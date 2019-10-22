@@ -29,7 +29,7 @@ class ElectrophysioFile
      *
      * @param integer $physiologicalFileID The PhysiologicalFileID to be loaded
      */
-    function __construct($physiologicalFileID)
+    function __construct(int $physiologicalFileID)
     {
         $db = \NDB_Factory::singleton()->database();
 
@@ -66,7 +66,7 @@ class ElectrophysioFile
      *
      * @return mixed The value of the parameter
      */
-    function getParameter($parameterName)
+    function getParameter(string $parameterName)
     {
         return $this->fileData[$parameterName] ??
             ($this->parameters[$parameterName] ?? '');

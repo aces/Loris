@@ -308,7 +308,7 @@ ElectrophysiologySessionView.defaultProps = {
  */
 window.onload = function() {
   const sidebarContent = (
-    <SidebarContent previous={'hello'} next={'okay'}/>
+    <SidebarContent previous={'previous'} next={'next'}/>
   );
 
   const eegSidebar = (

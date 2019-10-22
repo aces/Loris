@@ -51,9 +51,6 @@ class StaticDataTable extends Component {
       if (this.state.Hide.defaultColumn) {
         $('#dynamictable').find('tbody td:eq(0)').hide();
       }
-      if (this.state.Hide.defaultColumn) {
-        $('#dynamictable').find('tbody td:eq(0)').hide();
-      }
     }
 
     // Retrieve module preferences

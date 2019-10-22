@@ -25,7 +25,7 @@ namespace LORIS\electrophysiology_browser;
  * @link       https://github.com/aces/Loris
  */
 
-class Electrophysiology_Session extends \NDB_Form
+class Electrophysiology_Session extends \NDB_Page
 {
 
     public $skipTemplate = true; // stops from looking for a smarty template
@@ -44,10 +44,7 @@ class Electrophysiology_Session extends \NDB_Form
         );
 
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
-                || ((in_array(
-                    $timePoint->getData('CenterID'),
-                    $user->getData('CenterIDs')
-                ))
+                || ($user->hasCenter($timePoint->getData('CenterID'))
                 && $user->hasPermission('electrophysiology_browser_view_site')
             )
         );

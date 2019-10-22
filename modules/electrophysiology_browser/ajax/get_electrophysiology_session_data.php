@@ -38,18 +38,18 @@ if (!$user->hasPermission('electrophysiology_browser_view_allsites')
     exit;
 }
 
-$response = getSessionData($_REQUEST['sessionID']);
+$response = getSessionData(intval($_REQUEST['sessionID']));
 
 echo json_encode($response);
 
 /**
  * Get the session data information.
  *
- * @param string $sessionID ID of the electrophysiology session
+ * @param int $sessionID ID of the electrophysiology session
  *
  * @return array with the session information
  */
-function getSessionData(string $sessionID)
+function getSessionData(int $sessionID)
 {
     $db = \NDB_Factory::singleton()->database();
 
@@ -72,8 +72,8 @@ function getSessionData(string $sessionID)
     $response['database']    = array_values(getFilesData($sessionID));
     $response['sessions']    = $sessions;
     $currentIndex            = array_search($sessionID, $sessions);
-    $response['nextSession'] = isset($sessions[$currentIndex+1]) ?? '';
-    $response['prevSession'] = isset($sessions[$currentIndex-1]) ?? '';
+    $response['nextSession'] = $sessions[$currentIndex+1] ?? '';
+    $response['prevSession'] = $sessions[$currentIndex-1] ?? '';
 
     return $response;
 }
@@ -85,10 +85,10 @@ function getSessionData(string $sessionID)
  *
  * @return array with the subject information
  */
-function getSubjectData($sessionID)
+function getSubjectData(int $sessionID)
 {
     $subjectData = array();
-    $timePoint   = \NDB_Factory::singleton()->timepoint(intval($sessionID));
+    $timePoint   = \NDB_Factory::singleton()->timepoint($sessionID);
     $candidate   = \NDB_Factory::singleton()->candidate($timePoint->getCandID());
 
     $subjectData['pscid']       = $candidate->getPSCID();
@@ -111,7 +111,7 @@ function getSubjectData($sessionID)
  *
  * @return array with the file collection
  */
-function getFilesData($sessionID)
+function getFilesData(int $sessionID)
 {
     $db = \NDB_Factory::singleton()->database();
 
@@ -123,7 +123,6 @@ function getFilesData($sessionID)
                          pf.FilePath 
                        FROM 
                          physiological_file pf ';
-    //WHERE SessionID=:SID
 
     if ($outputType != 'all_types') {
         $query .= 'LEFT JOIN physiological_output_type pot ON ';
@@ -144,7 +143,7 @@ function getFilesData($sessionID)
         $fileSummary         = array();
         $physiologicalFileID = $file['PhysiologicalFileID'];
         $physiologicalFile   = $file['FilePath'];
-        $physioFileObj       = new \ElectrophysioFile($physiologicalFileID);
+        $physioFileObj       = new \ElectrophysioFile(intval($physiologicalFileID));
         $fileName            = basename($physioFileObj->getParameter('FilePath'));
 
         // -----------------------------------------------------
@@ -242,7 +241,7 @@ function getFilesData($sessionID)
 
         // get the links to the files for downloads
 
-        $links = getDownloadLinks($physiologicalFileID, $physiologicalFile);
+        $links = getDownloadLinks(intval($physiologicalFileID), $physiologicalFile);
 
         $fileSummary['downloads'] = $links;
 
@@ -262,7 +261,7 @@ function getFilesData($sessionID)
  * @return array array with the path to the different files associated to the
  *               electrophysiology file
  */
-function getDownloadlinks($physiologicalFileID, $physiologicalFile)
+function getDownloadlinks(int $physiologicalFileID, string $physiologicalFile): array
 {
     $db = \NDB_Factory::singleton()->database();
 
