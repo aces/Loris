@@ -63,17 +63,17 @@ class NDB_BVL_Feedback
      * can be passed but not necessarily all of them, depending on which
      * page is receiving feedback.
      *
-     * @param string   $username  The currently logged in user (why?)
-     * @param ?CandID  $candID    The 6 digit CandID
-     * @param ?integer $sessionID The session ID with feedback
-     * @param ?string  $commentID The commentID receiving feedback.
+     * @param string     $username  The currently logged in user (why?)
+     * @param ?CandID    $candID    The 6 digit CandID
+     * @param ?SessionID $sessionID The session ID with feedback
+     * @param ?string    $commentID The commentID receiving feedback.
      *
      * @return NDB_BVL_Feedback object
      */
     static function &singleton(
         $username,
         ?CandID $candID=null,
-        $sessionID=null,
+        ?SessionID $sessionID=null,
         $commentID=null
     ) {
         // at least one of the args have to be passed
@@ -120,18 +120,18 @@ class NDB_BVL_Feedback
     /**
      * Sets up a newly instantiated feedback thread object
      *
-     * @param string  $username  The name of the currently logged in user.
-     *                           (why is this here?)
-     * @param ?CandID $candID    The CandID we're getting a feedback thread for.
-     * @param ?string $sessionID The sessionID we're getting a feedback thread for.
-     * @param ?string $commentID The commentID we're getting a feedback thread for.
+     * @param string     $username  The name of the currently logged in user.
+     *                              FIXME (why is this here?)
+     * @param ?CandID    $candID    The CandID for this feedback thread.
+     * @param ?SessionID $sessionID The sessionID for this feedback thread.
+     * @param ?string    $commentID The commentID for this feedback thread.
      *
      * @return void
      */
     function setup(
         string $username,
         ?CandID $candID=null,
-        ?string $sessionID=null,
+        ?SessionID $sessionID=null,
         $commentID=null
     ) {
 
@@ -164,10 +164,10 @@ class NDB_BVL_Feedback
      *
      * @return void
      */
-    function _setCandidateProfileInfo()
+    function _setCandidateProfileInfo(): void
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = NDB_Factory::singleton()->database();
 
         // SELECT section
         $query = "SELECT c.CandID";
@@ -196,7 +196,7 @@ class NDB_BVL_Feedback
             $query          .= " WHERE c.CandID = :CaID";
             $qparams['CaID'] = (string) $this->_feedbackObjectInfo['CandID'];
         } else {
-            throw new Exception(
+            throw new LorisException(
                 "You need to pass at least one of the following to setup "
                 . "the Feedback Object: CandID, SessionID, or CommentID"
             );
@@ -205,7 +205,7 @@ class NDB_BVL_Feedback
 
         $result = $db->pselect($query, $qparams);
         if (!is_array($result) || count($result) == 0) {
-            throw new Exception(
+            throw new LorisException(
                 "Error, unable to select data for the feedback object"
             );
         }
@@ -224,7 +224,7 @@ class NDB_BVL_Feedback
      *
      * @return string feedback_level (either profile, visit, or instrument)
      */
-    function getFeedbackLevel()
+    function getFeedbackLevel(): string
     {
         return $this->_feedbackLevel;
     }
@@ -234,14 +234,14 @@ class NDB_BVL_Feedback
      *
      * @return array
      */
-    static public function getFeedbackTypes()
+    static public function getFeedbackTypes(): array
     {
-        // new DB Object
 
         $query = "SELECT Feedback_type as Type, Name, Description
             FROM feedback_bvl_type";
 
-        $result = \Database::singleton()->pselect($query, []);
+        $result = NDB_Factory::singleton()->database()
+            ->pselect($query, []);
 
         $list = [];
         foreach ($result as $record) {
@@ -262,40 +262,44 @@ class NDB_BVL_Feedback
      *
      * @return int feedback type id, empty array if none found
      */
-    public function getFeedbackTypeIdByName($name)
+    public function getFeedbackTypeIdByName(string $name): int
     {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->Database();
-
         $query = "SELECT  `Feedback_type`
                     FROM  `feedback_bvl_type`
                     WHERE  `Name` =  :name ";
 
-        return $db->pselectOne($query, [':name' => $name]);
+        return intval(
+            NDB_Factory::singleton()->database()
+                ->pselectOne($query, array(':name' => $name))
+        );
     }
 
     /**
      * Create new feedback type
      *
-     * @param string $name        feedback type name
-     * @param string $description feedback type description
+     * @param string  $name        feedback type name
+     * @param ?string $description feedback type description
      *
      * @return int feedback type id
      * @throws DatabaseException
      * @throws LorisException
      */
-    public function createFeedbackType($name, $description = null)
-    {
-        if (empty($name) || strlen($name)>100 ) {
-            throw new LorisException("Invalid feedback type name");
+    public function createFeedbackType(
+        string $name,
+        ?string $description = null
+    ): int {
+        if (empty($name) || strlen($name) > 100 ) {
+            throw new LorisException(
+                "Invalid feedback type name: name must not be empty and must "
+                . "not exceed 100 characters"
+            );
         }
 
         if (empty($description)) {
             $description = null;
         }
 
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->Database();
+        $db = NDB_Factory::singleton()->database();
 
         $values = [
             'Name'        => $name,
@@ -315,16 +319,13 @@ class NDB_BVL_Feedback
      */
     function getThreadType($feedbackID)
     {
-        // new DB Object
-        $db =& Database::singleton();
-
         $query = "SELECT Name FROM feedback_bvl_thread
                   JOIN feedback_bvl_type ON
                   feedback_bvl_type.Feedback_type = feedback_bvl_thread.Feedback_type
                   WHERE feedback_bvl_thread.FeedbackID = :FID";
 
-        $result = $db->pselectOne($query, ['FID' => $feedbackID]);
-        return $result;
+        return NDB_Factory::singleton()->database()
+            ->pselectOne($query, ['FID' => $feedbackID]);
     }
 
     /**

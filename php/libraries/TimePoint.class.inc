@@ -76,43 +76,45 @@ class TimePoint
      * Returns an object representing this Timepoint, and ensures that only
      * one is ever created per Session.
      *
-     * @param integer $sessionID The ID of the TimePoint to retrieve from the
+     * @param SessionID $sessionID The ID of the TimePoint to retrieve from the
      *                           database
      *
      * @return TimePoint object representing $sessionID
      */
-    static function &singleton(int $sessionID)
+    static function &singleton(SessionID $sessionID)
     {
         // instantiate new TimePoint object
-        static $timePointList = [];
-        if (!isset($timePointList[$sessionID])) {
+        static $timePointList = array();
+        if (!isset($timePointList[(string) $sessionID])) {
             try {
-                $timePointList[$sessionID] = new TimePoint();
+                $timePointList[(string) $sessionID] = new TimePoint();
 
-                $timePointList[$sessionID]->select($sessionID);
+                $timePointList[(string) $sessionID]->select($sessionID);
             } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
-                unset($timePointList[$sessionID]);
+                unset($timePointList[(string) $sessionID]);
                 throw $e;
             }
         }
 
-        return $timePointList[$sessionID];
+        return $timePointList[(string) $sessionID];
     }
 
 
     /**
      * Loads the data from the given sessionID into the current TimePoint class.
      *
-     * @param integer $sessionID The $sessionID to load.
+     * @param SessionID $sessionID The $sessionID to load.
      *
      * @return void (but side-effect loads current object.)
      */
-    function select(int $sessionID): void
+    function select(SessionID $sessionID): void
     {
-        $config         =& NDB_Config::singleton();
-        $useScreening   = $config->getSetting('useScreening');
+        $factory      = NDB_Factory::singleton();
+        $db           = $factory->database();
+        $config       = $factory->config();
+        $useScreening = $config->getSetting('useScreening');
         $screeningIndex = array_search('Screening', $this->_stageOptions);
         if ($useScreening != 'true' && $screeningIndex !== false) {
             unset($this->_stageOptions[$screeningIndex]);
@@ -120,7 +122,6 @@ class TimePoint
         }
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
 
         // get user data from database
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
@@ -135,7 +136,10 @@ class TimePoint
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                         LEFT JOIN Project AS pr USING(ProjectID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
-        $row   = $db->pselectRow($query, ['SID' => $sessionID]);
+        $row   = $factory->database()->pselectRow(
+            $query,
+            ['SID' => $sessionID]
+        );
 
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
@@ -407,15 +411,11 @@ class TimePoint
     /**
      * Returns the SessionID for this visit.
      *
-     * @return integer The ID for this session.
+     * @return SessionID The ID for this session.
      */
-    function getSessionID(): int
+    function getSessionID(): SessionID
     {
-        /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
-         */
-        return intval($this->_timePointInfo["SessionID"]);
+        return (new SessionID($this->_timePointInfo["SessionID"]));
     }
 
     /**

@@ -32,6 +32,8 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      */
     private $_feedbackObj;
 
+    private $_sessionID = 11;
+
 
     /**
      * Setup test
@@ -43,7 +45,9 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
     {
         parent::setUp();
         $this->createLorisDBConnection();
-        $this->_feedbackObj = NDB_BVL_Feedback::singleton("karo_test", null, 11);
+        $this->_feedbackObj = NDB_BVL_Feedback::singleton(
+            "karo_test", null, $this->_sessionID
+        );
     }
 
     /**

@@ -19,7 +19,7 @@ use \Loris\StudyEntities\Candidate\CandID;
 /**
  * The timepoint list menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Timepoint_List
@@ -60,7 +60,8 @@ class Timepoint_List extends \NDB_Menu
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        // FIXME: Update the code to add the singleton here, not the identifier.
+        // FIXME: At some point this class and related classes should use a
+        // Candidate object rather than passing a CandID around.
         $this->candID = new CandID($request->getAttribute('CandID'));
         return parent::process($request, $handler);
     }
@@ -70,10 +71,11 @@ class Timepoint_List extends \NDB_Menu
      *
      * @return void
      */
-    function setup()
+    function setup(): void
     {
         // create candidate object
-        $candidate =& \Candidate::singleton($this->candID);
+        $candidate = \Candidate::singleton($this->candID);
+        $DB        = \Database::singleton();
 
         $numberOfVisits           = 0;
         $this->tpl_data['candID'] = $this->candID;
@@ -82,7 +84,7 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candidate'] = $candidate->getData();
 
         if (!empty($listOfTimePoints)) {
-            $user     =& \User::singleton();
+            $user     = \User::singleton();
             $username = $user->getData('UserID');
 
             $feedback_select_inactive = null;
@@ -95,7 +97,8 @@ class Timepoint_List extends \NDB_Menu
              */
             $x = 0;
             foreach ($listOfTimePoints as $currentTimePoint) {
-                $timePoint =& \TimePoint::singleton($currentTimePoint);
+                $sessionID = new \SessionID($currentTimePoint);
+                $timePoint = \TimePoint::singleton($sessionID);
 
                 // get the first date of visit in order to
                 // turn on the future time points bit if we have a date of visit
@@ -122,7 +125,7 @@ class Timepoint_List extends \NDB_Menu
                 $feedback = \NDB_BVL_Feedback::singleton(
                     $username,
                     null,
-                    $timePoint->getData('SessionID')
+                    $sessionID
                 );
 
                 $feedback_status = $feedback->getMaxThreadStatus(
@@ -159,8 +162,7 @@ class Timepoint_List extends \NDB_Menu
                     $outcomeStage
                         = $this->_determinePreviousStage($currentTimePoint);
 
-                    $getStatusMethod
-                        = 'get'.$outcomeStage.'Status';
+                    $getStatusMethod = 'get'.$outcomeStage.'Status';
 
                     $getDateMethod = 'getDateOf'.$outcomeStage;
 
@@ -184,7 +186,9 @@ class Timepoint_List extends \NDB_Menu
              * List of future visits
              */
             if (isset($firstDateOfVisit)) {
-                $timePoint = \TimePoint::singleton($listOfTimePoints[0]);
+                $timePoint = \TimePoint::singleton(
+                    new \SessionID($listOfTimePoints[0])
+                );
 
                 $this->tpl_data['SubprojectID'] = $timePoint->getSubprojectID();
 
@@ -192,19 +196,18 @@ class Timepoint_List extends \NDB_Menu
         }
 
         $this->tpl_data['actions'] = $this->getActionButtons();
-
     }
     /**
      * Determining Previous Stage
      *
-     * @param string $sessionID sessionID
+     * @param \SessionID $sessionID that refers to this TimePoint
      *
      * @return string
      */
-    function _determinePreviousStage($sessionID)
+    function _determinePreviousStage(\SessionID $sessionID): string
     {
         // create timepoint object
-        $timePoint =& \TimePoint::singleton($sessionID);
+        $timePoint = \TimePoint::singleton($sessionID);
 
         // outcome stage is the last stage
         //(approval || visit || screening || not started, in that order)
@@ -222,26 +225,22 @@ class Timepoint_List extends \NDB_Menu
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
      *
-     * @param CandID $candID    candID
-     * @param string $sessionID sessionID
+     * @param CandID $candID candID
      *
      * @return string
      */
-    function getFeedbackPanel(CandID $candID, $sessionID = null)
+    function getFeedbackPanel(CandID $candID): string
     {
-        $feedbackPanel = new \BVL_Feedback_Panel($candID);
-        $html          = $feedbackPanel->display();
-        return $html;
+        return (new \BVL_Feedback_Panel($candID))->display();
     }
     /**
      * Get Action Buttons
      *
      * @return string
      */
-    function getActionButtons()
+    function getActionButtons(): string
     {
-        $controlPanel = new TimePoint_List_ControlPanel($this->candID);
-        return $controlPanel->display();
+        return (new TimePoint_List_ControlPanel($this->candID))->display();
     }
 
     /**
