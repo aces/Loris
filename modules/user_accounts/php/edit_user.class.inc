@@ -812,18 +812,23 @@ class Edit_User extends \NDB_Form
                     'N'  => 'No',
                 )
             );
-            $groupB[] = $this->createLabel(
-                "Pending Approval:"
-            );
-            $groupB[] = $this->createSelect(
-                "examiner_pending",
-                "Pending Approval: ",
-                array(
-                    null => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
-                )
-            );
+
+            // A user should not be able to edit their own examiner approval
+            // status.
+            if (!$this->_isEditingOwnAccount()) {
+                $groupB[] = $this->createLabel(
+                    "Pending Approval:"
+                );
+                $groupB[] = $this->createSelect(
+                    "examiner_pending",
+                    "Pending Approval: ",
+                    array(
+                     null => "",
+                     'Y'  => 'Yes',
+                     'N'  => 'No',
+                    )
+                );
+            }
             $this->addGroup(
                 $groupA,
                 'examiner_sites',
@@ -844,14 +849,20 @@ class Edit_User extends \NDB_Form
 
         // active
         $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
-        $this->addSelect(
-            'Pending_approval',
-            'Pending approval',
-            array(
-                'Y' => 'Yes',
-                'N' => 'No',
-            )
-        );
+
+        // It doesn't make sense for a user to be editing their own
+        // approval status. In fact this could result in a Darwinian
+        // self-lockout. Let us help those who cannot help themselves.
+        if (!$this->_isEditingOwnAccount()) {
+            $this->addSelect(
+                'Pending_approval',
+                'Pending approval',
+                array(
+                 'Y' => 'Yes',
+                 'N' => 'No',
+                )
+            );
+        }
 
         //------------------------------------------------------------
 
