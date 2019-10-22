@@ -37,6 +37,10 @@ class ImageDTO implements \LORIS\Data\DataInstance
 
     private $_filetype;
 
+    private $_centerid;
+
+    private $_entitytype;
+
     /**
      * Constructor
      *
@@ -46,6 +50,8 @@ class ImageDTO implements \LORIS\Data\DataInstance
      * @param ?string $outputtype          The output type
      * @param ?string $acquisitionprotocol The aquisition protocol
      * @param ?string $filetype            The file type
+     * @param ?int    $centerid            The image session's centerid
+     * @param ?string $entitytype          The image candidate's entity_type
      */
     public function __construct(
         ?int $fileid,
@@ -53,7 +59,9 @@ class ImageDTO implements \LORIS\Data\DataInstance
         ?string $filelocation,
         ?string $outputtype,
         ?string $acquisitionprotocol,
-        ?string $filetype
+        ?string $filetype,
+        ?int $centerid,
+        ?string $entitytype
     ) {
         $this->_fileid       = $fileid;
         $this->_filename     = $filename;
@@ -61,6 +69,8 @@ class ImageDTO implements \LORIS\Data\DataInstance
         $this->_outputtype   = $outputtype;
         $this->_acquisitionprotocol = $acquisitionprotocol;
         $this->_filetype            = $filetype;
+        $this->_centerid            = $centerid;
+        $this->_entitytype          = $entitytype;
     }
 
     /**
@@ -141,5 +151,27 @@ class ImageDTO implements \LORIS\Data\DataInstance
             )
         );
     }
+
+    /**
+     * Returns the CenterID for this row, for filters such as
+     * \LORIS\Data\Filters\UserSiteMatch to match again.
+     *
+     * @return integer The CenterID
+     */
+    public function getCenterID(): int
+    {
+        return intval($this->_centerid);
+    }
+
+    /**
+     * This tells is the image is a phantom.
+     *
+     * @return bool True is the Entity_type is a scanner
+     */
+    public function isPhantom(): bool
+    {
+        return $this->_entitytype === 'Scanner';
+    }
+
 }
 

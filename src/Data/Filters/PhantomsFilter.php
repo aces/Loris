@@ -9,14 +9,14 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-namespace LORIS\api\Filters;
+namespace LORIS\Data\Filters;
 
 use \Loris\Data\DataInstance;
 use \LORIS\Data\Filter;
 
 /**
  * This is meant to be used by a provisioner to filter-out images that are
- * not phantoms when the user should not see them.
+ * phantoms when the user should not see them.
  *
  * @category   Data
  * @package    Main
@@ -25,7 +25,7 @@ use \LORIS\Data\Filter;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class ScansFilter implements Filter
+class PhantomsFilter implements Filter
 {
     /**
      * Implements the \LORIS\Data\Filter interface
@@ -37,16 +37,15 @@ class ScansFilter implements Filter
      */
     public function filter(\User $user, DataInstance $resource) : bool
     {
-        if ($resource->isPhantom()) {
-            // This filter only have jurisdiction over non-phantom images.
+        if (!$resource->isPhantom()) {
+            // This filter only have jurisdiction over phantom images.
+            return true;
+        }
+        if ($user->hasPermission('imaging_browser_phantom_allsites')) {
             return true;
         }
 
-        if ($user->hasPermission('imaging_browser_view_allsites')) {
-            return true;
-        }
-
-        if ($user->hasPermission('imaging_browser_view_site')) {
+        if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
             return $user->hasCenter($resource->getCenterID());
         }
 
