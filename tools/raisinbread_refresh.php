@@ -172,12 +172,6 @@ function runPatch(string $file): void
     );
 }
 
-function sqlFileFilter(string $file): bool
-{
-    return pathinfo($file)['extension'] === 'sql';
-}
-
-
 /**
  * A wrapper around `exec()` built-in function with basic error reporting.
  *
