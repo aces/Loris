@@ -149,7 +149,7 @@ class Candidate_List extends \NDB_Menu_Filter
         }
 
         $this->fieldOptions = [
-                               'visitlabel'       => $visit_label_options,
+                               'visitlabel'        => $visit_label_options,
                                'site'              => $site_options,
                                'project'           => $project_options,
                                'subproject'        => $subproject_options,
