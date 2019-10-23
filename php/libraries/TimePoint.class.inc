@@ -390,7 +390,7 @@ class TimePoint
             ]
         );
         // this select updates the timepoint object
-        $this->select($this->getData('SessionID'));
+        $this->select($this->getSessionID());
         return true;
     }
 

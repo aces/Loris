@@ -55,8 +55,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         $factory = \NDB_Factory::singleton();
         $this->tpl_data['baseurl'] = $factory->settings()->getBaseURL();
 
-        $this->tpl_data['candID']    = $this->getData('CandID');
-        $this->tpl_data['sessionID'] = $this->getData('SessionID');
+        $this->tpl_data['candID']    = $this->getCandID();
+        $this->tpl_data['sessionID'] = $this->getSessionID();
 
         // start next stage
         $this->tpl_data['access']['next_stage'] = $this->_displayStartNextStage();
@@ -139,7 +139,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
                 // set the SessionID for the battery
                 $battery->selectBattery(
-                    $this->getData('SessionID')
+                    $this->getSessionID()
                 );
 
                 // get the list of instruments
@@ -201,7 +201,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $battery = new \NDB_BVL_Battery();
                 // set the SessionID for the battery
                 $battery->selectBattery(
-                    $this->getData('SessionID')
+                    $this->getSessionID()
                 );
                 // get the list of instruments
                 $batteryList = $battery->getBatteryVerbose();
@@ -441,9 +441,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             return ($user->hasPermission('bvl_feedback'));
         }
 
-        return ($user->hasPermission('data_entry') &&
-                in_array($this->getData('CenterID'), $user->getData('CenterIDs'))
-               );
+        return $user->hasPermission('data_entry')
+            && $user->hasCenter($this->getCenterID());
     }
     /**
      * DisplayStatus function
