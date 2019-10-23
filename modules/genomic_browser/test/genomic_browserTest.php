@@ -256,21 +256,4 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                   );
                   $this->assertContains($expectDataRows, $text);
     }
-    /**
-      * Tests that, when clicking the upload button,the upload window should show up
-      *
-      * @return void
-      */
-    function testUploadFile()
-    {
-        $this->safeGet($this->url . "/genomic_browser/genomic_file_uploader/");
-        $this->safeFindElement(
-            WebDriverBy::Name("upload")
-        )->click();
-        $value    = "#myModalLabel";
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
-            $this->assertContains("Upload File", $text);
-    }
 }
