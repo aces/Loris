@@ -136,14 +136,14 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserEachTab()
     {
           $this->_testPageUIs("/genomic_browser/", $this->_loadingProfilesUI);
-//  it will be rewritten later.
-//        $this->_testPageUIs("/genomic_browser/gwas_browser/", $this->_loadingGWASUI);
-//        $this->_testPageUIs("/genomic_browser/snp_browser/", $this->_loadingSNPUI);
-//        $this->_testPageUIs("/genomic_browser/cpg_browser/", $this->_MethylationUI);
-//        $this->_testPageUIs(
-//            "/genomic_browser/genomic_file_uploader/",
-//            $this->_FilesUI
-//        );
+        //  it will be rewritten later.
+        //        $this->_testPageUIs("/genomic_browser/gwas_browser/", $this->_loadingGWASUI);
+        //        $this->_testPageUIs("/genomic_browser/snp_browser/", $this->_loadingSNPUI);
+        //        $this->_testPageUIs("/genomic_browser/cpg_browser/", $this->_MethylationUI);
+        //        $this->_testPageUIs(
+        //            "/genomic_browser/genomic_file_uploader/",
+        //            $this->_FilesUI
+        //        );
     }
     /**
       * Tests that, inputing test data and searching the data,
