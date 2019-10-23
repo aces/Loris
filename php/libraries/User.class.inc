@@ -194,20 +194,20 @@ class User extends UserPermissions
      * @note   Call without any arguments to get the entire user data array
      * @return mixed
      * @access public
-     * @throws LorisException
+     * @throws \DeprecatedException
      */
     public function getData(string $var = '')
     {
         if ($var === '') {
             return $this->userInfo;
         } elseif ($var === 'CenterID') {
-            throw new \LorisException(
+            throw new \DeprecatedException(
                 "The function getData('CenterID')
                                         is deprecated and is replaced
                                         with getData('CenterIDs')"
             );
         } elseif ($var === 'Site') {
-            throw new \LorisException(
+            throw new \DeprecatedException(
                 "The function getData('Site')
                                         is deprecated and is replaced
                                         with getData('Sites')"
@@ -278,14 +278,14 @@ class User extends UserPermissions
      /**
      * Get the user's site's ID number
      *
-     * @return array
+     * @return     array
+     * @deprecated
      */
     function getCenterID()
     {
-        throw new \LorisException(
-            "The function getCenterID
-                                   is deprecated and is replaced
-                                   with getCenterIDs"
+        throw new \DeprecatedException(
+            'The function getCenterID is deprecated and is replaced with ' .
+            'getCenterIDs'
         );
     }
 

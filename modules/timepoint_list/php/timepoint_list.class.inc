@@ -44,10 +44,7 @@ class Timepoint_List extends \NDB_Menu
 
         // check user permissions
         if ($user->hasPermission('access_all_profiles')
-            || (in_array(
-                $candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
-            ))
+            || $user->hasCenter($candidate->getCenterID())
         ) {
             return true;
         }
@@ -105,7 +102,7 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candID'] = $this->candID;
         $this->tpl_data['PSCID']  = $candidate->getPSCID();
         $listOfTimePoints         = $candidate->getListOfTimePoints();
-        $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['candidate'] = $candidate->toTPLArray();
 
         if (!empty($listOfTimePoints)) {
             $user     =& \User::singleton();

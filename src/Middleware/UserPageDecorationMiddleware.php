@@ -74,7 +74,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             $candID    = new CandID($candID);
             $candidate = \Candidate::singleton($candID);
 
-            $tpl_data['candidate'] = $candidate->getData();
+            $tpl_data['candidate'] = $candidate->toTPLArray();
         }
         $tpl_data['candID'] = $candID ?? '';
 

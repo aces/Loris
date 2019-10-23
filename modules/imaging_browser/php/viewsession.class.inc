@@ -723,7 +723,7 @@ class ViewSession extends \NDB_Form
         $subjectData['candid']       = $timePoint->getCandID();
         $subjectData['scanner']      = $this->scanner;
 
-        $candidate            =& \Candidate::singleton($timePoint->getCandID());
+        $candidate            = \Candidate::singleton($timePoint->getCandID());
         $subjectData['pscid'] = $candidate->getPSCID();
         $subjectData['dob']   = $candidate->getCandidateDoB();
         $subjectData['edc']   = $candidate->getCandidateEDC();
@@ -733,7 +733,7 @@ class ViewSession extends \NDB_Form
         //Need to find the proper way to get the TarchiveID.
         //It should be per file, not per candidate. --Dave
         $params     = array();
-        $EntityType = $candidate->getData('Entity_type');
+        $EntityType = $candidate->getEntityType();
         if ($EntityType == 'Scanner') {
             $ID = ":PPSCID";
             $params['PPSCID'] = $timePoint->getData('PSCID');

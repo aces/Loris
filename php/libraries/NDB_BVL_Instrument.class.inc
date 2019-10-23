@@ -372,7 +372,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             throw new LorisException($e->getMessage());
         }
 
-        $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['candidate'] = $candidate->toTPLArray();
         $this->tpl_data['timePoint'] = $timePoint->getData();
     }
 

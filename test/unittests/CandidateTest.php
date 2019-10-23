@@ -182,9 +182,6 @@ class CandidateTest extends TestCase
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
-        //validate _candidate Info
-        $this->assertEquals($this->_candidateInfo, $this->_candidate->getData());
-
         //validate list of time points
         $expectedTimepoints = array();
         foreach ($this->_listOfTimePoints as $oneRow) {
@@ -232,7 +229,7 @@ class CandidateTest extends TestCase
             );
 
         $this->assertTrue($this->_candidate->setData($data));
-        $this->assertEquals($data['Active'], $this->_candidate->getData('Active'));
+        $this->assertEquals($data['Active'], $this->_candidate->isActive());
     }
 
     /**
@@ -249,30 +246,6 @@ class CandidateTest extends TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
     
         $this->_candidate->setData(array());
-    }
-
-    /**
-     * Test getData returns the entire array of candidate information if no
-     * variable is specified
-     *
-     * @covers Candidate::getData
-     * @return void
-     */
-    public function testGetDataReturnsAllInformationIfGivenNull()
-    {
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
-        $this->assertEquals(
-            $this->_candidateInfo,
-            $this->_candidate->getData()
-        );
-
-        $this->assertTrue(
-            $this->_candidate->setData(
-                array('RegisteredBy' => 'TestUser')
-            )
-        );
     }
 
     /** 

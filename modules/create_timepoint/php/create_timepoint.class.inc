@@ -50,14 +50,8 @@ class Create_Timepoint extends \NDB_Form
         $candidate = \Candidate::singleton(new CandID($this->identifier));
 
         // check user permissions
-        return (
-            $user->hasPermission('data_entry') &&
-            (in_array(
-                $candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
-        );
+        return $user->hasPermission('data_entry') &&
+            $user->hasCenter($candidate->getCenterID());
     }
 
     /**

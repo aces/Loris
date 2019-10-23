@@ -96,6 +96,13 @@ class Candidate
     var $lastModifiedBy;
 
     /**
+     * The entity type of this candidate. 'Human' or 'Scanner'.
+     *
+     * @var string
+     */
+    var $entityType;
+
+    /**
      * An array of SessionIDs for which this candidate has TimePoints.
      *
      * @var int[] FIXME This should be an array of SessionID objects.
@@ -154,6 +161,7 @@ p.Name as site,
 c.Active as isActive, 
 u1.Real_name as registeredBy, 
 c.UserID as lastModifiedBy, 
+c.Entity_type as entityType, 
 c.RegistrationCenterID as registrationCenterID, 
 c.RegistrationProjectID as registrationProjectID
 FROM candidate as c
@@ -577,7 +585,17 @@ QUERY;
      */
     function lastRecordChangeBy(): string
     {
-        return $this->userID;
+        return $this->lastModifiedBy;
+    }
+
+    /**
+     * Getter method for entityType class variable.
+     *
+     * @return string The value of entityType. 'Human' or 'Scanner'.
+     */
+    function getEntityType(): string
+    {
+        return $this->entityType;
     }
 
     /**
@@ -614,7 +632,7 @@ QUERY;
      * Generates list of valid subprojects for a the selected Candidate's
      * project
      *
-     * @return ?array<int,int> Array of the form SubprojectID => SubprojectID
+     * @return array<int,int> Array of the form SubprojectID => SubprojectID
      *
      * @throws DatabaseException
      */
@@ -810,6 +828,39 @@ QUERY;
         );
         //preg_match returns 1 on success.
         return preg_match($regex, $PSCID) === 1;
+    }
+
+    /**
+     * This is a function to supply data about the Candidate object to the
+     * front-end. Many Smarty templates refer to the specific column names
+     * and aliases used below.
+     * This function exists to provide legacy support. It should not be used
+     * by new code.
+     *
+     * @return string[]
+     */
+    function toTPLArray()
+    {
+        $candidateInfo = array();
+        // get candidate data from database
+        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
+            c.EDC, c.Sex, c.Entity_type,
+            p.Name AS PSC, c.Ethnicity,
+            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
+            FROM candidate as c
+            LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
+            LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
+            WHERE c.CandID=:candID AND c.Active = 'Y'";
+
+        $row = \NDB_Factory::singleton()->database()->pselectRow(
+            $query,
+            array('candID' => (string) $this->candID)
+        );
+
+        foreach ($row as $key=>$value) {
+            $candidateInfo[$key] = $value;
+        }
+        return $candidateInfo;
     }
 }
 

@@ -82,26 +82,16 @@ class Instrument_List extends \NDB_Menu_Filter
     */
     function _hasAccess(\User $user) : bool
     {
-        $timePoint = $this->timePoint;
-        if ($timePoint === null) {
+        if ($this->timePoint === null) {
             throw new \NotFound("Page requires a timepoint to load");
         }
-        $candidate = $this->candidate;
-        if ($candidate === null) {
+        if ($this->candidate === null) {
             throw new \NotFound("Page requires a candidate to load");
         }
 
-        //These variable are only for checking the permissions.
-        return ($user->hasPermission('access_all_profiles')
-            || (in_array(
-                $candidate->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )) || (in_array(
-                $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
-        );
+        return $user->hasPermission('access_all_profiles')
+            || $user->hasCenter($this->candidate->getCenterID())
+            || $user->hasCenter($this->timePoint->getCenterID());
     }
 
     /**
@@ -284,8 +274,10 @@ class Instrument_List extends \NDB_Menu_Filter
             }
         }
 
-        $this->tpl_data['display']
-            = array_merge($this->candidate->getData(), $this->timePoint->getData());
+        $this->tpl_data['display'] = array_merge(
+            $this->candidate->toTPLArray(),
+            $this->timePoint->getData()
+        );
     }
 
     /**
