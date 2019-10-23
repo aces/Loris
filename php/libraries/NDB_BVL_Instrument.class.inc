@@ -983,8 +983,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $centerID = null;
         }
 
-        //get examiner certifications for profiles part of IBIS2
-        $candID    = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $candID    = $_REQUEST['candID'] ?? '';
         $sessionID = $this->getSessionID();
 
         $project = $db->pselectOne(
@@ -1477,7 +1476,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
         if (empty($result)) {
-            throw new NotFound;
+            throw new NotFound(
+                "No SessionID exists for CommentID: `{$this->getCommentID()}`"
+            );
         }
 
         return (new SessionID($result));
