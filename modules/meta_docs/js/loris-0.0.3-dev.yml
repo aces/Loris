@@ -4,34 +4,852 @@ info:
   description: API for inserting dicoms and handling images within the LORIS Platform
   contact:
     name: LORIS Development Team
-    url: https://github.com/aces/loris
+    url: 'https://github.com/aces/loris'
   license:
-    name: GNU Public License, Version 3
-    url: https://opensource.org/licenses/GPL-3.0
+    name: 'GNU Public License, Version 3'
+    url: 'https://opensource.org/licenses/GPL-3.0'
   version: 0.0.3-dev
 servers:
-- url: https://xavier-dev.loris.ca/api/v0.0.3-dev
+  - url: 'https://xavier-dev.loris.ca/api/v0.0.3-dev'
 paths:
-  /candidates/{candid}/{visit}/dicoms:
+  '/login':
+    post:
+      tags:
+      - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: The JWT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+
+  '/projects':
     get:
       tags:
-      - Dicoms
-      summary: List all dicoms for that timepoint
-      parameters:
-      - name: candid
-        in: path
-        description: ID of the candidate
-        required: true
-        schema:
-          type: string
-      - name: visit
-        in: path
-        description: This timepoint visit label
-        required: true
-        schema:
-          type: string
+      - Projects
+      summary: List all projects
       responses:
         200:
+          description: An object with projects as properties
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Projects:
+                    type: object # FIXME this should be an array of projects
+                    
+  '/projects/{project}':
+    get:
+      tags:
+      - Projects
+      summary: Get that project descriptor
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: An object containing the project descriptor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          
+  '/projects/{project}/candidates':
+    get:
+      tags:
+      - Projects
+      summary: List all candidates of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: An object containing the list of candidates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCandidates'
+                
+  '/projects/{project}/images':
+    get:
+      tags:
+      - Projects
+      summary: List all images of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          schema:
+            type: string
+        - name: since
+          in: query
+          description: A date 
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: An object containing the list of image descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectImages'
+                
+  '/projects/{project}/instruments':
+    get:
+      tags:
+      - Projects
+      summary: List all instruments of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: An object containing the list of instrument summary descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectInstruments'
+                
+  '/projects/{project}/instruments/{instrument}':
+    get:
+      tags:
+      - Projects
+      summary: Get an instrument descriptor in that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: An JSON representation of the instrument form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectInstrument'
+                
+  '/projects/{project}/visits':
+    get:
+      tags:
+      - Projects
+      summary: List all existing visit label of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: An object containing the list of instrument summary descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectVisits'
+                
+  '/candidates':
+    get:
+      tags:
+      - Candidates
+      summary: List all candidates in this LORIS instance
+      responses:
+        200:
+          description: An object containing the list of instrument summary descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidates'
+      
+    post:
+      tags:
+      - Candidates
+      summary: Create a candidate
+      
+      
+  '/candidates/{candid}':
+    get:
+      tags:
+      - Candidates
+      summary: Get a candidate descriptor
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}':
+    get:
+      tags:
+      - Visit
+      summary: Get a visit descriptor for that candidate
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+    put:
+      tags:
+      - Visit
+      summary: Add a timepoint to that candidate
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/instruments':
+    get:
+      tags:
+      - Instruments
+      summary: List all instruments of that timepoint
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+
+  '/candidates/{candid}/{visit}/instruments/{instrument}':
+    get:
+      tags:
+      - Instruments
+      summary: Get an instrument data values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string    
+    patch:
+      tags:
+      - Instruments
+      summary: Update some data values of an instrument
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+    put:
+      tags:
+      - Instruments
+      summary: Set an instrument data values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/instruments/{instrument}/flags':
+    get:
+      tags:
+      - Instruments
+      summary: Get an instrument flags
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+            
+    patch:
+      tags:
+      - Instruments
+      summary: Update some flags of an instrument
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+            
+    put:
+      tags:
+      - Instruments
+      summary: Set an instrument flags
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/instruments/{instrument}/dde':
+    get:
+      tags:
+      - Instruments
+      summary: Get a double data entry instrument data values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string    
+    patch:
+      tags:
+      - Instruments
+      summary: Update some data values of a double data entry instrument
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+    put:
+      tags:
+      - Instruments
+      summary: Set a double data entry instrument data values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+  '/candidates/{candid}/{visit}/instruments/{instrument}/dde/flags':
+    get:
+      tags:
+      - Instruments
+      summary: Get a double data entry instrument flags
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+            
+    patch:
+      tags:
+      - Instruments
+      summary: Update some flags of a double data entry instrument
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+            
+    put:
+      tags:
+      - Instruments
+      summary: Set a double data entry instrument flags
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/images':
+    get:
+      tags:
+      - Images
+      summary: List all images of a timepoint
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+  '/candidates/{candid}/{visit}/images/{filename}':
+    get:
+      tags:
+      - Images
+      summary: Get an images of a timepoint
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/images/{filename}/qc':
+    get:
+      tags:
+      - Images
+      summary: Get the qc values of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          schema:
+            type: string
+            
+    put:
+      tags:
+      - Images
+      summary: Set the qc values of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/images/{filename}/format/brainbrowser':
+    get:
+      tags:
+      - Images
+      summary: Get the brainbrowser format of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/images/{filename}/format/raw':
+    get:
+      tags:
+      - Images
+      summary: Get the raw format of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/images/{filename}/format/thumbnail':
+    get:
+      tags:
+      - Images
+      summary: Get the thumbnail format of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/images/{filename}/headers':
+    get:
+      tags:
+      - Images
+      summary: Get the summary headers of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          schema:
+            type: string
+  '/candidates/{candid}/{visit}/images/{filename}/headers/full':
+    get:
+      tags:
+      - Images
+      summary: Get all headers of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          schema:
+            type: string
+  '/candidates/{candid}/{visit}/images/{filename}/headers/{headername}':
+    get:
+      tags:
+      - Images
+      summary: Get a specific header of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          schema:
+            type: string
+        - name: headername
+          in: path
+          description: The requested header name
+          required: true
+          schema:
+            type: string
+            
+  '/candidates/{candid}/{visit}/qc/imaging':
+    get:
+      tags:
+        - Visit
+      summary: Get the imaging qc values of a visit
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          schema:
+            type: string
+    put:
+      tags:
+        - Visit
+    
+  '/candidates/{candid}/{visit}/dicoms':
+    get:
+      tags:
+        - Dicoms
+      summary: List all dicoms for that timepoint
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
           description: An object containing the list of dicoms
           content:
             application/json:
@@ -39,27 +857,28 @@ paths:
                 $ref: '#/components/schemas/Dicoms'
     post:
       tags:
-      - Dicoms
+        - Dicoms
       summary: Upload a dicom to this timepoint
       parameters:
-      - name: candid
-        in: path
-        description: ID of the candidate
-        required: true
-        schema:
-          type: string
-      - name: visit
-        in: path
-        description: This timepoint visit label
-        required: true
-        schema:
-          type: string
-      - name: LORIS-Overwrite
-        in: header
-        description: If set to 'overwrite', will replace server file with the same name
-        schema:
-          type: string
-          enum: [overwrite]
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: LORIS-Overwrite
+          in: header
+          description: 'If set to ''overwrite'', will replace server file with the same name'
+          schema:
+            type: string
+            enum:
+              - overwrite
       requestBody:
         content:
           multipart/mixed:
@@ -80,125 +899,124 @@ paths:
                   type: string
                 IsPhantom:
                   type: string
-                  enum: [true, false]
+                  enum:
+                    - true
+                    - false
                 mriFile:
                   type: string
                   format: binary
             encoding:
               mriFile:
-                contentType: application/gzip, application/tar, application/tar+gzip, application/x-tar
+                contentType: 'application/gzip, application/tar, application/tar+gzip, application/x-tar'
                 headers:
                   LORIS-Overwrite:
                     schema:
                       type: string
-                      enum: [overwrite, ]
+                      enum:
+                        - overwrite
       responses:
-        500: # If upload or database insertion fails
-          $ref: '#/components/responses/InternalServerError'
-        403:
-          description: 'The _imaging_uploader_ permission is required'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        303: 
-          description: On success, redirect to this dicom upload server processes (mri_upload)
+        '303':
+          description: 'On success, redirect to this dicom upload server processes (mri_upload)'
           headers:
             Location:
               schema:
                 type: string
               description: The URL of the processes.
-        
+        '403':
+          description: The _imaging_uploader_ permission is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
       x-codegen-request-body-name: DicomUploadForm
-
-  /candidates/{candid}/{visit}/dicoms/{tarname}:
+  '/candidates/{candid}/{visit}/dicoms/{tarname}':
     get:
       tags:
-      - Dicoms
+        - Dicoms
       summary: Get the dicom file
       parameters:
-      - name: candid
-        in: path
-        description: ID of the candidate
-        required: true
-        schema:
-          type: string
-      - name: visit
-        in: path
-        description: This timepoint visit label
-        required: true
-        schema:
-          type: string
-      - name: tarname
-        in: path
-        description: The dicom filename
-        required: true
-        schema:
-          type: string
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: tarname
+          in: path
+          description: The dicom filename
+          required: true
+          schema:
+            type: string
       responses:
-        200:
+        '200':
           description: The dicom file content
           content:
             application/octet-stream:
               schema:
                 type: string
                 format: binary
-
-  /candidates/{candid}/{visit}/dicoms/{tarname}/processes:
+  '/candidates/{candid}/{visit}/dicoms/{tarname}/processes':
     get:
       tags:
-      - Dicoms
+        - Dicoms
       summary: List server processes executed on that dicom
       parameters:
-      - name: candid
-        in: path
-        description: ID of the candidate
-        required: true
-        schema:
-          type: string
-      - name: visit
-        in: path
-        description: This timepoint visit label
-        required: true
-        schema:
-          type: string
-      - name: tarname
-        in: path
-        description: The dicom filename
-        required: true
-        schema:
-          type: string
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: tarname
+          in: path
+          description: The dicom filename
+          required: true
+          schema:
+            type: string
       responses:
-        200:
+        '200':
           description: The processes list
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DicomProcesses'
-          
     post:
       tags:
         - Dicoms
       summary: Start a server process on that dicom
       parameters:
-      - name: candid
-        in: path
-        description: ID of the candidate
-        required: true
-        schema:
-          type: string
-      - name: visit
-        in: path
-        description: This timepoint visit label
-        required: true
-        schema:
-          type: string
-      - name: tarname
-        in: path
-        description: The dicom filename
-        required: true
-        schema:
-          type: string
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: tarname
+          in: path
+          description: The dicom filename
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -210,50 +1028,50 @@ paths:
               properties:
                 ProcessType:
                   type: string
-                  enum: [mri_upload]
+                  enum:
+                    - mri_upload
                 MRIUploadID:
                   type: number
       responses:
-        202: 
-          description: On success, put the generated server processes location in the headers
+        '202':
+          description: 'On success, put the generated server processes location in the headers'
           headers:
             Location:
               schema:
                 type: string
               description: The URL of the processes.
-      
-  /candidates/{candid}/{visit}/dicoms/{tarname}/processes/{processid}:
+  '/candidates/{candid}/{visit}/dicoms/{tarname}/processes/{processid}':
     get:
       tags:
         - Dicoms
       summary: Get the state of a server process
       parameters:
-      - name: candid
-        in: path
-        description: ID of the candidate
-        required: true
-        schema:
-          type: string
-      - name: visit
-        in: path
-        description: This timepoint visit label
-        required: true
-        schema:
-          type: string
-      - name: tarname
-        in: path
-        description: The dicom filename
-        required: true
-        schema:
-          type: string
-      - name: processid
-        in: path
-        description: The process id
-        required: true
-        schema:
-          type: number
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: tarname
+          in: path
+          description: The dicom filename
+          required: true
+          schema:
+            type: string
+        - name: processid
+          in: path
+          description: The process id
+          required: true
+          schema:
+            type: number
       responses:
-        200:
+        '200':
           description: The process state
           content:
             application/json:
@@ -264,10 +1082,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Process'
-
 components:
   schemas:
-
     Dicoms:
       type: object
       properties:
@@ -282,7 +1098,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DicomTar'
-
     DicomTar:
       type: object
       properties:
@@ -292,7 +1107,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SeriesInfo'
-
     SeriesInfo:
       type: object
       properties:
@@ -311,11 +1125,10 @@ components:
         Modality:
           type: string
           enum:
-          - MR
-          - PT
+            - MR
+            - PT
         SeriesUID:
           type: string
-
     DicomProcesses:
       type: object
       properties:
@@ -323,7 +1136,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MRIUploadProcesses'
-            
     MRIUploadProcesses:
       type: object
       properties:
@@ -333,7 +1145,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Process'
-
     Process:
       type: object
       properties:
@@ -345,13 +1156,200 @@ components:
           type: string
         PROGRESS:
           type: string
-          enum: [SUCCESS,RUNNING,ERROR]
+          enum:
+            - SUCCESS
+            - RUNNING
+            - ERROR
         EXIT_CODE:
           type: string
         END_TIME:
           type: string
-
-    # Schema for error response body
+    Project:
+      type: object
+      properties:
+        Meta:
+          type: object
+          properties:
+            Project:
+              type: string
+        Visits:
+          type: array
+          items:
+            type: string
+        Instruments:
+          type: array
+          items:
+            type: string
+        Candidates:
+          type: array
+          items:
+            type: string
+    ProjectCandidates:
+      type: object
+      properties:
+        Meta:
+          type: object
+          properties:
+            Project:
+              type: string
+        Candidates:
+          type: array
+          items:
+            type: string
+    ProjectImages:
+      type: object
+      properties:
+        Meta:
+          type: object
+          properties:
+            Project:
+              type: string
+        Images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectImage'
+    ProjectImage:
+      type: object
+      properties:
+        Candidate:
+          type: string
+        PSCID:
+          type: string
+        Visit:
+          type: string
+        Visit_date:
+          type: string
+        Site:
+          type: string
+        ScanType:
+          type: string
+        QC_status:
+          type: string
+          enum: [Pass,Fail,null]
+        Selected:
+          type: string
+          enum: [true,false,null]
+        Link:
+          type: string
+        InsertTime:
+          type: string
+    ProjectInstruments:
+      type: object
+      properties:
+        Meta:
+          type: object
+          properties:
+            Project:
+              type: string
+        Instruments:
+          type: object # FIXME this should be an array of instrument descriptors
+            
+    ProjectInstrument:
+      type: object
+      properties:
+        Meta:
+          type: object
+          properties:
+            InstrumentVersion:
+              type: string
+            InstrumentFormatVersion:
+              type: string
+            ShortName:
+              type: string
+            LongName:
+              type: string
+            IncludeMetaDataFields:
+              type: string
+            Elements:
+              type: array
+              items:
+                $ref: '#/components/schemas/LorisFormElement'
+    LorisFormElement:
+      type: object
+      properties:
+        Type:
+          type: string
+          enum:
+            - advcheckbox
+            - date
+            - file
+            - group
+            - header
+            - hidden
+            - link
+            - page
+            - password
+            - radio
+            - select
+            - static
+            - submit
+            - text
+            - textarea
+            - time
+        Name:
+          type: string
+        Description:
+          type: string
+        Options:
+          type: object
+          properties:
+            Values:
+              type: object
+              additionalProperties:
+                type: string
+        RequireResponse:
+          type: boolean
+    ProjectVisits:
+      type: object
+      properties:
+        Meta:
+          type: object
+          properties:
+            Project:
+              type: string
+        Visits:
+          type: array
+          items:
+            type: string
+    Candidates:
+      type: object
+      properties:
+        Candidates:
+          $ref: '#/components/schemas/Candidate'
+    Candidate:
+      type: object
+      properties:
+        CandID:
+          type: string
+        Project: 
+          type: string
+        PSCID: 
+          type: string
+        Site: 
+          type: string
+        EDC: 
+          type: string
+        DoB: 
+          type: string
+        Sex: 
+          type: string
+          enum: [Female, Male]
+    NewCandidate:
+      type: object
+      properties:
+        Project: 
+          type: string
+        PSCID: 
+          type: string
+        Site: 
+          type: string
+        EDC: 
+          type: string
+        DoB: 
+          type: string
+        Sex: 
+          type: string
+          enum: [Female, Male]
     Error:
       type: object
       properties:
@@ -360,21 +1358,18 @@ components:
           type: string
       required:
         - error
-        
   responses:
-  
     InternalServerError:
       description: 500 Internal server error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       name: Authorization
       in: header
-
 security:
   - ApiKeyAuth: []
+
