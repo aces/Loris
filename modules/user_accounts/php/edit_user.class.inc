@@ -1046,6 +1046,7 @@ class Edit_User extends \NDB_Form
         ) {
             try {
                 // New password must be different than current one
+                $password = new \Password($values['Password_hash']);
                 $passwordChanged = \User::factory($this->identifier)
                     ->passwordChanged($values['Password_hash']);
                 if (! $passwordChanged) {
