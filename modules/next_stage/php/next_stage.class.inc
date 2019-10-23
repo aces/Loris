@@ -51,7 +51,7 @@ class Next_Stage extends \NDB_Form
 
         // check user permissions
         if (!$user->hasPermission('data_entry')
-            || !$user->hasCenter($timePoint->getData('CenterID'))
+            || !$user->hasCenter($timePoint->getCenterID())
         ) {
             return false;
         }
@@ -114,7 +114,7 @@ class Next_Stage extends \NDB_Form
         }
 
          // select a specific time point (sessionID) for the battery
-        $battery->selectBattery($timePoint->getData('SessionID'));
+        $battery->selectBattery($timePoint->getSessionID());
 
         // add instruments to the time point (lower case stage)
         $battery->createBattery(
@@ -158,8 +158,8 @@ class Next_Stage extends \NDB_Form
             'maxYear'        => $config->getSetting('endYear'),
         ];
 
-        $this->addHidden('candID', $timePoint->getData('CandID'));
-        $this->addHidden('sessionID', $timePoint->getData('SessionID'));
+        $this->addHidden('candID', $timePoint->getCandID());
+        $this->addHidden('sessionID', $timePoint->getSessionID());
 
         $stage = $timePoint->getNextStage();
         $this->tpl_data['stage'] = $stage;

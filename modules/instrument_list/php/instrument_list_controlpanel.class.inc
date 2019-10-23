@@ -542,7 +542,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
-        $battery->selectBattery($this->getData('SessionID'));
+        $battery->selectBattery($this->getSessionID());
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
@@ -590,8 +590,8 @@ class Instrument_List_ControlPanel extends \TimePoint
     function _getSendToDCCStatusMessage()
     {
         // create user object
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
+        $user   = \User::singleton();
+        $config = \NDB_Config::singleton();
 
         // get the value of the session.Scan_done field
         $scanDone = $this->getData('Scan_done');
@@ -599,19 +599,13 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!$user->hasPermission('send_to_dcc')) {
             return "User does not have permission to send to DCC";
         }
-        if (!in_array(
-            $this->getData('CenterID'),
-            $user->getData('CenterIDs')
-        )
-        ) {
-            $returnStr = "Users must belong to the same site".
+        if (!$user->hasCenter($this->getCenterID())) {
+            return "Users must belong to the same site".
                          " as the candidate to submit to DCC.";
-            return $returnStr;
         }
         if ($this->isSubmitted()) {
             $returnStr = "This timepoint has already been sent to DCC.".
                          "  Try refreshing your page.";
-            return $returnStr;
         }
         if (!in_array(
             $this->getData('Current_stage'),
@@ -621,9 +615,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             ]
         )
         ) {
-            $returnStr = "This stage is not a Screening or Visit stage.".
+            return "This stage is not a Screening or Visit stage.".
                          "  Only Screening or Visit stages can be sent to DCC.";
-            return $returnStr;
         }
         if (in_array(
             $this->getData($this->getData('Current_stage')),
@@ -633,12 +626,11 @@ class Instrument_List_ControlPanel extends \TimePoint
             ]
         )
         ) {
-            $returnStr = "The status of this stage is either".
+            return "The status of this stage is either".
                          " In Progress or has not been set.";
-            return $returnStr;
         }
-        if ($config->getSetting("useScanDone")==="false"
-            || ($this->getData('Current_stage') !=            'Screening'
+        if (! $config->settingEnabled("useScanDone")
+            || ($this->getData('Current_stage') != 'Screening'
             && empty($scanDone))
         ) {
             return "The Scan done field must be entered for the Visit stage";
@@ -647,13 +639,12 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
-        $battery->selectBattery($this->getData('SessionID'));
+        $battery->selectBattery($this->getSessionID());
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
         // clear the unresolved conflicts for all the instruments
@@ -664,7 +655,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
-                $allDataEntryComplete =false;
+                $allDataEntryComplete = false;
                 break;
             }
 
@@ -675,7 +666,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
-                    $allDataEntryComplete =false;
+                    $allDataEntryComplete = false;
                     break;
                 }
             }
@@ -725,7 +716,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                     'In Progress',
                 ]
             )
-            && ($config->getSetting("useScanDone")==="false"
+            && (! $config->settingEnabled("useScanDone")
             || ($this->getData('Current_stage') == 'Screening'
             || !empty($scanDone)            )            )
         ) {
@@ -746,10 +737,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         $user =& \User::singleton();
 
         // check user permissions
-        if (!$user->hasPermission('data_entry') || !in_array(
-            $this->getData('CenterID'),
-            $user->getData('CenterIDs')
-        )
+        if (! $user->hasPermission('data_entry')
+            || ! $user->hasCenter($this->getCenterID())
         ) {
             return false;
         }
