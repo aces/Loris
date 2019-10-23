@@ -166,7 +166,8 @@ QUERY;
 
         if (!is_array($row) || sizeof($row) == 0) {
             throw new \LorisException(
-                "Could not select Candidate data from the database (DCCID: $candID)",
+                "Could not select Candidate data from the database: "
+                . "(CandID: $candID)",
                 CANDIDATE_INVALID
             );
         }
@@ -190,10 +191,10 @@ QUERY;
                     JOIN parameter_candidate pc ON (pc.CandID=c.CandID)
                     LEFT JOIN parameter_type pt ON
                     (pc.ParameterTypeID=pt.ParameterTypeID)
-                    WHERE c.CandID=:Candidate AND pt.Name=:PTName",
+                    WHERE c.CandID=:candID AND pt.Name=:PTName",
                     array(
-                     'Candidate' => $candID,
-                     'PTName'    => $parameter_type,
+                     'candID' => $candID,
+                     'PTName' => $parameter_type,
                     )
                 );
                 // Sanitize values coming from the parameter_candidate table
@@ -233,9 +234,9 @@ QUERY;
         // get TimePoint SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
         $query = "SELECT s.ID FROM session as s
-            WHERE s.CandID=:Candidate AND s.Active='Y'
+            WHERE s.CandID=:candID AND s.Active='Y'
             ORDER BY ID";
-        $row   = $db->pselect($query, $CandArray);
+        $row   = $db->pselect($query, array('candID' => $candID));
 
         // store user data in object property
         foreach ($row as $value) {
