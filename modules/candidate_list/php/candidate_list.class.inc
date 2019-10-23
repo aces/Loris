@@ -115,6 +115,9 @@ class Candidate_List extends \NDB_Menu_Filter
         $user   = \User::singleton();
         $config = \NDB_Config::singleton();
 
+        // get the list of visit labels
+        $visit_label_options = \Utility::getVisitList();
+
         // get the list of sites available for the user
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = \Utility::getSiteList();
@@ -146,6 +149,7 @@ class Candidate_List extends \NDB_Menu_Filter
         }
 
         $this->fieldOptions = [
+                               'visitlabel'       => $visit_label_options,
                                'site'              => $site_options,
                                'project'           => $project_options,
                                'subproject'        => $subproject_options,

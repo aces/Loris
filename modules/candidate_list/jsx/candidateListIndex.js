@@ -92,7 +92,7 @@ class CandidateListIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column === 'PSCID' && this.props.hasPermission('access_all_profiles')) {
+    if (column === 'PSCID') {
       let url = this.props.baseURL + '/' + row['DCCID'] + '/';
       return <td><a href ={url}>{cell}</a></td>;
     }
@@ -155,7 +155,8 @@ class CandidateListIndex extends Component {
         show: false,
         filter: {
           name: 'visitLabel',
-          type: 'text',
+          type: 'select',
+          options: options.visitlabel,
         },
       },
       {
