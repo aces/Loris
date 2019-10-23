@@ -35,8 +35,73 @@ define('EDC_NOT_SPECIFIED', 5);
  */
 class Candidate
 {
-    var $candidateInfo;
+    /**
+     * The ID of the Site where the candidate was registered.
+     *
+     * @var int
+     */
+    var $registrationCenterID;
+    /**
+     * The ID of the Project where the candidate was registered.
+     *
+     * @var int
+     */
+    var $registrationProjectID;
+    /**
+     * The identifer for this Candidate.
+     *
+     * @var CandID
+     */
+    var $candID;
+    /**
+     * The PSCID (user-friendly ID) for this Candidate.
+     *
+     * @var CandID
+     */
+    var $pscID;
+    /**
+     * The date of birth of the candidate.
+     *
+     * @var string FIXME This should be a DateTime.
+     */
+    var $dateOfBirth;
+    /**
+     * The estimated date of confiment for the candidate.
+     *
+     * @var string FIXME This should be a DateTime.
+     */
+    var $estimatedDateOfConfinement;
+    /**
+     * The sex of the candidate. 'Male' or 'Female'.
+     *
+     * @var string
+     */
+    var $sex;
+    /**
+     * The site of the candidate. `Name` from the `psc` table.
+     */
+    var $site;
+    /**
+     * Whether a candidate is active in the study. 'Y' or 'N'.
+     *
+     * @var string FIXME This should be a bool.
+     */
+    var $isActive;
+    /**
+     * The user that has last modified candidate information in the database.
+     * `UserID` in the `candidate` table.
+     *
+     * @var string FIXME This should be a User object.
+     */
+    var $lastModifiedBy;
+
+    /**
+     * An array of SessionIDs for which this candidate has TimePoints.
+     *
+     * @var int[] FIXME This should be an array of SessionID objects.
+     */
     var $listOfTimePoints;
+
 
     /**
      * This returns a single Candidate object for the given
@@ -76,22 +141,28 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $CandArray = array('Candidate' => (string) $candID);
-
-        // make a local reference to the Database object
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
-            c.EDC, c.Sex, c.Entity_type,
-            p.Name AS PSC, c.Ethnicity,
-            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
-            FROM candidate as c
-            LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
-            LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
-            WHERE c.CandID=:Candidate AND c.Active = 'Y'";
+        $query = <<<QUERY
+SELECT c.CandID as candID, 
+c.PSCID as pscID, 
+c.DoB as dateOfBirth, 
+c.EDC as estimatedDateOfConfinement, 
+c.Sex as sex, 
+p.Name as site, 
+c.Active as isActive, 
+u1.Real_name as registeredBy, 
+c.UserID as lastModifiedBy, 
+c.RegistrationCenterID as registrationCenterID, 
+c.RegistrationProjectID as registrationProjectID
+FROM candidate as c
+LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
+LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
+WHERE c.CandID=:candID AND c.Active = 'Y'"
+QUERY;
 
-        $row = $db->pselectRow($query, $CandArray);
+        $row = $db->pselectRow($query, array('candID' => (string) $candID));
 
         if (!is_array($row) || sizeof($row) == 0) {
             throw new \LorisException(
@@ -100,12 +171,10 @@ class Candidate
             );
         }
 
-        // store user data in object property
-        foreach ($row AS $key=>$value) {
-            $this->candidateInfo[$key] = $value;
+        // Populate class variables with data from the database
+        foreach ($row as $key => $value) {
+            $this->$key = $value;
         }
-
-        $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
 
         $headerSetting = $config->getSetting('HeaderTable');
         if (!empty($headerSetting)) {
@@ -161,7 +230,7 @@ class Candidate
             }
         }
 
-        // get Time Point SessionIDs for the $candID
+        // get TimePoint SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
         $query = "SELECT s.ID FROM session as s
             WHERE s.CandID=:Candidate AND s.Active='Y'
@@ -215,16 +284,16 @@ class Candidate
         // figure out how to generate PSCID
         $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
-        $useEDC        = $config->getSetting('useEDC');
 
-        if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
+        if ($config->settingEnabled('useEDC') && empty($edc)) {
             throw new \LorisException(
                 "EDC must be specified",
                 EDC_NOT_SPECIFIED
             );
         }
 
-        if ($PSCIDSettings['generation'] == 'user') {
+        switch ($PSCIDSettings['generation']) {
+        case 'user' :
             // check pscid is specified
             if (empty($PSCID)) {
                 throw new Exception(
@@ -240,9 +309,10 @@ class Candidate
                     PSCID_INVALID_STRUCTURE
                 );
             }
-
-        } else {
+            break;
+        default:
             $PSCID = (new \PSCIDGenerator($site->getSiteAlias()))->generate();
+            break;
         }
 
         // Insert the new candidate into the database if everything is fine.
@@ -307,25 +377,23 @@ class Candidate
         $db      = $factory->database();
 
         $candidateIDs = array(
-                         ':candidate_id' => $candID,
-                         ':pscid'        => $PSCID,
+                         ':candID' => $candID,
+                         ':pscid'  => $PSCID,
                         );
 
         // get candidate data from database
         $query = "SELECT CandID
             FROM candidate
-            WHERE CandID = :candidate_id AND PSCID = :pscid
+            WHERE CandID = :candID AND PSCID = :pscid
             AND Active = 'Y'";
 
-        $row = $db->pselectRow($query, $candidateIDs);
-
-        return $row !== null;
+        return ! is_null($db->pselectRow($query, $candidateIDs));
     }
 
     /**
      * Get a list of timepoints that this Candidate has registered
      *
-     * @return array|null Non-associative array of SessionIDs 1st Time Point
+     * @return int[]|null Non-associative array of SessionIDs 1st Time Point
      *               indexed to 0
      */
     function getListOfTimePoints(): ?array
@@ -356,49 +424,14 @@ class Candidate
      * @param string|null $var The type of data about the Candidate
      *                    to be returned
      *
-     * @return mixed The info requested
+     * @return     mixed The info requested
+     * @deprecated
      */
     public function getData(?string $var = null)
     {
-        if (is_null($var)) {
-            return $this->candidateInfo;
-        } else {
-            return $this->candidateInfo[$var] ?? null;
-        }
-    }
-
-    /**
-     * Sets some data about the candidate and saves it into the
-     * database.
-     *
-     * @param array $newData Key-value pair(s) of the field(s) to change and the
-     *                              new value(s).
-     *
-     * @return bool
-     *
-     * @throws DatabaseException
-     * @throws LorisException
-     */
-    public function setData(array $newData): bool
-    {
-        /* $newData should be in the form: array($key => $value). Count should
-         * equal 1 if this is the case.
-         */
-        if (empty($newData)) {
-            throw new LorisException(
-                'Candidate::setData() cannot be called with an empty array!'
-            );
-        }
-        $this->candidateInfo = array_merge($this->candidateInfo, $newData);
-
-        \NDB_Factory::singleton()->database()->update(
-            'candidate',
-            $newData,
-            array(
-             'CandID' => $this->getData('CandID'),
-            )
+        throw new \DeprecationException(
+            'Please use more specific accessor methods instead of this function'
         );
-        return true;
     }
 
 
@@ -409,7 +442,7 @@ class Candidate
      */
     function getProjectID(): int
     {
-        return intval($this->candidateInfo["RegistrationProjectID"]);
+        return intval($this->registrationProjectID);
     }
 
     /**
@@ -431,7 +464,7 @@ class Candidate
      */
     function getCandID()
     {
-        return $this->candidateInfo["CandID"];
+        return $this->candID;
     }
 
 
@@ -442,7 +475,7 @@ class Candidate
      */
     function getPSCID(): string
     {
-        return $this->candidateInfo["PSCID"];
+        return $this->pscID;
     }
 
     /**
@@ -452,7 +485,7 @@ class Candidate
      */
     function getCandidateSite(): string
     {
-        return $this->candidateInfo["PSC"];
+        return $this->site;
     }
 
 
@@ -469,22 +502,26 @@ class Candidate
     /**
      * Returns the date of birth of this candidate
      *
+     * TODO Convert this to use a DateTime object instead of a string.
+     *
      * @return string|null The DoB in YYYY-MM-DD format
      */
     function getCandidateDoB(): ?string
     {
-        return $this->candidateInfo["DoB"];
+        return $this->dateOfBirth;
     }
 
     /**
      * Returns the expect date of confinement (due date)
      * of this candidate.
      *
+     * TODO Convert this to use a DateTime object instead of a string.
+     *
      * @return string|null The DoB in YYYY-MM-DD format
      */
     function getCandidateEDC(): ?string
     {
-        return $this->candidateInfo["EDC"];
+        return $this->estimatedDateOfConfinement;
     }
 
     /**
@@ -495,7 +532,7 @@ class Candidate
      */
     function getCandidateSex(): ?string
     {
-        return $this->candidateInfo["Sex"];
+        return $this->sex;
     }
 
     /**
@@ -506,17 +543,20 @@ class Candidate
      */
     function getCandidateEthnicity(): string
     {
-        return $this->candidateInfo["Ethnicity"];
+        throw new DeprecatedException('This field is deprecated');
     }
 
     /**
      * Return whether the candidate is active
      *
+     * FIXME This property should be a bool and calling code should populate
+     * display values based on its value.
+     *
      * @return string Y|N|null Active flag for this candidate
      */
     function isActive(): string
     {
-        return $this->candidateInfo["Active"];
+        return $this->isActive;
     }
 
     /**
@@ -526,23 +566,24 @@ class Candidate
      */
     function registeredBy(): string
     {
-        return $this->candidateInfo["RegisteredBy"];
+        return $this->registeredBy;
     }
 
     /**
-     * Return the user who last changed this candidate
+     * Return the name of the user account that last changed this candidate.
      *
-     * @return string UserID of user who last changed this candidate
+     * @return string UserID of user who last changed this candidate.
      */
     function lastRecordChangeBy(): string
     {
-        return $this->candidateInfo["UserID"];
+        return $this->userID;
     }
 
     /**
      * Returns the list of visit labels w/ corresponding SessionID as key
      *
-     * @return array Associative array in the format SessionID=>Visit_label
+     * @return array<int,string> Associative array in the format
+     *                              SessionID=>Visit_label
      * @throws DatabaseException
      */
     public function getListOfVisitLabels(): array
@@ -572,8 +613,8 @@ class Candidate
      * Generates list of valid subprojects for a the selected Candidate's
      * project
      *
-     * @return array Array of the form SubprojectID => SubprojectID
-     *               or NULL if none exist
+     * @return ?array<int,int> Array of the form SubprojectID => SubprojectID
+     *
      * @throws DatabaseException
      */
     public function getValidSubprojects(): array
@@ -600,9 +641,10 @@ class Candidate
         return $subprojList;
     }
     /**
-     * Returns first visit for a candidate based on Date_visit
+     * Returns the Visit_label for a subject's first TimePoint.
      *
-     * @return string The visit label for the candidate's first visit
+     * @return string The visit label for the candidate's first visit.
+     *                  Returns an empty string if one doesn't exist.
      */
     public function getFirstVisit(): string
     {
@@ -653,17 +695,92 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $candID = $this->getCandID();
-
         $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn
             FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
             WHERE CandidateID=:cid";
-        $where = array('cid' => $candID);
+        $where = array('cid' => $this->candID);
         $key   = "ConsentID";
 
         $consentList = $db->pselectWithIndexKey($query, $where, $key);
 
         return $consentList;
+    }
+
+    /**
+     * Gets the participant_status options from participant_status_options table
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusOptions(): array
+    {
+        $options      = \NDB_Factory::singleton()->database()->pselect(
+            "SELECT ID,Description
+            FROM participant_status_options
+            WHERE parentID IS NULL",
+            array()
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+
+    /**
+     * Gets the participant_status options suboptions from participant_status_options
+     *
+     * @param int $parentID parent ID of the participant status option
+     *
+     * @return string[] Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusSubOptions(int $parentID): array
+    {
+        $options      = \NDB_Factory::singleton()->database()->pselect(
+            "SELECT ID,Description 
+            FROM participant_status_options 
+            WHERE parentID=:pid",
+            array('pid' => $parentID)
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+
+    /**
+     * Sets some data about the candidate and saves it into the
+     * database.
+     *
+     * @param array $newData Key-value pair(s) of the field(s) to change and the
+     *                              new value(s).
+     *
+     * @return bool
+     *
+     * @throws DatabaseException
+     * @throws LorisException
+     */
+    public function setData(array $newData): bool
+    {
+        /* $newData should be in the form: array($key => $value). Count should
+         * equal 1 if this is the case.
+         */
+        if (empty($newData)) {
+            throw new InvalidArgumentException(
+                'Candidate::setData() cannot be called with an empty array!'
+            );
+        }
+
+        \NDB_Factory::singleton()->database()->update(
+            'candidate',
+            $newData,
+            array(
+             'CandID' => $this->getCandID(),
+            )
+        );
+        return true;
     }
 
     /**
@@ -693,52 +810,5 @@ class Candidate
         //preg_match returns 1 on success.
         return preg_match($regex, $PSCID) === 1;
     }
-
-    /**
-     * Gets the participant_status options from participant_status_options table
-     *
-     * @return array Options array suitable for use in QuickForm select
-     *               element
-     */
-    static function getParticipantStatusOptions(): array
-    {
-        $DB           =& Database::singleton();
-        $options      = $DB->pselect(
-            "SELECT ID,Description
-            FROM participant_status_options
-            WHERE parentID IS NULL",
-            array()
-        );
-        $option_array = array();
-        foreach ($options as $option) {
-            $option_array[$option['ID']] = $option['Description'];
-        }
-        return $option_array;
-    }
-
-    /**
-     * Gets the participant_status options suboptions from participant_status_options
-     *
-     * @param int $parentID parent ID of the participant status option
-     *
-     * @return array Options array suitable for use in QuickForm select
-     *               element
-     */
-    static function getParticipantStatusSubOptions(int $parentID): array
-    {
-        $DB           =& Database::singleton();
-        $options      = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
-            WHERE parentID=:pid",
-            array('pid' => $parentID)
-        );
-        $option_array = array();
-        foreach ($options as $option) {
-            $option_array[$option['ID']] = $option['Description'];
-        }
-        return $option_array;
-    }
-
 }
 
