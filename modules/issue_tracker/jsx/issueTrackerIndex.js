@@ -66,7 +66,7 @@ class IssueTrackerIndex extends Component {
     case 'Issue ID':
       link = (
         <a
-          href={loris.BaseURL+'/issue_tracker/issue/'+row['Issue ID']}
+          href={loris.BaseURL+'/issue_tracker/issue/'+cell}
         >
           {cell}
         </a>
