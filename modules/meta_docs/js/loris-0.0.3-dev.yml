@@ -10,7 +10,7 @@ info:
     url: 'https://opensource.org/licenses/GPL-3.0'
   version: 0.0.3-dev
 servers:
-  - url: 'https://xavier-dev.loris.ca/api/v0.0.3-dev'
+- url: /api/v0.0.3-dev
 paths:
   '/login':
     post:

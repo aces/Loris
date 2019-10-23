@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>ServiceDesk Service Swagger</title>
-    <link rel="stylesheet" type="text/css" href="/meta_docs/css/swagger-ui.css">
-    <script src="/meta_docs/js/swagger-ui-standalone-preset.js"></script>
-    <script src="/meta_docs/js/swagger-ui-bundle.js"></script>
-</head>
-<body>
+  <link rel="stylesheet" type="text/css" href="/meta_docs/css/swagger-ui.css">
+  <script src="/meta_docs/js/swagger-ui-standalone-preset.js"></script>
+  <script src="/meta_docs/js/swagger-ui-bundle.js"></script>
   <div id="swagger-ui"></div>
   <style>
     html
@@ -48,8 +41,6 @@
         layout: "StandaloneLayout",
         validatorUrl: null,
       })
-      window.ui = ui
+      window.ui = ui;
     });
   </script>
-</body>
-</html>
