@@ -1,0 +1,7 @@
+site_name: LORIS
+repo_url: https://github.com/aces/Loris
+nav:
+    - Home: index.md
+    - API: API/LorisRESTAPI_v0.0.3.md
+    - Wiki: wiki/index.md
+theme: readthedocs
