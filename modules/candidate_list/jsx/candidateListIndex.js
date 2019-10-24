@@ -93,7 +93,7 @@ class CandidateListIndex extends Component {
    */
   formatColumn(column, cell, row) {
     if (column === 'PSCID' && this.props.hasPermission('access_all_profiles')) {
-      let url = this.props.baseURL + '/' + row['DCCID'] + '/';
+      let url = this.props.baseURL + '/' + row[1] + '/';
       return <td><a href ={url}>{cell}</a></td>;
     }
     if (column === 'Feedback') {
