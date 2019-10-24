@@ -66,7 +66,7 @@ class UserAccountsIndex extends Component {
         result = <td>{cell.join('; ')}</td>;
         break;
       case 'Username':
-        url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
+        url = loris.BaseURL + '/user_accounts/edit_user/' + row[1];
         result = <td><a href ={url}>{cell}</a></td>;
         break;
       case 'Active':
