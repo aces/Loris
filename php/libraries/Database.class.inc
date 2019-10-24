@@ -721,12 +721,11 @@ class Database
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
      */
-    function pselect(string $query, array $params)
+    function pselect(string $query, array $params): array
     {
         $this->_printQuery($query, $params);
-        $stmt   = $this->prepare($query);
-        $result = $this->execute($stmt, $params);
-        return $result;
+        $stmt = $this->prepare($query);
+        return $this->execute($stmt, $params);
     }
 
     /**
