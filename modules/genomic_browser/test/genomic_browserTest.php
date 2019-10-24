@@ -28,16 +28,16 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
 {
     // expect UIs for Profiles Tab
     private $_loadingProfilesUI = array(
-                                   'Profiles'          => '#tab-tabProfiles',
+                                   'Profiles'   => '#tab-tabProfiles',
           // expected_headers
-                                   'No.'               => '#dynamictable > thead',
-                                   'PSCID'             => '#dynamictable > thead',
-                                   'Sex'               => '#dynamictable > thead',
-                                   'Subproject'        => '#dynamictable > thead',
-                                   'File'              => '#dynamictable > thead',
-                                   'SNP'               => '#dynamictable > thead',
-                                   'CNV'               => '#dynamictable > thead',
-                                   'CPG'               => '#dynamictable > thead',
+                                   'No.'        => '#dynamictable > thead',
+                                   'PSCID'      => '#dynamictable > thead',
+                                   'Sex'        => '#dynamictable > thead',
+                                   'Subproject' => '#dynamictable > thead',
+                                   'File'       => '#dynamictable > thead',
+                                   'SNP'        => '#dynamictable > thead',
+                                   'CNV'        => '#dynamictable > thead',
+                                   'CPG'        => '#dynamictable > thead',
                                   );
     // expect UIs for GWAS Tab
     private $_loadingGWASUI = array(
@@ -137,7 +137,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     {
           $this->_testPageUIs("/genomic_browser/", $this->_loadingProfilesUI);
         //it will be rewritten later.
-        //$this->_testPageUIs("/genomic_browser/gwas_browser/", 
+        //$this->_testPageUIs("/genomic_browser/gwas_browser/",
         //$this->_loadingGWASUI);
         //$this->_testPageUIs("/genomic_browser/snp_browser/",
         //$this->_loadingSNPUI);
