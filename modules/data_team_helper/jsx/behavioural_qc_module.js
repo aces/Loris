@@ -134,7 +134,7 @@ class IncompleteCandidatesRow extends Component {
     return (
       <tr key={row.id} >
         <td>
-          <a href={this.props.BaseURL + '/instruments_list/?candID=' +
+          <a href={this.props.BaseURL + '/instrument_list/?candID=' +
               row.candid +
               '&sessionID=' + row.SessionID}
           >
