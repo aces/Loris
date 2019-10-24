@@ -70,12 +70,11 @@ class UploadHelper
 
         $this->_fileToUpload
             = (object) array(
-            'file_type'         => $files['file']['type'],
-            'file_name'         => $files['file']['name'],
-            'tmp_name'          => $files['file']['tmp_name'],
-            'size'              => round($this->_bytes / 1048576, 0),
-            'inserted_by'       => $this->_user->getData('UserID'),
-            'description'       => $this->_values['fileDescription'],
+            'file'        => $files['file']['name'],
+            'tmp_name'    => $files['file']['tmp_name'],
+            'size'        => round($this->_bytes / 1048576, 0),
+            'inserted_by' => $this->_user->getData('UserID'),
+            'description' => $this->_values['fileDescription'] ?? '',
         );
 
         $this->setFullPath($this->_fileToUpload);
@@ -139,31 +138,10 @@ class UploadHelper
     function setFullPath(&$fileToUpload) : void
     {
         $config           = \NDB_Config::singleton();
-        $attachment_data_dir = rtrim($config->getSetting('IssueTrackerDataPath'), '/')
-            . '/issue_tracker/';
+        $attachment_data_dir = rtrim($config->getSetting('IssueTrackerDataPath'), '/');
 
         $fileToUpload->full_path = $attachment_data_dir
-            . $fileToUpload->file_name;
-
-        $collision_count = 0;
-        $collision_max   = 100;
-
-        while (file_exists($fileToUpload->full_path)) {
-            ++$collision_count;
-            if ($collision_count > $collision_max) {
-                $this->_response = json_encode(
-                    array(
-                        'message'  => 'That file already exists, '
-                            . 'could not generate a non-colliding name',
-                        'error'    => true,
-                    )
-                );
-            }
-            $ext = pathinfo($fileToUpload->file_name, PATHINFO_EXTENSION);
-            $nme = pathinfo($fileToUpload->file_name, PATHINFO_FILENAME);
-            $fileToUpload->full_path = $attachment_data_dir
-                . $nme . '-' . $collision_count . '.' .$ext;
-        }
+            . '/' . $fileToUpload->file;
     }
 
     /**
@@ -177,24 +155,26 @@ class UploadHelper
     function registerFile(&$fileToUpload) : void
     {
         $DB     =& \Database::singleton();
+
         $values = array(
-            'FileName'         => $fileToUpload->full_path,
-            'Description'      => $fileToUpload->description,
-            'FileType'         => $fileToUpload->file_type,
-            'FileSize'         => $fileToUpload->size,
-            'Date_inserted'    => date('Y-m-d h:i:s', time()),
-            'InsertedByUserID' => $fileToUpload->inserted_by,
+            'file_uuid'   => $this->uuid4(),
+            'date_added'  => date('Y-m-d h:i:s', time()),
+            'file_name'   => $fileToUpload->file,
+            'deleted'     => 0,
+            'user'        => $fileToUpload->inserted_by,
+            'description' => $fileToUpload->description,
+            'file_size'   => $fileToUpload->size,
         );
         try {
-            $DB->replace('genomic_files', $values);
+            $DB->insert('issues_file_collection_files', $values);
             $last_id = $DB->pselectOne(
-                'SELECT MAX(GenomicFileID) AS last_id
-           FROM genomic_files',
+                'SELECT MAX(file_collection_id) AS last_id
+                            FROM issues_file_collection_files',
                 array()
             );
-            $fileToUpload->GenomicFileID = $last_id;
+            $fileToUpload->IssueTrackerFileID = $last_id;
 
-            $fileToUpload->date_inserted = $values['Date_inserted'];
+            $fileToUpload->date_inserted = $values['date_added'];
 
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
@@ -207,6 +187,23 @@ class UploadHelper
                 )
             );
         }
+    }
+
+    /**
+     * Create a UUID v4 string.
+     *
+     * Source from comments:
+     * http://php.net/manual/en/function.com-create-guid.php
+     * Maybe move to Utilities class.
+     *
+     * @return string $version
+     */
+    function uuid4()
+    {
+        $data    = openssl_random_pseudo_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
     /**
