@@ -138,7 +138,7 @@ elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
     sudo chmod 770 ../project
 else
     echo "$os_distro Linux distribution detected. We currently do not support this. "
-    echo "Please manually run chown/chgrp to the web server user, the following subdirectories: "
+    echo "Please manually change subdirectory ownership and permissions to ensure the web server can read *and write* in the following: "
     echo "../modules/data_release/user_uploads "
     echo "../modules/document_repository/user_uploads "
     echo "../smarty/templates_c "
