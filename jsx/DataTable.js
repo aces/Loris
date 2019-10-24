@@ -287,7 +287,7 @@ class DataTable extends Component {
           }
           break;
         default:
-            searchString = data.toLowerCase();
+            searchString = data ? data.toString().toLowerCase() : '';
             if (exactMatch) {
               result = (searchString === searchKey);
             } else if (opposite) {
@@ -309,7 +309,7 @@ class DataTable extends Component {
       let match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
-        searchString = data.toString().toLowerCase();
+        searchString = data ? data.toString().toLowerCase() : '';
 
         match = (searchString.indexOf(searchKey) > -1);
         if (match) {
@@ -410,6 +410,7 @@ class DataTable extends Component {
         let rowIndex = index[i].RowIdx;
         let rowData = this.props.data[rowIndex];
         let curRow = [];
+        filteredData.push(rowData);
 
         // Iterates through headers to populate row columns
         // with corresponding data
@@ -421,13 +422,16 @@ class DataTable extends Component {
             let celldata = rowData[j];
             let cell = null;
 
-
+            const row = {};
+            this.props.fields.forEach((field, k) => {
+              row[field.label] = rowData[k];
+            });
             // Get custom cell formatting if available
             if (this.props.getFormattedCell) {
                 cell = this.props.getFormattedCell(
                     this.props.fields[j].label,
                     celldata,
-                    rowData
+                    row
                 );
             }
             if (cell !== null) {
@@ -591,4 +595,3 @@ DataTable.defaultProps = {
 };
 
 export default DataTable;
-
