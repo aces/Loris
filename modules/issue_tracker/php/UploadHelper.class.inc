@@ -167,15 +167,6 @@ class UploadHelper
         );
         try {
             $DB->insert('issues_file_collection_files', $values);
-            $last_id = $DB->pselectOne(
-                'SELECT MAX(file_collection_id) AS last_id
-                            FROM issues_file_collection_files',
-                array()
-            );
-            $fileToUpload->IssueTrackerFileID = $last_id;
-
-            $fileToUpload->date_inserted = $values['date_added'];
-
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
             error_log("DatabaseException: $e");
