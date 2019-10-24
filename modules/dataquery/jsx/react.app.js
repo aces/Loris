@@ -233,11 +233,12 @@ class DataQueryApp extends Component {
     // Used to save the current query
 
     let filter = this.saveFilterGroup(this.state.filter);
+    let queryName = name.replace(/ /g,'_');
 
     $.post(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
       Fields: this.state.selectedFields,
       Filters: filter,
-      QueryName: name,
+      QueryName: queryName,
       SharedQuery: shared,
       OverwriteQuery: override
     }, (data) => {
