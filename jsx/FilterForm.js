@@ -132,7 +132,6 @@ class FilterForm extends Component {
       } else { // null and undefined handled here
         filter[key].value = '';
       }
-      filter[key].exactMatch = (type === 'SelectElement' || type === 'select');
     }
     if (filter && key && value === '') {
       delete filter[key];
