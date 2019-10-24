@@ -170,7 +170,7 @@ echo "Ubuntu distribution detected."
         case $yn in
             [Yy]* )
                 while [ "$projectname" == "" ]; do
-                        read -p "Please enter your Project name (default suggestion: LORIS) --: " projectname
+                        read -p "Please enter your Project name (if unsure, use LORIS) : " projectname
                         echo $projectname | tee -a $LOGFILE > /dev/null
                         case $projectname in
                                 "" )
@@ -211,7 +211,7 @@ while true; do
     case $yn in
         [Yy]* )
             while [ "$projectname" == "" ]; do
-                      read -p "Please enter your Project name (default suggestion: LORIS) --: " projectname
+                      read -p "Please enter your Project name (if unsure, use LORIS) : " projectname
                       echo $projectname | tee -a $LOGFILE > /dev/null
                       case $projectname in
                               "" )
