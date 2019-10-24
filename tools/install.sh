@@ -79,14 +79,7 @@ else
 fi
 
 echo ""
-
-cat <<QUESTIONS
-This install script will ask you to provide your project name. 
-If unsure, we suggest using "LORIS"
-(This will be used IFF you want this script to configure your apache)
-More information on the complete installation and setup process is available on the LORIS Wiki on GitHub. 
-QUESTIONS
-
+echo "More information on the complete installation and setup process is available on the LORIS Wiki on GitHub."
 echo ""
 
 while true; do
@@ -177,7 +170,7 @@ echo "Ubuntu distribution detected."
         case $yn in
             [Yy]* )
                 while [ "$projectname" == "" ]; do
-                        read -p "Enter project name: " projectname
+                        read -p "Please enter your Project name (default suggestion: LORIS) --: " projectname
                         echo $projectname | tee -a $LOGFILE > /dev/null
                         case $projectname in
                                 "" )
@@ -218,7 +211,7 @@ while true; do
     case $yn in
         [Yy]* )
             while [ "$projectname" == "" ]; do
-                      read -p "Enter project name: " projectname
+                      read -p "Please enter your Project name (default suggestion: LORIS) --: " projectname
                       echo $projectname | tee -a $LOGFILE > /dev/null
                       case $projectname in
                               "" )
