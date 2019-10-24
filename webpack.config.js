@@ -13,7 +13,7 @@ const config = [{
     './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/issue_tracker/js/issueTrackerIndex.js': './modules/issue_tracker/jsx/issueTrackerIndex.js',
-    './modules/biobank/js/biobankIndex.js': './modules/biobank/jsx/biobankIndex.js',
+    './project/modules/biobank/js/biobankIndex.js': './project/modules/biobank/jsx/biobankIndex.js',
     './modules/issue_tracker/js/index.js': './modules/issue_tracker/jsx/index.js',
     './modules/candidate_parameters/js/CandidateParameters.js': './modules/candidate_parameters/jsx/CandidateParameters.js',
     './modules/configuration/js/SubprojectRelations.js': './modules/configuration/jsx/SubprojectRelations.js',

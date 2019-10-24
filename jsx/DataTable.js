@@ -418,6 +418,7 @@ class DataTable extends Component {
         let rowIndex = index[i].RowIdx;
         let rowData = this.props.data[rowIndex];
         let curRow = [];
+        filteredData.push(rowData);
 
         // Iterates through headers to populate row columns
         // with corresponding data
