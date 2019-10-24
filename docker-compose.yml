@@ -13,7 +13,7 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
 
   selenium:
-    image: selenium/standalone-firefox-debug:3.8.1-aluminum
+    image: selenium/standalone-firefox-debug:3.8.1
     volumes:
       - /dev/shm:/dev/shm
     ports:
