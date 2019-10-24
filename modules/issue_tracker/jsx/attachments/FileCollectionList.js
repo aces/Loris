@@ -1,10 +1,10 @@
 /**
  * React component used to display a button and a collapsible list
- * with comments.
+ * with attachments.
  */
 import React, {Component} from 'react';
 
-class CommentList extends Component {
+class FileCollectionList extends Component {
   constructor(props) {
     super(props);
 
@@ -19,7 +19,7 @@ class CommentList extends Component {
   }
 
   render() {
-    const changes = this.props.commentHistory.reduce(function(carry, item) {
+    const changes = this.props.fileHistory.reduce(function(carry, item) {
       let label = item.dateAdded.concat(' - ', item.addedBy);
       if (!carry[label]) {
         carry[label] = {};
@@ -55,12 +55,12 @@ class CommentList extends Component {
     }, this);
 
     return (
-      <div id='comment-history'>
-        <h3>Comment History</h3>
+      <div id='file-collection'>
+        <h3>Attachment History</h3>
         {history}
       </div>
     );
   }
 }
 
-export default CommentList;
+export default FileCollectionList;

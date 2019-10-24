@@ -32,10 +32,27 @@ require_once "Email.class.inc";
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
     echo json_encode(getIssueFields());
 } else if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    echo json_encode(editIssue());
+    if ($_REQUEST['action'] === 'submitAttachment') {
+        echo json_encode(newAttachment());
+    } else {
+        echo json_encode(editIssue());
+    }
 } else {
     header("HTTP/1.1 403 Forbidden");
     exit;
+}
+
+function newAttachment() {
+    $user       =& User::singleton();
+    $attachment = new \LORIS\issue_tracker\UploadHelper();
+
+    $response = $attachment->setupUploading(
+        $user,
+        $_FILES,
+        []
+    );
+
+    return ['success' => true];
 }
 
 //TODO: encapsulate more
@@ -682,6 +699,7 @@ ORDER BY dateAdded LIMIT 1",
             $issueData['watching'] = "Yes";
         }
         $issueData['commentHistory'] = getComments($issueID);
+        // $issueData['fileCollection'] = getFileCollection($issueID);
         $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $desc[0]['issueComment'] ?? '';
     }

@@ -1,5 +1,8 @@
 import Loader from 'Loader';
+import Modal from 'jsx/Modal';
 import CommentList from './CommentList';
+import IssueUploadAttachmentForm from './attachments/uploadForm';
+import FileCollectionList from './attachments/FileCollectionList';
 
 /**
  * Issue add/edit form
@@ -25,6 +28,7 @@ class IssueForm extends Component {
       isLoaded: false,
       isNewIssue: false,
       issueID: 0,
+      showAttachmentUploadModal: false,
     };
 
     // Bind component instance to custom methods
@@ -33,10 +37,28 @@ class IssueForm extends Component {
     this.setFormData = this.setFormData.bind(this);
     this.isValidForm = this.isValidForm.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
+    this.closeAttachmentUploadModal = this.closeAttachmentUploadModal.bind(this);
+    this.openAttachmentUploadModal = this.openAttachmentUploadModal.bind(this);
   }
 
   componentDidMount() {
     this.getFormData();
+  }
+
+  openAttachmentUploadModal(e) {
+    e.preventDefault();
+    this.setState({showAttachmentUploadModal: true});
+  }
+  closeAttachmentUploadModal() {
+    this.setState({
+      upload: {
+        formData: {
+          fileType: '',
+          fileDescription: '',
+        },
+      },
+      showAttachmentUploadModal: false,
+    });
   }
 
   render() {
@@ -64,6 +86,7 @@ class IssueForm extends Component {
     let submitButtonValue;
     let commentLabel;
     let isWatching = this.state.issueData.watching;
+    let uploadAttachmentButton = null;
 
     if (this.state.isNewIssue) {
       headerText = 'Create New Issue';
@@ -79,7 +102,17 @@ class IssueForm extends Component {
       dateCreated = this.state.issueData.dateCreated;
       submitButtonValue = 'Update Issue';
       commentLabel = 'New Comment';
+      uploadAttachmentButton = (
+        <ButtonElement
+          onUserInput={this.openAttachmentUploadModal}
+          label={'Add Attachment'}
+        />
+      );
     }
+
+    const fileCollection = this.state.isNewIssue || (
+      <FileCollectionList fileHistory={this.state.issueData.commentHistory}/>
+    );
 
     const commentHistory = this.state.isNewIssue || (
       <CommentList commentHistory={this.state.issueData.commentHistory} />
@@ -137,6 +170,15 @@ class IssueForm extends Component {
 
     return (
       <div>
+        <Modal
+          title='Attachment for Issue'
+          onClose={this.closeAttachmentUploadModal}
+          show={this.state.showAttachmentUploadModal}
+        >
+          <IssueUploadAttachmentForm
+            issue={this.props.issue}
+          />
+        </Modal>
         <FormElement
           name='issueEdit'
           onSubmit={this.handleSubmit}
@@ -249,7 +291,9 @@ class IssueForm extends Component {
             value={this.state.formData.comment}
           />
           <ButtonElement label={submitButtonValue}/>
+          {uploadAttachmentButton}
         </FormElement>
+        {fileCollection}
         {commentHistory}
       </div>
     );
@@ -439,6 +483,7 @@ class IssueForm extends Component {
 IssueForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  issue: PropTypes.string.isRequired,
 };
 
 export default IssueForm;

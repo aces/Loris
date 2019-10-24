@@ -3,17 +3,15 @@ import IssueForm from './IssueForm';
 /**
  * Render IssueForm on page load
  */
-$(function() {
+window.addEventListener('load', () => {
   const id = location.href.split('/issue/')[1];
-  const issueTracker = (
-    <div className="page-issue-tracker">
-      <IssueForm
-        Module="issue_tracker"
-        DataURL={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=getData&issueID=${id}`}
-        action={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=edit`}
-      />
-    </div>
+  ReactDOM.render(
+    <IssueForm
+      Module='issue_tracker'
+      DataURL={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=getData&issueID=${id}`}
+      action={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=edit`}
+      issue={id}
+    />,
+    document.getElementById('lorisworkspace')
   );
-
-  ReactDOM.render(issueTracker, document.getElementById('lorisworkspace'));
 });
