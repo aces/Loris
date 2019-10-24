@@ -109,12 +109,13 @@ abstract class LorisIntegrationTest extends TestCase
         $profile->setPreference("security.insecure_field_warning.contextual.enabled", false);
         $desired_capabilities = DesiredCapabilities::firefox();
         // running headless model in Travis 
-        if (getenv('HEADLESS')){
+/*        if (getenv('HEADLESS')){
             $desired_capabilities->setCapability(
               'moz:firefoxOptions',
               ['args' => ['-headless']]
            );
         }
+*/
         $desired_capabilities->setCapability(FirefoxDriver::PROFILE,$profile);
 
         $this->webDriver = RemoteWebDriver::create(
