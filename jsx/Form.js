@@ -405,6 +405,24 @@ class SelectElement extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    const optionsArray = Object.keys(this.props.options);
+    if (this.props.autoSelect && optionsArray.length === 1) {
+      this.props.onUserInput(this.props.name, optionsArray[0]);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const options = Object.keys(this.props.options);
+    const prevOptions = Object.keys(prevProps.options);
+    if (options.length !== prevOptions.length ||
+        !options.every((v, i) => v === prevOptions[i])) {
+      if (this.props.autoSelect && options.length === 1) {
+        this.props.onUserInput(this.props.name, options[0]);
+      }
+    }
+  }
+
   handleChange(e) {
     let value = e.target.value;
     let options = e.target.options;
