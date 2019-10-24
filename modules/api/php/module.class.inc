@@ -53,6 +53,12 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        if ($this->hasPrefix('/static/', $request->getURI())) {
+            // Bypass for staticaly served files
+            // Important!! There is no permission check on those files
+            return  parent::handle($request);
+        }
+
         $url    = $request->getURI()->getPath();
         $pieces = [];
         if (preg_match(
