@@ -26,7 +26,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     //filter location
     static $PSCID          = ".col-xs-12:nth-child(2) > .row .form-control";
     static $DCCID          = ".col-xs-12:nth-child(3) > .row .form-control";
-    static $visitLabel     = ".col-xs-12:nth-child(4) .form-control";
+    static $visitLabel     = ".col-xs-12:nth-child(4) .form-control, select";
     static $site           = ".col-xs-12:nth-child(5) .form-control, select";
     static $entityType     = ".col-xs-12:nth-child(7) .form-control, select";
     static $sex            = "#candidateList_filter > div > div > fieldset >".
