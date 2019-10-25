@@ -424,7 +424,7 @@ class DataTable extends Component {
 
             let row = {};
             this.props.fields
-              .forEach((field, k) => {row[field.label] = rowData[k]});
+              .forEach((field, k) => row[field.label] = rowData[k]);
 
             // Get custom cell formatting if available
             if (this.props.getFormattedCell) {
