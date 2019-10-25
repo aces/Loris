@@ -422,10 +422,10 @@ class DataTable extends Component {
             let celldata = rowData[j];
             let cell = null;
 
-            const row = {};
-            this.props.fields.forEach((field, k) => {
-              row[field.label] = rowData[k];
-            });
+            let row = {};
+            this.props.fields
+              .forEach((field, k) => {row[field.label] = rowData[k]});
+
             // Get custom cell formatting if available
             if (this.props.getFormattedCell) {
                 cell = this.props.getFormattedCell(
