@@ -65,7 +65,7 @@ class FileCollectionList extends Component {
         console.log(item);
         attachmentsRows.push(
           <>
-            <div key={key} className='row'>
+            <div key={key + '_first'} className='row'>
               <hr/>
               <div className='col-md-3'>
                 <div className='col-md-5'><b>Date of attachment: </b></div>
