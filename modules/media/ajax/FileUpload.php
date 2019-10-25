@@ -164,7 +164,7 @@ function uploadFile()
               'data_dir'      => $mediaPath,
               'uploaded_by'   => $userID,
               'hide_file'     => 0,
-              'date_uploaded' => date("Y-m-d H:i:s"),
+              'last_modified' => date("Y-m-d H:i:s"),
               'language_id'   => $language,
              ];
 
