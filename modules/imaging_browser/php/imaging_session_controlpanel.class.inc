@@ -164,22 +164,12 @@ class Imaging_Session_ControlPanel
                                            'true'  => 'True',
                                            'false' => 'False',
                                           );
-        $query    = "SELECT MRIQCStatus, MRIQCPending,".
-                    " MRICaveat FROM session WHERE ID=:sid";
-        $qcstatus = $DB->pselectRow(
-            $query,
-            array("sid" => $this->sessionID)
-        );
-        if (is_null($qcstatus)) {
-            throw new \LorisException(
-                'Could not find QC status information for specified '
-                . 'session ID'
-            );
-        }
 
-        $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
-        $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat']    = $qcstatus['MRICaveat'];
+        $qcstatus = $timePoint->getImagingQC();
+
+        $subjectData['mriqcstatus']  = $qcstatus->getQC();
+        $subjectData['mriqcpending'] = $qcstatus->getQCPending();
+        $subjectData['mricaveat']    = $qcstatus->getHasCaveat();
 
         $factory = \NDB_Factory::singleton();
         $subjectData['backURL'] = isset($_REQUEST['backURL']) ?

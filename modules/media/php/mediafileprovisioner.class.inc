@@ -47,7 +47,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                			m.uploaded_by as uploadedBy,
                			m.date_taken as dateTaken,
                			substring(m.comments, 1, 50) as comments,
-               			m.date_uploaded as dateUploaded,
+               			m.last_modified as lastModified,
                			m.file_type as fileType,
                			s.CandID as candidateId,
                			s.ID as sessionId,

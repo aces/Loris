@@ -13,6 +13,7 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
+            <directory>../modules/api/test/</directory>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
