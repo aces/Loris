@@ -12,20 +12,26 @@
             <directory>./integrationtests/</directory>
         </testsuite>
 
-        <testsuite name='LorisModuleIntegrationTests'>
+        <testsuite name='LorisModuleIntegrationTests1'>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
+        </testsuite>
+        <testsuite name='LorisModuleIntegrationTests2'>
             <directory>../modules/candidate_parameters/test/</directory>
             <directory>../modules/configuration/test/</directory>
             <directory>../modules/conflict_resolver/test/</directory>
             <directory>../modules/create_timepoint/test/</directory>
+        </testsuite>
+        <testsuite name='LorisModuleIntegrationTests3'>
             <directory>../modules/dashboard/test/</directory>
             <directory>../modules/data_integrity_flag/test/</directory>
             <directory>../modules/data_team_helper/test/</directory>
             <directory>../modules/datadict/test/</directory>
             <directory>../modules/dicom_archive/test/</directory>
             <directory>../modules/document_repository/test/</directory>
+        </testsuite>
+        <testsuite name='LorisModuleIntegrationTests4'>
             <directory>../modules/examiner/test/</directory>
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
@@ -35,6 +41,8 @@
             <directory>../modules/instrument_list/test/</directory>
             <directory>../modules/instrument_manager/test/</directory>
             <directory>../modules/mri_upload/test/</directory>
+        </testsuite>
+        <testsuite name='LorisModuleIntegrationTests5'>
             <directory>../modules/mri_violations/test/</directory>
             <directory>../modules/new_profile/test/</directory>
             <directory>../modules/next_stage/test/</directory>
@@ -43,6 +51,8 @@
             <directory>../modules/timepoint_flag/test/</directory>
             <directory>../modules/timepoint_list/test/</directory>
             <directory>../modules/training/test/</directory>
+        </testsuite>
+        <testsuite name='LorisModuleIntegrationTests6'>
             <directory>../modules/user_accounts/test/</directory>
             <directory>../modules/media/test/</directory>
             <directory>../modules/issue_tracker/test/</directory>

@@ -920,7 +920,7 @@ class Utility
              FROM language",
             array()
         );
-        $languages   = array();
+        $languages = array();
         if ($languagesDB !== null) {
             foreach ($languagesDB as $l) {
                 $languages[$l['language_id']] =$l['language_label'] ?? null;
