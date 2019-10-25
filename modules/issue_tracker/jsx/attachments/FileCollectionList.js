@@ -10,6 +10,50 @@ class FileCollectionList extends Component {
     this.state = {
       attachments: this.props.attachments,
     };
+    this.deleteAttachment = this.deleteAttachment.bind(this);
+    this.downloadAttachment = this.downloadAttachment.bind(this);
+  }
+
+  deleteAttachment(event) {
+    const uuid = event.target.getAttribute('value');
+    const url = window.location.origin +
+      '/issue_tracker/ajax/Attachment.php' +
+      '?action=delete' +
+      '&uuid=' + uuid;
+    $.ajax(url, {
+      dataType: 'json',
+      success: function(data) {
+        console.log('data is:');
+        console.log(data);
+      },
+      error: function(err) {
+        this.setState({
+          error: 'An error occurred when deleting attachment!\n Error: ' +
+            err.status + ' (' + err.statusText + ')',
+        });
+      }.bind(this),
+    });
+  }
+
+  downloadAttachment(event) {
+    const uuid = event.target.getAttribute('value');
+    const url = window.location.origin +
+      '/issue_tracker/ajax/Attachment.php' +
+      '?action=download' +
+      '&uuid=' + uuid;
+    $.ajax(url, {
+      dataType: 'json',
+      success: function(data) {
+        console.log('data is:');
+        console.log(data);
+      },
+      error: function(err) {
+        this.setState({
+          error: 'An error occurred when downloading attachment!\n Error: ' +
+            err.status + ' (' + err.statusText + ')',
+        });
+      }.bind(this),
+    });
   }
 
   render() {
@@ -48,20 +92,19 @@ class FileCollectionList extends Component {
             </div>
             <div key={key + '_third'} className='row'>
               <div className='col-md-12'>
-                <a href={window.location.origin +
-                    '/issue_tracker/ajax/EditIssue.php?action=' +
-                    'deleteAttachment&uuid=' +
-                    item.file_uuid
-                  } style={{paddingLeft: '20px'}}>
-                  Delete attachment
-                </a> |&nbsp;
-                <a href={window.location.origin +
-                    '/issue_tracker/ajax/EditIssue.php?action=' +
-                    'downloadAttachment&uuid=' +
-                    item.file_uuid
-                  }>
-                  Download file
-                </a>
+                <div className='col-md-2'><b>Attachment Options: </b></div>
+                <div className='col-md-10'>
+                  <a onClick={this.deleteAttachment}
+                     value={item.file_uuid}
+                     style={{cursor: 'pointer'}}>
+                    Delete
+                  </a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                  <a onClick={this.downloadAttachment}
+                     value={item.file_uuid}
+                     style={{cursor: 'pointer'}}>
+                    Download
+                  </a>
+                </div>
               </div>
             </div>
           </>

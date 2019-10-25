@@ -71,8 +71,9 @@ class IssueUploadAttachmentForm extends Component {
     }
     formObj.append('issueID', this.props.issue);
     const url = window.location.origin +
-      '/issue_tracker/ajax/EditIssue.php?action=submitAttachment&issueID=' +
-      this.props.issue;
+      '/issue_tracker/ajax/Attachment.php' +
+      '?action=new' +
+      '&issueID=' + this.props.issue;
     fetch(url,
       {
         credentials: 'same-origin',

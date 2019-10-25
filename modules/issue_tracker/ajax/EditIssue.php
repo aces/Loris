@@ -32,27 +32,10 @@ require_once "Email.class.inc";
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
     echo json_encode(getIssueFields());
 } else if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    if ($_REQUEST['action'] === 'submitAttachment') {
-        echo json_encode(newAttachment());
-    } else {
-        echo json_encode(editIssue());
-    }
+    echo json_encode(editIssue());
 } else {
     header("HTTP/1.1 403 Forbidden");
     exit;
-}
-
-function newAttachment() {
-    $user       =& User::singleton();
-    $attachment = new \LORIS\issue_tracker\UploadHelper();
-
-    $response = $attachment->setupUploading(
-        $user,
-        $_FILES,
-        $_POST
-    );
-
-    return ['success' => true];
 }
 
 //TODO: encapsulate more
