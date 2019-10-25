@@ -12,7 +12,8 @@
  */
 
 /**
- * The BadRequest exception is thrown when the user's input is invalid or insufficient.
+ * The BadRequest exception is thrown when the user's input is invalid or
+ * insufficient.
  * It maps to a 400 error.
  *
  * @category Errors
