@@ -47,6 +47,23 @@ class MediaIndex extends Component {
   }
 
   /**
+   * Modify value of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} value - cell value
+   *
+   * @return {string} a mapped value for the table cell at a given column
+   */
+  mapContainerColumns(column, value) {
+    switch (column) {
+      case 'Site':
+        return this.state.fieldOptions.sites[value];
+      default:
+        return value;
+    }
+  }
+
+  /**
    * Modify behaviour of specified column cells in the Data Table component
    *
    * @param {string} column - column name
@@ -56,6 +73,7 @@ class MediaIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    cell = this.mapContainerColumns(column, cell);
     // Set class to 'bg-danger' if file is hidden.
     const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
     let result = <td className={style}>{cell}</td>;
@@ -81,7 +99,7 @@ class MediaIndex extends Component {
       }
       break;
     case 'Site':
-      result = <td className={style}>{this.state.fieldOptions.sites[cell]}</td>;
+      result = <td className={style}>{cell}</td>;
       break;
     case 'Edit Metadata':
       if (!this.props.hasPermission('media_write')) {
