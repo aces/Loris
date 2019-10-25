@@ -111,7 +111,9 @@ class IssueForm extends Component {
     }
 
     const fileCollection = this.state.isNewIssue || (
-      <FileCollectionList fileHistory={this.state.issueData.commentHistory}/>
+      <FileCollectionList issue={this.props.issue}
+                          attachments={this.state.issueData['attachments']}
+      />
     );
 
     const commentHistory = this.state.isNewIssue || (
@@ -306,6 +308,8 @@ class IssueForm extends Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
+        console.log('data is:');
+        console.log(data);
         let newIssue = !data.issueData.issueID;
         let formData = data.issueData;
         // ensure that if the user is at multiple sites and

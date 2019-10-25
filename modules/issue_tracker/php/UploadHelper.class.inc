@@ -71,6 +71,7 @@ class UploadHelper
         $this->_fileToUpload
             = (object) array(
             'file'        => $files['file']['name'],
+            'uuid'        => $this->uuid4(),
             'tmp_name'    => $files['file']['tmp_name'],
             'size'        => round($this->_bytes / 1048576, 0),
             'inserted_by' => $this->_user->getData('UserID'),
@@ -81,7 +82,6 @@ class UploadHelper
 
         $this->begin();
         $this->registerFile($this->_fileToUpload);
-        $this->moveFileToFS($this->_fileToUpload);
         $this->endWithSuccess();
 
         return array(
@@ -90,58 +90,31 @@ class UploadHelper
     }
 
     /**
-     * This moves the file from php tmp dir to the genomic data
-     * directory specified in the configSettings.
-     *
-     * @param object $fileToUpload The object containing the $_FILES
-     *               and the $_POST values.
-     *
-     * @return void
-     */
-    function moveFileToFS(&$fileToUpload) : void
-    {
-        $dest_dir = dirname($fileToUpload->full_path);
-        // file system validation
-        try {
-            if (!file_exists($fileToUpload->tmp_name)) {
-                throw new \Exception(
-                    "Some parts of path $fileToUpload->tmp_name does not exist."
-                );
-            } else if (!is_dir($dest_dir)) {
-                throw new \Exception(
-                    "$dest_dir exists but is not a directory."
-                );
-            } else if (!is_writable($dest_dir)) {
-                throw new \Exception(
-                    "$dest_dir is not writable by web user."
-                );
-            }
-        } catch (\Exception $ex){
-            error_log("Cannot move file: $ex");
-            $this->endWithFailure();
-            $this->_response = json_encode(
-                array(
-                    'message'  => 'File copy failed',
-                    'error'    => true,
-                )
-            );
-        }
-    }
-
-    /**
      * Sets $fileToUpload->full_path
      *
      * @param object $fileToUpload The file to upload
      *
      * @return void
+     * @throws \LorisException
      */
     function setFullPath(&$fileToUpload) : void
     {
-        $config           = \NDB_Config::singleton();
+        $config              = \NDB_Config::singleton();
         $attachment_data_dir = rtrim($config->getSetting('IssueTrackerDataPath'), '/');
 
-        $fileToUpload->full_path = $attachment_data_dir
-            . '/' . $fileToUpload->file;
+        if (is_writable($attachment_data_dir)) {
+            $fileToUpload->full_path = $attachment_data_dir .
+                                       '/attachments/' .
+                                       strval($this->_values['issueID']) .
+                                       '/' .
+                                       $fileToUpload->uuid;
+            mkdir($fileToUpload->full_path, 0770, true);
+        } else {
+            throw new \LorisException(
+                'Issue_Tracker attachments directory not writable.'
+            );
+        }
+
     }
 
     /**
@@ -155,9 +128,9 @@ class UploadHelper
     function registerFile(&$fileToUpload) : void
     {
         $DB     =& \Database::singleton();
-
         $values = array(
-            'file_uuid'   => $this->uuid4(),
+            'issueID'     => $this->_values['issueID'],
+            'file_uuid'   => $fileToUpload->uuid,
             'date_added'  => date('Y-m-d h:i:s', time()),
             'file_name'   => $fileToUpload->file,
             'deleted'     => 0,
@@ -167,6 +140,9 @@ class UploadHelper
         );
         try {
             $DB->insert('issues_file_collection_files', $values);
+            // Move file from tmp to issue_tracker attachment directory.
+            $path = $fileToUpload->full_path . '/' . $fileToUpload->file;
+            move_uploaded_file($_FILES['file']['tmp_name'], $path);
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
             error_log("DatabaseException: $e");

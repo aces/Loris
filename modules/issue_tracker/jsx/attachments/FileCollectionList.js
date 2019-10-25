@@ -7,57 +7,77 @@ import React, {Component} from 'react';
 class FileCollectionList extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {collapsed: true};
-
-    // Bind component instance to custom methods
-    this.toggleCollapsed = this.toggleCollapsed.bind(this);
-  }
-
-  toggleCollapsed() {
-    this.setState({collapsed: !this.state.collapsed});
+    this.state = {
+      attachments: this.props.attachments,
+    };
   }
 
   render() {
-    const changes = this.props.fileHistory.reduce(function(carry, item) {
-      let label = item.dateAdded.concat(' - ', item.addedBy);
-      if (!carry[label]) {
-        carry[label] = {};
-      }
-      carry[label][item.fieldChanged] = item.newValue;
-      return carry;
-    }, {});
-
-    const history = Object.keys(changes).sort().reverse().map(function(key, i) {
-      const textItems = Object.keys(changes[key]).map(function(index, j) {
-        return (
-          <div key={j} className='row'>
-            <div className='col-md-2'>
-              <div className='col-md-8'><b>{index}</b></div>
-              <div className='col-md-4'> to </div>
+    let attachmentsRows = [];
+    // eslint-disable-next-line guard-for-in
+    for (const key in this.state.attachments) {
+      if (this.state.attachments.hasOwnProperty(key)) {
+        const item = this.state.attachments[key];
+        console.log(item);
+        attachmentsRows.push(
+          <>
+            <div key={key} className='row'>
+              <hr/>
+              <div className='col-md-3'>
+                <div className='col-md-5'><b>Date of attachment: </b></div>
+                <div className='col-md-7'>{item.date_added}</div>
+              </div>
+              <div className='col-md-8'>
+                <div className='col-md-1'><b>File: </b></div>
+                <div className='col-md-11'><i>{item.file_name}</i></div>
+              </div>
             </div>
-            <div className='col-md-10'><i>{changes[key][index]}</i></div>
-          </div>
+            <div key={key + '_second'} className='row'>
+              <div className='col-md-3'>
+                <div className='col-md-5'><b>User: </b></div>
+                <div className='col-md-7'>{item.user}</div>
+              </div>
+              <div className='col-md-8'>
+                {item.description ? (
+                  <>
+                    <div className='col-md-2'><b>Description: </b></div>
+                    <div className='col-md-10'>{item.description}</div>
+                  </>
+                ) : null}
+              </div>
+            </div>
+            <div key={key + '_third'} className='row'>
+              <div className='col-md-12'>
+                <a href={window.location.origin +
+                    '/issue_tracker/ajax/EditIssue.php?action=' +
+                    'deleteAttachment&uuid=' +
+                    item.file_uuid
+                  } style={{paddingLeft: '20px'}}>
+                  Delete attachment
+                </a> |&nbsp;
+                <a href={window.location.origin +
+                    '/issue_tracker/ajax/EditIssue.php?action=' +
+                    'downloadAttachment&uuid=' +
+                    item.file_uuid
+                  }>
+                  Download file
+                </a>
+              </div>
+            </div>
+          </>
         );
-      }, this);
-
-      return (
-        <div key={i}>
-          <hr/>
-          <div className='history-item-label'>
-            <span>{key}</span> updated :
-          </div>
-          <div className='history-item-changes'>
-            {textItems}
-          </div>
-        </div>
-      );
-    }, this);
+      }
+    }
+    const issueAttachments = (
+      <div>
+        {attachmentsRows}
+      </div>
+    );
 
     return (
       <div id='file-collection'>
         <h3>Attachment History</h3>
-        {history}
+        {issueAttachments}
       </div>
     );
   }

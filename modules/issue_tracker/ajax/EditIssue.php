@@ -49,7 +49,7 @@ function newAttachment() {
     $response = $attachment->setupUploading(
         $user,
         $_FILES,
-        []
+        $_POST
     );
 
     return ['success' => true];
@@ -685,6 +685,14 @@ FROM issues_comments WHERE issueID=:i
 ORDER BY dateAdded LIMIT 1",
             array('i' => $issueID)
         );
+
+        $attachments = $db->pselect(
+            "SELECT *
+                    FROM issues_file_collection_files WHERE issueID=:i
+                        ORDER BY date_added",
+            array('i' => $issueID)
+        );
+
         $isWatching = $db->pselectOne(
             "SELECT userID, issueID FROM issues_watching
             WHERE issueID=:issueID AND userID=:userID",
@@ -699,7 +707,7 @@ ORDER BY dateAdded LIMIT 1",
             $issueData['watching'] = "Yes";
         }
         $issueData['commentHistory'] = getComments($issueID);
-        // $issueData['fileCollection'] = getFileCollection($issueID);
+        $issueData['attachments'] = $attachments;
         $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $desc[0]['issueComment'] ?? '';
     }

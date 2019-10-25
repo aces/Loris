@@ -69,6 +69,7 @@ class IssueUploadAttachmentForm extends Component {
         formObj.append(key, state.formData[key]);
       }
     }
+    formObj.append('issueID', this.props.issue);
     const url = window.location.origin +
       '/issue_tracker/ajax/EditIssue.php?action=submitAttachment&issueID=' +
       this.props.issue;
@@ -79,7 +80,6 @@ class IssueUploadAttachmentForm extends Component {
         body: formObj,
       }).then((resp) => resp.json())
       .then((data) => {
-        console.log(data);
         // reset form data after successful file upload
         this.setState({
           formData: {
