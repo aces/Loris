@@ -11,7 +11,7 @@ This test plan should be executed by someone with decent knowledge of the MRI up
 3. Check three filters, input correct data and click the show data button.Then check the table.
    [Automation Test]
 4. Check the contents of the server processes page and remember the number of entries.
-   Make sure that the ImagingUploader Auto-Launch is set to Yes (Config module, Study section).
+   Ensure that the ImagingUploader Auto-Launch is set to Yes (Config module, Study section).
    Using the Imaging uploader, upload an invalid scan (i.e. a `.tar.gz` file that is *not* a scan)
    When the upload fails, verify that no new entrires were created in the server processes table.
 5. Upload a valid scan using the correct CandID, PSCID and Visit Label on the imaging_upload page.
