@@ -8,12 +8,12 @@ version: 2
 # Build documentation with MkDocs
 mkdocs:
   configuration: mkdocs.yml
+  fail_on_warning: false
 
-# Required or else mkdocs and readthedocs will not be compatible and the build
-# will break.
-# https://github.com/readthedocs/readthedocs.org/issues/5474
 python:
-  version: 3.6
+  version: 3.7
+  install:
+      - requirements: docs/requirements.txt
 
 # Optionally build your docs in additional formats such as PDF and ePub
 formats: []
