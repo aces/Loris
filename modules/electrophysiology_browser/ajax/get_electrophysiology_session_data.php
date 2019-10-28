@@ -102,7 +102,9 @@ function getSubjectData(int $sessionID)
     $subjectData['sex']         = $candidate->getCandidateSex();
     $subjectData['subproject']  = $timePoint->getData('SubprojectTitle');
     $subjectData['output_type'] = htmlentities(
-        $_REQUEST['outputType'], ENT_QUOTES, "UTF-8"
+        $_REQUEST['outputType'],
+        ENT_QUOTES,
+        "UTF-8"
     );
 
     return $subjectData;
