@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Contains the ElectrophysioFile class used for electrophysiological browser
  *
@@ -64,9 +64,9 @@ class ElectrophysioFile
      *
      * @param string $parameterName The parameter to be retrieved
      *
-     * @return mixed The value of the parameter
+     * @return string The value of the parameter
      */
-    function getParameter(string $parameterName)
+    function getParameter(string $parameterName): string
     {
         return $this->fileData[$parameterName] ??
             ($this->parameters[$parameterName] ?? '');

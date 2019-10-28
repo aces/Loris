@@ -30,10 +30,12 @@ $timePoint = \NDB_Factory::singleton()->timepoint(
 // if a user does not have the permission to view all sites' electrophsyiology
 // sessions or if a user does not have permission to view other sites' session
 // then display a Forbidden message.
-if (!$user->hasPermission('electrophysiology_browser_view_allsites')
-    && !((in_array($timePoint->getData('CenterID'), $user->getData('CenterIDs')))
-    && $user->hasPermission('electrophysiology_browser_view_site'))
-) {
+
+$hasAccess = $user->hasPermission('electrophysiology_browser_view_allsites')
+    || ($user->hasCenter($timePoint->getCenterID())
+    && $user->hasPermission('electrophysiology_browser_view_site'));
+
+if (!$hasAccess) {
     header('HTTP/1.1 403 Forbidden');
     exit;
 }
@@ -99,7 +101,9 @@ function getSubjectData(int $sessionID)
     $subjectData['dob']         = $candidate->getCandidateDoB();
     $subjectData['sex']         = $candidate->getCandidateSex();
     $subjectData['subproject']  = $timePoint->getData('SubprojectTitle');
-    $subjectData['output_type'] = $_REQUEST['outputType'];
+    $subjectData['output_type'] = htmlentities(
+        $_REQUEST['outputType'], ENT_QUOTES, "UTF-8"
+    );
 
     return $subjectData;
 }

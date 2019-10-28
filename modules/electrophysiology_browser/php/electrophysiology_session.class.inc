@@ -44,7 +44,7 @@ class Electrophysiology_Session extends \NDB_Page
         );
 
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
-                || ($user->hasCenter($timePoint->getData('CenterID'))
+                || ($user->hasCenter($timePoint->getCenterID())
                 && $user->hasPermission('electrophysiology_browser_view_site')
             )
         );
