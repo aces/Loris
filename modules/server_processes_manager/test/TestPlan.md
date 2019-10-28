@@ -1,4 +1,4 @@
-#Test plan for the Server Processes Manager
+# Test plan for the Server Processes Manager
 
 This test plan should be executed by someone with decent knowledge of the MRI upload process and in possession of an MRI scan.
 
