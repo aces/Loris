@@ -18,7 +18,7 @@ This test plan should be executed by someone with decent knowledge of the MRI up
    After the progress bar reaches 100%, access the server processes manager page and check that a new
    entry for the upload was created in the process tables. 
    Using a Unix shell on the server on which the upload was done, do a tail -f on each of the process 
-   files listed in the table (stdout,stderr and exit code). Monitor the contents and make sure that they represent what 
+   files listed in the table (stdout,stderr and exit code). Monitor the contents and ensure that they represent what 
    would have appeared on the screen if the upload had been done running the MRI pipeline on the command line.
    When the process finishes (when the exit code file contains something), verify that all the process files
    have been deleted from `/tmp` if and only if the exit code is zero.
