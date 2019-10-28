@@ -70,13 +70,13 @@ class UploadHelper
 
         $this->_fileToUpload
             = (object) array(
-            'file'        => $files['file']['name'],
-            'uuid'        => $this->uuid4(),
-            'tmp_name'    => $files['file']['tmp_name'],
-            'size'        => round($this->_bytes / 1048576, 0),
-            'inserted_by' => $this->_user->getData('UserID'),
-            'description' => $this->_values['fileDescription'] ?? '',
-        );
+                        'file'        => $files['file']['name'],
+                        'uuid'        => $this->uuid4(),
+                        'tmp_name'    => $files['file']['tmp_name'],
+                        'size'        => round($this->_bytes / 1048576, 0),
+                        'inserted_by' => $this->_user->getData('UserID'),
+                        'description' => $this->_values['fileDescription'] ?? '',
+                       );
 
         $this->setFullPath($this->_fileToUpload);
 
@@ -84,9 +84,7 @@ class UploadHelper
         $this->registerFile($this->_fileToUpload);
         $this->endWithSuccess();
 
-        return array(
-            'message'  => 'success',
-        );
+        return array('message' => 'success');
     }
 
     /**
@@ -99,7 +97,7 @@ class UploadHelper
      */
     function setFullPath(&$fileToUpload) : void
     {
-        $config              = \NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         $attachment_data_dir = rtrim($config->getSetting('IssueTrackerDataPath'), '/');
 
         if (is_writable($attachment_data_dir)) {
@@ -129,15 +127,15 @@ class UploadHelper
     {
         $DB     =& \Database::singleton();
         $values = array(
-            'issueID'     => $this->_values['issueID'],
-            'file_uuid'   => $fileToUpload->uuid,
-            'date_added'  => date('Y-m-d h:i:s', time()),
-            'file_name'   => $fileToUpload->file,
-            'deleted'     => 0,
-            'user'        => $fileToUpload->inserted_by,
-            'description' => $fileToUpload->description,
-            'file_size'   => $fileToUpload->size,
-        );
+                   'issueID'     => $this->_values['issueID'],
+                   'file_uuid'   => $fileToUpload->uuid,
+                   'date_added'  => date('Y-m-d h:i:s', time()),
+                   'file_name'   => $fileToUpload->file,
+                   'deleted'     => 0,
+                   'user'        => $fileToUpload->inserted_by,
+                   'description' => $fileToUpload->description,
+                   'file_size'   => $fileToUpload->size,
+                  );
         try {
             $DB->insert('issues_file_collection_files', $values);
             // Move file from tmp to issue_tracker attachment directory.
@@ -148,9 +146,9 @@ class UploadHelper
             error_log("DatabaseException: $e");
             $this->_response = json_encode(
                 array(
-                    'message'  => 'File registration failed. 
+                 'message' => 'File registration failed. 
                     Is the description empty?',
-                    'error'    => true,
+                 'error'   => true,
                 )
             );
         }

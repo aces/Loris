@@ -86,7 +86,8 @@ class IssueForm extends Component {
     let submitButtonValue;
     let commentLabel;
     let isWatching = this.state.issueData.watching;
-    let uploadAttachmentButton = null;
+    let attachmentUploadBtn = null;
+    let attachmentFileElement = null;
 
     if (this.state.isNewIssue) {
       headerText = 'Create New Issue';
@@ -95,6 +96,15 @@ class IssueForm extends Component {
       dateCreated = 'Sometime Soon!';
       submitButtonValue = 'Submit Issue';
       commentLabel = 'Description';
+      attachmentFileElement = (
+        <FileElement
+          name='file'
+          label='Attachment for issue'
+          onUserInput={this.setFormData}
+          errorMessage={this.state.errorMessage}
+          value={this.state.formData.file}
+        />
+      );
     } else {
       headerText = 'Edit Issue #' + this.state.issueData.issueID;
       lastUpdateValue = this.state.issueData.lastUpdate;
@@ -102,7 +112,7 @@ class IssueForm extends Component {
       dateCreated = this.state.issueData.dateCreated;
       submitButtonValue = 'Update Issue';
       commentLabel = 'New Comment';
-      uploadAttachmentButton = (
+      attachmentUploadBtn = (
         <ButtonElement
           onUserInput={this.openAttachmentUploadModal}
           label={'Add Attachment'}
@@ -292,8 +302,9 @@ class IssueForm extends Component {
             onUserInput={this.setFormData}
             value={this.state.formData.comment}
           />
+          {attachmentFileElement}
           <ButtonElement label={submitButtonValue}/>
-          {uploadAttachmentButton}
+          {attachmentUploadBtn}
         </FormElement>
         {fileCollection}
         {commentHistory}

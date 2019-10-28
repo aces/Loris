@@ -112,6 +112,19 @@ function editIssue()
     updateHistory($historyValues, $issueID);
     updateComments($_POST['comment'], $issueID);
 
+    // Attachment for new issue.
+    if (isset($_FILES['file'])) {
+        $attachment = new \LORIS\issue_tracker\UploadHelper();
+        $attachment->setupUploading(
+            $user,
+            $_FILES,
+            [
+                'fileDescription' => '',
+                'issueID' => $issueID
+            ]
+        );
+    }
+
     // Adding new assignee to watching
     if (isset($issueValues['assignee'])) {
         $nowWatching = array(
@@ -662,7 +675,7 @@ WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
         $issueID   = $_GET['issueID'];
         $issueData = getIssueData($issueID);
 
-        $desc       = $db->pselect(
+        $desc = $db->pselect(
             "SELECT issueComment
 FROM issues_comments WHERE issueID=:i
 ORDER BY dateAdded LIMIT 1",
@@ -690,7 +703,7 @@ ORDER BY dateAdded LIMIT 1",
             $issueData['watching'] = "Yes";
         }
         $issueData['commentHistory'] = getComments($issueID);
-        $issueData['attachments'] = $attachments;
+        $issueData['attachments']    = $attachments;
         $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $desc[0]['issueComment'] ?? '';
     }

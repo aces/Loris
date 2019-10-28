@@ -2,7 +2,8 @@
 /**
  * Issue tracker
  *
- * Handles attachments and returns data in response to a front end call.
+ * Handles attachments in issue_tracker and
+ * returns data in response for frontend requests.
  *
  * PHP Version 7
  *
@@ -16,7 +17,8 @@
 /**
  * Issue tracker
  *
- * Handles attachments and returns data in response to a front end call.
+ * Handles attachments in issue_tracker and
+ * returns data in response for frontend requests.
  *
  * PHP Version 7
  *
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($_REQUEST['action'] === 'delete') {
         echo json_encode(deleteAttachment());
     } else if ($_REQUEST['action'] === 'download') {
-        echo json_encode(downloadAttachment());
+        downloadAttachment();
     }
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_REQUEST['action'] === 'new') {
@@ -42,7 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-function newAttachment() {
+/**
+ * Create attachment for issue_tracker
+ *
+ * @return array
+ */
+function newAttachment() : array
+{
     $user       =& User::singleton();
     $attachment = new \LORIS\issue_tracker\UploadHelper();
     $response   = $attachment->setupUploading(
@@ -53,12 +61,79 @@ function newAttachment() {
     return ['success' => true];
 }
 
-function deleteAttachment() {
+/**
+ * Deletes attachment from issue_tracker
+ *
+ * @return array
+ */
+function deleteAttachment() : array
+{
+    $uuid   = $_GET['uuid'];
+    $DB     =& \Database::singleton();
+    $query  = 'UPDATE issues_file_collection_files SET deleted=1 WHERE file_uuid=:uuid;';
+    $params = array('uuid' => $uuid);
+    $DB->pselect($query, $params);
 
     return ['success' => true];
 }
 
-function downloadAttachment() {
+/**
+ * Download attachment from issue_tracker
+ *
+ * @return void
+ * @throws LorisException
+ */
+function downloadAttachment() : void
+{
+    $uuid     = $_GET['uuid'];
+    $issue    = $_GET['issue'];
+    $filename = $_GET['filename'];
 
-    return ['success' => true];
+    $config = \NDB_Config::singleton();
+    $attachment_data_dir = rtrim(
+        $config->getSetting('IssueTrackerDataPath'),
+        '/'
+    );
+
+    $fileToDownload = $attachment_data_dir .
+        '/attachments/' .
+        strval($issue) . '/' .
+        $uuid . '/' .
+        $filename;
+
+    if (!is_readable($fileToDownload)) {
+        throw new \LorisException('Attachment NOT FOUND');
+    }
+
+    $size = filesize($fileToDownload);
+    $name = rawurldecode($filename);
+    $known_mime_types = array(
+                         'htm'  => 'text/html',
+                         'exe'  => 'application/octet-stream',
+                         'zip'  => 'application/zip',
+                         'doc'  => 'application/msword',
+                         'jpg'  => 'image/jpg',
+                         'php'  => 'text/plain',
+                         'xls'  => 'application/vnd.ms-excel',
+                         'ppt'  => 'application/vnd.ms-powerpoint',
+                         'gif'  => 'image/gif',
+                         'pdf'  => 'application/pdf',
+                         'txt'  => 'text/plain',
+                         'html' => 'text/html',
+                         'png'  => 'image/png',
+                         'jpeg' => 'image/jpg',
+                        );
+
+    $file_extension = strtolower(substr(strrchr($fileToDownload, '.'), 1));
+    if (array_key_exists($file_extension, $known_mime_types)) {
+        $mime_type = $known_mime_types[$file_extension];
+    } else {
+        $mime_type = 'application/force-download';
+    }
+
+    header('Content-Type: ' . $mime_type);
+    header('Content-Transfer-Encoding: binary');
+    header('Content-Disposition: attachment; filename="'.$name.'"');
+    header("Content-Length: ".$size);
+    readfile($fileToDownload);
 }
