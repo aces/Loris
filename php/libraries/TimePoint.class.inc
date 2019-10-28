@@ -121,7 +121,6 @@ class TimePoint
             $this->_stageOptions = array_values($this->_stageOptions);
         }
 
-
         // get user data from database
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
                          s.VisitNo, s.Visit_label, s.SubprojectID, s.Submitted,
