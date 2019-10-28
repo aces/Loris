@@ -219,14 +219,14 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
                   $this->DB->insert(
                       "flag",
                       array(
-                       'SessionID'      => '999999',
+                       'SessionID'      => '999991',
                        'CommentId'      => '300000MTL0004121465351036',
                       )
                   );
                   $this->DB->insert(
                       "session",
                       array(
-                       'ID'             => '999999',
+                       'ID'             => '999991',
                        'CandID'         => 'MTL000',
                        'Active'         => 'Y',
                        'ProjectID'      => '1',
@@ -253,15 +253,16 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->assertContains('575', $bodyText);
          $this->DB->delete(
              "conflicts_resolved",
-             array('CommentId1'          => '300000MTL0004121465351036')
+             array('CommentId1'          => '300000MTL0004121465351036',
+             )
          );
          $this->DB->delete(
                       "flag",
-                      array('SessionID'  => '999999')
+                      array('SessionID'  => '999991')
          );
          $this->DB->delete(
                       "session",
-                      array('ID'         => '999999')
+                      array('ID'         => '999991')
          );
          $this->DB->delete(
                       "candidate",
