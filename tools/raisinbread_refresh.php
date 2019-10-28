@@ -38,13 +38,15 @@
  */
 
 $info = <<<INFO
-This script is used by LORIS developers to empty their databases and replace
+This script is used by LORIS developers to DELETE DATA and replace
 them with new test data.
 
 
 INFO;
 
 echo $info;
+
+echo "\e[0;31;40m*** WARNING this will result in the LOSS OF DATA ***\e[0m\n";
 
 $cwd = getcwd();
 if (substr_compare($cwd, 'tools', mb_strlen($cwd) - mb_strlen('tools')) !== 0) {
@@ -91,7 +93,7 @@ try {
 
 
 echo <<<CONFIRMATION
-Please re-type the database name `$dbname` to confirm you wish to drop tables
+Please type the database name `$dbname` to confirm you wish to drop tables
 and import test data: 
 CONFIRMATION;
 
