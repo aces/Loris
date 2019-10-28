@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
  /**
@@ -32,11 +31,9 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     static $PSCID      = ".col-xs-12:nth-child(5) .form-control";
     static $Question   = ".col-xs-12:nth-child(6) .form-control";
     static $Project    = ".col-xs-12:nth-child(7) .form-control, [select]";
-
     //filter location on resolved_conflicts page
     static $Timestamp  = ".col-xs-12:nth-child(7) .form-control";
     static $Project_RC = ".col-xs-12:nth-child(8) .form-control, [select]";
-
     //public location for both pages
     static $clearFilter = ".col-sm-9 > .btn";
     static $display     = ".table-header .col-xs-12";
@@ -52,39 +49,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $this->setUpConfigSetting("useProjects", "true");
-        $this->DB->insert(
-            "conflicts_resolved",
-            array(
-             'ResolvedID'          => '999999',
-             'UserID'              => 'demo',
-             'ResolutionTimestamp' => '2015-11-03 16:21:49',
-             'User1'               => 'Null',
-             'User2'               => 'Null',
-             'TableName'           => 'Test',
-             'ExtraKey1'           => 'NULL',
-             'ExtraKey2'           => 'NULL',
-             'FieldName'           => 'TestTestTest',
-             'CommentId1'          => '589569DCC000012291366553230',
-             'CommentId2'          => 'DDE_589569DCC000012291366653254',
-             'OldValue1'           => 'Mother',
-             'OldValue2'           => 'Father',
-             'NewValue'            => 'NULL',
-            )
-        );
-         $this->DB->insert(
-             "conflicts_unresolved",
-             array(
-              'TableName'      => 'TestTestTest',
-              'ExtraKeyColumn' => 'Test',
-              'ExtraKey1'      => 'Null',
-              'ExtraKey2'      => 'Null',
-              'FieldName'      => 'TestTestTest',
-              'CommentId1'     => '963443000111271151398976899',
-              'Value1'         => 'no',
-              'CommentId2'     => 'DDE_963443000111271151398976899',
-              'Value2'         => 'no',
-             )
-         );
     }
      /**
      * Delete testing data from database
@@ -96,13 +60,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
         parent::tearDown();
         $this->restoreConfigSetting("useProjects");
-        $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
-        $this->DB->delete(
-            "conflicts_unresolved",
-            array('TableName' => 'TestTestTest')
-        );
     }
-
      /**
      * Tests that conflict resolver loads with the permission
      *
@@ -121,10 +79,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             "Resolved Conflicts",
             $bodyText
         );
-
         $this->resetPermissions();
     }
-
      /**
      * Tests that resolved conflicts loads with the permission
      *
@@ -141,7 +97,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->assertContains("Resolved Conflicts", $bodyText);
          $this->resetPermissions();
     }
-
      /**
      * Tests that conflict resolver does not load with the permission
      *
@@ -236,7 +191,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             $row,
             $btn
         );
-
     }
      /**
      * Tests save a unresolved conflicts to resolved
@@ -246,6 +200,46 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testSaveUnresolvedToResolved()
     {
+                  $this->DB->run('SET foreign_key_checks =0');
+                  $this->DB->insert(
+                      "conflicts_unresolved",
+                      array(
+                       'ConflictID'     => '34',
+                       'TableName'      => 'bmi',
+                       'ExtraKeyColumn' => null,
+                       'ExtraKey1'      => '',
+                       'ExtraKey2'      => '',
+                       'FieldName'      => 'height_inches',
+                       'CommentId1'     => '300000MTL0004121465351036',
+                       'Value1'         => '5',
+                       'CommentId2'     => 'DDE_300000MTL0004121465351036',
+                       'Value2'         => '8',
+                      )
+                  );
+                  $this->DB->insert(
+                      "flag",
+                      array(
+                       'SessionID'      => '999999',
+                       'CommentId'      => '300000MTL0004121465351036',
+                      )
+                  );
+                  $this->DB->insert(
+                      "session",
+                      array(
+                       'ID'             => '999999',
+                       'CandID'         => 'MTL000',
+                       'Active'         => 'Y',
+                       'ProjectID'      => '1',
+                      )
+                  );
+                  $this->DB->insert(
+                      "candidate",
+                      array(
+                       'CandID'     => 'MTL000',
+                       'PSCID'      => '300000',
+                       'Active'     => 'Y',
+                      )
+                  );
          $this->safeGet($this->url . "/conflict_resolver/");
          //give a correct answer and save it for the first row
          $element = "tr:nth-child(1) .form-control";
@@ -253,31 +247,26 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $btn     = self::$saveBtn;
          $row     = self::$display;
          $this->reactDropdownSendKey($element, $value);
-
          $this->clickReactElement($btn);
          sleep(1);
          $bodyText = $this->getReactElementContent(".table-header .col-xs-12");
-            // 4 means there are 4 records under this site.
-         $this->assertContains("of 578", $bodyText);
-                  $this->DB->insert(
-                      "conflicts_unresolved",
-                      array(
-                       'ConflictID'     => '92',
-                       'TableName'      => 'bmi',
-                       'ExtraKeyColumn' => null,
-                       'ExtraKey1'      => '',
-                       'ExtraKey2'      => '',
-                       'FieldName'      => 'height_inches',
-                       'CommentId1'     => '300004MTL0044121465351036',
-                       'Value1'         => '5',
-                       'CommentId2'     => 'DDE_300004MTL0044121465351036',
-                       'Value2'         => '8',
-                      )
-                  );
+         $this->assertContains('575', $bodyText);
          $this->DB->delete(
              "conflicts_resolved",
-             array('ConflictID' => '92')
+             array('CommentId1'          => '300000MTL0004121465351036')
          );
+         $this->DB->delete(
+                      "flag",
+                      array('SessionID'  => '999999')
+         );
+         $this->DB->delete(
+                      "session",
+                      array('ID'         => '999999')
+         );
+         $this->DB->delete(
+                      "candidate",
+                      array('PSCID'      => '300000')
+         );
+         $this->DB->run('SET foreign_key_checks =1');
     }
 }
-
