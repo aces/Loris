@@ -29,8 +29,6 @@ namespace LORIS\candidate_parameters;
  */
 class Candidate_Parameters extends \NDB_Form
 {
-    public $hasWritePermission = false;
-
     /**
      * Check user permissions
      *
@@ -40,11 +38,12 @@ class Candidate_Parameters extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        // Set global permission to control access
-        // to different modules of candidate_parameters page
-        $this->hasWritePermission = $user->hasPermission('candidate_parameter_edit');
-
-        return $user->hasPermission('candidate_parameter_view');
+        return $user->hasAnyPermission(
+            array(
+             'candidate_parameter_view',
+             'candidate_parameter_edit',
+            )
+        );
     }
 
     /**
