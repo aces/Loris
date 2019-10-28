@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php declare(strict_types=1);
 /**
  * This script generates data-only dumps for all tables in the currently active database.
