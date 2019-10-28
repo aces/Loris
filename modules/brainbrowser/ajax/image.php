@@ -53,7 +53,7 @@ if (!empty($image_file) && !empty($image_path)) {
         header('Content-Type: application/x-mnc');
     }
     header('X-FileID: ' . $_REQUEST['file_id']);
-    readfile($image_path);
+    readgzfile($image_path);
 } else {
     header("HTTP/1.1 404 Not Found");
     exit();
