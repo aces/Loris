@@ -600,8 +600,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             return "User does not have permission to send to DCC";
         }
         if (!$user->hasCenter($this->getCenterID())) {
-            return "Users must belong to the same site".
-                         " as the candidate to submit to DCC.";
+            return "Users must belong to the same site"
+                . " as the candidate to submit to DCC.";
         }
         if ($this->isSubmitted()) {
             $returnStr = "This timepoint has already been sent to DCC.".
@@ -615,8 +615,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             ]
         )
         ) {
-            return "This stage is not a Screening or Visit stage.".
-                         "  Only Screening or Visit stages can be sent to DCC.";
+            return "This stage is not a Screening or Visit stage. "
+                . "Only Screening or Visit stages can be sent to DCC.";
         }
         if (in_array(
             $this->getData($this->getData('Current_stage')),
@@ -626,8 +626,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             ]
         )
         ) {
-            return "The status of this stage is either".
-                         " In Progress or has not been set.";
+            return "The status of this stage is either"
+                . " In Progress or has not been set.";
         }
         if (! $config->settingEnabled("useScanDone")
             || ($this->getData('Current_stage') != 'Screening'
