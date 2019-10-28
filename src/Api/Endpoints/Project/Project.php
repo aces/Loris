@@ -118,7 +118,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $handler = new Visits($this->project);
                 break;
             default:
-                return new \LORIS\Http\Response\NotFound();
+                return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $newrequest = $request

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 # NOTE: To use this script, run `npm run lint:javascript`
 
 # Run ESLint on Loris modules

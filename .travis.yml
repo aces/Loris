@@ -7,6 +7,9 @@ matrix:
   include:
   - php: "7.2"
   - php: "7.3"
+  - php: "7.4snapshot"
+  allow_failures:
+  - php: "7.4snapshot"
 
 services:
 - docker
@@ -14,7 +17,7 @@ services:
 install:
 - sudo apt-get update
 - sudo apt-get install -y libapparmor1
-- pecl install -f ast-0.1.6
+- pecl install -f ast-1.0.1
 - sudo apt-get install npm
 - make dev
 

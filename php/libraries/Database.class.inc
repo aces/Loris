@@ -72,8 +72,8 @@ class Database
      * @param boolean $trackChanges boolean determining if changes should be
      *                              logged to the history table
      *
-     * @return object Database
-     * @throws DatabaseException
+     * @return \Database
+     * @throws \DatabaseException
      * @access public
      */
     static function &singleton(
@@ -82,7 +82,7 @@ class Database
         string $password     = '',
         string $host         = '',
         bool   $trackChanges = true
-    ) {
+    ): \Database {
 
         static $connections = array();
 
@@ -183,7 +183,6 @@ class Database
                 . "username: `$username`, dbname: `$database`, host: `$host` "
                 . "and the supplied password."
             );
-            return false;
         }
         $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -304,9 +303,9 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the row
      *
-     * @return void
+     * @return bool
      */
-    public function insertOnDuplicateUpdate($table, $set)
+    public function insertOnDuplicateUpdate(string $table, array $set): bool
     {
         return $this->_realinsert($table, $set, true, false, true);
     }
@@ -322,10 +321,12 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the row
      *
-     * @return void
+     * @return bool
      */
-    public function unsafeInsertOnDuplicateUpdate($table, $set)
-    {
+    public function unsafeInsertOnDuplicateUpdate(
+        string $table,
+        array $set
+    ): bool {
         return $this->_realinsert($table, $set, false, false, true);
     }
 
@@ -383,7 +384,13 @@ class Database
         bool   $autoescape = true,
         bool   $ignore = false,
         bool   $onDuplicateUpdate = false
-    ): bool {
+    ) : bool {
+        if ($ignore && $onDuplicateUpdate) {
+            throw new DatabaseException(
+                'The Database::_realinsert() function does not accept both ignore
+                and onDuplicateUpdate parameters.'
+            );
+        }
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
@@ -720,12 +727,11 @@ class Database
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
      */
-    function pselect(string $query, array $params)
+    function pselect(string $query, array $params): array
     {
         $this->_printQuery($query, $params);
-        $stmt   = $this->prepare($query);
-        $result = $this->execute($stmt, $params);
-        return $result;
+        $stmt = $this->prepare($query);
+        return $this->execute($stmt, $params);
     }
 
     /**
@@ -797,7 +803,6 @@ class Database
 
             // If you get here, we just need to build the new array
             $filteredResult[$row[$uniqueKey]] = $row;
-            unset($filteredResult[$row[$uniqueKey]][$uniqueKey]);
         }
 
         return $filteredResult;

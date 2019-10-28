@@ -64,7 +64,7 @@ class ResponseGenerator implements MiddlewareInterface, MiddlewareChainer
      *
      * @return MiddlewareChainer The same MiddlewareChainer, unmodified.
      */
-    public function withMiddleware(MiddlewareChainer $next) :MiddlewareChainer
+    public function withMiddleware(MiddlewareChainer $next)
     {
         return $this;
     }

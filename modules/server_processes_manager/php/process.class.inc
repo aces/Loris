@@ -27,35 +27,35 @@ class Process
     /**
      * Unix command used to start the process.
      *
-     * @var string.
+     * @var string
      */
     private $_shellCommand;
 
     /**
      * Unix PID
      *
-     * @var int.
+     * @var int
      */
     private $_pid;
 
     /**
      * Full path ot the file containing the command std output.
      *
-     * @var string.
+     * @var string
      */
     private $_outfile;
 
     /**
      * Full path ot the file containing the command std error.
      *
-     * @var string.
+     * @var string
      */
     private $_errfile;
 
     /**
      * Full path ot the file containing the command exit code.
      *
-     * @var string.
+     * @var string
      */
     private $_exitCodeFile;
 

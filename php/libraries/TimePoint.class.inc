@@ -3,7 +3,7 @@
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * The Loris TimePoint class
@@ -258,7 +259,7 @@ class TimePoint
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param integer $candid       The candidate identifier
+     * @param CandID  $candid       The candidate identifier
      * @param integer $subprojectID The subprojectID
      * @param string  $visitLabel   The visit label
      *
@@ -267,7 +268,7 @@ class TimePoint
      * @return void
      */
     static function isValidVisitLabel(
-        int $candid,
+        CandID $candid,
         int $subprojectID,
         string $visitLabel
     ): void {
@@ -363,7 +364,6 @@ class TimePoint
             throw new LorisException(
                 'TimePoint::setData() cannot be called with an empty array!'
             );
-            return false;
         }
 
         \Database::singleton()->update(
@@ -381,15 +381,15 @@ class TimePoint
     /**
      * Returns the CandID for the candidate who had this visit.
      *
-     * @return integer (6 digit) CandID for this timepoint.
+     * @return CandID (6 digit) CandID for this timepoint.
      */
-    function getCandID(): int
+    function getCandID(): CandID
     {
         /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
+         * which returns values in string format. CandID is used here to
+         * ensure we return a validated CandID object.
          */
-        return intval($this->_timePointInfo["CandID"]);
+        return new CandID($this->_timePointInfo["CandID"]);
     }
 
     /**

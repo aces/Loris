@@ -307,7 +307,6 @@ class Utility
      *
      * @note    This should probably be moved to the Candidate class, since it's
      *       only used there to validate the PSCID
-     * @note    This should be removed when user-generated PSCID support is removed
      * @cleanup
      */
     static function structureToPCRE(
@@ -688,7 +687,7 @@ class Utility
      * @param string|null $name       If specified, return fields for this
      *                           parameter_type name
      *
-     * @return  Array of the form array(
+     * @return  ?array Format: array(
      *              0 => array(
      *                   'SourceField' => value
      *                   'Name'        => name
@@ -704,7 +703,7 @@ class Utility
         ?string $instrument = null,
         ?string $commentID = null,
         ?string $name = null
-    ): array {
+    ): ?array {
 
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -915,11 +914,12 @@ class Utility
         $DB      = $factory->database();
 
         $languagesDB = $DB->pselect(
+
             "SELECT language_id, language_label
              FROM language",
             array()
         );
-        $languages   = array();
+        $languages = array();
         foreach ($languagesDB as $language) {
             $languages[$language['language_id']] = $language['language_label'];
         }
@@ -951,6 +951,29 @@ class Utility
             $pieces[] = $keyspace[random_int(0, $max)];
         }
         return implode('', $pieces);
+    }
+
+     /**
+     * Takes an argument and determine whether it is a positive integer
+     * i.e. > 0.
+     *
+     * @param mixed $value The value to check. Intentionally not type hinted as
+     * this function is meant to assist in cases where the type is unknown, e.g.
+     * when a parameter is sent via a form.
+     *
+     * @return bool Whether $value is a positive int.
+     */
+    public static function valueIsPositiveInteger($value): bool
+    {
+
+        // Reject arrays and objects
+        if (!is_scalar($value)) {
+            return false;
+        }
+
+        // First clause checks that only digits are present
+        // Second clause ensures a positive value
+        return ctype_digit(strval($value)) && intval($value) > 0;
     }
 }
 

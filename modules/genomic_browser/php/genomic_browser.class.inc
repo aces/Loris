@@ -249,8 +249,6 @@ class Genomic_Browser extends \NDB_Menu_Filter
                                  'full'  => 'All fields',
                                 );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
-
-        return true;
     }
 
     /**

@@ -485,7 +485,7 @@ class UserTest extends TestCase
         $newUserInfo = $this->_userInfo;
         $newUserInfo['ID'] = 2;
         $newUserInfo['UserID'] = '968776';
-        $this->assertTrue(\User::insert($newUserInfo));
+        \User::insert($newUserInfo);
         $this->_otherUser = \User::factory('968776');
         $this->assertEquals('968776', $this->_otherUser->getUsername());
     }
@@ -500,7 +500,7 @@ class UserTest extends TestCase
     {
         $this->_otherUser = \User::factory('968776');
         $newInfo = array('ID' => '3');
-        $this->assertTrue($this->_otherUser->update($newInfo));
+        $this->_otherUser->update($newInfo);
         $this->_otherUser = \User::factory('968776');
         $this->assertEquals('3', $this->_otherUser->getData('ID'));
     }

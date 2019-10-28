@@ -403,8 +403,6 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             $sites = array('' => 'All User Sites') + $sites;
         }
         $this->addSelect('Site', 'Site', $sites);
-
-        return true;
     }
 
 

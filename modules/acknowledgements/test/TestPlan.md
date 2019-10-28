@@ -1,4 +1,4 @@
-#Acknowledgements Module Test Plan
+# Acknowledgements Module Test Plan
 
 1. Access acknowledgements module page, ensure that it renders.[Automation Testing]
 2. Verify that either the permission acknowledgements_view is required for access the page. [Automation Testing]

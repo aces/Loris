@@ -52,9 +52,9 @@ class Statistics_Mri_Site extends Statistics_Site
      *
      * @param string $issue the value of issue
      *
-     * @return void
+     * @return string
      */
-    function _getIssueName($issue)
+    function _getIssueName(string $issue)
     {
         switch($issue) {
         case "Tarchive_Missing":
@@ -199,8 +199,11 @@ class Statistics_Mri_Site extends Statistics_Site
         $sqlRow = "SELECT CenterID as ID,".
                   " PSCArea as Name FROM psc WHERE CenterID=:cid";
         $center = $DB->pselectRow($sqlRow, array('cid' => $_REQUEST['CenterID']));
-        $id     = $center['ID'];
-        $name   = $center['Name'];
+        if (is_null($center)) {
+            throw new \LorisException('Invalid CenterID specified');
+        }
+        $id   = $center['ID'];
+        $name = $center['Name'];
         // List of all visits. Add to it any time a new one is seen, so
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given issue in the

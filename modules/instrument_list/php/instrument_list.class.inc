@@ -2,13 +2,14 @@
 /**
  * Instrument_List
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category Main
- * @package  Instrument_List
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
+ * @category   Main
+ * @package    Instrument_List
+ * @subpackage Imaging
+ * @author     Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://github.com/aces/Loris
  */
 /**
  * The timepoint details menu
@@ -24,13 +25,14 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * Instrument_List
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category Main
- * @package  Instrument_List
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
+ * @category   Main
+ * @package    Instrument_List
+ * @subpackage Imaging
+ * @author     Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://github.com/aces/Loris
  */
 class Instrument_List extends \NDB_Menu_Filter
 {

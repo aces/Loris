@@ -95,9 +95,9 @@ class ViewDetails extends \NDB_Form
             $array = $this->DB->pselectRow($query, array('ID' => $tarchiveID));
             break;
         case "tarchive_series":
-            $query = "SELECT * FROM $table WHERE TarchiveID =:ID
+            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $array = $this->DB->pselect(
+            $tarchiveData = $this->DB->pselect(
                 $query,
                 array(
                  'ID'     => $tarchiveID,
@@ -108,7 +108,7 @@ class ViewDetails extends \NDB_Form
             if ($this->_setProtocols()) {
                 $previousSeriesDescription = '';
                 $previousProtocolName      = '';
-                foreach ($array as &$series) {
+                foreach ($tarchiveData as &$series) {
                     $seriesDescription = $series['SeriesDescription'];
                     // if the same series, do not compute the protocol name again,
                     // use the previous one
@@ -124,9 +124,9 @@ class ViewDetails extends \NDB_Form
             }
             break;
         case "tarchive_files":
-            $query = "SELECT * FROM $table WHERE TarchiveID =:ID
+            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $array = $this->DB->pselect(
+            $tarchiveData = $this->DB->pselect(
                 $query,
                 array(
                  'ID'     => $tarchiveID,
@@ -136,7 +136,7 @@ class ViewDetails extends \NDB_Form
             break;
         }
 
-        return $array;
+        return $tarchiveData ?? array();
     }
     /**
     * Validates PatientName and PatientID,
@@ -219,15 +219,17 @@ class ViewDetails extends \NDB_Form
             $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
         }
 
-        if (preg_match(
-            "/$pIDRegex/",
-            $this->tpl_data['archive']['PatientID']
-        )
-        ) {
-            $this->tpl_data['archive']['patientIDValid'] = 1;
-        } else {
-            $this->tpl_data['archive']['patientIDValid'] = 0;
-            $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
+        if (!is_null($this->tpl_data['archive']['PatientID'])) {
+            if (preg_match(
+                "/$pIDRegex/",
+                $this->tpl_data['archive']['PatientID']
+            )
+            ) {
+                $this->tpl_data['archive']['patientIDValid'] = 1;
+            } else {
+                $this->tpl_data['archive']['patientIDValid'] = 0;
+                $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
+            }
         }
     }
 
@@ -321,7 +323,7 @@ class ViewDetails extends \NDB_Form
         try {
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
             $array = $this->DB->pselectRow($query, array('ID' => $id));
-            return $array['Scan_type'];
+            return $array['Scan_type'] ?? 'Unknown';
         } catch (\LorisException $e) {
             return "Unknown";
         }

@@ -69,13 +69,13 @@ class UserPermissions
     /**
      * Loads the users's permissions
      *
-     * @return bool
+     * @return void
      * @access private
      */
-    function setPermissions(): bool
+    function setPermissions(): void
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \Database::singleton();
 
         // get all the permissions for this user
         $query = "SELECT p.code, pr.userID FROM permissions p
@@ -87,17 +87,18 @@ class UserPermissions
         // reset the array
         $this->permissions = array();
 
-        // fill the array
-        foreach ($results AS $row) {
-            if (!empty($row['userID'])
-                && $row['userID'] === $this->userID
-            ) {
-                $this->permissions[$row['code']] = true;
-            } else {
-                $this->permissions[$row['code']] = false;
+        // Fill the permissions array of this UserPermissions object with the
+        // values extracted for this user from the database.
+        if (is_array($results) and !empty($results)) {
+            foreach ($results AS $row) {
+                if (empty($row['userID'])) {
+                    $this->permissions[$row['code']] = false;
+                    continue;
+                }
+                $userMatch = $row['userID'] === $this->userID;
+                $this->permissions[$row['code']] = $userMatch;
             }
         }
-        return true;
     }
 
 
@@ -193,10 +194,10 @@ class UserPermissions
      *
      * @param array $set Array of permission IDs to add
      *
-     * @return bool True
+     * @return void
      * @note   If saving permissions, remove all permissions first
      */
-    function addPermissions(array $set): bool
+    function addPermissions(array $set): void
     {
         // create DB object
         $DB = \Database::singleton();
@@ -214,8 +215,6 @@ class UserPermissions
 
         // refresh the user permissions
         $this->setPermissions();
-
-        return true;
     }
 
 
@@ -224,23 +223,23 @@ class UserPermissions
      *
      * @param array|null $set Array of permission IDs to remove
      *
-     * @return bool
+     * @return void
      * @note   Passing no arguments deletes all permissions
      */
-    function removePermissions(?array $set = null): bool
+    function removePermissions(?array $set = null): void
     {
         // create DB object
         $DB =& Database::singleton();
         if (is_null($set)) {
             // remove all permissions
-            $success = $DB->delete(
+            $DB->delete(
                 'user_perm_rel',
                 array('userID' => $this->userID)
             );
         } else {
             // remove the permissions
             foreach ($set as $value) {
-                $success = $DB->delete(
+                $DB->delete(
                     'user_perm_rel',
                     array(
                      'userID' => $this->userID,
@@ -251,9 +250,7 @@ class UserPermissions
         }
 
         // refresh the user permissions
-        $success = $this->setPermissions();
-
-        return true;
+        $this->setPermissions();
     }
 
 

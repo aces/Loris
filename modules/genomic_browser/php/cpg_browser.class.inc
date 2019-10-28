@@ -243,8 +243,6 @@ class CpG_Browser extends \NDB_Menu_Filter
                                   'gca.design_type',
                                   'gca.Strand',
                                  );
-
-        return true;
     }
 
     /**
@@ -426,8 +424,6 @@ class CpG_Browser extends \NDB_Menu_Filter
             'dmr'
         );
         $this->addSelect('DMR', 'DMR:', $Base_options);
-
-        return true;
     }
 
     /**

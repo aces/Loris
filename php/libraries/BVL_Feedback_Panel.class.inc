@@ -13,6 +13,7 @@
  * @license  GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * BVL_Feedback_Panel Class
@@ -40,12 +41,12 @@ class BVL_Feedback_Panel
      * Creates the feedback thread for the given combination of candID,
      * sessionID and commentID.
      *
-     * @param int         $candID    The candidate ID.
+     * @param CandID      $candID    The candidate ID.
      * @param int|null    $sessionID The session ID for a given visit.
      * @param string|null $commentID The comment ID for a given instrument.
      */
     function __construct(
-        int $candID,
+        CandID $candID,
         ?int $sessionID=null,
         ?string $commentID=null
     ) {
@@ -70,11 +71,11 @@ class BVL_Feedback_Panel
     function display(): string
     {
         $feedbackProfile = $this->_feedbackThread->_feedbackCandidateProfileInfo;
-        $candidateID     = $feedbackProfile["CandID"];
+        $candidateID     = new CandID($feedbackProfile["CandID"]);
 
-        $this->tpl_data['candID'] = $candidateID;
+        $this->tpl_data['candID'] = (string) $candidateID;
 
-        $candidateObject         = Candidate::singleton(intval($candidateID));
+        $candidateObject         = Candidate::singleton($candidateID);
         $this->tpl_data['pscid'] = $candidateObject->getPSCID();
 
         $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;
