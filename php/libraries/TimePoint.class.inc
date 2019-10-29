@@ -126,7 +126,7 @@ class TimePoint
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
-                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done
+                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done, s.EEG_done
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
@@ -557,6 +557,17 @@ class TimePoint
     {
         return $this->_timePointInfo["Scan_done"];
     }
+
+    /**
+     * Gets whether or not an EEG was done for this TimePoint
+     *
+     * @return string 'Y' if an EEG was done 'N' if not.
+     */
+    function getEegDone(): string
+    {
+        return $this->_timePointInfo["EEG_done"];
+    }
+
 
     /**
      * Returns BVLQC status (Y-hardcopy QC, N-no QC, V-visual QC)
