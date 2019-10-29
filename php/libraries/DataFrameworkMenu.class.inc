@@ -107,6 +107,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
                 new \LORIS\Data\Filters\UserSiteMatch()
             );
         }
+
         return $provisioner;
 
     }

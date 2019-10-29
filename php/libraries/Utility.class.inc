@@ -915,5 +915,31 @@ class Utility
         }
         return $languages;
     }
+
+    /**
+     * Get the list of MRI scan type available in the database
+     *
+     * @return array Array of MRI scan types which exist in the database table
+     *               mri_scan_type joined to the files table
+     *               array($scan_type_id => $scan_type)
+     */
+    static function getScanTypeList(): array
+    {
+        $DB = \Database::singleton();
+
+        $scan_types_DB = $DB->pselect(
+            "SELECT ID, Scan_type 
+             FROM mri_scan_type mri
+                JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+            array()
+        );
+
+        $scan_types = array();
+        foreach ($scan_types_DB as $scan_type) {
+            $scan_types[$scan_type['ID']] = $scan_type['Scan_type'];
+        }
+
+        return $scan_types;
+    }
 }
 
