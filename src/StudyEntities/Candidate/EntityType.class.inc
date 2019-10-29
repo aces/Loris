@@ -25,7 +25,7 @@
 class EntityType
 {
     /* @var string */
-    $value = '';
+    private $value;
 
     private const VALID_VALUES = array('Human', 'Scanner');
 

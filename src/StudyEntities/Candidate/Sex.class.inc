@@ -25,7 +25,7 @@
 class Sex
 {
     /* @var string */
-    $value = '';
+    public $value;
 
     private const VALID_VALUES = array('Male', 'Female');
 
