@@ -684,7 +684,7 @@ ORDER BY dateAdded LIMIT 1",
 
         $attachments = $db->pselect(
             "SELECT *
-                    FROM issues_file_collection_files WHERE issueID=:i
+                    FROM issues_attachments WHERE issueID=:i
                         ORDER BY date_added",
             array('i' => $issueID)
         );

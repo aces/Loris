@@ -18,7 +18,7 @@ namespace LORIS\issue_tracker;
  * The UploadHelper Class.
  *
  * This class provides the php code to process uploading
- * a user file from the issue_tracker.
+ * a user file from the issue_tracker for attachments.
  *
  * @category Loris
  * @package  Issue_Tracker
@@ -137,7 +137,7 @@ class UploadHelper
                    'file_size'   => $fileToUpload->size,
                   );
         try {
-            $DB->insert('issues_file_collection_files', $values);
+            $DB->insert('issues_attachments', $values);
             // Move file from tmp to issue_tracker attachment directory.
             $path = $fileToUpload->full_path . '/' . $fileToUpload->file;
             move_uploaded_file($_FILES['file']['tmp_name'], $path);

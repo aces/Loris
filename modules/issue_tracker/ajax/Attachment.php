@@ -70,7 +70,7 @@ function deleteAttachment() : array
 {
     $uuid   = $_GET['uuid'];
     $DB     = \Database::singleton();
-    $query  = 'UPDATE issues_file_collection_files SET deleted=1 WHERE file_uuid=:uuid;';
+    $query  = 'UPDATE issues_attachments SET deleted=1 WHERE file_uuid=:uuid;';
     $stmt    = $DB->prepare($query);
     $results = $stmt->execute(array('uuid' => $uuid));
 

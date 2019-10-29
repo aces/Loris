@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-class FileCollectionList extends Component {
+class AttachmentsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,9 +26,6 @@ class FileCollectionList extends Component {
         method: 'GET',
       }).then((resp) => resp.json())
       .then((data) => {
-        console.log('success');
-        console.log('data is:');
-        console.log(data);
         window.location.href = window.location.origin
           + '/issue_tracker/issue/'
           + this.props.issue;
@@ -118,12 +115,12 @@ class FileCollectionList extends Component {
     );
   }
 }
-FileCollectionList.propTypes = {
+AttachmentsList.propTypes = {
   issue: PropTypes.string.isRequired,
   attachments: PropTypes.array,
 };
-FileCollectionList.defaultProps = {
+AttachmentsList.defaultProps = {
   attachments: [],
 };
 
-export default FileCollectionList;
+export default AttachmentsList;

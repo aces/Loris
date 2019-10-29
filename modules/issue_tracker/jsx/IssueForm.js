@@ -2,7 +2,7 @@ import Loader from 'Loader';
 import Modal from 'jsx/Modal';
 import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
-import FileCollectionList from './attachments/FileCollectionList';
+import AttachmentsList from './attachments/attachmentsList';
 
 /**
  * Issue add/edit form
@@ -121,8 +121,8 @@ class IssueForm extends Component {
     }
 
     const fileCollection = this.state.isNewIssue || (
-      <FileCollectionList issue={this.props.issue}
-                          attachments={this.state.issueData['attachments']}
+      <AttachmentsList issue={this.props.issue}
+                       attachments={this.state.issueData['attachments']}
       />
     );
 
@@ -319,8 +319,6 @@ class IssueForm extends Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
-        console.log('data is:');
-        console.log(data);
         let newIssue = !data.issueData.issueID;
         let formData = data.issueData;
         // ensure that if the user is at multiple sites and
