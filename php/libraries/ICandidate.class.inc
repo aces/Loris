@@ -28,10 +28,9 @@ use LORIS\StudyEntities\Candidate\CandID;
 interface ICandidate
 {
     /**
-     * Get a list of SessionIDs for which this Candidate has a corresponding
-     * TimePoint.
+     * Get this candidate TimePoints.```
      *
-     * @return TimePoint[]
+     * @return \TimePoint[]
      */
     public function getTimepoints(): array;
 
