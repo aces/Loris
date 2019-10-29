@@ -47,13 +47,25 @@ class Media extends \DataFrameworkMenu
     }
 
     /**
-     * {@inheritDoc}
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
      *
      * @return bool true
      */
     public function useSiteFilter(): bool
     {
         return true;
+    }
+
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool false
+     */
+    public function useProjectFilter() : bool
+    {
+        return false;
     }
 
     /**

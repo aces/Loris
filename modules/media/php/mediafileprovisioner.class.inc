@@ -43,16 +43,17 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     l.language_label as languageLabel,
                     (SELECT Full_name FROM test_names
                       WHERE Test_name=m.instrument) as fullName,
-               			s.CenterID as centerId,
-               			m.uploaded_by as uploadedBy,
-               			m.date_taken as dateTaken,
-               			substring(m.comments, 1, 50) as comments,
-               			m.date_uploaded as dateUploaded,
-               			m.file_type as fileType,
-               			s.CandID as candidateId,
-               			s.ID as sessionId,
-               			m.hide_file as hideFile,
-               			m.id
+               		s.CenterID as centerId,
+               		s.ProjectID as projectId,
+               		m.uploaded_by as uploadedBy,
+               		m.date_taken as dateTaken,
+               		substring(m.comments, 1, 50) as comments,
+               		m.date_uploaded as dateUploaded,
+               		m.file_type as fileType,
+               		s.CandID as candidateId,
+               		s.ID as sessionId,
+               		m.hide_file as hideFile,
+               		m.id
              FROM media m
              INNER JOIN session s ON m.session_id = s.ID
              INNER JOIN candidate c ON c.CandID=s.CandID

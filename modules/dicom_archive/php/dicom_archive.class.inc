@@ -44,9 +44,20 @@ class Dicom_Archive extends \DataFrameworkMenu
      * Tells the base class that this page's provisioner can support
      * the UserSiteMatch filter.
      *
-     * @return bool always true
+     * @return bool always false
      */
     public function useSiteFilter() : bool
+    {
+        return false;
+    }
+
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool always false
+     */
+    public function useProjectFilter() : bool
     {
         return false;
     }
