@@ -69,10 +69,10 @@ function newAttachment() : array
 function deleteAttachment() : array
 {
     $uuid   = $_GET['uuid'];
-    $DB     =& \Database::singleton();
+    $DB     = \Database::singleton();
     $query  = 'UPDATE issues_file_collection_files SET deleted=1 WHERE file_uuid=:uuid;';
-    $params = array('uuid' => $uuid);
-    $DB->pselect($query, $params);
+    $stmt    = $DB->prepare($query);
+    $results = $stmt->execute(array('uuid' => $uuid));
 
     return ['success' => true];
 }

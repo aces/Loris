@@ -20,22 +20,26 @@ class FileCollectionList extends Component {
       '/issue_tracker/ajax/Attachment.php' +
       '?action=delete' +
       '&uuid=' + uuid;
-    $.ajax(url, {
-      dataType: 'json',
-      success: function(data) {
+    fetch(url,
+      {
+        credentials: 'same-origin',
+        method: 'GET',
+      }).then((resp) => resp.json())
+      .then((data) => {
+        console.log('success');
         console.log('data is:');
         console.log(data);
         window.location.href = window.location.origin
           + '/issue_tracker/issue/'
           + this.props.issue;
-      },
-      error: function(err) {
+      }).catch((error) => {
+        console.error(error);
         this.setState({
           error: 'An error occurred when deleting attachment!\n Error: ' +
-            err.status + ' (' + err.statusText + ')',
+            error.status + ' (' + error.statusText + ')',
         });
-      }.bind(this),
-    });
+      }
+    );
   }
 
   render() {
