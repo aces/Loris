@@ -137,13 +137,13 @@ class Imaging_Browser extends \DataFrameworkMenu
         );
 
         return [
-                'sites'         => $siteList,
-                'projects'      => $list_of_projects,
-                'visitQCStatus' => $visitQCStatus,
-                'sequenceTypes' => $all_scan_types,
-                'pendingNew'    => $pending,
-                'configLabels'  => $scan_id_types,
-               ];
+            'sites'         => $siteList,
+            'projects'      => $list_of_projects,
+            'visitQCStatus' => $visitQCStatus,
+            'sequenceTypes' => $all_scan_types,
+            'pendingNew'    => $pending,
+            'configLabels'  => $scan_id_types,
+        ];
 
     }
 
