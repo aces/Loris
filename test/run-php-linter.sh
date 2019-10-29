@@ -18,3 +18,6 @@ vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ m
 vendor/bin/phpcs --standard=test/SrcCS.xml --extensions=php/php src/ || exit $?;
 
 vendor/bin/phpmd php/,modules/,src/ text 'test/LorisPHPMD.xml' || exit $?;
+
+# Run PHPStan on php/ and modules/
+vendor/bin/phpstan analyse --level max -c ./test/phpstan-loris.neon --error-format table php/ modules/ || exit $?

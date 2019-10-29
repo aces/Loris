@@ -34,7 +34,8 @@ class SiteIDGenerator extends IdentifierGenerator
     /**
      * The abbreviation for a Site to be prepended to the ID. Equivalent to the
      * `Alias` column in the `psc` table.
-     * @var string 
+     *
+     * @var string
      */
     protected $siteAbbrev = '';
 
@@ -60,9 +61,15 @@ class SiteIDGenerator extends IdentifierGenerator
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
         // if the min or max is not configured in project/config.xml
-        $this->minValue = $this->_getIDSetting('min') ??
-            str_repeat(strval($this->alphabet[0]), $this->length);
         $this->maxValue = $this->_getIDSetting('max') ??
+            str_repeat(strval($this->alphabet[0]), intval($this->length));
+        if (!is_array($this->alphabet)) {
+            throw new \ConfigurationException(
+                'Expecting variable $alphabet to be an array but got '
+                . gettype($this->alphabet)
+            );
+        }
+        $this->maxValue   = $this->_getIDSetting('max') ??
             str_repeat(
                 strval($this->alphabet[count($this->alphabet) - 1]),
                 intval($this->length)
