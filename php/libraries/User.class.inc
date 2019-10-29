@@ -304,7 +304,7 @@ class User extends UserPermissions
     {
         return $this->userInfo['CenterIDs'];
     }
-    
+
     /**
      * Get the user's sites' ID numbers
      *
@@ -640,7 +640,7 @@ class User extends UserPermissions
             true
         );
     }
-    
+
     /**
      * Determines if the user has a project
      *
