@@ -2,7 +2,7 @@
 /**
  * This file contains the State class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
@@ -50,11 +50,12 @@ class State
     /**
      * Sets the username
      *
-     * @param string $username the user's username
+     * @param string|null $username the user's username or null when clearing
+     *                      SESSION state.
      *
      * @return void
      */
-    function setUsername($username)
+    function setUsername(?string $username): void
     {
         $this->_privateStateData['username'] = $username;
     }
@@ -62,9 +63,9 @@ class State
     /**
      * Gets the username
      *
-     * @return string the user's username
+     * @return string|null the user's username, or null if not set
      */
-    function getUsername()
+    function getUsername(): ?string
     {
         return $this->_privateStateData['username'];
     }
@@ -77,7 +78,7 @@ class State
      *
      * @return void
      */
-    function setProperty($property, $value)
+    function setProperty(string $property, $value): void
     {
         $this->_stateData[$property] = $value;
     }
@@ -89,7 +90,7 @@ class State
      *
      * @return mixed the value to which to set the property
      */
-    function getProperty($property)
+    function getProperty(string $property)
     {
         if (isset($this->_stateData[$property])) {
             return $this->_stateData[$property];
@@ -101,9 +102,9 @@ class State
     /**
      * Gets the last URL that was access to use as a "back" link.
      *
-     * @return String URL suitable for adding to a link of for a "Back" link
+     * @return string|null URL suitable for adding to a link of for a "Back" link
      */
-    function getLastURL()
+    function getLastURL(): ?string
     {
         $timepointSubMenus = array(
                               'instrument_list',
@@ -133,4 +134,4 @@ class State
         return null;
     }
 }
-?>
+

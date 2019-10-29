@@ -29,14 +29,13 @@ class AddSurvey extends \NDB_Form
      * Determine whether the logged in user has access to this page.
      * Tied to data_entry
      *
-     * @return boolean true if user has access to this page
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $editor =& \User::singleton();
-
-        return $editor->hasPermission('user_accounts');
+        return $user->hasPermission('user_accounts');
     }
 
     /**
@@ -201,18 +200,23 @@ class AddSurvey extends \NDB_Form
             $status = 'Created';
         }
 
-        $success = $db->insert(
-            "participant_accounts",
-            array(
-             'SessionID'       => $SessionID,
-             'Test_name'       => $values['Test_name'],
-             'Email'           => $values['Email'],
-             'Status'          => $status,
-             'OneTimePassword' => $key,
-             'CommentID'       => $commentID,
-            )
-        );
-        $this->tpl_data['success'] = $success;
+        try {
+            $db->insert(
+                "participant_accounts",
+                array(
+                 'SessionID'       => $SessionID,
+                 'Test_name'       => $values['Test_name'],
+                 'Email'           => $values['Email'],
+                 'Status'          => $status,
+                 'OneTimePassword' => $key,
+                 'CommentID'       => $commentID,
+                )
+            );
+        } catch(\DatabaseException $e) {
+            error_log($e->getMessage());
+            $this->tpl_data['success'] = false;
+        }
+        $this->tpl_data['success'] = true;
 
         if ($email) {
             $config = \NDB_Config::singleton();
@@ -282,9 +286,8 @@ class AddSurvey extends \NDB_Form
             $deps,
             array(
              $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
-             $baseURL . "/survey_accounts/js/columnFormatter.js",
             )
         );
     }
 }
-?>
+

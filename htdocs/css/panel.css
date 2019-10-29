@@ -1,129 +1,121 @@
 /* This is a custom css file made to override some bootstrap elements. Likely will change the structure of this come production.
 Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 
-.info{
+.info,
+.info:hover {
     color: #fff;
 }
 
 .example-enter {
-  opacity: 0.01;
-  transition: opacity .5s ease-in;
+    opacity: 0.01;
+    transition: opacity .5s ease-in;
 }
 
 .example-enter.example-enter-active {
-  opacity: 1;
+    opacity: 1;
 }
 
 .example-leave {
-  opacity: 1;
-  transition: opacity .5s ease-in;
+    opacity: 1;
+    transition: opacity .5s ease-in;
 }
 
 .example-leave.example-leave-active {
-  opacity: 0.01;
+    opacity: 0.01;
 }
 
-.thread_entry{
+.thread_entry {
     background-color: rgba(221, 221, 221, 0.25)
 }
 
-.glyphs:before{
+.glyphs:before {
     margin-right: 5px;
     margin-left: 5px;
 }
 
-.breadcrumb-panel{
+.breadcrumb-panel {
     background-color: #064785;
     color: #fff;
-    margin-left:5px;
-    margin-right:5px;
-    margin-top:10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 10px;
     border: 1px solid transparent;
     border-radius: 4px;
     padding: 5px 15px;
 }
 
-.navbar{
+.navbar {
     background-color: #064785;
     border-width: 0 0 1px;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
-.navbar-toggle{
-	margin-top: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-	border: 0px;
-	border-radius: 0px;
+.navbar-toggle {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    border: 0;
+    border-radius: 0;
 }
 
 .panel-heading a:after {
-    font-family:'Glyphicons Halflings';
-    content:"\e114";
+    font-family: 'Glyphicons Halflings', serif;
+    content: "\e114";
     float: right;
-    color: #FFF;
+    color: #064785;
 }
+
 .panel-heading a.collapsed:after {
-    content:"\e080";
+    content: "\e080";
 }
 
-.panel-default .panel-heading{
-    color: #FFF;
-    background-color: #1C70B6;
-    border-color: #ddd;
+.navbar {
+    margin-bottom: 0;
 }
 
-.navbar{
-    margin-bottom:0px;
+.panel-group {
+    margin: 10px 5px;
 }
 
-.panel-group{
-    margin-top:10px;
-    margin-bottom:10px;
-    margin-left:5px;
-    margin-right:5px;
-}
-
-.navmenu{
-    width: 35%;
+.navmenu {
+    width: 500px;
     position: fixed;
     z-index: 1040;
     top: 0;
     bottom: 0;
 }
 
-.panel-wrapper{
-  margin-right: -35%;
-  margin-top: 50px;
-  right: 0px;
-  width: 35%;
-  background: #F5F5F5;
-  position: fixed;
-  height: 100%;
-  border-left-style: solid;
-  border-left-width: 2px;
-  border-color: #064785;
-  overflow-y: scroll;
-  z-index: 1000;
-  transition: all 0.4s ease 0s;
+.panel-wrapper {
+    margin-right: -500px;
+    margin-top: 50px;
+    right: 0;
+    width: 500px;
+    background: #F5F5F5;
+    position: fixed;
+    height: 100%;
+    border-color: #064785;
+    border-left: 2px solid;
+    overflow-y: scroll;
+    z-index: 1000;
+    transition: all 0.4s ease 0s;
     padding-bottom: 50px;
 }
 
-.bvl_panel{
-    padding-right: 35%;
+.bvl_panel {
+    padding-right: 500px;
     transition: all 0.4s ease 0s;
 }
 
-.active_panel_footer{
-    padding-right: 35%;
+.active_panel_footer {
+    padding-right: 500px;
 }
 
-.active_panel{
-    right: 35%;
+.active_panel {
+    right: 500px;
 }
 
-.inactive_panel_page{
-    padding-right: 0px;
+.inactive_panel_page {
+    padding-right: 0;
 }
 
 .bvl_table_icons {
@@ -132,30 +124,28 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     visibility: hidden;
 }
 
-.feedback_entries_body{
+.feedback_entries_body {
     border-style: solid;
     border-style-top: none;
 
 }
 
-.feedback_entries{
+.feedback_entries {
     color: #ffffff;
     background-color: rgb(28, 112, 182);
 }
 
-.feedback_entries:hover{
+.feedback_entries:hover {
     color: #000000;
 }
 
-.hide_sidebar{
+.hide_sidebar {
     left: 0;
 }
 
-@media (max-width:884px){
-
-
-    .active_panel{
-        right: 35%;
+@media (max-width: 884px) {
+    .active_panel {
+        right: 500px;
     }
 
 }

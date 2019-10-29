@@ -31,14 +31,16 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * need to be recalculated for the ETag and handler
      */
     protected $projectsCache;
+
     /**
-     * All users have access to the login endpoint to try and login.
+     * Only logged in users can see projects.
+     *
+     * @param \User $user The user whose access is being checked
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess()
+    private function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
         return !($user instanceof \LORIS\AnonymousUser);
     }
 
@@ -81,7 +83,11 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // FIXME: Validate permissions.
+        $user = $request->getAttribute('user');
+        if (!$this->_hasAccess($user)) {
+            return new \LORIS\Http\Response\Unauthorized();
+        }
+
         $pathparts = $request->getAttribute('pathparts');
 
         if (count($pathparts) === 1) {
@@ -125,8 +131,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
         $config = \NDB_Factory::singleton()->config();
 
-        $useProjects = $config->getSetting("useProjects");
-        $useEDC      = $config->getSetting("useEDC");
+        $useEDC = $config->getSetting("useEDC");
 
         if ($useEDC === '1' || $useEDC === 'true') {
             $useEDC = true;
@@ -146,18 +151,13 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
                                  ],
                     ];
 
-        if ($useProjects && $useProjects !== "false" && $useProjects !== "0") {
-            $projects  = \Utility::getProjectList();
-            $projArray = [];
-            foreach ($projects as $project) {
-                $projArray[$project] = $settings;
-            }
-            $this->projectsCache = ["Projects" => $projArray];
-        } else {
-            $this->projectsCache = [
-                                    "Projects" => array("loris" => $settings),
-                                   ];
+        $projects  = \Utility::getProjectList();
+        $projArray = [];
+        foreach ($projects as $project) {
+            $projArray[$project] = $settings;
         }
+        $this->projectsCache = ["Projects" => $projArray];
+
         return $this->projectsCache;
     }
 

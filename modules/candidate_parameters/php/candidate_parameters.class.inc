@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains the NDB_Form_candidate_parameters class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Candidate_Parameters
@@ -19,7 +19,7 @@ namespace LORIS\candidate_parameters;
  * Displays a list of candidate_parameter categories
  * and tabs to view them.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Candidate_Parameters
@@ -29,24 +29,21 @@ namespace LORIS\candidate_parameters;
  */
 class Candidate_Parameters extends \NDB_Form
 {
-    public $hasWritePermission = false;
-
     /**
      * Check user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws \ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
-        // Set global permission to control access
-        // to different modules of candidate_parameters page
-        $this->hasWritePermission = $user->hasPermission('candidate_parameter_edit');
-
-        return $user->hasPermission('candidate_parameter_view');
+        return $user->hasAnyPermission(
+            array(
+             'candidate_parameter_view',
+             'candidate_parameter_edit',
+            )
+        );
     }
 
     /**
@@ -57,61 +54,6 @@ class Candidate_Parameters extends \NDB_Form
     function display()
     {
         return "";
-    }
-
-    /**
-     * Gets the participant_status options from participant_status_options
-     * getParticipantStatusOptions()
-     *
-     * @note   This function was moved to the Candidate class and should be removed
-     *       in the next major release
-     * @return array Options array suitable for use in QuickForm select
-     *               element
-     */
-    static function getParticipantStatusOptions()
-    {
-        error_log(
-            "Function getParticipantStatusOptions() was moved out of ".
-            "the NDB_Form_Candidate_Parameters class and will be removed in ".
-            "the next Major release. Refer to the Candidate class for new location."
-        );
-        $DB      =& \Database::singleton();
-        $options = $DB->pselect(
-            "SELECT ID,Description
-            FROM participant_status_options
-            WHERE parentID IS NULL",
-            array()
-        );
-        return \Candidate::getParticipantStatusOptions();
-    }
-
-    /**
-     * Gets the participant_status options suboptions from participant_status_options
-     * getParticipantStatusSubOptions()
-     *
-     * @param int $parentID parent ID of the participant status option
-     *
-     * @note This function was moved to the Candidate class and should be removed
-     *       in the next major release
-     *
-     * @return array Options array suitable for use in QuickForm select
-     *               element
-     */
-    function getParticipantStatusSubOptions($parentID)
-    {
-        error_log(
-            "Function getParticipantStatusSubOptions() was moved out of ".
-            "the NDB_Form_Candidate_Parameters class and will be removed in ".
-            "the next Major release. Refer to the Candidate class for new location."
-        );
-        $DB      =& \Database::singleton();
-        $options = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
-            WHERE parentID=:pid",
-            array('pid' => $parentID)
-        );
-        return Candidate::getParticipantStatusSubOptions($parentID);
     }
 
     /**
@@ -128,6 +70,24 @@ class Candidate_Parameters extends \NDB_Form
             $deps,
             array(
              $baseURL . "/candidate_parameters/js/CandidateParameters.js",
+            )
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $candidate =& \Candidate::singleton((int)$this->identifier);
+        $candID    = $candidate->getCandID();
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Candidate Parameters',
+                "/candidate_parameters/?candID=$candID&identifier=$candID"
             )
         );
     }

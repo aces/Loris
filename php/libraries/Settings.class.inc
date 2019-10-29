@@ -54,7 +54,7 @@ class Settings
      *
      * @return string the URL that LORIS is installed at
      */
-    public function getBaseURL()
+    public function getBaseURL(): string
     {
         $url = getenv("LORIS_BASEURL");
         if (!empty($url)) {
@@ -71,7 +71,7 @@ class Settings
      *              (example of sandbox config values which will
      *                return true: 1, 2 , 3, 'true')
      */
-    public function isSandbox()
+    public function isSandbox(): bool
     {
         return $this->_getBooleanSetting('sandbox');
     }
@@ -82,7 +82,7 @@ class Settings
      * @return string database name
      * @throws ConfigurationException
      */
-    public function dbName()
+    public function dbName(): string
     {
         return $this->_getDatabaseSetting('database');
     }
@@ -93,7 +93,7 @@ class Settings
      * @return string database host
      * @throws ConfigurationException
      */
-    public function dbHost()
+    public function dbHost(): string
     {
         return $this->_getDatabaseSetting('host');
     }
@@ -104,7 +104,7 @@ class Settings
      * @return string database user name
      * @throws ConfigurationException
      */
-    public function dbUserName()
+    public function dbUserName(): string
     {
         return $this->_getDatabaseSetting('username');
     }
@@ -115,7 +115,7 @@ class Settings
      * @return string database password
      * @throws ConfigurationException
      */
-    public function dbPassword()
+    public function dbPassword(): string
     {
         return $this->_getDatabaseSetting('password');
     }
@@ -129,7 +129,7 @@ class Settings
      * @return string database config value
      * @throws ConfigurationException
      */
-    private function _getDatabaseSetting($settingName)
+    private function _getDatabaseSetting(string $settingName): string
     {
         if (empty($this->_database)) {
             $this->_database = $this->_config->getSetting('database');
@@ -152,7 +152,7 @@ class Settings
      * @return bool true if configuration value is equivalent to true
      *              false otherwise
      */
-    private function _getBooleanSetting($settingName)
+    private function _getBooleanSetting(string $settingName): bool
     {
         $configVal = $this->_config->getSetting($settingName);
 

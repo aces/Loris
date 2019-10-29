@@ -13,7 +13,7 @@ class PublicationUploadForm extends React.Component {
       formErrors: {},
       isLoaded: false,
       loadedData: 0,
-      uploadProgress: -1
+      uploadProgress: -1,
     };
 
     this.setFormData = this.setFormData.bind(this);
@@ -47,15 +47,15 @@ class PublicationUploadForm extends React.Component {
       success: function(data) {
         self.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       },
       error: function(data, errorCode, errorMsg) {
         console.error(data, errorCode, errorMsg);
         self.setState({
-          loadError: 'An error occurred when loading the form!'
+          loadError: 'An error occurred when loading the form!',
         });
-      }
+      },
     });
   }
 
@@ -76,7 +76,7 @@ class PublicationUploadForm extends React.Component {
     let formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
 
@@ -87,7 +87,7 @@ class PublicationUploadForm extends React.Component {
     formData[formElement] = listItems;
     formData[pendingValKey] = null;
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
 
@@ -100,7 +100,7 @@ class PublicationUploadForm extends React.Component {
       listItems.splice(index, 1);
       formData[formElement] = listItems;
       this.setState({
-        formData: formData
+        formData: formData,
       });
     }
   }
@@ -120,7 +120,7 @@ class PublicationUploadForm extends React.Component {
 
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData.hasOwnProperty(key) && formData[key] !== "") {
+      if (formData.hasOwnProperty(key) && formData[key] !== '') {
         let formVal;
         if (Array.isArray(formData[key])) {
           formVal = JSON.stringify(formData[key]);
@@ -142,12 +142,12 @@ class PublicationUploadForm extends React.Component {
         // reset form data
         this.setState({
           formData: {},
-          numFiles: 0
+          numFiles: 0,
         });
         swal(
           {
-            title: "Submission Successful!",
-            type: "success"
+            title: 'Submission Successful!',
+            type: 'success',
           },
           function() {
             window.location.replace(loris.BaseURL + '/publication/');
@@ -156,14 +156,14 @@ class PublicationUploadForm extends React.Component {
       }.bind(this),
       error: function(jqXHR) {
         console.error(jqXHR);
-        let resp = "";
+        let resp = '';
         try {
           resp = JSON.parse(jqXHR.responseText).message;
         } catch (e) {
           console.error(e);
         }
-        swal("Something went wrong!", resp, "error");
-      }
+        swal('Something went wrong!', resp, 'error');
+      },
     });
   }
 
@@ -192,7 +192,7 @@ class PublicationUploadForm extends React.Component {
     }
 
     let createElements;
-    let formClass = "col-md-12 col-lg-12";
+    let formClass = 'col-md-12 col-lg-12';
     if (!this.props.editMode) {
       createElements = [
         <h3 className="col-md-offset-3 col-lg-offset-3">Propose a new project</h3>,
@@ -202,10 +202,10 @@ class PublicationUploadForm extends React.Component {
           onUserInput={this.setFormData}
           required={true}
           value={this.state.formData.title}
-        />
+        />,
       ];
       // if not in edit mode, shrink form for consistent display
-      formClass = "col-md-8 col-lg-7";
+      formClass = 'col-md-8 col-lg-7';
     }
 
     return (

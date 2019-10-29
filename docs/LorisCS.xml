@@ -62,4 +62,6 @@
              <property name="eolChar" value="\n"/>
          </properties>
      </rule>
+     <!-- Do not allow PHP closing tags because they can cause problems -->
+     <rule ref="PSR2.Files.ClosingTag"/>
 </ruleset>

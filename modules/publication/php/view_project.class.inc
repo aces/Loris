@@ -26,11 +26,15 @@ class View_Project extends \NDB_Form
     public $skipTemplate = true;
 
     /**
-     * Check user permissions
+     * Returns true if user has access to this page.
+     *
+     * You do not need to overload hasAccess() if there are no access restrictions.
+     *
+     * @param \User $user The user whose access is being checked
      *
      * @return bool
      */
-    function _hasAccess() : bool
+    function _hasAccess(\User $user) : bool
     {
         $user  = \User::singleton();
         $db    = \Database::singleton();

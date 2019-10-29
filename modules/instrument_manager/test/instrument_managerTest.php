@@ -49,7 +49,17 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentManagerDoespageLoadWithpermission()
     {
-        $this->setupPermissions(array("superuser"));
+        // Check read permission, 'instrument_manager_read'
+        $this->setupPermissions(array('instrument_manager_read'));
+        $this->safeGet($this->url . "/instrument_manager/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("Instrument Manager", $bodyText);
+        $this->resetPermissions();
+
+        // Check write permission, 'instrument_manager_write'
+        $this->setupPermissions(array('instrument_manager_write'));
         $this->safeGet($this->url . "/instrument_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -79,4 +89,4 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
 
 
 }
-?>
+

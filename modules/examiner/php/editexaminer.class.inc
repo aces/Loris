@@ -28,12 +28,13 @@ class EditExaminer extends \NDB_Form
     /**
      * Checks if the user has access to the edit examiner form
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws \ConfigurationException
-     * @throws \DatabaseException
      * @throws \LorisException
+     * @throws \ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         if (empty($_REQUEST['identifier'])) {
             throw new LorisException(
@@ -43,7 +44,6 @@ class EditExaminer extends \NDB_Form
         $DB     = \Database::singleton();
         $config = \NDB_Config::singleton();
 
-        $user         = \User::singleton();
         $userFullName = $user->getFullname();
         $userCenter   = $user->getCenterIDs();
 
@@ -51,8 +51,8 @@ class EditExaminer extends \NDB_Form
 
         if ($certification['EnableCertification'] ?? false) {
             $cids      = $DB->pselect(
-                "SELECT epr.centerID 
-                 FROM examiners e 
+                "SELECT epr.centerID
+                 FROM examiners e
                   LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
                  WHERE e.examinerID=:EID",
                 array('EID' => $this->identifier)
@@ -70,7 +70,9 @@ class EditExaminer extends \NDB_Form
                 = $user->hasPermission('examiner_multisite');
             return $permitted || $permittedAllSites;
         }
-        return false;
+        throw new \ConfigurationException(
+            "Certification Disabled in config.xml"
+        );
     }
 
     /**
@@ -85,7 +87,7 @@ class EditExaminer extends \NDB_Form
 
         // get the certification results for the given examiner
         $result = $DB->pselect(
-            "SELECT testID, pass, date_cert, comment 
+            "SELECT testID, pass, date_cert, comment
              FROM certification
              WHERE examinerID=:EID",
             array('EID' => $this->identifier)
@@ -127,7 +129,7 @@ class EditExaminer extends \NDB_Form
 
             // Get the certificationID if it exists
             $certID = $DB->pselectOne(
-                "SELECT certID 
+                "SELECT certID
                  FROM certification
                  WHERE examinerID=:EID AND testID=:TID",
                 array(
@@ -135,6 +137,9 @@ class EditExaminer extends \NDB_Form
                  'TID' => $testID,
                 )
             );
+            // FIXME $visit_label should be set properly. This declaration
+            // was only added to appease phan.
+            $visit_label = '';
 
              // if certification for new instrument for the examiner
             if (empty($certID) && !empty($certStatus)) {
@@ -154,7 +159,7 @@ class EditExaminer extends \NDB_Form
                 );
 
                 $certID = $DB->pselectOne(
-                    "SELECT certID 
+                    "SELECT certID
                      FROM certification
                      WHERE examinerID =:EID and testID=:TID",
                     array(
@@ -184,20 +189,22 @@ class EditExaminer extends \NDB_Form
             } else { // update to a test certification for the examiner
 
                 //select history events
-                $oldVals = $DB->pselectRow(
+                $oldVals = $DB->pselect(
                     "SELECT ch.new, ch.new_date
                      FROM certification_history ch
                      LEFT JOIN certification c ON (c.certID=ch.primaryVals)
                      WHERE c.examinerID=:EID AND ch.testID=:TID
-                     ORDER BY changeDate DESC",
+                     ORDER BY changeDate DESC LIMIT 1",
                     array(
                      'EID' => $examinerID,
                      'TID' => $testID,
                     )
                 );
 
-                $oldVal  = $oldVals['new'];
-                $oldDate = $oldVals['new_date'];
+                // since there is an ORDER BY in pselect
+                // $oldVals[0] corresponds to the latest date
+                $oldVal  = $oldVals[0]['new'] ?? null;
+                $oldDate = $oldVals[0]['new_date'] ?? null;
 
                 $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
@@ -258,7 +265,9 @@ class EditExaminer extends \NDB_Form
                 }
             }
         }
-        $url = "{$baseurl}/examiner/editExaminer/?identifier="
+
+        $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
+        $url     = "{$baseurl}/examiner/editExaminer/?identifier="
                . $examinerID;
         header("Location: " . $url, true, 303);
     }
@@ -348,6 +357,12 @@ class EditExaminer extends \NDB_Form
               WHERE e.examinerID=:EID",
             array('EID' => $this->identifier)
         );
+        if (is_null($row)) {
+            throw new \LorisException(
+                'No full name found in Database for examiner with ID ' .
+                htmlspecialchars($this->identifier)
+            );
+        }
         // Get identifier, to be added to the Reset button href
         $this->tpl_data['identifier'] = $this->identifier;
 
@@ -419,7 +434,7 @@ class EditExaminer extends \NDB_Form
             return array();
         }
         $certificationInstruments['test']
-            = \Utility::toArray($certificationInstruments['test']);
+            = \Utility::associativeToNumericArray($certificationInstruments['test']);
         $instruments = array();
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
@@ -453,4 +468,4 @@ class EditExaminer extends \NDB_Form
         );
     }
 }
-?>
+

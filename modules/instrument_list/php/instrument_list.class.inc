@@ -74,12 +74,12 @@ class Instrument_List extends \NDB_Menu_Filter
     /**
     * Checking permissions
     *
+    * @param \User $user The user whose access is being checked
+    *
     * @return bool
     */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user      =& \User::singleton();
         $timePoint = $this->timePoint;
         if ($timePoint === null) {
             throw new \NotFound("Page requires a timepoint to load");
@@ -146,7 +146,7 @@ class Instrument_List extends \NDB_Menu_Filter
             $this->timePoint->getSessionID()
         );
         // save possible changes from the control panel...
-        $success = $controlPanel->save();
+        $controlPanel->save();
 
         // display the control panel
         $html = $controlPanel->display();
@@ -169,7 +169,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
         // get behavioral battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
-        $success = $battery->selectBattery($this->timePoint->getSessionID());
+        $battery->selectBattery($this->timePoint->getSessionID());
 
         $this->tpl_data['stage']        = \Utility::getStageUsingCandID(
             $this->tpl_data['candID']
@@ -208,11 +208,11 @@ class Instrument_List extends \NDB_Menu_Filter
                 $prevSubgroup = $instrument['Sub_group'];
 
                 // make an instrument status object
-                $status  = new \NDB_BVL_InstrumentStatus;
-                $success = $status->select($instrument['CommentID']);
+                $status = new \NDB_BVL_InstrumentStatus;
+                $status->select($instrument['CommentID']);
 
                 $ddeStatus = new \NDB_BVL_InstrumentStatus;
-                $success   = $ddeStatus->select($instrument['DDECommentID']);
+                $ddeStatus->select($instrument['DDECommentID']);
 
                 $Ins = "instruments";
 
@@ -293,9 +293,9 @@ class Instrument_List extends \NDB_Menu_Filter
      * @param string $candID    the value of candID
      * @param string $sessionID the value of sessionID
      *
-     * @return void
+     * @return string
      */
-    function getFeedbackPanel($candID, $sessionID)
+    function getFeedbackPanel($candID, $sessionID): string
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
         $html          =  $feedbackPanel->display();

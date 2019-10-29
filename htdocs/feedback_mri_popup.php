@@ -18,8 +18,6 @@ if ($client->initialize() == false) {
     return;
 }
 
-require_once "FeedbackMRI.class.inc";
-
 // create DB object
 $DB = \Database::singleton();
 
@@ -27,19 +25,22 @@ $DB = \Database::singleton();
 $user = \User::singleton($_SESSION['State']->getUsername());
 
 // check permissions
-if (!$user->hasPermission('imaging_browser_qc')) {
+if (!$user->hasPermission('imaging_browser_qc')
+    && $_SERVER['REQUEST_METHOD'] !== 'GET'
+) {
     http_response_code(403);
     return;
 }
 
-$tpl_data['has_permission'] = true;
+$tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
+
 // instantiate feedback mri object
-$comments = new FeedbackMRI($_REQUEST['fileID'], $_REQUEST['sessionID']);
+$comments = new FeedbackMRI($_REQUEST['fileID'] ?? '', $_REQUEST['sessionID'] ?? '');
 
 /*
  * UPDATE SECTION
  */
-if ($_POST['fire_away']) {
+if (isset($_POST['fire_away']) && $_POST['fire_away']) {
     // clear all predefined comments
     $comments->clearAllComments();
 
@@ -47,7 +48,7 @@ if ($_POST['fire_away']) {
     $comments->setPredefinedComments($_POST['savecomments']['predefined']);
 
     // save all textual comments but only if there is an entry [sebas]
-    foreach ($_POST['savecomments']['text']
+    foreach (\Utility::asArray($_POST['savecomments']['text'])
         as $comment_type_id => $comment_message
     ) {
         if (trim($comment_message)) {
@@ -121,10 +122,15 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
             $CommentTpl['select_name']        = $comment_array['field'];
             $CommentTpl['select_value_array'] = $comment_array['values'];
         }
-        $CommentTpl['selected'] = $comments->getMRIValue($comment_array['field']);
+        $CommentTpl['selected'] = $comments
+            ->getMRIValue(
+                $comment_array['field']
+            );
     }
 
-    $CommentTpl['name'] = $comment_array['name'];
+    if (is_array($comment_array)) {
+        $CommentTpl['name'] = $comment_array['name'];
+    }
 
     // get the list of predefined comments for the current type
     $predefined_comments = $comments->getAllPredefinedComments($comment_type_id);
@@ -140,8 +146,8 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
         $PredefinedTpl['predefined_text'] = $predefined_comment_text['Comment'];
 
         // print the comment text
-        $Saved = $saved_comments[$comment_type_id];
-        if ($Saved['predefined'][$predefined_comment_id]) {
+        $Saved = $saved_comments[$comment_type_id] ?? array();
+        if ($Saved['predefined'][$predefined_comment_id] ?? false) {
             $CommentTpl['predefined'][$j]['checked'] = true;
         }
         $j++;
@@ -149,7 +155,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
 
     // print a form element for a free-form comment
     $CommentTpl['type']       = $comment_type_id;
-    $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'];
+    $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'] ?? '';
     $i++;
 }
 
@@ -161,3 +167,4 @@ $smarty->assign($tpl_data);
 $smarty->display('feedback_mri_popup.tpl');
 
 ob_end_flush();
+

@@ -28,18 +28,19 @@ class Stats_Behavioural extends \NDB_Form
     /**
      * Checking user's permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return $user->hasPermission('data_entry');
     }
     /**
      * InCenter function
      *
      * @param string $centerID the value of centerID
-     * @param string $Centers  the value of centers
+     * @param array  $Centers  the value of centers
      *
      * @return bool
      */
@@ -62,11 +63,7 @@ class Stats_Behavioural extends \NDB_Form
     {
         parent::setup();
 
-        $DB          =& \Database::singleton();
-        $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        $this->tpl_data['useProjects'] = $useProjects;
-        $subprojList ="";
+        $DB =& \Database::singleton();
 
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
@@ -113,27 +110,24 @@ class Stats_Behavioural extends \NDB_Form
             $currentProject = '';
             $Param_Project  = '';
         }
-
-        $subprojects = \Utility::getSubprojectsForProject($currentProject);
-
-        $this->tpl_data['Subprojects'] = $subprojects;
-        foreach ($subprojects as $key=>$val) {
-            $subprojList .= $key.",";
+        //
+        //SUBPROJECTS
+        $suproject_query = '';
+        // Only search for subprojects if $currentProject is a positive int.
+        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
+            $subprojList ="";
+            $subprojects = \Utility::getSubprojectsForProject($currentProject);
+            foreach ($subprojects as $key=>$val) {
+                $subprojList .= $key.",";
+            }
+            $subprojList = substr($subprojList, 0, -1);
+            if (!empty($subprojList)) {
+                $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+            }
+            $Visits = \Utility::getExistingVisitLabels($currentProject);
         }
-        $subprojList = substr($subprojList, 0, -1);
-        if (!empty($subprojList)) {
-            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $suproject_query ='';
-        }
 
-        $Visits = \Utility::getExistingVisitLabels($currentProject);
-        $this->tpl_data['Visits'] = $Visits;
-
-        // PREVENT Undefined property Console Output
-        if (!isset($this->params)) {
-            $this->params = null;
-        }
+        $this->tpl_data['Visits'] = $Visits ?? '';
 
         //---- BEHAVIORAL STATS -----
         $result = $DB->pselect(
@@ -151,7 +145,7 @@ class Stats_Behavioural extends \NDB_Form
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {
@@ -184,20 +178,22 @@ class Stats_Behavioural extends \NDB_Form
                     $c['all']['complete'] = $row['val'];
                 }
             }
-            if ($c[$vl]['total'] != 0) {
-                if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['percent']
-                        = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
-                } else {
-                    $c[$vl]['percent'] = 0;
+            if (!empty($c) && is_array($c)) {
+                if ($c[$vl]['total'] != 0) {
+                    if (isset($c[$vl]['complete'])) {
+                        $c[$vl]['percent']
+                            = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                    } else {
+                        $c[$vl]['percent'] = 0;
+                    }
                 }
-            }
-            if ($c['all']['total'] != 0) {
-                if (isset($c['all']['complete'])) {
-                    $c['all']['percent']
-                        = floor($c['all']['complete'] / $c['all']['total']*100);
-                } else {
-                    $c['all']['percent'] = 0;
+                if ($c['all']['total'] != 0) {
+                    if (isset($c['all']['complete'])) {
+                        $c['all']['percent']
+                            = floor($c['all']['complete'] / $c['all']['total']*100);
+                    } else {
+                        $c['all']['percent'] = 0;
+                    }
                 }
             }
         }
@@ -218,7 +214,7 @@ class Stats_Behavioural extends \NDB_Form
                 $suproject_query
                 $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
-            $this->params
+            $this->params ?? array()
         );
 
         foreach ($result as $row) {
@@ -248,20 +244,22 @@ class Stats_Behavioural extends \NDB_Form
                     $c['all']['complete'] = $row['val'];
                 }
             }
-            if ($c[$vl]['total'] != 0) {
-                if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['percent']
-                        = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
-                } else {
-                    $c[$vl]['percent'] = 0;
+            if (!empty($c) && is_array($c)) {
+                if ($c[$vl]['total'] != 0 && !is_null($c[$vl])) {
+                    if (isset($c[$vl]['complete'])) {
+                        $c[$vl]['percent']
+                            = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+                    } else {
+                        $c[$vl]['percent'] = 0;
+                    }
                 }
-            }
-            if ($c['all']['total'] != 0) {
-                if (isset($c['all']['complete'])) {
-                    $c['all']['percent']
-                        = floor($c['all']['complete'] / $c['all']['total']*100);
-                } else {
-                    $c['all']['percent'] = 0;
+                if ($c['all']['total'] != 0) {
+                    if (isset($c['all']['complete'])) {
+                        $c['all']['percent']
+                            = floor($c['all']['complete'] / $c['all']['total']*100);
+                    } else {
+                        $c['all']['percent'] = 0;
+                    }
                 }
             }
         }

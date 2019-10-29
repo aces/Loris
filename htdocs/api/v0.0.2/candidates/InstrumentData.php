@@ -95,7 +95,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
             $this->Instrument = \NDB_BVL_Instrument::factory(
                 $Instrument,
                 $CommentID,
-                null,
+                '',
                 true
             );
         } catch(\Exception $e) {
@@ -240,4 +240,4 @@ if (isset($_REQUEST['PrintInstrumentData'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

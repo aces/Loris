@@ -24,42 +24,50 @@ h4 {
  *	CSS for the filter builder
  */
 .tree li {
-    list-style-type:none;
-    margin:0;
-    padding:10px 5px 0 5px;
-    position:relative
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 5px 0 5px;
+    position: relative
 }
+
 .tree li::before, .tree li::after {
-    content:'';
-    left:-20px;
-    position:absolute;
-    right:auto
+    content: '';
+    left: -20px;
+    position: absolute;
+    right: auto
 }
+
 .tree li::before {
-    border-left:1px solid #999;
-    bottom:50px;
-    height:100%;
-    top:0;
-    width:1px
+    border-left: 1px solid #999;
+    bottom: 50px;
+    height: 100%;
+    top: 0;
+    width: 1px
 }
+
 .tree li::after {
-    border-top:1px solid #999;
-    height:20px;
-    top:25px;
-    width:25px
+    border-top: 1px solid #999;
+    height: 20px;
+    top: 25px;
+    width: 25px;
 }
-.tree>ul>li::before, .tree>ul>li::after {
-    border:0
+
+.tree > ul > li::before, .tree > ul > li::after {
+    border: 0;
 }
+
 .tree li:last-child::before {
-    height:30px
+    height: 30px;
 }
+
 .firstUL {
-	padding-left: 0px
+    padding-left: 0;
 }
+
 .instrumentLabel {
     word-break: break-all;
 }
+
 .switch {
     background: white;
     border-color: #064785;
@@ -69,7 +77,7 @@ h4 {
  *  CSS for managed saved query filters
  */
 .savedQueryTree {
-    margin-left: 0px;
+    margin-left: 0;
 }
 
 /*
@@ -83,45 +91,50 @@ h4 {
  *  CSS for the loading spinner
  */
 .spinner {
-  margin: 100px auto 0;
-  width: 70px;
-  text-align: center;
+    margin: 100px auto 0;
+    width: 70px;
+    text-align: center;
 }
 
 .spinner > div {
-  width: 18px;
-  height: 18px;
-  background-color: #064785;
+    width: 18px;
+    height: 18px;
+    background-color: #064785;
 
-  border-radius: 100%;
-  display: inline-block;
-  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
 
 .spinner .bounce1 {
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
 }
 
 .spinner .bounce2 {
-  -webkit-animation-delay: -0.16s;
-  animation-delay: -0.16s;
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
 }
 
 @-webkit-keyframes sk-bouncedelay {
-  0%, 80%, 100% { -webkit-transform: scale(0) }
-  40% { -webkit-transform: scale(1.0) }
+    0%, 80%, 100% {
+        -webkit-transform: scale(0);
+    }
+    40% {
+        -webkit-transform: scale(1.0);
+    }
 }
 
 @keyframes sk-bouncedelay {
-  0%, 80%, 100% { 
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  } 40% { 
-    -webkit-transform: scale(1.0);
-    transform: scale(1.0);
-  }
+    0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+    }
 }
 
 .loading-header {

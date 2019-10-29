@@ -2,7 +2,7 @@
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -12,10 +12,14 @@
  */
 
 namespace LORIS\instrument_manager;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \LORIS\Http\EmptyStream;
+
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -25,16 +29,216 @@ namespace LORIS\instrument_manager;
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {
+    const ALREADY_INSTALLED = 'This instrument already exists in the ' .
+                                  'test battery';
+
+    const CANNOT_WRITE_FILES = 'Automatic installation of instruments is ' .
+                                  'not possible given the current server ' .
+                                  'configuration. Please contact your ' .
+                                  'administrator if you require this ' .
+                                  'functionality';
+
+    const FILE_ALREADY_EXISTS = 'This file has already been uploaded. ' .
+                                  'Please contact your administrator to ' .
+                                  'install the instrument';
+
+    const UPLOAD_INSTALL_FAILED = 'File upload is successful but the ' .
+                                  'installation failed. Please contact your ' .
+                                  'administrator';
+
+    const UPLOAD_NO_INSTALL = 'File upload is successful but the ' .
+                                  'instrument needs to be installed manually';
+
+    /**
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param Module $module    The test name being accessed
+     * @param string $page      The subtest being accessed (may be an empty string)
+     * @param string $id        The identifier for the data to load on this page
+     * @param string $commentID The CommentID to load the data for
+     * @param string $formname  The name to give this form
+     */
+    public function __construct($module, $page, $id, $commentID, $formname)
+    {
+        $this->AjaxModule   = true;
+        $this->skipTemplate = true;
+        $this->factory      = \NDB_Factory::singleton();
+        $this->path         = $this->factory->config()->getSetting("base");
+
+        parent::__construct($module, $page, $id, $commentID, $formname);
+    }
+
     /**
     * Checking permissions
     *
+    * @param \User $user The user whose access is being checked
+    *
     * @return bool
     */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-        return $user->hasPermission('superuser');
+        return $user->hasAnyPermission(
+            array(
+             'instrument_manager_read',
+             'instrument_manager_write',
+            )
+        );
     }
+
+    /**
+     * Handle a PSR7 Request for that endpoint.
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        $method = $request->getMethod();
+        if ($method == 'POST') {
+            return $this->handlePOST($request);
+        }
+
+        return parent::handle($request);
+    }
+
+    /**
+     * Handle a POST request for instrument upload. It moves the uploaded file
+     * in the project/instruments directory then call the php script from the
+     * tools directory to generate sql statement required for the installation
+     * of the instrument. Finaly, it source the sql file to complete the
+     * installation.
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    protected function handlePOST(ServerRequestInterface $request): ResponseInterface
+    {
+        // Ensure the user is allowed to upload.
+        if (! \User::singleton()->hasPermission('instrument_manager_write')) {
+            return (new \LORIS\Http\Response())
+                ->withStatus(403, 'Forbidden')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            array('error' => 'Forbidden')
+                        )
+                    )
+                );
+        }
+        // Ensure the server is properly configured.
+        if (! $this->canWriteFiles()) {
+            return (new \LORIS\Http\Response())
+                ->withStatus(500, 'Internal Server Error')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            array('error' => self::UPLOAD_INSTALL_FAILED)
+                        )
+                    )
+                );
+        }
+        $uploaded_file = $request->getUploadedFiles()['install_file'];
+        $filename      = $uploaded_file->getClientFilename();
+        $instrument    = pathinfo($filename)['filename'];
+
+        if ($this->instrumentExists($instrument)) {
+            return new \LORIS\Http\Response\Conflict(
+                self::ALREADY_INSTALLED
+            );
+        }
+
+        $fullpath = $this->path . "project/instruments/" . $filename;
+
+        if (file_exists($fullpath)) {
+            /**
+             * Don't update the file if it already exists on the back-end.
+             * Instead, inform users that an administrator must install it on
+             * their behalf.
+             * This should only happen for users on a system where automatic
+             * installation is disabled (ie. has no quatUser), as the above
+             * error will return before this one.
+            */
+            return new \LORIS\Http\Response\Conflict(
+                self::FILE_ALREADY_EXISTS
+            );
+        }
+
+        $uploaded_file->moveTo($fullpath);
+        chmod($fullpath, 0644);
+
+        // Scripts in tools/ often make relative imports, so we must change
+        // our effective directory in order to use them.
+        chdir($this->path . "/tools");
+        // Use tools/ script to generate an SQL patch file based on the
+        // structure of the uploaded .linst file.
+        exec(
+            'php generate_tables_sql_and_testNames.php < '
+            . escapeshellarg($fullpath)
+        );
+
+        if (!$this->isQuatUserConfigured()) {
+            // If no quatUser is configured, automatic installation is not
+            // possible, so this is the last step.
+            return (new \LORIS\Http\Response())
+                ->withStatus(200, 'OK')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            array('message' => self::UPLOAD_NO_INSTALL)
+                        )
+                    )
+                );
+        }
+
+        // Install the instrument by directly sourcing the SQL file
+        // generated by `generate_tables_sql_and_testNames.php` using bash.
+        // If installation is successful, `exec` will complete
+        // silently. Otherwise, it will return the exit code and error
+        // messsage from MySQL. This will be stored in $result and
+        // logged via LorisException.
+        $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+
+        $db_config = $this->factory->config()->getSetting('database');
+        exec(
+            "mysql".
+            " -h" . escapeshellarg($db_config['host']).
+            " -u" . escapeshellarg($db_config['quatUser']).
+            " -p" . escapeshellarg($db_config['quatPassword']).
+            " " . escapeshellarg($db_config['database']).
+            " < " . $this->path . "project/tables_sql/".
+            escapeshellarg($table_name . '.sql'),
+            $output, // $output and $status are created automatically
+            $status  // by `exec` and so need not be declared above.
+        );
+        // An exit code of 0 is a success and 1 means failure
+        if ($status) {
+            error_log(
+                "The installation of $instrument.sql failed. "
+                . "Either: the instrument table exists (but is not in the "
+                . "test_names table), or "
+                . "LORIS could not connect to the database using the "
+                . "credentials supplied in the config file."
+            );
+            return (new \LORIS\Http\Response())
+                ->withStatus(500, 'Internal Server Error')
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode(
+                            array('error' => self::UPLOAD_INSTALL_FAILED)
+                        )
+                    )
+                );
+        }
+
+        return (new \LORIS\Http\Response())
+            ->withStatus(201, 'Created')
+            ->withBody(new EmptyStream());
+    }
+
     /**
     * SetupVariables function
     *
@@ -42,154 +246,64 @@ class Instrument_Manager extends \NDB_Menu_Filter
     */
     function _setupVariables()
     {
-        $config        = \NDB_Config::singleton();
-        $this->path    = $config->getSetting("base");
-        $this->headers = array(
-                          'Instrument',
-                          'Instrument_Type',
-                          'Table_Installed',
-                          'Table_Valid',
-                          'Pages_Valid',
-                         );
-        $this->query   = " FROM test_names t";
-        $this->columns = array(
-                          't.Test_name as Instrument',
-                          "'x' as Instrument_Type",
-                          "'x' as Table_Installed",
-                          "'x' as Table_Valid",
-                          "'x' as Pages_Valid",
-                         );
-        $this->validFilters = array('');
+        $this->headers      = array(
+                               'Instrument',
+                               'Instrument_Type',
+                               'Table_Installed',
+                               'Table_Valid',
+                               'Pages_Valid',
+                              );
+        $this->columns      = array('Test_name as Instrument');
+        $this->query        = " FROM test_names";
+        $this->validFilters = array();
         $this->formToFilter = array();
-
-        // Check to see whether the quatUser is configured.
-        // If this user is not configured, the instrument cannot be
-        // automatically installed as the table will not be able to be
-        // created.
-        $quat_user_is_configured = $this->isQuatUserConfigured();
-        if (!$quat_user_is_configured) {
-            $this->tpl_data['can_install'] = false;
-            $this->tpl_data['feedback']    = "Instrument installation is not "
-                . "possible given the current server configuration; the "
-                . "LORIS 'quatUser' is not configured properly. File upload is "
-                . "still possible but instruments will need to be installed "
-                . "manually.";
-        }
-
-        // Ensure we can write to folders in project/. If not, the upload
-        // form will not be created on the front-end. Warnings will explain to
-        // to the user that installation is not possible.
-        $writable = is_writable($this->path . "project/instruments")
-            && is_writable($this->path . "project/tables_sql");
-        $this->tpl_data['writable'] = $writable;
-        if (!$writable) {
-            $this->tpl_data['feedback'] = "Automatic installation of "
-                . "instruments is not possible given the current server "
-                . "configuration. Please contact your administrator if you "
-                . "require this functionality.";
-        }
-        // Process POST request (installation of an instrument).
-        if ($writable && isset($_POST['install'])
-            && $_POST['install'] == 'Install Instrument'
-        ) {
-            $instname = basename($_FILES['install_file']['name'], '.linst');
-            // Check the test_names table for the existence of $instname using
-            // COUNT in MySQL.
-            // If it is positive, tell the user the instrument is already in the
-            // test battery.
-            // Note that if a user manually deletes entries from the test_names
-            // table and tries to install an instrument with the same name, it
-            // will fail as the instrument table itself will still exist.
-            // In this case, the back-end admistrator is informed via logging
-            // below.
-            $db           = \Database::singleton();
-            $sqlSelectOne = "SELECT count(*)".
-                            " FROM test_names WHERE Test_name=:testname";
-            $count_result = $db->pselectOne(
-                $sqlSelectOne,
-                array('testname' => $instname)
-            );
-            if (intval($count_result) > 0) {
-                $this->tpl_data['feedback'] = "Instrument '$instname' already "
-                    . "exists in the test battery!";
-                http_response_code(409);
-                return;
-            }
-
-            // Don't update the file if it already exists on the back-end.
-            // Instead, inform users that an administrator must install it on
-            // their behalf.
-            // This should only happen for users on a system where automatic
-            // installation is disabled (ie. has no quatUser), as the above
-            // error will return before this one.
-            $file_path = $this->path . "project/instruments/" .
-                        $_FILES['install_file']['name'];
-            if (file_exists($file_path)) {
-                $this->tpl_data['feedback'] = "'$instname.linst' has already "
-                    . "been uploaded. Please contact your administrator to "
-                    . "install the instrument.";
-                http_response_code(409);
-                return;
-            }
-
-            move_uploaded_file($_FILES['install_file']['tmp_name'], $file_path);
-            chmod($file_path, 0644);
-            // Scripts in tools/ often make relative imports, so we must change
-            // our effective directory in order to use them.
-            chdir($this->path . "/tools");
-
-            // Use tools/ script to generate an SQL patch file based on the
-            // structure of the uploaded .linst file.
-            // If no quatUser is configured, automatic installation is not
-            // possible, so this is the last step.
-            $db_config = $config->getSetting('database');
-            exec(
-                'php generate_tables_sql_and_testNames.php < '
-                . escapeshellarg($file_path)
-            );
-            if (!$quat_user_is_configured) {
-                http_response_code(201);
-                return;
-            }
-
-            // Install the instrument by directly sourcing the SQL file
-            // generated by `generate_tables_sql_and_testNames.php` using bash.
-            // If installation is successful, `exec` will complete
-            // silently. Otherwise, it will return the exit code and error
-            // messsage from MySQL. This will be stored in $result and
-            // logged via LorisException.
-            $instrument = \NDB_BVL_Instrument::factory(
-                $instname,
-                '',
-                ''
-            );
-            exec(
-                "mysql".
-                " -h" . escapeshellarg($db_config['host']).
-                " -u" . escapeshellarg($db_config['quatUser']).
-                " -p" . escapeshellarg($db_config['quatPassword']).
-                " " . escapeshellarg($db_config['database']).
-                " < " . $this->path . "project/tables_sql/".
-                escapeshellarg($instrument->table . '.sql'),
-                $output, // $output and $status are created automatically
-                $status  // by `exec` and so need not be declared above.
-            );
-            // An exit code of 0 is a success and 1 means failure
-            if ($status) {
-                $this->tpl_data['feedback'] = "The installation of "
-                    . "$instrument->table.sql failed. "
-                    . "Please contact your administrator.";
-                error_log(
-                    "The installation of $instrument->table.sql failed. "
-                    . "Either: the instrument table exists (but is not in the "
-                    . "test_names table), or "
-                    . "LORIS could not connect to the database using the "
-                    . "credentials supplied in the config file."
-                    . print_r($object)
-                );
-            }
-        }
     }
+
+    /**
+     * Converts this menu filter to an array of the form
+     *
+     * Headers => (string array)
+     * Data => (array of arrays of row data)
+     *
+     * Suitable for serializing to JSON, CSV, etc..
+     *
+     * @return array
+     */
+    function toArray()
+    {
+        $data = array_map(
+            function ($row) {
+                $instrument = $row['Instrument'];
+                $row['Instrument_Type'] = $this->checkInstrumentType($instrument);
+                $row['Table_Installed'] = $this->checkTableInstalled($instrument);
+                $row['Table_Valid']     = $this->checkTableValid($instrument);
+                $row['Pages_Valid']     = $this->checkPagesValid($instrument);
+                return $row;
+            },
+            $this->_getFullList()
+        );
+
+        $headers = array_map(
+            function ($header) {
+                return ucwords(str_replace('_', ' ', $header));
+            },
+            $this->headers
+        );
+
+        $MappedData = array();
+        foreach ($data as $row) {
+            $MappedData[] = array_values($row);
+        }
+
+        return array(
+                'Headers'      => $headers,
+                'Data'         => $MappedData,
+                'fieldOptions' => $this->fieldOptions,
+                'writable'     => $this->canWriteFiles(),
+                'caninstall'   => $this->isQuatUserConfigured(),
+               );
+    }
+
     /**
     * SetFilterForm function
     *
@@ -198,108 +312,108 @@ class Instrument_Manager extends \NDB_Menu_Filter
     function _setFilterForm()
     {
     }
+
     /**
-    * SetDataTableRows function
-    *
-    * @param integer $count the value of count
-    *
-    * @return void
-    */
-    function _setDataTableRows($count)
+     * Determine the instrument type between LINST and PHP
+     *
+     * @param string $instrument The instrument name
+     *
+     * @return string The instrument type
+     */
+    protected function checkInstrumentType(string $instrument): string
     {
-        $factory = \NDB_Factory::singleton();
-        $db      = \Database::singleton();
-        $x       = 0;
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
+        $linst = $this->path . "/project/instruments/$instrument.linst";
+        if (file_exists($linst)) {
+            return 'Instrument Builder';
+        }
 
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                if ($key == 'Instrument_Type') {
-                    if (file_exists(
-                        $this->path .
-                        "/project/instruments/" .
-                                    $this->tpl_data['items'][$x]['instrument_name'] .
-                        ".linst"
-                    )
-                    ) {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = "Instrument Builder";
-                    } else if (file_exists(
-                        $this->path .
-                        "project/instruments/NDB_BVL_Instrument_" .
-                                    $this->tpl_data['items'][$x]['instrument_name'] .
-                        ".class.inc"
-                    )
-                    ) {
-                              $this->tpl_data['items'][$x][$i]['value'] = "PHP";
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = "Missing";
-                    }
-                } else if ($key == "Table_Installed") {
-                    // This should also check that all the columns exist and
-                    // have the right type, for new style instruments
-                    $sqlSelectOne = "SELECT count(*)".
-                                    " FROM information_schema.tables".
-                                    " WHERE TABLE_SCHEMA=:dbname".
-                                    " AND TABLE_NAME=:tablename";
-                    $tableName    = $this->tpl_data['items'][$x]['instrument_name'];
-                    $exists       = $db->pselectOne(
-                        $sqlSelectOne,
-                        array(
-                         'dbname'    => $factory->settings()->dbName(),
-                         'tablename' => $tableName,
-                        )
-                    );
-                    if ($exists > 0) {
-                        $this->tpl_data['items'][$x][$i]['value'] = 'Exists';
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = 'Missing';
-                    }
-                } else if ($key == "Table_Valid") {
-                    if (!file_exists(
-                        $this->path .
-                           "project/instruments/" .
-                           $this->tpl_data['items'][$x]['instrument_name'] .
-                           ".linst"
-                    )
-                    ) {
-                        $this->tpl_data['items'][$x][$i]['value'] = '?';
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $this->checkTable(
-                                $this->tpl_data['items'][$x]['instrument_name']
-                            );
-                    }
-                } else if ($key == 'Pages_Valid') {
-                    if (!file_exists(
-                        $this->path .
-                        "/project/instruments/" .
-                        $this->tpl_data['items'][$x]['instrument_name'] .
-                        ".linst"
-                    )
-                    ) {
-                        $this->tpl_data['items'][$x][$i]['value'] = '?';
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $this->checkPages(
-                                $this->tpl_data['items'][$x]['instrument_name']
-                            );
-                    }
+        $php = $this->path .
+            "/project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
 
-                } else {
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
-                }
-                if ($key == 'Instrument') {
-                    $this->tpl_data['items'][$x]['instrument_name'] = $val;
-                }
-                $i++;
-            }
-            $x++;
+        if (file_exists($php)) {
+            return 'PHP';
+        }
+
+        return 'Missing';
+    }
+
+    /**
+     * Checks if entries exists in the subtest table for each pages of the
+     * instrument's linst file.
+     *
+     * @param string $instrument The instrument name
+     *
+     * @return string An evocative answer
+     */
+    protected function checkPagesValid(string $instrument): string
+    {
+        $filename = $this->path . "/project/instruments/$instrument.linst";
+        if (!file_exists($filename)) {
+            return '?';
+        } else {
+            return $this->checkPages($instrument);
         }
     }
+
+    /**
+     * Checks if a table with that instrument name exists
+     *
+     * @param string $instrument The instrument name
+     *
+     * @return string An evocative answer
+     */
+    protected function checkTableValid(string $instrument): string
+    {
+        $filename = $this->path . "/project/instruments/$instrument.linst";
+        if (!file_exists($filename)) {
+            return '?';
+        } else {
+            return $this->checkTable($instrument);
+        }
+    }
+
+    /**
+     * Checks if a table with that instrument name exists
+     *
+     * @param string $instrument The instrument name
+     *
+     * @return string An evocative answer
+     */
+    protected function checkTableInstalled(string $instrument): string
+    {
+        // This should also check that all the columns exist and
+        // have the right type, for new style instruments
+        $exists = $this->factory->database()->pselectOne(
+            '
+           SELECT count(*)
+           FROM information_schema.tables
+           WHERE TABLE_SCHEMA=:dbname AND
+           TABLE_NAME=:tablename
+          ',
+            array(
+             'dbname'    => $this->factory->settings()->dbName(),
+             'tablename' => $instrument,
+            )
+        );
+        return ($exists > 0) ? 'Exists' : 'Missing';
+    }
+
+    /**
+     * Checks the test_names table for the existence of  the instrument
+     *
+     * @param string $instrument The instrument name
+     *
+     * @return bool True if the name is found in the table
+     */
+    protected function instrumentExists(string $instrument): bool
+    {
+        $count = $this->factory->database()->pselectOne(
+            'SELECT count(*) FROM test_names WHERE Test_name=:v_instrument',
+            array(':v_instrument' => $instrument)
+        );
+        return $count > 0;
+    }
+
     /**
     * CheckType function
     *
@@ -309,10 +423,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
     *
     * @return string
     */
-    function checkType($tablename, $columnname, $type)
+    protected function checkType($tablename, $columnname, $type)
     {
-        $factory      = \NDB_Factory::singleton();
-        $db           = \Database::singleton();
+        $db           = $this->factory->database();
         $sqlSelectOne = "SELECT count(*)".
                         " FROM information_schema.columns".
                         " WHERE TABLE_SCHEMA=:dbname".
@@ -322,7 +435,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $exists       = $db->pselectOne(
             $sqlSelectOne,
             array(
-             'dbname'     => $factory->settings()->dbName(),
+             'dbname'     => $this->factory->settings()->dbName(),
              'columnname' => $columnname,
              'tablename'  => $tablename,
              'typename'   => $type,
@@ -333,19 +446,19 @@ class Instrument_Manager extends \NDB_Menu_Filter
         }
         return null;
     }
+
     /**
     * CheckTable function
     *
     * @param string $instname the value of instname
     *
-    * @return bool
+    * @return string An evocative answer
     */
-    function checkTable($instname)
+    protected function checkTable($instname): string
     {
-        $factory  = \NDB_Factory::singleton();
         $filename = $this->path . "project/instruments/$instname.linst";
         $fp       = fopen($filename, "r");
-        $db       = \Database::singleton();
+        $db       = $this->factory->database();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces = explode("{@}", $line);
@@ -356,28 +469,27 @@ class Instrument_Manager extends \NDB_Menu_Filter
             }
             switch($type) {
             case 'page':
-                continue;
             case 'table':
             case 'title':
-                continue; // Should these two do something special?
+                break;
             case 'selectmultiple': // fallthrough, both selectmultiple and text
                 // require varchar to save
             case 'text':
                 $error = $this->checkType($instname, $name, 'varchar');
                 if ($error == null) {
-                    continue;
+                    break;
                 }
                 return $error;
             case 'textarea':
                 $error = $this->checkType($instname, $name, 'text');
                 if ($error == null) {
-                    continue;
+                    break;
                 }
                 return $error;
             case 'date':
                 $error = $this->checkType($instname, $name, 'date');
                 if ($error == null) {
-                    continue;
+                    break;
                 }
                 return $error;
             case 'select':
@@ -393,7 +505,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $db_enum      = $db->pselectOne(
                     $sqlSelectOne,
                     array(
-                     'dbname'     => $factory->settings()->dbName(),
+                     'dbname'     => $this->factory->settings()->dbName(),
                      'columnname' => $name,
                      'tablename'  => $instname,
                     )
@@ -419,18 +531,19 @@ class Instrument_Manager extends \NDB_Menu_Filter
 
         return "Appears Valid";
     }
+
     /**
     * CheckPages function
     *
     * @param string $instname the value of instname
     *
-    * @return bool
+    * @return string An evocative response
     */
-    function checkPages($instname)
+    protected function checkPages($instname): string
     {
         $filename = $this->path . "project/instruments/$instname.linst";
         $fp       = fopen($filename, "r");
-        $db       = \Database::singleton();
+        $db       = $this->factory->database();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces       = explode("{@}", $line);
@@ -468,11 +581,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
      *
      * @return bool True if a quatUser is configured properly. False if not.
      */
-    function isQuatUserConfigured() : bool
+    protected function isQuatUserConfigured() : bool
     {
-        $db        = \Database::singleton();
-        $config    = \NDB_Config::singleton();
-        $db_config = $config->getSetting('database');
+        $db        = $this->factory->database();
+        $db_config = $this->factory->config()->getSetting('database');
 
         $credentials_set = !empty($db_config['quatUser'])
             && !empty($db_config['quatPassword']);
@@ -482,12 +594,50 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // Check if supplied credentials are valid by making a DB connection.
         // If the credentials are invalid, an error message will be logged to
         // the backend.
-        return $db->connect(
-            $db_config['database'],
-            $db_config['quatUser'],
-            $db_config['quatPassword'],
-            $db_config['host'],
-            false
+        try {
+            $connected = $db->connect(
+                $db_config['database'],
+                $db_config['quatUser'],
+                $db_config['quatPassword'],
+                $db_config['host'],
+                false
+            );
+        } catch (\DatabaseException $e) {
+            $connected = false;
+        }
+        return $connected;
+    }
+
+    /**
+     * Checks if the instruments and table_sql are writable
+     *
+     * @return bool True if both directories are writable
+     */
+    protected function canWriteFiles(): bool
+    {
+        $instrument_dir = $this->path . 'project/instruments';
+        $table_dir      = $this->path . 'project/tables_sql';
+
+        return is_writable($instrument_dir) && is_writable($table_dir);
+    }
+
+
+    /**
+     * Adds React table related dependencies to menu filters, since forms don't
+     * usually have tables or pagination
+     *
+     * @return array of javascript files to be sourced
+     */
+    public function getJSDependencies(): array
+    {
+        $depends = parent::getJSDependencies();
+        $baseURL = $this->factory->settings()->getBaseURL();
+        return array_merge(
+            $depends,
+            array(
+             $baseURL . '/instrument_manager/js/instrumentManagerIndex.js',
+            )
         );
     }
 }
+

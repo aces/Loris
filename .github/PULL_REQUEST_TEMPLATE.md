@@ -1,15 +1,10 @@
-### Brief summary of changes
+## Brief summary of changes
 
 
+#### Testing instructions (if applicable)
 
-### This resolves issue...
+1.
 
-- [ ] Redmine? #
+#### Links to related tickets (GitHub, Redmine, ...)
 
-- [ ] Github? #
-
-### To test this change...
-
-- [ ] 
-
-# If this sentence shows up it means I didn't read the instructions!
+*

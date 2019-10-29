@@ -41,13 +41,12 @@ class Edit_User extends \NDB_Form
      * 'user_accounts_multisite' or whose site matches the site of the user they
      * are trying to edit.
      *
+     * @param \User $editor The user who is accessing this page
+     *
      * @return true if user has access, false otherwise.
      */
-    function _hasAccess()
+    function _hasAccess(\User $editor) : bool
     {
-        // create user object
-        $editor = \User::singleton();
-
         if (!$this->isCreatingNewUser()) {
             $user = \User::factory($this->identifier);
         }
@@ -428,7 +427,8 @@ class Edit_User extends \NDB_Form
 
         // make the set
         foreach ($values as $key => $value) {
-            if (!empty($value)) {
+            // Password updates are handled separately
+            if (!empty($value) && $key != 'Password_hash') {
                 $set[$key] = $value;
             } else {
                 $set[$key] = null;
@@ -454,12 +454,11 @@ class Edit_User extends \NDB_Form
             $user    = \User::factory($this->identifier);
             $success = $user->update($set);
         }
-        // prepend two random characters
-        if (isset($set['Password_hash'])) {
-            // Update CouchDB. Must do before password is salted/hashed.
-            $expiry = isset($values['Password_expiry'])
-                ? $values['Password_expiry'] : null;
-            $user->updatePassword($set['Password_hash'], $expiry);
+
+        // Now set the password. Note that this field is named incorrectly
+        // and represents a plaintext password, not a hash.
+        if (isset($values['Password_hash'])) {
+            $user->updatePassword($values['Password_hash']);
         }
         // update the user permissions if applicable
         // If the user is editing his/her own account, skip the part where
@@ -974,7 +973,21 @@ class Edit_User extends \NDB_Form
 
                 if (strlen($effectiveUID) > 255) {
                     $errors['UserID_Group']
-                        = 'The user name must not exsceed 255 characters';
+                        = 'The user name must not exceed 255 characters';
+                }
+
+                // Check that user name does not contain a whitespace character
+                if (preg_match('/\s/', $effectiveUID)) {
+                    // Note: email addresses can contain comments which themselves
+                    // can contain spaces
+                    if ($values['NA_UserID'] == 'on') {
+                        $errors['UserID_Group']
+                            = 'You cannot have the user name match an email address'
+                            . ' that contains a whitespace character';
+                    } else {
+                        $errors['UserID_Group']
+                            = 'Whitespace characters are not allowed in user names';
+                    }
                 }
             }
         }
@@ -1030,16 +1043,26 @@ class Edit_User extends \NDB_Form
                         . 'are identical: please choose another one';
                 }
             }
+            if (\User::pwnedPassword($values['Password_hash'])) {
+                $errors['Password_Group'] = 'The password you chose is too '
+                    . 'common. Please choose a more unique password.';
+            }
         }
 
         // if password is generated then the email user button should be clicked
-        if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
+        if (isset($values['NA_Password'])
+            && $values['NA_Password'] == "on"
+            && $values['SendEmail'] != "on"
+        ) {
             $errors['Email_Group']
                 = 'When generating a new password, '
                 . 'please notify the user by checking Send email to user box';
         }
 
-        if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
+        if (isset($values['NA_Password'])
+            && $values['NA_Password'] == 'on'
+            && $values['Password_hash'] != ''
+        ) {
             $errors['Password_Group'] = 'You must leave the password field empty '
                 . 'if you want the system to generate one for you';
         }
@@ -1133,12 +1156,12 @@ class Edit_User extends \NDB_Form
      * Determines if the new password that the user entered is different
      * than its current password (the one stored in the database).
      *
-     * @param Database $db          database object.
-     * @param string   $newPassword the new password the user entered.
+     * @param \Database $db          database object.
+     * @param string    $newPassword the new password the user entered.
      *
      * @return bool  true if the password changed, false otherwise.
      */
-    function _passwordChanged($db, $newPassword)
+    function _passwordChanged(\Database $db, $newPassword)
     {
         //--- Get current password stored in database
         $passwordQuery
@@ -1151,7 +1174,7 @@ class Edit_User extends \NDB_Form
             array('UID' => $this->identifier)
         );
 
-        if (!is_null($passwords['Password_hash'] ?? null)) {
+        if (!is_null($passwords)) {
             return !password_verify($newPassword, $passwords['Password_hash']);
         }
 
@@ -1162,12 +1185,12 @@ class Edit_User extends \NDB_Form
      * Validates that en email address entered for a given user
      * (either new or existing) is valid and unique.
      *
-     * @param Database $DB    database object.
-     * @param string   $email user's email.
+     * @param \Database $DB    database object.
+     * @param string    $email user's email.
      *
      * @return string error message if email is invalid, null otherwise.
      */
-    private function _getEmailError($DB, $email)
+    private function _getEmailError(\Database $DB, $email)
     {
         // remove illegal characters
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
@@ -1230,4 +1253,4 @@ class Edit_User extends \NDB_Form
         );
     }
 }
-?>
+

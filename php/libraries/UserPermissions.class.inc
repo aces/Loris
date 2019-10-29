@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * The UserPermissions class manages checking of user permissions
  *
- * PHP Version 5,7
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
@@ -44,20 +44,17 @@ class UserPermissions
      *
      * Fills the permissions property based on username
      *
-     * @param string $username Identifies the user
+     * @param string|null $username Identifies the user
      *
      * @return bool true if the user exists, false otherwise
      */
-    function select($username)
+    function select(?string $username): bool
     {
-        // create DB object
-        $DB =& Database::singleton();
-
         // get the proper ID from the database
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
         $params = array('UName' => $username);
 
-        $this->userID = $DB->pselectOne($query, $params);
+        $this->userID = \Database::singleton()->pselectOne($query, $params);
         if (empty($this->userID)) {
             return false;
         }
@@ -72,10 +69,10 @@ class UserPermissions
     /**
      * Loads the users's permissions
      *
-     * @return void
+     * @return bool
      * @access private
      */
-    function setPermissions()
+    function setPermissions(): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -100,35 +97,84 @@ class UserPermissions
                 $this->permissions[$row['code']] = false;
             }
         }
-
         return true;
     }
 
 
     /**
-     * Determines if the user has a permission
+     * Determines if the user has the permission to access a specific module
+     * or page.
      *
      * @param string $code The permission code
      *
-     * @return bool
+     * @return bool If the user has a permission.
      */
-    function hasPermission($code)
+    public function hasPermission(string $code): bool
+    {
+        return $this->_permissionTrueAndValid('superuser')
+            || $this->_permissionTrueAndValid($code);
+    }
+
+    /**
+     * Check if a given permission code is present in a user's list of
+     * permissions. Also validates that the permission code is real.
+     *
+     * @param string $code Permission code to test.
+     *
+     * @return bool The setting of permission code $permission
+     */
+    private function _permissionTrueAndValid(string $code): bool
     {
         if (!isset($this->permissions[$code])) {
             throw new ConfigurationException("Invalid permission code $code");
         }
-        if ($this->permissions[$code] === true) {
-            return true;
-        }
+        return intval($this->permissions[$code]) === 1;
+    }
 
-        if (isset($this->permissions['superuser'])
-            && $this->permissions['superuser'] == true
-        ) {
-            return true;
+    /**
+     * Used to test whether a user has ALL of an array of specified permissions.
+     * Returns false on the first permission that the user doesn't have.
+     *
+     * @param string[] $permissions Array of permissions codes.
+     *
+     * @return bool Whether the user has all the permissions in $permissions.
+     */
+    public function hasAllPermissions(array $permissions): bool
+    {
+        if (count($permissions) === 0) {
+            throw new LorisException(
+                "Cannot call hasAllPermissions with an empty array!"
+            );
+        }
+        foreach ($permissions as $p) {
+            if (!$this->_permissionTrueAndValid($p)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Used to test whether a user has ANY of an array of specified permissions.
+     *
+     * @param string[] $permissions Array of permissions codes.
+     *
+     * @return bool Whether the user has any of the permissions in $permissions.
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        if (count($permissions) === 0) {
+            throw new LorisException(
+                "Cannot call hasAnyPermission with an empty array!"
+            );
+        }
+        foreach ($permissions as $p) {
+            if ($this->hasPermission($p)) {
+                return true;
+            }
         }
         return false;
     }
-
 
     /**
      * Returns the permissions array
@@ -136,7 +182,7 @@ class UserPermissions
      * @return array
      * @access public
      */
-    function getPermissions()
+    function getPermissions(): array
     {
         return $this->permissions;
     }
@@ -147,17 +193,17 @@ class UserPermissions
      *
      * @param array $set Array of permission IDs to add
      *
-     * @return void
+     * @return bool True
      * @note   If saving permissions, remove all permissions first
      */
-    function addPermissions($set)
+    function addPermissions(array $set): bool
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \Database::singleton();
 
         // add the permissions
         foreach ($set as $value) {
-            $success = $DB->insert(
+            $DB->insert(
                 'user_perm_rel',
                 array(
                  'userID' => $this->userID,
@@ -167,7 +213,7 @@ class UserPermissions
         }
 
         // refresh the user permissions
-        $success = $this->setPermissions();
+        $this->setPermissions();
 
         return true;
     }
@@ -176,12 +222,12 @@ class UserPermissions
     /**
      * Removes permissions from a user
      *
-     * @param array $set Array of permission IDs to remove
+     * @param array|null $set Array of permission IDs to remove
      *
-     * @return void
+     * @return bool
      * @note   Passing no arguments deletes all permissions
      */
-    function removePermissions($set = null)
+    function removePermissions(?array $set = null): bool
     {
         // create DB object
         $DB =& Database::singleton();
@@ -217,7 +263,7 @@ class UserPermissions
      * @return array
      * @access public
      */
-    function getPermissionIDs()
+    function getPermissionIDs(): array
     {
         // create DB object
         $DB =& Database::singleton();
@@ -246,7 +292,7 @@ class UserPermissions
      * @return array
      * @access public
      */
-    function getPermissionsVerbose()
+    function getPermissionsVerbose(): array
     {
         // create DB object
         $DB =& Database::singleton();
@@ -265,14 +311,15 @@ class UserPermissions
     /**
      * Inserts the user modifications into the user_account_history
      *
-     * @param Integer $PermID     The ID of the permission
-     * @param String  $permAction The Type of user-modification ('D' or 'I')
+     * @param Integer|null $PermID     The ID of the permission
+     * @param String|null  $permAction The Type of user-modification ('D' or 'I')
      *
-     * @return null
+     * @return void
      */
     function insertIntoUserAccountHistory(
-        $PermID=null,$permAction=null
-    ) {
+        ?int $PermID = null,
+        ?string $permAction = null
+    ): void {
 
         // create DB object
         $DB =& Database::singleton();
@@ -287,6 +334,5 @@ class UserPermissions
             )
         );
     }
-
 }
-?>
+

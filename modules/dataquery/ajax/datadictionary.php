@@ -25,12 +25,13 @@ $couchConfig = $config->getSetting('CouchDB');
 $cdb         = \NDB_Factory::singleton()->couchDB(
     $couchConfig['dbName'],
     $couchConfig['hostname'],
-    $couchConfig['port'],
+    intval($couchConfig['port']),
     $couchConfig['admin'],
     $couchConfig['adminpass']
 );
 
-if ($_REQUEST['category']) {
+$results = array();
+if (isset($_REQUEST['category']) && $_REQUEST['category']) {
     $category = urlencode($_REQUEST['category']);
 
     $results = $cdb->queryView(
@@ -42,7 +43,7 @@ if ($_REQUEST['category']) {
          "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
         )
     );
-} else if ($_REQUEST['key']) {
+} else if (isset($_REQUEST['key']) && $_REQUEST['key']) {
     $key = explode('%2C', urlencode($_REQUEST['key']));
 
     $results = $cdb->queryView(
@@ -56,4 +57,4 @@ if ($_REQUEST['category']) {
 }
 
 print json_encode($results);
-?>
+

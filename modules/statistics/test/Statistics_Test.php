@@ -23,7 +23,7 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Statistics_Test extends LorisIntegrationTest
+class StatisticsTest extends LorisIntegrationTest
 {
 
     /**
@@ -101,23 +101,6 @@ class Statistics_Test extends LorisIntegrationTest
         $this->assertContains("Data Entry Statistics", $bodyText);
     }
     /**
-     * Tests that, when loading the Reliability Statistics Tab in Statistics
-     * module, some text appears in the body.
-     *
-     * @return void
-     */
-    function testReliabilityStatisticsTab()
-    {
-        $this->safeGet(
-            $this->url .
-            "/statistics/stats_reliability/?dynamictabs=dynamictabs"
-        );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(".statsH2")
-        )->getText();
-        $this->assertContains("Reliability Statistics", $bodyText);
-    }
-    /**
      * Tests that, when loading the Demographic Statistics Tab
      * in Statistics module, some text appears in the body.
      *
@@ -127,45 +110,15 @@ class Statistics_Test extends LorisIntegrationTest
     {
         $this->safeGet(
             $this->url .
-            "/statistics/stats_demographic/?dynamictabs=dynamictabs"
+            "/statistics/"
+        );
+        $this->webDriver->executescript(
+            "document.querySelector('.nav-tabs > li:nth-child(2)".
+            " > a:nth-child(1)').click()"
         );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".statsH2")
         )->getText();
         $this->assertContains("General Demographic Statistics", $bodyText);
-    }
-    /**
-     * Tests that, when loading the Imaging Statistics Tab in Statistics
-     * module, some text appears in the body.
-     *
-     * @return void
-     */
-    function testImagingStatisticsTab()
-    {
-        $this->safeGet(
-            $this->url .
-            "/statistics/stats_MRI/?dynamictabs=dynamictabs"
-        );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(".statsH2")
-        )->getText();
-        $this->assertContains("General Statistics with QC Status", $bodyText);
-    }
-    /**
-     * Tests that, when loading the General Statistics Tab
-     * in Statistics module, some text appears in the body.
-     *
-     * @return void
-     */
-    function testGeneralStatisticsTab()
-    {
-        $this->safeGet(
-            $this->url .
-            "/statistics/stats_general/?dynamictabs=dynamictabs"
-        );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("H1")
-        )->getText();
-        $this->assertContains("Welcome to the statistics page", $bodyText);
     }
 }

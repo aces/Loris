@@ -26,18 +26,19 @@ namespace LORIS\user_accounts;
 
 class User_Accounts extends \NDB_Menu_Filter
 {
+    public $skipTemplate = true;
     /**
      * Overloading this method to allow access to users account
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         return $user->hasPermission('user_accounts');
     }
+
     /**
     * Setup Variables
     *
@@ -108,44 +109,31 @@ class User_Accounts extends \NDB_Menu_Filter
         // PSC
         if ($user->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = \Utility::getSiteList(false);
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'All') + $list_of_sites;
+            $list_of_sites = array();
+            $site_arr      = \Utility::getSiteList(false);
+            foreach ($site_arr as $key=>$val) {
+                $list_of_sites[$val] = $val;
             }
         } else {
             // allow only to view own site data
             $list_of_sites = array();
             $site_arr      = $user->getData('CenterIDs');
             foreach ($site_arr as $key=>$val) {
-                $site[$key]          =& \Site::singleton($val);
-                $list_of_sites[$val] = $site[$key]->getCenterName();
+                $site[$key] = \Site::singleton($val);
+                $list_of_sites[$site[$key]->getCenterName()]
+                    = $site[$key]->getCenterName();
             }
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
-        // add form elements
-        $this->addSelect('centerID', 'Site:', $list_of_sites);
-        $this->addSelect(
-            'active',
-            'Active:',
-            array(
-             ''  => 'All',
-             'Y' => 'Y',
-             'N' => 'N',
-            )
-        );
-        $this->addBasicText('userID', 'Username:');
-        $this->addBasicText('real_name', 'Full name:');
-        $this->addBasicText('email', 'Email:');
-        $this->addSelect(
-            'pending',
-            'Pending Approval:',
-            array(
-             ''  => 'All',
-             'N' => 'N',
-             'Y' => 'Y',
-            )
-        );
+        $yesNoOptions = array(
+                         'Y' => 'Yes',
+                         'N' => 'No',
+                        );
 
+        $this->fieldOptions = array(
+                               'sites'            => $list_of_sites,
+                               'actives'          => $yesNoOptions,
+                               'pendingApprovals' => $yesNoOptions,
+                              );
         return true;
     }
     /**
@@ -160,8 +148,8 @@ class User_Accounts extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/user_accounts/js/columnFormatter.js")
+            array($baseURL . "/user_accounts/js/userAccountsIndex.js")
         );
     }
 }
-?>
+

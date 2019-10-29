@@ -41,13 +41,12 @@ class Next_Stage extends \NDB_Form
     /**
      * Tie the access to a data_entry permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool true if they have access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         $timePoint =& \TimePoint::singleton($this->identifier);
 
         // check user permissions
@@ -80,16 +79,28 @@ class Next_Stage extends \NDB_Form
         $timePoint->startStage($newStage);
 
         // set the date for the new stage
-        $timePoint->setData("Date_".$newStage, $values['date1']);
+        $timePoint->setData(
+            array(
+             "Date_".$newStage => $values['date1'],
+            )
+        );
 
         // set SubprojectID if applicable
         if (isset($values['SubprojectID'])) {
-            $timePoint->setData('SubprojectID', $values['SubprojectID']);
+            $timePoint->setData(
+                array(
+                 'SubprojectID' => $values['SubprojectID'],
+                )
+            );
         }
 
         // set scan done if applicable
         if (isset($values['scan_done'])) {
-            $timePoint->setData('Scan_done', $values['scan_done']);
+            $timePoint->setData(
+                array(
+                 'Scan_done' => $values['scan_done'],
+                )
+            );
         }
 
         // create a new battery object && new battery
@@ -186,7 +197,7 @@ class Next_Stage extends \NDB_Form
 
         // let user select subproject *only* if subprojectid is not > 0
         if (!($timePoint->getSubprojectID() > 0)) {
-            $list_of_objectives =& \Utility::getSubprojectList();
+            $list_of_objectives = \Utility::getSubprojectList();
             $this->addSelect(
                 'SubprojectID',
                 'Objective',
@@ -206,7 +217,7 @@ class Next_Stage extends \NDB_Form
      *
      * @param string $values the value
      *
-     * @return string
+     * @return array|bool
      */
     function _validate($values)
     {
@@ -218,11 +229,16 @@ class Next_Stage extends \NDB_Form
         $candidate =& \Candidate::singleton($candID);
 
         $errors = array();
+        /* Check that dates are present. Return early as there is no point
+         * doing further processing otherwise.
+         */
+        if (!isset($values['date1'], $values['date2'])) {
+            $errors['date1'] .= "Both date fields are required.";
+            return $errors;
+        }
         // check date pairs
         if (empty($values['date1'])) {
             $errors['date1'] .= "Date is required. \n";
-        } elseif (!\Utility::_checkDate($values['date1'])) {
-            $errors['date1'] .= "Date is not a valid date. \n";
         }
 
         if ($values['date1'] != $values['date2']) {

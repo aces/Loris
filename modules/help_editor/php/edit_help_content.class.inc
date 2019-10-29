@@ -28,16 +28,15 @@ class Edit_Help_Content extends \NDB_Form
      /**
      * Determine if user has permission to access this page
      *
-     * @return boolean true if access is permitted
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
-
-        // check user permissions
         return $user->hasPermission('context_help');
     }
+
      /**
       * Returns default help content of the page
       *
@@ -94,7 +93,9 @@ class Edit_Help_Content extends \NDB_Form
                 $defaults['title'] = str_replace("_", " ", $safeSection);
             }
             // if not module and not instrument, should be a subtest
-            if ($_REQUEST['subsection'] != 'undefined') {
+            if (!empty($_REQUEST['subsection'])
+                && $_REQUEST['subsection'] != 'undefined'
+            ) {
                 $defaults['title'] = str_replace("_", " ", $safeSubsection);
             }
             $this->tpl_data['module_name'] = $defaults['title'];
@@ -152,4 +153,4 @@ class Edit_Help_Content extends \NDB_Form
     }
 }
 
-?>
+

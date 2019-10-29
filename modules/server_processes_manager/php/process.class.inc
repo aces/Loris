@@ -110,7 +110,7 @@ class Process
     /**
      * Accessor for field $_processMonitor
      *
-     * @return value of field $_processMonitor
+     * @return IDatabaseProvider value of field $_processMonitor
      */
     public function getProcessMonitor()
     {
@@ -186,7 +186,7 @@ class Process
     /**
      * Accessor for field $_shellCommand
      *
-     * @return value of field $_shellCommand
+     * @return string value of field $_shellCommand
      */
     function getShellCommand()
     {
@@ -196,7 +196,7 @@ class Process
     /**
      * Accessor for field $_pid
      *
-     * @return value of field $_pid
+     * @return int value of field $_pid
      */
     function getPid()
     {
@@ -206,7 +206,7 @@ class Process
     /**
      * Accessor for field $_outfile
      *
-     * @return value of field $_outfile
+     * @return string value of field $_outfile
      */
     function getOutFile()
     {
@@ -216,7 +216,7 @@ class Process
     /**
      * Accessor for field $_errfile
      *
-     * @return value of field $_errfile
+     * @return string value of field $_errfile
      */
     function getErrFile()
     {
@@ -226,7 +226,7 @@ class Process
     /**
      * Accessor for field $_exitCodeFile
      *
-     * @return value of field $_exitCodeFile
+     * @return string value of field $_exitCodeFile
      */
     function getExitCodeFile()
     {
@@ -234,4 +234,4 @@ class Process
     }
 }
 
-?>
+

@@ -1,78 +1,49 @@
-import Loader from 'Loader';
-import FilterForm from 'FilterForm';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 import {Tabs, TabPane} from 'Tabs';
+import Loader from 'Loader';
+import FilterableDataTable from 'FilterableDataTable';
+import TriggerableModal from 'TriggerableModal';
 
 import MediaUploadForm from './uploadForm';
+import MediaEditForm from './editForm';
 
-class MediaIndex extends React.Component {
-
+class MediaIndex extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      data: {},
+      fieldOptions: {},
+      error: false,
       isLoaded: false,
-      filter: {},
-      hiddenHeaders: ['Cand ID', 'Session ID', 'Hide File', 'File Type']
     };
 
-    /**
-     * Set filter to the element's ref for filtering
-     */
-    this.filter = null;
-    this.setFilterRef = element => {
-      this.filter = element;
-    };
-
-    /**
-     * Bind component instance to custom methods
-     */
     this.fetchData = this.fetchData.bind(this);
-    this.updateFilter = this.updateFilter.bind(this);
-    this.resetFilters = this.resetFilters.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
    * Retrieve data from the provided URL and save it in state
    * Additionally add hiddenHeaders to global loris variable
    * for easy access by columnFormatter.
+   *
+   * @return {object}
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
-      method: "GET",
-      dataType: 'json',
-      success: data => {
-        // FIXME: Remove the following line of code as soon as hiddenHeaders is
-        // accepted as a prop by the StaticDataTable Component.
-        loris.hiddenHeaders = this.state.hiddenHeaders;
-        this.setState({
-          data: data,
-          isLoaded: true
-        });
-      },
-      error: error => console.error(error)
-    });
-  }
-
-  /**
-   * Set this.state.filter to the input filter object
-   *
-   * @param {object} filter - the filter object
-   */
-  updateFilter(filter) {
-    this.setState({filter});
-  }
-
-  // TODO: deprecate clearing filters via refs in future refactoring.
-  /**
-   * Reset the filter elements with textInput refs to empty values
-   */
-  resetFilters() {
-    this.filter.clearFilter();
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({data: data.data, fieldOptions: data.fieldOptions}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
   }
 
   /**
@@ -80,121 +51,173 @@ class MediaIndex extends React.Component {
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {array} rowData - array of cell contents for a specific row
-   * @param {array} rowHeaders - array of table headers (column names)
+   * @param {object} row - row content indexed by column
    *
    * @return {*} a formated table cell for a given column
    */
-  formatColumn(column, cell, rowData, rowHeaders) {
-    // If a column if set as hidden, don't display it
-    if (this.state.hiddenHeaders.indexOf(column) > -1) {
-      return null;
-    }
-
-    // Create the mapping between rowHeaders and rowData in a row object.
-    let row = {};
-    rowHeaders.forEach((header, index) => {
-      row[header] = rowData[index];
-    });
-
-    // create array of classes to be added to td tag
-    let classes = [];
-    if (row['Hide File'] === '1') {
-      classes.push("bg-danger");
-    }
-    // convert array to string, with blank space separator
-    classes = classes.join(" ");
-
-    const hasWritePermission = loris.userHasPermission('media_write');
-    if (column === 'File Name' && hasWritePermission === true) {
-      const downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" +
-        encodeURIComponent(row['File Name']);
-      return (
-        <td className= {classes}>
-          <a href={downloadURL} target="_blank" download={row['File Name']}>
-            {cell}
-          </a>
-        </td>
-      );
-    }
-
-    if (column === 'Visit Label') {
-      if (row["Cand ID"] !== null && row["Session ID"]) {
-        const sessionURL = loris.BaseURL + "/instrument_list/?candID=" +
-          row["Cand ID"] + "&sessionID=" + row["Session ID"];
-        return <td className={classes}><a href={sessionURL}>{cell}</a></td>;
+  formatColumn(column, cell, row) {
+    // Set class to 'bg-danger' if file is hidden.
+    const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
+    let result = <td className={style}>{cell}</td>;
+    switch (column) {
+    case 'File Name':
+      if (this.props.hasPermission('media_write')) {
+        const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
+          encodeURIComponent(row['File Name']);
+        result = (
+          <td className={style}>
+            <a href={downloadURL} target="_blank" download={row['File Name']}>
+              {cell}
+            </a>
+          </td>
+        );
       }
+      break;
+    case 'Visit Label':
+      if (row['CandID'] !== null && row['SessionID']) {
+        const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
+          row['CandID'] + '&sessionID=' + row['SessionID'];
+        result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
+      }
+      break;
+    case 'Site':
+      result = <td className={style}>{this.state.fieldOptions.sites[cell]}</td>;
+      break;
+    case 'Edit Metadata':
+      if (!this.props.hasPermission('media_write')) {
+          return;
+      }
+      const editButton = (
+            <TriggerableModal title="Edit Media File" label="Edit">
+                    <MediaEditForm
+                DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
+                action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+                /* this should be passed to onSubmit function
+                   upon refactoring editForm.js*/
+                fetchData={this.fetchData }
+                    />
+            </TriggerableModal>
+      );
+      result = <td className={style}>{editButton}</td>;
+      break;
     }
 
-    if (column === 'Edit Metadata') {
-      const editURL = loris.BaseURL + "/media/edit/?id=" + row['Edit Metadata'];
-      return <td className={classes}><a href={editURL}>Edit</a></td>;
-    }
-
-    return <td className={classes}>{cell}</td>;
+    return result;
   }
 
   render() {
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
+    if (this.state.error) {
+      return <h3>An error occured while loading the page.</h3>;
+    }
+
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
 
-    let uploadTab;
-    let tabList = [{id: "browse", label: "Browse"}];
-
-    if (loris.userHasPermission('media_write')) {
-      tabList.push({id: "upload", label: "Upload"});
-      uploadTab = (
-        <TabPane TabId={tabList[1].id}>
-          <MediaUploadForm
-            DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
-            action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
-            maxUploadSize={this.state.data.maxUploadSize}
-          />
-        </TabPane>
-      );
+   /**
+    * XXX: Currently, the order of these fields MUST match the order of the
+    * queried columns in _setupVariables() in media.class.inc
+    */
+    const options = this.state.fieldOptions;
+    let fields = [
+      {label: 'File Name', show: true, filter: {
+        name: 'fileName',
+        type: 'text',
+      }},
+      {label: 'PSCID', show: true, filter: {
+        name: 'pscid',
+        type: 'text',
+      }},
+      {label: 'Visit Label', show: true, filter: {
+        name: 'visitLabel',
+        type: 'select',
+        options: options.visits,
+      }},
+      {label: 'Language', show: true, filter: {
+        name: 'language',
+        type: 'select',
+        options: options.languages,
+      }},
+      {label: 'Instrument', show: true, filter: {
+        name: 'instrument',
+        type: 'select',
+        options: options.instruments,
+      }},
+      {label: 'Site', show: true, filter: {
+        name: 'site',
+        type: 'select',
+        options: options.sites,
+      }},
+      {label: 'Uploaded By', show: true, filter: {
+        name: 'uploadedBy',
+        type: 'text',
+        }},
+      {label: 'Date Taken', show: true},
+      {label: 'Comments', show: true},
+      {label: 'Date Uploaded', show: true},
+      {label: 'File Type', show: false, filter: {
+        name: 'fileType',
+        type: 'select',
+        options: options.fileTypes,
+      }},
+      {label: 'CandID', show: false},
+      {label: 'SessionID', show: false},
+      {label: 'File Visibility', show: false, filter: {
+        name: 'fileVisibility',
+        type: 'select',
+        options: options.hidden,
+        hide: !this.props.hasPermission('superUser'),
+      }},
+    ];
+    if (this.props.hasPermission('media_write')) {
+      fields.push({label: 'Edit Metadata', show: true});
     }
-    return (
-      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
-        <TabPane TabId={tabList[0].id}>
-          <FilterForm
-            Module="media"
-            name="media_filter"
-            id="media_filter_form"
-            ref={this.setFilterRef}
-            columns={3}
-            formElements={this.state.data.form}
-            onUpdate={this.updateFilter}
-            filter={this.state.filter}
-          >
-            <br/>
-            <ButtonElement
-              label="Clear Filters"
-              type="reset"
-              onUserInput={this.resetFilters}
+    const tabs = [{id: 'browse', label: 'Browse'}];
+    const uploadTab = () => {
+      if (this.props.hasPermission('media_write')) {
+        tabs.push({id: 'upload', label: 'Upload'});
+        return (
+          <TabPane TabId={tabs[1].id}>
+            <MediaUploadForm
+              DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
+              action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
+              maxUploadSize={options.maxUploadSize}
             />
-          </FilterForm>
-          <StaticDataTable
-            Data={this.state.data.Data}
-            Headers={this.state.data.Headers}
-            Filter={this.state.filter}
+          </TabPane>
+        );
+      }
+    };
+
+    return (
+      <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
+        <TabPane TabId={tabs[0].id}>
+          <FilterableDataTable
+            name="media"
+            data={this.state.data}
+            fields={fields}
             getFormattedCell={this.formatColumn}
-            freezeColumn="File Name"
           />
         </TabPane>
-        {uploadTab}
+        {uploadTab()}
       </Tabs>
     );
   }
 }
 
-$(function() {
-  const mediaIndex = (
-    <div className="page-media">
-      <MediaIndex DataURL={`${loris.BaseURL}/media/?format=json`} />
-    </div>
-  );
+MediaIndex.propTypes = {
+  dataURL: PropTypes.string.isRequired,
+  hasPermission: PropTypes.func.isRequired,
+};
 
-  ReactDOM.render(mediaIndex, document.getElementById("lorisworkspace"));
+window.addEventListener('load', () => {
+  ReactDOM.render(
+    <MediaIndex
+      dataURL={`${loris.BaseURL}/media/?format=json`}
+      hasPermission={loris.userHasPermission}
+    />,
+    document.getElementById('lorisworkspace')
+  );
 });

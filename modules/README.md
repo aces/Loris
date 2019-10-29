@@ -11,8 +11,7 @@ Modules should be entirely self-contained into a subdirectory with the following
 
         help/         - Contains a markdown file of help content for each page in this module
 
-        js/           - This contains any javascript for the module. They are accessed with GetJS.php in
-                        Loris, which does necessary permission checking and returns the file.
+        js/           - This contains any javascript for the module.
 
         php/          - This contains the NDB_Menu_Filter and/or NDB_Form for the module
 

@@ -59,17 +59,12 @@ Class TimePoint_List_ControlPanel extends \Candidate
         $user =& \User::singleton();
 
         $user_CenterID = $user->getData('CenterIDs');
-        $cand_CenterID = $this->getData('CenterID');
+        $cand_CenterID = $this->getData('RegistrationCenterID');
 
         $this->tpl_data['candID'] = $this->getData('CandID');
 
         $this->tpl_data['isDataEntryPerson']
             = $user->hasCenterPermission("data_entry", $cand_CenterID);
-
-        $this->tpl_data['candidate_parameters_view']
-            = $user->hasCenterPermission('candidate_parameter_view', $cand_CenterID);
-        $this->tpl_data['candidate_parameters_edit']
-            = $user->hasCenterPermission('candidate_parameter_edit', $cand_CenterID);
 
         //set the baseurl of the tpl_data
         $factory  = \NDB_Factory::singleton();
@@ -83,4 +78,4 @@ Class TimePoint_List_ControlPanel extends \Candidate
     }
 
 }
-?>
+

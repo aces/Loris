@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Class for managing the status of instrument flags
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural
@@ -80,7 +80,7 @@ class NDB_BVL_InstrumentStatus
      *
      * @return void
      */
-    function select($commentID)
+    function select(string $commentID): void
     {
         // set the _commentID property
         $this->_commentID = $commentID;
@@ -103,17 +103,17 @@ class NDB_BVL_InstrumentStatus
      * @return int
      * @access public
      */
-    function getSessionID()
+    public function getSessionID(): int
     {
-        return $this->_status['SessionID'];
+        return intval($this->_status['SessionID']);
     }
 
     /**
      * Gets the current data entry status of the instrument
      *
-     * @return string
+     * @return string|null
      */
-    function getDataEntryStatus()
+    function getDataEntryStatus(): ?string
     {
         return $this->_status['Data_entry'];
     }
@@ -121,9 +121,9 @@ class NDB_BVL_InstrumentStatus
     /**
      * Gets the current administration status of the instrument
      *
-     * @return string
+     * @return string|null
      */
-    function getAdministrationStatus()
+    function getAdministrationStatus(): ?string
     {
         return $this->_status['Administration'];
     }
@@ -131,9 +131,9 @@ class NDB_BVL_InstrumentStatus
     /**
      * Gets the current validity status of the instrument
      *
-     * @return string
+     * @return string|null
      */
-    function getValidityStatus()
+    function getValidityStatus(): ?string
     {
         return $this->_status['Validity'];
     }
@@ -143,7 +143,7 @@ class NDB_BVL_InstrumentStatus
      *
      * @return string
      */
-    function getExclusionStatus()
+    function getExclusionStatus(): string
     {
         return $this->_status['Exclusion'];
     }
@@ -156,7 +156,7 @@ class NDB_BVL_InstrumentStatus
      *
      * @return void
      */
-    function setDataEntryStatus($status)
+    function setDataEntryStatus(string $status): void
     {
         if (!isset($this->_commentID)) {
             throw new Exception("No instrument instance selected");
@@ -232,7 +232,7 @@ class NDB_BVL_InstrumentStatus
      *
      * @return void
      */
-    function setAdministrationStatus($status)
+    function setAdministrationStatus(string $status): void
     {
         if (!isset($this->_commentID)) {
             throw new Exception("No instrument instance selected");
@@ -258,7 +258,7 @@ class NDB_BVL_InstrumentStatus
      *
      * @return void
      */
-    function setValidityStatus($status)
+    function setValidityStatus(string $status): void
     {
         if (!isset($this->_commentID)) {
             throw new Exception("No instrument instance selected");
@@ -283,7 +283,7 @@ class NDB_BVL_InstrumentStatus
      *
      * @return void
      */
-    function setExclusionStatus($status)
+    function setExclusionStatus(string $status): void
     {
         if (!isset($this->_commentID)) {
             throw new Exception("No instrument instance selected");

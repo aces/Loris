@@ -38,13 +38,12 @@ class GWAS_Browser extends \NDB_Menu_Filter
      * Overloading this method to allow access to site users (own site only)
      * and users w/ multisite privileges
      *
-     * @note   overloaded function
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -181,7 +180,6 @@ class GWAS_Browser extends \NDB_Menu_Filter
                  $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
-                || strtolower(substr($field, -6)) == 'gender'
                 || strtolower(substr($field, -10)) == 'chromosome'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))

@@ -8,7 +8,7 @@ class ViewProject extends React.Component {
       formData: {},
       formErrors: {},
       numFiles: 0,
-      isLoaded: false
+      isLoaded: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
@@ -52,7 +52,7 @@ class ViewProject extends React.Component {
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData.hasOwnProperty(key) && formData[key] !== "") {
+      if (formData.hasOwnProperty(key) && formData[key] !== '') {
         let formVal;
         if (Array.isArray(formData[key])) {
           formVal = JSON.stringify(formData[key]);
@@ -71,18 +71,18 @@ class ViewProject extends React.Component {
       contentType: false,
       processData: false,
       success: function() {
-        swal("Edit Successful!", "", "success");
+        swal('Edit Successful!', '', 'success');
       },
       error: function(jqXHR) {
         console.error(jqXHR);
-        let resp = "Something went wrong!";
+        let resp = 'Something went wrong!';
         try {
           resp = JSON.parse(jqXHR.responseText).message;
         } catch (e) {
           console.error(e);
         }
-        swal("Edit failed!", resp, "error");
-      }
+        swal('Edit failed!', resp, 'error');
+      },
     });
   }
 
@@ -102,7 +102,7 @@ class ViewProject extends React.Component {
           keywords: data.keywords,
           collaborators: data.collaborators,
           usersWithEditPerm: data.usersWithEditPerm,
-          rejectedReason: data.rejectedReason
+          rejectedReason: data.rejectedReason,
         };
         // set formdata for file meta data
         if (data.files) {
@@ -127,15 +127,15 @@ class ViewProject extends React.Component {
           allCollabs: data.allCollabs,
           uploadTypes: data.uploadTypes,
           files: data.files,
-          isLoaded: true
+          isLoaded: true,
         });
       },
       error: function(error, errorCode, errorMsg) {
         console.error(error, errorCode, errorMsg);
         self.setState({
-          error: 'An error occurred when loading the form!'
+          error: 'An error occurred when loading the form!',
         });
-      }
+      },
     });
   }
 
@@ -184,7 +184,7 @@ class ViewProject extends React.Component {
         links.push(
           <span>
             <a
-              href={loris.BaseURL + "/publication/?" + filterVar + "=" + value}
+              href={loris.BaseURL + '/publication/?' + filterVar + '=' + value}
             >
               {value}
             </a>
@@ -208,7 +208,7 @@ class ViewProject extends React.Component {
 
     if (this.state.formData.collaborators.length > 0) {
       collabLinks = this.createMenuFilterLinks(
-        this.state.formData.collaborators.map(c => c.name),
+        this.state.formData.collaborators.map((c) => c.name),
         'collaborators'
       );
       collaborators = <StaticElement
@@ -303,7 +303,7 @@ class ViewProject extends React.Component {
     formData[formElement] = listItems;
     formData[pendingValKey] = null;
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
 
@@ -317,7 +317,7 @@ class ViewProject extends React.Component {
 
       formData[formElement] = listItems;
       this.setState({
-        formData: formData
+        formData: formData,
       });
     }
   }
@@ -326,7 +326,7 @@ class ViewProject extends React.Component {
     let formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
 
@@ -385,7 +385,7 @@ class ViewProject extends React.Component {
       const statClassMap = {
         Pending: 'text-warning',
         Approved: 'text-success',
-        Rejected: 'text-danger'
+        Rejected: 'text-danger',
       };
       let statusText = (
         <span className={statClassMap[status]}>

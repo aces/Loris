@@ -11,10 +11,10 @@
 </ul>
 {/if}
 <h3 class="controlPanelSection">Administration</h3>
-<ul class="controlPanel">
+<ul class="controlPanel fa-ul">
 {section name=item loop=$administration}
     <li>
-        <img src="{$baseurl}/images/{$administration[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />
+        <span class="fa-li"><i class="{$administration[item].icon|default:'far fa-square'}"></i></span>
     {if $access.administration and $administration[item].showlink}
         <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setAdministration={$administration[item].label}&test_name={$test_name}">{$administration[item].label}</a>
     {else}
@@ -26,10 +26,10 @@
 
 {if $validity}
 <h3 class="controlPanelSection">Validity</h3>
-<ul class="controlPanel">
+<ul class="controlPanel fa-ul">
 {section name=item loop=$validity}
     <li>
-        <img src="{$baseurl}/images/{$validity[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />
+        <span class="fa-li"><i class="{$validity[item].icon|default:'far fa-square'}"></i></span>
     {if $access.validity and $validity[item].showLink}
         <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setValidity={$validity[item].label}&test_name={$test_name}">{$validity[item].label}</a>
     {else}
@@ -40,10 +40,10 @@
 </ul>
 {/if}
 <h3 class="controlPanelSection">Data Entry</h3>
-<ul class="controlPanel">
+<ul class="controlPanel fa-ul">
 {section name=item loop=$data_entry}
     <li>
-        <img src="{$baseurl}/images/{$data_entry[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />
+        <span class="fa-li"><i class="{$data_entry[item].icon|default:'far fa-square'}"></i></span>
     {if $access.data_entry and $data_entry[item].showlink}
         <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setDataEntry={$data_entry[item].label}&test_name={$test_name}">{$data_entry[item].label}</a>
     {else}
@@ -60,13 +60,13 @@
     <h3 class="controlPanelSection">Subtests</h3>
     <!-- top button -->
     {if $subtest != ""}
-        {assign var=icon value="transfer"}
+        {assign var=icon value="far fa-file-alt"}
     {else}
-        {assign var=icon value="book"}
+        {assign var=icon value="fas fa-file-alt"}
     {/if}
-    <ul class="controlPanel">
+    <ul class="controlPanel fa-ul">
         <li>
-            <img src="{$baseurl}/images/{$icon}.gif" alt="" width="12" height="12" />&nbsp;
+            <span class="fa-li"><i class="{$icon}" width="12" height="12"></i></span>
             {if $subtest != ""}
                         <a href="{$baseurl}/instruments/{$test_name}/?candID={$candID}&sessionID={$sessionID}&commentID={$commentID}">Top</a>
             {else}
@@ -76,12 +76,12 @@
         <!-- subtest buttons -->
         {section name=item loop=$subtests}
             {if $subtest != $subtests[item].Name}
-                {assign var=icon value="transfer"}
+                {assign var=icon value="far fa-file-alt"}
             {else}
-                {assign var=icon value="book"}
+                {assign var=icon value="fas fa-file-alt"}
             {/if}
             <li>
-                <img src="{$baseurl}/images/{$icon}.gif" alt="" width="12" height="12" />&nbsp;
+                <span class="fa-li"><i class="{$icon}" width="12" height="12"></i></span>
             {if $subtest != $subtests[item].Name}
                 <a href="{$baseurl}/instruments/{$test_name}/?candID={$candID}&sessionID={$sessionID}&subtest={$subtests[item].Name}&commentID={$commentID}">{$subtests[item].Description}</a>
             {else}

@@ -98,4 +98,4 @@ if (isset($_REQUEST['PrintInstruments'])) {
     print $obj->toJSONString();
 }
 
-?>
+

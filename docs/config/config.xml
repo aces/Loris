@@ -40,7 +40,7 @@
             <generation>sequential</generation>
             <structure>
                 <seq type="siteAbbrev"/>
-                <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
+                <seq type="alphanumeric" length="4"/> <!-- Ex: AAA0001-->
             </structure>
         </PSCID>
         
@@ -71,39 +71,6 @@
                 <item value="V02">V02</item>
             </labelSet>
         </visitLabel>
-        <!-- Instruments for relability module -->
-        <ReliabilityInstruments>
-            <Instrument>
-                <Testname>aosi</Testname>
-                <Threshold>0.5</Threshold>
-                <Displayname>AOSI</Displayname>
-            </Instrument>
-            <Instrument>
-                <Testname>adi_r_proband</Testname>
-                <Threshold>89.5</Threshold>
-                <Displayname>ADI-R (Proband)</Displayname>
-            </Instrument>
-            <Instrument>
-                <Testname>adi_r_subject</Testname>
-                <Threshold>89.5</Threshold>
-                <Displayname>ADI-R (Subject)</Displayname>
-            </Instrument>
-            <Instrument>
-                <Testname>csbs</Testname>
-                <Threshold>79.5</Threshold>
-                <Displayname>CSBS</Displayname>
-            </Instrument>
-            <Instrument>
-                <Testname>ados_module1</Testname>
-                <Threshold>79.5</Threshold>
-                <Displayname>ADOS (Module1)</Displayname>
-            </Instrument>
-            <Instrument>
-                <Testname>ados_module2</Testname>
-                <Threshold>79.5</Threshold>
-                <Displayname>ADOS (Module2)</Displayname>
-            </Instrument>
-        </ReliabilityInstruments>
 
          <!-- certification module -->
         <Certification>
