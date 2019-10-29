@@ -25,6 +25,9 @@ class FileCollectionList extends Component {
       success: function(data) {
         console.log('data is:');
         console.log(data);
+        window.location.href = window.location.origin
+          + '/issue_tracker/issue/'
+          + this.props.issue;
       },
       error: function(err) {
         this.setState({
