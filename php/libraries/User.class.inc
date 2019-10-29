@@ -305,7 +305,7 @@ class User extends UserPermissions
         return $this->userInfo['CenterIDs'];
     }
     
-        /**
+    /**
      * Get the user's sites' ID numbers
      *
      * @return array
