@@ -1,7 +1,7 @@
 site_name: Longitudinal Online Research and Imaging System (LORIS)
 site_url: http://loris.ca/
 repo_url: https://github.com/aces/Loris
-edit_uri: https://github.com/aces/Loris/minor/
+edit_uri: https://github.com/aces/Loris/minor/blob/docs/
 nav:
     - Home: index.md
     - API: API/LorisRESTAPI_v0.0.3.md
