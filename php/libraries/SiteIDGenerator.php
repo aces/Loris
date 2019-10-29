@@ -24,12 +24,19 @@
  */
 class SiteIDGenerator extends IdentifierGenerator
 {
-    /* Either 'PSCID' or 'ExternalID' */
     private const LENGTH = 4;
 
+    /* Either 'PSCID' or 'ExternalID' */
     protected $kind;
     protected $siteAlias;
     protected $projectAlias;
+
+    /**
+     * The abbreviation for a Site to be prepended to the ID. Equivalent to the
+     * `Alias` column in the `psc` table.
+     * @var string 
+     */
+    protected $siteAbbrev = '';
 
     /**
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
