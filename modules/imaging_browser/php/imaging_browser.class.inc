@@ -168,67 +168,9 @@ class Imaging_Browser extends \DataFrameworkMenu
 
         $provisioner = parent::getDataProvisionerWithFilters();
 
-        $user = \User::singleton();
-
-        // get the permissions into boolean variables
-        $candidate_allsites = $user->hasPermission("imaging_browser_view_allsites");
-        $candidate_ownsites = $user->hasPermission("imaging_browser_view_site");
-        $phantom_allsites   = $user->hasPermission(
-            'imaging_browser_phantom_allsites'
-        );
-        $phantom_ownsites   = $user->hasPermission(
-            'imaging_browser_phantom_ownsite'
-        );
-
-        // UserSiteMatch for imaging browser specific permissions
-        if ($candidate_allsites == false) {
-            if ($candidate_ownsites == false) {
-                if ($phantom_allsites || $phantom_ownsites) {
-                    // user only has access to phantom scans
-                    $provisioner = $provisioner->filter(
-                        new \LORIS\Data\Filters\OnlyPhantoms()
-                    );
-                    if ($phantom_allsites == false) {
-                        // user only has access to own site's phantom scans
-                        $provisioner = $provisioner->filter(
-                            new \LORIS\Data\Filters\UserSiteMatch()
-                        );
-                    }
-                }
-            } else {
-                if ($phantom_allsites) {
-                    // user has access to own site scans and all sites phantom
-                    $provisioner = $provisioner->filter(
-                        new \LORIS\Data\Filters\AllSitesPhantomsOwnSitesScans()
-                    );
-                } else if ($phantom_ownsites) {
-                    // user has access to own site scans and own site phantom
-                    $provisioner = $provisioner->filter(
-                        new \LORIS\Data\Filters\UserSiteMatch()
-                    );
-                } else {
-                    // user has access to own site scans only
-                    $provisioner = $provisioner->filter(
-                        new \LORIS\Data\Filters\UserSiteMatch()
-                    );
-                    $provisioner = $provisioner->filter(
-                        new \LORIS\Data\Filters\NoPhantoms()
-                    );
-                }
-            }
-        } else {
-            if ($phantom_allsites == false && $phantom_ownsites == false) {
-                // user has all sites for candidate scans but no phantom access
-                $provisioner = $provisioner->filter(
-                    new \LORIS\Data\Filters\NoPhantoms()
-                );
-            } else if ($phantom_allsites == false && $phantom_ownsites == true) {
-                // user has candidate all sites but only own sites phantom access
-                $provisioner = $provisioner->filter(
-                    new \LORIS\Data\Filters\AllSitesScansOwnSitesPhantoms()
-                );
-            }
-        }
+        $provisioner = $provisioner
+            ->filter(new \LORIS\Data\Filters\ScansFilter())
+            ->filter(new \LORIS\Data\Filters\PhantomsFilter());
 
         return $provisioner;
     }
