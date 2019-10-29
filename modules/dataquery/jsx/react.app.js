@@ -173,7 +173,7 @@ class DataQueryApp extends Component {
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
         curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + this.state.queryIDs[key][i]), {
+          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
             data: {
               DocID: this.state.queryIDs[key][i]
             },
@@ -233,12 +233,11 @@ class DataQueryApp extends Component {
     // Used to save the current query
 
     let filter = this.saveFilterGroup(this.state.filter);
-    let queryName = name.replace(/ /g,'_');
 
     $.post(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
       Fields: this.state.selectedFields,
       Filters: filter,
-      QueryName: queryName,
+      QueryName: name,
       SharedQuery: shared,
       OverwriteQuery: override
     }, (data) => {
