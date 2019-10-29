@@ -37,8 +37,6 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
     function __construct()
     {
         $config = \NDB_Config::singleton();
-        $user   = \User::singleton();
-        $DB     = \Database::singleton();
 
         // ===========================================================
         // Get the different scan types to be displayed in data table
