@@ -73,12 +73,10 @@ class AttachmentsList extends Component {
         onClose={this.closeModalAttachmentDelete}
         show={this.state.showModalAttachmentDelete}
       >
-        <div className={'container'}>
-          <p style={{fontSize: '15pt'}}>
-            Please confirm the request to delete the
-            "{this.state.deleteItem.file_name}" attachment.
-          </p>
-        </div>
+        <p style={{fontSize: '15pt'}}>
+          Please confirm the request to delete the
+          "{this.state.deleteItem.file_name}" attachment.
+        </p>
         <div style={footerCSS}>
           <ButtonElement
             onUserInput={this.deleteAttachment}

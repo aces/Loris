@@ -98,7 +98,10 @@ class UploadHelper
     function setFullPath(&$fileToUpload) : void
     {
         $config = \NDB_Config::singleton();
-        $attachment_data_dir = rtrim($config->getSetting('IssueTrackerDataPath'), '/');
+        $attachment_data_dir = rtrim(
+            $config->getSetting('IssueTrackerDataPath'),
+            '/'
+        );
 
         if (is_writable($attachment_data_dir)) {
             $fileToUpload->full_path = $attachment_data_dir .
