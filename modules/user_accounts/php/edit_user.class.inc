@@ -731,7 +731,6 @@ class Edit_User extends \NDB_Form
         $siteOptions = array();
         $site        = array();
 
-        $siteOptions = array();
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
@@ -1164,7 +1163,7 @@ class Edit_User extends \NDB_Form
         //======================================
         // Ensure that at least one site is selected
         if (empty($values['ProjectIDs'])) {
-            $errors['projectss_group'] = "You must select at least one " .
+            $errors['projects_group'] = "You must select at least one " .
                 "project/affiliation";
         }
 
