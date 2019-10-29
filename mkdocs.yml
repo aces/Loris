@@ -3,7 +3,7 @@ site_url: http://loris.ca/
 repo_url: https://github.com/aces/Loris
 edit_uri: https://github.com/aces/Loris/blob/minor/docs/
 nav:
-    - Home: index.md
+    - Home: docs/index.md
     - API: API/LorisRESTAPI_v0.0.3.md
     - Wiki: wiki/index.md
 theme: readthedocs
