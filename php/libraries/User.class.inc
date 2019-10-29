@@ -304,6 +304,16 @@ class User extends UserPermissions
     {
         return $this->userInfo['CenterIDs'];
     }
+    
+        /**
+     * Get the user's sites' ID numbers
+     *
+     * @return array
+     */
+    function getProjectIDs(): array
+    {
+        return $this->userInfo['ProjectIDs'];
+    }
 
     /**
      * Get the user's language preference
