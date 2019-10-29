@@ -640,6 +640,22 @@ class User extends UserPermissions
             true
         );
     }
+    
+    /**
+     * Determines if the user has a project
+     *
+     * @param int $projectID The project ID
+     *
+     * @return bool
+     */
+    public function hasProject(int $projectID) : bool
+    {
+        return in_array(
+            $projectID,
+            $this->getProjectIDs(),
+            true
+        );
+    }
 
     /**
      * Determines if the user has a permission
