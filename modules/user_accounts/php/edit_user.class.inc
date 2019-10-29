@@ -96,20 +96,20 @@ class Edit_User extends \NDB_Form
 
             // An array of each field that requires front-end sanitization
             $fieldsThatAreStrings = array(
-                                     'UserID',
-                                     'First_name',
-                                     'Last_name',
-                                     'Real_name',
-                                     'Email',
-                                     'Degree',
-                                     'Institution',
-                                     'Address',
-                                     'City',
-                                     'State',
-                                     'Zip_code',
-                                     'Country',
-                                     'Fax',
-                                    );
+                'UserID',
+                'First_name',
+                'Last_name',
+                'Real_name',
+                'Email',
+                'Degree',
+                'Institution',
+                'Address',
+                'City',
+                'State',
+                'Zip_code',
+                'Country',
+                'Fax',
+            );
             // Prevent Javascript injection on all fields
             foreach ($fieldsThatAreStrings as $fieldName) {
                 // this check prevents PHP Notices
@@ -268,8 +268,8 @@ class Edit_User extends \NDB_Form
                 $DB->insert(
                     'user_psc_rel',
                     array(
-                     "UserID"   => $uid,
-                     "CenterID" => $site,
+                        "UserID"   => $uid,
+                        "CenterID" => $site,
                     )
                 );
             }
@@ -306,7 +306,7 @@ class Edit_User extends \NDB_Form
              FROM examiners e
              WHERE e.full_name=:fn",
                 array(
-                 "fn" => $values['Real_name'],
+                    "fn" => $values['Real_name'],
                 )
             );
 
@@ -322,9 +322,9 @@ class Edit_User extends \NDB_Form
                 $DB->insert(
                     'examiners',
                     array(
-                     'full_name'   => $values['Real_name'],
-                     'radiologist' => $ex_radiologist,
-                     'userID'      => $uid,
+                        'full_name'   => $values['Real_name'],
+                        'radiologist' => $ex_radiologist,
+                        'userID'      => $uid,
                     )
                 );
                 $examinerID = $DB->pselectOne(
@@ -346,11 +346,11 @@ class Edit_User extends \NDB_Form
                 $DB->update(
                     'examiners',
                     array(
-                     'radiologist' => $ex_radiologist,
-                     'userID'      => $uid,
+                        'radiologist' => $ex_radiologist,
+                        'userID'      => $uid,
                     ),
                     array(
-                     "full_name" => $values['Real_name'],
+                        "full_name" => $values['Real_name'],
                     )
                 );
                 $examinerID = $examinerID[0]['examinerID'];
@@ -376,8 +376,8 @@ class Edit_User extends \NDB_Form
                            FROM examiners_psc_rel epr 
                            WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                     array(
-                     "eid" => $examinerID,
-                     "cid" => $v,
+                        "eid" => $examinerID,
+                        "cid" => $v,
                     )
                 );
 
@@ -386,22 +386,22 @@ class Edit_User extends \NDB_Form
                     $DB->insert(
                         'examiners_psc_rel',
                         array(
-                         'examinerID'       => $examinerID,
-                         'centerID'         => $v,
-                         'active'           => 'Y',
-                         'pending_approval' => $ex_pending,
+                            'examinerID'       => $examinerID,
+                            'centerID'         => $v,
+                            'active'           => 'Y',
+                            'pending_approval' => $ex_pending,
                         )
                     );
                 } else {
                     $DB->update(
                         'examiners_psc_rel',
                         array(
-                         'active'           => 'Y',
-                         'pending_approval' => $ex_pending,
+                            'active'           => 'Y',
+                            'pending_approval' => $ex_pending,
                         ),
                         array(
-                         'examinerID' => $examinerID,
-                         'centerID'   => $v,
+                            'examinerID' => $examinerID,
+                            'centerID'   => $v,
                         )
                     );
                 }
@@ -415,8 +415,8 @@ class Edit_User extends \NDB_Form
                     'examiners_psc_rel',
                     array("active" => 'N'),
                     array(
-                     'examinerID' => $examinerID,
-                     'centerID'   => $cid,
+                        'examinerID' => $examinerID,
+                        'centerID'   => $cid,
                     )
                 );
             }
@@ -444,8 +444,8 @@ class Edit_User extends \NDB_Form
                 $DB->insert(
                     'user_psc_rel',
                     array(
-                     "UserID"   => $uid,
-                     "CenterID" => $site,
+                        "UserID"   => $uid,
+                        "CenterID" => $site,
                     )
                 );
             }
@@ -631,10 +631,10 @@ class Edit_User extends \NDB_Form
             'First_name',
             'First name',
             array(
-             'oninvalid' => $onInvalidMsg,
-             'onchange'  => "this.setCustomValidity('')",
-             'pattern'   => '^\s*\S.{0,119}\s*$',
-             'required'  => true,
+                'oninvalid' => $onInvalidMsg,
+                'onchange'  => "this.setCustomValidity('')",
+                'pattern'   => '^\s*\S.{0,119}\s*$',
+                'required'  => true,
             )
         );
         // The supplied pattern is:
@@ -648,10 +648,10 @@ class Edit_User extends \NDB_Form
             'Last_name',
             'Last name',
             array(
-             'oninvalid' => $onInvalidMsg,
-             'onchange'  => "this.setCustomValidity('')",
-             'pattern'   => '^\s*\S.{0,119}\s*$',
-             'required'  => true,
+                'oninvalid' => $onInvalidMsg,
+                'onchange'  => "this.setCustomValidity('')",
+                'pattern'   => '^\s*\S.{0,119}\s*$',
+                'required'  => true,
             )
         );
 
@@ -734,9 +734,9 @@ class Edit_User extends \NDB_Form
                 "examiner_radiologist",
                 "Radiologist: ",
                 array(
-                 null => "",
-                 'Y'  => 'Yes',
-                 'N'  => 'No',
+                    null => "",
+                    'Y'  => 'Yes',
+                    'N'  => 'No',
                 )
             );
             $groupB[] = $this->createLabel(
@@ -746,9 +746,9 @@ class Edit_User extends \NDB_Form
                 "examiner_pending",
                 "Pending Approval: ",
                 array(
-                 null => "",
-                 'Y'  => 'Yes',
-                 'N'  => 'No',
+                    null => "",
+                    'Y'  => 'Yes',
+                    'N'  => 'No',
                 )
             );
             $this->addGroup(
@@ -775,8 +775,8 @@ class Edit_User extends \NDB_Form
             'Pending_approval',
             'Pending approval',
             array(
-             'Y' => 'Yes',
-             'N' => 'No',
+                'Y' => 'Yes',
+                'N' => 'No',
             )
         );
 
@@ -785,10 +785,10 @@ class Edit_User extends \NDB_Form
         // active time windows
 
         $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => 'true',
-                       );
+            'language'       => 'en',
+            'format'         => 'YMd',
+            'addEmptyOption' => 'true',
+        );
 
         $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
@@ -1021,14 +1021,14 @@ class Edit_User extends \NDB_Form
             $isPasswordStrong = \User::isPasswordStrong(
                 $values['Password_hash'],
                 array(
-                 $values['__Confirm'],
-                 isset($values['UserID']) ? $values['UserID'] : $this->identifier,
-                 $values['Email'],
+                    $values['__Confirm'],
+                    isset($values['UserID']) ? $values['UserID'] : $this->identifier,
+                    $values['Email'],
                 ),
                 array(
-                 '==',
-                 '!=',
-                 '!=',
+                    '==',
+                    '!=',
+                    '!=',
                 )
             );
 

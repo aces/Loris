@@ -80,9 +80,9 @@ class Login extends Endpoint
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.2',
-                'v0.0.3-dev',
-               );
+            'v0.0.2',
+            'v0.0.3-dev',
+        );
     }
 
     /**
@@ -167,16 +167,16 @@ class Login extends Endpoint
 
         $token = array(
             // JWT related tokens to for the JWT library to validate
-                  "iss"  => $baseURL,
-                  "aud"  => $baseURL,
+            "iss"  => $baseURL,
+            "aud"  => $baseURL,
             // Issued at
-                  "iat"  => time(),
-                  "nbf"  => time(),
+            "iat"  => time(),
+            "nbf"  => time(),
             // Expire in 1 day
-                  "exp"  => time() + 86400,
+            "exp"  => time() + 86400,
             // Additional payload data
-                  "user" => $user,
-                 );
+            "user" => $user,
+        );
 
         $key = $config->getSetting("JWTKey");
         if (!self::isKeyStrong($key)) {

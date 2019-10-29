@@ -58,18 +58,18 @@ class Flags
         $isDDE = strpos($instrumentdata['CommentID'], 'DDE_') === 0;
 
         $meta = array(
-                 'Candidate'  => $this->_timepoint->getCandID(),
-                 'Visit'      => $this->_timepoint->getVisitLabel(),
-                 'DDE'        => $isDDE,
-                 'Instrument' => $instrumentname,
-                );
+            'Candidate'  => $this->_timepoint->getCandID(),
+            'Visit'      => $this->_timepoint->getVisitLabel(),
+            'DDE'        => $isDDE,
+            'Instrument' => $instrumentname,
+        );
 
         $flags = $this->_instrument->getFlags()->toArray();
 
         return array(
-                'Meta'  => $meta,
-                'Flags' => $flags,
-               );
+            'Meta'  => $meta,
+            'Flags' => $flags,
+        );
     }
 }
 

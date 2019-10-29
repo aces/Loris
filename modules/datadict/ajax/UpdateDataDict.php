@@ -50,8 +50,8 @@ if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
         $DB->replace(
             'parameter_type_override',
             array(
-             'Description' => $description,
-             'Name'        => $name,
+                'Description' => $description,
+                'Name'        => $name,
             )
         );
     } else {

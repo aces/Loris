@@ -89,9 +89,9 @@ class Stats_Behavioural extends \NDB_Form
                 && $_REQUEST['site'] == $row['NumericID']
             ) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
 
         }
@@ -101,9 +101,9 @@ class Stats_Behavioural extends \NDB_Form
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = array(
-                   'ID'   => $currentProject,
-                   'Name' => $projects[$currentProject],
-                  );
+                    'ID'   => $currentProject,
+                    'Name' => $projects[$currentProject],
+                );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } else {
@@ -279,7 +279,7 @@ class Stats_Behavioural extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/statistics/js/form_stats_behavioural.js",
+                $baseURL . "/statistics/js/form_stats_behavioural.js",
             )
         );
     }

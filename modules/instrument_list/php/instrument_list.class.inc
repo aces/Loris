@@ -72,12 +72,12 @@ class Instrument_List extends \NDB_Menu_Filter
         $this->candidate = $candidate;
     }
     /**
-    * Checking permissions
-    *
-    * @param \User $user The user whose access is being checked
-    *
-    * @return bool
-    */
+     * Checking permissions
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
     function _hasAccess(\User $user) : bool
     {
         $timePoint = $this->timePoint;
@@ -136,10 +136,10 @@ class Instrument_List extends \NDB_Menu_Filter
     }
 
     /**
-    * GetControlPanel function
-    *
-    * @return string
-    */
+     * GetControlPanel function
+     *
+     * @return string
+     */
     function getControlPanel()
     {
         $controlPanel = new Instrument_List_ControlPanel(
@@ -155,10 +155,10 @@ class Instrument_List extends \NDB_Menu_Filter
     }
 
     /**
-    * Setup function
-    *
-    * @return void
-    */
+     * Setup function
+     *
+     * @return void
+     */
     function setup()
     {
         // Don't call parent setup, we don't want it to try to run any SQL
@@ -383,7 +383,7 @@ class Instrument_List extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/instrument_list/js/instrument_list_helper.js",
+                $baseURL . "/instrument_list/js/instrument_list_helper.js",
             )
         );
     }

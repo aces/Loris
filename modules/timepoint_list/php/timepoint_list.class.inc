@@ -185,10 +185,10 @@ class Timepoint_List extends \NDB_Menu
                 if (!in_array(
                     $timePoint->getCurrentStage(),
                     array(
-                     null,
-                     'Not Started',
-                     'Visit',
-                     'Screening',
+                        null,
+                        'Not Started',
+                        'Visit',
+                        'Screening',
                     )
                 )
                 ) {

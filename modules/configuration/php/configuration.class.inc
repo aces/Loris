@@ -9,7 +9,7 @@
  * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
-*/
+ */
 
 namespace LORIS\configuration;
 
@@ -23,7 +23,7 @@ namespace LORIS\configuration;
  * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
-*/
+ */
 class Configuration extends \NDB_Form
 {
     /**
@@ -40,10 +40,10 @@ class Configuration extends \NDB_Form
     }
 
      /**
-     * Loads the main configuration module page.
-     *
-     * @return void
-     */
+      * Loads the main configuration module page.
+      *
+      * @return void
+      */
     function setup()
     {
         parent::setup();
@@ -70,10 +70,10 @@ class Configuration extends \NDB_Form
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
         $this->tpl_data['lookup_center']   = array(
-                                              ''            => '',
-                                              'PatientID'   => 'PatientID',
-                                              'PatientName' => 'PatientName',
-                                             );
+            ''            => '',
+            'PatientID'   => 'PatientID',
+            'PatientName' => 'PatientName',
+        );
     }
 
     /**
@@ -176,17 +176,17 @@ class Configuration extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/configuration/js/configuration_helper.js",
+                $baseURL . "/configuration/js/configuration_helper.js",
             )
         );
     }
 
      /**
-        * Include additional CSS files:
-        *  1. configuration
-        *
-        * @return array of CSS to be inserted
-        */
+      * Include additional CSS files:
+      *  1. configuration
+      *
+      * @return array of CSS to be inserted
+      */
     function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();

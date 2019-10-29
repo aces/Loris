@@ -439,8 +439,8 @@ class Installer
         );
         $userExistsQ->execute(
             [
-             'q_user' => $values['lorismysqluser'],
-             'q_host' => $connectHost,
+                'q_user' => $values['lorismysqluser'],
+                'q_host' => $connectHost,
             ]
         );
         $results    = $userExistsQ->fetchAll(\PDO::FETCH_ASSOC);
@@ -542,11 +542,11 @@ class Installer
         );
         return $stmt->execute(
             [
-             'q_userID'   => $values['frontenduser'],
-             'q_password' => password_hash(
-                 $values['frontendpassword'],
-                 PASSWORD_DEFAULT
-             ),
+                'q_userID'   => $values['frontenduser'],
+                'q_password' => password_hash(
+                    $values['frontendpassword'],
+                    PASSWORD_DEFAULT
+                ),
             ]
         );
     }
@@ -585,16 +585,16 @@ class Installer
         $contents = file_get_contents(__DIR__ . "/../../docs/config/config.xml");
         return str_replace(
             [
-             '%HOSTNAME%',
-             '%USERNAME%',
-             '%PASSWORD%',
-             '%DATABASE%',
+                '%HOSTNAME%',
+                '%USERNAME%',
+                '%PASSWORD%',
+                '%DATABASE%',
             ],
             [
-             $escapedValues['dbhost'],
-             $escapedValues['lorismysqluser'],
-             $escapedValues['lorismysqlpassword'],
-             $escapedValues['dbname'],
+                $escapedValues['dbhost'],
+                $escapedValues['lorismysqluser'],
+                $escapedValues['lorismysqlpassword'],
+                $escapedValues['dbname'],
             ],
             $contents
         );

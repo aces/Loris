@@ -79,10 +79,10 @@ class MediaTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-      * Testing React filter in this page.
-      *
-      * @return void
-      */
+     * Testing React filter in this page.
+     *
+     * @return void
+     */
     function testBrowseFilter()
     {
         $this->safeGet($this->url . "/media/");
@@ -95,10 +95,10 @@ class MediaTest extends LorisIntegrationTest
 
     }
     /**
-      * Testing the link React filter in this page.
-      *
-      * @return void
-      */
+     * Testing the link React filter in this page.
+     *
+     * @return void
+     */
     function testVisitAndEditLink()
     {
         $this->markTestSkipped(

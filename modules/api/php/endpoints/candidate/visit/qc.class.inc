@@ -58,9 +58,9 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function allowedMethods() : array
     {
         return array(
-                'GET',
-                'PUT',
-               );
+            'GET',
+            'PUT',
+        );
     }
 
     /**
@@ -72,9 +72,9 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.2',
-                'v0.0.3-dev',
-               );
+            'v0.0.2',
+            'v0.0.3-dev',
+        );
     }
 
     /**
@@ -144,10 +144,10 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $data = json_decode((string) $request->getBody(), true);
 
         $requiredfields = array(
-                           'Meta',
-                           'SessionQC',
-                           'Pending',
-                          );
+            'Meta',
+            'SessionQC',
+            'Pending',
+        );
         $diff           = array_diff($requiredfields, array_keys($data));
         if (!empty($diff)) {
             return new \LORIS\Http\Response\BadRequest(

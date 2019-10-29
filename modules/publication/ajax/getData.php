@@ -170,21 +170,21 @@ function getProjectData($db, $user, $id) : array
         $rejectedReason = htmlspecialchars_decode($result['RejectedReason']);
 
         $pubData = array(
-                    'title'                 => $title,
-                    'description'           => $description,
-                    'leadInvestigator'      => $result['LeadInvestigator'],
-                    'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
-                    'status'                => $result['PublicationStatusID'],
-                    'rejectedReason'        => $rejectedReason,
-                    'voi'                   => $result['VOIs'],
-                    'keywords'              => $result['Keywords'],
-                    'collaborators'         => $result['collaborators'],
-                    'files'                 => $result['files'],
-                    'usersWithEditPerm'     => $usersWithEditPerm,
-                    'userCanEdit'           => $userCanEdit,
-                    'statusOpts'            => getStatusOptions(),
-                    'uploadTypes'           => getUploadTypes(),
-                   );
+            'title'                 => $title,
+            'description'           => $description,
+            'leadInvestigator'      => $result['LeadInvestigator'],
+            'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
+            'status'                => $result['PublicationStatusID'],
+            'rejectedReason'        => $rejectedReason,
+            'voi'                   => $result['VOIs'],
+            'keywords'              => $result['Keywords'],
+            'collaborators'         => $result['collaborators'],
+            'files'                 => $result['files'],
+            'usersWithEditPerm'     => $usersWithEditPerm,
+            'userCanEdit'           => $userCanEdit,
+            'statusOpts'            => getStatusOptions(),
+            'uploadTypes'           => getUploadTypes(),
+        );
 
         // if user can edit, retrieve getData() options to allow modifications
         if ($userCanEdit) {

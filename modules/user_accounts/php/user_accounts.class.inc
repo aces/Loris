@@ -40,11 +40,11 @@ class User_Accounts extends \NDB_Menu_Filter
     }
 
     /**
-    * Setup Variables
-    *
-    * @note   Setup Variables
-    * @return void
-    */
+     * Setup Variables
+     *
+     * @note   Setup Variables
+     * @return void
+     */
     function _setupVariables()
     {
         $user =& \User::singleton();
@@ -60,36 +60,36 @@ class User_Accounts extends \NDB_Menu_Filter
 
         // set the class variables
         $this->columns      = array(
-                               "COALESCE(GROUP_CONCAT(
+            "COALESCE(GROUP_CONCAT(
                                 psc.Name SEPARATOR '; '),'Not Assigned'
                                 ) AS Sites",
-                               'users.UserID AS Username',
-                               'Real_name AS Full_name',
-                               'Email',
-                               'Active',
-                               'Pending_approval',
-                              );
+            'users.UserID AS Username',
+            'Real_name AS Full_name',
+            'Email',
+            'Active',
+            'Pending_approval',
+        );
         $this->query        = $query;
         $this->order_by     = 'Username';
         $this->group_by     = 'users.ID';
         $this->validFilters = array(
-                               'user_psc_rel.CenterID',
-                               'users.UserID',
-                               'users.Real_name',
-                               'users.Email',
-                               'users.Active',
-                               'users.Examiner',
-                               'users.Pending_approval',
-                              );
+            'user_psc_rel.CenterID',
+            'users.UserID',
+            'users.Real_name',
+            'users.Email',
+            'users.Active',
+            'users.Examiner',
+            'users.Pending_approval',
+        );
 
         $this->formToFilter = array(
-                               'centerID'  => 'user_psc_rel.CenterID',
-                               'active'    => 'users.Active',
-                               'userID'    => 'users.UserID',
-                               'real_name' => 'users.Real_name',
-                               'email'     => 'users.Email',
-                               'pending'   => 'users.Pending_approval',
-                              );
+            'centerID'  => 'user_psc_rel.CenterID',
+            'active'    => 'users.Active',
+            'userID'    => 'users.UserID',
+            'real_name' => 'users.Real_name',
+            'email'     => 'users.Email',
+            'pending'   => 'users.Pending_approval',
+        );
     }
 
     /**
@@ -125,15 +125,15 @@ class User_Accounts extends \NDB_Menu_Filter
             }
         }
         $yesNoOptions = array(
-                         'Y' => 'Yes',
-                         'N' => 'No',
-                        );
+            'Y' => 'Yes',
+            'N' => 'No',
+        );
 
         $this->fieldOptions = array(
-                               'sites'            => $list_of_sites,
-                               'actives'          => $yesNoOptions,
-                               'pendingApprovals' => $yesNoOptions,
-                              );
+            'sites'            => $list_of_sites,
+            'actives'          => $yesNoOptions,
+            'pendingApprovals' => $yesNoOptions,
+        );
     }
     /**
      * Gathers JS dependecies and merge them with the parent

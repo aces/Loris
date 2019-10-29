@@ -67,10 +67,10 @@ class Dashboard extends \NDB_Form
             foreach ($dashboard_links as $text => $url) {
                 $this->tpl_data['dashboard_links'][]
                     = array(
-                       'url'        => $url,
-                       'label'      => $text,
-                       'WindowName' => md5($url),
-                      );
+                        'url'        => $url,
+                        'label'      => $text,
+                        'WindowName' => md5($url),
+                    );
             }
         }
 
@@ -374,8 +374,8 @@ class Dashboard extends \NDB_Form
              WHERE c.Sex=:sex AND c.Active='Y' AND c.ProjectID=:PID
              AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
             array(
-             'sex' => $sex,
-             'PID' => $projectID,
+                'sex' => $sex,
+                'PID' => $projectID,
             )
         );
         return $total;
@@ -469,9 +469,9 @@ class Dashboard extends \NDB_Form
         return array_merge(
             $baseDeps,
             array(
-             $baseurl . '/js/d3.min.js',
-             $baseurl . '/js/c3.min.js',
-             $baseurl . '/dashboard/js/dashboard-helper.js',
+                $baseurl . '/js/d3.min.js',
+                $baseurl . '/js/c3.min.js',
+                $baseurl . '/dashboard/js/dashboard-helper.js',
             )
         );
 

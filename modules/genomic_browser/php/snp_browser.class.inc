@@ -6,11 +6,11 @@
  *
  * PHP version 7
  *
- *  @category LORIS_Module
- *  @package  Genomics
- *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser;
 
@@ -25,7 +25,7 @@ namespace LORIS\genomic_browser;
  * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 class SNP_Browser extends \NDB_Menu_Filter
 {
     /**
@@ -59,42 +59,42 @@ class SNP_Browser extends \NDB_Menu_Filter
      * Function _setupVariables
      *
      * @return void
-    */
+     */
     function _setupVariables()
     {
         // set the class variables
         $this->columns = array(
-                          'psc.Name AS PSC',
-                          'LPAD(candidate.CandID, 6, "0") AS DCCID',
-                          'candidate.PSCID',
-                          'candidate.Sex',
-                          'cohort.SubprojectID as Subproject',
-                          'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
-                          'candidate.ExternalID as externalID',
-                          'SNP.Chromosome as Chromosome',
-                          'SNP.Strand as Strand',
-                          'SNP.StartLoc as StartLoc',
-                          'SNP.EndLoc as EndLoc',
-                          'SNP.OfficialSymbol as Gene_Symbol',
-                          'SNP.OfficialName as Gene_Name',
-                          'genotyping_platform.Name as Platform',
-                          'SNP.rsID as rsID',
-                          'SNP.SNPExternalName as SNP_Name',
-                          'SNP.Description as SNP_Description',
-                          'SNP.SNPExternalSource as External_Source',
-                          'SNP_candidate_rel.AlleleA as Allele_A',
-                          'SNP_candidate_rel.AlleleB as Allele_B',
-                          'SNP.ReferenceBase as Reference_Base',
-                          'SNP.MinorAllele as Minor_Allele',
-                          'SNP_candidate_rel.ArrayReport as Array_Report',
-                          'SNP.Markers as Markers',
-                          'SNP_candidate_rel.ValidationMethod as Validation_Method',
-                          'SNP_candidate_rel.Validated as Validated',
-                          'SNP.FunctionPrediction as Function_Prediction',
-                          'SNP.Damaging as Damaging',
-                          'SNP_candidate_rel.GenotypeQuality as Genotype_Quality',
-                          'SNP.ExonicFunction as Exonic_Function',
-                         );
+            'psc.Name AS PSC',
+            'LPAD(candidate.CandID, 6, "0") AS DCCID',
+            'candidate.PSCID',
+            'candidate.Sex',
+            'cohort.SubprojectID as Subproject',
+            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
+            'candidate.ExternalID as externalID',
+            'SNP.Chromosome as Chromosome',
+            'SNP.Strand as Strand',
+            'SNP.StartLoc as StartLoc',
+            'SNP.EndLoc as EndLoc',
+            'SNP.OfficialSymbol as Gene_Symbol',
+            'SNP.OfficialName as Gene_Name',
+            'genotyping_platform.Name as Platform',
+            'SNP.rsID as rsID',
+            'SNP.SNPExternalName as SNP_Name',
+            'SNP.Description as SNP_Description',
+            'SNP.SNPExternalSource as External_Source',
+            'SNP_candidate_rel.AlleleA as Allele_A',
+            'SNP_candidate_rel.AlleleB as Allele_B',
+            'SNP.ReferenceBase as Reference_Base',
+            'SNP.MinorAllele as Minor_Allele',
+            'SNP_candidate_rel.ArrayReport as Array_Report',
+            'SNP.Markers as Markers',
+            'SNP_candidate_rel.ValidationMethod as Validation_Method',
+            'SNP_candidate_rel.Validated as Validated',
+            'SNP.FunctionPrediction as Function_Prediction',
+            'SNP.Damaging as Damaging',
+            'SNP_candidate_rel.GenotypeQuality as Genotype_Quality',
+            'SNP.ExonicFunction as Exonic_Function',
+        );
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -104,26 +104,26 @@ class SNP_Browser extends \NDB_Menu_Filter
                         return ucwords(str_replace('_', ' ', $header));
                 },
                 array(
-                 'PSC',
-                 'DCCID',
-                 'Subproject',
-                 'DoB',
-                 'externalID',
-                 'Chromosome',
-                 'Strand',
-                 'StartLoc',
-                 'EndLoc',
-                 'Gene_Symbol',
-                 'Gene_Name',
-                 'Platform',
-                 'SNP_Name',
-                 'SNP_Description',
-                 'External_Source',
-                 'Array_Report',
-                 'Markers',
-                 'Validation_Method',
-                 'Validated',
-                 'Genotype_Quality',
+                    'PSC',
+                    'DCCID',
+                    'Subproject',
+                    'DoB',
+                    'externalID',
+                    'Chromosome',
+                    'Strand',
+                    'StartLoc',
+                    'EndLoc',
+                    'Gene_Symbol',
+                    'Gene_Name',
+                    'Platform',
+                    'SNP_Name',
+                    'SNP_Description',
+                    'External_Source',
+                    'Array_Report',
+                    'Markers',
+                    'Validation_Method',
+                    'Validated',
+                    'Genotype_Quality',
                 )
             )
         );
@@ -156,71 +156,71 @@ class SNP_Browser extends \NDB_Menu_Filter
         $this->limit = 10000;
 
         $this->validFilters = array(
-                               'candidate.RegistrationCenterID',
-                               'candidate.CandID',
-                               'candidate.PSCID',
-                               'candidate.Sex',
-                               'cohort.SubprojectID',
-                               'candidate.DoB',
-                               'candidate.ExternalID',
-                               'show_brief_results',
-                               'SNP.rsID',
-                               'SNP.SNPExternalName',
-                               'SNP.Description',
-                               'SNP.SNPExternalSource',
-                               'SNP_candidate_rel.AlleleA',
-                               'SNP_candidate_rel.AlleleB',
-                               'SNP.ReferenceBase',
-                               'SNP.MinorAllele',
-                               'SNP_candidate_rel.ArrayReport',
-                               'SNP.Markers',
-                               'SNP_candidate_rel.ValidationMethod',
-                               'SNP_candidate_rel.Validated as Validated',
-                               'SNP.FunctionPrediction',
-                               'SNP.Damaging',
-                               'SNP_candidate_rel.GenotypeQuality',
-                               'SNP.ExonicFunction',
-                               'SNP.Chromosome',
-                               'SNP.Strand',
-                               'SNP.StartLoc',
-                               'SNP.EndLoc',
-                               'SNP.Strand',
-                               'SNP.OfficialSymbol',
-                               'SNP.OfficialName',
-                               'genotyping_platform.Name',
-                               'genomic_range',
-                              );
+            'candidate.RegistrationCenterID',
+            'candidate.CandID',
+            'candidate.PSCID',
+            'candidate.Sex',
+            'cohort.SubprojectID',
+            'candidate.DoB',
+            'candidate.ExternalID',
+            'show_brief_results',
+            'SNP.rsID',
+            'SNP.SNPExternalName',
+            'SNP.Description',
+            'SNP.SNPExternalSource',
+            'SNP_candidate_rel.AlleleA',
+            'SNP_candidate_rel.AlleleB',
+            'SNP.ReferenceBase',
+            'SNP.MinorAllele',
+            'SNP_candidate_rel.ArrayReport',
+            'SNP.Markers',
+            'SNP_candidate_rel.ValidationMethod',
+            'SNP_candidate_rel.Validated as Validated',
+            'SNP.FunctionPrediction',
+            'SNP.Damaging',
+            'SNP_candidate_rel.GenotypeQuality',
+            'SNP.ExonicFunction',
+            'SNP.Chromosome',
+            'SNP.Strand',
+            'SNP.StartLoc',
+            'SNP.EndLoc',
+            'SNP.Strand',
+            'SNP.OfficialSymbol',
+            'SNP.OfficialName',
+            'genotyping_platform.Name',
+            'genomic_range',
+        );
 
         $ftf = array(
-                'centerID'            => 'candidate.RegistrationCenterID',
-                'DCCID'               => 'candidate.CandID',
-                'PSCID'               => 'candidate.PSCID',
-                'sex'                 => 'candidate.Sex',
-                'SubprojectID'        => 'cohort.SubprojectID',
-                'dob'                 => 'candidate.DoB',
-                'External_ID'         => 'candidate.ExternalID',
-                'Show_Brief_Results'  => 'show_brief_results',
-                'rsID'                => 'SNP.rsID',
-                'SNP_Name'            => 'SNP.SNPExternalName',
-                'SNP_Description'     => 'SNP.Description',
-                'SNP_External_Source' => 'SNP.SNPExternalSource',
-                'Allele_A'            => 'SNP_candidate_rel.AlleleA',
-                'Allele_B'            => 'SNP_candidate_rel.AlleleB',
-                'Reference_Base'      => 'SNP.ReferenceBase',
-                'Minor_Allele'        => 'SNP.MinorAllele',
-                'Array_Report'        => 'SNP.ArrayReport',
-                'Markers'             => 'SNP.Markers',
-                'Validation_Method'   => 'SNP_candidate_rel.ValidationMethod',
-                'Validated'           => 'SNP_candidate_rel.Validated',
-                'Function_Prediction' => 'SNP.FunctionPrediction',
-                'Damaging'            => 'SNP.Damaging',
-                'Genotype_Quality'    => 'SNP_candidate_rel.GenotypeQuality',
-                'Exonic_Function'     => 'SNP.ExonicFunction',
-                'Chromosome'          => 'SNP.Chromosome',
-                'Gene_Symbol'         => 'SNP.OfficalSymbol',
-                'genomic_range'       => 'genomic_range',
-                'Platform'            => 'genotyping_platform.Name',
-               );
+            'centerID'            => 'candidate.RegistrationCenterID',
+            'DCCID'               => 'candidate.CandID',
+            'PSCID'               => 'candidate.PSCID',
+            'sex'                 => 'candidate.Sex',
+            'SubprojectID'        => 'cohort.SubprojectID',
+            'dob'                 => 'candidate.DoB',
+            'External_ID'         => 'candidate.ExternalID',
+            'Show_Brief_Results'  => 'show_brief_results',
+            'rsID'                => 'SNP.rsID',
+            'SNP_Name'            => 'SNP.SNPExternalName',
+            'SNP_Description'     => 'SNP.Description',
+            'SNP_External_Source' => 'SNP.SNPExternalSource',
+            'Allele_A'            => 'SNP_candidate_rel.AlleleA',
+            'Allele_B'            => 'SNP_candidate_rel.AlleleB',
+            'Reference_Base'      => 'SNP.ReferenceBase',
+            'Minor_Allele'        => 'SNP.MinorAllele',
+            'Array_Report'        => 'SNP.ArrayReport',
+            'Markers'             => 'SNP.Markers',
+            'Validation_Method'   => 'SNP_candidate_rel.ValidationMethod',
+            'Validated'           => 'SNP_candidate_rel.Validated',
+            'Function_Prediction' => 'SNP.FunctionPrediction',
+            'Damaging'            => 'SNP.Damaging',
+            'Genotype_Quality'    => 'SNP_candidate_rel.GenotypeQuality',
+            'Exonic_Function'     => 'SNP.ExonicFunction',
+            'Chromosome'          => 'SNP.Chromosome',
+            'Gene_Symbol'         => 'SNP.OfficalSymbol',
+            'genomic_range'       => 'genomic_range',
+            'Platform'            => 'genotyping_platform.Name',
+        );
 
         $this->formToFilter = $ftf;
     }
@@ -265,9 +265,9 @@ class SNP_Browser extends \NDB_Menu_Filter
             'sex',
             'Sex:',
             array(
-             ''       => 'All',
-             'Male'   => 'Male',
-             'Female' => 'Female',
+                ''       => 'All',
+                'Male'   => 'Male',
+                'Female' => 'Female',
             )
         );
         $this->addSelect(
@@ -278,17 +278,17 @@ class SNP_Browser extends \NDB_Menu_Filter
         $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
 
         $show_results_options = array(
-                                 'brief' => 'Summary fields',
-                                 'full'  => 'All fields',
-                                );
+            'brief' => 'Summary fields',
+            'full'  => 'All fields',
+        );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // SNP
 
         $Base_options = array(
-                         null => 'Any',
-                         '37' => 'GRCh37',
-                        );
+            null => 'Any',
+            '37' => 'GRCh37',
+        );
         $this->addSelect('Assembly', 'Build:', $Base_options);
 
         $this->addBasicText('rsID', 'rsID:');
@@ -296,12 +296,12 @@ class SNP_Browser extends \NDB_Menu_Filter
         $this->addBasicText('SNP_Description', 'Description:');
         $this->addBasicText('SNP_External_Source', 'External Source:');
         $Base_options = array(
-                         null => 'Any',
-                         'A'  => 'A',
-                         'C'  => 'C',
-                         'T'  => 'T',
-                         'G'  => 'G',
-                        );
+            null => 'Any',
+            'A'  => 'A',
+            'C'  => 'C',
+            'T'  => 'T',
+            'G'  => 'G',
+        );
         $this->addSelect('Allele_A', 'Allele A:', $Base_options);
         $this->addSelect('Allele_B', 'Allele B:', $Base_options);
         $this->addSelect('Reference_Base', 'Reference Base:', $Base_options);
@@ -311,40 +311,40 @@ class SNP_Browser extends \NDB_Menu_Filter
             'Validated',
             'Validated:',
             array(
-             null => 'Any',
-             '0'  => '0',
-             '1'  => '1',
+                null => 'Any',
+                '0'  => '0',
+                '1'  => '1',
             )
         );
         $this->addSelect(
             'Function_Prediction',
             'Function Prediction:',
             array(
-             null          => 'Any',
-             'exonic'      => 'exonic',
-             'ncRNAexonic' => 'ncRNAexonic',
-             'splicing'    => 'splicing',
-             'UTR3'        => 'UTR3',
-             'UTR5'        => 'UTR5',
+                null          => 'Any',
+                'exonic'      => 'exonic',
+                'ncRNAexonic' => 'ncRNAexonic',
+                'splicing'    => 'splicing',
+                'UTR3'        => 'UTR3',
+                'UTR5'        => 'UTR5',
             )
         );
         $this->addSelect(
             'Damaging',
             'Damaging:',
             array(
-             null => 'Any',
-             'D'  => 'D',
-             'NA' => 'NA',
+                null => 'Any',
+                'D'  => 'D',
+                'NA' => 'NA',
             )
         );
         $this->addBasicText('Genotype_Quality', 'Genotype Quality:');
         $this->addBasicText('Exonic_Function', 'Exonic Function:');
 
         $Base_options = array(
-                         null => 'Any',
-                         'F'  => 'Forward',
-                         'R'  => 'Reverse',
-                        );
+            null => 'Any',
+            'F'  => 'Forward',
+            'R'  => 'Reverse',
+        );
         $this->addSelect('Strand', 'Strand:', $Base_options);
 
         $this->addBasicText('genomic_range', 'Genomic Range:');
@@ -354,9 +354,9 @@ class SNP_Browser extends \NDB_Menu_Filter
         $DB = \Database::singleton();
         $platform_results
             = $DB->pselect(
-                "SELECT distinct Name FROM genotyping_platform ",
-                array()
-            );
+            "SELECT distinct Name FROM genotyping_platform ",
+            array()
+        );
 
         $platform_options = array('' => 'Any');
         foreach ($platform_results as $row => $result ) {
@@ -365,12 +365,12 @@ class SNP_Browser extends \NDB_Menu_Filter
         }
         $this->addSelect('Platform', 'Platform:', $platform_options);
         $Array_Report_options = array(
-                                 null        => 'Any',
-                                 'Abnormal'  => 'Abnormal',
-                                 'Normal'    => 'Normal',
-                                 'Pending'   => 'Pending',
-                                 'Uncertain' => 'Uncertain',
-                                );
+            null        => 'Any',
+            'Abnormal'  => 'Abnormal',
+            'Normal'    => 'Normal',
+            'Pending'   => 'Pending',
+            'Uncertain' => 'Uncertain',
+        );
         $this->addSelect('Array_Report', 'Array Report:', $Array_Report_options);
         $this->addBasicText('Markers', 'Markers:');
         $this->addBasicText('Validation_Method', 'Validation Method:');
@@ -387,7 +387,7 @@ class SNP_Browser extends \NDB_Menu_Filter
      * @note overloaded function
      *
      * @return string
-    */
+     */
     function _addValidFilters($prepared_key, $field, $val)
     {
         $query = ''; //initialize
@@ -450,8 +450,8 @@ class SNP_Browser extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/genomic_browser/js/genomic_browser.js",
-             $baseURL . "/genomic_browser/js/snpColumnFormatter.js",
+                $baseURL . "/genomic_browser/js/genomic_browser.js",
+                $baseURL . "/genomic_browser/js/snpColumnFormatter.js",
             )
         );
     }
