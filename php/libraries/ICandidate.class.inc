@@ -119,22 +119,6 @@ interface ICandidate
     public function getFirstVisit(): string;
 
     /**
-     * Returns the next visit number that should be created for this
-     * candidate.
-     *
-     * @return int The next visit number
-     */
-    public function getNextVisitNo() : int;
-
-    /**
-     * Returns list of consents and their respective statuses for this candidate
-     *
-     * @return array List of consents and their associated values for this candidate
-     *               The keys of the arrays are the IDs of the consents
-     */
-    public function getConsents(): array;
-
-    /**
      * Sets generic data in this object to $candidateParameters.
      * Manages the parameter_candidate table so that projects have a way to add
      * whatever data they want which is outside the scope of LORIS to their
