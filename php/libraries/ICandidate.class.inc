@@ -17,7 +17,7 @@ use LORIS\StudyEntities\Candidate\CandID;
  * Interface for Candidate objects.
  *
  * This deals with properties that may be accessed regarding
- * a user.
+ * a candidate.
  *
  * @category Main
  * @package  Main
