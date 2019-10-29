@@ -111,7 +111,7 @@ interface ICandidate
     public function getEntityType(): string;
 
     /**
-     * Returns the Visit_label for a subject's first TimePoint.
+     * Returns this candidate's first TimePoint.
      *
      * @return string The visit label for the candidate's first visit.
      *                  Returns an empty string if one doesn't exist.
