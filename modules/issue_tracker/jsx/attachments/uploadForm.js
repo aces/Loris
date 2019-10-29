@@ -90,17 +90,20 @@ class IssueUploadAttachmentForm extends Component {
           uploadProgress: -1,
         });
         swal('Upload Successful!', '', 'success');
+        window.location.href = window.location.origin
+          + '/issue_tracker/issue/'
+          + this.props.issue;
       }).catch((error) => {
-      console.error(error);
-      const msg = error.responseJSON ?
-        error.responseJSON.message
-        : 'Upload error!';
-      this.setState({
-        errorMessage: msg,
-        uploadProgress: -1,
+        console.error(error);
+        const msg = error.responseJSON ?
+          error.responseJSON.message
+          : 'Upload error!';
+        this.setState({
+          errorMessage: msg,
+          uploadProgress: -1,
+        });
+        swal(msg, '', 'error');
       });
-      swal(msg, '', 'error');
-    });
   }
 
   render() {
