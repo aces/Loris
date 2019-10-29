@@ -4,22 +4,30 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import Modal from 'jsx/Modal';
 
 class AttachmentsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       attachments: this.props.attachments,
+      showModalAttachmentDelete: false,
+      deleteItem: {
+        file_name: '',
+        file_uuid: '',
+      },
     };
     this.deleteAttachment = this.deleteAttachment.bind(this);
+    this.openModalAttachmentDelete = this.openModalAttachmentDelete.bind(this);
+    this.closeModalAttachmentDelete = this.closeModalAttachmentDelete.bind(this);
   }
 
-  deleteAttachment(event) {
-    const uuid = event.target.getAttribute('value');
+  deleteAttachment() {
+    const state = Object.assign({}, this.state);
     const url = window.location.origin +
       '/issue_tracker/ajax/Attachment.php' +
       '?action=delete' +
-      '&uuid=' + uuid;
+      '&uuid=' + state.deleteItem.file_uuid;
     fetch(url,
       {
         credentials: 'same-origin',
@@ -39,11 +47,52 @@ class AttachmentsList extends Component {
     );
   }
 
+  openModalAttachmentDelete(event) {
+    event.preventDefault();
+    const json = JSON.parse(event.target.getAttribute('value'));
+    this.setState({
+      showModalAttachmentDelete: true,
+      deleteItem: json,
+    });
+  }
+
+  closeModalAttachmentDelete() {
+    this.setState({
+      showModalAttachmentDelete: false,
+    });
+  }
+
   render() {
+    const footerCSS = {
+      float: 'right',
+      paddingRight: '100px',
+    };
+    const modalConfirmationDeleteAttachment = (
+      <Modal
+        title='Confirmation'
+        onClose={this.closeModalAttachmentDelete}
+        show={this.state.showModalAttachmentDelete}
+      >
+        <div className={'container'}>
+          <p style={{fontSize: '15pt'}}>
+            Please confirm the request to delete the
+            "{this.state.deleteItem.file_name}" attachment.
+          </p>
+        </div>
+        <div style={footerCSS}>
+          <ButtonElement
+            onUserInput={this.deleteAttachment}
+            label={'Delete attachment'}
+          />
+        </div>
+      </Modal>
+    );
+
     let attachmentsRows = [];
     for (const key in this.state.attachments) {
       if (this.state.attachments.hasOwnProperty(key)) {
         const item = this.state.attachments[key];
+        const deleteData = JSON.stringify(item);
         // Hide "soft" deleted attachments
         if (parseInt(item.deleted) === 1) {
           continue;
@@ -79,8 +128,8 @@ class AttachmentsList extends Component {
               <div className='col-md-12'>
                 <div className='col-md-2'><b>Attachment options: </b></div>
                 <div className='col-md-10'>
-                  <a onClick={this.deleteAttachment}
-                     value={item.file_uuid}
+                  <a onClick={this.openModalAttachmentDelete}
+                     value={deleteData}
                      style={{cursor: 'pointer'}}>
                     Delete
                   </a>&nbsp;&nbsp;|&nbsp;&nbsp;
@@ -110,6 +159,7 @@ class AttachmentsList extends Component {
     ) : null;
     return (
       <div id='file-collection'>
+        {modalConfirmationDeleteAttachment}
         {issueAttachments}
       </div>
     );
