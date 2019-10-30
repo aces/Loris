@@ -172,7 +172,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this-> _testFilter(self::$visitLabel, "362", 'V1');
         $this-> _testFilter(self::$visitLabel, "223", 'V2');
         $this-> _testFilter(self::$site, "7 rows", '1');
-        $this-> _testFilter(self::$site, "168", '2');
+        $this-> _testFilter(self::$site, "165", '2');
         $this-> _testFilter(self::$entityType, "438", '1');
 
         // test advanced filter - sex
