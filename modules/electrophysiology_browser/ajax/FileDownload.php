@@ -29,7 +29,7 @@ if (!$hasAccess) {
 
 // Make sure that the user isn't trying to break out of the $path
 // by using a relative filename.
-$file     = basename($_GET['File']);
+$file     = $_GET['File'];
 $config   =& NDB_Config::singleton();
 $path     = $config->getSetting('imagePath');
 $filePath = $path . $file;
