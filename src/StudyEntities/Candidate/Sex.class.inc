@@ -56,7 +56,7 @@ class Sex
      */
     private function validate(string $value): bool
     {
-        return in_array($value, self::ENTITY_TYPES, true);
+        return in_array($value, self::VALID_VALUES, true);
     }
 
     /**
