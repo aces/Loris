@@ -48,7 +48,7 @@ class Media extends \DataFrameworkMenu
 
     /**
      * Tells the base class that this page's provisioner can support
-     * the UserProjectMatch filter.
+     * the UserSitetMatch filter.
      *
      * @return bool true
      */

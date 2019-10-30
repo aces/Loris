@@ -65,7 +65,7 @@ class MediaFile implements \LORIS\Data\DataInstance
      * Returns the ProjectID for this instance, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match against.
      *
-     * @return integer The CenterID
+     * @return integer The ProjectID
      */
     public function getProjectID(): int
     {
