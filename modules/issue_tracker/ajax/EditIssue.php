@@ -687,7 +687,7 @@ ORDER BY dateAdded LIMIT 1",
         }
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['othersWatching'] = getWatching($issueID);
-        $issueData['desc']           = $desc[0]['issueComment'];
+        $issueData['desc']           = $desc[0]['issueComment'] ?? '';
     }
     $issueData['comment'] = null;
 
