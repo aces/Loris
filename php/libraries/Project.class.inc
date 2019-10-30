@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains a class which encapsulates the concept of a "Project"
  * in LORIS.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -25,6 +25,11 @@ class Project
 {
     private static $_instances = array();
 
+    /**
+     * The id of the project in database.
+     *
+     * @var int
+     */
     private $_projectId;
     private $_projectName;
     private $_recruitmentTarget;
@@ -53,11 +58,9 @@ class Project
     {
         if (!isset(self::$_instances[$projectName])) {
             $factory = \NDB_Factory::singleton();
-            $config  = $factory->config();
 
-            if ($config->getSetting("useProjects") == 'true') {
-                $projectData = $factory->database()->pSelectRow(
-                    "
+            $projectData = $factory->database()->pSelectRow(
+                "
                     SELECT
                       projectId,
                       name,
@@ -66,24 +69,18 @@ class Project
                       Project
                     WHERE name = :v_project_name
                     ",
-                    array('v_project_name' => $projectName)
-                );
+                array('v_project_name' => $projectName)
+            );
 
-                if (empty($projectData)) {
-                    throw new \NotFound("No project named: $projectName");
-                }
-
-                $project = new Project();
-
-                $project->_projectId         = $projectData['projectId'];
-                $project->_projectName       = $projectData['name'];
-                $project->_recruitmentTarget = (integer) $projectData['recTarget'];
-            } else {
-                if ($projectName != 'loris') {
-                    throw new \LorisException("This study is not using projects");
-                }
-                $project =& ProjectDefault::singleton('loris');
+            if (empty($projectData)) {
+                throw new \NotFound("No project named: $projectName");
             }
+
+            $project = new Project();
+
+            $project->_projectId         = (int) $projectData['projectId'];
+            $project->_projectName       = $projectData['name'];
+            $project->_recruitmentTarget = (integer) $projectData['recTarget'];
 
             self::$_instances[$projectName] = $project;
         }
@@ -91,13 +88,12 @@ class Project
         return self::$_instances[$projectName];
     }
 
-
     /**
      * This does the work of creating a new Project by inserting a new entry in the
      * Project table and return the object instance of the newly created project.
      *
-     * @param string  $projectName       The project name
-     * @param integer $recruitmentTarget The number of expected participants
+     * @param string       $projectName       The project name
+     * @param integer|null $recruitmentTarget The number of expected participants
      *
      * @note If the recruitmentTarget is missing or null, this project
      * recruitmentTarget will be the sum of all its subprojects recruitmentTarget
@@ -106,8 +102,10 @@ class Project
      * @return Project the Project object
      * @throws DatabaseException | LorisException
      */
-    static public function createNew($projectName, $recruitmentTarget = null)
-    {
+    static public function createNew(
+        string $projectName,
+        ?int $recruitmentTarget = null
+    ): \Project {
 
         // TODO :: Add not null constraint to the name column of the Project table
         if (empty($projectName)) {
@@ -149,7 +147,7 @@ class Project
      *
      * @return integer This project's id
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->_projectId;
     }
@@ -161,7 +159,7 @@ class Project
      *
      * @return void
      */
-    public function setId($projectId)
+    public function setId(int $projectId): void
     {
         $this->_projectId = $projectId;
     }
@@ -171,7 +169,7 @@ class Project
      *
      * @return string This project's name
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_projectName;
     }
@@ -183,7 +181,7 @@ class Project
      *
      * @return void
      */
-    public function setName($projectName)
+    public function setName(string $projectName): void
     {
         $this->_projectName = $projectName;
     }
@@ -210,7 +208,7 @@ class Project
             // database.
             $this->_recruitmentTarget = $total;
         }
-        return (int )$this->_recruitmentTarget;
+        return (int)$this->_recruitmentTarget;
     }
 
     /**
@@ -218,7 +216,7 @@ class Project
      *
      * @return array A list of object representation of subprojects
      */
-    public function getSubprojects()
+    public function getSubprojects(): array
     {
         $factory        = \NDB_Factory::singleton();
         $subProjectData = $factory->database()->pselect(
@@ -258,14 +256,11 @@ class Project
      *
      * @return array A list of object representation of a basic candidates
      */
-    public function getCandidateIds()
+    public function getCandidateIds(): array
     {
         $factory = \NDB_Factory::singleton();
 
         $p = array($this->_projectId);
-        if ($factory->config()->getSetting('useProjects') !== 'true') {
-            array_push($p, '-1');
-        }
         $candidatesData = $factory->database()->pselect(
             "
             SELECT

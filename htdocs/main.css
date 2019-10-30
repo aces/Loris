@@ -31,7 +31,7 @@ html, body {
 }
 
 #page {
-    min-height: 100%;
+    min-height: 100vh;
     position: relative;
     padding-top: 50px;
 }
@@ -54,7 +54,7 @@ em {
 
 /* anchor tags */
 a, a:link, a:visited {
-	color: #064785; 
+	color: #246EB6; 
 	text-decoration: none;
  	}
 a:active {
@@ -403,9 +403,9 @@ table.data {
 }
 
 .data tr th {
-    background: #1C70B6;
+    background: #E4EBF2;
     /* color: #CCC; */
-    color: white;
+    color: #064785;
     padding: 3px;
 }
 .data tr td {
@@ -489,14 +489,13 @@ list-style-type: none;
 
 #navlist a:link, #navlist a:visited
 {
-color: #064785;
+color: #246EB6;
 text-decoration: none;
 }
 
 #navlist a:hover
 {
-color: #064785;
-/*background-color: #369;*/
+color: #E89A0C;
 text-decoration: none;
 }
 #navbarspacer{
@@ -530,11 +529,7 @@ td.sidenav {
     text-align: left;
 }
 .navigationButtons a, .controlPanel li a:hover {
-	color: #fff !important;
-}
-.navigationButtons.active, .controlPanel li:hover {
-    background: #47F !important; 
-    /* background: green; */
+	color: #E89A0C !important;
 }
 .navigationButtons {
     float: left !important;
@@ -671,7 +666,10 @@ tr.directentry {
 .help-content {
     max-height: 94%;
     width: 30%;
-    background: #064785;
+    background: #E4EBF2;
+    border-style: solid;
+    border-color: #246EB6;
+    border-width: 0px 0px 1px 1px;
     height: auto;
     position: fixed;
     top: 50px;
@@ -684,7 +682,7 @@ tr.directentry {
 .help-content #help-wrapper {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
-    color: #FFFFFF;
+    color: #064785;
     padding: 9.5px;
 }
 #help-seperator {
@@ -701,12 +699,12 @@ tr.directentry {
    margin: 10px;
 }
 .help-content h3 {
-    color: #FFFFFF;
+    color: #064785;
 }
 
 .help-content a {
    text-decoration: underline;
-   color: white;
+   color: #064785;
 
 }
 

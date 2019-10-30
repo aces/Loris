@@ -1,18 +1,19 @@
 .tabHeader {
-	padding-bottom: 20px;
+    padding-bottom: 20px;
 }
+
 .spacingTop {
-	margin-top: 10px;
+    margin-top: 10px;
 }
 
 /* Truncate long file names */
 .file-upload .file-caption-name {
-	width: 202px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+    width: 202px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .file-upload .input-group-btn {
-	display: block;
+    display: block;
 }

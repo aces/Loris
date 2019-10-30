@@ -19,13 +19,13 @@ td.sidenav {
 }
 
 ul {
-    margin: 0px;
+    margin: 0;
     padding-left: 12px;
     list-style-type: none;
 }
 
 dl {
-    margin-top: 0px;
+    margin-top: 0;
     margin-bottom: 8px;
     padding-top: 5px;
 
@@ -43,6 +43,7 @@ h3 {
 .clickable {
     cursor: pointer;
 }
+
 .panel-title {
     display: inline;
     margin-top: 0;
@@ -50,27 +51,31 @@ h3 {
     font-size: 16px;
     color: inherit
 }
+
 .views {
     margin-right: 10px;
     margin-top: -2px;
 }
+
 .btn-volume-viewer {
-  color: #fff;
-  background-color: #778;
-  border-color: #333;
-  margin-bottom: 3px;
+    color: #fff;
+    background-color: #778;
+    border-color: #333;
+    margin-bottom: 3px;
 }
+
 .header-info {
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 13px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
 }
+
 .static-info {
-  color: #064785;
-  text-decoration: none;
+    color: #064785;
+    text-decoration: none;
 }
 
 .page-issue-tracker h3 {
-  margin: 25px 0;
+    margin: 25px 0;
 }
 
 .history-item-label > span {

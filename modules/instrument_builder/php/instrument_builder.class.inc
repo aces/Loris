@@ -35,32 +35,13 @@ class Instrument_Builder extends \NDB_Form
      * Tests that, when loading the Instrument builder module, some
      * text appears in the body.
      *
-     * @return bool
-     */
-    function _hasAccess()
-    {
-        return $this->_hasPerm('instrument_builder');
-    }
-    /**
-     * Wrapper to get the user object and check the permission.
-     *
-     * @param string $perm the value of perm
+     * @param \User $user The user whose access is being checked
      *
      * @return bool
      */
-    function _hasPerm($perm)
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-        return $user->hasPermission($perm);
-    }
-    /**
-     * Instrument builder
-     *
-     * @return void
-     */
-    function instrument_builder()// @codingStandardsIgnoreLine
-    {
-
+        return $user->hasPermission('instrument_builder');
     }
 
     /**
@@ -101,4 +82,4 @@ class Instrument_Builder extends \NDB_Form
         );
     }
 }
-?>
+

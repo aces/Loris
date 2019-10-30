@@ -2,7 +2,7 @@
 /**
  * Data Querying Module
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Data_Querying_Module
  * @package  Loris
@@ -15,7 +15,7 @@ namespace LORIS\dataquery;
 /**
  * Data Querying Module
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Data_Querying_Module
  * @package  Loris
@@ -28,16 +28,16 @@ class Dataquery extends \NDB_Form
     /**
      * Check user access permission
      *
-     * @return bool|object
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         // check user permissions
         return $user->hasPermission('dataquery_view');
     }
+
     /**
      * Sets up the smarty template variables for the dataquery page.
      *
@@ -51,10 +51,29 @@ class Dataquery extends \NDB_Form
         $username    = $user->getUsername();
         $config      = \NDB_Config::singleton();
         $couchConfig = $config->getSetting('CouchDB');
-        $couch       = \NDB_Factory::singleton()->couchDB(
+        $couchConfigValid = isset(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
             $couchConfig['port'],
+            $couchConfig['admin'],
+            $couchConfig['adminpass']
+        );
+        if (!$couchConfigValid) {
+            error_log(
+                'Data Query Tool cannot be loaded due to missing ' .
+                'configuration settings. Ensure that `dbName`, `hostname`, ' .
+                '`port`, `admin` and `adminpass` values are properly ' .
+                'configured in project/config.xml'
+            );
+            throw new \ConfigurationException(
+                'Missing CouchDB configuration settings. Cannot load ' .
+                'Data Query Tool.'
+            );
+        }
+        $couch = \NDB_Factory::singleton()->couchDB(
+            $couchConfig['dbName'],
+            $couchConfig['hostname'],
+            intval($couchConfig['port']),
             $couchConfig['admin'],
             $couchConfig['adminpass']
         );

@@ -26,97 +26,49 @@ namespace LORIS\help_editor;
 class Help_Editor extends \NDB_Menu_Filter
 {
     public $skipTemplate = true;
+    public $AjaxModule   = true;
 
-     /**
-       *  Checking user permissions
-       *
-       * @return bool
-       */
-    function _hasAccess()
+    /**
+     *  Checking user permissions
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
-
         return $user->hasPermission('context_help');
-    }
-     /**
-       * Setup Variables function
-       *
-       * @return void
-       */
-    function _setupVariables()
-    {
-        $user = \User::singleton();
-
-        // the base query
-        $query = " FROM help helpChild LEFT JOIN help helpParent".
-                 " ON (helpChild.parentID = helpParent.helpID )".
-                 " WHERE helpChild.hash IS NOT NULL".
-                 " AND helpChild.topic IS NOT NULL";
-
-        // set the class variables
-        $contentColumn      = "helpChild.content as Content";
-        $this->columns      = array(
-                               'helpChild.helpID as helpID',
-                               'helpChild.topic as Topic',
-                               'helpChild.parentID as Parent_ID',
-                               'helpParent.parentID as ParentTopic_ID',
-                               'helpParent.topic as Parent_Topic',
-                               $contentColumn,
-                              );
-        $this->query        = $query;
-        $this->order_by     = 'helpChild.helpID';
-        $this->headers      = array(
-                               'HelpID',
-                               'Topic',
-                               'ParentID',
-                               'ParentTopicID',
-                               'Parent_Topic',
-                               'Content',
-                              );
-        $this->validFilters = array('helpChild.topic');
-
-        $this->formToFilter  = array('topic' => 'helpChild.topic');
-        $this->searchKeyword = array(
-                                'helpChild.topic',
-                                'helpChild.content',
-                               );
-        return true;
     }
 
     /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
+     * Gets the data source for this menu filter.
      *
-     * @return void
+     * @return \LORIS\Data\Provisioner
      */
-    function setup()
+    function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        parent::setup();
-
-        // add form elements
-        $this->addBasicText('topic', 'Help topic:');
-        $this->addBasicText('keyword', 'Search keyword:');
+        return new HelpRowProvisioner();
     }
+
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return string json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {
-        $result = $this->toArray();
-        $result['hiddenHeaders'] = [
-                                    'HelpID',
-                                    'ParentID',
-                                    'ParentTopicID',
-                                   ];
-        $result['form']          = $this->form->form;
-
-        return json_encode($result);
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisioner());
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\User::singleton()), true)
+        );
+        return json_encode($arr);
     }
+
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
@@ -134,4 +86,4 @@ class Help_Editor extends \NDB_Menu_Filter
         );
     }
 }
-?>
+

@@ -3,14 +3,18 @@
  InstrumentConflictsPanel
  */
 
-var PagedRowHeader = React.createClass({
-  propType: {
-    headerRow: React.PropTypes.array.isRequired
-  },
-  render: function() {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+class PagedRowHeader extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     return (
       <thead>
-      <tr className="info">
+      <tr className='info'>
         {this.props.headerRow.map(function(headerColumn, key) {
           return (<th key={key}>{headerColumn}</th>);
         })}
@@ -18,61 +22,65 @@ var PagedRowHeader = React.createClass({
       </thead>
     );
   }
-});
+}
+PagedRowHeader.propType = {
+  headerRow: PropTypes.array.isRequired,
+};
 
-var PagedTable = React.createClass({
-  propTypes: {
-    tableHeaders: React.PropTypes.array,
-    tableRows: React.PropTypes.array
-  },
-  getInitialState: function() {
-    return {
+class PagedTable extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       pageSize: 10,
-      currentPage: 1
+      currentPage: 1,
     };
-  },
-  componentWillReceiveProps: function(nextProps) {
+
+    this.getPage = this.getPage.bind(this);
+    this.getNumPages = this.getNumPages.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
     this.setState({
-      currentPage: 1
+      currentPage: 1,
     });
-  },
-  getPage: function() {
-    var start = this.state.pageSize * (this.state.currentPage - 1);
-    var end = start + this.state.pageSize;
+  }
+
+  getPage() {
+    let start = this.state.pageSize * (this.state.currentPage - 1);
+    let end = start + this.state.pageSize;
 
     return {
       currentPage: this.state.currentPage,
       tableRows: this.props.tableRows.slice(start, end),
       numPages: this.getNumPages(),
-      handleClick: function(pageNum) {
-        return function() {
-          this.handlePageChange(pageNum);
-        }.bind(this);
-      }.bind(this)
+      handleClick: this.handlePageChange,
     };
-  },
-  getNumPages: function() {
-    var numPages = Math.floor(
+  }
+
+  getNumPages() {
+    let numPages = Math.floor(
       this.props.tableRows.length / this.state.pageSize
     );
     if (this.props.tableRows.length % this.state.pageSize > 0) {
       numPages++;
     }
     return numPages;
-  },
-  handlePageChange: function(pageNum) {
+  }
+  handlePageChange(pageNum) {
     this.setState({currentPage: pageNum});
-  },
-  render: function() {
-    var tableContents = "There is no data to display";
-    var page = this.getPage();
-    var rowsToMap = page.tableRows;
-    var childrenToMap = this.props.children;
+  }
 
-    var currentPageRows = rowsToMap.map(function(row) {
-      var mapped = React.Children.map(childrenToMap, function(child) {
+  render() {
+    let tableContents = 'There is no data to display';
+    let page = this.getPage();
+    let rowsToMap = page.tableRows;
+    let childrenToMap = this.props.children;
+
+    let currentPageRows = rowsToMap.map(function(row) {
+      let mapped = React.Children.map(childrenToMap, function(child) {
         return React.cloneElement(child, {
-          row: row
+          row: row,
         });
       });
       return mapped;
@@ -80,7 +88,7 @@ var PagedTable = React.createClass({
 
     if (currentPageRows.length) {
       tableContents = (
-        <table className="table table-hover table-bordered colm-freeze">
+        <table className='table table-hover table-bordered colm-freeze'>
           <PagedRowHeader headerRow={this.props.tableHeaders}/>
           <tbody>
             {currentPageRows}
@@ -92,50 +100,62 @@ var PagedTable = React.createClass({
     return (
       <div>
         {tableContents}
-        <nav><BVLPager page={page}/></nav>
+        <nav>
+          <BVLPager
+            page={page}
+          />
+        </nav>
       </div>
     );
   }
-});
+}
+PagedTable.propTypes = {
+  tableHeaders: PropTypes.array,
+  tableRows: PropTypes.array,
+};
 
-var IncompleteCandidatesRow = React.createClass({
-  handleClick: function(event) {
+class IncompleteCandidatesRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
     event.preventDefault();
-    var link = this.refs.incomplete;
-    window.open(link, "Incomplete Candidate");
-  },
-  propTypes: {
-    row: React.PropTypes.object.isRequired,
-    BaseURL: React.PropTypes.string.isRequired
+    let link = this.refs.incomplete;
+    window.open(link, 'Incomplete Candidate');
+  }
 
-  },
-  render: function() {
-    var row = this.props.row;
+  render() {
+    let row = this.props.row;
     return (
       <tr key={row.id} >
         <td>
-          <a href={this.props.BaseURL + "/instruments_list/?candID=" +
+          <a href={this.props.BaseURL + '/instrument_list/?candID=' +
               row.candid +
-              "&sessionID=" + row.SessionID}
+              '&sessionID=' + row.SessionID}
           >
             {row.visit_label}
           </a>
         </td>
         <td>
-          <a href={this.props.BaseURL + "/" + row.candid + "/"}>
+          <a href={this.props.BaseURL + '/' + row.candid + '/'}>
             {row.candid}
           </a>
         </td>
           <td>
-              <a href={this.props.BaseURL + "/" + row.candid + "/"}>
+              <a href={this.props.BaseURL + '/' + row.candid + '/'}>
                   {row.PSCID}
               </a>
           </td>
         <td>
-          <a href={this.props.BaseURL + "/instruments/" + row.test_name +
-              "/?candID=" + row.candid +
-              "&sessionID=" + row.SessionID +
-              "&commentID=" + row.commentid} ref="incomplete"
+          <a href={this.props.BaseURL + '/instruments/' + row.test_name +
+              '/?candID=' + row.candid +
+              '&sessionID=' + row.SessionID +
+              '&commentID=' + row.commentid} ref='incomplete'
               onClick={this.handleClick} >
             {row.Full_name}
           </a>
@@ -143,16 +163,23 @@ var IncompleteCandidatesRow = React.createClass({
       </tr>
     );
   }
-});
+}
+IncompleteCandidatesRow.propTypes = {
+  row: PropTypes.object.isRequired,
+  BaseURL: PropTypes.string.isRequired,
+};
 
-var InstrumentConflictsRow = React.createClass({
-  proptypes: {
-    row: React.PropTypes.object.isRequired,
-    BaseURL: React.PropTypes.string.isRequired
-  },
-  render: function() {
-    var row = this.props.row;
-    var baseURL = this.props.BaseURL;
+class InstrumentConflictsRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
+  render() {
+    let row = this.props.row;
+    let baseURL = this.props.BaseURL;
     return (
       <tr
         key={row.CandID + row.visit_label + row.test_name_display +
@@ -161,14 +188,14 @@ var InstrumentConflictsRow = React.createClass({
       >
         <td>{row.visit_label}</td>
         <td>
-          <a href={baseURL + "/" + row.CandID + "/"}>{row.CandID}</a>
+          <a href={baseURL + '/' + row.CandID + '/'}>{row.CandID}</a>
         </td>
           <td>
-              <a href={baseURL + "/" + row.CandID + "/"}>{row.PSCID}</a>
+              <a href={baseURL + '/' + row.CandID + '/'}>{row.PSCID}</a>
           </td>
         <td>
           <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-                 "conflict_resolver/",
+                 'conflict_resolver/',
                   {CandID: row.CandID,
                   Instrument: row.TableName,
                   Question: row.FieldName}
@@ -178,56 +205,65 @@ var InstrumentConflictsRow = React.createClass({
       </tr>
     );
   }
-});
+}
+InstrumentConflictsRow.proptypes = {
+  row: PropTypes.object.isRequired,
+  BaseURL: PropTypes.string.isRequired,
+};
 
-var BehaviouralFeedbackRow = React.createClass({
-  handleClick: function(event) {
+class BehaviouralFeedbackRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
     event.preventDefault();
-    var link = this.refs.feedback.href;
-    window.open(link, "Behavioural Feedback");
-  },
-  propTypes: {
-    row: React.PropTypes.object.isRequired,
-    BaseURL: React.PropTypes.string.isRequired
-  },
-  render: function() {
-    var row = this.props.row;
-    var bvlLink;
-    var bvlLevel;
+    let link = this.refs.feedback.href;
+    window.open(link, 'Behavioural Feedback');
+  }
+
+  render() {
+    let row = this.props.row;
+    let bvlLink;
+    let bvlLevel;
 
     if (row.Feedback_level === 'visit') {
-      bvlLink = this.props.BaseURL + "/instrument_list/?candID=" + row.CandID +
-            "&sessionID=" + row.SessionID;
-      bvlLevel = "Visit : " + row.Visit_label;
+      bvlLink = this.props.BaseURL + '/instrument_list/?candID=' + row.CandID +
+            '&sessionID=' + row.SessionID;
+      bvlLevel = 'Visit : ' + row.Visit_label;
     }
 
     if (row.Feedback_level === 'instrument') {
-      bvlLink = this.props.BaseURL + "/instruments/" + row.Test_name +
-            "/?candID=" + row.CandID +
-            "&sessionID=" + row.SessionID +
-            "&commentID=" + row.CommentID;
-      bvlLevel = "Instrument : " + row.Full_name;
+      bvlLink = this.props.BaseURL + '/instruments/' + row.Test_name +
+            '/?candID=' + row.CandID +
+            '&sessionID=' + row.SessionID +
+            '&commentID=' + row.CommentID;
+      bvlLevel = 'Instrument : ' + row.Full_name;
     }
 
     if (row.Feedback_level === 'profile') {
-      bvlLink = this.props.BaseURl + "/" + row.CandID + "/";
-      bvlLevel = "Profile";
+      bvlLink = this.props.BaseURl + '/' + row.CandID + '/';
+      bvlLevel = 'Profile';
     }
 
     return (
       <tr key={row.FeedbackID} >
         <td>
-          <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
+          <a href={this.props.BaseURL + '/' + row.CandID + '/'}>
             {row.CandID}
           </a>
         </td>
           <td>
-              <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
+              <a href={this.props.BaseURL + '/' + row.CandID + '/'}>
                   {row.PSCID}
               </a>
           </td>
         <td>
-          <a href={bvlLink} onClick={this.handleClick} ref="feedback">
+          <a href={bvlLink} onClick={this.handleClick} ref='feedback'>
             {bvlLevel}
           </a>
         </td>
@@ -237,29 +273,45 @@ var BehaviouralFeedbackRow = React.createClass({
       </tr>
     );
   }
-});
+}
+BehaviouralFeedbackRow.propTypes = {
+  row: PropTypes.object.isRequired,
+  BaseURL: PropTypes.string.isRequired,
+};
 
-var DefaultPanel = React.createClass({
-  displayName: 'CandidatesPanelTable',
-  propTypes: {
-    title: React.PropTypes.string
-  },
-  render: function() {
+class DefaultPanel extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      displayName: 'CandidatesPanelTable',
+    };
+  }
+
+  render() {
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading">{this.props.title}</div>
-        <div className="panel-body">
+      <div className='panel panel-primary'>
+        <div className='panel-heading'>{this.props.title}</div>
+        <div className='panel-body'>
           {this.props.children}
         </div>
       </div>
     );
   }
-});
+}
+DefaultPanel.propTypes = {
+  title: PropTypes.string,
+  children: PropTypes.string,
+};
 
-var IncompleteCandidates = React.createClass({
-  render: function() {
+class IncompleteCandidates extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+  }
+  render() {
     // The actual row is passed as a child inside PagedTable
-    var row = {};
+    let row = {};
     return (
       <DefaultPanel title={this.props.title}>
         <PagedTable
@@ -271,12 +323,26 @@ var IncompleteCandidates = React.createClass({
       </DefaultPanel>
     );
   }
-});
+}
+IncompleteCandidates.propTypes = {
+  title: PropTypes.string,
+  incomplete_candidates: PropTypes.array,
+  header: PropTypes.array,
+  BaseURL: PropTypes.string,
+};
 
-var InstrumentConflicts = React.createClass({
-  render: function() {
+
+class InstrumentConflicts extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
+  render() {
     // The actual row is passed as a child inside PagedTable
-    var row = {};
+    let row = {};
     return (
       <DefaultPanel title={this.props.title}>
         <PagedTable
@@ -288,12 +354,25 @@ var InstrumentConflicts = React.createClass({
       </DefaultPanel>
     );
   }
-});
+}
+InstrumentConflicts.propTypes = {
+  title: PropTypes.string,
+  conflicts: PropTypes.array,
+  header: PropTypes.array,
+  BaseURL: PropTypes.string,
+};
 
-var BehaviouralFeedback = React.createClass({
-  render: function() {
+class BehaviouralFeedback extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
+  render() {
     // The actual row is passed as a child inside PagedTable
-    var row = {};
+    let row = {};
     return (
       <DefaultPanel title={this.props.title}>
         <PagedTable
@@ -305,22 +384,30 @@ var BehaviouralFeedback = React.createClass({
       </DefaultPanel>
     );
   }
-});
+}
+BehaviouralFeedback.propTypes = {
+  title: PropTypes.string,
+  feedback: PropTypes.array,
+  header: PropTypes.array,
+  BaseURL: PropTypes.string,
+};
 
-var BVLPager = React.createClass({
-  render: function() {
-    var page = this.props.page;
-    var pageLinks = [];
+class BVLPager extends Component {
+  constructor(props) {
+    super(props);
+
+    let page = this.props.page;
+    let pageLinks = [];
 
     if (page.currentPage > 1) {
       pageLinks.push(
-        <li key={1} onClick={page.handleClick(page.currentPage - 1)}>
+        <li key={1} onClick={() => page.handleClick(page.currentPage - 1)}>
           <span>‹</span>
         </li>
       );
       if (page.currentPage > 2) {
         pageLinks.push(
-          <li key={2} onClick={page.handleClick(1)}>
+          <li key={2} onClick={() => page.handleClick(1)}>
             <span>1</span>
           </li>
         );
@@ -330,20 +417,20 @@ var BVLPager = React.createClass({
 
     if (page.numPages > 1) {
       pageLinks.push(
-        <li key={4} className="active"><span>{page.currentPage}</span></li>
+        <li key={4} className='active'><span>{page.currentPage}</span></li>
       );
     }
 
     if (page.currentPage < page.numPages) {
       pageLinks.push(
-        <li key={5} onClick={page.handleClick(page.currentPage + 1)}>
+        <li key={5} onClick={() => page.handleClick(page.currentPage + 1)}>
           <span>{page.currentPage + 1}</span>
         </li>
       );
 
       if (page.currentPage < page.numPages - 1) {
         pageLinks.push(
-          <li key={6} onClick={page.handleClick(page.currentPage + 2)}>
+          <li key={6} onClick={() => page.handleClick(page.currentPage + 2)}>
             <span>{page.currentPage + 2}</span>
           </li>
         );
@@ -351,7 +438,7 @@ var BVLPager = React.createClass({
 
       if (page.currentPage < page.numPages - 2) {
         pageLinks.push(
-          <li key={7} onClick={page.handleClick(page.currentPage + 3)}>
+          <li key={7} onClick={() => page.handleClick(page.currentPage + 3)}>
             <span>{page.currentPage + 3}</span>
           </li>
         );
@@ -360,33 +447,49 @@ var BVLPager = React.createClass({
       if (page.currentPage < page.numPages - 3) {
         pageLinks.push(<li key={8}><span>...</span></li>);
         pageLinks.push(
-          <li key={9} onClick={page.handleClick(page.numPages)}>
+          <li key={9} onClick={() => page.handleClick(page.numPages)}>
             <span>{page.numPages}</span>
           </li>
         );
       }
 
       pageLinks.push(
-        <li key={10} onClick={page.handleClick(page.currentPage + 1)}>
-          <span aria-hidden="true">›</span>
+        <li key={10} onClick={() => page.handleClick(page.currentPage + 1)}>
+          <span aria-hidden='true'>›</span>
         </li>
       );
     }
+    this.state = {
+      pageLinks: pageLinks,
+    };
+  }
+
+  render() {
     return (
-      <ul className="pagination pagination-sm">{pageLinks}</ul>
+      <ul className='pagination pagination-sm'>{this.state.pageLinks}</ul>
     );
   }
-});
+}
+BVLPager.propTypes = {
+  page: PropTypes.object,
+};
 
-var dataTeamGraphics = React.createClass({
-  componentDidMount: function() {
+class dataTeamGraphics extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
+  componentDidMount() {
     c3.generate({
       bindto: '#completedChart',
       data: {
         columns: [
-          ['data', this.props.percentCompleted]
+          ['data', this.props.percentCompleted],
         ],
-        type: 'gauge'
+        type: 'gauge',
       },
       color: {
         // the three color levels for the percentage values.
@@ -394,50 +497,59 @@ var dataTeamGraphics = React.createClass({
         threshold: {
           // unit: 'value', // percentage is default
           // max: 200, // 100 is default
-          values: [30, 60, 90, 100]
-        }
-      }
+          values: [30, 60, 90, 100],
+        },
+      },
     });
-  },
-  render: function() {
-    var pscidStatus = (
-      this.props.pscid ? ("Candidate " + this.props.pscid) : "All Candidates"
+  }
+  render() {
+    let pscidStatus = (
+      this.props.pscid ? ('Candidate ' + this.props.pscid) : 'All Candidates'
     );
-    var visitStatus = (
-      this.props.visit ? ("On " + this.props.visit) : "Across All Visits"
+    let visitStatus = (
+      this.props.visit ? ('On ' + this.props.visit) : 'Across All Visits'
     );
-    var instrumentStatus = (
-      this.props.instrument ? ("On Instrument " + this.props.instrument) :
-        "Across All Instruments"
+    let instrumentStatus = (
+      this.props.instrument ? ('On Instrument ' + this.props.instrument) :
+        'Across All Instruments'
     );
-    var siteStatus = (
+    let siteStatus = (
       this.props.site ? (this.props.site) :
-        "Across All Sites"
+        'Across All Sites'
       );
-    var projectStatus = (
+    let projectStatus = (
       this.props.project ? (this.props.project) :
-        "Across All Projects"
+        'Across All Projects'
       );
 
     return (
-      <div className="col-sm-12 col-md-5">
-        <div className="panel panel-primary">
-          <div className="panel-heading">
+      <div className='col-sm-12 col-md-5'>
+        <div className='panel panel-primary'>
+          <div className='panel-heading'>
             At A Glance: {pscidStatus} - {visitStatus} - {instrumentStatus} - {siteStatus} -{projectStatus}
           </div>
-          <div className="panel-body">
-            <div id="completedChart"></div>
+          <div className='panel-body'>
+            <div id='completedChart'/>
           </div>
         </div>
       </div>
     );
   }
-});
+}
+dataTeamGraphics.propTypes = {
+  percentCompleted: PropTypes.string,
+  pscid: PropTypes.string,
+  visit: PropTypes.string,
+  instrument: PropTypes.string,
+  site: PropTypes.string,
+  project: PropTypes.string,
+};
 
-var GraphicsPanel = React.createFactory(dataTeamGraphics);
-var BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
-var IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
-var InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
+
+let GraphicsPanel = React.createFactory(dataTeamGraphics);
+let BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
+let IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
+let InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
 
 window.GraphicsPanel = GraphicsPanel;
 window.BehaviouralFeedbackTab = BehaviouralFeedbackTab;
@@ -448,6 +560,6 @@ export default {
   GraphicsPanel,
   BehaviouralFeedbackTab,
   IncompleteCandidatesPanel,
-  InstrumentConflictsPanel
+  InstrumentConflictsPanel,
 };
 

@@ -2,7 +2,7 @@
 /**
  * This file contains the class for the Site object
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
@@ -23,7 +23,6 @@
  */
 class Site
 {
-
     var $_siteInfo;
 
     /**
@@ -43,7 +42,7 @@ class Site
             } catch(Exception $e) {
                 $message = $e->getMessage();
                 unset($siteList[$centerID]);
-                throw new Exception("Could not select site ($message)", null, $e);
+                throw new Exception("Could not select site ($message)", 0, $e);
 
             }
         }
@@ -58,7 +57,7 @@ class Site
      *
      * @return void
      */
-    function select($centerID)
+    function select(int $centerID): void
     {
         $this->_siteInfo['CenterID'] = $centerID;
 
@@ -85,7 +84,7 @@ class Site
      *
      * @return string The full name of site
      */
-    function getCenterName()
+    function getCenterName(): string
     {
         return $this->_siteInfo['Name'];
     }
@@ -95,7 +94,7 @@ class Site
      *
      * @return integer ID of this site
      */
-    function getCenterID()
+    function getCenterID(): int
     {
         return $this->_siteInfo['CenterID'];
     }
@@ -105,7 +104,7 @@ class Site
      *
      * @return string alias representing this site
      */
-    function getSiteAlias()
+    function getSiteAlias(): string
     {
         return $this->_siteInfo['Alias'];
     }
@@ -115,7 +114,7 @@ class Site
      *
      * @return string alias representing this site
      */
-    function getSiteMRIAlias()
+    function getSiteMRIAlias(): string
     {
         return $this->_siteInfo['MRI_alias'];
     }
@@ -125,7 +124,7 @@ class Site
      *
      * @return string account name for this site
      */
-    function getSiteAccount()
+    function getSiteAccount(): string
     {
         return $this->_siteInfo['Account'];
     }
@@ -135,11 +134,9 @@ class Site
      *
      * @return boolean true if a study site
      */
-    function isStudySite()
+    function isStudySite(): bool
     {
         return ($this->_siteInfo['Study_site'] == 'Y');
     }
-
-
 }
-?>
+

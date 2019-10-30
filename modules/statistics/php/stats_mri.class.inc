@@ -28,18 +28,20 @@ class Stats_MRI extends \NDB_Form
     /**
      * Checking user's permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return $user->hasPermission('data_entry');
     }
+
     /**
      * InCenter function
      *
      * @param string $centerID the value of centerID
-     * @param string $Centers  the value of centers
+     * @param array  $Centers  the value of centers
      *
      * @return bool
      */
@@ -56,34 +58,37 @@ class Stats_MRI extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string $sectionHeader     the value of sectionHeader
-     * @param string $tableHeader       the value of tableHeader
-     * @param string $subcats           the value of subcats
-     * @param string $visits            the value of visits
-     * @param string $dropdown_name     the value of dropdown_name
-     * @param string $dropdown_opt      the value of dropdown_opt
-     * @param string $dropdown_selected the value of dropdown_selected
-     * @param string $centers           the value of centers
-     * @param string $data              the value of data
-     * @param string $Subsection        the value of Subsection=''
-     * @param string $disclamer         the value of disclamer=''
-     * @param string $projectID         the value of projectID is null
+     * @param string  $sectionHeader     the value of sectionHeader
+     * @param string  $tableHeader       the value of tableHeader
+     * @param array   $subcats           the value of subcats
+     * @param array   $visits            the value of visits
+     * @param string  $dropdown_name     the value of dropdown_name
+     * @param string  $dropdown_opt      the value of dropdown_opt
+     * @param string  $dropdown_selected the value of dropdown_selected
+     * @param array   $centers           the value of centers
+     * @param array   $data              the value of data
+     * @param string  $Subsection        the value of Subsection=''
+     * @param string  $disclamer         the value of disclamer=''
+     * @param ?string $projectID         the value of projectID is null
+     * @param bool    $renderTable       whether to render the table or display a
+     *                                   default error message
      *
      * @return string
      */
     function renderStatsTable($sectionHeader,
         $tableHeader,
-        $subcats,
-        $visits,
+        array $subcats,
+        array $visits,
         $dropdown_name,
         $dropdown_opt,
         $dropdown_selected,
-        $centers,
-        $data,
+        array $centers,
+        array $data,
         $Subsection="",
         $disclamer='',
-        $projectID=null
-    ) {
+        $projectID=null,
+        $renderTable=true
+    ): string {
 
         $tpl_data = array();
         // Sanitize test name if present. Otherwise use empty string.
@@ -195,6 +200,8 @@ class Stats_MRI extends \NDB_Form
                 $tpl_data['data'][$C][$vl]['total'] += $row['val'];
             }
         }
+
+        $tpl_data['render_table'] = $renderTable;
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_statistics.tpl");
         return $html;
@@ -209,10 +216,9 @@ class Stats_MRI extends \NDB_Form
     {
         parent::setup();
 
-        $DB          =& \Database::singleton();
-        $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        $this->tpl_data['useProjects'] = $useProjects;
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
 
         $bigTable_params = array();
         $this->params    = array();
@@ -254,11 +260,20 @@ class Stats_MRI extends \NDB_Form
         }
         //SITES
         if ($_REQUEST['MRIsite'] ?? '') {
-            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $Param_Site          ='AND (s.CenterID IS NULL OR s.CenterID=:sid) ';
             $this->params['sid'] = htmlspecialchars($_REQUEST['MRIsite']);
         } else {
             $Param_Site = '';
         }
+
+        //SITES PERMISSIONS
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+        $sitesString = implode(",", array_keys($list_of_sites));
+
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
@@ -266,7 +281,8 @@ class Stats_MRI extends \NDB_Form
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
-                AND Study_site = 'Y'",
+                AND Study_site = 'Y'
+	        AND CenterID IN (" . $sitesString . ")",
             array()
         );
         $sites[null] ="All sites";
@@ -335,18 +351,6 @@ class Stats_MRI extends \NDB_Form
         } else {
             $MRI_Type = $scan_types[$_REQUEST['mri_type']];
         }
-        //TODO IBIS
-        if ($MRI_Type==='t1w') {
-            $MRI_Type ='T1';
-        } elseif ($MRI_Type=='t2w') {
-            $MRI_Type ='T2';
-        } elseif ($MRI_Type=='dti') {
-            $MRI_Type ='DTI';
-        } elseif ($MRI_Type=='ep2d_bold') {
-            $MRI_Type ='BOLD';
-        } elseif ($MRI_Type=='DTI65' || $MRI_Type=='DTI65_B1000' ) {
-            $MRI_Type ='Spectroscopy';
-        }
 
         $MRI_Type_Field = $MRI_Type . "_Scan_Done";
         $MRIHeader      = "$MRI_Type Breakdown";
@@ -357,30 +361,38 @@ class Stats_MRI extends \NDB_Form
                           ELSE 'Complete'
                           END";
 
-        $result = $DB->pselect(
-            "SELECT s.SubprojectID,
-                    c.CenterID,
+        // Check if the mri_parameter_form contains the necessary columns before
+        // running the query
+        $result         = array();
+        $scanDoneExists = false;
+        if ($DB->columnExists('mri_parameter_form', $MRI_Type . "_Scan_Done")) {
+            $scanDoneExists = true;
+            $result         = $DB->pselect(
+                "SELECT s.SubprojectID,
+                    s.CenterID,
                     s.Visit_label as VLabel,
                     $CaseStatement as Subcat,
                     COUNT(*) as val
-              FROM mri_parameter_form m
+                FROM mri_parameter_form m
                     JOIN flag f USING (CommentID)
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (c.CandID=s.CandID)
-              WHERE s.Current_stage <> 'Recycling Bin'
+                WHERE s.Current_stage <> 'Recycling Bin'
                     AND f.Administration <> 'None'
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     $suproject_query
                     $Param_Project
-              GROUP BY Subcat,
+                GROUP BY Subcat,
                     s.SubprojectID,
-                    c.CenterID,
+                    s.CenterID,
                     s.Visit_label",
-            $bigTable_params
-        );
+                $bigTable_params
+            );
+        }
 
         $M_Visits = \Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
@@ -395,7 +407,8 @@ class Stats_MRI extends \NDB_Form
             $result,
             "mri",
             "",
-            $currentProject
+            $currentProject,
+            $scanDoneExists
         );
         //END BIGTABLE
 
@@ -415,6 +428,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -433,6 +447,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -462,6 +477,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -482,6 +498,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -512,6 +529,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -532,6 +550,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -564,7 +583,7 @@ class Stats_MRI extends \NDB_Form
      * of statistics totals. They will eventually be passed to tpl_data.
      *
      * @param array $subcategories The subcategories being tracked by this
-     *                              module. Keys of the returned array.
+     *                             module. Keys of the returned array.
      *
      * @return array ('total' => 0, $subcat1 => 0, ..., $subcatN => 0)
      */

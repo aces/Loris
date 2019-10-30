@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * File contains NDB_BVL_InstrumentStatus_ControlPanel class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural
@@ -31,26 +31,22 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return string The HTML to render to the client
      */
-    function display()
+    function display(): string
     {
         if (empty($this->_commentID)) {
             throw new Exception("No instrument instance selected");
         }
 
         $this->tpl_data['candID']    = isset($_REQUEST['candID'])
-            ? $_REQUEST['candID']
+            ? intval($_REQUEST['candID'])
             : '';
-        $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
+        $this->tpl_data['sessionID'] = intval($_REQUEST['sessionID']);
         $this->tpl_data['commentID'] = $_REQUEST['commentID'];
         $this->tpl_data['test_name'] = $_REQUEST['test_name'];
-        if (isset($_REQUEST['subtest'])) {
-            $this->tpl_data['subtest'] = $_REQUEST['subtest'];
-        } else {
-            $this->tpl_data['subtest'] = '';
-        }
+        $this->tpl_data['subtest']   = $_REQUEST['subtest'] ?? '';
 
         // get the files path
-        $config =& NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         $base   = $config->getSetting('base');
 
         // the instrument exists
@@ -69,13 +65,13 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             }
             // create an instance of the instrument
 
-            $instrument =& NDB_BVL_Instrument::factory(
+            $instrument = \NDB_BVL_Instrument::factory(
                 $_REQUEST['test_name'],
                 $_REQUEST['commentID'],
                 $this->tpl_data['subtest'] ?? ''
             );
 
-            $this->_instrument =& $instrument;
+            $this->_instrument = $instrument;
 
             $this->ValidityEnabled  = $instrument->ValidityEnabled;
             $this->ValidityRequired = $instrument->ValidityRequired;
@@ -125,9 +121,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Saves changes to the flags based on interaction with the control panel
      *
-     * @return void
+     * @return bool Whether a user has access to the module and the instrument
+     *              is not locked.
      */
-    function save()
+    function save(): bool
     {
         $hasAccess = $this->_hasAccess();
         // don't do anything if the instrument is locked
@@ -139,7 +136,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             if (isset($_POST['deleteconfirm']) && isset($_POST['deleteconfirm2']) ) {
                 $user = User::singleton();
                 if ($user->hasPermission('send_to_dcc')) {
-                    $instrument =& NDB_BVL_Instrument::factory(
+                    $instrument = \NDB_BVL_Instrument::factory(
                         $_REQUEST['test_name'],
                         $_REQUEST['commentID'],
                         $_REQUEST['subtest']
@@ -148,11 +145,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     return false;
                 } else {
                     return false;
-                    //print "No permissions to delete";
                 }
             } else {
                 return false;
-                //print "Delete not confirmed.";
             }
             return false;
         }
@@ -178,9 +173,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the data entry flag
      *
-     * @return string
+     * @return bool Whether a user has access, Has the side-effect of
+     *                  modifying front-end content.
      */
-    function _displayDataEntry()
+    function _displayDataEntry(): bool
     {
         $hasAccess = $this->_hasAccess();
 
@@ -196,7 +192,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             // highlight the current option if it's the current status
             if ($this->getDataEntryStatus() == $option) {
-                $this->tpl_data['data_entry'][$i]['icon'] = 'selected';
+                $this->tpl_data['data_entry'][$i]['icon'] = 'far fa-check-square';
             } elseif ($hasAccess && $this->getAdministrationStatus()) {
                 // make the option a link unless this field is locked
                 // the field is locked if the Administration flag has not
@@ -231,7 +227,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     $this->tpl_data['data_entry'][$i]['showlink'] = true;
                 }
             } else {
-                $this->tpl_data['data_entry'][$i]['icon'] = 'locked';
+                $this->tpl_data['data_entry'][$i]['icon'] = 'fas fa-times';
             }
             $i++;
         }
@@ -241,9 +237,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the administration flag
      *
-     * @return string
+     * @return bool Whether a user has access, Has the side-effect of
+     *                  modifying front-end content.
      */
-    function _displayAdministration()
+    function _displayAdministration(): bool
     {
         $hasAccess = $this->_hasAccess();
 
@@ -261,7 +258,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             // highlight the current option if it's the current status
             if ($this->getAdministrationStatus() == $option) {
-                $this->tpl_data['administration'][$i]['icon'] = 'selected';
+                $this->tpl_data['administration'][$i]['icon']
+                    = 'far fa-check-square';
             } elseif ($hasAccess
                 && $dataEntry != 'Complete'
                 && $dataEntry != 'Not Complete'
@@ -274,7 +272,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $this->tpl_data['administration'][$i]['showlink'] = true;
             } else {
                 // block the button
-                $this->tpl_data['administration'][$i]['icon'] = 'locked';
+                $this->tpl_data['administration'][$i]['icon'] = 'fas fa-times';
             }
             $i++;
         }
@@ -285,9 +283,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the validity flag
      *
-     * @return string
+     * @return bool Whether a user has access, Has the side-effect of
+     *                  modifying front-end content.
      */
-    function _displayValidity()
+    function _displayValidity(): bool
     {
         $hasAccess = $this->_hasAccess();
 
@@ -306,7 +305,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             // highlight the current option if it's the current status
             if ($validityStatus == $option) {
-                $this->tpl_data['validity'][$i]['icon'] = 'selected';
+                $this->tpl_data['validity'][$i]['icon'] = 'far fa-check-square';
             }
             if ($data_entry_status == 'Complete') {
                 $this->tpl_data['validity'][$i]['showLink'] = false;
@@ -322,9 +321,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Generates the HTML to display the set of buttons for the exclusion flag
      *
-     * @return string
+     * @return bool Whether a user has access, Has the side-effect of
+     *                  modifying front-end content.
      */
-    function _displayExclusion()
+    function _displayExclusion(): bool
     {
         $hasAccess = $this->_hasAccess();
 
@@ -342,7 +342,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             // highlight the current option if it's the current status
             if ($exclusionStatus == $option) {
-                $this->tpl_data['exclusion'][$i]['icon'] = 'selected';
+                $this->tpl_data['exclusion'][$i]['icon'] = 'far fa-check-square';
             }
             $i++;
         }
@@ -356,13 +356,13 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      *
      * @return boolean
      */
-    function _hasAccess()
+    function _hasAccess(): bool
     {
         // get user object
-        $user =& User::singleton();
+        $user = \User::singleton();
 
         // make a timepoint object
-        $timePoint =& TimePoint::singleton($this->getSessionID());
+        $timePoint = \TimePoint::singleton($this->getSessionID());
 
         // make sure user belongs to same site as timepoint
         if (!$user->hasPermission('data_entry')
@@ -375,7 +375,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         }
 
         // make a feedback object
-        $feedback =& NDB_BVL_Feedback::singleton(
+        $feedback = \NDB_BVL_Feedback::singleton(
             $user->getData('UserID'),
             null,
             null,
@@ -390,4 +390,4 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         return (!$timePoint->isSubmitted() || $maxThreadStatus == 'opened');
     }
 }
-?>
+

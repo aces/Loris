@@ -1,3 +1,4 @@
+import Loader from 'Loader';
 import CommentList from './CommentList';
 
 /**
@@ -9,8 +10,10 @@ import CommentList from './CommentList';
  *
  * @author Caitrin Armstrong
  * */
-class IssueForm extends React.Component {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
+class IssueForm extends Component {
   constructor(props) {
     super(props);
 
@@ -21,7 +24,7 @@ class IssueForm extends React.Component {
       errorMessage: null,
       isLoaded: false,
       isNewIssue: false,
-      issueID: 0
+      issueID: 0,
     };
 
     // Bind component instance to custom methods
@@ -37,27 +40,15 @@ class IssueForm extends React.Component {
   }
 
   render() {
-    // Data loading error
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return (
-        <div className="alert alert-danger text-center">
-          <strong>
-            {this.state.error}
-          </strong>
-        </div>
-      );
+      return <h3>An error occurred while loading the page.</h3>;
     }
 
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (
-        <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
-        </button>
-      );
+      return <Loader/>;
     }
 
     const hasEditPermission = (
@@ -75,19 +66,19 @@ class IssueForm extends React.Component {
     let isWatching = this.state.issueData.watching;
 
     if (this.state.isNewIssue) {
-      headerText = "Create New Issue";
-      lastUpdateValue = "Never!";
-      lastUpdatedByValue = "No-one!";
-      dateCreated = "Sometime Soon!";
-      submitButtonValue = "Submit Issue";
-      commentLabel = "Description";
+      headerText = 'Create New Issue';
+      lastUpdateValue = 'Never!';
+      lastUpdatedByValue = 'No-one!';
+      dateCreated = 'Sometime Soon!';
+      submitButtonValue = 'Submit Issue';
+      commentLabel = 'Description';
     } else {
-      headerText = "Edit Issue #" + this.state.issueData.issueID;
+      headerText = 'Edit Issue #' + this.state.issueData.issueID;
       lastUpdateValue = this.state.issueData.lastUpdate;
       lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
       dateCreated = this.state.issueData.dateCreated;
-      submitButtonValue = "Update Issue";
-      commentLabel = "New Comment";
+      submitButtonValue = 'Update Issue';
+      commentLabel = 'New Comment';
     }
 
     const commentHistory = this.state.isNewIssue || (
@@ -98,36 +89,36 @@ class IssueForm extends React.Component {
     let description;
     if (!this.state.isNewIssue) {
       header = (
-        <div className="row">
-          <div className="col-md-6">
+        <div className='row'>
+          <div className='col-md-6'>
             <StaticElement
-              name="lastUpdate"
-              label={"Last Update: "}
-              ref="lastUpdate"
+              name='lastUpdate'
+              label={'Last Update: '}
+              ref='lastUpdate'
               text={lastUpdateValue}
             />
           </div>
-          <div className="col-md-6">
+          <div className='col-md-6'>
             <StaticElement
-              name="lastUpdatedBy"
-              label={"Last Updated By: "}
-              ref="lastUpdatedBy"
+              name='lastUpdatedBy'
+              label={'Last Updated By: '}
+              ref='lastUpdatedBy'
               text={lastUpdatedByValue}
             />
           </div>
-          <div className="col-md-6">
+          <div className='col-md-6'>
             <StaticElement
-              name="dateCreated"
-              label={"Date Created: "}
-              ref="dateCreated"
+              name='dateCreated'
+              label={'Date Created: '}
+              ref='dateCreated'
               text={dateCreated}
             />
           </div>
-          <div className="col-md-6">
+          <div className='col-md-6'>
             <StaticElement
-              name="reporter"
-              label={"Reporter: "}
-              ref="reporter"
+              name='reporter'
+              label={'Reporter: '}
+              ref='reporter'
               text={this.state.issueData.reporter}
             />
           </div>
@@ -136,9 +127,9 @@ class IssueForm extends React.Component {
 
       description = (
         <StaticElement
-          name="description"
-          label="Description"
-          ref="description"
+          name='description'
+          label='Description'
+          ref='description'
           text={this.state.issueData.desc}
         />
       );
@@ -147,126 +138,114 @@ class IssueForm extends React.Component {
     return (
       <div>
         <FormElement
-          name="issueEdit"
+          name='issueEdit'
           onSubmit={this.handleSubmit}
-          ref="form"
         >
           <h3>{headerText}</h3>
           {header}
           <TextboxElement
-            name="title"
-            label="Title"
+            name='title'
+            label='Title'
             onUserInput={this.setFormData}
-            ref="title"
             value={this.state.formData.title}
             disabled={!hasEditPermission}
             required={true}
           />
           {description}
           <SelectElement
-            name="assignee"
-            label="Assignee"
+            name='assignee'
+            label='Assignee'
             emptyOption={true}
             options={this.state.Data.assignees}
             onUserInput={this.setFormData}
-            ref="assignee"
             disabled={!hasEditPermission}
             value={this.state.formData.assignee}
             required={true}
           />
           <SelectElement
-            name="centerID"
-            label="Site"
+            name='centerID'
+            label='Site'
             emptyOption={true}
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
-            ref="centerID"
             disabled={!hasEditPermission}
             value={this.state.formData.centerID}
+            required={true}
           />
           <SelectElement
-            name="status"
-            label="Status"
+            name='status'
+            label='Status'
             emptyOption={false}
             options={this.state.Data.statuses}
             onUserInput={this.setFormData}
-            ref="status"
             disabled={!hasEditPermission}
             value={this.state.formData.status} // todo: edit this so the options are
                                                // different if the user doesn't have
                                                // permission
           />
           <SelectElement
-            name="priority"
-            label="Priority"
+            name='priority'
+            label='Priority'
             emptyOption={false}
             options={this.state.Data.priorities}
             onUserInput={this.setFormData}
-            ref="priority"
             required={false}
             disabled={!hasEditPermission}
             value={this.state.formData.priority}
           />
           <SelectElement
-            name="category"
-            label="Category"
+            name='category'
+            label='Category'
             emptyOption={true}
             options={this.state.Data.categories}
             onUserInput={this.setFormData}
-            ref="category"
             disabled={!hasEditPermission}
             value={this.state.formData.category}
           />
           <SelectElement
-            name="module"
-            label="Module"
+            name='module'
+            label='Module'
             emptyOption={true}
             options={this.state.Data.modules}
             onUserInput={this.setFormData}
-            ref="module"
             disabled={!hasEditPermission}
             value={this.state.formData.module}
           />
           <TextboxElement
-            name="PSCID"
-            label="PSCID"
+            name='PSCID'
+            label='PSCID'
             onUserInput={this.setFormData}
-            ref="PSCID"
             disabled={!hasEditPermission}
             value={this.state.formData.PSCID}
           />
           <TextboxElement
-            name="visitLabel"
-            label="Visit Label"
+            name='visitLabel'
+            label='Visit Label'
             onUserInput={this.setFormData}
-            ref="visitLabel"
             disabled={!hasEditPermission}
             value={this.state.formData.visitLabel}
           />
           <SelectElement
-            name="watching"
-            label="Watching?"
+            name='watching'
+            label='Watching?'
             emptyOption={false}
             options={{No: 'No', Yes: 'Yes'}}
             onUserInput={this.setFormData}
-            ref="watching"
             value={isWatching}
           />
           <SelectElement
-            name="othersWatching"
-            label="Add others to watching?"
+            name='othersWatching'
+            label='Add others to watching?'
             emptyOption={true}
             options={this.state.Data.otherWatchers}
             onUserInput={this.setFormData}
-            ref="watching"
             multiple={true}
             value={this.state.formData.othersWatching}
           />
           <TextareaElement
-            name="comment"
+            name='comment'
             label={commentLabel}
             onUserInput={this.setFormData}
-            ref="comment"
             value={this.state.formData.comment}
           />
           <ButtonElement label={submitButtonValue}/>
@@ -283,20 +262,30 @@ class IssueForm extends React.Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
+        let newIssue = !data.issueData.issueID;
+        let formData = data.issueData;
+        // ensure that if the user is at multiple sites and
+        // its a new issue, the centerID (which is a dropdown)
+        // is set to the empty option instead of an array of
+        // the user's sites.
+        if (newIssue) {
+            formData.centerID = null;
+        }
+
         this.setState({
           Data: data,
           isLoaded: true,
           issueData: data.issueData,
-          formData: data.issueData,
-          isNewIssue: !data.issueData.issueID
+          formData: formData,
+          isNewIssue: !data.issueData.issueID,
         });
       }.bind(this),
       error: function(err) {
         this.setState({
-          error: "An error occurred when loading the form!\n Error: " +
-          err.status + " (" + err.statusText + ")"
+          error: 'An error occurred when loading the form!\n Error: ' +
+          err.status + ' (' + err.statusText + ')',
         });
-      }.bind(this)
+      }.bind(this),
     });
   }
 
@@ -310,7 +299,7 @@ class IssueForm extends React.Component {
 
     // Prevent new issue submissions while one is already in progress
     if (this.state.submissionResult && this.state.isNewIssue) return;
-    this.setState({submissionResult: "pending"});
+    this.setState({submissionResult: 'pending'});
 
     const myFormData = this.state.formData;
     const formRefs = this.refs;
@@ -322,7 +311,7 @@ class IssueForm extends React.Component {
     }
 
     for (let key in myFormData) {
-      if (myFormData[key] !== "") {
+      if (myFormData[key] !== '') {
         formData.append(key, myFormData[key]);
       }
     }
@@ -340,17 +329,18 @@ class IssueForm extends React.Component {
         let message = this.state.isNewIssue ? 'You will be redirected to main page in 2 seconds!' : '';
         this.showAlertMessage(msgType, message);
         this.setState({
-          submissionResult: "success",
-          issueID: data.issueID
+          submissionResult: 'success',
+          issueID: data.issueID,
         });
       }.bind(this),
       error: function(err) {
         console.error(err);
-        this.setState({submissionResult: "error"});
+        this.setState({submissionResult: 'error'});
         let msgType = 'error';
-        let message = "Failed to submit issue :(";
+        let message = err.responseJSON.message || 'Failed to submit issue :(';
+
         this.showAlertMessage(msgType, message);
-      }.bind(this)
+      }.bind(this),
     });
   }
 
@@ -366,7 +356,7 @@ class IssueForm extends React.Component {
     formDataUpdate[formElement] = value;
 
     this.setState({
-      formData: formDataUpdate
+      formData: formDataUpdate,
     });
   }
 
@@ -382,7 +372,7 @@ class IssueForm extends React.Component {
     let isValidForm = true;
     const requiredFields = {
       title: null,
-      assignee: null
+      assignee: null,
     };
 
     Object.keys(requiredFields).map(function(field) {
@@ -413,20 +403,25 @@ class IssueForm extends React.Component {
       this.setState({submissionResult: null});
     };
 
-    if (msgType === "success" && this.state.isNewIssue) {
+    if (msgType === 'success' && this.state.isNewIssue) {
       title = 'Issue created!';
       timer = 2000;
       confirmation = false;
       callback = function() {
         this.setState({
           formData: {},
-          submissionResult: null
+          submissionResult: null,
         });
         window.location.assign('/issue_tracker');
       };
-    } else if (msgType === "error") {
+    } else if (msgType === 'error') {
       type = 'error';
       title = 'Error!';
+    } else if (msgType === 'success' && !this.state.isNewIssue) {
+      callback = function() {
+        this.setState({submissionResult: null});
+        this.getFormData();
+      };
     }
 
     swal({
@@ -436,14 +431,14 @@ class IssueForm extends React.Component {
       timer: timer,
       allowOutsideClick: false,
       allowEscapeKey: false,
-      showConfirmButton: confirmation
+      showConfirmButton: confirmation,
     }, callback.bind(this));
   }
 }
 
 IssueForm.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired
+  DataURL: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
 };
 
 export default IssueForm;

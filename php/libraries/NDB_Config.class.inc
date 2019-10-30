@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Provides an interface to the NeuroDB configuration
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -39,13 +39,6 @@ class NDB_Config
     var $_settings = array();
 
     /**
-     * The merged array of study and site-specific settings
-     *
-     * @access private
-     */
-    var $_siteSettings = array();
-
-    /**
      * An optional override for the location of the config file.
      * (default is ../project/config.xml)
      *
@@ -56,11 +49,11 @@ class NDB_Config
     /**
      * The singleton design pattern - autoloads config file
      *
-     * @param string $configFile the neurodb config.xml config file
+     * @param string|null $configFile the neurodb config.xml config file
      *
-     * @return NDB_Config object
+     * @return \NDB_Config object
      */
-    static function &singleton($configFile = null)
+    static function &singleton(?string $configFile = null): \NDB_Config
     {
         static $config = null;
         if (is_null($config)) {
@@ -97,7 +90,7 @@ class NDB_Config
      *
      * @throws Exception
      */
-    function load($configFile = "../project/config.xml")
+    function load(string $configFile = "../project/config.xml"): void
     {
         // load the configuration data into a global variable $config
         $newroot = simplexml_load_file($configFile);
@@ -121,7 +114,7 @@ class NDB_Config
      *
      * @throws LorisException when any config file is missing
      */
-    function configFilePath($pathToFile = "config.xml")
+    function configFilePath(string $pathToFile = "config.xml"): string
     {
         // first check for a project/config.xml, then check for the config
         // file in a standard unix filesystem location ->  /etc/loris/config.xml
@@ -159,6 +152,12 @@ class NDB_Config
      * and this gets it into the same format that was previously used
      * for backwards compatibility.
      *
+     * FIXME Despite the name, this function does not just return arrays, but
+     * also returns a string. Crucially, this is done in the process of creating
+     * a DB connection and so we cannot add a return type to this function.
+     * Future refactoring should be done to better encapsulate this logic to
+     * allow for strong typing.
+     *
      * @param SimpleXMLElement $xml The root element of the parsed XML.
      *
      * @return array of XML configuration
@@ -167,18 +166,12 @@ class NDB_Config
     {
         $retVal   = array();
         $children = $xml->children();
-        if (count($children) > 0) {
+        if ($children->count() > 0) {
             foreach ($children as $child) {
                 $name      = $child->getName();
-                $tagExists = isset($retVal[$name]);
-
-                $numericArrayExists
-                    = isset($retVal[$name])
-                    && is_array($retVal[$name])
-                    && Utility::NumericArray($retVal[$name]);
-
+                $tagExists = isset($retVal[$name]) && is_array($retVal[$name]);
                 if ($tagExists) {
-                    if (!$numericArrayExists) {
+                    if (!self::isNumericArray($retVal[$name])) {
                         // The tag is duplicated in the XML, so it should
                         // be stored in an array. Create a new array and replace
                         // the tag with what was already parsed before appending
@@ -223,7 +216,7 @@ class NDB_Config
         } else {
             $retVal     = $xml->__toString();
             $attributes = $xml->attributes();
-            if (count($attributes) > 0) {
+            if ($attributes->count() > 0) {
                 $retVal = array(
                            '#' => $retVal,
                            '@' => array(),
@@ -239,52 +232,37 @@ class NDB_Config
     }
 
     /**
-     * Attempts to determine the site of the user currently logged in and uses
-     * that to get site specific settings and override study defaults,
-     * building the _siteSettings property
+     * Determine whether an array is a numeric (normal) array, i.e. its keys
+     * are 0, 1, ..., n - 1.
+     * If an empty array is passed as $arr, this function will return true.
      *
-     * @return void (but modifies $this->siteSettings)
+     * @param array $arr The array to be checked for numeric keys.
+     *
+     * @return boolean True if the given parameter is an array with
+     *                 numeric keys, false otherwise.
      */
-    function mergeSettings()
+    static function isNumericArray(array $arr): bool
     {
-        // make sure this is a web client
-        if (!class_exists("User") || !isset($_SESSION['State'])) {
-            return;
+        if ($arr === array()) {
+            return true;
         }
-
-        // make sure a user has logged in
-        $username = $_SESSION['State']->getUsername();
-        if (empty($username)) {
-            $this->_siteSettings =& $this->_settings;
-        } else {
-            $user     =& User::singleton($username);
-            $siteName = Utility::getCleanString($user->getSiteNames());
-            if (isset($this->_settings['sites'][$siteName])
-                && is_array($this->_settings['sites'][$siteName])
-            ) {
-                $this->_siteSettings          = $this->_settings;
-                $this->_siteSettings['study']
-                    = Utility::arrayMergeRecursiveOverwriting(
-                        $this->_settings['study'],
-                        $this->_settings['sites'][$siteName]
-                    );
-                unset($this->_siteSettings['sites']);
-            } else {
-                $this->_siteSettings =& $this->_settings;
-            }
-        }
+        return array_keys($arr) === range(0, count($arr) - 1);
     }
 
     /**
      * Gets a setting from the database config tables
      *
-     * @param string  $name The name of the config setting to get
-     * @param integer $id   (optional) The ID of the config setting we're
+     * FIXME This function currently returns a string, array, or null.
+     * Refactoring should be done to better encapsulate the logic in this
+     * function to allow for strong typing.
+     *
+     * @param string   $name The name of the config setting to get
+     * @param int|null $id   (optional) The ID of the config setting we're
      *                      getting to avoid ambiguity.
      *
-     * @return string The value from the database, or null if nothing found.
+     * @return mixed The value from the database, or null if nothing found.
      */
-    function getSettingFromDB($name, $id=null)
+    function getSettingFromDB(string $name, ?int $id = null)
     {
         // These should never come from the DB
         switch($name) {
@@ -372,7 +350,10 @@ class NDB_Config
             foreach ($configSetting as $childSetting) {
                 $childName        = $childSetting['Name'];
                 $childID          = $childSetting['ChildID'];
-                $childValue       = $this->getSettingFromDB($childName, $childID);
+                $childValue       = $this->getSettingFromDB(
+                    $childName,
+                    intval($childID)
+                );
                 $tree[$childName] = $childValue;
             }
             return $tree;
@@ -386,36 +367,19 @@ class NDB_Config
      *
      * @param string $name The name of the XML node to retrieve.
      *
-     * @return string The value from the config.xml
+     * @return array|string The value from the config.xml
      */
-    function getSettingFromXML($name)
+    function getSettingFromXML(string $name)
     {
-        if (class_exists("User") && isset($_SESSION['State'])) {
-            if (empty($this->_siteSettings)) {
-                // merge site and study settings
-                $this->mergeSettings();
-            }
-
-            // look at the merged site settings
-            $settingsArray =& $this->_siteSettings;
-        } else {
-            // by default, look at the raw settings
-            $settingsArray =& $this->_settings;
-        }
-
         // loop over the settings, and find the node
-        foreach ($settingsArray AS $key=>$value) {
+        foreach ($this->_settings as $key => $value) {
             // see if they want the top level node
             if ($key == $name) {
                 return $value;
             }
 
             // Look inside the top level node
-            // is_array is called before the isset check. This is done to
-            // fix an undesirable feature of isset: it would sometimes
-            // return true is $value was not an array (see isset PHP doc)
-            // in PHP <= 5.3. This behavior was changed for PHP > 5.3.
-            if (is_array($value) && isset($value[$name])) {
+            if (isset($value[$name])) {
                 return $value[$name];
             }
         }
@@ -424,13 +388,13 @@ class NDB_Config
     }
 
     /**
-    * Gets a setting by name
-    *
-    * @param string $name The name of the setting to retrieve
-    *
-    * @return mixed The contents of the node identified by $name
-    */
-    function getSetting($name)
+     * Gets a setting by name
+     *
+     * @param string $name The name of the setting to retrieve
+     *
+     * @return mixed The contents of the node identified by $name
+     */
+    function getSetting(string $name)
     {
         try {
             $XMLValue = $this->getSettingFromXML($name);
@@ -451,32 +415,32 @@ class NDB_Config
     }
 
     /**
-    * Get list of projects for this projects, given a ProjectID.
-    *
-    * @param integer $ProjectID The ProjectID we want settings for
-    *
-    * @return array of settings for this project.
-    */
-    function getProjectSettings($ProjectID)
+     * Get list of projects for this projects, given a ProjectID.
+     *
+     * @param integer $ProjectID The ProjectID we want settings for
+     *
+     * @return ?array of settings for this project or null in case of error.
+     */
+    function getProjectSettings(int $ProjectID): ?array
     {
-        $factory = NDB_Factory::singleton();
-        $DB      = $factory->database();
-        try
-        {
-             $info =$DB->pselectRow(
-                 "SELECT * FROM Project WHERE ProjectID=:sp",
-                 array('sp' => $ProjectID)
-             );
-        } catch (DatabaseException $e)
-        {
+        try {
+            $info = \NDB_Factory::singleton()
+                ->database()
+                ->pselectRow(
+                    "SELECT * FROM Project WHERE ProjectID=:sp",
+                    array('sp' => $ProjectID)
+                );
+        } catch (\DatabaseException $e) {
             return null;
         }
         //Format the result into config.xml format.
-        return array(
-                'id'                => $info['ProjectID'],
-                'Name'              => $info['Name'],
-                'recruitmentTarget' => $info['recruitmentTarget'],
-               );
+        return is_null($info) ?
+            null
+            : array(
+               'id'                => $info['ProjectID'],
+               'Name'              => $info['Name'],
+               'recruitmentTarget' => $info['recruitmentTarget'],
+              );
     }
 
     /**
@@ -490,19 +454,15 @@ class NDB_Config
      *
      * @return array of settings for this subprojectID
      */
-    function getSubprojectSettings($subprojectID)
+    function getSubprojectSettings(int $subprojectID): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        try {
-            $info = $DB->pselectRow(
-                "SELECT * FROM subproject WHERE SubprojectID=:sp",
-                array('sp' => $subprojectID)
-            );
-        } catch(DatabaseException $e) {
-            return null;
-        }
+        $info = $DB->pselectRow(
+            "SELECT * FROM subproject WHERE SubprojectID=:sp",
+            array('sp' => $subprojectID)
+        );
         // Format the results the same way it was formatted in config.xml
         // This variable assignment was done for phpcs... if anyone figures out
         // a way around this, please correct it
@@ -518,6 +478,7 @@ class NDB_Config
                     'RecruitmentTarget' => $info['RecruitmentTarget'],
                    );
         }
+        return array();
     }
 
     /**
@@ -529,7 +490,7 @@ class NDB_Config
      *
      * @return boolean true if the user can access the menu item
      */
-    static function checkMenuPermission($menuID)
+    static function checkMenuPermission(int $menuID): bool
     {
         $DB   = Database::singleton();
         $user = User::singleton();
@@ -558,16 +519,16 @@ class NDB_Config
      * of using $this->getSetting() to give more options for how to load
      * the menus, exactly (config.xml, different database tables, etc..)
      *
-     * @param integer $parent The parent ID of the tree. This should not
+     * @param int|null $parent The parent ID of the tree. This should not
      *                        be passed. It's used to build the tree recursively
      *                        from the LorisMenu table.
      *
      * @return array          Label, Visible, Link, and ID to build the menu
      *                        for the currently logged in user
      */
-    static function getMenuTabs($parent = null)
+    static function getMenuTabs(?int $parent = null): array
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         if ($parent === null) {
             $thisLevel = $DB->pselect(
                 "SELECT Label,
@@ -581,7 +542,7 @@ class NDB_Config
             );
 
             foreach ($thisLevel as &$thisRow) {
-                $nextLevel = NDB_Config::getMenuTabs($thisRow['ID']);
+                $nextLevel = NDB_Config::getMenuTabs(intval($thisRow['ID']));
 
                 if (!empty($nextLevel)) {
                     $thisRow['subtabs'] = $nextLevel;
@@ -604,14 +565,14 @@ class NDB_Config
             $LevelWithPerm = array_filter(
                 $thisLevel,
                 function ($el) {
-                    return NDB_Config::checkMenuPermission($el['ID']);
+                    return NDB_Config::checkMenuPermission(intval($el['ID']));
                 }
             );
 
             if (!empty($LevelWithPerm)) {
                 return $LevelWithPerm;
             }
-            return;
+            return array();
         }
     }
 
@@ -622,7 +583,7 @@ class NDB_Config
      *
      * @return array of Label => URL
      */
-    function getExternalLinks($type)
+    function getExternalLinks(string $type): array
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -643,4 +604,4 @@ class NDB_Config
     }
 
 }
-?>
+

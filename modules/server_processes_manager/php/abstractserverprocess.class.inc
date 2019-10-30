@@ -234,7 +234,7 @@ abstract class AbstractServerProcess
      * Executes this task. This will start a background Unix process with stdout
      * stderr and exit code captured in temporary files.
      *
-     * @return int PID of the Unix process started or null if execution fails or
+     * @return int|null PID of the Unix process started or null if execution fails or
      *             if execution has already started
      */
     public function execute()
@@ -299,9 +299,9 @@ abstract class AbstractServerProcess
      * Gets the task return code. Also syncs the class and database information to
      * reflect the task's actual state.
      *
-     * @return int the class $_returnCode attribute if it is set. If not, then read
-     *                $_returnCodeFile and return contents. If empty, then return
-     *             'unknown'. If the task is still running, return null.
+     * @return int|null the class $_returnCode attribute if it is set. If not, then
+     *                  read $_returnCodeFile and return contents. If empty, then
+     *                  return 'unknown'. If the task is still running, return null.
      */
     public function getExitCode()
     {
@@ -325,7 +325,7 @@ abstract class AbstractServerProcess
      * Compute the text returned by this task. This is considered to be the task
      * result, in text form.
      *
-     * @return string the return text or null if the task is still running
+     * @return string|null the return text or null if the task is still running
      */
     public function getExitText()
     {
@@ -349,7 +349,7 @@ abstract class AbstractServerProcess
     /**
      * Compute the time at which the task ended.
      *
-     * @return string time at which the task ended or null if the task is still
+     * @return string|null time at which the task ended or null if the task is still
      *                running.
      */
     public function getEndTime()
@@ -583,4 +583,4 @@ abstract class AbstractServerProcess
     abstract function getType();
 }
 
-?>
+

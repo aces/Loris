@@ -28,16 +28,6 @@ namespace LORIS\login;
 class Login extends \NDB_Page
 {
     /**
-     * Determine whether the user has permission to view this page
-     *
-     * @return bool whether the user has access
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
-    /**
      * The constructor for login creates some basic tpl variables that are
      * used in the login template.
      *
@@ -75,4 +65,4 @@ class Login extends \NDB_Page
 
     }
 }
-?>
+

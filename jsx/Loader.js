@@ -6,22 +6,28 @@
  *
  */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Loader component
  */
-class Loader extends React.Component {
+class Loader extends Component {
+  constructor(props) {
+    super(props);
+  }
 
   render() {
     return (
-        <div
-          className="loader"
-          style={{width: this.props.size, height: this.props.size}}
-        />
+      <div
+        className='loader'
+        style={{width: parseInt(this.props.size), height: parseInt(this.props.size)}}
+      />
     );
   }
 }
 
-Loader.propTypes = {size: React.PropTypes.int};
-Loader.defaultProps = {size: 120};
+Loader.propTypes = {size: PropTypes.string};
+Loader.defaultProps = {size: '120'};
 
 export default Loader;

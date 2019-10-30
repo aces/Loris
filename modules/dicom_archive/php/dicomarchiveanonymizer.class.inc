@@ -89,7 +89,7 @@ class DICOMArchiveAnonymizer implements Mapper
         ) {
             $newrow['Patient Name'] = 'INVALID - HIDDEN';
         }
-        if (!preg_match("/$pIDRegex/", $newrow['Patient ID'])) {
+        if (!preg_match("/$pIDRegex/", $newrow['Patient ID'] ?? '')) {
             $newrow['Patient ID'] = 'INVALID - HIDDEN';
         }
         return new DICOMArchiveRow($newrow, $cid);

@@ -33,4 +33,4 @@ interface IDatabaseProvider
     function getDatabase();
 }
 
-?>
+

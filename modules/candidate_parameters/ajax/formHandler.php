@@ -81,7 +81,7 @@ function editCandInfoFields($db, $user)
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
 
-    foreach (array_keys($_POST) as $field) {
+    foreach (array_keys($_POST ?? array()) as $field) {
         if (!empty($_POST[$field])) {
             if (substr($field, 0, 4) === 'PTID') {
                 $ptid = substr($field, 4);
@@ -141,12 +141,12 @@ function editProbandInfoFields($db, $user)
     $candID   = $sanitize['candID'];
 
     // Process posted data
-    $gender = $sanitize['ProbandGender'] ?? null;
-    $dob    = $sanitize['ProbandDoB'] ?? null;
+    $sex = $sanitize['ProbandSex'] ?? null;
+    $dob = $sanitize['ProbandDoB'] ?? null;
 
     $updateValues = [
-                     'ProbandGender' => $gender,
-                     'ProbandDoB'    => $dob,
+                     'ProbandSex' => $sex,
+                     'ProbandDoB' => $dob,
                     ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
@@ -450,9 +450,10 @@ function editConsentStatusFields($db, $user)
                          ];
 
         // Validate data
-        $recordExists = array_key_exists($consentID, $candidateConsent);
-        $oldStatus    = $candidateConsent[$consentID]['Status'] ?? null;
-        $validated    = false;
+        $recordExists  = array_key_exists($consentID, $candidateConsent);
+        $oldStatus     = $candidateConsent[$consentID]['Status'] ?? null;
+        $oldWithdrawal = $candidateConsent[$consentID]['DateWithdrawn'] ?? null;
+        $validated     = false;
 
         switch ($status) {
         case 'yes':
@@ -477,10 +478,11 @@ function editConsentStatusFields($db, $user)
                           requires only the date of consent.');
                     return;
                 }
-            } else { // If no status stays no or record existed as NULL,
-                     // consent date and empty withdrawal date still required
+            } else { // If no status stays no or record existed as NULL
+                    // consent date required and withdrawal date unchanged
                 if (($oldStatus === null || $oldStatus === 'no') && !empty($date)
-                    && empty($withdrawal)
+                    && ((empty($oldWithdrawal) && empty($withdrawal))
+                    || (!empty($oldWithdrawal) && !empty($withdrawal)))
                 ) {
                     $validated = true;
                 } else if ($oldStatus === 'yes' && !empty($date)

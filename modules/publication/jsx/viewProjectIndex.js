@@ -16,5 +16,5 @@ $(function() {
     </div>
   );
 
-  ReactDOM.render(viewProject, document.getElementById("lorisworkspace"));
+  ReactDOM.render(viewProject, document.getElementById('lorisworkspace'));
 });

@@ -93,7 +93,6 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testNextStageDoesNotPageLoadWithDifferentStudySite()
     {
         // Reset any leftover study site from a previous test.
-
         $this->resetStudySite();
         // Change users CenterID
         $this->changeStudySite();
@@ -210,4 +209,4 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertContains("Next stage started.", $bodyText);
     }
 }
-?>
+

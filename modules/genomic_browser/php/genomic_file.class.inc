@@ -2,7 +2,7 @@
 /**
 * Contains the Genomic_File class used for LORIS Genomic data
 *
-* PHP Version &
+* PHP Version 7
 *
 * @category LORIS_Module
 * @package  Genomics
@@ -30,8 +30,10 @@ class Genomic_File
     * Construct a GenomicFile
     *
     * @param integer $fileID The FileID to be loaded
+    *
+    * @return void
     */
-    function __construct($fileID)
+    function __construct(int $fileID)
     {
         $db     =& \Database::singleton();
         $params = array('FID' => $fileID);
@@ -59,13 +61,14 @@ class Genomic_File
     }
 
     /**
-    * Gets a parameter for this file from the appropriate place
+    * Gets a parameter for this file from the appropriate place.
     *
-    * @param string $parameterName The parameter to be retrieved
+    * @param string $parameterName The parameter to be retrieved.
     *
-    * @return mixed The value of the parameter
+    * @return ?string The value of the requested parameter. All values will be
+    * represented as strings even if they are e.g. ints or dates.
     */
-    function getParameter($parameterName)
+    public function getParameter(string $parameterName): ?string
     {
         if (isset($this->QCData[$parameterName])) {
             return $this->QCData[$parameterName];
@@ -78,18 +81,4 @@ class Genomic_File
             return null;
         }
     }
-
-    /**
-    * Gets the AnalysisProtocol for this file
-    *
-    * @return String from the file properties
-    */
-    function getAnalysisProtocol()
-    {
-        if (is_null($this->fileData['AnalysisProtocol'])) {
-            return null;
-        }
-        return $this->fileData['AnalysisProtocol'];
-    }
-
 }

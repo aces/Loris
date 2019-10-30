@@ -24,16 +24,17 @@ namespace LORIS\survey_accounts;
  */
 class Survey_Accounts extends \NDB_Menu_Filter
 {
+    public $skipTemplate = true;
+
     /**
      * Determine if user has permission to access this page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         return $user->hasPermission('user_accounts');
     }
 
@@ -45,8 +46,6 @@ class Survey_Accounts extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user =& \User::singleton();
-
         // the base query
         $query = " FROM participant_accounts p 
             JOIN session s ON (p.SessionID=s.ID)
@@ -65,54 +64,10 @@ class Survey_Accounts extends \NDB_Menu_Filter
                               );
         $this->query        = $query;
         $this->order_by     = 'PSCID';
-        $this->validFilters = array(
-                               'c.PSCID',
-                               's.Visit_label',
-                               'p.Email',
-                               'p.Test_name',
-                               'p.OneTimePassword',
-                               'p.Status',
-                               'p.Test_name',
-                              );
-        $this->formToFilter = array(
-                               'PSCID'      => 'c.PSCID',
-                               'VisitLabel' => 's.Visit_label',
-                               'Email'      => 'p.Email',
-                               'key'        => 'p.OneTimePassword',
-                               'Instrument' => 'p.Test_name',
-                              );
-    }
-
-
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @return void
-     */
-    function setup()
-    {
-        parent::setup();
-
-        // create user object
-        $user =& \User::singleton();
-        $this->addBasicText('PSCID', 'PSCID');
-        // add form elements
-        $this->addSelect(
-            'VisitLabel',
-            'Visit:',
-            array_merge(array('' => 'All'), \Utility::getVisitList())
-        );
-        $this->addSelect(
-            'Instrument',
-            'Instrument:',
-            array_merge(array('' => 'All'), \Utility::getDirectInstruments())
-        );
-        $this->addBasicText('Email', 'Email:');
-        $this->addBasicText('key', 'Key:');
-
-        return true;
+        $this->fieldOptions = [
+                               'visits'      => \Utility::getVisitList(),
+                               'instruments' => \Utility::getDirectInstruments(),
+                              ];
     }
 
     /**
@@ -128,10 +83,8 @@ class Survey_Accounts extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
-             $baseURL . "/survey_accounts/js/columnFormatter.js",
+             $baseURL . "/survey_accounts/js/surveyAccountsIndex.js",
             )
         );
     }
 }
-?>

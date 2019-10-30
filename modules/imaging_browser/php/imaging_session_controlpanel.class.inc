@@ -71,13 +71,17 @@ class Imaging_Session_ControlPanel
 
         $linkedInstruments
             = $config->getSetting('ImagingBrowserLinkedInstruments');
+        if (!is_array($linkedInstruments)) {
+            $linkedInstruments = array();
+        }
 
         $links = array();
         foreach ($linkedInstruments as $k=>$v) {
             $qresult = $DB->pselectRow(
                 "SELECT f.CommentID, tn.Full_name FROM flag f
             JOIN test_names tn ON f.Test_name = tn.Test_name 
-            WHERE f.Test_name = :tname AND f.SessionID = :v_sessions_id",
+            WHERE f.Test_name = :tname AND f.SessionID = :v_sessions_id
+            AND f.CommentID NOT LIKE 'DDE_%'",
                 array(
                  'tname'         => $v,
                  'v_sessions_id' => $this->sessionID,

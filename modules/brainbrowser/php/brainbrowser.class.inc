@@ -25,16 +25,6 @@ namespace LORIS\brainbrowser;
 class Brainbrowser extends \NDB_Page
 {
     /**
-     * Everyone has access to the BrainBrowser module.
-     *
-     * @return boolean true if user has correct access permissions
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
-    /**
      * Override base function to include brainbrowser javascript files
      * and dependencies
      *
@@ -82,4 +72,4 @@ class Brainbrowser extends \NDB_Page
         );
     }
 }
-?>
+
