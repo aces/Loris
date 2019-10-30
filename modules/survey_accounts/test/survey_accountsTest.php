@@ -149,14 +149,14 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             array(
-                'ID'                    => '111111',
-                'CandID'                => '999888',
-                'CenterID'              => '55',
-                'ProjectID'             => '7777',
-                'UserID'                => '1',
-                'MRIQCStatus'           => 'Pass',
-                'SubprojectID'          => '55',
-                'Visit'                 => 'In Progress',
+                'ID'           => '111111',
+                'CandID'       => '999888',
+                'CenterID'     => '55',
+                'ProjectID'    => '7777',
+                'UserID'       => '1',
+                'MRIQCStatus'  => 'Pass',
+                'SubprojectID' => '55',
+                'Visit'        => 'In Progress',
             )
         );
         $this->DB->insert(
