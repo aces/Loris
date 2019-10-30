@@ -44,20 +44,18 @@ class Meta_Docs extends \NDB_Page
      */
     function setup()
     {
-        //TODO :: This list should be dynamic
-        $modules_with_specs = array('api');
-
         $urls = array_map(
-            function ($modulename) {
+            function ($m) {
+                preg_match('/\/([a-z_]*)\/static\/schema.yml$/', $m, $matches);
+                error_log(print_r($matches, true));
                 return (object) array(
-                                 'url'  => "/$modulename/static/schema.yml",
-                                 'name' => $modulename,
+                                 'url'  => $matches[0],
+                                 'name' => $matches[1],
                                 );
             },
-            $modules_with_specs
+            glob(__DIR__ . '/../../*/static/schema.yml')
         );
 
         $this->tpl_data['schema_urls'] = json_encode($urls);
-        error_log(print_r($this->tpl_data['schema_urls'], true));
     }
 }
