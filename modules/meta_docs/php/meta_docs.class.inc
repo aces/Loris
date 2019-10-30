@@ -45,9 +45,8 @@ class Meta_Docs extends \NDB_Page
     function setup()
     {
         $urls = array_map(
-            function ($m) {
-                preg_match('/\/([a-z_]*)\/static\/schema.yml$/', $m, $matches);
-                error_log(print_r($matches, true));
+            function ($f) {
+                preg_match('/\/([a-z_]*)\/static\/schema.yml$/', $f, $matches);
                 return (object) array(
                                  'url'  => $matches[0],
                                  'name' => $matches[1],
