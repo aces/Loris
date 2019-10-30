@@ -56,6 +56,12 @@ class Meta_Docs extends \NDB_Page
         $pattern = $baseurl . '{project,}/modules/*/static/schema.yml' ;
 
         $urls = array_map(
+            /*
+             * This function takes a filename and extract the module name from it
+             * using preg_match.
+             *
+             * It returns a object with 2 properties: url and name.
+             */
             function ($f) {
                 preg_match('/\/([a-z_]*)\/static\/schema.yml$/', $f, $matches);
                 $tmp_array = array(
@@ -67,6 +73,15 @@ class Meta_Docs extends \NDB_Page
             glob($pattern, GLOB_BRACE)
         );
 
+        /*
+         * The `schema_urls` template variable is meant to provide a value to the
+         * urls property of the SwaggerUIBundle constructor. It must be an array
+         * of objects with the following shape:
+         *   {
+         *     name: "api spec name",
+         *     url:  "url of the schema.yml file"
+         *   }
+         */
         $this->tpl_data['schema_urls'] = json_encode($urls);
     }
 }
