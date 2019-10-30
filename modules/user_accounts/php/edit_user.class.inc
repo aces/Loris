@@ -80,7 +80,7 @@ class Edit_User extends \NDB_Form
         $defaults = array();
 
         if (!$this->isCreatingNewUser()) {
-            $user = \User::factory(urldecode($this->identifier));
+            $user = \User::factory($this->identifier);
             // get the user defaults
             $defaults = $user->getData();
             // remove the password hash
