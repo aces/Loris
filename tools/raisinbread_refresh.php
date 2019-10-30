@@ -66,8 +66,10 @@ try {
     }
     $dbname = $dbInfo['database'];
     $host = $dbInfo['host'];
-    $username = $dbInfo['username'];
-    $password = $dbInfo['password'];
+    // The "quat" user and password should be configured to a user with DROP
+    // and CREATE permissions for the database.
+    $username = $dbInfo['quatUser'];
+    $password = $dbInfo['quatPassword'];
 
     $urlConfigSetting = $config->getSetting('url');
     $baseConfigSetting = $config->getSetting('base');
