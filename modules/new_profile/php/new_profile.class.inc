@@ -91,7 +91,7 @@ class New_Profile extends \NDB_Form
         /* Update front-end data. Use passed PSCID when present, otherwise
          * retrieve it from the newly-created candidate.
          */
-        $this->_candID = $candID;
+        $this->_candID = (string)$candID;
         $this->_pscid  = $values['pscid']
             ?? \Candidate::singleton($candID)->getPSCID();
 
