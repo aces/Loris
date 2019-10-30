@@ -67,9 +67,9 @@ class Imaging_Session_ControlPanel
         $timePoint = \TimePoint::singleton($_REQUEST['sessionID']);
 
         $subjectData = array(
-                        'sessionID' => $_REQUEST['sessionID'],
-                        'candid'    => $timePoint->getCandID(),
-                       );
+            'sessionID' => $_REQUEST['sessionID'],
+            'candid'    => $timePoint->getCandID(),
+        );
 
         $linkedInstruments
             = $config->getSetting('ImagingBrowserLinkedInstruments');

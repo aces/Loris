@@ -123,7 +123,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function toArray(ServerRequestInterface $request): array
+    private function _toArray(ServerRequestInterface $request): array
     {
         $projectname = $this->project->getName();
 
@@ -139,32 +139,33 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             // persistence layer.
             $result = \NDB_Factory::singleton()->database()->pselect(
                 'SELECT
-                   tn.Test_name as testname,
-                   tn.Full_name as fullname,
-                   sg.Subgroup_name as subgroupname
-                 FROM
-                   test_names tn
-                 LEFT JOIN test_subgroups sg
-                   ON (tn.Sub_group=sg.ID)
-                ',
+                tn.Test_name as testname,
+                tn.Full_name as fullname,
+                sg.Subgroup_name as subgroupname
+                FROM
+                test_names tn
+                LEFT JOIN test_subgroups sg
+                ON (tn.Sub_group=sg.ID)
+',
                 array()
             );
 
-        $prov = new \LORIS\api\Provisioners\ProjectInstrumentsRowProvisioner();
-        $user = $request->getAttribute('user');
+            $prov = new \LORIS\api\Provisioners\ProjectInstrumentsRowProvisioner();
+            $user = $request->getAttribute('user');
 
-        $instruments = (new \LORIS\Data\Table())
-            ->withDataFrom($prov)
-            ->getRows($user);
+            $instruments = (new \LORIS\Data\Table())
+                ->withDataFrom($prov)
+                ->getRows($user);
 
-        $array = (new \LORIS\api\Views\Project\Instruments(
-            $this->_project,
-            iterator_to_array($instruments)
-        ))->toArray();
+            $array = (new \LORIS\api\Views\Project\Instruments(
+                $this->_project,
+                iterator_to_array($instruments)
+            ))->toArray();
 
-        $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
+            $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
 
-        return $this->_cache;
+            return $this->_cache;
+        }
     }
 
     /**

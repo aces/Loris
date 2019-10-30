@@ -108,7 +108,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function toArray(ServerRequestInterface $request)
+    private function _toArray(ServerRequestInterface $request)
     {
         if (isset($this->_cache)) {
             return $this->_cache;

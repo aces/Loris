@@ -130,11 +130,11 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Generates a JSON representation of this project following the API
      * specification.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
+     * @param ServerRequestInterface $name The project to get
      *
      * @return ResponseInterface
      */
-    private function getProject(string $name): array
+    private function _getProject(string $name): array
     {
         if (isset($this->_cache)) {
             return $this->_cache;

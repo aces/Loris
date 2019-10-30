@@ -99,43 +99,43 @@ class Login extends Endpoint
         }
 
         switch ($request->getMethod()) {
-            case 'POST':
-                $requestdata = json_decode((string) $request->getBody(), true);
+        case 'POST':
+            $requestdata = json_decode((string) $request->getBody(), true);
 
-                $user     = $requestdata['username'] ?? null;
-                $password = $requestdata['password'] ?? null;
+            $user     = $requestdata['username'] ?? null;
+            $password = $requestdata['password'] ?? null;
 
-                if ($user === null || $password === null) {
-                    return new \LORIS\Http\Response\JSON\BadRequest(
-                        'Missing username or password'
+            if ($user === null || $password === null) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Missing username or password'
+                );
+            }
+
+            $login = $this->getLoginAuthenticator();
+
+            if ($login->passwordAuthenticate($user, $password, false)) {
+                $token = $this->getEncodedToken($user);
+                if (!empty($token)) {
+                    return new \LORIS\Http\Response\JsonResponse(
+                        array('token' => $token)
+                    );
+                } else {
+                    return new \LORIS\Http\Response\JSON\InternalServerError(
+                        'Unacceptable JWT key'
                     );
                 }
+            }
 
-                $login = $this->getLoginAuthenticator();
-
-                if ($login->passwordAuthenticate($user, $password, false)) {
-                    $token = $this->getEncodedToken($user);
-                    if (!empty($token)) {
-                        return new \LORIS\Http\Response\JsonResponse(
-                            array('token' => $token)
-                        );
-                    } else {
-                        return new \LORIS\Http\Response\JSON\InternalServerError(
-                            'Unacceptable JWT key'
-                        );
-                    }
-                }
-
-                return new \LORIS\Http\Response\Unauthorized(
-                    $login->_lastError
-                );
-            case 'OPTIONS':
-                return (new \LORIS\Http\Response())
+            return new \LORIS\Http\Response\Unauthorized(
+                $login->_lastError
+            );
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
                 ->withHeader('Allow', $this->allowedMethods());
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
 
@@ -145,7 +145,7 @@ class Login extends Endpoint
      *
      * @return \SinglePointLogin Loris Authenticator
      */
-    private function getLoginAuthenticator()
+    private function _getLoginAuthenticator()
     {
         return new \SinglePointLogin();
     }
@@ -157,7 +157,7 @@ class Login extends Endpoint
      *
      * @return string JWT encoded token
      */
-    private function getEncodedToken($user)
+    private function _getEncodedToken($user)
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
@@ -192,7 +192,7 @@ class Login extends Endpoint
      *
      * @return boolean Key passes strength test
      */
-    private static function isKeyStrong($key)
+    private static function _isKeyStrong($key)
     {
         // Note: this code adapted from User::isPasswordStrong
         $CharTypes = 0;

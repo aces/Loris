@@ -65,78 +65,78 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'                => '000001',
-             'PSCID'                 => 'DCC0001',
-             'RegistrationCenterID'  => 1,
-             'RegistrationProjectID' => 1,
-             'Active'                => 'Y',
-             'Entity_type'           => 'Human',
+                'CandID'                => '000001',
+                'PSCID'                 => 'DCC0001',
+                'RegistrationCenterID'  => 1,
+                'RegistrationProjectID' => 1,
+                'Active'                => 'Y',
+                'Entity_type'           => 'Human',
             )
         );
 
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'                => '000002',
-             'PSCID'                 => 'AOL0002',
-             'RegistrationCenterID'  => 253,
-             'RegistrationProjectID' => 1,
-             'Active'                => 'Y',
-             'Entity_type'           => 'Human',
+                'CandID'                => '000002',
+                'PSCID'                 => 'AOL0002',
+                'RegistrationCenterID'  => 253,
+                'RegistrationProjectID' => 1,
+                'Active'                => 'Y',
+                'Entity_type'           => 'Human',
             )
         );
 
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'                => 000003,
-             'PSCID'                 => 'BOL0003',
-             'RegistrationCenterID'  => 254,
-             'RegistrationProjectID' => 1,
-             'Active'                => 'Y',
-             'Entity_type'           => 'Human',
+                'CandID'                => 000003,
+                'PSCID'                 => 'BOL0003',
+                'RegistrationCenterID'  => 254,
+                'RegistrationProjectID' => 1,
+                'Active'                => 'Y',
+                'Entity_type'           => 'Human',
             )
         );
 
         $this->DB->insert(
             'session',
             array(
-             'ID'            => 999997,
-             'CandID'        => 000001,
-             'Visit_label'   => 'Test0',
-             'CenterID'      => 1,
-             'ProjectID'     => 1,
-             'Scan_done'     => 'Y',
-             'Current_stage' => 'Visit',
-             'Visit'         => 'In Progress',
+                'ID'            => 999997,
+                'CandID'        => 000001,
+                'Visit_label'   => 'Test0',
+                'CenterID'      => 1,
+                'ProjectID'     => 1,
+                'Scan_done'     => 'Y',
+                'Current_stage' => 'Visit',
+                'Visit'         => 'In Progress',
             )
         );
 
         $this->DB->insert(
             'session',
             array(
-             'ID'            => 999998,
-             'CandID'        => 000002,
-             'Visit_label'   => 'Test1',
-             'CenterID'      => 253,
-             'ProjectID'     => 1,
-             'Scan_done'     => 'Y',
-             'Current_stage' => 'Visit',
-             'Visit'         => 'In Progress',
+                'ID'            => 999998,
+                'CandID'        => 000002,
+                'Visit_label'   => 'Test1',
+                'CenterID'      => 253,
+                'ProjectID'     => 1,
+                'Scan_done'     => 'Y',
+                'Current_stage' => 'Visit',
+                'Visit'         => 'In Progress',
             )
         );
 
         $this->DB->insert(
             'session',
             array(
-             'ID'            => 999999,
-             'CandID'        => 000003,
-             'Visit_label'   => 'Test2',
-             'CenterID'      => 254,
-             'ProjectID'     => 1,
-             'Scan_done'     => 'Y',
-             'Current_stage' => 'Visit',
-             'Visit'         => 'In Progress',
+                'ID'            => 999999,
+                'CandID'        => 000003,
+                'Visit_label'   => 'Test2',
+                'CenterID'      => 254,
+                'ProjectID'     => 1,
+                'Scan_done'     => 'Y',
+                'Current_stage' => 'Visit',
+                'Visit'         => 'In Progress',
             )
         );
 

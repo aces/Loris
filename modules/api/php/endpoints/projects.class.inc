@@ -39,7 +39,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return boolean true if access is permitted
      */
-    private function hasAccess(\User $user) : bool
+    private function _hasAccess(\User $user) : bool
     {
         return !($user instanceof \LORIS\AnonymousUser);
     }
@@ -120,11 +120,9 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Returns a list of projects for this LORIS instance.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function getProjectList() : array
+    private function _getProjectList() : array
     {
         if (!isset($this->_cache)) {
             // The projects list should be related to the user in the request

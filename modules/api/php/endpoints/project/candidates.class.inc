@@ -110,7 +110,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return ResponseInterface
      */
-    private function toArray(ServerRequestInterface $request): array
+    private function _toArray(ServerRequestInterface $request): array
     {
         $projectname = $this->project->getName();
 
@@ -119,9 +119,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $candids = $this->project->getCandidateIds();
 
             $this->responseCache[$projectname] = array(
-                                                  'Meta'       => $meta,
-                                                  'Candidates' => $candids,
-                                                 );
+                'Meta'       => $meta,
+                'Candidates' => $candids,
+            );
         }
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
