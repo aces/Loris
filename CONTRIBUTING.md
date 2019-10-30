@@ -17,31 +17,12 @@ some of the factors we'll consider when reviewing your code.
 
 ## Development branches
 
-Please create a fork of the LORIS repository on your own GitHub account and
-push changes to local branches rather than pushing new branches directly 
-to our repository.
+You should base your pull requests on `master` when doing a bug fix. These PRs
+should not contain code that introduces a breaking change.
 
-You should base your pull requests on one of the following branches
-depending on the kind of change you are making:
-
-#### Bug Fixes
-   - Branch: `bugfix` 
-   - Content: Generally these changes do not require SQL scripts
-   and are concise with the sole objective to correct a single problem
-   in the code.
-
-#### Minor Changes and Small Features
-   - Branch: `minor` 
-   - Content: Features affecting self-contained components such
-   as modules. Additions to Libraries, API, or modules that do not change
-   any function signatures.
-
-#### Major Changes, Non Backwards-Compatible Changes and Large Features
-   - Branch: `major` 
-   - Content: Any change modifying a function signature in a
-   library class. Features require extensive LORIS-wide testing. New
-   complex systems and features spanning across multiple modules and
-   libraries. Deprecated functions clean-up.
+All other pull requests, including enhancements and refactoring, should be based
+on the development branch.
+>>>>>>> d67fd79d9... Remove references to old branches
 
 For more information about making well-organized pull requests,
 please read our in-depth Wiki page, 
