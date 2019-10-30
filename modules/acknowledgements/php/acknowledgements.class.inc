@@ -98,16 +98,16 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                 implode(', ', $values['addRoles']) :
                 $values['addRoles'];
             $results      = array(
-                             'ordering'      => $values['addOrdering'],
-                             'full_name'     => $values['addFullName'],
-                             'citation_name' => $values['addCitationName'],
-                             'affiliations'  => $affiliations,
-                             'degrees'       => $degrees,
-                             'roles'         => $roles,
-                             'start_date'    => $values['addStartDate'],
-                             'end_date'      => $values['addEndDate'],
-                             'present'       => $values['addPresent'],
-                            );
+                'ordering'      => $values['addOrdering'],
+                'full_name'     => $values['addFullName'],
+                'citation_name' => $values['addCitationName'],
+                'affiliations'  => $affiliations,
+                'degrees'       => $degrees,
+                'roles'         => $roles,
+                'start_date'    => $values['addStartDate'],
+                'end_date'      => $values['addEndDate'],
+                'present'       => $values['addPresent'],
+            );
 
             $DB->insert('acknowledgements', $results);
             unset($values);
@@ -126,44 +126,44 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     function _setupVariables()
     {
         $this->columns      = array(
-                               'ordering',
-                               'full_name',
-                               'citation_name',
-                               'affiliations',
-                               'degrees',
-                               'roles',
-                               'start_date',
-                               'end_date',
-                               'present',
-                              );
+            'ordering',
+            'full_name',
+            'citation_name',
+            'affiliations',
+            'degrees',
+            'roles',
+            'start_date',
+            'end_date',
+            'present',
+        );
         $this->query        = " FROM acknowledgements WHERE 1=1";
         $this->group_by     = '';
         $this->order_by     = "ordering ASC";
         $this->validFilters = array(
-                               'full_name',
-                               'citation_name',
-                               'start_date',
-                               'end_date',
-                               'present',
-                              );
+            'full_name',
+            'citation_name',
+            'start_date',
+            'end_date',
+            'present',
+        );
         $this->headers      = array(
-                               'ordering',
-                               'full_name',
-                               'citation_name',
-                               'affiliations',
-                               'degrees',
-                               'roles',
-                               'start_date',
-                               'end_date',
-                               'present',
-                              );
+            'ordering',
+            'full_name',
+            'citation_name',
+            'affiliations',
+            'degrees',
+            'roles',
+            'start_date',
+            'end_date',
+            'present',
+        );
         $this->formToFilter = array(
-                               'full_name'     => 'full_name',
-                               'citation_name' => 'citation_name',
-                               'start_date'    => 'start_date',
-                               'end_date'      => 'end_date',
-                               'present'       => 'present',
-                              );
+            'full_name'     => 'full_name',
+            'citation_name' => 'citation_name',
+            'start_date'    => 'start_date',
+            'end_date'      => 'end_date',
+            'present'       => 'present',
+        );
     }
 
     /**
@@ -178,9 +178,9 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         parent::setup();
 
         $present = array(
-                    'Yes' => 'Yes',
-                    'No'  => 'No',
-                   );
+            'Yes' => 'Yes',
+            'No'  => 'No',
+        );
 
         $this->fieldOptions = array('presents' => $present);
     }
@@ -221,7 +221,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         return array_merge(
             $baseDeps,
             array(
-             $baseurl . '/acknowledgements/js/acknowledgementsIndex.js',
+                $baseurl . '/acknowledgements/js/acknowledgementsIndex.js',
             )
         );
 

@@ -49,12 +49,74 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-
+        $this->DB->insert(
+            "psc",
+            array(
+                'CenterID'  => '55',
+                'Name'      => 'TESTinPSC',
+                'Alias'     => 'tst',
+                'MRI_alias' => 'test',
+            )
+        );
         $this->DB->insert(
             "subproject",
             array(
-             'SubprojectID' => '55',
-             'title'        => 'TESTinSubproject',
+                'SubprojectID' => '55',
+                'title'        => 'TESTinSubproject',
+            )
+        );
+        $this->DB->insert(
+            "candidate",
+            array(
+                'CandID'               => '999888',
+                'RegistrationCenterID' => '55',
+                'UserID'               => '1',
+                'PSCID'                => '8888',
+                'ProjectID'            => '7777',
+            )
+        );
+        $this->DB->insert(
+            "session",
+            array(
+                'ID'           => '111111',
+                'CandID'       => '999888',
+                'CenterID'     => '55',
+                'UserID'       => '1',
+                'MRIQCStatus'  => 'Pass',
+                'SubprojectID' => '55',
+                'Visit'        => 'In Progress',
+            )
+        );
+        $this->DB->insert(
+            "candidate",
+            array(
+                'CandID'               => '999999',
+                'RegistrationCenterID' => '55',
+                'UserID'               => '1',
+                'PSCID'                => '8889',
+                'ProjectID'            => '7777',
+            )
+        );
+        $this->DB->insert(
+            "session",
+            array(
+                'ID'           => '111112',
+                'CandID'       => '999999',
+                'CenterID'     => '55',
+                'UserID'       => '1',
+                'MRIQCStatus'  => 'Pass',
+                'SubprojectID' => '55',
+                'Visit'        => 'In Progress',
+            )
+        );
+        $this->DB->insert(
+            "participant_accounts",
+            array(
+                'SessionID'       => '111111',
+                'Email'           => 'TestTestTest@example.com',
+                'Test_name'       => 'Test',
+                'Status'          => 'In Progress',
+                'OneTimePassword' => 'Test',
             )
         );
         $this->DB->insert(
@@ -130,6 +192,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
               )
           );
     }
+
     /**
      * Deleting test data
      *
@@ -186,7 +249,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/survey_accounts/");
         $bodyText
             = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
-                ->getText();
+            ->getText();
         $this->assertContains("Survey Accounts", $bodyText);
         $this->resetPermissions();
     }
@@ -236,6 +299,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "Visit V1 does not exist for given candidate",
             $bodyText
         );
+
         //PSCID and DCC ID do not match or candidate does not exist.
         $this->safeFindElement(
             WebDriverBy::Name("CandID")

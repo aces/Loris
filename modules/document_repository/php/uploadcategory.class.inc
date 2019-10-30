@@ -38,8 +38,8 @@ class UploadCategory extends \NDB_Page
     {
         return $user->hasAnyPermission(
             array(
-             'document_repository_view',
-             'document_repository_delete',
+                'document_repository_view',
+                'document_repository_delete',
             )
         );
     }
@@ -89,9 +89,9 @@ class UploadCategory extends \NDB_Page
         $DB->insert(
             "document_repository_categories",
             array(
-             "category_name" => $category_name,
-             "parent_id"     => $parent_id,
-             "comments"      => $comments,
+                "category_name" => $category_name,
+                "parent_id"     => $parent_id,
+                "comments"      => $comments,
             )
         );
     }

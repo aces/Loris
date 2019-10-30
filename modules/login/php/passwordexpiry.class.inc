@@ -11,7 +11,7 @@
  * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
-*/
+ */
 namespace LORIS\login;
 
 /**

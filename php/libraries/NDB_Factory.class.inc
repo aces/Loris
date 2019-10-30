@@ -337,10 +337,10 @@ class NDB_Factory
                 'MockCouchDBWrap',
                 /* mock out the functions that make HTTP requests */
                 array(
-                 '_getRelativeURL',
-                 '_postRelativeURL',
-                 '_postURL',
-                 '_getURL',
+                    '_getRelativeURL',
+                    '_postRelativeURL',
+                    '_postURL',
+                    '_getURL',
                 )
             );
             self::$_couchdb[$database] = new MockCouchDBWrap();

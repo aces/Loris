@@ -99,12 +99,12 @@ class Candidate_List extends \DataFrameworkMenu
         }
 
         return [
-                'site'              => $site_options,
-                'project'           => $project_options,
-                'subproject'        => $subproject_options,
-                'participantstatus' => $participant_status_options,
-                'useedc'            => $config->getSetting("useEDC"),
-               ];
+            'site'              => $site_options,
+            'project'           => $project_options,
+            'subproject'        => $subproject_options,
+            'participantstatus' => $participant_status_options,
+            'useedc'            => $config->getSetting("useEDC"),
+        ];
     }
 
     /**
@@ -121,7 +121,7 @@ class Candidate_List extends \DataFrameworkMenu
         return array_merge(
             $deps,
             array(
-             $baseURL . "/candidate_list/js/candidateListIndex.js",
+                $baseURL . "/candidate_list/js/candidateListIndex.js",
             )
         );
     }

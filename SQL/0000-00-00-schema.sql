@@ -1282,7 +1282,7 @@ CREATE TABLE `media` (
   `data_dir` varchar(255) NOT NULL,
   `uploaded_by` varchar(255) DEFAULT NULL,
   `hide_file` tinyint(1) DEFAULT '0',
-  `date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `language_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file_name` (`file_name`),

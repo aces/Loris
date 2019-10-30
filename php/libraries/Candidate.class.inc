@@ -123,8 +123,8 @@ class Candidate
                     (pc.ParameterTypeID=pt.ParameterTypeID)
                     WHERE c.CandID=:Candidate AND pt.Name=:PTName",
                     array(
-                     'Candidate' => $candID,
-                     'PTName'    => $parameter_type,
+                        'Candidate' => $candID,
+                        'PTName'    => $parameter_type,
                     )
                 );
                 // Sanitize values coming from the parameter_candidate table
@@ -247,18 +247,18 @@ class Candidate
 
         // Insert the new candidate into the database if everything is fine.
         $setArray = array(
-                     'RegistrationCenterID'  => $centerID,
-                     'PSCID'                 => $PSCID,
-                     'DoB'                   => $dateOfBirth,
-                     'EDC'                   => $edc,
-                     'Sex'                   => $sex,
-                     'RegistrationProjectID' => $registrationProjectID,
-                     'Date_active'           => date('Y-m-d'),
-                     'Date_registered'       => date('Y-m-d'),
-                     'Entity_type'           => 'Human',
-                     'RegisteredBy'          => $user->getUsername(),
-                     'UserID'                => $user->getUsername(),
-                    );
+            'RegistrationCenterID' => $centerID,
+            'PSCID'                => $PSCID,
+            'DoB'                  => $dateOfBirth,
+            'EDC'                  => $edc,
+            'Sex'                  => $sex,
+            'RegistrationProjectID' => $registrationProjectID,
+            'Date_active'          => date('Y-m-d'),
+            'Date_registered'      => date('Y-m-d'),
+            'Entity_type'          => 'Human',
+            'RegisteredBy'         => $user->getUsername(),
+            'UserID'               => $user->getUsername(),
+        );
 
         if ($config->getSetting('useExternalID') === 'true') {
             $externalID = (new \ExternalIDGenerator())->generate();
@@ -307,9 +307,9 @@ class Candidate
         $db      = $factory->database();
 
         $candidateIDs = array(
-                         ':candidate_id' => $candID,
-                         ':pscid'        => $PSCID,
-                        );
+            ':candidate_id' => $candID,
+            ':pscid'        => $PSCID,
+        );
 
         // get candidate data from database
         $query = "SELECT CandID
@@ -354,7 +354,7 @@ class Candidate
      * Return a piece of data about this candidate
      *
      * @param string|null $var The type of data about the Candidate
-     *                    to be returned
+     *                         to be returned
      *
      * @return mixed The info requested
      */
@@ -372,7 +372,7 @@ class Candidate
      * database.
      *
      * @param array $newData Key-value pair(s) of the field(s) to change and the
-     *                              new value(s).
+     *                       new value(s).
      *
      * @return bool
      *
@@ -395,7 +395,7 @@ class Candidate
             'candidate',
             $newData,
             array(
-             'CandID' => $this->getData('CandID'),
+                'CandID' => $this->getData('CandID'),
             )
         );
         return true;
@@ -672,8 +672,8 @@ class Candidate
      *
      * @param string      $PSCID      The PSCID to validate
      * @param string|null $siteAbbrev (optional) The site of the candidate
-     *                           being validated to check against appropriate
-     *                           parts of PSCID definition
+     *                                being validated to check against appropriate
+     *                                parts of PSCID definition
      *
      * @return boolean True if PSCID is valid, false otherwise
      */

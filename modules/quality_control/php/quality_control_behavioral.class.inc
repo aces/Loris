@@ -115,18 +115,18 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
         $projectList = \Utility::getProjectList();
 
         $this->fieldOptions = [
-                               'visits'     => $visitList,
-                               'instrument' => $instrumentList,
-                               'site'       => $siteList,
-                               'projects'   => $projectList,
-                              ];
+            'visits'     => $visitList,
+            'instrument' => $instrumentList,
+            'site'       => $siteList,
+            'projects'   => $projectList,
+        ];
 
         $this->columns = [
-                          's.Visit_label as visit_label',
-                          's.CandID as cand_id',
-                          'c.PSCID as pscid',
-                          't.Full_name as instrument',
-                         ];
+            's.Visit_label as visit_label',
+            's.CandID as cand_id',
+            'c.PSCID as pscid',
+            't.Full_name as instrument',
+        ];
         $query         = $query . $where;
         $this->query   = $query;
 
@@ -146,7 +146,7 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/quality_control/js/qualityControlIndex.js",
+                $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }

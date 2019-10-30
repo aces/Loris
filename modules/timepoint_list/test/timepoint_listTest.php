@@ -109,6 +109,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             "candidate",
             array(
+<<<<<<< HEAD
              'CandID'                => '900001',
              'PSCID'                 => 'TST0002',
              'RegistrationCenterID'  => 1,
@@ -116,6 +117,14 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
              'Active'                => 'Y',
              'UserID'                => 1,
              'Entity_type'           => 'Human',
+=======
+                'CandID'               => '900001',
+                'PSCID'                => 'TST0002',
+                'RegistrationCenterID' => 1,
+                'Active'               => 'Y',
+                'UserID'               => 1,
+                'Entity_type'          => 'Human',
+>>>>>>> aces/minor
             )
         );
 
@@ -123,11 +132,18 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             'session',
             array(
+<<<<<<< HEAD
              'ID'          => '999998',
              'CandID'      => '900001',
              'Visit_label' => 'Test',
              'CenterID'    => 1,
              'ProjectID'   => 1,
+=======
+                'ID'          => '999998',
+                'CandID'      => '900001',
+                'Visit_label' => 'Test',
+                'CenterID'    => 1,
+>>>>>>> aces/minor
             )
         );
 
@@ -136,12 +152,20 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             'session',
             array(
+<<<<<<< HEAD
              'ID'          => '999997',
              'CandID'      => self::$_TST0001_CANDID,
              'Visit_label' => 'Test2',
              'CenterID'    => 1,
              'ProjectID'   => 1,
              'Active'      => 'N',
+=======
+                'ID'          => '999997',
+                'CandID'      => self::$_TST0001_CANDID,
+                'Visit_label' => 'Test2',
+                'CenterID'    => 1,
+                'Active'      => 'N',
+>>>>>>> aces/minor
             )
         );
         $this->safeGet(

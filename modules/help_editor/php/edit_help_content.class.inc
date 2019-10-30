@@ -26,12 +26,12 @@ namespace LORIS\help_editor;
 class Edit_Help_Content extends \NDB_Form
 {
      /**
-     * Determine if user has permission to access this page
-     *
-     * @param \User $user The user whose access is being checked
-     *
-     * @return bool true if access is permitted
-     */
+      * Determine if user has permission to access this page
+      *
+      * @param \User $user The user whose access is being checked
+      *
+      * @return bool true if access is permitted
+      */
     function _hasAccess(\User $user) : bool
     {
         return $user->hasPermission('context_help');
@@ -130,8 +130,8 @@ class Edit_Help_Content extends \NDB_Form
             'content',
             'Content',
             array(
-             'cols' => 140,
-             'rows' => 30,
+                'cols' => 140,
+                'rows' => 30,
             )
         );
 
@@ -151,7 +151,7 @@ class Edit_Help_Content extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/help_editor/js/help_editor_helper.js",
+                $baseURL . "/help_editor/js/help_editor_helper.js",
             )
         );
     }

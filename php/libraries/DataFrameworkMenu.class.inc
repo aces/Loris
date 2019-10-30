@@ -107,6 +107,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
                 new \LORIS\Data\Filters\UserSiteMatch()
             );
         }
+
         return $provisioner;
     }
 
@@ -129,8 +130,8 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
 
         return json_encode(
             [
-             'Data'         => $arr,
-             'fieldOptions' => $this->getFieldOptions(),
+                'Data'         => $arr,
+                'fieldOptions' => $this->getFieldOptions(),
             ]
         );
     }

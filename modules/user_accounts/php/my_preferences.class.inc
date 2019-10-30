@@ -40,20 +40,20 @@ class My_Preferences extends \NDB_Form
 
         // An array of each field that requires front-end sanitization
         $fieldsThatAreStrings = array(
-                                 'UserID',
-                                 'First_name',
-                                 'Last_name',
-                                 'Real_name',
-                                 'Email',
-                                 'Degree',
-                                 'Institution',
-                                 'Address',
-                                 'City',
-                                 'State',
-                                 'Zip_code',
-                                 'Country',
-                                 'Fax',
-                                );
+            'UserID',
+            'First_name',
+            'Last_name',
+            'Real_name',
+            'Email',
+            'Degree',
+            'Institution',
+            'Address',
+            'City',
+            'State',
+            'Zip_code',
+            'Country',
+            'Fax',
+        );
         // Prevent Javascript injection on all fields
         foreach ($fieldsThatAreStrings as $fieldName) {
             // this check prevents PHP Notices
@@ -155,9 +155,9 @@ class My_Preferences extends \NDB_Form
                             $DB->insert(
                                 'users_notifications_rel',
                                 array(
-                                 "module_id"  => $module_id,
-                                 "service_id" => $service_id,
-                                 "user_id"    => $user->getData("ID"),
+                                    "module_id"  => $module_id,
+                                    "service_id" => $service_id,
+                                    "user_id"    => $user->getData("ID"),
                                 )
                             );
                         }
@@ -166,9 +166,9 @@ class My_Preferences extends \NDB_Form
                             $DB->delete(
                                 'users_notifications_rel',
                                 array(
-                                 "module_id"  => $module_id,
-                                 "service_id" => $service_id,
-                                 "user_id"    => $user->getData("ID"),
+                                    "module_id"  => $module_id,
+                                    "service_id" => $service_id,
+                                    "user_id"    => $user->getData("ID"),
                                 )
                             );
                         }
@@ -251,10 +251,10 @@ class My_Preferences extends \NDB_Form
             'First_name',
             'First name',
             array(
-             'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
-             'onchange'  => "this.setCustomValidity('')",
-             'pattern'   => '^\s*\S.{0,119}\s*$',
-             'required'  => true,
+                'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
+                'onchange'  => "this.setCustomValidity('')",
+                'pattern'   => '^\s*\S.{0,119}\s*$',
+                'required'  => true,
             )
         );
         // The supplied pattern is:
@@ -267,10 +267,10 @@ class My_Preferences extends \NDB_Form
             'Last_name',
             'Last name',
             array(
-             'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
-             'onchange'  => "this.setCustomValidity('')",
-             'pattern'   => '^\s*\S.{0,119}\s*$',
-             'required'  => true,
+                'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
+                'onchange'  => "this.setCustomValidity('')",
+                'pattern'   => '^\s*\S.{0,119}\s*$',
+                'required'  => true,
             )
         );
 
@@ -279,8 +279,8 @@ class My_Preferences extends \NDB_Form
             'Email',
             'Email address',
             array(
-             'oninvalid' => "this.setCustomValidity('Email address is required')",
-             'onchange'  => "this.setCustomValidity('')",
+                'oninvalid' => "this.setCustomValidity('Email address is required')",
+                'onchange'  => "this.setCustomValidity('')",
             )
         );
 

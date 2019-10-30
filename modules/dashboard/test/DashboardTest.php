@@ -41,10 +41,10 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "users",
             array(
-             'UserID'          => 'testUser1',
-             'Email'           => 'test@test.com',
-             'Password'        => 'AA1234567!',
-             'Password_expiry' => '2020-01-06',
+                'UserID'          => 'testUser1',
+                'Email'           => 'test@test.com',
+                'Password'        => 'AA1234567!',
+                'Password_expiry' => '2020-01-06',
             )
         );
         $user_id = $this->DB->pselectOne(
@@ -54,25 +54,25 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "user_psc_rel",
             array(
-             'UserID'   => $user_id,
-             'CenterID' => '1',
+                'UserID'   => $user_id,
+                'CenterID' => '1',
             )
         );
         //Insert two violation scan
         $this->DB->insert(
             "psc",
             array(
-             'CenterID'  => '55',
-             'Name'      => 'TESTinPSC',
-             'Alias'     => 'tst',
-             'MRI_alias' => 'test',
+                'CenterID'  => '55',
+                'Name'      => 'TESTinPSC',
+                'Alias'     => 'tst',
+                'MRI_alias' => 'test',
             )
         );
         $this->DB->insert(
             "subproject",
             array(
-             'SubprojectID' => '55',
-             'title'        => 'TESTinSubproject',
+                'SubprojectID' => '55',
+                'title'        => 'TESTinSubproject',
             )
         );
         $this->DB->insert(
@@ -110,160 +110,160 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
-             'ID'                 => '1001',
-             'CandID'             => '999888',
-             'PatientName'        => '[Test]PatientName',
-             'time_run'           => '2009-06-29 04:00:44',
-             'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
-             'series_description' => 'Test Series Description',
-             'SeriesUID'          => '5555',
+                'ID'                 => '1001',
+                'CandID'             => '999888',
+                'PatientName'        => '[Test]PatientName',
+                'time_run'           => '2009-06-29 04:00:44',
+                'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
+                'series_description' => 'Test Series Description',
+                'SeriesUID'          => '5555',
             )
         );
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
-             'ID'                 => '1002',
-             'CandID'             => '999888',
-             'PatientName'        => '[Test]PatientName',
-             'time_run'           => '2008-06-29 04:00:44',
-             'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
-             'series_description' => 'Test Series Description',
-             'SeriesUID'          => '5556',
+                'ID'                 => '1002',
+                'CandID'             => '999888',
+                'PatientName'        => '[Test]PatientName',
+                'time_run'           => '2008-06-29 04:00:44',
+                'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
+                'series_description' => 'Test Series Description',
+                'SeriesUID'          => '5556',
             )
         );
         $this->DB->insert(
             "violations_resolved",
             array(
-             'ExtID'     => '1001',
-             'hash'      => 'this is not a null value',
-             'TypeTable' => 'mri_protocol_violated_scans',
-             'Resolved'  => 'other',
+                'ExtID'     => '1001',
+                'hash'      => 'this is not a null value',
+                'TypeTable' => 'mri_protocol_violated_scans',
+                'Resolved'  => 'other',
             )
         );
         $this->DB->insert(
             "violations_resolved",
             array(
-             'ExtID'     => '1002',
-             'hash'      => 'this is not a null value',
-             'TypeTable' => 'MRICandidateErrors',
-             'Resolved'  => 'unresolved',
+                'ExtID'     => '1002',
+                'hash'      => 'this is not a null value',
+                'TypeTable' => 'MRICandidateErrors',
+                'Resolved'  => 'unresolved',
             )
         );
         $this->DB->insert(
             "MRICandidateErrors",
             array(
-             'ID'          => '1002',
-             'PatientName' => '[Test]PatientName',
-             'MincFile'    => 'assembly/test2/test2/mri/test2/test2.mnc',
-             'SeriesUID'   => '5556',
+                'ID'          => '1002',
+                'PatientName' => '[Test]PatientName',
+                'MincFile'    => 'assembly/test2/test2/mri/test2/test2.mnc',
+                'SeriesUID'   => '5556',
             )
         );
         //Insert an incomplete form data
         $this->DB->insert(
             "test_names",
             array(
-             'ID'        => '111',
-             'Test_name' => 'TestName11111111111',
+                'ID'        => '111',
+                'Test_name' => 'TestName11111111111',
             )
         );
         $this->DB->insert(
             "flag",
             array(
-             'ID'         => '111111',
-             'SessionID'  => '222222',
-             'Test_name'  => 'TestName11111111111',
-             'CommentID'  => 'commentID111',
-             'Data_entry' => 'In Progress',
+                'ID'         => '111111',
+                'SessionID'  => '222222',
+                'Test_name'  => 'TestName11111111111',
+                'CommentID'  => 'commentID111',
+                'Data_entry' => 'In Progress',
             )
         );
         //Insert a demo data into conflicts_unresolved
         $this->DB->insert(
             "conflicts_unresolved",
             array(
-             'TableName'      => 'TestTestTest',
-             'ExtraKeyColumn' => 'Test',
-             'ExtraKey1'      => 'Null',
-             'ExtraKey2'      => 'Null',
-             'FieldName'      => 'TestTestTest',
-             'CommentId1'     => '963443000111271151398976899',
-             'Value1'         => 'no',
-             'CommentId2'     => 'DDE_963443000111271151398976899',
-             'Value2'         => 'no',
+                'TableName'      => 'TestTestTest',
+                'ExtraKeyColumn' => 'Test',
+                'ExtraKey1'      => 'Null',
+                'ExtraKey2'      => 'Null',
+                'FieldName'      => 'TestTestTest',
+                'CommentId1'     => '963443000111271151398976899',
+                'Value1'         => 'no',
+                'CommentId2'     => 'DDE_963443000111271151398976899',
+                'Value2'         => 'no',
             )
         );
         $this->DB->insert(
             "files",
             array(
-             'FileID'       => '1111112',
-             'SessionID'    => '222222',
-             'SourceFileID' => '1111112',
+                'FileID'       => '1111112',
+                'SessionID'    => '222222',
+                'SourceFileID' => '1111112',
             )
         );
 
         $this->DB->insert(
             "files_qcstatus",
             array(
-             'FileID'   => '1111112',
-             'FileQCID' => '2222221',
+                'FileID'   => '1111112',
+                'FileQCID' => '2222221',
             )
         );
         $this->DB->insert(
             "conflicts_resolved",
             array(
-             'ResolvedID'          => '999999',
-             'UserID'              => 'demo',
-             'ResolutionTimestamp' => '2015-11-03 16:21:49',
-             'User1'               => 'Null',
-             'User2'               => 'Null',
-             'TableName'           => 'Test',
-             'ExtraKey1'           => 'NULL',
-             'ExtraKey2'           => 'NULL',
-             'FieldName'           => 'TestTestTest',
-             'CommentId1'          => '589569DCC000012291366553230',
-             'CommentId2'          => 'DDE_589569DCC000012291366653254',
-             'OldValue1'           => 'Mother',
-             'OldValue2'           => 'Father',
-             'NewValue'            => 'NULL',
+                'ResolvedID'          => '999999',
+                'UserID'              => 'demo',
+                'ResolutionTimestamp' => '2015-11-03 16:21:49',
+                'User1'               => 'Null',
+                'User2'               => 'Null',
+                'TableName'           => 'Test',
+                'ExtraKey1'           => 'NULL',
+                'ExtraKey2'           => 'NULL',
+                'FieldName'           => 'TestTestTest',
+                'CommentId1'          => '589569DCC000012291366553230',
+                'CommentId2'          => 'DDE_589569DCC000012291366653254',
+                'OldValue1'           => 'Mother',
+                'OldValue2'           => 'Father',
+                'NewValue'            => 'NULL',
             )
         );
         $this->DB->insert(
             "conflicts_unresolved",
             array(
-             'TableName'      => 'TestTestTest',
-             'ExtraKeyColumn' => 'Test',
-             'ExtraKey1'      => 'Null',
-             'ExtraKey2'      => 'Null',
-             'FieldName'      => 'TestTestTest',
-             'CommentId1'     => 'commentID111',
-             'Value1'         => 'no',
-             'CommentId2'     => 'DDE_963443000111271151398976899',
-             'Value2'         => 'no',
+                'TableName'      => 'TestTestTest',
+                'ExtraKeyColumn' => 'Test',
+                'ExtraKey1'      => 'Null',
+                'ExtraKey2'      => 'Null',
+                'FieldName'      => 'TestTestTest',
+                'CommentId1'     => 'commentID111',
+                'Value1'         => 'no',
+                'CommentId2'     => 'DDE_963443000111271151398976899',
+                'Value2'         => 'no',
             )
         );
         $this->DB->insert(
             "issues",
             array(
-             'issueID'  => '999999',
-             'assignee' => 'UnitTester',
-             'status'   => 'new',
-             'priority' => 'low',
-             'reporter' => 'UnitTester',
+                'issueID'  => '999999',
+                'assignee' => 'UnitTester',
+                'status'   => 'new',
+                'priority' => 'low',
+                'reporter' => 'UnitTester',
             )
         );
         $this->DB->insert(
             "users",
             array(
-             'ID'     => '9999991',
-             'UserID' => 'Tester1',
+                'ID'     => '9999991',
+                'UserID' => 'Tester1',
             )
         );
         $this->DB->insert(
             "document_repository",
             array(
-             'record_id'  => '9999997',
-             'visitLabel' => null,
-             'Date_taken' => '2016-07-27 18:00:10',
-             'File_name'  => 'test.jpg',
+                'record_id'  => '9999997',
+                'visitLabel' => null,
+                'Date_taken' => '2016-07-27 18:00:10',
+                'File_name'  => 'test.jpg',
             )
         );
     }
@@ -315,29 +315,29 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->delete(
             "candidate",
             array(
-             'CandID'               => '999888',
-             'RegistrationCenterID' => '55',
+                'CandID'               => '999888',
+                'RegistrationCenterID' => '55',
             )
         );
         $this->DB->delete(
             "mri_protocol_violated_scans",
             array(
-             'ID'     => '1001',
-             'CandID' => '999888',
+                'ID'     => '1001',
+                'CandID' => '999888',
             )
         );
         $this->DB->delete(
             "mri_protocol_violated_scans",
             array(
-             'ID'     => '1002',
-             'CandID' => '999888',
+                'ID'     => '1002',
+                'CandID' => '999888',
             )
         );
         $this->DB->delete(
             "violations_resolved",
             array(
-             'ExtID'     => '1001',
-             'TypeTable' => 'mri_protocol_violated_scans',
+                'ExtID'     => '1001',
+                'TypeTable' => 'mri_protocol_violated_scans',
             )
         );
         $this->DB->delete(
@@ -347,15 +347,15 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->delete(
             "violations_resolved",
             array(
-             'ExtID'     => '1002',
-             'TypeTable' => 'mri_protocol_violated_scans',
+                'ExtID'     => '1002',
+                'TypeTable' => 'mri_protocol_violated_scans',
             )
         );
         $this->DB->delete(
             "psc",
             array(
-             'CenterID' => '55',
-             'Name'     => 'TESTinPSC',
+                'CenterID' => '55',
+                'Name'     => 'TESTinPSC',
             )
         );
         $this->DB->delete(
@@ -459,8 +459,8 @@ class DashboardTest extends LorisIntegrationTest
 
         $this->setupPermissions(
             array(
-             "imaging_browser_qc",
-             "imaging_browser_view_allsites",
+                "imaging_browser_qc",
+                "imaging_browser_view_allsites",
             )
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -487,8 +487,8 @@ class DashboardTest extends LorisIntegrationTest
 
         $this->setupPermissions(
             array(
-             "conflict_resolver",
-             "access_all_profiles",
+                "conflict_resolver",
+                "access_all_profiles",
             )
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -538,8 +538,8 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->setupPermissions(
             array(
-             "data_entry",
-             "access_all_profiles",
+                "data_entry",
+                "access_all_profiles",
             )
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -564,8 +564,8 @@ class DashboardTest extends LorisIntegrationTest
 
         $this->setupPermissions(
             array(
-             "user_accounts_multisite",
-             "user_accounts",
+                "user_accounts_multisite",
+                "user_accounts",
             )
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -592,8 +592,8 @@ class DashboardTest extends LorisIntegrationTest
 
         $this->setupPermissions(
             array(
-             "document_repository_delete",
-             "document_repository_view",
+                "document_repository_delete",
+                "document_repository_view",
             )
         );
         $this->safeGet($this->url . '/dashboard/');

@@ -36,24 +36,24 @@ class ServerProcessesMonitor
     private $_databaseProvider;
 
     /**
-      * Mutator for field databaseProvider.
-      *
-      * @param IDatabaseProvider $databaseProvider new value for field
-      *                          _databaseProvider.
-      *
-      * @return void
-      */
+     * Mutator for field databaseProvider.
+     *
+     * @param IDatabaseProvider $databaseProvider new value for field
+     *                                            _databaseProvider.
+     *
+     * @return void
+     */
     public function setDatabaseProvider($databaseProvider)
     {
         $this->_databaseProvider = $databaseProvider;
     }
 
     /**
-      * Accessor for field $databaseProvider.
-      *
-      * @return DefaultDatabaseProvider|IDatabaseProvider (value of
-      *                                                   field $databaseProvider)
-      */
+     * Accessor for field $databaseProvider.
+     *
+     * @return DefaultDatabaseProvider|IDatabaseProvider (value of
+     *                                                   field $databaseProvider)
+     */
     public function getDatabaseProvider()
     {
         // Lazy initialization of field
@@ -201,15 +201,15 @@ class ServerProcessesMonitor
 
             // Add current process state to state array
             $processState[] = array(
-                               'ID'        => is_null($matchingProcess) ? null :
+                'ID'        => is_null($matchingProcess) ? null :
                                              $matchingProcess->getId(),
-                               'PID'       => is_null($matchingProcess) ? null :
+                'PID'       => is_null($matchingProcess) ? null :
                                              $matchingProcess->getPid(),
-                               'STATE'     => $state,
-                               'PROGRESS'  => $progress,
-                               'EXIT_CODE' => $exitCode,
-                               'END_TIME'  => $endTime,
-                              );
+                'STATE'     => $state,
+                'PROGRESS'  => $progress,
+                'EXIT_CODE' => $exitCode,
+                'END_TIME'  => $endTime,
+            );
         }
 
         return $processState;
