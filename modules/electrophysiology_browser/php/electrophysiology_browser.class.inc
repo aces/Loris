@@ -139,7 +139,7 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         return array_merge(
             parent::getJSDependencies(),
             array(
-             $baseURL
+                $baseURL
                 . '/electrophysiology_browser/js/electrophysiologyBrowserIndex.js',
             )
         );

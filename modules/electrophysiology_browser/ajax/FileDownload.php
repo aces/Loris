@@ -1,15 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Electrophysiology downloader.
  *
  * This ensures that the file exists and the user is logged in to
  * LORIS before trying to return the file to the user.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Media
- * @author   Alex I. <ailea.mcin@gmail.com>
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
@@ -37,7 +37,7 @@ $filePath = $path . $file;
 if (!file_exists($filePath)) {
     error_log("ERROR: File $filePath does not exist");
     header("HTTP/1.1 404 Not Found");
-    exit(5);
+    exit;
 }
 
 // Output file in downloadable format

@@ -176,21 +176,21 @@ function getFilesData(int $sessionID)
         $emgChannelCount = $physioFileObj->getParameter('EMGChannelCount');
 
         $fileSummary['task']['channel'][] = array(
-                                             'name'  => 'EEG Channel Count',
-                                             'value' => $eegChannelCount,
-                                            );
+            'name'  => 'EEG Channel Count',
+            'value' => $eegChannelCount,
+        );
         $fileSummary['task']['channel'][] = array(
-                                             'name'  => 'EOG Channel Count',
-                                             'value' => $eogChannelCount,
-                                            );
+            'name'  => 'EOG Channel Count',
+            'value' => $eogChannelCount,
+        );
         $fileSummary['task']['channel'][] = array(
-                                             'name'  => 'ECG Channel Count',
-                                             'value' => $ecgChannelCount,
-                                            );
+            'name'  => 'ECG Channel Count',
+            'value' => $ecgChannelCount,
+        );
         $fileSummary['task']['channel'][] = array(
-                                             'name'  => 'EMG Channel Count',
-                                             'value' => $emgChannelCount,
-                                            );
+            'name'  => 'EMG Channel Count',
+            'value' => $emgChannelCount,
+        );
 
         // get the task reference
 
@@ -274,16 +274,16 @@ function getDownloadlinks(int $physiologicalFileID, string $physiologicalFile): 
     $params['PFID']  = $physiologicalFileID;
     $downloadLinks   = array();
     $downloadLinks[] = array(
-                        'type' => 'physiological_file',
-                        'file' => $physiologicalFile,
-                       );
+        'type' => 'physiological_file',
+        'file' => $physiologicalFile,
+    );
 
     $queries = [
-                'physiological_electrode'  => 'physiological_electrode_file',
-                'physiological_channel'    => 'physiological_channel_file',
-                'physiological_task_event' => 'physiological_task_event_file',
-                'physiological_archive'    => 'all_files',
-               ];
+        'physiological_electrode'  => 'physiological_electrode_file',
+        'physiological_channel'    => 'physiological_channel_file',
+        'physiological_task_event' => 'physiological_task_event_file',
+        'physiological_archive'    => 'all_files',
+    ];
 
     foreach ($queries as $query_key => $query_value) {
         $query_statement = "SELECT 
@@ -295,14 +295,14 @@ function getDownloadlinks(int $physiologicalFileID, string $physiologicalFile): 
         $query_statement = $db->pselectRow($query_statement, $params);
         if (isset($query_statement['FileType'])) {
             $downloadLinks[] = array(
-                                'type' => $query_statement['FileType'],
-                                'file' => $query_statement['FilePath'],
-                               );
+                'type' => $query_statement['FileType'],
+                'file' => $query_statement['FilePath'],
+            );
         } else {
             $downloadLinks[] = array(
-                                'type' => $query_value,
-                                'file' => '',
-                               );
+                'type' => $query_value,
+                'file' => '',
+            );
         }
     }
 
@@ -318,14 +318,14 @@ function getDownloadlinks(int $physiologicalFileID, string $physiologicalFile): 
     $queryFDT = $db->pselectRow($queryFDT, $params);
     if (isset($queryFDT['FileType'])) {
         $downloadLinks[] = array(
-                            'type' => $queryFDT['FileType'],
-                            'file' => $queryFDT['FilePath'],
-                           );
+            'type' => $queryFDT['FileType'],
+            'file' => $queryFDT['FilePath'],
+        );
     } else {
         $downloadLinks[] = array(
-                            'type' => 'physiological_fdt_file',
-                            'file' => '',
-                           );
+            'type' => 'physiological_fdt_file',
+            'file' => '',
+        );
     }
 
     return $downloadLinks;

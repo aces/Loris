@@ -63,7 +63,7 @@ class Electrophysiology_Session extends \NDB_Page
         $depends = array_merge(
             $depends,
             array(
-             $baseurl
+                $baseurl
                 . '/electrophysiology_browser/js/electrophysiology_session_view.js',
             )
         );
