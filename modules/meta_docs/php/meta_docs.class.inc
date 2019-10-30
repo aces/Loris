@@ -45,9 +45,7 @@ class Meta_Docs extends \NDB_Page
     function setup()
     {
         //TODO :: This list should be dynamic
-        $modules_with_specs = array(
-                               'api',
-                              );
+        $modules_with_specs = array('api');
 
         $urls = array_map(
             function ($modulename) {
