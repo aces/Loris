@@ -44,6 +44,20 @@ class Meta_Docs extends \NDB_Page
      */
     function setup()
     {
+        $baseurl = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('base');
+
+        /*
+         *  The pattern to find schema.yml files will scan the static directory
+         *  of all modules and project's modules. The pattern is ment to be used by
+         *  the glob() function.
+         *
+         *  Note: The GLOB_BRACE flag will be expended {project,} to match '' or
+         *        'project' . This is equivalent to /(project)?/ in perl regex.
+         */
+        $pattern = $baseurl . '{project,}/modules/*/static/schema.yml' ;
+
         $urls = array_map(
             function ($f) {
                 preg_match('/\/([a-z_]*)\/static\/schema.yml$/', $f, $matches);
@@ -52,7 +66,7 @@ class Meta_Docs extends \NDB_Page
                                  'name' => $matches[1],
                                 );
             },
-            glob(__DIR__ . '/../../*/static/schema.yml')
+            glob($pattern, GLOB_BRACE)
         );
 
         $this->tpl_data['schema_urls'] = json_encode($urls);
