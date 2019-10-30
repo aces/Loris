@@ -86,7 +86,6 @@ class Files extends \NDB_Page
             return (new \LORIS\Http\Response\MethodNotAllowed(
                 array("GET,POST,PUT,DELETE")
             ));
-            break;
         }
     }
     /**
