@@ -10,9 +10,6 @@
  */
 namespace LORIS\meta_docs;
 
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
-
 /**
  * Class module implements the basic LORIS module functionality
  *
@@ -61,10 +58,11 @@ class Meta_Docs extends \NDB_Page
         $urls = array_map(
             function ($f) {
                 preg_match('/\/([a-z_]*)\/static\/schema.yml$/', $f, $matches);
-                return (object) array(
-                                 'url'  => $matches[0],
-                                 'name' => $matches[1],
-                                );
+                $tmp_array = array(
+                              'url'  => $matches[0],
+                              'name' => $matches[1],
+                             );
+                return (object) $tmp_array;
             },
             glob($pattern, GLOB_BRACE)
         );
