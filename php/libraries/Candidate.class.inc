@@ -44,7 +44,7 @@ class Candidate
      * the event that it's called multiple times.
      *
      * @param CandID $candID A 6 digit Loris CandID that matches
-     *                        a candidate in the candidate table
+     *                       a candidate in the candidate table
      *
      * @return Candidate the Candidate object
      * @static
@@ -247,17 +247,17 @@ class Candidate
 
         // Insert the new candidate into the database if everything is fine.
         $setArray = array(
-            'RegistrationCenterID' => $centerID,
-            'PSCID'                => $PSCID,
-            'DoB'                  => $dateOfBirth,
-            'EDC'                  => $edc,
-            'Sex'                  => $sex,
+            'RegistrationCenterID'  => $centerID,
+            'PSCID'                 => $PSCID,
+            'DoB'                   => $dateOfBirth,
+            'EDC'                   => $edc,
+            'Sex'                   => $sex,
             'RegistrationProjectID' => $registrationProjectID,
-            'Date_active'          => date('Y-m-d'),
-            'Date_registered'      => date('Y-m-d'),
-            'Entity_type'          => 'Human',
-            'RegisteredBy'         => $user->getUsername(),
-            'UserID'               => $user->getUsername(),
+            'Date_active'           => date('Y-m-d'),
+            'Date_registered'       => date('Y-m-d'),
+            'Entity_type'           => 'Human',
+            'RegisteredBy'          => $user->getUsername(),
+            'UserID'                => $user->getUsername(),
         );
 
         if ($config->getSetting('useExternalID') === 'true') {

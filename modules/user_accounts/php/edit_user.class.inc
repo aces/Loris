@@ -285,8 +285,8 @@ class Edit_User extends \NDB_Form
                 $DB->insert(
                     'user_project_rel',
                     array(
-                     "UserID"    => $uid,
-                     "ProjectID" => $project,
+                        "UserID"    => $uid,
+                        "ProjectID" => $project,
                     )
                 );
             }
@@ -471,8 +471,8 @@ class Edit_User extends \NDB_Form
                 $DB->insert(
                     'user_project_rel',
                     array(
-                     "UserID"    => $uid,
-                     "ProjectID" => $project,
+                        "UserID"    => $uid,
+                        "ProjectID" => $project,
                     )
                 );
             }

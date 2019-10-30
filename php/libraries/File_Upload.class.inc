@@ -392,24 +392,24 @@ class File_Upload
     }
 
     /**
-    * Sets the field file types.
-    *
-    * This is used by processFiles to determine which handler class to use for
-    * each field.
-    *
-    * @param string        $fieldName The name of the field in the quickform to
-    *                                 with
-    * @param string|object $className The name of the class in the quickform to
-    *                               associate with or an instance of that class.
-    * @param array         $methods   An array of methods to assign to the field.
-    *                                 The keys must be the name of the action to
-    *                                 associate with the method, either verify,
-    *                                 import, or move.  If any (or all) of these
-    *                                 are empty the defaults will be used.
-    *
-    * @return boolean true
-    * @see    File_Upload::processFiles()
-    */
+     * Sets the field file types.
+     *
+     * This is used by processFiles to determine which handler class to use for
+     * each field.
+     *
+     * @param string        $fieldName The name of the field in the quickform to
+     *                                 with
+     * @param string|object $className The name of the class in the quickform to
+     *                                 associate with or an instance of that class.
+     * @param array         $methods   An array of methods to assign to the field.
+     *                                 The keys must be the name of the action to
+     *                                 associate with the method, either verify,
+     *                                 import, or move.  If any (or all) of these
+     *                                 are empty the defaults will be used.
+     *
+     * @return boolean true
+     * @see    File_Upload::processFiles()
+     */
     function setFileHandler($fieldName, $className, $methods=array())
     {
         $default_methods =array(

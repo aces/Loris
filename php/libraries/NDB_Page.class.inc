@@ -812,10 +812,10 @@ class NDB_Page implements RequestHandlerInterface
             $baseurl . '/js/polyfills.js',
                     // $baseurl . '/js/react/react-with-addons' . $min . '.js',
                     // $baseurl . '/js/react/react-dom' . $min . '.js',
-                  $baseurl . ($min === '' ?
+            $baseurl . ($min === '' ?
                       '/vendor/js/react/react.development.js' :
                       '/vendor/js/react/react.production' . $min . '.js'),
-                  $baseurl . ($min === '' ?
+            $baseurl . ($min === '' ?
                       '/vendor/js/react/react-dom.development.js' :
                       '/vendor/js/react/react-dom.production' . $min . '.js'),
 

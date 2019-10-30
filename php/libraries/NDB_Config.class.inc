@@ -421,7 +421,7 @@ class NDB_Config
      * comparison.
      *
      * @param string $name The name of the setting to retrieve. This setting
-     *                      should have a boolean value in the config file or DB.
+     *                     should have a boolean value in the config file or DB.
      *
      * @return bool True if the setting is equal to "true".
      */

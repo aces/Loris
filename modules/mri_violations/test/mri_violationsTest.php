@@ -41,8 +41,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "Project",
             array(
-             'ProjectID' => '7777',
-             'Name'      => 'TESTinProject',
+                'ProjectID' => '7777',
+                'Name'      => 'TESTinProject',
             )
         );
         $this->DB->insert(
@@ -64,47 +64,47 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'                => '999888',
-             'RegistrationCenterID'  => '55',
-             'UserID'                => '1',
-             'PSCID'                 => '8888',
-             'RegistrationProjectID' => '7777',
+                'CandID'                => '999888',
+                'RegistrationCenterID'  => '55',
+                'UserID'                => '1',
+                'PSCID'                 => '8888',
+                'RegistrationProjectID' => '7777',
             )
         );
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'                => '999777',
-             'RegistrationCenterID'  => '55',
-             'UserID'                => '2',
-             'PSCID'                 => '6666',
-             'RegistrationProjectID' => '7777',
+                'CandID'                => '999777',
+                'RegistrationCenterID'  => '55',
+                'UserID'                => '2',
+                'PSCID'                 => '6666',
+                'RegistrationProjectID' => '7777',
             )
         );
         $this->DB->insert(
             "session",
             array(
-             'ID'           => '9888',
-             'CandID'       => '999888',
-             'CenterID'     => '55',
-             'ProjectID'    => '7777',
-             'UserID'       => '1',
-             'MRIQCStatus'  => 'Pass',
-             'SubprojectID' => '55',
-             'Visit_label'  => 'Test1',
+                'ID'           => '9888',
+                'CandID'       => '999888',
+                'CenterID'     => '55',
+                'ProjectID'    => '7777',
+                'UserID'       => '1',
+                'MRIQCStatus'  => 'Pass',
+                'SubprojectID' => '55',
+                'Visit_label'  => 'Test1',
             )
         );
         $this->DB->insert(
             "session",
             array(
-             'ID'           => '9777',
-             'CandID'       => '999777',
-             'CenterID'     => '55',
-             'ProjectID'    => '7777',
-             'UserID'       => '2',
-             'MRIQCStatus'  => 'Pass',
-             'SubprojectID' => '55',
-             'Visit_label'  => 'Test1',
+                'ID'           => '9777',
+                'CandID'       => '999777',
+                'CenterID'     => '55',
+                'ProjectID'    => '7777',
+                'UserID'       => '2',
+                'MRIQCStatus'  => 'Pass',
+                'SubprojectID' => '55',
+                'Visit_label'  => 'Test1',
             )
         );
 
@@ -274,8 +274,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "Project",
             array(
-             'ProjectID' => '7777',
-             'Name'      => 'TESTinProject',
+                'ProjectID' => '7777',
+                'Name'      => 'TESTinProject',
             )
         );
         parent::tearDown();

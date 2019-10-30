@@ -497,8 +497,8 @@ class User extends UserPermissions
 
         $this->update(
             array(
-             'Password_hash'   => $password,
-             'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
+                'Password_hash'   => $password,
+                'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
             )
         );
     }

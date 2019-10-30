@@ -187,9 +187,9 @@ class Stats_Demographic extends \NDB_Form
             $demographicProject = htmlspecialchars($demographicProject);
             $this->tpl_data['CurrentProject']
                 = array(
-                   'ID'   => $demographicProject,
-                   'Name' => $projects[$demographicProject] ?? '',
-                  );
+                    'ID'   => $demographicProject,
+                    'Name' => $projects[$demographicProject] ?? '',
+                );
             $paramProject        ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
         }

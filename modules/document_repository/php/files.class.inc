@@ -199,9 +199,9 @@ class Files extends \NDB_Page
         if ($user->hasPermission('document_repository_delete')) {
             $DB->delete("document_repository", array("record_id" => $rid));
             $msg_data = array(
-                         'deleteDocument' => $baseURL. "/document_repository/",
-                         'document'       => $fileName,
-                        );
+                'deleteDocument' => $baseURL. "/document_repository/",
+                'document'       => $fileName,
+            );
             $Notifier->notify($msg_data);
         }
 
@@ -414,9 +414,9 @@ class Files extends \NDB_Page
                     )
                 );
                 $msg_data = array(
-                             'newDocument' => $baseURL . "/document_repository/",
-                             'document'    => $fileName,
-                            );
+                    'newDocument' => $baseURL . "/document_repository/",
+                    'document'    => $fileName,
+                );
                 $uploadNotifier->notify($msg_data);
                 $uploadOK = true;
         }

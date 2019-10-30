@@ -102,6 +102,7 @@ class SinglePointLogin
      * @return bool
      * @access public
      */
+    /*
     function save(): bool
     {
         // get saved data to pre-populate form
@@ -146,6 +147,7 @@ class SinglePointLogin
         $user->updatePassword($_POST['password']);
         return true;
     }
+     */
 
     /**
      * Attempt to authenticate a user's credentials by any supported means.

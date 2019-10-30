@@ -709,8 +709,8 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         return $this->arrayToCSV(
             array(
-             'data'    => $this->_getFullList(),
-             'headers' => $this->headers,
+                'data'    => $this->_getFullList(),
+                'headers' => $this->headers,
             )
         );
 

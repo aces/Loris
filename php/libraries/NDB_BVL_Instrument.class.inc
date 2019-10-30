@@ -954,8 +954,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $project = $db->pselectOne(
             "SELECT ProjectID from session where CandID =:cnd_id AND ID=:sid",
             array(
-             'cnd_id' => $candID,
-             'sid'    => $sessionID,
+                'cnd_id' => $candID,
+                'sid'    => $sessionID,
             )
         );
 

@@ -103,9 +103,11 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // =====================================================
         // Create Pending Fail and Pending New subquery
         // =====================================================
-        $case_desc = array();
-        $qc        = array();
-        $pass      = array();
+        $case_desc     = array();
+        $qc            = array();
+        $pass          = array();
+        $coalesce_desc = array();
+
         foreach ($scan_id_types as $id => $type) {
             $pass[$id]          = $type . 'pass';
             $qc[$id]            = $type . 'QC';

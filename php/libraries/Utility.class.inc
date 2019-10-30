@@ -914,12 +914,11 @@ class Utility
         $DB      = $factory->database();
 
         $languagesDB = $DB->pselect(
-
             "SELECT language_id, language_label
              FROM language",
             array()
         );
-        $languages = array();
+        $languages   = array();
         foreach ($languagesDB as $language) {
             $languages[$language['language_id']] = $language['language_label'];
         }
@@ -932,7 +931,7 @@ class Utility
      *
      * @param int     $length   How many characters do we want?
      * @param ?string $keyspace A string of all possible characters
-     *                         to select from. Will default to the alphanum set.
+     *                          to select from. Will default to the alphanum set.
      *
      * @return string
      */
@@ -954,15 +953,15 @@ class Utility
     }
 
      /**
-     * Takes an argument and determine whether it is a positive integer
-     * i.e. > 0.
-     *
-     * @param mixed $value The value to check. Intentionally not type hinted as
-     * this function is meant to assist in cases where the type is unknown, e.g.
-     * when a parameter is sent via a form.
-     *
-     * @return bool Whether $value is a positive int.
-     */
+      * Takes an argument and determine whether it is a positive integer
+      * i.e. > 0.
+      *
+      * @param mixed $value The value to check. Intentionally not type hinted as
+      *                     this function is meant to assist in cases where the type
+      *                     is unknown, e.g. when a parameter is sent via a form.
+      *
+      * @return bool Whether $value is a positive int.
+      */
     public static function valueIsPositiveInteger($value): bool
     {
 
@@ -976,7 +975,7 @@ class Utility
         return ctype_digit(strval($value)) && intval($value) > 0;
     }
 
-    /*
+    /**
      * Get the list of MRI scan type available in the database
      *
      * @return array Array of MRI scan types which exist in the database table

@@ -24,23 +24,23 @@ namespace LORIS\Data\Models;
  */
 class DicomSeriesDTO
 {
-    private $_seriesid;
+    private $seriesid;
 
-    private $_seriesdescription;
+    private $seriesdescription;
 
-    private $_seriesnumber;
+    private $seriesnumber;
 
-    private $_echotime;
+    private $echotime;
 
-    private $_repetitiontime;
+    private $repetitiontime;
 
-    private $_inversiontime;
+    private $inversiontime;
 
-    private $_slicethickness;
+    private $slicethickness;
 
-    private $_modality;
+    private $modality;
 
-    private $_seriesuid;
+    private $seriesuid;
 
     /**
      * Constructor
@@ -66,15 +66,15 @@ class DicomSeriesDTO
         ?string $modality,
         ?string $seriesuid
     ) {
-        $this->_seriesid          = $id;
-        $this->_seriesdescription = $description;
-        $this->_seriesnumber      = $number;
-        $this->_echotime          = $echotime;
-        $this->_repetitiontime    = $repetitiontime;
-        $this->_inversiontime     = $inversiontime;
-        $this->_slicethickness    = $slicethickness;
-        $this->_modality          = $modality;
-        $this->_seriesuid         = $seriesuid;
+        $this->seriesid          = $id;
+        $this->seriesdescription = $description;
+        $this->seriesnumber      = $number;
+        $this->echotime          = $echotime;
+        $this->repetitiontime    = $repetitiontime;
+        $this->inversiontime     = $inversiontime;
+        $this->slicethickness    = $slicethickness;
+        $this->modality          = $modality;
+        $this->seriesuid         = $seriesuid;
     }
 
     /**
@@ -84,7 +84,7 @@ class DicomSeriesDTO
      */
     public function getTarchiveSeriesID()
     {
-        return $this->_seriesid;
+        return $this->seriesid;
     }
 
     /**
@@ -94,7 +94,7 @@ class DicomSeriesDTO
      */
     public function getSeriesDescription()
     {
-        return $this->_seriesdescription;
+        return $this->seriesdescription;
     }
 
     /**
@@ -104,7 +104,7 @@ class DicomSeriesDTO
      */
     public function getSeriesNumber()
     {
-        return $this->_seriesnumber;
+        return $this->seriesnumber;
     }
 
     /**
@@ -114,7 +114,7 @@ class DicomSeriesDTO
      */
     public function getEchotime()
     {
-        return $this->_echotime;
+        return $this->echotime;
     }
 
     /**
@@ -124,7 +124,7 @@ class DicomSeriesDTO
      */
     public function getRepetitiontime()
     {
-        return $this->_repetitiontime;
+        return $this->repetitiontime;
     }
 
     /**
@@ -134,7 +134,7 @@ class DicomSeriesDTO
      */
     public function getInversiontime()
     {
-        return $this->_inversiontime;
+        return $this->inversiontime;
     }
 
     /**
@@ -144,7 +144,7 @@ class DicomSeriesDTO
      */
     public function getSlicethickness()
     {
-        return $this->_slicethickness;
+        return $this->slicethickness;
     }
 
     /**
@@ -154,7 +154,7 @@ class DicomSeriesDTO
      */
     public function getModality()
     {
-        return $this->_modality;
+        return $this->modality;
     }
 
     /**
@@ -164,7 +164,7 @@ class DicomSeriesDTO
      */
     public function getSeriesuid()
     {
-        return $this->_seriesuid;
+        return $this->seriesuid;
     }
     /**
      * Returns an array representation of this
@@ -174,16 +174,15 @@ class DicomSeriesDTO
     public function toArray(): array
     {
         return array(
-                'id'             => $this->_seriesid,
-                'description'    => $this->_description,
-                'number'         => $this->_number,
-                'echotime'       => $this->_echotime,
-                'repetitiontime' => $this->_repetitiontime,
-                'inversiontime'  => $this->_inversiontime,
-                'slicethickness' => $this->_slicethickness,
-                'modality'       => $this->_modality,
-                'seriesuid'      => $this->_seriesuid,
+                'id'             => $this->seriesid,
+                'description'    => $this->description,
+                'number'         => $this->number,
+                'echotime'       => $this->echotime,
+                'repetitiontime' => $this->repetitiontime,
+                'inversiontime'  => $this->inversiontime,
+                'slicethickness' => $this->slicethickness,
+                'modality'       => $this->modality,
+                'seriesuid'      => $this->seriesuid,
                );
     }
 }
-

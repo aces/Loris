@@ -121,7 +121,7 @@ class NDB_BVL_Feedback
      * Sets up a newly instantiated feedback thread object
      *
      * @param string  $username  The name of the currently logged in user.
-     *                          (why is this here?)
+     *                           (why is this here?)
      * @param ?CandID $candID    The CandID we're getting a feedback thread for.
      * @param ?string $sessionID The sessionID we're getting a feedback thread for.
      * @param ?string $commentID The commentID we're getting a feedback thread for.

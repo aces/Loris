@@ -23,7 +23,8 @@ return [
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchProperty",
-        "PhanTypeArraySuspiciousNullable"
+        "PhanTypeArraySuspiciousNullable",
+        "PhanNoopNew"
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
