@@ -213,7 +213,7 @@ class FilePanel extends Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>All Files</div>
                 <div className={'col-xs-2'}>
-                  <a id='download_all_files' href={loris.BaseURL + '/electrophysiology_browser/ajax/FileDownload.php?File=' + this.state.data.downloads[4].file} target='_blank' download={this.state.data.downloads[0].file}>
+                  <a id='download_all_files' href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[4].file} target='_blank' download={this.state.data.downloads[0].file}>
                     <button id='btn_download_all_files' style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -221,7 +221,7 @@ class FilePanel extends Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>EEG File</div>
                 <div className={'col-xs-2'}>
-                  <a id='download_eeg_file' href={loris.BaseURL + '/electrophysiology_browser/ajax/FileDownload.php?File=' + this.state.data.downloads[0].file} target='_blank' download={this.state.data.downloads[0].file}>
+                  <a id='download_eeg_file' href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[0].file} target='_blank' download={this.state.data.downloads[0].file}>
                     <button id='btn_download_eeg_file' style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -229,7 +229,7 @@ class FilePanel extends Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>Electrode Info</div>
                 <div className={'col-xs-2'}>
-                  <a id='download_electrode_info' href={loris.BaseURL + '/electrophysiology_browser/ajax/FileDownload.php?File=' + this.state.data.downloads[1].file} target='_blank' download={this.state.data.downloads[0].file}>
+                  <a id='download_electrode_info' href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[1].file} target='_blank' download={this.state.data.downloads[0].file}>
                     <button id='btn_download_electrode_info' style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -237,7 +237,7 @@ class FilePanel extends Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>Channels Info</div>
                 <div className={'col-xs-2'}>
-                  <a id='download_channels_info' href={loris.BaseURL + '/electrophysiology_browser/ajax/FileDownload.php?File=' + this.state.data.downloads[2].file} target='_blank' download={this.state.data.downloads[0].file}>
+                  <a id='download_channels_info' href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[2].file} target='_blank' download={this.state.data.downloads[0].file}>
                     <button id='btn_download_channels_info' style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -245,7 +245,7 @@ class FilePanel extends Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>Events</div>
                 <div className={'col-xs-2'}>
-                  <a id='download_events' href={loris.BaseURL + '/electrophysiology_browser/ajax/FileDownload.php?File=' + this.state.data.downloads[3].file} target='_blank' download={this.state.data.downloads[0].file}>
+                  <a id='download_events' href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[3].file} target='_blank' download={this.state.data.downloads[0].file}>
                     <button id='btn_download_events' style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
@@ -253,7 +253,7 @@ class FilePanel extends Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} id='fdt_title' style={stylesFile.div.element.download_title}>FDT File</div>
                 <div className={'col-xs-2'}>
-                  <a id='download_fdt_file' href={loris.BaseURL + '/electrophysiology_browser/ajax/FileDownload.php?File=' + this.state.data.downloads[5].file} target='_blank' download={this.state.data.downloads[0].file}>
+                  <a id='download_fdt_file' href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[5].file} target='_blank' download={this.state.data.downloads[0].file}>
                     <button id='btn_download_fdt_file' style={stylesFile.button.download}>Download</button>
                   </a>
                 </div>
