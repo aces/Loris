@@ -289,11 +289,14 @@ class New_Profile extends \NDB_Form
                 $site =& \Site::singleton($values['site']);
             }
 
+            $project = \Project::getProjectFromID(intval($values['project']));
+
             if (empty($values['pscid'])) {
                 $errors['pscid'] = 'PSCID must be specified';
             } elseif (!\Candidate::validatePSCID(
                 $values['pscid'],
-                $site->getSiteAlias()
+                $site->getSiteAlias(),
+                $project->getAlias()
             )
             ) {
                 $errors['pscid'] = 'PSCID does not match the required structure';

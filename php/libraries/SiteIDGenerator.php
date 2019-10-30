@@ -38,7 +38,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * @param string $siteAlias    To be appended to the ID value. Usually an
      *                             abbreviation for the name of a site.
      * @param string $projectAlias To be appended to the ID value. Usually an
-     *                       abbreviation for the name of a project.
+     *                             abbreviation for the name of a project.
      *
      * @return void
      */
@@ -53,9 +53,9 @@ class SiteIDGenerator extends IdentifierGenerator
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
         // if the min or max is not configured in project/config.xml
-        $this->minValue   = $this->_getIDSetting('min') ??
+        $this->minValue = $this->_getIDSetting('min') ??
             str_repeat(strval($this->alphabet[0]), $this->length);
-        $this->maxValue   = $this->_getIDSetting('max') ??
+        $this->maxValue = $this->_getIDSetting('max') ??
             str_repeat(
                 strval($this->alphabet[count($this->alphabet) - 1]),
                 $this->length
@@ -267,7 +267,9 @@ class SiteIDGenerator extends IdentifierGenerator
             $seqAttributes = array_filter(
                 self::_getSeqAttribute($idStructure, 'type'),
                 function ($x) {
-                    return $x === 'static' || $x === 'siteAbbrev';
+                    return $x === 'static'
+                        || $x === 'siteAbbrev'
+                        || $x === 'projectAbbrev';
                 }
             );
             break;

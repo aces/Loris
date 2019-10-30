@@ -108,7 +108,7 @@ class Project
         $projectName = $factory->database()->pSelectOne(
             "
                     SELECT
-                      Name,
+                      Name
                     FROM
                       Project
                     WHERE ProjectID = :pid

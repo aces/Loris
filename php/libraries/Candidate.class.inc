@@ -272,7 +272,10 @@ class Candidate
         );
 
         if ($config->getSetting('useExternalID') === 'true') {
-            $externalID = (new \ExternalIDGenerator())->generate();
+            $externalID = (new \ExternalIDGenerator(
+                $site->getSiteAlias(),
+                $project->getAlias()
+            ))->generate();
             $setArray['ExternalID'] = $externalID;
         }
 
