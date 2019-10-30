@@ -73,13 +73,15 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
 
         if (!isset($req['instrument'])
             || !isset($req['visitLabel'])
-            || !isset($req['comment'])
             || !isset($req['date'])
             || !isset($req['flagStatus'])
         ) {
             return "Error";
         }
         $req = \Utility::asArray($req);
+        // comment may not be set since it is not a required field
+        $comment = !empty($req['comment']) ?
+            $req['comment'] : null;
 
         $db->update(
             'data_integrity_flag',
@@ -94,7 +96,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
             [
              'dataflag_instrument' => $req['instrument'],
              'dataflag_visitlabel' => $req['visitLabel'],
-             'dataflag_comment'    => $req['comment'],
+             'dataflag_comment'    => $comment,
              'dataflag_date'       => $req['date'],
              'dataflag_status'     => $req['flagStatus'],
              'latest_entry'        => 1,

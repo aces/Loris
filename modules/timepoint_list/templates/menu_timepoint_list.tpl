@@ -60,8 +60,8 @@
     <!-- </div> -->
     <!-- <div class="col-xs-4"> -->
         {$actions}
-           <button class="btn btn-primary timepoint_imaging_datasets" data-pscid="{$PSCID}">
-              View Imaging datasets</button>
+           <a class="btn btn-default" role="button" href="{$baseurl}/imaging_browser/?DCCID={$candID}">
+              View Imaging datasets</a>
 
     <!-- </div> -->
 </div>
@@ -121,9 +121,7 @@
             {if $timePoints[timepoint].Scan_done != ""}
                     {if $timePoints[timepoint].Scan_done == 'Y'}
                         {assign var="scan_done" value="Yes"}
-                        <a href="#" class="timepoint_list"
-                           data-visitlabel="{$timePoints[timepoint].Visit_label}"
-                           data-pscid="{$PSCID}">
+                        <a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$timePoints[timepoint].SessionID}" class="timepoint_list">
                         {$scan_done}</a>
                     {else}
                         {assign var="scan_done" value="No"}

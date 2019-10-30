@@ -9,6 +9,8 @@ CREATE TABLE `Project` (
     PRIMARY KEY (`ProjectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
+INSERT INTO `Project` (Name) VALUES ('loris');
+
 CREATE TABLE `subproject` (
     `SubprojectID` int(10) unsigned NOT NULL auto_increment,
     `title` varchar(255) NOT NULL,
@@ -882,6 +884,7 @@ CREATE TABLE `notification_spool` (
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` integer unsigned default NULL,
   `Origin` varchar(255) DEFAULT NULL,
+  `Active` enum('Y', 'N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY  (`NotificationID`),
   KEY `FK_notification_spool_1` (`NotificationTypeID`),
   KEY `FK_notification_spool_2` (`CenterID`),

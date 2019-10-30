@@ -131,8 +131,8 @@ class MediaEditForm extends Component {
           <DateElement
             name='dateTaken'
             label='Date of Administration'
-            minYear='2000'
-            maxYear='2017'
+            minYear={this.state.Data.startYear}
+            maxYear={this.state.Data.endYear}
             onUserInput={this.setFormData}
             ref='dateTaken'
             value={this.state.formData.dateTaken}
@@ -209,7 +209,8 @@ class MediaEditForm extends Component {
         this.props.fetchData();
       },
       error: function(err) {
-        swal('Upload Error!', '', 'error');
+        let msg = err.responseJSON.message || 'Error updating file';
+        swal(msg, '', 'error');
         console.error(err);
       },
     });

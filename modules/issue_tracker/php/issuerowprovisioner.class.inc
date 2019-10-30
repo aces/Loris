@@ -63,12 +63,12 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             LEFT JOIN session s
               ON (i.sessionID = s.ID)
             LEFT JOIN issues_watching w
-              ON (i.issueID = w.issueID)
+              ON (i.issueID = w.issueID AND w.userID=:username)
             LEFT JOIN issues_comments ic
               ON (i.issueID = ic.issueID)
             GROUP BY i.issueID, w.userID
             ORDER BY i.issueID DESC",
-            array()
+            array('username' => $userID)
         );
     }
 
@@ -83,7 +83,6 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
             $cid = $row['centerId'];
-            unset($row['centerId']);
             return new IssueRow($row, $cid);
     }
 }

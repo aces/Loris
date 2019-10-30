@@ -465,7 +465,7 @@ class Candidate
      */
     function getCenterID(): int
     {
-        return $this->candidateInfo["RegistrationCenterID"];
+        return intval($this->candidateInfo["RegistrationCenterID"]);
     }
 
     /**

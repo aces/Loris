@@ -56,10 +56,10 @@ class TabPane extends Component {
         <div className={classList} id={this.props.TabId}>
           <Loading/>
         </div>
-      )
+      );
     }
     return (
-      <div className={classList} id={this.props.TabId}>
+      <div key={this.props.TabId}className={classList} id={this.props.TabId}>
         <h1>{this.props.Title}</h1>
         {this.props.children}
       </div>
@@ -77,25 +77,31 @@ class InfoTabPane extends Component {
   }
 
   render() {
-    return <TabPane Title='Welcome to the Data Query Tool'
-                    TabId={this.props.TabId} Active={true} Loading={this.props.Loading}>
-      <p>Data was last updated on {this.props.UpdatedTime}.</p>
-      <p>Please define or use your query by using the following tabs.</p>
-      <dl>
-        <dt>Define Fields</dt>
-        <dd>Define the fields to be added to your query here.</dd>
-        <dt>Define Filters</dt>
-        <dd>Define the criteria to filter the data for your query here.</dd>
-        <dt>View Data</dt>
-        <dd>See the results of your query.</dd>
-        <dt>Statistical Analysis</dt>
-        <dd>Visualize or see basic statistical measures from your query here.</dd>
-        <dt>Load Saved Query</dt>
-        <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
-        <dt>Manage Saved Queries</dt>
-        <dd>Either save your current query or see the criteria of previously saved quer ies here.</dd>
-      </dl>
-    </TabPane>
+    return (
+      <TabPane
+        Title='Welcome to the Data Query Tool'
+        TabId={this.props.TabId}
+        Active={this.props.Active}
+        Loading={this.props.Loading}
+      >
+        <p>Data was last updated on {this.props.UpdatedTime}.</p>
+        <p>Please define or use your query by using the following tabs.</p>
+        <dl>
+          <dt>Define Fields</dt>
+          <dd>Define the fields to be added to your query here.</dd>
+          <dt>Define Filters</dt>
+          <dd>Define the criteria to filter the data for your query here.</dd>
+          <dt>View Data</dt>
+          <dd>See the results of your query.</dd>
+          <dt>Statistical Analysis</dt>
+          <dd>Visualize or see basic statistical measures from your query here.</dd>
+          <dt>Load Saved Query</dt>
+          <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
+          <dt>Manage Saved Queries</dt>
+          <dd>Either save your current query or see the criteria of previously saved quer ies here.</dd>
+        </dl>
+      </TabPane>
+    );
   }
 }
 
@@ -109,15 +115,22 @@ class FieldSelectTabPane extends Component {
   }
 
   render() {
-    return <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
-      <FieldSelector title='Fields'
-                     items={this.props.categories}
-                     onFieldChange={this.props.onFieldChange}
-                     selectedFields={this.props.selectedFields}
-                     Visits={this.props.Visits}
-                     fieldVisitSelect={this.props.fieldVisitSelect}
-      />
-    </TabPane>
+    return (
+      <TabPane
+        TabId={this.props.TabId}
+        Loading={this.props.Loading}
+        Active={this.props.Active}
+      >
+        <FieldSelector
+          title='Fields'
+          items={this.props.categories}
+          onFieldChange={this.props.onFieldChange}
+          selectedFields={this.props.selectedFields}
+          Visits={this.props.Visits}
+          fieldVisitSelect={this.props.fieldVisitSelect}
+        />
+      </TabPane>
+    );
   }
 }
 
@@ -137,6 +150,7 @@ class FilterSelectTabPane extends Component {
                        updateFilter={this.props.updateFilter}
                        filter={this.props.filter}
                        Visits={this.props.Visits}
+                       Active={this.props.Active}
         />
       </TabPane>
     );
@@ -152,11 +166,15 @@ class ViewDataTabPane extends Component {
     this.state = {
       sessions: []
     };
-    this.runQuery = this.props.runQuery.bind(this);
+    this.runQuery = this.runQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
     this.getOrCreateProgressElement = this.getOrCreateProgressElement.bind(this);
     this.getOrCreateDownloadLink = this.getOrCreateDownloadLink.bind(this);
     this.downloadData = this.downloadData.bind(this);
+  }
+
+  runQuery() {
+    this.props.runQuery(this.props.Fields, this.props.Sessions);
   }
 
   changeDataDisplay(displayID) {
@@ -216,10 +234,9 @@ class ViewDataTabPane extends Component {
       CompleteMask = new Array(FileList.length),
       saveworker,
       dataURLs = [],
-      that = this,
-      multiLinkHandler = function(buffer) {
-        return function(ce) {
-          var downloadLink = document.getElementById('DownloadLink'),
+      multiLinkHandler = (buffer) => {
+        return ((ce) => {
+          let downloadLink = document.getElementById('DownloadLink'),
             dv = new DataView(buffer),
             blb;
 
@@ -232,7 +249,7 @@ class ViewDataTabPane extends Component {
           downloadLink.click();
 
           window.URL.revokeObjectURL(downloadLink.href);
-        }
+        });
       };
 
     // Does this work if we hold a global reference instead of a closure
@@ -241,7 +258,7 @@ class ViewDataTabPane extends Component {
 
     if (FileList.length < 100 || confirm('You are trying to download more than 100 files. This may be slow or crash your web browser.\n\nYou may want to consider splitting your query into more, smaller queries by defining more restrictive filters.\n\nPress OK to continue with attempting to download current files or cancel to abort.')) {
       saveworker = new Worker(loris.BaseURL + '/dataquery/js/workers/savezip.js');
-      saveworker.addEventListener('message', function(e) {
+      saveworker.addEventListener('message', (e) => {
         let link,
           progress,
           FileName,
@@ -249,7 +266,7 @@ class ViewDataTabPane extends Component {
           downloadLinks,
           i;
         if (e.data.cmd === 'SaveFile') {
-          progress = that.getOrCreateProgressElement('download_progress');
+          progress = this.getOrCreateProgressElement('download_progress');
           //progress.textContent = "Downloaded files";
           //hold a reference to the blob so that chrome doesn't release it. This shouldn't
           //be required.
@@ -257,15 +274,15 @@ class ViewDataTabPane extends Component {
           ;
           dataURLs[e.data.FileNo - 1] = window.URL.createObjectURL(window.dataBlobs[e.data.FileNo - 1]);
 
-          link = that.getOrCreateDownloadLink(e.data.Filename, 'application/zip');
+          link = this.getOrCreateDownloadLink(e.data.Filename, 'application/zip');
           link.href = dataURLs[e.data.FileNo - 1];
           //link.onclick = multiLinkHandler(e.data.buffer);
           //link.href = "#";
-          progress = that.getOrCreateProgressElement('zip_progress');
+          progress = this.getOrCreateProgressElement('zip_progress');
           progress.textContent = '';
 
         } else if (e.data.cmd === 'Progress') {
-          progress = that.getOrCreateProgressElement('download_progress');
+          progress = this.getOrCreateProgressElement('download_progress');
           progress.innerHTML = 'Downloading files: <progress value="' + e.data.Complete + '" max="' + e.data.Total + '">' + e.data.Complete + ' out of ' + e.data.Total + '</progress>';
         } else if (e.data.cmd === 'Finished') {
           if (dataURLs.length === 1) {
@@ -285,12 +302,12 @@ class ViewDataTabPane extends Component {
               downloadLinks[i].textContent = 'Zip file: ' + NewFileName;
             }
           }
-          progress = that.getOrCreateProgressElement('download_progress');
+          progress = this.getOrCreateProgressElement('download_progress');
           progress.textContent = 'Finished generating zip files';
           //this.terminate();
 
         } else if (e.data.cmd === 'CreatingZip') {
-          progress = that.getOrCreateProgressElement('zip_progress');
+          progress = this.getOrCreateProgressElement('zip_progress');
           progress.textContent = 'Creating a zip file with current batch of downloaded files. Process may be slow before proceeding.';
         }
 
@@ -337,38 +354,46 @@ class ViewDataTabPane extends Component {
       }
 
     }
-    return <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
-      <h2>Query Criteria</h2>{criteria} {buttons}
-      <div className='form-group form-horizontal row'>
-        <label for='selected-input' className='col-sm-1 control-label'>Data</label>
-        <div className='col-sm-4'>
-          <div className='btn-group'>
-            <button id='selected-input' type='button' className='btn btn-default dropdown-toggle' data-toggle='dropdown'>
-              <span id='search_concept'>{this.props.displayType}</span>
-              <span className='caret'></span>
-            </button>
-            <ul className='dropdown-menu' role='menu'>
-              <li onClick={this.changeDataDisplay.bind(this, 0)}>
-                <div className='col-sm-12'>
-                  <h5 className="">Cross-sectional</h5>
-                </div>
-              </li>
-              <li onClick={this.changeDataDisplay.bind(this, 1)}>
-                <div className='col-sm-12'>
-                  <h5 className=''>Longitudinal</h5>
-                </div>
-              </li>
-            </ul>
+    return (
+      <TabPane
+        TabId={this.props.TabId}
+        Loading={this.props.Loading}
+        Active={this.props.Active}
+      >
+        <h2>Query Criteria</h2>
+        {criteria}
+        {buttons}
+        <div className='form-group form-horizontal row'>
+          <label htmlFor='selected-input' className='col-sm-1 control-label'>Data</label>
+          <div className='col-sm-4'>
+            <div className='btn-group'>
+              <button id='selected-input' type='button' className='btn btn-default dropdown-toggle' data-toggle='dropdown'>
+                <span id='search_concept'>{this.props.displayType}</span>
+                <span className='caret'></span>
+              </button>
+              <ul className='dropdown-menu' role='menu'>
+                <li onClick={this.changeDataDisplay.bind(this, 0)}>
+                  <div className='col-sm-12'>
+                    <h5 className="">Cross-sectional</h5>
+                  </div>
+                </li>
+                <li onClick={this.changeDataDisplay.bind(this, 1)}>
+                  <div className='col-sm-12'>
+                    <h5 className=''>Longitudinal</h5>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-      <StaticDataTable
-        Headers={this.props.RowHeaders}
-        RowNumLabel='Identifiers'
-        Data={this.props.Data}
-        RowNameMap={this.props.RowInfo}
-      />
-    </TabPane>
+        <StaticDataTable
+          Headers={this.props.RowHeaders}
+          RowNumLabel='Identifiers'
+          Data={this.props.Data}
+          RowNameMap={this.props.RowInfo}
+        />
+      </TabPane>
+    );
   }
 }
 ViewDataTabPane.propTypes = {
@@ -450,7 +475,7 @@ class ScatterplotGraph extends Component {
       start,
       plots = [],
       label,
-      plotY = function(x) {
+      plotY = (x) => {
         return [x, start + (slope * x)];
       },
       dataset;
@@ -523,7 +548,7 @@ class ScatterplotGraph extends Component {
   }
 
   render() {
-    let options = this.props.Fields.map(function(element, key) {
+    let options = this.props.Fields.map((element, key) => {
         console.log(element);
         return (
           <option value={key}>
@@ -621,7 +646,7 @@ class StatsVisualizationTabPane extends Component {
 
 
       for (let i = 0; i < this.props.Fields.length; i += 1) {
-        rows.push(<tr>
+        rows.push(<tr key={'fields_'.concat(i)}>
           <td>{this.props.Fields[i]}</td>
           <td>{min[i]}</td>
           <td>{max[i]}</td>
@@ -657,7 +682,7 @@ class StatsVisualizationTabPane extends Component {
         </table>
       );
 
-      let content = (
+      content = (
         <div>
           <h2>Basic Statistics</h2>
           {statsTable}
@@ -670,7 +695,7 @@ class StatsVisualizationTabPane extends Component {
       );
     }
     return (
-      <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
+      <TabPane TabId={this.props.TabId} Loading={this.props.Loading} Active={this.props.Active}>
         {content}
       </TabPane>
     );
@@ -765,7 +790,7 @@ class ManageSavedQueryFilter extends Component {
       filter = this.props.filterItem;
     if (filter.activeOperator) {
       let logicOp = 'AND',
-        children = filter.children.map(function(element, key) {
+        children = filter.children.map((element, key) => {
           return <ManageSavedQueryFilter
             filterItem={element}
           />
@@ -860,10 +885,13 @@ class ManageSavedQueryRow extends Component {
           } else {
             operator = (<span>OR</span>)
           }
-          filter = this.props.Query.Conditions.children.map(function(element, key) {
-            return <ManageSavedQueryFilter
-              filterItem={element}
-            />
+          filter = this.props.Query.Conditions.children.map((element, key) => {
+            return (
+              <ManageSavedQueryFilter
+                key={key}
+                filterItem={element}
+              />
+            );
           });
         } else {
           operator = (<span>No filters defined</span>);
@@ -873,10 +901,13 @@ class ManageSavedQueryRow extends Component {
           operator = (<span>No filters defined</span>);
         } else {
           operator = (<span>AND</span>);
-          filter = this.props.Query.Conditions.map(function(element, key) {
-            return <ManageSavedQueryFilter
-              filterItem={element}
-            />
+          filter = this.props.Query.Conditions.map((element, key) => {
+            return (
+              <ManageSavedQueryFilter
+                key={key}
+                filterItem={element}
+              />
+            );
           });
         }
       }
@@ -931,6 +962,7 @@ class ManageSavedQueriesTabPane extends Component {
     };
     this.dismissDialog = this.dismissDialog.bind(this);
     this.saveQuery = this.saveQuery.bind(this);
+    this.savedQuery = this.savedQuery.bind(this);
   }
 
   dismissDialog() {
@@ -957,15 +989,13 @@ class ManageSavedQueriesTabPane extends Component {
         if (query.Meta.name) {
           name = query.Meta.name;
         }
-
         queryRows.push(
           <ManageSavedQueryRow Name={name} Query={query}/>
         );
-
       }
     } else {
       queryRows.push(
-        <tr>
+        <tr key='loading'>
           <td colSpan="3">Loading saved query details</td>
         </tr>
       );
@@ -982,7 +1012,7 @@ class ManageSavedQueriesTabPane extends Component {
         <button onClick={this.saveQuery}>Save Current Query</button>
         <table className='table table-hover table-primary table-bordered colm-freeze'>
           <thead>
-          <tr className='info'>
+          <tr key='info' className='info'>
             <th>Query Name</th>
             <th>Fields</th>
             <th>Filters</th>

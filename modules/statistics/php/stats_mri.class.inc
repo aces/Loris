@@ -70,8 +70,8 @@ class Stats_MRI extends \NDB_Form
      * @param string  $Subsection        the value of Subsection=''
      * @param string  $disclamer         the value of disclamer=''
      * @param ?string $projectID         the value of projectID is null
-     * @param bool    $scanDoneExists    whether the "Scan done" column exists in
-     *                                   the database
+     * @param bool    $renderTable       whether to render the table or display a
+     *                                   default error message
      *
      * @return string
      */
@@ -87,7 +87,7 @@ class Stats_MRI extends \NDB_Form
         $Subsection="",
         $disclamer='',
         $projectID=null,
-        $scanDoneExists = true
+        $renderTable=true
     ): string {
 
         $tpl_data = array();
@@ -201,7 +201,7 @@ class Stats_MRI extends \NDB_Form
             }
         }
 
-        $tpl_data['scan_done_exists'] = $scanDoneExists;
+        $tpl_data['render_table'] = $renderTable;
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_statistics.tpl");
         return $html;
@@ -216,7 +216,9 @@ class Stats_MRI extends \NDB_Form
     {
         parent::setup();
 
-        $DB =& \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
 
         $bigTable_params = array();
         $this->params    = array();
@@ -263,6 +265,15 @@ class Stats_MRI extends \NDB_Form
         } else {
             $Param_Site = '';
         }
+
+        //SITES PERMISSIONS
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+        $sitesString = implode(",", array_keys($list_of_sites));
+
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
@@ -270,7 +281,8 @@ class Stats_MRI extends \NDB_Form
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
-                AND Study_site = 'Y'",
+                AND Study_site = 'Y'
+	        AND CenterID IN (" . $sitesString . ")",
             array()
         );
         $sites[null] ="All sites";
@@ -371,6 +383,7 @@ class Stats_MRI extends \NDB_Form
                     AND c.Active='Y'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     $suproject_query
                     $Param_Project
                 GROUP BY Subcat,
@@ -415,6 +428,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -433,6 +447,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -462,6 +477,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -482,6 +498,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -512,6 +529,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -532,6 +550,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -564,7 +583,7 @@ class Stats_MRI extends \NDB_Form
      * of statistics totals. They will eventually be passed to tpl_data.
      *
      * @param array $subcategories The subcategories being tracked by this
-     *                              module. Keys of the returned array.
+     *                             module. Keys of the returned array.
      *
      * @return array ('total' => 0, $subcat1 => 0, ..., $subcatN => 0)
      */

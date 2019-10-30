@@ -59,41 +59,7 @@ $(document).ready(function () {
             scanLineChart.resize();
         }
     });
-
-    $(".new-scans").click(function(e) {
-        e.preventDefault();
-        applyFilter('imaging_browser', {"Pending" : "PN"});
-    });
-
-    $(".pending-accounts").click(function(e) {
-        e.preventDefault();
-        applyFilter('user_accounts', {"pending" : "Y"});
-    });
 });
-
-function applyFilter(test_name, filters) {
-    var form = $('<form />', {
-        "action" : loris.BaseURL + "/" + test_name + "/",
-        "method" : "post"
-    });
-
-    var values = {
-        "reset" : "true",
-        "filter" : "Show Data"
-    }
-
-    $.extend(values, filters);
-
-    $.each(values, function(name, value) {
-        $("<input />", {
-            type: 'hidden',
-            name: name,
-            value: value
-        }).appendTo(form);
-    });
-
-    form.appendTo('body').submit();
-}
 
 function formatPieData(data) {
     "use strict";

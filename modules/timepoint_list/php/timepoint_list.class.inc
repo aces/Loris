@@ -293,12 +293,7 @@ class Timepoint_List extends \NDB_Menu
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            array(
-             $baseURL . "/timepoint_list/js/timepoint_list_helper.js",
-            )
-        );
+        return $deps;
     }
 
     /**
@@ -310,8 +305,6 @@ class Timepoint_List extends \NDB_Menu
     {
         $candid = $this->tpl_data['candID'];
         $pscid  = $this->tpl_data['PSCID'];
-
-        $link = ltrim($_SERVER['REQUEST_URI'], '/');
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
