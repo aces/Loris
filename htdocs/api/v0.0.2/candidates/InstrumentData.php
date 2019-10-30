@@ -240,4 +240,4 @@ if (isset($_REQUEST['PrintInstrumentData'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

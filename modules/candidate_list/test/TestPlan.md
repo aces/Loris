@@ -15,7 +15,7 @@
    [ ] Project
    [ ] Scan done
    [ ] Participant Status
-   [ ] Gender
+   [ ] Biological Sex
    [ ] Number of visits
    [ ] Date of birth
    [ ] Latest Visit Status
@@ -32,4 +32,4 @@ Incorrect PSCID/DCCID combinations in the filter form should not give such an er
 It should return that no results were found.
 16. Enter correct PSCID/DCCID combination and ensure that it loads correct timepoint_list page
 17. Remove access_all_profiles permission and ensure that PSCID links are still clickable.
-18. Change useEDC and useProjects config variables to _no_ from the Configuration Module and ensure filters are removed from menu.
+18. Change useEDC config variable to _no_ from the Configuration Module and ensure filters are removed from menu.

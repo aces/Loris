@@ -5,11 +5,9 @@
     <div class="col-sm-2">
         {html_options id="DemographicSite" options=$Sites name="DemographicSite" selected=$CurrentSite.ID class="form-control"}
     </div>
-    {if $useProjects == "true"}
         <div class="col-sm-3">
             {html_options id="DemographicProject" options=$Projects name="DemographicProject" selected=$CurrentProject.ID class="form-control"}
         </div>
-    {/if}
     <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_demographic.js"></script>
     <button  onClick="updateDemographicTab()" class="btn btn-primary btn-small">Submit Query</button>
     <br><br>
@@ -112,8 +110,8 @@
             <td rowspan="2" align="left" style="vertical-align:middle">Sex</td>
             <td align="left" >Male</td>
             {if {$ps_active[$NULL]}>0}
-                {if {$gender_male[$NULL]}>0}
-                    <td>{$gender_male[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                {if {$sex_male[$NULL]}>0}
+                    <td>{$sex_male[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
                 {else}
                     <td>0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
                 {/if}
@@ -122,8 +120,8 @@
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$ps_active[$keyid]}>0}
-                    {if {$gender_male[$keyid]}>0}
-                        <td>{$gender_male[$keyid]}<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                    {if {$sex_male[$keyid]}>0}
+                        <td>{$sex_male[$keyid]}<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
                     {else}
                         <td>0<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
                     {/if}
@@ -132,8 +130,8 @@
                 {/if}
             {/foreach}
             {if {$ps_active.total}>0}
-                {if {$gender_male.total}>0}
-                    <td class="total">{$gender_male.total}<font size="1"><b>/{$ps_active.total}</b></font></td>
+                {if {$sex_male.total}>0}
+                    <td class="total">{$sex_male.total}<font size="1"><b>/{$ps_active.total}</b></font></td>
                 {else}
                     <td class="total">0<font size="1"><b>/{$ps_active.total}</b></font></td>
                 {/if}
@@ -145,8 +143,8 @@
         <tr>
             <td align="left">Female</td>
             {if {$ps_active[$NULL]}>0}
-                {if {$gender_female[$NULL]}>0}
-                    <td >{$gender_female[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                {if {$sex_female[$NULL]}>0}
+                    <td >{$sex_female[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
                 {else}
                     <td >0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
                 {/if}
@@ -155,8 +153,8 @@
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$ps_active[$keyid]}>0}
-                    {if {$gender_female[$keyid]}>0}
-                        <td >{$gender_female[$keyid]}<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                    {if {$sex_female[$keyid]}>0}
+                        <td >{$sex_female[$keyid]}<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
                     {else}
                         <td>0<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
                     {/if}
@@ -166,8 +164,8 @@
 
             {/foreach}
             {if {$ps_active.total}>0}
-                {if {$gender_female.total}>0}
-                    <td class="total">{$gender_female.total}<font size="1"><b>/{$ps_active.total}</b></font></td>
+                {if {$sex_female.total}>0}
+                    <td class="total">{$sex_female.total}<font size="1"><b>/{$ps_active.total}</b></font></td>
                 {else}
                     <td class="total">0<font size="1"><b>/{$ps_active.total}</b></font></td>
                 {/if}

@@ -70,7 +70,11 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      */
     public function close()
     {
-        return fclose($this->stream);
+        if (fclose($this->stream) === false) {
+            throw new LorisException(
+                'Could not close stream!'
+            );
+        }
     }
 
     /**
@@ -149,7 +153,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        $off = fseek($offset, $whence);
+        $off = fseek($this->stream, $offset, $whence);
         if ($off === -1) {
             throw new \RuntimeException("Could not seek in stream");
         }
@@ -180,7 +184,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      */
     public function isWritable()
     {
-        return is_writable($this->stream);
+        return is_writable(stream_get_meta_data($this->stream)['uri']);
     }
 
     /**

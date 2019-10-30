@@ -34,17 +34,30 @@ class Statistics_Site extends \NDB_Menu
     /**
      * Checking user's permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user     =& \User::singleton();
-        $centerID = htmlspecialchars($_REQUEST['CenterID']);
         //TODO: Create a permission specific to statistics
-        $accessAllProfiles = $user->hasPermission('access_all_profiles') &&
-            $user->hasPermission('data_entry');
-        return $user->hasCenterPermission('data_entry', $centerID) ||
-            $accessAllProfiles;
+        $hasAccessToAllProfiles = $user->hasAllPermissions(
+            array(
+             'access_all_profiles',
+             'data_entry',
+            )
+        );
+        // If a CenterID is passed in the request, check if the user has the
+        // data_entry permission at the site/center specified by CenterID.
+        $hasCenterPermission = false;
+        if (!empty($_REQUEST['CenterID'])) {
+            $hasCenterPermission = $user->hasCenterPermission(
+                'data_entry',
+                intval($_REQUEST['CenterID'])
+            );
+        }
+
+        return $hasAccessToAllProfiles || $hasCenterPermission;
 
     }
 
@@ -96,9 +109,9 @@ class Statistics_Site extends \NDB_Menu
      * @param string $projectID  the value of projectID
      * @param string $instrument the value of instrument
      *
-     * @return void
+     * @return ?string
      */
-    function _completeCount($centerID, $projectID, $instrument)
+    function _completeCount($centerID, $projectID, $instrument): ?string
     {
 
         $this->_checkCriteria($centerID, $projectID);

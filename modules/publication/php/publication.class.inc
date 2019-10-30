@@ -26,14 +26,15 @@ class Publication extends \NDB_Menu_Filter_Form
     public $AjaxModule   = true;
     public $skipTemplate = true;
     /**
-     * Has access returns true if the user has
-     * any of the publication module permissions
-     * OR has an affiliation to at least one of the
-     * proposed projects
+     * Returns true if user has access to this page.
      *
-     * @return boolean
+     * You do not need to overload hasAccess() if there are no access restrictions.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess() : bool
+    function _hasAccess(\User $user) : bool
     {
         $user = \User::singleton();
         $db   = \Database::singleton();
@@ -254,4 +255,4 @@ class Publication extends \NDB_Menu_Filter_Form
         return json_encode($result);
     }
 }
-?>
+

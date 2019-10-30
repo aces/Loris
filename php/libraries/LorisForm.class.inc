@@ -553,7 +553,7 @@ class LorisForm
      * @param string $name The form element name to retrieve the value
      *                     for.
      *
-     * @return string The value to use for the form element.
+     * @return array|string|null The value to use for the form element.
      */
     function getValue($name)
     {
@@ -674,9 +674,10 @@ class LorisForm
         }
 
         // Apply filters that should be applied on all fields
+        $count = count($this->filters['__ALL__'] ?? array());
         if (isset($this->filters['__ALL__'])) {
-            for ($i = 0; $i < count($this->filters['__ALL__']); $i++) {
-                if (in_array('trim', $this->filters['__ALL__'])) {
+            for ($i = 0; $i < $count; $i++) {
+                if (in_array('trim', $this->filters['__ALL__'] ?? array())) {
                     // Value for the element is in array so filter all
                     // elements in the array of values
                     if (is_array($value)) {
@@ -786,7 +787,7 @@ class LorisForm
 
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
-            if ($el['requireMsg']) {
+            if (isset($el['requireMsg']) && $el['requireMsg']) {
                 $retVal .= ' onChange="this.setCustomValidity('
                     . 'this.value === \'\' ? \''
                     . $el['requireMsg']
@@ -1290,7 +1291,7 @@ class LorisForm
                 }
 
                 if (isset($el['maxlength'])
-                    && strlen($value) > $el['maxlength']['maxlength']
+                    && strlen(strval($value)) > $el['maxlength']['maxlength']
                 ) {
                     $this->setElementError(
                         $el['name'],
@@ -2156,7 +2157,7 @@ class LorisForm
      *
      * Gets the values submitted by the user
      *
-     * @return void
+     * @return array
      */
     function getSubmitValues()
     {
@@ -2174,7 +2175,7 @@ class LorisForm
      *
      * @param string $name The name of the element to extract.
      *
-     * @return useless object which has the same methods as
+     * @return \LorisFormElement useless object which has the same methods as
      *         those used by QuickForm, so that the LorisForm
      *         is API compatible.
      */
@@ -2343,4 +2344,4 @@ class LorisFormFileElement extends LorisFormElement
         return $_FILES[$this->el['name']];
     }
 }
-?>
+

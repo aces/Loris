@@ -40,7 +40,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
           // expected_headers
                                    'No.'               => '#dynamictable > thead',
                                    'PSCID'             => '#dynamictable > thead',
-                                   'Gender'            => '#dynamictable > thead',
+                                   'Sex'               => '#dynamictable > thead',
                                    'Subproject'        => '#dynamictable > thead',
                                    'File'              => '#dynamictable > thead',
                                    'SNP'               => '#dynamictable > thead',
@@ -65,7 +65,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
           // expected_headers
                               'No.'                 => '#dynamictable > thead',
                               'PSCID'               => '#dynamictable > thead',
-                              'Gender'              => '#dynamictable > thead',
+                              'Sex'                 => '#dynamictable > thead',
                               'RsID'                => '#dynamictable > thead',
                               'Allele A'            => '#dynamictable > thead',
                               'Allele B'            => '#dynamictable > thead',
@@ -220,7 +220,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       * This function could test UI elemnts in each Tabs.
       *
       * @param string $url this is for the url which needs to be tested.
-      * @param string $ui  UI elements in each Tabs.
+      * @param array  $ui  UI elements in each Tabs.
       *
       * @return void
       */

@@ -26,6 +26,14 @@ Ensure formatting meets Loris style guidelines by running phpcs with the LorisCS
   for any files you've modified or added. For new modules, ensure that PHPCS has been
   run on the module directory and add the module to `travis.yml`
 
+  All new functions should use type hinting and return type declarations.
+
+  All new classes should declare strict types by including the following line at
+  the top of the file:
+  ```php
+  <?php declare(strict_types=1);
+  ```
+
 # HTML
 - HTML should never be mixed with code. 
 - HTML should go into a template and be rendered using a templating library (smarty for PHP).
@@ -37,10 +45,12 @@ Ensure formatting meets Loris style guidelines by running phpcs with the LorisCS
 </div>
 ```
 
-# Javascript
+# JavaScript
 - Javascript should never be mixed with HTML or PHP code. 
 - Javascript should go into `modules/js/`
-- Any newly written Javascript should pass ESLint with default options.
+- Any newly written JavaScript should pass ESLint with default options.
+- Compiled JavaScript should not be tracked by Git so make use of .gitignore
+if you are adding new files or converting existing code to use React.
 
 # SQL
 * Prepared statements MUST be used for any statements which involve user input. 

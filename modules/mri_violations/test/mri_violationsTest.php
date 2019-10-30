@@ -50,21 +50,21 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'    => '999888',
-             'CenterID'  => '55',
-             'UserID'    => '1',
-             'PSCID'     => '8888',
-             'ProjectID' => '7777',
+             'CandID'               => '999888',
+             'RegistrationCenterID' => '55',
+             'UserID'               => '1',
+             'PSCID'                => '8888',
+             'ProjectID'            => '7777',
             )
         );
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'    => '999777',
-             'CenterID'  => '55',
-             'UserID'    => '2',
-             'PSCID'     => '6666',
-             'ProjectID' => '5555',
+             'CandID'               => '999777',
+             'RegistrationCenterID' => '55',
+             'UserID'               => '2',
+             'PSCID'                => '6666',
+             'ProjectID'            => '5555',
             )
         );
         $this->DB->insert(
@@ -87,6 +87,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'UserID'       => '2',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
+             'Visit_label'  => 'test',
             )
         );
 
@@ -160,7 +161,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             array(
              'ID'                 => '1002',
              'CandID'             => '999777',
-             'PatientName'        => '[name]test',
+             'PatientName'        => '[name]test_test',
              'time_run'           => '2008-06-29 04:00:44',
              'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
              'series_description' => 'Test Series Description',
@@ -220,15 +221,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "candidate",
             array(
-             'CandID'   => '999888',
-             'CenterID' => '55',
+             'CandID'               => '999888',
+             'RegistrationCenterID' => '55',
             )
         );
         $this->DB->delete(
             "candidate",
             array(
-             'CandID'   => '999777',
-             'CenterID' => '55',
+             'CandID'               => '999777',
+             'RegistrationCenterID' => '55',
             )
         );
         $this->DB->delete(
@@ -465,7 +466,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("filter")
         )->click();
         sleep(1);
-        $resolutionStatus = "#dynamictable > tbody > tr > td:nth-child(8) > select";
+        $resolutionStatus = "#dynamictable > tbody > tr > td:nth-child(10) > select";
         $savebtn          = "#mri_violations > div.pull-right > input:nth-child(1)";
         $this->webDriver->executescript(
             "document.querySelector('$resolutionStatus').value='other'"
@@ -561,4 +562,4 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         }
     }
 }
-?>
+

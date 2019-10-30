@@ -622,7 +622,7 @@ class NDB_Page implements RequestHandlerInterface
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         $user = $request->getAttribute("user");
-        if ($this->_hasAccess() !== true) {
+        if ($this->_hasAccess($user ?? new AnonymousUser()) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
@@ -764,8 +764,15 @@ class NDB_Page implements RequestHandlerInterface
                   $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
                   $baseurl . '/js/polyfills.js',
-                  $baseurl . '/js/react/react-with-addons' . $min . '.js',
-                  $baseurl . '/js/react/react-dom' . $min . '.js',
+                    // $baseurl . '/js/react/react-with-addons' . $min . '.js',
+                    // $baseurl . '/js/react/react-dom' . $min . '.js',
+                  $baseurl . ($min === '') ?
+                      '/vendor/js/react/react.development.js' :
+                      '/vendor/js/react/react.production.js',
+                  $baseurl . ($min === '') ?
+                      '/vendor/js/react/react-dom.development.js' :
+                      '/vendor/js/react/react-dom.production.js',
+
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',
@@ -815,23 +822,15 @@ class NDB_Page implements RequestHandlerInterface
     }
 
     /**
-     * Returns false if user does not have access to page.
+     * Returns true if user has access to this page.
      *
-     * Usage: the hasAccess() function in a child class should contain
-     * something like:
+     * You do not need to overload hasAccess() if there are no access restrictions.
      *
-     *     // create user object
-     *     $user =& User::singleton();
+     * @param \User $user The user whose access is being checked
      *
-     *     return $user->hasPermission('superuser');
-     *
-     * You do not need to overload hasAccess() if there are no access restrictions
-     *
-     * @note   overloaded function
      * @return bool
-     * @access private
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         return true;
     }
@@ -858,4 +857,4 @@ class NDB_Page implements RequestHandlerInterface
         );
     }
 }
-?>
+

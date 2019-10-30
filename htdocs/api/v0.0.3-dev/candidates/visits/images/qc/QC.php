@@ -255,4 +255,4 @@ if (isset($_REQUEST['PrintImageQC'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

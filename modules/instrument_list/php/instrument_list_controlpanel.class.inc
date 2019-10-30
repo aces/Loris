@@ -71,14 +71,14 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
 
         // BVLQC - get permission and set the tpl element
-        $user =& \User::singleton();
+        $user = \User::singleton();
         $this->tpl_data['access']['bvl_qc']
             = $user->hasPermission('bvl_feedback');
 
         // BVLQCType
-        $success = $this->_displayBVLQCType();
+        $this->_displayBVLQCType();
         // BVLQCStatus
-        $success = $this->_displayBVLQCStatus();
+        $this->_displayBVLQCStatus();
 
         $smarty = new \Smarty_neurodb("instrument_list");
         $smarty->assign($this->tpl_data);
@@ -103,7 +103,11 @@ class Instrument_List_ControlPanel extends \TimePoint
             && in_array($_REQUEST['setStageUpdate'], $this->_statusOptions)
             && in_array($currentStage, $this->_dynamicStageOptions)
         ) {
-            $this->setData($currentStage, $_REQUEST['setStageUpdate']);
+            $this->setData(
+                array(
+                 $currentStage => $_REQUEST['setStageUpdate'],
+                )
+            );
             return;
         }
 
@@ -159,7 +163,6 @@ class Instrument_List_ControlPanel extends \TimePoint
                     }
                 }
                 unset($flagList);
-                unset($constantsArray);
                 unset($flagTypeIDs);
                 unset($flagName);
                 unset($flagStatus);
@@ -167,7 +170,11 @@ class Instrument_List_ControlPanel extends \TimePoint
             }
 
             // Send to DCC - set Submitted to Y
-            $this->setData('Submitted', $_REQUEST['setSubmitted']);
+            $this->setData(
+                array(
+                 'Submitted' => $_REQUEST['setSubmitted'],
+                )
+            );
             // move to next stage (approval or the bin)
             if ($currentStatus == 'Pass') {
                 $nextStage = 'Approval';
@@ -181,7 +188,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $battery = new \NDB_BVL_Battery();
 
                 // set the SessionID for the battery
-                $success = $battery->selectBattery(
+                $battery->selectBattery(
                     $this->getData('SessionID')
                 );
 
@@ -210,12 +217,10 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             return;
         }
-        $condition1 = isset($_REQUEST['setSubmitted']);
-        $condition2 = $condition1 ?
-            $_REQUEST['setSubmitted'] == 'N' :
-            false;
-        $condition3 = $this->_hasAccessSendToDCC();
-        $condition4 = !in_array(
+        $submitted  = $_REQUEST['setSubmitted'] ?? '';
+        $condition1 = $submitted == 'N';
+        $condition2 = $this->_hasAccessSendToDCC();
+        $condition3 = !in_array(
             $currentStage,
             array(
              null,
@@ -225,9 +230,11 @@ class Instrument_List_ControlPanel extends \TimePoint
             )
         );
         // un-submit to dcc
-        if ($condition1 && $condition2 && $condition3 && $condition4) {
+        if ($condition1 && $condition2 && $condition3) {
 
-                $this->setData('Submitted', $_REQUEST['setSubmitted']);
+            $this->setData(
+                array('Submitted' => $submitted)
+            );
 
                 // revert from approval (or the bin)
             if ($currentStage == 'Approval') {
@@ -243,7 +250,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
                 $battery = new \NDB_BVL_Battery();
                 // set the SessionID for the battery
-                $success = $battery->selectBattery(
+                $battery->selectBattery(
                     $this->getData('SessionID')
                 );
                 // get the list of instruments
@@ -271,11 +278,9 @@ class Instrument_List_ControlPanel extends \TimePoint
                         $instrument['DDECommentID']
                     );
                     \ConflictDetector::recordUnresolvedConflicts($diff);
-
                 }
             }
-
-                return;
+            return;
         }
 
         // set the BVLQC flag
@@ -283,19 +288,31 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!empty($_REQUEST['setBVLQCStatus'])
             && $user->hasPermission('bvl_feedback')
         ) {
-            $this->setData('BVLQCStatus', $_REQUEST['setBVLQCStatus']);
+            $this->setData(
+                array(
+                 'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
+                )
+            );
             return;
         } else {
-            $this->setData('BVLQCStatus', null);
+            $this->setData(
+                array('BVLQCStatus' => null)
+            );
             return;
         }
         if (!empty($_REQUEST['setBVLQCType'])
             && $user->hasPermission('bvl_feedback')
         ) {
-            $this->setData('BVLQCType', $_REQUEST['setBVLQCType']);
+            $this->setData(
+                array(
+                 'BVLQCType' => $_REQUEST['setBVLQCType'],
+                )
+            );
             return;
         } else {
-            $this->setData('BVLQCType', null);
+            $this->setData(
+                array('BVLQCType' => null)
+            );
             return;
         }
     }
@@ -350,7 +367,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery;
 
         // set the SessionID for the battery
-        $success = $battery->selectBattery($_REQUEST['sessionID']);
+        $battery->selectBattery($_REQUEST['sessionID']);
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
@@ -360,7 +377,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
         // loop the list and check the Data Entry status
-        $ddeConflictDetected =false;
+        $ddeConflictDetected = false;
+        $dataEntry           = '';
         foreach ($batteryList as $instrument) {
             $status = new \NDB_BVL_InstrumentStatus();
             $status->select($instrument['CommentID']);
@@ -406,7 +424,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             // highlight the current option if it's the current status
             if ($currentStatus == $option) {
-                $this->tpl_data['status'][$i]['icon'] = 'selected';
+                $this->tpl_data['status'][$i]['icon'] = 'far fa-check-square';
             } elseif (in_array($currentStage, $this->_dynamicStageOptions)
                 && (!$this->isSubmitted()
                 || ($this->isSubmitted() && $hasAccess)                )
@@ -428,11 +446,11 @@ class Instrument_List_ControlPanel extends \TimePoint
                 ) {
                     $this->tpl_data['status'][$i]['showlink'] = true;
                 } else {
-                    $this->tpl_data['status'][$i]['icon'] = 'locked';
+                    $this->tpl_data['status'][$i]['icon'] = 'fas fa-times';
                 }
 
             } else {
-                $this->tpl_data['status'][$i]['icon'] = 'locked';
+                $this->tpl_data['status'][$i]['icon'] = 'fas fa-times';
             }
             $i++;
         }
@@ -476,7 +494,8 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $type ="none";
             }
             if ($isSelected) {
-                $this->tpl_data['bvl_qc_type_'.$type]['icon'] = 'selected';
+                $this->tpl_data['bvl_qc_type_'.$type]['icon']
+                    = 'far fa-check-square';
             }
             //If a BVLQC status is not selected,
             // and this type is not already chosen, show the link.
@@ -508,7 +527,8 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $status ="none";
             }
             if ($isSelected) {
-                $this->tpl_data['bvl_qc_status_'.$status]['icon'] = 'selected';
+                $this->tpl_data['bvl_qc_status_'.$status]['icon']
+                    = 'far fa-check-square';
             }
             //If a BVLQC type is selected,
             // and this status is not already chosen, show the link.
@@ -525,7 +545,7 @@ class Instrument_List_ControlPanel extends \TimePoint
      * Generates the HTML to display the set of buttons
      * for the Time Point status update
      *
-     * @return string
+     * @return bool
      * @access private
      */
     function _displaySendToDCC()
@@ -548,14 +568,14 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
 
         if ($this->isSubmitted()) {
-            $this->tpl_data['send_to_dcc']['icon']    = 'selected';
+            $this->tpl_data['send_to_dcc']['icon']    = 'far fa-check-square';
             $this->tpl_data['send_to_dcc']['reverse'] = 'Reverse Send To DCC';
         }
 
         $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
-        $success = $battery->selectBattery($this->getData('SessionID'));
+        $battery->selectBattery($this->getData('SessionID'));
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
@@ -660,7 +680,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
-        $success = $battery->selectBattery($this->getData('SessionID'));
+        $battery->selectBattery($this->getData('SessionID'));
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
@@ -749,7 +769,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     /**
      * DisplayStartNextStage function
      *
-     * @return void
+     * @return bool
      */
     function _displayStartNextStage()
     {
@@ -770,4 +790,4 @@ class Instrument_List_ControlPanel extends \TimePoint
     }
 
 }
-?>
+

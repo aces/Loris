@@ -144,4 +144,4 @@ if (isset($_REQUEST['PrintBBFormat'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

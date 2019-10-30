@@ -26,18 +26,24 @@ namespace LORIS\examiner;
 
 class Examiner extends \NDB_Menu_Filter_Form
 {
-    var $useCertification;
+    public $skipTemplate  = true;
+    var $useCertification = false;
 
     /**
      * Checks if the user has access to examiner menu filter
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
-        return $user->hasPermission('examiner_view')
-            || $user->hasPermission('examiner_multisite');
+        return $user->hasAnyPermission(
+            array(
+             'examiner_view',
+             'examiner_multisite',
+            )
+        );
     }
 
     /**
@@ -52,8 +58,6 @@ class Examiner extends \NDB_Menu_Filter_Form
 
         if (isset($certification['EnableCertification'])) {
             $this->useCertification = $certification['EnableCertification'];
-        } else {
-            $this->useCertification = false;
         }
 
         $user      = \User::singleton();
@@ -88,7 +92,8 @@ class Examiner extends \NDB_Menu_Filter_Form
                                'e.examinerID as ID',
                                'psc.Name as Site',
                                'e.radiologist as Radiologist',
-                               'GROUP_CONCAT(tn.full_name) as Certification',
+                               "GROUP_CONCAT(tn.full_name SEPARATOR ', ') as
+                                Certification",
                               );
         $this->group_by     = "e.full_name,psc.Name,e.examinerID";
         $this->query        = $query;
@@ -111,18 +116,6 @@ class Examiner extends \NDB_Menu_Filter_Form
                                'site'        => 'epr.centerID',
                                'radiologist' => 'COALESCE(e.radiologist, 0)',
                               );
-
-        // If certification is turned on, update the class variables to include
-        // certification information
-        if ($this->useCertification == '1') {
-
-            $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
-
-        } else {
-
-            $this->tpl_data['hiddenHeaders'] = json_encode(['ID', 'Certification']);
-
-        }
         return true;
     }
 
@@ -142,38 +135,29 @@ class Examiner extends \NDB_Menu_Filter_Form
         if ($user->hasPermission('examiner_multisite')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = \Utility::getSiteList();
-            if (is_array($sites)) {
-                $sites = array('' => '') + $sites;
-            }
         } else {
             // allow only to view own site data
             $sites = $user->getStudySites();
-            $sites = array('' => 'All User Sites') + $sites;
+        }
+
+        // Set keys of sites to their names for FilterableDataTable
+        foreach ($sites as $siteID => $siteName) {
+            unset($sites[$siteID]);
+            $sites[$siteName] = $siteName;
         }
 
         // Radiologist options
         $radiologist = array(
-                        null => 'All',
-                        '1'  => 'Yes',
-                        '0'  => 'No',
+                        '1' => 'Yes',
+                        '0' => 'No',
                        );
 
-        // menu filter form elements
-        $this->addBasicText('examiner', 'Examiner:');
-        $this->addSelect('site', 'Site:', $sites);
-        $this->addSelect('radiologist', 'Radiologist:', $radiologist);
-
-        // add examiner form elements
-        $this->addBasicText('addName', 'Name');
-        $this->addCheckbox('addRadiologist', 'Radiologist', array('value' => '1'));
-        $this->addSelect('addSite', 'Site', $sites);
+        $this->fieldOptions = array(
+                               'sites'        => $sites,
+                               'radiologists' => $radiologist,
+                              );
 
         $this->form->addFormRule(array(&$this, '_validateAddExaminer'));
-
-        // Add a useCertification template variable so that the template
-        // rendering can depend on the EnableCertification setting
-        $this->tpl_data['certification'] = $this->useCertification;
-
     }
 
     /**
@@ -181,25 +165,29 @@ class Examiner extends \NDB_Menu_Filter_Form
      *
      * @param array $values Add Examiner form values
      *
-     * @return array of error messages
+     * @return void
      */
     function _validateAddExaminer($values)
     {
-        $errors = array();
-
         $name = $values['addName'];
-        $site = $values['addSite'];
+        $site = $this->getCenterID($values['addSite']);
 
         if (empty($name) || empty($site)) {
-            $errors['addName'] = 'Please include both a name and site';
-        } else if ($this->examinerExists($name, $site)) {
-            $errors['addName'] = 'This examiner already exists';
+            http_response_code(400);
+            echo('Cannot submit an empty name or site.');
+            return;
         } else if (trim($name) !== $name || preg_match('/\s[\s]+/', $name) === 1) {
-            $errors['addName'] = 'Please remove all trailing '.
-            'spaces and double spaces in name';
+            http_response_code(400);
+            echo(
+                'Please remove all trailing '.
+                'spaces and double spaces in name.'
+            );
+            return;
+        } else if ($this->examinerExists($name, $site)) {
+            http_response_code(400);
+            echo('This examiner already exists.');
+            return;
         }
-
-        return $errors;
     }
 
     /**
@@ -207,22 +195,27 @@ class Examiner extends \NDB_Menu_Filter_Form
      *
      * @param array $values add examiner form values
      *
-     * @return bool
+     * @return bool true if successful
      */
     function _process($values)
     {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $baseurl = $factory->settings()->getBaseURL();
 
-        $DB     = \Database::singleton();
-        $config = \NDB_Config::singleton();
+        $fullName = $values['addName'];
+        $siteName = $values['addSite'];
 
-        $fullName    = $values['addName'];
-        $siteID      = $values['addSite'];
-        $radiologist = $values['addRadiologist'];
-        $radiologist = (empty($radiologist)) ? 0:$radiologist;
-        //$values['addRadiologist'] should be used once addCheckbox is
-        // supported by LorisForm and once addRadiologist checkbox is added
-        // to the form using the addCheckbox method
-        //$radiologist = $values['addRadiologist'];
+        //Get centerID
+        $siteID = $this->getCenterID($siteName);
+
+        //Get radiologist value
+        $radiologist = 0;
+        if (isset($values['addRadiologist'])
+            && $values['addRadiologist'] === 'true'
+        ) {
+            $radiologist = 1;
+        }
 
         //Check if examiner is already in the database 'examiners', if not add them
         $examinerID = $DB->pselectOne(
@@ -281,7 +274,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      */
     function examinerExists($fullName, $siteID)
     {
-        $DB         = \Database::singleton();
+        $DB         = \NDB_Factory::singleton()->database();
         $examinerID = $DB->pselectOne(
             "SELECT e.examinerID
              FROM examiners e
@@ -309,7 +302,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      */
     function getExaminerID($fullName)
     {
-        $DB         = \Database::singleton();
+        $DB         = \NDB_Factory::singleton()->database();
         $examinerID = $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
@@ -322,10 +315,46 @@ class Examiner extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Getter for the centerID of the center name
      *
-     * @return array of javascript to be inserted
+     * @param string $siteName name of the site
+     *
+     * @return string ID of the site
+     */
+    function getCenterID($siteName)
+    {
+        $DB     = \NDB_Factory::singleton()->database();
+        $siteID = $DB->pselectOne(
+            "SELECT CenterID
+             FROM psc
+             WHERE Name=:siteName",
+            array('siteName' => $siteName)
+        );
+        //returned as a string
+        return $siteID;
+    }
+
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string JSON
+     */
+    function toJSON()
+    {
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+
+        // Include whether or not certification is being used
+        $result['useCertification'] = ($this->useCertification === '1') ?: false;
+
+        return json_encode($result);
+    }
+
+    /**
+     * Include the index examiner javascript dependency
+     *
+     * @return array
      */
     function getJSDependencies()
     {
@@ -335,9 +364,9 @@ class Examiner extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/examiner/js/columnFormatter.js",
+             $baseURL . "/examiner/js/examinerIndex.js",
             )
         );
     }
 }
-?>
+

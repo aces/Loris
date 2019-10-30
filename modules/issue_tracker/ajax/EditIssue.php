@@ -195,7 +195,7 @@ function validateInput($values)
         $validCenter = $db->pselectOne(
             "
             SELECT
-                CenterID = :center_id
+                RegistrationCenterID = :center_id as CenterID
             FROM
                 candidate
             WHERE
@@ -467,8 +467,8 @@ function getComments($issueID)
             $comment['fieldChanged'] = 'Visit Label';
         }
     }
-    return $unformattedComments; //now formatted I guess
 
+    return $unformattedComments; //now formatted I guess
 }
 
 /**
@@ -659,6 +659,12 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
     if (!empty($_GET['issueID'])) { //if an existing issue
         $issueID    = $_GET['issueID'];
         $issueData  = getIssueData($issueID);
+        $desc       = $db->pselect(
+            "SELECT issueComment
+FROM issues_comments WHERE issueID=:i
+ORDER BY dateAdded LIMIT 1",
+            array('i' => $issueID)
+        );
         $isWatching = $db->pselectOne(
             "SELECT userID, issueID FROM issues_watching
             WHERE issueID=:issueID AND userID=:userID",
@@ -670,12 +676,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $issueData['watching']       = is_array($isWatching) ? "No" : "Yes";
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['othersWatching'] = getWatching($issueID);
-        $issueData['desc']           = $db->pSelectOne(
-            "SELECT issueComment
-FROM issues_comments WHERE issueID=:issueID
-ORDER BY dateAdded",
-            array('issueID' => $issueID)
-        );
+        $issueData['desc']           = $desc[0]['issueComment'];
     }
     $issueData['comment'] = null;
 
@@ -705,7 +706,7 @@ ORDER BY dateAdded",
 
 /**
  * If issueID is passed retrieves issue data from database,
- * othewise return empty issue data object
+ * otherwise return empty issue data object
  *
  * @param string $issueID the ID of the requested issue
  *
@@ -714,8 +715,8 @@ ORDER BY dateAdded",
 function getIssueData($issueID=null)
 {
 
-    $user =& User::singleton();
-    $db   =& Database::singleton();
+    $user = \User::singleton();
+    $db   = \Database::singleton();
 
     if (!empty($issueID)) {
         return $db->pselectRow(

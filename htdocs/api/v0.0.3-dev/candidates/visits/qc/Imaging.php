@@ -216,4 +216,4 @@ if (isset($_REQUEST['PrintQC'])) {
     );
     print $obj->toJSONString();
 }
-?>
+

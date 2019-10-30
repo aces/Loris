@@ -28,12 +28,12 @@ class EditExaminer extends \NDB_Form
     /**
      * Checks if the user has access to the edit examiner form
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws \ConfigurationException
-     * @throws \DatabaseException
      * @throws \LorisException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         if (empty($_REQUEST['identifier'])) {
             throw new LorisException(
@@ -43,7 +43,6 @@ class EditExaminer extends \NDB_Form
         $DB     = \Database::singleton();
         $config = \NDB_Config::singleton();
 
-        $user         = \User::singleton();
         $userFullName = $user->getFullname();
         $userCenter   = $user->getCenterIDs();
 
@@ -135,6 +134,9 @@ class EditExaminer extends \NDB_Form
                  'TID' => $testID,
                 )
             );
+            // FIXME $visit_label should be set properly. This declaration
+            // was only added to appease phan.
+            $visit_label = '';
 
              // if certification for new instrument for the examiner
             if (empty($certID) && !empty($certStatus)) {
@@ -258,7 +260,9 @@ class EditExaminer extends \NDB_Form
                 }
             }
         }
-        $url = "{$baseurl}/examiner/editExaminer/?identifier="
+
+        $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
+        $url     = "{$baseurl}/examiner/editExaminer/?identifier="
                . $examinerID;
         header("Location: " . $url, true, 303);
     }
@@ -348,6 +352,12 @@ class EditExaminer extends \NDB_Form
               WHERE e.examinerID=:EID",
             array('EID' => $this->identifier)
         );
+        if (is_null($row)) {
+            throw new \LorisException(
+                'No full name found in Database for examiner with ID ' .
+                htmlspecialchars($this->identifier)
+            );
+        }
         // Get identifier, to be added to the Reset button href
         $this->tpl_data['identifier'] = $this->identifier;
 
@@ -419,7 +429,7 @@ class EditExaminer extends \NDB_Form
             return array();
         }
         $certificationInstruments['test']
-            = \Utility::toArray($certificationInstruments['test']);
+            = \Utility::associativeToNumericArray($certificationInstruments['test']);
         $instruments = array();
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
@@ -453,4 +463,4 @@ class EditExaminer extends \NDB_Form
         );
     }
 }
-?>
+

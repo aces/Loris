@@ -7,11 +7,11 @@
  *
  * PHP version 7
  *
- *  @category LORIS_Module
- *  @package  Genomics
- *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser;
 
@@ -25,7 +25,7 @@ namespace LORIS\genomic_browser;
  * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 class Genomic_Browser extends \NDB_Menu_Filter
 {
     /**
@@ -45,13 +45,12 @@ class Genomic_Browser extends \NDB_Menu_Filter
      * Overloading this method to allow access to site users (own site only)
      * and users w/ multisite privs
      *
-     * @note   overloaded function
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -61,7 +60,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
      *
      * @note   overloaded function
      * @return void
-    */
+     */
     function _setupVariables()
     {
         // set the class variables
@@ -98,7 +97,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
                           'psc.Name AS PSC',
                           'LPAD(candidate.CandID, 6, "0") AS DCCID',
                           'candidate.PSCID',
-                          'candidate.Gender',
+                          'candidate.Sex',
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as externalID',
@@ -128,7 +127,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
                 from session s GROUP BY s.CandID) AS cohort
                 ON (cohort.CandID=candidate.CandID)
-            LEFT JOIN psc ON (psc.CenterID= candidate.CenterID)
+            LEFT JOIN psc ON (psc.CenterID= candidate.RegistrationCenterID)
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
@@ -137,7 +136,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // allow only to view own site data
             $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
+            $this->query .= " AND candidate.RegistrationCenterID IN ($site_arr)";
         }
 
         $this->group_by = '';
@@ -145,10 +144,10 @@ class Genomic_Browser extends \NDB_Menu_Filter
         $this->order_by = 'psc.Name, candidate.CandID DESC';
 
         $this->validFilters = array(
-                               'candidate.CenterID',
+                               'candidate.RegistrationCenterID',
                                'candidate.CandID',
                                'candidate.PSCID',
-                               'candidate.Gender',
+                               'candidate.Sex',
                                'cohort.SubprojectID',
                                'candidate.DoB',
                                'candidate.ExternalID',
@@ -167,10 +166,10 @@ class Genomic_Browser extends \NDB_Menu_Filter
                                     );
 
         $ftf = array(
-                'centerID'           => 'candidate.CenterID',
+                'centerID'           => 'candidate.RegistrationCenterID',
                 'DCCID'              => 'candidate.CandID',
                 'PSCID'              => 'candidate.PSCID',
-                'gender'             => 'candidate.Gender',
+                'sex'                => 'candidate.Sex',
                 'SubprojectID'       => 'cohort.SubprojectID',
                 'External_ID'        => 'candidate.ExternalID',
                 'Show_Brief_Results' => 'show_brief_results',
@@ -220,8 +219,8 @@ class Genomic_Browser extends \NDB_Menu_Filter
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addBasicText('External_ID', 'External ID:');
         $this->addSelect(
-            'gender',
-            'Gender:',
+            'sex',
+            'Sex:',
             array(
              ''       => 'All',
              'Male'   => 'Male',
@@ -280,7 +279,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
                 $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
-                || strtolower(substr($field, -6)) == 'gender'
+                || strtolower(substr($field, -3)) == 'sex'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {
@@ -314,4 +313,4 @@ class Genomic_Browser extends \NDB_Menu_Filter
         );
     }
 }
-?>
+

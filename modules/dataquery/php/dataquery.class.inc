@@ -28,16 +28,16 @@ class Dataquery extends \NDB_Form
     /**
      * Check user access permission
      *
-     * @return bool|object
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         // check user permissions
         return $user->hasPermission('dataquery_view');
     }
+
     /**
      * Sets up the smarty template variables for the dataquery page.
      *
@@ -54,7 +54,7 @@ class Dataquery extends \NDB_Form
         $couch       = \NDB_Factory::singleton()->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
-            $couchConfig['port'],
+            intval($couchConfig['port']),
             $couchConfig['admin'],
             $couchConfig['adminpass']
         );

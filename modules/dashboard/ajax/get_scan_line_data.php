@@ -51,8 +51,8 @@ return 0;
 /**
  * Create chart labels (dates)
  *
- * @param date $startDate start date of scans
- * @param date $endDate   end date of scans
+ * @param string $startDate start date of scans
+ * @param string $endDate   end date of scans
  *
  * @return array
  */
@@ -107,4 +107,4 @@ function getScanData($siteID, $labels)
     return $data;
 }
 
-?>
+

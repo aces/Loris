@@ -10,8 +10,8 @@ var siteColours = [
     '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'
 ];
 
-// Colours for the recruitment bar chart: breakdown by gender
-var genderColours = ['#2FA4E7', '#1C70B6'];
+// Colours for the recruitment bar chart: breakdown by sex
+var sexColours = ['#2FA4E7', '#1C70B6'];
 
 $(document).ready(function () {
     "use strict";
@@ -107,10 +107,12 @@ function formatPieData(data) {
 function formatBarData(data) {
     "use strict";
     var processedData = new Array();
-    var females = ['Female'];
-    processedData.push(females.concat(data.datasets.female));
-    var males = ['Male'];
-    processedData.push(males.concat(data.datasets.male));
+    if (data.datasets) {
+      var females = ['Female'];
+      processedData.push(females.concat(data.datasets.female));
+      var males = ['Male'];
+      processedData.push(males.concat(data.datasets.male));
+    }
     return processedData;
 }
 function formatLineData(data) {
@@ -216,7 +218,7 @@ $.ajax({
                 }
             },
             color: {
-                pattern: genderColours
+                pattern: sexColours
             }
         });
     },

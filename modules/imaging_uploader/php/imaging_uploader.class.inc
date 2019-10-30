@@ -39,15 +39,15 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     var $uploaded_file_path;
     /**
-     * The _has_access returns true
-     * if the user has the specific permission
+     * The hasAccess function ensures that the user has the imaging_uploader
+     * permission.
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
         return $user->hasPermission('imaging_uploader');
     }
     /**
@@ -227,8 +227,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *       .gz, .zip or .tgz
      *  - The uploaded file is copied to a newly created temporary folder
      *
-     * @param FILE  $file The uploaded file
-     * @param Array $args The list of arguments
+     * @param Object $file The uploaded file
+     * @param Array  $args The list of arguments
      *
      * @return true on success, throws error otherwise
      */
@@ -386,7 +386,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
         if (!$updateFile && !empty($id) && file_exists($uploadPath)) {
             array_push(
-                $errors['mri_file'],
+                $errors['mriFile'],
                 "This file has already been uploaded."
             );
         }
@@ -430,8 +430,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *   - UploadedBy, UploadDate, UploadLocation, SessionID and
      *     PatientName
      *
-     * @param FILE  $file The uploaded file
-     * @param Array $args The list of arguments
+     * @param Object $file The uploaded file
+     * @param Array  $args The list of arguments
      *
      * @return boolean
      */
@@ -721,4 +721,4 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         return json_encode($result);
     }
 }
-?>
+

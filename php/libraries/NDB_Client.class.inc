@@ -25,28 +25,28 @@
 class NDB_Client
 {
     /**
-    * Defines whether session management and user authentication is performed
-    */
+     * Defines whether session management and user authentication is performed
+     */
     var $_isWebClient = true;
 
     /**
-    * Defines that the client is a command line client
-    *
-    * @return void
-    */
-    function makeCommandLine()
+     * Defines that the client is a command line client
+     *
+     * @return void
+     */
+    function makeCommandLine(): void
     {
         $this->_isWebClient = false;
     }
 
     /**
-    * Initializes the environment
-    *
-    * @param string $configFile Path on filesystem to config.xml file to use
-    *
-    * @return true on success
-    */
-    function initialize($configFile = null)
+     * Initializes the environment
+     *
+     * @param string|null $configFile Path on filesystem to config.xml file
+     *
+     * @return true on success
+     */
+    function initialize(?string $configFile = null)
     {
         // Load the config file.
         $factory = NDB_Factory::singleton();
@@ -132,18 +132,25 @@ class NDB_Client
             . $config_additions
         );
         // start php session
-        session_start(
-            ['cookie_httponly' => true]
-        );
+        $sessionOptions = array('cookie_httponly' => true);
+        // TODO remove this if statement when 7.3 is the minimum required LORIS
+        // version. All session from then onward should have Same Site enabled.
+        if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION >= 3) {
+            $sessionOptions['cookie_samesite'] = true;
+        }
 
+        // API Detect
+        if (strpos($_SERVER['REDIRECT_URL'], '/api/v0.0.3-dev/') !== false) {
+            session_cache_limiter('private');
+        }
+
+        session_start($sessionOptions);
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
             session_destroy();
             header("HTTP/1.1 303 See Other");
             header("Location: /");
-            session_start(
-                ['cookie_httponly' => true]
-            );
+            session_start($sessionOptions);
         }
 
         /**
@@ -209,4 +216,4 @@ class NDB_Client
         return $login->isLoggedIn();
     }
 }
-?>
+

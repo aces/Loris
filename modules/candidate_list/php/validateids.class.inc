@@ -34,12 +34,12 @@ class ValidateIDs extends \NDB_Page
     /**
      * Same as the permissions for the main menu filter page.
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool true iff the user has access to this page.
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return (
             $user->hasPermission('access_all_profiles')
             || ($user->hasStudySite() && $user->hasPermission('data_entry'))

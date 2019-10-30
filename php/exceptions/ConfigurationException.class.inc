@@ -24,4 +24,4 @@
 class ConfigurationException extends LorisException
 {
 }
-?>
+

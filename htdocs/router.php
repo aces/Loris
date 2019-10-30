@@ -77,4 +77,4 @@ if (preg_match(
 } else {
     include_once __DIR__ . "/index.php";
 }
-?>
+

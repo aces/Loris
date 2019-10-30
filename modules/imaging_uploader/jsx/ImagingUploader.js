@@ -1,3 +1,5 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
@@ -5,22 +7,21 @@ import Loader from 'Loader';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 
-class ImagingUploader extends React.Component {
-
+class ImagingUploader extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
       filter: {},
-      hiddenHeaders: ['PatientName']
+      hiddenHeaders: ['PatientName'],
     };
 
     /**
      * Set filter to the element's ref for filtering
      */
     this.filter = null;
-    this.setFilterRef = element => {
+    this.setFilterRef = (element) => {
       this.filter = element;
     };
 
@@ -44,20 +45,17 @@ class ImagingUploader extends React.Component {
    */
   fetchData() {
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
-      success: data => {
-        // FIXME: Remove the following line of code, add ['PatientName'] to the
-        // hiddenHeaders state and pass this.state.hiddenHeaders as a prop to
-        // StaticDataTable as soon as hiddenHeaders is accepted as a prop by
-        // the StaticDataTable Component.
-        loris.hiddenHeaders = this.state.hiddenHeaders;
+      success: (data) => {
         this.setState({
           data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       },
-      error: error => console.error(error)
+      error: function(error) {
+        console.error(error);
+      },
     });
   }
 
@@ -132,16 +130,9 @@ class ImagingUploader extends React.Component {
     }
 
     if (column === 'Tarchive Info') {
-      if (!cell || cell === "0") {
+      if (!cell || cell === '0') {
         return (<td></td>);
       }
-
-      const url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' + cell;
-      return (
-        <td style={cellStyle}>
-          <a href={url}>View Details</a>
-        </td>
-      );
     }
 
     if (column === 'Number Of MincInserted') {
@@ -186,7 +177,7 @@ class ImagingUploader extends React.Component {
    */
   handleClick(dccid, e) {
     loris.loadFilteredMenuClickHandler('imaging_browser/', {
-      DCCID: dccid
+      DCCID: dccid,
     })(e);
   }
 
@@ -198,7 +189,7 @@ class ImagingUploader extends React.Component {
    */
   openViolatedScans(patientName, e) {
     loris.loadFilteredMenuClickHandler('mri_violations/', {
-      PatientName: patientName
+      PatientName: patientName,
     })(e);
   }
 
@@ -208,19 +199,19 @@ class ImagingUploader extends React.Component {
     }
 
     const tabList = [
-      {id: "browse", label: "Browse"},
-      {id: "upload", label: "Upload"}
+      {id: 'browse', label: 'Browse'},
+      {id: 'upload', label: 'Upload'},
     ];
 
     return (
-      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
+      <Tabs tabs={tabList} defaultTab='browse' updateURL={true}>
         <TabPane TabId={tabList[0].id}>
-          <div className="row">
-            <div className="col-md-5">
+          <div className='row'>
+            <div className='col-md-5'>
               <FilterForm
-                Module="imaging_uploader"
-                name="imaging_filter"
-                id="imaging_filter"
+                Module='imaging_uploader'
+                name='imaging_filter'
+                id='imaging_filter'
                 ref={this.setFilterRef}
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
@@ -228,19 +219,20 @@ class ImagingUploader extends React.Component {
                 <TextboxElement {... this.state.data.form.candID} />
                 <TextboxElement {... this.state.data.form.pSCID} />
                 <SelectElement {... this.state.data.form.visitLabel} />
-                <ButtonElement type="reset" label="Clear Filters" onUserInput={this.resetFilters}/>
+                <ButtonElement type='reset' label='Clear Filters' onUserInput={this.resetFilters}/>
               </FilterForm>
             </div>
-            <div className="col-md-7">
+            <div className='col-md-7'>
               <LogPanel />
             </div>
           </div>
-          <div id="mri_upload_table">
+          <div id='mri_upload_table'>
             <StaticDataTable
               Data={this.state.data.Data}
               Headers={this.state.data.Headers}
               getFormattedCell={this.formatColumn}
               Filter={this.state.filter}
+              hiddenHeaders={this.state.hiddenHeaders}
             />
           </div>
         </TabPane>
@@ -257,7 +249,7 @@ class ImagingUploader extends React.Component {
 }
 
 ImagingUploader.propTypes = {
-  DataURL: React.PropTypes.string.isRequired
+  DataURL: PropTypes.string.isRequired,
 };
 
 export default ImagingUploader;

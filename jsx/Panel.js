@@ -6,24 +6,26 @@
  *
  */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Panel component
  * Wraps children in a collapsible bootstrap panel
  */
-class Panel extends React.Component {
-
+class Panel extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      collapsed: this.props.initCollapsed
+      collapsed: this.props.initCollapsed,
     };
 
     // Initialize panel class based on collapsed status
     this.panelClass = (
       this.props.initCollapsed ?
-        "panel-collapse collapse" :
-        "panel-collapse collapse in"
+        'panel-collapse collapse' :
+        'panel-collapse collapse in'
     );
 
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
@@ -37,8 +39,8 @@ class Panel extends React.Component {
     // Change arrow direction based on collapse status
     let glyphClass = (
       this.state.collapsed ?
-        "glyphicon pull-right glyphicon-chevron-down" :
-        "glyphicon pull-right glyphicon-chevron-up"
+        'glyphicon pull-right glyphicon-chevron-down' :
+        'glyphicon pull-right glyphicon-chevron-up'
     );
 
     // Add panel header, if title is set
@@ -69,14 +71,14 @@ class Panel extends React.Component {
 }
 
 Panel.propTypes = {
-  id: React.PropTypes.string,
-  height: React.PropTypes.string,
-  title: React.PropTypes.string
+  id: PropTypes.string,
+  height: PropTypes.string,
+  title: PropTypes.string,
 };
 Panel.defaultProps = {
   initCollapsed: false,
   id: 'default-panel',
-  height: '100%'
+  height: '100%',
 };
 
 export default Panel;

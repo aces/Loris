@@ -13,19 +13,29 @@
  *
  * @category Main
  * @package  Loris
- * @author   Various <example@example.com>
- * @license  Loris license
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
 
+/* 
+ * The minimum number of arguments required to run this script.
+ *
+ * @var int 
+ */
+
+const MIN_NUMBER_OF_ARGS = 4;
 // Possible script actions
 $actions = array('delete_timepoint');
 
 //define the command line parameters
-if (count($argv) < 4 || $argv[1] == 'help' || !in_array($argv[1], $actions)) {
+if (count($argv) < MIN_NUMBER_OF_ARGS 
+    || $argv[1] == 'help' 
+    || !in_array($argv[1], $actions, true)
+) {
     showHelp();
 }
 

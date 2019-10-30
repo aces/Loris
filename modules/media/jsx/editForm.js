@@ -10,7 +10,11 @@
  * @version 1.0.0
  *
  * */
-class MediaEditForm extends React.Component {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import swal from 'sweetalert2';
+
+class MediaEditForm extends Component {
   constructor(props) {
     super(props);
 
@@ -19,40 +23,39 @@ class MediaEditForm extends React.Component {
       formData: {},
       uploadResult: null,
       isLoaded: false,
-      loadedData: 0
+      loadedData: 0,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
-    this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   componentDidMount() {
-    var self = this;
+    let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
-        var formData = {
+        let formData = {
           idMediaFile: data.mediaData.id,
           forSite: data.mediaData.forSite,
           dateTaken: data.mediaData.dateTaken,
           comments: data.mediaData.comments,
-          hideFile: data.mediaData.hideFile
+          hideFile: data.mediaData.hideFile,
         };
 
         self.setState({
           Data: data,
           isLoaded: true,
           mediaData: data.mediaData,
-          formData: formData
+          formData: formData,
         });
       },
       error: function(error, errorCode, errorMsg) {
         console.error(error, errorCode, errorMsg);
         self.setState({
-          error: 'An error occurred when loading the form!'
+          error: 'An error occurred when loading the form!',
         });
-      }
+      },
     });
   }
 
@@ -60,7 +63,7 @@ class MediaEditForm extends React.Component {
     // Data loading error
     if (this.state.error !== undefined) {
       return (
-        <div className="alert alert-danger text-center">
+        <div className='alert alert-danger text-center'>
           <strong>
             {this.state.error}
           </strong>
@@ -71,120 +74,96 @@ class MediaEditForm extends React.Component {
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
+        <button className='btn-info has-spinner'>
           Loading
           <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
         </button>
       );
     }
 
-    var alertMessage = "";
-    var alertClass = "alert text-center hide";
-    var backURL = loris.BaseURL.concat('/media/');
-
-    if (this.state.uploadResult) {
-      if (this.state.uploadResult === "success") {
-        alertClass = "alert alert-success text-center";
-        alertMessage = "Update Successful!";
-      } else if (this.state.uploadResult === "error") {
-        alertClass = "alert alert-danger text-center";
-        alertMessage = "Failed to update the file";
-      }
-    }
-
     return (
       <div>
-        <div className={alertClass} role="alert" ref="alert-message">
-          {alertMessage}
-        </div>
-        {
-          this.state.uploadResult === "success" ?
-          <a className="btn btn-primary" href={backURL}>Back to media</a> :
-          null
-        }
         <FormElement
-          name="mediaEdit"
+          name='mediaEdit'
           onSubmit={this.handleSubmit}
-          ref="form"
+          ref='form'
         >
-          <h3>Edit Media File</h3>
-          <br />
           <SelectElement
-            name="pscid"
-            label="PSCID"
+            name='pscid'
+            label='PSCID'
             options={this.state.Data.candidates}
             onUserInput={this.setFormData}
-            ref="pscid"
+            ref='pscid'
             required={true}
             disabled={true}
             value={this.state.mediaData.pscid}
           />
           <SelectElement
-            name="visitLabel"
-            label="Visit Label"
+            name='visitLabel'
+            label='Visit Label'
             options={this.state.Data.visits}
             onUserInput={this.setFormData}
-            ref="visitLabel"
+            ref='visitLabel'
             required={true}
             disabled={true}
             value={this.state.mediaData.visitLabel}
           />
           <SelectElement
-            name="forSite"
-            label="Site"
+            name='forSite'
+            label='Site'
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
-            ref="forSite"
+            ref='forSite'
             disabled={true}
             value={this.state.mediaData.forSite}
           />
           <SelectElement
-            name="instrument"
-            label="Instrument"
+            name='instrument'
+            label='Instrument'
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
-            ref="instrument"
+            ref='instrument'
             disabled={true}
             value={this.state.mediaData.instrument}
           />
           <DateElement
-            name="dateTaken"
-            label="Date of Administration"
-            minYear="2000"
-            maxYear="2017"
+            name='dateTaken'
+            label='Date of Administration'
+            minYear='2000'
+            maxYear='2017'
             onUserInput={this.setFormData}
-            ref="dateTaken"
+            ref='dateTaken'
             value={this.state.formData.dateTaken}
           />
           <TextareaElement
-            name="comments"
-            label="Comments"
+            name='comments'
+            label='Comments'
             onUserInput={this.setFormData}
-            ref="comments"
+            ref='comments'
             value={this.state.formData.comments}
           />
           <FileElement
-            name="file"
-            id="mediaEditEl"
+            name='file'
+            id='mediaEditEl'
             onUserInput={this.setFormData}
             required={true}
             disabled={true}
-            ref="file"
-            label="Uploaded file"
+            ref='file'
+            label='Uploaded file'
             value={this.state.mediaData.fileName}
           />
           <SelectElement
-            name="hideFile"
-            label="Hide File"
+            name='hideFile'
+            label='Hide File'
             emptyOption={false}
-            options={["No", "Yes"]}
+            options={['No', 'Yes']}
             onUserInput={this.setFormData}
-            ref="hideFile"
+            ref='hideFile'
             value={this.state.formData.hideFile}
           />
-          <ButtonElement label="Update File"/>
+          <ButtonElement label='Update File'/>
         </FormElement>
       </div>
     );
@@ -192,16 +171,16 @@ class MediaEditForm extends React.Component {
 
   /**
    * Handles form submission
-   * @param {event} e - Form submition event
+   * @param {event} e - Form submission event
    */
   handleSubmit(e) {
     e.preventDefault();
 
-    var self = this;
-    var myFormData = this.state.formData;
+    let self = this;
+    let myFormData = this.state.formData;
 
     $('#mediaEditEl').hide();
-    $("#file-progress").removeClass('hide');
+    $('#file-progress').removeClass('hide');
 
     $.ajax({
       type: 'POST',
@@ -211,85 +190,55 @@ class MediaEditForm extends React.Component {
       contentType: false,
       processData: false,
       xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function(evt) {
+        let xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener('progress', function(evt) {
           if (evt.lengthComputable) {
-            var progressbar = $("#progressbar");
-            var progresslabel = $("#progresslabel");
-            var percent = Math.round((evt.loaded / evt.total) * 100);
-            $(progressbar).width(percent + "%");
-            $(progresslabel).html(percent + "%");
+            let progressbar = $('#progressbar');
+            let progresslabel = $('#progresslabel');
+            let percent = Math.round((evt.loaded / evt.total) * 100);
+            $(progressbar).width(percent + '%');
+            $(progresslabel).html(percent + '%');
             progressbar.attr('aria-valuenow', percent);
           }
         }, false);
         return xhr;
       },
-      success: function(data) {
-        $("#file-progress").addClass('hide');
-        self.setState({
-          uploadResult: "success"
-        });
-        self.showAlertMessage();
+      success: (data) => {
+        $('#file-progress').addClass('hide');
+        swal('Upload Successful!', '', 'success');
+        this.props.fetchData();
       },
       error: function(err) {
+        swal('Upload Error!', '', 'error');
         console.error(err);
-        self.setState({
-          uploadResult: "error"
-        });
-        self.showAlertMessage();
-      }
-
+      },
     });
   }
 
   /**
-   * Set the form data based on state values of child elements/componenets
+   * Set the form data based on state values of child elements/components
    *
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    var formData = this.state.formData;
+    let formData = this.state.formData;
 
-    if (value === "") {
+    if (value === '') {
       formData[formElement] = null;
     } else {
       formData[formElement] = value;
     }
 
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
-
-  /**
-   * Display a success/error alert message after form submission
-   */
-  showAlertMessage() {
-    var self = this;
-
-    if (this.refs["alert-message"] === null) {
-      return;
-    }
-
-    var alertMsg = this.refs["alert-message"];
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
-      self.setState({
-        uploadResult: null
-      });
-    });
-  }
-
 }
 
 MediaEditForm.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired
+  DataURL: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
 };
-
-var RMediaEditForm = React.createFactory(MediaEditForm);
-
-window.MediaEditForm = MediaEditForm;
-window.RMediaEditForm = RMediaEditForm;
 
 export default MediaEditForm;

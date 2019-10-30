@@ -3,6 +3,7 @@
     {if $dynamictabs neq "dynamictabs"}
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
+        <link rel="stylesheet" href="{$baseurl}/fontawesome/css/all.css" type="text/css" />
         <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
         {*
@@ -11,7 +12,7 @@
            and can access them through the loris global (ie. loris.BaseURL) *}
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
-        var loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
+        let loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
         </script>
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
@@ -243,200 +244,13 @@
                                         Please click here to go back
                                     </a>.
                                 </p>
-                            {else}
-                                {if $candID != ""}
-                                    <!-- table with candidate profile info -->
-                                        <table cellpadding="2" class="table table-info table-bordered dynamictable" style="max-width:auto">
-                                            <!-- column headings -->
-                                            <thead>
-                                                <tr class="info">
-                                                        <th>
-                                                            DOB
-                                                        </th>
-                                                        {if $candidate.EDC!=""}
-                                                            <th>
-                                                                EDC
-                                                            </th>
-                                                        {/if}
-                                                        <th>
-                                                            Gender
-                                                        </th>
-                                                        {if $candidate.ProjectTitle != ""}
-                                                            <th>
-                                                                Project
-                                                            </th>
-                                                        {/if}
-                                                        {foreach from=$candidate.DisplayParameters item=value key=name}
-                                                            <th>
-                                                                {$name}
-                                                            </th>
-                                                        {/foreach}
-                                                        {if $sessionID != ""}
-                                                            <th>
-                                                                Visit Label
-                                                            </th>
-                                                            <th>
-                                                                Visit to Site
-                                                            </th>
-                                                            <th>
-                                                                Subproject
-                                                            </th>
-                                                            <th>
-                                                                MR Scan Done
-                                                            </th>
-                                                            {*
-                                                                <th>
-                                                                    Age During Visit
-                                                                </th>
-                                                            *}
-                                                            <th>
-                                                                Within Optimal
-                                                            </th>
-                                                            <th>
-                                                                Within Permitted
-                                                            </th>
-                                                            {if $SupplementalSessionStatuses }
-                                                                {foreach from=$timePoint.status item=status key=name}
-                                                                    <th>
-                                                                        {$name}
-                                                                    </th>
-                                                                {/foreach}
-                                                            {/if}
-                                                        {/if}
-                                                </tr>
-                                            </thead>
-                                            <!-- candidate data -->
-                                            <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            {$candidate.DoB}
-                                                        </td>
-                                                        {if $candidate.EDC!=""}
-                                                            <td>
-                                                                {$candidate.EDC}
-                                                            </td>
-                                                        {/if}
-                                                        <td>
-                                                            {$candidate.Gender}
-                                                        </td>
-                                                        {if $candidate.ProjectTitle != ""}
-                                                            <td>
-                                                                {$candidate.ProjectTitle}
-                                                            </td>
-                                                        {/if}
-                                                        {foreach from=$candidate.DisplayParameters item=value key=name}
-                                                            <td>
-                                                                {$value}
-                                                            </td>
-                                                        {/foreach}
-
-                                                        {if $sessionID != ""}
-                                                            <!-- timepoint data -->
-                                                            <td>
-                                                                {$timePoint.Visit_label}
-                                                            </td>
-                                                            <td>
-                                                                {$timePoint.PSC}
-                                                            </td>
-                                                            <td>
-                                                                {$timePoint.SubprojectTitle}
-                                                            </td>
-                                                            <td>
-                                                                {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}
-                                                            </td>
-                                                            {*
-                                                                <td>
-                                                                    {$timePoint.WindowInfo.AgeDays}
-                                                                </td>
-                                                            *}
-                                                            <td>
-                                                                {if $timePoint.WindowInfo.Optimum}
-                                                                    Yes
-                                                                {else}
-                                                                    No
-                                                                {/if}
-                                                            </td>
-                                                            <td {if not $timePoint.WindowInfo.Optimum}class="error"{/if}>
-                                                                {if $timePoint.WindowInfo.Permitted}
-                                                                    Yes
-                                                                {else}
-                                                                    No
-                                                                {/if}
-                                                            </td>
-                                                            {if $SupplementalSessionStatuses }
-                                                                {foreach from=$timePoint.status item=status}
-                                                                    <td>
-                                                                        {$status}
-                                                                    </td>
-                                                                {/foreach}
-                                                            {/if}
-                                                        {/if}
-                                                    </tr>
-                                            </tbody>
-                                        </table>
-
-                                    {if $sessionID != ""}
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered">
-                                                <!-- visit statuses -->
-                                                <thead>
-                                                    <tr class="info">
-                                                        <th nowrap="nowrap" colspan="3">
-                                                            Stage
-                                                        </th>
-                                                        <th nowrap="nowrap" colspan="3">
-                                                            Status
-                                                        </th>
-                                                        <th nowrap="nowrap" colspan="2">
-                                                            Date
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td nowrap="nowrap" colspan="3">
-                                                            Screening
-                                                        </td>
-                                                        <td nowrap="nowrap" colspan="3">
-                                                            {$timePoint.Screening}
-                                                        </td>
-                                                        <td nowrap="nowrap" colspan="2">
-                                                            {$timePoint.Date_screening}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td nowrap="nowrap" colspan="3">
-                                                            Visit
-                                                        </td>
-                                                        <td nowrap="nowrap" colspan="3">
-                                                            {$timePoint.Visit}
-                                                        </td>
-                                                        <td nowrap="nowrap" colspan="2">
-                                                            {$timePoint.Date_visit}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td nowrap="nowrap" colspan="3">
-                                                            Approval
-                                                        </td>
-                                                        <td nowrap="nowrap" colspan="3">
-                                                            {$timePoint.Approval}
-                                                        </td>
-                                                        <td nowrap="nowrap" colspan="2">
-                                                            {$timePoint.Date_approval}
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    {/if}
-                                {/if}
-                                <div id="lorisworkspace">
-                                    {$workspace}
-                                </div>
                             {/if}
+
+                          <div id="lorisworkspace">
+                            {$workspace}
+                          </div>
                         </div>
-                    </div>
+            </div>
 
 
             <!-- </div> -->

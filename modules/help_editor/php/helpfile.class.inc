@@ -333,4 +333,4 @@ class HelpFile
         return $helpID;
     }
 }
-?>
+

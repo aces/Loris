@@ -37,9 +37,7 @@
                         <ul class="dropdown-menu pull-right" role="menu">
                             <li class="active"><a data-target="overall-recruitment">View overall recruitment</a></li>
                             <li><a data-target="recruitment-site-breakdown">View site breakdown</a></li>
-                            {if $useProjects eq "true"}
-                                <li><a data-target="recruitment-project-breakdown">View project breakdown</a></li>
-                            {/if}
+                            <li><a data-target="recruitment-project-breakdown">View project breakdown</a></li>
                         </ul>
                     </div>
                 </div>
@@ -58,7 +56,7 @@
                         </div>
                         <div class="col-lg-8 col-md-8 col-sm-8">
                             <div>
-                                <h5 class="chart-title">Gender breakdown by site</h5>
+                                <h5 class="chart-title">Biological sex breakdown by site</h5>
                                 <div id="recruitmentBarChart"></div>
                             </div>
                         </div>
@@ -66,15 +64,13 @@
                         <p>There have been no candidates registered yet.</p>
                     {/if}
                 </div>
-                {if $useProjects eq "true"}
-                    <div class="recruitment-panel hidden" id="recruitment-project-breakdown">
-                        {foreach from=$recruitment key=ID item=project}
-                            {if $ID != "overall"}
-                                {include file='progress_bar.tpl' project=$project}
-                            {/if}
-                        {/foreach}
-                    </div>
-                {/if}
+                  <div class="recruitment-panel hidden" id="recruitment-project-breakdown">
+                      {foreach from=$recruitment key=ID item=project}
+                          {if $ID != "overall"}
+                              {include file='progress_bar.tpl' project=$project}
+                          {/if}
+                      {/foreach}
+                  </div>
             </div>
         </div>
 
@@ -254,7 +250,7 @@
                     <div class="panel-body">
                         <div class="list-group document-repository-item">
                             {foreach from=$document_repository_notifications item=link}
-                                <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$link.Data_dir}"
+                                <a href="/document_repository/Files/{$link.Data_dir}"
                                    download="{$link.File_name}" class="list-group-item">
                                     {if $link.new eq 1}
                                         <span class="pull-left new-flag">NEW</span>

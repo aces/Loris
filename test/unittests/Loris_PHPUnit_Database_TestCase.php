@@ -87,7 +87,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      * Get database connection which will be used by PHPUnit
      * for clean-up and fixture loading into the test DB.
      *
-     * @return \PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection
+     * @return \PHPUnit\DbUnit\Database\DefaultConnection
      */
     final public function getConnection()
     {
@@ -104,7 +104,6 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
             }
             $this->_conn = $this->createDefaultDBConnection(self::$_pdo);
         }
-
         return $this->_conn;
     }
 

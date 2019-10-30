@@ -13,8 +13,6 @@ RewriteRule ^(api/v.*/projects[/]?)$ index.php?lorispath=$1 [QSA,END]
 RewriteRule ^instruments/([a-zA-Z0-9_-]+)/$ main.php?test_name=$1 [QSA,END]
 RewriteRule ^instruments/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)/$ main.php?test_name=$1&subtest=$2 [QSA,END]
 
-RewriteRule ^([a-zA-Z0-9_-]+)reliability([a-zA-Z0-9_-]*) main.php?test_name=$1reliability$2 [QSA,END]
-
 # Everything else gets rewritten to be handled by index.php, unless it's a file that's served
 # directly from apache
 RewriteCond "%{REQUEST_FILENAME}" "!-f" [OR]
