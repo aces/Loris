@@ -71,6 +71,7 @@ class UserTest extends TestCase
      * @var array
      */
     private $_userInfoComplete;
+
     /**
      * Psc table information
      *
@@ -81,6 +82,18 @@ class UserTest extends TestCase
                               1 => array('CenterID' => '4',
                                          'Name' => 'psc_test2')
                         );
+    /**
+     * Project table information
+     *
+     * @var array
+     */
+    private $_projectInfo = array(0 => array('ProjectID' => '1',
+                                         'Name' => 'project_test'),
+                              1 => array('ProjectID' => '3',
+                                         'Name' => 'project_test2')
+                        );
+
+
     /**
      * Examiners table information
      *
@@ -99,6 +112,17 @@ class UserTest extends TestCase
                                          'CenterID' => '1'),
                               1 => array('UserID' => '1',
                                          'CenterID' => '4')
+                        );
+
+    /**
+     * User_psc_rel table information
+     *
+     * @var array
+     */
+    private $_uprojrInfo = array(0 => array('UserID' => '1',
+                                         'ProjectID' => '1'),
+                              1 => array('UserID' => '1',
+                                         'ProjectID' => '3')
                         );
     /**
      * Examiners_psc_rel table information
@@ -217,6 +241,7 @@ class UserTest extends TestCase
                                                                   )
                                                );
         $this->_userInfoComplete['CenterIDs'] = array('1', '4');
+        $this->_userInfoComplete['ProjectIDs'] = array('1', '3');
     }
 
     /**
@@ -619,12 +644,20 @@ class UserTest extends TestCase
             array(0 => $this->_userInfo)
         );
         $this->_dbMock->setFakeTableData(
+            "psc",
+            $this->_pscInfo
+        );
+        $this->_dbMock->setFakeTableData(
+            "Project",
+            $this->_projectInfo
+        );
+        $this->_dbMock->setFakeTableData(
             "user_psc_rel",
             $this->_uprInfo
         );
         $this->_dbMock->setFakeTableData(
-            "psc",
-            $this->_pscInfo
+            "user_project_rel",
+            $this->_uprojrInfo
         );
         $this->_dbMock->setFakeTableData(
             "examiners",

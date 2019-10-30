@@ -95,6 +95,11 @@ class User extends UserPermissions
             $user_cid[$key] = intval($val['CenterID']);
         }
 
+        $user_pid = $DB->pselectCol(
+            "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
+            array('uid' => $row['ID'])
+        );
+
         // Get examiner information
         $examiner_check = $DB->pselect(
             "SELECT e.full_name,
@@ -126,9 +131,10 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
-        $row['examiner']  = $examiner_info;
-        $row['CenterIDs'] = $user_cid;
-        $obj->userInfo    = $row;
+        $row['examiner']   = $examiner_info;
+        $row['CenterIDs']  = $user_cid;
+        $row['ProjectIDs'] = $user_pid;
+        $obj->userInfo     = $row;
         return $obj;
     }
 
@@ -300,6 +306,16 @@ class User extends UserPermissions
     }
 
     /**
+     * Get the user's sites' ID numbers
+     *
+     * @return array
+     */
+    function getProjectIDs(): array
+    {
+        return $this->userInfo['ProjectIDs'];
+    }
+
+    /**
      * Get the user's language preference
      *
      * @return int
@@ -397,6 +413,22 @@ class User extends UserPermissions
         return in_array(
             $center_id,
             $this->getCenterIDs(),
+            true
+        );
+    }
+
+    /**
+     * Determines if the user has a project
+     *
+     * @param int $projectID The project ID
+     *
+     * @return bool
+     */
+    public function hasProject(int $projectID) : bool
+    {
+        return in_array(
+            $projectID,
+            $this->getProjectIDs(),
             true
         );
     }

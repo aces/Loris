@@ -96,6 +96,14 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
 
+        $this->DB->insert(
+            "user_project_rel",
+            array(
+                'UserID'    => 999990,
+                'ProjectID'  => 1,
+            )
+        );
+
         $this->resetPermissions();
 
         $user = User::factory('UnitTester');
