@@ -59,6 +59,13 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             )
         );
         $this->DB->insert(
+            "Project",
+            array(
+                'ProjectID' => '7777',
+                'Name'      => 'TESTinProject',
+            )
+        );
+        $this->DB->insert(
             "subproject",
             array(
                 'SubprojectID' => '55',
@@ -126,13 +133,6 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                 'Name'      => 'TESTinPSC',
                 'Alias'     => 'tst',
                 'MRI_alias' => 'test',
-            )
-        );
-        $this->DB->insert(
-            "Project",
-            array(
-                'ProjectID' => '7777',
-                'Name'      => 'TESTinProject',
             )
         );
         $this->DB->insert(
