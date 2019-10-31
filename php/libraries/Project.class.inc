@@ -169,9 +169,9 @@ class Project
         $factory->database()->insert(
             'Project',
             array(
-             'Name'              => $projectName,
-             'Alias'             => $projectAlias,
-             'recruitmentTarget' => $recruitmentTarget,
+                'Name'              => $projectName,
+                'Alias'             => $projectAlias,
+                'recruitmentTarget' => $recruitmentTarget,
             )
         );
 
