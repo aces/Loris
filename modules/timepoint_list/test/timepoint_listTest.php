@@ -28,18 +28,18 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
      * the time point list page for candidate TST0001.
      */
     private static $_TST0001_SESSION = array(
-                                        'Test',
-                                        '',
-                                        'DCC',
-                                        'Pumpernickel',
-                                        'Not Started',
-                                        '-',
-                                        '',
-                                        '-',
-                                        '',
-                                        '',
-                                        '',
-                                       );
+        'Test',
+        '',
+        'DCC',
+        'Pumpernickel',
+        'Not Started',
+        '-',
+        '',
+        '-',
+        '',
+        '',
+        '',
+    );
 
     /**
      * Candidate ID for candidate TST0001.
@@ -109,13 +109,13 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'                => '900001',
-             'PSCID'                 => 'TST0002',
-             'RegistrationCenterID'  => 1,
-             'RegistrationProjectID' => 1,
-             'Active'                => 'Y',
-             'UserID'                => 1,
-             'Entity_type'           => 'Human',
+                'CandID'                => '900001',
+                'PSCID'                 => 'TST0002',
+                'RegistrationCenterID'  => 1,
+                'RegistrationProjectID' => 1,
+                'Active'                => 'Y',
+                'UserID'                => 1,
+                'Entity_type'           => 'Human',
             )
         );
 
@@ -123,11 +123,11 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             'session',
             array(
-             'ID'          => '999998',
-             'CandID'      => '900001',
-             'Visit_label' => 'Test',
-             'CenterID'    => 1,
-             'ProjectID'   => 1,
+                'ID'          => '999998',
+                'CandID'      => '900001',
+                'Visit_label' => 'Test',
+                'CenterID'    => 1,
+                'ProjectID'   => 1,
             )
         );
 
@@ -136,12 +136,12 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             'session',
             array(
-             'ID'          => '999997',
-             'CandID'      => self::$_TST0001_CANDID,
-             'Visit_label' => 'Test2',
-             'CenterID'    => 1,
-             'ProjectID'   => 1,
-             'Active'      => 'N',
+                'ID'          => '999997',
+                'CandID'      => self::$_TST0001_CANDID,
+                'Visit_label' => 'Test2',
+                'CenterID'    => 1,
+                'ProjectID'   => 1,
+                'Active'      => 'N',
             )
         );
         $this->safeGet(

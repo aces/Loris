@@ -124,8 +124,8 @@ abstract class AbstractServerProcess
     private $_exitText;
 
     /**
-      * Build a new server process
-      *
+     * Build a new server process
+     *
      * @param int    $id           ID of the process in the database.
      * @param int    $pid          PID for this process
      * @param string $type         type of process
@@ -270,21 +270,21 @@ abstract class AbstractServerProcess
     }
 
     /**
-      * Gets directory where all temporary files created by this task should go
-      *
-      * @return string full path to the temporary directory
-      */
+     * Gets directory where all temporary files created by this task should go
+     *
+     * @return string full path to the temporary directory
+     */
     protected function getTmpDir()
     {
         return sys_get_temp_dir();
     }
 
     /**
-      * Determines whether this task is currently running or not by examining whether
-      * its associated process is running.
-      *
-      * @return boolean true if the task is running, false otherwise
-      */
+     * Determines whether this task is currently running or not by examining whether
+     * its associated process is running.
+     *
+     * @return boolean true if the task is running, false otherwise
+     */
     public function isRunning()
     {
         if (is_null($this->getPid())) {
@@ -372,15 +372,15 @@ abstract class AbstractServerProcess
     }
 
     /**
-      * Updates the current object and its associated information in the database
-      * in order to reflect the task's current state. This should be done if
-      * execution of the task is finished to update all attributes related to the
-      * task's completion status (return code, return text, end time).
-      *
-      * @return boolean true if the operation succeeded, false otherwise.
-      * @throws \UnexpectedValueException if the return code file does not exists,
-      *                                  cannot be read or has invalid content
-      */
+     * Updates the current object and its associated information in the database
+     * in order to reflect the task's current state. This should be done if
+     * execution of the task is finished to update all attributes related to the
+     * task's completion status (return code, return text, end time).
+     *
+     * @return boolean true if the operation succeeded, false otherwise.
+     * @throws \UnexpectedValueException if the return code file does not exists,
+     *                                  cannot be read or has invalid content
+     */
     private function _syncTaskProperties()
     {
         // Task is still running so there's nothing to do.
@@ -460,10 +460,10 @@ abstract class AbstractServerProcess
         // Update object and database values to reflect what was computed previously
         //--------------------------------------------------------------------------
         $setValues   = array(
-                        'exit_text' => $exitText,
-                        'exit_code' => $exitCode,
-                        'end_time'  => $endTime,
-                       );
+            'exit_text' => $exitText,
+            'exit_code' => $exitCode,
+            'end_time'  => $endTime,
+        );
         $whereValues = array('id' => $this->getId());
 
         try {

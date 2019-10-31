@@ -30,45 +30,45 @@ class TimePoint
     var $_timePointInfo;
 
     var $_stageOptions = array(
-                          null,
-                          'Not Started',
-                          'Screening',
-                          'Visit',
-                          'Approval',
-                          'Subject',
-                          'Recycling Bin',
-                         );
+        null,
+        'Not Started',
+        'Screening',
+        'Visit',
+        'Approval',
+        'Subject',
+        'Recycling Bin',
+    );
 
     var $_dynamicStageOptions = array(
-                                 'Screening',
-                                 'Visit',
-                                 'Approval',
-                                );
+        'Screening',
+        'Visit',
+        'Approval',
+    );
 
     var $_statusOptions = array(
-                           null,
-                           'Pass',
-                           'Failure',
-                           'Withdrawal',
-                           'In Progress',
-                          );
+        null,
+        'Pass',
+        'Failure',
+        'Withdrawal',
+        'In Progress',
+    );
 
     var $bvlQcTypes = array(
-                       null,
-                       'Visual',
-                       'Hardcopy',
-                      );
+        null,
+        'Visual',
+        'Hardcopy',
+    );
 
     var $bvlQcStatuses = array(
-                          null,
-                          'Complete',
-                         );
+        null,
+        'Complete',
+    );
 
     var $bvlQcExclusionStatuses = array(
-                                   null,
-                                   'Excluded',
-                                   'Not Excluded',
-                                  );
+        null,
+        'Excluded',
+        'Not Excluded',
+    );
 
 
     /**
@@ -238,19 +238,20 @@ class TimePoint
         }
 
         $insertData = array(
-                       'CandID'          => $candidate->getCandID(),
-                       'SubprojectID'    => $SubprojectID,
-                       'VisitNo'         => $visitNo,
-                       'Visit_label'     => $VisitLabel,
-                       'CenterID'        => $psc->getCenterID(),
-                       'ProjectID'       => $project->getId(),
-                       'Current_stage'   => 'Not Started',
-                       'Submitted'       => 'N',
-                       'registeredBy'    => $userID,
-                       'UserID'          => $userID,
-                       'Date_registered' => $today,
-                       'Date_active'     => $today,
-                      );
+            'CandID'          => $candidate->getCandID(),
+            'SubprojectID'    => $SubprojectID,
+            'VisitNo'         => $visitNo,
+            'Visit_label'     => $VisitLabel,
+            'CenterID'        => $psc->getCenterID(),
+            'ProjectID'       => $project->getId(),
+            'Current_stage'   => 'Not Started',
+            'Submitted'       => 'N',
+            'registeredBy'    => $userID,
+            'UserID'          => $userID,
+            'Date_registered' => $today,
+            'Date_active'     => $today,
+        );
+
         // insert the data
         $db->insert('session', $insertData);
     }
@@ -348,7 +349,7 @@ class TimePoint
      * use setData.
      *
      * @param array $newData Key-value pair(s) of the field(s) to change and its
-     *                              new value(s).
+     *                       new value(s).
      *
      * @return bool
      *
@@ -370,7 +371,7 @@ class TimePoint
             'session',
             $newData,
             array(
-             'ID' => $this->getData('SessionID'),
+                'ID' => $this->getData('SessionID'),
             )
         );
         // this select updates the timepoint object
@@ -484,9 +485,9 @@ class TimePoint
     /**
      * Gets the visit status of this timepoint.
      *
-     * @return string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
+     * @return ?string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
      */
-    function getVisitStatus(): string
+    function getVisitStatus(): ?string
     {
         return $this->_timePointInfo["Visit"];
     }
@@ -757,9 +758,9 @@ class TimePoint
 
         // update session table
         $update_columns = array(
-                           "Date_stage_change" => $today,
-                           'Current_stage'     => $newCurrentStage,
-                          );
+            "Date_stage_change" => $today,
+            'Current_stage'     => $newCurrentStage,
+        );
 
         $db->update(
             'session',
@@ -783,9 +784,9 @@ class TimePoint
     function startStage(string $stage): void
     {
         $setArray = array(
-                     'Current_stage'     => $stage,
-                     'Date_stage_change' => date('Y-m-d'),
-                    );
+            'Current_stage'     => $stage,
+            'Date_stage_change' => date('Y-m-d'),
+        );
 
         if (in_array($stage, $this->_dynamicStageOptions)
             && $this->getData($stage) == null
@@ -950,6 +951,174 @@ class TimePoint
         }
 
         return $candidate->getCandidateDoB();
+    }
+
+    /**
+     * Gets the Images of that session.
+     *
+     * @param \User $user The requesting user
+     *
+     * @return \LORIS\Data\Models\ImageDTO[] A traversable of ImageDTO
+     */
+    public function getImages(\User $user): array
+    {
+        $provisioner = new \LORIS\Data\Provisioners\TimepointImagesRowProvisioner(
+            $this
+        );
+
+        $provisioner = $provisioner
+            ->filter(new \LORIS\Data\Filters\ScansFilter())
+            ->filter(new \LORIS\Data\Filters\PhantomsFilter());
+
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
+    }
+
+    /**
+     * Gets the first Image of that session matching a given filename.
+     *
+     * @param \User  $user     The requesting user
+     * @param string $filename The requested filename
+     *
+     * @throws \NotFound
+     * @return \LORIS\Image
+     */
+    public function getImageByFilename(\User $user, string $filename): \LORIS\Image
+    {
+        $filtered = array_filter(
+            $this->getImages($user),
+            function ($dto) use ($filename) {
+                return $dto->getFilename() == $filename;
+            }
+        );
+
+        if (empty($filtered)) {
+            throw new \NotFound($filename . ' not found.');
+        }
+
+        // Take the first corresponding file.
+        $imagedto = array_pop($filtered);
+
+        return new \LORIS\Image($imagedto->getFileid());
+    }
+
+    /**
+     * Gets the DicomTars of that session.
+     *
+     * @param \User $user The requesting user
+     *
+     * @return \LORIS\data\Models\DicomTarDTO[] A traversable of DicomTarDTO
+     */
+    public function getDicomTars(\User $user): array
+    {
+        $provisioner = new \LORIS\api\provisioners\VisitDicomsRowProvisioner($this);
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
+    }
+
+    /**
+     * Gets the first DicomTar of that session matching a given filename.
+     *
+     * @param string $tarname The requested filename
+     *
+     * @throws \NotFound
+     * @return \LORIS\Data\Models\DicomTarDTO
+     */
+    public function getDicomTarByFilename(
+        string $tarname
+    ): \LORIS\Data\Models\DicomTarDTO {
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
+            'SELECT
+               TarchiveID as tarchiveid
+             FROM
+               tarchive
+             WHERE
+               tarchive.SessionID = :v_sessionid AND
+               tarchive.ArchiveLocation LIKE :v_basename',
+            array(
+                'v_sessionid' => $this->getSessionID(),
+                'v_basename'  => '%' . $tarname,
+            )
+        );
+
+        if (empty($row)) {
+            throw new \NotFound($tarname . ' not found.');
+        }
+
+        return (new \LORIS\DicomTar(intval($row['tarchiveid'])))->asDTO();
+    }
+
+    /**
+     * Accessor for this timepoint imaging QC status.
+     *
+     * @return \LORIS\TimePointImagingQC
+     */
+    public function getImagingQC(): \LORIS\TimePointImagingQC
+    {
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
+            '
+             SELECT
+               MRIQCStatus as qcstatus,
+               MRIQCPending as ispending,
+               MRICaveat as hascaveat
+             FROM
+               session
+             WHERE
+               ID = :v_sessionid
+            ',
+            array('v_sessionid' => $this->getSessionID())
+        );
+
+        return new \LORIS\TimePointImagingQC(
+            $row['qcstatus'] ?? null,
+            $row['ispending'] ?? null,
+            $row['hascaveat'] ?? null
+        );
+    }
+
+    /**
+     * Gets the instrument names associated to this timepoint
+     *
+     * The DISTINCT keyword is used because DDE instruments would meke
+     * duplicates.
+     *
+     * @return array A list of test_name
+     */
+    public function getInstrumentNames(): array
+    {
+        $db     = \NDB_Factory::singleton()->database();
+        $result = $db->pselectCol(
+            '
+             SELECT DISTINCT
+               Test_name as shortname
+             FROM
+               flag
+             WHERE
+               SessionID = :v_sessionid
+            ',
+            array('v_sessionid' => $this->getSessionID())
+        );
+        return $result;
+    }
+
+    /**
+     * Gets the project of this Timepoint
+     *
+     * @return \Project
+     */
+    public function getProject(): \Project
+    {
+        return \NDB_Factory::singleton()->project(
+            $this->getData('ProjectName')
+        );
     }
 }
 

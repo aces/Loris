@@ -10,7 +10,7 @@
  * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
-*/
+ */
 namespace LORIS\login;
 
 /**
@@ -71,10 +71,10 @@ class PasswordReset extends \NDB_Form
                   $password = \Utility::randomString();
                   // reset the password in the database
                   // expire password so user must change it upon login
-                  $user->updatePassword(
-                      new \Password($password),
-                      new \DateTime('1999-01-01')
-                  );
+                $user->updatePassword(
+                    new \Password($password),
+                    new \DateTime('1999-01-01')
+                );
                   // send the user an email
                   $msg_data          = array();
                   $msg_data['study'] = $config->getSetting('title');

@@ -44,8 +44,8 @@ class DocTree extends \NDB_Page
     {
         return $user->hasAnyPermission(
             array(
-             'document_repository_view',
-             'document_repository_delete',
+                'document_repository_view',
+                'document_repository_delete',
             )
         );
     }
@@ -63,13 +63,13 @@ class DocTree extends \NDB_Page
         if ($request->getMethod()=='GET') {
             $id = basename($request->getUri()->getPath());
             return (new \LORIS\Http\Response())
-            ->withHeader("Content-Type", "text/plain")
-            ->withStatus(200)
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode($this->fileTree($id))
-                )
-            );
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($this->fileTree($id))
+                    )
+                );
         }
     }
     /**
@@ -124,10 +124,10 @@ class DocTree extends \NDB_Page
             if ($v['id'] == $id) {
                 $arr[] = $v;
                 if ($v['parent_id'] != 0) {
-                     $arr = array_merge(
-                         $this->getParents($data, $v['parent_id']),
-                         $arr
-                     );
+                    $arr = array_merge(
+                        $this->getParents($data, $v['parent_id']),
+                        $arr
+                    );
                 }
             }
         }

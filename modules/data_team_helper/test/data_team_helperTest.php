@@ -48,13 +48,13 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/data_team_helper/");
-         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-         $this->assertContains(
-             "You do not have access to this page.",
-             $bodyText
-         );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
     /**
@@ -66,13 +66,13 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array("data_team_helper"));
          $this->safeGet($this->url . "/data_team_helper/");
-         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-          $this->assertNotContains(
-              "You do not have access to this page.",
-              $bodyText
-          );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
           $this->resetPermissions();
     }
 }

@@ -465,8 +465,8 @@ class Data_Team_Helper extends \NDB_Form
         $conflicts = $DB->pselect(
             $query,
             array(
-             'TN' => $test_name,
-             'FN' => $field_name,
+                'TN' => $test_name,
+                'FN' => $field_name,
             )
         );
         return $conflicts;
@@ -834,7 +834,7 @@ class Data_Team_Helper extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/data_team_helper/js/data_team.js",
+                $baseURL . "/data_team_helper/js/data_team.js",
             )
         );
     }

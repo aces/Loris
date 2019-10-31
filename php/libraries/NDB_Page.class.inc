@@ -276,7 +276,10 @@ class NDB_Page implements RequestHandlerInterface
         $field,
         $label,
         $options=array(),
-        $attr=array('class' => 'form-control input-sm')
+        $attr=array(
+            'class' => 'form-control input-sm',
+            'style' => 'max-width:33%; display:inline-block;',
+        )
     ) {
         if ($options === array() && !empty($this->dateOptions)) {
             $options = $this->dateOptions;
@@ -333,8 +336,8 @@ class NDB_Page implements RequestHandlerInterface
         foreach ($radios as $radElement) {
             $tempOptions = array_merge(
                 array(
-                 'class' => 'form-control input-sm',
-                 'value' => $radElement['value'],
+                    'class' => 'form-control input-sm',
+                    'value' => $radElement['value'],
                 ),
                 $options
             );
@@ -377,9 +380,9 @@ class NDB_Page implements RequestHandlerInterface
         $field,
         $label,
         $not_answered_options=array(
-                               ''             => '',
-                               'not_answered' => 'Not Answered',
-                              )
+            ''             => '',
+            'not_answered' => 'Not Answered',
+        )
     ) {
         $group   = array();
         $group[] = $this->createTextArea($field, '');
@@ -566,7 +569,10 @@ class NDB_Page implements RequestHandlerInterface
         $field,
         $label,
         $dateOptions=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attr=array(
+            'class' => 'form-control input-sm',
+            'style' => 'max-width:33%; display:inline-block;',
+        )
     ) {
         return $this->form->createElement(
             "date",
@@ -799,30 +805,30 @@ class NDB_Page implements RequestHandlerInterface
         // and datepickers only created by modernizr
 
         $files = array(
-                  $baseurl . '/js/jquery/jquery-1.11.0.min.js',
-                  $baseurl . '/js/helpHandler.js',
-                  $baseurl . '/js/modernizr/modernizr.min.js',
+            $baseurl . '/js/jquery/jquery-1.11.0.min.js',
+            $baseurl . '/js/helpHandler.js',
+            $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
-                  $baseurl . '/js/polyfills.js',
+            $baseurl . '/js/polyfills.js',
                     // $baseurl . '/js/react/react-with-addons' . $min . '.js',
                     // $baseurl . '/js/react/react-dom' . $min . '.js',
-                  $baseurl . ($min === '' ?
+            $baseurl . ($min === '' ?
                       '/vendor/js/react/react.development.js' :
                       '/vendor/js/react/react.production' . $min . '.js'),
-                  $baseurl . ($min === '' ?
+            $baseurl . ($min === '' ?
                       '/vendor/js/react/react-dom.development.js' :
                       '/vendor/js/react/react-dom.production' . $min . '.js'),
 
-                  $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
-                  $baseurl . '/js/jquery.dynamictable.js',
-                  $baseurl . '/js/jquery.fileupload.js',
-                  $baseurl . '/bootstrap/js/bootstrap.min.js',
-                  $baseurl . '/js/components/Breadcrumbs.js',
-                  $baseurl . '/vendor/sweetalert/sweetalert' . $min . '.js',
-                  $baseurl . "/js/util/queryString.js",
-                  $baseurl . '/js/components/Form.js',
-                  $baseurl . '/js/components/Markdown.js',
-                 );
+            $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
+            $baseurl . '/js/jquery.dynamictable.js',
+            $baseurl . '/js/jquery.fileupload.js',
+            $baseurl . '/bootstrap/js/bootstrap.min.js',
+            $baseurl . '/js/components/Breadcrumbs.js',
+            $baseurl . '/vendor/sweetalert/sweetalert' . $min . '.js',
+            $baseurl . "/js/util/queryString.js",
+            $baseurl . '/js/components/Form.js',
+            $baseurl . '/js/components/Markdown.js',
+        );
         return $files;
     }
 
@@ -843,11 +849,11 @@ class NDB_Page implements RequestHandlerInterface
         $baseurl = $www['url'];
 
         $files = array(
-                  $baseurl . "/bootstrap/css/bootstrap.min.css",
-                  $baseurl . "/bootstrap/css/custom-css.css",
-                  $baseurl . "/js/jquery/datepicker/datepicker.css",
-                  $baseurl . '/vendor/sweetalert/sweetalert.css',
-                 );
+            $baseurl . "/bootstrap/css/bootstrap.min.css",
+            $baseurl . "/bootstrap/css/custom-css.css",
+            $baseurl . "/js/jquery/datepicker/datepicker.css",
+            $baseurl . '/vendor/sweetalert/sweetalert.css',
+        );
         return $files;
     }
 

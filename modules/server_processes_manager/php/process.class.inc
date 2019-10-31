@@ -98,7 +98,7 @@ class Process
      * Mutator for field $_processMonitor.
      *
      * @param IProcessMonitor $processMonitor new value for field
-     *                        $_processMonitor.
+     *                                        $_processMonitor.
      *
      * @return void
      */

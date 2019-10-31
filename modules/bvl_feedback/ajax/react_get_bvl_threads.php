@@ -34,21 +34,21 @@ if (isset($_POST['candID']) && !(isset($_POST['sessionID']))) {
     $candID         = new CandID($_POST['candID']);
     $feedbackThread =&
         \NDB_BVL_Feedback::Singleton(
-            $username,
-            $candID,
-            $_POST['sessionID']
-        );
+        $username,
+        $candID,
+        $_POST['sessionID']
+    );
 } elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
     && isset($_POST['commentID'])
 ) {
     $candID         = new CandID($_POST['candID']);
     $feedbackThread =&
         \NDB_BVL_Feedback::Singleton(
-            $username,
-            $candID,
-            $_POST['sessionID'],
-            $_POST['commentID']
-        );
+        $username,
+        $candID,
+        $_POST['sessionID'],
+        $_POST['commentID']
+    );
 }
 
 $feedbackThreadList = $feedbackThread->getThreadList();

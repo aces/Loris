@@ -41,70 +41,70 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "Project",
             array(
-             'ProjectID' => '7777',
-             'Name'      => 'TESTinProject',
+                'ProjectID' => '7777',
+                'Name'      => 'TESTinProject',
             )
         );
         $this->DB->insert(
             "psc",
             array(
-             'CenterID'  => '55',
-             'Name'      => 'TESTinPSC',
-             'Alias'     => 'ttt',
-             'MRI_alias' => 'test',
+                'CenterID'  => '55',
+                'Name'      => 'TESTinPSC',
+                'Alias'     => 'ttt',
+                'MRI_alias' => 'test',
             )
         );
         $this->DB->insert(
             "subproject",
             array(
-             'SubprojectID' => '55',
-             'title'        => 'TESTinSubproject',
+                'SubprojectID' => '55',
+                'title'        => 'TESTinSubproject',
             )
         );
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'                => '999888',
-             'RegistrationCenterID'  => '55',
-             'UserID'                => '1',
-             'PSCID'                 => '8888',
-             'RegistrationProjectID' => '7777',
+                'CandID'                => '999888',
+                'RegistrationCenterID'  => '55',
+                'UserID'                => '1',
+                'PSCID'                 => '8888',
+                'RegistrationProjectID' => '7777',
             )
         );
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'                => '999777',
-             'RegistrationCenterID'  => '55',
-             'UserID'                => '2',
-             'PSCID'                 => '6666',
-             'RegistrationProjectID' => '7777',
+                'CandID'                => '999777',
+                'RegistrationCenterID'  => '55',
+                'UserID'                => '2',
+                'PSCID'                 => '6666',
+                'RegistrationProjectID' => '7777',
             )
         );
         $this->DB->insert(
             "session",
             array(
-             'ID'           => '9888',
-             'CandID'       => '999888',
-             'CenterID'     => '55',
-             'ProjectID'    => '7777',
-             'UserID'       => '1',
-             'MRIQCStatus'  => 'Pass',
-             'SubprojectID' => '55',
-             'Visit_label'  => 'Test1',
+                'ID'           => '9888',
+                'CandID'       => '999888',
+                'CenterID'     => '55',
+                'ProjectID'    => '7777',
+                'UserID'       => '1',
+                'MRIQCStatus'  => 'Pass',
+                'SubprojectID' => '55',
+                'Visit_label'  => 'Test1',
             )
         );
         $this->DB->insert(
             "session",
             array(
-             'ID'           => '9777',
-             'CandID'       => '999777',
-             'CenterID'     => '55',
-             'ProjectID'    => '7777',
-             'UserID'       => '2',
-             'MRIQCStatus'  => 'Pass',
-             'SubprojectID' => '55',
-             'Visit_label'  => 'Test1',
+                'ID'           => '9777',
+                'CandID'       => '999777',
+                'CenterID'     => '55',
+                'ProjectID'    => '7777',
+                'UserID'       => '2',
+                'MRIQCStatus'  => 'Pass',
+                'SubprojectID' => '55',
+                'Visit_label'  => 'Test1',
             )
         );
 
@@ -112,87 +112,87 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             'tarchive',
             array(
-             'TarchiveID'             => '263',
-             'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+                'TarchiveID'             => '263',
+                'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
               '100912542610900000004',
-             'PatientID'              => '8888_999888_Test1',
-             'PatientName'            => '8888_999888_Test1',
-             'CenterName'             => 'Test',
-             'AcquisitionCount'       => '10',
-             'NonDicomFileCount'      => '3',
-             'DicomFileCount'         => '1000',
-             'CreatingUser'           => 'lorisdev',
-             'sumTypeVersion'         => '1',
-             'SourceLocation'         => '/data/incoming/8888_999888_Test1',
-             'ScannerManufacturer'    => 'Siemens',
-             'ScannerModel'           => 'TrioTim',
-             'ScannerSerialNumber'    => '33333',
-             'ScannerSoftwareVersion' => 'syngo MR B17',
-             'uploadAttempt'          => '1',
-             'AcquisitionMetadata'    => 'metadata',
-             'SessionID'              => '9888',
-             'PendingTransfer'        => '1',
+                'PatientID'              => '8888_999888_Test1',
+                'PatientName'            => '8888_999888_Test1',
+                'CenterName'             => 'Test',
+                'AcquisitionCount'       => '10',
+                'NonDicomFileCount'      => '3',
+                'DicomFileCount'         => '1000',
+                'CreatingUser'           => 'lorisdev',
+                'sumTypeVersion'         => '1',
+                'SourceLocation'         => '/data/incoming/8888_999888_Test1',
+                'ScannerManufacturer'    => 'Siemens',
+                'ScannerModel'           => 'TrioTim',
+                'ScannerSerialNumber'    => '33333',
+                'ScannerSoftwareVersion' => 'syngo MR B17',
+                'uploadAttempt'          => '1',
+                'AcquisitionMetadata'    => 'metadata',
+                'SessionID'              => '9888',
+                'PendingTransfer'        => '1',
             )
         );
         $this->DB->insert(
             'tarchive',
             array(
-             'TarchiveID'             => '264',
-             'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+                'TarchiveID'             => '264',
+                'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
                '100912542610900000004',
-             'PatientID'              => '8888_999888_Test1',
-             'PatientName'            => '8888_999888_Test1',
-             'CenterName'             => 'Test',
-             'AcquisitionCount'       => '10',
-             'NonDicomFileCount'      => '3',
-             'DicomFileCount'         => '1000',
-             'CreatingUser'           => 'lorisdev',
-             'sumTypeVersion'         => '1',
-             'SourceLocation'         => '/data/incoming/8888_999888_Test1',
-             'ScannerManufacturer'    => 'Siemens',
-             'ScannerModel'           => 'TrioTim',
-             'ScannerSerialNumber'    => '33333',
-             'ScannerSoftwareVersion' => 'syngo MR B17',
-             'uploadAttempt'          => '1',
-             'AcquisitionMetadata'    => 'metadata',
-             'SessionID'              => '9777',
-             'PendingTransfer'        => '1',
+                'PatientID'              => '8888_999888_Test1',
+                'PatientName'            => '8888_999888_Test1',
+                'CenterName'             => 'Test',
+                'AcquisitionCount'       => '10',
+                'NonDicomFileCount'      => '3',
+                'DicomFileCount'         => '1000',
+                'CreatingUser'           => 'lorisdev',
+                'sumTypeVersion'         => '1',
+                'SourceLocation'         => '/data/incoming/8888_999888_Test1',
+                'ScannerManufacturer'    => 'Siemens',
+                'ScannerModel'           => 'TrioTim',
+                'ScannerSerialNumber'    => '33333',
+                'ScannerSoftwareVersion' => 'syngo MR B17',
+                'uploadAttempt'          => '1',
+                'AcquisitionMetadata'    => 'metadata',
+                'SessionID'              => '9777',
+                'PendingTransfer'        => '1',
             )
         );
 
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
-             'ID'                 => '1001',
-             'CandID'             => '999888',
-             'PatientName'        => '[Test]PatientName_Test1',
-             'time_run'           => '2009-06-29 04:00:44',
-             'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
-             'series_description' => 'Test Description',
-             'SeriesUID'          => '5555',
-             'TarchiveID'         => '263',
+                'ID'                 => '1001',
+                'CandID'             => '999888',
+                'PatientName'        => '[Test]PatientName_Test1',
+                'time_run'           => '2009-06-29 04:00:44',
+                'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
+                'series_description' => 'Test Description',
+                'SeriesUID'          => '5555',
+                'TarchiveID'         => '263',
             )
         );
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
-             'ID'                 => '1002',
-             'CandID'             => '999777',
-             'PatientName'        => '[name]test_Test1',
-             'time_run'           => '2008-06-29 04:00:44',
-             'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
-             'series_description' => 'Test Series Description',
-             'SeriesUID'          => '5556',
-             'TarchiveID'         => '264',
+                'ID'                 => '1002',
+                'CandID'             => '999777',
+                'PatientName'        => '[name]test_Test1',
+                'time_run'           => '2008-06-29 04:00:44',
+                'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
+                'series_description' => 'Test Series Description',
+                'SeriesUID'          => '5556',
+                'TarchiveID'         => '264',
             )
         );
         $this->DB->insert(
             "violations_resolved",
             array(
-             'ExtID'     => '1001',
-             'hash'      => '123456',
-             'TypeTable' => 'mri_protocol_violated_scans',
-             'Resolved'  => 'other',
+                'ExtID'     => '1001',
+                'hash'      => '123456',
+                'TypeTable' => 'mri_protocol_violated_scans',
+                'Resolved'  => 'other',
             )
         );
 
@@ -224,36 +224,36 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "session",
             array(
-             'CandID'   => '999888',
-             'CenterID' => '55',
+                'CandID'   => '999888',
+                'CenterID' => '55',
             )
         );
         $this->DB->delete(
             "session",
             array(
-             'CandID'   => '999777',
-             'CenterID' => '55',
+                'CandID'   => '999777',
+                'CenterID' => '55',
             )
         );
         $this->DB->delete(
             "candidate",
             array(
-             'CandID'               => '999888',
-             'RegistrationCenterID' => '55',
+                'CandID'               => '999888',
+                'RegistrationCenterID' => '55',
             )
         );
         $this->DB->delete(
             "candidate",
             array(
-             'CandID'               => '999777',
-             'RegistrationCenterID' => '55',
+                'CandID'               => '999777',
+                'RegistrationCenterID' => '55',
             )
         );
         $this->DB->delete(
             "violations_resolved",
             array(
-             'ExtID'     => '1001',
-             'TypeTable' => 'mri_protocol_violated_scans',
+                'ExtID'     => '1001',
+                'TypeTable' => 'mri_protocol_violated_scans',
             )
         );
         $this->DB->delete(
@@ -267,15 +267,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "psc",
             array(
-             'CenterID' => '55',
-             'Name'     => 'TESTinPSC',
+                'CenterID' => '55',
+                'Name'     => 'TESTinPSC',
             )
         );
         $this->DB->delete(
             "Project",
             array(
-             'ProjectID' => '7777',
-             'Name'      => 'TESTinProject',
+                'ProjectID' => '7777',
+                'Name'      => 'TESTinProject',
             )
         );
         parent::tearDown();
@@ -323,8 +323,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     *Tests landing the mri violation whit the permission
-     *'violated_scans_view_allsites'
+     * Tests landing the mri violation whit the permission
+     * 'violated_scans_view_allsites'
      *
      * @return void
      */
@@ -332,17 +332,17 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array("violated_scans_view_allsites"));
          $this->safeGet($this->url . "/mri_violations/");
-         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-         $this->assertNotContains(
-             "You do not have access to this page.",
-             $bodyText
-         );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
           $this->resetPermissions();
     }
     /**
-     *Tests anding the mri violation whitout the permission
+     * Tests anding the mri violation whitout the permission
      *
      * @return void
      */
@@ -350,13 +350,13 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array(""));
          $this->safeGet($this->url . "/mri_violations/");
-         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-         $this->assertContains(
-             "You do not have access to this page.",
-             $bodyText
-         );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
 

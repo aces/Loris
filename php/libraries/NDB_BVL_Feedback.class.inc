@@ -47,11 +47,11 @@ class NDB_BVL_Feedback
 
     // set of status options
     var $_feedbackStatusOptions = array(
-                                   'opened',
-                                   'answered',
-                                   'closed',
-                                   'comment',
-                                  );
+        'opened',
+        'answered',
+        'closed',
+        'comment',
+    );
 
     var $_username ='';
 
@@ -121,7 +121,7 @@ class NDB_BVL_Feedback
      * Sets up a newly instantiated feedback thread object
      *
      * @param string  $username  The name of the currently logged in user.
-     *                          (why is this here?)
+     *                           (why is this here?)
      * @param ?CandID $candID    The CandID we're getting a feedback thread for.
      * @param ?string $sessionID The sessionID we're getting a feedback thread for.
      * @param ?string $commentID The commentID we're getting a feedback thread for.
@@ -246,10 +246,10 @@ class NDB_BVL_Feedback
         $list = array();
         foreach ($result as $record) {
             $list[$record['Type']] = array(
-                                      'Type'  => $record['Type'],
-                                      'Name'  => $record['Name'],
-                                      'Label' => $record['Description'],
-                                     );
+                'Type'  => $record['Type'],
+                'Name'  => $record['Name'],
+                'Label' => $record['Description'],
+            );
         }
         return $list;
     }
@@ -298,9 +298,9 @@ class NDB_BVL_Feedback
         $db      = $factory->Database();
 
         $values = array(
-                   'Name'        => $name,
-                   'Description' => $description,
-                  );
+            'Name'        => $name,
+            'Description' => $description,
+        );
         $db->insert("feedback_bvl_type", $values);
         return intval($db->getLastInsertId());
     }
@@ -607,12 +607,12 @@ class NDB_BVL_Feedback
     }
 
     /**
-    * Returns the list of entries for the thread
-    *
-    * @param string $feedbackID feedback_bvl_thread.FeedbackID field
-    *
-    * @return array
-    */
+     * Returns the list of entries for the thread
+     *
+     * @param string $feedbackID feedback_bvl_thread.FeedbackID field
+     *
+     * @return array
+     */
     static function getThreadEntries($feedbackID)
     {
         // new DB Object
@@ -678,43 +678,44 @@ class NDB_BVL_Feedback
 
         // create SET array for the INSERT into the feedback_bvl_thread table
         $setArray = array(
-                     'FeedbackID'    => null,
-                     'Feedback_type' => $type,
-                     'Public'        => $public,
-                     'Status'        => $status,
-                     'Active'        => $active,
-                     'Date_taken'    => $today,
-                     'UserID'        => $this->_username,
-                    );
+            'FeedbackID'    => null,
+            'Feedback_type' => $type,
+            'Public'        => $public,
+            'Status'        => $status,
+            'Active'        => $active,
+            'Date_taken'    => $today,
+            'UserID'        => $this->_username,
+        );
         if ($level == 'instrument' || $this->_feedbackLevel=='instrument') {
             $feedbackInfo =& $this->_feedbackCandidateProfileInfo;
 
             $setArray = array_merge(
                 $setArray,
                 array(
-                 "CommentID"      => $this->_feedbackObjectInfo['CommentID'],
-                 "SessionID"      => $feedbackInfo['SessionID'],
-                 "CandID"         => $feedbackInfo['CandID'],
-                 "Feedback_level" => "instrument",
-                 "FieldName"      => $fieldname,
+                    "CommentID"      => $this->_feedbackObjectInfo['CommentID'],
+                    "SessionID"      => $feedbackInfo['SessionID'],
+                    "CandID"         => $feedbackInfo['CandID'],
+                    "Feedback_level" => "instrument",
+                    "FieldName"      => $fieldname,
                 )
             );
 
         } elseif ($level == 'visit' || $this->_feedbackLevel=='visit') {
+            $candID   = $this->_feedbackCandidateProfileInfo['CandID'];
             $setArray = array_merge(
                 $setArray,
                 array(
-                 "SessionID"      => $this->_feedbackObjectInfo['SessionID'],
-                 "CandID"         => $this->_feedbackCandidateProfileInfo['CandID'],
-                 "Feedback_level" => "visit",
+                    "SessionID"      => $this->_feedbackObjectInfo['SessionID'],
+                    "CandID"         => $candID,
+                    "Feedback_level" => "visit",
                 )
             );
         } elseif ($level == 'profile' || $this->_feedbackLevel=='profile') {
             $setArray = array_merge(
                 $setArray,
                 array(
-                 "CandID"         => $this->_feedbackObjectInfo['CandID'],
-                 "Feedback_level" => "profile",
+                    "CandID"         => $this->_feedbackObjectInfo['CandID'],
+                    "Feedback_level" => "profile",
                 )
             );
         } else {
@@ -765,10 +766,10 @@ class NDB_BVL_Feedback
 
         // create SET array for the INSERT
         $setArray = array(
-                     'FeedbackID' => $feedbackID,
-                     'Comment'    => $comment,
-                     'UserID'     => $username,
-                    );
+            'FeedbackID' => $feedbackID,
+            'Comment'    => $comment,
+            'UserID'     => $username,
+        );
 
         $db->insert('feedback_bvl_entry', $setArray);
 
@@ -785,9 +786,9 @@ class NDB_BVL_Feedback
      * @param ?integer $type       The typeID to update Feedback_type to
      * @param string   $public     Y or N to update thread's public status to
      * @param string   $status     Status of the thread (options from
-     *                            feedback_bvl_thread.Status)
+     *                             feedback_bvl_thread.Status)
      * @param string   $fieldname  The optional fieldname that the thread is in
-     *                            reference to.
+     *                             reference to.
      *
      * @return void
      */
@@ -897,9 +898,9 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         $setArray = array(
-                     "Active"   => 'Y',
-                     "Testdate" => "NULL",
-                    );
+            "Active"   => 'Y',
+            "Testdate" => "NULL",
+        );
 
         // only inactive threads can be activated
         $whereArray = array("Active" => 'N');
@@ -951,14 +952,14 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         $setArray = array(
-                     "Status" => 'closed',
-                     "UserID" => $this->_username,
-                    );
+            "Status" => 'closed',
+            "UserID" => $this->_username,
+        );
 
         $whereArray = array(
-                       "Public" => 'Y',
-                       "Active" => 'Y',
-                      );
+            "Public" => 'Y',
+            "Active" => 'Y',
+        );
         if (!empty($feedbackID)) {
             // only one thread to be closed
             $whereArray = array_merge(
@@ -1008,14 +1009,14 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         $setArray = array(
-                     "Status" => 'opened',
-                     "UserID" => $this->_username,
-                    );
+            "Status" => 'opened',
+            "UserID" => $this->_username,
+        );
 
         $whereArray = array(
-                       "Public" => 'Y',
-                       "Active" => 'Y',
-                      );
+            "Public" => 'Y',
+            "Active" => 'Y',
+        );
         if (!empty($feedbackID)) {
             // only one thread to be closed
             $whereArray = array_merge(

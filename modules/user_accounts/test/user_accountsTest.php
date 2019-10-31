@@ -24,21 +24,21 @@ require_once __DIR__
 class UserAccountsIntegrationTest extends LorisIntegrationTest
 {
     private static $_UNIT_TESTER = array(
-                                    'Data Coordinating Center',
-                                    'UnitTester',
-                                    'Unit Tester',
-                                    'tester@example.com',
-                                    'Y',
-                                    'N',
-                                   );
+        'Data Coordinating Center',
+        'UnitTester',
+        'Unit Tester',
+        'tester@example.com',
+        'Y',
+        'N',
+    );
     private static $_ADMIN       = array(
-                                    'Data Coordinating Center',
-                                    'admin',
-                                    'Admin account',
-                                    'admin@example.com',
-                                    'Y',
-                                    'N',
-                                   );
+        'Data Coordinating Center',
+        'admin',
+        'Admin account',
+        'admin@example.com',
+        'Y',
+        'N',
+    );
     private $_name        = "#userAccounts_filter".
                                 " > div > div > fieldset > div:nth-child(3)".
                                 " > div > div > input";

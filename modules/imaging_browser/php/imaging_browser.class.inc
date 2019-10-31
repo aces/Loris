@@ -25,7 +25,7 @@ namespace LORIS\imaging_browser;
  * @license    Loris License
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-class Imaging_Browser extends \NDB_Menu_Filter
+class Imaging_Browser extends \DataFrameworkMenu
 {
     var $AjaxModule      = true;
     public $skipTemplate = true;
@@ -44,9 +44,9 @@ class Imaging_Browser extends \NDB_Menu_Filter
          */
         return $user->hasAnyPermission(
             array(
-             'imaging_browser_view_allsites',
-             'imaging_browser_phantom_allsites',
-             'imaging_browser_phantom_ownsite',
+                'imaging_browser_view_allsites',
+                'imaging_browser_phantom_allsites',
+                'imaging_browser_phantom_ownsite',
             )
         )
             || (
@@ -56,221 +56,38 @@ class Imaging_Browser extends \NDB_Menu_Filter
     }
 
     /**
-     * Set up the variables required by NDB_Menu_Filter class for constructing
-     * a query
+     * Tells the base class that this page's provisioner can support
+     * the UserSiteMatch filter.
      *
-     * @return void
+     * @return bool always false
      */
-    function _setupVariables()
+    public function useSiteFilter() : bool
     {
-        $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
-        $toTable_scan_types = $config->getSetting('tblScanTypes');
-        $all_scan_types_2d  = $DB->pselect(
-            "SELECT ID, Scan_type FROM mri_scan_type mri",
-            array()
-        );
+        return false;
+    }
 
-        $all_scan_types = array();
-        foreach ($all_scan_types_2d as $row) {
-            $type = $row['Scan_type'];
-            $all_scan_types[$row['ID']] = $type;
-        }
-
-        // Get the intersection between all the scan types and those
-        // that are desired to go into imaging browser table, based on
-        // array values rather than keys (hence the array_flip), then flip
-        // the resulting array back to revert it to a key/value (i.e.
-        // acquisition protocol ID/scan type) combination.
-        $scan_id_types =array_flip(
-            array_intersect_key(
-                array_flip($all_scan_types),
-                array_flip($toTable_scan_types)
-            )
-        );
-
-        if (!empty($scan_id_types)) {
-            $this->acqpid = "AND AcquisitionProtocolID IN (".
-                implode(",", array_keys($scan_id_types)) .")";
-            $isFirst      = true;
-            $acqpif       = '';
-            $newQueryCase = '';
-            foreach ($scan_id_types as $key => $value) {
-                if ($isFirst) {
-                    $acqpif       = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))>0 ";
-                    $newQueryCase = "AND(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))";
-                } else {
-                    $acqpif       .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))>0 ";
-                    $newQueryCase .= " OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))";
-                }
-                $isFirst = false;
-            }
-            $acqpif       .= ",'new','')";
-            $newQueryCase .=")";
-        } else {
-            $this->acqpid = '';
-            $acqpif       = "'new'";
-            $newQueryCase ='';
-        }
-
-        $NewDataSubquery = "CASE 
-            COALESCE(Max(fqc.QCLastChangeTime), 'new')
-            WHEN 'new' THEN {$acqpif}
-            WHEN ''    THEN {$acqpif}
-            WHEN NULL  THEN {$acqpif}
-            ELSE ''
-            END";
-
-        $pass = $qc = $coalesce_desc = $case_desc = array();
-        foreach ($scan_id_types as $id => $type) {
-            $pass[$id]          = $type . 'pass';
-            $qc[$id]            = $type . 'QC';
-            $coalesce_desc[$id] = $pass[$id] . '.' . $qc[$id];
-            $case_desc[$id]     = "CASE
-                COALESCE($coalesce_desc[$id], '')
-                WHEN '' THEN ''
-                WHEN 1 THEN 'Passed'
-                WHEN 2 THEN 'Failed'
-                END";
-        }
-
-        $PendingFailSubquery = "
-            CASE s.MRIQCStatus
-                WHEN 'Fail' THEN
-                    IF(s.MRIQCPending='Y', 'Pending Fail', 'Fail')
-                WHEN 'Pass' THEN
-                    IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass') 
-                ELSE s.MRIQCStatus
-            END 
-            ";
-
-        $PendingNewquery = "CASE 
-    WHEN s.MRIQCPending='Y' THEN 'P'
-    WHEN MAX(fqc.QCFirstChangeTime) IS NULL $newQueryCase THEN  'N'
-      
-END";
-        $this->query     = " FROM psc AS p 
-            JOIN session s ON (s.CenterID=p.CenterID) 
-            JOIN candidate c ON (c.CandID=s.CandID) 
-            JOIN files f ON (f.SessionID=s.ID) 
-            LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN parameter_file pf ON (f.FileID=pf.FileID)
-            JOIN parameter_type pt USING (ParameterTypeID)
-            LEFT JOIN mri_scan_type modality ON 
-            (f.AcquisitionProtocolID=modality.ID)";
-
-        $left_joins = "";
-        foreach ($case_desc as $key => $value) {
-            $left_joins .= "
-            LEFT JOIN (SELECT files.SessionID, 
-            MIN(files_qcstatus.QCStatus+0) as " . $DB->escape($qc[$key]) . " 
-            FROM files 
-            JOIN files_qcstatus USING (FileID) 
-            WHERE files.AcquisitionProtocolID=" . $DB->quote($key) . " 
-            AND files_qcstatus.QCStatus IN (1, 2) 
-            GROUP BY files.SessionID) " . $DB->escape($pass[$key]) . " 
-            ON (" . $DB->escape($pass[$key]) . ".SessionID=f.SessionID) ";
-        }
-
-        $where = "
-            WHERE 
-            s.Active = 'Y' AND
-            pt.Name = 'acquisition_date' AND
-            f.FileType ='mnc'";
-
-        $this->query .= $left_joins;
-        $this->query .= $where;
-
-        $config = \NDB_Config::singleton();
-        $user   = \User::singleton();
-        $DB     = \Database::singleton();
-        if (!$user->hasPermission('imaging_browser_view_allsites')) {
-            $site_arr = implode(",", $user->getCenterIDs());
-            if (!$user->hasPermission('imaging_browser_view_site')) {
-                // User must have one of the two phantom permissions to get here
-                $this->query .= " AND c.Entity_type = 'Scanner' ";
-                if (!$user->hasPermission('imaging_browser_phantom_allsites')) {
-                    // Display only the phantom scans at the user's centers
-                    // For phantoms, use session centerID
-                    $this->query .= " AND s.CenterID IN (" . $site_arr . ") ";
-                }
-            } else {
-                if ($user->hasPermission('imaging_browser_phantom_allsites')) {
-                    $this->query .= " AND (c.RegistrationCenterID IN ($site_arr) 
-                                      OR c.Entity_type = 'Scanner') ";
-                } else if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
-                    $this->query .= " AND (c.RegistrationCenterID IN ($site_arr)
-                                      OR (c.Entity_type = 'Scanner'
-                                      AND s.CenterID IN (" . $site_arr . "))) ";
-                } else {
-                    $this->query .= " AND c.RegistrationCenterID IN ($site_arr) ";
-                }
-            }
-        }
-
-        // Initialize the arrays that go into this->columns and
-        // $this->headers so that array_merge works even if no
-        // $scan_types are set in the configuration module
-        $modalities_subquery    = array();
-        $modalities_subquery_as = array();
-        $as = array();
-
-        foreach ($case_desc as $key => $value) {
-            $modalities_subquery[$key] = $value;
-            $as[$key] = $scan_id_types[$key] . '_QC_Status';
-            $modalities_subquery_as[$key] = $modalities_subquery[$key] .
-                ' as ' .
-                $as[$key];
-        }
-
-        $firstAcquisitionSubquery = 'DATE_FORMAT(MIN(pf.Value), "%Y-%m-%d")';
-
-        $this->columns = array(
-                          'p.Name as Site',
-                          'c.PSCID as PSCID',
-                          'c.CandID as DCCID',
-                          '(SELECT Name 
-                            FROM Project 
-                            WHERE ProjectID=s.ProjectID) as project',
-                          's.visit_label as Visit_Label',
-                          "$PendingFailSubquery as Visit_QC_Status",
-                          "$firstAcquisitionSubquery as First_Acquisition",
-                          'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion',
-                          'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
-                          "$NewDataSubquery as New_Data",
-                         );
-        $this->columns = array_merge(
-            $this->columns,
-            array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
-            array(
-             's.ID as sessionID',
-             'GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType',
-             "$PendingNewquery as pending",
-            ),
-            $modalities_subquery_as
-        );
-
-        $this->order_by = 'c.PSCID, s.Visit_label';
-        $this->group_by = 's.ID';
+    /**
+     * The imaging browser uses the image session's project for filtering projects.
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
     }
 
     /**
      * Setup $this->tpl_data for use by Smarty
      *
-     * @return void
+     * @return array array with fieldOptions
      */
-    function setup()
+    function getFieldOptions() : array
     {
-        parent::setup();
         // create user object
         $user     = \User::singleton();
         $siteList = array();
 
-        // PSC
+        // get list of sites available for the user
         if ($user->hasPermission('imaging_browser_view_allsites')
             || $user->hasPermission('imaging_browser_phantom_allsites')
         ) {
@@ -291,118 +108,83 @@ END";
             }
         }
 
-        $DB    = \Database::singleton();
-        $allAr = array();
-
-        $config = \NDB_Config::singleton();
-
-        $toTable_scan_types = $config->getSetting('tblScanTypes');
-
-        $all_scan_types_2d = $DB->pselect(
-            "SELECT ID, Scan_type FROM mri_scan_type mri",
-            array()
-        );
-
-        $all_scan_types = array();
-        foreach ($all_scan_types_2d as $row) {
-            $type = $row['Scan_type'];
-            $all_scan_types[$row['ID']] = $type;
-        }
-
-        // Get the intersection between all the scan types and those
-        // that are desired to go into imaging browser table, based on
-        // array values rather than keys (hence the array_flip), then flip
-        // the resulting array back to revert it to a key/value (i.e.
-        // acquisition protocol ID/scan type) combination.
-
-        $scan_id_types          =array_flip(
-            array_intersect_key(
-                array_flip($all_scan_types),
-                array_flip($toTable_scan_types)
-            )
-        );
-        $modalities_subquery_as = array();
-        $as = array();
+        // get list of projects
         $list_of_projects = array();
-
-        $modalities_subquery = array();
-        foreach ($scan_id_types as $key => $value) {
-            $modalities_subquery[$key] = $value;
-            $as[$key] = $scan_id_types[$key] . '_QC_Status';
-            $modalities_subquery_as[$key] = $modalities_subquery[$key] .
-                ' as ' .
-                $as[$key];
-        }
-
-        $list_of_projects = $allAr;
         $projectList      = \Utility::getProjectList();
         foreach ($projectList as $key => $project) {
             unset($projectList[$key]);
             $list_of_projects[$project] = $project;
         }
 
+        // get visit QC status options
         $visitQCStatus = array(
-                          'Pass' => 'Pass',
-                          'Fail' => 'Fail',
-                         );
+            'Pass' => 'Pass',
+            'Fail' => 'Fail',
+        );
 
+        // get Pending/New options
         $pending = array(
-                    'P' => 'Pending',
-                    'N' => 'New',
-                   );
-
-        $types_q    = $DB->pselect(
-            "SELECT ID, Scan_type FROM mri_scan_type mri
-                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-            array()
-        );
-        $scan_types = $allAr;
-        foreach ($types_q as $key=>$sequenceType) {
-            $scan_types[$sequenceType['Scan_type']] = $sequenceType['Scan_type'];
-        }
-
-        $outputTypes = $DB->pselect(
-            "SELECT DISTINCT OutputType AS outputType 
-            FROM files WHERE FileType='mnc' AND OutputType!='native'",
-            array()
+            'P' => 'Pending',
+            'N' => 'New',
         );
 
-        $this->fieldOptions = [
-                               'sites'         => $siteList,
-                               'projects'      => $list_of_projects,
-                               'visitQCStatus' => $visitQCStatus,
-                               'sequenceTypes' => $scan_types,
-                               'pendingNew'    => $pending,
-                               'configLabels'  => $scan_id_types,
-                              ];
+        // get list of scan types
+        $all_scan_types = \Utility::getScanTypeList();
 
-        $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
+        // get list of scan types that should be present in the data table
+        // Get the intersection between all the scan types and those
+        // that are desired to go into imaging browser table, based on
+        // array values rather than keys (hence the array_flip), then flip
+        // the resulting array back to revert it to a key/value (i.e.
+        // acquisition protocol ID/scan type) combination.
+        $config = \NDB_Config::singleton();
+        $toTable_scan_types = $config->getSetting('tblScanTypes');
+        $scan_id_types      = array_flip(
+            array_intersect_key(
+                array_flip($all_scan_types),
+                array_flip($toTable_scan_types)
+            )
+        );
+
+        return [
+            'sites'         => $siteList,
+            'projects'      => $list_of_projects,
+            'visitQCStatus' => $visitQCStatus,
+            'sequenceTypes' => $all_scan_types,
+            'pendingNew'    => $pending,
+            'configLabels'  => $scan_id_types,
+        ];
+
     }
+
     /**
-     * Converts this menu filter to an array of the form
+     * Gets the data source for this menu filter.
      *
-     * Headers => (string array)
-     * Data => (array of arrays of row data)
-     *
-     * @note overloaded function
-     *         Overloading this method to create a list of sessionID that
-     *         will be used for the Navigation Links in  the viewSession
-     *         page.
-     *
-     * @return array
+     * @return \LORIS\Data\Provisioner
      */
-    function toArray()
+    public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $data  = parent::toArray();
-        $index = array_search('SessionID', $data['Headers']);
-        if ($index !== false) {
-            $_SESSION['State']->setProperty(
-                'mriSessionsListed',
-                array_column($data['Data'], $index)
-            );
-        }
-        return $data;
+        return new ImagingBrowserRowProvisioner();
     }
+
+    /**
+     * Return a data provisioner of the same type as BaseDataProvisioner, with
+     * additional LORIS filters applied.
+     *
+     * @return \LORIS\Data\Provisioner a provisioner with specific filters added
+     */
+    public function getDataProvisionerWithFilters(): \LORIS\Data\Provisioner
+    {
+
+        $provisioner = parent::getDataProvisionerWithFilters();
+
+        $provisioner = $provisioner
+            ->filter(new \LORIS\Data\Filters\ScansFilter())
+            ->filter(new \LORIS\Data\Filters\PhantomsFilter());
+
+        return $provisioner;
+    }
+
 
     /**
      * Include additional CSS files:
@@ -435,7 +217,7 @@ END";
         return array_merge(
             parent::getJSDependencies(),
             array(
-             $baseurl . "/imaging_browser/js/imagingBrowserIndex.js",
+                $baseurl . "/imaging_browser/js/imagingBrowserIndex.js",
             )
         );
     }

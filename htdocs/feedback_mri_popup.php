@@ -9,7 +9,7 @@
  * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
-*/
+ */
 require_once __DIR__ . "/../vendor/autoload.php";
 $client = new NDB_Client;
 if ($client->initialize() == false) {

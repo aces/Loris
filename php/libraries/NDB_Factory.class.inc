@@ -337,10 +337,10 @@ class NDB_Factory
                 'MockCouchDBWrap',
                 /* mock out the functions that make HTTP requests */
                 array(
-                 '_getRelativeURL',
-                 '_postRelativeURL',
-                 '_postURL',
-                 '_getURL',
+                    '_getRelativeURL',
+                    '_postRelativeURL',
+                    '_postURL',
+                    '_getURL',
                 )
             );
             self::$_couchdb[$database] = new MockCouchDBWrap();
@@ -415,15 +415,16 @@ class NDB_Factory
      */
     public function candidate(CandID $CandID): \Candidate
     {
-        if (isset(self::$_candidates[intval($CandID)])) {
-            return self::$_candidates[$CandID];
+        $key = (string) $CandID;
+        if (isset(self::$_candidates[$key])) {
+            return self::$_candidates[$key];
         }
         if ($this->Testing) {
-            self::$_candidates[intval($CandID)] = new MockCandidate($CandID);
+            self::$_candidates[$key] = new MockCandidate($CandID);
         } else {
-            self::$_candidates[intval($CandID)] = Candidate::singleton($CandID);
+            self::$_candidates[$key] = Candidate::singleton($CandID);
         }
-        return self::$_candidates[intval($CandID)];
+        return self::$_candidates[$key];
 
     }
 

@@ -122,9 +122,9 @@ class New_Profile extends \NDB_Form
                     );
             }
             $result = array(
-                       'candID' => $this->_candID,
-                       'pscid'  => $this->_pscid,
-                      );
+                'candID' => $this->_candID,
+                'pscid'  => $this->_pscid,
+            );
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(201)
@@ -159,9 +159,9 @@ class New_Profile extends \NDB_Form
         $dobFormat = $config->getSetting('dobFormat');
         $edc       = $config->getSetting('useEDC');
         $sex       = array(
-                      'male'   => 'Male',
-                      'female' => 'Female',
-                     );
+            'male'   => 'Male',
+            'female' => 'Female',
+        );
         $pscidSet  = "false";
         $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
         $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
@@ -198,15 +198,15 @@ class New_Profile extends \NDB_Form
         }
 
         $this->fieldOptions = array(
-                               'minYear'   => $minYear,
-                               'maxYear'   => $maxYear,
-                               'dobFormat' => $dobFormat,
-                               'edc'       => $edc,
-                               'sex'       => $sex,
-                               'pscidSet'  => $pscidSet,
-                               'site'      => $site,
-                               'project'   => $project,
-                              );
+            'minYear'   => $minYear,
+            'maxYear'   => $maxYear,
+            'dobFormat' => $dobFormat,
+            'edc'       => $edc,
+            'sex'       => $sex,
+            'pscidSet'  => $pscidSet,
+            'site'      => $site,
+            'project'   => $project,
+        );
 
         $this->form->addFormRule(array(&$this, '_validateNewCandidate'));
     }

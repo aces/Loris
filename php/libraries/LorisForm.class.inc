@@ -41,14 +41,14 @@ class LorisForm
     var $groupMapping  = array();
     var $action        = '';
     var $allowedRules  = array(
-                          'compare',
-                          'requiredIf',
-                          'required',
-                          'numeric',
-                          'regex',
-                          'email',
-                          'maxlength',
-                         );
+        'compare',
+        'requiredIf',
+        'required',
+        'numeric',
+        'regex',
+        'email',
+        'maxlength',
+    );
 
     /**
      * Creates and returns an element that can be added
@@ -657,7 +657,7 @@ class LorisForm
      *
      * @param string $name  name of the form element in the $form.
      * @param string $value value of the form element in $_REQUEST or null if
-     *               none was found.
+     *                      none was found.
      *
      * @return string value of the form element once all registered filters
      *                (if any) have been applied.
@@ -1035,9 +1035,9 @@ class LorisForm
         $timeStamp = $this->getValue($el['name']);
         $smarty    = new Smarty_neurodb;
         $value     = array(
-                      'H' => null,
-                      'i' => null,
-                     );
+            'H' => null,
+            'i' => null,
+        );
         $bits      = array();
 
         if (is_array($timeStamp)) {
@@ -1350,9 +1350,9 @@ class LorisForm
      * note that it will print() if you use it badly
      *
      * @param array $elements the two element array - [0] is the
-     *                         element, [1] is the controller
+     *                        element, [1] is the controller
      * @param array $format   the optional array containing elements
-     *                         'operator' and 'value'
+     *                        'operator' and 'value'
      *
      * @return boolean
      * @access public
@@ -1685,10 +1685,10 @@ class LorisForm
     {
 
         $curPage = array(
-                    'elements' => array(),
-                    'type'     => 'page',
-                    'errors'   => $this->errors,
-                   );
+            'elements' => array(),
+            'type'     => 'page',
+            'errors'   => $this->errors,
+        );
         $retVal  = $curPage;
 
         // Hack to populate the HTML elements
@@ -1701,10 +1701,10 @@ class LorisForm
                 }
 
                 $curPage = array(
-                            'elements'    => array(),
-                            'Description' => $el['label'],
-                            'type'        => 'page',
-                           );
+                    'elements'    => array(),
+                    'Description' => $el['label'],
+                    'type'        => 'page',
+                );
             } else {
                 $curPage['elements'][] = $el;
             }
@@ -1765,10 +1765,10 @@ class LorisForm
                 $this->form[$element[1]]['compare'] = $element[0];
             } else if ($type === 'requiredIf') {
                 $this->formRules[]['requiredIf'] = array(
-                                                    "elements" => $element,
-                                                    "format"   => func_get_arg(3),
-                                                    "message"  => $message,
-                                                   );
+                    "elements" => $element,
+                    "format"   => func_get_arg(3),
+                    "message"  => $message,
+                );
             }
             return;
         }
@@ -1791,9 +1791,9 @@ class LorisForm
 
         if ($type === 'regex') {
             $this->form[$element]['regex'][] = array(
-                                                'regexMsg' => $message,
-                                                'match'    => func_get_arg(3),
-                                               );
+                'regexMsg' => $message,
+                'match'    => func_get_arg(3),
+            );
         }
 
         if ($type === 'email') {
@@ -1803,9 +1803,9 @@ class LorisForm
 
         if ($type === 'maxlength') {
             $this->form[$element]['maxlength'] = array(
-                                                  'message'   => $message,
-                                                  'maxlength' => func_get_arg(3),
-                                                 );
+                'message'   => $message,
+                'maxlength' => func_get_arg(3),
+            );
         }
     }
 
@@ -1905,18 +1905,18 @@ class LorisForm
         foreach ($array as $key => $value) {
              $group_key = $value['name'] ?? $this->_generateName('');
              $this->groupMapping[$group_key] = array(
-                                                'groupName' => $name,
-                                                'index'     => $key,
-                                               );
+                 'groupName' => $name,
+                 'index'     => $key,
+             );
         }
         $this->form[$name] = array(
-                              'type'      => 'group',
-                              'name'      => $name,
-                              'elements'  => $array,
-                              'label'     => $label,
-                              'delimiter' => empty($delimiter) ? ' ' : $delimiter,
-                              'options'   => $options,
-                             );
+            'type'      => 'group',
+            'name'      => $name,
+            'elements'  => $array,
+            'label'     => $label,
+            'delimiter' => empty($delimiter) ? ' ' : $delimiter,
+            'options'   => $options,
+        );
 
     }
 
@@ -2055,9 +2055,9 @@ class LorisForm
      * whole form as the "group".
      *
      * @param array $submitKeys The elements that need to have their
-     *                             values extracted.
+     *                          values extracted.
      * @param array $arr        A reference to an array to store the
-     *                             extracted values into.
+     *                          extracted values into.
      *
      * @return void (but will modify &$arr parameter passed as a side-effect)
      */

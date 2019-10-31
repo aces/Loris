@@ -57,13 +57,13 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array("superuser"));
          $this->safeGet($this->url . "/document_repository/");
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-         $this->assertNotContains(
-             "You do not have access to this page.",
-             $bodyText
-         );
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
 
@@ -131,12 +131,12 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         $this->markTestSkipped("This method isn't working properly on travis.");
          $this->safeGet($this->url . "/document_repository/");
-         $this->safeFindElement(
-             WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span")
-         )->click();
-         $this->safeFindElement(
-             WebDriverBy::Id("9999999")
-         )->click();
+        $this->safeFindElement(
+            WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span")
+        )->click();
+        $this->safeFindElement(
+            WebDriverBy::Id("9999999")
+        )->click();
 
          // modify comment,search it and check it
          $select  = $this->safeFindElement(WebDriverBy::Id("categoryEdit"));
@@ -150,33 +150,33 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(WebDriverBy::Id("postEdit"))->click();
          sleep(3);
 
-         $this->safeFindElement(
-             WebDriverBy::Name("File_name")
-         )->sendKeys("README.md");
-         $this->safeFindElement(
-             WebDriverBy::Name("filter")
-         )->click();
-         $text = $this->safeFindElement(
-             WebDriverBy::cssSelector("#dir-tree > tr"),
-             3000
-         )
-             ->getText();
+        $this->safeFindElement(
+            WebDriverBy::Name("File_name")
+        )->sendKeys("README.md");
+        $this->safeFindElement(
+            WebDriverBy::Name("filter")
+        )->click();
+        $text = $this->safeFindElement(
+            WebDriverBy::cssSelector("#dir-tree > tr"),
+            3000
+        )
+            ->getText();
          $this->assertContains("This is a test comment!", $text);
 
          // delete upload file
 
-         $this->safeFindElement(
-             WebDriverBy::linkText("Delete"),
-             3000
-         )->click();
+        $this->safeFindElement(
+            WebDriverBy::linkText("Delete"),
+            3000
+        )->click();
 
          $this->safeFindElement(WebDriverBy::Id("postDelete"))->click();
-         $this->safeFindElement(
-             WebDriverBy::Name("File_name")
-         )->sendKeys("README.md");
-         $this->safeFindElement(
-             WebDriverBy::Name("filter")
-         )->click();
+        $this->safeFindElement(
+            WebDriverBy::Name("File_name")
+        )->sendKeys("README.md");
+        $this->safeFindElement(
+            WebDriverBy::Name("filter")
+        )->click();
          sleep(3);
          $text = $this->safeFindElement(WebDriverBy::cssSelector("tbody"), 3000)
              ->getText();

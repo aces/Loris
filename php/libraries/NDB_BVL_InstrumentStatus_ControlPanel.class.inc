@@ -174,10 +174,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         }
         // get control panel selections from _REQUEST
         $possibleFlags = array(
-                          'setDataEntry',
-                          'setAdministration',
-                          'setValidity',
-                         );
+            'setDataEntry',
+            'setAdministration',
+            'setValidity',
+        );
         $flagsToSave   = array_intersect($possibleFlags, array_keys($_REQUEST));
 
         // make sure there are at least one flag to save
@@ -388,9 +388,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         // make sure user belongs to same site as timepoint
         if (!$user->hasPermission('data_entry')
             || !in_array(
-                $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
+            $timePoint->getData('CenterID'),
+            $user->getData('CenterIDs')
+        )
         ) {
             return false;
         }

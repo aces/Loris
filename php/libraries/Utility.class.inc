@@ -60,10 +60,10 @@ class Utility
             );
         }
         $dob = array(
-                'year' => $matches[1],
-                'mon'  => $matches[2],
-                'day'  => $matches[3],
-               );
+            'year' => $matches[1],
+            'mon'  => $matches[2],
+            'day'  => $matches[3],
+        );
 
         if (!preg_match(
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
@@ -76,10 +76,10 @@ class Utility
             );
         }
         $testdate = array(
-                     'year' => $matches[1],
-                     'mon'  => $matches[2],
-                     'day'  => $matches[3],
-                    );
+            'year' => $matches[1],
+            'mon'  => $matches[2],
+            'day'  => $matches[3],
+        );
 
         if ($testdate['day'] < $dob['day']) {
             $testdate['day'] += 30;
@@ -91,10 +91,10 @@ class Utility
         }
 
         $age = array(
-                'year' => (int)$testdate['year'] - (int)$dob['year'],
-                'mon'  => (int)$testdate['mon'] - (int)$dob['mon'],
-                'day'  => (int)$testdate['day'] - (int)$dob['day'],
-               );
+            'year' => (int)$testdate['year'] - (int)$dob['year'],
+            'mon'  => (int)$testdate['mon'] - (int)$dob['mon'],
+            'day'  => (int)$testdate['day'] - (int)$dob['day'],
+        );
 
         return $age;
     }
@@ -230,7 +230,7 @@ class Utility
      * Returns a list of study Subprojects
      *
      * @param integer|null $projectID The project for which you would like
-     *                           to get the subprojects
+     *                                to get the subprojects
      *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
@@ -261,7 +261,7 @@ class Utility
      * Returns a list of study Subprojects associated with a project
      *
      * @param integer|null $projectID The project for which you would like
-     *                           to get the subprojects
+     *                                to get the subprojects
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
@@ -301,7 +301,7 @@ class Utility
      *
      * @param array       $structure  the structure root
      * @param string|null $siteAbbrev the site abbreviation, sometimes used as part
-     *                           of the PSCID
+     *                                of the PSCID
      *
      * @return string the regex pattern
      *
@@ -681,11 +681,11 @@ class Utility
      * Returns all the sourcefrom instruments from parameter_type
      *
      * @param string|null $instrument If specified, return fields from this
-     *                           test_name
+     *                                test_name
      * @param string|null $commentID  If specified, return fields for this
-     *                           commentid
+     *                                commentid
      * @param string|null $name       If specified, return fields for this
-     *                           parameter_type name
+     *                                parameter_type name
      *
      * @return  ?array Format: array(
      *              0 => array(
@@ -742,7 +742,7 @@ class Utility
      * Returns a list of study Visit Labels that are being used by this study.
      *
      * @param integer|null $projectID Limit visit labels to labels used by this
-     *                                  project.
+     *                                project.
      *
      * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
@@ -914,12 +914,11 @@ class Utility
         $DB      = $factory->database();
 
         $languagesDB = $DB->pselect(
-
             "SELECT language_id, language_label
              FROM language",
             array()
         );
-        $languages = array();
+        $languages   = array();
         foreach ($languagesDB as $language) {
             $languages[$language['language_id']] = $language['language_label'];
         }
@@ -932,7 +931,7 @@ class Utility
      *
      * @param int     $length   How many characters do we want?
      * @param ?string $keyspace A string of all possible characters
-     *                         to select from. Will default to the alphanum set.
+     *                          to select from. Will default to the alphanum set.
      *
      * @return string
      */
@@ -954,15 +953,15 @@ class Utility
     }
 
      /**
-     * Takes an argument and determine whether it is a positive integer
-     * i.e. > 0.
-     *
-     * @param mixed $value The value to check. Intentionally not type hinted as
-     * this function is meant to assist in cases where the type is unknown, e.g.
-     * when a parameter is sent via a form.
-     *
-     * @return bool Whether $value is a positive int.
-     */
+      * Takes an argument and determine whether it is a positive integer
+      * i.e. > 0.
+      *
+      * @param mixed $value The value to check. Intentionally not type hinted as
+      *                     this function is meant to assist in cases where the type
+      *                     is unknown, e.g. when a parameter is sent via a form.
+      *
+      * @return bool Whether $value is a positive int.
+      */
     public static function valueIsPositiveInteger($value): bool
     {
 
@@ -974,6 +973,32 @@ class Utility
         // First clause checks that only digits are present
         // Second clause ensures a positive value
         return ctype_digit(strval($value)) && intval($value) > 0;
+    }
+
+    /**
+     * Get the list of MRI scan type available in the database
+     *
+     * @return array Array of MRI scan types which exist in the database table
+     *               mri_scan_type joined to the files table
+     *               array($scan_type_id => $scan_type)
+     */
+    static function getScanTypeList(): array
+    {
+        $DB = \Database::singleton();
+
+        $scan_types_DB = $DB->pselect(
+            "SELECT ID, Scan_type 
+             FROM mri_scan_type mri
+                JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+            array()
+        );
+
+        $scan_types = array();
+        foreach ($scan_types_DB as $scan_type) {
+            $scan_types[$scan_type['ID']] = $scan_type['Scan_type'];
+        }
+
+        return $scan_types;
     }
 }
 

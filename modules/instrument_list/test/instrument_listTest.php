@@ -38,7 +38,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             'Access Profile'  => '#bc2 > a:nth-child(2) > div',
             '300001 / MTL001' => '#bc2 > a:nth-child(3) > div',
             'TimePoint V1'    => '#bc2 > a:nth-child(4) > div',
-           );
+        );
     /**
      * Tests that, when loading the Instrument list module, some
      * text appears in the body.
@@ -94,10 +94,10 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-      * Testing UI elements when page loads
-      *
-      * @return void
-      */
+     * Testing UI elements when page loads
+     *
+     * @return void
+     */
     function testPageUIs()
     {
         $this->safeGet($this->url . "/instrument_list/?candID=300001&sessionID=1");

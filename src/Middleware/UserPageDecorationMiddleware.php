@@ -204,12 +204,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // This seems to only be used in imaging_browser, it can probably be
         // moved to properly use OOP.
         $tpl_data['FormAction'] = $page->FormAction ?? '';
-        // Finally, the actual content and render it..
-        $tpl_data += array(
-                      'jsfiles'   => $this->JSFiles,
-                      'cssfiles'  => $this->CSSFiles,
-                      'workspace' => $undecorated->getBody(),
-                     );
 
         if ($page instanceof \NDB_Page) {
             $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();

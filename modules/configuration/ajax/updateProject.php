@@ -35,8 +35,8 @@ if ($_POST['ProjectID'] === 'new') {
         $db->insert(
             "Project",
             array(
-             "Name"              => $_POST['Name'],
-             "recruitmentTarget" => $recTarget,
+                "Name"              => $_POST['Name'],
+                "recruitmentTarget" => $recTarget,
             )
         );
         $projectID = $db->getLastInsertId();
@@ -49,8 +49,8 @@ if ($_POST['ProjectID'] === 'new') {
     $db->update(
         "Project",
         array(
-         "Name"              => $_POST['Name'],
-         "recruitmentTarget" => $recTarget,
+            "Name"              => $_POST['Name'],
+            "recruitmentTarget" => $recTarget,
         ),
         array("ProjectID" => $_POST['ProjectID'])
     );
@@ -79,8 +79,8 @@ foreach ($toAdd as $sid) {
     $db->insertIgnore(
         'project_subproject_rel',
         array(
-         'ProjectID'    => $projectID,
-         'SubprojectID' => $sid,
+            'ProjectID'    => $projectID,
+            'SubprojectID' => $sid,
         )
     );
 }
@@ -89,8 +89,8 @@ foreach ($toRemove as $sid) {
     $db->delete(
         'project_subproject_rel',
         array(
-         'ProjectID'    => $projectID,
-         'SubprojectID' => $sid,
+            'ProjectID'    => $projectID,
+            'SubprojectID' => $sid,
         )
     );
 }
