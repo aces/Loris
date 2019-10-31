@@ -191,7 +191,8 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               $PendingNewquery as pending,
               $modalities_subquery,
               s.CenterID as CenterID,
-              c.Entity_type as entityType
+              c.Entity_type as entityType,
+              s.ProjectID
             FROM psc AS p 
               JOIN session s ON (s.CenterID=p.CenterID) 
               JOIN candidate c ON (c.CandID=s.CandID) 
@@ -228,7 +229,9 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // behaviour of requiring the registration site to match
         // one of the user's sites.
         $cid = (int )$row['CenterID'];
+        $pid = (int )$row['ProjectID'];
         unset($row['CenterID']);
-        return new ImagingBrowserRow($row, $cid);
+        unset($row['ProjectID']);
+        return new ImagingBrowserRow($row, $cid, $pid);
     }
 }

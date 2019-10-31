@@ -67,6 +67,15 @@ class Imaging_Browser extends \DataFrameworkMenu
     }
 
     /**
+     * The imaging browser uses the image session's project for filtering projects.
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool {
+        return true;
+    }
+
+    /**
      * Setup $this->tpl_data for use by Smarty
      *
      * @return array array with fieldOptions
