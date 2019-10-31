@@ -49,6 +49,18 @@ class Candidate_List extends \DataFrameworkMenu
     {
         return true;
     }
+
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool always true
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
+
     /**
      * Return the list of field options required to be serialized to JSON
      * in order to render the frontend.
