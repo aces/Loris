@@ -80,7 +80,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) !== 0) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         switch ($request->getMethod()) {
@@ -91,7 +91,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return (new \LORIS\Http\Response())
                 ->withHeader('Allow', $this->allowedMethods());
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
         }
@@ -114,7 +114,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $datestring = $request->getQueryParams()['since'] ?? '1970-01-01';
             $since      = new \DateTime($datestring);
         } catch (\Exception $e) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 $e->getMessage()
             );
         }

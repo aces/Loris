@@ -52,7 +52,7 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
                s.ID = :v_sessionid
             ',
             array(
-                'v_sessionid' => $timepoint->getSessionID(),
+             'v_sessionid' => $timepoint->getSessionID(),
             )
         );
     }

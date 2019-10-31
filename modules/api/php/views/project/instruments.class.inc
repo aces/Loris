@@ -65,16 +65,16 @@ class Instruments
         foreach ($this->_instruments as $instrument) {
             $shortname = $instrument->getShortname();
             $item      = array(
-                'Fullname'               => $instrument->getFullname(),
-                'Subgroup'               => $instrument->getSubgroupname(),
-                'DoubleDataEntryEnabled' => $instrument->isDDE(),
-            );
+                          'Fullname'               => $instrument->getFullname(),
+                          'Subgroup'               => $instrument->getSubgroupname(),
+                          'DoubleDataEntryEnabled' => $instrument->isDDE(),
+                         );
             $instruments[$shortname] = $item;
         }
 
         return array(
-            'Meta'        => $meta,
-            'Instruments' => $instruments,
-        );
+                'Meta'        => $meta,
+                'Instruments' => $instruments,
+               );
     }
 }

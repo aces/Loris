@@ -16,6 +16,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
 use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * A class for handling the /candidates endpoint.
@@ -57,9 +58,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function allowedMethods() : array
     {
         return array(
-            'GET',
-            'POST',
-        );
+                'GET',
+                'POST',
+               );
     }
 
     /**
@@ -71,9 +72,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-            "v0.0.2",
-            "v0.0.3-dev",
-        );
+                "v0.0.2",
+                "v0.0.3-dev",
+               );
     }
 
     /**
@@ -87,11 +88,11 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $user = $request->getAttribute('user');
         if ($user instanceof \LORIS\AnonymousUser) {
-            return new \LORIS\Http\Response\Unauthorized();
+            return new \LORIS\Http\Response\JSON\Unauthorized();
         }
 
         if (!$this->_hasAccess($user)) {
-            return new \LORIS\Http\Response\Forbidden();
+            return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
         $pathparts = $request->getAttribute('pathparts');
@@ -109,7 +110,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     ->withHeader('Allow', $this->allowedMethods());
 
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
             }
@@ -118,9 +119,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // Delegate to candidate specific endpoint.
         try {
             $candidate = \NDB_Factory::singleton()
-                ->candidate(intval($pathparts[1]));
+                ->candidate(new CandID($pathparts[1]));
         } catch (\NotFound | \LorisException $e) {
-            return new \LORIS\Http\Response\NotFound('Candidate not found');
+            return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
         }
 
         $endpoint = new Candidate\Candidate($candidate);
@@ -176,14 +177,14 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $data = json_decode((string) $request->getBody(), true);
 
         if (!isset($data['Candidate'])) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'There is no Candidate object in the POST data'
             );
         }
 
         $usersites = $user->getSiteNames();
         if (!in_array($data['Candidate']['Site'], $usersites)) {
-            return new \LORIS\Http\Response\Forbidden(
+            return new \LORIS\Http\Response\JSON\Forbidden(
                 'You are not affiliated with the candidate`s site'
             );
         }
@@ -192,7 +193,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $project = \NDB_Factory::singleton()->project($projectname);
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\BadRequest($e->getMessage());
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
         $centerid = array_search(
@@ -211,7 +212,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $pscid
             );
         } catch (\LorisException $e) {
-            return new \LORIS\Http\Response\BadRequest($e->getMessage());
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
         $candidate = \NDB_Factory::singleton()->candidate($candid);

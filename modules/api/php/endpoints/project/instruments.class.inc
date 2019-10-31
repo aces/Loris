@@ -67,9 +67,9 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-            'v0.0.2',
-            'v0.0.3-dev',
-        );
+                'v0.0.2',
+                'v0.0.3-dev',
+               );
     }
 
     /**
@@ -91,7 +91,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
             }
@@ -123,49 +123,27 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _toArray(ServerRequestInterface $request): array
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        $projectname = $this->project->getName();
-
-        if (!isset($this->responseCache[$projectname])) {
-            $meta = array('Project' => $projectname);
-
-            $ddeinstruments = \NDB_Factory::singleton()
-                ->config()
-                ->getSetting("DoubleDataEntryInstruments");
-
-            // FIXME: We should be able to instanciate an instrument and call
-            // ->isDDE() and ->getSubgroupName() instead of querying the
-            // persistence layer.
-            $result = \NDB_Factory::singleton()->database()->pselect(
-                'SELECT
-                tn.Test_name as testname,
-                tn.Full_name as fullname,
-                sg.Subgroup_name as subgroupname
-                FROM
-                test_names tn
-                LEFT JOIN test_subgroups sg
-                ON (tn.Sub_group=sg.ID)
-',
-                array()
-            );
-
-            $prov = new \LORIS\api\Provisioners\ProjectInstrumentsRowProvisioner();
-            $user = $request->getAttribute('user');
-
-            $instruments = (new \LORIS\Data\Table())
-                ->withDataFrom($prov)
-                ->getRows($user);
-
-            $array = (new \LORIS\api\Views\Project\Instruments(
-                $this->_project,
-                iterator_to_array($instruments)
-            ))->toArray();
-
-            $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
-
+        if (isset($this->_cache)) {
             return $this->_cache;
         }
+
+        $prov = new \LORIS\api\Provisioners\ProjectInstrumentsRowProvisioner();
+        $user = $request->getAttribute('user');
+
+        $instruments = (new \LORIS\Data\Table())
+            ->withDataFrom($prov)
+            ->getRows($user);
+
+        $array = (new \LORIS\api\Views\Project\Instruments(
+            $this->_project,
+            iterator_to_array($instruments)
+        ))->toArray();
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
+
+        return $this->_cache;
     }
 
     /**

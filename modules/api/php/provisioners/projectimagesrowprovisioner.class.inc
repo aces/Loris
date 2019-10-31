@@ -66,7 +66,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
              LEFT JOIN files_qcstatus qc
                ON (f.FileID = qc.FileID)
              LEFT JOIN Project project
-               ON (s.ProjectID = project.ProjectID)
+               ON (c.ProjectID = project.ProjectID)
              WHERE
                c.Active = \'Y\' AND
                s.Active = \'Y\' AND
@@ -75,8 +75,8 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
              ORDER BY f.InsertTime ASC
             ',
             array(
-                'v_projectname' => $project->getName(),
-                'v_time'        => $since->getTimestamp(),
+             'v_projectname' => $project->getName(),
+             'v_time'        => $since->getTimestamp(),
             )
         );
     }

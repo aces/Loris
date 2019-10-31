@@ -50,9 +50,9 @@ class Login extends Endpoint
      *
      * @param \User $user The user whose access is being checked
      *
-     * @return boolean True always
+     * @return boolean true if access is permitted
      */
-    protected function hasAccess(\User $user) : bool
+    function _hasAccess(\User $user) : bool
     {
         // Anyone can try and login. Even you.
         return true;
@@ -80,9 +80,9 @@ class Login extends Endpoint
     protected function supportedVersions() : array
     {
         return array(
-            'v0.0.2',
-            'v0.0.3-dev',
-        );
+                'v0.0.2',
+                'v0.0.3-dev',
+               );
     }
 
     /**
@@ -126,7 +126,7 @@ class Login extends Endpoint
                 }
             }
 
-            return new \LORIS\Http\Response\Unauthorized(
+            return new \LORIS\Http\Response\JSON\Unauthorized(
                 $login->_lastError
             );
         case 'OPTIONS':
@@ -145,7 +145,7 @@ class Login extends Endpoint
      *
      * @return \SinglePointLogin Loris Authenticator
      */
-    private function _getLoginAuthenticator()
+    function getLoginAuthenticator()
     {
         return new \SinglePointLogin();
     }
@@ -157,7 +157,7 @@ class Login extends Endpoint
      *
      * @return string JWT encoded token
      */
-    private function _getEncodedToken($user)
+    function getEncodedToken($user)
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
@@ -167,16 +167,16 @@ class Login extends Endpoint
 
         $token = array(
             // JWT related tokens to for the JWT library to validate
-            "iss"  => $baseURL,
-            "aud"  => $baseURL,
+                  "iss"  => $baseURL,
+                  "aud"  => $baseURL,
             // Issued at
-            "iat"  => time(),
-            "nbf"  => time(),
+                  "iat"  => time(),
+                  "nbf"  => time(),
             // Expire in 1 day
-            "exp"  => time() + 86400,
+                  "exp"  => time() + 86400,
             // Additional payload data
-            "user" => $user,
-        );
+                  "user" => $user,
+                 );
 
         $key = $config->getSetting("JWTKey");
         if (!self::isKeyStrong($key)) {
@@ -192,7 +192,7 @@ class Login extends Endpoint
      *
      * @return boolean Key passes strength test
      */
-    private static function _isKeyStrong($key)
+    static function isKeyStrong($key)
     {
         // Note: this code adapted from User::isPasswordStrong
         $CharTypes = 0;

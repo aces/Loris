@@ -63,9 +63,9 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-            'v0.0.2',
-            'v0.0.3-dev',
-        );
+                'v0.0.2',
+                'v0.0.3-dev',
+               );
     }
 
     /**
@@ -79,7 +79,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $user = $request->getAttribute('user');
         if (!$this->_hasAccess($user)) {
-            return new \LORIS\Http\Response\Unauthorized();
+            return new \LORIS\Http\Response\JSON\Unauthorized();
         }
 
         $pathparts = $request->getAttribute('pathparts');
@@ -93,7 +93,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
             }
@@ -120,9 +120,11 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Returns a list of projects for this LORIS instance.
      *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
      * @return ResponseInterface
      */
-    private function _getProjectList() : array
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         if (!isset($this->_cache)) {
             // The projects list should be related to the user in the request

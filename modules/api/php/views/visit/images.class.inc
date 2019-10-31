@@ -48,24 +48,24 @@ class Images
     public function toArray(): array
     {
         $meta = array(
-            'CandID' => $this->_timepoint->getCandID(),
-            'Visit'  => $this->_timepoint->getVisitLabel(),
-        );
+                 'CandID' => $this->_timepoint->getCandID(),
+                 'Visit'  => $this->_timepoint->getVisitLabel(),
+                );
 
         $imagesdata = array_map(
             function ($image) {
                 return array(
-                    'OutputType'      => $image->getOutputType(),
-                    'Filename'        => $image->getFilename(),
-                    'AcquisitionType' => $image->getAcquisitionprotocol(),
-                );
+                        'OutputType'      => $image->getOutputType(),
+                        'Filename'        => $image->getFilename(),
+                        'AcquisitionType' => $image->getAcquisitionprotocol(),
+                       );
             },
             $this->_images
         );
 
         return array(
-            'Meta'  => $meta,
-            'Files' => $imagesdata,
-        );
+                'Meta'  => $meta,
+                'Files' => $imagesdata,
+               );
     }
 }

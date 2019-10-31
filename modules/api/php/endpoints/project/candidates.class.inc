@@ -67,9 +67,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-            'v0.0.2',
-            'v0.0.3-dev',
-        );
+                'v0.0.2',
+                'v0.0.3-dev',
+               );
     }
 
     /**
@@ -84,7 +84,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $pathparts = $request->getAttribute('pathparts');
 
         if (count($pathparts) !== 0) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         switch ($request->getMethod()) {
@@ -96,7 +96,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withHeader('Allow', $this->allowedMethods());
 
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
 
@@ -110,18 +110,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return ResponseInterface
      */
-    private function _toArray(ServerRequestInterface $request): array
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        $projectname = $this->project->getName();
-
-        if (!isset($this->responseCache[$projectname])) {
-            $meta    = array('Project' => $projectname);
-            $candids = $this->project->getCandidateIds();
-
-            $this->responseCache[$projectname] = array(
-                'Meta'       => $meta,
-                'Candidates' => $candids,
-            );
+        if (isset($this->_cache)) {
+            return $this->_cache;
         }
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(

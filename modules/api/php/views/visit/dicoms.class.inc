@@ -52,12 +52,12 @@ class Dicoms
     private static function _formatDicomTars(DicomTarDTO $dicom): array
     {
         return array(
-            'Tarname'    => $dicom->getTarname(),
-            'SeriesInfo' => array_map(
-                'self::_formatSeries',
-                $dicom->getSeries()
-            ),
-        );
+                'Tarname'    => $dicom->getTarname(),
+                'SeriesInfo' => array_map(
+                    'self::_formatSeries',
+                    $dicom->getSeries()
+                ),
+               );
     }
 
     /**
@@ -71,15 +71,15 @@ class Dicoms
     private static function _formatSeries(DicomSeriesDTO $series): array
     {
         return array(
-            'SeriesDescription' => $series->getSeriesDescription(),
-            'SeriesNumber'      => $series->getSeriesNumber(),
-            'EchoTime'          => $series->getEchotime(),
-            'RepetitionTime'    => $series->getRepetitiontime(),
-            'InversionTime'     => $series->getInversiontime(),
-            'SliceThickness'    => $series->getSlicethickness(),
-            'Modality'          => $series->getModality(),
-            'SeriesUID'         => $series->getSeriesuid(),
-        );
+                'SeriesDescription' => $series->getSeriesDescription(),
+                'SeriesNumber'      => $series->getSeriesNumber(),
+                'EchoTime'          => $series->getEchotime(),
+                'RepetitionTime'    => $series->getRepetitiontime(),
+                'InversionTime'     => $series->getInversiontime(),
+                'SliceThickness'    => $series->getSlicethickness(),
+                'Modality'          => $series->getModality(),
+                'SeriesUID'         => $series->getSeriesuid(),
+               );
     }
 
     /**
@@ -90,9 +90,9 @@ class Dicoms
     public function toArray(): array
     {
         $meta = array(
-            'CandID' => $this->_timepoint->getCandID(),
-            'Visit'  => $this->_timepoint->getVisitLabel(),
-        );
+                 'CandID' => $this->_timepoint->getCandID(),
+                 'Visit'  => $this->_timepoint->getVisitLabel(),
+                );
 
         $dicomtars = array_map(
             'self::_formatDicomTars',
@@ -100,9 +100,9 @@ class Dicoms
         );
 
         return array(
-            'Meta'      => $meta,
-            'DicomTars' => $dicomtars,
-        );
+                'Meta'      => $meta,
+                'DicomTars' => $dicomtars,
+               );
     }
 }
 

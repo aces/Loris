@@ -67,9 +67,9 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-            'v0.0.2',
-            'v0.0.3-dev',
-        );
+                'v0.0.2',
+                'v0.0.3-dev',
+               );
     }
 
     /**
@@ -92,7 +92,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     ->withHeader('Allow', $this->allowedMethods());
 
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
             }
@@ -114,7 +114,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $handler = new Visits($this->_project);
             break;
         default:
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $newrequest = $request
@@ -130,21 +130,18 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Generates a JSON representation of this project following the API
      * specification.
      *
-     * @param ServerRequestInterface $name The project to get
+     * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface
      */
-    private function _getProject(string $name): array
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;
         }
 
-            $responsebody           = array();
-            $responsebody['Meta']   = $meta;
-            $responsebody['Visits'] = $visits;
-            $responsebody['Instruments'] = $instruments;
-            $responsebody['Candidates']  = $candids;
+        $array = (new \LORIS\api\Views\Project($this->_project))
+            ->toArray();
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
 
