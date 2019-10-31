@@ -32,6 +32,7 @@ class Project
      */
     private $_projectId;
     private $_projectName;
+    private $_projectAlias;
     private $_recruitmentTarget;
 
     /**
@@ -64,6 +65,7 @@ class Project
                     SELECT
                       projectId,
                       name,
+                      Alias,
                       recruitmentTarget as recTarget
                     FROM
                       Project
@@ -80,6 +82,7 @@ class Project
 
             $project->_projectId         = (int) $projectData['projectId'];
             $project->_projectName       = $projectData['name'];
+            $project->_projectAlias      = $projectData['Alias'];
             $project->_recruitmentTarget = (integer) $projectData['recTarget'];
 
             self::$_instances[$projectName] = $project;
@@ -89,10 +92,43 @@ class Project
     }
 
     /**
+     * Get a project object from the ID by mapping the ID to a name and using the
+     * singleton function
+     *
+     * @param int $projectID The ID of the project queried
+     *
+     * @return Project
+     *
+     * @throws NotFound
+     */
+    static function getProjectFromID(int $projectID) : \Project
+    {
+        $factory = \NDB_Factory::singleton();
+
+        $projectName = $factory->database()->pSelectOne(
+            "
+                    SELECT
+                      Name
+                    FROM
+                      Project
+                    WHERE ProjectID = :pid
+                    ",
+            array('pid' => $projectID)
+        );
+
+        if (empty($projectName)) {
+            throw new \NotFound("No project with ID: $projectID");
+        }
+
+        return \Project::singleton($projectName);
+    }
+
+    /**
      * This does the work of creating a new Project by inserting a new entry in the
      * Project table and return the object instance of the newly created project.
      *
      * @param string       $projectName       The project name
+     * @param string       $projectAlias      The project alias
      * @param integer|null $recruitmentTarget The number of expected participants
      *
      * @note If the recruitmentTarget is missing or null, this project
@@ -104,6 +140,7 @@ class Project
      */
     static public function createNew(
         string $projectName,
+        string $projectAlias,
         ?int $recruitmentTarget = null
     ): \Project {
 
@@ -132,7 +169,8 @@ class Project
         $factory->database()->insert(
             'Project',
             array(
-                'name'              => $projectName,
+                'Name'              => $projectName,
+                'Alias'             => $projectAlias,
                 'recruitmentTarget' => $recruitmentTarget,
             )
         );
@@ -184,6 +222,34 @@ class Project
     public function setName(string $projectName): void
     {
         $this->_projectName = $projectName;
+    }
+
+    /**
+     * Get this project's alias
+     *
+     * @return string This project's alias
+     */
+    public function getAlias(): string
+    {
+        return $this->_projectAlias;
+    }
+
+    /**
+     * Set this project's alias
+     *
+     * @param string $projectAlias This project's alias
+     *
+     * @return void
+     */
+    public function setAlias(string $projectAlias): void
+    {
+        if (strlen($projectAlias) > 4 ) {
+            throw new ConfigurationException(
+                "The length of the project's alias can not be longer than ".
+                "4 characters."
+            );
+        }
+        $this->_projectAlias = $projectAlias;
     }
 
     /**
