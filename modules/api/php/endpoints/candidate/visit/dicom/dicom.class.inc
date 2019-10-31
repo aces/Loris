@@ -102,14 +102,14 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     ->withHeader('Allow', $this->allowedMethods());
 
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
             }
         }
 
         // Delegate to sub-endpoints
-        return new \LORIS\Http\Response\NotFound();
+        return new \LORIS\Http\Response\JSON\NotFound();
     }
 
     /**
@@ -128,7 +128,7 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $dicom = $this->_visit->getDicomTarByFilename($this->_tarname);
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $tarchivepath = \NDB_factory::singleton()
@@ -138,11 +138,11 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $fullpath = $tarchivepath . $dicom->getArchiveLocation();
         $info     = new \SplFileInfo($fullpath);
         if (!$info->isFile()) {
-            return new \LORIS\Http\Response\NotFound('');
+            return new \LORIS\Http\Response\JSON\NotFound('');
         }
 
         if (!$info->isReadable()) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $file         = $info->openFile('r');

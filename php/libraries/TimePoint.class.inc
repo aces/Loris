@@ -1108,5 +1108,17 @@ class TimePoint
         );
         return $result;
     }
+
+    /**
+     * Gets the project of this Timepoint
+     *
+     * @return \Project
+     */
+    public function getProject(): \Project
+    {
+        return \NDB_Factory::singleton()->project(
+            $this->getData('ProjectName')
+        );
+    }
 }
 

@@ -15,6 +15,7 @@ namespace LORIS\api\Endpoints\Candidate\Visit;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * A class for handling the /candidates/$candidate/$visit_label endpoint.
@@ -74,8 +75,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
+        // Removed 0.0.2 since session requires a project.
         return array(
-            'v0.0.2',
             'v0.0.3-dev',
         );
     }
@@ -103,7 +104,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     ->withHeader('Allow', $this->allowedMethods());
 
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
             }
@@ -111,7 +112,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($this->_visit === null) {
             // Subendpoint requires a Timepoint. see Constructor comment for $visit
-            return new \LORIS\Http\Response\NotFound('Visit not found');
+            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
         }
 
         // Delegate to sub-endpoints
@@ -130,7 +131,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $handler = new Dicoms($this->_visit);
             break;
         default:
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $newrequest = $request
@@ -152,7 +153,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if ($this->_visit === null) {
-            return new \LORIS\Http\Response\NotFound('Visit not found');
+            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
         }
 
         return new \LORIS\Http\Response\JsonResponse(
@@ -185,16 +186,25 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             'Visit',
             'Site',
             'Battery',
+            'Project',
         );
         $diff           = array_diff($requiredfields, array_keys($visitinfo));
         if (!empty($diff)) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'Field(s) missing: ' . implode(', ', $diff)
             );
         }
 
+        try {
+            $project = \NDB_Factory::singleton()->project($visitinfo['Project']);
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $e->getMessage()
+            );
+        }
+
         if ($visitinfo['CandID'] !== $this->_candidate->getCandID()) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'CandID do not match this candidate'
             );
         }
@@ -207,7 +217,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
 
         if (!in_array($centerid, $user->getCenterIDs())) {
-            return new \LORIS\Http\Response\Forbidden(
+            return new \LORIS\Http\Response\JSON\Forbidden(
                 'You can`t create candidates visit for that site'
             );
         }
@@ -221,7 +231,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             // If the visit label already exists for that candidate
             $timepoint = \NDB_Factory::singleton()->timepoint($sessionid);
             if ($timepoint->getCurrentStage() !== 'Not Started') {
-                return new \LORIS\Http\Response\Conflict(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'This visit is already started'
                 );
             }
@@ -240,6 +250,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     'UserID'          => $username,
                     'Date_registered' => $today,
                     'Testdate'        => $today,
+                    'ProjectID'       => $project->getId(),
                 )
             );
 
@@ -251,12 +262,12 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             \TimePoint::isValidVisitLabel(
-                (int) $visitinfo['CandID'],
+                new CandID($visitinfo['CandID']),
                 $subprojectid,
                 $visitinfo['Visit']
             );
         } catch (\LorisException $e) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 $e->getMessage()
             );
         }
@@ -265,7 +276,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_candidate,
             $subprojectid,
             $visitinfo['Visit'],
-            \Site::singleton($centerid)
+            \Site::singleton($centerid),
+            $project
         );
 
         $link = '/' . $request->getUri()->getPath();

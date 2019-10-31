@@ -47,6 +47,7 @@ class Visit
             'Visit'   => $this->_timepoint->getVisitLabel(),
             'Site'    => $this->_timepoint->getPSC(),
             'Battery' => $this->_timepoint->getData('SubprojectTitle'),
+            'Project' => $this->_timepoint->getProject(),
         );
 
         $stages = array();

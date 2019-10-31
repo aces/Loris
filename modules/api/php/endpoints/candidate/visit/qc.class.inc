@@ -15,6 +15,7 @@ namespace LORIS\api\Endpoints\Candidate\Visit;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * A class for handling request for a visit imaging qc.
@@ -100,12 +101,12 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     ->withHeader('Allow', $this->allowedMethods());
 
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
             }
         }
-        return new \LORIS\Http\Response\NotFound();
+        return new \LORIS\Http\Response\JSON\NotFound();
     }
 
     /**
@@ -150,21 +151,28 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
         $diff           = array_diff($requiredfields, array_keys($data));
         if (!empty($diff)) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'Field(s) missing: ' . implode(', ', $diff)
             );
         }
 
-        $candid = $data['Meta']['CandID'] ?? null;
-        if (intval($candid) !== $this->_visit->getCandID()) {
-            return new \LORIS\Http\Response\BadRequest(
+        try {
+            $candid = new CandID($data['Meta']['CandID']);
+        } catch(\DomainException $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'CandID is invalid'
+            );
+        }
+
+        if ($candid != $this->_visit->getCandID()) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'Candidate from URL does not match metadata'
             );
         }
 
         $visitlabel = $data['Meta']['Visit'] ?? null;
         if ($visitlabel !== $this->_visit->getVisitLabel()) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'Visit from URL does not match metadata'
             );
         }
@@ -175,7 +183,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $this->_visit->setData(array('MRIQCStatus' => $qcstatus));
         } catch (\DatabaseException $e) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'MRIQCStatus value not acceptable'
             );
         }
@@ -183,7 +191,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $this->_visit->setData(array('MRIQCPending' => $ispending));
         } catch (\DatabaseException $e) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'MRIQCPending value not acceptable'
             );
         }

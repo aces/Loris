@@ -97,14 +97,14 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         case 'PUT':
         case 'PATCH':
             // TODO :: I don`t think this was working in v0.0.3-dev
-            return new \LORIS\Http\Response\NotImplemented();
+            return new \LORIS\Http\Response\JSON\NotImplemented();
 
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
                 ->withHeader('Allow', $this->allowedMethods());
 
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
         }

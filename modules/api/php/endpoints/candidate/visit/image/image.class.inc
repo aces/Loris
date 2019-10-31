@@ -97,7 +97,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     ->withHeader('Allow', $this->allowedMethods());
 
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
             }
@@ -109,7 +109,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $image = $this->_visit->getImageByFilename($user, $this->_filename);
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\NotFound($e->getMessage());
+            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
 
         $subendpoint = array_shift($pathparts);
@@ -124,7 +124,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $handler = new Qc($this->_visit, $image);
             break;
         default:
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $newrequest = $request
@@ -150,7 +150,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $image = $this->_visit->getImageByFilename($user, $this->_filename);
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\NotFound($e->getMessage());
+            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
 
         $mimetype = substr($image->getHeader('header'), 0, 4) === 'hdf5' ?
@@ -160,12 +160,12 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!$info->isFile()) {
             error_log('file in database but not in file system');
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         if (!$info->isReadable()) {
             error_log('file exist but is not readable by webserver');
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $body = new \LORIS\Http\FileStream($info->getRealPath(), 'r');

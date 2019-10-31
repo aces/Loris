@@ -86,7 +86,7 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withHeader('Allow', $this->allowedMethods());
 
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
 
@@ -106,12 +106,12 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!$info->isFile()) {
             error_log('Thumbnail not found');
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         if (!$info->isReadable()) {
             error_log('Thumbnail exists but is not readable by webserver');
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $filename = $info->getFilename();

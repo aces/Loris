@@ -17,6 +17,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
+
 /**
  * An abstract class for common concerns of different API endpoints.
  *
@@ -62,7 +63,7 @@ abstract class Endpoint implements RequestHandlerInterface
         $versions = $this->supportedVersions() ?? [];
         $version  = $request->getAttribute("LORIS-API-Version") ?? "unknown";
         if (!in_array($version, $versions)) {
-            return new \LORIS\Http\Response\BadRequest('Unsupported version');
+            return new \LORIS\Http\Response\JSON\BadRequest('Unsupported version');
         }
 
         if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
