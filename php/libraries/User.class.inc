@@ -99,6 +99,9 @@ class User extends UserPermissions
             "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
             array('uid' => $row['ID'])
         );
+        foreach ($user_pid as $k=>$pid) {
+            $user_pid[$k] = intval($pid);
+        }
 
         // Get examiner information
         $examiner_check = $DB->pselect(

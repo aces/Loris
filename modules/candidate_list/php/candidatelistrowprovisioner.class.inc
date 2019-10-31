@@ -58,7 +58,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
                 max(s.Current_stage) AS LatestVisitStatus,
                 p.Name AS RegistrationProject,
-                c.RegistrationCenterID
+                c.RegistrationCenterID,
+                c.RegistrationProjectID
                 $maybeEDC
                 FROM candidate c
                     LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
@@ -93,8 +94,10 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = (int )$row['RegistrationCenterID'];
+        $cid = (int) $row['RegistrationCenterID'];
+        $pid = (int) $row['RegistrationProjectID'];
         unset($row['RegistrationCenterID']);
-        return new CandidateListRow($row, $cid);
+        unset($row['RegistrationProjectID']);
+        return new CandidateListRow($row, $cid, $pid);
     }
 }
