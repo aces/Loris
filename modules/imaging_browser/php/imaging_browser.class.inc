@@ -71,7 +71,8 @@ class Imaging_Browser extends \DataFrameworkMenu
      *
      * @return bool
      */
-    public function useProjectFilter() : bool {
+    public function useProjectFilter() : bool
+    {
         return true;
     }
 

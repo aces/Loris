@@ -65,9 +65,9 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function allowedMethods() : array
     {
         return array(
-                'GET',
-                'PUT',
-               );
+            'GET',
+            'PUT',
+        );
     }
 
     /**
@@ -79,9 +79,9 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.2',
-                'v0.0.3-dev',
-               );
+            'v0.0.2',
+            'v0.0.3-dev',
+        );
     }
 
     /**

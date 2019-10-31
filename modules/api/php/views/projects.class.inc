@@ -53,12 +53,12 @@ class Projects
         $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 
         $settings = array(
-                     "useEDC" => $useEDC,
-                     "PSCID"  => array(
-                                  "Type"  => $type,
-                                  "Regex" => $PSCIDFormat,
-                                 ),
-                    );
+            "useEDC" => $useEDC,
+            "PSCID"  => array(
+                "Type"  => $type,
+                "Regex" => $PSCIDFormat,
+            ),
+        );
 
         $projects = array();
         foreach ($this->_projects as $project) {
