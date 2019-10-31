@@ -10,7 +10,7 @@ CREATE TABLE `Project` (
     PRIMARY KEY (`ProjectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `Project` (Name) VALUES ('loris');
+INSERT INTO `Project` (Name,Alias) VALUES ('loris','LORI');
 
 CREATE TABLE `subproject` (
     `SubprojectID` int(10) unsigned NOT NULL auto_increment,
