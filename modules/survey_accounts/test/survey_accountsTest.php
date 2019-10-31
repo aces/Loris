@@ -88,6 +88,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                 'ID'           => '111111',
                 'CandID'       => '999888',
                 'CenterID'     => '55',
+                'ProjectID'    => '7777',
                 'UserID'       => '1',
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
