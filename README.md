@@ -76,11 +76,12 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
 5. Apache configuration
 
 If your apache configuration was not completed by the Install script, run the following enable rewriting of LORIS, enable your `$projectname` site, and restart apache:  (run by user who has root privileges)
-```bash
+    ```bash
     sudo a2enmod rewrite
     sudo a2dissite default
     sudo a2ensite $projectname
     sudo service apache2 reload
+    ```
 6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation, then restart apache.
 
 7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
