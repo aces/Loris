@@ -178,7 +178,7 @@ CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `CenterID` integer unsigned NOT NULL,
-  `ProjectID` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
   `SubprojectID` int(10) unsigned DEFAULT NULL,
