@@ -182,7 +182,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                "return document.querySelector('$btn').click()"
            );
            //female
-           $this-> _testFilter(self::$sex, "20 rows displayed of 228", '1');
+           $this-> _testFilter(self::$sex, "20 rows displayed of 225", '1');
            // male
            $this-> _testFilter(self::$sex, "20 rows displayed of 210", '2');
 
