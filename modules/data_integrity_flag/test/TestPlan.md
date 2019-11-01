@@ -1,4 +1,4 @@
-#Data Integrity Flag Test Plan
+# Data Integrity Flag Test Plan
 
 1. Check permissions. You should not be able to access the page without permission 'data_integrity_flag'.
    [Automation Testing]
@@ -16,11 +16,11 @@
    [Automation Testing]
 6. Ensure that the right users show up for the dropdown
    [Manual Testing]
-7. Try 'Update' instrument status without specifying a date. Required error message should appear and prevent you from saving.
+7. Try to 'Update' instrument status without specifying a date. Required error message should appear and prevent you from saving.
    [Manual Testing]
-8. Try 'Update' instrument without setting the Flag Status. Required error message should appear and prevent you from saving.
+8. Try to 'Update' instrument without setting the Flag Status. Required error message should appear and prevent you from saving.
    [Manual Testing]
-9. Try updating the parameters and click "Update". Ensure the values are saved in the back-end table 'data_integrity_flag'.
+9. Try to modify the parameters and click "Update". Ensure the modified values are saved in the back-end table 'data_integrity_flag'.
    [Manual Testing]
 10. Go back to the 'Browse' tab. Updated data should show in the front-end table.
    [Manual Testing] 
