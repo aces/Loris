@@ -78,8 +78,7 @@ sudo mv composer.phar /usr/local/bin/composer
 ```
 ### Extensions for Composer
 ```bash
-sudo yum install php-xml
-sudo yum install php-mbstring
+sudo yum --enablerepo=remi-php72 install php-xml php-mbstring
 ```
 
 # Get the Code
