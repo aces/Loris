@@ -36,6 +36,11 @@ sudo yum update
 sudo yum install php72
 sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-pdo php72-php-mysql
 ```
+### PHP MySQL Packages
+```bash
+sudo yum install php-pdo
+sudo yum install php-pdo_mysql
+```
 ## MariaDB
 
 MySQL is not recommended/supported on CentOS, see [paragraph 2 here](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-centos-7) for background). MySQL and MariaDB are nearly identical in operation.
