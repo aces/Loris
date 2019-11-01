@@ -35,18 +35,15 @@
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
-                            <li class="active"><a data-target="overall-recruitment">View overall recruitment</a></li>
-                            <li><a data-target="recruitment-site-breakdown">View site breakdown</a></li>
+                            <li class="active"><a data-target="recruitment-site-breakdown">View site breakdown</a></li>
+                            <li><a data-target="overall-recruitment">View overall recruitment</a></li>
                             <li><a data-target="recruitment-project-breakdown">View project breakdown</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="panel-body">
-                <div class="recruitment-panel" id="overall-recruitment">
-                    {include file='progress_bar.tpl' project=$recruitment["overall"]}
-                </div>
-                <div class="recruitment-panel hidden" id="recruitment-site-breakdown">
+                <div class="recruitment-panel" id="recruitment-site-breakdown">
                     {if $recruitment['overall']['total_recruitment'] neq 0}
                         <div class="col-lg-4 col-md-4 col-sm-4">
                             <div>
@@ -63,6 +60,9 @@
                     {else}
                         <p>There have been no candidates registered yet.</p>
                     {/if}
+                </div>
+                <div class="recruitment-panel" id="overall-recruitment">
+                    {include file='progress_bar.tpl' project=$recruitment["overall"]}
                 </div>
                   <div class="recruitment-panel hidden" id="recruitment-project-breakdown">
                       {foreach from=$recruitment key=ID item=project}
@@ -126,6 +126,9 @@
                     <!-- /.panel-heading -->
                     <div class="panel-body">
                         <div class="list-group tasks">
+                            {if ($conflicts eq "" or $conflicts eq 0) and ($incomplete_forms eq "" or $incomplete_forms eq 0) and ($new_scans eq "" or $new_scans eq 0) and ($violated_scans eq "" or $violated_scans eq 0) and ($pending_users eq "" or $pending_users eq 0) and ($issues_assigned eq "" or $issues_assigned eq 0)}
+                              <p>There are no tasks to resolve.</p>
+                            {/if}
                             {if $conflicts neq "" and $conflicts neq 0}
                                 <a href="{$baseURL}/conflict_resolver/" class="list-group-item conflict_resolver">
                                     <div class="row">
@@ -140,6 +143,7 @@
                                     </div>
                                 </a>
                             {/if}
+                            
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
                                 {if $incomplete_forms_site eq "Sites: all"}
                                      <a href="{$baseURL}/statistics/statistics_site" class="list-group-item statistics">
@@ -239,7 +243,7 @@
         {/if}
 
         <!-- Document Repository -->
-        {if $document_repository_notifications neq ""}
+        {if $document_repository_notifications neq ("" or 0)}
             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -270,8 +274,24 @@
             </div>
         {/if}
 
+       <!-- Candidates -->
+       <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
+           <div class="panel panel-default">
+               <div class="panel-heading">
+                   <h3 class="panel-title">Patients</h3>
+                   <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
+               </div>
+               <!-- /.panel-heading -->
+               <div class="panel-body">
+                   <a href="{$baseURL}/biobank/" class="btn btn-default btn-block">View All Patients
+                       <span class="glyphicon glyphicon-chevron-right"></span></a>
+               </div>
+               <!-- /.panel-body -->
+           </div>
+       </div>
+
        <!-- Behavioural Feedback -->
-        {if $bvl_feedback_notifications neq ""}
+        {if $bvl_feedback_notifications neq ("" or 0)}
             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">

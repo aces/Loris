@@ -158,6 +158,10 @@ class CandidateListIndex extends Component {
           type: 'text',
         },
       },
+      {label: 'Diagnosis', show: true, filter: {
+        name: 'diagnosis',
+        type: 'text',
+      }},
       {
         label: 'Site',
         show: true,
@@ -178,7 +182,7 @@ class CandidateListIndex extends Component {
       },
       {
         label: 'Entity Type',
-        show: true,
+        show: false,
         filter: {
           name: 'entityType',
           type: 'select',
@@ -211,6 +215,10 @@ class CandidateListIndex extends Component {
           options: options.participantstatus,
         },
       },
+      {label: 'Age', show: true, filter: {
+        name: 'age',
+        type: 'text',
+      }},
       {
         'label': 'DoB',
         'show': true,
@@ -244,7 +252,7 @@ class CandidateListIndex extends Component {
       },
       {
         'label': 'Feedback',
-        'show': true,
+        'show': false,
         'filter': {
           name: 'feedback',
           type: 'select',
@@ -260,7 +268,7 @@ class CandidateListIndex extends Component {
       },
       {
         'label': 'Latest Visit Status',
-        'show': true,
+        'show': false,
         'filter': {
           name: 'latestVisitStatus',
           type: 'select',
