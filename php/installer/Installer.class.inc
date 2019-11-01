@@ -371,7 +371,7 @@ class Installer
         $sqls = file_get_contents(__DIR__ . "/../../SQL/0000-00-$file");
         $DB->PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         try {
-            $DB->PDO->query($sqls);
+            $DB->PDO->exec($sqls);
         } catch (\PDOException $err) {
             error_log($err->getMessage());
             return false;
