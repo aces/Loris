@@ -19,7 +19,7 @@ The most closely related module to the DQT is the Data Release module, which is 
 ## Permissions
 Users must have `dataquery_view` permission to use the DQT. 
 
-It’s important to note that more granular permissions do not exist for this module, to restrict access to a subset of the data. Anyone with the `dataquery_view` permission has access to view, query and download data from the DQT, and therefore has access to all data loaded in the DQT from this LORIS instance.
+It’s important to note that granular permissions do not exist for this module. Anyone with the `dataquery_view` permission has access to view, query and download data from the DQT, and therefore has access to all data loaded in the DQT from this LORIS instance. It is not possible to restrict user access to a subset of the data.
 
 ## Interactions with LORIS
 Before the DQT can be used, the CouchDB import scripts must be run to load data from LORIS' MySQL tables into CouchDB. These scripts are found in the `tools/` directory, named `CouchDB_Import_*.php`.
