@@ -216,7 +216,9 @@ class Stats_MRI extends \NDB_Form
     {
         parent::setup();
 
-        $DB = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
 
         $bigTable_params = array();
         $this->params    = array();
@@ -264,14 +266,24 @@ class Stats_MRI extends \NDB_Form
         } else {
             $Param_Site = '';
         }
-        $centers   = $DB->pselect(
+
+        //SITES PERMISSIONS
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+        $sitesString = implode(",", array_keys($list_of_sites));
+
+        $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
-                AND Study_site = 'Y'",
+                AND Study_site = 'Y'
+	        AND CenterID IN (" . $sitesString . ")",
             array()
         );
         $sites     = array();
@@ -374,6 +386,7 @@ class Stats_MRI extends \NDB_Form
                     AND c.Active='Y'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     $suproject_query
                     $Param_Project
                 GROUP BY Subcat,
@@ -418,6 +431,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -436,6 +450,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -465,6 +480,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -485,6 +501,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -515,6 +532,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -535,6 +553,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query

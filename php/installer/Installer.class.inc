@@ -297,12 +297,16 @@ class Installer
     {
         $DB = Database::singleton();
         try {
-            $DB->connect(
+            $success = $DB->connect(
                 $values['dbname'],
                 $values['dbadminuser'],
                 $values['dbadminpassword'],
                 $values['dbhost']
             );
+
+            if (! $success) {
+                throw new \DatabaseException('Could not connect to database');
+            }
         } catch (\Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
