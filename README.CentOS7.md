@@ -35,6 +35,7 @@ sudo yum-config-manager --enable remi-php72
 sudo yum update
 sudo yum install php72
 sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-pdo php72-php-mysql
+sudo ln -s /usr/bin/php72 /usr/bin/php
 ```
 ## MariaDB
 
