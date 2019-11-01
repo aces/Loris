@@ -196,7 +196,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             FROM psc AS p 
               JOIN session s ON (s.CenterID=p.CenterID) 
               JOIN candidate c ON (c.CandID=s.CandID) 
-              LEFT JOIN Project ON (c.ProjectID=Project.ProjectID)
+              LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
               JOIN files f ON (f.SessionID=s.ID) 
               LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
               JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
