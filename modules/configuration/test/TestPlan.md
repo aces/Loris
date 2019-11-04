@@ -1,4 +1,4 @@
-#Configuration Test Plan
+# Configuration Test Plan
 
 1. Verify that the Config menu item only appears in the Admin main menu if the user 
 has permission "config" (Edit configuration settings).
@@ -15,7 +15,7 @@ save at the bottom of the page. Refresh the page and check that the value actual
 persists. Try to see if the change actually affected LORIS in some way. For example, 
 for the project description in the dashboard settings, go to the dashboard to see if 
 the project description actually changed.
->Some settings will break LORIS, like changing the base path, or Main project 
+   >Some settings will break LORIS, like changing the base path, or Main project 
  URL, so be wary.
   [Manual Test] 
 5. Go through each of the fields in the configuration module that have the 
