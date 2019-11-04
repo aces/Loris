@@ -53,7 +53,7 @@ gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 ```
 
-The install will now use the supported version.
+Then install the database client and server packages.
 
 ```bash
 sudo yum install MariaDB-client MariaDB-server
