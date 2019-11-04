@@ -43,7 +43,8 @@ MySQL is not recommended/supported on CentOS, see [paragraph 2 here](https://www
 *Note:* LORIS developers (those NOT working with a .zip release codebase) should skip steps relating to hosting their database locally. Contact your system administrator for database credentials.
 
 ```bash
-sudo yum install mariadb-client mariadb-server
+curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+sudo yum install MariaDB-client MariaDB-server
 ```
 
 By default in CentOS 7, the MariaDB version is 10.2
