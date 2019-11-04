@@ -37,7 +37,7 @@ class UserTest extends TestCase
     private $_userInfo
         = array('ID'                     => 1,
                 'UserID'                 => '968775',
-                'Password'               => 'pass123',
+                'Password'               => 'sufficient length and complexity',
                 'Real_name'              => 'John Doe',
                 'First_name'             => 'John',
                 'Last_name'              => 'Doe',
@@ -242,6 +242,8 @@ class UserTest extends TestCase
                                                );
         $this->_userInfoComplete['CenterIDs'] = array('1', '4');
         $this->_userInfoComplete['ProjectIDs'] = array('1', '3');
+        $this->_userInfoComplete['Password_hash'] = 
+            new \Password($this->_userInfoComplete['Password']);
     }
 
     /**
@@ -630,6 +632,55 @@ class UserTest extends TestCase
             )
             ->willReturn($count);
         $this->assertFalse($this->_user->hasLoggedIn());
+    }
+
+    /**
+     * Test that a user cannot keep the same password.
+     *
+     * Uses a random string as the "new password" which is evaluated against 
+     * another random string as the "old password hash". 
+     * This should always return false because passwordChanged checks that its 
+     * input matches the old hash and random strings won't generate a match.
+     *
+     * @return void
+     * @covers User::passwordChanged
+     */
+    private function testPasswordChangedReturnsTrue() {
+        $this->_user = \User::factory($this->_username);
+        $this->_mockDB->expects($this->any())
+            ->method('pselectOne')
+            ->with(
+                $this->stringContains("FROM user_login_history")
+            )
+            ->willReturn(\Utility::getRandomString());
+        // Should return true (i.e. the password has changed) because random
+        // strings should not generate a match.
+        $this->assertTrue(
+            $this->_user->passwordChanged(
+                \Utility::getRandomString()
+            )
+        );
+    }
+
+    /**
+     * Test that a user cannot keep the same password.
+     *
+     * @return void
+     * @covers User::passwordChanged
+     */
+    private function testPasswordChangedReturnsFalse() {
+        $this->_user = \User::factory($this->_username);
+        $password = $this->_userInfoComplete['Password'];
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+
+        $this->_mockDB->expects($this->any())
+            ->method('pselectOne')
+            ->with(
+                $this->stringContains("FROM user_login_history")
+            )
+            ->willReturn($hash);
+
+        $this->assertFalse($this->_user->passwordChanged($password));
     }
 
     /**
