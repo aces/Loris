@@ -104,9 +104,20 @@ if ($input !== $dbname) {
     die('Input did not match database name. Exiting.');
 }
 
-// Create a connection to mysql via bash. All credentials are supplied via 
-// command line arguments except for the password which must be entered manually.
-$mysqlCommand = "mysql -A \"$dbname\"";
+$mysqlCommand = <<<CMD
+mysql -A $dbname
+CMD;
+
+// Test whether a connection to MySQL is possible via a config file.
+// If not, read DB information from the config file. This method is not as 
+// preferable because it generates MySQL warnings due to the password being
+// supplied via a command-line argument.
+exec($mysqlCommand . ' -e "show tables;" 2>&1 1>/dev/null', $output, $status);
+if ($status != 0) {
+    $mysqlCommand = <<<CMD
+mysql -A "$dbname" -u "$username" -h "$host" -p$password
+CMD;
+}
 
 // Drop tables
 echo PHP_EOL .'Dropping LORIS tables....' . PHP_EOL;
@@ -185,8 +196,16 @@ function runPatch(string $file): void
  */
 function runCommand(string $command): void
 {
-    echo "Running command: `$command`" . PHP_EOL;
-    echo shell_exec($command);
+    global $password;
+    // Hide password from output
+    $output = str_replace($password, str_repeat('*', 10), $command);
+    echo "Running command: `$output`" . PHP_EOL;
+    exec($command, $output, $status);
+    // If a non-zero exit code is given, then an error has occurred.
+    // In this case, print the output.
+    if ($status) {
+        echo $output;
+    }
 }
 
 /**
