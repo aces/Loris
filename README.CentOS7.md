@@ -65,6 +65,7 @@ sudo yum install MariaDB-client MariaDB-server
 ```
 
 ### Starting MariaDB server
+
 ```bash
 sudo systemctl start mariadb 
 sudo systemctl enable mariadb
