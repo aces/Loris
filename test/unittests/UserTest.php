@@ -648,7 +648,7 @@ class UserTest extends TestCase
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
-                $this->stringContains("FROM user_login_history")
+                $this->stringContains("Password_hash")
             )
             ->willReturn(\Utility::randomString());
         // Should return true (i.e. the password has changed) because random
@@ -674,7 +674,7 @@ class UserTest extends TestCase
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
-                $this->stringContains("FROM user_login_history")
+                $this->stringContains("Password_hash")
             )
             ->willReturn($hash);
 
