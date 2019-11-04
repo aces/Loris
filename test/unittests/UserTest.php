@@ -225,9 +225,6 @@ class UserTest extends TestCase
         $this->_mockFactory->setDatabase($this->_mockDB);
         $this->_factory->setConfig($this->_mockConfig);
 
-        $this->_userInfo['Password_hash'] = 
-            new \Password($this->_userInfoComplete['Password']);
-
         $this->_userInfoComplete = $this->_userInfo;
         $this->_userInfoComplete['ID'] = '1';
         $this->_userInfoComplete['Privilege'] = '1';
