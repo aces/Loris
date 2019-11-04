@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\candidate_parameters;
+use \Loris\StudyEntities\Candidate\CandID;
+
 /**
  * Main class for candidate_parameters module
  * corresponding to /candidate_parameters/ URL
