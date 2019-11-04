@@ -941,10 +941,7 @@ class NDB_BVL_Feedback
      *
      * @param integer $feedbackID The ID of the feedback thread being closed
      *
-     * @return void
-     *  FIXME: This shares a lot of code from activateThread, it should be
-     *         refactored
-     * FIXME: This needs to properly check for sites.
+     * @return int The number of updated threads
      */
     function closeThread($feedbackID=null)
     {
@@ -999,7 +996,7 @@ class NDB_BVL_Feedback
      *
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      *
-     * @return void
+     * @return int The number of updated threads
      */
     function openThread($feedbackID)
     {
