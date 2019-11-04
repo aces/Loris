@@ -955,25 +955,25 @@ class NDB_BVL_Feedback
         if (!empty($feedbackID)) {
             // only one thread to be closed
             $whereStr .= 'AND FeedbackID = :v_feedbackid ';
-            $params = array('v_feedbackid' => $feedbackID);
+            $params    = array('v_feedbackid' => $feedbackID);
 
         } elseif (!empty($this->_feedbackObjectInfo['CommentID'])) {
             // close all threads for the instruments
             $commentid = $this->_feedbackObjectInfo['CommentID'];
             $whereStr .= 'AND CommentID = :v_commentid ';
-            $params = array('v_commentid' => $commentid);
+            $params    = array('v_commentid' => $commentid);
 
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
             // close all threads for the timepoint
             $sessionid = $this->_feedbackObjectInfo['SessionID'];
             $whereStr .= 'AND SessionID = :v_sessionid ';
-            $params = array('v_sessionid' => $sessionid);
+            $params    = array('v_sessionid' => $sessionid);
 
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
             // close all threads for the candidate
-            $candid = $this->_feedbackObjectInfo['CandID'];
+            $candid    = $this->_feedbackObjectInfo['CandID'];
             $whereStr .= 'AND CandID = :v_candid ';
-            $params = array('v_candid' => $sessionid);
+            $params    = array('v_candid' => $sessionid);
 
         } else {
             // at least one of the above has to be true
@@ -982,10 +982,11 @@ class NDB_BVL_Feedback
             );
         }
         // close the threads - update feedback_bvl_thread table
-        $stmt = $db->prepare('
+        $stmt = $db->prepare(
+            '
             UPDATE feedback_bvl_thread
             SET Status = \'closed\', UserID = \'' . $this->_username . '\'
-            WHERE ' . $whereStr 
+            WHERE ' . $whereStr
         );
         $db->execute($stmt, $params, array('nofetch' => true));
         return $stmt->rowCount();
@@ -1016,7 +1017,8 @@ class NDB_BVL_Feedback
 
         $params = array('v_feedbackid' => $feedbackID);
 
-        $stmt = $db->prepare('
+        $stmt = $db->prepare(
+            '
             UPDATE feedback_bvl_thread
             SET Status = \'opened\', UserID = \'' . $this->_username . '\'
             WHERE ' . $whereStr
