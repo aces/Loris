@@ -374,6 +374,7 @@ class Installer
             $DB->PDO->exec($sqls);
         } catch (\PDOException $err) {
             error_log($err->getMessage());
+            $this->_lastErr = $err->getMessage();
             return false;
         }
         return true;
