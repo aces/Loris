@@ -47,7 +47,7 @@ MySQL is not recommended/supported on CentOS, see [paragraph 2 here](https://www
 curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 ```
 
-### Manually select MariaDB version 10.3
+Configure MariaDB repository
 Use the following yum repository configuration in `/etc/yum.repos.d/MariaDB.repo`:
 
 ```
