@@ -951,48 +951,44 @@ class NDB_BVL_Feedback
         // new DB Object
         $db =& Database::singleton();
 
-        $setArray = array(
-            "Status" => 'closed',
-            "UserID" => $this->_username,
-        );
-
-        $whereArray = array(
-            "Public" => 'Y',
-            "Active" => 'Y',
-        );
+        $whereStr = 'Public = \'Y\' AND Active = \'Y\' ';
         if (!empty($feedbackID)) {
             // only one thread to be closed
-            $whereArray = array_merge(
-                $whereArray,
-                array("FeedbackID" => $feedbackID)
-            );
+            $whereStr .= 'AND FeedbackID = :v_feedbackid ';
+            $params = array('v_feedbackid' => $feedbackID);
+
         } elseif (!empty($this->_feedbackObjectInfo['CommentID'])) {
             // close all threads for the instruments
-            $whereArray = array_merge(
-                $whereArray,
-                array("CommentID" => $this->_feedbackObjectInfo['CommentID'])
-            );
+            $commentid = $this->_feedbackObjectInfo['CommentID'];
+            $whereStr .= 'AND CommentID = :v_commentid ';
+            $params = array('v_commentid' => $commentid);
+
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
             // close all threads for the timepoint
-            $whereArray = array_merge(
-                $whereArray,
-                array("SessionID" => $this->_feedbackObjectInfo['SessionID'])
-            );
+            $sessionid = $this->_feedbackObjectInfo['SessionID'];
+            $whereStr .= 'AND SessionID = :v_sessionid ';
+            $params = array('v_sessionid' => $sessionid);
+
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
             // close all threads for the candidate
-            $whereArray = array_merge(
-                $whereArray,
-                array("CandID" => $this->_feedbackObjectInfo['CandID'])
-            );
+            $candid = $this->_feedbackObjectInfo['CandID'];
+            $whereStr .= 'AND CandID = :v_candid ';
+            $params = array('v_candid' => $sessionid);
+
         } else {
             // at least one of the above has to be true
             throw new Exception(
                 "Error: No threads selected were selected to be closed"
             );
         }
-
         // close the threads - update feedback_bvl_thread table
-        $db->update('feedback_bvl_thread', $setArray, $whereArray);
+        $stmt = $db->prepare('
+            UPDATE feedback_bvl_thread
+            SET Status = \'closed\', UserID = \'' . $this->_username . '\'
+            WHERE ' . $whereStr 
+        );
+        $db->execute($stmt, $params, array('nofetch' => true));
+        return $stmt->rowCount();
     }
 
     /**
@@ -1006,26 +1002,27 @@ class NDB_BVL_Feedback
      */
     function openThread($feedbackID)
     {
-        $db =& Database::singleton();
-
-        $setArray = array(
-            "Status" => 'opened',
-            "UserID" => $this->_username,
-        );
-
-        $whereArray = array(
-            "Public" => 'Y',
-            "Active" => 'Y',
-        );
-        if (!empty($feedbackID)) {
-            // only one thread to be closed
-            $whereArray = array_merge(
-                $whereArray,
-                array("FeedbackID" => $feedbackID)
+        if (empty($feedbackID)) {
+            throw new Exception(
+                "Missing feedbackID"
             );
         }
 
-        $db->update('feedback_bvl_thread', $setArray, $whereArray);
+        $db =& Database::singleton();
+
+        $whereStr = 'Public = \'Y\' AND Active = \'Y\' ';
+
+        $whereStr .= 'AND FeedbackID = :v_feedbackid ';
+
+        $params = array('v_feedbackid' => $feedbackID);
+
+        $stmt = $db->prepare('
+            UPDATE feedback_bvl_thread
+            SET Status = \'opened\', UserID = \'' . $this->_username . '\'
+            WHERE ' . $whereStr
+        );
+        $db->execute($stmt, $params, array('nofetch' => true));
+        return $stmt->rowCount();
 
     }
 

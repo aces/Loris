@@ -13,8 +13,27 @@
 ini_set('default_charset', 'utf-8');
 require_once "bvl_panel_ajax.php";
 
-if (isset($_POST['feedbackID']) && isset($_POST['candID'])) {
-    $feedbackThread->openThread($_POST['feedbackID']);
+try {
+    $openedthreadcount = $feedbackThread->openThread($_POST['feedbackID']);
+} catch (\Exception $e) {
+    error_log($e->getMessage());
+    header("HTTP/1.1 404 Not Found");
+    header("Content-Type: aaplication/json");
+    print json_encode(
+        array('error' => 'The requested feedback thread can`t be found')
+    );
+    exit;
 }
 
-exit();
+if ($openedthreadcount === 0) {
+    header("HTTP/1.1 500 Internal Server Error");
+    header("Content-Type: aaplication/json");
+    print json_encode(
+        array('error' => 'No feedback thread updated')
+    );
+    exit;
+}
+
+header("HTTP/1.1 204 No Content");
+exit;
+
