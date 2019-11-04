@@ -275,7 +275,7 @@ class Stats_MRI extends \NDB_Form
         }
         $sitesString = implode(",", array_keys($list_of_sites));
 
-        $centers     = $DB->pselect(
+        $centers   = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     IFNULL(PSCArea,Name) as LongName,

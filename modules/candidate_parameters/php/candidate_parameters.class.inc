@@ -40,8 +40,8 @@ class Candidate_Parameters extends \NDB_Form
     {
         return $user->hasAnyPermission(
             array(
-             'candidate_parameter_view',
-             'candidate_parameter_edit',
+                'candidate_parameter_view',
+                'candidate_parameter_edit',
             )
         );
     }
@@ -81,7 +81,7 @@ class Candidate_Parameters extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candidate =& \Candidate::singleton((int)$this->identifier);
+        $candidate =& \Candidate::singleton(new CandID($this->identifier));
         $candID    = $candidate->getCandID();
 
         return new \LORIS\BreadcrumbTrail(
