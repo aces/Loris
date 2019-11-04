@@ -58,7 +58,7 @@ Install PGP key with:
 sudo rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 ```
 
-Then install the database client and server packages.
+### Database client and server packages.
 
 ```bash
 sudo yum install MariaDB-client MariaDB-server
