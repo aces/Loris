@@ -64,14 +64,7 @@ sudo rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 sudo yum install MariaDB-client MariaDB-server
 ```
 
-By default in CentOS 7, the MariaDB version is 10.2
-Check what version you have installed by running:
-```
-mysql -V
-```
-
-Upgrade your MariaDB to version 10.3 (LORIS 21 does not support MariaDB 10.2.27)
-Then, 
+### Starting MariaDB server
 ```bash
 sudo systemctl start mariadb 
 sudo systemctl enable mariadb
