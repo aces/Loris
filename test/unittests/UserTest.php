@@ -28,7 +28,7 @@ class UserTest extends TestCase
      *
      * @var string
      */
-    private $_username;
+    private const USERNAME = '968775'
     /**
      * Stores user information
      *
@@ -36,7 +36,7 @@ class UserTest extends TestCase
      */
     private $_userInfo
         = array('ID'                     => 1,
-                'UserID'                 => '968775',
+                'UserID'                 => self::USERNAME
                 'Password'               => 'sufficient length and complexity',
                 'Real_name'              => 'John Doe',
                 'First_name'             => 'John',
@@ -225,7 +225,8 @@ class UserTest extends TestCase
         $this->_mockFactory->setDatabase($this->_mockDB);
         $this->_factory->setConfig($this->_mockConfig);
 
-        $this->_username = "968775";
+        $this->_userInfo['Password_hash'] = 
+            new \Password($this->_userInfoComplete['Password']);
 
         $this->_userInfoComplete = $this->_userInfo;
         $this->_userInfoComplete['ID'] = '1';
@@ -242,8 +243,8 @@ class UserTest extends TestCase
                                                );
         $this->_userInfoComplete['CenterIDs'] = array('1', '4');
         $this->_userInfoComplete['ProjectIDs'] = array('1', '3');
-        $this->_userInfoComplete['Password_hash'] = 
-            new \Password($this->_userInfoComplete['Password']);
+
+        $this->_user = \User::factory(self::USERNAME);
     }
 
     /**
@@ -271,7 +272,7 @@ class UserTest extends TestCase
     public function testFactoryRetrievesUserInfo()
     {
         $this->_setUpTestDoublesForFactoryUser();
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         //validate _user Info
         $this->assertEquals($this->_userInfoComplete, $this->_user->getData());
     }
@@ -285,7 +286,7 @@ class UserTest extends TestCase
      */
     public function testGetDataForLanguagePreferences()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['language_preference'], 
             $this->_user->getData('language_preference')
@@ -300,7 +301,7 @@ class UserTest extends TestCase
      */
     public function testGetFullname()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['Real_name'],        
             $this->_user->getFullname()
@@ -315,7 +316,7 @@ class UserTest extends TestCase
      */
     public function testGetId()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['ID'],
             $this->_user->getId()
@@ -330,7 +331,7 @@ class UserTest extends TestCase
      */
     public function testGetUsername()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['UserID'],
             $this->_user->getUsername()
@@ -345,7 +346,7 @@ class UserTest extends TestCase
      */
     public function testSiteNames()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             array('psc_test', 'psc_test2'),
             $this->_user->getSiteNames()
@@ -360,7 +361,7 @@ class UserTest extends TestCase
      */
     public function testGetCenterIDs()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['CenterIDs'],
             $this->_user->getCenterIDs()
@@ -375,7 +376,7 @@ class UserTest extends TestCase
      */
     public function testGetLanguagePreference()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['language_preference'],
             $this->_user->getLanguagePreference()
@@ -391,7 +392,7 @@ class UserTest extends TestCase
      */
     public function testGetExaminerSites()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $result = array('1' => array('Y', 1),
                         '4' => array('Y', 1));
         $this->assertEquals(
@@ -410,7 +411,7 @@ class UserTest extends TestCase
      */
     public function testGetStudySites()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $result = array('1' => 'psc_test',
                         '4' => 'psc_test2');
         $this->assertEquals(
@@ -427,7 +428,7 @@ class UserTest extends TestCase
      */
     public function testHasStudySites()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertTrue($this->_user->hasStudySite());
     }
     
@@ -439,7 +440,7 @@ class UserTest extends TestCase
      */
     public function testIsEmailValid()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertTrue($this->_user->isEmailValid());
     }
 
@@ -458,7 +459,7 @@ class UserTest extends TestCase
             "users", 
             array(0=> $invalidEmailInfo)
         );
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertFalse($this->_user->isEmailValid());
     }
  
@@ -470,7 +471,7 @@ class UserTest extends TestCase
      */
     public function testHasCenterWhenTrue()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertTrue($this->_user->hasCenter(4));
     }
 
@@ -482,7 +483,7 @@ class UserTest extends TestCase
      */
     public function testHasCenterWhenFalse()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertFalse($this->_user->hasCenter(5));
     }
 
@@ -494,7 +495,7 @@ class UserTest extends TestCase
      */
     public function testIsUserDCC()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertTrue($this->_user->isUserDCC());
     }
 
@@ -645,7 +646,7 @@ class UserTest extends TestCase
      * @return void
      * @covers User::passwordChanged
      */
-    private function testPasswordChangedReturnsTrue() {
+    public function testPasswordChangedReturnsTrue() {
         $this->_user = \User::factory($this->_username);
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
@@ -668,7 +669,7 @@ class UserTest extends TestCase
      * @return void
      * @covers User::passwordChanged
      */
-    private function testPasswordChangedReturnsFalse() {
+    public function testPasswordChangedReturnsFalse() {
         $this->_user = \User::factory($this->_username);
         $password = $this->_userInfoComplete['Password'];
         $hash = password_hash($password, PASSWORD_DEFAULT);
