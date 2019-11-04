@@ -87,7 +87,7 @@ foreach ($_POST as $key => $value) {
                 continue;
             }
             if (isDuplicate($ConfigSettingsID, $value)) {
-                http_response_code(400);
+                displayError(400, "Duplicate Value In The Instrument Form");
                 exit();
             }
             // Get all the IDs in ConfigSettings with the web_path data type.
