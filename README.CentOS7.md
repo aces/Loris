@@ -42,11 +42,6 @@ MySQL is not recommended/supported on CentOS, see [paragraph 2 here](https://www
 
 *Note:* LORIS developers (those NOT working with a .zip release codebase) should skip steps relating to hosting their database locally. Contact your system administrator for database credentials.
 
-### The MariaDB Repository Configuration Tool
-```bash
-curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-```
-
 ### Manually select MariaDB version 10.3
 Use the following yum repository configuration in `/etc/yum.repos.d/MariaDB.repo`:
 
