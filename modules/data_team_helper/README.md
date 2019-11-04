@@ -26,6 +26,3 @@ There are no configurations for this module.
 The Data Team Helper module links to the feedback module, the
 conflict resolver, and the data entry for particular instruments.
 
-Note: The Data Team Helper module is listed as "Quality Control"
-in the default LORIS menu.
-
