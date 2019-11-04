@@ -3,7 +3,7 @@
  * This file is used by the Configuration module to update
  * or insert values into the Project table.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Main
  * @package  Loris
@@ -12,7 +12,7 @@
  * @link     https://github.com/aces/Loris
  */
 
-$user =& User::singleton();
+$user = \User::singleton();
 if (!$user->hasPermission('config')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -22,79 +22,55 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$factory     = NDB_Factory::singleton();
-$db          = $factory->database();
-$ProjectList = Utility::getProjectList();
-$recTarget   = empty($_POST['recruitmentTarget'])
-    ? null : $_POST['recruitmentTarget'];
-$projectID   = null;
-// if a new project is created add the new project.php
-// Otherwise, update the existing project.
-if ($_POST['ProjectID'] === 'new') {
-    if (!in_array($_POST['Name'], $ProjectList) && !empty($_POST['Name'])) {
-        $db->insert(
-            "Project",
-            array(
-                "Name"              => $_POST['Name'],
-                "recruitmentTarget" => $recTarget,
-            )
-        );
-        $projectID = $db->getLastInsertId();
-    } else {
-        header("HTTP/1.1 409 Conflict");
-        print '{ "error" : "Conflict" }';
-        exit();
-    }
-} else {
-    $db->update(
-        "Project",
-        array(
-            "Name"              => $_POST['Name'],
-            "recruitmentTarget" => $recTarget,
-        ),
-        array("ProjectID" => $_POST['ProjectID'])
-    );
-    $projectID = $_POST['ProjectID'];
-}
+$factory = NDB_Factory::singleton();
+$db      = $factory->database();
 
-// get values from the database before change to crossmatch with new submission
-$preValues = $db->pselectCol(
-    'SELECT SubprojectID 
-    FROM project_subproject_rel WHERE ProjectID=:pid',
-    array('pid' => $projectID)
-);
+$ProjectList = Utility::getProjectList();
+$projectName = $_POST['Name'] ?? '';
+// FIXME This field should be added to the front-end.
+$projectAlias  = '';
+$recTarget     = empty($_POST['recruitmentTarget'])
+    ? null : $_POST['recruitmentTarget'];
+$projectID     = $_POST['ProjectID'] ?? null;
+$subprojectIDs = $_POST['SubprojectIDs'] ?? array();
+
+$project = null;
+
+// Create or update a Project
+if ($_POST['ProjectID'] === 'new') {
+    // Give Conflict response if this project already exists.
+    if (in_array($_POST['Name'], $ProjectList, true)) {
+        http_response_code(409);
+        echo json_encode(array('error' => 'Conflict'));
+        exit;
+    }
+
+    $project = \Project::createNew($projectName, $projectAlias, $recTarget);
+} else {
+    // Update Project fields
+    $project = \Project::getProjectFromID($projectID);
+    $project->updateName($projectName);
+    $project->updateRecruitmentTarget($recTarget);
+
+}
 
 // Compare submitted values with DB values.
 // It's important not to delete and reinsert the values due to delete cascades on
 // tables referencing project_subproject_rel in the database.
-$subprojectIDs = $_POST['SubprojectIDs'] ?? array();
 if (empty($subprojectIDs)) {
-    http_response_code(400);
+    http_response_code(200);
     exit;
 }
-$toAdd    = array_diff($subprojectIDs, $preValues);
-$toRemove = array_diff($preValues, $subprojectIDs);
 
-foreach ($toAdd as $sid) {
-    $db->insertIgnore(
-        'project_subproject_rel',
-        array(
-            'ProjectID'    => $projectID,
-            'SubprojectID' => $sid,
-        )
-    );
-}
-// the following can cause some deletions from the visit_project_subproject_rel table
-foreach ($toRemove as $sid) {
-    $db->delete(
-        'project_subproject_rel',
-        array(
-            'ProjectID'    => $projectID,
-            'SubprojectID' => $sid,
-        )
-    );
-}
+// Update subprojectIDs if data submitted.
+$preValues = array_column($project->getSubprojects(), 'subprojectId');
+$toAdd     = array_diff($subprojectIDs, $preValues);
+$toRemove  = array_diff($preValues, $subprojectIDs);
+
+$project->insertSubprojectIDs($toAdd);
+$project->deleteSubprojectIDs($toRemove);
+
 header("HTTP/1.1 200 OK");
-print '{ "ok" : "Success" }';
-exit();
+echo json_encode(array('ok' => 'Success'));
+exit;
 
