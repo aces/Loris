@@ -28,7 +28,7 @@ class UserTest extends TestCase
      *
      * @var string
      */
-    private const USERNAME = '968775'
+    private const USERNAME = '968775';
     /**
      * Stores user information
      *
@@ -36,7 +36,7 @@ class UserTest extends TestCase
      */
     private $_userInfo
         = array('ID'                     => 1,
-                'UserID'                 => self::USERNAME
+                'UserID'                 => self::USERNAME,
                 'Password'               => 'sufficient length and complexity',
                 'Real_name'              => 'John Doe',
                 'First_name'             => 'John',
@@ -650,12 +650,12 @@ class UserTest extends TestCase
             ->with(
                 $this->stringContains("FROM user_login_history")
             )
-            ->willReturn(\Utility::getRandomString());
+            ->willReturn(\Utility::randomString());
         // Should return true (i.e. the password has changed) because random
         // strings should not generate a match.
         $this->assertTrue(
             $this->_user->passwordChanged(
-                \Utility::getRandomString()
+                \Utility::randomString()
             )
         );
     }
