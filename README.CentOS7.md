@@ -53,6 +53,11 @@ gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 ```
 
+Install PGP key with:
+```
+sudo rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+```
+
 Then install the database client and server packages.
 
 ```bash
