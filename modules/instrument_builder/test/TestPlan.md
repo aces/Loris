@@ -29,7 +29,7 @@ Instrument builder Test Plan
 7.  Save Instrument file
 8.  Validate that not_answered option is added in the linst file for 1.e, 1.f, 1.g, 1.h
 9.  Re-load existing instrument
-    9.a  Add questions
-    10.b Save instrument file and ensure new changes are reflected in the file
+    9.a Add questions
+    9.b Save instrument file and ensure new changes are reflected in the file
 10. Install and test instrument and rules implemented
 11. Test functionality on mutiple broswers.
