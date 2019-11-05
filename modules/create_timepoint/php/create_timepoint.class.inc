@@ -204,7 +204,7 @@ class Create_Timepoint extends \NDB_Form
                 $this->addRule('visitLabel', 'Visit label is required', 'required');
 
                 // List of sites for the user
-                $user_list_of_sites = $user->getData('CenterIDs');
+                $user_list_of_sites = $user->getCenterIDs();
                 $num_sites          = count($user_list_of_sites);
                 if ($num_sites >1) {
                     $this->tpl_data['pscLabelAdded'] = true;
