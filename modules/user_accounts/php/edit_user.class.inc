@@ -2,7 +2,7 @@
 /**
  * The user account page
  *
- * PHP Version 5,7
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -25,6 +25,11 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Edit_User extends \NDB_Form
 {
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
+    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
+                                        'identical: please choose another one';
+
     /**
      * Determines whether this form is in edit or create mode.
      *
@@ -1005,9 +1010,13 @@ class Edit_User extends \NDB_Form
         $DB     = \Database::singleton();
         $errors = array();
 
+        // NOTE The 'Password_hash' key actually represents a plaintext password
+        $plaintext = $values['Password_hash'];
+
         //============================================
         //         Validate UserID and NA_UserID
         //============================================
+
         if ($this->isCreatingNewUser()) {
             // Clicked on "UID == email" and specified a UID
             if (!empty($values['UserID']) && $values['NA_UserID'] == 'on') {
@@ -1063,6 +1072,9 @@ class Edit_User extends \NDB_Form
         //==================================
         //        Password validation
         //==================================
+        if ($values['Email'] === $values['Password_hash']) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+        }
         if (!is_null($this->identifier)) {
             $pass = $DB->pselectOne(
                 "SELECT COALESCE(Password_hash) "
@@ -1081,19 +1093,25 @@ class Edit_User extends \NDB_Form
                     = 'Please specify password or click Generate new password';
             }
         }
+        // Ensure that the password and confirm password fields match.
+        // TODO This validation should be done on the front-end instead.
+        if ($plaintext !== $values['__Confirm']) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_NO_MATCH;
+        }
 
         // if password is user-defined, and user wants to change password
         if (empty($values['NA_Password'])
             && (!empty($values['Password_hash']) || !empty($values['__Confirm']))
         ) {
             try {
-                // New password must be different than current one
-                $password        = new \Password($values['Password_hash']);
+                // The Password class is self-validating and will throw an
+                // InvalidArgumentException if the value passed to it is
+                // bad or the input is too weak to be a good password.
+                $password        = new \Password($plaintext);
                 $passwordChanged = \User::factory($this->identifier)
-                    ->passwordChanged($values['Password_hash']);
+                    ->passwordChanged($plaintext);
                 if (! $passwordChanged) {
-                    $errors['Password_Group'] = 'New and old passwords '
-                        . 'are identical: please choose another one';
+                    $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
                 }
             } catch (\InvalidArgumentException $e) {
                 $errors['Password_Group'] = $e->getMessage();
@@ -1112,7 +1130,7 @@ class Edit_User extends \NDB_Form
 
         if (isset($values['NA_Password'])
             && $values['NA_Password'] == 'on'
-            && $values['Password_hash'] != ''
+            && $plaintext != ''
         ) {
             $errors['Password_Group'] = 'You must leave the password field empty '
                 . 'if you want the system to generate one for you';
@@ -1120,7 +1138,7 @@ class Edit_User extends \NDB_Form
 
         if (is_null($this->identifier)
             && ($values['NA_Password'] != 'on')
-            && empty($values['Password_hash'])
+            && empty($plaintext)
         ) {
             $errors['Password_Group'] = 'Password is required';
         }

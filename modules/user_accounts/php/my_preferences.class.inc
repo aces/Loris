@@ -23,6 +23,10 @@ namespace LORIS\user_accounts;
  */
 class My_Preferences extends \NDB_Form
 {
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
+    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
+                                        'identical: please choose another one';
     /**
      * Computes the initial values this page will be filled with.
      *
@@ -192,6 +196,9 @@ class My_Preferences extends \NDB_Form
         // update the user
         $user->update($set);
 
+        // Now set the password. Note that this field is named incorrectly at this
+        // point in the code and represents a plaintext password, not a hash.
+        // Validation for the password is performed in _validateMyPreferences()
         if (isset($values['Password_hash'])) {
             $user->updatePassword(new \Password($values['Password_hash']));
         }
@@ -386,20 +393,36 @@ class My_Preferences extends \NDB_Form
         $DB     = \Database::singleton();
         $errors = array();
 
+        // NOTE The 'Password_hash' key actually represents a plaintext password
+        $plaintext = $values['Password_hash'];
+
+        if ($values['Email'] === $plaintext) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+        }
+
+        // Ensure that the password and confirm password fields match.
+        // TODO This validation should be done on the front-end instead.
+        if ($values['Password_hash'] !== $values['__Confirm']) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_NO_MATCH;
+            return $errors;
+        }
+
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
             try {
-                $password = new \Password($values['Password_hash']);
-                // New password must be different than current one
-                if (! \User::factory($this->identifier)->passwordChanged(
-                    $values['Password_hash']
-                )
-                ) {
-                    $errors['Password_hash'] = 'New and old passwords '
-                        . 'are identical: please choose another one';
+                // The Password class is self-validating and will throw an
+                // InvalidArgumentException if the value passed to it is
+                // bad or the input is too weak to be a good password.
+                //
+                // NOTE 'Password_hash' is actually plaintext, not a hash.
+                $password        = new \Password($plaintext);
+                $passwordChanged = \User::factory($this->identifier)
+                    ->passwordChanged($plaintext);
+                if (! $passwordChanged) {
+                    $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
                 }
             } catch (\InvalidArgumentException $e) {
-                $errors['Password_hash'] = $e->getMessage();
+                $errors['Password_Group'] = $e->getMessage();
             }
         }
 
