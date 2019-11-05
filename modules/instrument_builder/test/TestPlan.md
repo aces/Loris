@@ -29,7 +29,7 @@ Instrument builder Test Plan
 7.  Add Rules [not available now].
 8.  Save Rules file [not available now].
 9.  Re-load existing instrument
-    9.a Add questions
-    9.b Save instrument file and ensure new changes are reflected in the file
+  * 9.a Add questions
+  * 9.b Save instrument file and ensure new changes are reflected in the file
 10. Install and test instrument and rules implemented
 11. Test functionality on mutiple broswers.
