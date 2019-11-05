@@ -205,8 +205,9 @@ function viewData()
 function getUploadFields()
 {
 
-    $db   = \NDB_Factory::singleton()->database();
-    $user = \User::singleton();
+    $db     = \NDB_Factory::singleton()->database();
+    $user   = \User::singleton();
+    $config = \NDB_Config::singleton();
 
     // Select only candidates that have had visit at user's sites
     $qparam       = array();
@@ -231,6 +232,8 @@ function getUploadFields()
     $visitList       = Utility::getVisitList();
     $siteList        = Utility::getSiteList(false);
     $languageList    = Utility::getLanguageList();
+    $startYear       = $config->getSetting('startYear');
+    $endYear         = $config->getSetting('endYear');
 
     // Build array of session data to be used in upload media dropdowns
     $sessionData = array();
@@ -328,6 +331,8 @@ function getUploadFields()
                'mediaFiles'  => array_values(getFilesList()),
                'sessionData' => $sessionData,
                'language'    => $languageList,
+               'startYear'   => $startYear,
+               'endYear'     => $endYear,
               ];
 
     return $result;
@@ -414,9 +419,9 @@ function checkDateTaken($dateTaken)
         }
 
         $now  = new DateTime();
-        $diff = date_diff($date, $now)->format("%a");
-        if ($diff > 0) {
-            showMediaError("Date of administration can not be in the future", 400);
+        $diff = intval(date_diff($date, $now)->format("%R%a"));
+        if ($diff < 0) {
+            showMediaError("Date of administration cannot be in the future", 400);
         }
     }
 }

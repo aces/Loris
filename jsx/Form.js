@@ -987,7 +987,7 @@ class DateElement extends Component {
       if (this.props.maxYear === '' || this.props.maxYear === null) {
         maxYear = '9999';
       }
-      let monthInputs = $('input[name=' + this.props.name+']');
+      let monthInputs = $('input[type=month][name=' + this.props.name+']');
       monthInputs.datepicker({
         dateFormat: 'yy-mm',
         changeMonth: true,
