@@ -169,8 +169,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this-> _testFilter(self::$PSCID, "1 rows", 'MTL001');
         $this-> _testFilter(self::$DCCID, "1 rows", '300001');
         $this-> _testFilter(self::$DCCID, "0 rows", 'test');
-        $this-> _testFilter(self::$visitLabel, "375", 'V1');
-        $this-> _testFilter(self::$visitLabel, "261", 'V2');
+        $this-> _testFilter(self::$visitLabel, "375", '1');
+        $this-> _testFilter(self::$visitLabel, "261", '2');
         $this-> _testFilter(self::$site, "8 rows", '1');
         $this-> _testFilter(self::$site, "168", '2');
         $this-> _testFilter(self::$entityType, "8 rows", '1');
