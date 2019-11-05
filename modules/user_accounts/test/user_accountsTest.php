@@ -23,6 +23,11 @@ require_once __DIR__
  */
 class UserAccountsIntegrationTest extends LorisIntegrationTest
 {
+    private const UNIT_TESTER_EMAIL = 'tester@example.com'
+    private const UNIT_TESTER_EMAIL_NEW = 'tester@example.com'
+    private const FORM_FIELD_PASSWORD = 'Password_hash';
+    private const FORM_FIELD_CONFIRM_PASSWORD = '__Confirm';
+
     private static $_UNIT_TESTER = array(
         'Data Coordinating Center',
         'UnitTester',
@@ -292,7 +297,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function _verifyUserModification($page, $userId, $fieldName, $newValue)
     {
-
         // Submit the change
         $this->submitUserData($page, $userId, $fieldName, $newValue);
 
@@ -310,18 +314,11 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         }
     }
 
-    function submitUserData($page, $userId, $fieldName, $newValue)
+    /**
+     * Submit user data to the form specified by $page.
+     */
+    function submit($page, $userId): void
     {
-        $this->_accessUser($page, $userId);
-        $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
-        if ($field->getTagName() == 'input') {
-            $field->clear();
-            $field->sendKeys($newValue);
-        } else {
-            $selectField = new WebDriverSelect($field);
-            $selectField->selectByVisibleText($newValue);
-        }
-
         // if working on edit_user, select at least one site
         if (strpos($page, 'my_preferences') === false) {
             $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
@@ -337,17 +334,57 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->safeClick(WebDriverBy::Name('fire_away'));
     }
 
+    function setValue($fieldName, $newValue): void {
+        $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
+        if ($field->getTagName() == 'input') {
+            $field->clear();
+            $field->sendKeys($newValue);
+        } else {
+            $selectField = new WebDriverSelect($field);
+            $selectField->selectByVisibleText($newValue);
+        }
+    }
+
+    function verifyPasswordNotEqualToEmail($page, $userId): void {
+        $this->_accessUser($page, $userId);
+        // Set Password and Confirm Password equal to the user's email
+        $this->setValue(
+            self::FORM_FIELD_PASSWORD,
+            self::UNIT_TESTER_EMAIL_NEW
+        );
+        $this->setValue(
+            self::FORM_FIELD_PASSWORD_CONFIRM,
+            self::UNIT_TESTER_EMAIL_NEW
+        );
+        $this->submit(
+            $page,
+            $userId
+        );
+        
+        // Reload
+        $this->_accessUser($page, $userId);
+        assertContains('', $this->getBody());
+    }
+
+    function getBody() {
+        return $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+    }
+
     function verifyPasswordErrors($page, $userId): void {
         $this->_accessUser($page, $userId);
-        $password = $this->safeFindElement(
+        // Set the password 
+        $passwordElement = $this->safeFindElement(
             WebDriverBy::Name('Password_hash')
         );
-        $confirmPassword = $this->safeFindElement(
+        $confirmPasswordElement = $this->safeFindElement(
             WebDriverBy::Name('__Confirm')
         );
 
-        // Ensure the passwords match.
-        assertEqual($password, $confirmPassword);
+        $passwordValue = $passwordElement->getAttribute('value');
+        $confirmPasswordValue = $confirmPasswordElement->getAttribute('value');
+
         
         $this->submitUserData(
             'user_accounts',
