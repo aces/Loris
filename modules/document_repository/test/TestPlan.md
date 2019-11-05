@@ -31,8 +31,8 @@
     [Manual Testing]
 15. Check that if you have the 'Receive document repository notification' activated you will receive an email each 
     time one of the following event occurs:
-       - Addition, deletion or modification of a file
-       - Addition of a category.
+       - Addition, deletion or modification of a file (by a user other than yourself)
+       - Addition of a category (by a user other than yourself)
     Also check that the www address contained in the notification email is correct.
     [Manual Testing]
 16. To upload large files, check that the following settings are in php.ini (default: /etc/php/{php_version}/apache2/php.ini):
