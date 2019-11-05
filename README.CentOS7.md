@@ -103,6 +103,31 @@ Customize and Verify your settings:
  * DocumentRoot should point to `/var/www/loris/htdocs`
  * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
 
+Modify the Apache configuration file for our production environment.
+```
+sudo open -e /usr/local/etc/httpd/httpd.conf
+```
+
+**a.** Find & modify the `ServerName` to:
+```
+ServerName <production_server>
+```
+
+**b.** Find the lines for `DocumentRoot` and `Directory` in Apache and change them to:
+```
+DocumentRoot "/var/www/loris/htdocs/"
+<Directory "/var/www/loris/htdocs/">
+```
+
+**c.** In the same `<Directory>` block, modify `AllowOverride` to allow all:
+```
+# AllowOverride controls what directives may be placed in .htaccess files.
+# It can be "All", "None", or any combination of the keywords:
+#   AllowOverride FileInfo AuthConfig Limit
+#
+AllowOverride All
+```
+
 Finally, restart apache:
 ```bash
 sudo systemctl restart httpd
