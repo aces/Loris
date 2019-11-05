@@ -1,6 +1,6 @@
 # Data Query Tool (DQT) Test Plan
 
-1. Ensure the DQT module loads only for user that has the permission 'View Data Query Tool' (`dataquery_view`)
+1. Ensure the DQT module loads only for a user that has the permission 'View Data Query Tool' (`dataquery_view`)
 2. Verify that the permission 'View Data Query Tool' is required to access the DQT page
 3. Go to the "Define Fields" tab:
    - select an instrument in the instrument drop down, ensure the fields are displayed
