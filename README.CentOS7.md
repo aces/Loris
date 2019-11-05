@@ -110,7 +110,7 @@ vi /etc/httpd/conf/httpd.conf
 
 **a.** Find & modify the `ServerName` to:
 ```
-ServerName your.Loris.url.here:443
+ServerName your.Loris.url.here:80
 ```
 
 **b.** Find the lines for `DocumentRoot` and `Directory` in Apache and change them to:
