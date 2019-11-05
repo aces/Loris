@@ -292,6 +292,26 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function _verifyUserModification($page, $userId, $fieldName, $newValue)
     {
+
+        // Submit the change
+        $this->submitUserData($page, $userId, $fieldName, $newValue);
+
+        // Verify changes appear on the page
+        $this->_accessUser($page, $userId);
+        $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
+        if ($field->getTagName() == 'input') {
+            $this->assertEquals($field->getAttribute('value'), $newValue);
+        } else {
+            $selectField = new WebDriverSelect($field);
+            $this->assertEquals(
+                $selectField->getFirstSelectedOption()->getText(),
+                $newValue
+            );
+        }
+    }
+
+    function submitUserData($page, $userId, $fieldName, $newValue)
+    {
         $this->_accessUser($page, $userId);
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
@@ -315,19 +335,29 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $projectsOption->selectByValue("1");
         }
         $this->safeClick(WebDriverBy::Name('fire_away'));
-
-        $this->_accessUser($page, $userId);
-        $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
-        if ($field->getTagName() == 'input') {
-            $this->assertEquals($field->getAttribute('value'), $newValue);
-        } else {
-            $selectField = new WebDriverSelect($field);
-            $this->assertEquals(
-                $selectField->getFirstSelectedOption()->getText(),
-                $newValue
-            );
-        }
     }
+
+    function verifyPasswordErrors($page, $userId): void {
+        $this->_accessUser($page, $userId);
+        $password = $this->safeFindElement(
+            WebDriverBy::Name('Password_hash')
+        );
+        $confirmPassword = $this->safeFindElement(
+            WebDriverBy::Name('__Confirm')
+        );
+
+        // Ensure the passwords match.
+        assertEqual($password, $confirmPassword);
+        
+        $this->submitUserData(
+            'user_accounts',
+            'UnitTester',
+            'Email',
+            'newemail@example.com'
+        );
+
+    }
+
     /**
      * Does one of two things: either accesses the My Preferences page of the
      * current user of the user account page for the user whose ID is passed
