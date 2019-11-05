@@ -123,8 +123,8 @@ class CandidateListIndex extends Component {
       );
     }
 
-    if (column === 'Visit Label' || column === 'Subproject') {
-      // If user has multiple visits or subprojects, join array into string
+    if (column === 'Subproject') {
+      // If user has multiple subprojects, join array into string
       let result = (cell) ? <td>{cell.join(',')}</td> : null;
       return result;
     }
