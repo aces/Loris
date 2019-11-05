@@ -633,24 +633,20 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that a user cannot keep the same password.
-     *
-     * Uses a random string as the "new password" which is evaluated against 
-     * another random string as the "old password hash". 
-     * This should always return false because passwordChanged checks that its 
-     * input matches the old hash and random strings won't generate a match.
+     * Test that passwordChanged returns true when the input does not match
+     * the Password_hash in the database.
+     * Both the hash and the input are set to different random strings so a
+     * match should never occur in this function.
      *
      * @return void
      * @covers User::passwordChanged
      */
     public function testPasswordChangedReturnsTrue() {
-        $this->_user = \User::factory($this->_username);
-        $this->_mockDB->expects($this->any())
-            ->method('pselectOne')
-            ->with(
-                $this->stringContains("Password_hash")
-            )
-            ->willReturn(\Utility::randomString());
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_userInfo['Password_hash'] = password_hash(
+            \Utility::randomString(),
+            PASSWORD_DEFAULT
+        );
         // Should return true (i.e. the password has changed) because random
         // strings should not generate a match.
         $this->assertTrue(
@@ -661,22 +657,19 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that a user cannot keep the same password.
+     * Test that passwordChanged returns false when the input matches the
+     * Password_hash in the database.
      *
      * @return void
      * @covers User::passwordChanged
      */
     public function testPasswordChangedReturnsFalse() {
-        $this->_user = \User::factory($this->_username);
-        $password = $this->_userInfoComplete['Password'];
-        $hash = password_hash($password, PASSWORD_DEFAULT);
-
-        $this->_mockDB->expects($this->any())
-            ->method('pselectOne')
-            ->with(
-                $this->stringContains("Password_hash")
-            )
-            ->willReturn($hash);
+        $this->_user = \User::factory(self::USERNAME);
+        $password = $this->_userInfo['Password'];
+        $this->_userInfo['Password_hash'] = password_hash(
+            $password,
+            PASSWORD_DEFAULT
+        );
 
         $this->assertFalse($this->_user->passwordChanged($password));
     }
