@@ -539,7 +539,7 @@ class UserTest extends TestCase
      */
     public function testUpdatePasswordWithExpiryDate()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $oldHash = $this->_user->getData('Password_hash');
         $customDate = '2021-07-18';
 
@@ -553,7 +553,7 @@ class UserTest extends TestCase
             new DateTime($customDate)
         );
         //Re-populate the user object now that the password has been changed
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
 
         $this->assertEquals($customDate, $this->_user->getData('Password_expiry'));
         // This checks that the hash has been updated. There is no way to predict
