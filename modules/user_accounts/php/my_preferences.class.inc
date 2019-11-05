@@ -23,6 +23,7 @@ namespace LORIS\user_accounts;
  */
 class My_Preferences extends \NDB_Form
 {
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
                                         'identical: please choose another one';
@@ -394,6 +395,10 @@ class My_Preferences extends \NDB_Form
 
         // NOTE The 'Password_hash' key actually represents a plaintext password
         $plaintext = $values['Password_hash'];
+
+        if ($values['Email'] === $plaintext) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+        }
 
         // Ensure that the password and confirm password fields match.
         // TODO This validation should be done on the front-end instead.

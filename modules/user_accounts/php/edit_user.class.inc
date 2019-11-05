@@ -25,6 +25,7 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Edit_User extends \NDB_Form
 {
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
                                         'identical: please choose another one';
@@ -1015,6 +1016,7 @@ class Edit_User extends \NDB_Form
         //============================================
         //         Validate UserID and NA_UserID
         //============================================
+
         if ($this->isCreatingNewUser()) {
             // Clicked on "UID == email" and specified a UID
             if (!empty($values['UserID']) && $values['NA_UserID'] == 'on') {
@@ -1070,6 +1072,9 @@ class Edit_User extends \NDB_Form
         //==================================
         //        Password validation
         //==================================
+        if ($values['Email'] === $values['Password_hash']) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+        }
         if (!is_null($this->identifier)) {
             $pass = $DB->pselectOne(
                 "SELECT COALESCE(Password_hash) "
