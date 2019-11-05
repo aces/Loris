@@ -64,7 +64,17 @@ class CandidateListIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
+      .then((data) => {
+        // Convert concatenated string of subproject and visit labels to array
+        data.Data = data.Data.map((row) => {
+          // Visit label
+          row[2] = (row[2]) ? row[2].split(',') : null;
+          // Subproject
+          row[4] = (row[4]) ? row[4].split(',') : null;
+          return row;
+        });
+        this.setState({data});
+      })
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -112,6 +122,13 @@ class CandidateListIndex extends Component {
           <a href={url}>{cell}</a></td>
       );
     }
+
+    if (column === 'Visit Label' || column === 'Subproject') {
+      // If user has multiple visits or subprojects, join array into string
+      let result = (cell) ? <td>{cell.join(',')}</td> : null;
+      return result;
+    }
+
     return <td>{cell}</td>;
   }
 
@@ -131,7 +148,6 @@ class CandidateListIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in candidate_list.class.inc
      */
-    // FIXME: if candidate in more than one subproject, filter does not work
     const options = this.state.data.fieldOptions;
     const fields = [
       {
