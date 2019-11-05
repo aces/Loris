@@ -518,22 +518,10 @@ class User extends UserPermissions
     function passwordChanged(
         string $plaintextPassword
     ): bool {
-        $passwordQuery = "SELECT Password_hash
-            FROM users
-            WHERE UserID = :UID";
-
-        $current = \NDB_Factory::singleton()->database()->pselectOne(
-            $passwordQuery,
-            array('UID' => $this->getID())
+        return ! password_verify(
+            $plaintextPassword,
+            $this->userInfo['Password_hash']
         );
-
-        if (!is_null($current)) {
-            // The plaintext password must be used here rather than the
-            // Password class.
-            return !password_verify($plaintextPassword, $current);
-        }
-
-        return true;
     }
 }
 
