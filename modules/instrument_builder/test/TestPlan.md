@@ -7,22 +7,15 @@ Instrument builder Test Plan
       1.c.1 Validate that this requires both QuestionName and QuestionText
     1.d Add Textbox
       1.d.1 Validate that this requires both QuestionName and QuestionText
-    1.e Add Textarea
+    1.e Add Textarea. 
       1.e.1 Validate that this requires both QuestionName and QuestionText
-      1.e.2 Validate that not_answered option is added in the linst file for this question
-    1.f Add Dropdown
-     1.f.1 Validate that this requires both QuestionName and QuestionText
-     1.f.2 Validate not_answered option is added as last dropdown option in the linst file
-           for this question
-    1.g Add Multiselect
-      1.g.1 Validate that this requires both QuestionName and QuestionText
-      1.g.2 Validate not_answered option is added as last dropdown option in the linst file
-            for this question
+    1.f Add Dropdown.  
+      1.f.1 Validate that this requires both QuestionName and QuestionText
+    1.g Add Multiselect. 
+      1.g.1Validate that this requires both QuestionName and QuestionText
     1.h Add Date
       1.h.1 Validate that this requires both QuestionName and QuestionText
-      1.h.2 Validate not_answered option is added as last dropdown option in the linst file
-            for this question
-      1.h.3 Validate adding range (startyear-endyear)
+      1.h.2 Validate adding range (startyear-endyear)
     1.i Add Numeric
       1.i.1 Validate that this requires both QuestionName and QuestionText
       1.i.2 Validate adding range
@@ -34,8 +27,9 @@ Instrument builder Test Plan
 5.  Save Rules file
 6.  Validate Instrument (Does not save if there is a same QuestionName twice)
 7.  Save Instrument file
-8.  Re-load existing instrument
+8.  Validate that not_answered option is added in the linst file for 1.e, 1.f, 1.g, 1.h
+9.  Re-load existing instrument
     8.a  Add questions
     8.b Save instrument file and ensure new changes are reflected in the file
-9. Install and test instrument and rules implemented
-10. Test functionality on mutiple broswers.
+10. Install and test instrument and rules implemented
+11. Test functionality on mutiple broswers.
