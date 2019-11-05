@@ -970,7 +970,7 @@ class NDB_BVL_Feedback
             // close all threads for the candidate
             $candid    = $this->_feedbackObjectInfo['CandID'];
             $whereStr .= 'AND CandID = :v_candid ';
-            $params    = array('v_candid' => $sessionid);
+            $params    = array('v_candid' => $candid);
 
         } else {
             // at least one of the above has to be true
