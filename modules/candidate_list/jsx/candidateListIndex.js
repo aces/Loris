@@ -125,7 +125,7 @@ class CandidateListIndex extends Component {
 
     if (column === 'Subproject') {
       // If user has multiple subprojects, join array into string
-      let result = (cell) ? <td>{cell.join(',')}</td> : null;
+      let result = (cell) ? <td>{cell.join(', ')}</td> : null;
       return result;
     }
 
