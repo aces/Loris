@@ -14,8 +14,7 @@ Issue Tracker Create New Issue [Manual Testing]
 4. Submit invalid and valid PSCID and visit label pairs. Error messages should respond accordingly. Not that you cannot submit PSCIDs from other sites unless you have access all profiles permission
 5. Submit just a visit label - this should give an error message.
 6. Check that all values are propagated and saved correctly.
-7. Navigation bar should lead you back to list [not available now].
-8. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
+7. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
 
 Issue Tracker Edit Existing Issue [Manual Testing]
 1. User can access the page if they have (developer or reporter permission) and (they have either access_all_profiles or are a member of the site of the issue or the site has no issue).
@@ -24,8 +23,7 @@ Issue Tracker Edit Existing Issue [Manual Testing]
 4. Submit invalid and valid PSCID and visit label pairs. Error messages should respond accordingly. Not that you cannot submit PSCIDs from other sites unless you have access all profiles permission
 5. Submit just a visit label - this should give an error message.
 6. Check that all values are propagated and saved correctly.
-7. Check that the navigation bar bring you to the next issue in your previously filtered list of issues [not available now].
-8. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
+7. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
 
 
 Permissions [Automation Testing]
