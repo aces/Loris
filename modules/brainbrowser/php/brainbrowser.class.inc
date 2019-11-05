@@ -29,7 +29,7 @@ class Brainbrowser extends \NDB_Page
      *
      * @param \User $user The user whose access is being checked
      *
-     * @return bool whether the user hass access
+     * @return bool whether the user has access
      */
     function _hasAccess(\User $user) : bool
     {
