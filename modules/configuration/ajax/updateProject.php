@@ -37,7 +37,7 @@ $subprojectIDs = $_POST['SubprojectIDs'] ?? array();
 $project = null;
 
 // Create or update a Project
-if ($_POST['ProjectID'] === 'new') {
+if ($projectID == 'new') {
     // Give Conflict response if this project already exists.
     if (in_array($_POST['Name'], $ProjectList, true)) {
         http_response_code(409);
@@ -54,23 +54,22 @@ if ($_POST['ProjectID'] === 'new') {
 
 }
 
-// Compare submitted values with DB values.
-// It's important not to delete and reinsert the values due to delete cascades on
-// tables referencing project_subproject_rel in the database.
-if (empty($subprojectIDs)) {
-    http_response_code(200);
-    exit;
+// Subproject information isn't mandatory. If the array is empty, give an
+// OK response.
+if (!empty($subprojectIDs)) {
+
+    // Update subprojectIDs if data submitted.
+    // It's important not to delete and reinsert the values due to delete
+    // cascades on tables referencing project_subproject_rel in the database.
+    $preValues = array_column($project->getSubprojects(), 'subprojectId');
+    $toAdd     = array_diff($subprojectIDs, $preValues);
+    $toRemove  = array_diff($preValues, $subprojectIDs);
+
+    $project->insertSubprojectIDs($toAdd);
+    $project->deleteSubprojectIDs($toRemove);
 }
 
-// Update subprojectIDs if data submitted.
-$preValues = array_column($project->getSubprojects(), 'subprojectId');
-$toAdd     = array_diff($subprojectIDs, $preValues);
-$toRemove  = array_diff($preValues, $subprojectIDs);
-
-$project->insertSubprojectIDs($toAdd);
-$project->deleteSubprojectIDs($toRemove);
-
-header("HTTP/1.1 200 OK");
+http_response_code(200);
 echo json_encode(array('ok' => 'Success'));
 exit;
 
