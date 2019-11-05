@@ -1,6 +1,6 @@
 # Data Query Tool (DQT) Test Plan
 
-1. Access the DQT page with a user that has permission 'View Data Query Tool', ensure it renders
+1. Ensure the DQT module loads only when with user that has the permission 'View Data Query Tool' (`dataquery_view`)
 2. Verify that the permission 'View Data Query Tool' is required to access the DQT page
 3. Go to the "Define Fields" tab:
    - select an instrument in the instrument drop down, ensure the fields are displayed
@@ -14,8 +14,8 @@
      right side of the screen
    - select a few fields from different instruments and ensure that they are all added 
      to the list of selected fields on the right side of the screen
-   - ensure that the number of visits selected reflect the number of visits that were
-     selected for the fields
+   - ensure that the number of visits added to the query reflect the number of
+     visits that were selected for the fields
    -
 4. Go to the "Define Filters" tab:
    - add a filter by selecting an instrument; ensure that drop downs with field names
@@ -33,7 +33,7 @@
      message is displayed after clicking on the "Run Query" button and before the 
      data is displayed
    - ensure that a table with results is being displayed after having run the query
-   - play with the "(Maximum rows per page)" drop down and ensure the table gets updated
+   - change the "(Maximum rows per page)" drop down and ensure the table gets updated
      accordingly
    - ensure that the first column of the data table is the "Identifiers" column that
      contains the "PSCID,VisitLabel" information separated with a comma
