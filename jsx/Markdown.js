@@ -29,9 +29,39 @@ class Markdown extends Component {
       .replace(/&quot;/g, '"');
   }
 
+  bulletsHandler(lines) {
+    let bulletFlag = false;
+    const style = 'style="margin-left:0;"';
+    for (let i=0; i<lines.length; i++) {
+      let line = lines[i];
+      if ((line.trimStart()).length > 2
+        && (line.trimStart()).charAt(0) === '*'
+        && (line.trimStart()).charAt(1) === ' ') {
+        if (!bulletFlag) {
+          bulletFlag = true;
+          i === 0
+            ? lines.unshift('<ul ' + style + '>')
+            : lines.splice(i, 0, '<ul ' + style + '>');
+          lines[i+1] = '<li>' + lines[i+1].replace('<br>', '') + '</li>';
+          i += 1;
+        } else {
+          lines[i] = '<li>' + lines[i].replace('<br>', '') + '</li>';
+        }
+      } else if (bulletFlag) {
+        lines.splice(i, 0, '</ul>');
+        i += 1;
+        bulletFlag = false;
+      }
+    }
+    return lines.join('\n');
+  }
+
   render() {
     // Fix stupid-style newlines to be just \n.
     let fixedNewLines = this.props.content.replace(/\r\n/g, '\n');
+
+    // Fix bullets
+    fixedNewLines = this.bulletsHandler(fixedNewLines.split('\n'));
 
     // Fix excaped html
     fixedNewLines = this.htmlSpecialCharsDecode(fixedNewLines);
