@@ -22,12 +22,12 @@ Instrument builder Test Plan
     1.j Add Blank Line
     1.k Add Page break
 2.  Edit DatabaseName and Question in the table directly and check if it sticks
-3.  Preview Instrument [not available now].
-4.  Add Rules [not available now].
-5.  Save Rules file [not available now].
-6.  Validate Instrument (Does not save if there is a same QuestionName twice)
-7.  Save Instrument file
-8.  Validate that not_answered option is added in the linst file for 1.e, 1.f, 1.g, 1.h
+3.  Validate Instrument (Does not save if there is a same QuestionName twice)
+4.  Save Instrument file
+5.  Validate that not_answered option is added in the linst file for 1.e, 1.f, 1.g, 1.h
+6.  Preview Instrument [not available now].
+7.  Add Rules [not available now].
+8.  Save Rules file [not available now].
 9.  Re-load existing instrument
     9.a Add questions
     9.b Save instrument file and ensure new changes are reflected in the file
