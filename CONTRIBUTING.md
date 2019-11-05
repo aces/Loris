@@ -7,7 +7,7 @@ mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
 Your next step before issuing a pull request is to review our
 [Coding Standards](./docs/CodingStandards.md). If you are doing
 front-end development you should also check out our [React
-guidelines](./docs/LORIS_react.README.md).
+guidelines](./docs/React.README.md).
 
 You can also learn about our code
 review process by perusing our [Code Review
