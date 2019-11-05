@@ -105,12 +105,12 @@ Customize and Verify your settings:
 
 Modify the Apache configuration file for our production environment.
 ```
-sudo open -e /usr/local/etc/httpd/httpd.conf
+vi /etc/httpd/conf/httpd.conf
 ```
 
 **a.** Find & modify the `ServerName` to:
 ```
-ServerName <production_server>
+ServerName your.Loris.url.here
 ```
 
 **b.** Find the lines for `DocumentRoot` and `Directory` in Apache and change them to:
