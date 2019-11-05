@@ -22,7 +22,7 @@ Instrument builder Test Plan
     1.j Add Blank Line
     1.k Add Page break
 2.  Edit DatabaseName and Question in the table directly and check if it sticks
-3.  Preview Instrument
+3.  Preview Instrument [not available now].
 4.  Add Rules [not available now].
 5.  Save Rules file [not available now].
 6.  Validate Instrument (Does not save if there is a same QuestionName twice)
