@@ -283,7 +283,7 @@ class Create_Timepoint extends \NDB_Form
         }
 
         //Project
-        $user_list_of_projects = $user->getData('ProjectIDs');
+        $user_list_of_projects = $user->getProjectIDs();
         if (count($user_list_of_projects) == 0) {
             $errors['project'] = "You must be affiliated with a project to create a 
             timepoint.";
