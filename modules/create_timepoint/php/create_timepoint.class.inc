@@ -228,7 +228,7 @@ class Create_Timepoint extends \NDB_Form
                 }
 
                 // List projects
-                $user_list_of_projects = $user->getData('ProjectIDs');
+                $user_list_of_projects = $user->getProjectIDs();
                 if (count($user_list_of_projects) >1) {
                     $this->tpl_data['projectAdded'] = true;
                     $projectOptions = array(null => '');
