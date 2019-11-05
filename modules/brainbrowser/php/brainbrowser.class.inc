@@ -37,16 +37,16 @@ class Brainbrowser extends \NDB_Page
         * part of a study site and are permitted to view their own site.
          */
         return $user->hasAnyPermission(
-                array(
-                    'imaging_browser_view_allsites',
-                    'imaging_browser_phantom_allsites',
-                    'imaging_browser_phantom_ownsite',
-                )
+            array(
+                'imaging_browser_view_allsites',
+                'imaging_browser_phantom_allsites',
+                'imaging_browser_phantom_ownsite',
             )
-            || (
-                $user->hasStudySite()
-                && $user->hasPermission('imaging_browser_view_site')
-            );
+        )
+        || (
+            $user->hasStudySite()
+            && $user->hasPermission('imaging_browser_view_site')
+        );
     }
 
     /**
