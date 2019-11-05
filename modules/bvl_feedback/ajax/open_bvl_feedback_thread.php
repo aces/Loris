@@ -18,7 +18,7 @@ try {
 } catch (\Exception $e) {
     error_log($e->getMessage());
     header("HTTP/1.1 404 Not Found");
-    header("Content-Type: aaplication/json");
+    header("Content-Type: application/json");
     print json_encode(
         array('error' => 'The requested feedback thread can`t be found')
     );
