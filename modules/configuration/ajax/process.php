@@ -31,7 +31,6 @@ $client->makeCommandLine();
 $client->initialize();
 $factory = \NDB_Factory::singleton();
 $DB      = $factory->database();
-print_r($_POST);
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) {
         // When a $key is numeric, it means we are updating the entry in the
