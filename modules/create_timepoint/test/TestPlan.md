@@ -3,7 +3,7 @@
 1. Access a candidate that does not have all timepoints from project created
 from Access Profile and click "Create time point"
   [Automation Testing]
-2. Ensure that clicking on all elements of the breadcrums takes you to the 
+2. Ensure that clicking on all elements of the breadcrumbs takes you to the 
 appropriate page.
   [Manual Testing]
 3. Ensure that the DCCID field displays the correct candidate's identifier.
