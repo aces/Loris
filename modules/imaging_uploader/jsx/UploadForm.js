@@ -82,7 +82,7 @@ class UploadForm extends Component {
 
     const fileName = data.mriFile.name;
     // Make sure file is of type .zip|.tgz|.tar.gz format
-    const properExt = new RegExp('.(zip|tgz|tar.gz)$');
+    const properExt = new RegExp('\.(zip|tgz|tar.gz)$');
     if (!fileName.match(properExt)) {
       swal({
         title: 'Invalid extension for the uploaded file!',
@@ -92,7 +92,7 @@ class UploadForm extends Component {
       });
 
       let errorMessage = {
-        mriFile: 'The file ' + fileName + ' is not of type .tgz, .tar.gz or .zip.',
+        mriFile: 'The file ' + fileName + ' must be of type .tgz, .tar.gz or .zip.',
         candID: undefined,
         pSCID: undefined,
         visitLabel: undefined,
