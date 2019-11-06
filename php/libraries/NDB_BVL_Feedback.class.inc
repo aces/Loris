@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This is legacy code that should be rewritten, but is currently used - Dave
  *
@@ -943,7 +943,7 @@ class NDB_BVL_Feedback
      *
      * @return int The number of updated threads
      */
-    function closeThread($feedbackID=null)
+    function closeThread(int $feedbackID = null)
     {
         // new DB Object
         $db =& Database::singleton();
@@ -992,20 +992,14 @@ class NDB_BVL_Feedback
     /**
      * Used to re-open a thread identified by its feedbackID.
      *
-     * @param integer $feedbackID The ID of the feedback thread being closed
+     * @param int $feedbackID The ID of the feedback thread being closed
      *
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      *
      * @return int The number of updated threads
      */
-    function openThread($feedbackID)
+    function openThread(int $feedbackID): int
     {
-        if (empty($feedbackID)) {
-            throw new Exception(
-                "Missing feedbackID"
-            );
-        }
-
         $db =& Database::singleton();
 
         $whereStr = 'Public = \'Y\' AND Active = \'Y\' ';

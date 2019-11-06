@@ -28,7 +28,7 @@ try {
 
 if (!isset($_POST['feedbackID'])) {
     header("HTTP/1.1 400 Bad Request");
-    header("Content-Type: aaplication/json");
+    header("Content-Type: application/json");
     print json_encode(array('error' => 'Missing FeedbackID'));
     exit;
 }
@@ -36,8 +36,11 @@ if (!isset($_POST['feedbackID'])) {
 $feedbackid = $_POST['feedbackID'];
 
 try {
-    $feedbackThread   =& NDB_BVL_Feedback::Singleton($username, $candid);
-    $closethreadcount = $feedbackThread->closeThread($feedbackid);
+    $feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candid);
+
+    // FIXME This allows to close any thread as long as the feedbackid
+    //       exists. It do not have to be related to this feedbackthreah.
+    $closethreadcount = $feedbackThread->closeThread((int) $feedbackid);
 } catch (\Exception $e) {
     error_log($e->getMessage());
     header("HTTP/1.1 404 Not Found");

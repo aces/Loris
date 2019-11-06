@@ -13,17 +13,21 @@
 ini_set('default_charset', 'utf-8');
 require_once "bvl_panel_ajax.php";
 
-try {
-    $openedthreadcount = $feedbackThread->openThread($_POST['feedbackID']);
-} catch (\Exception $e) {
-    error_log($e->getMessage());
-    header("HTTP/1.1 404 Not Found");
+$feedbackid = $_POST['feedbackID'] ?? '';
+
+if (empty($feedbackid) || !is_numeric($feedbackID)) {
+    header("HTTP/1.1 400 Bad Request");
     header("Content-Type: application/json");
     print json_encode(
-        array('error' => 'The requested feedback thread can`t be found')
+        array('error' => 'feedbackId missing or invalid')
     );
     exit;
 }
+
+// This is realy powerfull; it allows to reopen any feedbackthread as long as the
+// feedbackid exists. It doesn`t need to be related to this feedbackThread.
+// It should probably be fixed...
+$openedthreadcount = $feedbackThread->openThread((int) $feedbackID);
 
 if ($openedthreadcount === 0) {
     header("HTTP/1.1 500 Internal Server Error");
