@@ -633,13 +633,13 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that passwordChanged returns true when the input does not match
+     * Test that isPasswordDifferent returns true when the input does not match
      * the Password_hash in the database.
      * Both the hash and the input are set to different random strings so a
      * match should never occur in this function.
      *
      * @return void
-     * @covers User::passwordChanged
+     * @covers User::isPasswordDifferent
      */
     public function testPasswordChangedReturnsTrue() {
         $this->_user = \User::factory(self::USERNAME);
@@ -650,18 +650,18 @@ class UserTest extends TestCase
         // Should return true (i.e. the password has changed) because random
         // strings should not generate a match.
         $this->assertTrue(
-            $this->_user->passwordChanged(
+            $this->_user->isPasswordDifferent(
                 \Utility::randomString()
             )
         );
     }
 
     /**
-     * Test that passwordChanged returns false when the input matches the
+     * Test that isPasswordDifferent returns false when the input matches the
      * Password_hash in the database.
      *
      * @return void
-     * @covers User::passwordChanged
+     * @covers User::isPasswordDifferent
      */
     public function testPasswordChangedReturnsFalse() {
         $this->_user = \User::factory(self::USERNAME);
@@ -671,7 +671,7 @@ class UserTest extends TestCase
             PASSWORD_DEFAULT
         );
 
-        $this->assertFalse($this->_user->passwordChanged($password));
+        $this->assertFalse($this->_user->isPasswordDifferent($password));
     }
 
     /**

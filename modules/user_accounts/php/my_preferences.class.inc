@@ -416,9 +416,10 @@ class My_Preferences extends \NDB_Form
                 //
                 // NOTE 'Password_hash' is actually plaintext, not a hash.
                 $password        = new \Password($plaintext);
-                $passwordChanged = \User::factory($this->identifier)
-                    ->passwordChanged($plaintext);
-                if (! $passwordChanged) {
+                // New password must be different than current one
+                if (! \User::factory($this->identifier)->isPasswordDifferent(
+                    $values['Password_hash']
+                ) {
                     $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
                 }
             } catch (\InvalidArgumentException $e) {
