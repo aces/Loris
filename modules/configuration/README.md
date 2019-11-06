@@ -17,8 +17,8 @@ study configuration, not LORIS installation parameters.
 
 ## Permissions
 
-The permission named "config" is required in order to access this
-module.
+The permission named `config` (Edit configuration settings) is required in order to 
+access this module.
 
 ## Configurations
 
