@@ -27,7 +27,6 @@ $db      = $factory->database();
 
 $ProjectList = Utility::getProjectList();
 $projectName = $_POST['Name'] ?? '';
-// FIXME This field should be added to the front-end.
 $projectAlias  = $_POST['Alias'] ?? '';
 $recTarget     = empty($_POST['recruitmentTarget'])
     ? null : $_POST['recruitmentTarget'];
