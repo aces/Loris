@@ -571,7 +571,7 @@ class UserTest extends TestCase
      */
     public function testUpdatePasswordWithoutExpiry()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
 
         $oldHash = $this->_user->getData('Password_hash');
         $newDate = date('Y-m-d', strtotime('+6 months'));
@@ -585,7 +585,7 @@ class UserTest extends TestCase
             new \Password(\Utility::randomString(16))
         );
         //Re-populate the user object now that the password has been changed
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
 
         $this->assertEquals($newDate, $this->_user->getData('Password_expiry'));
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
@@ -600,7 +600,7 @@ class UserTest extends TestCase
      */
     public function testHasLoggedInWhenTrue()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $count = 1;
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
@@ -621,7 +621,7 @@ class UserTest extends TestCase
      */
     public function testHasLoggedInWhenFalse()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $count = 0;
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
