@@ -12,7 +12,7 @@ appropriate page.
 subproject selected and also a list of visitlabels if <labelSet> is set in the config.xml.
   [Manual Testing]
    - Ensure that if the `config.xml` file contains a `<visitLabel subprojectID="X">` 
-   matching the subproject ID selected, a list of visits ()defined in the same file 
+   matching the subproject ID selected, a list of visits defined in the same file 
    under the `<labelSet>` tag) should be displayed.
    - Ensure that if the `config.xml` file does not contain a matching `<visitLabel>` entry, an 
    error message should be displayed to the user. 
