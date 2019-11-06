@@ -45,7 +45,7 @@ $(function () {
         $.ajax({
             type: 'post',
             url: loris.BaseURL + '/configuration/ajax/process.php',
-            data: {id: id},
+            data: {remove: id},
             success: function () {
                 if ($(button).parent().parent().parent().children().length > 1) {
                     $(button).parent().parent().remove();

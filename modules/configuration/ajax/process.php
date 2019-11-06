@@ -77,10 +77,12 @@ foreach ($_POST as $key => $value) {
         // This is different from the above is_numeric case; this makes use of
         // Config.ID, not Config.ConfigID (which is a FK to ConfigSettings.ID).
         // The Config table is the one that will be modified here.
-        $keySplit         = explode("-", $key); // e.g. 'add-10' or 'remove-49'
+        $keySplit         = explode("-", $key); // e.g. 'add-17-1' or 'remove'
         $action           = $keySplit[0];
-        $ConfigSettingsID = $keySplit[1];
-        assert(count($keySplit) == 2);
+        $ConfigSettingsID = $keySplit[1];        
+        $valueSplit       = explode("-", $value); // e.g. "remove-74"
+        $removeID         = $valueSplit[1]; 
+        //assert(count($keySplit) == 2);
         if ($action == 'add') {
             // This branch adds a new entry to the Config table.
             if ($value === "") {
@@ -113,7 +115,7 @@ foreach ($_POST as $key => $value) {
             // Delete an entry from the Config table.
             $DB->delete(
                 'Config',
-                array('ConfigID' => $ConfigSettingsID)
+                array('ID' => $removeID)
             );
         } else {
             displayError(400, 'Invalid action');
