@@ -1,4 +1,4 @@
-Create Timepoint Test Plan:
+# Create Timepoint Test Plan:
 
 1. Access a candidate that does not have all timepoints from project created
 from Access Profile and click "Create time point"
