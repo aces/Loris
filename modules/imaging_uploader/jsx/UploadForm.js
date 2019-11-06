@@ -82,7 +82,7 @@ class UploadForm extends Component {
 
     const fileName = data.mriFile.name;
     // Make sure file is of type .zip|.tgz|.tar.gz format
-    const properExt = new RegExp('\.(zip|tgz|tar.gz)$');
+    const properExt = new RegExp('\.(zip|tgz|tar\.gz)$');
     if (!fileName.match(properExt)) {
       swal({
         title: 'Invalid extension for the uploaded file!',
