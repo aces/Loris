@@ -291,6 +291,19 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $file_name_error = "";
         $config          = \NDB_Config::singleton();
         $file_name       = $file->fileInfo['name'];
+
+        ///////////////////////////////////////////////////////////////////////
+        ////////////// Checks to see if the file is of type////////////////////
+        //////////////.gz, .zip or .tgz////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        if (!$this->isCompressed($temp_file)) {
+            array_push(
+                $errors["mriFile"],
+                "The file $file_name is not of type".
+                " .tgz, .tar.gz or .zip."
+            );
+        }
+
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
@@ -390,17 +403,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                      ", and has the extension .tgz, tar.gz or .zip";
             }
         }
-        ///////////////////////////////////////////////////////////////////////
-        ////////////// Checks to see if the file is of type////////////////////
-        //////////////.gz, .zip or .tgz////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        if (!$this->isCompressed($temp_file)) {
-            array_push(
-                $errors["mriFile"],
-                "The file $file_name is not of type".
-                " .tgz, .tar.gz or .zip."
-            );
-        }
+
         ///////////////////////////////////////////////////////////////////////
         //////// Make sure there's no existing identical entry ////////////////
         //////// for "new" scans //////////////////////////////////////////////
