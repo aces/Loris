@@ -34,7 +34,7 @@ options empty gives an error.
 visit which the candidate already has. Ensure that an error appears stating that the 
 visit label already exists for the candidate.
   [Manual Testing]
-6. Choose visit label to be created and click "Create Time Point".
+7. Choose visit label to be created and click "Create Time Point".
 Ensure that you get a page saying creation was successful.
 Click on "Click here to continue" link and ensure that it brings you back
 to timepoint list page for that candidate (with new timepoint created)
