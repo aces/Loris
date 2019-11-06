@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * This is legacy code that should be rewritten, but is currently used - Dave
  *
