@@ -27,6 +27,25 @@ namespace LORIS\data_release;
 class Data_Release extends \NDB_Menu_Filter
 {
     /**
+     * Check user permissions
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        // check user permissions
+        return $user->hasAnyPermission(
+            array(
+                'data_release_view',
+                'data_release_upload',
+                'data_release_edit_file_access'
+            )
+        );
+    }
+
+    /**
      * Setup variables
      *
      * @return void
