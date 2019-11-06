@@ -28,5 +28,6 @@ Instrument builder Test Plan
 6.  Re-load existing instrument
   * 6.a Add questions
   * 6.b Save instrument file and ensure new changes are reflected in the file
-7. Install and test instrument and rules implemented
-8. Test functionality on mutiple broswers.
+7. Install and test instrument
+8. Add and test some basic rules for the instrument (see the `bmi` in this repo for examples
+9. Test functionality on mutiple broswers.
