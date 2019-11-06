@@ -36,10 +36,12 @@ class Data_Release extends \NDB_Menu_Filter
     function _hasAccess(\User $user) : bool
     {
         // check user permissions
-        return (
-            $user->hasPermission('data_release_view')
-            || $user->hasPermission('data_release_upload')
-            || $user->hasPermission('data_release_edit_file_access')
+        return $user->hasAnyPermission(
+            array(
+                'data_release_view',
+                'data_release_upload',
+                'data_release_edit_file_access'
+            )
         );
     }
 
