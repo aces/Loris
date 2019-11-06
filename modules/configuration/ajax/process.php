@@ -31,6 +31,7 @@ $client->makeCommandLine();
 $client->initialize();
 $factory = \NDB_Factory::singleton();
 $DB      = $factory->database();
+print_r($_POST);
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) {
         // When a $key is numeric, it means we are updating the entry in the
@@ -79,9 +80,9 @@ foreach ($_POST as $key => $value) {
         // The Config table is the one that will be modified here.
         $keySplit         = explode("-", $key); // e.g. 'add-17-1' or 'remove'
         $action           = $keySplit[0];
-        $ConfigSettingsID = $keySplit[1];        
+        $ConfigSettingsID = $keySplit[1];
         $valueSplit       = explode("-", $value); // e.g. "remove-74"
-        $removeID         = $valueSplit[1]; 
+        $removeID         = $valueSplit[1];
         //assert(count($keySplit) == 2);
         if ($action == 'add') {
             // This branch adds a new entry to the Config table.
@@ -90,7 +91,7 @@ foreach ($_POST as $key => $value) {
             }
             if (isDuplicate($ConfigSettingsID, $value)) {
                 displayError(400, "Duplicate Value In The Instrument Form");
-                exit();
+                exit;
             }
             // Get all the IDs in ConfigSettings with the web_path data type.
             $pathIDs = getPathIDs('ConfigSettings');
