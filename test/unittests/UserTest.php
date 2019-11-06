@@ -240,6 +240,12 @@ class UserTest extends TestCase
                                                );
         $this->_userInfoComplete['CenterIDs'] = array('1', '4');
         $this->_userInfoComplete['ProjectIDs'] = array('1', '3');
+        $passwordHash = (new \Password(
+            $this->_userInfo['Password']
+        ))->__toString();
+        $this->_userInfo['Password_hash'] = $passwordHash;
+        $this->_userInfoComplete['Password_hash'] = $passwordHash;
+
 
         $this->_user = \User::factory(self::USERNAME);
     }
@@ -635,18 +641,12 @@ class UserTest extends TestCase
     /**
      * Test that isPasswordDifferent returns true when the input does not match
      * the Password_hash in the database.
-     * Both the hash and the input are set to different random strings so a
-     * match should never occur in this function.
      *
      * @return void
      * @covers User::isPasswordDifferent
      */
     public function testPasswordChangedReturnsTrue() {
         $this->_user = \User::factory(self::USERNAME);
-        $this->_userInfo['Password_hash'] = password_hash(
-            \Utility::randomString(),
-            PASSWORD_DEFAULT
-        );
         // Should return true (i.e. the password has changed) because random
         // strings should not generate a match.
         $this->assertTrue(
@@ -664,12 +664,16 @@ class UserTest extends TestCase
      * @covers User::isPasswordDifferent
      */
     public function testPasswordChangedReturnsFalse() {
+        // Update the password again to make sure another test hasn't
+        // interfered.
         $this->_user = \User::factory(self::USERNAME);
         $password = $this->_userInfo['Password'];
-        $this->_userInfo['Password_hash'] = password_hash(
-            $password,
-            PASSWORD_DEFAULT
+        $this->_user->updatePassword(
+            new \Password($password)
         );
+
+        //Re-populate the user object now that the password has been changed
+        $this->_user = \User::factory(self::USERNAME);
 
         $this->assertFalse($this->_user->isPasswordDifferent($password));
     }
