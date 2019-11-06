@@ -939,11 +939,11 @@ class NDB_BVL_Feedback
     /**
      * Closes all selected threads, including all active threads of lower class
      *
-     * @param integer $feedbackID The ID of the feedback thread being closed
+     * @param int|null $feedbackID The ID of the feedback thread being closed
      *
      * @return int The number of updated threads
      */
-    function closeThread(int $feedbackID = null)
+    function closeThread(?int $feedbackID = null): int
     {
         // new DB Object
         $db =& Database::singleton();
