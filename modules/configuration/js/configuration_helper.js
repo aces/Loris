@@ -56,7 +56,7 @@ $(function () {
 
                     resetForm($(button).parent().parent());
                     $(button).parent().parent().children('.form-control').attr('name', name);
-                    $(button).addClass('remove-new').removeClass('btn-remove')
+                    $(button).addClass('remove-new').removeClass('btn-remove');
                 }
             },
             error: function(xhr, desc, err) {
@@ -81,13 +81,12 @@ $(function () {
             data: form,
             success: function () {
                 var html = "<label>Submitted</label>";
-                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
-                $('input[type="reset"]').attr('disabled','disabled');
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500);
+                location.reload();
             },
             error: function(xhr, desc, err) {
                 var html = "<label>" + xhr.responseText + "</label>";
-                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000)
-                $('input[type="reset"]').attr('disabled','disabled')
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000);
             }
         });
     });
