@@ -10,10 +10,10 @@ The resulting table will display your results, which includes a unique URL for e
 
 The last column of the table, *Status*, tells you whether the survey has been accessed. This column will display one of the following options:
 
-* *Created*: Survey was created. This is the default status once a survey is created using the "Add Survey" page.<br>
-* *Sent*: Survey was created, and an email with the unique survey URL was sent to the survey respondent. This is the default status once a survey is created and sent by email within LORIS.<br>
-* *In Progress*: Survey was opened and accessed by anyone with the link, including study personnel (not just the intended respondent).<br>
-* *Complete*: Survey was completed and submitted. After this stage, the respondent will not be able to go back and change any entries. No data will be visible via the URL once a survey is completed: clicking on the URL will display a page with the message *"Data has already been submitted"*.
+**Created**: Survey was created. This is the default status once a survey is created using the "Add Survey" page.<br>
+**Sent**: Survey was created, and an email with the unique survey URL was sent to the survey respondent. This is the default status once a survey is created and sent by email within LORIS.<br>
+**In Progress**: Survey was opened and accessed by anyone with the link, including study personnel (not just the intended respondent).<br>
+**Complete**: Survey was completed and submitted. After this stage, the respondent will not be able to go back and change any entries. No data will be visible via the URL once a survey is completed: clicking on the URL will display a page with the message *"Data has already been submitted"*
 
 You can create a new survey manually with data that hasn’t yet been entered into LORIS. Click **Add Survey**, which takes you to a new page. Enter the required information and click **Create Survey** to simply generate a URL (which you can send to the candidate), or **Email Survey** to automatically send the URL to the candidate. If you choose Email Survey, you’ll be able to customize the content of the email in a pop-up window (which will contain an editable generic message). 
 
