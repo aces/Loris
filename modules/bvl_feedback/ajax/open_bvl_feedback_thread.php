@@ -15,7 +15,7 @@ require_once "bvl_panel_ajax.php";
 
 $feedbackid = $_POST['feedbackID'] ?? '';
 
-if (empty($feedbackid) || !is_numeric($feedbackID)) {
+if (! \Utility::valueIsPositiveInteger($feedbackID)) {
     header("HTTP/1.1 400 Bad Request");
     header("Content-Type: application/json");
     print json_encode(
@@ -24,7 +24,7 @@ if (empty($feedbackid) || !is_numeric($feedbackID)) {
     exit;
 }
 
-// This is realy powerfull; it allows to reopen any feedbackthread as long as the
+// This is really powerful; it allows you to reopen any feedbackthread as long as the
 // feedbackid exists. It doesn`t need to be related to this feedbackThread.
 // It should probably be fixed...
 $openedthreadcount = $feedbackThread->openThread((int) $feedbackID);

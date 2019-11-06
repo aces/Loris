@@ -39,7 +39,7 @@ try {
     $feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candid);
 
     // FIXME This allows to close any thread as long as the feedbackid
-    //       exists. It do not have to be related to this feedbackthreah.
+    //       exists. It does not have to be related to this feedbackthread.
     $closethreadcount = $feedbackThread->closeThread((int) $feedbackid);
 } catch (\Exception $e) {
     error_log($e->getMessage());
