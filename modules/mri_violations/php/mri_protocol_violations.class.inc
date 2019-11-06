@@ -20,7 +20,7 @@ namespace LORIS\mri_violations;
  *
  * @category MRI
  * @package  Main
- * @author   Zia Mohades <zia.mohades@gmail.com>
+ * @author   Zia Mohadesz <zia.mohades@gmail.com>
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
