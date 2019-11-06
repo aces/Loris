@@ -27,7 +27,7 @@ try {
 
 if ($openedthreadcount === 0) {
     header("HTTP/1.1 500 Internal Server Error");
-    header("Content-Type: aaplication/json");
+    header("Content-Type: application/json");
     print json_encode(
         array('error' => 'No feedback thread updated')
     );
