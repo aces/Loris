@@ -25,8 +25,8 @@ $client->initialize();
 $factory = NDB_Factory::singleton();
 $db      = $factory->database();
 
-$ProjectList = Utility::getProjectList();
-$projectName = $_POST['Name'] ?? '';
+$ProjectList   = Utility::getProjectList();
+$projectName   = $_POST['Name'] ?? '';
 $projectAlias  = $_POST['Alias'] ?? '';
 $recTarget     = empty($_POST['recruitmentTarget'])
     ? null : $_POST['recruitmentTarget'];
