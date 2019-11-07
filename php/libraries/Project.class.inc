@@ -231,7 +231,7 @@ class Project
      *
      * @return void
      */
-    public function updateName(?string $projectName = null): void
+    public function updateName(?string $projectName = ''): void
     {
         if (!empty($projectName)) {
             $this->setName($projectName);
@@ -274,7 +274,7 @@ class Project
      *
      * @return void
      */
-    public function updateAlias(?string $projectAlias = null): void
+    public function updateAlias(?string $projectAlias = ''): void
     {
         if (!empty($projectAlias)) {
             $this->setAlias($projectAlias);
