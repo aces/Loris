@@ -444,7 +444,11 @@ class NDB_BVL_Battery
                         (b.AgeMinDays<= :vAge AND b.AgeMaxDays >= :vAge)
                     )
                     AND b.Active='Y'
-                    AND (SubprojectID=:SubprojID OR SubprojectID IS NULL)";
+                    AND (
+                         SubprojectID=:SubprojID
+                            OR
+                         SubprojectID IS NULL
+                    )";
 
         if (!is_null($visit_label)) {
             $VisitBatteryExists = $DB->pselectOne(
@@ -495,7 +499,8 @@ class NDB_BVL_Battery
             $query_firstVisit = "
                 SELECT DISTINCT Test_name
                 FROM test_battery
-                WHERE firstVisit=:FV AND (SubprojectID IS NULL OR SubprojectID=:subID)";
+                WHERE firstVisit=:FV
+                AND (SubprojectID IS NULL OR SubprojectID=:subID)";
             $where            = array(
                 'FV'    => 'Y',
                 'subID' => $SubprojectID,
@@ -511,7 +516,8 @@ class NDB_BVL_Battery
             $query_notfirstVisit = "
                 SELECT DISTINCT Test_name
                 FROM test_battery
-                WHERE firstVisit=:FV AND (SubprojectID IS NULL OR SubprojectID=:subID)";
+                WHERE firstVisit=:FV 
+                AND (SubprojectID IS NULL OR SubprojectID=:subID)";
             $where = array(
                 'FV'    => 'N',
                 'subID' => $SubprojectID,
