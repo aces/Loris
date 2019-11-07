@@ -227,11 +227,11 @@ class Project
     /**
      * Set this project's name
      *
-     * @param ?string $projectName The new name. Uses class property when null.
+     * @param string $projectName The new name. Uses class property when null.
      *
      * @return void
      */
-    public function updateName(?string $projectName = ''): void
+    public function updateName(string $projectName = ''): void
     {
         if (!empty($projectName)) {
             $this->setName($projectName);
@@ -270,11 +270,11 @@ class Project
     /**
      * Update the Alias field in the database for this Project.
      *
-     * @param ?string $projectAlias The new alias. Uses class property when null.
+     * @param string $projectAlias The new alias. Uses class property when null.
      *
      * @return void
      */
-    public function updateAlias(?string $projectAlias = ''): void
+    public function updateAlias(string $projectAlias = ''): void
     {
         if (!empty($projectAlias)) {
             $this->setAlias($projectAlias);
