@@ -495,7 +495,7 @@ class NDB_BVL_Battery
             $query_firstVisit = "
                 SELECT DISTINCT Test_name
                 FROM test_battery
-                WHERE firstVisit=:FV AND SubprojectID=:subID";
+                WHERE firstVisit=:FV AND (SubprojectID IS NULL OR SubprojectID=:subID)";
             $where            = array(
                 'FV'    => 'Y',
                 'subID' => $SubprojectID,
@@ -511,7 +511,7 @@ class NDB_BVL_Battery
             $query_notfirstVisit = "
                 SELECT DISTINCT Test_name
                 FROM test_battery
-                WHERE firstVisit=:FV AND SubprojectID=:subID";
+                WHERE firstVisit=:FV AND (SubprojectID IS NULL OR SubprojectID=:subID)";
             $where = array(
                 'FV'    => 'N',
                 'subID' => $SubprojectID,
