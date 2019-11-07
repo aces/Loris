@@ -28,7 +28,7 @@ It’s important to note that granular permissions do not exist for this module.
 
 ### Interactions with LORIS
 
-Before the DQT can be used, the CouchDB import scripts must be run to load data from LORIS' MySQL tables into CouchDB. These scripts are found in the `tools/` directory, named `CouchDB_Import_*.php`.
+Before the DQT can be used, the CouchDB import scripts must be run in order to load data from LORIS's MySQL tables into CouchDB. These scripts are found in the `tools/` directory, named `CouchDB_Import_*.php`.
 
 It is recommended to set up a cronjob to execute these scripts to refresh the data on a regular basis. 
 
