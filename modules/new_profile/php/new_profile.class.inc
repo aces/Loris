@@ -286,7 +286,7 @@ class New_Profile extends \NDB_Form
             } else {
                 // user has multiple sites,
                 // so validate PSCID against the Site selected
-                $site =& \Site::singleton($values['site']);
+                $site =& \Site::singleton((int) $values['site']);
             }
 
             $project = \Project::getProjectFromID(intval($values['project']));
