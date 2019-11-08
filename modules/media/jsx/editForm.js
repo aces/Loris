@@ -32,7 +32,6 @@ class MediaEditForm extends Component {
 
   componentDidMount() {
     let self = this;
-    console.log(this.props.DataURL);
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
