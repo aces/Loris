@@ -105,18 +105,18 @@ Customize and Verify your settings:
 
 Modify the Apache configuration file for our production environment.
 ```
-vi /etc/httpd/conf/httpd.conf
+sudo open -e /etc/httpd/conf/httpd.conf
 ```
 
 **a.** Find & modify the `ServerName` to:
 ```
-ServerName your.Loris.url.here:80
+ServerName your.Loris.url.here
 ```
 
 **b.** Find the lines for `DocumentRoot` and `Directory` in Apache and change them to:
 ```
-DocumentRoot "/var/www/loris/htdocs/"
-<Directory "/var/www/loris/htdocs/">
+DocumentRoot "%LORISROOT%/htdocs/"
+<Directory "%LORISROOT%/htdocs/">
 ```
 
 **c.** In the same `<Directory>` block, modify `AllowOverride` to allow all:
