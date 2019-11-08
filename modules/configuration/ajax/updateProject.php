@@ -25,10 +25,9 @@ $client->initialize();
 $factory = NDB_Factory::singleton();
 $db      = $factory->database();
 
-$ProjectList = Utility::getProjectList();
-$projectName = $_POST['Name'] ?? '';
-// FIXME This field should be added to the front-end.
-$projectAlias  = '';
+$ProjectList   = Utility::getProjectList();
+$projectName   = $_POST['Name'] ?? '';
+$projectAlias  = $_POST['Alias'] ?? '';
 $recTarget     = empty($_POST['recruitmentTarget'])
     ? null : $_POST['recruitmentTarget'];
 $projectID     = $_POST['ProjectID'] ?? null;
@@ -50,6 +49,7 @@ if ($projectID == 'new') {
     // Update Project fields
     $project = \Project::getProjectFromID($projectID);
     $project->updateName($projectName);
+    $project->updateAlias($projectAlias);
     $project->updateRecruitmentTarget($recTarget);
 
 }

@@ -227,13 +227,16 @@ class Project
     /**
      * Set this project's name
      *
-     * @param string $projectName This project's name
+     * @param string $projectName The new name. Uses class property when null.
      *
      * @return void
      */
-    public function updateName(string $projectName): void
+    public function updateName(string $projectName = ''): void
     {
-        $this->_projectName = $projectName;
+        if (!empty($projectName)) {
+            $this->setName($projectName);
+        }
+        $this->_updateField("Name", $this->_projectName);
     }
 
     /**
@@ -265,33 +268,18 @@ class Project
     }
 
     /**
-     * Update the Alias field in the databse for this Project.
+     * Update the Alias field in the database for this Project.
      *
-     * @param ?string $alias The new alias. Uses class property when null.
-     *
-     * @return void
-     */
-    public function updateAlias(?string $alias = null): void
-    {
-        $this->_updateField("Alias", $alias ?? $this->_projectAlias);
-    }
-
-    /**
-     * Updates a column in the database corresponding to this Project.
-     *
-     * @param string $field The name of the column to update.
-     * @param mixed  $value The new value
+     * @param string $projectAlias The new alias. Uses class property when null.
      *
      * @return void
      */
-    private function _updateField(string $field, $value): void
+    public function updateAlias(string $projectAlias = ''): void
     {
-        \NDB_Factory::singleton()->database()
-            ->update(
-                "Project",
-                array($field => (string) $value),
-                array("ProjectID" => $this->_projectId)
-            );
+        if (!empty($projectAlias)) {
+            $this->setAlias($projectAlias);
+        }
+        $this->_updateField("Alias", $this->_projectAlias);
     }
 
     /**
@@ -341,10 +329,28 @@ class Project
      */
     public function updateRecruitmentTarget(?int $target = null): void
     {
-        $this->_updateField(
-            "recruitmentTarget",
-            $target ?? $this->_recruitmentTarget
-        );
+        if (isset($target)) {
+            $this->setRecruitmentTarget($target);
+        }
+        $this->_updateField("recruitmentTarget", $this->_recruitmentTarget);
+    }
+
+    /**
+     * Updates a column in the database corresponding to this Project.
+     *
+     * @param string $field The name of the column to update.
+     * @param mixed  $value The new value
+     *
+     * @return void
+     */
+    private function _updateField(string $field, $value): void
+    {
+        \NDB_Factory::singleton()->database()
+            ->update(
+                "Project",
+                array($field => (string) $value),
+                array("ProjectID" => $this->_projectId)
+            );
     }
 
     /**
