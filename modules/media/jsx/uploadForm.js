@@ -86,9 +86,6 @@ class MediaUploadForm extends Component {
     const visits = this.state.formData.pscid ?
       this.state.Data.sessionData[this.state.formData.pscid].visits :
       {};
-    const sites = this.state.formData.pscid ?
-      this.state.Data.sessionData[this.state.formData.pscid].sites :
-      {};
     const instruments = this.state.formData.pscid && this.state.formData.visitLabel ?
       this.state.Data.sessionData[this.state.formData.pscid].instruments[this.state.formData.visitLabel] :
       {};
@@ -128,18 +125,6 @@ class MediaUploadForm extends Component {
               value={this.state.formData.visitLabel}
               disabled={this.state.formData.pscid == null}
             />
-            <SearchableDropdown
-              name='forSite'
-              label='Site'
-              placeHolder='Search for site'
-              options={sites}
-              strictSearch={true}
-              onUserInput={this.setFormData}
-              ref='forSite'
-              required={true}
-              value={this.state.formData.forSite}
-              disabled={this.state.formData.pscid == null}
-            />
             <SelectElement
               name='instrument'
               label='Instrument'
@@ -172,7 +157,7 @@ class MediaUploadForm extends Component {
               options={this.state.Data.language}
               onUserInput={this.setFormData}
               ref='language'
-              required={false}
+              required={true}
               value={this.state.formData.language}
             />
             <FileElement

@@ -108,13 +108,13 @@ function uploadFile()
     $pscid      = isset($_POST['pscid']) ? $_POST['pscid'] : null;
     $visit      = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
     $instrument = isset($_POST['instrument']) ? $_POST['instrument'] : null;
-    $site       = isset($_POST['forSite']) ? $_POST['forSite'] : null;
     $dateTaken  = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
     $comments   = isset($_POST['comments']) ? $_POST['comments'] : null;
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($site)) {
+    if (!isset($_FILES) || !isset($pscid) || !isset($visit) ||
+        !isset($instrument) || !isset($language)) {
         showMediaError("Please fill in all required fields!", 400);
         return;
     }
@@ -135,11 +135,10 @@ function uploadFile()
     $sessionID = $db->pselectOne(
         "SELECT s.ID as session_id FROM candidate c " .
         "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
-        "s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
+        "s.Visit_label = :v_visit_label",
         [
             'v_pscid'       => $pscid,
             'v_visit_label' => $visit,
-            'v_center_id'   => $site,
         ]
     );
 
@@ -209,7 +208,7 @@ function getUploadFields()
     $user   = \User::singleton();
     $config = \NDB_Config::singleton();
 
-    // Select only candidates that have had visit at user's sites
+    // Select only candidates that have had visit at user's ites
     $qparam       = array();
     $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
                       FROM candidate c
@@ -230,7 +229,6 @@ function getUploadFields()
     $instrumentsList = toSelect($sessionRecords, "Test_name", null);
     $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $visitList       = Utility::getVisitList();
-    $siteList        = Utility::getSiteList(false);
     $languageList    = Utility::getLanguageList();
     $startYear       = $config->getSetting('startYear');
     $endYear         = $config->getSetting('endYear');
@@ -238,21 +236,6 @@ function getUploadFields()
     // Build array of session data to be used in upload media dropdowns
     $sessionData = array();
     foreach ($sessionRecords as $record) {
-
-        // Populate sites
-        if (!isset($sessionData[$record["PSCID"]]['sites'])) {
-            $sessionData[$record["PSCID"]]['sites'] = [];
-        }
-        if ($record["CenterID"] !== null && !in_array(
-            $record["CenterID"],
-            $sessionData[$record["PSCID"]]['sites'],
-            true
-        )
-        ) {
-            $sessionData[$record["PSCID"]]['sites'][$record["CenterID"]]
-                = $siteList[$record["CenterID"]];
-        }
-
         // Populate visits
         if (!isset($sessionData[$record["PSCID"]]['visits'])) {
             $sessionData[$record["PSCID"]]['visits'] = [];
@@ -326,7 +309,6 @@ function getUploadFields()
         'candidates'  => $candidatesList,
         'visits'      => $visitList,
         'instruments' => $instrumentsList,
-        'sites'       => $siteList,
         'mediaData'   => $mediaData,
         'mediaFiles'  => array_values(getFilesList()),
         'sessionData' => $sessionData,
