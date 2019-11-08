@@ -154,7 +154,11 @@ class MediaIndex extends Component {
         type: 'select',
         options: options.sites,
       }},
-      {label: 'Project', show: true},
+      {label: 'Project', show: true, filter: {
+        name: 'project',
+        type: 'select',
+        options: options.projects,
+      }},
       {label: 'Uploaded By', show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
