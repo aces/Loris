@@ -4,7 +4,7 @@
 By default LORIS provides 2 different identifiers for each candidate: 
 
 - **CandID**, also known as the **DCCID**, is a unique randomized 6-digit numeric ID (e.g. '436792') assigned automatically by LORIS upon the candidate's registration. The CandID is not configurable.
-- **PSCID** (Project Study Center ID) is a unique configurable ID. It can be set up to be either manually entered when registering a candidate or automatically generated and usually contains the site abbreviation followed by sequential or randomized characters (e.g. 'MTL0006'), but its exact format is customizable.
+- **PSCID** (Project Study Center ID) is a unique configurable ID. It can be set up to be either manually entered when registering a candidate or automatically generated and usually contains the site or project abbreviation followed by sequential or randomized characters (e.g. 'MTL0006'), but its exact format is customizable.
 
 The format and the generation of the **PSCID** must be configured by an admin at the setup stage.
 
@@ -52,14 +52,17 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
      <generation>random</generation> 
      <structure>
          <seq type="static">PROJ</seq>
-         <seq type="siteAbbrev"/>
+         <seq type="projectAbbrev"/>
          <seq type="numeric" length="4" min="1" max="9999"/> <!-- Ex: PROJMTL3994-->
      </structure>
  </PSCID>
  ```
  
  Options for the `type` element of the `<seq>` tag are:
-  - `siteAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` field of the `psc` table in the database.
+  - `siteAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
+  field of the `psc` table in the database.
+  - `projectAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
+  field of the `Project` table in the database.
   - `static`: A string value that will be used as a fixed prefix. Value defined in the `config.xml` file.
   - `numeric`: An integer value generated dynamically in accordance to the generation method defined.
   - `alphanumeric`: An alphanumeric string value generated dynamically in accordance to the generation method defined. 
@@ -77,3 +80,5 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  The **PSCID** and **CandID** are used throughout LORIS including when uploading files and media linked to a candidate. The **CandID** is mainly used internally to link data across the database.
 
  The **PSCID** is dependent on the list of sites in the `psc` table of the database, more specifically the `Alias` column that is used for the `siteAbbrev` type in the generation of the ID. Please refer to the [Sites Parameter Setup](03 - Sites.md) page for more details.
+ 
+  The **PSCID** is also dependent on the list of projects in the `Project` table of the database, more specifically the `Alias` column that is used for the `projectAbbrev` type in the generation of the ID. Please refer to the [Projects Parameter Setup](02 - Projects.md) page for more details.
