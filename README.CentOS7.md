@@ -105,7 +105,7 @@ Customize and Verify your settings:
 
 Modify the Apache configuration file for our production environment.
 ```
-sudo open -e /etc/httpd/conf/httpd.conf
+sudo ed /etc/httpd/conf/httpd.conf
 ```
 
 **a.** Find & modify the `ServerName` to:
