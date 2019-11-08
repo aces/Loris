@@ -32,6 +32,7 @@ class MediaEditForm extends Component {
 
   componentDidMount() {
     let self = this;
+    console.log(this.props.DataURL);
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
@@ -143,6 +144,13 @@ class MediaEditForm extends Component {
             onUserInput={this.setFormData}
             ref='comments'
             value={this.state.formData.comments}
+          />
+          <SelectElement
+            name='language'
+            label='Language'
+            options={this.state.Data.language}
+            onUserInput={this.setFormData}
+            value={this.state.formData.language}
           />
           <FileElement
             name='file'

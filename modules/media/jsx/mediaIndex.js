@@ -83,6 +83,9 @@ class MediaIndex extends Component {
     case 'Site':
       result = <td className={style}>{this.state.fieldOptions.sites[cell]}</td>;
       break;
+    case 'Project':
+      result = <td className={style}>{this.state.fieldOptions.projects[cell]}</td>;
+      break;
     case 'Edit Metadata':
       if (!this.props.hasPermission('media_write')) {
           return;
@@ -151,6 +154,7 @@ class MediaIndex extends Component {
         type: 'select',
         options: options.sites,
       }},
+      {label: 'Project', show: true},
       {label: 'Uploaded By', show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
