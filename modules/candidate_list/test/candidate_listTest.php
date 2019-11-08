@@ -26,12 +26,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     //filter location
     static $PSCID          = ".col-xs-12:nth-child(2) > .row .form-control";
     static $DCCID          = ".col-xs-12:nth-child(3) > .row .form-control";
-    static $visitLabel     = ".col-xs-12:nth-child(4) .form-control, select";
-    static $site           = ".col-xs-12:nth-child(5) .form-control, select";
-    static $entityType     = ".col-xs-12:nth-child(7) .form-control, select";
-    static $sex            = "#candidateList_filter > div > div > fieldset >".
-                             " div:nth-child(11) > div > div > select";
-    static $project        = ".col-xs-12:nth-child(15) .form-control, select";
+    static $visitLabel     = "select[name='visitLabel']";
+    static $site           = "select[name='site']";
+    static $entityType     = "select[name='entityType']";
+    static $sex            = "select[name='sex']";
+    static $project        = "select[name='project']";
     static $advancedFilter = ".table-header > div > div > div:nth-child(2) >".
                              " button:nth-child(1)";
     static $openProfile    = ".table-header > div > div > div:nth-child(2) >".
