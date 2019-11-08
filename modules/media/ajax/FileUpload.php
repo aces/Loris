@@ -208,7 +208,7 @@ function getUploadFields()
     $user   = \User::singleton();
     $config = \NDB_Config::singleton();
 
-    // Select only candidates that have had visit at user's ites
+    // Select only candidates that have had visit at user's sites
     $qparam       = array();
     $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
                       FROM candidate c
