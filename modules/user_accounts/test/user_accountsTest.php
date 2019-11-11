@@ -332,7 +332,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
 
     /**
      * Modifies a field on either the user account or my preferences page
-     * and checks that the modification was recorded in the database.
+     * and checks that the modification was updated on the front-end.
      *
      * @param string $page      either 'user_accounts' or
                                 'user_accounts/my_preferences'.
@@ -345,10 +345,11 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function _verifyUserModification($page, $userId, $fieldName, $newValue)
     {
-        // Submit the change
+        // Set the value and submit the changes
+        $this->setValue($fieldName, $newValue);
         $this->submit($page, $userId);
 
-        // Verify changes appear on the page
+        // Reload and verify changes appear on the page
         $this->_accessUser($page, $userId);
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
