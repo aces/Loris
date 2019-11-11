@@ -1,4 +1,3 @@
-import Panel from 'Panel';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 
@@ -252,7 +251,11 @@ class NewProfileIndex extends React.Component {
         </div>
       );
     }
-    return (<Panel title="Create a new profile">{profile}</Panel>);
+    return (
+      <FieldsetElement legend={'Create a New Profile'}>
+        {profile}
+      </FieldsetElement>
+    );
   }
 }
 window.addEventListener('load', () => {
