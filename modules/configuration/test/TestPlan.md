@@ -17,8 +17,14 @@ for the project description in the dashboard settings, go to the dashboard to se
 the project description actually changed.
    >Some settings will break LORIS, like changing the base path, or Main project 
  URL, so be wary.
-  [Manual Test] 
-5. Go through each of the fields in the configuration module that have the 
+  [Manual Test]
+5. Boolean configurations in the database can be either set to `1/0` or `true/false`.
+   - make sure that changing the value from the module does not alter the type of 
+   boolean (`1/0` or `true/false`) in the database but only alters it's value. 
+   - manually change, in the database, the type of boolean (from `true/false` to `1/0`
+    for example) and make sure that updating the value from the front end subsequently 
+    only changes the value again without reverting the type to `true/false`.
+6. Go through each of the fields in the configuration module that have the 
 "Add field" button are configuration values that allow multiple entries. For each of 
 these fields:
    - try clicking the "Add field" button to see that this adds a new field to enter 
@@ -27,13 +33,13 @@ these fields:
    - try deleting a field with the 'X' button. Press save at the bottom of the page. 
    Refresh the page and check that the field was in fact deleted
   [Manual Test]
-6. Check that by setting 'Sandbox' in the config.xml to 1, the config tag names 
+7. Check that by setting 'Sandbox' in the config.xml to 1, the config tag names 
 appear in grey below their labels.
   [Automation Test]
-7. Check that the fields overridden in the config.xml appear greyed out in the config 
+8. Check that the fields overridden in the config.xml appear greyed out in the config 
 module and not editable.
   [Automation Test]
-8. Verify that Help section content and Developer's guide is complete, accurate and 
+9. Verify that Help section content and Developer's guide is complete, accurate and 
 up-to-date.
   [Automation Test]
  
