@@ -54,7 +54,7 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  <PSCID>
      <generation>random</generation> 
      <structure>
-         <seq type="static">PROJ</seq>
+         <seq type="static">PREFIX</seq>
          <seq type="numeric" length="4" min="1" max="9999"/>
      </structure>
  </PSCID>
