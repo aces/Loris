@@ -89,10 +89,11 @@ class Statistics_Site extends \NDB_Menu
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
-            if ($user->hasPermission('access_all_profiles')) {
+            $currentUser = \User::singleton();
+            if ($currentUser->hasPermission('access_all_profiles')) {
                 $list_of_sites = \Utility::getSiteList();
             } else {
-                $list_of_sites = \User::getStudySites();
+                $list_of_sites = $currentUser->getStudySites();
             }
             $sitesString = implode(",", array_keys($list_of_sites));
 
