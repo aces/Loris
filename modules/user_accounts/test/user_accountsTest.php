@@ -529,7 +529,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         );
         $this->setValue(
             self::FORM_FIELD_CONFIRMPASSWORD,
-            ($confirmPassword === '') ? $password : $confirmPassword,
+            ($confirmPassword === '') ? $password : $confirmPassword
         );
         $this->submit(
             $page,
