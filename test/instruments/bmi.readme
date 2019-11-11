@@ -1,8 +1,0 @@
-The BMI instrument was created using the Instrument builder module under the Admin
-module. There are three files associated with the BMI instrument:
-1. bmi.linst : Output file from the instrument builder.
-2. bmi.rules : File that contains the rules for data entry for the instrument
-3. bmi.score : Scoring file written in php that will calculate the bmi for a person
-               given a height and weight
-
-All three files should be put in project/instruments directory.
