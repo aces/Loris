@@ -33,6 +33,8 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
      </structure>
  </PSCID>
  ```
+ > Example PSCID generated: MTL1234
+ > Where the site's alias is MTL
 
 2. ***manual*** asks the user to enter the PSCID when registering a new candidate.
 
@@ -40,10 +42,11 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  <PSCID> 
      <generation>user</generation> 
      <structure>
-         <seq type="alphanumeric" length="2"/> <!-- Ex: A1-->
+         <seq type="alphanumeric" length="2"/>
      </structure>
  </PSCID>
  ```
+  > Example PSCID generated: A1
 
 3. ***random*** generates PSCIDs with a random numerical value for each new participant registered.
 
@@ -52,11 +55,11 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
      <generation>random</generation> 
      <structure>
          <seq type="static">PROJ</seq>
-         <seq type="projectAbbrev"/>
-         <seq type="numeric" length="4" min="1" max="9999"/> <!-- Ex: PROJMTL3994-->
+         <seq type="numeric" length="4" min="1" max="9999"/>
      </structure>
  </PSCID>
  ```
+ > Example PSCID generated: PROJ3994
  
  Options for the `type` element of the `<seq>` tag are:
   - `siteAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
