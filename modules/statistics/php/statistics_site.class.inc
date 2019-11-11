@@ -55,6 +55,20 @@ class Statistics_Site extends \NDB_Menu
                 'data_entry',
                 intval($_REQUEST['CenterID'])
             );
+        } else {
+
+            // If no CenterID is passed in the request, check if the user has the
+            // data_entry permission in all the sites/centers it have access to.
+            // TODO: There are no means of set permissions per site
+            // for a given user right now: (e.g.) The user X can have
+            // the permission data_entry on site Y but not on site Z.
+
+            $hasCenterPermission = true;
+            foreach ($user->getStudySites() as $key => $value) {
+                if (!$user->hasCenterPermission('data_entry', intval($key))) {
+                    $hasCenterPermission = false;
+                }
+            }
         }
 
         return $hasAccessToAllProfiles || $hasCenterPermission;
@@ -66,15 +80,27 @@ class Statistics_Site extends \NDB_Menu
      *
      * @param string $centerID  the value of centerID
      * @param string $projectID the value of projectID
+     * @param \User  $user      The user whose access is being checked
      *
      * @return void
      */
-    function _checkCriteria($centerID, $projectID)
+    function _checkCriteria($centerID, $projectID, \User $user)
     {
         if (!empty($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
+        } else {
+            if ($user->hasPermission('access_all_profiles')) {
+                $list_of_sites = \Utility::getSiteList();
+            } else {
+                $list_of_sites = $user->getStudySites();
+            }
+            $sitesString = implode(",", array_keys($list_of_sites));
+
+            $this->query_criteria    .= " AND s.CenterID IN (:cids) ";
+            $this->query_vars['cids'] = $sitesString;
         }
+
         if (!empty($projectID)) {
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
