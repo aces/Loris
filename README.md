@@ -33,6 +33,11 @@ Deploy and log in with username *admin* and the password that's set up during de
 
 These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS. Installing some dependencies may require `sudo` privileges.
 
+Note: the default password plugin of MySQL 8 is caching_sha2_password instead of mysql_native_password. The most PHP versions don't support the caching_sha2_password, you can work around the problem by modifying the 
+default_authentication_plugin=mysql_native_password in the section [mysqld] of my.cnf, or modify that of one particular database user with a command similar to the following:
+alter user '<user>'@'localhost' identified with mysql_native_password by '<password>';
+This solution is temporary, pending the program upgrading to support caching_sha2_password.
+
 ### Install Steps
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
