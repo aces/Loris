@@ -80,11 +80,10 @@ class Statistics_Site extends \NDB_Menu
      *
      * @param string $centerID  the value of centerID
      * @param string $projectID the value of projectID
-     * @param \User  $user      The user whose access is being checked
      *
      * @return void
      */
-    function _checkCriteria($centerID, $projectID, \User $user)
+    function _checkCriteria($centerID, $projectID)
     {
         if (!empty($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
@@ -93,7 +92,7 @@ class Statistics_Site extends \NDB_Menu
             if ($user->hasPermission('access_all_profiles')) {
                 $list_of_sites = \Utility::getSiteList();
             } else {
-                $list_of_sites = $user->getStudySites();
+                $list_of_sites = \User::getStudySites();
             }
             $sitesString = implode(",", array_keys($list_of_sites));
 
