@@ -1,0 +1,68 @@
+#!/usr/bin/php
+<?php
+/**
+* BMI Scoring
+*
+* PHP version 5
+*
+* @category Main
+* @package  BMI_Instrument
+* @author   Rathi Gnanasekaran <sekaranrathi@gmail.com>
+* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+* @link     https://github.com/aces/Loris
+*/
+
+require_once "../tools/generic_includes.php";
+require_once "Database.class.inc";
+$CommentID = $argv[1];
+$db        =& Database::singleton();
+$query         = "SELECT * from bmi WHERE CommentID = :CommentID";
+$WhereCriteria = array('CommentID'=>$CommentID);
+$record        = array();
+$record        = $db->pselectRow($query, $WhereCriteria);
+$scores = array();
+$bmi = '';
+if($record['unit_classification'] == 'metric') {
+   if(is_numeric($record['height_cms']) && is_numeric($record['weight_kgs'])) {
+      $height_mts = $record['height_cms']/100;
+      $bmi        = $record['weight_kgs']/ ($height_mts*$height_mts);
+   }
+
+} else if($record['unit_classification'] == 'standard') {
+    $ht_inches =0;
+    if(is_numeric($record['height_feet'])) {
+        $ht_inches = $record['height_feet']*12;
+    }
+    if(is_numeric($record['height_inches'])) {
+        $ht_inches += $record['height_inches'];
+    }
+    if(is_numeric($record['weight_lbs']) && $ht_inches !=0 ) {
+        $bmi       = ($record['weight_lbs']*703)/ ($ht_inches*$ht_inches);
+    }
+}
+if(empty($bmi)) {
+    $scores['bmi']          = 'Unable to calculate';
+    $scores['bmi_category'] = 'Unable to calculate';
+
+} else {
+    if($bmi < 18.5) {
+        $bmi_category = 'Underweight';
+    } else if($bmi >=18.5 && $bmi <= 22.9) {
+        $bmi_category = 'Normal Range';
+    } else if($bmi >=23.0 && $bmi <=24.9) {
+        $bmi_category = 'Overweight - At Risk';
+    } else if($bmi >=25.0 && $bmi <= 29.9) {
+        $bmi_category = 'Overweight - Moderately Obese';
+    } else if($bmi >=30.0) {
+        $bmi_category = 'Overweight - Severely Obese';
+    }
+    $scores['bmi']          = round($bmi, 2);
+    $scores['bmi_category'] = $bmi_category;
+
+}
+//save scores
+$result = $db->update('bmi', $scores, $WhereCriteria);
+
+exit(0);
+
+?>
