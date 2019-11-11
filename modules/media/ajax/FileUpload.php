@@ -53,9 +53,10 @@ function editFile()
     checkDateTaken($dateTaken);
 
     $updateValues = [
-        'date_taken' => $dateTaken,
-        'comments'   => $req['comments'],
-        'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
+        'date_taken'  => $dateTaken,
+        'comments'    => $req['comments'],
+        'language_id' => $req['language'],
+        'hide_file'   => $req['hideFile'] ? $req['hideFile'] : 0,
     ];
 
     try {
