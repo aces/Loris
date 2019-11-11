@@ -33,11 +33,6 @@ Deploy and log in with username *admin* and the password that's set up during de
 
 These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS. Installing some dependencies may require `sudo` privileges.
 
-Note: the default password plugin of MySQL 8 is caching_sha2_password instead of mysql_native_password. The most PHP versions don't support the caching_sha2_password, you can work around the problem by modifying the 
-default_authentication_plugin=mysql_native_password in the section [mysqld] of my.cnf, or modify that of one particular database user with a command similar to the following:
-alter user '<user>'@'localhost' identified with mysql_native_password by '<password>';
-This solution is temporary, pending the program upgrading to support caching_sha2_password.
-
 ### Install Steps
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
@@ -87,6 +82,8 @@ If your apache configuration was not completed by the Install script, run the fo
     sudo a2ensite $projectname
     sudo service apache2 reload
 6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation, then restart apache.
+
+If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli.requirements.php) and also [this](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors).
 
 7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
