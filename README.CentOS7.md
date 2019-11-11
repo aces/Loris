@@ -33,7 +33,7 @@ sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 sudo yum install yum-utils
 sudo yum update
 sudo yum --enablerepo=remi-php72 install php php-pdo php-pdo_mysql
-sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-pdo php72-php-mysql
+sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-mysql
 ```
 ## MariaDB
 
