@@ -144,6 +144,13 @@ class MediaEditForm extends Component {
             ref='comments'
             value={this.state.formData.comments}
           />
+          <SelectElement
+            name='language'
+            label='Language'
+            options={this.state.Data.language}
+            onUserInput={this.setFormData}
+            value={this.state.formData.language}
+          />
           <FileElement
             name='file'
             id='mediaEditEl'
