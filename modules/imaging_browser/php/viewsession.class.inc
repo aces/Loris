@@ -57,15 +57,15 @@ class ViewSession extends \NDB_Form
         if ($candidate->getData('Entity_type') == 'Scanner') {
             return $user->hasPermission('imaging_browser_phantom_allsites')
                 || $user->hasCenterPermission(
-                    'imaging_browser_phantom_ownsite',
-                    \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
-                );
+                'imaging_browser_phantom_ownsite',
+                \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
+            );
         } elseif ($candidate->getData('Entity_type') == 'Human') {
             return $user->hasPermission('imaging_browser_view_allsites')
                 || $user->hasCenterPermission(
-                    'imaging_browser_view_site',
-                    \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
-                );
+                'imaging_browser_view_site',
+                \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
+            );
         }
 
         return false;
