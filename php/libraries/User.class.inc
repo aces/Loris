@@ -492,7 +492,7 @@ class User extends UserPermissions
         \Password $password,
         ?\DateTime $expiry = null
     ): void {
-        if (password_verify($this->userInfo['Email'], $password)) {
+        if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(
                 'Password cannot be set to email'
             );
