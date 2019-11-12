@@ -1,9 +1,14 @@
 {function name=createRadio}
+  {*Use variable to make sure 1/0 values dont get converted to true/false accidentally, code sections expecting 1/0 or true/false can break otherwise*}
+  {$useZerosAndOnes=false}
+  {if $v eq "1" || $v eq "0"}
+    {$useZerosAndOnes=true}
+  {/if}
     <label class="radio-inline">
-        <input type="radio" name="{$k}" value="1" {if $v eq "1" || $v eq "true"}checked{/if} {if $d eq "Yes"}disabled{/if}>Yes
+        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="1"{else}value="true"{/if} {if $v eq "1" || $v eq "true"}checked{/if} {if $d eq "Yes"}disabled{/if}>Yes
     </label>
     <label class="radio-inline">
-        <input type="radio" name="{$k}" value="0" {if $v eq "0" || $v eq "false"}checked{/if} {if $d eq "Yes"}disabled{/if}>No
+        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="0"{else}value="false"{/if} {if $v eq "0" || $v eq "false"}checked{/if} {if $d eq "Yes"}disabled{/if}>No
     </label>
 {/function}
 
