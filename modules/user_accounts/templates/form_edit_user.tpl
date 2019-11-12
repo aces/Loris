@@ -40,12 +40,10 @@
        <h3>Password Rules</h3>
       <ul>
         <li>The password must be at least 8 characters long.</li>
-        <li>The password and the user name must not be the same.</li>
-        <li>The password and the email address must not be the same.</li>
+        <li>The password cannot be your username or email address.</li>
       </ul>
-        <p><b>Please choose a unique password.</b></p>
+        <p>Please choose a unique password.</p>
         <p>We suggest using a password manager to generate one for you.</p>
-      </ul>
       <h3>Notes</h3>
       <ul>
         <li>It is recommended to use an email address as the username, for clarity and uniqueness.</li>
