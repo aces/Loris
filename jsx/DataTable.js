@@ -28,7 +28,7 @@ class DataTable extends Component {
     this.updatePageNumber = this.updatePageNumber.bind(this);
     this.updatePageRows = this.updatePageRows.bind(this);
     this.downloadCSV = this.downloadCSV.bind(this);
-    this.getFilteredRows = this.getFilteredRows.bind(this);
+    this.getFilteredRowIndexes = this.getFilteredRowIndexes.bind(this);
     this.sortRows = this.sortRows.bind(this);
     this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
     this.renderActions = this.renderActions.bind(this);
@@ -83,7 +83,8 @@ class DataTable extends Component {
     this.setState({page});
   }
 
-  downloadCSV(csvData) {
+  downloadCSV(filteredRowIndexes) {
+    const csvData = filteredRowIndexes.map((id) => this.props.data[id]);
     let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function(e) {
@@ -111,13 +112,9 @@ class DataTable extends Component {
     });
   }
 
-  getFilteredRows() {
+  getFilteredRowIndexes() {
     let useKeyword = false;
-    // let filterMatchCount = 0;
-    let filterValuesCount = (this.props.filter ?
-        Object.keys(this.props.filter).length :
-        0
-    );
+    let filterValuesCount = Object.keys(this.props.filter).length;
     let tableData = this.props.data;
     let fieldData = this.props.fields;
 
@@ -131,7 +128,6 @@ class DataTable extends Component {
       }
       return filteredIndexes;
     }
-
 
     if (this.props.filter.keyword) {
       useKeyword = true;
@@ -392,11 +388,10 @@ class DataTable extends Component {
     }
 
     let rows = [];
-    let filteredRows = this.getFilteredRows();
-    let filteredCount = filteredRows.length;
-    let index = this.sortRows(filteredRows);
+    let filteredRowIndexes = this.getFilteredRowIndexes();
+    let filteredCount = filteredRowIndexes.length;
+    let index = this.sortRows(filteredRowIndexes);
     let currentPageRow = (rowsPerPage * (this.state.page.number - 1));
-    let filteredData = [];
 
     if (this.props.filter.keyword) {
       useKeyword = true;
@@ -410,7 +405,6 @@ class DataTable extends Component {
         let rowIndex = index[i].RowIdx;
         let rowData = this.props.data[rowIndex];
         let curRow = [];
-        filteredData.push(rowData);
 
         // Iterates through headers to populate row columns
         // with corresponding data
@@ -468,12 +462,6 @@ class DataTable extends Component {
       </select>
     );
 
-    // Include only filtered data if filters were applied
-    let csvData = this.props.data;
-    if (this.props.filter && filteredData.length > 0) {
-      csvData = filteredData;
-    }
-
     let header = this.props.hide.rowsPerPage === true ? '' : (
       <div className="table-header">
         <div className="row">
@@ -503,12 +491,12 @@ class DataTable extends Component {
               {this.renderActions()}
               <button
                 className="btn btn-primary"
-                onClick={this.downloadCSV.bind(null, csvData)}
+                onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
               >
                 Download Table as CSV
               </button>
               <PaginationLinks
-                Total={filteredRows}
+                Total={filteredCount}
                 onChangePage={this.changePage}
                 RowsPerPage={rowsPerPage}
                 Active={this.state.page.number}
@@ -542,7 +530,7 @@ class DataTable extends Component {
               marginLeft: 'auto',
             }}>
               <PaginationLinks
-                Total={filteredRows}
+                Total={filteredCount}
                 onChangePage={this.changePage}
                 RowsPerPage={rowsPerPage}
                 Active={this.state.page.number}
