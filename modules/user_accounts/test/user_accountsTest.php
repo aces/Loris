@@ -109,8 +109,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testUserAccountsMyPreferencesDoespageLoad()
     {
         $this->safeGet($this->url . "/user_accounts/my_preferences/");
-        $this->getBody();
-        $this->assertContains("My Preferences", $bodyText);
+        $this->assertContains("My Preferences", $this->getBody());
     }
     /**
      * Tests that searching for users using thei user IDs works
@@ -366,9 +365,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         }
     }
 
-    function _verifyPasswordErrorMessageDisplayed($page, $userId, $fieldName, $newValue) {
-    }
-
     /**
      * Submit user data to the form specified by $page.
      *
@@ -508,7 +504,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         );
         // This text comes from the class constants in Edit User/My Preferences
         $this->assertContains(
-            'New and old passwords are identical', 
+            'New and old passwords are identical',
             $this->getBody()
         );
     }
