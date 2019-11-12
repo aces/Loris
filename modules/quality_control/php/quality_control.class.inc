@@ -40,7 +40,7 @@ class Quality_Control extends \NDB_Menu_Filter
     function _hasAccess(\User $user) : bool
     {
         // FIXME This module should have its own permission.
-        return $user->hasPermission('data_team_helper');
+        return $user->hasPermission('quality_control');
     }
 
     /**

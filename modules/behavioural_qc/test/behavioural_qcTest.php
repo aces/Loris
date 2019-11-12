@@ -1,6 +1,6 @@
 <?php
 /**
- * Data_team_helper automated integration tests
+ * behavioural_qc automated integration tests
  *
  * PHP Version 5
  *
@@ -13,7 +13,7 @@
 require_once __DIR__ .
         "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
- * Data_team_helper automated integration tests
+ * behavioural_qc automated integration tests
  *
  * PHP Version 5
  *
@@ -26,28 +26,28 @@ require_once __DIR__ .
 class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
 {
     /**
-     * Tests that, when loading the data_team_helper module, some
+     * Tests that, when loading the behavioural_qc module, some
      * text appears in the body.
      *
      * @return void
      */
     function testDataTeamHelperDoespageLoad()
     {
-        $this->safeGet($this->url . "/data_team_helper/");
+        $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Data Team Helper", $bodyText);
+        $this->assertContains("Behavioural Quality Control", $bodyText);
     }
      /**
-      * Tests that data_team_helper does not load with the permission
+      * Tests that behavioural_qc does not load with the permission
       *
       * @return void
       */
     function testDataTeamHelperWithoutPermission()
     {
          $this->setupPermissions(array());
-         $this->safeGet($this->url . "/data_team_helper/");
+         $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -64,8 +64,8 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataTeamHelperPermission()
     {
-         $this->setupPermissions(array("data_team_helper"));
-         $this->safeGet($this->url . "/data_team_helper/");
+         $this->setupPermissions(array("behavioural_qc"));
+         $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();

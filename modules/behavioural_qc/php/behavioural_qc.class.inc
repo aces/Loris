@@ -12,7 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\data_team_helper;
+namespace LORIS\behavioural_qc;
 /**
  * Dashboard: displays recruitment and study progression charts,
  * user tasks and document repository notifications
@@ -23,11 +23,11 @@ namespace LORIS\data_team_helper;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
-class Data_Team_Helper extends \NDB_Form
+class behavioural_qc extends \NDB_Form
 {
 
     /**
-     * Class that returns the data team helper.
+     * Class that returns the Behavioural Quality Control.
      *
      * @param \User $user The user whose access is being checked
      *
@@ -35,7 +35,7 @@ class Data_Team_Helper extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('data_team_helper'));
+        return ($user->hasPermission('quality_control'));
     }
 
     /**
@@ -834,14 +834,14 @@ class Data_Team_Helper extends \NDB_Form
         return array_merge(
             $deps,
             array(
-                $baseURL . "/data_team_helper/js/data_team.js",
+                $baseURL . "/behavioural_qc/js/behavioural_qc.js",
             )
         );
     }
 
     /**
      * Include additional CSS files:
-     *  1. data_team_helper
+     *  1. behavioural_qc
      *
      * @return array of CSS to be inserted
      */
@@ -852,7 +852,7 @@ class Data_Team_Helper extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/data_team_helper/css/data_team_helper.css"]
+            [$baseURL . "/behavioural_qc/css/behavioural_qc.css"]
         );
     }
 }

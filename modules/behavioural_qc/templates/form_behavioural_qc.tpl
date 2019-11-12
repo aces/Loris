@@ -103,7 +103,7 @@
 
 							</div>
 					</div>
-					<input type="hidden" name="test_name" value="data_team_helper" />
+					<input type="hidden" name="test_name" value="behavioural_qc" />
 				</form>
 			</div>
 		</div>
@@ -128,7 +128,7 @@
   </div>
 
 
-<script type="text/javascript" src="{$baseurl}/data_team_helper/js/behavioural_qc_module.js"></script>
+<script type="text/javascript" src="{$baseurl}/behavioural_qc/js/behavioural_qc_module.js"></script>
 
 <script type="text/javascript">
 var incomplete = {$Incomplete_candidates|@json_encode};
