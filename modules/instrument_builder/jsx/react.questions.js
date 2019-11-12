@@ -502,6 +502,10 @@ class ListElements extends Component {
     let textSize = 'small';
     // Set the options for the desired type
     switch (newId) {
+      case 'line':
+        newState.Options = {};
+        newState.Name = '';
+        newState.Description = '';
       case 'textarea':
         textSize = 'large';
         // falls through
