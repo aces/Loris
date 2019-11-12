@@ -78,7 +78,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * {@inheritDoc}
+     * Ensures that the module loads if and only if the user has one of the
+     * module permissions codes.
      *
      * @return void
      */
