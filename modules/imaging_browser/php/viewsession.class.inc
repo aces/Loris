@@ -221,7 +221,7 @@ class ViewSession extends \NDB_Form
             $SeriesNumber        = $FileObj->getParameter('series_number');
             $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
-                (int)$FileObj->getParameter('echo_time') * 1000,
+                (int)$FileObj->getParameter('echo_time')*1000,
                 2
             );
             $RepetitionTime      = number_format(
