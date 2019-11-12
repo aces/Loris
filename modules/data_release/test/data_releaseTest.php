@@ -1,6 +1,6 @@
 <?php
 /**
- Data Release automated integration tests
+ * Data Release automated integration tests
  *
  * PHP Version 7
  *
