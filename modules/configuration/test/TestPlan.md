@@ -24,6 +24,7 @@ the project description actually changed.
    - manually change, in the database, the type of boolean (from `true/false` to `1/0`
     for example) and make sure that updating the value from the front end subsequently 
     only changes the value again without reverting the type to `true/false`.
+  [Manual Test]
 6. Go through each of the fields in the configuration module that have the 
 "Add field" button are configuration values that allow multiple entries. For each of 
 these fields:
@@ -41,7 +42,7 @@ module and not editable.
   [Automation Test]
 9. Verify that Help section content and Developer's guide is complete, accurate and 
 up-to-date.
-  [Automation Test]
+  [Manual Test]
  
 ## Subproject
 
