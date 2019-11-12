@@ -103,29 +103,43 @@ Customize and Verify your settings:
  * DocumentRoot should point to `/var/www/loris/htdocs`
  * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
 
-Modify the Apache configuration file for our production environment.
+Create the Apache configuration `/etc/httpd/conf.id/loris.conf` for our production environment.
 ```
-Edit /etc/httpd/conf/httpd.conf as follows (may require sudo-ing the text editor command)
-```
+<VirtualHost *:80>  # change from 80 to 443 if you enable SSL
+        ServerAdmin webmaster@localhost
+        ServerName your.Loris.url.here
 
-**a.** Find & modify the `ServerName` to:
-```
-ServerName your.Loris.url.here
-```
+        DocumentRoot /var/www/loris/htdocs/
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride All
+        </Directory>
+        <Directory /var/www/loris/htdocs/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
 
-**b.** Find the lines for `DocumentRoot` and `Directory` in Apache and change them to:
-```
-DocumentRoot "%LORISROOT%/htdocs/"
-<Directory "%LORISROOT%/htdocs/">
-```
+        php_value include_path .:/usr/share/php:/var/www/loris/project/libr$
 
-**c.** In the same `<Directory>` block, modify `AllowOverride` to allow all:
-```
-# AllowOverride controls what directives may be placed in .htaccess files.
-# It can be "All", "None", or any combination of the keywords:
-#   AllowOverride FileInfo AuthConfig Limit
-#
-AllowOverride All
+        #DirectoryIndex main.php index.html
+
+        ErrorLog /var/log/httpd/loris-error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog /var/log/httpd/loris-access.log combined
+        ServerSignature Off
+
+        #SSLEngine Off  # change to On to enable, after updating cert paths$
+        #SSLCertificateFile /etc/apache2/ssl/loris-cert.pem
+        #SSLCertificateKeyFile /etc/apache2/ssl/loris-key.pem
+        #SSLCACertificateFile /etc/apache2/ssl/CA-cacert.pem
+
+</VirtualHost>
 ```
 
 Finally, restart apache:
