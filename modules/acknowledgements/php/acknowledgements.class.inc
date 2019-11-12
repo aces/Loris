@@ -28,7 +28,11 @@ namespace LORIS\acknowledgements;
 
 class Acknowledgements extends \NDB_Menu_Filter_Form
 {
-    public $skipTemplate = true;
+    public const PERMISSIONS = array(
+        'acknowledgements_view',
+        'acknowledgements_edit'
+    );
+    public $skipTemplate     = true;
 
     /**
      * Determine whether user should be granted access.
@@ -39,8 +43,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('acknowledgements_view')
-                ||$user->hasPermission('acknowledgements_edit'));
+        return $user->hasAnyPermission(self::PERMISSIONS);
     }
 
     /**

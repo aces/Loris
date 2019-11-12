@@ -76,36 +76,24 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("acknowledgements", array('full_name' => 'Test Test'));
         parent::tearDown();
     }
+
     /**
-     * Tests that, the homepage should have "Acknowledgements" on the page.
+     * {@inheritDoc}
      *
      * @return void
      */
-    function testPageLoads()
+    function testPermissions(): void
     {
-        $this->safeGet($this->url . "/acknowledgements/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Acknowledgements", $bodyText);
-    }
-    /**
-     * Tests that, the homepage should have "You do not have access to this page."
-     * on the page without permission.
-     *
-     * @return void
-     */
-    function testPageLoadsWithoutPermissions()
-    {
-        $this->setupPermissions(array("violated_scans_view_allsites"));
-        $this->safeGet($this->url . "/acknowledgements/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
-            "You do not have access to this page.",
-            $bodyText
+        $this->testPagePermissions(
+            '/acknowledgements/',
+            array(
+                'acknowledgements_view',
+                'acknowledgements_edit'
+            ),
+            "Acknowledgements"
         );
-        $this->resetPermissions();
     }
+
     /**
      * Tests that, after clicking the "filter" button, all of the
      * advanced filters appear on the page.

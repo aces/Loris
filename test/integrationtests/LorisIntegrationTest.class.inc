@@ -559,5 +559,87 @@ abstract class LorisIntegrationTest extends TestCase
             );
         }
     }
+
+    /**
+     * Ensures that the module loads if and only if the user has the correct
+     * permissions.
+     *
+     * @param string   $path            The path to the module. Usually the same name as
+     *                                  the folder containing the module.
+     * @param string[] $permissionCodes An array of permission codes
+     *                                  corresponding to the module. Should
+     *                                  match the permission codes used in the
+     *                                  hasAccess() method of the module.
+     * @param string   $successMessage  Indicates that the module has
+     *                                  loaded successfully, i.e.
+     *                                  that the user has permission
+     *                                  to access the module. Usually
+     *                                  the name of the module, e.g.
+     *                                  "Data Release" for the
+     *                                  data_release module.
+     * @param string   $failureMessage  Indicates the user does not have
+     *                                  permission to view the module.
+     *                                  Defaults to the 403 message
+     *                                  served by
+     *                                  src/Middleware/AuthMiddleware.php.
+     *
+     * @return void
+     */
+    protected function testPagePermissions(
+        string $path,
+        array $permissionCodes,
+        string $successMessage,
+        string $failureMessage = 'You do not have access to this page'
+    ): void {
+        // Ensure a forbidden message is delivered when the user does not
+        // have any permissions set.
+        $this->_verifyPermission(
+            $failureMessage,
+            $this->_loadWithPermission($path)
+        );
+
+        // Validate that each permission code on its own is enough to load
+        // the module.
+        foreach ($permissionCodes as $code) {
+            $this->_verifyPermission(
+                $successMessage,
+                $this->_loadWithPermission($path, $code)
+            );
+        }
+    }
+
+    /**
+     * Asserts that a message appears in the HTML body of the page.
+     * Rests the permissions checked to cleanup before further tests.
+     *
+     * @param string $needle   This string should be in $haystack.
+     * @param string $haystack The HTML body of the page.
+     *
+     * @return void
+     */
+    function _verifyPermission(string $needle, string $haystack): void
+    {
+        assertContains($needle, $haystack);
+        $this->resetPermissions();
+    }
+
+    /**
+     * Helper function to set up and load a page with a given permisison code.
+     *
+     * @param string $path       The path to the module. Usually the same name as
+     *                           the folder containing the module.
+     * @param string $permission A valid permission code for the data_release
+     *                           module.
+     *
+     * @return string The body text of the page loaded.
+     */
+    function _loadWithPermission(string $path, string $permission = ''): string
+    {
+        $this->setupPermissions(array($permission));
+        $this->safeGet($this->url . $path);
+        return $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+    }
 }
 
