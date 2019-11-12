@@ -36,13 +36,15 @@
     {/if}
 
     <div class="panel panel-default">
-      <div class="panel-body">
+  <div class="panel-body">
        <h3>Password Rules</h3>
-       <ul>
-          <li>The password must be at least 8 characters long</li>
-          <li>The password must contain at least 1 letter, 1 number and 1 character from   !@#$%^&amp;*()</li>
-          <li>The password and the user name must not be the same</li>
-          <li>The password and the email address must not be the same</li>
+      <ul>
+        <li>The password must be at least 8 characters long.</li>
+        <li>The password and the user name must not be the same.</li>
+        <li>The password and the email address must not be the same.</li>
+      </ul>
+        <p><b>Please choose a unique password.</b></p>
+        <p>We suggest using a password manager to generate one for you.</p>
       </ul>
       <h3>Notes</h3>
       <ul>
