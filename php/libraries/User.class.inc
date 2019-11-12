@@ -525,7 +525,7 @@ class User extends UserPermissions
     ): bool {
         return ! password_verify(
             $plaintextPassword,
-            $this->userInfo['Password_hash']
+            (string) $this->userInfo['Password_hash']
         );
     }
 }
