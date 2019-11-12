@@ -506,6 +506,7 @@ class ListElements extends Component {
         newState.Options = {};
         newState.Name = '';
         newState.Description = '';
+        break;
       case 'textarea':
         textSize = 'large';
         // falls through
