@@ -109,9 +109,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testUserAccountsMyPreferencesDoespageLoad()
     {
         $this->safeGet($this->url . "/user_accounts/my_preferences/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
+        $this->getBody();
         $this->assertContains("My Preferences", $bodyText);
     }
     /**
@@ -452,7 +450,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // Try changing the password to the same value.
         $this->_sendPasswordValues($page, $userId, self::UNITTESTER_EMAIL_NEW);
         // This text comes from the class constants in Edit User/My Preferences
-        assertContains('cannot be your email', $this->getBody());
+        $this->assertContains('cannot be your email', $this->getBody());
     }
 
     /**
@@ -475,7 +473,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             \Utility::randomString()
         );
         // This text comes from the class constants in Edit User/My Preferences
-        assertContains('do not match', $this->getBody());
+        $this->assertContains('do not match', $this->getBody());
     }
 
     /**
@@ -504,7 +502,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $newPassword
         );
         // This text comes from the class constants in Edit User/My Preferences
-        assertContains('New and old passwords are identical', $this->getBody());
+        $this->assertContains(
+            'New and old passwords are identical', 
+            $this->getBody()
+        );
     }
 
     /**
