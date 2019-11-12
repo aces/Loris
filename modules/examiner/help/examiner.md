@@ -1,6 +1,6 @@
 # Examiner
 
-This module allows you to add, view, or modify examiners and their certifications. An examiner is the person certified to administer a specific instrument, or the person entering data into the database. 
+This module allows you to add, view, or modify examiners and their certifications. An examiner is the person certified to administer a specific instrument, or in some cases the person entering data into the database. 
 
 To add a new examiner, enter their name, select their site, and specify whether they are a radiologist. Then, click **Add Examiner**. 
 
