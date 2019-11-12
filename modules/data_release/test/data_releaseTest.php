@@ -73,7 +73,6 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function testPageDoesNotLoadWithoutPermission(): void
     {
-        $this->_loadWithPermission('');
         $this->assertContains(
             'You do not have access',
             $this->_loadWithPermission('')
