@@ -529,11 +529,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     ): void {
         // Go to page
         $this->_accessUser($page, $userId);
-        // Set Password and Confirm Password form values to be equal to the
-        // user's email.
         $this->setValue(
             self::FORM_FIELD_PASSWORD,
-            self::UNITTESTER_EMAIL_NEW
+            $password
         );
         $this->setValue(
             self::FORM_FIELD_CONFIRMPASSWORD,
