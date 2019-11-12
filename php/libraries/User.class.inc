@@ -504,6 +504,11 @@ class User extends UserPermissions
                 'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
             )
         );
+        // XXX This class should use DateTime objects instead of strings so
+        // that formatting doens't need to be specified and so that Date math
+        // is simpler and safer.
+        $this->userInfo['Password_hash']   = (string) $password;
+        $this->userInfo['Password_expiry'] = $expiry->format('Y-m-d');
     }
 
     /**
@@ -515,25 +520,13 @@ class User extends UserPermissions
      *
      * @return bool  true if the password has changed, false otherwise.
      */
-    function passwordChanged(
+    function isPasswordDifferent(
         string $plaintextPassword
     ): bool {
-        $passwordQuery = "SELECT Password_hash
-            FROM users
-            WHERE UserID = :UID";
-
-        $current = \NDB_Factory::singleton()->database()->pselectOne(
-            $passwordQuery,
-            array('UID' => $this->getID())
+        return ! password_verify(
+            $plaintextPassword,
+            (string) $this->userInfo['Password_hash']
         );
-
-        if (!is_null($current)) {
-            // The plaintext password must be used here rather than the
-            // Password class.
-            return !password_verify($plaintextPassword, $current);
-        }
-
-        return true;
     }
 }
 

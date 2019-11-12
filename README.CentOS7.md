@@ -31,11 +31,9 @@ sudo systemctl start httpd
 sudo yum install epel-release
 sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 sudo yum install yum-utils
-sudo yum-config-manager --enable remi-php72
 sudo yum update
-sudo yum install php72
+sudo yum --enablerepo=remi-php72 install php php-xml php-mbstring
 sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mysqlnd php72-php-xmlrpc php72-php-opcache php72-php-pdo php72-php-mysql
-sudo yum --enablerepo=remi-php72 install php-xml php-mbstring
 ```
 ## MariaDB
 
@@ -43,18 +41,30 @@ MySQL is not recommended/supported on CentOS, see [paragraph 2 here](https://www
 
 *Note:* LORIS developers (those NOT working with a .zip release codebase) should skip steps relating to hosting their database locally. Contact your system administrator for database credentials.
 
+### Configure MariaDB repository
+Configure MariaDB repository by manually creating the file `/etc/yum.repos.d/MariaDB.repo` with the following details:
+
+```
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.3/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+```
+
+Install PGP key with:
+```
+sudo rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+```
+
+### Database client and server packages.
+
 ```bash
 sudo yum install MariaDB-client MariaDB-server
 ```
 
-By default in CentOS 7, the MariaDB version is 10.2
-Check what version you have installed by running:
-```
-mysql -V
-```
+### Starting MariaDB server
 
-Upgrade your MariaDB to version 10.3 (LORIS 21 does not support MariaDB 10.2.27)
-Then, 
 ```bash
 sudo systemctl start mariadb 
 sudo systemctl enable mariadb

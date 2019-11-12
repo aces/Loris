@@ -1107,10 +1107,10 @@ class Edit_User extends \NDB_Form
                 // The Password class is self-validating and will throw an
                 // InvalidArgumentException if the value passed to it is
                 // bad or the input is too weak to be a good password.
-                $password        = new \Password($plaintext);
-                $passwordChanged = \User::factory($this->identifier)
-                    ->passwordChanged($plaintext);
-                if (! $passwordChanged) {
+                $password            = new \Password($plaintext);
+                $isPasswordDifferent = \User::factory($this->identifier)
+                    ->isPasswordDifferent($plaintext);
+                if (! $isPasswordDifferent) {
                     $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
                 }
             } catch (\InvalidArgumentException $e) {
