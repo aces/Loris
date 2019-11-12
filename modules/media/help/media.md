@@ -1,43 +1,17 @@
 # Media
 
-The Media module serves as a repository for files associated with a particular 
-candidate-timepoint or instrument in a study.  Users can access and upload files 
-such as PDF scans, recordings, log files, or stimulus presentation media in multiple 
-formats such as .pdf, .mp4, .mp3, .txt, etc. 
+This module serves as a repository for files associated with a particular candidate-timepoint or instrument in a study. You can access and upload files such as PDF scans, recordings, log files, or stimulus presentation media in a variety of formats formats, including .pdf, .mp4, .mp3, .txt, and more.
 
-## Searching for a Media File
+## Search For/Edit a File
 
-Under the Browse tab, use the Selection Filters to search for files by fields such 
-as filename, file type, candidate PSCID, Visit Label, Instrument, Site, or 
-name of user who uploaded the file.  Partial string matching can be used on many 
-fields (e.g. filename).  As filters are selected, the data table below will
-dynamically update with relevant results.  Click the “Clear Filters” button to reset 
-all filters. 
+In the **Browse** tab, in the *Selection Filter* section, use any combination of filters to narrow down your search for a file or files. The table below will dynamically update with relevant results.  
 
-Within the data table, results can be sorted in ascending or descending order by 
-clicking on any column header. To download a file, click on the filename (in blue 
-text). 
+Depending on the size of your results table, you may have to move the table over using the navigation arrows on either side. If you haven’t seen it already, scrolling to the right will reveal the *Edit Metadata* column. Click **Edit** to edit certain properties of any given file. This will reveal an *Edit Media File* pop-up that allows you to make your desired changes. To finalize your update, click **Update File**. 
 
-## Uploading a Media File
+Note: only certain changes can be made to a file once it’s uploaded. If you need to make more detailed changes to the file, such as PSCID, visit label, site, or instrument, you would have to delete that file and re-upload it with the correct information. 
 
-Under the “Upload” tab, users will be able to upload a new media file. 
-Users must specify information about the file by selecting from a number of dropdown 
-menus including PSCID, Visit Label, Site, Instrument (optional), Date of 
-Administration, and enter comments on the file in the textbox provided. Lastly, 
-users will select the file they wish to upload by clicking the “Browse” button and 
-selecting the file from their computer. To begin the upload, users must click 
-“Upload File”. 
+## Upload a File
 
-Note that a file to be uploaded should follow the naming convention listed at the 
-top of the Upload page: [PSCID]\_[VisitLabel]\_[Instrument]
+In the **Upload** tab, populate the fields with information about the file. Click **Browse** to select the desired file from your computer. Click **Upload File** to complete the upload. 
 
-## Editing a Media File
-
-Click “Edit” from the “Edit Metadata” column to update or edit certain file 
-properties, via the “Edit Media File” page. 
-
-This page allows users to modify information about an uploaded file.  Fields such 
-as Date of Administration, Comments, and file visibility (hidden or visible) can be 
-updated.  Note that fields such as PSCID, Visit Label, Site, and Instrument cannot 
-be modified on uploaded media files. To finalize an update, users must click “Update 
-File”. 
+Note: uploaded files must follow the naming convention listed at the top of the Upload page: [PSCID]\_[VisitLabel]\_[Instrument]
