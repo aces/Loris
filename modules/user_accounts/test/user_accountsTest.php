@@ -333,7 +333,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * and checks that the modification was updated on the front-end.
      *
      * @param string $page      either 'user_accounts' or
-                                'user_accounts/my_preferences'.
+     *                          'user_accounts/my_preferences'.
      * @param string $userId    ID of the user to modify.
      * @param string $fieldName name of the field (on the HTML page) that should
      *                          be modified.
@@ -364,6 +364,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 $newValue
             );
         }
+    }
+
+    function _verifyPasswordErrorMessageDisplayed($page, $userId, $fieldName, $newValue) {
     }
 
     /**
@@ -440,13 +443,15 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function _verifyPasswordMustNotEqualEmail($page, $userId): void
     {
-        // Make sure the user's email is set to a known value
+        // Make sure the user's email is set to a known value. This will also
+        // load the page.
         $this->_verifyUserModification(
             $page,
             'UnitTester',
             'Email',
             self::UNITTESTER_EMAIL_NEW
         );
+
         // Try changing the password to the same value.
         $this->_sendPasswordValues($page, $userId, self::UNITTESTER_EMAIL_NEW);
         // This text comes from the class constants in Edit User/My Preferences
@@ -542,9 +547,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $page,
             $userId
         );
-
-        // Reload
-        $this->_accessUser($page, $userId);
     }
 
     /**
