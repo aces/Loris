@@ -352,7 +352,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->setValue($fieldName, $newValue);
         $this->submit($page, $userId);
 
-        // Reload 
+        // Reload
         $this->_accessUser($page, $userId);
 
         // Verify changes appear on the page
