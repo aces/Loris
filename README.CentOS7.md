@@ -111,7 +111,6 @@ Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS en
 ```
 <VirtualHost *:80>  # change from 80 to 443 if you enable SSL
         ServerAdmin webmaster@localhost
-        ServerName your.Loris.url.here
 
         DocumentRoot /var/www/%LORISROOT%/htdocs/
         <Directory />
