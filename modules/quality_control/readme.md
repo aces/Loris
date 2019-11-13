@@ -1,32 +1,28 @@
-## Quality Control Module
+## Imaging Quality Control Module
 
 #### Purpose
-The purpose of this module is to ensure data has been uploaded into LORIS properly. LORIS employs double data entry as a quality control measure, and this module is designed to catch any inconsistencies.
+The purpose of this module is to verify and help ensure imaging data has been uploaded into LORIS and reviwed for Quality Control (QC). It provides a queryable interface for users to gauge the completeness of imaging data collections matched against a given protocol, and the status of QC review processes on them.
+
+Note: this module is not the module in which QC is performed on images, just the module in which QC is *reviewed*.  QC is actually marked on the images in the Imaging Browser module.
 
 #### Intended Users
-This module is used by data entry staff, imaging scientists, analysts, coordinators, and clinicians.
+This module is used by study administrators, imaging scientists, analysts, coordinators, and clinicians.
 
 #### Scope
-The imaging tab allows you to view more specific data on uploaded image files, with many additional filtering options. The resulting table has a column for QC status, so you can see whether the upload has passed QC or not. The table indicates the location of each file as a clickable hyperlink. You can download the table in .csv format. 
+The Imaging QC module allows you to view specific data on uploaded image files, with many additional filtering options. The resulting table has a column for QC status, so you can see whether the upload has passed QC or not. The table provides a link to each file. You can download the table in `.csv` format. 
 
-The Imaging Quality Control module is simply a tool to view where conflicts exist within your data. Once you’ve identified any issues, you’ll need to go elsewhere in LORIS to amend them. For example, the module may tell you that there’s a conflict with a double data entry point. From there, you would visit the Conflict Resolver module to address/fix the issue. 
+Note: To QC a scan, the user must click the link leading to the Imaging Browser, and enter the QC details in that module.
 
-In other words, the The Imaging Quality Control module is designed to bring all quality control information into the same module, for ease of access.
+#### Permissions
+`Placeholder - waiting for contribution from LL`
 
-###### Permissions
-Placeholder - waiting for contribution from Liza
+#### Interactions
+The Imaging Quality Control module is directly related to the following modules:
 
-##### Interactions
-The The Imaging Quality Control module is directly related to the following modules:
+##### Imaging Browser
+The Imaging QC module displays images that have been loaded in LORIS and QC'd in the Imaging Browser. The Imaging Browser also provides metadata and visualization of each scan and session collected for a study. 
 
-###### Behavioral Quality Control
-This module allows you to see data issues, as separated into three sections: Incomplete Forms, Data Conflicts, and Behavioural Feedback. Clicking on any item in the *Instrument* columns will bring you right into the QC module.
-
-###### Conflict Resolver
-This module displays inconsistencies related to double data entry. The column for *Unresolved Conflicts* will show you any issues that have two conflicting answers, where they should be identical. You can fix this issue directly within the module. 
-
-######Imaging Browser
-This module displays images (from candidate scan sessions) collected for a study. It has columns to show whether images have passed QC, and when. 
-
+#### Imaging Uploader
+This module displays the status of images that have been excluded from or failed to load into LORIS, for a variety of reasons.  
 #### Configuration
-Placeholder - waiting for contribution from Liza
+`Placeholder - waiting for contribution from LL`
