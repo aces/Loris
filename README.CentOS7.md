@@ -138,9 +138,9 @@ Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS en
         ServerSignature Off
 
         #SSLEngine Off  # change to On to enable, after updating cert paths$
-        #SSLCertificateFile /etc/apache2/ssl/loris-cert.pem
-        #SSLCertificateKeyFile /etc/apache2/ssl/loris-key.pem
-        #SSLCACertificateFile /etc/apache2/ssl/CA-cacert.pem
+        #SSLCertificateFile /etc/pki/tls/certs/%PROJECTNAME%.pem
+        #SSLCertificateKeyFile /etc/pki/tls/private/%PROJECTNAME%.key
+        #SSLCACertificateFile /etc/pki/tls/certs/CA-cert.pem
 
 </VirtualHost>
 ```
