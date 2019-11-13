@@ -134,7 +134,7 @@ Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS en
         # alert, emerg.
         LogLevel warn
 
-        CustomLog /var/log/httpd/loris-access.log combined
+        CustomLog %LOGDIRECTORY%/loris-access.log combined
         ServerSignature Off
 
         #SSLEngine Off  # change to On to enable, after updating cert paths$
