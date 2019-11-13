@@ -113,7 +113,7 @@ Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS en
         ServerAdmin webmaster@localhost
         ServerName your.Loris.url.here
 
-        DocumentRoot /var/www/loris/htdocs/
+        DocumentRoot /var/www/%LORISROOT%/htdocs/
         <Directory />
                 Options FollowSymLinks
                 AllowOverride All
