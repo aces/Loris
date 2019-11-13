@@ -3,9 +3,14 @@ sudo: required
 language: php
 
 php: 
-- "7.2"
-- "7.3"
-- "nightly"
+- 7.2
+- 7.3
+- nightly
+
+matrix:
+    fast_finish: true
+    allow_failures:
+        - php: nightly
 
 services:
 - docker
@@ -23,20 +28,10 @@ before_script:
 jobs:
     include:
         - stage: "Tests"
+          php: 7.3
           name: "Static Analysis"
           script: make checkstatic
-          php: 
-            - "7.3"
-            - "nightly"
         - script: test/dockerized-unit-tests.sh
           name: "Unit Tests"
-          php: 
-            - "7.3"
-            - "nightly"
         - script: test/dockerized-integration-tests.sh
           name: "Integration Tests"
-          php: 
-            - "7.3"
-            - "nightly"
-    allow_failures:
-          php: "nightly"
