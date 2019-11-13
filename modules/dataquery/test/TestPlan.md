@@ -53,7 +53,8 @@
    - ensure the 'Save Current Query' button opens to a modal window with a text box 
      to write the name of the query to be saved, a checkbox to publicly share the 
      query and 2 buttons at the bottom ('Close' and 'Save Changes') 
-     entering a name for that query and clicking on 'Save Changes' in the modal win
+     entering a name for that query and clicking on 'Save Changes' in the modal 
+     window
    - save one query (`query1`) that would not be shared publicly
    - save another query (`query2`) that will be shared publicly
 8. Go to the "Load Saved Query" tab:
