@@ -7,6 +7,10 @@ php:
   - 7.3
   - "nightly"
 
+matrix:
+    - allow_failures:
+        - php: "nightly"
+
 env:
   - TEST_SUITE=static
   - TEST_SUITE=unit
