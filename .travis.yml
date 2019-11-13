@@ -3,14 +3,14 @@ sudo: required
 language: php
 
 php: 
-- 7.2
-- 7.3
-- nightly
+  - 7.2
+  - 7.3
+  - "nightly"
 
-matrix:
-    fast_finish: true
-    allow_failures:
-        - php: nightly
+env:
+  - TEST_SUITE=static
+  - TEST_SUITE=unit
+  - TEST_SUITE=integration
 
 services:
 - docker
@@ -22,16 +22,4 @@ install:
 - sudo apt-get install npm
 - make dev
 
-before_script:
-- sed -i "s/7.3/$TRAVIS_PHP_VERSION/g" Dockerfile.test.php7
-
-jobs:
-    include:
-        - stage: "Tests"
-          php: 7.3
-          name: "Static Analysis"
-          script: make checkstatic
-        - script: test/dockerized-unit-tests.sh
-          name: "Unit Tests"
-        - script: test/dockerized-integration-tests.sh
-          name: "Integration Tests"
+script: "npm run tests:$TEST_SUITE"
