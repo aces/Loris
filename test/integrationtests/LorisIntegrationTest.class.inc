@@ -626,7 +626,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     private function _verifyPermission(string $needle, string $haystack): void
     {
-        assertContains($needle, $haystack);
+        $this->assertContains($needle, $haystack);
         $this->resetPermissions();
     }
 
