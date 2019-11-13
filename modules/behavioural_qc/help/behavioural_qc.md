@@ -1,6 +1,6 @@
-# Data Team Helper
+# Behavioural Quality Control
 
-The Data Team Helper module allows users to view outstanding behavioural feedback, data entry conflicts and incomplete forms for a given candidate and/or instrument.
+The Behavioural Quality Control module allows users to view outstanding behavioural feedback, data entry conflicts and incomplete forms for a given candidate and/or instrument.
 Use the Selection Filter to enter search criteria, and click “Show Data” to update the results in the data table below.
 To the right of the Selection Filter is a data completion meter panel expressed as a percentage for a selected instrument and/or visit label. By default, the meter displays the completion level of all instruments for V1 (or the customized first visit label of a study), but once the user selects criteria in the Selection Filter and clicks “Show Data”, the meter will be updated to reflect their specifications.
 

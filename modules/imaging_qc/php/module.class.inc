@@ -5,21 +5,22 @@
  *
  * PHP Version 7
  *
- * @category LORIS_Module
- * @package  Behavioural
- * @author   Sruthy Mathew <sruthy.mathew@mcgill.ca>
+ * @category Tools
+ * @package  Imaging_QC
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-namespace LORIS\data_team_helper;
+namespace LORIS\imaging_qc;
 /**
  * Class module implements the basic LORIS module functionality
  *
- * @category LORIS_Module
- * @package  Behavioural
- * @author   Sruthy Mathew <sruthy.mathew@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging_QC
+ * @author     Liza Levitis <llevitis.mcin@gmail.com>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 class Module extends \Module
 {

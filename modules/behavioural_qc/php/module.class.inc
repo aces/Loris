@@ -5,22 +5,21 @@
  *
  * PHP Version 7
  *
- * @category Tools
- * @package  Quality_Control
- * @author   Liza Levitis <llevitis.mcin@gmail.com>
+ * @category LORIS_Module
+ * @package  Behavioural
+ * @author   Sruthy Mathew <sruthy.mathew@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-namespace LORIS\quality_control;
+namespace LORIS\behavioural_qc;
 /**
  * Class module implements the basic LORIS module functionality
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Quality_Control
- * @author     Liza Levitis <llevitis.mcin@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
+ * @category LORIS_Module
+ * @package  Behavioural
+ * @author   Sruthy Mathew <sruthy.mathew@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class Module extends \Module
 {

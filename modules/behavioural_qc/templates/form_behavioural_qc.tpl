@@ -103,7 +103,7 @@
 
 							</div>
 					</div>
-					<input type="hidden" name="test_name" value="data_team_helper" />
+					<input type="hidden" name="test_name" value="behavioural_qc" />
 				</form>
 			</div>
 		</div>
@@ -128,7 +128,7 @@
   </div>
 
 
-<script type="text/javascript" src="{$baseurl}/data_team_helper/js/behavioural_qc_module.js"></script>
+<script type="text/javascript" src="{$baseurl}/behavioural_qc/js/behavioural_qc_module.js"></script>
 
 <script type="text/javascript">
 var incomplete = {$Incomplete_candidates|@json_encode};
@@ -168,7 +168,7 @@ var instrument = {$test_name|@json_encode};
 var site = $("#site option:selected").text();
 var project =$("#project option:selected").text();
 
-var DataTeamGraphics = GraphicsPanel({
+var BeahaviouralQCGraphics = GraphicsPanel({
 	percentCompleted: percentCompleted,
     pscid: pscid,
     visit: visit,
@@ -183,6 +183,6 @@ ReactDOM.render(ConflictsPanel, document.getElementById("conflicts"));
 
 ReactDOM.render(FeedbackTab, document.getElementById("feedback"));
 
-ReactDOM.render(DataTeamGraphics, document.getElementById("graphics"));
+ReactDOM.render(BeahaviouralQCGraphics, document.getElementById("graphics"));
 
 </script>
