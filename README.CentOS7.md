@@ -118,7 +118,7 @@ Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS en
                 Options FollowSymLinks
                 AllowOverride All
         </Directory>
-        <Directory /var/www/loris/htdocs/>
+        <Directory /var/www/%LORISROOT%/htdocs/>
                 Options Indexes FollowSymLinks MultiViews
                 AllowOverride All
                 Order allow,deny
