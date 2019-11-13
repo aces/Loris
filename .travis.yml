@@ -5,11 +5,12 @@ language: php
 php: 
   - 7.2
   - 7.3
-  - "nightly"
+  - "7.4snapshot"
 
 matrix:
-    - allow_failures:
-        - php: "nightly"
+    fast_finish: true
+    allow_failures:
+        - php: "7.4snapshot"
 
 env:
   - TEST_SUITE=static
