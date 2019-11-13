@@ -22,6 +22,7 @@ class MediaIndex extends Component {
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.mapColumn = this.mapColumn.bind(this);
   }
 
   componentDidMount() {
@@ -54,7 +55,7 @@ class MediaIndex extends Component {
    *
    * @return {string} a mapped value for the table cell at a given column
    */
-  mapContainerColumns(column, value) {
+  mapColumn(column, value) {
     switch (column) {
       case 'Site':
         return this.state.fieldOptions.sites[value];
@@ -217,6 +218,7 @@ class MediaIndex extends Component {
             data={this.state.data}
             fields={fields}
             getFormattedCell={this.formatColumn}
+            getMappedCell={this.mapColumn}
           />
         </TabPane>
         {uploadTab()}
