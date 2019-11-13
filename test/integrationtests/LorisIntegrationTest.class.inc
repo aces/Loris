@@ -162,8 +162,12 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         */
-        $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
-        $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
+        $usernameEl = $this->webDriver->findElement(
+            WebDriverBy::Name("username")
+        );
+        $passwordEl = $this->webDriver->findElement(
+            WebDriverBy::Name("password")
+        );
 
         $usernameEl->sendKeys($username);
         $passwordEl->sendKeys($password);
@@ -176,7 +180,9 @@ abstract class LorisIntegrationTest extends TestCase
         // are run one will fail due to the login taking too long?
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
+                WebDriverBy::xpath(
+                    "//div[@id='page'] | //input[@name='username']"
+                )
             )
         );
     }
@@ -348,7 +354,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function createSubproject($SubprojectID,$title)
+    function createSubproject($SubprojectID, $title)
     {
         $this->DB->insert(
             "subproject",
@@ -424,10 +430,11 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
-     * Helper function to click on a element and wait for the new page to be loaded.
+     * Helper function to click on a element and wait for the new page to be 
+     * loaded.
      * When the DOM is reloaded, the elements of the previous page become stale.
-     * Selenium will raise an exception when a function (like getText) are called on
-     * those elements.
+     * Selenium will raise an exception when a function (like getText) are
+     * called on those elements.
      *
      * Note: If the page don't reload, this will produce an infinite loop.
      *
@@ -585,7 +592,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    protected function testPagePermissions(
+    public function checkPagePermissions(
         string $path,
         array $permissionCodes,
         string $successMessage,
@@ -617,7 +624,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function _verifyPermission(string $needle, string $haystack): void
+    private function _verifyPermission(string $needle, string $haystack): void
     {
         assertContains($needle, $haystack);
         $this->resetPermissions();
@@ -633,7 +640,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return string The body text of the page loaded.
      */
-    function _loadWithPermission(string $path, string $permission = ''): string
+    private function _loadWithPermission(string $path, string $permission = ''): string
     {
         $this->setupPermissions(array($permission));
         $this->safeGet($this->url . $path);

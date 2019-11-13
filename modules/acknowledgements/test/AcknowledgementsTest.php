@@ -83,9 +83,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testPermissions(): void
+    public function testPermissions(): void
     {
-        $this->testPagePermissions(
+        $this->checkPagePermissions(
             '/acknowledgements/',
             array(
                 'acknowledgements_view',
