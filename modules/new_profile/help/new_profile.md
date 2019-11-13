@@ -1,6 +1,6 @@
 # New Profile
 
-This is where—with the appropriate permissions—you can register a new candidate for your study site. 
+This is where you can register a new candidate for your study site. 
 
 Populate the fields and click **Create**. 
 
