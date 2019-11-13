@@ -90,7 +90,7 @@ var Instrument = {
             for (element of elements[i].Elements) {
                 switch (element.Type) {
                     case "line":
-                        content += '<br>\n';
+                        content += 'static{@}{@}<br>\n';
                     case "select":
                         if (element.Options.AllowMultiple) {
                             content += "selectmultiple{@}"
