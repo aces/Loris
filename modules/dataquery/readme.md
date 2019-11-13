@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The Data Query Tool (“The DQT”) is used to query and export data stored in LORIS. Designed as a front-end tool, it is located within the Reports drop-down menu. 
+The Data Query Tool (“The DQT”) is used to query and export data stored in LORIS. It is located within the Reports drop-down menu. 
 
 A variety of filters allow users to define parameters and query the exact data fields desired. The extracted data can be downloaded as a single CSV file, and imaging files can also be downloaded as a zipped package of files. Users can visualize or see basic statistical measures from a query. Users can load a previously saved query, and can make saved queries visible to other users.
 
