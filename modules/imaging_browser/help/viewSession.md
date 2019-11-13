@@ -1,3 +1,5 @@
+# Imaging Browser - View Session
+
 This page displays a candidate's scans collected from a single time-point. Click on any image to launch the BrainBrowser visualization tool. With every file displayed, there are different actions you can take. Use the dropdown menus to change the file’s QC Status, Selected, and Caveat. You can also edit the QC comments, download the MINC file, or see a longitudinal view (in BrainBrowser). Click **Header Info** to see further scan parameters from the DICOM header.
 
 Notice that each scan has a checkbox in the top left corner of its panel. You can check these boxes, then click **3D Only** or **3D + Overlay** which will overlay the selected volumes.
