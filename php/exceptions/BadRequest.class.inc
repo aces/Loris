@@ -12,9 +12,10 @@
  */
 
 /**
- * The BadRequest exception is thrown when the user's input is invalid or
- * insufficient.
- * It maps to a 400 error.
+ * The BadRequest exception is thrown when the server cannot or will not
+ * process the request due to something that is perceived to be a client error
+ * (e.g., malformed request syntax, invalid request message framing, or
+ * deceptive request routing). It maps to a 400 error.
  *
  * @category Errors
  * @package  Loris
