@@ -103,7 +103,11 @@ Customize and Verify your settings:
  * DocumentRoot should point to `/var/www/loris/htdocs`
  * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
 
-Create the Apache configuration `/etc/httpd/conf.id/loris.conf` for our production environment.
+Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS environment. Adjust the following parameters to according to your configuration
+
+- %LORISROOT%    i.e. /var/www/loris
+- %PROJECTNAME%  i.e loris
+- %LOGDIRECTORY%  .i.e /var/log/httpd
 ```
 <VirtualHost *:80>  # change from 80 to 443 if you enable SSL
         ServerAdmin webmaster@localhost
