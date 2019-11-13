@@ -37,5 +37,14 @@ INSERT INTO subproject (title) VALUES('SCI');
 > Note: If affiliation of subprojects to projectscan not be done from the front-end, it could be done directly in SQL as follows. 
 
   ```sql 
-    INSERT INTO project_subproject_rel SELECT p.ProjectID,s.SubprojectID FROM Project p, subproject s WHERE p.Name="%PROJECT_NAME%" AND s.title IN ("%SUBPROJECT_1%", "%SUBPROJECT_2%", "%SUBPROJECT_3%");
+  INSERT INTO project_subproject_rel
+  SELECT
+	p.ProjectID,
+	s.SubprojectID
+  FROM
+	Project p,
+	subproject s
+  WHERE
+	p.Name = "%PROJECT_NAME%"
+	AND s.title IN("%SUBPROJECT_1%", "%SUBPROJECT_2%", "%SUBPROJECT_3%")
    ```
