@@ -28,3 +28,8 @@ install:
 - make dev
 
 script: "npm run tests:$TEST_SUITE"
+
+# This should improve build time by caching composer files.
+cache:
+  directories:
+    - $HOME/.composer/cache/files

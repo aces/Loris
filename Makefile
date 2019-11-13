@@ -1,14 +1,14 @@
 .PHONY: clean dev all check checkstatic unittests test phpdev javascript
 
 all: VERSION javascript
-	composer install --no-dev
+	composer install --no-dev --prefer-dist
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
 	tools/gen-version.sh
 
 phpdev:
-	composer install
+	composer install --prefer-dist
 
 javascript:
 	npm install
