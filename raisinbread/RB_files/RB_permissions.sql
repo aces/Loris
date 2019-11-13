@@ -30,7 +30,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (27,'reliability_swap_candidates','Swap Reliability candidates across all sites',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (28,'instrument_builder','Instrument Builder: Create and Edit instrument forms',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (29,'data_dict_edit','Edit Data Dictionary',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (30,'data_team_helper','Data Team Helper',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (30,'quality_control','Quality Control access',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (31,'candidate_parameter_view','View Candidate Parameters',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (32,'candidate_parameter_edit','Edit Candidate Parameters',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (33,'genomic_browser_view_site','View Genomic Browser data from own site',2);
