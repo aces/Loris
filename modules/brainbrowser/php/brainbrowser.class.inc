@@ -25,6 +25,31 @@ namespace LORIS\brainbrowser;
 class Brainbrowser extends \NDB_Page
 {
     /**
+     * Determine whether the user has permission to view this page
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool whether the user has access
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        /* User has access if they have an 'all site' permission or if they are
+        * part of a study site and are permitted to view their own site.
+         */
+        return $user->hasAnyPermission(
+            array(
+                'imaging_browser_view_allsites',
+                'imaging_browser_phantom_allsites',
+                'imaging_browser_phantom_ownsite',
+            )
+        )
+        || (
+            $user->hasStudySite()
+            && $user->hasPermission('imaging_browser_view_site')
+        );
+    }
+
+    /**
      * Override base function to include brainbrowser javascript files
      * and dependencies
      *
@@ -39,12 +64,12 @@ class Brainbrowser extends \NDB_Page
         return array_merge(
             $deps,
             array(
-             $baseURL . "/brainbrowser/js/Brainbrowser.js",
-             $baseURL . "/brainbrowser/js/jquery.mousewheel.min.js",
-             $baseURL . "/brainbrowser/js/three.min.js",
-             $baseURL . "/brainbrowser/js/brainbrowser.volume-viewer.min.js",
-             $baseURL . "/brainbrowser/js/brainbrowser.config.js",
-             $baseURL . "/brainbrowser/js/brainbrowser.loris.js",
+                $baseURL . "/brainbrowser/js/Brainbrowser.js",
+                $baseURL . "/brainbrowser/js/jquery.mousewheel.min.js",
+                $baseURL . "/brainbrowser/js/three.min.js",
+                $baseURL . "/brainbrowser/js/brainbrowser.volume-viewer.min.js",
+                $baseURL . "/brainbrowser/js/brainbrowser.config.js",
+                $baseURL . "/brainbrowser/js/brainbrowser.loris.js",
             )
         );
     }
@@ -65,9 +90,9 @@ class Brainbrowser extends \NDB_Page
         return array_merge(
             $deps,
             [
-             $baseURL . "/css/loris-jquery/jquery-ui-1.10.4.custom.min.css",
-             $baseURL . "/brainbrowser/css/volume-viewer-demo.css",
-             $baseURL . "/brainbrowser/css/brainbrowser.css",
+                $baseURL . "/css/loris-jquery/jquery-ui-1.10.4.custom.min.css",
+                $baseURL . "/brainbrowser/css/volume-viewer-demo.css",
+                $baseURL . "/brainbrowser/css/brainbrowser.css",
             ]
         );
     }

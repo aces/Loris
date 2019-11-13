@@ -131,8 +131,8 @@ class MediaEditForm extends Component {
           <DateElement
             name='dateTaken'
             label='Date of Administration'
-            minYear='2000'
-            maxYear='2017'
+            minYear={this.state.Data.startYear}
+            maxYear={this.state.Data.endYear}
             onUserInput={this.setFormData}
             ref='dateTaken'
             value={this.state.formData.dateTaken}
@@ -143,6 +143,13 @@ class MediaEditForm extends Component {
             onUserInput={this.setFormData}
             ref='comments'
             value={this.state.formData.comments}
+          />
+          <SelectElement
+            name='language'
+            label='Language'
+            options={this.state.Data.language}
+            onUserInput={this.setFormData}
+            value={this.state.formData.language}
           />
           <FileElement
             name='file'
@@ -205,12 +212,12 @@ class MediaEditForm extends Component {
       },
       success: (data) => {
         $('#file-progress').addClass('hide');
-        swal('Upload Successful!', '', 'success');
+        swal.fire('Upload Successful!', '', 'success');
         this.props.fetchData();
       },
       error: function(err) {
         let msg = err.responseJSON.message || 'Error updating file';
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
         console.error(err);
       },
     });

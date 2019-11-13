@@ -2,19 +2,19 @@
 /**
  * The configuration module is used to manage the configuration of Loris.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Behavioural
  * @package  Main
  * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
-*/
+ */
 
 namespace LORIS\configuration;
 
 /**
- * Admin_Config Class
+ * Configuration Class
  *
  * This class is to configure the system settings
  *
@@ -23,7 +23,7 @@ namespace LORIS\configuration;
  * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
-*/
+ */
 class Configuration extends \NDB_Form
 {
     /**
@@ -40,29 +40,29 @@ class Configuration extends \NDB_Form
     }
 
      /**
-     * Loads the main configuration module page.
-     *
-     * @return void
-     */
+      * Loads the main configuration module page.
+      *
+      * @return void
+      */
     function setup()
     {
         parent::setup();
-        $config =& \NDB_Config::singleton();
-        $DB     =& \Database::singleton();
+        $config = \NDB_Config::singleton();
+        $DB     = \Database::singleton();
 
-        $scans = $DB->pselect(
+        $scans      = $DB->pselect(
             "SELECT Scan_type
              FROM mri_scan_type",
             array()
         );
+        $scan_types = array('' => '');
         foreach ($scans as $type) {
             $val = $type['Scan_type'];
-            $scan_types[$val] =$val;
+            $scan_types[$val] = $val;
         }
-        $scan_types = array_merge(array('' => ''), $scan_types);
 
-        $instruments = \Utility::getAllInstruments();
-        $instruments = array_merge(array('' => ''), $instruments);
+        $instruments     = \Utility::getAllInstruments();
+        $instruments[''] = '';
 
         $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
         $this->tpl_data['config']          = $this->_getConfigSettingTree();
@@ -70,10 +70,10 @@ class Configuration extends \NDB_Form
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
         $this->tpl_data['lookup_center']   = array(
-                                              ''            => '',
-                                              'PatientID'   => 'PatientID',
-                                              'PatientName' => 'PatientName',
-                                             );
+            ''            => '',
+            'PatientID'   => 'PatientID',
+            'PatientName' => 'PatientName',
+        );
     }
 
     /**
@@ -150,6 +150,7 @@ class Configuration extends \NDB_Form
         }
 
         // build a tree from configs array
+        $tree = array();
         foreach ($configs as &$node) {
             $node['Children']  = array();
             $tree[$node['ID']] = &$node;
@@ -176,17 +177,17 @@ class Configuration extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/configuration/js/configuration_helper.js",
+                $baseURL . "/configuration/js/configuration_helper.js",
             )
         );
     }
 
      /**
-        * Include additional CSS files:
-        *  1. configuration
-        *
-        * @return array of CSS to be inserted
-        */
+      * Include additional CSS files:
+      *  1. configuration
+      *
+      * @return array of CSS to be inserted
+      */
     function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();

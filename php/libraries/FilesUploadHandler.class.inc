@@ -24,11 +24,11 @@ use \Psr\Http\Server\RequestHandlerInterface;
 /**
  * Class to validate file uploads to LORIS.
  *
- *  @category Main
- *  @package  Behavioural
- *  @author   John Saigle <john.saigle@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris
+ * @category Main
+ * @package  Behavioural
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris
  */
 class FilesUploadHandler implements RequestHandlerInterface
 {
@@ -174,7 +174,7 @@ class FilesUploadHandler implements RequestHandlerInterface
              * calling code wants to overwrite the file.
              */
             if (file_exists($targetPath) && $this->overwrite !== true) {
-                return new \LORIS\Http\Response\Conflict(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'This file has already been uploaded.'
                 );
             }

@@ -6,11 +6,11 @@
  *
  * PHP version 7
  *
- *  @category LORIS_Module
- *  @package  Genomics
- *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser;
 
@@ -25,7 +25,7 @@ namespace LORIS\genomic_browser;
  * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 class GWAS_Browser extends \NDB_Menu_Filter
 {
     /**
@@ -52,21 +52,21 @@ class GWAS_Browser extends \NDB_Menu_Filter
      * Function _setupVariables
      *
      * @return void
-    */
+     */
     function _setupVariables()
     {
         // set the class variables
         $this->columns = array(
-                          'GWAS.rsID AS SNP_ID',
-                          'SNP.Chromosome AS Chromosome',
-                          'SNP.StartLoc AS Position_BP',
-                          'GWAS.MajorAllele AS Major_Allele',
-                          'GWAS.MinorAllele AS Minor_Allele',
-                          'GWAS.MAF AS MAF',
-                          'GWAS.Estimate AS Estimate',
-                          'GWAS.StdErr AS StdErr',
-                          'GWAS.Pvalue AS Pvalue',
-                         );
+            'GWAS.rsID AS SNP_ID',
+            'SNP.Chromosome AS Chromosome',
+            'SNP.StartLoc AS Position_BP',
+            'GWAS.MajorAllele AS Major_Allele',
+            'GWAS.MinorAllele AS Minor_Allele',
+            'GWAS.MAF AS MAF',
+            'GWAS.Estimate AS Estimate',
+            'GWAS.StdErr AS StdErr',
+            'GWAS.Pvalue AS Pvalue',
+        );
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -85,28 +85,28 @@ class GWAS_Browser extends \NDB_Menu_Filter
 
         $this->order_by     = 'SNP.Chromosome, GWAS.Pvalue DESC';
         $this->validFilters = array(
-                               'GWAS.rsID',
-                               'SNP.Chromosome',
-                               'SNP.StartLoc',
-                               'GWAS.MajorAllele',
-                               'GWAS.MinorAllele',
-                               'GWAS.MAF',
-                               'GWAS.Estimate',
-                               'GWAS.StdErr',
-                               'GWAS.Pvalue',
-                              );
+            'GWAS.rsID',
+            'SNP.Chromosome',
+            'SNP.StartLoc',
+            'GWAS.MajorAllele',
+            'GWAS.MinorAllele',
+            'GWAS.MAF',
+            'GWAS.Estimate',
+            'GWAS.StdErr',
+            'GWAS.Pvalue',
+        );
 
         $this->formToFilter = array(
-                               'SNP_ID'       => 'GWAS.rsID',
-                               'Chromosome'   => 'SNP.Chromosome',
-                               'BP_Position'  => 'SNP.StartLoc',
-                               'Major_Allele' => 'GWAS.MajorAllele',
-                               'Minor_Allele' => 'GWAS.MinorAllele',
-                               'MAF'          => 'GWAS.MAF',
-                               'Estimate'     => 'GWAS.Estimate',
-                               'StdErr'       => 'GWAS.StdErr',
-                               'Pvalue'       => 'GWAS.Pvalue',
-                              );
+            'SNP_ID'       => 'GWAS.rsID',
+            'Chromosome'   => 'SNP.Chromosome',
+            'BP_Position'  => 'SNP.StartLoc',
+            'Major_Allele' => 'GWAS.MajorAllele',
+            'Minor_Allele' => 'GWAS.MinorAllele',
+            'MAF'          => 'GWAS.MAF',
+            'Estimate'     => 'GWAS.Estimate',
+            'StdErr'       => 'GWAS.StdErr',
+            'Pvalue'       => 'GWAS.Pvalue',
+        );
 
     }
 
@@ -126,9 +126,9 @@ class GWAS_Browser extends \NDB_Menu_Filter
 
         // add form elements
         $show_results_options = array(
-                                 'brief' => 'Summary fields',
-                                 'full'  => 'All fields',
-                                );
+            'brief' => 'Summary fields',
+            'full'  => 'All fields',
+        );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         $this->addBasicText('SNP_ID', 'SNP ID:');
@@ -137,20 +137,18 @@ class GWAS_Browser extends \NDB_Menu_Filter
         $this->addBasicText('MAF', 'MAF:');
 
         $alleleArray = array(
-                        ''  => 'Any',
-                        'A' => 'A',
-                        'C' => 'C',
-                        'T' => 'T',
-                        'G' => 'G',
-                       );
+            ''  => 'Any',
+            'A' => 'A',
+            'C' => 'C',
+            'T' => 'T',
+            'G' => 'G',
+        );
         $this->addSelect('Minor_Allele', 'Minor Allele:', $alleleArray);
         $this->addSelect('Major_Allele', 'Major Allele:', $alleleArray);
 
         $this->addBasicText('Estimate', 'Estimate:');
         $this->addBasicText('StdErr', 'Std Err:');
         $this->addBasicText('Pvalue', 'P-value:');
-
-        return true;
     }
 
     /**
@@ -164,7 +162,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
      * @note overloaded function
      *
      * @return string
-    */
+     */
     function _addValidFilters($prepared_key, $field, $val)
     {
         $query = ''; //initialize
@@ -207,8 +205,8 @@ class GWAS_Browser extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/genomic_browser/js/genomic_browser.js",
-             $baseURL . "/genomic_browser/js/gwasColumnFormatter.js",
+                $baseURL . "/genomic_browser/js/genomic_browser.js",
+                $baseURL . "/genomic_browser/js/gwasColumnFormatter.js",
             )
         );
     }

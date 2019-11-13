@@ -26,18 +26,23 @@ class SiteIDGenerator extends IdentifierGenerator
 {
     /* Either 'PSCID' or 'ExternalID' */
     private const LENGTH = 4;
+
     protected $kind;
+    protected $siteAlias;
+    protected $projectAlias;
 
     /**
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
      * ExternalIDs. Relevant properties are extracted from the config.xml file.
      *
-     * @param ?string $prefix To be appended to the ID value. Usually an
-     *                       abbreviation for the name of a site.
+     * @param string $siteAlias    To be appended to the ID value. Usually an
+     *                             abbreviation for the name of a site.
+     * @param string $projectAlias To be appended to the ID value. Usually an
+     *                             abbreviation for the name of a project.
      *
      * @return void
      */
-    public function __construct(?string $prefix = null)
+    public function __construct(string $siteAlias, string $projectAlias)
     {
         // Read config settings from project/config.xml to retrieve the
         // alphabet, length, and generation method (sequential or random) used
@@ -52,10 +57,13 @@ class SiteIDGenerator extends IdentifierGenerator
             str_repeat(strval($this->alphabet[0]), $this->length);
         $this->maxValue = $this->_getIDSetting('max') ??
             str_repeat(
-                strval($this->alphabet[count($this->alphabet) - 1]),
-                $this->length
-            );
-        $this->prefix   = $prefix ?? $this->_getIDSetting('prefix');
+            strval($this->alphabet[count($this->alphabet) - 1]),
+            $this->length
+        );
+
+        $this->siteAlias    = $siteAlias;
+        $this->projectAlias = $projectAlias;
+        $this->prefix       = $this->_getIDSetting('prefix');
         $this->validate();
     }
 
@@ -145,7 +153,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * settings relating to the PSCID structure.
      *
      * @param string $setting One of: 'generation', 'length', 'alphabet',
-     * 'length', 'min', 'max'.
+     *                        'length', 'min', 'max'.
      *
      * @return array|int|string|null
      */
@@ -208,11 +216,14 @@ class SiteIDGenerator extends IdentifierGenerator
                         return $seq['#'];
                     }
                 }
+            } elseif ($seqValue === 'siteAbbrev') {
+                return $this->siteAlias;
+            } elseif ($seqValue === 'projectAbbrev') {
+                return $this->projectAlias;
             } else {
-                // The other option, 'siteAbbrev', indicates that the calling
-                // code should prepend a Site Alias to the ID. Since the config
-                // file does not know what this will be, return null.
-                return null;
+                throw new ConfigurationException(
+                    "Incorrect option $seqValue selected for PSCID generation."
+                );
             }
         }
         // Min, max, and length values should be returned as integers or as
@@ -225,9 +236,9 @@ class SiteIDGenerator extends IdentifierGenerator
      * value corresponding to the requested setting.
      *
      * @param array  $idStructure Settings concerning ID structure extracted
-     *                  from project/config.sml
+     *                            from project/config.sml
      * @param string $setting     The name of the variable for which we want the
-     *                  value.
+     *                            value.
      *
      * @throws \ConfigurationException
      *
@@ -256,7 +267,9 @@ class SiteIDGenerator extends IdentifierGenerator
             $seqAttributes = array_filter(
                 self::_getSeqAttribute($idStructure, 'type'),
                 function ($x) {
-                    return $x === 'static' || $x === 'siteAbbrev';
+                    return $x === 'static'
+                        || $x === 'siteAbbrev'
+                        || $x === 'projectAbbrev';
                 }
             );
             break;
@@ -285,9 +298,9 @@ class SiteIDGenerator extends IdentifierGenerator
      * for $setting.
      *
      * @param array  $idStructure Settings concerning ID structure extracted
-     *                  from project/config.xml
+     *                            from project/config.xml
      * @param string $setting     The name of the variable for which we want the
-     *                  value.
+     *                            value.
      *
      * @return array The value(s) corresponding to $setting.
      */

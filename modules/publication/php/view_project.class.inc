@@ -44,8 +44,8 @@ class View_Project extends \NDB_Form
             'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
             'WHERE UserID=:uid AND PublicationID=:pid',
             array(
-             'uid' => $user->getId(),
-             'pid' => $pubID,
+                'uid' => $user->getId(),
+                'pid' => $pubID,
             )
         );
         return ($user->hasPermission('publication_view')
@@ -75,7 +75,7 @@ class View_Project extends \NDB_Form
                 "SELECT PublicationID FROM publication WHERE PublicationID = :pid",
                 array('pid' => $pubID)
             );
-            if (count($result) < 1) {
+            if (count($result ?? array()) < 1) {
                 header('Location: ' . $baseURL . '/publication/');
             }
         } else {

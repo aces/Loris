@@ -52,13 +52,24 @@ class MediaFile implements \LORIS\Data\DataInstance
 
     /**
      * Returns the CenterID for this instance, for filters such as
-     * \LORIS\Data\Filters\UserSiteMatch to match again.
+     * \LORIS\Data\Filters\UserSiteMatch to match against.
      *
      * @return integer The CenterID
      */
     public function getCenterID(): int
     {
         return $this->DBRow['centerId'];
+    }
+
+    /**
+     * Returns the ProjectID for this instance, for filters such as
+     * \LORIS\Data\Filters\UserProjectMatch to match against.
+     *
+     * @return integer The ProjectID
+     */
+    public function getProjectID(): int
+    {
+        return $this->DBRow['projectId'];
     }
 
     /**

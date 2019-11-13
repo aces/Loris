@@ -119,7 +119,7 @@ class NDB_ConfigTest extends TestCase
      */
     public function testConfigFilePath()
     {
-        $text = $this->_config::configFilePath("config.xml");
+        $text = $this->_config->configFilePath("config.xml");
         $this->assertContains("config.xml", $text);
 
     }
@@ -246,11 +246,13 @@ class NDB_ConfigTest extends TestCase
         $info   = array(
                    'ProjectID'         => '999',
                    'Name'              => 'test',
+                   'Alias'             => 'TST',
                    'recruitmentTarget' => '100',
                   );
         $result =  array(
                     'id'                => '999',
                     'Name'              => 'test',
+                    'Alias'             => 'TST',
                     'recruitmentTarget' => '100',
                    );
         $this->_dbMock->expects($this->once())

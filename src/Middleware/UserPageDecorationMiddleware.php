@@ -6,6 +6,8 @@ use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 
+use LORIS\StudyEntities\Candidate\CandID;
+
 class UserPageDecorationMiddleware implements MiddlewareInterface
 {
     protected $JSFiles;
@@ -69,6 +71,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             $candID = $get['candID'];
         }
         if ($candID != null) {
+            $candID    = new CandID($candID);
             $candidate = \Candidate::singleton($candID);
 
             $tpl_data['candidate'] = $candidate->getData();
@@ -132,7 +135,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         );
 
         // User related template variables that used to be in main.php.
-        $site_arr = $this->user->getData('CenterIDs');
+        $site_arr    = $this->user->getData('CenterIDs');
+        $site        = array();
+        $isStudySite = array();
         foreach ($site_arr as $key => $val) {
             $site[$key]        = & \Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
@@ -199,12 +204,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // This seems to only be used in imaging_browser, it can probably be
         // moved to properly use OOP.
         $tpl_data['FormAction'] = $page->FormAction ?? '';
-        // Finally, the actual content and render it..
-        $tpl_data += array(
-                      'jsfiles'   => $this->JSFiles,
-                      'cssfiles'  => $this->CSSFiles,
-                      'workspace' => $undecorated->getBody(),
-                     );
 
         if ($page instanceof \NDB_Page) {
             $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();

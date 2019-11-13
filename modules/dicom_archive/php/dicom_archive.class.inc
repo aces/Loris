@@ -25,10 +25,8 @@ namespace LORIS\dicom_archive;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-class Dicom_Archive extends \NDB_Menu_Filter
+class Dicom_Archive extends \DataFrameworkMenu
 {
-    var $dicomArchiveSettings;
-    public $AjaxModule = true;
 
     /**
      * Determine whether the user has permission to view this page
@@ -43,19 +41,44 @@ class Dicom_Archive extends \NDB_Menu_Filter
     }
 
     /**
-     * Set up the variables required by NDB_Menu_Filter class for constructing
-     * a query
+     * Tells the base class that this page's provisioner can support
+     * the UserSiteMatch filter.
      *
-     * @return void
+     * @return bool always false
      */
-    function _setupVariables()
+    public function useSiteFilter() : bool
     {
-        // Rest the filter because this is broken with react modules
-        $this->_resetFilters();
+        return false;
+    }
 
-        $this->skipTemplate = true;
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool always false
+     */
+    public function useProjectFilter() : bool
+    {
+        return false;
+    }
 
-        $this->columns = [];
+    /**
+     * Return the list of field options required to be serialized to JSON
+     * in order to render the frontend.
+     *
+     * @return array
+     */
+    function getFieldOptions() : array
+    {
+        // get the list of sites available for the user
+        $list_of_sites = \Utility::getSiteList();
+        $site_options  = array();
+
+        foreach ($list_of_sites as $id => $name) {
+            $site_options[$name] = $name;
+        }
+
+        return [ 'sites' => $site_options ];
     }
 
     /**
@@ -63,56 +86,13 @@ class Dicom_Archive extends \NDB_Menu_Filter
      *
      * @return \LORIS\Data\Provisioner
      */
-    function getDataProvisioner() : \LORIS\Data\Provisioner
+    function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
         $provisioner = new DicomArchiveRowProvisioner();
 
-        $user = \User::singleton();
-
-        if ($user->hasPermission("access_all_profiles") == false) {
-            $provisioner = $provisioner->filter(
-                new \LORIS\Data\Filters\UserSiteMatch()
-            );
-        }
         $provisioner = $provisioner->map(new DICOMArchiveAnonymizer());
+
         return $provisioner;
-    }
-
-    /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
-     *
-     * @return string a json encoded string of the headers and data from this table
-     */
-    function toJSON()
-    {
-        $table = (new \LORIS\Data\Table())
-            ->withDataFrom($this->getDataProvisioner());
-        $arr   = array_map(
-            function ($row) {
-                return array_values($row);
-            },
-            json_decode($table->toJSON(\User::singleton()), true)
-        );
-        $options = array('sites' => \Utility::getSiteList());
-        return json_encode(
-            [
-             'data'         => $arr,
-             'fieldOptions' => $options,
-            ]
-        );
-    }
-
-    /**
-     * Converts the data from the data table to an array suitable for JSON
-     * serialiation. Overrides the base class in order to enforce name regex
-     * rules.
-     *
-     * @return array of data from dicom_archive menu filter
-     */
-    function toArray()
-    {
-        return json_decode($this->toJSON());
     }
 
     /**
@@ -129,7 +109,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dicom_archive/js/dicom_archive.js",
+                $baseURL . "/dicom_archive/js/dicom_archive.js",
             )
         );
     }

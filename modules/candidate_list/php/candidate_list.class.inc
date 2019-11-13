@@ -51,6 +51,17 @@ class Candidate_List extends \DataFrameworkMenu
     }
 
     /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool always true
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
+
+    /**
      * Return the list of field options required to be serialized to JSON
      * in order to render the frontend.
      *
@@ -72,6 +83,7 @@ class Candidate_List extends \DataFrameworkMenu
         } else {
             $list_of_sites = $user->getStudySites();
         }
+        $site_options = array();
         foreach ($list_of_sites as $id => $name) {
             $site_options[$name] = $name;
         }
@@ -85,6 +97,7 @@ class Candidate_List extends \DataFrameworkMenu
 
         // get the list of subprojects
         $list_of_subprojects = \Utility::getSubprojectList();
+        $subproject_options  = array();
         foreach ($list_of_subprojects as $id => $name) {
             $subproject_options[$name] = $name;
         }
@@ -92,17 +105,18 @@ class Candidate_List extends \DataFrameworkMenu
         // get the list participant status options
         $list_of_participant_status
             = \Candidate::getParticipantStatusOptions();
+        $participant_status_options = array();
         foreach ($list_of_participant_status as $id => $name) {
             $participant_status_options[$name] = $name;
         }
 
         return [
-                'site'              => $site_options,
-                'project'           => $project_options,
-                'subproject'        => $subproject_options,
-                'participantstatus' => $participant_status_options,
-                'useedc'            => $config->getSetting("useEDC"),
-               ];
+            'site'              => $site_options,
+            'project'           => $project_options,
+            'subproject'        => $subproject_options,
+            'participantstatus' => $participant_status_options,
+            'useedc'            => $config->getSetting("useEDC"),
+        ];
     }
 
     /**
@@ -119,7 +133,7 @@ class Candidate_List extends \DataFrameworkMenu
         return array_merge(
             $deps,
             array(
-             $baseURL . "/candidate_list/js/candidateListIndex.js",
+                $baseURL . "/candidate_list/js/candidateListIndex.js",
             )
         );
     }

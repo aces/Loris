@@ -34,10 +34,10 @@ $column_name = $table_desc[$column_id]['Field'];
 $user =& \User::singleton();
 
 if ($user->hasPermission('violated_scans_edit')) {
-     $DB->update(
-         'mri_protocol',
-         array($column_name => $value),
-         array('ID' => $row_id)
-     );
+    $DB->update(
+        'mri_protocol',
+        array($column_name => $value),
+        array('ID' => $row_id)
+    );
 }
 

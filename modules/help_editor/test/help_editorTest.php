@@ -40,12 +40,12 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "help",
             array(
-             'helpID'   => '999999',
-             'parentID' => '-1',
-             'hash'     => $md5String,
-             'topic'    => 'Test Topic',
-             'content'  => 'This is a test content.',
-             'created'  => '2013-04-05 00:00:00',
+                'helpID'   => '999999',
+                'parentID' => '-1',
+                'hash'     => $md5String,
+                'topic'    => 'Test Topic',
+                'content'  => 'This is a test content.',
+                'created'  => '2013-04-05 00:00:00',
             )
         );
     }
@@ -106,9 +106,9 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array("context_help"));
          $this->safeGet($this->url . "/help_editor/");
-         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
          $this->assertNotContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
@@ -121,9 +121,9 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/help_editor/");
-         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
          $this->assertContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
@@ -134,17 +134,17 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorSearchByTopic()
     {
-         $this->markTestSkipped(
-             'Modifications needed to adapt to layout changes'
-         );
+        $this->markTestSkipped(
+            'Modifications needed to adapt to layout changes'
+        );
          $this->safeGet($this->url . "/help_editor/");
-         $this->safeFindElement(
-             WebDriverBy::Name("topic")
-         )->sendKeys("Test Topic");
+        $this->safeFindElement(
+            WebDriverBy::Name("topic")
+        )->sendKeys("Test Topic");
          //click the [show data] button
-         $this->safeFindElement(
-             WebDriverBy::Name("topic")
-         )->click();
+        $this->safeFindElement(
+            WebDriverBy::Name("topic")
+        )->click();
          $this->safeGet($this->url . "/help_editor/?format=json");
          $bodyText = $this->webDriver->getPageSource();
          $this->assertContains("Test Topic", $bodyText);
@@ -156,17 +156,17 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorSearchByKeyword()
     {
-         $this->markTestSkipped(
-             'Modifications needed to adapt to layout changes'
-         );
+        $this->markTestSkipped(
+            'Modifications needed to adapt to layout changes'
+        );
          $this->safeGet($this->url . "/help_editor/");
-         $this->safeFindElement(
-             WebDriverBy::Name("keyword")
-         )->sendKeys("test content");
+        $this->safeFindElement(
+            WebDriverBy::Name("keyword")
+        )->sendKeys("test content");
          //click the [show data] button
-         $this->safeFindElement(
-             WebDriverBy::Name("keyword")
-         )->click();
+        $this->safeFindElement(
+            WebDriverBy::Name("keyword")
+        )->click();
          $this->safeGet($this->url . "/help_editor/?format=json");
          $bodyText = $this->webDriver->getPageSource();
          $this->assertContains("test content", $bodyText);

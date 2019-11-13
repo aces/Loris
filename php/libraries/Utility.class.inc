@@ -25,6 +25,7 @@
  */
 class Utility
 {
+
     /**
      * Stops anyone from instantiating an instance of Utility
      */
@@ -59,10 +60,10 @@ class Utility
             );
         }
         $dob = array(
-                'year' => $matches[1],
-                'mon'  => $matches[2],
-                'day'  => $matches[3],
-               );
+            'year' => $matches[1],
+            'mon'  => $matches[2],
+            'day'  => $matches[3],
+        );
 
         if (!preg_match(
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
@@ -75,10 +76,10 @@ class Utility
             );
         }
         $testdate = array(
-                     'year' => $matches[1],
-                     'mon'  => $matches[2],
-                     'day'  => $matches[3],
-                    );
+            'year' => $matches[1],
+            'mon'  => $matches[2],
+            'day'  => $matches[3],
+        );
 
         if ($testdate['day'] < $dob['day']) {
             $testdate['day'] += 30;
@@ -90,10 +91,10 @@ class Utility
         }
 
         $age = array(
-                'year' => (int)$testdate['year'] - (int)$dob['year'],
-                'mon'  => (int)$testdate['mon'] - (int)$dob['mon'],
-                'day'  => (int)$testdate['day'] - (int)$dob['day'],
-               );
+            'year' => (int)$testdate['year'] - (int)$dob['year'],
+            'mon'  => (int)$testdate['mon'] - (int)$dob['mon'],
+            'day'  => (int)$testdate['day'] - (int)$dob['day'],
+        );
 
         return $age;
     }
@@ -217,19 +218,19 @@ class Utility
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         // get the list of projects
-        $projects = $DB->pselect("SELECT * FROM Project", array());
-        $project  = array();
-        foreach ($projects as $row) {
-            $project[$row['ProjectID']] = $row['Name'];
-        }
-        return $project;
+        $projects = $DB->pselectColWithIndexKey(
+            "SELECT ProjectID, Name FROM Project",
+            array(),
+            'ProjectID'
+        ) ?? array();
+        return $projects;
     }
 
     /**
      * Returns a list of study Subprojects
      *
      * @param integer|null $projectID The project for which you would like
-     *                           to get the subprojects
+     *                                to get the subprojects
      *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
@@ -260,7 +261,7 @@ class Utility
      * Returns a list of study Subprojects associated with a project
      *
      * @param integer|null $projectID The project for which you would like
-     *                           to get the subprojects
+     *                                to get the subprojects
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
@@ -298,20 +299,21 @@ class Utility
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
-     * @param array       $structure  the structure root
-     * @param string|null $siteAbbrev the site abbreviation, sometimes used as part
-     *                           of the PSCID
+     * @param array       $structure     the structure root
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
      *
      * @return string the regex pattern
      *
      * @note    This should probably be moved to the Candidate class, since it's
      *       only used there to validate the PSCID
-     * @note    This should be removed when user-generated PSCID support is removed
      * @cleanup
      */
     static function structureToPCRE(
         array $structure,
-        ?string $siteAbbrev = null
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
     ): string {
         $seqs = $structure['seq'];
         // handle the situation where there exists only one seq
@@ -349,6 +351,9 @@ class Utility
 
             case 'siteAbbrev':
                 $unit .= $siteAbbrev;
+                break;
+            case 'projectAbbrev':
+                $unit .= $projectAbbrev;
                 break;
             } // end switch
 
@@ -457,21 +462,11 @@ class Utility
      */
     static function toArray($var)
     {
-        // TODO Uncomment the exception code below after LORIS 21 is released.
-        //throw new DeprecatedException(
-        //    'Utility::toArray() is deprecated and should not be used. ' .
-        //    'Instead use Utility::associativeToNumericArray() for converting ' .
-        //    'arrays. Scalar values cannot be passed to this function.'
-        //);
-        error_log(
-            'Utility::toArray() will be deprecated in LORIS ' .
-            'version 21. Please use Utility::associativeToNumericArray() ' .
-            'instead.'
+        throw new \DeprecatedException(
+            'Utility::toArray() is deprecated and should not be used. ' .
+            'Instead use Utility::associativeToNumericArray() for converting ' .
+            'arrays. Scalar values cannot be passed to this function.'
         );
-        if (is_array($var) && !array_key_exists(0, $var)) {
-            $var = array($var);
-        }
-        return $var;
     }
 
     /**
@@ -668,7 +663,7 @@ class Utility
      *
      * @return  string (Non-associative array of the form array(Test1, Test2, ..))
      * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Data team helper?)
+     *       module uses it. (Behavioural Quality Control?)
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
@@ -691,13 +686,13 @@ class Utility
      * Returns all the sourcefrom instruments from parameter_type
      *
      * @param string|null $instrument If specified, return fields from this
-     *                           test_name
+     *                                test_name
      * @param string|null $commentID  If specified, return fields for this
-     *                           commentid
+     *                                commentid
      * @param string|null $name       If specified, return fields for this
-     *                           parameter_type name
+     *                                parameter_type name
      *
-     * @return  Array of the form array(
+     * @return  ?array Format: array(
      *              0 => array(
      *                   'SourceField' => value
      *                   'Name'        => name
@@ -705,7 +700,7 @@ class Utility
      *              )
      *         )
      * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Data team helper, BVL_Feedback_panel)
+     *       module uses it. (Behavioural Quality Control, BVL_Feedback_panel)
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
@@ -713,7 +708,7 @@ class Utility
         ?string $instrument = null,
         ?string $commentID = null,
         ?string $name = null
-    ): array {
+    ): ?array {
 
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -752,7 +747,7 @@ class Utility
      * Returns a list of study Visit Labels that are being used by this study.
      *
      * @param integer|null $projectID Limit visit labels to labels used by this
-     *                                  project.
+     *                                project.
      *
      * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
@@ -772,7 +767,7 @@ class Utility
 
         if ($projectID != null) {
             $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)';
+                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
             $qparams["ProjectID"]  = $projectID;
         } else {
             $ExtraProject_Criteria ='';
@@ -808,8 +803,8 @@ class Utility
      * @note    Function comment written by Dave, not the author of this function.
      *       The return value format seems weird. Should possibly be refactored.
      * @note    Used in:
-     *      - data_team_helper/php/NDB_Form_data_team_helper.class.inc
-     *      - data_team_helper/ajax/GetInstruments.php
+     *      - behavioural_qc/php/NDB_Form_behavioural_qc.class.inc
+     *      - behavioural_qc/ajax/GetInstruments.php
      * @cleanup
      */
     static function getVisitInstruments(string $visit_label): array
@@ -928,10 +923,87 @@ class Utility
              FROM language",
             array()
         );
+        $languages   = array();
         foreach ($languagesDB as $language) {
             $languages[$language['language_id']] = $language['language_label'];
         }
         return $languages;
+    }
+
+    /**
+     * Generate a random string, using a cryptographically secure
+     * pseudorandom number generator (random_int)
+     *
+     * @param int     $length   How many characters do we want?
+     * @param ?string $keyspace A string of all possible characters
+     *                          to select from. Will default to the alphanum set.
+     *
+     * @return string
+     */
+    static function randomString(
+        int $length = 64,
+        ?string $keyspace = null
+    ): string {
+        $keyspace = $keyspace
+        ?? '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if ($length < 1) {
+            throw new \RangeException("Length must be a positive integer");
+        }
+        $pieces = [];
+        $max    = mb_strlen($keyspace, '8bit') - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $pieces[] = $keyspace[random_int(0, $max)];
+        }
+        return implode('', $pieces);
+    }
+
+     /**
+      * Takes an argument and determine whether it is a positive integer
+      * i.e. > 0.
+      *
+      * @param mixed $value The value to check. Intentionally not type hinted as
+      *                     this function is meant to assist in cases where the type
+      *                     is unknown, e.g. when a parameter is sent via a form.
+      *
+      * @return bool Whether $value is a positive int.
+      */
+    public static function valueIsPositiveInteger($value): bool
+    {
+
+        // Reject arrays and objects
+        if (!is_scalar($value)) {
+            return false;
+        }
+
+        // First clause checks that only digits are present
+        // Second clause ensures a positive value
+        return ctype_digit(strval($value)) && intval($value) > 0;
+    }
+
+    /**
+     * Get the list of MRI scan type available in the database
+     *
+     * @return array Array of MRI scan types which exist in the database table
+     *               mri_scan_type joined to the files table
+     *               array($scan_type_id => $scan_type)
+     */
+    static function getScanTypeList(): array
+    {
+        $DB = \Database::singleton();
+
+        $scan_types_DB = $DB->pselect(
+            "SELECT ID, Scan_type 
+             FROM mri_scan_type mri
+                JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+            array()
+        );
+
+        $scan_types = array();
+        foreach ($scan_types_DB as $scan_type) {
+            $scan_types[$scan_type['ID']] = $scan_type['Scan_type'];
+        }
+
+        return $scan_types;
     }
 }
 

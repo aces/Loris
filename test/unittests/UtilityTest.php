@@ -1,26 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * Utility class tests
+ * Unit tests for Utility class.
  *
  * PHP Version 7
  *
  * @category Tests
  * @package  Test
  * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
+ *           John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
-/**
- * Unit test for Utility class
- *
- * @category Tests
- * @package  Main
- * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
 class UtilityTest extends TestCase
 {
     /**
@@ -46,13 +38,10 @@ class UtilityTest extends TestCase
      * @var array contains project information retrieved by getProjectList method
      */
     private $_projectInfo = array(
-        array('ProjectID' => '12',
-              'Name' => 'project1',
-              'recruitmentTarget' => '123456'),
-        array('ProjectID' => '23',
-              'Name' => 'project2',
-              'recruitmentTarget' => '234567')
-        );
+        '12' => 'project1',
+        '23' => 'project2'
+    );
+
     /**
      * Test_name table information
      * 
@@ -241,7 +230,7 @@ class UtilityTest extends TestCase
     public function testGetProjectList()
     {
         $this->_dbMock->expects($this->at(0))
-            ->method('pselect')
+            ->method('pselectColWithIndexKey')
             ->willReturn($this->_projectInfo);
         $this->assertEquals(
             Utility::getProjectList(),
@@ -577,7 +566,7 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)"
+                    "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
                 )
             )  
             ->willReturn(
@@ -590,7 +579,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             array('VL1' => 'VL1'),
-            Utility::getExistingVisitLabels('1')
+            Utility::getExistingVisitLabels(1)
         );
     }
 
@@ -829,5 +818,52 @@ class UtilityTest extends TestCase
             Utility::getSourcefields('instrument1', '1', 'name')
         );
     }
-}
 
+    /*
+     * dataProvider for function testValueIsPositiveIntegerReturnsFalse
+     */
+    public function notPositiveIntegerValues(): array
+    {
+        return array(
+                [-1],
+                [0],
+                [3.14],
+                ['abcdefg'],
+                ['-1'],
+                ['-98.6'],
+                ['0'],
+                [array()],
+                [array(1)],
+                [null],
+                [new stdClass()]
+               );
+    }
+
+    /*
+     * dataProvider for function testValueIsPositiveIntegerReturnsTrue
+     */
+    public function positiveIntegerValues(): array
+    {
+        return array(
+                [1],
+                [100],
+                ['1000'],
+               );
+    }
+
+    /**
+     * @dataProvider notPositiveIntegerValues
+     */
+    public function testValueIsPositiveIntegerReturnsFalse($notInt): void
+    {
+        $this->assertFalse(\Utility::valueIsPositiveInteger($notInt));
+    }
+
+    /**
+     * @dataProvider positiveIntegerValues
+     */
+    public function testValueIsPositiveIntegerReturnsTrue($int): void
+    {
+        $this->assertTrue(\Utility::valueIsPositiveInteger($int));
+    }
+}

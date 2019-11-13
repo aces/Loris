@@ -1,11 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
-# This will:
-#   1. Set up the LORIS DB schema
-#   2. Log the installation in the logs directory
-# This will only install the database components and LORIS config file.
+# This script will:
+#   1. Install the directory structure with appropriate permissions
+#   2. Configure apache (optional)
+#   3. Log these steps in the logs/ directory (if writable)
 #
+
+set -euo pipefail
 
 # Must be run interactively.
 if ! test -t 0 -a -t 1 -a -t 2 ; then
@@ -28,11 +30,16 @@ exec 1>$LOGPIPE 2>&1
 CWD=`pwd`
 RootDir=`dirname $CWD`
 
+if [ $UID == "0" ]; then
+    echo "install.sh must not be run as root (but should be run as a user with sudo access.)"
+    exit 1
+fi
 
 echo "LORIS Installation Script starting at $START"
 
 if [ ! -w $LOGDIR ] ; then
         echo "The logs directory is not writable. You will not have an automatically generated report of your installation."
+        echo "We recommend you verify your user permissions and then re-run this script."
         while true; do
                 read -p "Do you still want to continue? [yn] " yn
 		echo $yn | tee -a $LOGFILE > /dev/null
@@ -57,13 +64,19 @@ cat <<BANNER
 ---------------------------------------------------------------------
 BANNER
 
+if [ -f ../project/config.xml ]; then
+    echo " "
+    echo "LORIS appears to already be installed. Aborting."
+    exit 2;
+fi
+
 # Check that bash is being used
 if ! [ $BASH ] ; then
-    echo "Please use bash shell. Run the install script as command: ./install.sh"
+    echo "Please switch to a bash shell. Then re-run this script using the command: ./install.sh"
     exit 2
 fi
 
-if [[ -n $(which php) ]]; then
+if [[ -n $(command -v php) ]]; then
     echo ""
     echo "PHP appears to be installed."
 else
@@ -72,40 +85,8 @@ else
     exit 2;
 fi
 
-if [[ -n $(which composer) ]]; then
-    echo ""
-    echo "PHP Composer appears to be installed."
-    composer_scr="composer install --no-dev"
-elif [[ -x ../composer ]]; then
-    echo ""
-    echo "PHP Composer appears to be installed."
-    composer_scr="./composer install --no-dev"
-else
-    echo ""
-    echo "PHP Composer does not appear to be installed. Please install it before running this script."
-    echo ""
-    echo "(e.g. wget https://getcomposer.org/installer"
-    echo "php installer --install-dir=/usr/local/bin --filename=composer)"
-    echo "while having root permission)";
-    exit 2;
-fi
-
 echo ""
-
-cat <<QUESTIONS
-This install script will ask you to provide inputs for different steps.
-Please ensure you have the following information ready (if applicable):
-
-  1) Your project directory name.
-     (Will be used to modify the paths for Imaging data in the generated
-     config.xml file for LORIS, and may also be used to automatically
-     create/install apache config files.) If unsure, a default like "LORIS"
-     should be acceptable.
-
-Please also consult the Loris WIKI on GitHub for more information on these
-Install Script input parameters.
-QUESTIONS
-
+echo "More information on the complete installation and setup process is available on the LORIS Wiki on GitHub."
 echo ""
 
 while true; do
@@ -123,23 +104,6 @@ done;
 
 echo ""
 
-while [ "$projectname" == "" ]; do
-        read -p "Enter project name: " projectname
-        echo $projectname | tee -a $LOGFILE > /dev/null
-        case $projectname in
-                "" )
-                        read -p "Enter project name: " projectname
-                        continue;;
-                * )
-                        break;;
-        esac
-done;
-
-if [ -f ../project/config.xml ]; then
-    echo "LORIS appears to already be installed. Aborting."
-    exit 2;
-fi
-
 # Create some subdirectories, if needed.
 ./create-project.sh ../project
 
@@ -149,14 +113,19 @@ chmod 770 ../smarty/templates_c
 
 # Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module
 # Detecting distribution
-os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
+if ! os_distro=$(hostnamectl 2>/dev/null)
+then
+  os_distro="Other"
+else
+  os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
+fi
 
 debian=("Debian" "Ubuntu")
-redhat=("Red" "CentOS" "Fedora" "Oracle") 
+redhat=("Red" "CentOS" "Fedora" "Oracle")
 
 if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
-    mkdir ../modules/document_repository/user_uploads
-    mkdir ../modules/data_release/user_uploads
+    mkdir -p ../modules/document_repository/user_uploads
+    mkdir -p ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../modules/document_repository/user_uploads
     sudo chown www-data.www-data ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../smarty/templates_c
@@ -165,8 +134,8 @@ if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
     sudo chgrp www-data ../project
     sudo chmod 770 ../project
 elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
-    mkdir ../modules/document_repository/user_uploads
-    mkdir ../modules/data_release/user_uploads
+    mkdir -p ../modules/document_repository/user_uploads
+    mkdir -p ../modules/data_release/user_uploads
     sudo chown apache.apache ../modules/document_repository/user_uploads
     sudo chown apache.apache ../modules/data_release/user_uploads
     sudo chown apache.apache ../smarty/templates_c
@@ -175,7 +144,12 @@ elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
     sudo chgrp apache ../project
     sudo chmod 770 ../project
 else
-    echo "$os_distro Linux distribution detected. We currently do not support this. Please manually chown/chgrp to the web server user in: the user_uploads directory in ../modules/data_release/ and ../modules/document_repository/, as well as ../smarty/templates_c/"
+    echo "$os_distro Linux distribution detected. We currently do not support this. "
+    echo "Please manually change subdirectory ownership and permissions to ensure the web server can read *and write* in the following: "
+    echo "../modules/data_release/user_uploads "
+    echo "../modules/document_repository/user_uploads "
+    echo "../smarty/templates_c "
+    echo ""
 fi
 
 # Set the proper permission for the tools/logs directory:
@@ -192,21 +166,27 @@ if [ -d logs ]; then
 fi
 
 echo ""
-# Install external libraries using composer
-cd ..
-eval $composer_scr
-cd tools
-
 
 if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
 echo "Ubuntu distribution detected."
     # for CentOS, the log directory is called httpd
     logdirectory=/var/log/apache2
     while true; do
-        read -p "Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 or later default Apache installations) [yn] " yn
+        read -p "Would you like to automatically set up your apache configuration files? [yn] " yn
         echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )
+                while [ "$projectname" == "" ]; do
+                        read -p "Please enter your Project name (if unsure, use LORIS) : " projectname
+                        echo $projectname | tee -a $LOGFILE > /dev/null
+                        case $projectname in
+                                "" )
+                                       read -p "Enter project name: " projectname
+                                       continue;;
+                                 * )
+                                       break;;
+                        esac
+                done;
                 if [ -f /etc/apache2/sites-available/$projectname ]; then
                     echo "Apache appears to already be configured for $projectname. Aborting\n"
                     exit 1
@@ -233,10 +213,21 @@ echo "CentOS distribution detected."
 # for CentOS, the log directory is called httpd
 logdirectory=/var/log/httpd
 while true; do
-    read -p "Would you like to automatically create/install apache config files? (In development for CentOS 6.5) [yn] " yn
+    read -p "Would you like to automatically set up your apache configuration files? (In development for CentOS) [yn] " yn
     echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
+            while [ "$projectname" == "" ]; do
+                      read -p "Please enter your Project name (if unsure, use LORIS) : " projectname
+                      echo $projectname | tee -a $LOGFILE > /dev/null
+                      case $projectname in
+                              "" )
+                                     read -p "Enter project name: " projectname
+                                     continue;;
+                               * )
+                                     break;;
+                      esac
+            done;
             if [ -f /etc/httpd/conf.d/$projectname ]; then
                 echo "Apache appears to already be configured for $projectname. Aborting\n"
                 exit 1
@@ -249,7 +240,7 @@ while true; do
                 < ../docs/config/apache2-site | sudo tee /etc/httpd/conf.d/$projectname.conf > /dev/null
 
             sudo service httpd restart
-            echo "You may need to manually uncomment the load rewrite module line of your conf."
+            echo "You may need to manually uncomment the load rewrite module line of your apache configuration."
             break;;
         [Nn]* )
             echo "Not configuring apache."
@@ -262,4 +253,10 @@ else
     exit 1
 fi
 
-echo "Installation complete."
+echo "Script execution finished. Installation of LORIS directory structure is complete."
+echo "Please keep a copy of this script output for troubleshooting purposes. "
+echo ""
+echo "Next steps: "
+echo "- Run 'make' (or 'make dev') from inside your $RootDir folder."
+echo "- Verify/enable your apache configuration and restart apache"
+echo "- Navigate to <loris-url>/installdb.php using a supported browser (Chrome or Firefox) to continue installing the database."

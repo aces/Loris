@@ -44,7 +44,7 @@ class Statistics_DD_Site extends statistics_site
             $this->query_vars['cid'] = $centerID;
         }
         if (!empty($projectID)) {
-            $this->query_criteria   .= " AND c.ProjectID =:pid ";
+            $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         }
     }
@@ -79,8 +79,8 @@ class Statistics_DD_Site extends statistics_site
         $this->instruments = array_filter(
             $this->instruments,
             array(
-             &$this,
-             'notexcluded',
+                &$this,
+                'notexcluded',
             )
         );
     }

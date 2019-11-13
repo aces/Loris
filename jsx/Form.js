@@ -1,5 +1,5 @@
 /* exported FormElement, FieldsetElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
-TextboxElement, DateElement, NumericElement, FileElement, StaticElement, LinkElement,
+TextboxElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
 CheckboxElement, ButtonElement, LorisElement
 */
 
@@ -472,13 +472,26 @@ class SelectElement extends Component {
     // Default to empty string for regular select and to empty array for 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
-    return (
-      <div className={elementClass}>
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <SelectElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = 'col-sm-12';
+    if (this.props.label || this.props.label == '') {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
           <select
             name={this.props.name}
             multiple={multiple}
@@ -508,7 +521,6 @@ SelectElement.propTypes = {
     PropTypes.array,
   ]),
   id: PropTypes.string,
-  class: PropTypes.string,
   multiple: PropTypes.bool,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -521,10 +533,8 @@ SelectElement.propTypes = {
 SelectElement.defaultProps = {
   name: '',
   options: {},
-  label: '',
   value: undefined,
   id: null,
-  class: '',
   multiple: false,
   disabled: false,
   required: false,
@@ -914,13 +924,27 @@ class TextboxElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    return (
-      <div className={elementClass}>
+
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <TextboxElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = 'col-sm-12';
+    if (this.props.label || this.props.label == '') {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
           <input
             type="text"
             className="form-control"
@@ -953,7 +977,6 @@ TextboxElement.propTypes = {
 
 TextboxElement.defaultProps = {
   name: '',
-  label: '',
   value: '',
   id: null,
   disabled: false,
@@ -987,7 +1010,7 @@ class DateElement extends Component {
       if (this.props.maxYear === '' || this.props.maxYear === null) {
         maxYear = '9999';
       }
-      let monthInputs = $('input[name=' + this.props.name+']');
+      let monthInputs = $('input[type=month][name=' + this.props.name+']');
       monthInputs.datepicker({
         dateFormat: 'yy-mm',
         changeMonth: true,
@@ -1422,6 +1445,38 @@ StaticElement.defaultProps = {
 };
 
 /**
+ * Header element component.
+ * Used to display a header element with specific level (1-6) as part of a form
+ *
+ */
+class HeaderElement extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    const Tag = 'h' + this.props.headerLevel;
+    return (
+      <div className="row form-group">
+        <Tag className='col-xs-12'>
+          {this.props.text}
+        </Tag>
+      </div>
+    );
+  }
+}
+
+HeaderElement.propTypes = {
+  text: PropTypes.string.isRequired,
+  headerLevel: PropTypes.oneOf([
+    1, 2, 3, 4, 5, 6,
+  ]),
+};
+
+HeaderElement.defaultProps = {
+  headerLevel: 3,
+};
+
+/**
  * Link element component.
  * Used to link plain/formated text to an href destination as part of a form
  */
@@ -1661,6 +1716,9 @@ class LorisElement extends Component {
       case 'static':
         elementHtml = (<StaticElement {...elementProps} />);
         break;
+      case 'header':
+        elementHtml = (<HeaderElement {...elementProps} />);
+        break;
       case 'link':
         elementHtml = (<LinkElement {...elementProps} />);
         break;
@@ -1678,6 +1736,137 @@ class LorisElement extends Component {
   }
 }
 
+/**
+ * Slider Component
+ * React wrapper for a <input type='range'> element.
+ */
+class SliderElement extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    // Handles empty, min & max cases.
+    const inputValue = e.target.value
+      ? parseFloat(e.target.value)
+      : this.props.minValue;
+    let value = inputValue > this.props.maxValue
+      ? this.props.maxValue
+      : inputValue;
+    value = value < this.props.minValue
+      ? this.props.minValue
+      : value;
+    this.props.onUserInput(this.props.name, value);
+  }
+
+  render() {
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = this.props.elementClass;
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className='text-danger'>*</span>;
+    }
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = this.props.elementClass + ' has-error';
+    }
+
+    return (
+      <div className={elementClass}>
+        <label className={'col-sm-3 control-label'}
+               htmlFor={this.props.id}>
+          {this.props.label}
+          {errorMessage}
+          {requiredHTML}
+        </label>
+        <div className={'col-sm-9'}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            width: '100%',
+          }}>
+            <div style={{
+              flexGrow: 1000,
+              display: 'flex',
+              flexDirection: 'column',
+              flexBasis: '100%',
+              maxWidth: this.props.maxWidth,
+              marginRight: '5px',
+              flex: 2,
+            }}>
+              <input
+                type='range'
+                name={this.props.name}
+                id={this.props.id}
+                value={this.props.value}
+                min={this.props.minValue}
+                max={this.props.maxValue}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+                style={{width: '100%'}}
+              />
+            </div>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flexBasis: '100%',
+              maxWidth: '50px',
+              flex: 1,
+            }}>
+              <input
+                type='number'
+                name={'input_' + this.props.name}
+                value={this.props.value}
+                min={this.props.minValue}
+                max={this.props.maxValue}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+                style={{
+                  width: '50px',
+                  textAlign: 'center',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+SliderElement.propTypes = {
+  id: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
+  minValue: PropTypes.number.isRequired,
+  maxValue: PropTypes.number.isRequired,
+  maxWidth: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  elementClass: PropTypes.string,
+  onUserInput: PropTypes.func,
+};
+SliderElement.defaultProps = {
+  id: null,
+  maxWidth: 'auto',
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  elementClass: 'row form-group',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+};
+
 window.FormElement = FormElement;
 window.FieldsetElement = FieldsetElement;
 window.SelectElement = SelectElement;
@@ -1690,7 +1879,9 @@ window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
+window.HeaderElement = HeaderElement;
 window.LinkElement = LinkElement;
+window.SliderElement = SliderElement;
 window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
 window.CTA = CTA;
@@ -1709,8 +1900,10 @@ export default {
   NumericElement,
   FileElement,
   StaticElement,
+  HeaderElement,
   LinkElement,
   CheckboxElement,
+  SliderElement,
   ButtonElement,
   CTA,
   LorisElement,

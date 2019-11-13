@@ -40,7 +40,7 @@ if (strpos($_REQUEST['file_id'], 'l') !== false) {
     $image_file = $DB->pselectOne(
         $query,
         array(
-         'FileID' => $_REQUEST['file_id'],
+            'FileID' => $_REQUEST['file_id'],
         )
     );
     $image_path = getFileLocation() . $image_file;
@@ -53,7 +53,7 @@ if (!empty($image_file) && !empty($image_path)) {
         header('Content-Type: application/x-mnc');
     }
     header('X-FileID: ' . $_REQUEST['file_id']);
-    readfile($image_path);
+    readgzfile($image_path);
 } else {
     header("HTTP/1.1 404 Not Found");
     exit();

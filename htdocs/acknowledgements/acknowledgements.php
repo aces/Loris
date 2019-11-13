@@ -24,16 +24,16 @@ $db     = Database::singleton();
 $publication_date = $_GET["date"];
 
 $columns = array(
-            'full_name'     => 'Full Name',
-            'citation_name' => 'Citation Name',
-            'title'         => 'Title',
-            'affiliations'  => 'Affiliations',
-            'degrees'       => 'Degrees',
-            'roles'         => 'Roles',
-            'start_date'    => 'Start Date',
-            'end_date'      => 'End Date',
-            'present'       => 'Present?',
-           );
+    'full_name'     => 'Full Name',
+    'citation_name' => 'Citation Name',
+    'title'         => 'Title',
+    'affiliations'  => 'Affiliations',
+    'degrees'       => 'Degrees',
+    'roles'         => 'Roles',
+    'start_date'    => 'Start Date',
+    'end_date'      => 'End Date',
+    'present'       => 'Present?',
+);
 
 $keysAsString   = implode(', ', array_keys($columns));
 $valuesAsString = implode('","', array_values($columns));

@@ -77,8 +77,8 @@ class FeedbackMRI
      * predefined comments internally
      *
      * @param array|null $predefinedCommentIDs an array of integers which are
-     *                                    PredefinedCommentID from
-     *                                    feedback_mri_predefined_comments table
+     *                                         PredefinedCommentID from
+     *                                         feedback_mri_predefined_comments table
      *
      * @return bool true if operation succeeded
      */
@@ -206,9 +206,10 @@ class FeedbackMRI
      *
      * @param string $fieldName field to select from in mri table
      *
-     * @return string value of $fieldName in mri table
+     * @return string|bool value of $fieldName in mri table or false when
+     *                      no information found in the database
      */
-    function getMRIValue(string $fieldName): string
+    function getMRIValue(string $fieldName)
     {
         // choke if not a volume instance
         if ($this->objectType != 'volume') {
@@ -234,8 +235,8 @@ class FeedbackMRI
         $value = $DB->pselectOne(
             $query,
             array(
-             'PTID' => $parameterTypeID,
-             'FID'  => $this->fileID,
+                'PTID' => $parameterTypeID,
+                'FID'  => $this->fileID,
             )
         );
         if (empty($value)) {
@@ -280,29 +281,29 @@ class FeedbackMRI
         $updateNeeded = $DB->pselectOne(
             $query,
             array(
-             'PTID' => $parameterTypeID,
-             'FID'  => $this->fileID,
+                'PTID' => $parameterTypeID,
+                'FID'  => $this->fileID,
             )
         );
 
         // build the query
         if ($updateNeeded) {
-            $success = $DB->update(
+            $DB->update(
                 'parameter_file',
                 array('Value' => $value),
                 array(
-                 'ParameterTypeID' => $parameterTypeID,
-                 'FileID'          => $this->fileID,
+                    'ParameterTypeID' => $parameterTypeID,
+                    'FileID'          => $this->fileID,
                 )
             );
         } else {
-            $success = $DB->insert(
+            $DB->insert(
                 'parameter_file',
                 array(
-                 'Value'           => $value,
-                 'ParameterTypeID' => $parameterTypeID,
-                 'FileID'          => $this->fileID,
-                 'InsertTime'      => time(),
+                    'Value'           => $value,
+                    'ParameterTypeID' => $parameterTypeID,
+                    'FileID'          => $this->fileID,
+                    'InsertTime'      => time(),
                 )
             );
         }
@@ -347,17 +348,17 @@ class FeedbackMRI
                 if ($CommentName == "Overall") {
                     $overallType = $CTID;
                     $overallName = array(
-                                    'name'   => stripslashes($CommentName),
-                                    'field'  => $statusField['field'] ?? 'overall',
-                                    'values' => $statusField['values'] ?? '',
-                                   );
+                        'name'   => stripslashes($CommentName),
+                        'field'  => $statusField['field'] ?? 'overall',
+                        'values' => $statusField['values'] ?? '',
+                    );
                 } else {
                     // add a row to the output array
                     $commentNames[$CTID] = array(
-                                            'name'   => stripslashes($CommentName),
-                                            'field'  => $statusField['field'],
-                                            'values' => $statusField['values'],
-                                           );
+                        'name'   => stripslashes($CommentName),
+                        'field'  => $statusField['field'],
+                        'values' => $statusField['values'],
+                    );
                 }
 
                 unset($statusField);
@@ -402,9 +403,10 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \Database::singleton();
 
         // object identifier
+        $set = array();
         if ($this->objectType == 'volume') {
             // per-volume
             $set['FileID'] = $this->fileID;
