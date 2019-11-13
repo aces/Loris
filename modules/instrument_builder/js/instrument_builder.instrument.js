@@ -91,6 +91,7 @@ var Instrument = {
                 switch (element.Type) {
                     case "line":
                         content += 'static{@}{@}<br>\n';
+                        break;
                     case "select":
                         if (element.Options.AllowMultiple) {
                             content += "selectmultiple{@}"
