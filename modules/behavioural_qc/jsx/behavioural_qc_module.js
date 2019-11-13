@@ -40,7 +40,6 @@ class PagedTable extends Component {
     this.getPage = this.getPage.bind(this);
     this.getNumPages = this.getNumPages.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
-    this.changePage = this.changePage.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -72,12 +71,6 @@ class PagedTable extends Component {
   }
   handlePageChange(pageNum) {
     this.setState({currentPage: pageNum});
-  }
-
-  changePage(pageNo) {
-    this.setState({
-      PageNumber: pageNo,
-    });
   }
 
   render() {
