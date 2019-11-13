@@ -200,6 +200,11 @@ class Password
      */
     public final function __construct(string $value)
     {
+        // If a password contains a special character such as '&' or '<' then
+        // its possible that it has been encoded during transmission to the
+        // class.
+        $value = htmlspecialchars_decode($value);
+
         // Ensure proposed value is well-formed.
         $this->_validate($value);
         // Don't store the value in the object; instead use the hashed version

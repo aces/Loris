@@ -120,4 +120,42 @@ class PasswordTest extends TestCase
             password_verify(self::VALID_PASSWORD, (string) $password)
         );
     }
+
+    /**
+     * dataProvider for testAcceptsSpecialChars
+     *
+     * Provides strings containing special characters.
+     *
+     * @see https://www.php.net/manual/en/function.htmlspecialchars.php
+     */
+    public function specialValues(): array
+    {
+        return array(
+            // test single quote
+            ["password' AND 1=1; --"],
+            // test ampersand
+            ["Hot & Dangerous"],
+            // test double quote
+            ['unit tests are "useful"'],
+            // test less-than symbol
+            ['all you need is <3'],
+            // test greater-than symbol
+            ['> formatted quotation']
+        );
+    }
+
+
+    /**
+     * Ensures that the Password class HTML-decodes values given to it and
+     * creates a hash that can be used to authenticate users.
+     *
+     * @dataProvider specialValues
+     */
+    public function testAcceptsSpecialChars($specialText): void {
+        $encoded = htmlspecialchars($specialText);
+        $password = new \Password($encoded);
+        $hash = (string) $password;
+
+        $this->assertTrue(password_verify($specialText, $hash));
+    }
 }
