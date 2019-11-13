@@ -1,28 +1,15 @@
 # Imaging Uploader
 
-The Imaging Uploader allows users to upload DICOM scan sessions and browse past uploads.  
+This module allows you to upload DICOM scan sessions and browse past uploads.
 
-To upload a file, click on the Upload tab and enter required information about the scan: whether it is a 
-“Phantom Scan”, the “CandID” (DCCID), “PSCID”, and “Visit Label”. 
-Note: the candidate must already be registered in LORIS and the visit label must be known for the study. 
+In the **Browse** tab, you can use the *Selection Filter* section to search for existing uploads. 
 
-Typically an entire imaging session containing several raw DICOM acquisitions is uploaded at time. 
-Please note that file to upload should be in a compressed format (.tgz, .tar.gz, or .zip) and must be labeled 
-properly (by default: PSCID_DCCID_VisitLabel) in order to be uploaded and inserted into the database.  
+Click on any row in the data table to view the output of the imaging insertion pipeline for that file, which will appear in the *Log Viewer* section in the top right. Use the drop-down menu to toggle between a *Detailed* view of all pipeline output, or a *Summary* view of key pipeline steps. 
 
-Click “Browse” to select the file to upload from the local computer.  Click “Submit” to launch the upload. 
-The newly uploaded file will be displayed in the table at the bottom.  
-As the upload progresses, refreshing the page will show the current status in the “Progress” column.
+In the data table, in the *Tarchive Info* column, you can click any **View Details** link to view all DICOM header fields and metadata for that scan (in the DICOM Archive module). You can also click on any number in the **Number of MINC Inserted** column to view the files in BrainBrowser.
 
-Use the Selection Filters to find past uploads, filtering by “CandID”, “PSCID”, or “Visit Label”. 
-As filter criteria are added, the data table of results below will dynamically update.  
-Click “Clear Filters” to reset all filters and search fields. 
+To upload scans, click on the **Upload** tab. Enter the required information about the scan and select your file for upload. Note: the candidate must already be registered in LORIS and the visit label must be known for the study.
 
-Click on any row in the data table to view the output of the imaging insertion pipeline for that file, which will appear 
-in the “Log Viewer” panel at top right. In this panel, users have the option to display a “Detailed” view of all pipeline 
-output, or “Summary” of key pipeline steps. This log information is displayed in the grey panel below;  scroll down within 
-the grey panel to view additional output. 
-
-To view all DICOM header fields and metadata, click on “View Details” under the “Tarchive Info” column to load the DICOM Archive module.
+Pay attention to the *Notes* for upload rules. If you are uploading an entire imaging session containing several raw DICOM acquisitions, the file must be in a compressed format, and labelled appropriately. You must follow these rules in order to upload and insert the file into the database.
 
 
