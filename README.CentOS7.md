@@ -125,7 +125,7 @@ Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS en
                 allow from all
         </Directory>
 
-        php_value include_path .:/usr/share/php:/var/www/loris/project/libr$
+         php_value include_path .:/usr/share/php:%LORISROOT%/project/libraries:%LORISROOT%/php/libraries
 
         #DirectoryIndex main.php index.html
 
