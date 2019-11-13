@@ -50,7 +50,7 @@ curl -H 'Content-Type: application/json' -X POST http://$YOURCOUCHDBADMIN:$YOURC
 
 3. Amend the `<CouchDB>` section of your LORIS `project/config.xml` as follows:
 
-```
+```xml
 <CouchDB>
     <database>dqg</database>
     <hostname>localhost</hostname>
