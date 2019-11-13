@@ -1,6 +1,6 @@
 <?php
 /**
- * behavioural_qc automated integration tests
+ * Behavioural_QC automated integration tests
  *
  * PHP Version 5
  *
@@ -13,7 +13,7 @@
 require_once __DIR__ .
         "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
- * behavioural_qc automated integration tests
+ * Behavioural_QC automated integration tests
  *
  * PHP Version 5
  *
@@ -23,7 +23,7 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
+class Behavioural_QCTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the behavioural_qc module, some
@@ -31,7 +31,7 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataTeamHelperDoespageLoad()
+    function testBeahaviouralQCDoespageLoad()
     {
         $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->webDriver->findElement(
@@ -44,7 +44,7 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testDataTeamHelperWithoutPermission()
+    function testBeahaviouralQCWithoutPermission()
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/behavioural_qc/");
@@ -62,7 +62,7 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDataTeamHelperPermission()
+    function testBeahaviouralQCPermission()
     {
          $this->setupPermissions(array("behavioural_qc"));
          $this->safeGet($this->url . "/behavioural_qc/");

@@ -6,18 +6,18 @@
  * PHP Version 7
  *
  * @category Tools
- * @package  Quality_Control
+ * @package  Imaging_QC
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-namespace LORIS\quality_control;
+namespace LORIS\imaging_qc;
 /**
  * Class module implements the basic LORIS module functionality
  *
  * @category   Behavioural
  * @package    Main
- * @subpackage Quality_Control
+ * @subpackage Imaging_QC
  * @author     Liza Levitis <llevitis.mcin@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/

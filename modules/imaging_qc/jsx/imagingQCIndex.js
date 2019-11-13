@@ -1,19 +1,15 @@
 import React, {Component} from 'react';
 import Loader from 'Loader';
-import {Tabs, TabPane} from 'Tabs';
 import FilterableDataTable from 'FilterableDataTable';
 import PropTypes from 'prop-types';
 
-class QualityControlIndex extends Component {
+class ImagingQCIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
       ImgData: {},
-      BehavioralData: {},
       isLoadedImg: false,
-      isLoadedBehavioral: false,
       imgFilter: {},
-      behavioralFilter: {},
     };
     this.fetchData = this.fetchData.bind(this);
   }
@@ -57,8 +53,6 @@ class QualityControlIndex extends Component {
   componentDidMount() {
     this.fetchData(this.props.ImgDataURL, 'ImgData')
         .then(() => this.setState({isLoadedImg: true}));
-    this.fetchData(this.props.BehavioralDataURL, 'BehavioralData')
-        .then(() => this.setState({isLoadedBehavioral: true}));
   }
 
   fetchData(url, state) {
@@ -71,17 +65,11 @@ class QualityControlIndex extends Component {
   }
 
   render() {
-    if (!this.state.isLoadedBehavioral || !this.state.isLoadedImg) {
+    if (!this.state.isLoadedImg) {
       return <Loader/>;
     }
     if (Object.keys(this.state.ImgData).length > 0) {
-      let tabList = [
-        {id: 'behavioral', label: 'Behavioral'},
-        {id: 'imaging', label: 'Imaging'},
-      ];
-
       const ImgOptions = this.state.ImgData.fieldOptions;
-      const BehavioralOptions = this.state.BehavioralData.fieldOptions;
 
       const ImgFields = [
         {
@@ -185,63 +173,17 @@ class QualityControlIndex extends Component {
         {label: 'TarchiveID', show: false},
       ];
 
-      const BehavioralFields = [
-        {
-          label: 'Visit Label', show: true, filter: {
-            name: 'visitLabel',
-            type: 'select',
-            options: BehavioralOptions.visits,
-          },
-        },
-        {
-          label: 'DCCID', show: true, filter: {
-            name: 'candId',
-            type: 'text',
-          },
-        },
-        {
-          label: 'PSCID', show: true, filter: {
-            name: 'pSCID',
-            type: 'text',
-          },
-        },
-        {
-          label: 'Instrument', show: true, filter: {
-            name: 'instrument',
-            type: 'select',
-            options: BehavioralOptions.instrument,
-          },
-        },
-      ];
-
-      const tab0 = (
-        <TabPane TabId={tabList[0].id}>
+      const datatable = (
           <FilterableDataTable
-            name="quality_control_behavioural"
-            data={this.state.BehavioralData.Data}
-            fields={BehavioralFields}
-            getFormattedCell={this.formatColumn}
-          />
-        </TabPane>
-      );
-
-      const tab1 = (
-        <TabPane TabId={tabList[1].id}>
-          <FilterableDataTable
-            name="quality_control"
+            name="imaging_qc"
             data={this.state.ImgData.Data}
             fields={ImgFields}
             getFormattedCell={this.formatColumn}
           />
-        </TabPane>
       );
       return (
         <div>
-          <Tabs id="TabPanes" tabs={tabList} defaultTab={tabList[0].id}
-                updateURL={true}>
-            {tab0}
-            {tab1}
-          </Tabs>
+            {datatable}
         </div>
       );
     } else {
@@ -254,17 +196,15 @@ class QualityControlIndex extends Component {
   }
 }
 
-QualityControlIndex.propTypes = {
+ImagingQCIndex.propTypes = {
   ImgDataURL: PropTypes.string.isRequired,
-  BehavioralDataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
   ReactDOM.render(
-    <QualityControlIndex
-      ImgDataURL={`${loris.BaseURL}/quality_control/?format=json`}
-      BehavioralDataURL = {`${loris.BaseURL}/quality_control/quality_control_behavioral/?format=json`}
+    <ImagingQCIndex
+      ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
       hasPermission={loris.userHasPermission}
     />,
     document.getElementById('lorisworkspace')

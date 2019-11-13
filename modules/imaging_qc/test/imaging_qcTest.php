@@ -1,6 +1,6 @@
 <?php
 /**
- * QualityControlIntegrationTest automated integration tests
+ * ImagingQCIntegrationTest automated integration tests
  *
  * PHP Version 5
  *
@@ -13,7 +13,7 @@
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
- * QualityControlIntegrationTest
+ * ImagingQCIntegrationTest
  *
  * @category Test
  * @package  Loris
@@ -21,19 +21,19 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class QualityControlIntegrationTest extends LorisIntegrationTest
+class ImagingQCIntegrationTest extends LorisIntegrationTest
 {
     /**
-     * Tests that, the homepage should have "Quality Control" on the page.
+     * Tests that, the homepage should have "Imaging Quality Control" on the page.
      *
      * @return void
      */
     function testPageLoads()
     {
-        $this->safeGet($this->url . "/quality_control/");
+        $this->safeGet($this->url . "/imaging_qc/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Quality Control", $bodyText);
+        $this->assertContains("Imaging Quality Control", $bodyText);
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertNotContains("An error occurred", $bodyText);

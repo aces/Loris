@@ -1,30 +1,30 @@
 <?php
 /**
- * This file contains the Quality_Control class
+ * This file contains the Imaging_QC class
  *
  * PHP Version 7
  *
  * @category Module
- * @package  Quality_Control
+ * @package  Imaging_QC
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
-namespace LORIS\quality_control;
+namespace LORIS\imaging_qc;
 
 /**
- * Main class for quality control module corresponding to /quality_control/
+ * Main class for imaging quality control module corresponding to /imaging_qc/
  * endpoint.
  *
  * PHP Version 7
  *
  * @category Module
- * @package  Quality_Control
+ * @package  Imaging_QC
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
-class Quality_Control extends \NDB_Menu_Filter
+class Imaging_QC extends \NDB_Menu_Filter
 {
     public $AjaxModule = true;
     public $fieldOptions;
@@ -356,7 +356,25 @@ class Quality_Control extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/quality_control/js/qualityControlIndex.js",
+                $baseURL . "/imaging_qc/js/imagingQCIndex.js",
+            )
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $candid = $this->tpl_data['candID'];
+        $pscid  = $this->tpl_data['PSCID'];
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Imaging Quality Control',
+                '/imaging_qc'
             )
         );
     }

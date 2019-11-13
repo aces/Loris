@@ -23,7 +23,7 @@ namespace LORIS\behavioural_qc;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
-class behavioural_qc extends \NDB_Form
+class Behavioural_QC extends \NDB_Form
 {
 
     /**
@@ -853,6 +853,24 @@ class behavioural_qc extends \NDB_Form
         return array_merge(
             $deps,
             [$baseURL . "/behavioural_qc/css/behavioural_qc.css"]
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $candid = $this->tpl_data['candID'];
+        $pscid  = $this->tpl_data['PSCID'];
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Behavioural Quality Control',
+                '/behavioural_qc'
+            )
         );
     }
 }

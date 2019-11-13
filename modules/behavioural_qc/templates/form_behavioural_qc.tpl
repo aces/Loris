@@ -168,7 +168,7 @@ var instrument = {$test_name|@json_encode};
 var site = $("#site option:selected").text();
 var project =$("#project option:selected").text();
 
-var DataTeamGraphics = GraphicsPanel({
+var BeahaviouralQCGraphics = GraphicsPanel({
 	percentCompleted: percentCompleted,
     pscid: pscid,
     visit: visit,
@@ -183,6 +183,6 @@ ReactDOM.render(ConflictsPanel, document.getElementById("conflicts"));
 
 ReactDOM.render(FeedbackTab, document.getElementById("feedback"));
 
-ReactDOM.render(DataTeamGraphics, document.getElementById("graphics"));
+ReactDOM.render(BeahaviouralQCGraphics, document.getElementById("graphics"));
 
 </script>
