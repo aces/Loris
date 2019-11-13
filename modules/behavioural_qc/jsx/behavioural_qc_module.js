@@ -6,6 +6,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import PaginationLinks from 'jsx/PaginationLinks';
+
 class PagedRowHeader extends Component {
   constructor(props) {
     super(props);
@@ -38,6 +40,7 @@ class PagedTable extends Component {
     this.getPage = this.getPage.bind(this);
     this.getNumPages = this.getNumPages.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.changePage = this.changePage.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -71,6 +74,12 @@ class PagedTable extends Component {
     this.setState({currentPage: pageNum});
   }
 
+  changePage(pageNo) {
+    this.setState({
+      PageNumber: pageNo,
+    });
+  }
+
   render() {
     let tableContents = 'There is no data to display';
     let page = this.getPage();
@@ -101,8 +110,11 @@ class PagedTable extends Component {
       <div>
         {tableContents}
         <nav>
-          <BVLPager
-            page={page}
+          <PaginationLinks
+            Total={page.numPages}
+            onChangePage={page.handleClick}
+            RowsPerPage={10}
+            Active={this.state.currentPage}
           />
         </nav>
       </div>
@@ -390,88 +402,6 @@ BehaviouralFeedback.propTypes = {
   feedback: PropTypes.array,
   header: PropTypes.array,
   BaseURL: PropTypes.string,
-};
-
-class BVLPager extends Component {
-  constructor(props) {
-    super(props);
-
-    let page = this.props.page;
-    let pageLinks = [];
-
-    if (page.currentPage > 1) {
-      pageLinks.push(
-        <li key={1} onClick={() => page.handleClick(page.currentPage - 1)}>
-          <span>‹</span>
-        </li>
-      );
-      if (page.currentPage > 2) {
-        pageLinks.push(
-          <li key={2} onClick={() => page.handleClick(1)}>
-            <span>1</span>
-          </li>
-        );
-        pageLinks.push(<li key={3}><span>...</span></li>);
-      }
-    }
-
-    if (page.numPages > 1) {
-      pageLinks.push(
-        <li key={4} className='active'><span>{page.currentPage}</span></li>
-      );
-    }
-
-    if (page.currentPage < page.numPages) {
-      pageLinks.push(
-        <li key={5} onClick={() => page.handleClick(page.currentPage + 1)}>
-          <span>{page.currentPage + 1}</span>
-        </li>
-      );
-
-      if (page.currentPage < page.numPages - 1) {
-        pageLinks.push(
-          <li key={6} onClick={() => page.handleClick(page.currentPage + 2)}>
-            <span>{page.currentPage + 2}</span>
-          </li>
-        );
-      }
-
-      if (page.currentPage < page.numPages - 2) {
-        pageLinks.push(
-          <li key={7} onClick={() => page.handleClick(page.currentPage + 3)}>
-            <span>{page.currentPage + 3}</span>
-          </li>
-        );
-      }
-
-      if (page.currentPage < page.numPages - 3) {
-        pageLinks.push(<li key={8}><span>...</span></li>);
-        pageLinks.push(
-          <li key={9} onClick={() => page.handleClick(page.numPages)}>
-            <span>{page.numPages}</span>
-          </li>
-        );
-      }
-
-      pageLinks.push(
-        <li key={10} onClick={() => page.handleClick(page.currentPage + 1)}>
-          <span aria-hidden='true'>›</span>
-        </li>
-      );
-    }
-    this.state = {
-      pageLinks: pageLinks,
-    };
-  }
-
-  render() {
-    return (
-      <ul className='pagination pagination-sm'>{this.state.pageLinks}</ul>
-    );
-  }
-}
-BVLPager.propTypes = {
-  page: PropTypes.object,
 };
 
 class BeahaviouralQCGraphics extends Component {
