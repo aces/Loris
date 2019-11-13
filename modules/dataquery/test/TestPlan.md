@@ -50,7 +50,16 @@
      Quartile) is shown and filled
    - ensure that the "Scatterplot" is working when selecting data for column X and Y
 7. Go to the "Manage Saved Queries" tab:
-   - ensure the current query can be saved
-   - ...
+   - ensure the 'Save Current Query' button opens to a modal window with a text box 
+     to write the name of the query to be saved, a checkbox to publicly share the 
+     query and 2 buttons at the bottom ('Close' and 'Save Changes') 
+     entering a name for that query and clicking on 'Save Changes' in the modal win
+   - save one query (`query1`) that would not be shared publicly
+   - save another query (`query2`) that will be shared publicly
 8. Go to the "Load Saved Query" tab:
-   - ...
+   - ensure that `query1` saved in item '7.' of the test plan is displayed under the
+     user 'User Saved Queries' section
+   - ensure that `query2` saved in item '7.' of the test plan is displayed under the 
+     'Shared Saved Queries' section
+   - ensure both queries saved in item '7.' of the test plan load properly in the
+     DQT and give similar results than when run the first time
