@@ -1,54 +1,15 @@
 # Instrument manager
 
-## Uploading Instruments
+This module allows you to view the status of instruments that are installed in LORIS. If configured, the module will contain an **Upload** tab, where you can install new instruments created with the Instrument Builder. 
 
-The instrument manager provides the ability to view the status of
-instruments that are installed in LORIS and, if configured, the
-ability to install new instruments created with the instrument
-builder.
+## View Installed Instruments
 
-If configured, the top of the page displays an "Upload Instrument"
-section where a user can click "Browse" to select a LINST file from
-their computer.  After selecting a valid LINST file, clicking
-"Install Instrument" will install the instrument into LORIS (but
-it must still be manually inserted into a study specific test battery.)
+In the **Browse** tab, use the *Selection Filter* section to search for a specific instrument or instruments. The resulting table will display details on the instrument, including whether or not the instrument SQL table exists and is valid. 
 
-## Viewing Installed Instruments
+**Note**: the *Table Valid* and *Pages Valid* columns can only be determined for LINST instruments (those created in the instrument builder), as there is no way to extract the “proper” values from instruments coded in PHP. The *Instrument Type* column displays whether the instrument was created in the instrument builder or coded in PHP. 
 
-Below the "Upload Instrument" section is a table displaying all
-instruments which are currently installed in LORIS. For each
-instrument it displays the columns:
+## Upload New Instrument
 
-*Instrument*: This provides the name of the instrument (as given
-in the `test_names` table).
+If configured, the **Upload** tab will display an *Upload Instrument* section. Click **Browse** to select a LINST file from your computer. Click **Install Instrument** to install the instrument into LORIS. 
 
-*Instrument Type*: This contains either "PHP" or "Instrument Builder",
-depending on if the instrument was created using the instrument
-builder or coded in PHP.
-
-*Table Installed*: This does a very basic check for each instruments
-and displays either "Exists" (or the instrument table exists in the
-LORIS SQL database) or "Missing" (if the instrument SQL table does
-not exist).
-
-*Table Valid*: This column displays whether the LORIS SQL database
-is correctly configured, with respect to the instrument that's
-installed in the LORIS `project/instruments` directory. It contains
-either of the following: 
- - "Appears Valid" if everything looks peachy 
- - "Column (name) invalid" if the SQL table exists, but the column 
- named "(name)" does not reflect the type as configured in the 
- instrument
- - "enum (name) invalid" if the column exists, but does not accurately 
- reflect the possible options in a select box
- - "?" if it's unable to determine the validity of the table.
-
-*Pages Valid*: This column checks whether the `instrument_subtests`
-table in LORIS is correctly populated by verifying it against the
-instrument which is installed in LORIS. It contains either "Appears
-Valid" or "Missing page (pagename)" if a page is missing from the
-`instrument_subtests` table.
-
-Note that the last two columns can only be determined for LINST
-(instrument builder) instruments as there is no way to extract the
-"proper" values from instruments coded in PHP.
+**Note**: Once installed, you’ll still need to manually insert the instrument into a study-specific test battery. 
