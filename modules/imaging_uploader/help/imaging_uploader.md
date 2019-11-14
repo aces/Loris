@@ -12,4 +12,4 @@ To upload scans, click on the **Upload** tab. Enter the required information abo
 
 Note: the candidate must already be registered in LORIS and the visit label must be known for the study.
 
-Pay attention to the *Notes* for upload rules. If you are uploading an entire imaging session containing several raw DICOM acquisitions, the file must be in a compressed format, and labelled appropriately. You must follow these rules in order to upload and insert the file into the database.
+Pay attention to the *Notes* for upload rules. If you are uploading an entire imaging session containing several raw DICOM acquisitions, the file must be in a compressed format, and labelled appropriately, or your upload will not be successful.
