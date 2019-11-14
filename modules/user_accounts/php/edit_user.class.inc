@@ -499,7 +499,7 @@ class Edit_User extends \NDB_Form
                 : null;
             $user->updatePassword(
                 new \Password(
-                    htmlspecialchars_decode($decoded)
+                    htmlspecialchars_decode($values['Password_hash'])
                 ),
                 $expiry
             );
