@@ -168,7 +168,7 @@ var instrument = {$test_name|@json_encode};
 var site = $("#site option:selected").text();
 var project =$("#project option:selected").text();
 
-var BeahaviouralQCGraphics = GraphicsPanel({
+var BehaviouralQCGraphics = GraphicsPanel({
 	percentCompleted: percentCompleted,
     pscid: pscid,
     visit: visit,
@@ -183,6 +183,6 @@ ReactDOM.render(ConflictsPanel, document.getElementById("conflicts"));
 
 ReactDOM.render(FeedbackTab, document.getElementById("feedback"));
 
-ReactDOM.render(BeahaviouralQCGraphics, document.getElementById("graphics"));
+ReactDOM.render(BehaviouralQCGraphics, document.getElementById("graphics"));
 
 </script>
