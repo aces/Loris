@@ -419,7 +419,7 @@ class My_Preferences extends \NDB_Form
                 // bad or the input is too weak to be a good password.
                 //
                 // NOTE 'Password_hash' is actually plaintext, not a hash.
-                $decoded = htmlspecialchars_decode($plaintext);
+                $decoded  = htmlspecialchars_decode($plaintext);
                 $password = new \Password($decoded);
                 // New password must be different than current one
                 if (! \User::factory($this->identifier)->isPasswordDifferent(

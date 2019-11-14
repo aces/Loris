@@ -489,21 +489,19 @@ class Edit_User extends \NDB_Form
 
         // Now set the password. Note that this field is named incorrectly
         // and represents a plaintext password, not a hash.
-        if (isset($values['Password_hash'], $values['Password_expiry'])) {
-            $decoded = htmlspecialchars_decode($values['Password_hash']);
-            // If both hash and expiry are set, use both values when resetting
-            // the password. This occurs when a new password is generated
-            // by the system.
-            $user->updatePassword(
-                new \Password($decoded),
+        if (isset($values['Password_hash'])) {
+
+            // Set custom expiry date if the value is present.
+            // Otherwise, use null which will cause the expiry to be 6 months
+            // from the current date.
+            $expiry = isset($values['Password_expiry']) ?
                 new \DateTime($values['Password_expiry'])
-            );
-        } else if (isset($values['Password_hash'])) {
-            // If just the Password_hash value is present, do not specify a
-            // custom expiry date. This will set the password to expire in
-            // 6 months from the current date (handled in updatePassword()).
+                : null;
             $user->updatePassword(
-                new \Password($decoded)
+                new \Password(
+                    htmlspecialchars_decode($decoded)
+                ),
+                $expiry
             );
         }
 
@@ -1109,8 +1107,8 @@ class Edit_User extends \NDB_Form
                 // The Password class is self-validating and will throw an
                 // InvalidArgumentException if the value passed to it is
                 // bad or the input is too weak to be a good password.
-                $decoded = htmlspecialchars_decode($plaintext)
-                $password            = new \Password($decoded);
+                $decoded  = htmlspecialchars_decode($plaintext);
+                $password = new \Password($decoded);
                 $isPasswordDifferent = \User::factory($this->identifier)
                     ->isPasswordDifferent($decoded);
                 if (! $isPasswordDifferent) {

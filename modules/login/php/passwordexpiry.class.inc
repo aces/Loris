@@ -88,7 +88,7 @@ class PasswordExpiry extends \NDB_Form
     {
         $this->_user = \User::factory($this->_username);
         $data        = $this->_user->getData();
-        $plaintext = htmlspecialchars_decode($values['password']);
+        $plaintext   = htmlspecialchars_decode($values['password']);
 
         try {
             $password = new \Password($plaintext);
