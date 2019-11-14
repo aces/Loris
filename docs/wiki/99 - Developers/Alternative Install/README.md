@@ -1,1 +1,1 @@
-Instructions for the installation of the software
+Instructions for alternative installations of our software
