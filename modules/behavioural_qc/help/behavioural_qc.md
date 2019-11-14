@@ -1,4 +1,4 @@
-# Behavioural Quality Control
+# Behavioural Quality Control (QC)
 
 This module allows you to view outstanding behavioural feedback, data entry conflicts, and incomplete forms for a given candidate and/or instrument.
 
