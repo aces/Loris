@@ -27,7 +27,7 @@ For CentOS 6 systems a separate [[CentOS Readme|https://github.com/aces/Loris/bl
 ### Mac OSX
 * _Mac is not actively supported as of release 15.10_
 
-For Mac OSX installations, a [[Mac Readme|https://raw.githubusercontent.com/aces/Loris/master/README.Mac.md]] was developed for release 15.04. It has not been updated for subsequent releases, e.g. for newer dependencies such as Composer.  Users attempting Mac install may also find Apache setup changes for El Capitan. 
+For Mac OSX installations, a [Mac Readme](https://github.com/aces/Loris/blob/master/docs/wiki/00%20-%20SERVER%20INSTALL%20AND%20CONFIGURATION/01%20-%20LORIS%20Install/Macintosh/README.md) was developed for release 15.04. It has not been updated for subsequent releases, e.g. for newer dependencies such as Composer.  Users attempting Mac install may also find Apache setup changes for El Capitan. 
 
 ## Running the Install Script 
 The Install script and web-based installer is designed to be run on Ubuntu (14+) or CentOS systems. 
