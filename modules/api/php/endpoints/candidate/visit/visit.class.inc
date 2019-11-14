@@ -12,6 +12,7 @@
  */
 namespace LORIS\api\Endpoints\Candidate\Visit;
 
+use LORIS\api\Endpoints\Candidate\Visit\Electrophysiology\Electrophysiology;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
@@ -127,6 +128,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             break;
         case 'dicoms':
             $handler = new Dicoms($this->_visit);
+            break;
+        case 'recordings':
+            $handler = new Recordings($this->_visit);
             break;
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
