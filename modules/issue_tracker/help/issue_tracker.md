@@ -8,4 +8,4 @@ In the table, in the *Title* column, you can click on any issue name to edit its
 
 Click **New Issue** if you wish to add a new issue. Then, populate the fields and click **Submit Issue**.
 
-Note that you can add "Watchers" to an issue - this will send email notifications to the given user when the issue is created and updated.  If you are the author of an issue, and you add yourself as a Watcher, you won't receive notifications about your own updates. 
+Note that you can add users to the "Watching" list - this will send email notifications to the selected users when the issue is created and updated. If you are the author of an issue, and you add yourself as Watching, you won't be sent notifications about your own updates. 
