@@ -6,7 +6,7 @@ UPDATE LorisMenu SET Label='Behavioural Quality Control', Link='behavioural_qc/'
 
 SELECT MAX(OrderNumber)+1 INTO @ordernumber FROM LorisMenu WHERE Parent=(SELECT ID FROM LorisMenu WHERE Label='Imaging');
 SELECT ID INTO @parentid FROM LorisMenu WHERE Label='Imaging';
-UPDATE LorisMenu SET Label='Imaging Quality Control', Link='imaging_qc/', Parent=@parentid, OrderNumber=@ordernumebr WHERE Link='quality_control/';
+UPDATE LorisMenu SET Label='Imaging Quality Control', Link='imaging_qc/', Parent=@parentid, OrderNumber=@ordernumber WHERE Link='quality_control/';
 
 -- change location of Genomic Browser to place right after imaging tab
 SELECT OrderNumber INTO @ordernumber FROM LorisMenu WHERE Label='Imaging';
