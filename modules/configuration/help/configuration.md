@@ -1,20 +1,11 @@
 # Configuration
 
-To edit any configuration settings, navigate to the field that you'd
-like to edit in the module, and edit or insert a new value.
+This module allows you to edit configuration settings for your LORIS instance.
 
-Some configuration settings can accept multiple values. For these
-settings, you can add additional fields by pressing the "Add Field"
-button. This will create an empty form area where you can insert
-new values. You can delete any of the settings by pressing the red
-delete button attached to the form.
+Click on any of the configurable options along the left side in order to edit. Populate the fields as necessary and click **Submit**. 
 
-Press the submit button at the bottom of the page to save your
-changes.  Pressing the submit button on a page will not save changes
-made on other pages.
+Some configuration settings can accept multiple values. For these settings, you can add additional fields by clicking **Add Field**. This will create a new field where you can insert your values. You can click on the associate red **“X”** to delete any of these additional fields.
 
-Care should be taken when editing the fields as there is currently
-no way to "undo" changes. You can reset the form to its values on
-page load by pressing the reset button. However, this will not undo
-any changes made before the submit button has been pressed.
-
+**Note:** Take caution while editing these fields. Once you click **Submit**, there is no way to undo changes, unless you re-edit and re-submit a new form.
+ 
+**Note:** at the top of the page, you can click the links to configure study projects and subprojects. 
