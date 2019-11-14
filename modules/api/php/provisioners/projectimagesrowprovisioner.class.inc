@@ -66,7 +66,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
              LEFT JOIN files_qcstatus qc
                ON (f.FileID = qc.FileID)
              LEFT JOIN Project project
-               ON (c.ProjectID = project.ProjectID)
+               ON (s.ProjectID = project.ProjectID)
              WHERE
                c.Active = \'Y\' AND
                s.Active = \'Y\' AND

@@ -21,7 +21,7 @@ namespace LORIS\api\Models;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class ProjectElectrophysiologyRow implements \LORIS\Data\DataInstance
+class ProjectRecordingsRow implements \LORIS\Data\DataInstance
 {
     private $_candid;
     private $_pscid;

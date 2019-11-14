@@ -238,6 +238,30 @@ will return a JSON object of the form:
 
 where 123456, 342332, etc are the candidates that exist for this project.
 
+#### 2.1.5 Single project electrophysiology recordings
+```
+GET /projects/$ProjectName/recordings/
+```
+
+will return a JSON object of the form:
+```js
+{
+  "ElectrophysiologyRecordings": [
+    {
+      "Candidate":"300167",
+      "PSCID":"OTT167",
+      "Visit":"V1",
+      "Visit_date":"2016-08-15",
+      "Site":"Ottawa",
+      "File":"bids_imports/Face13_BIDSVersion_1.1.0/sub-OTT167/ses-V1/eeg/sub-OTT167_ses-V1_task-faceO_eeg.edf",
+      "InsertTime":"1970-01-01T00:33:39+00:00",
+      "Link":"/candidates/300167/V1/electrophysiology/sub-OTT167_ses-V1_task-faceO_eeg.edf"
+    },
+    ...
+  ]
+}
+```
+
 ### 2.2 Instrument Forms
 
 ```
@@ -838,3 +862,93 @@ files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
 scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
 Only `GET` is currently supported.
+
+## 6.0 Electrophysiology Recording Data
+
+The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the 
+REST API namespace, but is defined in a separate section of this document for 
+clarity purposes.  
+
+### 6.1 Candidate Electrophysiology Recordings
+
+```
+GET /candidates/$CandID/$Visit/recordings
+```
+
+A GET request to a `/candidates/$CandID/$Visit/recordings` will return a JSON object
+of all the recordings which have been acquired for that visit. It will return an
+object of the form:
+
+```js
+{
+  "Meta": {
+    "CandID": $CandID,
+    "Visit": $VisitLabel
+  },
+  "Files": [{
+      "OutputType": "raw",
+      "Filename": $Filename,
+      "AcquisitionModality": "eeg/meg/etc"
+  }, /* More files */]
+}
+```
+
+### 6.2 Electrophysiology Level Data
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename
+```
+
+Returns raw file with the appropriate MimeType headers for each Filename retrieved
+from `/candidates/$CandID/$Visit/recordings`.
+
+Only `GET` is currently supported, but future versions of this API may include `PUT`
+support to insert raw (or derivatives) data into LORIS.
+
+### 6.3 Electrophysiology Recording Metadata
+
+#### 6.3.1 Complete Metadata
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/metadata
+```
+
+This will return a JSON object with all metadata associated with the recording. It 
+will return an object of the form:
+
+```js
+{
+  "Meta": {
+    "CandID": $CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename
+  },
+  "Data": {
+    "EEGReference": "CMS",
+    "SamplingFrequency": "256",
+    "ECGChannelCount": "0",
+    "HardwareFilters": "n/a",
+    /* more metadata ... */
+  }
+}
+```
+
+#### 6.3.2 Specific Metadata
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/metadata/$HeaderName
+```
+
+This will return a JSON object that extracts one specific metadata from $Filename.
+
+The JSON object is of the form:
+```js
+{
+  "Meta": {
+    "CandID": $CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename,
+    "Header": $HeaderName
+  },
+  "Value": string
+}
+```

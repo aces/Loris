@@ -114,8 +114,8 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
             case 'visits':
                 $handler = new Visits($this->_project);
                 break;
-            case 'electrophysiology':
-                $handler = new Electrophysiology($this->_project);
+            case 'recordings':
+                $handler = new Recordings($this->_project);
                 break;
             default:
                 return new \LORIS\Http\Response\JSON\NotFound();

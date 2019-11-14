@@ -14,7 +14,7 @@
 namespace LORIS\api\Provisioners;
 
 use LORIS\Data\Provisioners\DBRowProvisioner;
-use \LORIS\api\Models\ProjectElectrophysiologyRow;
+use \LORIS\api\Models\ProjectRecordingsRow;
 
 /**
  * This file implements a data provisioner to get all electrophysiology recordings
@@ -28,7 +28,7 @@ use \LORIS\api\Models\ProjectElectrophysiologyRow;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ProjectElectrophysiologyRowProvisioner extends DBRowProvisioner
+class ProjectRecordingsRowProvisioner extends DBRowProvisioner
 {
     /**
      * Create a RowProvisioner
@@ -84,6 +84,6 @@ class ProjectElectrophysiologyRowProvisioner extends DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        return new ProjectElectrophysiologyRow($row);
+        return new ProjectRecordingsRow($row);
     }
 }
