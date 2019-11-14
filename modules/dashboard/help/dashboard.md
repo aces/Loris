@@ -10,7 +10,7 @@ Need to update your account information, such as your password or other profile 
 
 ## Dashboard Features
 
-This is where you’ll find an at-a-glance status of your LORIS study. Note that all data shown in these sections are from ineligible, excluded, and consent-withdrawn candidates. You can temporarily hide any of the sections from view by clicking the arrow located in the top right corner. We’ve broken down the different sections below:
+This is where you’ll find an at-a-glance status of your LORIS study. Note that the charts in these sections include data from ineligible, excluded, and consent-withdrawn candidates. You can temporarily hide any of the sections from view by clicking the arrow located in the top right corner. We’ve broken down the different sections below:
 
 #### Recruitment
 
