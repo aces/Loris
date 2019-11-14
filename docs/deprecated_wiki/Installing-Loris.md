@@ -24,7 +24,7 @@ For older versions of Ubuntu, we recommend adapting the 16.04 installation instr
 Mac OS X is no longer supported as of LORIS 15.10. You may do the following for Mac OS X:
 
 + View Ubuntu 16.04 instructions and adapt for Max OS X (recommended)
-+ View the [older instructions](https://github.com/aces/Loris/blob/master/docs/wiki/00%20-%20SERVER%20INSTALL%20AND%20CONFIGURATION/01%20-%20LORIS%20Install/Macintosh/README.md) for Mac OS X and adapt it for newer releases
++ View the [older instructions](https://github.com/aces/Loris/blob/master/README.Mac.md) for Mac OS X and adapt it for newer releases
 
 -----
 
@@ -32,4 +32,3 @@ Mac OS X is no longer supported as of LORIS 15.10. You may do the following for 
 
 **[[NEXT: (3) Behavioural Setup|Behavioural-Database]]**
 
-**[[NEXT: (4) Imaging Setup|Imaging-Database]]**
