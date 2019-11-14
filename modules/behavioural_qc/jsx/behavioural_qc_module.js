@@ -474,7 +474,7 @@ BVLPager.propTypes = {
   page: PropTypes.object,
 };
 
-class BeahaviouralQCGraphics extends Component {
+class BehaviouralQCGraphics extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -536,7 +536,7 @@ class BeahaviouralQCGraphics extends Component {
     );
   }
 }
-BeahaviouralQCGraphics.propTypes = {
+BehaviouralQCGraphics.propTypes = {
   percentCompleted: PropTypes.string,
   pscid: PropTypes.string,
   visit: PropTypes.string,
@@ -546,7 +546,7 @@ BeahaviouralQCGraphics.propTypes = {
 };
 
 
-let GraphicsPanel = React.createFactory(BeahaviouralQCGraphics);
+let GraphicsPanel = React.createFactory(BehaviouralQCGraphics);
 let BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
 let IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
 let InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
