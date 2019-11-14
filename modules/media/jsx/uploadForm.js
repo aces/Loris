@@ -157,7 +157,7 @@ class MediaUploadForm extends Component {
               options={this.state.Data.language}
               onUserInput={this.setFormData}
               ref='language'
-              required={true}
+              required={false}
               value={this.state.formData.language}
             />
             <FileElement
