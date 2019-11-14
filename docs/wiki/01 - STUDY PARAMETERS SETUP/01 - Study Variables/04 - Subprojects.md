@@ -46,5 +46,5 @@ INSERT INTO subproject (title) VALUES('SCI');
 	subproject s
   WHERE
 	p.Name = "%PROJECT_NAME%"
-	AND s.title IN("%SUBPROJECT_1%", "%SUBPROJECT_2%", "%SUBPROJECT_3%")
+	AND s.title IN("%SUBPROJECT_1%", "%SUBPROJECT_2%", "%SUBPROJECT_3%");
    ```
