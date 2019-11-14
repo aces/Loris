@@ -1,4 +1,4 @@
-# Loris API - v0.0.0-dev
+# LORIS API - v0.0.0-dev
 ## 1.0 Overview
 
 This document specifies the Loris REST API.
@@ -237,6 +237,31 @@ will return a JSON object of the form:
 ```
 
 where 123456, 342332, etc are the candidates that exist for this project.
+
+#### 2.1.5 Single project electrophysiology recordings
+```
+GET /projects/$ProjectName/recordings
+```
+
+will return a JSON object of the form:
+```js
+{
+  "Recordings": [
+    {
+      "Candidate":"300167",
+      "PSCID":"OTT167",
+      "Visit":"V1",
+      "Visit_date":"2016-08-15",
+      "Site":"Ottawa",
+      "File":"bids_imports/Face13_BIDSVersion_1.1.0/sub-OTT167/ses-V1/eeg/sub-OTT167_ses-V1_task-faceO_eeg.edf",
+      "Modality":"eeg",
+      "InsertTime":"1970-01-01T00:33:39+00:00",
+      "Link":"/candidates/300167/V1/electrophysiology/sub-OTT167_ses-V1_task-faceO_eeg.edf"
+    },
+    ...
+  ]
+}
+```
 
 ### 2.2 Instrument Forms
 
@@ -838,3 +863,242 @@ files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
 scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
 Only `GET` is currently supported.
+
+## 6.0 Electrophysiology Recording Data
+
+The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the 
+REST API namespace, but is defined in a separate section of this document for 
+clarity purposes.  
+
+### 6.1 Candidate Electrophysiology Recordings
+
+```
+GET /candidates/$CandID/$Visit/recordings
+```
+
+A GET request to a `/candidates/$CandID/$Visit/recordings` will return a JSON object
+of all the recordings which have been acquired for that visit. It will return an
+object of the form:
+
+```js
+{
+  "Meta": {
+    "CandID": $CandID,
+    "Visit": $VisitLabel
+  },
+  "Files": [{
+      "OutputType": "raw",
+      "Filename": $Filename,
+      "AcquisitionModality": "eeg/meg/etc"
+  }, /* More files */]
+}
+```
+
+### 6.2 Electrophysiology Level Data
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename
+```
+
+Returns raw file with the appropriate MimeType headers for each Filename retrieved
+from `/candidates/$CandID/$Visit/recordings`.
+
+Only `GET` is currently supported, but future versions of this API may include `PUT`
+support to insert raw (or derivatives) data into LORIS.
+
+### 6.3 Electrophysiology Recording Metadata
+
+#### 6.3.1 Complete Metadata
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/metadata
+```
+
+This will return a JSON object with all metadata associated with the recording. It 
+will return an object of the form:
+
+```js
+{
+  "Meta": {
+    "CandID": $CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename
+  },
+  "Data": {
+    "EEGReference": "CMS",
+    "SamplingFrequency": "256",
+    "ECGChannelCount": "0",
+    "HardwareFilters": "n/a",
+    /* more metadata ... */
+  }
+}
+```
+
+#### 6.3.2 Specific Metadata
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/metadata/$HeaderName
+```
+
+This will return a JSON object that extracts one specific metadata from $Filename.
+
+The JSON object is of the form:
+```js
+{
+  "Meta": {
+    "CandID": $CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename,
+    "Header": $HeaderName
+  },
+  "Value": string
+}
+```
+
+### 6.4 Electrophysiology Recording Channels Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/channels
+```
+
+This will return a JSON object with information about the channels used to produce
+the recording. It will return an object of the form:
+
+```js
+{
+  "Meta":{
+    "CandID":$CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename
+  },
+  "Channels":[
+    {
+      "ChannelName":"A1",
+      "ChannelDescription":null,
+      "ChannelType":"EEG",
+      "ChannelTypeDescription":"ElectoEncephaloGram: EEG sensors",
+      "ChannelStatus":"good",
+      "StatusDescription":null,
+      "SamplingFrequency":null,
+      "LowCutoff":null,
+      "HighCutoff":null,
+      "ManualFlag":null,
+      "Notch":null,
+      "Reference":null,
+      "Unit":"microV",
+      "ChannelFilePath":"sub-OTT167_ses-V1_task-faceO_channels.tsv"
+    },
+    ...
+  ]
+}
+```
+
+### 6.5 Electrophysiology Recording Electrodes Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/electrodes
+```
+
+This will return a JSON object with information about the electrodes used to produce
+the recording. It will return an object of the form:
+
+```js
+{
+  "Meta":{
+    "CandID":$CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename
+  },
+  "Electrodes":[
+    {
+      "ElectrodeName":"A1",
+      "ElectrodeType":"active/cap",
+      "ElectrodeMaterial":"Ag/AgCl",
+      "X":"-0.005000",
+      "Y":"0.001000",
+      "Z":"0.120000",
+      "Impedance":null,
+      "ElectrodeFilePath":"sub-OTT167_ses-V1_task-faceO_electrodes.tsv"
+    },
+    ...
+  ]
+}
+
+```
+
+### 6.6 Electrophysiology Recording Events Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/events
+```
+
+This will return a JSON object with information about the task events used when
+recording. It will return an object of the form:
+
+```js
+{
+  "Meta":{
+    "CandID":$CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename
+  },
+  "TaskEvents":[
+    {
+      "Onset":"11.734000",
+      "Duration":"0.000000",
+      "EventCode":null,
+      "EventSample":null,
+      "EventType":null,
+      "TrialType":"checker-right",
+      "ResponseTime":null,
+      "EventFilePath":"sub-OTT167_ses-V1_task-faceO_events.tsv"
+    },
+    ...
+  ]
+}
+```
+
+### 6.7 Download BIDS Files Associated To The Recording
+
+#### 6.7.1 Download The BIDS File With Channels Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/channels
+```
+
+Returns raw file with the appropriate MimeType headers for the channels file 
+retrieved from `/candidates/$CandID/$Visit/recordings/bidsfiles/channels`. 
+
+Only `GET` is currently supported.  
+
+#### 6.7.2 Download The BIDS File With Electrodes Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/electrodes
+```
+
+Returns raw file with the appropriate MimeType headers for the electrodes file 
+retrieved from `/candidates/$CandID/$Visit/recordings/bidsfiles/electrodes`. 
+
+Only `GET` is currently supported.  
+
+#### 6.7.3 Download The BIDS File With Task Events Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/events
+```
+
+Returns raw file with the appropriate MimeType headers for the task events file 
+retrieved from `/candidates/$CandID/$Visit/recordings/bidsfiles/events`. 
+
+Only `GET` is currently supported.
+
+#### 6.7.4 Download An Archive File With All Associated Files For The Recording
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/archive
+```
+
+Returns raw file with the appropriate MimeType headers for the channels file 
+retrieved from `/candidates/$CandID/$Visit/recordings/bidsfiles/archive`. 
+
+Only `GET` is currently supported.    

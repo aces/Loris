@@ -1006,6 +1006,60 @@ class TimePoint
     }
 
     /**
+     * Gets the Electrophysiology recordings of that session.
+     *
+     * @param \User $user The requesting user
+     *
+     * @return \LORIS\Data\Models\ImageDTO[] A traversable of RecordingDTO.php
+     */
+    public function getRecordings(\User $user): array
+    {
+        $provisioner
+            = new \LORIS\Data\Provisioners\TimepointRecordingsRowProvisioner(
+            $this
+        );
+
+        $provisioner = $provisioner
+            ->filter(new \LORIS\Data\Filters\RecordingsFilter());
+
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
+    }
+
+    /**
+     * Gets the first Recording of that session matching a given filename.
+     *
+     * @param \User  $user     The requesting user
+     * @param string $filename The requested filename
+     *
+     * @throws \NotFound
+     * @return \LORIS\Recording
+     */
+    public function getRecordingByFilename(\User $user, string $filename):
+    \LORIS\Recording
+    {
+        $filtered = array_filter(
+            $this->getRecordings($user),
+            function ($dto) use ($filename) {
+                return $dto->getFilename() == $filename;
+            }
+        );
+
+        if (empty($filtered)) {
+            throw new \NotFound($filename . ' not found.');
+        }
+
+        // Take the first corresponding file.
+        $recordingdto = array_pop($filtered);
+
+        return new \LORIS\Recording($recordingdto->getFileid());
+    }
+
+
+    /**
      * Gets the DicomTars of that session.
      *
      * @param \User $user The requesting user

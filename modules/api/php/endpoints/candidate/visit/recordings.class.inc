@@ -1,51 +1,53 @@
 <?php declare(strict_types=1);
 /**
- * This implements the Project page class under Projects
+ * This implements the visit's electrophysiology recordings endpoint class.
  *
  * PHP Version 7
  *
  * @category API
- * @package  Loris
- * @author   Xavier Lecours Boucher <xavier.lecours@mcin.ca>
+ * @package  LORIS
+ * @author   Cecile Madjar <cecile.madjar@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\api\Endpoints\Project;
+namespace LORIS\api\Endpoints\Candidate\Visit;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
 
 /**
- * A class for handling the /projects/$projectname endpoint.
+ * A class for handling request for a visit's electrophysiology recordings.
  *
  * @category API
- * @package  Loris
- * @author   Xavier Lecours Boucher <xavier.lecours@mcin.ca>
+ * @package  LORIS
+ * @author   Cecile Madjar <cecile.madjar@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
-     * A cache of the results of the projects/$projectname endpoint, so that
-     * it doesn't need to be recalculated for the ETag and handler
+     * The requested Visit
+     *
+     * @var \Timepoint
+     */
+    private $_visit;
+
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
      */
     private $_cache;
 
     /**
-     * The requested project
-     */
-    private $_project;
-
-    /**
      * Contructor
      *
-     * @param \Project $project The requested project
+     * @param \Timepoint $visit The requested visit
      */
-    public function __construct(\Project $project)
+    public function __construct(\Timepoint $visit)
     {
-        $this->_project = $project;
+        $this->_visit = $visit;
     }
 
     /**
@@ -59,21 +61,19 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Versions of the LORIS API which are supported by this
-     * endpoint.
+     * Versions of the LORIS API which are supported by this endpoint.
      *
      * @return array a list of supported API versions.
      */
     protected function supportedVersions() : array
     {
         return array(
-            'v0.0.2',
             'v0.0.3-dev',
         );
     }
 
     /**
-     * Handles a request that starts with /projects/$projectname
+     * Handles a request that starts with /candidates/$candid.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -99,29 +99,14 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to sub-endpoints
-        $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
-        case 'candidates':
-            $handler = new Candidates($this->_project);
-            break;
-        case 'images':
-            $handler = new Images($this->_project);
-            break;
-        case 'instruments':
-            $handler = new Instruments($this->_project);
-            break;
-        case 'visits':
-            $handler = new Visits($this->_project);
-            break;
-        case 'recordings':
-            $handler = new Recordings($this->_project);
-            break;
-        default:
-            return new \LORIS\Http\Response\JSON\NotFound();
-        }
-
+        $filename   = array_shift($pathparts);
         $newrequest = $request
             ->withAttribute('pathparts', $pathparts);
+
+        $handler = new Electrophysiology\Recording(
+            $this->_visit,
+            $filename
+        );
 
         return $handler->process(
             $newrequest,
@@ -130,12 +115,11 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Generates a JSON representation of this project following the API
-     * specification.
+     * Create an array representation of this endpoint's response body.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return ResponseInterface
+     * @return ResponseInterface The outgoing PSR7 response
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
@@ -143,16 +127,22 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return $this->_cache;
         }
 
-        $array = (new \LORIS\api\Views\Project($this->_project))
-            ->toArray();
+        $recordings = $this->_visit->getRecordings(
+            $request->getAttribute('user')
+        );
 
-        $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
+        $view = (new \LORIS\api\Views\Visit\Recordings(
+            $this->_visit,
+            ...$recordings
+        ))->toArray();
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
 
         return $this->_cache;
     }
 
     /**
-     * Implements the ETagCalculator interface
+     * Implements the ETagCalculator interface.
      *
      * @param ServerRequestInterface $request The PSR7 incoming request.
      *

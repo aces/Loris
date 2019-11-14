@@ -128,6 +128,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         case 'dicoms':
             $handler = new Dicoms($this->_visit);
             break;
+        case 'recordings':
+            $handler = new Recordings($this->_visit);
+            break;
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }
