@@ -74,7 +74,7 @@ class MediaIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    cell = this.mapContainerColumns(column, cell);
+    cell = this.mapColumn(column, cell);
     // Set class to 'bg-danger' if file is hidden.
     const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
     let result = <td className={style}>{cell}</td>;
