@@ -492,8 +492,12 @@ class User extends UserPermissions
         \Password $password,
         ?\DateTime $expiry = null
     ): void {
+        if (password_verify($this->userInfo['Email'], (string) $password)) {
+            throw new \InvalidArgumentException(
+                'Password cannot be set to email'
+            );
+        }
         // Set default expiry date value to 6 months in the future.
-
         $expiry = $expiry ?? new \DateTime(
             date('Y-m-d', strtotime('+6 months'))
         );

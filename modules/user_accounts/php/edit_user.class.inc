@@ -486,6 +486,7 @@ class Edit_User extends \NDB_Form
             $user = \User::factory($this->identifier);
             $user->update($set);
         }
+
         // Now set the password. Note that this field is named incorrectly
         // and represents a plaintext password, not a hash.
         if (isset($values['Password_hash'], $values['Password_expiry'])) {
@@ -497,7 +498,7 @@ class Edit_User extends \NDB_Form
                 new \DateTime($values['Password_expiry'])
             );
         } else if (isset($values['Password_hash'])) {
-            // If just the Password_hash value is present, no not specify a
+            // If just the Password_hash value is present, do not specify a
             // custom expiry date. This will set the password to expire in
             // 6 months from the current date (handled in updatePassword()).
             $user->updatePassword(

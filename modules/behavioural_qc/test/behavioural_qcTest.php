@@ -31,7 +31,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testBeahaviouralQCDoespageLoad()
+    function testBehaviouralQCDoespageLoad()
     {
         $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->webDriver->findElement(
@@ -44,7 +44,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testBeahaviouralQCWithoutPermission()
+    function testBehaviouralQCWithoutPermission()
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/behavioural_qc/");
@@ -62,7 +62,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testBeahaviouralQCPermission()
+    function testBehaviouralQCPermission()
     {
          $this->setupPermissions(array("quality_control"));
          $this->safeGet($this->url . "/behavioural_qc/");

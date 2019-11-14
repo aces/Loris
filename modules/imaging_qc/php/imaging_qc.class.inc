@@ -368,9 +368,6 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candid = $this->tpl_data['candID'];
-        $pscid  = $this->tpl_data['PSCID'];
-
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
                 'Imaging Quality Control',
