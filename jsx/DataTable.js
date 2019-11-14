@@ -84,6 +84,14 @@ class DataTable extends Component {
   }
 
   downloadCSV(csvData) {
+    // Map cell data to proper values if applicable.
+    if (this.props.getMappedCell) {
+      csvData = csvData
+      .map((row, i) => this.props.fields
+        .map((field, j) => this.props.getMappedCell(field.label, row[j]))
+      );
+    }
+
     let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function(e) {
