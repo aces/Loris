@@ -1,12 +1,11 @@
 # Genomic Browser
 
-The Genomic Browser houses analyzed genetic results and facilitates exploration of these 
-datasets, cross-linked with behavioural and imaging candidate data.  Within each tab, toggle the “Display” dropdown 
-select to show a selection of Summary fields, or all available fields for these data records.  Download of the current data table via the “Download as CSV” button.
+This module allows you to view analyzed genetic results cross-linked with behavioural and imaging candidate data. 
 
-The Profiles tab displays all genetic data and files stored in LORIS per candidate, and can be filtered via the Selection Filters panel to show specific populations.
+Notice there are several tabs to explore—each has a similar set up, with *Selection Filter* sections and a resulting data table. Use any combination of filters to achieve the desired data output. 
 
-The GWAS, SNP, CNV and Methylation tabs enable filtering and exploration of analysis-specific datasets performed on a candidate population. In each tab, relevant filters such as Candidate Filters, GWAS Filters, SNP Filters, Genomic Range Filters, etc. allow users to specify search criteria to retrieve specific data of interest. After selecting or entering filter criteria, click “Show Data” to update the results data table below.
+The **Profiles** tab displays all genetic data and files stored in LORIS per candidate.
 
-The “Files” tab displays all genetic filesets available for download, and provides upload functionality for Methylation data. Use the Selection Filters to search for specific files or file types. Clicking on a fileset name in the results data table will load a subpage displaying the metadata available for this file.  Each fileset can be downloaded by clicking the download icon in the top right corner.
+The **GWAS**, **SNP**, **CNV**, and **Methylation** tabs displays analysis-specific datasets performed on a candidate population.
 
+The **Files** tab displays all genetic filesets available for download, and provides upload functionality for Methylation data. Click on any fileset name in the results data table to view the metadata available for this file. You can upload a file directly in this tab—click on **Upload File** to do so.
