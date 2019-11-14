@@ -863,9 +863,6 @@ class Behavioural_QC extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candid = $this->tpl_data['candID'];
-        $pscid  = $this->tpl_data['PSCID'];
-
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
                 'Behavioural Quality Control',
