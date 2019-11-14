@@ -200,7 +200,11 @@ class My_Preferences extends \NDB_Form
         // point in the code and represents a plaintext password, not a hash.
         // Validation for the password is performed in _validateMyPreferences()
         if (isset($values['Password_hash'])) {
-            $user->updatePassword(new \Password($values['Password_hash']));
+            $user->updatePassword(
+                new \Password(
+                    htmlspecialchars_decode($values['Password_hash'])
+                )
+            );
         }
 
         // send the user an email
@@ -415,10 +419,11 @@ class My_Preferences extends \NDB_Form
                 // bad or the input is too weak to be a good password.
                 //
                 // NOTE 'Password_hash' is actually plaintext, not a hash.
-                $password = new \Password($plaintext);
+                $decoded = htmlspecialchars_decode($plaintext);
+                $password = new \Password($decoded);
                 // New password must be different than current one
                 if (! \User::factory($this->identifier)->isPasswordDifferent(
-                    $values['Password_hash']
+                    $decoded
                 )
                 ) {
                     $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
