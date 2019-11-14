@@ -113,7 +113,7 @@ function uploadFile()
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (!isset($_FILES, $pscid, $visit, $instrument, $language)) {
+    if (!isset($_FILES, $pscid, $visit, $language)) {
         showMediaError("Please fill in all required fields!", 400);
         return;
     }

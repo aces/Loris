@@ -131,7 +131,7 @@ class MediaUploadForm extends Component {
               options={instruments}
               onUserInput={this.setFormData}
               ref='instrument'
-              required={true}
+              required={false}
               value={this.state.formData.instrument}
               disabled={this.state.formData.pscid == null}
             />
