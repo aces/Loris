@@ -104,6 +104,11 @@ Customize and Verify your settings:
  * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
 
 Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS environment. You can find an example in `loris/docs/config/apache2-site` for setup of `VirtualHost` in the loris.conf file you will create. Adjust the parameters according to your configuration.
+```
+- %LORISROOT%    i.e. /var/www/loris
+- %PROJECTNAME%  i.e loris
+- %LOGDIRECTORY%  .i.e /var/log/httpd
+```
 
 Finally, restart apache:
 ```bash
