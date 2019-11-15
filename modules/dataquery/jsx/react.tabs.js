@@ -124,7 +124,7 @@ class FieldSelectTabPane extends Component {
         <FieldSelector
           title='Fields'
           items={this.props.categories}
-          onFieldChange={this.props.onFieldChange}
+          onFieldChange={this.props.onFieldChange || ''}
           selectedFields={this.props.selectedFields}
           Visits={this.props.Visits}
           fieldVisitSelect={this.props.fieldVisitSelect}
