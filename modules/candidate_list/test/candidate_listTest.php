@@ -162,17 +162,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
 
-        //testing data from RBdata.sql
+        //testing is done with user affiliated to only site=1 and project=1
+        //numbers below should reflect these affiliations.
 
         $this-> _testFilter(self::$PSCID, "0 rows", 'test');
         $this-> _testFilter(self::$PSCID, "1 rows", 'MTL001');
         $this-> _testFilter(self::$DCCID, "1 rows", '300001');
         $this-> _testFilter(self::$DCCID, "0 rows", 'test');
-        $this-> _testFilter(self::$visitLabel, "374", '1');
-        $this-> _testFilter(self::$visitLabel, "261", '2');
-        $this-> _testFilter(self::$site, "8 rows", '1');
-        $this-> _testFilter(self::$site, "168", '2');
-        $this-> _testFilter(self::$entityType, "663", '1');
+        $this-> _testFilter(self::$visitLabel, "362", '1');
+        $this-> _testFilter(self::$visitLabel, "223", '2');
+        $this-> _testFilter(self::$site, "7 rows", '1');
+        $this-> _testFilter(self::$site, "165", '2');
+        $this-> _testFilter(self::$entityType, "436", '1');
 
         // test advanced filter - sex
         // Switch to Advanced mode
