@@ -103,47 +103,7 @@ Customize and Verify your settings:
  * DocumentRoot should point to `/var/www/loris/htdocs`
  * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
 
-Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS environment. Adjust the following parameters to according to your configuration
-
-- %LORISROOT%    i.e. /var/www/loris
-- %PROJECTNAME%  i.e loris
-- %LOGDIRECTORY%  .i.e /var/log/httpd
-```
-<VirtualHost *:80>  # change from 80 to 443 if you enable SSL
-        ServerAdmin webmaster@localhost
-
-        DocumentRoot /var/www/%LORISROOT%/htdocs/
-        <Directory />
-                Options FollowSymLinks
-                AllowOverride All
-        </Directory>
-        <Directory /var/www/%LORISROOT%/htdocs/>
-                Options Indexes FollowSymLinks MultiViews
-                AllowOverride All
-                Order allow,deny
-                allow from all
-        </Directory>
-
-         php_value include_path .:/usr/share/php:%LORISROOT%/project/libraries:%LORISROOT%/php/libraries
-
-        #DirectoryIndex main.php index.html
-
-        ErrorLog /var/log/httpd/loris-error.log
-
-        # Possible values include: debug, info, notice, warn, error, crit,
-        # alert, emerg.
-        LogLevel warn
-
-        CustomLog %LOGDIRECTORY%/loris-access.log combined
-        ServerSignature Off
-
-        #SSLEngine Off  # change to On to enable, after updating cert paths$
-        #SSLCertificateFile /etc/pki/tls/certs/%PROJECTNAME%.pem
-        #SSLCertificateKeyFile /etc/pki/tls/private/%PROJECTNAME%.key
-        #SSLCACertificateFile /etc/pki/tls/certs/CA-cert.pem
-
-</VirtualHost>
-```
+Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS environment. You can find an example in `docs/config/apache2-site` for setup of `VirtualHost` in the loris.conf file you will create. Adjust the parameters according to your configuration.
 
 Finally, restart apache:
 ```bash
