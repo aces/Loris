@@ -90,7 +90,7 @@ var Instrument = {
             for (element of elements[i].Elements) {
                 switch (element.Type) {
                     case "line":
-                        content += 'static{@}{@}<br>\n';
+                      content += 'line{@}{@}' + element.Description + "\n";
                         break;
                     case "select":
                         if (element.Options.AllowMultiple) {
@@ -298,6 +298,14 @@ var Instrument = {
                                 value: "Header"
                             };
                             break;
+                      case "line":
+                          tempElement.Type = 'line';
+                          tempElement.Description = pieces[2];
+                          tempElement.selected = {
+                            id: 'line',
+                            value: 'Blank Line'
+                          };
+                          break;
                         default:
                             break;
                     }
