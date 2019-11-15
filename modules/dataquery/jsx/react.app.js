@@ -472,7 +472,7 @@ class DataQueryApp extends Component {
     } else {
       // Query was saved in the new format
       filterState = criteria;
-      selectedFields = fields;
+      selectedFields = fields ? fields : {};
       for (let instrument in fields) {
         for (let field in fields[instrument]) {
           if (field !== 'allVisits') {
