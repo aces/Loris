@@ -41,7 +41,10 @@ abstract class LorisIntegrationTest extends TestCase
     protected $validPassword = 'sufficient length and complexity';
 
     private $_oldConfig = array();
-
+    /** The maximum number of attempts the integration tests will try
+     * to execute some task before aborting.
+     */
+    private const NUM_OF_ATTEMPTS = 5;
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -555,6 +558,186 @@ abstract class LorisIntegrationTest extends TestCase
                 array($webElement)
             );
         }
+    }
+    /**
+     * Get the content of a React Element
+     *
+     * @param  string $ui the location of this ui (css selector)
+     * @return string
+     */
+    function getReactElementContent($ui)
+    {
+        $attempts = 0;
+        $err = null;
+        do {
+            try {
+                return $this->webDriver->executescript(
+                    "return document.querySelector('$ui').textContent"
+                );
+            } catch (Exception $e) {
+         //       echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
+                        $attempts++;
+                        sleep(1);
+                        continue;
+            }
+              break;
+        } while($attempts < self::NUM_OF_ATTEMPTS);
+        if ($err && $attempts > 4) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
+        }
+    }
+    /**
+     * Click a React Element
+     *
+     * @param  string $ui the location of this ui (css selector)
+     * @return void
+     */
+    function clickReactElement($ui)
+    {
+          $attempts = 0;
+          $err = null;
+        do {
+            try {
+                $this->webDriver->executescript(
+                    "document.querySelector('$ui').click()"
+                );
+            } catch (Exception $e) {
+         //       echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
+                        $attempts++;
+                        sleep(1);
+                        continue;
+            }
+            break;
+        } while($attempts < self::NUM_OF_ATTEMPTS);
+        if ($err && $attempts > 4) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
+        }
+    }
+    /**
+     * Get rows of the React table, ? rows displayed of ?
+     *
+     * @param  string $ui the result of React table (css selector)
+     * @return string
+     */
+    function getReactTableRows($ui)
+    {
+        $attempts = 0;
+        $err      = null;
+        do {
+            try {
+                $res = $this->webDriver->executescript(
+                    "return document.querySelector('$ui').textContent"
+                );
+            } catch (Exception $e) {
+           //     echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
+                        $attempts++;
+                        sleep(1);
+                        continue;
+            }
+              break;
+        } while($attempts < self::NUM_OF_ATTEMPTS);
+        if ($err && $attempts > 4) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
+        }
+        $array =explode('rows', $res);
+        return trim($array[0]);
+    }
+    /**
+     * Input a value into a text react element
+     *
+     * @param  string $ui    the result of React element (css selector)
+     * @param  string $value input a value
+     * @return void
+     */
+    function reactTextSendKey($ui,$value)
+    {
+         $attempts = 0;
+         $err      = null;
+        do {
+            try {
+                $this->webDriver->executescript(
+                    "input = document.querySelector('$ui');
+                 lastValue = input.value;
+                 input.value = '$value';
+                 event = new Event('input', { bubbles: true });
+                 input._valueTracker.setValue(lastValue);
+                 input.dispatchEvent(event);"
+                );
+            } catch (Exception $e) {
+         //       echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
+                        $attempts++;
+                        sleep(1);
+                        continue;
+            }
+            break;
+        } while($attempts < self::NUM_OF_ATTEMPTS);
+        if ($err && $attempts > 4) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
+        }
+    }
+    /**
+     * Select a value in a react dropdown list
+     *
+     * @param  string $ui    the result of React element (css selector)
+     * @param  string $value input a value
+     * @return void
+     */
+    function reactDropdownSendKey($ui,$value)
+    {
+         $attempts = 0;
+         $err = null;
+        do {
+            try {
+                $this->webDriver->executescript(
+                    "input = document.querySelector('$ui');
+                 input.selectedIndex = '$value';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
+                );
+            } catch (Exception $e) {
+             //   echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        $err = $e;
+                        $attempts++;
+                        sleep(1);
+                        continue;
+            }
+            break;
+        } while($attempts < self::NUM_OF_ATTEMPTS);
+        if ($err && $attempts > 4) {
+           echo 'Caught exception: ',  $err->getMessage(), "\n";
+        }
+         
+    }
+    /**
+     * Testing filter funtion and clear button
+     *
+     * @param string $element The input element loaction
+     * @param string $records The records number in the table
+     * @param string $value   The test value
+     * @param string $row     React Table row number 
+     * @param string $btn     clear filter button
+     *
+     * @return void
+     */
+    function _testFilter($element,$records,$value,$row,$btn): void
+    { 
+        // get element from the page
+ 
+            if (strpos($element, "select") === false) {
+                $this->reactTextSendKey($element,$value);
+            } else {
+                $this->reactDropdownSendKey($element,$value);
+            }
+            $bodyText = $this->getReactElementContent($row);
+            // 4 means there are 4 records under this site.
+            $this->assertContains($records, $bodyText);
+            //test clear filter
+            $this->clickReactElement($btn);
     }
 }
 ?>
