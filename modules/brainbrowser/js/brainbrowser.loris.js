@@ -817,7 +817,7 @@ $(function() {
       $("#panel-size").change();
     }
 
-    /////////////////////////////(
+    //////////////////////////////
     // Load the default color map.
     //////////////////////////////
     viewer.loadDefaultColorMapFromURL(color_map_config.url, color_map_config.cursor_color);
