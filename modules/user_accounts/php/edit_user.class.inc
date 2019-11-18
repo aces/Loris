@@ -1214,8 +1214,8 @@ class Edit_User extends \NDB_Form
                 }
             }
             if (!$matched
-                && (($values['examiner_radiologist'] !== ''
-                || $values['examiner_pending'] !== ''))
+                && ($values['examiner_radiologist'] !== ''
+                    || $values['examiner_pending'] ?? '' !== '')
             ) {
                 $errors['examiner_sites'] = "Please select at least one examiner
                 site or clear the 'Examiner status' fields below (i.e.
