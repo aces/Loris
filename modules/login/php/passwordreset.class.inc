@@ -66,11 +66,11 @@ class PasswordReset extends \NDB_Form
         try {
             // check that the email is valid
             if ($user->isEmailValid()) {
-                  $config = \NDB_Config::singleton();
-                  // generate a new password
-                  $password = \Utility::randomString();
-                  // reset the password in the database
-                  // expire password so user must change it upon login
+                $config = \NDB_Config::singleton();
+                // generate a new password
+                $password = \Utility::randomString();
+                // reset the password in the database
+                // expire password so user must change it upon login
                 $user->updatePassword(
                     new \Password($password),
                     new \DateTime('1999-01-01')
