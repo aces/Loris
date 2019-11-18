@@ -97,7 +97,7 @@ class PasswordExpiry extends \NDB_Form
             return array('password' => $e->getMessage());
         }
 
-        if (!$this->_user->passwordChanged($plaintext)) {
+        if (!$this->_user->isPasswordDifferent($plaintext)) {
             $this->tpl_data['error_message'] = 'You cannot keep the same password';
             return array('password' => 'You cannot keep the same password');
         }
