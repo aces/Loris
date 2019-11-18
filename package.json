@@ -35,7 +35,7 @@
     "lint:php": "./test/run-php-linter.sh",
     "tests:unit": "./test/dockerized-unit-tests.sh",
     "tests:unit:debug": "DEBUG=true ./test/dockerized-unit-tests.sh",
-    "tests:integration": "./test/dockerized-integration-tests.sh",
+    "tests:integration": "DEBUG=false ./test/dockerized-integration-tests.sh",
     "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
     "compile": "webpack",
     "watch": "webpack --watch"
