@@ -749,10 +749,10 @@ $(function() {
         minc_ids_arr = [minc_ids];
     }
 
-    let request;
+    let requests = [];
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
-      request = $.ajax({
+      let single_request = $.ajax({
         url: loris.BaseURL + "/brainbrowser/ajax/image.php",
         data: 'file_id=' + minc_ids_arr[i],
         method: 'GET',
@@ -796,6 +796,7 @@ $(function() {
           }
         }
       });
+      requests.push(single_request);
     }
 
     if (getQueryVariable("overlay") === "true") {
@@ -816,7 +817,7 @@ $(function() {
       $("#panel-size").change();
     }
 
-    //////////////////////////////
+    /////////////////////////////(
     // Load the default color map.
     //////////////////////////////
     viewer.loadDefaultColorMapFromURL(color_map_config.url, color_map_config.cursor_color);
@@ -836,7 +837,7 @@ $(function() {
     /////////////////////
     // Load the volumes.
     /////////////////////
-    request.then(function(filename) {
+    $.when.apply($, requests).then(function() {
       bboptions.volumes = minc_volumes;
       viewer.render();                // start the rendering
       viewer.loadVolumes(bboptions);  // load the volumes
