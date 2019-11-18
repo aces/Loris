@@ -24,5 +24,6 @@ The Imaging QC module displays images that have been loaded in LORIS and QC'd in
 
 ##### Imaging Uploader
 This module displays the status of images that have been excluded from or failed to load into LORIS, for a variety of reasons.  
+
 #### Configuration
 The `tblScanTypes` setting allows customization of which modalities are displayed in this module (as well as in the Imaging Browser main data table). 
