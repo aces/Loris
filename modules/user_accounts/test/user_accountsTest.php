@@ -49,6 +49,53 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private $_table       = "#dynamictable > tbody > tr:nth-child(1)";
     private $_addUserBtn  = "#default-panel > div > div > div.table-header >".
                             " div > div > div:nth-child(2) > button:nth-child(1)";
+
+    /**
+     * Does basic setting up of Loris variables for this test, such as
+     * instantiting the config and database objects, creating a user
+     * to user for the tests, and logging in.
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $password = new \Password($this->validPassword);
+        $this->DB->insert(
+            "users",
+            array(
+                'ID'               => 999991,
+                'UserID'           => 'UnitTesterTwo',
+                'Real_name'        => 'Unit Tester 2',
+                'First_name'       => 'Unit 2',
+                'Last_name'        => 'Tester 2',
+                'Email'            => 'tester2@example.com',
+                'Privilege'        => 0,
+                'PSCPI'            => 'N',
+                'Active'           => 'Y',
+                'Password_hash'    => $password,
+                'Password_expiry'  => '2099-12-31',
+                'Pending_approval' => 'N',
+            )
+        );
+
+        $this->DB->insert(
+            "user_psc_rel",
+            array(
+                'UserID'   => 999991,
+                'CenterID' => 1,
+            )
+        );
+
+        $this->DB->insert(
+            "user_project_rel",
+            array(
+                'UserID'    => 999991,
+                'ProjectID' => 1,
+            )
+        );
+    }
+
     /**
      * Tests that, when loading the User accounts module > edit_user submodule, some
      * text appears in the body.
@@ -103,7 +150,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testUserAccountsFilterClearBtn()
     {
         $this->safeGet($this->url . "/user_accounts/");
-        //testing data from RBdata.sql
         $this-> _testFilter($this->_name, $this->_table, null, "UnitTester");
         $this-> _testFilter($this->_site, $this->_table, "1 rows", "3");
     }
@@ -183,7 +229,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         );
         $this->_verifyUserModification(
             'user_accounts',
-            'UnitTester',
+            'UnitTesterTwo',
             'Active',
             'No'
         );
@@ -195,10 +241,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         );
         $this->_verifyUserModification(
             'user_accounts',
-            'UnitTester',
+            'UnitTesterTwo',
             'Pending_approval',
             'No'
         );
+        //TODO:add test case to ensure pending_approval
+        //DOES NOT show up on UnitTester since logged in user is UnitTester
     }
     /**
      * Tests various My Preference page edit operations.
@@ -358,6 +406,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         $this->DB->delete("users", array("UserID" => 'userid'));
+        $this->DB->delete("user_psc_rel", array("UserID" => 999991));
+        $this->DB->delete("user_project_rel", array("UserID" => 999991));
+        $this->DB->delete("users", array("UserID" => 'UnitTesterTwo'));
         parent::tearDown();
     }
 }

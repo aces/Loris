@@ -823,9 +823,9 @@ class Edit_User extends \NDB_Form
                     "examiner_pending",
                     "Pending Approval: ",
                     array(
-                     null => "",
-                     'Y'  => 'Yes',
-                     'N'  => 'No',
+                        null => "",
+                        'Y'  => 'Yes',
+                        'N'  => 'No',
                     )
                 );
             }
@@ -858,8 +858,8 @@ class Edit_User extends \NDB_Form
                 'Pending_approval',
                 'Pending approval',
                 array(
-                 'Y' => 'Yes',
-                 'N' => 'No',
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 )
             );
         }
@@ -1215,7 +1215,7 @@ class Edit_User extends \NDB_Form
             }
             if (!$matched
                 && ($values['examiner_radiologist'] !== ''
-                    || $values['examiner_pending'] ?? '' !== '')
+                || $values['examiner_pending'] ?? '' !== '')
             ) {
                 $errors['examiner_sites'] = "Please select at least one examiner
                 site or clear the 'Examiner status' fields below (i.e.
