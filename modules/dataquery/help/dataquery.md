@@ -27,7 +27,7 @@ To add a filter, select a category using the dropdown. A secondary dropdown will
 
 To add more filters, click **Add Rule** and follow the instructions above. To delete any unwanted filters, click **Delete** within the specific filter.
 
-Filters can be combined using "And" and "Or" logic - “And” requires that all filter conditions are true before the data record is selected. "Or" requires that only one filter condition must be true.
+Filters can be combined using "And" and "Or" logic. “And” requires that all filter conditions are true before the data record is selected. "Or" requires that only one filter condition must be true.
 
 **Note:** by default the filters are set to “And” logic. Click "Or" to switch the operator, which will apply to the whole group of filters.
 
