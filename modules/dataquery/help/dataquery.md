@@ -21,7 +21,7 @@ To add a filter, select a category using the dropdown. A secondary dropdown will
    = equal to<br>
    != does not equal<br>
    <= less than or equal to<br>
-   >= greater than or equal to<br>
+   \>= greater than or equal to<br>
    _startsWith_ : must begin with a specific character or string<br>
    _contains_ : must contain a specific character or string<br>
 
