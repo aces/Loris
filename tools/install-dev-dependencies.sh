@@ -33,17 +33,17 @@ do
    fi
 done
 
-# Last updated for LORIS version: 21.0.2
+# Last updated for LORIS version: 22.0.0
 export PHP='7.2'
 declare -a dependencies=(
+"make"
 "curl"
+"git"
 "wget"
 "zip"
 "unzip"
 "php-json"
-"make"
 "software-properties-common"
-"php-ast"
 "php$PHP"
 "php$PHP-mysql"
 "php$PHP-xml"
@@ -60,10 +60,13 @@ declare -a dependencies=(
 echo "Updating apt package directory..."
 sudo apt update > /dev/null
 
-## Install all dependencies using sudo
+# Install all dependencies using sudo
 for i in "${dependencies[@]}"
 do
    echo "Installing dependency '$i' using apt...."
    sudo apt install -f -y "$i"
 done
 
+# Install php-ast using pecl as the Ubuntu version is too old.
+# This is required for phan to operate.
+sudo pecl install -f ast-1.0.3
