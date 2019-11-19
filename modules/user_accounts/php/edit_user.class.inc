@@ -847,9 +847,8 @@ class Edit_User extends \NDB_Form
             unset($groupB);
         }
 
-
         // It doesn't make sense for a user to be editing their own
-        // approval status or active status. In fact this could result in a 
+        // approval status or active status. In fact this could result in a
         // Darwinian self-lockout. Let us help those who cannot help themselves.
         if (!$this->_isEditingOwnAccount()) {
             $this->addSelect(
@@ -862,10 +861,10 @@ class Edit_User extends \NDB_Form
             );
 
             $this->addSelect(
-                'Active', 
-                'Active', 
+                'Active',
+                'Active',
                 array(
-                    'Y' => 'Yes', 
+                    'Y' => 'Yes',
                     'N' => 'No'
                 )
             );

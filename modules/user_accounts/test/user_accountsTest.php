@@ -64,7 +64,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "users",
             array(
-                'ID'               => 999991,
+                'ID'               => 999995,
                 'UserID'           => 'UnitTesterTwo',
                 'Real_name'        => 'Unit Tester 2',
                 'First_name'       => 'Unit 2',
@@ -82,7 +82,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "user_psc_rel",
             array(
-                'UserID'   => 999991,
+                'UserID'   => 999995,
                 'CenterID' => 1,
             )
         );
@@ -90,7 +90,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "user_project_rel",
             array(
-                'UserID'    => 999991,
+                'UserID'    => 999995,
                 'ProjectID' => 1,
             )
         );
@@ -406,8 +406,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         $this->DB->delete("users", array("UserID" => 'userid'));
-        $this->DB->delete("user_psc_rel", array("UserID" => 999991));
-        $this->DB->delete("user_project_rel", array("UserID" => 999991));
+        $this->DB->delete("user_psc_rel", array("UserID" => 999995));
+        $this->DB->delete("user_project_rel", array("UserID" => 999995));
         $this->DB->delete("users", array("UserID" => 'UnitTesterTwo'));
         parent::tearDown();
     }
