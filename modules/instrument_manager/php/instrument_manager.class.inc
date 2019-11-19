@@ -208,7 +208,17 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // silently. Otherwise, it will return the exit code and error
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
-        $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        try {
+            $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        } catch (\NotFound $e) {
+            return (new \LORIS\Http\Response\JSON\NotFound(
+                $e->getMessage()
+            ));
+        } catch (\Exception $e) {
+            return (new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
+            ));
+        }
 
         $db_config = $this->factory->config()->getSetting('database');
         exec(
