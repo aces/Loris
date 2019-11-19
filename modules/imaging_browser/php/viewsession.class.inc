@@ -51,17 +51,24 @@ class ViewSession extends \NDB_Form
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
          */
-        return $user->hasAnyPermission(
-            array(
-                'imaging_browser_view_allsites',
-                'imaging_browser_phantom_allsites',
+        $candid    = \TimePoint::singleton($_REQUEST['sessionID'])->getCandID();
+        $candidate = \Candidate::singleton($candid);
+
+        if ($candidate->getData('Entity_type') == 'Scanner') {
+            return $user->hasPermission('imaging_browser_phantom_allsites')
+                || $user->hasCenterPermission(
                 'imaging_browser_phantom_ownsite',
-            )
-        )
-        || $user->hasCenterPermission(
-            'imaging_browser_view_site',
-            \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
-        );
+                \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
+            );
+        } elseif ($candidate->getData('Entity_type') == 'Human') {
+            return $user->hasPermission('imaging_browser_view_allsites')
+                || $user->hasCenterPermission(
+                'imaging_browser_view_site',
+                \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
+            );
+        }
+
+        return false;
     }
 
     /**
@@ -221,11 +228,11 @@ class ViewSession extends \NDB_Form
             $SeriesNumber        = $FileObj->getParameter('series_number');
             $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
-                (int)$FileObj->getParameter('echo_time')*1000,
+                (float)$FileObj->getParameter('echo_time') * 1000,
                 2
             );
             $RepetitionTime      = number_format(
-                (int)$FileObj->getParameter('repetition_time') * 1000,
+                (float)$FileObj->getParameter('repetition_time') * 1000,
                 2
             );
             $SliceThickness      = number_format(
@@ -257,9 +264,18 @@ class ViewSession extends \NDB_Form
                 $FileObj,
                 'intergradient'
             );
-            $Xstep       = number_format(intval($FileObj->getParameter('xstep')), 2);
-            $Ystep       = number_format(intval($FileObj->getParameter('ystep')), 2);
-            $Zstep       = number_format(intval($FileObj->getParameter('zstep')), 2);
+            $Xstep       = number_format(
+                (float)($FileObj->getParameter('xstep')),
+                2
+            );
+            $Ystep       = number_format(
+                (float)($FileObj->getParameter('ystep')),
+                2
+            );
+            $Zstep       = number_format(
+                (float)($FileObj->getParameter('zstep')),
+                2
+            );
             $Selected    = $this->_getSelected(
                 (int) $FileObj->getParameter('FileID')
             );

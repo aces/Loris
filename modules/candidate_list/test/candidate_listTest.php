@@ -26,12 +26,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     //filter location
     static $PSCID          = ".col-xs-12:nth-child(2) > .row .form-control";
     static $DCCID          = ".col-xs-12:nth-child(3) > .row .form-control";
-    static $visitLabel     = ".col-xs-12:nth-child(4) .form-control";
-    static $site           = ".col-xs-12:nth-child(5) .form-control, select";
-    static $entityType     = ".col-xs-12:nth-child(7) .form-control, select";
-    static $sex            = "#candidateList_filter > div > div > fieldset >".
-                             " div:nth-child(11) > div > div > select";
-    static $project        = ".col-xs-12:nth-child(15) .form-control, select";
+    static $visitLabel     = 'select[name="visitLabel"]';
+    static $site           = 'select[name="site"]';
+    static $entityType     = 'select[name="entityType"]';
+    static $sex            = 'select[name="sex"]';
+    static $project        = 'select[name="project"]';
     static $advancedFilter = ".table-header > div > div > div:nth-child(2) >".
                              " button:nth-child(1)";
     static $openProfile    = ".table-header > div > div > div:nth-child(2) >".
@@ -163,17 +162,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
 
-        //testing data from RBdata.sql
+        //testing is done with user affiliated to only site=1 and project=1
+        //numbers below should reflect these affiliations.
 
         $this-> _testFilter(self::$PSCID, "0 rows", 'test');
         $this-> _testFilter(self::$PSCID, "1 rows", 'MTL001');
         $this-> _testFilter(self::$DCCID, "1 rows", '300001');
         $this-> _testFilter(self::$DCCID, "0 rows", 'test');
-        $this-> _testFilter(self::$visitLabel, "362", 'V1');
-        $this-> _testFilter(self::$visitLabel, "223", 'V2');
+        $this-> _testFilter(self::$visitLabel, "362", '1');
+        $this-> _testFilter(self::$visitLabel, "223", '2');
         $this-> _testFilter(self::$site, "7 rows", '1');
         $this-> _testFilter(self::$site, "165", '2');
-        $this-> _testFilter(self::$entityType, "7 rows", '1');
+        $this-> _testFilter(self::$entityType, "436", '1');
 
         // test advanced filter - sex
         // Switch to Advanced mode

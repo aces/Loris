@@ -11,7 +11,8 @@ while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent 
   sleep 1
 done
 
-if [ "$SELENIUM_REQUIRED" = true ]  ; then
+if [ -v SELENIUM_REQUIRED ]; 
+then
   echo "Waiting for Selenium..."
   until $(curl --output /dev/null --silent --head --fail http://selenium:4444/wd/hub); do
     sleep 1
