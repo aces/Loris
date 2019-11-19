@@ -29,7 +29,7 @@ To add more filters, click **Add Rule** and follow the instructions above. To de
 
 Filters can be combined using "And" and "Or" logic - “And” requires that all filter conditions are true before the data record is selected. "Or" requires that only one filter condition must be true.
 
-**Note:** by default the filters are set to “And” logic -- click "Or" to switch the operator, which will apply to the whole group of filters.
+**Note:** by default the filters are set to “And” logic. Click "Or" to switch the operator, which will apply to the whole group of filters.
 
 To create nested filters with multiple And/Or filter conditions, click **Add Group**.
 
