@@ -149,7 +149,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         if ($this->instrumentExists($instrument)) {
             // An instrument with this name already exists in the test_names
             // table. Abort upload.
-            return new \LORIS\Http\Response\Conflict(self::ALREADY_INSTALLED);
+            return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
         }
 
         /* Although only .linst files should be uploaded to this module, and
@@ -171,7 +171,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
                  * This should only happen for users on a system where automatic
                  * installation is disabled (ie. has no quatUser).
                  */
-                return new \LORIS\Http\Response\Conflict(self::FILE_ALREADY_EXISTS);
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    self::FILE_ALREADY_EXISTS
+                );
             }
             return $response;
         }
