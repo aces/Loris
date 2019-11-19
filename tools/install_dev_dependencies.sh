@@ -4,7 +4,7 @@
 
 os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
 debian=("Debian" "Ubuntu")
-if [[ ! " ${debian[*]} " =~ " $os_distro " ]]; then
+if [[ ! " ${debian[*]} " == *" $os_distro "* ]]; then
     echo "Only Debian and Ubuntu are supported by $0."
     exit 0;
 fi
