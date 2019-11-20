@@ -784,12 +784,10 @@ $(function() {
               console.warn(msg);
               console.warn("\nNot supported file was " + filename);
               console.groupEnd();
-              console.log($("#loading").text());
             }
             resolve();
           },
           error: function (jqXHR, status, errorThrown) {
-            console.log('error');
             if (errorThrown === "Not Found") {
               let msg = "ERROR: file not found.";
               $("#loading").html(msg);
