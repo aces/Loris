@@ -1,7 +1,7 @@
 ## Imaging Quality Control Module
 
 #### Purpose
-The purpose of this module is to verify and help ensure imaging data has been uploaded into LORIS and reviwed for Quality Control (QC). It provides a queryable interface for users to assess the completeness of imaging data collections matched against a given protocol, and the status of QC review processes on them.
+The purpose of this module is to verify and help ensure imaging data has been uploaded into LORIS and reviewed for Quality Control (QC). It provides a queryable interface to check at a glance the completeness of imaging data collection for a study, and the status of QC review processes on them.  
 
 Note: this module is not the module in which visual/radiological QC is performed on scans, just the module in which QC assessments are *reviewed*. Links are included in this module so the user can jump to the Imaging Browser to mark QC assessments on images and visits.
 
