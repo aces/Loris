@@ -38,6 +38,14 @@ To create nested filters with multiple And/Or filter conditions, click **Add Gro
 This tab executes your query, displays the query results, and allows you to download data. 
 Use the "Data" dropdown to organize the data displayed: _cross-sectional_ by time-point, or _longitudinal_ across all time-points. Click **Run Query** to execute the current query on the database, based on the defined fields and filters.
 
-## Manage Saved Queries tab
+## Statistical Analysis
 
-This tab organizes new or previously saved queries. If you want to save your current query, click **Save Current Query**, then enter your new query name. Specify that it should be saved publicly if you want it to be visible to other users. Click **Save Changes**. Saved queries will show up in the **Load Saved Queries** feature. 
+This tab shows basic statistical calculations and scatterplot visualization of data from your query. 
+
+## Load Saved Query
+
+This tab lists all previously saved queries. Hover over the tab to reveal the list, and select your desired query. 
+
+## Manage Saved Queries
+
+This tab organizes new or previously saved queries. If you want to save your current query, click **Save Current Query**, then enter your new query name. Specify that it should be saved publicly if you want it to be visible to other users. Click **Save Changes**. Saved queries will show up in the **Load Saved Query** tab. 
