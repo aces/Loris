@@ -25,4 +25,4 @@ The `tblScanTypes` setting allows customization of which modalities are displaye
 Links are provided to the Imaging Browser module, and the QC entered in that module (for the scan types specified in the Configuration module as noted above).
 
 #### Imaging Uploader 
-The status of excluded or failed scans from the Imaging Uploader module are displayed in this module.
+The name of the user who uploaded the scan via the Imaging Uploader module is displayed in this module.
