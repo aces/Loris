@@ -23,7 +23,7 @@ _Some fields display or calculate information :_
 - Label : for explanations or blocks of text, e.g. instructions for the next section of questions
 - Scored Field : for storing calculated values (this can include dates which are calculated instead of entered)
 
-_Data entry fields_ : 
+_Data entry fields_ :
 
 - Textbox : for short-answer text questions (do not use for numbers). 	
 
