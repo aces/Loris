@@ -6,4 +6,4 @@ Use the *Selection Filter* section to narrow down the results in the table. Note
 
 In the resulting table, you might notice some clickable cells. In the *Metadata* column, click **View Details** to see the compressed package of DICOM files for that scan, along with their metadata. In the *MRI Browser* column, click on **View Images** to visualize and QC these scans in the Imaging Browser module.
 
-In the **Archive Location** column, click any link to download the DICOMs from all scans in this session.
+In the **Archive Location** column, click on a link to download the DICOMs from all scans in that session.
