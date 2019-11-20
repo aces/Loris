@@ -26,8 +26,8 @@ the project description actually changed.
     only changes the value again without reverting the type to `true/false`.
   [Manual Test]
 6. Go through each of the fields in the configuration module that have the 
-"Add field" button are configuration values that allow multiple entries. For each of 
-these fields:
+"Add field" button. These are configuration values that allow multiple entries. 
+For each of these fields:
    - try clicking the "Add field" button to see that this adds a new field to enter 
    data. Enter data and press save at the bottom of the page. Refresh the page, check
    that the data saved
