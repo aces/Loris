@@ -1,6 +1,6 @@
 # Conflict Resolver
 
-This module is designed to identify and resolve data conflicts in a study. LORIS uses double data entry, which means you may be asked to enter critical data twice in duplicate instrument forms. The Conflict Resolver will flag any discrepancies between the two entries (called *unresolved conflicts*) and allow you to fix—resolve—them easily. 
+This module is designed to identify and resolve data conflicts in a study. LORIS uses double data entry, which means you may be asked to enter critical data twice in duplicate instrument forms. The Conflict Resolver will flag any discrepancies between the two entries (called *unresolved conflicts*) and allow you to fix or "resolve" them easily. 
 
 Conflicts are displayed in a table with two separate tabs—resolved and unresolved conflicts. By default, the module displays the *Unresolved Conflicts* tab. You can narrow this list of results using any combination of filters in the *Selection Filters* section. 
 
