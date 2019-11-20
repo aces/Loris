@@ -43,5 +43,5 @@ The next time you add a dropdown field, you'll see your last options list is sug
 _Formatting fields_ for cosmetic/visual form features:
 
 - Blank Line : for separating blocks of questions. Leave blank "Question Name" and "Question Text".	
-- Page Break : for add a new page within the instrument. The "Question Text" should be populated with the name of the new page. 
+- Page Break : for adding a new page within the instrument. The "Question Text" should be populated with the name of the new page. 
 Note that the first page of an instrument should be the _Top_ page (containing scores), followed by _page 1_.	
