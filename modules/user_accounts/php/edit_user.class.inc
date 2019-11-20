@@ -812,18 +812,23 @@ class Edit_User extends \NDB_Form
                     'N'  => 'No',
                 )
             );
-            $groupB[] = $this->createLabel(
-                "Pending Approval:"
-            );
-            $groupB[] = $this->createSelect(
-                "examiner_pending",
-                "Pending Approval: ",
-                array(
-                    null => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
-                )
-            );
+
+            // A user should not be able to edit their own examiner approval
+            // status.
+            if (!$this->_isEditingOwnAccount()) {
+                $groupB[] = $this->createLabel(
+                    "Pending Approval:"
+                );
+                $groupB[] = $this->createSelect(
+                    "examiner_pending",
+                    "Pending Approval: ",
+                    array(
+                        null => "",
+                        'Y'  => 'Yes',
+                        'N'  => 'No',
+                    )
+                );
+            }
             $this->addGroup(
                 $groupA,
                 'examiner_sites',
@@ -842,42 +847,50 @@ class Edit_User extends \NDB_Form
             unset($groupB);
         }
 
-        // active
-        $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
-        $this->addSelect(
-            'Pending_approval',
-            'Pending approval',
-            array(
-                'Y' => 'Yes',
-                'N' => 'No',
-            )
-        );
+        // It doesn't make sense for a user to be editing their own
+        // approval status or active status. In fact this could result in a
+        // Darwinian self-lockout. Let us help those who cannot help themselves.
+        if (!$this->_isEditingOwnAccount()) {
+            $this->addSelect(
+                'Pending_approval',
+                'Pending approval',
+                array(
+                    'Y' => 'Yes',
+                    'N' => 'No',
+                )
+            );
 
-        //------------------------------------------------------------
+            $this->addSelect(
+                'Active',
+                'Active',
+                array(
+                    'Y' => 'Yes',
+                    'N' => 'No'
+                )
+            );
 
-        // active time windows
+            $dateOptions = array(
+                'language'       => 'en',
+                'format'         => 'YMd',
+                'addEmptyOption' => 'true',
+            );
 
-        $dateOptions = array(
-            'language'       => 'en',
-            'format'         => 'YMd',
-            'addEmptyOption' => 'true',
-        );
+            $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
-        $dateAttributes = ['class' => 'form-control input-sm input-date'];
+            $this->addBasicDate(
+                'active_from',
+                'Active from',
+                $dateOptions,
+                $dateAttributes
+            );
 
-        $this->addBasicDate(
-            'active_from',
-            'Active from',
-            $dateOptions,
-            $dateAttributes
-        );
-
-        $this->addBasicDate(
-            'active_to',
-            'Active to',
-            $dateOptions,
-            $dateAttributes
-        );
+            $this->addBasicDate(
+                'active_to',
+                'Active to',
+                $dateOptions,
+                $dateAttributes
+            );
+        }
 
         // checking if the account can be rejected (no password hash
         // pending approval)
@@ -1204,8 +1217,8 @@ class Edit_User extends \NDB_Form
                 }
             }
             if (!$matched
-                && (($values['examiner_radiologist'] !== ''
-                || $values['examiner_pending'] !== ''))
+                && ($values['examiner_radiologist'] !== ''
+                || $values['examiner_pending'] ?? '' !== '')
             ) {
                 $errors['examiner_sites'] = "Please select at least one examiner
                 site or clear the 'Examiner status' fields below (i.e.
