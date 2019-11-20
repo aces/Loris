@@ -8,7 +8,7 @@ In the results table, you can view data within three tabs: Incomplete Forms, Dat
 
 ## Incomplete Forms
 
-In this tab, you'll see a list of forms that have not yet been marked as "Data Entry = Complete", "Administration = All" associated with their search criteria. Click on an instrument in the *Instrument* column to access the incomplete form. You can complete the form from there.
+In this tab, you'll see a list of forms that have not yet been marked as both "Data Entry = Complete" and "Administration = All". Click on an instrument in the *Instrument* column to access the incomplete form. You can complete the form from there.
 
 ## Data Conflicts
 
