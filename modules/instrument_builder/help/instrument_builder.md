@@ -10,7 +10,7 @@ After entering a question, click **Add row** and it will appear in the "form pre
 
 Once you are satisfied with the instrument form, navigate to the **Save** tab. Populate the fields and click **Save**.
 
-**Important** to know when defining fields storing data --  
+**Important** to know when defining fields storing data
 
 _"Question Name"_ will be the database table (back-end) field name, never seen by users. This name must be unique and fairly brief, and no special characters or spaces can go into this name. It's recommended to begin with the question number e.g. `q09_number_cigarettes_daily`.
 
