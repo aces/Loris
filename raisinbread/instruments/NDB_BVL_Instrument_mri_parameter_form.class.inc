@@ -200,6 +200,13 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         $scanTypes = array(
             '3d_t1w'   => '3D-T1w',
             '2d_flair' => 'FLAIR',
+            'fieldmapBOLD' => 'BOLD',
+            't1' => 'T1',
+            't2' => 'T2',
+            'fMRI' => 'FMRI',
+            'dwi25' => 'DWI 25',
+            'dwi65' => 'DWI 65',
+            'fieldmapDWI' => 'Fieldmap DWI',
         );
 
         $group[] = $this->createLabel('Sequences');
@@ -252,8 +259,6 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
                 false
             );
 
-            unset($group);
-
             $this->XINRegisterRule(
                 $k.'_Scan_Done',
                 array($k.'_Scan_Done{@}=={@}'),
@@ -266,6 +271,8 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
                 'Please enter number of attempts for this sequence',
                 $k.'_group'
             );
+
+            unset($group);
 
         }
         $this->form->addFormRule(array(&$this, 'validateNumerics'));
@@ -298,277 +305,4 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
             return true;
         }
     }
-
-    // methods available to all children
-    /**
-     * preprocesses the array of values to be saved into the database
-     * (such as to rearrange date fields)
-     *
-     * @param array $values      the array of values ready to be passed to
-     * an Database::update call as the set array
-     * @return void
-     * @access private
-     */
-    function _saveValues(array $values): void
-    {
-        $timepoint =& TimePoint::singleton($this->getSessionID());
-        $candidate =& Candidate::singleton($timepoint->getCandID());
-        $this->_nullStatus($values);
-
-        if(isset($values['Date_taken'])) {
-            $date = $values['Date_taken'];
-            if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                $values['Date_taken'] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                $this->_saveCandidateAge($values);
-            }  else {
-                unset($values['Date_taken']);
-            }
-        }
-
-        if(isset($values['T1_Scan_done_date'])) {
-            $date = $values['T1_Scan_done_date'];
-            if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                $values['T1_Scan_done_date'] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                //$values['T1_Scan_done_date'] = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-            } else {
-                unset($values['T1_Scan_done_date']);
-            }
-
-        }
-
-        if(isset($values['T2_Scan_done_date'])) {
-            $date = $values['T2_Scan_done_date'];
-            if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                $values['T2_Scan_done_date'] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                //$values['T2_Scan_done_date'] = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-            } else {
-                unset($values['T2_Scan_done_date']);
-            }
-
-        }
-
-        if(isset($values['DTI_Scan_done_date'])) {
-            $date = $values['DTI_Scan_done_date'];
-            if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                $values['DTI_Scan_done_date'] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                //$values['DTI_Scan_done_date'] = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-            } else {
-                unset($values['DTI_Scan_done_date']);
-            }
-
-        }
-
-        if(isset($values['DTI65Dir_Scan_done_date'])) {
-            $date = $values['DTI65Dir_Scan_done_date'];
-            if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                $values['DTI65Dir_Scan_done_date'] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                //$values['DTI65Dir_Scan_done_date'] = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-            } else {
-                unset($values['DTI65Dir_Scan_done_date']);
-            }
-
-        }
-        if(isset($values['BOLD_Scan_done_date'])) {
-            $date = $values['BOLD_Scan_done_date'];
-            if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                $values['BOLD_Scan_done_date'] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                //$values['BOLD_Scan_done_date'] = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-            } else {
-                unset($values['BOLD_Scan_done_date']);
-            }
-
-        }
-        if(isset($values['Spectroscopy_Scan_done_date'])) {
-            $date = $values['Spectroscopy_Scan_done_date'];
-            if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                $values['Spectroscopy_Scan_done_date'] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                //$values['Spectroscopy_Scan_done_date'] = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-            } else {
-                unset($values['Spectroscopy_Scan_done_date']);
-            }
-
-        }
-
-        if(isset($values['wait_time'])) {
-            $time = $values['wait_time'];
-            $values['wait_time'] = sprintf("%02d:%02d:00", $time['H'], $time['i']);
-        }
-
-        if(isset($values['total_duration'])) {
-            $time = $values['total_duration'];
-            $values['total_duration'] = sprintf("%02d:%02d:00", $time['H'], $time['i']);
-        }
-
-        //print_r($values['wait_time']);
-        if(isset($values['directions_file']) && !empty($values['directions_file']['name'])) {
-            require_once "File_Upload.class.inc";
-            $file=new File_Upload;
-
-            //pass the existing form ($form) by reference to File_Upload, and register the file_upload field names being used.
-            $file->registerForm($this->form);
-
-            //Tell File_Upload what file handlers to use.
-            $file->setFileHandler("directions_file", $this);
-
-            //Set the target directory that you want files moved into once they are validated and processed.
-            $config = NDB_Config::singleton();
-            $dir = $config->getSetting("UploadDir");
-            if(empty($dir)) {
-                $dir = ".";
-            }
-
-            $file->setBaseUploadDirectory($dir . "/mri_parameter_directions");
-
-            //Set the prefix to prepend to the filenames
-            //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
-
-            //set the the IDs to the handler functions.
-            $file->setHandlerArgs(array("CommentID"=>$this->getCommentID(),
-                                        "candID"=>$candidate->getCandID(),
-                                        "PSCID"=>$candidate->getPSCID(),
-                                        "visitLabel"=>$timepoint->getVisitLabel(),
-                                        "username"=>$_SESSION['State']->getUsername(),
-                                        "values"=>$values)
-            );
-
-            //If the form is validated, call File_Upload::processFiles() which loops through the files and
-            //proccesses them (including verify, move, and import steps)
-
-            $file->processFiles();
-        }
-
-
-        //echo error messages
-        if(!empty($file->errorLog)){
-            while(list($fileType,$fileErrors)=each($file->errorLog)){
-                foreach($fileErrors AS $error){
-                    echo "<span style='color:red'><b>Upload Error</b> $fileType: $error</span><br>";
-                }
-            }
-        }
-        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'], $values['directions_file']);
-        $this->_save($values);
-    }
-
-    /**
-     * isValid checks the validity of the file.
-     *
-     * @param     string  $file    The full filename including directory.
-     *
-     * @return    bool    $success		if operation succeeded
-     * @access    public
-     */
-    function isValid(&$file, $args){
-        $fp=fopen($file->fileInfo['tmp_name'], "r");
-        $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
-        fclose($fp);
-
-        $lines=explode("\n",$contents);
-
-        $i = 0;
-        $size = count($lines);
-        while(!preg_match("/\[directions\s*\=\s*25\]/", $lines[$i++])){
-            if($i > $size){
-                echo("<font color='red'>Improper format: Can't find entry with 25 directions.</font><BR>");
-                return false;
-            }
-        }
-        if(!preg_match("/CoordinateSystem\s*=\s*.+/", $lines[$i++])){
-            echo("<font color='red'>Improper format: Can't find coordinate system.</font><BR>");
-            return false;
-        }
-        if(!preg_match("/Normalisation\s*=\s*.+/", $lines[$i++])){
-            echo("<font color='red'>Improper format: Can't find normalization.</font><BR>");
-            return false;
-        }
-
-        for($j = 0; $j < 25; $j++){
-            if(!preg_match("/Vector\[{$j}\]\s*=\s*\(\s*(\-?[\d\.]+)\s*,\s*(\-?[\d\.]+)\s*,\s*(\-?[\d\.]+)\s*\)/", $lines[$i++])){
-                echo("<font color='red'>Improper format: Can't find entry for vector {$j}.</font><BR>");
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * importFile imports the vineland file into the database.
-     *
-     * @param     object       $file    A reference to the file object (passed automatically by callFileHandler)
-     * @param     assoc_array  $args    The arguments passed to the function they must be:
-     *   -
-     *
-     * @return    bool    $success		if operation succeeded
-     * @access    public
-     */
-    function importFile(&$file, $args){
-        $fp=fopen($file->fileInfo['tmp_name'], "r");
-        $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
-        fclose($fp);
-
-        $values=array(
-            'UserID'    =>$args['username'],
-            'File_type' =>'directions',
-            'File_name' =>$file->getDestinationFilename(),
-            'Data_dir'  =>$file->getDestinationDirectory()
-        );
-
-
-        //Cycle through the lines and extract the data
-        $lines=explode("\n",$contents);
-
-        $i = 0;
-        $size = count($lines);
-        while(!preg_match("/\[directions\s*\=\s*25\]/", $lines[$i++]) && $i < $size);
-        $result = preg_split("/\s*\=\s*/", $lines[$i++]);
-        $values["coordinate_system"] = trim($result[1]);
-        $result = preg_split("/\s*\=\s*/", $lines[$i++]);
-        $values["normalization"] = trim($result[1]);
-
-        for($j = 0; $j < 25; $j++){
-            $matches = array();
-            if(preg_match("/Vector\[{$j}\]\s*=\s*\(\s*(\-?[\d\.]+)\s*,\s*(\-?[\d\.]+)\s*,\s*(\-?[\d\.]+)\s*\)/", $lines[$i++], $matches)){
-                $values["vector{$j}_x"] = $matches[1];
-                $values["vector{$j}_y"] = $matches[2];
-                $values["vector{$j}_z"] = $matches[3];
-
-                $vector_x = number_format($values["vector{$j}_x"], 5);
-                $vector_y = number_format($values["vector{$j}_y"], 5);
-                $vector_z = number_format($values["vector{$j}_z"], 5);
-
-                $this->localDefaults["vector{$j}"] = "({$vector_x}, {$vector_y}, {$vector_z})";
-            }else{
-                return false;
-            }
-        }
-
-        $db=& Database::singleton();
-
-        $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
-        return true;
-    }
-
-    function formatDate($date){
-        if(empty($date)){
-            return null;
-        }
-        $dateBits = explode('/', $date);
-        return sprintf("%04d-%02d-%02d", $dateBits[2], $dateBits[0], $dateBits[1]);
-    }
-
-    /**
-     * getTargetDirectory retrieves info about where the file should be stored.
-     *
-     * The returned directory is ADDED to the baseUploadDirectory property.  It should have a trailing slash.
-     *
-     * @param     string  $file    The full filename including directory.
-     *
-     * @return    bool    $success		if operation succeeded
-     * @access    public
-     */
-    function getTargetDirectory(&$file, $args){
-        $output=$args['candID']."/";
-        return $output;
-    }
 }
-?>

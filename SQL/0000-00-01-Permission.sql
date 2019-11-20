@@ -76,7 +76,7 @@ INSERT INTO `permissions` VALUES
     (25,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2'),
     (28,'instrument_builder', 'Instrument Builder: Create and Edit instrument forms', '2'),
     (29,'data_dict_edit','Edit Data Dictionary','2'),
-    (30,'data_team_helper','Data Team Helper','2'),
+    (30,'quality_control','Quality Control access','2'),
     (31,'candidate_parameter_view','View Candidate Parameters','2'),
     (32,'candidate_parameter_edit','Edit Candidate Parameters','2'),
     (33,'genomic_browser_view_site','View Genomic Browser data from own site','2'),
