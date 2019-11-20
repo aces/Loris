@@ -36,7 +36,7 @@ The next time you add a dropdown field, you'll see your last options list is sug
 	
 - Multiselect : for selecting one or more options from a list. see _Dropdown_ for information on creating/re-using Options.
 
-- Date : for dates such as _Date of first reported incident_	
+- Date : for dates such as _Date of first reported incident_
 
 - Numeric : for numbers - e.g. height, weight, etc.	 Ranges can be specified to enforce valid data entry.
 
