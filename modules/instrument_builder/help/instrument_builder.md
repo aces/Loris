@@ -29,7 +29,7 @@ _Data entry fields_ :
 
 - Textarea : for long-answer questions, e.g. comment fields. 
 
-- Dropdown : for selecting one option from a list. To create the list of options, type in the "Dropdown option" row and then click "add option" - in the "preview" dropdown underneath you'll see your new option.  Type again in the boxes to begin defining your second option, and when all options are added, click "add row".  
+- Dropdown : for selecting one option from a list. To create the list of options, type in the "Dropdown option" row and then click "add option". In the "preview" dropdown underneath you'll see your new option.  Type again in the boxes to begin defining your second option, and when all options are added, click "add row".
 
 Note: _"not_answered"_ will be automatically added as the last option for any dropdown. 
 The next time you add a dropdown field, you'll see your last options list is suggested for convenience - click "reset" to clear them.  
