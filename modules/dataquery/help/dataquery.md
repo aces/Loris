@@ -6,17 +6,20 @@ There are several tabs within this module, including the default **Info** tab, w
 
 ## Define Fields
 
-This tab allows you to select the data categories and fields to add to your query. You can add fields via the Instrument dropdown menu, the *Search within Instrument* search bar, or the *Add All* function. You can also use the *Load Saved Query* function to load a previously saved query, rather than generating a new one from scratch. Note: once you select a category, its field names and descriptions will appear in a table for you to select from. You can also specify visits. 
+This tab allows you to select the data categories and fields to add to your query. You can add fields via the Instrument dropdown menu, the *Search within Instrument* search bar, or the *Add All* function. 
+Note: once you select an instrument, its field names and descriptions will appear in a table for you to select from. You can also specify visits. 
+
+You can also use the *Load Saved Query* menu to select a previously saved query, rather than generating a new set of fields and filters to query from scratch. 
 
 Once you have your fields defined, you can continue on to the **Define Filters** tab, or directly to the **View Data** tab if your query does not require filters. 
 
 ## Define Filters
 
-This is where you define the criteria to filter the data for your query. You can apply filters on any field in order to narrow the set of data records returned by a query, such as filtering for a specific site or visit.
+This is where you define the criteria to filter the data for your query. If you have You can apply filters on any field in order to narrow the set of data records returned by a query, such as filtering for a specific site or visit.
 
 You can apply multiple filters, and layer them with "And/Or" conditional logic. Filters are applied at the level of the candidate. The data fields are grouped by category.
 
-To add a filter, select a category using the dropdown. A secondary dropdown will appear, listing all data fields in that category. Once a data field is selected, additional dropdowns to specify the “Operator” and “Value” will appear. These _Operators_ are:
+To add a filter, select an instrument using the dropdown. A secondary dropdown will appear, listing all data fields in that category. Once a data field is selected, additional dropdowns to specify the “Operator” and “Value” will appear. These _Operators_ are:
 
    = equal to<br>
    != does not equal<br>
@@ -36,11 +39,11 @@ To create nested filters with multiple And/Or filter conditions, click **Add Gro
 ## View Data
 
 This tab executes your query, displays the query results, and allows you to download data. 
-Use the "Data" dropdown to organize the data displayed: _cross-sectional_ by time-point, or _longitudinal_ across all time-points. Click **Run Query** to execute the current query on the database, based on the defined fields and filters.
+Use the "Data" dropdown to organize the results table: _cross-sectional_ by timepoint, or _longitudinal_ across all timepoints. Click **Run Query** to execute the current query on the database, based on the defined fields and filters.
 
 ## Statistical Analysis
 
-This tab shows basic statistical calculations and scatterplot visualization of data from your query. 
+This tab shows basic statistical calculations and scatterplot visualizations of data from your query. 
 
 ## Load Saved Query
 
@@ -48,4 +51,4 @@ This tab lists all previously saved queries. Hover over the tab to reveal the li
 
 ## Manage Saved Queries
 
-This tab organizes new or previously saved queries. If you want to save your current query, click **Save Current Query**, then enter your new query name. Specify that it should be saved publicly if you want it to be visible to other users. Click **Save Changes**. Saved queries will show up in the **Load Saved Query** tab. 
+This tab lets you review and edit saved queries. If you want to save your current query, click **Save Current Query**, then enter your new query name. Specify that it should be saved publicly if you want it to be visible to other users. Click **Save Changes**. Saved queries will show up in the **Load Saved Query** tab. 
