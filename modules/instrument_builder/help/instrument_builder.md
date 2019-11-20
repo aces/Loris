@@ -14,7 +14,7 @@ Once you are satisfied with the instrument form, navigate to the **Save** tab. P
 
 _"Question Name"_ will be the database table (back-end) field name, never seen by users. This name must be unique and fairly brief, and no special characters or spaces can go into this name. It's recommended to begin with the question number e.g. `q09_number_cigarettes_daily`.
 
-_"Question Text"_ is the prompt seen by users or survey respondents entering data into the form - the full text of the question goes here. 
+_"Question Text"_ is the prompt seen by users or survey respondents entering data into the form. The full text of the question goes here.
 
 #### Field types, by category : 
 
