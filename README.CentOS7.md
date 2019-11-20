@@ -86,6 +86,7 @@ sudo yum install nodejs
 sudo curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
+
 # Get the Code
 
 Download the latest release from the [releases page](https://github.com/aces/Loris/releases) to the home directory (~/), unzip it, and copy the contents to your project directory, `/var/www/loris` (we recommend naming your project directory `loris`, although you can use a different naming convention if you prefer). 
@@ -112,6 +113,13 @@ Customize and Verify your settings:
 * Paths and settings in `/etc/httpd/conf.d/apache-site.conf` should be populated appropriately for your server. Replace placeholders such as `%LORISROOT%` with `/var/www/loris`, `%PROJECTNAME%` with `loris`, `%LOGDIRECTORY%` with `/var/log/httpd/loris-error.log` 
  * DocumentRoot should point to `/var/www/loris/htdocs`
  * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
+
+Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS environment. You can find an example in `loris/docs/config/apache2-site` for setup of `<VirtualHost>` in the loris.conf file you will create. Adjust the parameters according to your configuration.
+```
+- %LORISROOT%    i.e. /var/www/loris
+- %PROJECTNAME%  i.e loris
+- %LOGDIRECTORY%  .i.e /var/log/httpd
+```
 
 Finally, restart apache:
 ```bash

@@ -33,18 +33,20 @@ expand and collapse.
 set to 300 Pixels.
     - Should change the size of the three displayed volumes.
 9. Check that scrolling on top of the brain canvas zooms in and out.    
-10. Check that the "Reset view" resets the view of the canvas. 
+10. Check that the "Reset view" resets the view of the canvas (restores the default zoom). 
 11. Check that the keyboard key 'r' also resets the view of the canvas. 
 12. Test `View slices` buttons (Sagittal, Coronal and Axial).
     - Should give a screenshot of all slices within the selected orientation.    
-13. From the Imaging Browser's View Session page, Load BrainBrowser using the 
-`Add panel` checkbox (on the left of the pic) and the “3D only” button (left panel).
+13. From the Imaging Browser's View Session page, Load BrainBrowser by selecting the 
+checkbox(es) in the upper left corner of the scan panel (right next to the scan's name) 
+and clicking the **3D only** button (module's left control panel). 
 (Select 2 or more scans for proper testing) 
     - Should display only the selected image(s), no overlay.
     - Repeat 2 to 12 steps on each displayed volume.
     - Check that it updates only the appropriate image.
-14. From the Imaging Browser's View Session page, Load BrainBrowser using the 
-`Add panel` checkbox (on the left of the pic) and the “3D overlay” button (left panel).
+14. From the Imaging Browser's View Session page, Load BrainBrowser by selecting the 
+checkbox(es) in the upper left corner of the scan panel (right next to the scan's name) 
+and clicking the **3D overlay** button (module's left control panel)
 (Select 2 or more scans for proper testing)
     - Should display the selected images plus the overlay.
     - Repeat 2 to 12 steps on each displayed volume.

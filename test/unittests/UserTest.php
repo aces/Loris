@@ -246,7 +246,6 @@ class UserTest extends TestCase
         $this->_userInfo['Password_hash'] = $passwordHash;
         $this->_userInfoComplete['Password_hash'] = $passwordHash;
 
-
         $this->_user = \User::factory(self::USERNAME);
     }
 
