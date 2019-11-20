@@ -2,14 +2,14 @@
 function getQueryVariable(variable) {
     "use strict";
     var query = window.location.search.substring(1),
-      vars = query.split("&"),
-      i,
-      pair;
+        vars = query.split("&"),
+        i,
+        pair;
     for (i = 0; i < vars.length; i += 1) {
-      pair = vars[i].split("=");
-      if (pair[0] === variable) {
-        return unescape(pair[1]);
-      }
+        pair = vars[i].split("=");
+        if (pair[0] === variable) {
+            return unescape(pair[1]);
+        }
     }
 }
 
@@ -553,9 +553,9 @@ $(function() {
                $('#filename-additional-info-'+vol_id).slideToggle("fast");
                var arrow = $(this).siblings('.arrow');
                if (arrow.hasClass('glyphicon-chevron-down')) {
-                     arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                   arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
                } else {
-                     arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                   arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
                }
 
        });
@@ -740,13 +740,13 @@ $(function() {
 
     minc_ids = getQueryVariable("minc_id");
     if (minc_ids[0] === '[') {
-    // An array was passed. Get rid of the brackets and then split on ","
-    minc_ids = minc_ids.substring(1, minc_ids.length - 1);
-    minc_ids_arr = minc_ids.split(",");
+        // An array was passed. Get rid of the brackets and then split on ","
+        minc_ids = minc_ids.substring(1, minc_ids.length - 1);
+        minc_ids_arr = minc_ids.split(",");
 
     } else {
-    // Only one passed
-    minc_ids_arr = [minc_ids];
+        // Only one passed
+        minc_ids_arr = [minc_ids];
     }
 
     function requestMINC(minc_id) {
