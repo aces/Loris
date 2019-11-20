@@ -16,7 +16,7 @@ _"Question Name"_ will be the database table (back-end) field name, never seen b
 
 _"Question Text"_ is the prompt seen by users or survey respondents entering data into the form. The full text of the question goes here.
 
-#### Field types, by category : 
+#### Field types, by category
 
 _Some fields display or calculate information :_
 - Header : for the Title of an instrument, page or section. Appears bold and centered in the form. 
