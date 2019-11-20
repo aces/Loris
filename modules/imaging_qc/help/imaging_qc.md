@@ -5,8 +5,8 @@ Its purpose is to verify that imaging data has been uploaded properly, that it h
 
 Use the *Selection Filter* section to narrow your search for specific data.
 
-The resulting data table lists details on every scan that results from your search. Notice that this table shows you helpful details for specific scan types, including upload status, the scan’s location, whether there is an associated MRI Parameter Form, and whether the scan has passed QC. 
+The resulting data table lists details on every scan that results from your search. Notice that this table shows you helpful details for specific scan types, including who uploaded it, the scan’s location, whether there is an associated MRI Parameter Form, and whether the scan has passed QC. 
 
 If the scan has been completed in the MRI parameter form, then you’ll be able to click on **Yes** in the *Scan Done in MRI PF* column. This will bring you to the form for that scan, containing the detailed notes from the scan session including other modalities collected.
 
-If any QC is outstanding, click the link to load the Imaging Browser where your imaging specialist or radiologist can review scans and add their QC findings. 
+If any QC is outstanding, click the link to load the Imaging Browser where your imaging specialist or radiologist can review scans and add their QC findings for all scan types as well as for the entire scanning session. 
