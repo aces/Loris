@@ -269,7 +269,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // check that user has access
         if ($access == false) {
             throw new Exception(
-                "You do not have access to this page."
+                "You do not have access to this page.",
+                403
             );
         }
 
