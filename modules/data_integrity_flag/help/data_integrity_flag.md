@@ -1,6 +1,6 @@
 # Data Integrity Flag
 
-This module provides a direct way to view and update behavioural feedback at a glance.
+This module provides a direct way to view and flag the status of the behavioural feedback data review process.
 
 In the **Browse** tab, use the *Selection Filter* section to search for existing feedback. You can click any link in the *Instrument* column to view a detailed summary of each field for that instrument and visit.
 
