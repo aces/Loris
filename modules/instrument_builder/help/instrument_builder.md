@@ -38,7 +38,7 @@ The next time you add a dropdown field, you'll see your last options list is sug
 
 - Date : for dates such as _Date of first reported incident_
 
-- Numeric : for numbers - e.g. height, weight, etc.	 Ranges can be specified to enforce valid data entry.
+- Numeric : for numbers - e.g. height, weight, etc. Ranges can be specified to enforce valid data entry.
 
 _Formatting fields_ for cosmetic/visual form features:
 
