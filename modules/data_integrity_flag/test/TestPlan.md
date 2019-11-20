@@ -1,4 +1,4 @@
-#Data Integrity Flag Test Plan
+# Data Integrity Flag Test Plan
 
 1. Check permissions. You should not be able to access the page without permission 'data_integrity_flag'.
    [Automation Testing]
