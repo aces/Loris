@@ -1,16 +1,16 @@
 /*global window, BrainBrowser, unescape, $*/
 function getQueryVariable(variable) {
-  "use strict";
-  var query = window.location.search.substring(1),
-    vars = query.split("&"),
-    i,
-    pair;
-  for (i = 0; i < vars.length; i += 1) {
-    pair = vars[i].split("=");
-    if (pair[0] === variable) {
-      return unescape(pair[1]);
+    "use strict";
+    var query = window.location.search.substring(1),
+      vars = query.split("&"),
+      i,
+      pair;
+    for (i = 0; i < vars.length; i += 1) {
+      pair = vars[i].split("=");
+      if (pair[0] === variable) {
+        return unescape(pair[1]);
+      }
     }
-  }
 }
 
 
@@ -29,7 +29,7 @@ $(function() {
     var loading_div = $("#loading");
 
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
-      bboptions = {};
+    bboptions = {};
 
     ///////////////////////////
     // Set up global UI hooks.
@@ -331,7 +331,7 @@ $(function() {
             value = volume.getVoxelMin();
           }
           value = Math.max(volume.getVoxelMin(),
-            Math.min(value, volume.getVoxelMax()));
+                           Math.min(value, volume.getVoxelMax()));
           this.value = value;
 
           // Update the slider.
@@ -350,7 +350,7 @@ $(function() {
             value = volume.getVoxelMax();
           }
           value = Math.max(volume.getVoxelMin(),
-            Math.min(value, volume.getVoxelMax()));
+                           Math.min(value, volume.getVoxelMax()));
           this.value = value;
 
           // Update the slider.
@@ -537,47 +537,47 @@ $(function() {
       });
 
       $.ajax({
-        dataType: "json",
-        data: 'file_id=' + minc_ids_arr[vol_id],
-        url: loris.BaseURL + '/brainbrowser/ajax/getImageName.php',
-        method: 'GET',
-        success: function(data) {
-          let fileName = $("#filename-" + vol_id);
-          fileName.html(data.filename);
-          fileName.data("title", data.filename);
-          fileName.tooltip();
-        }
+          dataType: "json",
+          data: 'file_id=' + minc_ids_arr[vol_id],
+          url: loris.BaseURL + '/brainbrowser/ajax/getImageName.php',
+          method: 'GET',
+          success: function(data) {
+              let fileName = $("#filename-" + vol_id);
+              fileName.html(data.filename);
+              fileName.data("title", data.filename);
+              fileName.tooltip();
+          }
       });
 
       $('#filename-'+vol_id).on("click", function() {
-        $('#filename-additional-info-'+vol_id).slideToggle("fast");
-        var arrow = $(this).siblings('.arrow');
-        if (arrow.hasClass('glyphicon-chevron-down')) {
-          arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-        } else {
-          arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-        }
+               $('#filename-additional-info-'+vol_id).slideToggle("fast");
+               var arrow = $(this).siblings('.arrow');
+               if (arrow.hasClass('glyphicon-chevron-down')) {
+                     arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+               } else {
+                     arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+               }
 
-      });
-      $('.filename-overlay').on("click", function() {
-        $('.filename-overlay-additional-info').slideToggle("fast");
-        var arrow = $(this).siblings('.arrow');
-        if (arrow.hasClass('glyphicon-chevron-down')) {
-          arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-        } else {
-          arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-        }
+       });
+       $('.filename-overlay').on("click", function() {
+               $('.filename-overlay-additional-info').slideToggle("fast");
+               var arrow = $(this).siblings('.arrow');
+               if (arrow.hasClass('glyphicon-chevron-down')) {
+                   arrow.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+               } else {
+                   arrow.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+               }
 
-      });
+       });
 
-      $('.arrow').on("click", function() {
-        $('#filename-additional-info-'+vol_id).slideToggle("fast");
-        if ($('.arrow').hasClass('glyphicon-chevron-down')) {
-          $('.arrow').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-        } else {
-          $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-        }
-      });
+        $('.arrow').on("click", function() {
+              $('#filename-additional-info-'+vol_id).slideToggle("fast");
+              if ($('.arrow').hasClass('glyphicon-chevron-down')) {
+                $('.arrow').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+              } else {
+                $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+              }
+            });
 
       // Contrast controls
       container.find(".contrast-div").each(function() {
@@ -726,9 +726,9 @@ $(function() {
       var fg_color = getContrastYIQ(bg_color);
 
       $("#intensity-value-" + vol_id)
-        .css("background-color", "#" + bg_color)
-        .css("color", fg_color)
-        .html(Math.floor(value));
+      .css("background-color", "#" + bg_color)
+      .css("color", fg_color)
+      .html(Math.floor(value));
 
       if (volume.header && volume.header.time) {
         $("#time-slider-" + vol_id).slider("option", "value", volume.current_time);
@@ -740,13 +740,13 @@ $(function() {
 
     minc_ids = getQueryVariable("minc_id");
     if (minc_ids[0] === '[') {
-      // An array was passed. Get rid of the brackets and then split on ","
-      minc_ids = minc_ids.substring(1, minc_ids.length - 1);
-      minc_ids_arr = minc_ids.split(",");
+    // An array was passed. Get rid of the brackets and then split on ","
+    minc_ids = minc_ids.substring(1, minc_ids.length - 1);
+    minc_ids_arr = minc_ids.split(",");
 
     } else {
-      // Only one passed
-      minc_ids_arr = [minc_ids];
+    // Only one passed
+    minc_ids_arr = [minc_ids];
     }
 
     function requestMINC(minc_id) {
