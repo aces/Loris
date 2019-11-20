@@ -47,9 +47,11 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         ob_start();
         // Set the page template variables
         // $user is set by the page base router
-        $user     = $request->getAttribute("user");
+        $user = $request->getAttribute("user");
+        //print_r($request);
         $tpl_data = array(
                      'test_name' => $this->PageName,
+                     'subtest'   => $request->getAttribute('subtest') ?? '',
                     );
 
         // Basic page outline variables
@@ -88,6 +90,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
+
+        $tpl_data['subtest'] = $request->getAttribute("pageclass")->page;
 
         $page = $request->getAttribute("pageclass");
         if (method_exists($page, 'getFeedbackPanel')
