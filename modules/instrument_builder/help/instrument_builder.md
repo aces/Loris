@@ -27,7 +27,7 @@ _Data entry fields_ :
 
 - Textbox : for short-answer text questions (do not use for numbers).
 
-- Textarea : for long-answer questions, e.g. comment fields. 
+- Textarea : for long-answer questions, e.g. comment fields.
 
 - Dropdown : for selecting one option from a list. To create the list of options, type in the "Dropdown option" row and then click "add option". In the "preview" dropdown underneath you'll see your new option.  Type again in the boxes to begin defining your second option, and when all options are added, click "add row".
 
