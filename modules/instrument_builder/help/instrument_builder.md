@@ -6,7 +6,7 @@ If you want to edit an existing instrument form created with this module, go to 
 
 If you are creating a new instrument, navigate to the **Build** tab. Use the fields and dropdown menus provided to build out the questions for your new instrument. Important information on each Field Type and how to use it is below in this Help text.
 
-After entering a question, click **Add row** and it will appear in the "form preview" just above, showing fields added already to your form. Click on any field in this form preview to modify with the **Edit** or **Delete* buttons. 
+After entering a question, click **Add row** and it will appear in the "form preview" just above, showing fields added already to your form. Click on any field in this form preview to modify with the **Edit** or **Delete* buttons.
 
 Once you are satisfied with the instrument form, navigate to the **Save** tab. Populate the fields and click **Save**.
 
