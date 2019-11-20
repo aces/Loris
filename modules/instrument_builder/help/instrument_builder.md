@@ -2,9 +2,9 @@
 
 This module allows you to create new behavioural forms in your LORIS database.
 
-If you have existing instruments that were created using the instrument builder, add them into the database in the **Load** tab. Browse for the instrument in question and click **Load Instrument**.
+If you want to edit an existing instrument form created with this module, go to the **Load** tab and open the file from your computer. 
 
-If you need to create a new instrument, navigate to the **Build** tab. Use the fields and dropdown menus provided to build out the questions for your new instrument. Important information on each Field Type and how to use it is below in this Help text.
+If you are creating a new instrument, navigate to the **Build** tab. Use the fields and dropdown menus provided to build out the questions for your new instrument. Important information on each Field Type and how to use it is below in this Help text.
 
 After entering a question, click **Add row** and it will appear in the "form preview" just above, showing fields added already to your form. Click on any field in this form preview to modify with the **Edit** or **Delete* buttons. 
 
