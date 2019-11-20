@@ -25,7 +25,7 @@ _Some fields display or calculate information :_
 
 _Data entry fields_ :
 
-- Textbox : for short-answer text questions (do not use for numbers). 	
+- Textbox : for short-answer text questions (do not use for numbers).
 
 - Textarea : for long-answer questions, e.g. comment fields. 
 
