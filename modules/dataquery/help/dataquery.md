@@ -6,18 +6,23 @@ There are several tabs within this module, including the default **Info** tab, w
 
 ## Define Fields
 
-This tab allows you to select the data categories and fields to add to your query. You can add fields via the Instrument dropdown menu, the *Search within Instrument* search bar, or the *Add All* function. 
-Note: once you select an instrument, its field names and descriptions will appear in a table for you to select from. You can also specify visits. 
+This tab allows you to select a data category or instrument, then add specific fields to your query, as well as specifying which visit or timepoint should be queried. 
+You can add fields via the _Instrument_ dropdown, the *Search within Instrument* search bar, or the *Add All* function. 
 
-You can also use the *Load Saved Query* menu to select a previously saved query, rather than generating a new set of fields and filters to query from scratch. 
+Note: To select a previously saved query, use the *Load Saved Query* tab in this module.
+
+Once you select an instrument or category (such as `mri_data`), field names and descriptions will appear in a table for you to select from. After selecting a field, you'll notice that all applicable visits are selected - you can unselect any visits you don't wish to query. This visit selection will be suggested for the next fields selected in this category or instrument. 
+
+As you add fields to your query, you'll notice they are listed on the right side of the page under "Fields". 
 
 Once you have your fields defined, you can continue on to the **Define Filters** tab, or directly to the **View Data** tab if your query does not require filters. 
 
 ## Define Filters
 
-This is where you define the criteria to filter the data for your query. If you have You can apply filters on any field in order to narrow the set of data records returned by a query, such as filtering for a specific site or visit.
+This is where you define the criteria to filter the data for your query. You can apply filters on any field in order to narrow the set of data records returned by a query, such as filtering for a specific value, e.g. `Sex` = `Female`.
 
-You can apply multiple filters, and layer them with "And/Or" conditional logic. Filters are applied at the level of the candidate. The data fields are grouped by category.
+You can apply multiple filters, and layer them with "And/Or" conditional logic. 
+Filters are applied at the level of the candidate. The data fields are grouped by category.
 
 To add a filter, select an instrument using the dropdown. A secondary dropdown will appear, listing all data fields in that category. Once a data field is selected, additional dropdowns to specify the “Operator” and “Value” will appear. These _Operators_ are:
 
