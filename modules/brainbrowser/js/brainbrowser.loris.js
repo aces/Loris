@@ -844,7 +844,7 @@ $(function() {
     /////////////////////
     // Load the volumes.
     /////////////////////
-    Promise.all([...promises]).then(() => {
+    Promise.all(promises).then(() => {
       bboptions.volumes = minc_volumes;
       viewer.render();                // start the rendering
       viewer.loadVolumes(bboptions);  // load the volumes
