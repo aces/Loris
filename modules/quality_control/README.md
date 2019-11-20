@@ -16,14 +16,13 @@ Note: To QC a scan, the user must click the link leading to the Imaging Browser,
 #### Permissions
 The `quality_control` permission gives users access to this module and its features.
 
-#### Interactions
-The Imaging Quality Control module is directly related to the following modules:
-
-##### Imaging Browser
-The Imaging QC module displays images that have been loaded in LORIS and QC'd in the Imaging Browser. The Imaging Browser also provides metadata and visualization of each scan and session collected for a study. 
-
-##### Imaging Uploader
-This module displays the status of images that have been excluded from or failed to load into LORIS, for a variety of reasons.  
+#### Interactions With LORIS
 
 #### Configuration
-The `tblScanTypes` setting allows customization of which modalities are displayed in this module (as well as in the Imaging Browser main data table). 
+The `tblScanTypes` setting allows customization of which modalities are displayed in this module.
+
+#### Imaging Browser 
+Links are provided to the Imaging Browser module, and the QC entered in that module (for the scan types specified in the Configuration module as noted above).
+
+#### Imaging Uploader 
+The status of excluded or failed scans from the Imaging Uploader module are displayed in this module.
