@@ -115,7 +115,10 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
             case 'metadata':
                 $handler = new Metadata($this->_visit, $recording);
                 break;
-            // TODO add channels, electrodes and events + path to the archive
+            // TODO add channels.class, electrodes and events + path to the archive
+            case 'channels':
+                $handler = new Channels($this->_visit, $recording);
+                break;
             default:
                 return new \LORIS\Http\Response\JSON\NotFound();
         }

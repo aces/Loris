@@ -4,7 +4,7 @@
  *
  * PHP Version 7
  *
- *  @category Imaging
+ *  @category Recording
  *  @package  Main
  *  @author   Cecile Madjar <cecile.madjar@mcin.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -15,9 +15,9 @@ namespace LORIS;
 /**
  * This class defines a Recording and business logic related to Recordings.
  *
- * @category Imaging
+ * @category Recording
  * @package  Main
- *  @author   Cecile Madjar <cecile.madjar@mcin.ca>
+ *  @author  Cecile Madjar <cecile.madjar@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
@@ -120,7 +120,8 @@ class Recording
     }
 
     /**
-     * Get all headers.class from the physiological_parameter files table for that Recording.
+     * Get all metadata.class from the physiological_parameter files table for that
+     * Recording.
      *
      * @return array An associative array of {Name => Value}
      */
@@ -173,9 +174,86 @@ class Recording
     }
 
     /**
-     * Creates an immutable object representation of this Image
+     * Get all channels.class info from the physiological_channel table for that
+     * Recording.
      *
-     * @return \LORIS\Data\Models\ImageDTO
+     * @return \LORIS\RecordingChannels[]
+     */
+    public function getChannels(): array
+    {
+        $dbrows = \NDB_Factory::singleton()
+            ->database()
+            ->pselect(
+                '
+                       SELECT
+                         pc.Name                as channelname,
+                         pc.Description         as channeldescription,
+                         pct.ChannelTypeName    as channeltype,
+                         pct.ChannelDescription as channeltypedescription,
+                         pst.ChannelStatus      as channelstatus,
+                         pc.StatusDescription   as statusdescription,
+                         pc.SamplingFrequency   as samplingfrequency,
+                         pc.LowCutoff           as lowcutoff,
+                         pc.HighCutoff          as highcutoff,
+                         pc.ManualFlag          as manualflag,
+                         pc.Notch               as notch,
+                         pc.Reference           as reference,
+                         pc.Unit                as unit,
+                         pc.FilePath            as filepath
+                       FROM
+                         physiological_channel pc 
+                       JOIN physiological_channel_type pct
+                         USING (PhysiologicalChannelTypeID)
+                       JOIN physiological_status_type pst
+                         USING (PhysiologicalStatusTypeID)
+                       JOIN physiological_file f
+                         USING (PhysiologicalFileID)
+                       WHERE
+                         pc.PhysiologicalFileID = :v_fileid
+                      ',
+                array('v_fileid' => $this->_fileid)
+            );
+        return array_map(
+            function ($row) {
+                $values = array_values($row);
+                return new \LORIS\RecordingChannels(...$values);
+            },
+            $dbrows
+        );
+    }
+
+    /**
+     * Get channel BIDS tsv file per filename
+     *
+     * @param \User  $user     The requesting user
+     * @param string $filename The requested filename
+     *
+     * @throws \NotFound
+     * @return \LORIS\RecordingChannels
+     */
+    public function getChannelsByFilename(\User $user, string $filename): \LORIS\RecordingChannels
+    {
+        $filtered = array_filter(
+          $this->getChannelFiles($user),
+          function ($dto) use ($filename) {
+              return $dto->getFilename() == $filename;
+          }
+        );
+
+        if (empty($filtered)) {
+            throw new \NotFound($filename . 'not found.');
+        }
+
+        // Take the first corresponding file.
+        $channeldto = array_pop($filtered);
+
+        return new \LORIS\RecordingChannels($channeldto->getFileId);
+    }
+
+    /**
+     * Creates an immutable object representation of this Recording
+     *
+     * @return \LORIS\Data\Models\RecordingDTO
      */
     public function asDTO(): \LORIS\Data\Models\RecordingDTO
     {

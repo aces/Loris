@@ -23,8 +23,7 @@ use \LORIS\api\Endpoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-class Metadata extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
      * The requested Visit
@@ -91,19 +90,32 @@ class Metadata extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
+        $pathparts = $request->getAttribute('pathparts');
+        if (count($pathparts) === 1) {
+            switch ($request->getMethod()) {
+                case 'GET':
+                    return $this->_handleGET($request);
 
-            case 'OPTIONS':
-                return (new \LORIS\Http\Response())
-                    ->withHeader('Allow', $this->allowedMethods());
+                case 'OPTIONS':
+                    return (new \LORIS\Http\Response())
+                        ->withHeader('Allow', $this->allowedMethods());
 
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+                default:
+                    return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                        $this->allowedMethods()
+                    );
+            }
         }
+
+        // Delegate to sub-endpoints
+        // At this point, the recording must exist
+        $user = $request->getAttribute('user');
+        try {
+            $recording = $this->_visit->getRecordingByFilename($user, $this->_filename);
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
+        }
+
     }
 
     /**
@@ -128,17 +140,19 @@ class Metadata extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         switch ($headername) {
             case '':
-                $view = new \LORIS\api\Views\Visit\Recording\Metadata\Full(
+                $view = new \LORIS\api\Views\Visit\Recording\Channels(
+                    $this->_visit,
+                    $this->_recording
+                );
+                break;
+            case 'file':
+                $view = new Downloads\ChannelsBidsFile(
                     $this->_visit,
                     $this->_recording
                 );
                 break;
             default:
-                $view = new \LORIS\api\Views\Visit\Recording\Metadata\Specific(
-                    $this->_visit,
-                    $this->_recording,
-                    $headername
-                );
+
         }
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($view->toArray());
