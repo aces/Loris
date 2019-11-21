@@ -47,7 +47,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         ob_start();
         // Set the page template variables
         // $user is set by the page base router
-        $user = $request->getAttribute("user");
+        $user     = $request->getAttribute("user");
         $tpl_data = array(
                      'test_name' => $this->PageName,
                      'subtest'   => $request->getAttribute('subtest') ?? '',
