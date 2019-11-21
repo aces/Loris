@@ -399,7 +399,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (file_exists($scorer)) {
             $output = array();
             exec(
-                $scorer . " " . escapeshellarg($this->getCommentID()),
+                escapeshellarg($scorer) . " " . escapeshellarg(
+                    $this->getCommentID()
+                ),
                 $output,
                 $retVal
             );
