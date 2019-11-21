@@ -33,6 +33,7 @@ This guide does not cover installation of these requirements.
 The following Ubuntu packages are required and should be installed using 
 `sudo apt install ...`.
 
+* git
 * curl
 * wget
 * zip
@@ -40,7 +41,6 @@ The following Ubuntu packages are required and should be installed using
 * php-json
 * make
 * software-properties-common
-* php-ast
 * php7.2-mysql
 * php7.2-xml
 * php7.2-json
@@ -139,11 +139,13 @@ cd `/var/www/loris/`; make
 ### Installing LORIS for development
 
 ```bash
+# This is necessary for 'phan', a static analysis tool
+sudo pecl install ast-1.0.3
 cd `/var/www/loris/`; make dev
 ```
 
 The `dev` target for `make` will install additional libraries that are needed 
-for develoment process but not for production installs.
+for development process but not for production installs.
 
 ## Configuring the database
 
