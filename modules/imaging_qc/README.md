@@ -13,6 +13,12 @@ The Imaging QC module allows you to view specific data on uploaded image files, 
 
 Note: To QC a scan, the user must click the link leading to the Imaging Browser, and enter the QC details in that module.
 
+#### Configuration caveat 
+
+This module has a key dependency - the `mri_parameter_form` instrument must installed. 
+Otherwise an error will show in the front-end: `Table 'LORIS.mri_parameter_form` and thid module will not load.
+A sample MRI Parameter Form (PHP) instrument is available with our sample dataset under `raisinbread/instruments/NDB_BVL_Instrument_mri_parameter_form.class.inc` in this repo.  Please customize this for your project, and install it and configure it for your battery.
+
 #### Permissions
 The `quality_control` permission gives users access to this module and its features.
 
