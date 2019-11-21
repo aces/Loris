@@ -133,11 +133,7 @@ class NDB_Client
         );
         // start php session
         $sessionOptions = array('cookie_httponly' => true);
-        // TODO remove this if statement when 7.3 is the minimum required LORIS
-        // version. All session from then onward should have Same Site enabled.
-        if (PHP_MAJOR_VERSION === 7 && PHP_MINOR_VERSION >= 3) {
-            $sessionOptions['cookie_samesite'] = true;
-        }
+        $sessionOptions['cookie_samesite'] = true;
 
         // API Detect
         if (strpos(

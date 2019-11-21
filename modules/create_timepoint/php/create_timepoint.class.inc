@@ -85,8 +85,7 @@ class Create_Timepoint extends \NDB_Form
         $projects = \Utility::getProjectList();
         if (count($projects) == 1) {
             //if there is only one project, autoselect first project from array of 1
-            //TODO: change this to array_key_first() when support is only PHP 7.3+
-            $project = \Project::singleton(array_pop($projects));
+            $project = array_key_first($projects);
         } else if (count($projects) > 1) {
             $project_id = intval($values['project']);
             $project    = \Project::singleton($projects[$project_id]);
