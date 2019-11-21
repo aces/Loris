@@ -16,8 +16,8 @@ Note: To QC a scan, the user must click the link leading to the Imaging Browser,
 #### Configuration caveat 
 
 This module has a key dependency - the `mri_parameter_form` instrument must installed. 
-Otherwise an error will show in the front-end: `Table 'LORIS.mri_parameter_form` and thid module will not load.
-A sample MRI Parameter Form (PHP) instrument is available with our sample dataset under `raisinbread/instruments/NDB_BVL_Instrument_mri_parameter_form.class.inc` in this repo.  Please customize this for your project, and install it and configure it for your battery.
+If not, this module will not and error message will indicate that `Table 'LORIS.mri_parameter_form` is missing. 
+A sample MRI Parameter Form (PHP) instrument is available with our sample dataset under `raisinbread/instruments/NDB_BVL_Instrument_mri_parameter_form.class.inc` in this repo.  Please customize this for your project, and install it in the database tables. It is also recommended to configure and populate this instrument for your battery, following our Setup Guide for behavioural instruments. 
 
 #### Permissions
 The `quality_control` permission gives users access to this module and its features.
