@@ -17,7 +17,7 @@
     different types of resolutions, and ensure that they show up in the 
     `Resolved` tab, and are no longer in the `Not resolved` tab.
 5. Ensure that the link to the `protocol violation` and `Could not identify scan
-   type' works within the `Resolved` tab (`Problem` column).
+   type` works within the `Resolved` tab (`Problem` column).
 6. Ensure all filters and sorting work in the `Resolved` tab.
 7. Click on the question mark on the right upper side of the windows and ensure
    that the help content about MRI Violation is showing up and is up-to-date.
