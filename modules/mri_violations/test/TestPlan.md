@@ -19,8 +19,8 @@
 5. Ensure that the link to the `protocol violation` and `Could not identify scan
    type' works within the `Resolved` tab (`Problem` column).
 6. Ensure all filters and sorting work in the `Resolved` tab.
-7. Click on the question mark on the rigth upper side of the windows and ensure
-   that the help content about MRI Violation is showing up.
+7. Click on the question mark on the right upper side of the windows and ensure
+   that the help content about MRI Violation is showing up and is up-to-date.
 
 ### MRI Protocol Violations Page
  This page contains two 
@@ -33,8 +33,9 @@
     `Violated Scans: Edit MRI protocol table`. Ensure that the edited data is
     saved to the database.
 3.  Ensure first table displays all valid protocols for the study.
-4. Click on the question mark on the rigth upper side of the windows and ensure
-   that the help content about MRI Protocol Violation is showing up.
+4. Click on the question mark on the right upper side of the windows and ensure
+   that the help content about MRI Protocol Violation is showing up and is
+   up-to-date.
 
 ### MRI Protocol Check Violations page
 1. Ensure that the Selection Filter works for 
@@ -46,8 +47,9 @@
 2. Click on link under `PatientName` 
     column, should go to DICOM Archive for the patient if permission `Across 
     all sites view DICOM Archive module and pages` is granted.
-3. Click on the question mark on the rigth upper side of the windows and ensure
-   that the help content about MRI Protocol Check Violation is showing up.
+3. Click on the question mark on the right upper side of the windows and ensure
+   that the help content about MRI Protocol Check Violation is showing up
+   and is up-to-date.
 
 ## Functionality tested by automated testing
 1.  Ensure that the module loads only when a user has appropriate permissions.
