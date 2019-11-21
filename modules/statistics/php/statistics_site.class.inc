@@ -49,7 +49,7 @@ class Statistics_Site extends \NDB_Menu
         );
         
         $hasCenterPermission = false;
-                
+        
         // TODO: There are no means of set permissions per site
         // for a given user right now: (e.g.) The user X can have
         // the permission data_entry on site Y but not on site Z.
@@ -70,7 +70,6 @@ class Statistics_Site extends \NDB_Menu
             
             // For the short term the user we'll be granted access
             // if at least have permission AND one of the centers
-            
             // The filter _checkCriteria() (please see bellow)
             // takes care of restricting access to sites the user belongs to.
             // When logic reimplemented on hasCenterPermission(),
@@ -99,21 +98,21 @@ class Statistics_Site extends \NDB_Menu
      * @return void
      */
     
-    // TODO: There are no means of set permissions per site
-    // for a given user right now: (e.g.) The user X can have
-    // the permission data_entry on site Y but not on site Z.
-    // Currently, hasCenterPermission() function is only checking
-    // if the user have a given center AND a given permission
-    // not if it have the permission for this specific center.
-    // This logic will be implemented in hasCenterPermission()
-    // in near versions when the permission framework allow it
-            
-    // The filter _checkCriteria() takes care of restricting
-    // the user access only to the sites it belongs to.
-    // When logic reimplemented on hasCenterPermission(),
-    // _checkCriteria() will take care of retriving information
-    // only for those centers the user has the specific permission.
+    /* TODO: There are no means of set permissions per site
+       for a given user right now: (e.g.) The user X can have
+       the permission data_entry on site Y but not on site Z.
+       Currently, hasCenterPermission() function is only checking
+       if the user have a given center AND a given permission
+       not if it have the permission for this specific center.
+       This logic will be implemented in hasCenterPermission()
+       in near versions when the permission framework allow it
     
+       The filter _checkCriteria() takes care of restricting
+       the user access only to the sites it belongs to.
+       When logic reimplemented on hasCenterPermission(),
+       _checkCriteria() will take care of retriving information
+       only for those centers the user has the specific permission.
+     */
     function _checkCriteria($centerID, $projectID)
     {
         if (!empty($centerID)) {
