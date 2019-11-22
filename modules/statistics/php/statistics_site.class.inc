@@ -125,7 +125,11 @@ class Statistics_Site extends \NDB_Menu
                 $list_of_permitted_sites = \Utility::getSiteList();
             } else {
                 foreach ($currentUser->getCenterIDs() as $centerID) {
-                    if ($currentUser->hasCenterPermission('data_entry', intval($centerID))) {
+                    if ($currentUser->hasCenterPermission(
+                        'data_entry',
+                        intval($centerID)
+                    )
+                    ) {
                         array_push($list_of_permitted_sites, $centerID);
                     }
                 }
