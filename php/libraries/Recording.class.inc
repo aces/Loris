@@ -326,7 +326,7 @@ class Recording
      * Get all electrodes info from the physiological_electrode table for that
      * Recording.
      *
-     * @return \LORIS\RecordingChannels[]
+     * @return \LORIS\RecordingElectrodes[]
      */
     public function getElectrodes(): array
     {
@@ -360,6 +360,45 @@ class Recording
             function ($row) {
                 $values = array_values($row);
                 return new \LORIS\RecordingElectrodes(...$values);
+            },
+            $dbrows
+        );
+    }
+
+    /**
+     * Get all task events from the physiological_task_event table for that
+     * Recording.
+     *
+     * @return \LORIS\RecordingEvents[]
+     */
+    public function getEvents(): array
+    {
+        $dbrows = \NDB_Factory::singleton()
+            ->database()
+            ->pselect(
+                '
+                       SELECT
+                         pte.Onset        as onset,
+                         pte.Duration     as duration,
+                         pte.EventCode    as eventcode,
+                         pte.EventSample  as eventsample,
+                         pte.EventType    as eventtype,
+                         pte.TrialType    as trialtype,
+                         pte.ResponseTime as responsetime,
+                         pte.FilePath     as filepath
+                       FROM
+                         physiological_task_event pte 
+                       JOIN physiological_file f
+                         USING (PhysiologicalFileID)
+                       WHERE
+                         pte.PhysiologicalFileID = :v_fileid
+                      ',
+                array('v_fileid' => $this->_fileid)
+            );
+        return array_map(
+            function ($row) {
+                $values = array_values($row);
+                return new \LORIS\RecordingEvents(...$values);
             },
             $dbrows
         );
