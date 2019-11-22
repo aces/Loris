@@ -8,14 +8,14 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\api\Endpoints\Candidate\Visit\Electrophysiology;
+namespace LORIS\api\Endpoints\Candidate\Visit\Electrophysiology\BidsFile;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
 
 /**
- * This class handles request to an image header(s).
+ * This class handles request to a recording's electrode BIDS TSV file.
  *
  * @category API
  * @package  LORIS
@@ -23,37 +23,22 @@ use \LORIS\api\Endpoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Electrodes extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
-     * The requested Visit
-     *
-     * @var \Timepoint
-     */
-    private $_visit;
-
-    /**
-     * The requested Recording
+     * The requested recording
      *
      * @var \LORIS\Recording
      */
     private $_recording;
 
     /**
-     * A cache of the results of the endpoint, so that
-     * it doesn't need to be recalculated for the ETag and handler
-     */
-    private $_cache;
-
-    /**
      * Contructor
      *
-     * @param \Timepoint       $visit     The requested visit
      * @param \LORIS\Recording $recording The requested recording
      */
-    public function __construct(\Timepoint $visit, \LORIS\Recording $recording)
+    public function __construct(\LORIS\Recording $recording)
     {
-        $this->_visit     = $visit;
         $this->_recording = $recording;
     }
 
@@ -90,23 +75,24 @@ class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-            switch ($request->getMethod()) {
-                case 'GET':
-                    return $this->_handleGET($request);
+        switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGET($request);
 
-                case 'OPTIONS':
-                    return (new \LORIS\Http\Response())
-                        ->withHeader('Allow', $this->allowedMethods());
+            case 'OPTIONS':
+                return (new \LORIS\Http\Response())
+                    ->withHeader('Allow', $this->allowedMethods());
 
-                default:
-                    return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                        $this->allowedMethods()
-                    );
-            }
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    $this->allowedMethods()
+                );
+
+        }
     }
 
     /**
-     * Generates a response using specialized views.
+     * Create an array representation of this endpoint's response body
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -114,23 +100,29 @@ class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (isset($this->_cache)) {
-            return $this->_cache;
-        }
+        $info = $this->_recording->getElectrodesFileInfo();
 
-        $pathparts = $request->getAttribute('pathparts');
-        if (count($pathparts) > 1) {
+        if (!$info->isFile()) {
+            error_log('file in database but not in file system');
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        $view = new \LORIS\api\Views\Visit\Recording\Channels(
-            $this->_visit,
-            $this->_recording
+        if (!$info->isReadable()) {
+            error_log('file exist but is not readable by webserver');
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
+
+        $filename = $info->getFilename();
+        $body     = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
+
+        return new \LORIS\Http\Response(
+            $body,
+            200,
+            array(
+                'Content-Type'        => 'recording/tsv',
+                'Content-Disposition' => 'attachment; filename=' . $filename,
+            )
         );
-
-        $this->_cache = new \LORIS\Http\Response\JsonResponse($view->toArray());
-
-        return $this->_cache;
     }
 
     /**

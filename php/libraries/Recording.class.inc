@@ -52,12 +52,16 @@ class Recording
                 ->pselectRow(
                     '
                      SELECT
-                       f.FilePath as filelocation,
-                       pot.OutputTypeName as outputtype,
+                       f.FilePath               as filelocation,
+                       pot.OutputTypeName       as outputtype,
                        pm.PhysiologicalModality as acquisitionmodality,
-                       FileType as filetype,
-                       s.CenterID as centerid,
-                       c.Entity_type as entitytype
+                       FileType                 as filetype,
+                       s.CenterID               as centerid,
+                       c.Entity_type            as entitytype,
+                       pc.FilePath              as channel_file_path,
+                       pe.FilePath              as electrode_file_path,
+                       pte.FilePath             as event_file_path,
+                       pa.FilePath              as archive_file_path
                      FROM
                        physiological_file f 
                      LEFT JOIN session s
@@ -68,6 +72,26 @@ class Recording
                        ON (pot.PhysiologicalOutputTypeID = f.PhysiologicalOutputTypeID)
                      LEFT JOIN physiological_modality pm
                        ON (pm.PhysiologicalModalityID = f.PhysiologicalModalityID)
+                     LEFT JOIN (
+                       SELECT PhysiologicalFileID, FilePath
+                       FROM physiological_channel
+                       LIMIT 1
+                     ) pc
+                       ON (pc.PhysiologicalFileID = f.PhysiologicalFileID)
+                     LEFT JOIN (
+                       SELECT PhysiologicalFileID, FilePath
+                       FROM physiological_electrode
+                       LIMIT 1
+                     ) pe
+                       ON (pe.PhysiologicalFileID = f.PhysiologicalFileID)
+                     LEFT JOIN (
+                       SELECT PhysiologicalFileID, FilePath
+                       FROM physiological_task_event
+                       LIMIT 1
+                     ) pte
+                       ON (pte.PhysiologicalFileID = f.PhysiologicalFileID)
+                     LEFT JOIN physiological_archive pa
+                       ON (pa.PhysiologicalFileID = f.PhysiologicalFileID)
                      WHERE f.PhysiologicalFileID = :v_fileid
                     ',
                     array('v_fileid' => $fileid)
@@ -83,6 +107,10 @@ class Recording
             $this->_filetype            = $dbrow['filetype'];
             $this->_centerid            = (int) $dbrow['centerid'];
             $this->_entitytype          = $dbrow['entitytype'];
+            $this->_channel_file_path   = $dbrow['channel_file_path'];
+            $this->_electrode_file_path = $dbrow['electrode_file_path'];
+            $this->_event_file_path     = $dbrow['event_file_path'];
+            $this->_archive_file_path   = $dbrow['archive_file_path'];
         }
     }
 
@@ -174,6 +202,78 @@ class Recording
     }
 
     /**
+     * Return a SPLFileInfo object based on this channels' file's properties
+     **
+     * @return \SplFileInfo
+     */
+    public function getChannelsFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('imagePath');
+
+        $fullpath = $imagepath . $this->_channel_file_path;
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
+    }
+
+    /**
+     * Return a SPLFileInfo object based on this electrodes' file's properties
+     *
+     * @return \SplFileInfo
+     */
+    public function getElectrodesFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('imagePath');
+
+        $fullpath = $imagepath . $this->_electrode_file_path;
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
+    }
+
+    /**
+     * Return a SPLFileInfo object based on this events.class' file's properties
+     *
+     * @return \SplFileInfo
+     */
+    public function getEventsFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('imagePath');
+
+        $fullpath = $imagepath . $this->_event_file_path;
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
+    }
+
+    /**
+     * Return a SPLFileInfo object based on this archive's properties
+     *
+     * @return \SplFileInfo
+     */
+    public function getArchiveFileInfo(): \SplFileInfo
+    {
+        $imagepath = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('imagePath');
+
+        $fullpath = $imagepath . $this->_archive_file_path;
+
+        $info = new \SplFileInfo($fullpath);
+
+        return $info;
+    }
+
+    /**
      * Get all channels.class info from the physiological_channel table for that
      * Recording.
      *
@@ -220,34 +320,6 @@ class Recording
             },
             $dbrows
         );
-    }
-
-    /**
-     * Get channel BIDS tsv file per filename
-     *
-     * @param \User  $user     The requesting user
-     * @param string $filename The requested filename
-     *
-     * @throws \NotFound
-     * @return \LORIS\RecordingChannels
-     */
-    public function getChannelsByFilename(\User $user, string $filename): \LORIS\RecordingChannels
-    {
-        $filtered = array_filter(
-          $this->getChannelFiles($user),
-          function ($dto) use ($filename) {
-              return $dto->getFilename() == $filename;
-          }
-        );
-
-        if (empty($filtered)) {
-            throw new \NotFound($filename . 'not found.');
-        }
-
-        // Take the first corresponding file.
-        $channeldto = array_pop($filtered);
-
-        return new \LORIS\RecordingChannels($channeldto->getFileId);
     }
 
     /**
