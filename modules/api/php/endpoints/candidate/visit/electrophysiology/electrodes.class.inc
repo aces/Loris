@@ -15,7 +15,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
 
 /**
- * This class handles request to a recording's channel information.
+ * This class handles request to a recording electrode information.
  *
  * @category API
  * @package  LORIS
@@ -23,7 +23,7 @@ use \LORIS\api\Endpoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Electrodes extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
      * The requested Visit
@@ -123,7 +123,7 @@ class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        $view = new \LORIS\api\Views\Visit\Recording\Channels(
+        $view = new \LORIS\api\Views\Visit\Recording\Electrodes(
             $this->_visit,
             $this->_recording
         );

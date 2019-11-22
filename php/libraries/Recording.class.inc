@@ -274,7 +274,7 @@ class Recording
     }
 
     /**
-     * Get all channels.class info from the physiological_channel table for that
+     * Get all channels info from the physiological_channel table for that
      * Recording.
      *
      * @return \LORIS\RecordingChannels[]
@@ -317,6 +317,49 @@ class Recording
             function ($row) {
                 $values = array_values($row);
                 return new \LORIS\RecordingChannels(...$values);
+            },
+            $dbrows
+        );
+    }
+
+    /**
+     * Get all electrodes info from the physiological_electrode table for that
+     * Recording.
+     *
+     * @return \LORIS\RecordingChannels[]
+     */
+    public function getElectrodes(): array
+    {
+        $dbrows = \NDB_Factory::singleton()
+            ->database()
+            ->pselect(
+                '
+                       SELECT
+                         pe.Name                as electrodename,
+                         pet.ElectrodeType      as electrodetype,
+                         pem.ElectrodeMaterial  as electrodematerial,
+                         pe.X                   as x,
+                         pe.Y                   as y,
+                         pe.Z                   as z,
+                         pe.Impedance           as Impedance,
+                         pe.FilePath            as filepath
+                       FROM
+                         physiological_electrode pe 
+                       JOIN physiological_electrode_type pet
+                         USING (PhysiologicalElectrodeTypeID)
+                       JOIN physiological_electrode_material pem
+                         USING (PhysiologicalElectrodeMaterialID)
+                       JOIN physiological_file f
+                         USING (PhysiologicalFileID)
+                       WHERE
+                         pe.PhysiologicalFileID = :v_fileid
+                      ',
+                array('v_fileid' => $this->_fileid)
+            );
+        return array_map(
+            function ($row) {
+                $values = array_values($row);
+                return new \LORIS\RecordingElectrodes(...$values);
             },
             $dbrows
         );
