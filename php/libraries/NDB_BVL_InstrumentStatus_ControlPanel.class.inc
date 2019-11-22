@@ -106,7 +106,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         if (empty($this->subtest)) {
             $status = new \NDB_BVL_InstrumentStatus;
             $status->select($this->tpl_data['commentID']);
-            $this->setDataEntryStatus($status->_status['Data_entry'] ?? 'In Progress');
+            $this->setDataEntryStatus(
+                $status->_status['Data_entry']
+                ?? 'In Progress'
+            );
 
             // generate the administration flag buttons
             $this->tpl_data['access']['administration']
