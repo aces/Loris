@@ -74,7 +74,7 @@ class Events
 
         return array(
             'Meta'       => $meta,
-            'Electrodes' => $events,
+            'TaskEvents' => $events,
         );
     }
 }
