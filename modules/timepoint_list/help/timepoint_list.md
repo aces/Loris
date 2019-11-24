@@ -2,7 +2,7 @@
 
 LORIS organizes longitudinal study data into a series of timepoints (visit) for each candidate. Each timepoint will be identified by a **Visit Label** (i.e. V1, V2), according to the testing plan or battery design of the study.
 
-## Time-Point List table
+## Timepoint List
 
 The data table lists all registered time-points, displaying summary status information about each. Click on any **Visit Label** to open a timepoint record and view all instruments and data collected at that candidate-timepoint.
 
