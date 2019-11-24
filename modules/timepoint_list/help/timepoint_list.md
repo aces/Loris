@@ -10,7 +10,7 @@ There are several actions you can take within a candidate's profile from the *Ca
 
 ## Create New Timepoint
 
-Click **Create New Timepoint**, which brings you to a new page. Here, you'll select a subproject (if applicable) and click **Create Timepoint**. 
+Click **Create New Timepoint**, which brings you to a new page, which has its own help text with instructions for creating a new timepoint.
 
 ## Edit Candidate Info
 
