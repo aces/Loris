@@ -205,7 +205,7 @@ class NewProfileIndex extends React.Component {
             name = "dobDate"
             label = "Date of Birth"
             minYear = {minYear}
-            maxYear = {maxYear}
+            maxYear = {(new Date()).getFullYear()}
             dateFormat = {dateFormat}
             onUserInput = {this.setFormData}
             value = {this.state.formData.dobDate}
@@ -215,7 +215,7 @@ class NewProfileIndex extends React.Component {
             name = "dobDateConfirm"
             label = "Date of Birth Confirm"
             minYear = {minYear}
-            maxYear = {maxYear}
+            maxYear = {(new Date()).getFullYear()}
             dateFormat = {dateFormat}
             onUserInput = {this.setFormData}
             value = {this.state.formData.dobDateConfirm}
