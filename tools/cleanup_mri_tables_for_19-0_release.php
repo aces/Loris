@@ -1,5 +1,6 @@
 <?php
-/** Script to clean up orphan entries in the imaging tables.
+/**
+ * Script to clean up orphan entries in the imaging tables.
  *
  * WARNING!!
  *  This script should be run before applying the following SQL patch
@@ -28,66 +29,73 @@
  *         and FileID
  *  3) Congratulations!! You are ready to run the SQL patch!
  *
+ * PHP Version 7
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 require_once 'generic_includes.php';
 require_once 'Database.class.inc';
 
 $table_array = array(
-    'MRICandidateErrors' => array(
+    'MRICandidateErrors'  => array(
         'table1'   => 'MRICandidateErrors',
         'table2'   => 'tarchive',
         'FK_name1' => 'TarchiveID',
-        'FK_name2' => 'TarchiveID'
+        'FK_name2' => 'TarchiveID',
     ),
-    'mri_violations_log' => array(
+    'mri_violations_log'  => array(
         'table1'   => 'mri_violations_log',
         'table2'   => 'tarchive',
         'FK_name1' => 'TarchiveID',
-        'FK_name2' => 'TarchiveID'
+        'FK_name2' => 'TarchiveID',
     ),
-    'files' => array(
+    'files'               => array(
         'table1'   => 'files',
         'table2'   => 'tarchive',
         'FK_name1' => 'TarchiveSource',
-        'FK_name2' => 'TarchiveID'
+        'FK_name2' => 'TarchiveID',
     ),
-    'files_qcstatus' => array(
+    'files_qcstatus'      => array(
         'table1'   => 'files_qcstatus',
         'table2'   => 'files',
         'FK_name1' => 'FileID',
-        'FK_name2' => 'FileID'
+        'FK_name2' => 'FileID',
     ),
     'mri_upload_tarchive' => array(
         'table1'   => 'mri_upload',
         'table2'   => 'tarchive',
         'FK_name1' => 'TarchiveID',
-        'FK_name2' => 'TarchiveID'
+        'FK_name2' => 'TarchiveID',
     ),
-    'mri_upload_session' => array(
+    'mri_upload_session'  => array(
         'table1'   => 'mri_upload',
         'table2'   => 'session',
         'FK_name1' => 'SessionID',
-        'FK_name2' => 'ID'
+        'FK_name2' => 'ID',
     ),
     'mri_protocol_checks' => array(
         'table1'   => 'mri_protocol_checks',
         'table2'   => 'mri_scan_type',
         'FK_name1' => 'Scan_type',
-        'FK_name2' => 'ID'
+        'FK_name2' => 'ID',
     ),
-    'tarchive' => array(
+    'tarchive'            => array(
         'table1'   => 'tarchive',
         'table2'   => 'session',
         'FK_name1' => 'SessionID',
-        'FK_name2' => 'ID'
-    )
+        'FK_name2' => 'ID',
+    ),
 );
 
 iterate($table_array);
 
 /**
- * iterate through the array of tables to look for orphan entries
+ * Iterate through the array of tables to look for orphan entries
  *
  * @param array $table_array tables and fields array to use to look for orphans
  *
@@ -109,7 +117,7 @@ function iterate($table_array)
 }
 
 /**
- * creates the select query based on the table and foreign names given as input
+ * Creates the select query based on the table and foreign names given as input
  *
  * @param string $table1        name of table 1 to use in the select
  * @param string $table2        name of table 2 to use in the select (join part)
@@ -133,7 +141,7 @@ function createSelect($table1, $table2, $FK1, $FK2, $select_fields)
 }
 
 /**
- * main function with wrapper of actions to execute for each table
+ * Main function with wrapper of actions to execute for each table
  *
  * @param string $select_all_query select all query
  * @param string $table_name       table name
@@ -148,7 +156,7 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
     $orphan_list = selectOrphan($select_all_query);
 
     // if no entries found, return to continue to the next table
-    if ( empty($orphan_list) ) {
+    if (empty($orphan_list)) {
         print "Congratulations! No orphans found in $table_name! \n";
         return;
     }
@@ -176,7 +184,6 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
         backupEntries($select_ID_query, $table_name, $FK_field);
     }
 
-
     // clean up the table $table_name based on answer provided by the user
     cleanTable(
         $table_name,
@@ -184,16 +191,14 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
         $select_ID_query,
         $delete_answer
     );
-    
 }
 
 /**
- * selects orphan entries base on select query
+ * Selects orphan entries base on select query
  *
  * @param string $query query to use to select orphans
  *
  * @return array result of the select query
- *
  */
 function selectOrphan($query)
 {
@@ -205,7 +210,7 @@ function selectOrphan($query)
 }
 
 /**
- * prints the list of found orphan entries in the table
+ * Prints the list of found orphan entries in the table
  *
  * @param string $table_name  name of the table
  * @param array  $orphan_list array with the list of orphan entries found]
@@ -220,11 +225,11 @@ function printOrphan($table_name, $orphan_list)
 }
 
 /**
- * ask whether the user wants to delete orphans from the table
+ * Ask whether the user wants to delete orphans from the table
  *
  * @param string $table_name name of the table in which to delete orphans
  * @param string $FK_field   foreign key to set to null if don't want to delete
- * orphans
+ *                           orphans
  *
  * @return string  answer from the user to the question
  */
@@ -247,7 +252,7 @@ function askToDelete($table_name, $FK_field)
 }
 
 /**
- * backup the orphan entries into a text file
+ * Backup the orphan entries into a text file
  *
  * @param string $selectID   select IDs query
  * @param string $table_name name of the table to backup
@@ -260,11 +265,11 @@ function backupEntries($selectID, $table_name, $FK_field)
     // grep the IDs to backup from the database based on query stored in
     // $selectID. This will be given as an argument to mysqldump using
     // --where option
-    $IDs = generateIdList($selectID, $FK_field);
+    $IDs   = generateIdList($selectID, $FK_field);
     $where = $FK_field . " IN (" . $IDs . ")";
 
     // create directory where the back up will go if it does not exist yet
-    if ( !file_exists(__DIR__."/../project/backup") ) {
+    if (!file_exists(__DIR__."/../project/backup")) {
         mkdir(__DIR__."/../project/backup");
     }
 
@@ -305,7 +310,7 @@ function backupEntries($selectID, $table_name, $FK_field)
 }
 
 /**
- * either delete orphans from table or update the foreign key of the orphans
+ * Either delete orphans from table or update the foreign key of the orphans
  * to NULL if the user wants to keep the orphan entries in the table
  *
  * @param string $table_name    name of the table to update
@@ -340,7 +345,7 @@ function cleanTable($table_name, $FK_field, $selectID, $delete_answer)
 }
 
 /**
- * generates the list of IDs to be used in a mysql where close (where ID IN ())
+ * Generates the list of IDs to be used in a mysql where close (where ID IN ())
  *
  * @param string $selectIDs select the IDs to use in a mysql where close
  * @param string $FK_field  foreign key ID field
@@ -369,5 +374,3 @@ function generateIdList($selectIDs, $FK_field)
 
     return $IDs; // return sting of IDs
 }
-
-?>

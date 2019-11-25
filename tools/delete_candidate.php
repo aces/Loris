@@ -47,8 +47,8 @@ const MIN_NUMBER_OF_ARGS = 4;
 $actions = array('delete_candidate');
 
 //define the command line parameters
-if (count($argv) < MIN_NUMBER_OF_ARGS 
-    || $argv[1] == 'help' 
+if (count($argv) < MIN_NUMBER_OF_ARGS
+    || $argv[1] == 'help'
     || !in_array($argv[1], $actions, true)
 ) {
     showHelp();
@@ -122,27 +122,31 @@ case 'delete_candidate':
     break;
 }
 
-/*
+/**
  * Prints the usage and example help text and stop program
  */
 function showHelp()
 {
-    echo "*** Delete Candidate Info ***\n\n";
+    echo <<<USAGE
+*** Delete Candidate Info ***
 
-    echo "Usage: php delete_candidate.php delete_candidate CandID PSCID [confirm]\n";
-    echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007\n";
-    echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm\n";
-    echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007 tosql\n\n";
+Usage: php delete_candidate.php delete_candidate CandID PSCID [confirm]
+Example: php delete_candidate.php delete_candidate 965327 dcc0007
+Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm
+Example: php delete_candidate.php delete_candidate 965327 dcc0007 tosql
 
-    echo "When the 'tosql' function is used, the SQL file exported will be located \n".
-        "under the following path: loris_root/project/tables_sql/DELETE_candidate_CandID.sql\n\n";
-
-    die();
+When the 'tosql' function is used, the SQL file exported will be located
+under the following path: 
+    loris_root/project/tables_sql/DELETE_candidate_CandID.sql
+USAGE;
+    die;
 }
-/*
- * All tables with entries to be deleted here are only those with FOREIGN KEY relations to `candidate`.
- * All other tables with FOREIGN KEY relations to these tables (second-level relations) should
- * have actions on delete specified in the database schema
+/**
+ * All tables with entries to be deleted here are only those with FOREIGN KEY
+ * relations to `candidate`.
+ * All other tables with FOREIGN KEY relations to these tables
+ * (second-level relations) should have actions on delete specified in the
+ * database schema
  */
 function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 {
@@ -155,7 +159,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     $outputType ="";
     if ($printToSQL) {
         $outputType ="tosql";
-    } else if ($confirm) {
+    } elseif ($confirm) {
         $outputType ="confirm";
     }
 
@@ -176,7 +180,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
                 " $CandID $PSCID $sid $subOutputType"
             );
             //echo $out;
-            $match = Array();
+            $match    = array();
             $nbDelete = preg_match_all("/(DELETE FROM .*;)/", $out, $match);
             if ($nbDelete > 0) {
                 for ($i=0; $i < $nbDelete; $i++) {
@@ -190,60 +194,88 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     // Print participant_status
     echo "\nParticipant Status\n";
     echo "--------------------\n";
-    $result = $DB->pselect('SELECT * FROM participant_status WHERE CandID=:cid', array('cid' => $CandID));
+    $result = $DB->pselect(
+        'SELECT * FROM participant_status WHERE CandID=:cid',
+        array('cid' => $CandID)
+    );
     print_r($result);
 
     // Print participant_status_history
     echo "\nParticipant Status History\n";
     echo "----------------------------\n";
-    $result = $DB->pselect('SELECT * FROM participant_status_history WHERE CandID=:cid', array('cid' => $CandID));
+    $result = $DB->pselect(
+        'SELECT * FROM participant_status_history WHERE CandID=:cid',
+        array('cid' => $CandID)
+    );
     print_r($result);
 
     // Print parameter_candidate
     echo "\nParameter Candidate\n";
     echo "---------------------\n";
-    $result = $DB->pselect('SELECT * FROM parameter_candidate WHERE CandID=:cid', array('cid' => $CandID));
+    $result = $DB->pselect(
+        'SELECT * FROM parameter_candidate WHERE CandID=:cid',
+        array('cid' => $CandID)
+    );
     print_r($result);
 
     // Print SNP_candidate_rel
     echo "\nSNP_candidate_rel\n";
     echo "-----------\n";
-    $result = $DB->pselect('SELECT * FROM SNP_candidate_rel WHERE CandID=:cid', array('cid' => $CandID));
+    $result = $DB->pselect(
+        'SELECT * FROM SNP_candidate_rel WHERE CandID=:cid',
+        array('cid' => $CandID)
+    );
     print_r($result);
 
     // Print CNV
     echo "\nCNV\n";
     echo "-----------\n";
-    $result = $DB->pselect('SELECT * FROM CNV WHERE CandID=:cid', array('cid' => $CandID));
+    $result = $DB->pselect(
+        'SELECT * FROM CNV WHERE CandID=:cid',
+        array('cid' => $CandID)
+    );
     print_r($result);
-    
+
     // Print genomic_candidate_files_rel
     echo "\nGenomic Candidate Files Relation\n";
     echo "-----------\n";
-    $result = $DB->pselect('SELECT * FROM genomic_candidate_files_rel WHERE CandID=:cid', array('cid' => $CandID));
+    $result = $DB->pselect(
+        'SELECT * FROM genomic_candidate_files_rel WHERE CandID=:cid',
+        array('cid' => $CandID)
+    );
     print_r($result);
-    
+
     // Print genomic_sample_candidate_rel
     echo "\nGenomic Sample Candidate Relation\n";
     echo "-----------\n";
-    $result = $DB->pselect('SELECT * FROM genomic_sample_candidate_rel WHERE CandID=:cid', array('cid' => $CandID));
+    $result = $DB->pselect(
+        'SELECT * FROM genomic_sample_candidate_rel WHERE CandID=:cid',
+        array('cid' => $CandID)
+    );
     print_r($result);
-    
+
     // Print issues
     echo "\nIssues\n";
     echo "-----------\n";
-    $result = $DB->pselect('SELECT * FROM issues WHERE candID=:cid', array('cid' => $CandID));
+    $result = $DB->pselect(
+        'SELECT * FROM issues WHERE candID=:cid',
+        array('cid' => $CandID)
+    );
     print_r($result);
-    
+
     // Print candidate
     echo "\nCandidate\n";
     echo "-----------\n";
-    $result = $DB->pselect('SELECT * FROM candidate WHERE CandID=:cid', array('cid' => $CandID));
+    $result = $DB->pselect(
+        'SELECT * FROM candidate WHERE CandID=:cid',
+        array('cid' => $CandID)
+    );
     print_r($result);
 
     // IF CONFIRMED, DELETE CANDIDATE
     if ($confirm) {
-        echo "\nDropping all DB entries for candidate CandID: " . $CandID . " And PSCID: " .
+        echo "\nDropping all DB entries for candidate CandID: " . $CandID
+            . " And PSCID: " .
             $PSCID . "\n";
 
         //delete from the participant_status table
@@ -262,10 +294,16 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         $result = $DB->delete("CNV", array("CandID" => $CandID));
 
         //delete from genomic_candidate_files_rel
-        $result = $DB->delete("genomic_candidate_files_rel", array("CandID" => $CandID));
+        $result = $DB->delete(
+            "genomic_candidate_files_rel",
+            array("CandID" => $CandID)
+        );
 
         //delete from genomic_sample_candidate_rel
-        $result = $DB->delete("genomic_sample_candidate_rel", array("CandID" => $CandID));
+        $result = $DB->delete(
+            "genomic_sample_candidate_rel",
+            array("CandID" => $CandID)
+        );
 
         //delete from issues
         $result = $DB->delete("issues", array("candID" => $CandID));
@@ -273,29 +311,60 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from candidate
         $DB->delete("candidate", array("CandID" => $CandID));
     } elseif ($printToSQL) {
-        echo "Generating all DELETE statements for CandID: " . $CandID . " And PSCID: " .
+        echo "Generating all DELETE statements for CandID: " . $CandID
+            . " And PSCID: " .
             $PSCID . "\n";
 
         //delete from the participant_status table
-        _printResultsSQL("participant_status", array("CandID" => $CandID), $output, $DB);
+        _printResultsSQL(
+            "participant_status",
+            array("CandID" => $CandID),
+            $output,
+            $DB
+        );
 
         //delete from the participant_status_history table
-        _printResultsSQL("participant_status_history", array("CandID" => $CandID), $output, $DB);
+        _printResultsSQL(
+            "participant_status_history",
+            array("CandID" => $CandID),
+            $output,
+            $DB
+        );
 
         //delete from parameter_candidate
-        _printResultsSQL("parameter_candidate", array("CandID" => $CandID), $output, $DB);
+        _printResultsSQL(
+            "parameter_candidate",
+            array("CandID" => $CandID),
+            $output,
+            $DB
+        );
 
         //delete from SNP_candidate_rel
-        _printResultsSQL("SNP_candidate_rel", array("CandID" => $CandID), $output, $DB);
+        _printResultsSQL(
+            "SNP_candidate_rel",
+            array("CandID" => $CandID),
+            $output,
+            $DB
+        );
 
         //delete from CNV
         _printResultsSQL("CNV", array("CandID" => $CandID), $output, $DB);
 
         //delete from genomic_candidate_files_rel
-        _printResultsSQL("genomic_candidate_files_rel", array("CandID" => $CandID), $output, $DB);
+        _printResultsSQL(
+            "genomic_candidate_files_rel",
+            array("CandID" => $CandID),
+            $output,
+            $DB
+        );
 
         //delete from genomic_sample_candidate_rel
-        _printResultsSQL("genomic_sample_candidate_rel", array("CandID" => $CandID), $output, $DB);
+        _printResultsSQL(
+            "genomic_sample_candidate_rel",
+            array("CandID" => $CandID),
+            $output,
+            $DB
+        );
 
         //delete from issues
         _printResultsSQL("issues", array("candID" => $CandID), $output, $DB);
@@ -307,6 +376,9 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     }
 }
 
+/**
+ * Format delete statements.
+ */
 function _printResultsSQL($table, $where, &$output, $DB)
 {
     $query  = "DELETE FROM $table WHERE ";
@@ -317,7 +389,11 @@ function _printResultsSQL($table, $where, &$output, $DB)
     $output .=$query;
 }
 
-function _exportSQL ($output, $CandID) {
+/**
+ * Write SQL commands to file.
+ */
+function _exportSQL($output, $CandID)
+{
     //export file
     $filename = __DIR__ . "/../project/tables_sql/DELETE_candidate_$CandID.sql";
     $fp       = fopen($filename, "w");

@@ -1,10 +1,8 @@
 #!/usr/bin/env php
 <?php
-#!/usr/bin/php
 /**
- * @version $Id: fix_timepoint_date_problems.php,v 1.21 2006/05/05 15:42:25 dario Exp $
- *
- * This is the tool to diagnose and correct the date problems in a candidate profile and add missing instruments to the bvl battery.
+ * This is the tool to diagnose and correct the date problems in a candidate 
+ * profile and add missing instruments to the bvl battery.
  *
  * Currently the tool does the following:
  * - corrects DOB and EDC (candidate table)
@@ -39,7 +37,13 @@
  * -- to fix bvl battery (run only once the dates are fixed)
  * fix_timepoint_date_problems.php add_instrument  <candID> <sessionID> <test_name>
  *
- * @package behavioural
+ * PHP Version 7
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 use LORIS\StudyEntities\Candidate\CandID;
 
@@ -60,17 +64,19 @@ $db = \Database::singleton();
  * display and stop processing if action=help
  */
 if (empty($argv[1]) || $argv[1] == 'help') {
-    fwrite(STDERR, "Usage: \n\n");
-    fwrite(STDERR, "fix_timepoint_date_problems.php help - displays this msg\n");
-    fwrite(STDERR, "fix_timepoint_date_problems.php fix_date        <candID> <newCorrectDate> <dob/edc>\n");
-    fwrite(STDERR, "fix_timepoint_date_problems.php fix_date        <candID> <newCorrectDate> <screening/visit> <sessionID>\n");
-    fwrite(STDERR, "fix_timepoint_date_problems.php diagnose        <candID> \n");
-    fwrite(STDERR, "fix_timepoint_date_problems.php diagnose        <candID> [<newCorrectDate> <dob/edc/>]\n");
-    fwrite(STDERR, "fix_timepoint_date_problems.php diagnose        <candID> [<newCorrectDate> <screening/visit> <sessionID>]\n");
-    fwrite(STDERR, "fix_timepoint_date_problems.php add_instrument  <candID> <sessionID> <test_name>\n");
-    fwrite(STDERR, "NOTES: The date format is: YYYY-MM-DD.\n");
-    fwrite(STDERR, "fix_date: updates the dates in candidate or session table. Does not alter the BVL battery\n");
-    return;
+    echo <<<USAGE
+Usage: 
+    fix_timepoint_date_problems.php help - displays this msg
+    fix_timepoint_date_problems.php fix_date        <candID> <newCorrectDate> <dob/edc>
+    fix_timepoint_date_problems.php fix_date        <candID> <newCorrectDate> <screening/visit> <sessionID>
+    fix_timepoint_date_problems.php diagnose        <candID> 
+    fix_timepoint_date_problems.php diagnose        <candID> [<newCorrectDate> <dob/edc/>]
+    fix_timepoint_date_problems.php diagnose        <candID> [<newCorrectDate> <screening/visit> <sessionID>]\n");
+    fix_timepoint_date_problems.php add_instrument  <candID> <sessionID> <test_name>
+    NOTES: The date format is: YYYY-MM-DD.
+    fix_date: updates the dates in candidate or session table. 
+                Does not alter the BVL battery
+USAGE;
 }
 
 /**
@@ -84,32 +90,38 @@ $candID = new CandID($argv[2]);
 
 // get the rest of the arguments
 switch ($action) {
- case 'fix_date':
-     // new date
-     $newDate = $argv[3];
-     // date type
-     $dateType = strtolower($argv[4]);
-     // sessionID
-     if (in_array($dateType, array('screening','visit'))) $sessionID = $argv[5];
-     break;
+case 'fix_date':
+    // new date
+    $newDate = $argv[3];
+    // date type
+    $dateType = strtolower($argv[4]);
+    // sessionID
+    if (in_array($dateType, array('screening', 'visit'))) {
+        $sessionID = $argv[5];
+    }
+    break;
 
- case 'diagnose':
-     // new date
-     if (!empty($argv[3])) $newDate = $argv[3];
-     // date type
-     if (!empty($argv[4])){
-         $dateType = strtolower($argv[4]);
-         // sessionID only present when dateType defined
-         if (in_array($dateType, array('screening','visit'))) $sessionID = $argv[5];
-     }
-     break;
+case 'diagnose':
+    // new date
+    if (!empty($argv[3])) {
+        $newDate = $argv[3];
+    }
+    // date type
+    if (!empty($argv[4])) {
+        $dateType = strtolower($argv[4]);
+        // sessionID only present when dateType defined
+        if (in_array($dateType, array('screening', 'visit'))) {
+            $sessionID = $argv[5];
+        }
+    }
+    break;
 
- case 'add_instrument':
-     // sessionID
-     $sessionID = $argv[3];
-     // test name
-     $testName = $argv[4];
-     break;
+case 'add_instrument':
+    // sessionID
+    $sessionID = $argv[3];
+    // test name
+    $testName = $argv[4];
+    break;
 }
 
 /**
@@ -141,7 +153,7 @@ if (!empty($sessionID)) {
     // check SessionID - if supplied as an argument, it has to be in the list of existing timepoints
     if (!in_array($sessionID, $listOfTimePoints)) {
         fwrite(STDERR, "Please specify a valid SessionID for candidate ($candID).\n Valid SessionIDs for this subject are:\n");
-        foreach ($listOfTimePoints as $key=>$val) {
+        foreach ($listOfTimePoints as $key => $val) {
             fwrite(STDERR, "$val\n");
         }
         fwrite(STDERR, "For the script syntax type: fix_timepoint_date_problems.php help \n");
@@ -152,87 +164,83 @@ if (!empty($sessionID)) {
 /*
  * The switch to execute actions
  */
-switch ($action)
-{
+switch ($action) {
  /**
   * Fixing the behavioral battery by adding the instrument
   * arguments: $candID, $sessionID, $testName
   * RUN THE DIAGNOSTICS BEFORE TO SEE WHAT NEEDS TO BE FIXED
   */
- case 'add_instrument':
-     // add a missing instrument (sessionID and test name are checked inside the function)
-     $success = addInstrument($sessionID, $testName);
-     break;
+case 'add_instrument':
+    // add a missing instrument (sessionID and test name are checked inside the function)
+    $success = addInstrument($sessionID, $testName);
+    break;
 
   /**
    * Fixing the dates
    * arguments: $candID, $dateType, $newDate, $sessionID
    */
- case 'fix_date':
-     // fix the date (arguments are checked by the function
-     // wrapping in an if/else statement to avoid PHP Notice when $sessionID is empty
-     if (!empty($sessionID)){
-         $success = fixDate($candID, $dateType, $newDate, $sessionID);
-     }else{
-         $success = fixDate($candID, $dateType, $newDate);
-     }
-     break;
+case 'fix_date':
+    // fix the date (arguments are checked by the function
+    // wrapping in an if/else statement to avoid PHP Notice when $sessionID is empty
+    if (!empty($sessionID)) {
+        $success = fixDate($candID, $dateType, $newDate, $sessionID);
+    } else {
+        $success = fixDate($candID, $dateType, $newDate);
+    }
+    break;
 
   /**
    * Timepoint Diagnostics
    * Recommended: run the diagnostics once the dates have been fixed, you can also pass the 'correct' date and the date type to see what changes would happen if the dates were different
    */
-   case 'diagnose':
-   if (!empty($sessionID)) {
-       // overwrite the array to include the provided $sessionID only
-       $listOfTimePoints = array($sessionID);
-   }
+case 'diagnose':
+    if (!empty($sessionID)) {
+           // overwrite the array to include the provided $sessionID only
+           $listOfTimePoints = array($sessionID);
+    }
 
-   // print out candidate info
-   fwrite(STDERR, "Candidate: $candID \n");
+    // print out candidate info
+    fwrite(STDERR, "Candidate: $candID \n");
 
-   // check/diagnose each timepoint separately
-   foreach ($listOfTimePoints as $sessionID) {
+    // check/diagnose each timepoint separately
+    foreach ($listOfTimePoints as $sessionID) {
+          // create timepoint object
+          $timePoint =& TimePoint::singleton($sessionID);
 
-       // create timepoint object
-       $timePoint =& TimePoint::singleton($sessionID);
+          // print out the $sessionID
+          fwrite(STDERR, "\n Timepoint ".$timePoint->getVisitLabel()." ; SubProjectID: ".$timePoint->getSubprojectID()." ; Effective DOB: ".$timePoint->getEffectiveDateOfBirth()." ; (SessionID): $sessionID \n");
 
-       // print out the $sessionID
-       fwrite(STDERR, "\n Timepoint ".$timePoint->getVisitLabel()." ; SubProjectID: ".$timePoint->getSubprojectID()." ; Effective DOB: ".$timePoint->getEffectiveDateOfBirth()." ; (SessionID): $sessionID \n");
+          // diagnose - get the list of missing instruments
+        try {
+            // wrapping in if statement to avoid PHP notice. Checking for both dateType and newDate at the same time since
+            // one should not be set without the other.
+            if (isset($dateType) && isset($newDate)) {
+                  $listNewInstruments = diagnose($sessionID, $dateType, $newDate);
+            } else {
+                 $listNewInstruments = diagnose($sessionID);
+            }
+        } catch (LorisException $e) {
+            // handle the error and skip to next time point
+            fwrite(STDERR, "Error: failed to get the list of needed instruments for candidate ($candID), timepoint ($sessionID):\n");
+            //print error message from dianose function
+            fwrite(STDERR, $e->getMessage(). "\n");
+            continue;
+        }
 
-       // diagnose - get the list of missing instruments
-       try {
-           // wrapping in if statement to avoid PHP notice. Checking for both dateType and newDate at the same time since
-           // one should not be set without the other.
-           if (isset($dateType) && isset($newDate)){
-               $listNewInstruments = diagnose($sessionID, $dateType, $newDate);
-           }else{
-               $listNewInstruments = diagnose($sessionID);
-           }
+        // if there are missing instruments
+        //if (count($listNewInstruments) > 0) {
+        if (!empty($listNewInstruments) >0) {
+            fwrite(STDERR, "\n Missing instruments are:\n");
 
-       } catch (LorisException $e) {
-          // handle the error and skip to next time point
-           fwrite(STDERR, "Error: failed to get the list of needed instruments for candidate ($candID), timepoint ($sessionID):\n");
-           //print error message from dianose function
-           fwrite(STDERR, $e->getMessage(). "\n");
-           continue;
-       }
-
-       // if there are missing instruments
-       //if (count($listNewInstruments) > 0) {
-       if (!empty($listNewInstruments) >0){
-
-           fwrite(STDERR, "\n Missing instruments are:\n");
-
-           //print out the list of missing instruments
-           foreach ($listNewInstruments as $instrument) {
-               fwrite(STDERR, "$instrument \n");
-           }
-       } else {
-           fwrite(STDERR, "\n There are no missing instruments \n");
-       }
-   }
-   break;
+            //print out the list of missing instruments
+            foreach ($listNewInstruments as $instrument) {
+                fwrite(STDERR, "$instrument \n");
+            }
+        } else {
+            fwrite(STDERR, "\n There are no missing instruments \n");
+        }
+    }
+    break;
 } // end switch ($action)
 
 
@@ -243,16 +251,17 @@ switch ($action)
 /**
  * adds a bvl instrument to the battery
  * the function checks the args, add the instrument (if valid), creates a bvl feedback, writes a log and displays the message
- * @param int sessionID of the timepoint
+ *
+ * @param    int sessionID of the timepoint
  * @testName string name of the instrument to add to the battery
- * @throws LorisException
- * @return void
+ * @throws   LorisException
+ * @return   void
  */
 function addInstrument($sessionID, $testName)
 {
     // check the user $_ENV['USER']
     $user =& User::singleton(getenv('USER'));
-    if($user->getUsername() == null) {
+    if ($user->getUsername() == null) {
         throw new LorisException("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
 
@@ -295,8 +304,7 @@ function addInstrument($sessionID, $testName)
 
     //get thread feedback type
     $threadFeedbackType = $feedback->getFeedbackTypeIdByName('other');
-    if (empty($threadFeedbackType))
-    {
+    if (empty($threadFeedbackType)) {
         //create thread feedback type "Other", if it does not exist
         $threadFeedbackType = $feedback->createFeedbackType("Other", "Other");
     }
@@ -308,7 +316,7 @@ function addInstrument($sessionID, $testName)
     $success = $feedback->activateThread();
 
     // print the success msg
-    fwrite(STDERR,"Added the instrument ($testName) to the battery of the timepoint ($sessionID)\n");
+    fwrite(STDERR, "Added the instrument ($testName) to the battery of the timepoint ($sessionID)\n");
 
     // destroy objects
     unset($timePoint);
@@ -328,12 +336,12 @@ function addInstrument($sessionID, $testName)
  * @throws LorisException
  * @return void
  */
-function fixDate($candID, $dateType, $newDate, $sessionID=null)
+function fixDate($candID, $dateType, $newDate, $sessionID = null)
 {
     // check the user $_ENV['USER']
     $user =& User::singleton(getenv('USER'));
 
-    if($user->getUsername() == null) {
+    if ($user->getUsername() == null) {
         throw new LorisException("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
 
@@ -341,7 +349,8 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
 
     // check the args
     if (empty($dateType) || !in_array($dateType, array('dob', 'edc', 'screening', 'visit')) || empty($newDate)
-    || (in_array($dateType, array('screening', 'visit')) && empty($sessionID))) {
+        || (in_array($dateType, array('screening', 'visit')) && empty($sessionID))
+    ) {
         throw new LorisException("Please pass a valid set of arguments\n");
     }
 
@@ -357,9 +366,8 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
 
     // fixing DOB or EDC
     if (in_array($dateType, array('dob', 'edc'))) {
-
         // set and where arrays
-        $setArray = array($dateType => $newDate);
+        $setArray   = array($dateType => $newDate);
         $whereArray = array('CandID' => $candID);
 
         // update candidate table record
@@ -375,10 +383,8 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         $success = $feedback->createThread('profile', '5', "The date of $dateType has been changed to $newDate.", 'N');
 
         // log the change
-        fwrite (STDERR, "Updated $dateType to: $newDate, for candidate $candID. Check the record in the DB! \n");
-
+        fwrite(STDERR, "Updated $dateType to: $newDate, for candidate $candID. Check the record in the DB! \n");
     } else {
-
         // fixing Date_screening or Date_visit
 
         // create timepoint object
@@ -391,14 +397,14 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
 
         // get the stage statuses
         $screeningStage = $timePoint->getScreeningStatus();
-        $visitStage = $timePoint->getVisitStatus();
+        $visitStage     = $timePoint->getVisitStatus();
         // make sure that the stage to fix is started
         if ($dateType == 'visit' && empty($visitStage) || $dateType == 'screening' && empty($screeningStage)) {
             throw new LorisException("Error: failed to retrieve the date of $dateType (sessionID: $sessionID) b/c that stage was not started!");
         }
 
         // set and where arrays for the update
-        $setArray = array("Date_".$dateType => $newDate);
+        $setArray   = array("Date_".$dateType => $newDate);
         $whereArray = array("ID" => $sessionID);
 
         // update session table record
@@ -430,7 +436,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
  * @return array list of missing instruments
  * @throws LorisException
  */
-function diagnose($sessionID, $dateType=null, $newDate=null)
+function diagnose($sessionID, $dateType = null, $newDate = null)
 {
     // check args: sessionID
     if (empty($sessionID)) {
@@ -440,7 +446,8 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
     if (!empty($dateType) || !empty($newDate)) {
         // check the args
         if (empty($dateType) || !in_array($dateType, array('dob', 'edc', 'screening', 'visit')) || empty($newDate)
-        || (in_array($dateType, array('screening', 'visit')) && empty($sessionID))) {
+            || (in_array($dateType, array('screening', 'visit')) && empty($sessionID))
+        ) {
             throw new LorisException("Please pass a valid set of arguments\n");
         }
 
@@ -456,18 +463,21 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
     $timePoint =& TimePoint::singleton($sessionID);
 
     // candidate object - needed to get the dob/edc
-   // $candidate =& Candidate::singleton($timePoint->getCandID());
+    // $candidate =& Candidate::singleton($timePoint->getCandID());
 
     // get the statuses and dates of the screening and visit stages to decide what to do w/ each of them
     $stageList['screening']['status'] = $timePoint->getScreeningStatus();
-    $stageList['screening']['date'] = $timePoint->getDateOfScreening();
-    $stageList['visit']['status'] = $timePoint->getVisitStatus();
-    $stageList['visit']['date'] = $timePoint->getDateOfVisit();
+    $stageList['screening']['date']   = $timePoint->getDateOfScreening();
+    $stageList['visit']['status']     = $timePoint->getVisitStatus();
+    $stageList['visit']['date']       = $timePoint->getDateOfVisit();
     $subProjectID = $timePoint->getSubprojectID();
 
     // define the date of birth to use (dob or edc)
-    if (($dateType=='dob' && $subProjectID==1) || ($dateType=='edc' && $subProjectID==2)) $dateBirth=$newDate;
-    else $dateBirth = $timePoint->getEffectiveDateOfBirth();
+    if (($dateType=='dob' && $subProjectID==1) || ($dateType=='edc' && $subProjectID==2)) {
+        $dateBirth =$newDate;
+    } else {
+        $dateBirth = $timePoint->getEffectiveDateOfBirth();
+    }
 
     // check if the timepoint is started before attempting to make changes to it
     if ($timePoint->getCurrentStage() == 'Not Started' || empty($stageList['screening']['status'])) {
@@ -478,21 +488,18 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
         throw new LorisException("SubProjectID ($subProjectID) is empty for timepoint ($sessionID)");
     }
 
-
     // initialize the array
     $missingInstruments = array();
 
     // check/diagnose the battery for each stage
     foreach ($stageList as $stage => $stageData) {
-
         // if the stage is started
         if (!empty($stageData['status'])) {
-
             $dateOfStage = (!empty($newDate) && strtolower($dateType)==$stage) ? $newDate : $stageList[$stage]['date'];
 
             // compute subject age for the current stage
             $ageArray = Utility::calculateAge($dateBirth, $dateOfStage);
-            $age = ($ageArray['year'] * 12 + $ageArray['mon']) * 30 + $ageArray['day'];
+            $age      = ($ageArray['year'] * 12 + $ageArray['mon']) * 30 + $ageArray['day'];
             if ($age < 0) {
                 $age = 0;
             }

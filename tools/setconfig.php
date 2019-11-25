@@ -26,11 +26,11 @@ require_once "generic_includes.php";
 const MIN_NUMBER_OF_ARGS = 3;
 $args = $argv;
 if ($args[0] == 'php') {
-	$args = array_slice($argv, 1);
+    $args = array_slice($argv, 1);
 }
 if (count($args) < MIN_NUMBER_OF_ARGS) {
-	fwrite(STDERR, "Usage: setconfig.php setting value\n");
-	exit(2);
+    fwrite(STDERR, "Usage: setconfig.php setting value\n");
+    exit(2);
 }
 
 $setting = $args[1];
@@ -61,7 +61,7 @@ $newconfig = (int )$DB->pselectOne(
     array('id' => $id)
 );
 
-if($newconfig === 0) {
+if ($newconfig === 0) {
     $DB->insert("Config", array('Value' => $value, 'ConfigID' => $id));
 } else {
     $DB->update("Config", array('Value' => $value), array('ConfigID' => $id));

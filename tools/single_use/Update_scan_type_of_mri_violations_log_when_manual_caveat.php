@@ -87,4 +87,4 @@ function updateScanType($seriesUID)
     }
 }
 
-?>
+

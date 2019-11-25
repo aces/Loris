@@ -21,10 +21,10 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
 
-/* 
+/*
  * The minimum number of arguments required to run this script.
  *
- * @var int 
+ * @var int
  */
 
 const MIN_NUMBER_OF_ARGS = 4;
@@ -32,8 +32,8 @@ const MIN_NUMBER_OF_ARGS = 4;
 $actions = array('delete_timepoint');
 
 //define the command line parameters
-if (count($argv) < MIN_NUMBER_OF_ARGS 
-    || $argv[1] == 'help' 
+if (count($argv) < MIN_NUMBER_OF_ARGS
+    || $argv[1] == 'help'
     || !in_array($argv[1], $actions, true)
 ) {
     showHelp();
@@ -41,7 +41,7 @@ if (count($argv) < MIN_NUMBER_OF_ARGS
 
 // set default arguments
 $action    = $argv[1];
-$CandID     = $argv[2];
+$CandID    = $argv[2];
 $PSCID     = $argv[3];
 $sessionID = $argv[4];
 $confirm   = false;
@@ -57,9 +57,11 @@ case 'delete_timepoint':
         echo "Missing SessionID parameter\n\n";
         showHelp();
     }
-    if (!empty($argv[5]) && $argv[5] == 'confirm') { $confirm = true;
+    if (!empty($argv[5]) && $argv[5] == 'confirm') {
+        $confirm = true;
     }
-    if (!empty($argv[5]) && $argv[5] == 'tosql') { $printToSQL = true;
+    if (!empty($argv[5]) && $argv[5] == 'tosql') {
+        $printToSQL = true;
     }
     break;
 default:
@@ -104,11 +106,9 @@ if ($sessionID != null) {
     // Check for existence of imaging data
     $filesExist = $DB->pselectOne(
         "SELECT COUNT(*) FROM files WHERE SessionID=:sid",
-        array(
-            'sid' => $sessionID
-        )
+        array('sid' => $sessionID)
     );
-    $numFiles = (int)$filesExist;
+    $numFiles   = (int)$filesExist;
     if ($numFiles > 0) {
         echo "Session ID $sessionID for candidate $CandID has imaging data and files ".
             "in the database, and should not be deleted. Look at `files` and `tarchive` ".
@@ -170,7 +170,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
             echo "\nERROR:\n";
             echo $e->getMessage();
         }
-        
+
         // Print from conflicts
         echo "\nConflicts Unresolved\n";
         echo "----------------------\n";
@@ -199,13 +199,13 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     $result = $DB->pselect('SELECT * FROM media WHERE session_id=:sid', array('sid' => $sessionID));
     print_r($result);
 
-   // Print from issues
+    // Print from issues
     echo "\nIssues\n";
     echo "-------\n";
     $result = $DB->pselect('SELECT * FROM issues WHERE sessionID=:sid', array('sid' => $sessionID));
     print_r($result);
 
-   // Print from mri_upload
+    // Print from mri_upload
     echo "\nMRI Upload\n";
     echo "-------\n";
     $result = $DB->pselect('SELECT * FROM mri_upload WHERE SessionID=:sid', array('sid' => $sessionID));
@@ -245,7 +245,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
                 $name = implode(" -> ", $instrument);
                 echo "\n-- Deleting Instrument $name.\n";
                 $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
-    
+
                 // Delete from conflicts
                 $DB->delete('conflicts_unresolved', array('CommentId1' => $instrument['CommentID']));
                 $DB->delete('conflicts_unresolved', array('CommentId2' => $instrument['CommentID']));
@@ -255,7 +255,6 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
                 echo "\nERROR:\n";
                 echo $e->getMessage();
             }
-            
         }
         // Delete from flag
         echo "\n-- Deleting from flag.\n";
@@ -322,7 +321,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         // Delete from session
         $output .= "\n-- Deleting from session.\n";
         _printResultsSQL('session', array('ID' => $sessionID), $output, $DB);
-        
+
         if ($printToSQL) {
             _exportSQL($output, $CandID, $sessionID);
         } else {
@@ -342,7 +341,8 @@ function _printResultsSQL($table, $where, &$output, $DB)
     $output .=$query;
 }
 
-function _exportSQL ($output, $CandID, $sessionID) {
+function _exportSQL($output, $CandID, $sessionID)
+{
     //export file
     $filename = __DIR__ . "/../project/tables_sql/DELETE_session_".$CandID."_".$sessionID.".sql";
     $fp       = fopen($filename, "w");

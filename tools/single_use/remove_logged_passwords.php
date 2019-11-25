@@ -19,11 +19,11 @@ echo $info;
 
 echo "Checking for exposed passwords...\n";
 
-// Query DB for burned passwords. The bug caused passwords to be stored on 
+// Query DB for burned passwords. The bug caused passwords to be stored on
 // update so we'll limit the query to that. Additionally we will filter out
 // results from the `new` data that are password hashes i.e. those that begin
 // with the $ character.
-$sql = "select h.userID,
+$sql    = "select h.userID,
     h.changeDate,
     u.Email,
     u.Active 
@@ -38,8 +38,8 @@ $result = $DB->pselect($sql, array());
 $compromised = array();
 foreach($result as $row) {
     $compromised[$row['userID']] = array(
-        'date' => $row['changeDate'],
-        'email' => $row['Email'],
+        'date'   => $row['changeDate'],
+        'email'  => $row['Email'],
         'active' => $row['Active']
     );
 }
@@ -50,9 +50,9 @@ if (count($compromised) === 0) {
 }
 
 // Set up output
-$report = array();
+$report   = array();
 $report[] = "The following users' passwords may have been exposed: ";
-$entry = <<<REPORT
+$entry    = <<<REPORT
 \tUsername: %s
 \tEmail: %s
 \tDate of Password Change: %s
@@ -73,8 +73,8 @@ foreach($compromised as $username => $details) {
 
     // password reset
     $DB->update(
-        'users', 
-        array('Password_expiry' => '1990-01-01'), 
+        'users',
+        array('Password_expiry' => '1990-01-01'),
         array('UserID' => $username)
     );
 }
@@ -86,13 +86,15 @@ echo "These users should be contacted and informed of the potential password "
 
 // Delete all passwords from history table.
 $DB->delete(
-    'history', array(
+    'history',
+    array(
         'col' => 'Password_hash',
         'tbl' => 'users'
     )
 );
 $DB->delete(
-    'history', array(
+    'history',
+    array(
         'col' => 'Password_md5',
         'tbl' => 'users'
     )

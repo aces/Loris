@@ -20,7 +20,8 @@ if ($argc < 2) {
 }
 $testname = $argv[1];
 
-$commentIDs = $DB->pselectCol("SELECT CommentID FROM flag WHERE Test_name=:instrument",
+$commentIDs = $DB->pselectCol(
+    "SELECT CommentID FROM flag WHERE Test_name=:instrument",
     array("instrument" => $testname)
 );
 
@@ -32,7 +33,7 @@ foreach ($commentIDs as $commentID) {
     // script is run outside the class.
     $values = $DB->pselectRow(
         "SELECT * FROM $inst->table WHERE CommentID=:CID",
-                array('CID' => $inst->getCommentID())
+        array('CID' => $inst->getCommentID())
     );
 
     // Query taken from _save
@@ -43,9 +44,9 @@ foreach ($commentIDs as $commentID) {
     // json_encode ensures that this is safe. If we use the safe wrapper,
     // HTML encoding the quotation marks will make it invalid JSON.
     $DB->unsafeUpdate(
-            "flag",
-            array("Data" => json_encode($values)),
-            array('CommentID' => $inst->getCommentID())
-        );
+        "flag",
+        array("Data" => json_encode($values)),
+        array('CommentID' => $inst->getCommentID())
+    );
 
 }

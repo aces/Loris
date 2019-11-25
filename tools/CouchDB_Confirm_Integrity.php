@@ -90,7 +90,7 @@ class CouchDBIntegrityChecker
                 WHERE c.PSCID=:PID AND s.Visit_label=:VL",
                 array(
                     "PID" => $pscid,
-                    "VL" => $vl
+                    "VL"  => $vl,
                 )
             );
 
@@ -99,11 +99,13 @@ class CouchDBIntegrityChecker
                 Deleting Doc.\n";
 
                 $this->CouchDB->deleteDoc($row['id']);
-            } else if (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
+            } elseif (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
                 $numActive = $this->SQLDB->execute(
-                    $activeExists, array(
-                    'PID' => $pscid,
-                    'VL' => $vl)
+                    $activeExists,
+                    array(
+                        'PID' => $pscid,
+                        'VL'  => $vl,
+                    )
                 );
 
                 if (!array_key_exists('count', $numActive[0])
@@ -117,18 +119,17 @@ class CouchDBIntegrityChecker
                     print "There is an active session for $pscid $vl overriding 
                     the cancelled one. Keeping $row[id]\n";
                 }
-            } else if (!empty($sqlDB) && $sqlDB['PSCID'] !== $pscid) {
+            } elseif (!empty($sqlDB) && $sqlDB['PSCID'] !== $pscid) {
                 print "PSCID $pscid case sensitivity mismatch for $row[id].\n";
 
                 $this->CouchDB->deleteDoc($row['id']);
-            } else if (!empty($sqlDB) && $sqlDB['Visit_label'] !== $vl) {
+            } elseif (!empty($sqlDB) && $sqlDB['Visit_label'] !== $vl) {
                 print "Visit Label case sensitivity mismatch for $row[id].\n";
 
                 $this->CouchDB->deleteDoc($row['id']);
             } else {
                 print "Nothing wrong with $row[id]!\n";
             }
-
         }
     }
 }
@@ -138,4 +139,3 @@ if (!class_exists('UnitTestCase')) {
     $Runner = new CouchDBIntegrityChecker();
     $Runner->run();
 }
-?>

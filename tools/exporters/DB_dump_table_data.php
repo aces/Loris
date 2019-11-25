@@ -26,12 +26,15 @@
  */
 require_once __DIR__ . '/../generic_includes.php';
 
-$config = NDB_Config::singleton();
+$config       = NDB_Config::singleton();
 $databaseInfo = $config->getSetting('database');
 
 $tableNames = [];
 
-$allTables = $DB->pselectCol("
+// Get all tables in the database
+$tableNames = $DB->pselectCol(
+    "
+>>>>>>> 9fa6f4817... Add PHPCS to tools folder
                       SELECT TABLE_NAME 
                       FROM INFORMATION_SCHEMA.TABLES
                       WHERE TABLE_SCHEMA =:dbn",
@@ -86,7 +89,7 @@ if (empty($adminUser) || empty($adminPassword) || empty($dbHost)) {
 
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
-    $paths = \NDB_Config::singleton()->getSetting('paths');
+    $paths    = \NDB_Config::singleton()->getSetting('paths');
     $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
     exec('mysqldump -u '.escapeshellarg($adminUser).' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
         escapeshellarg($databaseInfo['database']).' '.
