@@ -9,6 +9,12 @@
 
 set -euo pipefail
 
+# Script must be run from tools directory.
+if [[ "$PWD" != *'/tools'* ]]; then
+    echo "Please run this script from the tools directory."
+    exit 2
+fi
+
 # Must be run interactively.
 if ! test -t 0 -a -t 1 -a -t 2 ; then
     echo "This installation program should be run interactively."
