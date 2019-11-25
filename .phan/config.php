@@ -24,7 +24,8 @@ return [
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
-        "PhanNoopNew"
+        "PhanNoopNew",
+        "PhanTypePossiblyInvalidDimOffset"
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
