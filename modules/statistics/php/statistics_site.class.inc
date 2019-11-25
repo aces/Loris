@@ -122,7 +122,7 @@ class Statistics_Site extends \NDB_Menu
             $currentUser = \User::singleton();
 
             if ($currentUser->hasPermission('access_all_profiles')) {
-                $list_of_permitted_sites = \Utility::getSiteList();
+                $list_of_permitted_sites = array_keys(\Utility::getSiteList());
             } else {
                 foreach ($currentUser->getCenterIDs() as $centerID) {
                     if ($currentUser->hasCenterPermission(
@@ -134,7 +134,7 @@ class Statistics_Site extends \NDB_Menu
                     }
                 }
             }
-            $sitesString = implode(",", array_keys($list_of_permitted_sites));
+            $sitesString = implode(",", $list_of_permitted_sites);
 
             $this->query_criteria    .= " AND s.CenterID IN (:cids) ";
             $this->query_vars['cids'] = $sitesString;
