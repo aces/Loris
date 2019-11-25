@@ -3,6 +3,8 @@
 /**
  * Wrapper around CouchDB MRI functions
  *
+ * PHP Version 7
+ *
  * @category CouchDB_Import_Script
  * @package  Main
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
@@ -66,6 +68,13 @@ class CouchDBMRIImporter
     }
 
 
+    /**
+     * Accessor for dictionary array
+     *
+     * @param array The scan types
+     *
+     * @return array
+     */
     public function getDataDictionary($types)
     {
         $this->_buildDataDictionary($types);
@@ -106,7 +115,8 @@ class CouchDBMRIImporter
         $Query = "SELECT c.PSCID, s.Visit_label, s.ID as SessionID, fmric.Comment
           as QCComment";
 
-        foreach($s as $scan){
+        foreach($s as $scan)
+        {
             $scantype =$scan['ScanType'];
             $Query   .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
               ON (msc.ID= f.AcquisitionProtocolID)
@@ -461,7 +471,7 @@ class CouchDBMRIImporter
                 if (!empty($comments['field'])) {
                     $fieldName = $comments['field'];
                     $type
-                    =
+      =
                         "enum ('" . implode("','", $comments['values']) . "')";
 
                     $cmt_field = "Comment_" . $fieldName . "_$ScanType";
@@ -500,14 +510,14 @@ class CouchDBMRIImporter
                                                      =
                         $preDefinedComment['field'] . "_$ScanType";
                     $preDef_cmt
-                    = $preDefinedComment['Comment'];
+   = $preDefinedComment['Comment'];
                     $preDef_Array = array(
                         'Type'        => "enum('Yes', 'No')",
                         'Description' => "$preDef_cmt $ScanType",
                     );
                     $this->Dictionary[$preDef_field] = $preDef_Array;
                     $pre[$preDefinedCommentTypeID]
-                    = $preDefinedComment['field'];
+   = $preDefinedComment['field'];
                 }
                 $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
 
@@ -548,7 +558,7 @@ class CouchDBMRIImporter
 }
 
 // Don't run if we're doing the unit tests; the unit test will call run.
-if(!class_exists('UnitTestCase')) {
+if (!class_exists('UnitTestCase')) {
     $Runner = new CouchDBMRIImporter();
     $Runner->run();
 }

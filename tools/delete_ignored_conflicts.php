@@ -84,7 +84,10 @@ if ($confirm === false) {
  * Populates the DDE ignore fields for each instrument and runs
  * the ignoreColumn function on the instrument for the given fields
  *
- * @param  $instruments
+ * @param array $instruments The instruments to check for ignore fields
+ *
+ * @return void
+ *
  * @throws Exception
  */
 function detectIgnoreColumns($instruments)
@@ -104,7 +107,10 @@ function detectIgnoreColumns($instruments)
             if ($DDEIgnoreFields != null) {
                 foreach ($DDEIgnoreFields as $key => $DDEField) {
                     if (!in_array($DDEField, $this->defaultFields)) {
-                        $instrumentFields = array_merge($instrumentFields, array($DDEField => $instrument));
+                        $instrumentFields = array_merge(
+                            $instrumentFields,
+                            array($DDEField => $instrument)
+                        );
                     }
                 }
             } else {
@@ -121,6 +127,8 @@ function detectIgnoreColumns($instruments)
 /**
  * Prints the default ignore columns to be removed
  * Removes the fields if confirmation is set
+ *
+ * @return void
  */
 function defaultIgnoreColumns()
 {
@@ -128,7 +136,8 @@ function defaultIgnoreColumns()
 
     if ($this->confirm) {
         foreach ($this->defaultFields as $field) {
-            $defaultQuery = "DELETE FROM conflicts_unresolved WHERE FieldName = '$field'";
+            $defaultQuery = "DELETE FROM conflicts_unresolved 
+                WHERE FieldName = '$field'";
             $changes      = $db->run($defaultQuery);
             echo $changes . "\n";
         }
@@ -147,6 +156,11 @@ function defaultIgnoreColumns()
 /**
  * Prints the instrument-specific ignore columns to be removed
  * Removes the fields if confirmation is set
+ *
+ * @param string $instrument       The name of the instrument
+ * @param array  $instrumentFields The fields for the instrument
+ *
+ * @return void
  */
 function ignoreColumn($instrument, $instrumentFields)
 {
@@ -154,14 +168,16 @@ function ignoreColumn($instrument, $instrumentFields)
 
     if ($this->confirm) {
         foreach ($instrumentFields as $field => $instr) {
-            $query   = "DELETE FROM conflicts_unresolved WHERE TableName = '$instrument' AND FieldName = '$field'";
+            $query   = "DELETE FROM conflicts_unresolved 
+                WHERE TableName = '$instrument' AND FieldName = '$field'";
             $changes = $db->run($query);
             echo $changes . "\n";
         }
     } else {
         foreach ($instrumentFields as $field => $instr) {
-            $query        = "SELECT TableName, FieldName, Value1, Value2 FROM conflicts_unresolved 
-          WHERE TableName = '$instrument' AND FieldName = '$field'";
+            $query        = "SELECT TableName, FieldName, Value1, Value2 
+                FROM conflicts_unresolved 
+                WHERE TableName = '$instrument' AND FieldName = '$field'";
             $ignoreColumn = $db->pselectOne($query, array());
             echo "TableName, FieldName, Value1, Value2: ";
             print_r($ignoreColumn);

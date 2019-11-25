@@ -34,10 +34,7 @@ const MAX_NUMBER_OF_ARGS = 6;
  */
 const MIN_SIZE_OF_COMMENTID_ARRAY = 2;
 
-/**
- * User prompt
- */
-
+// User prompt
 if ((count($argv) < MIN_NUMBER_OF_ARGS) || (count($argv) > MAX_NUMBER_OF_ARGS)) {
     echo "Usage: php detect_duplicated_commentids.php -i Instrument \n";
     echo "Example: php detect_duplicated_commentids.php bdi \n";
@@ -47,9 +44,7 @@ if ((count($argv) < MIN_NUMBER_OF_ARGS) || (count($argv) > MAX_NUMBER_OF_ARGS)) 
     die();
 }
 
-/**
- * parse the options
- */
+// parse the options
 $opts        = getopt("i:r");
 $change      = false;
 $change_all  = false;
@@ -153,16 +148,15 @@ foreach ($instruments as $instrument => $full_name) {
 /**
  * Get the commentids for the given instrument, candidate and visit_label
  *
- * @param String $test_name    The instrument been searched
- * @param string $visit_label  The VisitLabel Placed in the CSV file
- * @param string $sid          The SessionID been searched
- * @param string $candid       The candid been searched
- * @param string $pscid        The PSCID been searched
- * @param string $subprojectid The subprojecitd been searched
+ * @param String  $test_name    The instrument been searched
+ * @param ?string $visit_label  The VisitLabel Placed in the CSV file
+ * @param ?string $sid          The SessionID been searched
+ * @param ?string $candid       The candid been searched
+ * @param ?string $pscid        The PSCID been searched
+ * @param ?string $subprojectid The subprojecitd been searched
  *
  * @return array $commentids An array of commentids found
  */
-
 function getCommentIDs(
     $test_name,
     $visit_label = null,

@@ -31,6 +31,9 @@ class CouchDBRadiologicalReviewImporter
                 // of using Database::singleton in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
 
+    // Ignoring PHPCS for now since this section is fairly readable and
+    // would require more refactoring to get right.
+    // phpcs: disable
     var $Dictionary = array(
         'FinalReview_Radiologist'        => array(
             'Description' => 'Radiologist/Reviewer doing the final review',
@@ -101,6 +104,7 @@ class CouchDBRadiologicalReviewImporter
             'Type'        => "enum('No','Yes')",
         ),
     );
+    // phpcs: enable
 
     /**
      * Construct a new instance.
@@ -122,6 +126,8 @@ class CouchDBRadiologicalReviewImporter
 
     /**
      * Execute CouchDB commands.
+     *
+     * @return void
      */
     function run()
     {
@@ -131,65 +137,70 @@ class CouchDBRadiologicalReviewImporter
             'DataDictionary:FinalRadiologicalReview',
             array(
                 'Meta'           => array('DataDict' => true),
-                'DataDictionary' => array('FinalRadiologicalReview' => $this->Dictionary),
+                'DataDictionary' => array(
+                    'FinalRadiologicalReview' => $this->Dictionary
+                )
             )
         );
 
         // Query to retrieve radiological review data
+            $query = <<<QUERY
+SELECT c.PSCID, s.Visit_label,
+eFinal.full_name AS FinalReview_Radiologist, 
+CASE WHEN frr.Review_Done=0 THEN 'No' 
+WHEN frr.Review_Done=1 THEN 'Yes' END as FinalReview_Done, 
+frr.Final_Review_Results AS FinalReview_Results, 
+frr.Final_Exclusionary AS FinalReview_ExclusionaryStatus, 
+CASE WHEN frr.SAS=0 THEN 'None' 
+WHEN frr.SAS=1 THEN 'Minimal' 
+WHEN frr.SAS=2 THEN 'Mild' 
+WHEN frr.SAS=3 THEN 'Moderate' 
+WHEN frr.SAS=4 THEN 'Marker' END as FinalReview_SAS, 
+CASE WHEN frr.PVS=0 THEN 'None' 
+WHEN frr.PVS=1 THEN 'Minimal' 
+WHEN frr.PVS=2 THEN 'Mild' 
+WHEN frr.PVS=3 THEN 'Moderate' 
+WHEN frr.PVS=4 THEN 'Marker' END as FinalReview_PVS, 
+frr.Final_Incidental_Findings AS FinalReview_Comment, 
+CASE WHEN frr.Finalized=0 THEN 'No' 
+WHEN frr.Finalized=1 THEN 'Yes' END as FinalReview_Finalized,
+eExtra.full_name AS ExtraReview_Radiologist, 
+CASE WHEN frr.Review_Done2=0 THEN 'No' 
+WHEN frr.Review_Done2=1 THEN 'Yes' END as ExtraReview_Done, 
+frr.Final_Review_Results2 AS ExtraReview_Results, 
+CASE WHEN frr.SAS2=0 THEN 'None' 
+WHEN frr.SAS2=1 THEN 'Minimal' 
+WHEN frr.SAS2=2 THEN 'Mild' 
+WHEN frr.SAS2=3 THEN 'Moderate' 
+WHEN frr.SAS2=4 THEN 'Marker' END as ExtraReview_SAS, 
+CASE WHEN frr.PVS2=0 THEN 'None' 
+WHEN frr.PVS2=1 THEN 'Minimal' 
+WHEN frr.PVS2=2 THEN 'Mild' 
+WHEN frr.PVS2=3 THEN 'Moderate' 
+WHEN frr.PVS2=4 THEN 'Marker' END as ExtraReview_PVS, 
+frr.Final_Exclusionary2 AS ExtraReview_ExclusionaryStatus,
+frr.Final_Incidental_Findings2 AS ExtraReview_Comment,
+CASE WHEN orig.review_results <> r.final_review_results THEN 'true'
+WHEN orig.abnormal_atypical_exclusionary <> r.final_exclusionary  THEN 'true'
+WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'true'
+WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'true'
+WHEN r.SAS <> r.SAS2 THEN 'true'
+WHEN r.PVS <> r.PVS2 THEN 'true'
+ELSE 'false' END as Conflict_Final_Extra,
+CASE WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'prim_second'
+WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'prim_second'
+WHEN r.SAS <> r.SAS2 THEN 'prim_second'
+WHEN r.PVS <> r.PVS2 THEN 'prim_second'
+ELSE 'false' END as Conflict_Any
+FROM final_radiological_review frr
+LEFT JOIN flag f ON (f.CommentID=frr.CommentID) 
+LEFT JOIN session s ON (s.ID=f.SessionID) 
+LEFT JOIN candidate c ON (c.CandID=s.CandID)
+LEFT JOIN examiners eFinal ON (eFinal.ExaminerID=frr.Final_Examiner)
+LEFT JOIN examiners eExtra ON (eExtra.ExaminerID=frr.Final_Examiner2)
+QUERY;
         $finalradiologicalreview = $this->SQLDB->pselect(
-            "SELECT c.PSCID, s.Visit_label,
-            eFinal.full_name AS FinalReview_Radiologist, 
-            CASE WHEN frr.Review_Done=0 THEN 'No' 
-            WHEN frr.Review_Done=1 THEN 'Yes' END as FinalReview_Done, 
-            frr.Final_Review_Results AS FinalReview_Results, 
-            frr.Final_Exclusionary AS FinalReview_ExclusionaryStatus, 
-            CASE WHEN frr.SAS=0 THEN 'None' 
-            WHEN frr.SAS=1 THEN 'Minimal' 
-            WHEN frr.SAS=2 THEN 'Mild' 
-            WHEN frr.SAS=3 THEN 'Moderate' 
-            WHEN frr.SAS=4 THEN 'Marker' END as FinalReview_SAS, 
-            CASE WHEN frr.PVS=0 THEN 'None' 
-            WHEN frr.PVS=1 THEN 'Minimal' 
-            WHEN frr.PVS=2 THEN 'Mild' 
-            WHEN frr.PVS=3 THEN 'Moderate' 
-            WHEN frr.PVS=4 THEN 'Marker' END as FinalReview_PVS, 
-            frr.Final_Incidental_Findings AS FinalReview_Comment, 
-            CASE WHEN frr.Finalized=0 THEN 'No' 
-            WHEN frr.Finalized=1 THEN 'Yes' END as FinalReview_Finalized,
-            eExtra.full_name AS ExtraReview_Radiologist, 
-            CASE WHEN frr.Review_Done2=0 THEN 'No' 
-            WHEN frr.Review_Done2=1 THEN 'Yes' END as ExtraReview_Done, 
-            frr.Final_Review_Results2 AS ExtraReview_Results, 
-            CASE WHEN frr.SAS2=0 THEN 'None' 
-            WHEN frr.SAS2=1 THEN 'Minimal' 
-            WHEN frr.SAS2=2 THEN 'Mild' 
-            WHEN frr.SAS2=3 THEN 'Moderate' 
-            WHEN frr.SAS2=4 THEN 'Marker' END as ExtraReview_SAS, 
-            CASE WHEN frr.PVS2=0 THEN 'None' 
-            WHEN frr.PVS2=1 THEN 'Minimal' 
-            WHEN frr.PVS2=2 THEN 'Mild' 
-            WHEN frr.PVS2=3 THEN 'Moderate' 
-            WHEN frr.PVS2=4 THEN 'Marker' END as ExtraReview_PVS, 
-            frr.Final_Exclusionary2 AS ExtraReview_ExclusionaryStatus,
-            frr.Final_Incidental_Findings2 AS ExtraReview_Comment,
-            CASE WHEN orig.review_results <> r.final_review_results THEN 'true'
-            WHEN orig.abnormal_atypical_exclusionary <> r.final_exclusionary  THEN 'true'
-            WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'true'
-            WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'true'
-            WHEN r.SAS <> r.SAS2 THEN 'true'
-            WHEN r.PVS <> r.PVS2 THEN 'true'
-            ELSE 'false' END as Conflict_Final_Extra,
-            CASE WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'prim_second'
-            WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'prim_second'
-            WHEN r.SAS <> r.SAS2 THEN 'prim_second'
-            WHEN r.PVS <> r.PVS2 THEN 'prim_second'
-            ELSE 'false' END as Conflict_Any
-            FROM final_radiological_review frr
-            LEFT JOIN flag f ON (f.CommentID=frr.CommentID) 
-            LEFT JOIN session s ON (s.ID=f.SessionID) 
-            LEFT JOIN candidate c ON (c.CandID=s.CandID)
-            LEFT JOIN examiners eFinal ON (eFinal.ExaminerID=frr.Final_Examiner)
-            LEFT JOIN examiners eExtra ON (eExtra.ExaminerID=frr.Final_Examiner2)",
+            $query,
             array()
         );
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * This is the tool to diagnose and correct the date problems in a candidate 
+ * This is the tool to diagnose and correct the date problems in a candidate
  * profile and add missing instruments to the bvl battery.
  *
  * Currently the tool does the following:

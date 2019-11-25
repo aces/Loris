@@ -124,6 +124,8 @@ case 'delete_candidate':
 
 /**
  * Prints the usage and example help text and stop program
+ *
+ * @return void
  */
 function showHelp()
 {
@@ -147,6 +149,15 @@ USAGE;
  * All other tables with FOREIGN KEY relations to these tables
  * (second-level relations) should have actions on delete specified in the
  * database schema
+ *
+ * @param string   $CandID     Identifying the candidate
+ * @param string   $PSCID      Identifying the candidate
+ * @param string   $confirm    Whether to execute the script
+ * @param string   $printToSQL Whether to print the results
+ * @param Database $DB         The database to connect to
+ * @param string   $output     The string containing the statements to execute
+ *
+ * @return void
  */
 function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 {
@@ -378,6 +389,13 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 
 /**
  * Format delete statements.
+ *
+ * @param string    $table  The name of a LORIS table.
+ * @param string    $where  The where clause of the SQl statement
+ * @param string    $output A reference to the string to append to.
+ * @param \Database $DB     The database to connect to.
+ *
+ * @return void
  */
 function _printResultsSQL($table, $where, &$output, $DB)
 {
@@ -391,6 +409,11 @@ function _printResultsSQL($table, $where, &$output, $DB)
 
 /**
  * Write SQL commands to file.
+ *
+ * @param string $output SQL statements to write to file.
+ * @param string $CandID The candidate to be deleted.
+ *
+ * @return void
  */
 function _exportSQL($output, $CandID)
 {

@@ -6,13 +6,12 @@
  * - Option to insert the missing conflict for the given instrument
  * - Option to remove and re-insert conflict for the given instrument
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Main
  * @package  Loris
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @license  Loris License
  * @link     https://github.com/aces/Loris
  */
 require_once __DIR__ . "/../vendor/autoload.php";
@@ -146,7 +145,7 @@ if ($delete_ignored_conflicts) {
     // Check to see if the variable instrument is set
     if (($instrument=='all') ||($instrument=='All')) {
         $Factory       = NDB_Factory::singleton();
-        $DB            = $Factory->Database(); //=& Database::singleton();
+        $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name FROM test_names",
             array()

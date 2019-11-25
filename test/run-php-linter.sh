@@ -3,14 +3,14 @@ set -euo pipefail
 
 # Run PHP -l on everything to ensure there's no syntax
 # errors.
-find docs modules htdocs php src -name '*.class.inc' -print0 -o -name '*.php' -print0 |xargs -0 -n1 php -l >/dev/null  
+find docs modules htdocs php src tools -name '*.class.inc' -print0 -o -name '*.php' -print0 |xargs -0 -n1 php -l >/dev/null  
 
 # Run PHPCS on all .php and .inc files in folders:
 # php/
 # htdocs/
 # modules/
 # tools/
-vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ tools/ --ignore=tools/deprecated/ || exit $?;
+vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ tools/ --ignore=tools/deprecated/,tools/data_integrity,tools/single_use,tools/exporters || exit $?;
 
 # Run PHPCS on some scripts  -- fixing the files format later
 # vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Confirm_Integrity.php

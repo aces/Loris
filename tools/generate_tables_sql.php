@@ -1,6 +1,5 @@
 #!/usr/bin/php
 <?php
-
 /**
  * The script generate_tables_sql.php takes the ip_output.txt file generated from
  * lorisform_parser.php and outputs an sql build file for the table of each
@@ -46,9 +45,10 @@ foreach ($instruments as $instrument) {
         $paramId = "";
         $bits    = explode("{@}", trim($item));
         if (preg_match(
-            "/Examiner[0-9]*/", 
+            "/Examiner[0-9]*/",
             $bits[1] ?? null
-        )) {
+        )
+        ) {
             continue;
         }
         switch ($bits[0]) {
@@ -61,6 +61,7 @@ foreach ($instruments as $instrument) {
             }
             // There's no good way to display this SQL command without exceeding
             // out line lengtht requirements, so disable phpcs for this chunk.
+            // phpcs: disable
             $output .= <<<OUTPUT
 CREATE TABLE `$bits[1]` (
     `CommentID` varchar(255) NOT NULL default '',
@@ -70,20 +71,20 @@ CREATE TABLE `$bits[1]` (
     `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
 OUTPUT;
             break;
+            // phpcs: enable
 
             //no SQL need be generated.
         case "title":
         case "header":
-            continue;
-            break;
+            continue 2;
 
-            //generate specific column definitions for specific types of HTML 
+            //generate specific column definitions for specific types of HTML
             //elements
         default:
-            if ((array_key_exists(1, $bits) ? $bits[1] : "") == "") {
-                continue;
+            if (isset($bits[1]) && $bits[1] === '') {
+                continue 2;
             }
-            switch ((array_key_exists(0, $bits) ? $bits[0] : null) {
+            switch ($bits[0] ?? null) {
             case "selectmultiple":
                 $bits[0] ="varchar(255)";
                 break;
@@ -93,31 +94,32 @@ OUTPUT;
             case "text":
                 $bits[0] ="varchar(255)";
                 break;
-            case: "checkbox":
+            case "checkbox":
                 $bits[0] ="varchar(255)";
                 break;
             case "static":
-                $bits[0] ="varchar(255)";
+                $bits[0] = "varchar(255)";
                 break;
             case "radio":
                 $bits[0] =enumizeOptions($bits[3], $table = array(), $bits[1]);
                 break;
-            }
-            if ($bits[0]=="select") {
+            case "select":
                 $bits[0]   =enumizeOptions(
-                    array_key_exists(3, $bits) ? $bits[3] : null,
+                    $bits[3] ?? null,
                     $table = array(),
                     $bits[1]
                 );
+                break;
+            }
             if (array_key_exists(2, $bits)) {
                 $bits[2] =htmlspecialchars($bits[2]);
             }
             $output .="`$bits[1]` $bits[0] default NULL,\n";
         }
+        $output .="PRIMARY KEY  (`CommentID`)\n
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
     }
-    $output .="PRIMARY KEY  (`CommentID`)\n
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
-    $fp      =fopen($filename, "w");
+    $fp =fopen($filename, "w");
     fwrite($fp, $output);
     fclose($fp);
 }

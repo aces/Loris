@@ -143,14 +143,13 @@ if (!empty($frrCheck)) {
 }
 
 if ($errorPRE) {
-    die(
-        <<<'ERRORS'
+    $err = <<<'ERRORS'
 Some errors were detected, this script will now terminate.
 Please Fix errors and try running script again.
 
 
 ERRORS;
-    );
+    die($err);
 
 }
 

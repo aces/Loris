@@ -112,9 +112,9 @@ QUERY;
         unset($sql);
         $sql = <<<QUERY
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description) 
-VALUES ('%s', '%s_page" (%s), '%s');
+VALUES ('%s', '%s_page%s, '%s');
 QUERY;
-        fwrite($fp, sprintf($sql, $tableName, $tableName, $pageNo + 1, $page);
+        fwrite($fp, sprintf($sql, $tableName, $tableName, $pageNo + 1, $page));
 
     }
     fclose($fp);
