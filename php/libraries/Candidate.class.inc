@@ -509,7 +509,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     }
 
     /**
-     * Return the candidate's sex
+     * Return the candidate's entity type.
      *
      * @return ?EntityType
      */
@@ -913,4 +913,3 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         return '/^'.$regex.'$/i';
     }
 }
-
