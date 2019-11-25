@@ -1070,7 +1070,7 @@ class DateElement extends Component {
     if (!format.match(/d/i)) {
       inputType = 'month';
       minFullDate = minYear + '-01';
-      maxFullDate = maxYear + '-12';
+      maxFullDate = maxYear + '-' + currentMonth;
     }
 
     return (
