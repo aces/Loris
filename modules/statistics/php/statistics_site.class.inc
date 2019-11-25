@@ -134,7 +134,7 @@ class Statistics_Site extends \NDB_Menu
                     }
                 }
             }
-            $sitesString = implode(",", array_keys($list_of_sites));
+            $sitesString = implode(",", array_keys($list_of_permitted_sites));
 
             $this->query_criteria    .= " AND s.CenterID IN (:cids) ";
             $this->query_vars['cids'] = $sitesString;
