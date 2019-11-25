@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This defines valid values for the Sex data point for a Candidate. 
+ * This defines valid values for the Sex data point for a Candidate.
  * It is a Value Object used to assist with validation.
  *
  * PHP Version 7
@@ -11,9 +11,10 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+namespace LORIS\StudyEntities\Candidate;
 
 /**
- * This defines valid values for the Sex data point for a Candidate. 
+ * This defines valid values for the Sex data point for a Candidate.
  * It is a Value Object used to assist with validation.
  *
  * @category Main
@@ -27,7 +28,10 @@ class Sex
     /* @var string */
     public $value;
 
-    private const VALID_VALUES = array('Male', 'Female');
+    private const VALID_VALUES = array(
+                                  'Male',
+                                  'Female',
+                                 );
 
     /**
      * Calls validate() immediately.

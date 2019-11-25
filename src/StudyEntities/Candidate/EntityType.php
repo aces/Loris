@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+namespace LORIS\StudyEntities\Candidate;
 
 /**
  * This defines the entity type for a Candidate. It is a Value Object used
@@ -27,7 +28,10 @@ class EntityType
     /* @var string */
     private $value;
 
-    private const VALID_VALUES = array('Human', 'Scanner');
+    private const VALID_VALUES = array(
+                                  'Human',
+                                  'Scanner',
+                                 );
 
     /**
      * Creates a new EntityType. Calls validate() immediately.
