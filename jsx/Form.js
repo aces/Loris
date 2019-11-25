@@ -1060,8 +1060,6 @@ class DateElement extends Component {
     const currentDay = ('0' + currentDate.getDate()).slice(-2);
     const currentMonth = ('0' + (currentDate.getMonth() + 1)).slice(-2);
 
-    console.log(maxYear);
-
     // Handle date format
     let format = this.props.dateFormat;
     let inputType = 'date';

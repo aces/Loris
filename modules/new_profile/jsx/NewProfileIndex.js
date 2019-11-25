@@ -146,7 +146,9 @@ class NewProfileIndex extends React.Component {
     let pscid = null;
     let site = null;
     let minYear = this.state.configData.minYear;
-    let maxYear = this.state.configData.maxYear;
+    let today = (new Date()).getFullYear();
+    let maxYear = (this.state.configData.maxYear > today)
+      ? today : this.state.configData.maxYear;
     let dateFormat = this.state.configData.dobFormat;
 
     if (this.state.configData['edc'] === 'true') {
