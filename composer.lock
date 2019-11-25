@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "452d13ceaefc6c44b75fdc15ff38bdc7",
+    "content-hash": "cf3f68b42bfb2935cc325ce96a0f5d72",
     "packages": [
         {
             "name": "bjeavons/zxcvbn-php",
@@ -1282,16 +1282,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "2.4.0",
+            "version": "2.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "9670327691736be2581394fd34a89df0ff008d17"
+                "reference": "9236f30e5b6ccb582ebc77b1635eabe08bdecf9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/9670327691736be2581394fd34a89df0ff008d17",
-                "reference": "9670327691736be2581394fd34a89df0ff008d17",
+                "url": "https://api.github.com/repos/phan/phan/zipball/9236f30e5b6ccb582ebc77b1635eabe08bdecf9e",
+                "reference": "9236f30e5b6ccb582ebc77b1635eabe08bdecf9e",
                 "shasum": ""
             },
             "require": {
@@ -1302,6 +1302,7 @@
                 "ext-tokenizer": "*",
                 "felixfbecker/advanced-json-rpc": "^3.0.4",
                 "microsoft/tolerant-php-parser": "0.0.18",
+                "netresearch/jsonmapper": "^1.6.0",
                 "php": "^7.1.0",
                 "sabre/event": "^5.0",
                 "symfony/console": "^2.3|^3.0|~4.0",
@@ -1350,7 +1351,7 @@
                 "php",
                 "static"
             ],
-            "time": "2019-10-26T17:47:01+00:00"
+            "time": "2019-11-24T16:38:38+00:00"
         },
         {
             "name": "phar-io/manifest",
