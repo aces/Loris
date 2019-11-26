@@ -163,7 +163,7 @@ class New_Profile extends \NDB_Form
         $sex       = array(
             'male'   => 'Male',
             'female' => 'Female',
-            'other' => 'Other',
+            'other'  => 'Other',
         );
         $pscidSet  = "false";
         $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;

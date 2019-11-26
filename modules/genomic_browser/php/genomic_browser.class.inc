@@ -225,7 +225,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
                 ''       => 'All',
                 'Male'   => 'Male',
                 'Female' => 'Female',
-                'Other' => 'Other'
+                'Other'  => 'Other'
             )
         );
         $this->addSelect(
