@@ -167,7 +167,7 @@ as follows. It denotes a group of values of which the user must select one optio
                        to allow the user to explicitly not answer a question
                        but require that some answer is entered.
                        If false, it should not.
-                       This is done instead of simply adding the option to
+                       This is done instead of adding the option to
                        Values to ensure consistency with other PageElement types
                        such as date or text.
                        Default: true.
