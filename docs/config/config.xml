@@ -20,8 +20,8 @@
         <username>%USERNAME%</username>
         <password>%PASSWORD%</password>
         <database>%DATABASE%</database>
-        <dbUser>%USERNAME%</dbUser>
-        <dbPassword>%PASSWORD%</dbPassword>
+        <adminUser>%USERNAME%</adminUser>
+        <adminPassword>%PASSWORD%</adminPassword>
         <name>Example database</name>
     </database>
 

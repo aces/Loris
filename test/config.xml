@@ -21,8 +21,8 @@
         <username>SQLTestUser</username>
         <password>TestPassword</password>
         <database>LorisTest</database>
-        <dbUser>SQLTestUser</dbUser>
-        <dbPassword>TestPassword</dbPassword>
+        <adminUser>SQLTestUser</adminUser>
+        <adminPassword>TestPassword</adminPassword>
         <name>Example database</name>
     </database>
 

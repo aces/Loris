@@ -49,8 +49,8 @@ directories (to write the instrument itself, and instrument table
 patch respectively.)
 
 In order to automatically source the SQL patch and fully configure
-LINST instruments, the LORIS `dbUser` and `dbPassword` configuration
+LINST instruments, the LORIS `adminUser` and `adminPassword` configuration
 must be set to a user which has the MySQL `CREATE TABLE` permission.
-(The name `dbUser` and `dbPassword` is an anachronism and should
+(The name `adminUser` and `adminPassword` is an anachronism and should
 be renamed.)
 

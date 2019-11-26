@@ -277,12 +277,12 @@ The Instrument Manager module is designed allow the Loris database Admin superus
 
 To enable upload and installation of `*.linst` instrument files created using the Instrument Builder: 
 
-i. **Create a separate MySQL user account with CREATE, SELECT, INSERT, UPDATE and DELETE privileges** on the database. This credential should be stored in `project/config.xml` within the `<database>` tag section as `<dbUser>` and `<dbPassword>` : 
+i. **Create a separate MySQL user account with CREATE, SELECT, INSERT, UPDATE and DELETE privileges** on the database. This credential should be stored in `project/config.xml` within the `<database>` tag section as `<adminUser>` and `<adminPassword>` : 
    ```xml
    <database>
         ...
-        <dbUser>%USERNAME%</dbUser>
-        <dbPassword>%PASSWORD%</dbPassword>
+        <adminUser>%USERNAME%</adminUser>
+        <adminPassword>%PASSWORD%</adminPassword>
         ...
     </database>
    ```
