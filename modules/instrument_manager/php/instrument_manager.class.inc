@@ -169,7 +169,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                  * Instead, inform users that an administrator must install it
                  * on their behalf.
                  * This should only happen for users on a system where automatic
-                 * installation is disabled (ie. has no dbUser).
+                 * installation is disabled (ie. has no adminUser).
                  */
                 return new \LORIS\Http\Response\Conflict(self::FILE_ALREADY_EXISTS);
             }
@@ -187,7 +187,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         );
 
         if (!$this->isQuatUserConfigured()) {
-            // If no dbUser is configured, automatic installation is not
+            // If no adminUser is configured, automatic installation is not
             // possible, so this is the last step.
             return (new \LORIS\Http\Response())
                 ->withStatus(200, 'OK')
@@ -581,11 +581,11 @@ class Instrument_Manager extends \NDB_Menu_Filter
     /**
      * Return whether the dbUser is properly configured, ie. credentials are
      * set and are valid.
-     * The dbUser is a MySQL user with CREATE table permissions.
+     * The adminUser is a MySQL user with CREATE table permissions.
      * `empty` is used instead of `isset` as blank values in the config file
      * are still considered set.
      *
-     * @return bool True if a dbUser is configured properly. False if not.
+     * @return bool True if a adminUser is configured properly. False if not.
      */
     protected function isQuatUserConfigured() : bool
     {
