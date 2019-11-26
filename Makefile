@@ -26,6 +26,7 @@ checkstatic: phpdev
 	npm run lint:php
 	npm run lint:javascript
 	vendor/bin/phan
+	npx alex
 
 unittests: phpdev
 	vendor/bin/phpunit --configuration test/phpunit.xml
