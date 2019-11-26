@@ -105,9 +105,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
         if (empty($this->subtest)) {
             $hasAccess = $this->_hasAccess();
-            if ($this->_status === null && !empty($this->_commentID)) {
-                $this->select($this->_commentID);
-            }
             if ($hasAccess) {
                 $this->setDataEntryStatus(
                     $this->_status['Data_entry']

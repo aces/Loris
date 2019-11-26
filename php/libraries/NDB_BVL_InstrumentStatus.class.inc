@@ -121,6 +121,9 @@ class NDB_BVL_InstrumentStatus
      */
     function getDataEntryStatus(): ?string
     {
+        if ($this->_status === null && !empty($this->_commentID)) {
+            $this->select($this->_commentID);
+        }
         return $this->_status['Data_entry'];
     }
 
