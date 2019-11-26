@@ -105,11 +105,12 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
         if (empty($this->subtest)) {
             $hasAccess = $this->_hasAccess();
-            $status    = new \NDB_BVL_InstrumentStatus;
-            $status->select($this->tpl_data['commentID']);
+            if ($this->_status === null && !empty($this->_commentID)) {
+                $this->select($this->_commentID);
+            }
             if ($hasAccess) {
                 $this->setDataEntryStatus(
-                    $status->_status['Data_entry']
+                    $this->_status['Data_entry']
                     ?? 'In Progress'
                 );
             }
