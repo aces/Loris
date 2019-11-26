@@ -52,6 +52,7 @@
 2019-10-05-Add_alias_to_projects.sql
 2019-11-01-Add_data_release_permissions.sql
 2019-11-12-Rename_modules_QC_and_DTH.sql
+2019-11-25-Default_value_for_session_submitted.sql
 
 # NEW
 

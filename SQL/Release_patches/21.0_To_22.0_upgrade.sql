@@ -105,3 +105,10 @@ UPDATE LorisMenu SET Parent=@parentid WHERE Link='genomic_browser/';
 
 UPDATE permissions SET Code='quality_control', description='Quality Control access' WHERE code='data_team_helper';
 
+SELECT 'Running: SQL/Archive/22.0/2019-11-25-Default_value_for_session_submitted.sql';
+
+UPDATE session SET Submitted='N' WHERE Submitted IS NULL;
+ALTER TABLE session CHANGE Submitted Submitted ENUM('Y','N') DEFAULT 'N' NOT NULL;
+
+
+
