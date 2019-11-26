@@ -31,6 +31,7 @@ class Sex
     private const VALID_VALUES = array(
                                   'Male',
                                   'Female',
+                                  'Other',
                                  );
 
     /**
