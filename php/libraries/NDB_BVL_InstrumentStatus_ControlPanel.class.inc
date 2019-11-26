@@ -107,8 +107,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             $hasAccess = $this->_hasAccess();
             if ($hasAccess && $this->getDataEntryStatus() == null) {
                 $this->setDataEntryStatus(
-                    $this->_status['Data_entry']
-                    ?? 'In Progress'
+                    'In Progress'
                 );
             }
 
