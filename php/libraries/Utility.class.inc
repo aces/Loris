@@ -168,7 +168,7 @@ class Utility
         bool $study_site = true,
         bool $DCC = true
     ): array {
-        throw new \DeprecationException(
+        throw new \DeprecatedException(
             ' This function is deprecated. Please use \Utility::getSiteList()'
             . ' instead.'
         );

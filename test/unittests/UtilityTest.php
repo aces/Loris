@@ -403,10 +403,9 @@ class UtilityTest extends TestCase
      * TODO Potential edge cases: test with the study_site and DCC booleans as false
      *
      * @covers Utility::getSiteList()
-     * @covers Utility::getAssociativeSiteList
      * @return void
      */
-    public function testGetSiteListAndGetAssociativeSiteList()
+    public function testGetSiteList()
     {       
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -418,13 +417,6 @@ class UtilityTest extends TestCase
                 '1' => 'site1',
                 '2' => 'site2'),
             Utility::getSiteList()
-        );
-        
-        $this->assertEquals(
-            array(
-                '1' => 'site1',
-                '2' => 'site2'),
-            Utility::getAssociativeSiteList()
         );
     }
 
