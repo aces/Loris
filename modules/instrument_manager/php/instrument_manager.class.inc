@@ -579,7 +579,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-     * Return whether the dbUser is properly configured, ie. credentials are
+     * Return whether the adminUser is properly configured, ie. credentials are
      * set and are valid.
      * The adminUser is a MySQL user with CREATE table permissions.
      * `empty` is used instead of `isset` as blank values in the config file
