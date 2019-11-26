@@ -50,7 +50,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $user     = $request->getAttribute("user");
         $tpl_data = array(
                      'test_name' => $this->PageName,
-                     'subtest'   => $request->getAttribute('subtest') ?? '',
                     );
 
         // Basic page outline variables
