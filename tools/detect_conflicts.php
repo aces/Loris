@@ -40,22 +40,26 @@ const MAX_NUMBER_OF_ARGS = 6;
 
 /// User prompt
 
-if ((count($argv) < MIN_NUMBER_OF_ARGS) || (count($argv) > MAX_NUMBER_OF_ARGS)) {
-    echo "Usage: php detect_conflicts.php -i [instrument] -t [timepoint]\n";
-    echo "Example: php detect_conflicts.php -i bdi -t 3month \n\n";
+if ((count($argv) < MIN_NUMBER_OF_ARGS)
+    || (count($argv) > MAX_NUMBER_OF_ARGS)
+) {
+    echo <<<USAGE
+Usage: php detect_conflicts.php -i [instrument] -t [timepoint]
+Example: php detect_conflicts.php -i bdi -t 3month
 
-    echo "Usage: php detect_conflicts.php -i [instrument] \n";
-    echo "Example: php detect_conflicts.php -i bdi \n\n";
+Usage: php detect_conflicts.php -i [instrument]
+Example: php detect_conflicts.php -i bdi
 
-    echo "Usage: php detect_conflicts.php -r [instrument/all] [-y to confirm]\n";
-    echo "Example: php detect_conflicts.php -r all -y\n";
-    echo "Example: php detect_conflicts.php -r bdi -y \n\n";
+Usage: php detect_conflicts.php -r [instrument/all] [-y to confirm]
+Example: php detect_conflicts.php -r all -y
+Example: php detect_conflicts.php -r bdi -y
 
-    echo "to insert the conflicts into conflicts_unresolved table type -c -i \n";
-    echo "to remove all/re-insert the conflicts into conflicts_unresolved table type -m \n";
-    echo "to run the script for all the instruments simply type -i all \n";
-    echo "to remove ignored conflicts type -r\n\n";
-    echo "NOTE: ONLY THE FAILED VISITS ARE EXCLUDED BY THIS SCRIPT \n";
+to insert the conflicts into conflicts_unresolved table type -c -i
+to remove all/re-insert the conflicts into conflicts_unresolved table type -m
+to run the script for all the instruments simply type -i all
+to remove ignored conflicts type -r
+NOTE: ONLY THE FAILED VISITS ARE EXCLUDED BY THIS SCRIPT
+USAGE;
     die();
 }
 
@@ -104,8 +108,13 @@ if (array_key_exists('y', $opts)) {
 }
 print_r($opts);
 
-if (($change && $change_all) || ($delete_ignored_conflicts && ($change || $change_all))) {
-    $die("Choose either Change (-c) or remove and re-insert all conflicts (-m) or remove ignored conflicts (-r)");
+if (($change && $change_all)
+    || ($delete_ignored_conflicts && ($change || $change_all))
+) {
+    $die(
+        "Choose either Change (-c) or remove and re-insert all conflicts " .
+        "(-m) or remove ignored conflicts (-r)"
+    );
 }
 
 /// Initialization
@@ -206,7 +215,9 @@ if ($delete_ignored_conflicts) {
                 be inserted \n";
                     print "To re-create the conflict, run this script with 
                 -c option \n";
-                    if ((empty($new_conflicts)) && empty($conflicts_to_be_excluded)) {
+                    if ((empty($new_conflicts))
+                        && empty($conflicts_to_be_excluded)
+                    ) {
                         print "No new conflicts or current conflicts to be
                 removed are detected for instrument $instrument \n";
                     } else {
@@ -227,13 +238,14 @@ if ($delete_ignored_conflicts) {
                     }
                 }
                 /**
-                 * Only insert those conflicts which are new and are not currently
-                 * in the conflict_uresolved
+                 * Only insert those conflicts which are new and are not
+                 * currently in the conflict_uresolved
                  * 1)remove/clear the existing conflicts
                  * 2) And then re-create the conflicts
                  */
 
-                ///if the instrument is not provided, run it only for all the instruments
+                //if the instrument is not provided, run it only for all the
+                //instruments
                 if ($change) {
                     if ((empty($new_conflicts)) || (!isset($new_conflicts))) {
                         die("There are No new conflicts to be inserted ");
@@ -251,12 +263,14 @@ if ($delete_ignored_conflicts) {
 
 
                 /**
-                 * Remove all the current conflicts for the givent instrument/visit_label
-                 * And re-insert them
+                 * Remove all the current conflicts for the givent
+                 * instrument/visit_label and re-insert them
                  */
                 if ($change_all) {
                     foreach ($commentids as $cid) {
-                        ConflictDetector::clearConflictsForInstance($cid['CommentID']);
+                        ConflictDetector::clearConflictsForInstance(
+                            $cid['CommentID']
+                        );
                         $diff = ConflictDetector::detectConflictsForCommentIds(
                             $test_name,
                             $cid['CommentID'],
@@ -276,13 +290,12 @@ if ($delete_ignored_conflicts) {
 /**
  * Get the commentids for the given instrument, candidate and visit_label
  *
- * @param String $test_name   The instrument been searched
- * @param string $visit_label The  visit_label been searched
- * @param string $candid      The  candid been searched
+ * @param String  $test_name   The instrument been searched
+ * @param ?string $visit_label The  visit_label been searched
+ * @param ?string $candid      The  candid been searched
  *
  * @return array $commentids An array of commentids found
  */
-
 function getCommentIDs($test_name, $visit_label = null, $candid = null)
 {
     $db     =& Database::singleton();
@@ -309,19 +322,15 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
     return $commentids;
 }
 
-
-
 /**
  * Get the conflicts currently in the conflicts_unresolved table
  *
- * @param String $test_name   The instrument been searched
- * @param string $visit_label The visit_label been searched
+ * @param String  $test_name   The instrument been searched
+ * @param ?string $visit_label The visit_label been searched
  *
  * @return array $conflicts An array of conflicts detected
  */
-
-
-function getCurrentUnresolvedConflicts($test_name, $visit_label = null)
+function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
 {
     $db     =& Database::singleton();
     $params = array();
@@ -346,9 +355,8 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null)
     return $conflicts;
 }
 
-
 /**
- * detect the conflicts by
+ * Detect the conflicts by
  * 1) instantiating the instrument for each given commmentid
  * 2) and then taking the diff
  *
@@ -358,7 +366,6 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null)
  *
  * @return Array $detected_conflicts List of newly detected conflicts
  */
-
 function detectConflicts($test_name, $commentids, $current_conflicts)
 {
     $detected_conflicts = array();
@@ -396,7 +403,6 @@ function detectConflicts($test_name, $commentids, $current_conflicts)
  *
  * @return Null
  */
-
 function writeCSV($output, $path, $instrument, $visit_label, $prefix)
 {
 
@@ -444,13 +450,12 @@ function writeCSV($output, $path, $instrument, $visit_label, $prefix)
 
 
 /**
- *  Return data using the commentid
+ * Return data using the commentid
  *
  * @param String $commentid extract data using commentid
  *
  * @return Array $data        Result of the query
  */
-
 function getInfoUsingCommentID($commentid)
 {
     $db   =& Database::singleton();
@@ -467,7 +472,7 @@ function getInfoUsingCommentID($commentid)
 
 
 /**
- * *Detect those conflicts which are currently in the conflicts_unresolved table
+ * Detect those conflicts which are currently in the conflicts_unresolved table
  * But should be excluded based on the _doubleDataEntryDiffIgnoreColumns array
  *
  * @param String $instrument        The instrument used for conflict detection
@@ -478,7 +483,6 @@ function getInfoUsingCommentID($commentid)
  */
 function detectConflictsTobeExcluded($instrument, $commentids, $current_conflicts)
 {
-
     $conflicts_to_excluded = array();
     $instance1      =& NDB_BVL_Instrument::factory(
         $instrument,
@@ -487,18 +491,15 @@ function detectConflictsTobeExcluded($instrument, $commentids, $current_conflict
     );
     $ignore_columns = $instance1->_doubleDataEntryDiffIgnoreColumns;
     foreach ($current_conflicts as $conflict) {
-        /**
-         * if the field is part of the ignore_columns,
-         * and it doesn exist in the conflict array
-         * then track it
-         */
+         // if the field is part of the ignore_columns,
+         // and it doesn exist in the conflict array
+         // then track it
         if (in_array($conflict['FieldName'], $ignore_columns)) {
             $conflicts_to_excluded[] = $conflict;
         }
     }
     return $conflicts_to_excluded;
 }
-
 
 /**
  * Detect those conflicts not currently in conflicts unresolved table
@@ -508,7 +509,6 @@ function detectConflictsTobeExcluded($instrument, $commentids, $current_conflict
  *
  * @return Array $new_conflicts  The list of conflicts to be included
  */
-
 function getNewConflicts($current_conflicts, $detected_conflicts)
 {
     $new_conflicts = array();
@@ -537,15 +537,14 @@ function getNewConflicts($current_conflicts, $detected_conflicts)
     return $new_conflicts;
 }
 
-
 /**
- * check to see if the commentid and fieldname exist in the array of conflicts
+ * Check to see if the commentid and fieldname exist in the array of conflicts
  * if it doesn't then return false
  * and if they do, then check to see if the values are the same,
  * if not the same, return false
  *
  * @param String $conflict  The needle
- * @param Array  $conflicts The Haysta
+ * @param Array  $conflicts The Haystack
  *
  * @return boolean true if needle exists , else false
  */
@@ -568,15 +567,15 @@ function findConflict($conflict, $conflicts)
     return false;
 }
 
-
-
-
-
 /**
  * Populates the DDE ignore fields for each instrument and runs
  * the ignoreColumn function on the instrument for the given fields
  *
- * @param  $instruments
+ * @param array $instruments The instruments to check
+ * @param bool  $confirm     Whether to execute
+ *
+ * @return void
+ *
  * @throws Exception
  */
 function detectIgnoreColumns($instruments, $confirm)
@@ -588,12 +587,19 @@ function detectIgnoreColumns($instruments, $confirm)
         if (file_exists($file)) {
             include_once $file;
             $commentids      = getCommentIDs($instrument, null);
-            $instance        =& NDB_BVL_Instrument::factory($instrument, $commentids[0]['CommentID'], null);
+            $instance        =& NDB_BVL_Instrument::factory(
+                $instrument,
+                $commentids[0]['CommentID'],
+                null
+            );
             $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
 
             if ($DDEIgnoreFields != null) {
                 foreach ($DDEIgnoreFields as $key => $DDEField) {
-                    $instrumentFields = array_merge($instrumentFields, array($DDEField => $instrument));
+                    $instrumentFields = array_merge(
+                        $instrumentFields,
+                        array($DDEField => $instrument)
+                    );
                 }
             } else {
                 echo "No DDE ignore fields found for " . $instrument;
@@ -606,26 +612,37 @@ function detectIgnoreColumns($instruments, $confirm)
 }
 
 
-/*
+/**
  * Prints the instrument-specific ignore columns to be removed
  * Removes the fields if confirmation is set
+ *
+ * @param string $instrument       The instrument name
+ * @param array  $instrumentFields The instrument fields
+ * @param bool   $confirm          whether to execute the command or not
+ *
+ * @return void
  */
 function ignoreColumn($instrument, $instrumentFields, $confirm)
 {
     $db =& Database::singleton();
 
     foreach ($instrumentFields as $field => $instr) {
-        $query        = "SELECT TableName, FieldName, Value1, Value2 FROM conflicts_unresolved 
-          WHERE TableName = '$instrument' AND FieldName = '$field'";
+        $query        = "SELECT TableName, FieldName, Value1, Value2 
+            FROM conflicts_unresolved 
+            WHERE TableName = '$instrument' AND FieldName = '$field'";
         $ignoreColumn = $db->pselectOne($query, array());
 
         if (!empty($ignoreColumn)) {
-            $query = "SELECT TableName, FieldName, CommentId1, Value1, CommentId2, Value2 FROM conflicts_unresolved WHERE TableName = '$instrument' AND FieldName = '$field'";
+            $query = "SELECT 
+                TableName, FieldName, CommentId1, Value1, CommentId2, Value2 
+                FROM conflicts_unresolved 
+                WHERE TableName = '$instrument' AND FieldName = '$field'";
             $conflictsToRemove = $db->pselect($query, array());
             print_r($conflictsToRemove);
 
             if ($confirm) {
-                $query = "DELETE FROM conflicts_unresolved WHERE TableName = '$instrument' AND FieldName = '$field'";
+                $query = "DELETE FROM conflicts_unresolved 
+                    WHERE TableName = '$instrument' AND FieldName = '$field'";
                 $db->run($query);
             }
         }

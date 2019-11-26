@@ -64,7 +64,7 @@ if ($opts['i']!=null) {
 }
 
 /**
- * to be removed
+ * To be removed
  */
 if ($opts['r']!=null) {
     $to_remove = true;

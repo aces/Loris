@@ -71,7 +71,7 @@ class CouchDBMRIImporter
     /**
      * Accessor for dictionary array
      *
-     * @param array The scan types
+     * @param array $types The scan types
      *
      * @return array
      */
@@ -115,8 +115,7 @@ class CouchDBMRIImporter
         $Query = "SELECT c.PSCID, s.Visit_label, s.ID as SessionID, fmric.Comment
           as QCComment";
 
-        foreach($s as $scan)
-        {
+        foreach ($s as $scan) {
             $scantype =$scan['ScanType'];
             $Query   .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
               ON (msc.ID= f.AcquisitionProtocolID)
@@ -156,7 +155,9 @@ class CouchDBMRIImporter
         $inter_rej = 'IntergradientRejected_'.$type;
         $pipeline  = 'processing:pipeline';
 
-        $header['ScannerID_'.$type]           = $this->_getScannerID((int)$FileObj->getParameter('FileID'));
+        $header['ScannerID_'.$type]           = $this->_getScannerID(
+            (int)$FileObj->getParameter('FileID')
+        );
         $header['Pipeline_'.$type]            = $FileObj->getParameter('Pipeline');
         $header['OutputType_'.$type]          = $FileObj->getParameter('OutputType');
         $header['AcquisitionProtocol_'.$type] = $FileObj->getAcquisitionProtocol();
@@ -234,7 +235,7 @@ class CouchDBMRIImporter
     /**
      * Gets the scannerID
      *
-     * @param MRIFile $file file object
+     * @param MRIFile $FileID file object
      *
      * @return scannerID
      */
@@ -370,7 +371,8 @@ class CouchDBMRIImporter
     {
 
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID from mri_scan_type msc
+            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID 
+            from mri_scan_type msc
             JOIN files f ON msc.ID= f.AcquisitionProtocolID
             JOIN files_qcstatus fqc ON f.FileID=fqc.FileID
             ORDER BY f.AcquisitionProtocolID",
@@ -464,15 +466,13 @@ class CouchDBMRIImporter
             $this->Dictionary["Selected_$ScanType"]    = $SelectedArray;
             $this->Dictionary[$ScanType . "_QCStatus"] = $QCStatusArray;
 
-            $feedback_types
-                                                       = $mri_feedback->getAllCommentTypes(
-            );
+            $feedback_types = $mri_feedback->getAllCommentTypes();
             foreach ($feedback_types as $CommentTypeID => $comments) {
                 if (!empty($comments['field'])) {
                     $fieldName = $comments['field'];
-                    $type
-      =
-                        "enum ('" . implode("','", $comments['values']) . "')";
+                    $type      = "enum ('"
+                        . implode("','", $comments['values'])
+                        . "')";
 
                     $cmt_field = "Comment_" . $fieldName . "_$ScanType";
                     $scanfield = "$fieldName $ScanType";
@@ -494,8 +494,7 @@ class CouchDBMRIImporter
                 );
 
                 $this->Dictionary[$fieldName . "_$ScanType"] = $cmt_scanArray;
-                $preDefinedComments
-                                                                   = $mri_feedback->getAllPredefinedComments(
+                $preDefinedComments = $mri_feedback->getAllPredefinedComments(
                     $CommentTypeID
                 );
 
@@ -506,18 +505,14 @@ class CouchDBMRIImporter
                     $preDefinedComments as
                     $preDefinedCommentTypeID => $preDefinedComment
                 ) {
-                    $preDef_field
-                                                     =
-                        $preDefinedComment['field'] . "_$ScanType";
-                    $preDef_cmt
-   = $preDefinedComment['Comment'];
+                    $preDef_field = $preDefinedComment['field'] . "_$ScanType";
+                    $preDef_cmt   = $preDefinedComment['Comment'];
                     $preDef_Array = array(
                         'Type'        => "enum('Yes', 'No')",
                         'Description' => "$preDef_cmt $ScanType",
                     );
                     $this->Dictionary[$preDef_field] = $preDef_Array;
-                    $pre[$preDefinedCommentTypeID]
-   = $preDefinedComment['field'];
+                    $pre[$preDefinedCommentTypeID]   = $preDefinedComment['field'];
                 }
                 $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
 

@@ -51,7 +51,11 @@ class CouchDBInstrumentImporter
     }
 
     /**
-     * @param array $Instruments
+     * Update data dictionaries
+     *
+     * @param array $Instruments the instruments
+     *
+     * @return void
      */
     function updateDataDicts($Instruments)
     {
@@ -113,6 +117,13 @@ class CouchDBInstrumentImporter
         }
     }
 
+    /**
+     * Generates SQL statement
+     *
+     * @param string $tablename Name of the database table
+     *
+     * @return string
+     */
     function generateDocumentSQL(string $tablename) : string
     {
         $select = <<<'QUERY'
@@ -166,7 +177,15 @@ QUERY;
         . " i ON(i.CommentID=f.CommentID) ";
         return $select . $extraSelect . $from . $extraJoin . $where;
     }
-    function UpdateCandidateDocs($Instruments)
+
+    /**
+     * Update candidate documents
+     *
+     * @param array $Instruments the instruments
+     *
+     * @return void
+     */
+    function updateCandidateDocs($Instruments)
     {
         $results = array(
             'new'       => 0,
@@ -293,7 +312,7 @@ QUERY;
     {
         $tests = $this->getInstruments();
         $this->updateDataDicts($tests);
-        $results = $this->UpdateCandidateDocs($tests);
+        $results = $this->updateCandidateDocs($tests);
         $this->CreateRunLog($results);
     }
 }

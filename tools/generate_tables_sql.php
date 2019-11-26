@@ -60,8 +60,8 @@ foreach ($instruments as $instrument) {
                 $output = "DROP TABLE IF EXISTS `$bits[1]`;\n";
             }
             // There's no good way to display this SQL command without exceeding
-            // out line lengtht requirements, so disable phpcs for this chunk.
-            // phpcs: disable
+            // out line length requirements, so disable phpcs for this chunk.
+            // phpcs:disable
             $output .= <<<OUTPUT
 CREATE TABLE `$bits[1]` (
     `CommentID` varchar(255) NOT NULL default '',
@@ -71,7 +71,7 @@ CREATE TABLE `$bits[1]` (
     `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
 OUTPUT;
             break;
-            // phpcs: enable
+            // phpcs:enable
 
             //no SQL need be generated.
         case "title":

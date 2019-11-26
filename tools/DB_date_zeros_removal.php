@@ -4,7 +4,7 @@
  * Script exporting Update statements to remove 0000-00-00 values
  * and replace them by NULL
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -12,9 +12,11 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-set_include_path(get_include_path().":".__DIR__."/../project/libraries:".":".__DIR__."/../../php/libraries:");
+set_include_path(
+    get_include_path().":".__DIR__."/../project/libraries:"
+    .":".__DIR__."/../../php/libraries:"
+);
 require_once __DIR__ . "/../vendor/autoload.php";
-//require_once "NDB_Config.class.inc";
 
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -28,7 +30,8 @@ $base = $config->getSetting('base');
 $db->_trackChanges = false;
 
 // Set up variables
-$filename       = __DIR__ . "/../SQL/Archive/18.0/2016-06-01-update_zero_fields_statements.sql";
+$filename       = __DIR__
+    . "/../SQL/Archive/18.0/2016-06-01-update_zero_fields_statements.sql";
 $output         = "";
 $alters         ="";
 $updates        ="";
@@ -89,6 +92,7 @@ foreach ($field_names as $key => $field) {
         }
     }
 
+    //phpcs:disable
     if ($field['COLUMN_DEFAULT']=='0000-00-00') {
         echo "The script will modify the date schema for TABLE: `".$field['TABLE_NAME']."` FIELD: `".$field['COLUMN_NAME']."` to default to NULL\n";
         $alters .= "ALTER TABLE ".$db->escape($field['TABLE_NAME'])." MODIFY ".$db->escape($field['COLUMN_NAME'])." ".$field['COLUMN_TYPE']." NULL DEFAULT NULL;\n";
@@ -127,6 +131,7 @@ foreach ($field_names as $key => $field) {
                 " WHERE CAST(".$db->escape($field['COLUMN_NAME'])." AS CHAR(20))='0000-00-00 00:00:00';\n";
         }
     }
+    //phpcs:enable
 }
 
 $output .= $alters . $updates . $nonNullUpdates;

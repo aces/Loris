@@ -33,7 +33,7 @@ class CouchDBRadiologicalReviewImporter
 
     // Ignoring PHPCS for now since this section is fairly readable and
     // would require more refactoring to get right.
-    // phpcs: disable
+    // phpcs:disable
     var $Dictionary = array(
         'FinalReview_Radiologist'        => array(
             'Description' => 'Radiologist/Reviewer doing the final review',
@@ -104,7 +104,7 @@ class CouchDBRadiologicalReviewImporter
             'Type'        => "enum('No','Yes')",
         ),
     );
-    // phpcs: enable
+    // phpcs:enable
 
     /**
      * Construct a new instance.

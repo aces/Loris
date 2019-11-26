@@ -63,10 +63,12 @@ class CouchDBDemographicsImporter
         ),
         'Current_stage'    => array(
             'Description' => 'Current stage of visit',
-            'Type'        => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')",
+            'Type'        => "enum('Not Started','Screening','Visit'," .
+                                "'Approval','Subject','Recycling Bin')",
         ),
         'Failure'          => array(
-            'Description' => 'Whether Recycling Bin Candidate was failure or withdrawal',
+            'Description' => 'Whether Recycling Bin Candidate was failure or '
+                                .'withdrawal',
             'Type'        => "enum('Failure','Withdrawal','Neither')",
         ),
         'CEF'              => array(
@@ -90,7 +92,8 @@ class CouchDBDemographicsImporter
             'Type'        => "varchar(255)",
         ),
         'Status_reason'    => array(
-            'Description' => 'Reason for status - only filled out if status is inactive or incomplete',
+            'Description' => 'Reason for status - only filled out if status '
+                                . 'is inactive or incomplete',
             'Type'        => "int(10)",
         ),
         'Status_comments'  => array(
@@ -114,6 +117,9 @@ class CouchDBDemographicsImporter
         ),
     );
 
+    /**
+     * Create a new instance
+     */
     function __construct()
     {
         $factory       = \NDB_Factory::singleton();
@@ -129,6 +135,13 @@ class CouchDBDemographicsImporter
         );
     }
 
+    /**
+     * Get subproject title
+     *
+     * @param int $id The subproject ID
+     *
+     * @return string
+     */
     function _getSubproject($id)
     {
         $config   = \NDB_Config::singleton();
@@ -138,6 +151,13 @@ class CouchDBDemographicsImporter
         }
     }
 
+    /**
+     * Get project name
+     *
+     * @param int $id The projectID
+     *
+     * @return string
+     */
     function _getProject($id)
     {
         $config = \NDB_Config::singleton();
@@ -147,10 +167,16 @@ class CouchDBDemographicsImporter
         }
     }
 
+    /**
+     * Builds SQL query.
+     *
+     * @return string
+     */
     function _generateQuery()
     {
         $config = \NDB_Config::singleton();
 
+        //phpcs:disable
         $fieldsInQuery = "SELECT c.DoB,
                                 c.CandID, 
                                 c.PSCID, 
@@ -178,7 +204,8 @@ class CouchDBDemographicsImporter
                                 LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                                 LEFT JOIN feedback_bvl_thread fbt ON (fbt.CandID=c.CandID) 
                                 LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
-        $groupBy       =" GROUP BY s.ID, 
+        //phpcs:enable
+        $groupBy =" GROUP BY s.ID, 
                             c.DoB,
                             c.CandID,
                             c.PSCID, 
@@ -197,13 +224,17 @@ class CouchDBDemographicsImporter
                             ps.participant_suboptions, 
                             ps.reason_specify";
 
-        // If proband fields are being used, add proband information into the query
+        // If proband fields are being used, add proband information into the
+        // query
         if ($config->getSetting("useProband") === "true") {
-            $probandFields  = ", c.ProbandSex as Sex_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
+            $probandFields  = ", c.ProbandSex as Sex_proband, "
+                ."ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) " .
+                "AS Age_difference";
             $fieldsInQuery .= $probandFields;
             $groupBy       .= ", c.ProbandSex, Age_difference";
         }
-        // If expected date of confinement is being used, add EDC information into the query
+        // If expected date of confinement is being used, add EDC information
+        // into the query
         if ($config->getSetting("useEDC") === "true") {
             $EDCFields      = ", c.EDC as EDC";
             $fieldsInQuery .= $EDCFields;
@@ -221,20 +252,29 @@ class CouchDBDemographicsImporter
                 $cField.DateWithdrawn AS " . $consentName . "_withdrawal";
                 $fieldsInQuery .= $consentFields;
                 $tablesToJoin  .= "
-                                LEFT JOIN candidate_consent_rel $cField ON ($cField.CandidateID=c.CandID) 
-                                AND $cField.ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
+                                LEFT JOIN candidate_consent_rel $cField 
+                                ON ($cField.CandidateID=c.CandID) 
+                                AND $cField.ConsentID=(SELECT ConsentID 
+                                FROM consent 
+                                WHERE Name='" . $consentName . "') ";
                 $groupBy       .= ",
                             $cField.Status,
                             $cField.DateGiven,
                             $cField.DateWithdrawn";
             }
         }
-        $whereClause =" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
+        $whereClause =" WHERE s.Active='Y' AND c.Active='Y' "
+            ."AND c.Entity_type != 'Scanner'";
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . $whereClause . $groupBy;
         return $concatQuery;
     }
 
+    /**
+     * Update data dictionary
+     *
+     * @return void
+     */
     function _updateDataDict()
     {
         $config = \NDB_Config::singleton();
@@ -245,11 +285,13 @@ class CouchDBDemographicsImporter
                 'Type' => "enum('Male','Female', 'Other')"
             );
             $this->Dictionary["Age_difference"] = array(
-                'Description' => 'Age difference between the candidate and the proband',
+                'Description' => 'Age difference between the candidate and ' .
+                                    'the proband',
                 'Type'        => "int",
             );
         }
-        // If expected date of confinement is being used, update the data dictionary
+        // If expected date of confinement is being used, update the data
+        // dictionary
         if ($config->getSetting("useEDC") === "true") {
             $this->Dictionary["EDC"] = array(
                 'Description' => 'Expected Date of Confinement (Due Date)',
@@ -284,38 +326,41 @@ class CouchDBDemographicsImporter
                 );
             }
         }
-        /*
-        // Add any candidate parameter fields to the data dictionary
-        $parameterCandidateFields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom='parameter_candidate' AND Queryable=1",
-            array());
-        foreach($parameterCandidateFields as $field) {
-            if(isset($field['Name'])) {
-                $fname = $field['Name'];
-                $Dict[$fname] = array();
-                $Dict[$fname]['Description'] = $field['Description'];
-                $Dict[$fname]['Type'] = $field['Type'];
-            }
-        }
-        */
     }
 
+    /**
+     * Run the query
+     *
+     * @return void
+     */
     function run()
     {
-        $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
+        $config = $this->CouchDB->replaceDoc(
+            'Config:BaseConfig',
+            $this->Config
+        );
         print "Updating Config:BaseConfig: $config";
 
         // Run query
-        $max_len      = $this->SQLDB->run("SET SESSION group_concat_max_len = 100000;", array());
+        $max_len      = $this->SQLDB->run(
+            "SET SESSION group_concat_max_len = 100000;",
+            array()
+        );
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
         $this->CouchDB->beginBulkTransaction();
         $config_setting = \NDB_Config::singleton();
         foreach ($demographics as $demographics) {
-            $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
-            $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
+            $id = 'Demographics_Session_'
+                . $demographics['PSCID']
+                . '_'
+                . $demographics['Visit_label'];
+            $demographics['Cohort']
+                = $this->_getSubproject($demographics['SubprojectID']);
             unset($demographics['SubprojectID']);
             if (isset($demographics['ProjectID'])) {
-                $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
+                $demographics['Project']
+                    = $this->_getProject($demographics['ProjectID']);
                 unset($demographics['ProjectID']);
             }
             if ($config_setting->getSetting("useFamilyID") === "true") {
@@ -343,6 +388,10 @@ class CouchDBDemographicsImporter
                     $num_family   = 1;
                     if (!empty($familyFields)) {
                         foreach ($familyFields as $row) {
+                            // This script needs further refactoring because the
+                            // indentation is too severe. Disable phpcs for this
+                            // section.
+                            //phpcs:disable
                             //adding each sibling id and relationship to the file
                             $this->Dictionary["Family_CandID".$num_family]            = array(
                                 'Description' => 'CandID of Family Member '.$num_family,
@@ -355,6 +404,7 @@ class CouchDBDemographicsImporter
                             $demographics['Family_CandID'.$num_family]            = $row['Family_ID'];
                             $demographics['Relationship_type_Family'.$num_family] = $row['Relationship_to_candidate'];
                             $num_family += 1;
+                            //phpcs:enable
                         }
                     }
                 }
