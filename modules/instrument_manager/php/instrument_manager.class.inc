@@ -212,8 +212,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).
-            " -u" . escapeshellarg($db_config['dbUser']).
-            " -p" . escapeshellarg($db_config['dbPassword']).
+            " -u" . escapeshellarg($db_config['adminUser']).
+            " -p" . escapeshellarg($db_config['adminPassword']).
             " " . escapeshellarg($db_config['database']).
             " < " . $this->path . "project/tables_sql/".
             escapeshellarg($table_name . '.sql'),
@@ -592,8 +592,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $db        = $this->factory->database();
         $db_config = $this->factory->config()->getSetting('database');
 
-        $credentials_set = !empty($db_config['dbUser'])
-            && !empty($db_config['dbPassword']);
+        $credentials_set = !empty($db_config['adminUser'])
+            && !empty($db_config['adminPassword']);
         if (!$credentials_set) {
             return false;
         }
@@ -603,8 +603,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
         try {
             $connected = $db->connect(
                 $db_config['database'],
-                $db_config['dbUser'],
-                $db_config['dbPassword'],
+                $db_config['adminUser'],
+                $db_config['adminPassword'],
                 $db_config['host'],
                 false
             );
