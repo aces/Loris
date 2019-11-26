@@ -19,8 +19,8 @@ const NUM_ARGS_REQUIRED = 3;
 $dbConfig = $config->getSetting("database");
 $adminDB  = Database::singleton(
     $dbConfig["database"],
-    $dbConfig["quatUser"],
-    $dbConfig["quatPassword"],
+    $dbConfig["dbUser"],
+    $dbConfig["dbPassword"],
     $dbConfig["host"],
     true
 );

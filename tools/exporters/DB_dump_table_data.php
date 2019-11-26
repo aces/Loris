@@ -36,13 +36,13 @@ $tableNames = $DB->pselectCol("
     array("dbn"=>$databaseInfo['database'])
 );
 
-$dbUser = $databaseInfo["quatUser"];
-$dbPassword = $databaseInfo["quatPassword"];
+$dbUser = $databaseInfo["dbUser"];
+$dbPassword = $databaseInfo["dbPassword"];
 $dbHost = $databaseInfo["host"];
 
 if (empty($dbUser) || empty($dbPassword) || empty($dbHost)) {
     echo "\n\n Some database credentials are missing, please ensure administrator 
-    credentials (quatUser, quatPassword) and a host value are available in your 
+    credentials (dbUser, dbPassword) and a host value are available in your 
     configuration file. \n\n";
     die();
 }
