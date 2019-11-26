@@ -149,7 +149,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         if ($this->instrumentExists($instrument)) {
             // An instrument with this name already exists in the test_names
             // table. Abort upload.
-            return new \LORIS\Http\Response\Conflict(self::ALREADY_INSTALLED);
+            return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
         }
 
         /* Although only .linst files should be uploaded to this module, and
@@ -171,7 +171,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
                  * This should only happen for users on a system where automatic
                  * installation is disabled (ie. has no quatUser).
                  */
-                return new \LORIS\Http\Response\Conflict(self::FILE_ALREADY_EXISTS);
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    self::FILE_ALREADY_EXISTS
+                );
             }
             return $response;
         }
@@ -206,7 +208,17 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // silently. Otherwise, it will return the exit code and error
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
-        $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        try {
+            $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        } catch (\NotFound $e) {
+            return (new \LORIS\Http\Response\JSON\NotFound(
+                $e->getMessage()
+            ));
+        } catch (\Exception $e) {
+            return (new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
+            ));
+        }
 
         $db_config = $this->factory->config()->getSetting('database');
         exec(

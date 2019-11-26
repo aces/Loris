@@ -27,6 +27,9 @@ use \Loris\StudyEntities\Candidate\CandID;
  */
 abstract class NDB_BVL_Instrument extends NDB_Page
 {
+    protected const ERROR_CERTIFICATION_BAD_FORMATTING
+        = 'Certification settings are not formatted correctly in the '
+        . 'configuration file. Cannot continue.';
     /**
      * Determines whether this instrument should load data in
      * JSON format from the "Data" column of the flag table, or
@@ -177,6 +180,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return object|null the new object of $instrument type
      * @access public
+     * @throws NotFound
+     * @throws Exception
      */
     static function factory(
         string $instrument,
@@ -219,7 +224,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 && ($guarantee_exists === true
                 && !file_exists($base."project/instruments/$class.class.inc"))
             ) {
-                throw new Exception("Instrument does not exist");
+                throw new NotFound("Instrument does not exist");
             }
             if (!class_exists($class)) {
                 include_once $base."project/instruments/$class.class.inc";
@@ -883,6 +888,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * settings and don't need to parse the config file themselves.
      *
      * @return array
+     * @throws \ConfigurationException
      */
     function _getCertificationConfig(): array
     {
@@ -894,6 +900,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $CertificationInstruments = array();
 
         if ($CertificationEnabled) {
+            // Throw exception if config file is formatted incorrectly.
+            if (!is_array(
+                $CertificationConfig['CertificationProjects']
+            )
+                || !is_array(
+                $CertificationConfig['CertificationInstruments']
+            )
+            ) {
+                throw new \ConfigurationException(
+                    self::ERROR_CERTIFICATION_BAD_FORMATTING
+                );
+            }
             foreach (
                 Utility::associativeToNumericArray(
                     $CertificationConfig['CertificationProjects']
