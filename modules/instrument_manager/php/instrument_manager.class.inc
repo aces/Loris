@@ -29,6 +29,11 @@ use \LORIS\Http\EmptyStream;
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {
+    const PERMISSIONS = array(
+        'instrument_manager_read',
+        'instrument_manager_write'
+    );
+    // Error messages
     const ALREADY_INSTALLED     = 'This instrument already exists in the ' .
                                   'test battery.';
     const CANNOT_WRITE_FILES    = 'Automatic installation of instruments is ' .
@@ -77,11 +82,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            array(
-                'instrument_manager_read'
-            )
-        );
+        return $user->hasAnyPermission(self::PERMISSIONS);
     }
 
     /**
