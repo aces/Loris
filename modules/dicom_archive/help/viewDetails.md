@@ -1,4 +1,4 @@
-# DICOM Archive: Tarchive Metadata
+# View Details
 
 You've arrived at this page by clicking on **View Details** from the DICOM Archive. This page displays metadata for your selected DICOM tarchive (compressed package of DICOM files). 
 
