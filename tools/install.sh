@@ -10,7 +10,7 @@
 set -euo pipefail
 
 # Script must be run from tools directory.
-if [[ ${PWD:(-6)} != *'/tools'* ]]; then
+if [[ "$PWD" != *'/tools' ]]; then
     echo "Please run this script from the tools directory."
     exit 1
 fi
