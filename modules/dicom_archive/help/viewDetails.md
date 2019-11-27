@@ -1,6 +1,6 @@
 # View Details
 
-You've arrived at this page by clicking on **View Details** from the DICOM Archive. This page displays metadata for your selected DICOM tarchive (compressed package of DICOM files). 
+This page displays metadata for a selected DICOM tarchive (compressed package of DICOM files). 
 
 Here, you'll fine all DICOM header fields and other metadata from the DICOM dataset, including information about the candidate, number of acquisitions, where the files were acquired, and all files contained within the given archive.
 
