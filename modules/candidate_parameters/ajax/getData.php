@@ -20,6 +20,7 @@ if (!$user->hasAnyPermission(
         'candidate_parameter_edit',
         'candidate_parameter_view' 
       )
+    )
 ) {
     header("HTTP/1.1 403 Forbidden");
     exit;
