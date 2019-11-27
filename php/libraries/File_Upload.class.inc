@@ -273,10 +273,6 @@ class File_Upload
         } else if (!file_exists($dest_dir) && $this->createDirectories) {
             $config = NDB_Config::singleton();
             mkdir($dest_dir, 0775);
-            $grp = $config->getSetting('FileGroup');
-            if (!empty($grp)) {
-                chgrp($dest_dir, $grp);
-            }
         } else if (!file_exists($dest_dir) && $this->createDirectories) {
             $this->setError(
                 $this->fieldName,

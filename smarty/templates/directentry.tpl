@@ -56,7 +56,7 @@
     {/section}
             </ul>
             
-            If this error persists, please <a target="issue_tracker_url" href="{$issue_tracker_url}">report a bug to your administrator</a>.</p>
+            If this error persists, please <a target="/issue_tracker/" href="{$issue_tracker_url}">report a bug to your administrator</a>.</p>
             <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {else}
 

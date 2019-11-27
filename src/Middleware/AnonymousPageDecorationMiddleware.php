@@ -8,6 +8,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 
 class AnonymousPageDecorationMiddleware implements MiddlewareInterface
 {
+    private const CSS_FILE = 'main.css';
     protected $JSFiles;
     protected $CSSFiles;
     protected $Config;
@@ -39,8 +40,7 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
                      'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                     );
 
-        // I don't think anyone uses this. It's not really supported
-        $tpl_data['css'] = $this->Config->getSetting('css');
+        $tpl_data['css'] = self::CSS_FILE;
 
         //Display the footer links, as specified in the config file
         $links =$this->Config->getExternalLinks('FooterLink');

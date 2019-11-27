@@ -2,7 +2,7 @@
 /**
  * This file represents the MRI Feedback popup window in Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Loris
@@ -10,6 +10,10 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+
+// This constant replaces a config setting that is no longer supported. It may
+// not be needed but was included so as not to break any functionality.
+const CSS_FILE = 'main.css';
 require_once __DIR__ . "/../vendor/autoload.php";
 $client = new NDB_Client;
 if ($client->initialize() == false) {
@@ -164,7 +168,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
 
 //Output template using Smarty
 $config          = \NDB_Config::singleton();
-$tpl_data['css'] = $config->getSetting('css');
+$tpl_data['css'] = CSS_FILE;
 $smarty          = new Smarty_neurodb;
 $smarty->assign($tpl_data);
 $smarty->display('feedback_mri_popup.tpl');

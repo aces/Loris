@@ -147,11 +147,6 @@ class Imaging_Session_ControlPanel
             'radiology_review'
         );
 
-        $issue_tracker_url = \NDB_Config::singleton()
-            ->getSetting("issue_tracker_url");
-        $this->tpl_data['issue_tracker_url'] = $issue_tracker_url;
-        $subjectData['issue_tracker_url']    = $issue_tracker_url;
-
         $subjectData['has_permission']  = $this->_hasAccess();
         $subjectData['status_options']  = array(
             'Unrated' => '',

@@ -10,6 +10,8 @@ use LORIS\StudyEntities\Candidate\CandID;
 
 class UserPageDecorationMiddleware implements MiddlewareInterface
 {
+    private const CSS_FILE = 'main.css';
+
     protected $JSFiles;
     protected $CSSFiles;
     protected $Config;
@@ -131,8 +133,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
 
-        // I don't think anyone uses this. It's not really supported
-        $tpl_data['css'] = $this->Config->getSetting('css');
+        $tpl_data['css'] = self::CSS_FILE:
 
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
@@ -150,11 +151,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                 $this->PageName
             );
         }
-
-        // This shouldn't exist. (And if it does, it shouldn't reference
-        // mantis..)
-        $tpl_data['issue_tracker_url'] = $this->Config->getSetting('issue_tracker_url');
-
         // We're back in the territory of stuff that belongs here..
 
         // Variables that get passed along to the LorisHelper javascript object.

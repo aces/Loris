@@ -42,9 +42,6 @@
                 </a>
             </li>
         {/foreach}
-        {if $mantis}
-            <li><a target="mantis" href="{$issue_tracker_url}">Report a Bug (Mantis)</a></li>
-        {/if}
     </ul>
 
     <h3>Visit Level QC</h3>
