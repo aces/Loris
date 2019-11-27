@@ -12,6 +12,7 @@
  */
 use PHPUnit\Framework\TestCase;
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\StudyEntities\Candidate\SiteAlias;
 /**
  * Unit test for Candidate class
  *
@@ -765,14 +766,16 @@ class CandidateTest extends TestCase
 
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
+        $siteAlias = new SiteAlias('AAA');
+        $projectAlias = new ProjectAlias('BBB');
         $this->assertEquals(
             1,
-            Candidate::validatePSCID('AAA0012', 'AAA', 'BBB'),
+            Candidate::validatePSCID('AAA0012', $siteAlias, $projectAlias);
             'Valid PSCID: validatePSCID should return 1'
         );
         $this->assertEquals(
             0,
-            Candidate::validatePSCID('AAA001', 'AAA', 'BBB'),
+            Candidate::validatePSCID('AAA0012', $siteAlias, $projectAlias);
             'Invalid PSCID: validatePSCID should return 0'
         );
     }

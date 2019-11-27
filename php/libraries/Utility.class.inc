@@ -11,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+use LORIS\StudyEntities\Candidate\SiteAlias;
 
 /**
  * A class for holding a set of (static) utility/helper functions in a
@@ -291,9 +291,10 @@ class Utility
      * Perl-compatible regex expression for validation
      *
      * @param array       $structure     the structure root
-     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
      *                                   part of the PSCID
-     * @param string|null $projectAbbrev the project abbreviation
+     * @param ?SiteAlias $siteAbbrev the site abbreviation, sometimes used
+     *                                   as part of the PSCID
+     * @param ?ProjectAlias $projectAbbrev the project abbreviation
      *
      * @return string the regex pattern
      *
@@ -303,8 +304,8 @@ class Utility
      */
     static function structureToPCRE(
         array $structure,
-        ?string $siteAbbrev = null,
-        ?string $projectAbbrev = null
+        ?SiteAlias $siteAbbrev = null
+        ?ProjectAlias $projectAbbrev = null
     ): string {
         $seqs = $structure['seq'];
         // handle the situation where there exists only one seq

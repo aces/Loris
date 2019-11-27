@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use LORIS\StudyEntities\Candidate\SiteAlias;
+use LORIS\StudyEntities\Candidate\ProjectAlias;
 
 /**
  * This class is a simple extension of SiteIDGenerator and is used by calling
@@ -28,12 +30,12 @@ class PSCIDGenerator extends SiteIDGenerator
     /**
      * Generate PSCIDs.
      *
-     * @param string $siteAlias    The site prefix to prepend to the ID value.
-     * @param string $projectAlias The project prefix to prepend to the ID value.
+     * @param SiteAlias $siteAlias    The site prefix to prepend to the ID value.
+     * @param ProjectAlias $projectAlias The project prefix to prepend to the ID value.
      *
      * @return void
      */
-    public function __construct(string $siteAlias, string $projectAlias)
+    public function __construct(SiteAlias $siteAlias, ProjectAlias $projectAlias)
     {
         $this->kind = 'PSCID';
         parent::__construct($siteAlias, $projectAlias);

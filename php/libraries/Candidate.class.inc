@@ -13,6 +13,7 @@
  */
 
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\StudyEntities\Candidate\SiteAlias;
 /* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
@@ -685,11 +686,11 @@ class Candidate
      * config
      *
      * @param string $PSCID         The PSCID to validate
-     * @param string $siteAbbrev    The site of the candidate
+     * @param SiteAlias $siteAbbrev    The site of the candidate
      *                              being validated to check
      *                              against appropriate parts
      *                              of PSCID definition
-     * @param string $projectAbbrev The project of the candidate
+     * @param ProjectAlias $projectAbbrev The project of the candidate
      *                              being validated to check against appropriate
      *                              parts of PSCID definition
      *
@@ -697,8 +698,8 @@ class Candidate
      */
     static public function validatePSCID(
         string $PSCID,
-        string $siteAbbrev,
-        string $projectAbbrev
+        ?SiteAlias $siteAbbrev = null
+        ?ProjectAlias $projectAbbrev = null
     ): bool {
 
         $factory = NDB_Factory::singleton();

@@ -10,7 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+use LORIS\StudyEntities\Candidate\SiteAlias;
+use LORIS\StudyEntities\Candidate\MRIAlias;
 /**
  * A site object represents a site in the PSC table of
  * Loris.
@@ -24,6 +25,20 @@
 class Site
 {
     var $_siteInfo;
+
+    /**
+     * A short name for the site. E.g. MTL for Montreal.
+     *
+     * @var SiteAlias
+     */
+    var $alias;
+
+    /**
+     * A short name for the MRI.
+     *
+     * @var MRIAlias
+     */
+    var $MRIAlias;
 
     /**
      * Gets an instance of this Site
@@ -43,7 +58,6 @@ class Site
                 $message = $e->getMessage();
                 unset($siteList[$centerID]);
                 throw new Exception("Could not select site ($message)", 0, $e);
-
             }
         }
 
@@ -73,6 +87,14 @@ class Site
         if (is_array($result) && count($result) > 0) {
             foreach ($result as $key=>$value) {
                 $this->_siteInfo[$key] = strval($value);
+                switch ($key) {
+                case 'Alias':
+                    $this->alias = $value;
+                    break;
+                case 'MRI_alias':
+                    $this->MRIAlias = $value;
+                    break;
+                }
             }
         } else {
             throw new Exception("Invalid site");
@@ -102,21 +124,21 @@ class Site
     /**
      * Gets the alias used for this site across Loris.
      *
-     * @return string alias representing this site
+     * @return SiteAlias alias representing this site
      */
-    function getSiteAlias(): string
+    function getSiteAlias(): SiteAlias
     {
-        return strval($this->_siteInfo['Alias']);
+        return $this->alias;
     }
 
     /**
      * Gets the alias used for this site in MRI scripts
      *
-     * @return string alias representing this site
+     * @return MRIAlias alias representing this site
      */
-    function getSiteMRIAlias(): string
+    function getSiteMRIAlias(): MRIAlias
     {
-        return strval($this->_siteInfo['MRI_alias']);
+        return $this->mriAlias;
     }
 
     /**

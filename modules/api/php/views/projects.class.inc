@@ -11,6 +11,7 @@
 
 namespace LORIS\api\Views;
 
+use LORIS\StudyEntities\Candidate\SiteAlias;
 /**
  * Create a array representations of this LORIS instance projects
  *  suitable to the API specifications.
@@ -48,7 +49,10 @@ class Projects
         $useEDC = $config->getSetting("useEDC");
         $PSCID  = $config->getSetting("PSCID");
 
-        $PSCIDFormat = \Utility::structureToPCRE($PSCID['structure'], "SITE");
+        $PSCIDFormat = \Utility::structureToPCRE(
+            $PSCID['structure'],
+            new SiteAlias("SITE")
+        );
 
         $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 

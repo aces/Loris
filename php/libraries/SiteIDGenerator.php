@@ -11,6 +11,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use LORIS\StudyEntities\Candidate\SiteAlias;
+use LORIS\StudyEntities\Candidate\ProjectAlias;
 
 /**
  * This class is responsible for extracting configuration settings relating to
@@ -35,14 +37,12 @@ class SiteIDGenerator extends IdentifierGenerator
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
      * ExternalIDs. Relevant properties are extracted from the config.xml file.
      *
-     * @param string $siteAlias    To be appended to the ID value. Usually an
-     *                             abbreviation for the name of a site.
-     * @param string $projectAlias To be appended to the ID value. Usually an
-     *                             abbreviation for the name of a project.
+     * @param ?SiteAlias $siteAbbrevPrefix To be appended to the ID value.
+     * @param ?ProjectAlias $siteAbbrevPrefix To be appended to the ID value.
      *
      * @return void
      */
-    public function __construct(string $siteAlias, string $projectAlias)
+    public function __construct(SiteAlias $siteAlias, ProjectAlias $projectAlias)
     {
         // Read config settings from project/config.xml to retrieve the
         // alphabet, length, and generation method (sequential or random) used
@@ -82,7 +82,6 @@ class SiteIDGenerator extends IdentifierGenerator
             || empty($this->alphabet)
             || empty($this->minValue)
             || empty($this->maxValue)
-            || empty($this->prefix)
             || !is_array($this->alphabet)
         ) {
             throw new \DomainException(
