@@ -29,8 +29,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         'document_repository_edit',
         'document_repository_delete',
     );
-    public $AjaxModule   = true;
-    public $skipTemplate = true;
+    public $AjaxModule        = true;
+    public $skipTemplate      = true;
 
     /**
      * Checking user permissions

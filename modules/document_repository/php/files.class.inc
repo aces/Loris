@@ -399,9 +399,9 @@ class Files extends \NDB_Page
 
         // Notify users of event
         $msg_data = array(
-                     'newDocument' => 'Document Repository',
-                     'document'    => $filename,
-                    );
+            'newDocument' => 'Document Repository',
+            'document'    => $filename,
+        );
         $uploadNotifier->notify($msg_data);
 
         return $response;
