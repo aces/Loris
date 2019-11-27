@@ -240,7 +240,7 @@ where 123456, 342332, etc are the candidates that exist for this project.
 
 #### 2.1.5 Single project electrophysiology recordings
 ```
-GET /projects/$ProjectName/recordings/
+GET /projects/$ProjectName/recordings
 ```
 
 will return a JSON object of the form:
