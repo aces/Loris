@@ -16,11 +16,11 @@ use \LORIS\StudyEntities\Candidate\CandID;
 
 $user = \NDB_Factory::singleton()->user();
 if (!$user->hasAnyPermission(
-      array(
+    array(
         'candidate_parameter_edit',
-        'candidate_parameter_view' 
-      )
+        'candidate_parameter_view'
     )
+)
 ) {
     header("HTTP/1.1 403 Forbidden");
     exit;
