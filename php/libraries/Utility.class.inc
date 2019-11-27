@@ -197,7 +197,7 @@ class Utility
         } else {
             $ExtraProject_Criteria ='';
         }
-        $query       = "SELECT DISTINCT Visit_label FROM session s
+        $query  = "SELECT DISTINCT Visit_label FROM session s
             JOIN candidate c ON (s.CandID = c.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y'
@@ -205,13 +205,12 @@ class Utility
             AND c.Entity_type != 'Scanner'
             AND psc.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels = $db->pselect($query, $qparams);
-        $visits      = array();
-        for ($i = 0; $i < count($visitlabels); $i++) {
-            $visits[$visitlabels[$i]['Visit_label']]
-                = ($visitlabels[$i]['Visit_label']);
-        }
-        return $visits;
+        $result = $db->pselect($query, $qparams);
+        // The result has several columns; we only want the visit labels.
+        $visitLabels = array_column($result, 'Visit_label');
+
+        // Generates an array where the keys are equal to the values.
+        return array_combine($visitLabels, $visitLabels);
     }
 
     /**
