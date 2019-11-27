@@ -41,7 +41,7 @@ class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
     /**
      * A cache of the results of the endpoint, so that
-     * it doesn't need to be recalculated for the ETag and handler
+     * it doesn't need to be recalculated for the ETag and handler.
      */
     private $_cache;
 

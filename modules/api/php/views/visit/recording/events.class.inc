@@ -41,7 +41,7 @@ class Events
     }
 
     /**
-     * Creates a serializable array of this object's data
+     * Creates a serializable array of this object's data.
      *
      * @return array
      */

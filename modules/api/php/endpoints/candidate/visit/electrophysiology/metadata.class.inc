@@ -42,7 +42,7 @@ class Metadata extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
     /**
      * A cache of the results of the endpoint, so that
-     * it doesn't need to be recalculated for the ETag and handler
+     * it doesn't need to be recalculated for the ETag and handler.
      */
     private $_cache;
 
@@ -147,7 +147,7 @@ class Metadata extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Implements the ETagCalculator interface
+     * Implements the ETagCalculator interface.
      *
      * @param ServerRequestInterface $request The PSR7 incoming request.
      *

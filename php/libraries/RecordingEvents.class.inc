@@ -13,7 +13,7 @@ namespace LORIS;
 
 /**
  * RecordingEvents value object to allow one to type hint function's
- * parameters
+ * parameters.
  *
  *  @category Recording
  *  @package  Main

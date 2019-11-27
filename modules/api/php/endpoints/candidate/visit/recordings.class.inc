@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This implements the visit's electrophysiology recordings endpoint class
+ * This implements the visit's electrophysiology recordings endpoint class.
  *
  * PHP Version 7
  *
@@ -74,7 +74,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request that starts with /candidates/$candid
+     * Handles a request that starts with /candidates/$candid.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -116,7 +116,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Create an array representation of this endpoint's response body
+     * Create an array representation of this endpoint's response body.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -143,7 +143,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Implements the ETagCalculator interface
+     * Implements the ETagCalculator interface.
      *
      * @param ServerRequestInterface $request The PSR7 incoming request.
      *

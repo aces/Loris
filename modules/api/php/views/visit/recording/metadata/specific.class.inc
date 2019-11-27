@@ -64,7 +64,7 @@ class Specific
     }
 
     /**
-     * Creates an serializable array of this object's data
+     * Creates an serializable array of this object's data.
      *
      * @return array
      */
@@ -77,7 +77,7 @@ class Specific
     }
 
     /**
-     * Creates an array of this recording metadata
+     * Creates an array of this recording metadata.
      *
      * @return array
      */

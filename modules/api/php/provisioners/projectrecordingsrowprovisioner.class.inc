@@ -31,7 +31,7 @@ use \LORIS\api\Models\ProjectRecordingsRow;
 class ProjectRecordingsRowProvisioner extends DBRowProvisioner
 {
     /**
-     * Create a RowProvisioner
+     * Create a RowProvisioner.
      *
      * @param \Project  $project The project from which recordings are requested
      * @param \DateTime $since   The project from which recordings are requested

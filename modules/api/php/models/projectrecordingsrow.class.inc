@@ -35,7 +35,7 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
     private $_inserttime;
 
     /**
-     * Create a new ProjectElectrophysiologyRow
+     * Create a new ProjectElectrophysiologyRow.
      *
      * @param array $row An array of image properties
      */

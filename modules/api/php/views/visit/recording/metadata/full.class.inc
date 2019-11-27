@@ -52,7 +52,7 @@ class Full
     }
 
     /**
-     * Creates an serializable array of this object's data
+     * Creates an serializable array of this object's data.
      *
      * @return array
      */
@@ -76,7 +76,7 @@ class Full
     }
 
     /**
-     * Creates an array of this recording metadata.class
+     * Creates an array of this recording metadata.class.
      *
      * @return array
      */

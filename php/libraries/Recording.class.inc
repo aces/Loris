@@ -115,7 +115,7 @@ class Recording
     }
 
     /**
-     * Get a specific file header from physiological_parameter file
+     * Get a specific file header from physiological_parameter file.
      *
      * @param string $headername The parameter name to retrieve
      *
@@ -202,7 +202,7 @@ class Recording
     }
 
     /**
-     * Return a SPLFileInfo object based on this channels' file's properties
+     * Return a SPLFileInfo object based on this channels' file's properties.
      **
      * @return \SplFileInfo
      */
@@ -220,7 +220,7 @@ class Recording
     }
 
     /**
-     * Return a SPLFileInfo object based on this electrodes' file's properties
+     * Return a SPLFileInfo object based on this electrodes' file's properties.
      *
      * @return \SplFileInfo
      */
@@ -238,7 +238,7 @@ class Recording
     }
 
     /**
-     * Return a SPLFileInfo object based on this events.class' file's properties
+     * Return a SPLFileInfo object based on this events.class' file's properties.
      *
      * @return \SplFileInfo
      */
@@ -256,7 +256,7 @@ class Recording
     }
 
     /**
-     * Return a SPLFileInfo object based on this archive's properties
+     * Return a SPLFileInfo object based on this archive's properties.
      *
      * @return \SplFileInfo
      */
@@ -306,8 +306,6 @@ class Recording
                          USING (PhysiologicalChannelTypeID)
                        JOIN physiological_status_type pst
                          USING (PhysiologicalStatusTypeID)
-                       JOIN physiological_file f
-                         USING (PhysiologicalFileID)
                        WHERE
                          pc.PhysiologicalFileID = :v_fileid
                       ',
@@ -349,8 +347,6 @@ class Recording
                          USING (PhysiologicalElectrodeTypeID)
                        JOIN physiological_electrode_material pem
                          USING (PhysiologicalElectrodeMaterialID)
-                       JOIN physiological_file f
-                         USING (PhysiologicalFileID)
                        WHERE
                          pe.PhysiologicalFileID = :v_fileid
                       ',
@@ -388,8 +384,6 @@ class Recording
                          pte.FilePath     as filepath
                        FROM
                          physiological_task_event pte 
-                       JOIN physiological_file f
-                         USING (PhysiologicalFileID)
                        WHERE
                          pte.PhysiologicalFileID = :v_fileid
                       ',
@@ -405,7 +399,7 @@ class Recording
     }
 
     /**
-     * Creates an immutable object representation of this Recording
+     * Creates an immutable object representation of this Recording.
      *
      * @return \LORIS\Data\Models\RecordingDTO
      */

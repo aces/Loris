@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * File that describe the RecordingDTO class
+ * File that describe the RecordingDTO class.
  *
  * PHP Version 7
  *
@@ -134,7 +134,7 @@ class RecordingDTO implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Implements \LORIS\Data\DataInstance interface
+     * Implements \LORIS\Data\DataInstance interface.
      *
      * @return string
      */

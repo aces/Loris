@@ -11,7 +11,6 @@
 
 namespace LORIS\api\Views\Visit;
 
-use \LORIS\Data\Models\ImageDTO;
 use LORIS\Data\Models\RecordingDTO;
 
 /**
@@ -31,10 +30,10 @@ class Recordings
     private $_recordings;
 
     /**
-     * Constructor which sets the instance variables based on the provided timepoint
+     * Constructor which sets the instance variables based on the provided timepoint.
      *
-     * @param \Timepoint $timepoint The timepoint to represent
-     * @param ImageDTO   ...$images An array of images
+     * @param \Timepoint     $timepoint     The timepoint to represent
+     * @param RecordingDTO   ...$recordings An array of recordings
      */
     public function __construct(\Timepoint $timepoint, RecordingDTO ...$recordings)
     {
@@ -43,7 +42,7 @@ class Recordings
     }
 
     /**
-     * Creates an serializable array of this object's data
+     * Creates an serializable array of this object's data.
      *
      * @return array
      */
