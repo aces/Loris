@@ -26,6 +26,12 @@ use \LORIS\api\Endpoint;
 class Electrodes extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
+     * A cache of the results of the endpoint, so that
+     * it doesn't need to be recalculated for the ETag and handler
+     */
+    private $_cache;
+
+    /**
      * The requested recording
      *
      * @var \LORIS\Recording
@@ -100,6 +106,10 @@ class Electrodes extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
+        if (isset($this->_cache)) {
+            return $this->_cache;
+        }
+
         $info = $this->_recording->getElectrodesFileInfo();
 
         if (!$info->isFile()) {
@@ -115,7 +125,7 @@ class Electrodes extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $filename = $info->getFilename();
         $body     = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
 
-        return new \LORIS\Http\Response(
+        $this->_cache = new \LORIS\Http\Response(
             $body,
             200,
             array(
@@ -123,6 +133,8 @@ class Electrodes extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 'Content-Disposition' => 'attachment; filename=' . $filename,
             )
         );
+
+        return $this->_cache;
     }
 
     /**
