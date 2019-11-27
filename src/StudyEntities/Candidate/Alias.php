@@ -29,14 +29,14 @@ abstract class Alias extends ValidatableIdentifier
      *
      * @var int
      */
-    protected const MAX_LENGTH = 3;
+    public const MAX_LENGTH = 3;
 
     /*
      * The minimum length of the identifier.
      *
      * @var int
      */
-    protected const MIN_LENGTH = 3;
+    public const MIN_LENGTH = 3;
 
     /**
      * Validate that the alias is alphabetical and between MAX_LENGTH and

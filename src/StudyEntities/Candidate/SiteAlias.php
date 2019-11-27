@@ -29,14 +29,14 @@ class SiteAlias extends Alias
      *
      * @var int
      */
-    protected const MAX_LENGTH = 4;
+    public const MAX_LENGTH = 4;
 
     /*
      * The minimum length of the identifier.
      *
      * @var int
      */
-    protected const MIN_LENGTH = 3;
+    public const MIN_LENGTH = 3;
 
     /**
      * {@inheritDoc}

@@ -858,4 +858,29 @@ class UtilityTest extends TestCase
     {
         $this->assertTrue(\Utility::valueIsPositiveInteger($int));
     }
+
+    public function testRandomString(): void {
+        $length = 100;
+        // Test length
+        $string = \Utility::randomString($length);
+        $this->assertEquals(mb_strlen($string), $length);
+
+        // Test keyspace:
+        // Test alphanumeric (default)
+        $this->assertTrue(ctype_alnum($string));
+        
+        // Test alphabetical
+        $alphabet = implode('', array_merge(range('a', 'z'), range('A', 'Z')));
+        $this->assertTrue(
+            ctype_alpha(\Utility::randomString($length, $alphabet))
+        );
+        
+        // Test random number
+        $ints = implode('', range(0, 9));
+        $this->assertTrue(
+            \Utility::valueIsPositiveInteger(
+                \Utility::randomString($length, $ints)
+            )
+        );
+    }
 }

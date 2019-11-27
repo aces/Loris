@@ -949,6 +949,28 @@ class Utility
         return implode('', $pieces);
     }
 
+    /**
+     * Generate a random alphanumeric string.
+     *
+     * @param int $length How many characters do we want?
+     *
+     * @return string
+     */
+    static function randomAlphabeticalString(
+        int $length = 64
+    ): string {
+        return \Utility::randomString(
+            $length,
+            implode(
+                '',
+                array_merge(
+                    range('a', 'z'),
+                    range('A', 'Z')
+                )
+            )
+        );
+    }
+
      /**
       * Takes an argument and determine whether it is a positive integer
       * i.e. > 0.

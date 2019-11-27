@@ -29,14 +29,14 @@ class ProjectAlias extends Alias
      *
      * @var int
      */
-    protected const MAX_LENGTH = 5;
+    public const MAX_LENGTH = 5;
 
     /*
      * The minimum length of the identifier.
      *
      * @var int
      */
-    protected const MIN_LENGTH = 3;
+    public const MIN_LENGTH = 3;
 
     /**
      * {@inheritDoc}
