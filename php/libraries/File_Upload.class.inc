@@ -271,7 +271,6 @@ class File_Upload
             );
             return false;
         } else if (!file_exists($dest_dir) && $this->createDirectories) {
-            $config = NDB_Config::singleton();
             mkdir($dest_dir, 0775);
         } else if (!file_exists($dest_dir) && $this->createDirectories) {
             $this->setError(

@@ -133,7 +133,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
 
-        $tpl_data['css'] = self::CSS_FILE:
+        $tpl_data['css'] = self::CSS_FILE;
 
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
