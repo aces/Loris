@@ -77,7 +77,7 @@ class TimePoint
      * one is ever created per Session.
      *
      * @param SessionID $sessionID The ID of the TimePoint to retrieve from the
-     *                           database
+     *                             database
      *
      * @return TimePoint object representing $sessionID
      */

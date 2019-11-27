@@ -452,7 +452,7 @@ class NDB_Factory
      * Retrieve a TimePoint object representing this session
      *
      * @param SessionID $sessionID The sessionID of the timepoint
-     *                           to retrieve
+     *                             to retrieve
      *
      * @return TimePoint object for $sessionID
      */
