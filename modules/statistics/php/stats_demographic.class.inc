@@ -161,7 +161,7 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $visits = \Utility::getExistingVisitLabels();
+        $visits = \Utility::getVisitList();
         $db     = \Database::singleton();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table

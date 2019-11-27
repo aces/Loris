@@ -98,9 +98,9 @@ class Project
      */
     private function _getVisits(): array
     {
-        // TODO :: This should be replace by $this->_project->getVisitLabels();
+        // TODO :: This should be replaced by $this->_project->getVisitLabels();
         return array_keys(
-            \Utility::getExistingVisitLabels(
+            \Utility::getVisitList(
                 $this->_project->getId()
             )
         );

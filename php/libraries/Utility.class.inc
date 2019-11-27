@@ -176,25 +176,42 @@ class Utility
     }
 
     /**
-     * Gets a list of visits used by the database as specified from
-     * the Visit_Windows table
+     * Returns a list of study Visit Labels that are being used by this study.
      *
-     * @return array<string, string> of the form VisitLabel => Visit_label
+     * @param integer|null $projectID Limit visit labels to labels used by this
+     *                                project.
+     *
+     * @return array of study visits in the format array('VL' => 'VL')
+     *         where VL is the visit label
      */
-    static function getVisitList() : array
+    static function getVisitList(?int $projectID = null) : array
     {
-        $factory = NDB_Factory::singleton();
-        $DB      = $factory->database();
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $qparams = array();
 
-        $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
-
-        $result = $DB->pselect($query, array());
-
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["Visit_label"]] = ucfirst($row["Visit_label"]);
+        if ($projectID != null) {
+            $ExtraProject_Criteria
+                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
+            $qparams["ProjectID"]  = $projectID;
+        } else {
+            $ExtraProject_Criteria ='';
         }
-        return $list;
+        $query       = "SELECT DISTINCT Visit_label FROM session s
+            JOIN candidate c ON (s.CandID = c.Candid)
+            JOIN psc ON (s.CenterID = psc.CenterID)
+            WHERE c.Active = 'Y'
+            AND s.Active = 'Y'
+            AND c.Entity_type != 'Scanner'
+            AND psc.CenterID!= '1'
+            $ExtraProject_Criteria ORDER BY Visit_label";
+        $visitlabels = $db->pselect($query, $qparams);
+        $visits      = array();
+        for ($i = 0; $i < count($visitlabels); $i++) {
+            $visits[$visitlabels[$i]['Visit_label']]
+                = ($visitlabels[$i]['Visit_label']);
+        }
+        return $visits;
     }
 
     /**
@@ -742,42 +759,14 @@ class Utility
      * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      *
-     * @note       THIS FUNCTION USES STRING CONCATENATION TO GENERATE AN
-     *             SQL STATEMENT.
-     *             IT IS VULNERABLE TO AN SQL INJECTION ATTACK.
-     * @note       Function comment written by Dave, not the author of this function.
-     * @vulnerable
-     * @cleanup
+     * @deprecated
      */
     static function getExistingVisitLabels(int $projectID = null): array
     {
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
-        $qparams = array();
-
-        if ($projectID != null) {
-            $ExtraProject_Criteria
-                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
-            $qparams["ProjectID"]  = $projectID;
-        } else {
-            $ExtraProject_Criteria ='';
-        }
-        $query          = "SELECT DISTINCT Visit_label FROM session s
-            JOIN candidate c ON (s.CandID = c.Candid)
-            JOIN psc ON (s.CenterID = psc.CenterID)
-            WHERE c.Active = 'Y'
-            AND s.Active = 'Y'
-            AND c.Entity_type != 'Scanner'
-            AND psc.CenterID!= '1'
-            $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels    = $db->pselect($query, $qparams);
-        $visits         = array();
-        $numVisitLabels = count($visitlabels);
-        for ($i = 0; $i < $numVisitLabels; $i++) {
-            $visits[$visitlabels[$i]['Visit_label']]
-                = ($visitlabels[$i]['Visit_label']);
-        }
-        return $visits;
+        throw new \DeprecatedException(
+            'This function is deprecated. Please use Utility::getVisitList() '
+            . 'instead.'
+        );
     }
 
     /**

@@ -94,7 +94,7 @@ class Behavioural_QC extends \NDB_Form
 
         /* Visit_labels
          */
-        $visit_array   =\Utility::getExistingVisitLabels();
+        $visit_array   =\Utility::getVisitList();
         $visit_array   = array_combine($visit_array, $visit_array);
         $list_of_sites = array();
         $this->tpl_data['visitLabels'] = $visit_array;
