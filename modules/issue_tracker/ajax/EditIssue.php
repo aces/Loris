@@ -267,7 +267,7 @@ function validateInput($values)
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             $params['CenterID'] = implode(',', $user->getCenterIDs());
-            $query .= " AND FIND_IN_SET(CenterID,:CenterID)";
+            $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
         }
 
         $candidate = $db->pSelectOne($query, $params);
