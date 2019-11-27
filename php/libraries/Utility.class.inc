@@ -163,6 +163,8 @@ class Utility
      *         Note that even though CenterID is numeric, the array
      *         should be interpreted as an associative array since the keys
      *         refer to the centerID, not the array index.
+     *
+     * @deprecated
      */
     static function getAssociativeSiteList(
         bool $study_site = true,
