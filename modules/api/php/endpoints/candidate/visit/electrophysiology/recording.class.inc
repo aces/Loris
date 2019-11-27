@@ -87,17 +87,17 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
-                case 'GET':
-                    return $this->_handleGET($request);
+            case 'GET':
+                return $this->_handleGET($request);
 
-                case 'OPTIONS':
-                    return (new \LORIS\Http\Response())
-                        ->withHeader('Allow', $this->allowedMethods());
+            case 'OPTIONS':
+                return (new \LORIS\Http\Response())
+                    ->withHeader('Allow', $this->allowedMethods());
 
-                default:
-                    return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                        $this->allowedMethods()
-                    );
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    $this->allowedMethods()
+                );
             }
         }
 
@@ -105,30 +105,33 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // At this point, the recording must exist
         $user = $request->getAttribute('user');
         try {
-            $recording = $this->_visit->getRecordingByFilename($user, $this->_filename);
+            $recording = $this->_visit->getRecordingByFilename(
+                $user,
+                $this->_filename
+            );
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
 
         $subendpoint = array_shift($pathparts);
         switch($subendpoint) {
-            case 'metadata':
-                $handler = new Metadata($this->_visit, $recording);
-                break;
-            case 'channels':
-                $handler = new Channels($this->_visit, $recording);
-                break;
-            case 'electrodes':
-                $handler = new Electrodes($this->_visit, $recording);
-                break;
-            case 'events':
-                $handler = new Events($this->_visit, $recording);
-                break;
-            case 'bidsfiles':
-                $handler = new BidsFile($recording);
-                break;
-            default:
-                return new \LORIS\Http\Response\JSON\NotFound();
+        case 'metadata':
+            $handler = new Metadata($this->_visit, $recording);
+            break;
+        case 'channels':
+            $handler = new Channels($this->_visit, $recording);
+            break;
+        case 'electrodes':
+            $handler = new Electrodes($this->_visit, $recording);
+            break;
+        case 'events':
+            $handler = new Events($this->_visit, $recording);
+            break;
+        case 'bidsfiles':
+            $handler = new BidsFile($recording);
+            break;
+        default:
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $newrequest = $request
@@ -152,7 +155,10 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
 
         try {
-            $recording = $this->_visit->getRecordingByFilename($user, $this->_filename);
+            $recording = $this->_visit->getRecordingByFilename(
+                $user,
+                $this->_filename
+            );
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
@@ -195,7 +201,10 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $user = $request->getAttribute('user');
 
         try {
-            $recording = $this->_visit->getRecordingByFilename($user, $this->_filename);
+            $recording = $this->_visit->getRecordingByFilename(
+                $user,
+                $this->_filename
+            );
         } catch (\Throwable $e) {
             return '';
         }

@@ -92,17 +92,17 @@ class Metadata extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
+        case 'GET':
+            return $this->_handleGET($request);
 
-            case 'OPTIONS':
-                return (new \LORIS\Http\Response())
-                    ->withHeader('Allow', $this->allowedMethods());
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
 
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
 
@@ -127,18 +127,18 @@ class Metadata extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $headername = array_shift($pathparts);
 
         switch ($headername) {
-            case '':
-                $view = new \LORIS\api\Views\Visit\Recording\Metadata\Full(
-                    $this->_visit,
-                    $this->_recording
-                );
-                break;
-            default:
-                $view = new \LORIS\api\Views\Visit\Recording\Metadata\Specific(
-                    $this->_visit,
-                    $this->_recording,
-                    $headername
-                );
+        case '':
+            $view = new \LORIS\api\Views\Visit\Recording\Metadata\Full(
+                $this->_visit,
+                $this->_recording
+            );
+            break;
+        default:
+            $view = new \LORIS\api\Views\Visit\Recording\Metadata\Specific(
+                $this->_visit,
+                $this->_recording,
+                $headername
+            );
         }
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($view->toArray());

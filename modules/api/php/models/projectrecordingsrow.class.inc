@@ -75,7 +75,8 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
         $candid   = $obj['Candidate'];
         $visit    = $obj['Visit'];
 
-        $obj['Link']       = "/candidates/$candid/$visit/electrophysiology/$filename";
+        $obj['Link'] = "/candidates/$candid/$visit/electrophysiology/$filename";
+
         $obj['InsertTime'] = date('c', (int) $obj['InsertTime']);
 
         return json_encode($obj);

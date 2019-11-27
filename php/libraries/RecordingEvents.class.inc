@@ -15,25 +15,25 @@ namespace LORIS;
  * RecordingEvents value object to allow one to type hint function's
  * parameters.
  *
- *  @category Recording
- *  @package  Main
- *  @author   Cecile Madjar <cecile.madjar@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Recording
+ * @package  Main
+ * @author   Cecile Madjar <cecile.madjar@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RecordingEvents
 {
     /**
      * Contructor
      *
-     * @param ?string $onset       Onset
-     * @param ?string $duration    Duration
-     * @param ?string $eventcode   Event Code
-     * @param ?string eventsample  Event Sample
-     * @param ?string eventtype    Event Type
-     * @param ?string trialtype    Trial Type
-     * @param ?string responsetime Response time
-     * @param ?string $filepath    Events BIDS File Path
+     * @param ?string $onset        Onset
+     * @param ?string $duration     Duration
+     * @param ?string $eventcode    Event Code
+     * @param ?string $eventsample  Event Sample
+     * @param ?string $eventtype    Event Type
+     * @param ?string $trialtype    Trial Type
+     * @param ?string $responsetime Response time
+     * @param ?string $filepath     Events BIDS File Path
      */
     public function __construct(
         ?string $onset,
@@ -55,7 +55,8 @@ class RecordingEvents
         $this->_filepath     = $filepath;
     }
 
-    /** Accessor for onset
+    /**
+     * Accessor for onset
      *
      * @return ?string
      */
@@ -64,7 +65,8 @@ class RecordingEvents
         return $this->_onset;
     }
 
-    /** Accessor for duration
+    /**
+     * Accessor for duration
      *
      * @return ?string
      */
@@ -73,7 +75,8 @@ class RecordingEvents
         return $this->_duration;
     }
 
-    /** Accessor for event code
+    /**
+     * Accessor for event code
      *
      * @return ?string
      */
@@ -82,7 +85,8 @@ class RecordingEvents
         return $this->_eventcode;
     }
 
-    /** Accessor for event sample
+    /**
+     * Accessor for event sample
      *
      * @return ?string
      */
@@ -91,7 +95,8 @@ class RecordingEvents
         return $this->_eventsample;
     }
 
-    /** Accessor for event type
+    /**
+     * Accessor for event type
      *
      * @return ?string
      */
@@ -100,7 +105,8 @@ class RecordingEvents
         return $this->_eventtype;
     }
 
-    /** Accessor for trial type
+    /**
+     * Accessor for trial type
      *
      * @return ?string
      */
@@ -109,7 +115,8 @@ class RecordingEvents
         return $this->_trialtype;
     }
 
-    /** Accessor for impedance
+    /**
+     * Accessor for impedance
      *
      * @return ?string
      */
@@ -118,7 +125,8 @@ class RecordingEvents
         return $this->_responsetime;
     }
 
-    /** Accessor for filepath
+    /**
+     * Accessor for filepath
      *
      * @return ?string
      */

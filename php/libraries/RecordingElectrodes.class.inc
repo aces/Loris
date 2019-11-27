@@ -15,11 +15,11 @@ namespace LORIS;
  * RecordingElectrodes value object to allow one to type hint function's
  * parameters.
  *
- *  @category Recording
- *  @package  Main
- *  @author   Cecile Madjar <cecile.madjar@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Recording
+ * @package  Main
+ * @author   Cecile Madjar <cecile.madjar@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RecordingElectrodes
 {
@@ -48,14 +48,15 @@ class RecordingElectrodes
         $this->_electrodename     = $electrodename;
         $this->_electrodetype     = $electrodetype;
         $this->_electrodematerial = $electrodematerial;
-        $this->_x                 = $x;
-        $this->_y                 = $y;
-        $this->_z                 = $z;
-        $this->_impedance         = $impedance;
-        $this->_filepath          = $filepath;
+        $this->_x         = $x;
+        $this->_y         = $y;
+        $this->_z         = $z;
+        $this->_impedance = $impedance;
+        $this->_filepath  = $filepath;
     }
 
-    /** Accessor for electrode name
+    /**
+     * Accessor for electrode name
      *
      * @return ?string
      */
@@ -64,7 +65,8 @@ class RecordingElectrodes
         return $this->_electrodename;
     }
 
-    /** Accessor for electrode type
+    /**
+     * Accessor for electrode type
      *
      * @return ?string
      */
@@ -73,7 +75,8 @@ class RecordingElectrodes
         return $this->_electrodetype;
     }
 
-    /** Accessor for electrode material
+    /**
+     * Accessor for electrode material
      *
      * @return ?string
      */
@@ -82,7 +85,8 @@ class RecordingElectrodes
         return $this->_electrodematerial;
     }
 
-    /** Accessor for x
+    /**
+     * Accessor for x
      *
      * @return ?string
      */
@@ -91,7 +95,8 @@ class RecordingElectrodes
         return $this->_x;
     }
 
-    /** Accessor for y
+    /**
+     * Accessor for y
      *
      * @return ?string
      */
@@ -100,7 +105,8 @@ class RecordingElectrodes
         return $this->_y;
     }
 
-    /** Accessor for z
+    /**
+     * Accessor for z
      *
      * @return ?string
      */
@@ -109,7 +115,8 @@ class RecordingElectrodes
         return $this->_z;
     }
 
-    /** Accessor for impedance
+    /**
+     * Accessor for impedance
      *
      * @return ?string
      */
@@ -118,7 +125,8 @@ class RecordingElectrodes
         return $this->_impedance;
     }
 
-    /** Accessor for filepath
+    /**
+     * Accessor for filepath
      *
      * @return ?string
      */

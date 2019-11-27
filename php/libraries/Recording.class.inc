@@ -17,7 +17,7 @@ namespace LORIS;
  *
  * @category Recording
  * @package  Main
- *  @author  Cecile Madjar <cecile.madjar@mcin.ca>
+ * @author   Cecile Madjar <cecile.madjar@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
@@ -69,9 +69,13 @@ class Recording
                      LEFT JOIN candidate c
                        ON (s.CandID = c.CandID)
                      LEFT JOIN  physiological_output_type pot
-                       ON (pot.PhysiologicalOutputTypeID = f.PhysiologicalOutputTypeID)
+                       ON (
+                        pot.PhysiologicalOutputTypeID = f.PhysiologicalOutputTypeID
+                       )
                      LEFT JOIN physiological_modality pm
-                       ON (pm.PhysiologicalModalityID = f.PhysiologicalModalityID)
+                       ON (
+                        pm.PhysiologicalModalityID = f.PhysiologicalModalityID
+                       )
                      LEFT JOIN (
                        SELECT PhysiologicalFileID, FilePath
                        FROM physiological_channel

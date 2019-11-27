@@ -30,10 +30,10 @@ class Recordings
     private $_recordings;
 
     /**
-     * Constructor which sets the instance variables based on the provided timepoint.
+     * Constructor which sets the instance variables based on the provide timepoint.
      *
-     * @param \Timepoint     $timepoint     The timepoint to represent
-     * @param RecordingDTO   ...$recordings An array of recordings
+     * @param \Timepoint   $timepoint     The timepoint to represent
+     * @param RecordingDTO ...$recordings An array of recordings
      */
     public function __construct(\Timepoint $timepoint, RecordingDTO ...$recordings)
     {

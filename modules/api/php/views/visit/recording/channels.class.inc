@@ -54,24 +54,24 @@ class Channels
         );
 
         $channels = array_map(
-            function ($channel) {
-                $channelfileinfo = $channel->getFileInfo();
+            function ($chanL) {
+                $channelfileinfo = $chanL->getFileInfo();
                 $filename        = $channelfileinfo->getFilename();
 
                 return array(
-                    'ChannelName'            => $channel->getChannelName(),
-                    'ChannelDescription'     => $channel->getChannelDescription(),
-                    'ChannelType'            => $channel->getChannelType(),
-                    'ChannelTypeDescription' => $channel->getChannelTypeDescription(),
-                    'ChannelStatus'          => $channel->getChannelStatus(),
-                    'StatusDescription'      => $channel->getStatusDescription(),
-                    'SamplingFrequency'      => $channel->getSamplingFrequency(),
-                    'LowCutoff'              => $channel->getLowCutoff(),
-                    'HighCutoff'             => $channel->getHighCutoff(),
-                    'ManualFlag'             => $channel->getManualFlag(),
-                    'Notch'                  => $channel->getNotch(),
-                    'Reference'              => $channel->getReference(),
-                    'Unit'                   => $channel->getUnit(),
+                    'ChannelName'            => $chanL->getChannelName(),
+                    'ChannelDescription'     => $chanL->getChannelDescription(),
+                    'ChannelType'            => $chanL->getChannelType(),
+                    'ChannelTypeDescription' => $chanL->getChannelTypeDescription(),
+                    'ChannelStatus'          => $chanL->getChannelStatus(),
+                    'StatusDescription'      => $chanL->getStatusDescription(),
+                    'SamplingFrequency'      => $chanL->getSamplingFrequency(),
+                    'LowCutoff'              => $chanL->getLowCutoff(),
+                    'HighCutoff'             => $chanL->getHighCutoff(),
+                    'ManualFlag'             => $chanL->getManualFlag(),
+                    'Notch'                  => $chanL->getNotch(),
+                    'Reference'              => $chanL->getReference(),
+                    'Unit'                   => $chanL->getUnit(),
                     'ChannelFilePath'        => $filename,
                 );
             },

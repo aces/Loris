@@ -15,11 +15,11 @@ namespace LORIS;
  * RecordingChannels value object to allow one to type hint function's
  * parameters.
  *
- *  @category Recording
- *  @package  Main
- *  @author   Cecile Madjar <cecile.madjar@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Recording
+ * @package  Main
+ * @author   Cecile Madjar <cecile.madjar@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class RecordingChannels
 {
@@ -64,16 +64,17 @@ class RecordingChannels
         $this->_channelstatus          = $channelstatus;
         $this->_statusdescription      = $statusdescription;
         $this->_samplingfrequency      = $samplingfrequency;
-        $this->_lowcutoff              = $lowcutoff;
-        $this->_highcutoff             = $highcutoff;
-        $this->_manualflag             = $manualflag;
-        $this->_notch                  = $notch;
-        $this->_reference              = $reference;
-        $this->_unit                   = $unit;
-        $this->_filepath               = $filepath;
+        $this->_lowcutoff  = $lowcutoff;
+        $this->_highcutoff = $highcutoff;
+        $this->_manualflag = $manualflag;
+        $this->_notch      = $notch;
+        $this->_reference  = $reference;
+        $this->_unit       = $unit;
+        $this->_filepath   = $filepath;
     }
 
-    /** Accessor for channel name
+    /**
+     * Accessor for channel name
      *
      * @return ?string
      */
@@ -82,7 +83,8 @@ class RecordingChannels
         return $this->_channelname;
     }
 
-    /** Accessor for channel description
+    /**
+     * Accessor for channel description
      *
      * @return ?string
      */
@@ -91,7 +93,8 @@ class RecordingChannels
         return $this->_channeldescription;
     }
 
-    /** Accessor for channel type
+    /**
+     * Accessor for channel type
      *
      * @return ?string
      */
@@ -100,7 +103,8 @@ class RecordingChannels
         return $this->_channeltype;
     }
 
-    /** Accessor for channel type description
+    /**
+     * Accessor for channel type description
      *
      * @return ?string
      */
@@ -109,7 +113,8 @@ class RecordingChannels
         return $this->_channeltypedescription;
     }
 
-    /** Accessor for channel status
+    /**
+     * Accessor for channel status
      *
      * @return ?string
      */
@@ -118,7 +123,8 @@ class RecordingChannels
         return $this->_channelstatus;
     }
 
-    /** Accessor for status description
+    /**
+     * Accessor for status description
      *
      * @return ?string
      */
@@ -127,7 +133,8 @@ class RecordingChannels
         return $this->_statusdescription;
     }
 
-    /** Accessor for sampling frequency
+    /**
+     * Accessor for sampling frequency
      *
      * @return ?string
      */
@@ -136,7 +143,8 @@ class RecordingChannels
         return $this->_samplingfrequency;
     }
 
-    /** Accessor for low cutoff
+    /**
+     * Accessor for low cutoff
      *
      * @return ?string
      */
@@ -145,7 +153,8 @@ class RecordingChannels
         return $this->_lowcutoff;
     }
 
-    /** Accessor for high cutoff
+    /**
+     * Accessor for high cutoff
      *
      * @return ?string
      */
@@ -154,7 +163,8 @@ class RecordingChannels
         return $this->_highcutoff;
     }
 
-    /** Accessor for manual flag
+    /**
+     * Accessor for manual flag
      *
      * @return ?string
      */
@@ -163,7 +173,8 @@ class RecordingChannels
         return $this->_manualflag;
     }
 
-    /** Accessor for notch
+    /**
+     * Accessor for notch
      *
      * @return ?string
      */
@@ -172,7 +183,8 @@ class RecordingChannels
         return $this->_notch;
     }
 
-    /** Accessor for reference
+    /**
+     * Accessor for reference
      *
      * @return ?string
      */
@@ -181,7 +193,8 @@ class RecordingChannels
         return $this->_reference;
     }
 
-    /** Accessor for unit
+    /**
+     * Accessor for unit
      *
      * @return ?string
      */
@@ -190,7 +203,8 @@ class RecordingChannels
         return $this->_unit;
     }
 
-    /** Accessor for filepath
+    /**
+     * Accessor for filepath
      *
      * @return ?string
      */

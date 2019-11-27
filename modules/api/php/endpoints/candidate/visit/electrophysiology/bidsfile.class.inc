@@ -81,20 +81,20 @@ class BidsFile extends Endpoint
 
         $format = array_shift($pathparts);
         switch ($format) {
-            case 'channels':
-                $handler = new BidsFile\Channels($this->_recording);
-                break;
-            case 'electrodes':
-                $handler = new BidsFile\Electrodes($this->_recording);
-                break;
-            case 'events.class':
-                $handler = new BidsFile\Events($this->_recording);
-                break;
-            case 'archive':
-                $handler = new BidsFile\Archive($this->_recording);
-                break;
-            default:
-                return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
+        case 'channels':
+            $handler = new BidsFile\Channels($this->_recording);
+            break;
+        case 'electrodes':
+            $handler = new BidsFile\Electrodes($this->_recording);
+            break;
+        case 'events.class':
+            $handler = new BidsFile\Events($this->_recording);
+            break;
+        case 'archive':
+            $handler = new BidsFile\Archive($this->_recording);
+            break;
+        default:
+            return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
         }
 
         $newrequest = $request

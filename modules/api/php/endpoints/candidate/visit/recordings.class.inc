@@ -44,11 +44,11 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Timepoint   $visit The requested visit
+     * @param \Timepoint $visit The requested visit
      */
     public function __construct(\Timepoint $visit)
     {
-        $this->_visit      = $visit;
+        $this->_visit = $visit;
     }
 
     /**
@@ -85,17 +85,17 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
-                case 'GET':
-                    return $this->_handleGET($request);
+            case 'GET':
+                return $this->_handleGET($request);
 
-                case 'OPTIONS':
-                    return (new \LORIS\Http\Response())
-                        ->withHeader('Allow', $this->allowedMethods());
+            case 'OPTIONS':
+                return (new \LORIS\Http\Response())
+                    ->withHeader('Allow', $this->allowedMethods());
 
-                default:
-                    return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                        $this->allowedMethods()
-                    );
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    $this->allowedMethods()
+                );
             }
         }
 

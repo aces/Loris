@@ -1014,7 +1014,8 @@ class TimePoint
      */
     public function getRecordings(\User $user): array
     {
-        $provisioner = new \LORIS\Data\Provisioners\TimepointRecordingsRowProvisioner(
+        $provisioner =
+            new \LORIS\Data\Provisioners\TimepointRecordingsRowProvisioner(
             $this
         );
 
@@ -1037,7 +1038,8 @@ class TimePoint
      * @throws \NotFound
      * @return \LORIS\Recording
      */
-    public function getRecordingByFilename(\User $user, string $filename): \LORIS\Recording
+    public function getRecordingByFilename(\User $user, string $filename):
+    \LORIS\Recording
     {
         $filtered = array_filter(
             $this->getRecordings($user),
