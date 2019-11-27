@@ -12,9 +12,9 @@ There are several actions you can take within a candidate's profile from the *Ca
 
 Click **Create New Timepoint**, which brings you to a new page, which has its own help text with instructions for creating a new timepoint.
 
-## Edit Candidate Info
+## Candidate Info
 
-Click **Edit Candidate Info** to arrive at the *Candidate Parameters* page, where you can edit general information about the candidate, such as adding their consent. 
+Click **Candidate Info** to arrive at the *Candidate Parameters* page, where you can edit general information about the candidate, such as adding their consent. 
 
 ## View Imaging Datasets
 
