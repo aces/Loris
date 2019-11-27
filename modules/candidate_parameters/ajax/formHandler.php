@@ -398,9 +398,11 @@ function editConsentStatusFields($db, $user)
 {
     // Get CandID
     $candIDParam = $_POST['candID'];
-    $candID      = (isset($candIDParam) && $candIDParam !== 'null') ?
-        new CandID($candIDParam) : null;
-
+    if (!isset($candIDParam) || $candIDParam === 'null') {
+        http_response_code(404);
+        die(json_encode(["error" => "Appointment does not exist."]));
+    }
+    $candID      = new CandID($candIDParam);
     $candidate   = \Candidate::singleton($candID);
     $currentUser = \User::singleton();
     $uid         = $currentUser->getUsername();
