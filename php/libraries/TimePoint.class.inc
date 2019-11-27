@@ -1014,8 +1014,8 @@ class TimePoint
      */
     public function getRecordings(\User $user): array
     {
-        $provisioner =
-            new \LORIS\Data\Provisioners\TimepointRecordingsRowProvisioner(
+        $provisioner
+            = new \LORIS\Data\Provisioners\TimepointRecordingsRowProvisioner(
             $this
         );
 

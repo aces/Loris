@@ -207,7 +207,7 @@ class Recording
 
     /**
      * Return a SPLFileInfo object based on this channels' file's properties.
-     **
+     *
      * @return \SplFileInfo
      */
     public function getChannelsFileInfo(): \SplFileInfo

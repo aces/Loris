@@ -90,19 +90,19 @@ class Events extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-            switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
+        switch ($request->getMethod()) {
+        case 'GET':
+            return $this->_handleGET($request);
 
-            case 'OPTIONS':
-                return (new \LORIS\Http\Response())
-                    ->withHeader('Allow', $this->allowedMethods());
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
 
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
-            }
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
+        }
     }
 
     /**
