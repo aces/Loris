@@ -24,11 +24,11 @@ The `quality_control` permission gives users access to this module and its featu
 
 #### Interactions With LORIS
 
-##### Configuration
+- Configuration
 The `tblScanTypes` setting allows customization of which modalities are displayed in this module.
 
-##### Imaging Browser 
+- Imaging Browser 
 Links are provided to the Imaging Browser module, and the QC entered in that module (for the scan types specified in the Configuration module as noted above).
 
-##### Imaging Uploader 
+- Imaging Uploader 
 The name of the user who uploaded the scan via the Imaging Uploader module is displayed in this module.
