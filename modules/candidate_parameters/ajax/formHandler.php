@@ -13,6 +13,9 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
+use \LORIS\StudyEntities\Candidate\CandID;
+
+
 $user = \User::singleton();
 if (!$user->hasPermission('candidate_parameter_edit')) {
     header("HTTP/1.1 403 Forbidden");
@@ -396,7 +399,7 @@ function editConsentStatusFields($db, $user)
     // Get CandID
     $candIDParam = $_POST['candID'];
     $candID      = (isset($candIDParam) && $candIDParam !== 'null') ?
-        $candIDParam : null;
+        new CandID($candIDParam) : null;
 
     $candidate   = \Candidate::singleton($candID);
     $currentUser = \User::singleton();
