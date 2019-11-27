@@ -49,6 +49,7 @@ class ProjectRecordingsRowProvisioner extends DBRowProvisioner
                s.CenterID as CenterID,
                p.Name as Site,
                f.FilePath as File,
+               pm.PhysiologicalModality as Modality,
                f.InsertTime as InsertTime
              FROM
                physiological_file f
@@ -60,6 +61,8 @@ class ProjectRecordingsRowProvisioner extends DBRowProvisioner
                ON (s.CenterID = p.CenterID)
              LEFT JOIN Project project
                ON (s.ProjectID = project.ProjectID)
+             LEFT JOIN physiological_modality pm
+               ON (pm.PhysiologicalModalityID = f.PhysiologicalModalityID)
              WHERE
                c.Active = \'Y\' AND
                s.Active = \'Y\' AND

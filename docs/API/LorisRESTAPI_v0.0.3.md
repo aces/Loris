@@ -246,7 +246,7 @@ GET /projects/$ProjectName/recordings/
 will return a JSON object of the form:
 ```js
 {
-  "ElectrophysiologyRecordings": [
+  "Recordings": [
     {
       "Candidate":"300167",
       "PSCID":"OTT167",
@@ -254,6 +254,7 @@ will return a JSON object of the form:
       "Visit_date":"2016-08-15",
       "Site":"Ottawa",
       "File":"bids_imports/Face13_BIDSVersion_1.1.0/sub-OTT167/ses-V1/eeg/sub-OTT167_ses-V1_task-faceO_eeg.edf",
+      "Modality":"eeg",
       "InsertTime":"1970-01-01T00:33:39+00:00",
       "Link":"/candidates/300167/V1/electrophysiology/sub-OTT167_ses-V1_task-faceO_eeg.edf"
     },

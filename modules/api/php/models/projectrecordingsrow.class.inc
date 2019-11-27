@@ -31,6 +31,7 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
     private $_centerid;
     private $_centername;
     private $_filename;
+    private $_modality;
     private $_inserttime;
 
     /**
@@ -48,6 +49,7 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
         $this->_centerid   = $row['CenterID'] ?? null;
         $this->_centername = $row['Site'] ?? null;
         $this->_filename   = $row['File'] ?? null;
+        $this->_modality   = $row['Modality'] ?? null;
         $this->_inserttime = $row['InsertTime'] ?? null;
     }
 
@@ -65,6 +67,7 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
             'Visit_date' => $this->_visitdate,
             'Site'       => $this->_centername,
             'File'       => $this->_filename,
+            'Modality'   => $this->_modality,
             'InsertTime' => $this->_inserttime,
         );
 
