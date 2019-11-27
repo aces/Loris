@@ -75,7 +75,8 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
 5. Apache configuration
 
 If your apache configuration was not completed by the Install script, run the following enable rewriting of LORIS, enable your `$projectname` site, and restart apache:  (run by user who has root privileges)
-    ```bash
+    
+```bash
     sudo a2enmod rewrite
     sudo a2dissite default
     sudo a2ensite $projectname
@@ -110,5 +111,4 @@ LORIS is made by staff developers at the McGill Centre for Integrative Neuroscie
 See [LORIS.ca](www.loris.ca) for our current team, the history of LORIS, and our **Technical Papers**.
 
 The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, and Samir Das.  
-
 
