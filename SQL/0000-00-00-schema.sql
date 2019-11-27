@@ -183,7 +183,7 @@ CREATE TABLE `session` (
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
   `SubprojectID` int(10) unsigned DEFAULT NULL,
-  `Submitted` enum('Y','N') DEFAULT NULL,
+  `Submitted` enum('Y','N') NOT NULL DEFAULT 'N',
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
   `Date_stage_change` date DEFAULT NULL,
   `Screening` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,
