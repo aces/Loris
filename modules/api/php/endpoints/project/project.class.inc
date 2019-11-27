@@ -12,7 +12,6 @@
  */
 namespace LORIS\api\Endpoints\Project;
 
-use LORIS\Data\Filters\RecordingsFilter;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;

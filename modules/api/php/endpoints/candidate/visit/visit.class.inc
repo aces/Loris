@@ -12,7 +12,6 @@
  */
 namespace LORIS\api\Endpoints\Candidate\Visit;
 
-use LORIS\api\Endpoints\Candidate\Visit\Electrophysiology\Electrophysiology;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
