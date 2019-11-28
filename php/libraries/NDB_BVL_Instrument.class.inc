@@ -2203,6 +2203,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             array('CID' => $this->commentID),
             array('nofetch' => true)
         );
+        // after update database, it needs to refresh the front-end page
+        header("Refresh:0");
     }
 
     /**
