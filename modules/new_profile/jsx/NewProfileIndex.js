@@ -89,6 +89,8 @@ class NewProfileIndex extends React.Component {
       }
       formObject.append('fire_away', 'New Candidate');
 
+      document.getElementById('button').disabled = true;
+
       fetch(this.props.submitURL, {
         method: 'POST',
         cache: 'no-cache',
