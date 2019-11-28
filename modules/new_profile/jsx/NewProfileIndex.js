@@ -90,7 +90,7 @@ class NewProfileIndex extends React.Component {
       }
       formObject.append('fire_away', 'New Candidate');
 
-      // disable form from resubmission.
+      // disable button to prevent form resubmission.
       this.setState({submitDisabled: true});
 
       fetch(this.props.submitURL, {
@@ -107,7 +107,7 @@ class NewProfileIndex extends React.Component {
           });
         } else {
           resp.json().then((message) => {
-            // enable form from resubmission.
+            // enable button for form resubmission.
             this.setState({submitDisabled: false});
             swal('Error!', message, 'error');
           });
