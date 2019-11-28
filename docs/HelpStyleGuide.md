@@ -2,7 +2,7 @@
 
 Help text exists as an on-screen guide for users, to add context and provide instructions to using all of the features in LORIS. It is always accessed by clicking the question mark in the top right menu bar in LORIS, as seen below:
 
-![Help Text](/images/helptext.png)
+![Help Text](/docs/Screenshot 2019-11-24 21.07.08.png)
 
 ## How to Store and Name Files
 
