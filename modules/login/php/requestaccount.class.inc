@@ -143,9 +143,9 @@ class RequestAccount extends \NDB_Form
     function _process($values)
     {
         $DB       = \Database::singleton();
-        $name     = htmlspecialchars($_REQUEST["firstname"], ENT_QUOTES);
-        $lastname = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
-        $from     = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
+        $name     = htmlspecialchars(trim($_REQUEST["firstname"]), ENT_QUOTES);
+        $lastname = htmlspecialchars(trim($_REQUEST["lastname"]), ENT_QUOTES);
+        $from     = htmlspecialchars(trim($_REQUEST["from"]), ENT_QUOTES);
         $site     = $_REQUEST["site"];
         $fullname = $name." ".$lastname;
 
