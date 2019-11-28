@@ -1580,6 +1580,7 @@ ButtonElement.propTypes = {
 ButtonElement.defaultProps = {
   label: 'Submit',
   type: 'submit',
+  disabled: null,
   buttonClass: 'btn btn-primary',
   columnSize: 'col-sm-9 col-sm-offset-3',
   onUserInput: function() {
