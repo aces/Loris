@@ -1555,11 +1555,11 @@ class ButtonElement extends Component {
       <div className="row form-group">
         <div className={this.props.columnSize}>
           <button
-            id={this.props.id}
             name={this.props.name}
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
+            disabled={this.props.disabled}
           >
             {this.props.label}
           </button>
@@ -1570,10 +1570,10 @@ class ButtonElement extends Component {
 }
 
 ButtonElement.propTypes = {
-  id: PropTypes.string,
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
+  disabled: PropTypes.bool,
   onUserInput: PropTypes.func,
 };
 
