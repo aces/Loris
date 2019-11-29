@@ -178,9 +178,9 @@ function editIssue()
 function validateInput($values)
 {
     $db         =& Database::singleton();
-    $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
-    $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
-    $centerID   = (isset($values['centerID']) ? $values['centerID'] : null);
+    $pscid      = $values['PSCID']      ?? null;
+    $visitLabel = $values['visitLabel'] ?? null;
+    $centerID   = $values['centerID']   ?? null;
     $result     = [
                    'PSCID'             => $pscid,
                    'visit'             => $visitLabel,
@@ -190,98 +190,117 @@ function validateInput($values)
                    'isValidSubmission' => true,
                    'invalidMessage'    => null,
                   ];
-
-    if (isset($result['PSCID'], $result['centerID'])) {
-        $validCenter = $db->pselectOne(
-            "
+    //--------------------------//
+    // If PSCID was specified   //
+    //--------------------------//
+    if (!is_null($pscid)) {
+        $query = "
             SELECT
-                CenterID = :center_id
-            FROM
-                candidate
-            WHERE
-                PSCID = :psc_id
-        ",
+                c.CandID,
+                p.Name,
+                FIND_IN_SET(c.CenterID,:CenterIDs) AS InUserSite
+            FROM candidate c
+            JOIN psc p ON (p.CenterID=c.CenterID)
+            WHERE c.PSCID=:PSCID
+         ";
+
+        $user   =& User::singleton();
+        $params = [
+                   'PSCID'     => $pscid,
+                   'CenterIDs' => implode(',', $user->getCenterIDs()),
+                  ];
+
+        $row = $db->pSelectRow($query, $params);
+
+        // If query does not return anything, PSCID does not exist
+        if (empty($row)) {
+            showError("Invalid PSCID $pscid");
+        }
+
+        // If the candidate's site is not in the list of sites that the user
+        // is affiliated to, an issue cannot be created for that candidate
+        if (!$row['InUserSite'] && !$user->hasPermission('access_all_profiles')) {
+            showError(
+                "You cannot create issues for candidates that " .
+                "belong to site {$row['Name']}"
+            );
+        }
+
+        $result['candID'] = $row['CandID'];
+    }
+
+    //--------------------------------//
+    // If visit label was specified   //
+    //--------------------------------//
+    if ($visitLabel) {
+        // If visit label is set but not pscid -> error
+        if (is_null($pscid)) {
+            showError("You must specify a PSCID if you specify a visit label");
+        }
+
+        // Check that the session exists for that PSCID
+        $query = "
+            SELECT s.ID
+            FROM session s
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE c.PSCID=:PSCID
+            AND Visit_label =:visitLabel
+        ";
+
+        $params = [
+                   'PSCID'      => $pscid,
+                   'visitLabel' => $visitLabel,
+                  ];
+
+        // If center ID was specified, ensure that session exists *and*
+        // was done at site with the specified center ID
+        if (!is_null($centerID)) {
+            $query .= " AND s.CenterID=:centerID";
+            $params['centerID'] = $centerID;
+        }
+
+        $sessionID = $db->pselectOne($query, $params);
+
+        // No session meeting the above constraints could be found
+        if (!$sessionID) {
+            $msg = "Candidate $pscid does not have a visit $visitLabel";
+            if ($centerID) {
+                $siteName = $db->pselectOne(
+                    "SELECT Name FROM psc WHERE CenterID=:centerID",
+                    array( 'centerID' => $centerID )
+                );
+                $msg     .= " at site $siteName";
+            }
+            showError($msg);
+        }
+
+        $result['sessionID'] = $sessionID;
+    }
+
+    //--------------------------------------------------------------------//
+    // If center ID was specified, but not the PSCID or the visit label   //
+    //--------------------------------------------------------------------//
+    if (!is_null($centerID)) {
+        // Retrieve site real name and check whether the site is in the
+        // list of sites the user is affiliated to
+        $query = "
+            SELECT Name, FIND_IN_SET(CenterID,:userCenterIDs) AS SiteOK
+            FROM psc
+            WHERE CenterID=:centerID
+        ";
+        $user  =& User::singleton();
+        $site  = $db->pselectRow(
+            $query,
             array(
-             "center_id" => $result['centerID'],
-             "psc_id"    => $result['PSCID'],
+             'centerID'      => $centerID,
+             'userCenterIDs' => implode(',', $user->getCenterIDs()),
             )
         );
-        if (!$validCenter) {
-            $validCenter = $db->pselectOne(
-                "
-                SELECT
-                    EXISTS (
-                        SELECT
-                            *
-                        FROM
-                            session s
-                        JOIN
-                            candidate c
-                        ON
-                            c.CandID = s.CandID
-                        WHERE
-                            s.CenterID = :center_id AND
-                            c.PSCID = :psc_id
-                    )
-            ",
-                array(
-                 "center_id" => $result['centerID'],
-                 "psc_id"    => $result['PSCID'],
-                )
-            );
+
+        // User is not affiliated to specified site
+        if (!$site['SiteOK']) {
+            showError("You cannot create issues related to site {$site['Name']}");
         }
-        if (!$validCenter) {
-            showError("PSCID and Center ID do not match a valid session!");
-        }
-    }
-    // If both are set, return SessionID and CandID
-    if (isset($result['PSCID']) && isset($result['visit'])) {
-        $session = $db->pSelect(
-            "SELECT s.ID as sessionID, c.candID as candID FROM candidate c
-            INNER JOIN session s on (c.CandID = s.CandID)
-            WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
-            [
-             'PSCID'      => $result['PSCID'],
-             'visitLabel' => $result['visit'],
-            ]
-        );
-
-        if (isset($session[0]['sessionID'])) {
-            $result['sessionID'] = $session[0]['sessionID'];
-            $result['candID']    = $session[0]['candID'];
-        } else {
-            showError(
-                "PSCID and Visit Label do not match a valid candidate session!"
-            );
-        }
-
-        return $result;
-    }
-
-    // If only PSCID is set, return CandID
-    if (isset($result['PSCID'])) {
-        $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
-        $params = ['PSCID' => $result['PSCID']];
-
-        $user =& User::singleton();
-        if (!$user->hasPermission('access_all_profiles')) {
-            $params['CenterID'] = implode(',', $user->getCenterIDs());
-            $query .= " AND FIND_IN_SET(CenterID,:CenterID)";
-        }
-
-        $candidate = $db->pSelectOne($query, $params);
-        if ($candidate) {
-            $result['candID'] = $candidate;
-        } else {
-            showError("PSCID does not match a valid candidate!");
-        }
-
-        return $result;
-    }
-
-    // If only visit label is set, return an error
-    if (isset($result['visit'])) {
-        showError("Visit Label must be accompanied by a PSCID");
     }
 
     return $result;
@@ -685,20 +704,19 @@ ORDER BY dateAdded",
         $isOwnIssue = false;
     }
 
-    $result = [
-               'assignees'         => $assignees,
-               'sites'             => $sites,
-               'statuses'          => $statuses,
-               'priorities'        => $priorities,
-               'categories'        => $categories,
-               'modules'           => $modules,
-               'otherWatchers'     => $otherWatchers,
-               'issueData'         => $issueData,
-               'hasEditPermission' => $user->hasPermission(
-                   'issue_tracker_developer'
-               ),
-               'isOwnIssue'        => $isOwnIssue,
-              ];
+    $result
+        = [
+           'assignees'         => $assignees,
+           'sites'             => $sites,
+           'statuses'          => $statuses,
+           'priorities'        => $priorities,
+           'categories'        => $categories,
+           'modules'           => $modules,
+           'otherWatchers'     => $otherWatchers,
+           'issueData'         => $issueData,
+           'hasEditPermission' => $user->hasPermission('issue_tracker_developer'),
+           'isOwnIssue'        => $isOwnIssue,
+          ];
 
     return $result;
 }

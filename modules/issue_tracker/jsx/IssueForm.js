@@ -348,7 +348,7 @@ class IssueForm extends React.Component {
         console.error(err);
         this.setState({submissionResult: "error"});
         let msgType = 'error';
-        let message = "Failed to submit issue :(";
+        let message = err.responseJSON ||  "Failed to submit issue :(";
         this.showAlertMessage(msgType, message);
       }.bind(this)
     });
