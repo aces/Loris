@@ -317,7 +317,7 @@ class FieldSelector extends Component {
 
   deleteAll() {
     // Deletes all fields the currently selected category
-    let i, index, fieldName;
+    let i, index, fieldName, category, isFile;
     for (i in this.state.categoryFields[this.state.selectedCategory]) {
       fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
       category = this.state.categoryFields[this.state.selectedCategory][i].key[0];

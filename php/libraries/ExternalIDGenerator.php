@@ -27,13 +27,16 @@ class ExternalIDGenerator extends SiteIDGenerator
     /**
      * Generates ExternalIDs.
      *
-     * @param ?string $prefix The site prefix to prepend to the ID value.
+     * @param string $siteAlias    To be appended to the ID value. Usually an
+     *                             abbreviation for the name of a site.
+     * @param string $projectAlias To be appended to the ID value. Usually an
+     *                             abbreviation for the name of a project.
      *
      * @return void
      */
-    public function __construct(?string $prefix = null)
+    public function __construct(string $siteAlias, string $projectAlias)
     {
         $this->kind = 'ExternalID';
-        parent::__construct($prefix);
+        parent::__construct($siteAlias, $projectAlias);
     }
 }

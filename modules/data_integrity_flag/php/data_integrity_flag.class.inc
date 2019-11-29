@@ -76,7 +76,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
             || !isset($req['date'])
             || !isset($req['flagStatus'])
         ) {
-            return "Error";
+            return;
         }
         $req = \Utility::asArray($req);
         // comment may not be set since it is not a required field
@@ -87,20 +87,20 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
             'data_integrity_flag',
             ['latest_entry' => 0],
             [
-             'dataflag_instrument' => $req['instrument'],
-             'dataflag_visitlabel' => $req['visitLabel'],
+                'dataflag_instrument' => $req['instrument'],
+                'dataflag_visitlabel' => $req['visitLabel'],
             ]
         );
         $db->insert(
             "data_integrity_flag",
             [
-             'dataflag_instrument' => $req['instrument'],
-             'dataflag_visitlabel' => $req['visitLabel'],
-             'dataflag_comment'    => $comment,
-             'dataflag_date'       => $req['date'],
-             'dataflag_status'     => $req['flagStatus'],
-             'latest_entry'        => 1,
-             'dataflag_userid'     => $user->getUsername(),
+                'dataflag_instrument' => $req['instrument'],
+                'dataflag_visitlabel' => $req['visitLabel'],
+                'dataflag_comment'    => $comment,
+                'dataflag_date'       => $req['date'],
+                'dataflag_status'     => $req['flagStatus'],
+                'latest_entry'        => 1,
+                'dataflag_userid'     => $user->getUsername(),
             ]
         );
     }
@@ -117,14 +117,14 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
 
         // set the class variables
         $this->columns = [
-                          'dataflag_id',
-                          'dataflag_visitlabel',
-                          'dataflag_instrument',
-                          'dataflag_date',
-                          'dataflag_status',
-                          'dataflag_comment',
-                          'dataflag_userid',
-                         ];
+            'dataflag_id',
+            'dataflag_visitlabel',
+            'dataflag_instrument',
+            'dataflag_date',
+            'dataflag_status',
+            'dataflag_comment',
+            'dataflag_userid',
+        ];
 
         $this->query        = " FROM data_integrity_flag WHERE 1=1";
         $this->group_by     = '';
@@ -143,17 +143,17 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         }
 
         $flagStatusList     = [
-                               '1' => '1 - Ready For Review',
-                               '2' => '2 - Review Completed',
-                               '3' => '3 - Feedbacks Closed',
-                               '4' => '4 - Finalization',
-                              ];
+            '1' => '1 - Ready For Review',
+            '2' => '2 - Review Completed',
+            '3' => '3 - Feedbacks Closed',
+            '4' => '4 - Finalization',
+        ];
         $this->fieldOptions = [
-                               'visits'         => \Utility::getVisitList(),
-                               'instruments'    => \Utility::getAllInstruments(),
-                               'users'          => $users,
-                               'flagStatusList' => $flagStatusList,
-                              ];
+            'visits'         => \Utility::getVisitList(),
+            'instruments'    => \Utility::getAllInstruments(),
+            'users'          => $users,
+            'flagStatusList' => $flagStatusList,
+        ];
     }
 
     /**

@@ -26,12 +26,12 @@ namespace LORIS\help_editor;
 class Edit_Help_Content extends \NDB_Form
 {
      /**
-     * Determine if user has permission to access this page
-     *
-     * @param \User $user The user whose access is being checked
-     *
-     * @return bool true if access is permitted
-     */
+      * Determine if user has permission to access this page
+      *
+      * @param \User $user The user whose access is being checked
+      *
+      * @return bool true if access is permitted
+      */
     function _hasAccess(\User $user) : bool
     {
         return $user->hasPermission('context_help');
@@ -40,18 +40,22 @@ class Edit_Help_Content extends \NDB_Form
      /**
       * Returns default help content of the page
       *
-      * @return array
+      * @return array An associative array containing the title and content
+      *         for the default help information.
       */
     function _getDefaults()
     {
         $DB = \Database::singleton();
         //Get the default values
+        $defaults = array();
 
         // Sanitize user input
         $safeSection    = $_REQUEST['section'] ?
             htmlspecialchars($_REQUEST['section']) : '';
         $safeSubsection = $_REQUEST['subsection'] ?
             htmlspecialchars($_REQUEST['subsection']) : '';
+
+        $defaults = array();
 
         if (isset($_REQUEST['helpID'])) {
             $helpID = htmlspecialchars($_REQUEST['helpID']);
@@ -126,8 +130,8 @@ class Edit_Help_Content extends \NDB_Form
             'content',
             'Content',
             array(
-             'cols' => 140,
-             'rows' => 30,
+                'cols' => 140,
+                'rows' => 30,
             )
         );
 
@@ -147,7 +151,7 @@ class Edit_Help_Content extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/help_editor/js/help_editor_helper.js",
+                $baseURL . "/help_editor/js/help_editor_helper.js",
             )
         );
     }

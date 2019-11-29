@@ -36,14 +36,14 @@
     {/if}
 
     <div class="panel panel-default">
-      <div class="panel-body">
+  <div class="panel-body">
        <h3>Password Rules</h3>
-       <ul>
-          <li>The password must be at least 8 characters long</li>
-          <li>The password must contain at least 1 letter, 1 number and 1 character from   !@#$%^&amp;*()</li>
-          <li>The password and the user name must not be the same</li>
-          <li>The password and the email address must not be the same</li>
+      <ul>
+        <li>The password must be at least 8 characters long.</li>
+        <li>The password cannot be your username or email address.</li>
       </ul>
+        <p>Please choose a unique password.</p>
+        <p>We suggest using a password manager to generate one for you.</p>
       <h3>Notes</h3>
       <ul>
         <li>It is recommended to use an email address as the username, for clarity and uniqueness.</li>
@@ -307,6 +307,23 @@
         </div>
         {/if}
     </div>
+        {if $form.errors.projects_group}
+        <div class="row form-group form-inline has-error">
+            {else}
+            <div class="row form-group form-inline">
+                {/if}
+                <label class="col-sm-2">
+                    {$form.ProjectIDs.label}
+                </label>
+                <div class="col-sm-10">
+                    {$form.ProjectIDs.html}
+                </div>
+                {if $form.errors.projects_group}
+                    <div class="col-sm-offset-2 col-xs-12">
+                        <font class="form-error">{$form.errors.projects_group}</font>
+                    </div>
+                {/if}
+            </div>
     {if $form.examiner_sites}
     {if $form.errors.examiner_sites}
     <div class="row form-group form-inline form-inline has-error">

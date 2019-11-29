@@ -44,22 +44,22 @@ class ExaminerTest extends LorisIntegrationTest
             'Add Examiner'     => '#lorisworkspace > div > div:nth-child(1) > '.
                                   'div > div:nth-child(1)',
             'Add'              => '#examiner > div:nth-child(3) > div > button',
-           );
+        );
 
     /**
-    * Insert testing data
-    *
-    * @return void
-    */
+     * Insert testing data
+     *
+     * @return void
+     */
     public function setUp()
     {
         parent::setUp();
     }
     /**
-    * Delete testing data
-    *
-    * @return void
-    */
+     * Delete testing data
+     *
+     * @return void
+     */
     public function tearDown()
     {
         $this->DB->delete(
@@ -190,10 +190,10 @@ class ExaminerTest extends LorisIntegrationTest
         $this->assertContains("Test_Examiner", $text);
     }
     /**
-      * Testing UI elements when page loads
-      *
-      * @return void
-      */
+     * Testing UI elements when page loads
+     *
+     * @return void
+     */
     function testPageUIs()
     {
         $this->markTestSkipped(

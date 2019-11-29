@@ -155,13 +155,14 @@ class DicomArchive extends Component {
       }},
       {label: 'TarchiveID', show: false},
       {label: 'SessionID', show: false},
+      {label: 'CenterID', show: false},
     ];
 
     return (
       <FilterableDataTable
         name="dicom_filter"
         title='Dicom Archive'
-        data={this.state.data.data}
+        data={this.state.data.Data}
         fields={fields}
         getFormattedCell={this.formatColumn}
       />

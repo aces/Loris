@@ -10,7 +10,7 @@
  * @author   Loris team <info-loris.mni@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
-*/
+ */
 namespace LORIS\imaging_browser;
 /**
  * Imaging browser control panel class
@@ -56,18 +56,20 @@ class Imaging_Session_ControlPanel
     }
 
     /**
-    *  Gets data for the control panel template
-    *
-    * @return array ($subjectData) with data for the template
-    */
+     *  Gets data for the control panel template
+     *
+     * @return array ($subjectData) with data for the template
+     */
     function getData()
     {
         $DB        = \Database::singleton();
         $config    = \NDB_Config::singleton();
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint = \TimePoint::singleton($_REQUEST['sessionID']);
 
-        $subjectData['sessionID'] = $_REQUEST['sessionID'];
-        $subjectData['candid']    = $timePoint->getCandID();
+        $subjectData = array(
+            'sessionID' => $_REQUEST['sessionID'],
+            'candid'    => $timePoint->getCandID(),
+        );
 
         $linkedInstruments
             = $config->getSetting('ImagingBrowserLinkedInstruments');
@@ -83,20 +85,25 @@ class Imaging_Session_ControlPanel
             WHERE f.Test_name = :tname AND f.SessionID = :v_sessions_id
             AND f.CommentID NOT LIKE 'DDE_%'",
                 array(
-                 'tname'         => $v,
-                 'v_sessions_id' => $this->sessionID,
+                    'tname'         => $v,
+                    'v_sessions_id' => $this->sessionID,
                 )
             );
+            if (is_null($qresult)) {
+                throw new \LorisException(
+                    'Could not find linked instruments for specified '
+                    . 'test name and session ID'
+                );
+            }
             $links[] = array(
-                        "FEName"    => $qresult['Full_name'],
-                        "BEName"    => $v,
-                        "CommentID" => $qresult['CommentID'],
-                       );
+                "FEName"    => $qresult['Full_name'],
+                "BEName"    => $v,
+                "CommentID" => $qresult['CommentID'],
+            );
         }
-        $subjectData['links']
-            = (empty($links)) ? "" : $links;
+        $subjectData['links'] = (empty($links)) ? "" : $links;
 
-        $candidate =& \Candidate::singleton($timePoint->getCandID());
+        $candidate = \Candidate::singleton($timePoint->getCandID());
 
         /* Note: the if statement below prepares parameters to use in an SQL
         * query. The $ID variable is appended directly to a SQL query string;
@@ -147,28 +154,24 @@ class Imaging_Session_ControlPanel
 
         $subjectData['has_permission']  = $this->_hasAccess();
         $subjectData['status_options']  = array(
-                                           'Unrated' => '',
-                                           'Pass'    => 'Pass',
-                                           'Fail'    => 'Fail',
-                                          );
+            'Unrated' => '',
+            'Pass'    => 'Pass',
+            'Fail'    => 'Fail',
+        );
         $subjectData['pending_options'] = array(
-                                           'Y' => 'Yes',
-                                           'N' => 'No',
-                                          );
+            'Y' => 'Yes',
+            'N' => 'No',
+        );
         $subjectData['caveat_options']  = array(
-                                           'true'  => 'True',
-                                           'false' => 'False',
-                                          );
-        $query    = "SELECT MRIQCStatus, MRIQCPending,".
-                    " MRICaveat FROM session WHERE ID=:sid";
-        $qcstatus = $DB->pselectRow(
-            $query,
-            array("sid" => $this->sessionID)
+            'true'  => 'True',
+            'false' => 'False',
         );
 
-        $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
-        $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat']    = $qcstatus['MRICaveat'];
+        $qcstatus = $timePoint->getImagingQC();
+
+        $subjectData['mriqcstatus']  = $qcstatus->getQC();
+        $subjectData['mriqcpending'] = $qcstatus->getQCPending();
+        $subjectData['mricaveat']    = $qcstatus->getHasCaveat();
 
         $factory = \NDB_Factory::singleton();
         $subjectData['backURL'] = isset($_REQUEST['backURL']) ?

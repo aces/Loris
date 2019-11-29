@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # This script will:
@@ -6,6 +6,14 @@
 #   2. Configure apache (optional)
 #   3. Log these steps in the logs/ directory (if writable)
 #
+
+set -euo pipefail
+
+# Script must be run from tools directory.
+if [[ "$PWD" != *'/tools' ]]; then
+    echo "Please run this script from the tools directory."
+    exit 1
+fi
 
 # Must be run interactively.
 if ! test -t 0 -a -t 1 -a -t 2 ; then
@@ -27,6 +35,11 @@ exec 1>$LOGPIPE 2>&1
 
 CWD=`pwd`
 RootDir=`dirname $CWD`
+
+if [ $UID == "0" ]; then
+    echo "install.sh must not be run as root (but should be run as a user with sudo access.)"
+    exit 1
+fi
 
 echo "LORIS Installation Script starting at $START"
 
@@ -69,7 +82,7 @@ if ! [ $BASH ] ; then
     exit 2
 fi
 
-if [[ -n $(which php) ]]; then
+if [[ -n $(command -v php) ]]; then
     echo ""
     echo "PHP appears to be installed."
 else
@@ -117,8 +130,8 @@ debian=("Debian" "Ubuntu")
 redhat=("Red" "CentOS" "Fedora" "Oracle")
 
 if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
-    mkdir ../modules/document_repository/user_uploads
-    mkdir ../modules/data_release/user_uploads
+    mkdir -p ../modules/document_repository/user_uploads
+    mkdir -p ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../modules/document_repository/user_uploads
     sudo chown www-data.www-data ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../smarty/templates_c
@@ -127,8 +140,8 @@ if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
     sudo chgrp www-data ../project
     sudo chmod 770 ../project
 elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
-    mkdir ../modules/document_repository/user_uploads
-    mkdir ../modules/data_release/user_uploads
+    mkdir -p ../modules/document_repository/user_uploads
+    mkdir -p ../modules/data_release/user_uploads
     sudo chown apache.apache ../modules/document_repository/user_uploads
     sudo chown apache.apache ../modules/data_release/user_uploads
     sudo chown apache.apache ../smarty/templates_c
@@ -169,6 +182,7 @@ echo "Ubuntu distribution detected."
         echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )
+                export projectname=""
                 while [ "$projectname" == "" ]; do
                         read -p "Please enter your Project name (if unsure, use LORIS) : " projectname
                         echo $projectname | tee -a $LOGFILE > /dev/null

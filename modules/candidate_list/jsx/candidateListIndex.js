@@ -64,7 +64,17 @@ class CandidateListIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
+      .then((data) => {
+        // Convert concatenated string of subproject and visit labels to array
+        data.Data = data.Data.map((row) => {
+          // Visit label
+          row[2] = (row[2]) ? row[2].split(',') : null;
+          // Subproject
+          row[4] = (row[4]) ? row[4].split(',') : null;
+          return row;
+        });
+        this.setState({data});
+      })
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -92,7 +102,7 @@ class CandidateListIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column === 'PSCID' && this.props.hasPermission('access_all_profiles')) {
+    if (column === 'PSCID') {
       let url = this.props.baseURL + '/' + row['DCCID'] + '/';
       return <td><a href ={url}>{cell}</a></td>;
     }
@@ -112,6 +122,13 @@ class CandidateListIndex extends Component {
           <a href={url}>{cell}</a></td>
       );
     }
+
+    if (column === 'Subproject') {
+      // If user has multiple subprojects, join array into string
+      let result = (cell) ? <td>{cell.join(', ')}</td> : <td></td>;
+      return result;
+    }
+
     return <td>{cell}</td>;
   }
 
@@ -131,7 +148,6 @@ class CandidateListIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in candidate_list.class.inc
      */
-    // FIXME: if candidate in more than one subproject, filter does not work
     const options = this.state.data.fieldOptions;
     const fields = [
       {
@@ -155,7 +171,8 @@ class CandidateListIndex extends Component {
         show: false,
         filter: {
           name: 'visitLabel',
-          type: 'text',
+          type: 'select',
+          options: options.visitlabel,
         },
       },
       {

@@ -32,21 +32,21 @@ inserted into LORIS.
 The imaging browser module uses the following permissions. Any one of them
 (except imaging_browser_qc) is sufficient to have access to the module.
 
-imaging_browser_view_allsites
+imaging_browser_view_allsites (View all-sites Imaging Browser pages)
     - This permission gives the user access to all scans in the database
 
-imaging_browser_view_site
+imaging_browser_view_site (View own-site Imaging Browser pages)
     - This permission gives the user access to scans from their own site(s) only
 
-imaging_browser_phantom_allsites
+imaging_browser_phantom_allsites (Can access only phantom data from all sites in Imaging Browser)
     - This permission gives the user access to phantom, but not candidate, scans
       across the database
 
-imaging_browser_phantom_ownsite
+imaging_browser_phantom_ownsite (Can access only phantom data from own site in Imaging Browser)
     - This permission gives the user access to phantom, but not candidate, data
       at the user's site(s).
 
-imaging_browser_qc
+imaging_browser_qc (Edit imaging browser QC status)
     - This permission gives the user access to modify the quality control data
       for the associated scans and timepoints.
 

@@ -9,7 +9,7 @@
  * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
-*/
+ */
 require_once __DIR__ . "/../vendor/autoload.php";
 $client = new NDB_Client;
 if ($client->initialize() == false) {
@@ -32,6 +32,7 @@ if (!$user->hasPermission('imaging_browser_qc')
     return;
 }
 
+$tpl_data = array();
 $tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
 
 // instantiate feedback mri object
@@ -114,6 +115,7 @@ $comment_types = $comments->getAllCommentTypes();
 // loop through the comment types
 $i = 0;
 foreach ($comment_types AS $comment_type_id => $comment_array) {
+    $tpl_data['comment'][$i] = array();
     $CommentTpl =& $tpl_data['comment'][$i];
 
     // print the status select field if it exists
@@ -140,6 +142,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
     foreach ($predefined_comments
         AS $predefined_comment_id => $predefined_comment_text
     ) {
+        $CommentTpl['predefined'][$j] = array();
         $PredefinedTpl =& $CommentTpl['predefined'][$j];
         // print a form element
         $PredefinedTpl['id'] = $predefined_comment_id;

@@ -32,9 +32,9 @@ foreach ($list_of_sites as $siteID => $siteName) {
     );
 
     $recruitmentBySiteData[] = array(
-                                "label" => $siteName,
-                                "total" => $totalRecruitment,
-                               );
+        "label" => $siteName,
+        "total" => $totalRecruitment,
+    );
 }
 
 print json_encode($recruitmentBySiteData);

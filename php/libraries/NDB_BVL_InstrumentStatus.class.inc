@@ -39,39 +39,39 @@ class NDB_BVL_InstrumentStatus
      * The set of valid options for the data entry flag
      */
     var $_dataEntryOptions = array(
-                              null,
-                              'In Progress',
-                              'Complete',
-                             );
+        null,
+        'In Progress',
+        'Complete',
+    );
 
     /**
      * The set of valid options for the administration flag
      */
     var $_administrationOptions = array(
-                                   null,
-                                   'None',
-                                   'Partial',
-                                   'All',
-                                  );
+        null,
+        'None',
+        'Partial',
+        'All',
+    );
 
     /**
      * The set of valid options for the validity flag
      */
     var $_validityOptions = array(
-                             null,
-                             'Valid',
-                             'Questionable',
-                             'Invalid',
-                            );
+        null,
+        'Valid',
+        'Questionable',
+        'Invalid',
+    );
 
     /**
      * The set of valid options for the exclusion flag
      */
     var $_exclusionOptions = array(
-                              null,
-                              'Fail',
-                              'Pass',
-                             );
+        null,
+        'Fail',
+        'Pass',
+    );
 
     /**
      * Loads the object with the current status of the instrument
@@ -92,6 +92,12 @@ class NDB_BVL_InstrumentStatus
             FROM flag
             WHERE CommentID=:CID";
         $row   = $db->pselectRow($query, array('CID' => $this->_commentID));
+        if (is_null($row)) {
+            throw new \LorisException(
+                'No information exists in the database for the specified '
+                . 'CommentID. Cannot build InstrumentStatus object'
+            );
+        }
 
         // store the statuses into the _status property
         $this->_status = $row;
@@ -115,6 +121,9 @@ class NDB_BVL_InstrumentStatus
      */
     function getDataEntryStatus(): ?string
     {
+        if ($this->_status === null && !empty($this->_commentID)) {
+            $this->select($this->_commentID);
+        }
         return $this->_status['Data_entry'];
     }
 
@@ -186,8 +195,8 @@ class NDB_BVL_InstrumentStatus
                 "SELECT Data_entry FROM flag
                 WHERE CommentID=:PCID OR CommentID=:DDECID",
                 array(
-                 'PCID'   => $principalCommentId,
-                 'DDECID' => $DDECommentId,
+                    'PCID'   => $principalCommentId,
+                    'DDECID' => $DDECommentId,
                 )
             );
 

@@ -83,10 +83,3 @@ an examiner as well as setting their sites and their radiologist status.
 When an examiner is added from the user_accounts module, the `userID` field of 
 the `examiners` table in the database is populated to associate the examiner 
 to the user.
-
-- The Training module allows the study to automatically assign 
-certification upon successful completion of training. The module 
-starts by verifying that the user is indeed an examiner 
-before beginning the training. The certifications should appear 
-in the examiner module once obtained by an examiner and it should 
-be dated with the date of completion of the training process.

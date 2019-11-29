@@ -23,7 +23,7 @@ namespace LORIS\genomic_browser;
  * @contributor Xavier <xavier.lecoursboucher@mcgill.ca>
  * @license     http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link        https://github.com/aces/Loris
-*/
+ */
 class Genomic_File_Uploader extends \NDB_Menu_Filter
 {
 
@@ -41,8 +41,8 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
     {
         return $user->hasAnyPermission(
             array(
-             'genomic_browser_view_allsites',
-             'genomic_browser_view_site',
+                'genomic_browser_view_allsites',
+                'genomic_browser_view_site',
             )
         );
     }
@@ -52,20 +52,20 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
      * Function _setupVariables
      *
      * @return void
-    */
+     */
     function _setupVariables()
     {
         // set the class variables
         $this->columns = array(
-                          'GenomicFileID',
-                          'FileName',
-                          'Description',
-                          'FileType',
-                          'Date_inserted',
-                          'InsertedByUserID',
-                          'Caveat',
-                          'Notes',
-                         );
+            'GenomicFileID',
+            'FileName',
+            'Description',
+            'FileType',
+            'Date_inserted',
+            'InsertedByUserID',
+            'Caveat',
+            'Notes',
+        );
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -81,29 +81,29 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
         $this->query = " FROM genomic_files WHERE 1=1 ";
 
         $this->validFilters = array(
-                               'GenomicFileID',
-                               'FileName',
-                               'Description',
-                               'FileType',
-                               'Date_inserted',
-                               'InsertedByUserID',
-                               'Caveat',
-                               'Notes',
-                              );
+            'GenomicFileID',
+            'FileName',
+            'Description',
+            'FileType',
+            'Date_inserted',
+            'InsertedByUserID',
+            'Caveat',
+            'Notes',
+        );
 
         $this->formToFilter = array(
-                               'file_name'         => 'FileName',
-                               'description'       => 'Description',
-                               'genomic_file_type' => 'FileType',
-                               'date_inserted'     => 'Date_inserted',
-                               'caveat'            => 'Caveat',
-                               'notes'             => 'Notes',
-                              );
+            'file_name'         => 'FileName',
+            'description'       => 'Description',
+            'genomic_file_type' => 'FileType',
+            'date_inserted'     => 'Date_inserted',
+            'caveat'            => 'Caveat',
+            'notes'             => 'Notes',
+        );
 
         $this->EqualityFilters = array(
-                                  'FileType',
-                                  'Caveat',
-                                 );
+            'FileType',
+            'Caveat',
+        );
 
     }
 
@@ -143,8 +143,6 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
         $this->tpl_data['upload_allowed'] = $user->hasPermission(
             'genomic_data_manager'
         );
-
-        return true;
     }
 
     /**
@@ -161,9 +159,9 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/genomic_browser/js/genomic_browser.js",
-             $baseURL . "/genomic_browser/js/genomic_file_uploader.js",
-             $baseURL . "/genomic_browser/js/FileUploadModal.js",
+                $baseURL . "/genomic_browser/js/genomic_browser.js",
+                $baseURL . "/genomic_browser/js/genomic_file_uploader.js",
+                $baseURL . "/genomic_browser/js/FileUploadModal.js",
             )
         );
     }

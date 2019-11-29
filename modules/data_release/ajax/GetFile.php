@@ -5,11 +5,11 @@
  *
  * PHP Version 7
  *
- *  @category Loris
- *  @package  Data_Release
- *  @author   Justin Kat <justinkat@gmail.com>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/aces/Loris
+ * @category Loris
+ * @package  Data_Release
+ * @author   Justin Kat <justinkat@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
  */
 
 $user =& User::singleton();
@@ -45,8 +45,8 @@ $permission = $db->pselectOne(
           FROM data_release_permissions 
           WHERE userid=:uid AND data_release_id=:fileID",
     array(
-     'uid'    => $uid,
-     'fileID' => $fileID,
+        'uid'    => $uid,
+        'fileID' => $fileID,
     )
 );
 if (empty($permission)) {

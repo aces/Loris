@@ -117,7 +117,4 @@
         </instrument>
     </instrumentPermissions>
 
-    <!-- MINC TOOLS PATH -->
-    <MINCToolsPath>%MINCTOOLSPATH%</MINCToolsPath>
-
 </config>

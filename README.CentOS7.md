@@ -31,10 +31,8 @@ sudo systemctl start httpd
 sudo yum install epel-release
 sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 sudo yum install yum-utils
-sudo yum-config-manager --enable remi-php72
 sudo yum update
-sudo yum install php72
-sudo yum install php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-pdo php72-php-mysql
+sudo yum --enablerepo=remi-php72 install php php-pdo php-pdo_mysql php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-mysql
 ```
 ## MariaDB
 
@@ -42,18 +40,30 @@ MySQL is not recommended/supported on CentOS, see [paragraph 2 here](https://www
 
 *Note:* LORIS developers (those NOT working with a .zip release codebase) should skip steps relating to hosting their database locally. Contact your system administrator for database credentials.
 
+### Configure MariaDB repository
+Configure MariaDB repository by manually creating the file `/etc/yum.repos.d/MariaDB.repo` with the following details:
+
+```
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.3/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+```
+
+Install PGP key with:
+```
+sudo rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+```
+
+### Database client and server packages.
+
 ```bash
 sudo yum install MariaDB-client MariaDB-server
 ```
 
-By default in CentOS 7, the MariaDB version is 10.2
-Check what version you have installed by running:
-```
-mysql -V
-```
+### Starting MariaDB server
 
-Upgrade your MariaDB to version 10.3 (LORIS 21 does not support MariaDB 10.2.27)
-Then, 
 ```bash
 sudo systemctl start mariadb 
 sudo systemctl enable mariadb
@@ -68,7 +78,8 @@ Then follow instructions to create a password for the root user.
 
 ## NodeJS
 ```bash
-sudo yum install nodejs
+curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
+sudo yum install -y nodejs
 ```
 
 ## PHP Composer
@@ -76,6 +87,7 @@ sudo yum install nodejs
 sudo curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
+
 # Get the Code
 
 Download the latest release from the [releases page](https://github.com/aces/Loris/releases) to the home directory (~/), unzip it, and copy the contents to your project directory, `/var/www/loris` (we recommend naming your project directory `loris`, although you can use a different naming convention if you prefer). 
@@ -102,6 +114,13 @@ Customize and Verify your settings:
 * Paths and settings in `/etc/httpd/conf.d/apache-site.conf` should be populated appropriately for your server. Replace placeholders such as `%LORISROOT%` with `/var/www/loris`, `%PROJECTNAME%` with `loris`, `%LOGDIRECTORY%` with `/var/log/httpd/loris-error.log` 
  * DocumentRoot should point to `/var/www/loris/htdocs`
  * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
+
+Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS environment. You can find an example in `loris/docs/config/apache2-site` for setup of `<VirtualHost>` in the loris.conf file you will create. Adjust the parameters according to your configuration.
+```
+- %LORISROOT%    i.e. /var/www/loris
+- %PROJECTNAME%  i.e loris
+- %LOGDIRECTORY%  .i.e /var/log/httpd
+```
 
 Finally, restart apache:
 ```bash

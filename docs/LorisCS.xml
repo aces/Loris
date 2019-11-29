@@ -28,12 +28,11 @@
         </properties>
     </rule>
 
-    <!-- This includes many things about array declarations, but the
-         one that we care about the most is that it ensures the arrows
-         are aligned properly. Some of the other things it enforces are
-         a little annoying, but there's no other way to get just the
-         arrow alignment that I could find..-->
-    <rule ref="Squiz.Arrays.ArrayDeclaration" />
+    <!--  Indent arrays by 4 spaces -->
+    <rule ref="Generic.Arrays.ArrayIndent"/>
+
+    <!-- Ensure that array double arrows are aligned properly -->
+    <rule ref="Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned"/>
 
     <!-- Do not allow call time pass by reference because it generates warnings
          in the logs, they should be defined on the function not by the runtime -->

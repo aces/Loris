@@ -34,7 +34,7 @@ sourced, followed by the different instrument schemas and finally the actual RB 
 The commands below assume that the current working directory is the main LORIS root
 directory.
 
-```
+```bash
 cat SQL/0000-00-00-schema.sql \
     SQL/0000-00-01-Permission.sql \
     SQL/0000-00-02-Menus.sql \
@@ -48,6 +48,14 @@ cat SQL/0000-00-00-schema.sql \
     raisinbread/instruments/instrument_sql/radiology_review.sql \
     raisinbread/RB_files/*.sql | mysql
 ```
+
+Note: to empty and delete all RaisinBread tables, use the following command in the 
+main LORIS root directory
+```bash
+cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
+    SQL/9999-99-99-drop_tables.sql | mysql
+```
+
 
 ##### Configuring
 In order to be able to load the LORIS front-end while using the RaisinBread dataset 
@@ -111,7 +119,7 @@ in the parameter_file using ParameterTypeID=238. To decrease the size of the
 RB_parameter_file.sql file, run the following query on your mysql and recreate
 the RB_parameter_file.sql file.
 
-```
+```SQL
 DELETE FROM parameter_file JOIN parameter_type USING (ParameterTypeID) WHERE Name='header';
 ```
 
@@ -121,7 +129,7 @@ If you are having issues sourcing RB using the single command above, you can try
 use the following comands sequentially. These commands echo the name of the SQL 
 script before running it which helps to identify exactly what SQL statement is failing.
 
-```
+```bash
 for n in SQL/0000-*.sql; do echo $n; cat $n | mysql || break; done;
 for n in raisinbread/instruments/instrument_sql/*.sql; do echo $n; cat $n | mysql || break; done;
 for n in raisinbread/RB_files/*.sql; do echo $n; cat $n | mysql || break; done;

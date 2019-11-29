@@ -26,12 +26,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     //filter location
     static $PSCID          = ".col-xs-12:nth-child(2) > .row .form-control";
     static $DCCID          = ".col-xs-12:nth-child(3) > .row .form-control";
-    static $visitLabel     = ".col-xs-12:nth-child(4) .form-control";
-    static $site           = ".col-xs-12:nth-child(5) .form-control, select";
-    static $entityType     = ".col-xs-12:nth-child(7) .form-control, select";
-    static $sex            = "#candidateList_filter > div > div > fieldset >".
-                             " div:nth-child(11) > div > div > select";
-    static $project        = ".col-xs-12:nth-child(15) .form-control, select";
+    static $visitLabel     = 'select[name="visitLabel"]';
+    static $site           = 'select[name="site"]';
+    static $entityType     = 'select[name="entityType"]';
+    static $sex            = 'select[name="sex"]';
+    static $project        = 'select[name="project"]';
     static $advancedFilter = ".table-header > div > div > div:nth-child(2) >".
                              " button:nth-child(1)";
     static $openProfile    = ".table-header > div > div > div:nth-child(2) >".
@@ -114,18 +113,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertContains("Access Profile", $bodyText);
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
-           $this->webDriver->executescript(
-               "return document.querySelector('$btn').click()"
-           );
+        $this->webDriver->executescript(
+            "return document.querySelector('$btn').click()"
+        );
            // Go through each element and ensure it's on the page after clicking
            // advanced
-           $scanDoneOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("scanDone")
-           );
+        $scanDoneOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("scanDone")
+        );
            $this->assertEquals("select", $scanDoneOptions->getTagName());
-           $participantsStatusOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("participantStatus")
-           );
+        $participantsStatusOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("participantStatus")
+        );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
            $dobOptions = $this->webDriver->findElement(WebDriverBy::Name("DoB"));
            $this->assertEquals("input", $dobOptions->getTagName());
@@ -133,9 +132,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
            //$this->assertEquals("date",$dobOptions->getAttribute("type"));
            $sexOptions = $this->webDriver->findElement(WebDriverBy::Name("sex"));
            $this->assertEquals("select", $sexOptions->getTagName());
-           $numVisits = $this->webDriver->findElement(
-               WebDriverBy::Name("visitCount")
-           );
+        $numVisits = $this->webDriver->findElement(
+            WebDriverBy::Name("visitCount")
+        );
            $this->assertEquals("input", $dobOptions->getTagName());
            // Not currently done in Loris.
            //$this->assertEquals("number",$dobOptions->getAttribute("type"));
@@ -144,13 +143,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
            $this->assertEquals("input", $edcOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$edcOptions->getAttribute("type"));
-           $latestVisitOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("latestVisitStatus")
-           );
+        $latestVisitOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("latestVisitStatus")
+        );
            $this->assertEquals("select", $latestVisitOptions->getTagName());
-           $feedbackOptions = $this->webDriver->findElement(
-               WebDriverBy::Name("feedback")
-           );
+        $feedbackOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("feedback")
+        );
            $this->assertEquals("select", $feedbackOptions->getTagName());
     }
     /**
@@ -163,28 +162,29 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
 
-        //testing data from RBdata.sql
+        //testing is done with user affiliated to only site=1 and project=1
+        //numbers below should reflect these affiliations.
 
         $this-> _testFilter(self::$PSCID, "0 rows", 'test');
         $this-> _testFilter(self::$PSCID, "1 rows", 'MTL001');
         $this-> _testFilter(self::$DCCID, "1 rows", '300001');
         $this-> _testFilter(self::$DCCID, "0 rows", 'test');
-        $this-> _testFilter(self::$visitLabel, "374", 'V1');
-        $this-> _testFilter(self::$visitLabel, "261", 'V2');
-        $this-> _testFilter(self::$site, "8 rows", '1');
-        $this-> _testFilter(self::$site, "168", '2');
-        $this-> _testFilter(self::$entityType, "8 rows", '1');
+        $this-> _testFilter(self::$visitLabel, "362", '1');
+        $this-> _testFilter(self::$visitLabel, "223", '2');
+        $this-> _testFilter(self::$site, "7 rows", '1');
+        $this-> _testFilter(self::$site, "165", '2');
+        $this-> _testFilter(self::$entityType, "436", '1');
 
         // test advanced filter - sex
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
-           $this->webDriver->executescript(
-               "return document.querySelector('$btn').click()"
-           );
+        $this->webDriver->executescript(
+            "return document.querySelector('$btn').click()"
+        );
            //female
-           $this-> _testFilter(self::$sex, "20 rows displayed of 334", '1');
+           $this-> _testFilter(self::$sex, "20 rows displayed of 225", '1');
            // male
-           $this-> _testFilter(self::$sex, "20 rows displayed of 328", '2');
+           $this-> _testFilter(self::$sex, "20 rows displayed of 210", '2');
 
     }
     /**
