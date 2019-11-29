@@ -15,22 +15,17 @@ Note: To QC a scan, the user must click the link leading to the Imaging Browser,
 
 #### Configurations
 
+* This module will not load without the `mri_parameter_form` instrument installed and properly configured.  Each scan type (identified below via the Configuration module) should have an equivalent _scan_done_ column in the database table for this instrument. 
+>  A sample MRI Parameter Form is available with our sample dataset in this repo: `raisinbread/instruments/NDB_BVL_Instrument_mri_parameter_form.class.inc`, and should be customized and installed for your project.  (Please consult our online Setup Guide for more information.)  
 
-The `tblScanTypes` setting allows customization of which modalities are displayed in this module.
-
-> **caveat:** This module has a key dependency - the `mri_parameter_form` instrument must installed and properly configured. 
-If not, this module will not load and an error message will indicate that `Table 'LORIS.mri_parameter_form` is missing. 
-A sample MRI Parameter Form is available with our sample dataset in this repo: `raisinbread/instruments/NDB_BVL_Instrument_mri_parameter_form.class.inc`.  Please customize this PHP instrument for your project, and install it following the instructions in our Setup Guide for behavioural instruments, so that it appears among the database tables. Also consult the Setup Guide for recommended steps to configure and populate this instrument for your battery. 
+* The `tblScanTypes` Configuration setting allows customization of which modalities are displayed in this module. 
 
 #### Permissions
 The `quality_control` permission gives users access to this module and its features.
 
 #### Interactions With LORIS
 
-- Imaging Browser 
-
-  Links are provided to the Imaging Browser module, and the QC entered in that module (for the scan types specified in the Configuration module as noted above).
-
-- Imaging Uploader 
-
-  The name of the user who uploaded the scan via the Imaging Uploader module is displayed in this module.
+* Imaging Browser: presents info about and links to QC and scans, for the scan types specified in the Configuration module (as noted above)
+* Imaging Uploader : the name of the user who uploaded the scan is displayed in this module 
+* Dicom Archive: Tarchive detected
+* MRI parameter form: Completeness of form and Scan Done are displayed, for this instrument
