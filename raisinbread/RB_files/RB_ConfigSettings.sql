@@ -97,5 +97,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (98,'publication_deletions','Path to deleted publications',1,0,'web_path',26,'Deleted Publications',11);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (99,'usePwnedPasswordsAPI','Whether to query the Have I Been Pwned password API on password changes to prevent the usage of common and breached passwords',1,0,'boolean',1,'Enable \"Pwned Password\" check',22);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (100,'EnvironmentFile','Name of the environment file that need to be sourced for the imaging pipeline',1,0,'text',69,'Name of the environment file',20);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (101,'MINCToolsPath','Path to the MINC tools',1,0,'web_path',26,'Path to the MINC tools',12);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
