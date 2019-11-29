@@ -12,7 +12,9 @@
  * @link     https://github.com/aces/Loris
  */
 
-$user =& User::singleton();
+$user   =& User::singleton();
+$config = \NDB_Factory::singleton()->config();
+$path   = $config->getSetting('dataReleasePath');
 
 $File = $_GET['File'];
 // Make sure that the user isn't trying to break out of the $path by
@@ -23,13 +25,13 @@ if (strpos($File, "..") !== false) {
     header("HTTP/1.1 400 Bad Request");
     exit(4);
 }
-$FullPath = __DIR__ . "/../user_uploads/$File";
+$FullPath = $path . $File;
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $FullPath does not exist");
     header("HTTP/1.1 404 Not Found");
     exit(5);
 }
-$db         =& Database::singleton();
+$db         = \Database::singleton();
 $fileID     = $db->pselectOne(
     "SELECT ID FROM data_release WHERE "
     . "file_name=:fn",

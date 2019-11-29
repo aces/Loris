@@ -12,8 +12,9 @@
  * @link     https://github.com/aces/Loris
  */
 
-$DB   = \Database::singleton();
-$user = \User::singleton();
+$DB     = \Database::singleton();
+$user   = \User::singleton();
+$config =\ NDB_Factory::singleton()->config();
 
 if ($_POST['action'] == 'upload'
     && $user->hasPermission("data_release_upload")
@@ -21,27 +22,27 @@ if ($_POST['action'] == 'upload'
     $fileName    = $_FILES["file"]["name"];
     $version     = $_POST['version'];
     $upload_date = date('Y-m-d');
-    $base_path   = __DIR__ . "/../user_uploads/";
 
     $factory  = NDB_Factory::singleton();
     $settings = $factory->settings();
 
     $baseURL = $settings->getBaseURL();
+    $path    = $config->getSetting('dataReleasePath');
 
-    if (!file_exists(__DIR__ . "/../user_uploads/")) {
+    if (!file_exists($path)) {
         error_log(
-            "ERROR: File upload failed. Default user_uploads"
+            "ERROR: File upload failed. Default upload"
             . " directory not found."
         );
         header("HTTP/1.1 500 Internal Server Error");
-    } elseif (!is_writable(__DIR__ . "/../user_uploads/")) {
+    } elseif (!is_writable($path)) {
         error_log(
-            "File upload failed. Default user_uploads directory"
+            "File upload failed. Default upload directory"
             . " does not appear to be writeable."
         );
         header("HTTP/1.1 500 Internal Server Error");
     } else {
-        $target_path = $base_path . $fileName;
+        $target_path = $path . $fileName;
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
             $DB->insert(
                 'data_release',
