@@ -13,9 +13,12 @@ The Imaging QC module allows you to view specific data on uploaded image files, 
 
 Note: To QC a scan, the user must click the link leading to the Imaging Browser, and enter the QC details in that module.
 
-#### Configuration caveat 
+#### Configurations
 
-This module has a key dependency - the `mri_parameter_form` instrument must installed. 
+
+The `tblScanTypes` setting allows customization of which modalities are displayed in this module.
+
+> **caveat:** This module has a key dependency - the `mri_parameter_form` instrument must installed and properly configured. 
 If not, this module will not load and an error message will indicate that `Table 'LORIS.mri_parameter_form` is missing. 
 A sample MRI Parameter Form is available with our sample dataset in this repo: `raisinbread/instruments/NDB_BVL_Instrument_mri_parameter_form.class.inc`.  Please customize this PHP instrument for your project, and install it following the instructions in our Setup Guide for behavioural instruments, so that it appears among the database tables. Also consult the Setup Guide for recommended steps to configure and populate this instrument for your battery. 
 
@@ -24,14 +27,10 @@ The `quality_control` permission gives users access to this module and its featu
 
 #### Interactions With LORIS
 
-- Configuration
-
-The `tblScanTypes` setting allows customization of which modalities are displayed in this module.
-
 - Imaging Browser 
 
-Links are provided to the Imaging Browser module, and the QC entered in that module (for the scan types specified in the Configuration module as noted above).
+  Links are provided to the Imaging Browser module, and the QC entered in that module (for the scan types specified in the Configuration module as noted above).
 
 - Imaging Uploader 
 
-The name of the user who uploaded the scan via the Imaging Uploader module is displayed in this module.
+  The name of the user who uploaded the scan via the Imaging Uploader module is displayed in this module.
