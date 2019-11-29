@@ -130,20 +130,12 @@ debian=("Debian" "Ubuntu")
 redhat=("Red" "CentOS" "Fedora" "Oracle")
 
 if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
-    mkdir -p ../modules/document_repository/user_uploads
-    mkdir -p ../modules/data_release/user_uploads
-    sudo chown www-data.www-data ../modules/document_repository/user_uploads
-    sudo chown www-data.www-data ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../smarty/templates_c
     # Make Apache the group for project directory, so that the web based install
     # can write the config.xml file.
     sudo chgrp www-data ../project
     sudo chmod 770 ../project
 elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
-    mkdir -p ../modules/document_repository/user_uploads
-    mkdir -p ../modules/data_release/user_uploads
-    sudo chown apache.apache ../modules/document_repository/user_uploads
-    sudo chown apache.apache ../modules/data_release/user_uploads
     sudo chown apache.apache ../smarty/templates_c
     # Make Apache the group for project directory, so that the web based install
     # can write the config.xml file.
@@ -152,8 +144,6 @@ elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
 else
     echo "$os_distro Linux distribution detected. We currently do not support this. "
     echo "Please manually change subdirectory ownership and permissions to ensure the web server can read *and write* in the following: "
-    echo "../modules/data_release/user_uploads "
-    echo "../modules/document_repository/user_uploads "
     echo "../smarty/templates_c "
     echo ""
 fi
