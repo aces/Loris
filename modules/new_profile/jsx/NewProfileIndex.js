@@ -19,6 +19,7 @@ class NewProfileIndex extends React.Component {
       isLoaded: false,
       isCreated: false,
       error: false,
+      submitDisabled: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
@@ -88,6 +89,9 @@ class NewProfileIndex extends React.Component {
       }
       formObject.append('fire_away', 'New Candidate');
 
+      // disable button to prevent form resubmission.
+      this.setState({submitDisabled: true});
+
       fetch(this.props.submitURL, {
         method: 'POST',
         cache: 'no-cache',
@@ -102,6 +106,8 @@ class NewProfileIndex extends React.Component {
           });
         } else {
           resp.json().then((message) => {
+            // enable button for form resubmission.
+            this.setState({submitDisabled: false});
             swal.fire('Error!', message, 'error');
           });
         }
@@ -239,6 +245,7 @@ class NewProfileIndex extends React.Component {
             label = "Create"
             id = "button"
             type = "submit"
+            disabled={this.state.submitDisabled}
           />
         </FormElement>
       );

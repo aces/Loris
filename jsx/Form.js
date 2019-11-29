@@ -1614,6 +1614,7 @@ class ButtonElement extends Component {
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
+            disabled={this.props.disabled}
           >
             {this.props.label}
           </button>
@@ -1627,12 +1628,14 @@ ButtonElement.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
+  disabled: PropTypes.bool,
   onUserInput: PropTypes.func,
 };
 
 ButtonElement.defaultProps = {
   label: 'Submit',
   type: 'submit',
+  disabled: null,
   buttonClass: 'btn btn-primary',
   columnSize: 'col-sm-9 col-sm-offset-3',
   onUserInput: function() {
