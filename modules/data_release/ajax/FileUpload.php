@@ -14,7 +14,7 @@
 
 $DB     = \Database::singleton();
 $user   = \User::singleton();
-$config =\ NDB_Factory::singleton()->config();
+$config = \NDB_Factory::singleton()->config();
 
 if ($_POST['action'] == 'upload'
     && $user->hasPermission("data_release_upload")

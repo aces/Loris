@@ -67,7 +67,7 @@ class Files extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $config =\ NDB_Factory::singleton()->config();
+        $config = \NDB_Factory::singleton()->config();
         $path   = $config->getSetting("documentRepositoryPath");
         switch ($request->getMethod()) {
         case "POST":
@@ -173,7 +173,7 @@ class Files extends \NDB_Page
      */
     function deleteFile($rid): void
     {
-        $config =\ NDB_Factory::singleton()->config();
+        $config = \NDB_Factory::singleton()->config();
         $path   = $config->getSetting("documentRepositoryPath");
         // create Database object
         $DB       = \Database::singleton();
