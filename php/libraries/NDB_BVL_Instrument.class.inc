@@ -2727,10 +2727,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($request->getMethod() === "POST") {
+        $req = $request->getParsedBody();
+        if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
             $this->save();
         }
-
         return (new \Zend\Diactoros\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
