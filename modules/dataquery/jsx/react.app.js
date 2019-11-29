@@ -77,7 +77,7 @@ class SavedQueriesList extends Component {
             {globalSaved}
           </ul>
         </li>
-        <li role='presentation'><a href='#SavedQueriesTab' data-toggle='tab'>Manage Saved Queries</a></li>
+        <li role='presentation' id='presentationMSQ'><a href='#SavedQueriesTab' data-toggle='tab'>Manage Saved Queries</a></li>
       </ul>
     );
   }
@@ -146,6 +146,14 @@ class DataQueryApp extends Component {
     this.resetQuery = this.resetQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+  }
+
+  onTabChangeHandler(e) {
+    if (e.target.innerHTML !== 'Manage Saved Queries') {
+      document.getElementById(
+        'presentationMSQ'
+      ).classList.remove('active');
+    }
   }
 
   componentDidMount() {
@@ -1033,11 +1041,11 @@ class DataQueryApp extends Component {
       <div className={widthClass}>
         <nav className='nav nav-tabs'>
           <ul className='nav nav-tabs navbar-left' data-tabs='tabs'>
-            <li role='presentation' className='active'><a href='#Info' data-toggle='tab'>Info</a></li>
-            <li role='presentation'><a href='#DefineFields' data-toggle='tab'>Define Fields</a></li>
-            <li role='presentation'><a href='#DefineFilters' data-toggle='tab'>Define Filters</a></li>
-            <li role='presentation'><a href='#ViewData' data-toggle='tab'>View Data</a></li>
-            <li role='presentation'><a href='#Statistics' data-toggle='tab'>Statistical Analysis</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler} className='active'><a href='#Info' data-toggle='tab'>Info</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#DefineFields' data-toggle='tab'>Define Fields</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#DefineFilters' data-toggle='tab'>Define Filters</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#ViewData' data-toggle='tab'>View Data</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#Statistics' data-toggle='tab'>Statistical Analysis</a></li>
           </ul>
           <SavedQueriesList
             userQueries={this.state.queryIDs.User}
