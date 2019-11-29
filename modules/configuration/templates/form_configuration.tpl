@@ -1,19 +1,15 @@
 {function name=createRadio}
-    {if $v eq "1" || $v eq "0"}
+  {*Use variable to make sure 1/0 values dont get converted to true/false accidentally, code sections expecting 1/0 or true/false can break otherwise*}
+  {$useZerosAndOnes=false}
+  {if $v eq "1" || $v eq "0"}
+    {$useZerosAndOnes=true}
+  {/if}
     <label class="radio-inline">
-        <input type="radio" name="{$k}" value="1" {if $v eq "1"}checked{/if} {if $d eq "Yes"}disabled{/if}>Yes
+        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="1"{else}value="true"{/if} {if $v eq "1" || $v eq "true"}checked{/if} {if $d eq "Yes"}disabled{/if}>Yes
     </label>
     <label class="radio-inline">
-        <input type="radio" name="{$k}" value="0" {if $v eq "0"}checked{/if} {if $d eq "Yes"}disabled{/if}>No
+        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="0"{else}value="false"{/if} {if $v eq "0" || $v eq "false"}checked{/if} {if $d eq "Yes"}disabled{/if}>No
     </label>
-    {else if $v eq "true" || $v eq "false"}
-    <label class="radio-inline">
-        <input type="radio" name="{$k}" value="true" {if $v eq "true"}checked{/if} {if $d eq "Yes"}disabled{/if}>Yes
-    </label>
-    <label class="radio-inline">
-        <input type="radio" name="{$k}" value="false" {if $v eq "false"}checked{/if} {if $d eq "Yes"}disabled{/if}>No
-    </label>
-    {/if}
 {/function}
 
 {function name=createInstrument}
@@ -104,7 +100,9 @@
     {foreachelse}
         {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
         {assign var=id value={"add-"|cat:$node['ID']} }
-        {if $node['DataType'] eq 'instrument'}
+        {if $node['DataType'] eq 'boolean'}
+            {call createRadio k=$id d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'instrument'}
             {call createInstrument k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'scan_type'}
             {call createScanType k=$id d=$node['Disabled']}

@@ -5,11 +5,12 @@
 CREATE TABLE `Project` (
     `ProjectID` INT(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` VARCHAR(255) NULL,
+    `Alias` char(4) NOT NULL,
     `recruitmentTarget` INT(6) Default NULL,
     PRIMARY KEY (`ProjectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `Project` (Name) VALUES ('loris');
+INSERT INTO `Project` (Name,Alias) VALUES ('loris','LORI');
 
 CREATE TABLE `subproject` (
     `SubprojectID` int(10) unsigned NOT NULL auto_increment,
@@ -178,11 +179,11 @@ CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `CenterID` integer unsigned NOT NULL,
-  `ProjectID` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
   `SubprojectID` int(10) unsigned DEFAULT NULL,
-  `Submitted` enum('Y','N') DEFAULT NULL,
+  `Submitted` enum('Y','N') NOT NULL DEFAULT 'N',
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
   `Date_stage_change` date DEFAULT NULL,
   `Screening` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,

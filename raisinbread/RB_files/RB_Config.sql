@@ -93,5 +93,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (96,100,'environment');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (97,70,'/data-raisinbread/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (98,93,'V1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (99,101,'');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (102,19,'false');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

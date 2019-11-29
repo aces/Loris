@@ -179,7 +179,7 @@ class File_Upload
     function callFileHandler($field, $action)
     {
         $class  =$this->fileHandlers[$field]['class'];
-        $method =$this->fileHandlers[$field]['methods'][(int) $action];
+        $method =$this->fileHandlers[$field]['methods'][$action];
         $args   =array();
 
         //If handlerArgs are being passed, include them

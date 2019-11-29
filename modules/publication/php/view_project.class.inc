@@ -101,6 +101,23 @@ class View_Project extends \NDB_Form
     }
 
     /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'View Project',
+                "/publication/view_project?id=" . $_GET['id']
+            )
+        );
+    }
+
+    /**
      * Include additional JS files:
      *  1. editForm.js - reactified form to update media
      *
