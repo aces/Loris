@@ -1,0 +1,1 @@
+Information required to personalize LORIS to the needs of a specific study. The content of this folder **must not overlap** with the install configuration.

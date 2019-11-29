@@ -27,7 +27,6 @@ class UploadForm extends Component {
     };
 
     this.onFormChange = this.onFormChange.bind(this);
-    this.getDisabledStatus = this.getDisabledStatus.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
   }
@@ -57,21 +56,20 @@ class UploadForm extends Component {
 
     formData[field] = value;
 
+    if (field === 'mriFile') {
+      if (value.name !== '') {
+        let patientName = value.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
+        let ids = patientName.split('_', 3);
+        formData.candID = ids[1];
+        formData.pSCID = ids[0];
+        formData.visitLabel = ids[2];
+      }
+    }
+
     this.setState({
       form: form,
       formData: formData,
     });
-  }
-
-  /*
-   Returns false if Phantom Scans is set to No, and true otherwise
-   Result disables the element that calls the function
-   */
-  getDisabledStatus(phantomScans) {
-    if (phantomScans === 'N') {
-      return false;
-    }
-    return true;
   }
 
   submitForm() {
@@ -83,91 +81,42 @@ class UploadForm extends Component {
     }
 
     const fileName = data.mriFile.name;
+    // Make sure file is of type .zip|.tgz|.tar.gz format
+    const properExt = new RegExp('\.(zip|tgz|tar\.gz)$');
+    if (!fileName.match(properExt)) {
+      swal({
+        title: 'Invalid extension for the uploaded file!',
+        text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
+        type: 'error',
+        confirmButtonText: 'OK',
+      });
+
+      let errorMessage = {
+        mriFile: 'The file ' + fileName + ' must be of type .tgz, .tar.gz or .zip.',
+        candID: undefined,
+        pSCID: undefined,
+        visitLabel: undefined,
+      };
+
+      let hasError = {
+        mriFile: true,
+        candID: false,
+        pSCID: false,
+        visitLabel: false,
+      };
+
+      this.setState({errorMessage, hasError});
+      return;
+    }
+
     if (data.IsPhantom === 'N') {
       if (!data.candID || !data.pSCID || !data.visitLabel) {
-        return;
-      }
-      // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
-      const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
-      const properName = new RegExp('^' + pcv + '(_|.)');
-      const properExt = new RegExp('.(zip|tgz|tar.gz)$');
-      if (!fileName.match(properName)) {
         swal({
-          title: 'Filename does not match other fields!',
-          text: 'Filename and values in the PSCID, CandID ' +
-          'and Visit Label fields of the form do not match. Please ' +
-          'verify that the information entered in the ' +
-          'fields or the filename are correct.',
+          title: 'Incorrect file name!',
+          text: 'Could not determine PSCID, CandID and Visit Label based on the filename!\n',
           type: 'error',
           confirmButtonText: 'OK',
         });
-        let fieldMsg = 'Field does not match the filename!';
-
-        let errorMessage = {
-          mriFile: 'Filename does not match other fields!',
-          candID: undefined,
-          pSCID: undefined,
-          visitLabel: undefined,
-        };
-
-        let hasError = {
-          mriFile: true,
-          candID: false,
-          pSCID: false,
-          visitLabel: false,
-        };
-
-        // check filename fields individually to decide
-        // which fields to apply error message
-        // use limit of 2 to avoid splitting the visit label
-        let fileNameParts = fileName.split('_', 2);
-        if (data.pSCID !== fileNameParts[0]) {
-          errorMessage.pSCID = fieldMsg;
-          hasError.pSCID = true;
-        }
-
-        if (data.candID !== fileNameParts[1]) {
-          errorMessage.candID = fieldMsg;
-          hasError.candID = true;
-        }
-
-        // offset for visit label is size of the two parts plus 2 _'s
-        let visitLabelOffset = fileNameParts[0].length + fileNameParts[1].length + 2;
-        let fileNameRemains = fileName.substr(visitLabelOffset);
-        // only check that this part of the filename begins with
-        // the field, last part of file name includes optional
-        // specifiers + file extension
-        if (fileNameRemains.indexOf(data.visitLabel) !== 0) {
-          errorMessage.visitLabel = fieldMsg;
-          hasError.visitLabel = true;
-        }
-
-        this.setState({errorMessage, hasError});
-        return;
-      }
-      if (!fileName.match(properExt)) {
-        swal({
-          title: 'Invalid extension for the uploaded file!',
-          text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
-          type: 'error',
-          confirmButtonText: 'OK',
-        });
-
-        let errorMessage = {
-          mriFile: 'The file ' + fileName + ' is not of type .tgz, .tar.gz or .zip.',
-          candID: undefined,
-          pSCID: undefined,
-          visitLabel: undefined,
-        };
-
-        let hasError = {
-          mriFile: true,
-          candID: false,
-          pSCID: false,
-          visitLabel: false,
-        };
-
-        this.setState({errorMessage, hasError});
         return;
       }
     }
@@ -391,9 +340,8 @@ class UploadForm extends Component {
             <TextboxElement
               name='candID'
               label='CandID'
-              onUserInput={this.onFormChange}
-              disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
-              required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
+              disabled={true}
+              required={false}
               hasError={this.state.hasError.candID}
               errorMessage={this.state.errorMessage.candID}
               value={this.state.formData.candID}
@@ -401,20 +349,17 @@ class UploadForm extends Component {
             <TextboxElement
               name='pSCID'
               label='PSCID'
-              onUserInput={this.onFormChange}
-              disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
-              required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
+              disabled={true}
+              required={false}
               hasError={this.state.hasError.pSCID}
               errorMessage={this.state.errorMessage.pSCID}
               value={this.state.formData.pSCID}
             />
-            <SelectElement
+            <TextboxElement
               name='visitLabel'
               label='Visit Label'
-              options={this.props.form.visitLabel.options}
-              onUserInput={this.onFormChange}
-              disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
-              required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
+              disabled={true}
+              required={false}
               hasError={this.state.hasError.visitLabel}
               errorMessage={this.state.errorMessage.visitLabel}
               value={this.state.formData.visitLabel}

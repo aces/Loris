@@ -47,7 +47,7 @@ class ResolvedConflictsPane extends React.Component {
       let correctAnswer = '';
       const newValue = row['New Value'];
       const oldValue1 = row['Correct Answer'];
-      const oldValue2 = row.OldValue2;
+      const oldValue2 = row['Old Value2'];
 
       if (newValue === '1' && oldValue1 !== null) {
         correctAnswer = oldValue1;

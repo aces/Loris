@@ -3,13 +3,14 @@
 -- ********************************
 
 CREATE TABLE `Project` (
-    `ProjectID` INT(2) NOT NULL AUTO_INCREMENT,
+    `ProjectID` INT(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` VARCHAR(255) NULL,
+    `Alias` char(4) NOT NULL,
     `recruitmentTarget` INT(6) Default NULL,
     PRIMARY KEY (`ProjectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `Project` (Name) VALUES ('loris');
+INSERT INTO `Project` (Name,Alias) VALUES ('loris','LORI');
 
 CREATE TABLE `subproject` (
     `SubprojectID` int(10) unsigned NOT NULL auto_increment,
@@ -25,12 +26,14 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
   ('Control', false, 'optimal'),
   ('Experimental', false, 'optimal');
 
-CREATE TABLE `project_rel` (
+CREATE TABLE `project_subproject_rel` (
   `ProjectSubprojectRelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ProjectID` int(2) NOT NULL,
-  `SubprojectID` int(2) NOT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  `SubprojectID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ProjectSubprojectRelID`),
-  CONSTRAINT UK_project_subproject_rel_ProjectID_SubprojectID UNIQUE KEY (ProjectID, SubprojectID)
+  CONSTRAINT `UK_project_subproject_rel_ProjectID_SubprojectID` UNIQUE KEY (ProjectID, SubprojectID),
+  CONSTRAINT `FK_project_subproject_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_project_subproject_rel_SubprojectID` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
@@ -119,6 +122,17 @@ CREATE TABLE `user_psc_rel` (
 
 INSERT INTO user_psc_rel (UserID, CenterID) SELECT 1, CenterID FROM psc;
 
+CREATE TABLE `user_project_rel` (
+  `UserID` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`UserID`,`ProjectID`),
+  CONSTRAINT `FK_user_project_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_project_rel_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO user_project_rel (UserID, ProjectID) SELECT 1, ProjectID FROM Project;
+
+
 CREATE TABLE `caveat_options` (
   `ID` int(6),
   `Description` varchar(255),
@@ -134,7 +148,7 @@ CREATE TABLE `candidate` (
   `EDC` date DEFAULT NULL,
   `Sex` enum('Male','Female') DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
-  `ProjectID` int(11) DEFAULT NULL,
+  `RegistrationProjectID` int(10) unsigned DEFAULT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `Date_active` date DEFAULT NULL,
@@ -157,17 +171,19 @@ CREATE TABLE `candidate` (
   KEY `FK_candidate_2_idx` (`flagged_reason`),
   KEY `PSCID` (`PSCID`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`RegistrationCenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `CenterID` integer unsigned NOT NULL,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
-  `SubprojectID` int(11) DEFAULT NULL,
-  `Submitted` enum('Y','N') DEFAULT NULL,
+  `SubprojectID` int(10) unsigned DEFAULT NULL,
+  `Submitted` enum('Y','N') NOT NULL DEFAULT 'N',
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
   `Date_stage_change` date DEFAULT NULL,
   `Screening` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,
@@ -199,7 +215,9 @@ CREATE TABLE `session` (
   KEY `SessionSubproject` (`SubprojectID`),
   KEY `SessionActive` (`Active`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
+  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`),
+  CONSTRAINT `FK_session_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
 CREATE TABLE `session_status` (
@@ -544,13 +562,6 @@ CREATE TABLE `files_qcstatus` (
     KEY (`FileID`),
     CONSTRAINT `FK_filesqcstatus_FileID`
       FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `mri_acquisition_dates` (
-  `SessionID` int(10) unsigned NOT NULL default '0',
-  `AcquisitionDate` date default NULL,
-  PRIMARY KEY  (`SessionID`),
-  CONSTRAINT `FK_mri_acquisition_dates_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol` (
@@ -1272,7 +1283,7 @@ CREATE TABLE `media` (
   `data_dir` varchar(255) NOT NULL,
   `uploaded_by` varchar(255) DEFAULT NULL,
   `hide_file` tinyint(1) DEFAULT '0',
-  `date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `language_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file_name` (`file_name`),
@@ -1985,7 +1996,7 @@ CREATE TABLE `visit_project_subproject_rel` (
   CONSTRAINT FK_visit_project_subproject_rel_VisitID FOREIGN KEY (`VisitID`)
     REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FK_visit_project_subproject_rel_ProjectSubprojectRelID FOREIGN KEY (`ProjectSubprojectRelID`)
-    REFERENCES `project_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES `project_subproject_rel`(`ProjectSubprojectRelID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Publication Status

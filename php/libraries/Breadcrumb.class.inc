@@ -64,8 +64,8 @@ class Breadcrumb
     {
         return json_encode(
             array(
-             'text'  => $this->label,
-             'query' => $this->link,
+                'text'  => $this->label,
+                'query' => $this->link,
             ),
             JSON_FORCE_OBJECT
         );

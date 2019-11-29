@@ -1,4 +1,4 @@
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
 
@@ -19,7 +19,7 @@ const config = [{
     './modules/conflict_resolver/js/conflictResolverIndex.js': './modules/conflict_resolver/jsx/conflictResolverIndex.js',
     './modules/conflict_resolver/js/resolvedConflictsIndex.js': './modules/conflict_resolver/jsx/resolvedConflictsIndex.js',
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
-    './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
+    './modules/behavioural_qc/js/behavioural_qc_module.js': './modules/behavioural_qc/jsx/behavioural_qc_module.js',
     './modules/candidate_list/js/openProfileForm.js': './modules/candidate_list/jsx/openProfileForm.js',
     './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
     './modules/candidate_list/js/candidateListIndex.js': './modules/candidate_list/jsx/candidateListIndex.js',
@@ -51,7 +51,7 @@ const config = [{
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './modules/acknowledgements/js/acknowledgementsIndex.js': './modules/acknowledgements/jsx/acknowledgementsIndex.js',
     './modules/new_profile/js/NewProfileIndex.js': './modules/new_profile/jsx/NewProfileIndex.js',
-    './modules/quality_control/js/qualityControlIndex.js': './modules/quality_control/jsx/qualityControlIndex.js',
+    './modules/imaging_qc/js/imagingQCIndex.js': './modules/imaging_qc/jsx/imagingQCIndex.js',
     './modules/server_processes_manager/js/server_processes_managerIndex.js': './modules/server_processes_manager/jsx/server_processes_managerIndex.js',
     './modules/document_repository/js/docIndex.js': './modules/document_repository/jsx/docIndex.js',
     './modules/document_repository/js/editFormIndex.js': './modules/document_repository/jsx/editFormIndex.js',
@@ -67,12 +67,18 @@ const config = [{
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader'],
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        use: [
+          {
+            loader: 'babel-loader?cacheDirectory',
+          },
+          {
+            loader: 'eslint-loader',
+            options: {
+              cache: true,
+            },
+          },
+        ],
+        enforce: 'pre',
       },
       {
         test: /\.json$/,
@@ -114,10 +120,10 @@ const config = [{
   plugins: [],
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
+      new TerserPlugin({
         cache: true,
         parallel: true,
-        uglifyOptions: {
+        terserOptions: {
           compress: false,
           ecma: 6,
           mangle: false,

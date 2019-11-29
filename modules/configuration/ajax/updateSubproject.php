@@ -34,10 +34,10 @@ if ($_POST['subprojectID'] === 'new') {
         $db->insert(
             "subproject",
             array(
-             "title"             => $_POST['title'],
-             "useEDC"            => $_POST['useEDC'],
-             "WindowDifference"  => $_POST['WindowDifference'],
-             "RecruitmentTarget" => $recTarget,
+                "title"             => $_POST['title'],
+                "useEDC"            => $_POST['useEDC'],
+                "WindowDifference"  => $_POST['WindowDifference'],
+                "RecruitmentTarget" => $recTarget,
             )
         );
     } else {
@@ -49,10 +49,10 @@ if ($_POST['subprojectID'] === 'new') {
     $db->update(
         "subproject",
         array(
-         "title"             => $_POST['title'],
-         "useEDC"            => $_POST['useEDC'],
-         "WindowDifference"  => $_POST['WindowDifference'],
-         "RecruitmentTarget" => $recTarget,
+            "title"             => $_POST['title'],
+            "useEDC"            => $_POST['useEDC'],
+            "WindowDifference"  => $_POST['WindowDifference'],
+            "RecruitmentTarget" => $recTarget,
         ),
         array("SubprojectID" => $_POST['subprojectID'])
     );

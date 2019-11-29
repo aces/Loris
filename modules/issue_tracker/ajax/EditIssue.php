@@ -4,7 +4,7 @@
  *
  * Handles issue edits and returns data in response to a front end call.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Issue_Tracker
@@ -18,7 +18,7 @@
  *
  * Handles issue edits and returns data in response to a front end call.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Issue Tracker
@@ -54,19 +54,19 @@ function editIssue()
     $issueValues    = array();
     $validateValues = array();
     $fields         = array(
-                       'assignee',
-                       'status',
-                       'priority',
-                       'centerID',
-                       'title',
-                       'category',
-                       'module',
-                      );
+        'assignee',
+        'status',
+        'priority',
+        'centerID',
+        'title',
+        'category',
+        'module',
+    );
     $fieldsToValidateFirst = array(
-                              'PSCID',
-                              'visitLabel',
-                              'centerID',
-                             );
+        'PSCID',
+        'visitLabel',
+        'centerID',
+    );
 
     foreach ($fields as $field) {
         // The default is a string "null" because if the front end submits
@@ -115,9 +115,9 @@ function editIssue()
     // Adding new assignee to watching
     if (isset($issueValues['assignee'])) {
         $nowWatching = array(
-                        'userID'  => $issueValues['assignee'],
-                        'issueID' => $issueID,
-                       );
+            'userID'  => $issueValues['assignee'],
+            'issueID' => $issueID,
+        );
         $db->replace('issues_watching', $nowWatching);
 
         //sending email
@@ -140,8 +140,8 @@ function editIssue()
                 $db->insert(
                     'issues_watching',
                     [
-                     'userID'  => $usersWatching,
-                     'issueID' => $issueID,
+                        'userID'  => $usersWatching,
+                        'issueID' => $issueID,
                     ]
                 );
             }
@@ -151,16 +151,16 @@ function editIssue()
     // Add editor to the watching table unless they don't want to be added.
     if (isset($_POST['watching']) &&  $_POST['watching'] == 'Yes') {
         $nowWatching = array(
-                        'userID'  => $user->getData('UserID'),
-                        'issueID' => $issueID,
-                       );
+            'userID'  => $user->getData('UserID'),
+            'issueID' => $issueID,
+        );
         $db->replace('issues_watching', $nowWatching);
     } else if (isset($_POST['watching']) && $_POST['watching'] == 'No') {
         $db->delete(
             'issues_watching',
             array(
-             'issueID' => $issueID,
-             'userID'  => $user->getData('UserID'),
+                'issueID' => $issueID,
+                'userID'  => $user->getData('UserID'),
             )
         );
     }
@@ -183,14 +183,14 @@ function validateInput($values)
     $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
     $centerID   = (isset($values['centerID']) ? $values['centerID'] : null);
     $result     = [
-                   'PSCID'             => $pscid,
-                   'visit'             => $visitLabel,
-                   'centerID'          => $centerID,
-                   'candID'            => null,
-                   'sessionID'         => null,
-                   'isValidSubmission' => true,
-                   'invalidMessage'    => null,
-                  ];
+        'PSCID'             => $pscid,
+        'visit'             => $visitLabel,
+        'centerID'          => $centerID,
+        'candID'            => null,
+        'sessionID'         => null,
+        'isValidSubmission' => true,
+        'invalidMessage'    => null,
+    ];
 
     if (isset($result['PSCID'], $result['centerID'])) {
         $validCenter = $db->pselectOne(
@@ -203,8 +203,8 @@ function validateInput($values)
                 PSCID = :psc_id
         ",
             array(
-             "center_id" => $result['centerID'],
-             "psc_id"    => $result['PSCID'],
+                "center_id" => $result['centerID'],
+                "psc_id"    => $result['PSCID'],
             )
         );
         if (!$validCenter) {
@@ -226,8 +226,8 @@ function validateInput($values)
                     )
             ",
                 array(
-                 "center_id" => $result['centerID'],
-                 "psc_id"    => $result['PSCID'],
+                    "center_id" => $result['centerID'],
+                    "psc_id"    => $result['PSCID'],
                 )
             );
         }
@@ -242,8 +242,8 @@ function validateInput($values)
             INNER JOIN session s on (c.CandID = s.CandID)
             WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
             [
-             'PSCID'      => $result['PSCID'],
-             'visitLabel' => $result['visit'],
+                'PSCID'      => $result['PSCID'],
+                'visitLabel' => $result['visit'],
             ]
         );
 
@@ -267,7 +267,7 @@ function validateInput($values)
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             $params['CenterID'] = implode(',', $user->getCenterIDs());
-            $query .= " AND FIND_IN_SET(CenterID,:CenterID)";
+            $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
         }
 
         $candidate = $db->pSelectOne($query, $params);
@@ -329,11 +329,11 @@ function updateHistory($values, $issueID)
     foreach ($values as $key => $value) {
         if (!empty($value)) {
             $changedValues = [
-                              'newValue'     => $value,
-                              'fieldChanged' => $key,
-                              'issueID'      => $issueID,
-                              'addedBy'      => $user->getData('UserID'),
-                             ];
+                'newValue'     => $value,
+                'fieldChanged' => $key,
+                'issueID'      => $issueID,
+                'addedBy'      => $user->getData('UserID'),
+            ];
             $db->insert('issues_history', $changedValues);
         }
     }
@@ -356,10 +356,10 @@ function updateComments($comment, $issueID)
 
     if (isset($comment) && $comment != "null") {
         $commentValues = array(
-                          'issueComment' => $comment,
-                          'addedBy'      => $user->getData('UserID'),
-                          'issueID'      => $issueID,
-                         );
+            'issueComment' => $comment,
+            'addedBy'      => $user->getData('UserID'),
+            'issueID'      => $issueID,
+        );
         $db->insert('issues_comments', $commentValues);
     }
 }
@@ -380,10 +380,10 @@ function updateCommentHistory($issueCommentID, $newCommentValue)
     $db   =& Database::singleton();
 
     $changedValue = array(
-                     'issueCommentID' => $issueCommentID,
-                     'newValue'       => $newCommentValue,
-                     'editedBy'       => $user->getData('UserID'),
-                    );
+        'issueCommentID' => $issueCommentID,
+        'newValue'       => $newCommentValue,
+        'editedBy'       => $user->getData('UserID'),
+    );
 
     $db->insert('issues_comments_history', $changedValue);
 }
@@ -495,9 +495,10 @@ function emailUser($issueID, $changed_assignee)
         array('issueID' => $issueID)
     );
 
-    $msg_data['url']         = $baseurl .
+    $msg_data            = array();
+    $msg_data['url']     = $baseurl .
         "/issue_tracker/issue/" . $issueID;
-    $msg_data['issueID']     = $issueID;
+    $msg_data['issueID'] = $issueID;
     $msg_data['currentUser'] = $user->getUsername();
     $msg_data['title']       = $title;
 
@@ -507,8 +508,8 @@ function emailUser($issueID, $changed_assignee)
             "FROM users u WHERE u.UserID=:assignee
             AND u.UserID<>:currentUser",
             array(
-             'assignee'    => $changed_assignee,
-             'currentUser' => $user->getUserName(),
+                'assignee'    => $changed_assignee,
+                'currentUser' => $user->getUserName(),
             )
         );
 
@@ -530,9 +531,9 @@ function emailUser($issueID, $changed_assignee)
         "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE ".
         "w.issueID=:issueID AND u.UserID<>:uid AND u.UserID<>:assignee",
         array(
-         'issueID'  => $issueID,
-         'uid'      => $user->getUsername(),
-         'assignee' => $changed_assignee,
+            'issueID'  => $issueID,
+            'uid'      => $user->getUsername(),
+            'assignee' => $changed_assignee,
         )
     );
 
@@ -587,8 +588,8 @@ function getIssueFields()
              LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
             array(
-             'CenterID' => $CenterID,
-             'DCC'      => $DCCID,
+                'CenterID' => $CenterID,
+                'DCC'      => $DCCID,
             )
         );
     }
@@ -611,30 +612,30 @@ WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
     //can't set to closed if not developer.
     if ($user->hasPermission('issue_tracker_developer')) {
         $statuses = array(
-                     'new'          => 'New',
-                     'acknowledged' => 'Acknowledged',
-                     'assigned'     => 'Assigned',
-                     'feedback'     => 'Feedback',
-                     'resolved'     => 'Resolved',
-                     'closed'       => 'Closed',
-                    );
+            'new'          => 'New',
+            'acknowledged' => 'Acknowledged',
+            'assigned'     => 'Assigned',
+            'feedback'     => 'Feedback',
+            'resolved'     => 'Resolved',
+            'closed'       => 'Closed',
+        );
     } else {
         $statuses = array(
-                     'new'          => 'New',
-                     'acknowledged' => 'Acknowledged',
-                     'assigned'     => 'Assigned',
-                     'feedback'     => 'Feedback',
-                     'resolved'     => 'Resolved',
-                    );
+            'new'          => 'New',
+            'acknowledged' => 'Acknowledged',
+            'assigned'     => 'Assigned',
+            'feedback'     => 'Feedback',
+            'resolved'     => 'Resolved',
+        );
     }
 
     $priorities = array(
-                   'low'       => 'Low',
-                   'normal'    => 'Normal',
-                   'high'      => 'High',
-                   'urgent'    => 'Urgent',
-                   'immediate' => 'Immediate',
-                  );
+        'low'       => 'Low',
+        'normal'    => 'Normal',
+        'high'      => 'High',
+        'urgent'    => 'Urgent',
+        'immediate' => 'Immediate',
+    );
 
     $unorgCategories = $db->pselect(
         "SELECT categoryName FROM issues_categories",
@@ -676,8 +677,8 @@ ORDER BY dateAdded LIMIT 1",
             "SELECT userID, issueID FROM issues_watching
             WHERE issueID=:issueID AND userID=:userID",
             array(
-             'issueID' => $issueID,
-             'userID'  => $user->getData('UserID'),
+                'issueID' => $issueID,
+                'userID'  => $user->getData('UserID'),
             )
         );
         if ($isWatching === null) {
@@ -687,7 +688,7 @@ ORDER BY dateAdded LIMIT 1",
         }
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['othersWatching'] = getWatching($issueID);
-        $issueData['desc']           = $desc[0]['issueComment'];
+        $issueData['desc']           = $desc[0]['issueComment'] ?? '';
     }
     $issueData['comment'] = null;
 
@@ -698,19 +699,19 @@ ORDER BY dateAdded LIMIT 1",
     }
 
     $result = [
-               'assignees'         => $assignees,
-               'sites'             => $sites,
-               'statuses'          => $statuses,
-               'priorities'        => $priorities,
-               'categories'        => $categories,
-               'modules'           => $modules,
-               'otherWatchers'     => $otherWatchers,
-               'issueData'         => $issueData,
-               'hasEditPermission' => $user->hasPermission(
-                   'issue_tracker_developer'
-               ),
-               'isOwnIssue'        => $isOwnIssue,
-              ];
+        'assignees'         => $assignees,
+        'sites'             => $sites,
+        'statuses'          => $statuses,
+        'priorities'        => $priorities,
+        'categories'        => $categories,
+        'modules'           => $modules,
+        'otherWatchers'     => $otherWatchers,
+        'issueData'         => $issueData,
+        'hasEditPermission' => $user->hasPermission(
+            'issue_tracker_developer'
+        ),
+        'isOwnIssue'        => $isOwnIssue,
+    ];
 
     return $result;
 }
@@ -736,26 +737,26 @@ function getIssueData($issueID=null)
             "LEFT JOIN session s ON (i.sessionID=s.ID) " .
             "WHERE issueID=:issueID",
             ['issueID' => $issueID]
-        );
+        ) ?? array();
     }
 
     return [
-            'reporter'      => $user->getData('UserID'),
-            'dateCreated'   => date('Y-m-d H:i:s'),
-            'centerID'      => $user->getData('CenterIDs'),
-            'status'        => "new",
-            'priority'      => "normal",
-            'issueID'       => 0, //TODO: this is dumb
-            'title'         => null,
-            'lastUpdate'    => null,
-            'PSCID'         => null,
-            'assignee'      => null,
-            'history'       => null,
-            'watching'      => "Yes",
-            'visitLabel'    => null,
-            'category'      => null,
-            'lastUpdatedBy' => null,
-           ];
+        'reporter'      => $user->getData('UserID'),
+        'dateCreated'   => date('Y-m-d H:i:s'),
+        'centerID'      => $user->getData('CenterIDs'),
+        'status'        => "new",
+        'priority'      => "normal",
+        'issueID'       => 0, //TODO: this is dumb
+        'title'         => null,
+        'lastUpdate'    => null,
+        'PSCID'         => null,
+        'assignee'      => null,
+        'history'       => null,
+        'watching'      => "Yes",
+        'visitLabel'    => null,
+        'category'      => null,
+        'lastUpdatedBy' => null,
+    ];
 }
 
 /**

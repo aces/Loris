@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\Middleware;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
@@ -63,7 +64,7 @@ class ResponseGenerator implements MiddlewareInterface, MiddlewareChainer
      *
      * @return MiddlewareChainer The same MiddlewareChainer, unmodified.
      */
-    public function withMiddleware(MiddlewareChainer $next) :MiddlewareChainer
+    public function withMiddleware(MiddlewareChainer $next)
     {
         return $this;
     }

@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php declare(strict_types=1);
 error_reporting(E_ALL);
 require_once __DIR__ . "/../generic_includes.php";

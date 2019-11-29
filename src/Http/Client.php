@@ -37,18 +37,18 @@ class Client implements ClientInterface
      *
      * @return void
      */
-    public function __construct(string $uri) {
+    public function __construct(string $uri)
+    {
         $this->client = GuzzleClient::createWithConfig(
-            array(
-                'base_uri' => $uri
-            )
+            array('base_uri' => $uri)
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function sendRequest(RequestInterface $request): ResponseInterface {
+    public function sendRequest(RequestInterface $request): ResponseInterface
+    {
         return $this->client->sendRequest($request);
     }
 }

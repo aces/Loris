@@ -88,11 +88,11 @@ $tpl_data = array();
 
 // Page 1: Help, prompt server, root username, root password
 // Page 2: 1. Connect with username/password
-// 	2. Check has required permissions -- abort if not
-//	 3. Source schema
+//     2. Check has required permissions -- abort if not
+//     3. Source schema
 // Page 3: Help, prompt for new username/password (include defaults)
 // Page 4: 1. Check if user exists -- if so, error, if not create
-//	 2. Update config.xml if write access, otherwise download copy
+//     2. Update config.xml if write access, otherwise download copy
 switch(isset($_POST['formname']) ? $_POST['formname'] : '') {
 case 'validaterootaccount':
     // This will connect to MySQL, check the permissions of the
@@ -124,11 +124,11 @@ case 'validaterootaccount':
         && isset($_POST['dbadminuser'])
         && isset($_POST['dbadminpassword'])
         && !Database::canLogIn(
-            $_POST['dbhost'],
-            $_POST['dbname'],
-            $_POST['dbadminuser'],
-            $_POST['dbadminpassword']
-        )
+        $_POST['dbhost'],
+        $_POST['dbname'],
+        $_POST['dbadminuser'],
+        $_POST['dbadminpassword']
+    )
     ) {
         $tpl_data['error'] = 'The specified user does not exist or '.
             'is using an incorrect password or the database does not exist';
@@ -188,8 +188,8 @@ $tpl_data['console'] = htmlspecialchars(ob_get_contents());
 // pages
 if (isset($tpl_data['Page'])) {
     if ($tpl_data['Page'] == 'MySQLUserPrompt') {
-        $tpl_data['SamplePassword']  = User::newPassword(16);
-        $tpl_data['SamplePassword2'] = User::newPassword(16);
+        $tpl_data['SamplePassword']  = Utility::randomString(16);
+        $tpl_data['SamplePassword2'] = Utility::randomString(16);
     } else if ($tpl_data['Page'] == 'Done') {
         $tpl_data['lorisurl'] = $installer->getBaseURL();
     }

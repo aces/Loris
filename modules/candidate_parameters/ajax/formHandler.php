@@ -4,7 +4,7 @@
  *
  * Handles form update actions received from a front-end ajax call
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Media
@@ -12,31 +12,53 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-if (isset($_POST['tab'])) {
-    $tab = $_POST['tab'];
 
-    $db   =& \Database::singleton();
-    $user =& \User::singleton();
+use \LORIS\StudyEntities\Candidate\CandID;
 
-    if ($tab == "candidateInfo") {
-        editCandInfoFields($db, $user);
-    } else if ($tab == "probandInfo") {
-        editProbandInfoFields($db, $user);
-    } else if ($tab == "familyInfo") {
-        editFamilyInfoFields($db, $user);
-    } else if ($tab == "deleteFamilyMember") {
-        deleteFamilyMember($db, $user);
-    } else if ($tab == "participantStatus") {
-        editParticipantStatusFields($db, $user);
-    } else if ($tab == "consentStatus") {
-        editConsentStatusFields($db, $user);
-    } else {
-        header("HTTP/1.1 404 Not Found");
-        exit;
-    }
+
+$user = \User::singleton();
+if (!$user->hasPermission('candidate_parameter_edit')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
 }
 
+$tab = $_POST['tab'] ?? '';
+if ($tab === '') {
+    header("HTTP/1.1 400 Bad Request");
+    exit;
+}
 
+$db = \Database::singleton();
+
+switch($tab) {
+case 'candidateInfo':
+    editCandInfoFields($db, $user);
+    break;
+
+case 'probandInfo':
+    editProbandInfoFields($db, $user);
+    break;
+
+case 'familyInfo':
+    editFamilyInfoFields($db, $user);
+    break;
+
+case 'deleteFamilyMember':
+    deleteFamilyMember($db, $user);
+    break;
+
+case 'participantStatus':
+    editParticipantStatusFields($db, $user);
+    break;
+
+case 'consentStatus':
+    editConsentStatusFields($db, $user);
+    break;
+
+default:
+    header("HTTP/1.1 404 Not Found");
+    exit;
+}
 
 /**
  * Handles the updating of Candidate Info
@@ -50,10 +72,6 @@ if (isset($_POST['tab'])) {
  */
 function editCandInfoFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
 
     $candID = $_POST['candID'];
 
@@ -74,10 +92,10 @@ function editCandInfoFields($db, $user)
     }
 
     $updateValues = [
-                     'flagged_caveatemptor' => $caveatEmptor,
-                     'flagged_reason'       => $reason,
-                     'flagged_other'        => $other,
-                    ];
+        'flagged_caveatemptor' => $caveatEmptor,
+        'flagged_reason'       => $reason,
+        'flagged_other'        => $other,
+    ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
 
@@ -87,19 +105,19 @@ function editCandInfoFields($db, $user)
                 $ptid = substr($field, 4);
 
                 $updateValues = [
-                                 'ParameterTypeID' => $ptid,
-                                 'CandID'          => $candID,
-                                 'Value'           => $_POST[$field],
-                                 'InsertTime'      => time(),
-                                ];
+                    'ParameterTypeID' => $ptid,
+                    'CandID'          => $candID,
+                    'Value'           => $_POST[$field],
+                    'InsertTime'      => time(),
+                ];
 
                 $result = $db->pselectOne(
                     'SELECT * from parameter_candidate 
                     WHERE CandID=:cid 
                     AND ParameterTypeID=:ptid',
                     [
-                     'cid'  => $candID,
-                     'ptid' => $ptid,
+                        'cid'  => $candID,
+                        'ptid' => $ptid,
                     ]
                 );
 
@@ -110,8 +128,8 @@ function editCandInfoFields($db, $user)
                         'parameter_candidate',
                         $updateValues,
                         [
-                         'CandID'          => $candID,
-                         'ParameterTypeID' => $ptid,
+                            'CandID'          => $candID,
+                            'ParameterTypeID' => $ptid,
                         ]
                     );
                 }
@@ -132,10 +150,6 @@ function editCandInfoFields($db, $user)
  */
 function editProbandInfoFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
     //Sanitizing the post data
     $sanitize = array_map('htmlentities', $_POST);
     $candID   = $sanitize['candID'];
@@ -145,9 +159,9 @@ function editProbandInfoFields($db, $user)
     $dob = $sanitize['ProbandDoB'] ?? null;
 
     $updateValues = [
-                     'ProbandSex' => $sex,
-                     'ProbandDoB' => $dob,
-                    ];
+        'ProbandSex' => $sex,
+        'ProbandDoB' => $dob,
+    ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
     foreach (array_keys($sanitize) as $field) {
@@ -156,19 +170,19 @@ function editProbandInfoFields($db, $user)
                 $ptid = substr($field, 4);
 
                 $updateValues = [
-                                 'ParameterTypeID' => $ptid,
-                                 'CandID'          => $candID,
-                                 'Value'           => $_POST[$field],
-                                 'InsertTime'      => time(),
-                                ];
+                    'ParameterTypeID' => $ptid,
+                    'CandID'          => $candID,
+                    'Value'           => $_POST[$field],
+                    'InsertTime'      => time(),
+                ];
 
                 $result = $db->pselectOne(
                     'SELECT CandID from parameter_candidate 
                     WHERE CandID=:cid 
                     AND ParameterTypeID=:ptid',
                     [
-                     'cid'  => $candID,
-                     'ptid' => $ptid,
+                        'cid'  => $candID,
+                        'ptid' => $ptid,
                     ]
                 );
 
@@ -179,8 +193,8 @@ function editProbandInfoFields($db, $user)
                         'parameter_candidate',
                         $updateValues,
                         [
-                         'CandID'          => $candID,
-                         'ParameterTypeID' => $ptid,
+                            'CandID'          => $candID,
+                            'ParameterTypeID' => $ptid,
                         ]
                     );
                 }
@@ -202,11 +216,6 @@ function editProbandInfoFields($db, $user)
  */
 function editFamilyInfoFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID = $_POST['candID'];
 
     // Process posted data
@@ -224,18 +233,18 @@ function editFamilyInfoFields($db, $user)
     if ($siblingCandID != null) {
 
         $updateValues = [
-                         'CandID'            => $siblingCandID,
-                         'Relationship_type' => $relationship,
-                         'FamilyID'          => $familyID,
-                        ];
+            'CandID'            => $siblingCandID,
+            'Relationship_type' => $relationship,
+            'FamilyID'          => $familyID,
+        ];
 
         if ($familyID != null) {
 
             $siblingID = $db->pselectOne(
                 "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
                 [
-                 'candid'   => $siblingCandID,
-                 'familyid' => $familyID,
+                    'candid'   => $siblingCandID,
+                    'familyid' => $familyID,
                 ]
             );
 
@@ -273,16 +282,16 @@ function editFamilyInfoFields($db, $user)
         $siblingID = $db->pselectOne(
             "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
             [
-             'candid'   => $siblingCandID,
-             'familyid' => $familyID,
+                'candid'   => $siblingCandID,
+                'familyid' => $familyID,
             ]
         );
 
         $updateValues = [
-                         'CandID'            => $siblingCandID,
-                         'Relationship_type' => $relationship,
-                         'FamilyID'          => $familyID,
-                        ];
+            'CandID'            => $siblingCandID,
+            'Relationship_type' => $relationship,
+            'FamilyID'          => $familyID,
+        ];
 
         $db->update('family', $updateValues, ['ID' => $siblingID]);
 
@@ -302,11 +311,6 @@ function editFamilyInfoFields($db, $user)
  */
 function deleteFamilyMember($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID         = $_POST['candID'];
     $familyMemberID = $_POST['familyDCCID'];
 
@@ -318,9 +322,9 @@ function deleteFamilyMember($db, $user)
     );
 
     $where = [
-              'FamilyID' => $familyID,
-              'CandID'   => $familyMemberID,
-             ];
+        'FamilyID' => $familyID,
+        'CandID'   => $familyMemberID,
+    ];
 
     $db->delete('family', $where);
 
@@ -338,11 +342,6 @@ function deleteFamilyMember($db, $user)
  */
 function editParticipantStatusFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
     $candID = $_POST['candID'];
 
     // Process posted data
@@ -360,12 +359,12 @@ function editParticipantStatusFields($db, $user)
     }
 
     $updateValues = [
-                     'participant_status'     => $status,
-                     'participant_suboptions' => $suboption,
-                     'reason_specify'         => $reason,
-                     'CandID'                 => $candID,
-                     'entry_staff'            => $id,
-                    ];
+        'participant_status'     => $status,
+        'participant_suboptions' => $suboption,
+        'reason_specify'         => $reason,
+        'CandID'                 => $candID,
+        'entry_staff'            => $id,
+    ];
 
     $exists = $db->pselectOne(
         "SELECT * from participant_status WHERE CandID=:candid",
@@ -397,16 +396,13 @@ function editParticipantStatusFields($db, $user)
  */
 function editConsentStatusFields($db, $user)
 {
-    if (!$user->hasPermission('candidate_parameter_edit')) {
-        header('HTTP/1.1 403 Forbidden');
-        exit;
-    }
-
     // Get CandID
     $candIDParam = $_POST['candID'];
-    $candID      = (isset($candIDParam) && $candIDParam !== 'null') ?
-        $candIDParam : null;
-
+    if (!isset($candIDParam) || $candIDParam === 'null') {
+        http_response_code(400);
+        die(json_encode(["error" => "You must supply a CandID."]));
+    }
+    $candID      = new CandID($candIDParam);
     $candidate   = \Candidate::singleton($candID);
     $currentUser = \User::singleton();
     $uid         = $currentUser->getUsername();
@@ -433,21 +429,21 @@ function editConsentStatusFields($db, $user)
                         $_POST[$consentName . '_withdrawal'] : null;
 
         $updateStatus  = [
-                          'CandidateID'   => $candID,
-                          'ConsentID'     => $consentID,
-                          'Status'        => $status,
-                          'DateGiven'     => $date,
-                          'DateWithdrawn' => $withdrawal,
-                         ];
+            'CandidateID'   => $candID,
+            'ConsentID'     => $consentID,
+            'Status'        => $status,
+            'DateGiven'     => $date,
+            'DateWithdrawn' => $withdrawal,
+        ];
         $updateHistory = [
-                          'PSCID'         => $pscid,
-                          'ConsentName'   => $consentName,
-                          'ConsentLabel'  => $consentLabel,
-                          'Status'        => $status,
-                          'DateGiven'     => $date,
-                          'DateWithdrawn' => $withdrawal,
-                          'EntryStaff'    => $uid,
-                         ];
+            'PSCID'         => $pscid,
+            'ConsentName'   => $consentName,
+            'ConsentLabel'  => $consentLabel,
+            'Status'        => $status,
+            'DateGiven'     => $date,
+            'DateWithdrawn' => $withdrawal,
+            'EntryStaff'    => $uid,
+        ];
 
         // Validate data
         $recordExists  = array_key_exists($consentID, $candidateConsent);
@@ -518,8 +514,8 @@ function editConsentStatusFields($db, $user)
                     'candidate_consent_rel',
                     $updateStatus,
                     array(
-                     'CandidateID' => $candID,
-                     'ConsentID'   => $consentID,
+                        'CandidateID' => $candID,
+                        'ConsentID'   => $consentID,
                     )
                 );
             } else {

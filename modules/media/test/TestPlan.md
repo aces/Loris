@@ -17,8 +17,9 @@ In order to use the media module the user might need one or both of the followin
 
 1. **Browse** a list of uploaded files and related information
 2. **Upload** new files associated to a specific timepoint
-  - PSCID, Visit Label and Instrument are required fields for all uploaded files
-  - File name should always start with [PSCID]\_[Visit Label]\_[Instrument]
+  - PSCID and Visit Label are required fields for all uploaded files
+  - File name should always start with [PSCID]\_[Visit Label]. If an instrument
+is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Instrument].
 3. **Delete** files. Deleting a file hides it from the frontend, but preserves a copy in the database.
 
 ---

@@ -1,0 +1,1 @@
+[[Home]] | [About](https://github.com/aces/Loris/wiki/About) | [Community](https://github.com/aces/Loris/wiki/Community) | [Setup](https://github.com/aces/Loris/wiki/Setup) | [Technical](https://github.com/aces/Loris/wiki/Technical)

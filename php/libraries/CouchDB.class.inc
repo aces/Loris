@@ -713,7 +713,7 @@ class CouchDB
         }
 
         if ($full_json) {
-            return $query;
+            return $query ?? array();
         }
         $data = json_decode($query ?? '', true);
         if (is_null($data)) {

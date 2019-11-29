@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * This script populates the Visit_Windows table based on the config.xml.

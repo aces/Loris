@@ -57,8 +57,8 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
     /**
      * Preprocesses the array of values to be saved into the database
      *
-     * @param array $values the array of values ready to be passed to
-                             a Database::replace call as the set array
+     * @param array $values the array of values ready to be passed to a
+     *                      Database::replace call as the set array
      *
      * @return void
      * @access private

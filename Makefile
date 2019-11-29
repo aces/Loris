@@ -5,7 +5,7 @@ all: VERSION javascript
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
-	git describe --tags --always > VERSION
+	tools/gen-version.sh
 
 phpdev:
 	composer install

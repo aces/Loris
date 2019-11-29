@@ -37,9 +37,9 @@ $results = $cdb->queryView(
     "DQG-2.0",
     "search",
     array(
-     "reduce"   => "false",
-     "startkey" => "[\"$category\", \"$fieldName\"]",
-     "endkey"   => "[\"$category\", \"$fieldName\", $value]",
+        "reduce"   => "false",
+        "startkey" => "[\"$category\", \"$fieldName\"]",
+        "endkey"   => "[\"$category\", \"$fieldName\", $value]",
     )
 );
 
