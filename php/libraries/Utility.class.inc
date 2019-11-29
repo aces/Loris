@@ -299,9 +299,10 @@ class Utility
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
-     * @param array       $structure  the structure root
-     * @param string|null $siteAbbrev the site abbreviation, sometimes used as part
-     *                                of the PSCID
+     * @param array       $structure     the structure root
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
      *
      * @return string the regex pattern
      *
@@ -311,7 +312,8 @@ class Utility
      */
     static function structureToPCRE(
         array $structure,
-        ?string $siteAbbrev = null
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
     ): string {
         $seqs = $structure['seq'];
         // handle the situation where there exists only one seq
@@ -349,6 +351,9 @@ class Utility
 
             case 'siteAbbrev':
                 $unit .= $siteAbbrev;
+                break;
+            case 'projectAbbrev':
+                $unit .= $projectAbbrev;
                 break;
             } // end switch
 
@@ -658,7 +663,7 @@ class Utility
      *
      * @return  string (Non-associative array of the form array(Test1, Test2, ..))
      * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Data team helper?)
+     *       module uses it. (Behavioural Quality Control?)
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
@@ -695,7 +700,7 @@ class Utility
      *              )
      *         )
      * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Data team helper, BVL_Feedback_panel)
+     *       module uses it. (Behavioural Quality Control, BVL_Feedback_panel)
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
@@ -798,8 +803,8 @@ class Utility
      * @note    Function comment written by Dave, not the author of this function.
      *       The return value format seems weird. Should possibly be refactored.
      * @note    Used in:
-     *      - data_team_helper/php/NDB_Form_data_team_helper.class.inc
-     *      - data_team_helper/ajax/GetInstruments.php
+     *      - behavioural_qc/php/NDB_Form_behavioural_qc.class.inc
+     *      - behavioural_qc/ajax/GetInstruments.php
      * @cleanup
      */
     static function getVisitInstruments(string $visit_label): array

@@ -6,7 +6,7 @@
  * scan, etc) and link to the appropriate module to further investigate
  * why a scan was excluded by the imaging pipeline scripts.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main
@@ -39,7 +39,12 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     {
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
-        return ($user->hasPermission('violated_scans_view_allsites'));
+        return $user->hasAnyPermission(
+            array(
+                'violated_scans_view_allsites',
+                'violated_scans_edit'
+            )
+        );
     }
     /**
      * Process function
@@ -53,8 +58,8 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB   =& \Database::singleton();
-        $user =& \User::singleton();
+        $DB   = \Database::singleton();
+        $user = \User::singleton();
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
             $row  = $DB->pselectRow(

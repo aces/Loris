@@ -30,7 +30,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (27,'reliability_swap_candidates','Swap Reliability candidates across all sites',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (28,'instrument_builder','Instrument Builder: Create and Edit instrument forms',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (29,'data_dict_edit','Edit Data Dictionary',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (30,'data_team_helper','Data Team Helper',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (30,'quality_control','Quality Control access',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (31,'candidate_parameter_view','View Candidate Parameters',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (32,'candidate_parameter_edit','Edit Candidate Parameters',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (33,'genomic_browser_view_site','View Genomic Browser data from own site',2);
@@ -56,5 +56,6 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (53,'publication_view','Publication - Access to module',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (54,'publication_propose','Publication - Propose a project',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (55,'publication_approve','Publication - Approve or reject proposed publication projects',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (56,'data_release_view','Data Release: View releases',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

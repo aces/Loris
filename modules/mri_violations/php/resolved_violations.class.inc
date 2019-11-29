@@ -5,7 +5,7 @@
  * Emailed site/pending,
  * Inserted, Rejected, Inserted with flag, Other.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main
@@ -38,7 +38,12 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
     {
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
-        return ($user->hasPermission('violated_scans_view_allsites'));
+        return $user->hasAnyPermission(
+            array(
+                'violated_scans_view_allsites',
+                'violated_scans_edit'
+            )
+        );
     }
 
     /**

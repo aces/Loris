@@ -246,11 +246,13 @@ class NDB_ConfigTest extends TestCase
         $info   = array(
                    'ProjectID'         => '999',
                    'Name'              => 'test',
+                   'Alias'             => 'TST',
                    'recruitmentTarget' => '100',
                   );
         $result =  array(
                     'id'                => '999',
                     'Name'              => 'test',
+                    'Alias'             => 'TST',
                     'recruitmentTarget' => '100',
                    );
         $this->_dbMock->expects($this->once())

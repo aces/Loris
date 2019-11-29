@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ "$DEBUG" == "true" ]
+if [ -v DEBUG ];
 then
     CONTAINER=unit-tests-debug
 else

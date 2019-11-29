@@ -2,7 +2,7 @@
 /**
  * The user account page
  *
- * PHP Version 5,7
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -25,6 +25,11 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Edit_User extends \NDB_Form
 {
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
+    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
+                                        'identical: please choose another one';
+
     /**
      * Determines whether this form is in edit or create mode.
      *
@@ -481,22 +486,22 @@ class Edit_User extends \NDB_Form
             $user = \User::factory($this->identifier);
             $user->update($set);
         }
+
         // Now set the password. Note that this field is named incorrectly
         // and represents a plaintext password, not a hash.
-        if (isset($values['Password_hash'], $values['Password_expiry'])) {
-            // If both hash and expiry are set, use both values when resetting
-            // the password. This occurs when a new password is generated
-            // by the system.
-            $user->updatePassword(
-                new \Password($values['Password_hash']),
+        if (isset($values['Password_hash'])) {
+
+            // Set custom expiry date if the value is present.
+            // Otherwise, use null which will cause the expiry to be 6 months
+            // from the current date.
+            $expiry = isset($values['Password_expiry']) ?
                 new \DateTime($values['Password_expiry'])
-            );
-        } else if (isset($values['Password_hash'])) {
-            // If just the Password_hash value is present, no not specify a
-            // custom expiry date. This will set the password to expire in
-            // 6 months from the current date (handled in updatePassword()).
+                : null;
             $user->updatePassword(
-                new \Password($values['Password_hash'])
+                new \Password(
+                    htmlspecialchars_decode($values['Password_hash'])
+                ),
+                $expiry
             );
         }
 
@@ -807,18 +812,23 @@ class Edit_User extends \NDB_Form
                     'N'  => 'No',
                 )
             );
-            $groupB[] = $this->createLabel(
-                "Pending Approval:"
-            );
-            $groupB[] = $this->createSelect(
-                "examiner_pending",
-                "Pending Approval: ",
-                array(
-                    null => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
-                )
-            );
+
+            // A user should not be able to edit their own examiner approval
+            // status.
+            if (!$this->_isEditingOwnAccount()) {
+                $groupB[] = $this->createLabel(
+                    "Pending Approval:"
+                );
+                $groupB[] = $this->createSelect(
+                    "examiner_pending",
+                    "Pending Approval: ",
+                    array(
+                        null => "",
+                        'Y'  => 'Yes',
+                        'N'  => 'No',
+                    )
+                );
+            }
             $this->addGroup(
                 $groupA,
                 'examiner_sites',
@@ -837,42 +847,50 @@ class Edit_User extends \NDB_Form
             unset($groupB);
         }
 
-        // active
-        $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
-        $this->addSelect(
-            'Pending_approval',
-            'Pending approval',
-            array(
-                'Y' => 'Yes',
-                'N' => 'No',
-            )
-        );
+        // It doesn't make sense for a user to be editing their own
+        // approval status or active status. In fact this could result in a
+        // Darwinian self-lockout. Let us help those who cannot help themselves.
+        if (!$this->_isEditingOwnAccount()) {
+            $this->addSelect(
+                'Pending_approval',
+                'Pending approval',
+                array(
+                    'Y' => 'Yes',
+                    'N' => 'No',
+                )
+            );
 
-        //------------------------------------------------------------
+            $this->addSelect(
+                'Active',
+                'Active',
+                array(
+                    'Y' => 'Yes',
+                    'N' => 'No'
+                )
+            );
 
-        // active time windows
+            $dateOptions = array(
+                'language'       => 'en',
+                'format'         => 'YMd',
+                'addEmptyOption' => 'true',
+            );
 
-        $dateOptions = array(
-            'language'       => 'en',
-            'format'         => 'YMd',
-            'addEmptyOption' => 'true',
-        );
+            $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
-        $dateAttributes = ['class' => 'form-control input-sm input-date'];
+            $this->addBasicDate(
+                'active_from',
+                'Active from',
+                $dateOptions,
+                $dateAttributes
+            );
 
-        $this->addBasicDate(
-            'active_from',
-            'Active from',
-            $dateOptions,
-            $dateAttributes
-        );
-
-        $this->addBasicDate(
-            'active_to',
-            'Active to',
-            $dateOptions,
-            $dateAttributes
-        );
+            $this->addBasicDate(
+                'active_to',
+                'Active to',
+                $dateOptions,
+                $dateAttributes
+            );
+        }
 
         // checking if the account can be rejected (no password hash
         // pending approval)
@@ -1005,9 +1023,13 @@ class Edit_User extends \NDB_Form
         $DB     = \Database::singleton();
         $errors = array();
 
+        // NOTE The 'Password_hash' key actually represents a plaintext password
+        $plaintext = $values['Password_hash'];
+
         //============================================
         //         Validate UserID and NA_UserID
         //============================================
+
         if ($this->isCreatingNewUser()) {
             // Clicked on "UID == email" and specified a UID
             if (!empty($values['UserID']) && $values['NA_UserID'] == 'on') {
@@ -1063,6 +1085,9 @@ class Edit_User extends \NDB_Form
         //==================================
         //        Password validation
         //==================================
+        if ($values['Email'] === $values['Password_hash']) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+        }
         if (!is_null($this->identifier)) {
             $pass = $DB->pselectOne(
                 "SELECT COALESCE(Password_hash) "
@@ -1081,19 +1106,26 @@ class Edit_User extends \NDB_Form
                     = 'Please specify password or click Generate new password';
             }
         }
+        // Ensure that the password and confirm password fields match.
+        // TODO This validation should be done on the front-end instead.
+        if ($plaintext !== $values['__Confirm']) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_NO_MATCH;
+        }
 
         // if password is user-defined, and user wants to change password
         if (empty($values['NA_Password'])
             && (!empty($values['Password_hash']) || !empty($values['__Confirm']))
         ) {
             try {
-                // New password must be different than current one
-                $password        = new \Password($values['Password_hash']);
-                $passwordChanged = \User::factory($this->identifier)
-                    ->passwordChanged($values['Password_hash']);
-                if (! $passwordChanged) {
-                    $errors['Password_Group'] = 'New and old passwords '
-                        . 'are identical: please choose another one';
+                // The Password class is self-validating and will throw an
+                // InvalidArgumentException if the value passed to it is
+                // bad or the input is too weak to be a good password.
+                $decoded  = htmlspecialchars_decode($plaintext);
+                $password = new \Password($decoded);
+                $isPasswordDifferent = \User::factory($this->identifier)
+                    ->isPasswordDifferent($decoded);
+                if (! $isPasswordDifferent) {
+                    $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
                 }
             } catch (\InvalidArgumentException $e) {
                 $errors['Password_Group'] = $e->getMessage();
@@ -1112,7 +1144,7 @@ class Edit_User extends \NDB_Form
 
         if (isset($values['NA_Password'])
             && $values['NA_Password'] == 'on'
-            && $values['Password_hash'] != ''
+            && $plaintext != ''
         ) {
             $errors['Password_Group'] = 'You must leave the password field empty '
                 . 'if you want the system to generate one for you';
@@ -1120,7 +1152,7 @@ class Edit_User extends \NDB_Form
 
         if (is_null($this->identifier)
             && ($values['NA_Password'] != 'on')
-            && empty($values['Password_hash'])
+            && empty($plaintext)
         ) {
             $errors['Password_Group'] = 'Password is required';
         }
@@ -1185,8 +1217,8 @@ class Edit_User extends \NDB_Form
                 }
             }
             if (!$matched
-                && (($values['examiner_radiologist'] !== ''
-                || $values['examiner_pending'] !== ''))
+                && ($values['examiner_radiologist'] !== ''
+                || $values['examiner_pending'] ?? '' !== '')
             ) {
                 $errors['examiner_sites'] = "Please select at least one examiner
                 site or clear the 'Examiner status' fields below (i.e.

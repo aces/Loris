@@ -16,7 +16,7 @@
         </div>
         <ul class="list-group" style="display:none" id="tabsContent">
             {foreach from=$StatsTabs item=tab}
-            <li class="statsTab active list-group-item">
+            <li class="statsTab list-group-item">
                 <a class="statsTabLink" value="{$baseurl}/{$tab.ModuleName}/{$tab.SubModuleName}/?dynamictabs=dynamictabs">{$tab.Description}</a>
             </li>
             {/foreach}

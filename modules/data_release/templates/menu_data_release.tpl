@@ -132,7 +132,7 @@
                                     {foreach from = $data_release_versions item=vv key=kk}
                                       {*the [] brackets appended to the `name` attributes below are necessary
                                       to submit all checked permissions as an array rather then overwrite pervious values*}
-                                      {if in_array($vv, $elem)}
+                                      {if in_array($vv, $elem, true)}
                                         <input type='checkbox' name='permissions_{$k}[]' value='{$vv}' checked>{$vv}</input>
                                       {else}
                                         <input type='checkbox' name='permissions_{$k}[]' value='{$vv}'>{$vv}</input>
