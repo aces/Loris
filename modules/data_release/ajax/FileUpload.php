@@ -48,10 +48,16 @@ if ($_GET['action'] == 'upload') {
     $baseURL = $settings->getBaseURL();
     $path    = \Utility::appendForwardSlash($config->getSetting('dataReleasePath'));
 
-    if (!file_exists($path)) {
-        error_log(
-            "ERROR: File upload failed. Upload"
-            . " directory not found."
+    $target_path = $path . $fileName;
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
+        // insert the file into the data_release table
+        $DB->insert(
+            'data_release',
+            array(
+                'file_name'   => $fileName,
+                'version'     => $version,
+                'upload_date' => $upload_date,
+            )
         );
         header("HTTP/1.1 500 Internal Server Error");
     } elseif (!is_writable($path)) {
