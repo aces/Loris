@@ -94,7 +94,7 @@ function getSubjectData(int $sessionID)
     $candidate   = \NDB_Factory::singleton()->candidate($timePoint->getCandID());
 
     $subjectData['pscid']       = $candidate->getPSCID();
-    $subjectData['dccid']       = $timePoint->getCandID();
+    $subjectData['dccid']       = $candidate->getCandID();
     $subjectData['visit_label'] = $timePoint->getVisitLabel();
     $subjectData['sessionID']   = $sessionID;
     $subjectData['site']        = $timePoint->getPSC();
