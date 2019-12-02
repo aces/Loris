@@ -22,16 +22,17 @@ clean:
 	rm -rf vendor
 
 # Perform static analysis checks
-#
+checkstatic: phpdev
+	npm run lint:php
+	npm run lint:javascript
+	vendor/bin/phan
+
 # The 'alex' tool scans documentation for condescending language.
 # Arguments:
 #     --quiet Shows only warnings and errors
 #     --why   Explains why something is problematic
 #     --diff  On Travis, only scans files changed
-checkstatic: phpdev
-	npm run lint:php
-	npm run lint:javascript
-	vendor/bin/phan
+make checklanguage:
 	npx alex --quiet --why --diff
 
 unittests: phpdev
