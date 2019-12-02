@@ -730,12 +730,13 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test Candidate::validatePSCID with both valid and invalid PSCID
+     * Test Candidate::validatePSCID with both valid and invalid PSCID genreated
+     * based on site
      *
      * @covers Candidate::validatePSCID
      * @return void
      */
-    public function testValidatePSCID()
+    public function testValidateSitePSCID()
     {
         $seq = array(
                 'seq' => array(
@@ -766,15 +767,64 @@ class CandidateTest extends TestCase
             ->will($this->returnValueMap($this->_configMap));
         $this->assertEquals(
             1,
-            Candidate::validatePSCID('AAA0012', 'AAA'),
+            Candidate::validatePSCID('AAA0012', 'AAA', 'BBB'),
             'Valid PSCID: validatePSCID should return 1'
         );
         $this->assertEquals(
             0,
-            Candidate::validatePSCID('AAA001', 'AAA'),
+            Candidate::validatePSCID('AAA001', 'AAA', 'BBB'),
             'Invalid PSCID: validatePSCID should return 0'
         );
     }
+
+    /**
+     * Test Candidate::validatePSCID with both valid and invalid PSCID
+     * generated based on Project
+     *
+     * @covers Candidate::validatePSCID
+     * @return void
+     */
+    public function testValidateProjectPSCID()
+    {
+        $seq = array(
+            'seq' => array(
+                0 => array(
+                    '#' => '',
+                    '@' => array('type' => 'projectAbbrev'),
+                ),
+                1 => array(
+                    '#' => '',
+                    '@' => array(
+                        'type'      => 'numeric',
+                        'length' => '4',
+                    ),
+                ),
+            ),
+        );
+        $this->_configMap = array(
+            array(
+                'PSCID',
+                array(
+                    'generation' => 'sequential',
+                    'structure'  => $seq,
+                ),
+            ),
+        );
+
+        $this->_configMock->method('getSetting')
+            ->will($this->returnValueMap($this->_configMap));
+        $this->assertEquals(
+            1,
+            Candidate::validatePSCID('BBB0012', 'AAA', 'BBB'),
+            'Valid PSCID: validatePSCID should return 1'
+        );
+        $this->assertEquals(
+            0,
+            Candidate::validatePSCID('BBB001', 'AAA', 'BBB'),
+            'Invalid PSCID: validatePSCID should return 0'
+        );
+    }
+
 
     /**
      * Test getConsents returns correct array of information

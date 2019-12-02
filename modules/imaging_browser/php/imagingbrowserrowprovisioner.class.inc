@@ -181,7 +181,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               Project.Name as project,
               s.Visit_label as visitLabel,
               $PendingFailSubquery as Visit_QC_Status,
-              md.AcquisitionDate as First_Acquisition,
+              DATE_FORMAT(MIN(pf.Value), \"%Y-%m-%d\") as First_Acquisition,
               FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion,
               FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC,
               $NewDataSubquery as New_Data,
@@ -196,10 +196,11 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             FROM psc AS p 
               JOIN session s ON (s.CenterID=p.CenterID) 
               JOIN candidate c ON (c.CandID=s.CandID) 
-              LEFT JOIN Project ON (c.ProjectID=Project.ProjectID)
+              LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
               JOIN files f ON (f.SessionID=s.ID) 
               LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-              JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
+              JOIN parameter_file pf ON (f.FileID=pf.FileID)
+              JOIN parameter_type pt USING (ParameterTypeID)
               LEFT JOIN mri_scan_type modality ON 
                 (f.AcquisitionProtocolID=modality.ID)
               $left_joins 

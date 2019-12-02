@@ -939,93 +939,83 @@ class NDB_BVL_Feedback
     /**
      * Closes all selected threads, including all active threads of lower class
      *
-     * @param integer $feedbackID The ID of the feedback thread being closed
+     * @param int|null $feedbackID The ID of the feedback thread being closed
      *
-     * @return void
-     *  FIXME: This shares a lot of code from activateThread, it should be
-     *         refactored
-     * FIXME: This needs to properly check for sites.
+     * @return int The number of updated threads
      */
-    function closeThread($feedbackID=null)
+    function closeThread(?int $feedbackID = null): int
     {
         // new DB Object
         $db =& Database::singleton();
 
-        $setArray = array(
-            "Status" => 'closed',
-            "UserID" => $this->_username,
-        );
-
-        $whereArray = array(
-            "Public" => 'Y',
-            "Active" => 'Y',
-        );
+        $whereStr = 'Public = \'Y\' AND Active = \'Y\' ';
         if (!empty($feedbackID)) {
             // only one thread to be closed
-            $whereArray = array_merge(
-                $whereArray,
-                array("FeedbackID" => $feedbackID)
-            );
+            $whereStr .= 'AND FeedbackID = :v_feedbackid ';
+            $params    = array('v_feedbackid' => $feedbackID);
+
         } elseif (!empty($this->_feedbackObjectInfo['CommentID'])) {
             // close all threads for the instruments
-            $whereArray = array_merge(
-                $whereArray,
-                array("CommentID" => $this->_feedbackObjectInfo['CommentID'])
-            );
+            $commentid = $this->_feedbackObjectInfo['CommentID'];
+            $whereStr .= 'AND CommentID = :v_commentid ';
+            $params    = array('v_commentid' => $commentid);
+
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
             // close all threads for the timepoint
-            $whereArray = array_merge(
-                $whereArray,
-                array("SessionID" => $this->_feedbackObjectInfo['SessionID'])
-            );
+            $sessionid = $this->_feedbackObjectInfo['SessionID'];
+            $whereStr .= 'AND SessionID = :v_sessionid ';
+            $params    = array('v_sessionid' => $sessionid);
+
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
             // close all threads for the candidate
-            $whereArray = array_merge(
-                $whereArray,
-                array("CandID" => $this->_feedbackObjectInfo['CandID'])
-            );
+            $candid    = $this->_feedbackObjectInfo['CandID'];
+            $whereStr .= 'AND CandID = :v_candid ';
+            $params    = array('v_candid' => $candid);
+
         } else {
             // at least one of the above has to be true
             throw new Exception(
                 "Error: No threads selected were selected to be closed"
             );
         }
-
         // close the threads - update feedback_bvl_thread table
-        $db->update('feedback_bvl_thread', $setArray, $whereArray);
+        $stmt = $db->prepare(
+            '
+            UPDATE feedback_bvl_thread
+            SET Status = \'closed\', UserID = \'' . $this->_username . '\'
+            WHERE ' . $whereStr
+        );
+        $db->execute($stmt, $params, array('nofetch' => true));
+        return $stmt->rowCount();
     }
 
     /**
      * Used to re-open a thread identified by its feedbackID.
      *
-     * @param integer $feedbackID The ID of the feedback thread being closed
+     * @param int $feedbackID The ID of the feedback thread being closed
      *
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      *
-     * @return void
+     * @return int The number of updated threads
      */
-    function openThread($feedbackID)
+    function openThread(int $feedbackID): int
     {
         $db =& Database::singleton();
 
-        $setArray = array(
-            "Status" => 'opened',
-            "UserID" => $this->_username,
-        );
+        $whereStr = 'Public = \'Y\' AND Active = \'Y\' ';
 
-        $whereArray = array(
-            "Public" => 'Y',
-            "Active" => 'Y',
-        );
-        if (!empty($feedbackID)) {
-            // only one thread to be closed
-            $whereArray = array_merge(
-                $whereArray,
-                array("FeedbackID" => $feedbackID)
-            );
-        }
+        $whereStr .= 'AND FeedbackID = :v_feedbackid ';
 
-        $db->update('feedback_bvl_thread', $setArray, $whereArray);
+        $params = array('v_feedbackid' => $feedbackID);
+
+        $stmt = $db->prepare(
+            '
+            UPDATE feedback_bvl_thread
+            SET Status = \'opened\', UserID = \'' . $this->_username . '\'
+            WHERE ' . $whereStr
+        );
+        $db->execute($stmt, $params, array('nofetch' => true));
+        return $stmt->rowCount();
 
     }
 

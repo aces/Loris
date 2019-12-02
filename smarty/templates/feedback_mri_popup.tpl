@@ -36,7 +36,7 @@
 
 {foreach from=$comment item=curr_comment}
 <h3>
-{if $curr_comment.select_name}
+{if $curr_comment.select_value_array and $curr_comment.select_name}
 {* the assign is simply because i [jharlap] don't have time to figure out how to make this work otherwise *}
 {assign var="save_comment_status_field_name" value="saveCommentStatusField["|cat:$curr_comment.select_name|cat:"]"}
 {html_options name=$save_comment_status_field_name values=$curr_comment.select_value_array selected=$curr_comment.selected output=$curr_comment.select_value_array}

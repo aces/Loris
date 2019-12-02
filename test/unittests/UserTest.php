@@ -28,7 +28,7 @@ class UserTest extends TestCase
      *
      * @var string
      */
-    private $_username;
+    private const USERNAME = '968775';
     /**
      * Stores user information
      *
@@ -36,8 +36,8 @@ class UserTest extends TestCase
      */
     private $_userInfo
         = array('ID'                     => 1,
-                'UserID'                 => '968775',
-                'Password'               => 'pass123',
+                'UserID'                 => self::USERNAME,
+                'Password'               => 'sufficient length and complexity',
                 'Real_name'              => 'John Doe',
                 'First_name'             => 'John',
                 'Last_name'              => 'Doe',
@@ -225,8 +225,6 @@ class UserTest extends TestCase
         $this->_mockFactory->setDatabase($this->_mockDB);
         $this->_factory->setConfig($this->_mockConfig);
 
-        $this->_username = "968775";
-
         $this->_userInfoComplete = $this->_userInfo;
         $this->_userInfoComplete['ID'] = '1';
         $this->_userInfoComplete['Privilege'] = '1';
@@ -242,6 +240,13 @@ class UserTest extends TestCase
                                                );
         $this->_userInfoComplete['CenterIDs'] = array('1', '4');
         $this->_userInfoComplete['ProjectIDs'] = array('1', '3');
+        $passwordHash = (new \Password(
+            $this->_userInfo['Password']
+        ))->__toString();
+        $this->_userInfo['Password_hash'] = $passwordHash;
+        $this->_userInfoComplete['Password_hash'] = $passwordHash;
+
+        $this->_user = \User::factory(self::USERNAME);
     }
 
     /**
@@ -269,7 +274,7 @@ class UserTest extends TestCase
     public function testFactoryRetrievesUserInfo()
     {
         $this->_setUpTestDoublesForFactoryUser();
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         //validate _user Info
         $this->assertEquals($this->_userInfoComplete, $this->_user->getData());
     }
@@ -283,7 +288,7 @@ class UserTest extends TestCase
      */
     public function testGetDataForLanguagePreferences()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['language_preference'], 
             $this->_user->getData('language_preference')
@@ -298,7 +303,7 @@ class UserTest extends TestCase
      */
     public function testGetFullname()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['Real_name'],        
             $this->_user->getFullname()
@@ -313,7 +318,7 @@ class UserTest extends TestCase
      */
     public function testGetId()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['ID'],
             $this->_user->getId()
@@ -328,7 +333,7 @@ class UserTest extends TestCase
      */
     public function testGetUsername()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['UserID'],
             $this->_user->getUsername()
@@ -343,7 +348,7 @@ class UserTest extends TestCase
      */
     public function testSiteNames()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             array('psc_test', 'psc_test2'),
             $this->_user->getSiteNames()
@@ -358,7 +363,7 @@ class UserTest extends TestCase
      */
     public function testGetCenterIDs()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['CenterIDs'],
             $this->_user->getCenterIDs()
@@ -373,7 +378,7 @@ class UserTest extends TestCase
      */
     public function testGetLanguagePreference()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['language_preference'],
             $this->_user->getLanguagePreference()
@@ -389,7 +394,7 @@ class UserTest extends TestCase
      */
     public function testGetExaminerSites()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $result = array('1' => array('Y', 1),
                         '4' => array('Y', 1));
         $this->assertEquals(
@@ -408,7 +413,7 @@ class UserTest extends TestCase
      */
     public function testGetStudySites()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $result = array('1' => 'psc_test',
                         '4' => 'psc_test2');
         $this->assertEquals(
@@ -425,7 +430,7 @@ class UserTest extends TestCase
      */
     public function testHasStudySites()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertTrue($this->_user->hasStudySite());
     }
     
@@ -437,7 +442,7 @@ class UserTest extends TestCase
      */
     public function testIsEmailValid()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertTrue($this->_user->isEmailValid());
     }
 
@@ -456,7 +461,7 @@ class UserTest extends TestCase
             "users", 
             array(0=> $invalidEmailInfo)
         );
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertFalse($this->_user->isEmailValid());
     }
  
@@ -468,7 +473,7 @@ class UserTest extends TestCase
      */
     public function testHasCenterWhenTrue()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertTrue($this->_user->hasCenter(4));
     }
 
@@ -480,7 +485,7 @@ class UserTest extends TestCase
      */
     public function testHasCenterWhenFalse()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertFalse($this->_user->hasCenter(5));
     }
 
@@ -492,7 +497,7 @@ class UserTest extends TestCase
      */
     public function testIsUserDCC()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $this->assertTrue($this->_user->isUserDCC());
     }
 
@@ -539,7 +544,7 @@ class UserTest extends TestCase
      */
     public function testUpdatePasswordWithExpiryDate()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $oldHash = $this->_user->getData('Password_hash');
         $customDate = '2021-07-18';
 
@@ -553,7 +558,7 @@ class UserTest extends TestCase
             new DateTime($customDate)
         );
         //Re-populate the user object now that the password has been changed
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
 
         $this->assertEquals($customDate, $this->_user->getData('Password_expiry'));
         // This checks that the hash has been updated. There is no way to predict
@@ -571,7 +576,7 @@ class UserTest extends TestCase
      */
     public function testUpdatePasswordWithoutExpiry()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
 
         $oldHash = $this->_user->getData('Password_hash');
         $newDate = date('Y-m-d', strtotime('+6 months'));
@@ -585,7 +590,7 @@ class UserTest extends TestCase
             new \Password(\Utility::randomString(16))
         );
         //Re-populate the user object now that the password has been changed
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
 
         $this->assertEquals($newDate, $this->_user->getData('Password_expiry'));
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
@@ -600,7 +605,7 @@ class UserTest extends TestCase
      */
     public function testHasLoggedInWhenTrue()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $count = 1;
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
@@ -621,7 +626,7 @@ class UserTest extends TestCase
      */
     public function testHasLoggedInWhenFalse()
     {
-        $this->_user = \User::factory($this->_username);
+        $this->_user = \User::factory(self::USERNAME);
         $count = 0;
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
@@ -630,6 +635,46 @@ class UserTest extends TestCase
             )
             ->willReturn($count);
         $this->assertFalse($this->_user->hasLoggedIn());
+    }
+
+    /**
+     * Test that isPasswordDifferent returns true when the input does not match
+     * the Password_hash in the database.
+     *
+     * @return void
+     * @covers User::isPasswordDifferent
+     */
+    public function testPasswordChangedReturnsTrue() {
+        $this->_user = \User::factory(self::USERNAME);
+        // Should return true (i.e. the password has changed) because random
+        // strings should not generate a match.
+        $this->assertTrue(
+            $this->_user->isPasswordDifferent(
+                \Utility::randomString()
+            )
+        );
+    }
+
+    /**
+     * Test that isPasswordDifferent returns false when the input matches the
+     * Password_hash in the database.
+     *
+     * @return void
+     * @covers User::isPasswordDifferent
+     */
+    public function testPasswordChangedReturnsFalse() {
+        // Update the password again to make sure another test hasn't
+        // interfered.
+        $this->_user = \User::factory(self::USERNAME);
+        $password = $this->_userInfo['Password'];
+        $this->_user->updatePassword(
+            new \Password($password)
+        );
+
+        //Re-populate the user object now that the password has been changed
+        $this->_user = \User::factory(self::USERNAME);
+
+        $this->assertFalse($this->_user->isPasswordDifferent($password));
     }
 
     /**

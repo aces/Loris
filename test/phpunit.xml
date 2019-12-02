@@ -23,7 +23,7 @@
             <directory>../modules/create_timepoint/test/</directory>
             <directory>../modules/dashboard/test/</directory>
             <directory>../modules/data_integrity_flag/test/</directory>
-            <directory>../modules/data_team_helper/test/</directory>
+            <directory>../modules/behavioural_qc/test/</directory>
             <directory>../modules/datadict/test/</directory>
             <directory>../modules/dicom_archive/test/</directory>
             <directory>../modules/document_repository/test/</directory>
