@@ -14,7 +14,7 @@ return [
     // suspicious code.
     "minimum_severity" => 5,
     // TODO: Update this value to the minimum required by LORIS.
-    "target_php_version" => "7.2",
+    "target_php_version" => "7.3",
     // FIXME: allow_missing_properties should be false, but there's
     // too many other things to fix first.
     "allow_missing_properties" => true,
@@ -77,7 +77,7 @@ return [
         // because Phan disables xdebug by default.
         "xdebug"     => "vendor/phan/phan/.phan/internal_stubs/xdebug.phan_php",
     ],
-    'plugins' => [
-        //'UnreachableCodePlugin',
+    "plugins" => [
+        "UnreachableCodePlugin",
     ]
 ];
