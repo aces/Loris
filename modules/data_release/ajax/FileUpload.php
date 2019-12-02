@@ -98,8 +98,8 @@ if ($_GET['action'] == 'upload') {
                AND $version_where
                AND upload_date=:upload_date",
                 array(
-                    'file_name' => $fileName,
-                    'version' => $version,
+                    'file_name'   => $fileName,
+                    'version'     => $version,
                     'upload_date' => $upload_date,
                 )
             );
@@ -107,7 +107,7 @@ if ($_GET['action'] == 'upload') {
             $DB->insert(
                 'data_release_permissions',
                 array(
-                    'userid' => $user_ID,
+                    'userid'          => $user_ID,
                     'data_release_id' => $ID,
                 )
             );
@@ -128,8 +128,8 @@ if ($_GET['action'] == 'upload') {
     }
 
     $results = [
-                'files' => array_values($dataReleaseFiles),
-               ];
+        'files' => array_values($dataReleaseFiles),
+    ];
 
     echo json_encode($results);
 
