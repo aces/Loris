@@ -48,9 +48,6 @@ return [
         "PhanPossiblyUndeclaredVariable",
         "PhanNoopNew",
         "PhanNonClassMethodCall",
-        "PhanUndeclaredVariableDim",
-        "PhanTypeSuspiciousStringExpression",
-        "PhanNonClassMethodCall",
         "PhanTypeSuspiciousStringExpression"
     ],
     "analyzed_file_extensions" => ["php", "inc"],
