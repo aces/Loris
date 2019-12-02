@@ -241,11 +241,11 @@ function getManagePermissionsData(): void
                 $hasPermission = true;
             }
             $data_table_values[] = [
-                                    $index,
-                                    $username,
-                                    $versionName,
-                                    $hasPermission,
-                                   ];
+                $index,
+                $username,
+                $versionName,
+                $hasPermission,
+            ];
             $index++;
         }
     }

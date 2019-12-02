@@ -249,7 +249,7 @@ class Data_Release extends \NDB_Menu_Filter
         return array_merge(
             parent::getJSDependencies(),
             array(
-             $baseurl . "/data_release/js/dataReleaseIndex.js",
+                $baseurl . "/data_release/js/dataReleaseIndex.js",
             )
         );
     }
