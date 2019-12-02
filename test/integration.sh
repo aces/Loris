@@ -52,7 +52,7 @@ sed -i \
 export LORIS_DB_CONFIG=$(pwd)/config.xml
 
 #start PHP's built in webserver
-php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>&1 > /dev/null &
+php -S localhost:8000 -t ../htdocs ../htdocs/router.php  > /dev/null 2>&1 &
 php_pid=$!
 
 # Start Selenium and redirect Selenium WebDriver
