@@ -14,6 +14,7 @@
 
 use LORIS\StudyEntities\Candidate\CandID;
 use LORIS\StudyEntities\Candidate\SiteAlias;
+use LORIS\StudyEntities\Candidate\ProjectAlias;
 /* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
@@ -683,22 +684,23 @@ class Candidate
 
     /**
      * Validate's that a PSCID matches the format defined by project
-     * config
+     * config.
      *
-     * @param string $PSCID         The PSCID to validate
-     * @param SiteAlias $siteAbbrev    The site of the candidate
-     *                              being validated to check
-     *                              against appropriate parts
-     *                              of PSCID definition
-     * @param ProjectAlias $projectAbbrev The project of the candidate
-     *                              being validated to check against appropriate
-     *                              parts of PSCID definition
+     * @param string        $PSCID         The PSCID to validate.
+     * @param ?SiteAlias    $siteAbbrev    The site of the candidate
+     *                                     being validated to check
+     *                                     against appropriate parts
+     *                                     of PSCID definition>
+     * @param ?ProjectAlias $projectAbbrev The project of the candidate
+     *                                     being validated to check against
+     *                                     appropriate parts of PSCID
+     *                                     definition.
      *
-     * @return boolean True if PSCID is valid, false otherwise
+     * @return bool True if PSCID is valid, false otherwise.
      */
     static public function validatePSCID(
         string $PSCID,
-        ?SiteAlias $siteAbbrev = null
+        ?SiteAlias $siteAbbrev = null,
         ?ProjectAlias $projectAbbrev = null
     ): bool {
 

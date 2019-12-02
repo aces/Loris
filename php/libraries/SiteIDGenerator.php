@@ -26,10 +26,11 @@ use LORIS\StudyEntities\Candidate\ProjectAlias;
  */
 class SiteIDGenerator extends IdentifierGenerator
 {
-    /* Either 'PSCID' or 'ExternalID' */
     private const LENGTH = 4;
 
+    /* Either 'PSCID' or 'ExternalID' */
     protected $kind;
+
     protected $siteAlias;
     protected $projectAlias;
 
@@ -37,13 +38,15 @@ class SiteIDGenerator extends IdentifierGenerator
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
      * ExternalIDs. Relevant properties are extracted from the config.xml file.
      *
-     * @param ?SiteAlias $siteAbbrevPrefix To be appended to the ID value.
-     * @param ?ProjectAlias $siteAbbrevPrefix To be appended to the ID value.
+     * @param SiteAlias    $siteAlias    To be appended to the ID value.
+     * @param ProjectAlias $projectAlias To be appended to the ID value.
      *
      * @return void
      */
-    public function __construct(SiteAlias $siteAlias, ProjectAlias $projectAlias)
-    {
+    public function __construct(
+        SiteAlias $siteAlias,
+        ProjectAlias $projectAlias
+    ) {
         // Read config settings from project/config.xml to retrieve the
         // alphabet, length, and generation method (sequential or random) used
         // to create new IDs.

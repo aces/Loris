@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use LORIS\StudyEntities\Candidate\SiteAlias;
+use LORIS\StudyEntities\Candidate\ProjectAlias;
 
 /**
  * A class for holding a set of (static) utility/helper functions in a
@@ -290,10 +291,10 @@ class Utility
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
-     * @param array       $structure     the structure root
-     *                                   part of the PSCID
-     * @param ?SiteAlias $siteAbbrev the site abbreviation, sometimes used
-     *                                   as part of the PSCID
+     * @param array         $structure     the structure root
+     *                                     part of the PSCID
+     * @param ?SiteAlias    $siteAbbrev    the site abbreviation, sometimes used
+     *                                     as part of the PSCID
      * @param ?ProjectAlias $projectAbbrev the project abbreviation
      *
      * @return string the regex pattern
@@ -304,7 +305,7 @@ class Utility
      */
     static function structureToPCRE(
         array $structure,
-        ?SiteAlias $siteAbbrev = null
+        ?SiteAlias $siteAbbrev = null,
         ?ProjectAlias $projectAbbrev = null
     ): string {
         $seqs = $structure['seq'];

@@ -30,12 +30,14 @@ class PSCIDGenerator extends SiteIDGenerator
     /**
      * Generate PSCIDs.
      *
-     * @param SiteAlias $siteAlias    The site prefix to prepend to the ID value.
-     * @param ProjectAlias $projectAlias The project prefix to prepend to the ID value.
+     * @param ?SiteAlias    $siteAlias    The site prefix to prepend to the ID
+     *                                    value.
+     * @param ?ProjectAlias $projectAlias The project prefix to prepend to the
+     *                                    ID value.
      *
      * @return void
      */
-    public function __construct(SiteAlias $siteAlias, ProjectAlias $projectAlias)
+    public function __construct(?SiteAlias $siteAlias, ?ProjectAlias $projectAlias)
     {
         $this->kind = 'PSCID';
         parent::__construct($siteAlias, $projectAlias);

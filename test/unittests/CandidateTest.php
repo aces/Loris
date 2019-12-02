@@ -770,12 +770,12 @@ class CandidateTest extends TestCase
         $projectAlias = new ProjectAlias('BBB');
         $this->assertEquals(
             1,
-            Candidate::validatePSCID('AAA0012', $siteAlias, $projectAlias);
+            Candidate::validatePSCID('AAA0012', $siteAlias, $projectAlias),
             'Valid PSCID: validatePSCID should return 1'
         );
         $this->assertEquals(
             0,
-            Candidate::validatePSCID('AAA0012', $siteAlias, $projectAlias);
+            Candidate::validatePSCID('AAA0012', $siteAlias, $projectAlias),
             'Invalid PSCID: validatePSCID should return 0'
         );
     }
@@ -816,14 +816,16 @@ class CandidateTest extends TestCase
 
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
+        $siteAlias = new SiteAlias('AAA');
+        $projectAlias = new ProjecAlias('BBB');
         $this->assertEquals(
             1,
-            Candidate::validatePSCID('BBB0012', 'AAA', 'BBB'),
+            Candidate::validatePSCID('BBB0012', $siteAlias, $projectAlias),
             'Valid PSCID: validatePSCID should return 1'
         );
         $this->assertEquals(
             0,
-            Candidate::validatePSCID('BBB001', 'AAA', 'BBB'),
+            Candidate::validatePSCID('BBB0012', $siteAlias, $projectAlias),
             'Invalid PSCID: validatePSCID should return 0'
         );
     }

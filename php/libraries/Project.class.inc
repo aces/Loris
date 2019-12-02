@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use LORIS\StudyEntities\Candidate\ProjectAlias;
 
 /**
  * The Project class encapsulates all details of a project.
@@ -24,6 +25,13 @@
 class Project
 {
     private static $_instances = array();
+
+    /**
+     * A short name for the Project.
+     *
+     * @var ProjectAlias
+     */
+    var $alias;
 
     /**
      * The id of the project in database.
@@ -82,7 +90,7 @@ class Project
 
             $project->_projectId         = (int) $projectData['projectId'];
             $project->_projectName       = $projectData['name'];
-            $project->_projectAlias      = $projectData['Alias'];
+            $project->_projectAlias      = new ProjectAlias($projectData['Alias']);
             $project->_recruitmentTarget = (integer) $projectData['recTarget'];
 
             self::$_instances[$projectName] = $project;
@@ -240,11 +248,11 @@ class Project
     }
 
     /**
-     * Get this project's alias
+     * Accessor for projectAlias variable.
      *
-     * @return string This project's alias
+     * @return ProjectAlias
      */
-    public function getAlias(): string
+    public function getAlias(): ProjectAlias
     {
         return $this->_projectAlias;
     }
