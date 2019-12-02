@@ -71,12 +71,8 @@ class Dicom_Archive extends \DataFrameworkMenu
     function getFieldOptions() : array
     {
         // get the list of sites available for the user
-        $list_of_sites = \Utility::getSiteList();
-        $site_options  = array();
-
-        foreach ($list_of_sites as $id => $name) {
-            $site_options[$name] = $name;
-        }
+        $site_names   = array_values(\Utility::getSiteList());
+        $site_options = array_combine($site_names, $site_names);
 
         return [ 'sites' => $site_options ];
     }

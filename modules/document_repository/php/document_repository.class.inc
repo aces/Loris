@@ -64,8 +64,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                $categoriesList[$arr['id']] =$arr['name'];
         }
         //site
-        $siteList  = array();
-        $visitList = \Utility::getVisitList();
+        $siteList = array();
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
@@ -159,7 +158,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         if (isset($item2)) {
             $optionsValue = $item2;
         }
-        foreach ($options as $key => $value) {
+        foreach ($options as $key) {
             $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
         }
         return $selectOptions;

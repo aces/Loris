@@ -145,8 +145,7 @@ class Files extends \NDB_Page
      */
     function editDocFile(array $req): void
     {
-        $db           = \Database::singleton();
-        $user         = \User::singleton();
+        $db           = \NDB_Factory::singleton()->database();
         $updateValues = [
             'instrument' => $req['instrument'] ?? null,
             'comments'   => $req['comments'] ?? null,
@@ -190,11 +189,6 @@ class Files extends \NDB_Page
         $baseURL  = $factory->settings()->getBaseURL();
         $fileName = $DB->pselectOne(
             "SELECT File_name FROM document_repository
-             WHERE record_id =:identifier",
-            array(':identifier' => $rid)
-        );
-        $userName = $DB->pselectOne(
-            "SELECT uploaded_by FROM document_repository
              WHERE record_id =:identifier",
             array(':identifier' => $rid)
         );
@@ -327,8 +321,11 @@ class Files extends \NDB_Page
             $optionsValue = $item2;
         }
 
-        foreach ($options as $key => $value) {
-            $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
+        // FIXME OPTIONSOPTIONSOPTIONS
+        // These variable names should be more descriptive.
+        foreach ($options as $option) {
+            $selectOptions[$options[$option][$optionsValue]]
+                = $options[$option][$item];
         }
 
         return $selectOptions;
@@ -345,10 +342,6 @@ class Files extends \NDB_Page
         $req            = $request->getParsedBody();
         $uploadedFiles  = $request->getUploadedFiles();
         $uploadOK       = false;
-        $editNotifier   = new \NDB_Notifier(
-            "document_repository",
-            "edit"
-        );
         $uploadNotifier = new \NDB_Notifier(
             "document_repository",
             "upload"

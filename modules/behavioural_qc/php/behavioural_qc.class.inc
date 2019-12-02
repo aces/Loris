@@ -49,7 +49,6 @@ class Behavioural_QC extends \NDB_Form
         parent::setup();
         $DB       =& \Database::singleton();
         $user     =& \User::singleton();
-        $config   =& \NDB_Config::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
         $instrument   = $this->getTestNameusingMappedName(
@@ -489,13 +488,18 @@ class Behavioural_QC extends \NDB_Form
         $site=null,
         $project=null
     ) {
-        $config         =& \NDB_Config::singleton();
+        $config = \NDB_Factory::singleton()->config();
+        $DB     = \NDB_Factory::singleton()->database();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-        for ($i=0; $i<count($ddeInstruments); ++$i) {
-            $ddeInstruments[$i] = \Database::singleton()->quote($ddeInstruments[$i]);
-        }
+        // Apply Database::quote() to each element of the ddeInstruments array
+        array_walk(
+            $ddeInstruments,
+            array(
+                $DB,
+                'quote'
+            )
+        );
 
-        global $DB;
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid,".
             " f.SessionID, f.test_name,f.data_entry,f.commentid,".
             " t.Full_name FROM session s".

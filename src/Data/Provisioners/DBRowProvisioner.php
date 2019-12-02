@@ -72,6 +72,12 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      * the cursor used by the PDO does not conflict with multiple calls
      * to the function, and to make the code more deterministic.
      *
+     * This will suppress UnusedLocalVariable
+     * warnings in this method. PHPMD has some issues with anonymous
+     * functions, apparently.
+     *
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     *
      * @return \Traversable which returns DataInstance for row when traversed.
      */
     public function getAllInstances() : \Traversable

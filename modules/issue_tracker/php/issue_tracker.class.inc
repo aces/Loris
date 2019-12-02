@@ -146,12 +146,6 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             }
         }
 
-        $dateOptions = array(
-            'language'       => 'en',
-            'format'         => 'YMdHis',
-            'addEmptyOption' => true,
-        );
-
         $fieldOptions = [
             'modules'    => $modules,
             'categories' => $categories,

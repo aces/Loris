@@ -216,7 +216,6 @@ class Stats_Demographic extends \NDB_Form
         }
 
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
         $user    = $factory->user();
 
         //SITES

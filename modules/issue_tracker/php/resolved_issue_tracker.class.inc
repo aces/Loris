@@ -57,92 +57,92 @@ class Resolved_Issue_Tracker extends \NDB_Menu_Filter_Form
 
         //note that this needs to be in the same order as the headers array
         $this->columns = array(
-                          'i.issueID as Issue_ID',
-                          'i.title as Title',
-                          'l.Label as Module',
-                          'i.category as Category',
-                          'i.reporter as Reporter',
-                          'i.assignee as Assignee',
-                          'i.status as Status',
-                          'i.priority as Priority',
-                          'p.Name as Site',
-                          'c.PSCID as PSCID',
-                          's.Visit_label as Visit_Label',
-                          'i.lastUpdate as Last_Update',
-                          's.ID as SessionID',
-                          'c.CandID as CandID',
-                         );
+            'i.issueID as Issue_ID',
+            'i.title as Title',
+            'l.Label as Module',
+            'i.category as Category',
+            'i.reporter as Reporter',
+            'i.assignee as Assignee',
+            'i.status as Status',
+            'i.priority as Priority',
+            'p.Name as Site',
+            'c.PSCID as PSCID',
+            's.Visit_label as Visit_Label',
+            'i.lastUpdate as Last_Update',
+            's.ID as SessionID',
+            'c.CandID as CandID',
+        );
 
         $this->order_by = 'i.issueID DESC';
         $this->group_by = 'i.issueID';
 
         //NDB filter will remove underscores
         $this->headers = array(
-                          'Issue_ID',
-                          'Title',
-                          'Module',
-                          'Category',
-                          'Reporter',
-                          'Assignee',
-                          'Status',
-                          'Priority',
-                          'Site',
-                          'PSCID',
-                          'Visit_Label',
-                          'Last_Update',
-                          'SessionID',
-                          'CandID',
-                         );
+            'Issue_ID',
+            'Title',
+            'Module',
+            'Category',
+            'Reporter',
+            'Assignee',
+            'Status',
+            'Priority',
+            'Site',
+            'PSCID',
+            'Visit_Label',
+            'Last_Update',
+            'SessionID',
+            'CandID',
+        );
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
-             'SessionID',
-             'CandID',
+                'SessionID',
+                'CandID',
             ]
         );
 
         $this->validFilters = array(
-                               'i.issueID',
-                               'l.Label',
-                               'i.category',
-                               'c.PSCID',
-                               's.Visit_label',
-                               'i.reporter',
-                               'i.assignee',
-                               'i.centerID',
-                               'w.userID',
-                               'i.projectID',
-                               'i.priority',
-                               'keyword',
-                               'minDate',
-                               'maxDate',
-                              );
+            'i.issueID',
+            'l.Label',
+            'i.category',
+            'c.PSCID',
+            's.Visit_label',
+            'i.reporter',
+            'i.assignee',
+            'i.centerID',
+            'w.userID',
+            'i.projectID',
+            'i.priority',
+            'keyword',
+            'minDate',
+            'maxDate',
+        );
 
         $this->formToFilter = array(
-                               'issueID'                => 'i.issueID',
-                               'category'               => 'i.category',
-                               'module'                 => 'l.Label',
-                               'PSCID'                  => 'c.PSCID',
-                               'visitLabel'             => 's.Visit_label',
-                               'reporter'               => 'i.reporter',
-                               'assignee'               => 'i.assignee',
-                               'site'                   => 'i.centerID',
-                               'watching'               => 'w.userID',
-                               'projectID'              => 'i.projectID',
-                               'priority'               => 'i.priority',
-                               'keyword'                => 'ic.issueComment',
-                               'minDate'                => 'minDate',
-                               'maxDate'                => 'maxDate',
-                               $user->getData('UserID') => 'watching',
-                              );
+            'issueID'                => 'i.issueID',
+            'category'               => 'i.category',
+            'module'                 => 'l.Label',
+            'PSCID'                  => 'c.PSCID',
+            'visitLabel'             => 's.Visit_label',
+            'reporter'               => 'i.reporter',
+            'assignee'               => 'i.assignee',
+            'site'                   => 'i.centerID',
+            'watching'               => 'w.userID',
+            'projectID'              => 'i.projectID',
+            'priority'               => 'i.priority',
+            'keyword'                => 'ic.issueComment',
+            'minDate'                => 'minDate',
+            'maxDate'                => 'maxDate',
+            $user->getData('UserID') => 'watching',
+        );
 
         $this->EqualityFilters = array(
-                                  'i.issueID',
-                                  'i.centerID',
-                                 );
+            'i.issueID',
+            'i.centerID',
+        );
         $this->searchKeyword   = array(
-                                  'ic.issueComment',
-                                  'i.title',
-                                 );
+            'ic.issueComment',
+            'i.title',
+        );
     }
 
     /**
@@ -202,13 +202,13 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         );
 
         $priorities = array(
-                       ''          => 'All',
-                       'low'       => 'Low',
-                       'normal'    => 'Normal',
-                       'high'      => 'High',
-                       'urgent'    => 'Urgent',
-                       'immediate' => 'Immediate',
-                      );
+            ''          => 'All',
+            'low'       => 'Low',
+            'normal'    => 'Normal',
+            'high'      => 'High',
+            'urgent'    => 'Urgent',
+            'immediate' => 'Immediate',
+        );
 
         $unorgCategories = $db -> pselect(
             "SELECT categoryName
@@ -224,25 +224,25 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         }
 
         $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMdHis',
-                        'addEmptyOption' => true,
-                       );
+            'language'       => 'en',
+            'format'         => 'YMdHis',
+            'addEmptyOption' => true,
+        );
 
         $this->addBasicText(
             'keyword',
             'Keyword',
             array(
-             "size"      => 10,
-             "maxlength" => 50,
+                "size"      => 10,
+                "maxlength" => 50,
             )
         );
         $this->addBasicText(
             'issueID',
             'Issue ID',
             array(
-             "size"      => 10,
-             "maxlength" => 25,
+                "size"      => 10,
+                "maxlength" => 25,
             )
         );
         $this->addSelect('module', 'Module', $modules);
@@ -251,16 +251,16 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
             'PSCID',
             'PSCID',
             array(
-             "size"      => 10,
-             "maxlength" => 25,
+                "size"      => 10,
+                "maxlength" => 25,
             )
         );
         $this->addBasicText(
             'visitLabel',
             'Visit Label',
             array(
-             'size'      => "5",
-             "maxlength" => "15",
+                'size'      => "5",
+                "maxlength" => "15",
             )
         );
         $this->addSelect('site', 'Site', $list_of_sites);

@@ -40,12 +40,19 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        // FIXME This should be reworked to not silently handle the try-catch
         try {
             $resp = parent::handle($request);
             if ($resp->getStatusCode() != 404) {
                   return $resp;
             }
         } catch (\NotFound $e) {
+            /**
+             * This will suppress EmptyCatchBlock
+             * warnings in this method
+             *
+             * @SuppressWarnings(PHPMD.EmptyCatchBlock)
+             */
         }
         $page = $this->loadPage("timepoint_list");
         return $page->process($request, $page);

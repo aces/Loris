@@ -99,7 +99,6 @@ class Timepoint_List extends \NDB_Menu
     {
         // create candidate object
         $candidate =& \Candidate::singleton($this->candID);
-        $DB        =& \Database::singleton();
 
         $numberOfVisits           = 0;
         $this->tpl_data['candID'] = $this->candID;
@@ -277,9 +276,7 @@ class Timepoint_List extends \NDB_Menu
      */
     function getJSDependencies()
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
+        $deps = parent::getJSDependencies();
         return $deps;
     }
 

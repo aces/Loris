@@ -167,9 +167,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 || $ImagingUploaderAutoLaunch == 'true'
             ) {
                 try {
-                    // Instantiate the server process module to autoload
-                    // its namespace classes
-                    $spm_module = \Module::factory('server_processes_manager');
                     // Perform the real upload on the server
                     $serverProcessLauncher = new SP\ServerProcessLauncher();
                     $serverProcessLauncher->mriUpload(
@@ -215,16 +212,16 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
     // methods available to all children
     /**
-       * Save the file to the DataBase by:
-       * 1) registering the file handlers
-       * 2) Calling the processFiles function which in return will call
-       *   - isValid function
-       *   - importFile Function
-       *
-       * @param array $values the array of values from the form
-       *
-       * @return true
-       */
+     * Save the file to the DataBase by:
+     * 1) registering the file handlers
+     * 2) Calling the processFiles function which in return will call
+     *   - isValid function
+     *   - importFile Function
+     *
+     * @param array $values the array of values from the form
+     *
+     * @return true
+     */
     function _saveFile($values)
     {
         //get the stored-file path

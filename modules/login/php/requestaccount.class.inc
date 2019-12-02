@@ -2,7 +2,7 @@
 /**
  * Implements the LORIS request account page.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category   Behavioural
  * @package    Main
@@ -32,8 +32,6 @@ class RequestAccount extends \NDB_Form
      */
     function setup()
     {
-        $config   = \NDB_Config::singleton();
-        $tpl_data = array();
         $this->tpl_data['page_title'] = 'Request Account';
 
         $this->addBasicText(
@@ -222,7 +220,6 @@ class RequestAccount extends \NDB_Form
                 $_SERVER['REMOTE_ADDR']
             );
             if (!$resp->isSuccess()) {
-                $errors         = $resp->getErrorCodes();
                 $err['captcha'] = 'Please complete the reCaptcha!';
             }
         }

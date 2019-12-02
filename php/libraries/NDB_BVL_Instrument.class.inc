@@ -1322,7 +1322,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             //Loop through the rules (will only be one rule if this is not an OR)
             $or_conditions = false;
-            for ($i = 0; $i < count($rules_array); $i++) {
+            $numRules      = count($rules_array);
+            for ($i = 0; $i < $numRules; $i++) {
                 $rule = explode("{@}", $rules_array[$i]);
                 //Some rules compare against multiple values, handle this here.
                 if (stristr($rule[2], "|")) {  //ex: q_1{@}=={@}yes|no

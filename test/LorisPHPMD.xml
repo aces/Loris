@@ -12,10 +12,14 @@
 
     <!-- Import the entire unused code rule set -->
     <rule ref="rulesets/unusedcode.xml">
-		<!-- parameters are sometimes necessary for interfaces, so don't worry
-			about them not being used -->
-		<exclude name="UnusedFormalParameter" />
-	</rule>
+        <!-- This rule has known bugs in the PHPMD tool and doesn't correctly
+             recognize when methods are used as callbacks. When this is fixed
+             by the maintainers of PHPMD we should use this rule. -->
+        <exclude name="UnusedPrivateMethod" />
+        <!-- parameters are sometimes necessary for interfaces, so don't worry
+            about them not being used -->
+        <exclude name="UnusedFormalParameter" />
+    </rule>
 
     <rule ref="rulesets/design.xml">
         <exclude name="CouplingBetweenObjects" />
