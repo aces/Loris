@@ -134,14 +134,18 @@ class Recording
                        SELECT
                          Value
                        FROM
-                         physiological_parameter_file pf 
-                       JOIN parameter_type pt
-                         USING (ParameterTypeID)
-                       JOIN physiological_file f
-                         USING (PhysiologicalFileID)
+                         physiological_parameter_file
                        WHERE
-                         f.PhysiologicalFileID = :v_fileid AND
-                         pt.Name = :v_headername
+                         ParameterTypeID = (
+                           SELECT ParameterTypeID 
+                           FROM parameter_type
+                           WHERE Name = :v_headername
+                         )
+                         AND PhysiologicalFileID = (
+                           SELECT PhysiologicalFileID 
+                           FROM physiological_file
+                           WHERE PhysiologicalFileID = :v_fileid
+                         )
                       ',
                 array(
                     'v_fileid'     => $this->_fileid,
@@ -170,10 +174,12 @@ class Recording
                          physiological_parameter_file pf 
                        JOIN parameter_type pt
                          USING (ParameterTypeID)
-                       JOIN physiological_file f
-                         USING (PhysiologicalFileID)
                        WHERE
-                         f.PhysiologicalFileID = :v_fileid
+                         PhysiologicalFileID = (
+                           SELECT PhysiologicalFileID 
+                           FROM physiological_file
+                           WHERE PhysiologicalFileID = :v_fileid
+                         )
                       ',
                 array('v_fileid' => $this->_fileid)
             );
