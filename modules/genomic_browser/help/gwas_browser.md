@@ -1,3 +1,3 @@
 # GWAS Browser
 
-Browse through summary genomic data. Filters can by applied on the genomic variable annotations.
+In this tab, you can browse through summary genomic data. Apply filters on the genomic variable annotations.

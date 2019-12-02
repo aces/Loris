@@ -13,9 +13,13 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
 
   selenium:
-    image: selenium/standalone-firefox-debug:2.53.1
+    image: selenium/standalone-firefox-debug:3.8.1-aluminum
+    volumes:
+      - /dev/shm:/dev/shm
     ports:
       - "5900:5900"
+    environment:
+      - SE_OPTS=-enablePassThrough false
 
   web:
     build:

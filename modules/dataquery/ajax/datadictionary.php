@@ -38,9 +38,9 @@ if (isset($_REQUEST['category']) && $_REQUEST['category']) {
         "DQG-2.0",
         "datadictionary",
         array(
-         "reduce"   => "false",
-         "startkey" => "[\"$category\"]",
-         "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
+            "reduce"   => "false",
+            "startkey" => "[\"$category\"]",
+            "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
         )
     );
 } else if (isset($_REQUEST['key']) && $_REQUEST['key']) {
@@ -50,8 +50,8 @@ if (isset($_REQUEST['category']) && $_REQUEST['category']) {
         "DQG-2.0",
         "datadictionary",
         array(
-         "reduce" => "false",
-         "key"    => "[\"$key[0]\",\"$key[1]\"]",
+            "reduce" => "false",
+            "key"    => "[\"$key[0]\",\"$key[1]\"]",
         )
     );
 }

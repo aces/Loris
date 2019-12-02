@@ -47,7 +47,7 @@ class Edit extends \NDB_Form
                 "SELECT id FROM media WHERE id = :mid",
                 array('mid' => $idMediaFile)
             );
-            if (count($result) < 1) {
+            if (empty($result)) {
                 header('Location: ' . $baseURL . '/media/');
             }
         } else {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * File defines the MiddlewareChainer interface.
  *
@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\Middleware;
+
 use \Psr\Http\Server\MiddlewareInterface;
 
 /**
@@ -34,5 +35,5 @@ interface MiddlewareChainer extends MiddlewareInterface
      *
      * @return MiddlewareChainer
      */
-    public function withMiddleware(MiddlewareChainer $next) : MiddlewareChainer;
+    public function withMiddleware(MiddlewareChainer $next);
 }

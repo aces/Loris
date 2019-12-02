@@ -102,7 +102,7 @@ class ExaminerIndex extends Component {
     })
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
-        swal('Success!', 'Examiner added.', 'success').then((result) => {
+        swal.fire('Success!', 'Examiner added.', 'success').then((result) => {
           if (result.value) {
             this.closeModal();
             this.fetchData();
@@ -110,7 +110,7 @@ class ExaminerIndex extends Component {
         });
       } else {
         resp.text().then((message) => {
-          swal('Error!', message, 'error');
+          swal.fire('Error!', message, 'error');
         });
       }
     })

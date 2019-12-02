@@ -1,43 +1,22 @@
 # Survey Accounts
 
-## Purpose
+This module is used to create and manage survey forms that are sent to participants in a study.
 
-The survey accounts module is intended to manage the surveys which
-are sent to participants in a study. It is used to generate a survey
-key, and (optionally) automatically send it to the participant, if
-their email address is provided.
+## View Surveys
 
-## Intended Users
+Each survey form is generated with a unique URL. This survey link URL can be emailed directly to respondents for survey completion from home, or can be used in the clinic to capture data directly from participants, i.e. on a tablet in the waiting room during a study visit. 
 
-The survey accounts module is primarily used by study coordinators
-in order to generate a survey key to send to participants.
+Use the *Selection Filter* section to search for existing surveys.
 
-## Scope
+The resulting table will display your results, which includes a unique URL for each survey generated. Click on this link to access the online survey form.
 
-The survey accounts module only generates new survey keys. It does
-*not* collect the data for the surveys, which are written as LORIS
-instruments and collected via a different survey.php script in the
-LORIS `htdocs` directory.
+The *Status* column tells you whether the survey has been accessed. This column will display one of the following options:
 
-## Permissions
+**Created**: Survey was created. This is the default status once a survey is created using the "Add Survey" page.<br>
+**Sent**: Survey was created, and an email with the unique survey URL was sent to the survey respondent. This is the default status once a survey is created and sent by email within LORIS.<br>
+**In Progress**: Survey was opened and accessed by anyone with the link, including study personnel (not just the intended respondent).<br>
+**Complete**: Survey was completed and submitted. After this stage, the respondent will not be able to go back and change any entries. No data will be visible via the URL once a survey is completed: clicking on the URL will display a page with the message *"Data has already been submitted"*
 
-Accessing the survey accounts module requires the `user_accounts`
-LORIS permission.
+## Create Surveys
 
-## Configurations
-
-Each survey must be created as a LORIS instrument, and the
-"IsDirectEntry" column in the `test_names` table in MySQL must be
-set to "true" in order for the survey to show the instrument in the
-dropdown for the list of available surveys in the `add_survey` page.
-
-## Interactions with LORIS
-
-The module validates that surveys have not already been sent to a
-participant by comparing the test_name against the LORIS `flag`
-table. As a result, surveys should not be inserted into the LORIS
-`test_battery` table or attempting to send a survey will result in
-an error.
-
-The `add_survey` page generates a link to `$LORIS/survey.php?key=....`
-in the email that it sends after generating a new survey key.
+You can create a new survey manually with data that hasn’t yet been entered into LORIS. Click **Add Survey**, which takes you to a new page. Populate the fields and click **Create Survey** to generate a URL, which you can send to the candidate, or **Email Survey** to send the URL to the candidate. If you choose Email Survey, you’ll be able to customize the content of the email in a pop-up window (which will contain an editable generic message).

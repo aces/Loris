@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\candidate_parameters;
+use \Loris\StudyEntities\Candidate\CandID;
+
 /**
  * Main class for candidate_parameters module
  * corresponding to /candidate_parameters/ URL
@@ -40,8 +42,8 @@ class Candidate_Parameters extends \NDB_Form
     {
         return $user->hasAnyPermission(
             array(
-             'candidate_parameter_view',
-             'candidate_parameter_edit',
+                'candidate_parameter_view',
+                'candidate_parameter_edit',
             )
         );
     }
@@ -69,7 +71,7 @@ class Candidate_Parameters extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/candidate_parameters/js/CandidateParameters.js",
+                $baseURL . "/candidate_parameters/js/CandidateParameters.js",
             )
         );
     }
@@ -81,7 +83,7 @@ class Candidate_Parameters extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candidate =& \Candidate::singleton((int)$this->identifier);
+        $candidate =& \Candidate::singleton(new CandID($this->identifier));
         $candID    = $candidate->getCandID();
 
         return new \LORIS\BreadcrumbTrail(

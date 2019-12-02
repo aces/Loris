@@ -18,14 +18,13 @@ return [
 	"suppress_issue_types" => [
         "PhanTypeInvalidDimOffset",
 		"PhanUndeclaredMethod",
-		"PhanUndeclaredVariableDim",
         "PhanTypeMismatchDimFetch",
+		"PhanTypeMismatchReturn",
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
-		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
-		"PhanNonClassMethodCall",
-        "PhanTypeSuspiciousStringExpression",
+        "PhanTypeArraySuspiciousNullable",
+        "PhanNoopNew"
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
@@ -43,8 +42,13 @@ return [
 	],
 	"exclude_analysis_directory_list" => [
 		"vendor",
-		"htdocs/api/",
 	],
+    // Required to fix an issue with PHP 7.2, PHPCS, and TravisCI. This can be
+    // removed once PHP 7.3 or higher is the minimum required version for LORIS
+    // and support for 7.2 is dropped.
+    "exclude_file_list" => [
+        "vendor/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Methods/MethodDeclarationUnitTest.inc"
+    ],
     'autoload_internal_extension_signatures' => [
         // Xdebug stubs are bundled with Phan 0.10.1+/0.8.9+ for usage,
         // because Phan disables xdebug by default.
@@ -59,5 +63,8 @@ return [
     // see https://github.com/phan/phan/issues/1650.
     //
     // When the module is refactored, this line should be deleted.
-    'ignore_undeclared_variables_in_global_scope' => true
+    'ignore_undeclared_variables_in_global_scope' => true,
+    'plugins' => [
+        'UnreachableCodePlugin'
+    ]
 ];

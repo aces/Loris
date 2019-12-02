@@ -228,9 +228,6 @@ class Database
             $this->lastErr = $e->getMessage();
             return false;
         }
-
-        // Unreachable
-        return false;
     }
 
     /**

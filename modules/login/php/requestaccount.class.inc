@@ -32,31 +32,32 @@ class RequestAccount extends \NDB_Form
      */
     function setup()
     {
-        $config = \NDB_Config::singleton();
+        $config   = \NDB_Config::singleton();
+        $tpl_data = array();
         $this->tpl_data['page_title'] = 'Request Account';
 
         $this->addBasicText(
             "firstname",
             "First name",
             array(
-             "placeholder" => "First Name",
-             "required"    => true,
+                "placeholder" => "First Name",
+                "required"    => true,
             )
         );
         $this->addBasicText(
             "lastname",
             "Last name",
             array(
-             "placeholder" => "Last Name",
-             "required"    => true,
+                "placeholder" => "Last Name",
+                "required"    => true,
             )
         );
         $this->addBasicText(
             "from",
             "Email address",
             array(
-             "placeholder" => "Email address",
-             "required"    => true,
+                "placeholder" => "Email address",
+                "required"    => true,
             )
         );
 
@@ -143,20 +144,20 @@ class RequestAccount extends \NDB_Form
     function _process($values)
     {
         $DB       = \Database::singleton();
-        $name     = htmlspecialchars($_REQUEST["firstname"], ENT_QUOTES);
-        $lastname = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
-        $from     = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
+        $name     = trim(htmlspecialchars($_REQUEST["firstname"], ENT_QUOTES));
+        $lastname = trim(htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES));
+        $from     = trim(htmlspecialchars($_REQUEST["from"], ENT_QUOTES));
         $site     = $_REQUEST["site"];
         $fullname = $name." ".$lastname;
 
         $vals = array(
-                 'UserID'           => $from,
-                 'Real_name'        => $fullname,
-                 'First_name'       => $name,
-                 'Last_name'        => $lastname,
-                 'Pending_approval' => 'Y',
-                 'Email'            => $from,
-                );
+            'UserID'           => $from,
+            'Real_name'        => $fullname,
+            'First_name'       => $name,
+            'Last_name'        => $lastname,
+            'Pending_approval' => 'Y',
+            'Email'            => $from,
+        );
 
         // check email address' uniqueness
         $result = $DB->pselectOne(
@@ -168,15 +169,15 @@ class RequestAccount extends \NDB_Form
 
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
-            $success = $DB->insert('users', $vals);
+            $DB->insert('users', $vals);
             // Get the ID of the new user and insert into user_psc_rel
             $user_id = $DB->getLastInsertId();
 
             $DB->insert(
                 'user_psc_rel',
                 array(
-                 'UserID'   => $user_id,
-                 'CenterID' => $site,
+                    'UserID'   => $user_id,
+                    'CenterID' => $site,
                 )
             );
 
@@ -201,19 +202,19 @@ class RequestAccount extends \NDB_Form
                     $DB->insert(
                         'examiners',
                         array(
-                         'full_name'   => $fullname,
-                         'radiologist' => $rad,
-                         'userID'      => $user_id,
+                            'full_name'   => $fullname,
+                            'radiologist' => $rad,
+                            'userID'      => $user_id,
                         )
                     );
                     $examinerID = $DB->getLastInsertID();
                     $DB->insert(
                         'examiners_psc_rel',
                         array(
-                         'examinerID'       => $examinerID,
-                         'centerID'         => $site,
-                         'active'           => 'Y',
-                         'pending_approval' => 'Y',
+                            'examinerID'       => $examinerID,
+                            'centerID'         => $site,
+                            'active'           => 'Y',
+                            'pending_approval' => 'Y',
                         )
                     );
                 }
@@ -221,6 +222,7 @@ class RequestAccount extends \NDB_Form
         }
 
         // Verify reCAPTCHA
+        $err = array();
         if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
             $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
             $resp      = $recaptcha->verify(

@@ -20,10 +20,8 @@ namespace LORIS\candidate_list;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Candidate_List extends \NDB_Menu_Filter
+class Candidate_List extends \DataFrameworkMenu
 {
-    var $AjaxModule = true;
-
     /**
      * Overloading this method to allow access to site users (their own site only)
      * and users w/ multisite privs
@@ -42,71 +40,35 @@ class Candidate_List extends \NDB_Menu_Filter
     }
 
     /**
-     * Sets up all the class variables needed for the candidate_list menu
-     * filter
+     * Tells the base class that this page's provisioner can support
+     * the UserSiteMatch filter.
      *
-     * @return void
+     * @return bool always true
      */
-    function _setupVariables()
+    public function useSiteFilter() : bool
     {
-        $user   = \User::singleton();
-        $config = \NDB_Config::singleton();
-
-        $this->skipTemplate = true;
-
-        // set the class variables
-        $this->columns = array(
-                          'c.PSCID',
-                          'c.CandID AS DCCID',
-                          'GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel',
-                          'psc.Name AS RegistrationSite',
-                          'GROUP_CONCAT(DISTINCT sp.title) as Subproject',
-                          'c.Entity_type AS EntityType',
-                          'MAX(s.Scan_done) as scanDone',
-                          'COALESCE(pso.Description,"Active") AS ParticipantStatus',
-                          'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
-                          'c.Sex',
-                          'COUNT(DISTINCT s.Visit_label) AS VisitCount',
-                          "IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback",
-                          'max(s.Current_stage) AS LatestVisitStatus',
-                          'p.Name as Project',
-                         );
-
-        if ($config->getSetting("useEDC") === "true") {
-            $this->columns[] = 'DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
-        }
-
-        $this->query = " FROM candidate c
-            LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
-            LEFT JOIN session s ON (c.CandID = s.CandID AND s.Active = 'Y')
-            LEFT JOIN feedback_bvl_thread
-                ON (c.CandID=feedback_bvl_thread.CandID)
-            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-            LEFT JOIN participant_status_options pso
-                ON (ps.participant_status=pso.ID)
-            LEFT JOIN Project p ON (c.ProjectID=p.ProjectID)
-            LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
-            WHERE c.Active = 'Y'";
-
-        if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND c.RegistrationCenterID IN (" . $site_arr . ")";
-        }
-
-        //'COALESCE(pso.ID,1) AS Participant_Status',
-        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Sex';
-        $this->order_by = 'c.PSCID ASC';
+        return true;
     }
 
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool always true
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
 
     /**
-     * Create the form for the candidate_list menu page
+     * Return the list of field options required to be serialized to JSON
+     * in order to render the frontend.
      *
-     * @return void
+     * @return array
      */
-    function setup()
+    function getFieldOptions() : array
     {
-        parent::setup();
         // Relying on a side-effect of the the server process module to autoload
         // its namespace.
         \Module::factory('candidate_parameters');
@@ -115,12 +77,16 @@ class Candidate_List extends \NDB_Menu_Filter
         $user   = \User::singleton();
         $config = \NDB_Config::singleton();
 
+        // get the list of visit labels
+        $visit_label_options = \Utility::getVisitList();
+
         // get the list of sites available for the user
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = \Utility::getSiteList();
         } else {
             $list_of_sites = $user->getStudySites();
         }
+        $site_options = array();
         foreach ($list_of_sites as $id => $name) {
             $site_options[$name] = $name;
         }
@@ -134,6 +100,7 @@ class Candidate_List extends \NDB_Menu_Filter
 
         // get the list of subprojects
         $list_of_subprojects = \Utility::getSubprojectList();
+        $subproject_options  = array();
         foreach ($list_of_subprojects as $id => $name) {
             $subproject_options[$name] = $name;
         }
@@ -141,19 +108,19 @@ class Candidate_List extends \NDB_Menu_Filter
         // get the list participant status options
         $list_of_participant_status
             = \Candidate::getParticipantStatusOptions();
+        $participant_status_options = array();
         foreach ($list_of_participant_status as $id => $name) {
             $participant_status_options[$name] = $name;
         }
 
-        $this->fieldOptions = [
-                               'site'              => $site_options,
-                               'project'           => $project_options,
-                               'subproject'        => $subproject_options,
-                               'participantstatus' => $participant_status_options,
-                               'useedc'            => $config->getSetting("useEDC"),
-                              ];
-
-        return true;
+        return [
+            'visitlabel'        => $visit_label_options,
+            'site'              => $site_options,
+            'project'           => $project_options,
+            'subproject'        => $subproject_options,
+            'participantstatus' => $participant_status_options,
+            'useedc'            => $config->getSetting("useEDC"),
+        ];
     }
 
     /**
@@ -170,7 +137,7 @@ class Candidate_List extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/candidate_list/js/candidateListIndex.js",
+                $baseURL . "/candidate_list/js/candidateListIndex.js",
             )
         );
     }
@@ -185,6 +152,16 @@ class Candidate_List extends \NDB_Menu_Filter
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb('Access Profile', "/$this->name")
         );
+    }
+
+    /**
+     * Gets the data source for this menu filter.
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
+    {
+        return new CandidateListRowProvisioner();
     }
 }
 

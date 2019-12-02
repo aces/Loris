@@ -43,8 +43,8 @@ class Statistics_Site extends \NDB_Menu
         //TODO: Create a permission specific to statistics
         $hasAccessToAllProfiles = $user->hasAllPermissions(
             array(
-             'access_all_profiles',
-             'data_entry',
+                'access_all_profiles',
+                'data_entry',
             )
         );
         // If a CenterID is passed in the request, check if the user has the
@@ -76,7 +76,7 @@ class Statistics_Site extends \NDB_Menu
             $this->query_vars['cid'] = $centerID;
         }
         if (!empty($projectID)) {
-            $this->query_criteria   .= " AND c.ProjectID =:pid ";
+            $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         }
     }
@@ -178,8 +178,8 @@ class Statistics_Site extends \NDB_Menu
                 $sqlRow,
                 array('cid' => $_REQUEST['CenterID'])
             );
-            $centerID = $center['ID'];
-            $name     = $center['Name'];
+            $centerID = $center['ID'] ?? '';
+            $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
             $centerID = '';
@@ -219,19 +219,19 @@ class Statistics_Site extends \NDB_Menu
                         $visits[] = $row['Visit_label'];
                     }
                     $arrayVar = array(
-                                 'test_url'  => $test_url,
-                                 'CandID'    => $row['CandID'],
-                                 'SessionID' => $row['SessionID'],
-                                 'CommentID' => $row['CommentID'],
-                                 'PSCID'     => $row['PSCID'],
-                                );
+                        'test_url'  => $test_url,
+                        'CandID'    => $row['CandID'],
+                        'SessionID' => $row['SessionID'],
+                        'CommentID' => $row['CommentID'],
+                        'PSCID'     => $row['PSCID'],
+                    );
                     $results[$row['Visit_label']][] = $arrayVar;
                 }
                 $data[] = array(
-                           'name'        => $label,
-                           'count'       => $complete_count,
-                           'incompletes' => $results,
-                          );
+                    'name'        => $label,
+                    'count'       => $complete_count,
+                    'incompletes' => $results,
+                );
             }
         }
 

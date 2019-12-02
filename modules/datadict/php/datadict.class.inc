@@ -29,13 +29,13 @@ class Datadict extends \NDB_Menu_Filter
     var $skipTemplate = true;
 
     /**
-    * Overloading this method to allow access to site users (their own site
-    * only) and users w/ multisite privs
-    *
-    * @param \User $user The user whose access is being checked
-    *
-    * @return bool
-    */
+     * Overloading this method to allow access to site users (their own site
+     * only) and users w/ multisite privs
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
     function _hasAccess(\User $user) : bool
     {
         return ($user->hasPermission('data_dict_view') ||
@@ -43,11 +43,11 @@ class Datadict extends \NDB_Menu_Filter
     }
 
     /**
-    * Setup variables function
-    *
-    * @note   Setup variables function
-    * @return string
-    */
+     * Setup variables function
+     *
+     * @note   Setup variables function
+     * @return string
+     */
     function _buildQuery(): string
     {
         $select = " SELECT DISTINCT
@@ -79,39 +79,39 @@ class Datadict extends \NDB_Menu_Filter
         $this->query = " FROM (" . $query . ") as tmp";
 
         $this->formToFilter = array(
-                               'sourceFrom'  => 'pt.sourceFrom',
-                               'description' => 'pt.Description',
-                              );
+            'sourceFrom'  => 'pt.sourceFrom',
+            'description' => 'pt.Description',
+        );
 
         $this->searchKeyword = array(
-                                'pt.Name',
-                                'pt.sourceField',
-                                'pto.description',
-                               );
+            'pt.Name',
+            'pt.sourceField',
+            'pto.description',
+        );
         // set the class variables
 
         $this->columns = array(
-                          'source_from',
-                          'name',
-                          'source_field',
-                          'description',
-                          'description_status',
-                         );
+            'source_from',
+            'name',
+            'source_field',
+            'description',
+            'description_status',
+        );
 
         $this->headers = array(
-                          'Source From',
-                          'Name',
-                          'Source Field',
-                          'Description',
-                          'Description Status',
-                         );
+            'Source From',
+            'Name',
+            'Source Field',
+            'Description',
+            'Description Status',
+        );
     }
 
     /**
-    * Set Filter Form
-    *
-    * @return void
-    */
+     * Set Filter Form
+     *
+     * @return void
+     */
     function setup()
     {
         parent::setup();
@@ -128,26 +128,25 @@ class Datadict extends \NDB_Menu_Filter
             'descriptionStatus',
             'Description Status',
             array(
-             'empty'     => 'Empty',
-             'modified'  => 'Modified',
-             'unchanged' => 'Unchanged',
+                'empty'     => 'Empty',
+                'modified'  => 'Modified',
+                'unchanged' => 'Unchanged',
             )
         );
         $this->addBasicText('keyword', "Search keyword");
-        return true;
     }
 
     /**
-    * Add query filters
-    *
-    * @param string $prepared_key the query string
-    * @param string $key          the key of filter
-    * @param string $val          the value of filter
-    *
-    * @note   Get base query
-    * @return string
-    * @access private
-    */
+     * Add query filters
+     *
+     * @param string $prepared_key the query string
+     * @param string $key          the key of filter
+     * @param string $val          the value of filter
+     *
+     * @note   Get base query
+     * @return string
+     * @access private
+     */
     function _addValidFilters($prepared_key, $key, $val)
     {
         $query = '';
@@ -201,7 +200,7 @@ class Datadict extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/datadict/js/dataDictIndex.js",
+                $baseURL . "/datadict/js/dataDictIndex.js",
             )
         );
     }
