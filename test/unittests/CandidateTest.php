@@ -2,7 +2,7 @@
 /**
  * Unit test for Candidate class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Tests
  * @package  Main
@@ -13,6 +13,7 @@
 use PHPUnit\Framework\TestCase;
 use LORIS\StudyEntities\Candidate\CandID;
 use LORIS\StudyEntities\Candidate\SiteAlias;
+use LORIS\StudyEntities\Candidate\ProjectAlias;
 /**
  * Unit test for Candidate class
  *
@@ -817,7 +818,7 @@ class CandidateTest extends TestCase
         $this->_configMock->method('getSetting')
             ->will($this->returnValueMap($this->_configMap));
         $siteAlias = new SiteAlias('AAA');
-        $projectAlias = new ProjecAlias('BBB');
+        $projectAlias = new ProjectAlias('BBB');
         $this->assertEquals(
             1,
             Candidate::validatePSCID('BBB0012', $siteAlias, $projectAlias),
