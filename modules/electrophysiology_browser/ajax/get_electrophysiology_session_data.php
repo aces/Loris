@@ -68,6 +68,8 @@ function getSessionData(int $sessionID)
                 AND pf.FileType IN ("bdf", "cnt", "edf", "set", "vhdr", "vsm") 
               ORDER BY pf.SessionID';
 
+    $response = array();
+
     $sessions            = $db->pselect($query, array());
     $sessions            = array_column($sessions, 'SessionID');
     $response['patient'] = getSubjectData($sessionID);
@@ -122,6 +124,7 @@ function getFilesData(int $sessionID)
     $db = \NDB_Factory::singleton()->database();
 
     $fileCollection = array();
+    $params         = array();
     $outputType     = $_REQUEST['outputType'];
     $params['SID']  = $sessionID;
     $query          = 'SELECT 
@@ -271,6 +274,7 @@ function getDownloadlinks(int $physiologicalFileID, string $physiologicalFile): 
 {
     $db = \NDB_Factory::singleton()->database();
 
+    $params          = array();
     $params['PFID']  = $physiologicalFileID;
     $downloadLinks   = array();
     $downloadLinks[] = array(
