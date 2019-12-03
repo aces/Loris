@@ -100,8 +100,8 @@ if ($_GET['action'] == 'addpermission') {
         '',
         '',
     );
-    $vFiles         = $data_release->getVersionedFiles();
-    $prePermissions = $data_release->getUserVersionPermissions($vFiles);
+    $vFiles         = $data_release->getVersionedFiles($DB);
+    $prePermissions = $data_release->getUserVersionPermissions($vFiles, $DB);
 
     $postPermissions = array();
     foreach ($_POST as $key => $value) {
