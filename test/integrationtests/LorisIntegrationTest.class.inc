@@ -6,7 +6,7 @@
  * the module being tested and not the overhead of logging in
  * to Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Test
@@ -35,6 +35,10 @@ abstract class LorisIntegrationTest extends TestCase
     protected $DB;
     protected $url;
     protected $factory;
+    /**
+     * A valid password to use for login tests.
+     */
+    protected $validPassword = 'sufficient length and complexity';
 
     private $_oldConfig = array();
 
@@ -64,6 +68,7 @@ abstract class LorisIntegrationTest extends TestCase
             1
         );
         $this->url = $this->config->getSetting("url");
+        $password = new \Password($this->validPassword);
 
         $this->DB->insert(
             "users",
@@ -77,7 +82,7 @@ abstract class LorisIntegrationTest extends TestCase
              'Privilege'        => 0,
              'PSCPI'            => 'N',
              'Active'           => 'Y',
-             'Password_hash'    => password_hash("4test4", PASSWORD_DEFAULT),
+             'Password_hash'    => $password,
              'Password_expiry'  => '2099-12-31',
              'Pending_approval' => 'N',
             )
@@ -91,25 +96,41 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
 
+        $this->DB->insert(
+            "user_project_rel",
+            array(
+                'UserID'    => 999990,
+                'ProjectID'  => 1,
+            )
+        );
+
         $this->resetPermissions();
 
         $user = User::factory('UnitTester');
-        $user->updatePassword('4test4');
+        $user->updatePassword($password);
 
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
-
-        $capabilities = array(
-                         WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
-                         WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
-                        );
+        $profile = new FirefoxProfile();
+        $profile->setPreference("setAcceptUntrustedCertificates", true);
+        $profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
+        $profile->setPreference("security.insecure_field_warning.contextual.enabled", false);
+        $desired_capabilities = DesiredCapabilities::firefox();
+        // running headless model in Travis 
+        if (getenv('HEADLESS')){
+            $desired_capabilities->setCapability(
+              'moz:firefoxOptions',
+              ['args' => ['-headless']]
+           );
+        }
+        $desired_capabilities->setCapability(FirefoxDriver::PROFILE,$profile);
 
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
-            $capabilities
+            $desired_capabilities
         );
 
-        $this->login("UnitTester", "4test4");
+        $this->login("UnitTester", $this->validPassword);
 
         if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);

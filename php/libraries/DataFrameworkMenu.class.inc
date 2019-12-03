@@ -69,13 +69,21 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
     abstract public function useSiteFilter() : bool;
 
     /**
+     * Determines whether the DataProvisioner should filter out rows which
+     * do not match the user's project.
+     *
+     * @return bool true if the data provisioner should filter non-matching projects.
+     */
+    abstract public function useProjectFilter() : bool;
+
+    /**
      * Items to add to the JSON fieldOptions key, which React components
      * can use for formatting. This is used to send data dependent options
      * to the frontend.
      *
      * @return array An array of data-context sensitive GUI options.
      */
-    abstract protected function getFieldOptions() : array ;
+    abstract protected function getFieldOptions() : array;
 
     /**
      * Return the base Provisioner, without any filters applied.
@@ -95,7 +103,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
     {
         $provisioner = $this->getBaseDataProvisioner();
 
-        $user = \User::singleton();
+        $user = \NDB_Factory::singleton()->user();
 
         // UserSiteMatch throws an exception if used on a model without a getCenterID
         // or getCenterIDs function, so we only apply it on sub-classes that
@@ -107,8 +115,13 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
                 new \LORIS\Data\Filters\UserSiteMatch()
             );
         }
-        return $provisioner;
 
+        if ($this->useProjectFilter()) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserProjectMatch()
+            );
+        }
+        return $provisioner;
     }
 
     /**
@@ -130,8 +143,8 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
 
         return json_encode(
             [
-             'Data'         => $arr,
-             'fieldOptions' => $this->getFieldOptions(),
+                'Data'         => $arr,
+                'fieldOptions' => $this->getFieldOptions(),
             ]
         );
     }

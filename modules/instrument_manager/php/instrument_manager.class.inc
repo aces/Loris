@@ -29,25 +29,28 @@ use \LORIS\Http\EmptyStream;
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {
-    const ALREADY_INSTALLED = 'This instrument already exists in the ' .
-                                  'test battery';
-
-    const CANNOT_WRITE_FILES = 'Automatic installation of instruments is ' .
+    const PERMISSIONS = array(
+        'instrument_manager_read',
+        'instrument_manager_write'
+    );
+    // Error messages
+    const ALREADY_INSTALLED     = 'This instrument already exists in the ' .
+                                  'test battery.';
+    const CANNOT_WRITE_FILES    = 'Automatic installation of instruments is ' .
                                   'not possible given the current server ' .
                                   'configuration. Please contact your ' .
                                   'administrator if you require this ' .
-                                  'functionality';
-
-    const FILE_ALREADY_EXISTS = 'This file has already been uploaded. ' .
+                                  'functionality.';
+    const FILE_ALREADY_EXISTS   = 'This file has already been uploaded. ' .
                                   'Please contact your administrator to ' .
-                                  'install the instrument';
-
+                                  'install the instrument.';
+    const BAD_REQUEST           = 'Uploaded file is not of type LINST or is ' .
+                                  'too large.';
     const UPLOAD_INSTALL_FAILED = 'File upload is successful but the ' .
                                   'installation failed. Please contact your ' .
-                                  'administrator';
-
-    const UPLOAD_NO_INSTALL = 'File upload is successful but the ' .
-                                  'instrument needs to be installed manually';
+                                  'administrator.';
+    const UPLOAD_NO_INSTALL     = 'File upload is successful but the ' .
+                                  'instrument needs to be installed manually.';
 
     /**
      * Does the setup required for this page. By default, sets up elements
@@ -71,20 +74,15 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * Checking permissions
-    *
-    * @param \User $user The user whose access is being checked
-    *
-    * @return bool
-    */
+     * Checking permissions
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            array(
-             'instrument_manager_read',
-             'instrument_manager_write',
-            )
-        );
+        return $user->hasAnyPermission(self::PERMISSIONS);
     }
 
     /**
@@ -118,7 +116,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
         // Ensure the user is allowed to upload.
-        if (! \User::singleton()->hasPermission('instrument_manager_write')) {
+        if (! \User::singleton()->hasPermission('superuser')) {
             return (new \LORIS\Http\Response())
                 ->withStatus(403, 'Forbidden')
                 ->withBody(
@@ -130,45 +128,55 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 );
         }
         // Ensure the server is properly configured.
-        if (! $this->canWriteFiles()) {
+        if (!$this->canWriteFiles()) {
             return (new \LORIS\Http\Response())
                 ->withStatus(500, 'Internal Server Error')
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode(
-                            array('error' => self::UPLOAD_INSTALL_FAILED)
+                            array('error' => self::CANNOT_WRITE_FILES)
                         )
                     )
                 );
         }
+
         $uploaded_file = $request->getUploadedFiles()['install_file'];
         $filename      = $uploaded_file->getClientFilename();
         $instrument    = pathinfo($filename)['filename'];
+        $targetdir     = new \SplFileInfo($this->path . 'project/instruments/');
+        $fullpath      = $targetdir->getPathname() . '/' . $filename;
 
         if ($this->instrumentExists($instrument)) {
-            return new \LORIS\Http\Response\Conflict(
-                self::ALREADY_INSTALLED
-            );
+            // An instrument with this name already exists in the test_names
+            // table. Abort upload.
+            return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
         }
 
-        $fullpath = $this->path . "project/instruments/" . $filename;
-
-        if (file_exists($fullpath)) {
-            /**
-             * Don't update the file if it already exists on the back-end.
-             * Instead, inform users that an administrator must install it on
-             * their behalf.
-             * This should only happen for users on a system where automatic
-             * installation is disabled (ie. has no quatUser), as the above
-             * error will return before this one.
-            */
-            return new \LORIS\Http\Response\Conflict(
-                self::FILE_ALREADY_EXISTS
+        /* Although only .linst files should be uploaded to this module, and
+         * they are just special text files, they are marked as
+         * application/octet-stream upon upload.
+         */
+        $uploader = (new \LORIS\FilesUploadHandler($targetdir))
+            ->withPermittedMIMETypes(
+                'application/octet-stream'
             );
-        }
 
-        $uploaded_file->moveTo($fullpath);
-        chmod($fullpath, 0644);
+        $response = $uploader->handle($request);
+
+        if (!in_array($response->getStatusCode(), array(200, 201), true)) {
+            if ($response->getStatusCode() == 409) {
+                /* Don't update the file if it already exists on the back-end.
+                 * Instead, inform users that an administrator must install it
+                 * on their behalf.
+                 * This should only happen for users on a system where automatic
+                 * installation is disabled (ie. has no quatUser).
+                 */
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    self::FILE_ALREADY_EXISTS
+                );
+            }
+            return $response;
+        }
 
         // Scripts in tools/ often make relative imports, so we must change
         // our effective directory in order to use them.
@@ -200,7 +208,17 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // silently. Otherwise, it will return the exit code and error
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
-        $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        try {
+            $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        } catch (\NotFound $e) {
+            return (new \LORIS\Http\Response\JSON\NotFound(
+                $e->getMessage()
+            ));
+        } catch (\Exception $e) {
+            return (new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
+            ));
+        }
 
         $db_config = $this->factory->config()->getSetting('database');
         exec(
@@ -240,19 +258,19 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * SetupVariables function
-    *
-    * @return void
-    */
+     * SetupVariables function
+     *
+     * @return void
+     */
     function _setupVariables()
     {
         $this->headers      = array(
-                               'Instrument',
-                               'Instrument_Type',
-                               'Table_Installed',
-                               'Table_Valid',
-                               'Pages_Valid',
-                              );
+            'Instrument',
+            'Instrument_Type',
+            'Table_Installed',
+            'Table_Valid',
+            'Pages_Valid',
+        );
         $this->columns      = array('Test_name as Instrument');
         $this->query        = " FROM test_names";
         $this->validFilters = array();
@@ -296,19 +314,19 @@ class Instrument_Manager extends \NDB_Menu_Filter
         }
 
         return array(
-                'Headers'      => $headers,
-                'Data'         => $MappedData,
-                'fieldOptions' => $this->fieldOptions,
-                'writable'     => $this->canWriteFiles(),
-                'caninstall'   => $this->isQuatUserConfigured(),
-               );
+            'Headers'      => $headers,
+            'Data'         => $MappedData,
+            'fieldOptions' => $this->fieldOptions,
+            'writable'     => $this->canWriteFiles(),
+            'caninstall'   => $this->isQuatUserConfigured(),
+        );
     }
 
     /**
-    * SetFilterForm function
-    *
-    * @return void
-    */
+     * SetFilterForm function
+     *
+     * @return void
+     */
     function _setFilterForm()
     {
     }
@@ -391,15 +409,15 @@ class Instrument_Manager extends \NDB_Menu_Filter
            TABLE_NAME=:tablename
           ',
             array(
-             'dbname'    => $this->factory->settings()->dbName(),
-             'tablename' => $instrument,
+                'dbname'    => $this->factory->settings()->dbName(),
+                'tablename' => $instrument,
             )
         );
         return ($exists > 0) ? 'Exists' : 'Missing';
     }
 
     /**
-     * Checks the test_names table for the existence of  the instrument
+     * Checks the test_names table for the existence of the instrument
      *
      * @param string $instrument The instrument name
      *
@@ -415,14 +433,14 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * CheckType function
-    *
-    * @param string $tablename  the value of table name
-    * @param string $columnname the value of column name
-    * @param string $type       the value of the type
-    *
-    * @return ?string
-    */
+     * CheckType function
+     *
+     * @param string $tablename  the value of table name
+     * @param string $columnname the value of column name
+     * @param string $type       the value of the type
+     *
+     * @return ?string
+     */
     protected function checkType($tablename, $columnname, $type)
     {
         $db           = $this->factory->database();
@@ -435,10 +453,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $exists       = $db->pselectOne(
             $sqlSelectOne,
             array(
-             'dbname'     => $this->factory->settings()->dbName(),
-             'columnname' => $columnname,
-             'tablename'  => $tablename,
-             'typename'   => $type,
+                'dbname'     => $this->factory->settings()->dbName(),
+                'columnname' => $columnname,
+                'tablename'  => $tablename,
+                'typename'   => $type,
             )
         );
         if (!$exists) {
@@ -448,12 +466,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * CheckTable function
-    *
-    * @param string $instname the value of instname
-    *
-    * @return string An evocative answer
-    */
+     * CheckTable function
+     *
+     * @param string $instname the value of instname
+     *
+     * @return string An evocative answer
+     */
     protected function checkTable($instname): string
     {
         $filename = $this->path . "project/instruments/$instname.linst";
@@ -505,9 +523,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $db_enum      = $db->pselectOne(
                     $sqlSelectOne,
                     array(
-                     'dbname'     => $this->factory->settings()->dbName(),
-                     'columnname' => $name,
-                     'tablename'  => $instname,
+                        'dbname'     => $this->factory->settings()->dbName(),
+                        'columnname' => $name,
+                        'tablename'  => $instname,
                     )
                 );
                 $options      = array();
@@ -533,12 +551,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-    * CheckPages function
-    *
-    * @param string $instname the value of instname
-    *
-    * @return string An evocative response
-    */
+     * CheckPages function
+     *
+     * @param string $instname the value of instname
+     *
+     * @return string An evocative response
+     */
     protected function checkPages($instname): string
     {
         $filename = $this->path . "project/instruments/$instname.linst";
@@ -558,8 +576,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $exists = $db->pselectOne(
                     $sqlSelectOne,
                     array(
-                     'testname' => $instname,
-                     'testdesc' => trim($pieces[2]),
+                        'testname' => $instname,
+                        'testdesc' => trim($pieces[2]),
                     )
                 );
                 if ($exists <= 0) {
@@ -635,7 +653,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         return array_merge(
             $depends,
             array(
-             $baseURL . '/instrument_manager/js/instrumentManagerIndex.js',
+                $baseURL . '/instrument_manager/js/instrumentManagerIndex.js',
             )
         );
     }

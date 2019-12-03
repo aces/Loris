@@ -83,6 +83,12 @@ class MediaUploadForm extends Component {
       </span>
     );
 
+    const visits = this.state.formData.pscid ?
+      this.state.Data.sessionData[this.state.formData.pscid].visits :
+      {};
+    const instruments = this.state.formData.pscid && this.state.formData.visitLabel ?
+      this.state.Data.sessionData[this.state.formData.pscid].instruments[this.state.formData.visitLabel] :
+      {};
     return (
       <div className='row'>
         <div className='col-md-8 col-lg-7'>
@@ -112,36 +118,28 @@ class MediaUploadForm extends Component {
             <SelectElement
               name='visitLabel'
               label='Visit Label'
-              options={this.state.Data.visits}
+              options={visits}
               onUserInput={this.setFormData}
               ref='visitLabel'
               required={true}
               value={this.state.formData.visitLabel}
-            />
-            <SearchableDropdown
-              name='forSite'
-              label='Site'
-              placeHolder='Search for site'
-              options={this.state.Data.sites}
-              strictSearch={true}
-              onUserInput={this.setFormData}
-              ref='forSite'
-              required={true}
-              value={this.state.formData.forSite}
+              disabled={this.state.formData.pscid == null}
             />
             <SelectElement
               name='instrument'
               label='Instrument'
-              options={this.state.Data.instruments}
+              options={instruments}
               onUserInput={this.setFormData}
               ref='instrument'
+              required={false}
               value={this.state.formData.instrument}
+              disabled={this.state.formData.pscid == null}
             />
             <DateElement
               name='dateTaken'
               label='Date of Administration'
-              minYear='2000'
-              maxYear='2017'
+              minYear={this.state.Data.startYear}
+              maxYear={this.state.Data.endYear}
               onUserInput={this.setFormData}
               ref='dateTaken'
               value={this.state.formData.dateTaken}
@@ -365,27 +363,6 @@ class MediaUploadForm extends Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    // Only display visits and sites available for the current pscid
-    let visitLabel = this.state.formData.visitLabel;
-    let pscid = this.state.formData.pscid;
-
-    if (formElement === 'pscid' && value !== '') {
-      this.state.Data.visits = this.state.Data.sessionData[value].visits;
-      this.state.Data.sites = this.state.Data.sessionData[value].sites;
-      if (visitLabel) {
-        this.state.Data.instruments =
-          this.state.Data.sessionData[value].instruments[visitLabel];
-      } else {
-        this.state.Data.instruments =
-          this.state.Data.sessionData[value].instruments.all;
-      }
-    }
-
-    if (formElement === 'visitLabel' && value !== '' && pscid) {
-      this.state.Data.instruments =
-        this.state.Data.sessionData[pscid].instruments[value];
-    }
-
     let formData = this.state.formData;
     formData[formElement] = value;
 

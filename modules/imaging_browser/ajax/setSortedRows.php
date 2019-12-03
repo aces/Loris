@@ -17,9 +17,9 @@
  */
 $canAccess = \User::singleton()->hasAnyPermission(
     array(
-     'imaging_browser_view_allsites',
-     'imaging_browser_phantom_allsites',
-     'imaging_browser_phantom_ownsite',
+        'imaging_browser_view_allsites',
+        'imaging_browser_phantom_allsites',
+        'imaging_browser_phantom_ownsite',
     )
 )
 || ($user->hasStudySite()

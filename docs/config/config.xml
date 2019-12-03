@@ -40,7 +40,7 @@
             <generation>sequential</generation>
             <structure>
                 <seq type="siteAbbrev"/>
-                <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
+                <seq type="alphanumeric" length="4"/> <!-- Ex: AAA0001-->
             </structure>
         </PSCID>
         
@@ -116,8 +116,5 @@
             <permission>sampleInstrument2PermissionName</permission>
         </instrument>
     </instrumentPermissions>
-
-    <!-- MINC TOOLS PATH -->
-    <MINCToolsPath>%MINCTOOLSPATH%</MINCToolsPath>
 
 </config>

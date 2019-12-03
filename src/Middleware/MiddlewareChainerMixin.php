@@ -43,7 +43,7 @@ trait MiddlewareChainerMixin
      *
      * @param MiddlewareChainer $next The middleware to append
      *
-     * @return MiddlewareChainer A new middleware queue 
+     * @return MiddlewareChainer A new middleware queue
      *                                              with $next appended
      */
     public function withMiddleware(MiddlewareChainer $next)
@@ -54,11 +54,10 @@ trait MiddlewareChainerMixin
         while ($cur->next !== null) {
             $cur->next = clone $cur->next;
             $cur       = $cur->next;
-
         }
 
         // We know next is null from the above loop, so this is safe.
         $cur->next = $next;
         return $new;
     }
-};
+}

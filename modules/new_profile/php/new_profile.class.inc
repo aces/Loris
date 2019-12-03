@@ -13,6 +13,7 @@ declare(strict_types=1);
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\new_profile;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -74,6 +75,8 @@ class New_Profile extends \NDB_Form
         if (count($centerIDs) <= 1 && !isset($values['site'])) {
             $values['site'] = $centerIDs[0];
         }
+        //TODO: add similar logic to projects when user-projects association is
+        //incorporated.
 
         /* Create the candidate and retrieve its ID.
          * Use form values when present, otherwise default to null.
@@ -84,13 +87,13 @@ class New_Profile extends \NDB_Form
             $values['edcDate'] ?? null,
             $values['sex'],
             $values['pscid'] ?? null,
-            isset($values['project']) ? intval($values['project']) : null
+            intval($values['project'])
         );
 
         /* Update front-end data. Use passed PSCID when present, otherwise
          * retrieve it from the newly-created candidate.
          */
-        $this->_candID = $candID;
+        $this->_candID = (string)$candID;
         $this->_pscid  = $values['pscid']
             ?? \Candidate::singleton($candID)->getPSCID();
 
@@ -121,9 +124,9 @@ class New_Profile extends \NDB_Form
                     );
             }
             $result = array(
-                       'candID' => $this->_candID,
-                       'pscid'  => $this->_pscid,
-                      );
+                'candID' => $this->_candID,
+                'pscid'  => $this->_pscid,
+            );
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(201)
@@ -158,9 +161,9 @@ class New_Profile extends \NDB_Form
         $dobFormat = $config->getSetting('dobFormat');
         $edc       = $config->getSetting('useEDC');
         $sex       = array(
-                      'male'   => 'Male',
-                      'female' => 'Female',
-                     );
+            'male'   => 'Male',
+            'female' => 'Female',
+        );
         $pscidSet  = "false";
         $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
         $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
@@ -197,15 +200,15 @@ class New_Profile extends \NDB_Form
         }
 
         $this->fieldOptions = array(
-                               'minYear'   => $minYear,
-                               'maxYear'   => $maxYear,
-                               'dobFormat' => $dobFormat,
-                               'edc'       => $edc,
-                               'sex'       => $sex,
-                               'pscidSet'  => $pscidSet,
-                               'site'      => $site,
-                               'project'   => $project,
-                              );
+            'minYear'   => $minYear,
+            'maxYear'   => $maxYear,
+            'dobFormat' => $dobFormat,
+            'edc'       => $edc,
+            'sex'       => $sex,
+            'pscidSet'  => $pscidSet,
+            'site'      => $site,
+            'project'   => $project,
+        );
 
         $this->form->addFormRule(array(&$this, '_validateNewCandidate'));
     }
@@ -263,7 +266,7 @@ class New_Profile extends \NDB_Form
             ) {
                 $errors['edcFormat'] = 'EDC is not in valid date format.';
             }
-            if (strlen($values['dobDate']) < 10) {
+            if (strlen($values['dobDate'] ?? '') < 10) {
                 $errors['dobFormat'] = 'DOB is not in valid date format.';
             }
         }
@@ -283,14 +286,17 @@ class New_Profile extends \NDB_Form
             } else {
                 // user has multiple sites,
                 // so validate PSCID against the Site selected
-                $site =& \Site::singleton($values['site']);
+                $site =& \Site::singleton((int) $values['site']);
             }
+
+            $project = \Project::getProjectFromID(intval($values['project']));
 
             if (empty($values['pscid'])) {
                 $errors['pscid'] = 'PSCID must be specified';
             } elseif (!\Candidate::validatePSCID(
                 $values['pscid'],
-                $site->getSiteAlias()
+                $site->getSiteAlias(),
+                $project->getAlias()
             )
             ) {
                 $errors['pscid'] = 'PSCID does not match the required structure';

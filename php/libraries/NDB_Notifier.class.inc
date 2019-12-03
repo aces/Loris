@@ -52,7 +52,7 @@ class NDB_Notifier extends NDB_Notifier_Abstract
      * Function to be overridden by module using the notification system
      *
      * @param array   $extra_tpl_data additional variables to be sent to the
-     *                              template.
+     *                                template.
      * @param ?string $custom_message message overriding module-defined message
      *
      * @return void

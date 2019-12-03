@@ -3,7 +3,7 @@
  * This file retrieves content for specific help section
  * and returns a json object
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -13,48 +13,41 @@
  */
 
 try {
-    /**
-     * The link constructed from the front end sets the testName
-     * parameter, not the Module parameter.
-     */
-    if (isset($_REQUEST['testName'])) {
-        $mname = $_REQUEST['testName'];
-    }
-
-    $m = Module::factory($mname);
-} catch (Exception $e) {
-    $m = '';
-}
-if (!empty($m)) {
-    $page            = !empty($_REQUEST['subtest']) ? $_REQUEST['subtest'] : $mname;
-    $help['content'] = $m->getHelp($page);
-    $help['format']  = 'markdown';
+    $moduleName  = $_REQUEST['testName'] ?? null;
+    $subpageName = $_REQUEST['subtest'] ?? null;
+    $m           = Module::factory($moduleName);
+    // Load help data. Try to load subpage first as its more specific and
+    // will only be present some of the time. Fallback to the module name if
+    // no subpage present.
+    $help = array(
+        'content' => $m->getHelp($subpageName ?? $moduleName),
+        'format'  => 'markdown',
+    );
     print json_encode($help);
     ob_end_flush();
-    exit(0);
-}
+    exit;
+} catch (Exception $e) {
 
-// Wasn't a module, so fall back on the old style of DB lookup.
-require_once "helpfile.class.inc";
+    // Wasn't a module, so fall back on the old style of DB lookup.
+    include_once "helpfile.class.inc";
 
-if (!empty($_REQUEST['testName'])) {
-    if (empty($_REQUEST['subtest'])) {
-        $helpID = \LORIS\help_editor\HelpFile::hashToID(md5($_REQUEST['testName']));
-    } else {
-        $helpID = \LORIS\help_editor\HelpFile::hashToID(md5($_REQUEST['subtest']));
+    if (!empty($moduleName)) {
+        $helpID = \LORIS\help_editor\HelpFile::hashToID(
+            md5($subpageName ?? $moduleName)
+        );
     }
-}
 
-$help_file       = \LORIS\help_editor\HelpFile::factory($helpID);
-$data            = $help_file->toArray();
-$data['content'] = trim($data['content']);
+    $help_file       = \LORIS\help_editor\HelpFile::factory($helpID);
+    $data            = $help_file->toArray();
+    $data['content'] = trim($data['content']);
 
-if (empty($data['updated'])) {
-    $data['updated'] = "-";
-    // if document was never updated should display date created
-    if (!empty($data['created'])) {
-        $data['updated'] = $data['created'];
+    if (empty($data['updated'])) {
+        $data['updated'] = "-";
+        // if document was never updated should display date created
+        if (!empty($data['created'])) {
+            $data['updated'] = $data['created'];
+        }
     }
+    print json_encode($data);
+    ob_end_flush();
 }
-print json_encode($data);
-ob_end_flush();

@@ -7,7 +7,7 @@ mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
 Your next step before issuing a pull request is to review our
 [Coding Standards](./docs/CodingStandards.md). If you are doing
 front-end development you should also check out our [React
-guidelines](./LORIS_react.README.md).
+guidelines](./docs/React.README.md).
 
 You can also learn about our code
 review process by perusing our [Code Review
@@ -16,6 +16,10 @@ in the [LORIS Wiki](https://github.com/aces/Loris/wiki). These will be
 some of the factors we'll consider when reviewing your code.
 
 ## Development branches
+
+Please create a fork of the LORIS repository on your own GitHub account and
+push changes to local branches rather than pushing new branches directly 
+to our repository.
 
 You should base your pull requests on one of the following branches
 depending on the kind of change you are making:

@@ -9,7 +9,7 @@
  * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
-*/
+ */
 
 namespace LORIS\configuration;
 
@@ -23,7 +23,7 @@ namespace LORIS\configuration;
  * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
-*/
+ */
 class Subproject extends \NDB_Form
 {
     /**
@@ -59,14 +59,14 @@ class Subproject extends \NDB_Form
 
         $this->tpl_data['useEDCOptions']
             = array(
-               '1' => 'Yes',
-               '0' => 'No',
-              );
+                '1' => 'Yes',
+                '0' => 'No',
+            );
 
         $this->tpl_data['WindowDifferenceOptions']
             = array(
-               'battery' => 'Closest Test Battery',
-               'optimal' => 'Optimal Visit Window for Visit Label',
-              );
+                'battery' => 'Closest Test Battery',
+                'optimal' => 'Optimal Visit Window for Visit Label',
+            );
     }
 }

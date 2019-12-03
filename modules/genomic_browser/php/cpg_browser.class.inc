@@ -66,40 +66,40 @@ class CpG_Browser extends \NDB_Menu_Filter
         // set the class variables
         $this->_displayBrief = !(isset($_REQUEST['format']));
         $this->columns       = array(
-                                'psc.Name AS PSC',
-                                'LPAD(candidate.CandID, 6, "0") AS DCCID',
-                                'candidate.PSCID',
-                                'candidate.Sex',
-                                'cohort.SubprojectID as Subproject',
-                                'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
-                                'gscr.sample_label as Sample',
-                                'cpg.cpg_name as cpg_name',
-                                'cpg.beta_value as Beta_value',
-                                'gca.Chromosome as Chromosome',
-                                'gca.Strand as Strand',
-                                'gca.StartLoc as StartLoc',
-                                'gca.address_id_a as Probe_Loc_A',
-                                'gca.probe_seq_a as Probe_Seq_A',
-                                'gca.address_id_b as Probe_Loc_B',
-                                'gca.probe_seq_b as Probe_Seq_B',
-                                'gca.design_type as Design',
-                                'gca.color_channel as Color',
-                                'gca.genome_build as Assembly',
-                                'gca.probe_snp_10 as SNP_10',
-                                'gca.gene_name as Gene',
-                                'gca.gene_acc_num as Accession_number',
-                                'gca.gene_group as Gene_Grp',
-                                'gca.island_loc as Island_Loc',
-                                'gca.island_relation as Context',
-                                'gca.fantom_promoter_loc as Fantom_Prom',
-                                'gca.dmr as DMR',
-                                'gca.enhancer as Enhancer',
-                                'gca.hmm_island_loc as HMM_Island',
-                                'gca.reg_feature_loc as Reg_Feature_Loc',
-                                'gca.reg_feature_group as Reg_Feature_Grp',
-                                'gca.dhs as DHS',
-                                'platform.Name as Platform',
-                               );
+            'psc.Name AS PSC',
+            'LPAD(candidate.CandID, 6, "0") AS DCCID',
+            'candidate.PSCID',
+            'candidate.Sex',
+            'cohort.SubprojectID as Subproject',
+            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
+            'gscr.sample_label as Sample',
+            'cpg.cpg_name as cpg_name',
+            'cpg.beta_value as Beta_value',
+            'gca.Chromosome as Chromosome',
+            'gca.Strand as Strand',
+            'gca.StartLoc as StartLoc',
+            'gca.address_id_a as Probe_Loc_A',
+            'gca.probe_seq_a as Probe_Seq_A',
+            'gca.address_id_b as Probe_Loc_B',
+            'gca.probe_seq_b as Probe_Seq_B',
+            'gca.design_type as Design',
+            'gca.color_channel as Color',
+            'gca.genome_build as Assembly',
+            'gca.probe_snp_10 as SNP_10',
+            'gca.gene_name as Gene',
+            'gca.gene_acc_num as Accession_number',
+            'gca.gene_group as Gene_Grp',
+            'gca.island_loc as Island_Loc',
+            'gca.island_relation as Context',
+            'gca.fantom_promoter_loc as Fantom_Prom',
+            'gca.dmr as DMR',
+            'gca.enhancer as Enhancer',
+            'gca.hmm_island_loc as HMM_Island',
+            'gca.reg_feature_loc as Reg_Feature_Loc',
+            'gca.reg_feature_group as Reg_Feature_Grp',
+            'gca.dhs as DHS',
+            'platform.Name as Platform',
+        );
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -109,32 +109,32 @@ class CpG_Browser extends \NDB_Menu_Filter
                         return ucwords(str_replace('_', ' ', $header));
                 },
                 array(
-                 'PSC',
-                 'DCCID',
-                 'Subproject',
-                 'DoB',
-                 'Sample',
-                 'StartLoc',
-                 'Probe_Loc_A',
-                 'Probe_Seq_A',
-                 'Probe_Loc_B',
-                 'Probe_Seq_B',
-                 'Design',
-                 'Color',
-                 'Assembly',
-                 'SNP_10',
-                 'Accession_number',
-                 'Gene_Grp',
-                 'Island_Loc',
-                 'Context',
-                 'Fantom_Prom',
-                 'DMR',
-                 'Enhancer',
-                 'HMM_Island',
-                 'Reg_Feature_Loc',
-                 'Reg_Feature_Grp',
-                 'DHS',
-                 'Platform',
+                    'PSC',
+                    'DCCID',
+                    'Subproject',
+                    'DoB',
+                    'Sample',
+                    'StartLoc',
+                    'Probe_Loc_A',
+                    'Probe_Seq_A',
+                    'Probe_Loc_B',
+                    'Probe_Seq_B',
+                    'Design',
+                    'Color',
+                    'Assembly',
+                    'SNP_10',
+                    'Accession_number',
+                    'Gene_Grp',
+                    'Island_Loc',
+                    'Context',
+                    'Fantom_Prom',
+                    'DMR',
+                    'Enhancer',
+                    'HMM_Island',
+                    'Reg_Feature_Loc',
+                    'Reg_Feature_Grp',
+                    'DHS',
+                    'Platform',
                 )
             )
         );
@@ -171,78 +171,78 @@ class CpG_Browser extends \NDB_Menu_Filter
         $this->limit = 10000;
 
         $this->validFilters = array(
-                               'candidate.RegistrationCenterID',
-                               'candidate.CandID',
-                               'candidate.PSCID',
-                               'candidate.Sex',
-                               'cohort.SubprojectID',
-                               'candidate.DoB',
-                               'show_brief_results',
-                               'cpg.cpg_name',
-                               'cpg.beta_value',
-                               'gca.Chromosome',
-                               'gca.Strand',
-                               'gca.StartLoc',
-                               'gca.EndLoc',
-                               'genomic_range',
-                               'gca.gene_name',
-                               'gca.genome_build',
-                               'gca.design_type',
-                               'gca.color_channel',
-                               'gca.probe_snp_10',
-                               'gca.gene_group',
-                               'gca.island_loc',
-                               'gca.island_relation',
-                               'gca.fantom_promoter_loc',
-                               'gca.dmr',
-                               'gca.enhancer',
-                               'gca.hmm_island_loc',
-                               'gca.reg_feature_group',
-                               'gca.dhs',
-                               'platform.Name',
-                              );
+            'candidate.RegistrationCenterID',
+            'candidate.CandID',
+            'candidate.PSCID',
+            'candidate.Sex',
+            'cohort.SubprojectID',
+            'candidate.DoB',
+            'show_brief_results',
+            'cpg.cpg_name',
+            'cpg.beta_value',
+            'gca.Chromosome',
+            'gca.Strand',
+            'gca.StartLoc',
+            'gca.EndLoc',
+            'genomic_range',
+            'gca.gene_name',
+            'gca.genome_build',
+            'gca.design_type',
+            'gca.color_channel',
+            'gca.probe_snp_10',
+            'gca.gene_group',
+            'gca.island_loc',
+            'gca.island_relation',
+            'gca.fantom_promoter_loc',
+            'gca.dmr',
+            'gca.enhancer',
+            'gca.hmm_island_loc',
+            'gca.reg_feature_group',
+            'gca.dhs',
+            'platform.Name',
+        );
 
         $ftf = array(
-                'centerID'           => 'candidate.RegistrationCenterID',
-                'DCCID'              => 'candidate.CandID',
-                'PSCID'              => 'candidate.PSCID',
-                'sex'                => 'candidate.Sex',
-                'SubprojectID'       => 'cohort.SubprojectID',
-                'dob'                => 'candidate.DoB',
-                'Show_Brief_Results' => 'show_brief_results',
-                'cpg_name'           => 'cpg.cpg_name',
-                'Beta_value'         => 'cpg.beta_value',
-                'Chromosome'         => 'gca.Chromosome',
-                'Gene_Symbol'        => 'gca.gene_name',
-                'Platform'           => 'platform.Name',
-                'Strand'             => 'gca.Strand',
-                'StartLoc'           => 'gca.StartLoc',
-                'EndLoc'             => 'gca.EndLoc',
-                'genomic_range'      => 'genomic_range',
-                'Assembly'           => 'gca.genome_build',
-                'Context'            => 'gca.island_relation',
-                'Design'             => 'gca.design_type',
-                'Color'              => 'gca.color_channel',
-                'SNP_10'             => 'gca.probe_snp_10',
-                'Gene_Grp'           => 'gca.gene_group',
-                'Island_Loc'         => 'gca.island_loc',
-                'Fantom_Prom'        => 'gca.fantom_promoter_loc',
-                'DMR'                => 'gca.dmr',
-                'Enhancer'           => 'gca.enhancer',
-                'HMM_Island'         => 'gca.hmm_island_loc',
-                'Reg_Feature_Loc'    => 'gca.reg_feature_loc',
-                'Reg_Feature_Grp'    => 'gca.reg_feature_group',
-                'DHS'                => 'gca.dhs',
-               );
+            'centerID'           => 'candidate.RegistrationCenterID',
+            'DCCID'              => 'candidate.CandID',
+            'PSCID'              => 'candidate.PSCID',
+            'sex'                => 'candidate.Sex',
+            'SubprojectID'       => 'cohort.SubprojectID',
+            'dob'                => 'candidate.DoB',
+            'Show_Brief_Results' => 'show_brief_results',
+            'cpg_name'           => 'cpg.cpg_name',
+            'Beta_value'         => 'cpg.beta_value',
+            'Chromosome'         => 'gca.Chromosome',
+            'Gene_Symbol'        => 'gca.gene_name',
+            'Platform'           => 'platform.Name',
+            'Strand'             => 'gca.Strand',
+            'StartLoc'           => 'gca.StartLoc',
+            'EndLoc'             => 'gca.EndLoc',
+            'genomic_range'      => 'genomic_range',
+            'Assembly'           => 'gca.genome_build',
+            'Context'            => 'gca.island_relation',
+            'Design'             => 'gca.design_type',
+            'Color'              => 'gca.color_channel',
+            'SNP_10'             => 'gca.probe_snp_10',
+            'Gene_Grp'           => 'gca.gene_group',
+            'Island_Loc'         => 'gca.island_loc',
+            'Fantom_Prom'        => 'gca.fantom_promoter_loc',
+            'DMR'                => 'gca.dmr',
+            'Enhancer'           => 'gca.enhancer',
+            'HMM_Island'         => 'gca.hmm_island_loc',
+            'Reg_Feature_Loc'    => 'gca.reg_feature_loc',
+            'Reg_Feature_Grp'    => 'gca.reg_feature_group',
+            'DHS'                => 'gca.dhs',
+        );
         $this->formToFilter = $ftf;
 
         $this->EqualityFilters = array(
-                                  'candidate.Sex',
-                                  'cpg.cpg_name',
-                                  'gca.genome_build',
-                                  'gca.design_type',
-                                  'gca.Strand',
-                                 );
+            'candidate.Sex',
+            'cpg.cpg_name',
+            'gca.genome_build',
+            'gca.design_type',
+            'gca.Strand',
+        );
     }
 
     /**
@@ -287,9 +287,9 @@ class CpG_Browser extends \NDB_Menu_Filter
             'sex',
             'Sex:',
             array(
-             ''       => 'All',
-             'Male'   => 'Male',
-             'Female' => 'Female',
+                ''       => 'All',
+                'Male'   => 'Male',
+                'Female' => 'Female',
             )
         );
         $this->addSelect(
@@ -301,9 +301,9 @@ class CpG_Browser extends \NDB_Menu_Filter
 
         $show_results_options
             = array(
-               'brief' => 'Summary fields',
-               'full'  => 'All fields',
-              );
+                'brief' => 'Summary fields',
+                'full'  => 'All fields',
+            );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // ------------------------------------------------------------
@@ -313,15 +313,15 @@ class CpG_Browser extends \NDB_Menu_Filter
         $this->addBasicText('Gene_Symbol', 'Gene:');
         $this->addBasicText('genomic_range', 'Genomic Range:');
         $Base_options = array(
-                         null => 'Any',
-                         '37' => 'GRCh37',
-                        );
+            null => 'Any',
+            '37' => 'GRCh37',
+        );
         $this->addSelect('Assembly', 'Build:', $Base_options);
         $Base_options = array(
-                         null => 'Any',
-                         'F'  => 'Forward',
-                         'R'  => 'Reverse',
-                        );
+            null => 'Any',
+            'F'  => 'Forward',
+            'R'  => 'Reverse',
+        );
         $this->addSelect('Strand', 'Strand:', $Base_options);
 
         // ------------------------------------------------------------
@@ -346,45 +346,45 @@ class CpG_Browser extends \NDB_Menu_Filter
 
         // Gene_Grp
         $Base_options = array(
-                         null      => 'Any',
-                         '1stExon' => '1st Exon',
-                         '3`UTR'   => '3`UTR',
-                         '5`UTR'   => '5`UTR',
-                         'Body'    => 'Body',
-                         'TSS1500' => 'TSS1500',
-                         'TSS200'  => 'TSS200',
-                        );
+            null      => 'Any',
+            '1stExon' => '1st Exon',
+            '3`UTR'   => '3`UTR',
+            '5`UTR'   => '5`UTR',
+            'Body'    => 'Body',
+            'TSS1500' => 'TSS1500',
+            'TSS200'  => 'TSS200',
+        );
         $this->addSelect('Gene_Grp', 'Position:', $Base_options);
 
         // Design
         $Base_options = array(
-                         null => 'Any',
-                         'I'  => 'I',
-                         'II' => 'II',
-                        );
+            null => 'Any',
+            'I'  => 'I',
+            'II' => 'II',
+        );
         $this->addSelect('Design', 'Infinium design:', $Base_options);
 
         // Color
         $Base_options = array(
-                         null  => 'Any',
-                         'Grn' => 'Green',
-                         'Red' => 'Red',
-                        );
+            null  => 'Any',
+            'Grn' => 'Green',
+            'Red' => 'Red',
+        );
         $this->addSelect('Color', 'Color:', $Base_options);
 
         // Enhancer
         $Base_options = array(
-                         null => 'Any',
-                         '1'  => 'Yes',
-                        );
+            null => 'Any',
+            '1'  => 'Yes',
+        );
         $this->addSelect('Enhancer', 'Enhancer:', $Base_options);
 
         // SNP_10
         $Base_options = array(
-                         null   => 'Any',
-                         'NULL' => 'No',
-                         '_'    => 'Yes',
-                        );
+            null   => 'Any',
+            'NULL' => 'No',
+            '_'    => 'Yes',
+        );
         $this->addSelect('SNP_10', 'SNP:', $Base_options);
 
         // Reg_Feature_Grp
@@ -396,26 +396,26 @@ class CpG_Browser extends \NDB_Menu_Filter
 
         // Fantom_Prom
         $Base_options = array(
-                         null       => 'Any',
-                         'NULL'     => 'No',
-                         'NOT_NULL' => 'Yes',
-                        );
+            null       => 'Any',
+            'NULL'     => 'No',
+            'NOT_NULL' => 'Yes',
+        );
         $this->addSelect('Fantom_Prom', 'Promoter:', $Base_options);
 
         // HMM_Island
         $Base_options = array(
-                         null       => 'Any',
-                         'NULL'     => 'No',
-                         'NOT_NULL' => 'Yes',
-                        );
+            null       => 'Any',
+            'NULL'     => 'No',
+            'NOT_NULL' => 'Yes',
+        );
         $this->addSelect('HMM_Island', 'HMM Island:', $Base_options);
 
         // DHS
         $Base_options = array(
-                         null   => 'Any',
-                         '1'    => 'Yes',
-                         'NULL' => 'No',
-                        );
+            null   => 'Any',
+            '1'    => 'Yes',
+            'NULL' => 'No',
+        );
         $this->addSelect('DHS', 'DHS:', $Base_options);
 
         // DMR
@@ -503,8 +503,8 @@ class CpG_Browser extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/genomic_browser/js/genomic_browser.js",
-             $baseURL . "/genomic_browser/js/cpgColumnFormatter.js",
+                $baseURL . "/genomic_browser/js/genomic_browser.js",
+                $baseURL . "/genomic_browser/js/cpgColumnFormatter.js",
             )
         );
     }

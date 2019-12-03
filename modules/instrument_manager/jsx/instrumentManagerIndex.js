@@ -39,7 +39,6 @@ class InstrumentManagerIndex extends Component {
       .then((data) => this.setState({data}))
       .catch((error) => {
         this.setState({error: true});
-        console.error(error);
       });
   }
 

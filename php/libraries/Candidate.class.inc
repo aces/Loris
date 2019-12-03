@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+use LORIS\StudyEntities\Candidate\CandID;
 /* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
@@ -42,21 +43,21 @@ class Candidate
      * candID, and will only ever instantiate one object in
      * the event that it's called multiple times.
      *
-     * @param integer $candID A 6 digit Loris CandID that matches
-     *                        a candidate in the candidate table
+     * @param CandID $candID A 6 digit Loris CandID that matches
+     *                       a candidate in the candidate table
      *
      * @return Candidate the Candidate object
      * @static
      */
-    static public function &singleton(int $candID)
+    static public function &singleton(CandID $candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
-        if (!isset($candidateList[$candID])) {
-            $candidateList[$candID] = new Candidate();
-            $candidateList[$candID]->select($candID);
+        if (!isset($candidateList[strval($candID)])) {
+            $candidateList[strval($candID)] = new Candidate();
+            $candidateList[strval($candID)]->select($candID);
         }
 
-        return $candidateList[$candID];
+        return $candidateList[strval($candID)];
     }
 
     /**
@@ -64,18 +65,18 @@ class Candidate
      * information from the database and populating it into the
      * Candidate object. Used by singleton method.
      *
-     * @param integer $candID The 6 digit Loris CandID
+     * @param CandID $candID The 6 digit Loris CandID
      *
      * @return void As a side-effect loads candidate into current
      *              object
      * @throws DatabaseException | LorisException
      */
-    public function select(int $candID): void
+    public function select(CandID $candID): void
     {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $CandArray = array('Candidate' => $candID);
+        $CandArray = array('Candidate' => (string) $candID);
 
         // make a local reference to the Database object
         $db = $factory->database();
@@ -84,7 +85,7 @@ class Candidate
         $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
-            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
+            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
@@ -93,7 +94,7 @@ class Candidate
         $row = $db->pselectRow($query, $CandArray);
 
         if (!is_array($row) || sizeof($row) == 0) {
-            throw new LorisException(
+            throw new \LorisException(
                 "Could not select Candidate data from the database (DCCID: $candID)",
                 CANDIDATE_INVALID
             );
@@ -122,8 +123,8 @@ class Candidate
                     (pc.ParameterTypeID=pt.ParameterTypeID)
                     WHERE c.CandID=:Candidate AND pt.Name=:PTName",
                     array(
-                     'Candidate' => $candID,
-                     'PTName'    => $parameter_type,
+                        'Candidate' => $candID,
+                        'PTName'    => $parameter_type,
                     )
                 );
                 // Sanitize values coming from the parameter_candidate table
@@ -168,10 +169,9 @@ class Candidate
         $row   = $db->pselect($query, $CandArray);
 
         // store user data in object property
-        foreach ($row AS $value) {
+        foreach ($row as $value) {
             $this->listOfTimePoints[] = intval($value["ID"]);
         }
-
     }
 
     /**
@@ -182,18 +182,19 @@ class Candidate
      * it is an optional parameter based on configuration
      * settings. However, this will not be backward compatiable.
      *
-     * @param int         $centerID    centerID of the site to which the
-     *                                  candidate will belong
-     * @param string      $dateOfBirth date of birth written as YYYY-MM-DD
-     * @param string|null $edc         estimated date of confinement written as
-     *                                      YYYY-MM-DD. Value should be null
-     *                                      unless the useEDC setting is
-     *                                      configured to be true.
-     * @param string      $sex         sex, either 'Male' or 'Female'
-     * @param string|null $PSCID       PSCID specified by the user, if available
-     * @param int|null    $projectID   The project ID, if available
+     * @param int         $centerID              centerID of the site to which the
+     *                                           candidate will belong
+     * @param string      $dateOfBirth           date of birth written as YYYY-MM-DD
+     * @param string|null $edc                   estimated date of confinement
+     *                                           written as YYYY-MM-DD. Value should
+     *                                           be null unless the useEDC setting
+     *                                           is configured to be true.
+     * @param string      $sex                   sex, either 'Male' or 'Female'
+     * @param string|null $PSCID                 PSCID specified by the user,
+     *                                           if available
+     * @param int|null    $registrationProjectID The project ID, if available
      *
-     * @return int   $candID      candidate id of the new candidate
+     * @return CandID   $candID      candidate id of the new candidate
      * @throws Exception
      * @static
      */
@@ -203,11 +204,13 @@ class Candidate
         ?string $edc,
         string $sex,
         ?string $PSCID = null,
-        int $projectID = null
-    ): int {
+        int $registrationProjectID = null
+    ): CandID {
         $factory = NDB_Factory::singleton();
 
         $site = \Site::singleton($centerID);
+
+        $project = \Project::getProjectFromID($registrationProjectID);
 
         $user = \User::singleton($_SESSION['State']->getUsername());
 
@@ -233,7 +236,12 @@ class Candidate
             }
 
             // check pscid structure
-            if (!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
+            if (!Candidate::validatePSCID(
+                $PSCID,
+                $site->getSiteAlias(),
+                $project->getAlias()
+            )
+            ) {
                 throw new LorisException(
                     "PSCID has an invalid structure",
                     PSCID_INVALID_STRUCTURE
@@ -241,26 +249,33 @@ class Candidate
             }
 
         } else {
-            $PSCID = (new \PSCIDGenerator($site->getSiteAlias()))->generate();
+            $PSCID = (new \PSCIDGenerator(
+                $site->getSiteAlias(),
+                $project->getAlias()
+            )
+            )->generate();
         }
 
         // Insert the new candidate into the database if everything is fine.
         $setArray = array(
-                     'RegistrationCenterID' => $centerID,
-                     'PSCID'                => $PSCID,
-                     'DoB'                  => $dateOfBirth,
-                     'EDC'                  => $edc,
-                     'Sex'                  => $sex,
-                     'ProjectID'            => $projectID,
-                     'Date_active'          => date('Y-m-d'),
-                     'Date_registered'      => date('Y-m-d'),
-                     'Entity_type'          => 'Human',
-                     'RegisteredBy'         => $user->getUsername(),
-                     'UserID'               => $user->getUsername(),
-                    );
+            'RegistrationCenterID'  => $centerID,
+            'PSCID'                 => $PSCID,
+            'DoB'                   => $dateOfBirth,
+            'EDC'                   => $edc,
+            'Sex'                   => $sex,
+            'RegistrationProjectID' => $registrationProjectID,
+            'Date_active'           => date('Y-m-d'),
+            'Date_registered'       => date('Y-m-d'),
+            'Entity_type'           => 'Human',
+            'RegisteredBy'          => $user->getUsername(),
+            'UserID'                => $user->getUsername(),
+        );
 
         if ($config->getSetting('useExternalID') === 'true') {
-            $externalID = (new \ExternalIDGenerator())->generate();
+            $externalID = (new \ExternalIDGenerator(
+                $site->getSiteAlias(),
+                $project->getAlias()
+            ))->generate();
             $setArray['ExternalID'] = $externalID;
         }
 
@@ -285,9 +300,7 @@ class Candidate
         } while ($invalidID);
 
         // Return the new CandID
-        // FIXME This class should be refactored to use the new CandID class
-        // instead of returning an integer.
-        return intval((string) $candID);
+        return $candID;
     }
 
     /**
@@ -295,22 +308,22 @@ class Candidate
      * Used to check that PSCID matches CandID when entered into the boxes
      * on the candidate_list form
      *
-     * @param int    $candID 6 digit Loris CandID
+     * @param CandID $candID 6 digit Loris CandID
      * @param string $PSCID  project study center ID
      *
      * @return bool TRUE if candidate is found (in candidate table), FALSE otherwise
      * @throws DatabaseException
      */
-    static function candidateExists(int $candID, string $PSCID): bool
+    static function candidateExists(CandID $candID, string $PSCID): bool
     {
         // make a local reference to the Database object
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
         $candidateIDs = array(
-                         ':candidate_id' => $candID,
-                         ':pscid'        => $PSCID,
-                        );
+            ':candidate_id' => $candID,
+            ':pscid'        => $PSCID,
+        );
 
         // get candidate data from database
         $query = "SELECT CandID
@@ -355,7 +368,7 @@ class Candidate
      * Return a piece of data about this candidate
      *
      * @param string|null $var The type of data about the Candidate
-     *                    to be returned
+     *                         to be returned
      *
      * @return mixed The info requested
      */
@@ -373,7 +386,7 @@ class Candidate
      * database.
      *
      * @param array $newData Key-value pair(s) of the field(s) to change and the
-     *                              new value(s).
+     *                       new value(s).
      *
      * @return bool
      *
@@ -396,7 +409,7 @@ class Candidate
             'candidate',
             $newData,
             array(
-             'CandID' => $this->getData('CandID'),
+                'CandID' => $this->getData('CandID'),
             )
         );
         return true;
@@ -410,7 +423,7 @@ class Candidate
      */
     function getProjectID(): int
     {
-        return intval($this->candidateInfo["ProjectID"]);
+        return intval($this->candidateInfo["RegistrationProjectID"]);
     }
 
     /**
@@ -671,16 +684,21 @@ class Candidate
      * Validate's that a PSCID matches the format defined by project
      * config
      *
-     * @param string      $PSCID      The PSCID to validate
-     * @param string|null $siteAbbrev (optional) The site of the candidate
-     *                           being validated to check against appropriate
-     *                           parts of PSCID definition
+     * @param string $PSCID         The PSCID to validate
+     * @param string $siteAbbrev    The site of the candidate
+     *                              being validated to check
+     *                              against appropriate parts
+     *                              of PSCID definition
+     * @param string $projectAbbrev The project of the candidate
+     *                              being validated to check against appropriate
+     *                              parts of PSCID definition
      *
      * @return boolean True if PSCID is valid, false otherwise
      */
     static public function validatePSCID(
         string $PSCID,
-        ?string $siteAbbrev = null
+        string $siteAbbrev,
+        string $projectAbbrev
     ): bool {
 
         $factory = NDB_Factory::singleton();
@@ -689,7 +707,8 @@ class Candidate
         $PSCIDSettings = $config->getSetting('PSCID');
         $regex         = Utility::structureToPCRE(
             $PSCIDSettings['structure'],
-            $siteAbbrev
+            $siteAbbrev,
+            $projectAbbrev
         );
         //preg_match returns 1 on success.
         return preg_match($regex, $PSCID) === 1;

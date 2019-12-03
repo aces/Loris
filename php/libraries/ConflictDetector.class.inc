@@ -104,14 +104,14 @@ class ConflictDetector
     function clearConflictsForField(array $diffLine): void
     {
         $deleteWhere = array(
-                        'TableName'      => $diffLine['TableName'],
-                        'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
-                        'ExtraKey1'      => $diffLine['ExtraKey1'],
-                        'ExtraKey2'      => $diffLine['ExtraKey2'],
-                        'FieldName'      => $diffLine['FieldName'],
-                        'CommentId1'     => $diffLine['CommentId1'],
-                        'CommentId2'     => $diffLine['CommentId2'],
-                       );
+            'TableName'      => $diffLine['TableName'],
+            'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
+            'ExtraKey1'      => $diffLine['ExtraKey1'],
+            'ExtraKey2'      => $diffLine['ExtraKey2'],
+            'FieldName'      => $diffLine['FieldName'],
+            'CommentId1'     => $diffLine['CommentId1'],
+            'CommentId2'     => $diffLine['CommentId2'],
+        );
 
         \Database::singleton()->delete('conflicts_unresolved', $deleteWhere);
     }

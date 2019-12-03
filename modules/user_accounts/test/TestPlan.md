@@ -28,14 +28,14 @@ When creating or editing a user: (subtest: edit_user)
       - First name,
       - Last name,
       - Email.
-10. If password and confirmed password do not match, an error should be displayed.
+10. If password and confirmed password do not match, an error should be displayed. [Automated]
 11. Email fields containing submitted with invalid formats should generate an error. 
      
 * Ensure the confirm email text field is not displayed on the edit user page (and only on the create new user page).
 
 12. For an existing active user, edit the user's account and click 'Generate new password' and check 'Send email'.
-    Save. Check that an email is sent to the user with the new password. Check that the password rules are enforced 
-    for this new password. Check that after logging in, the user is immediately asked to update his/her password.
+    Save. Check that an email is sent to the user with the new password. 
+    Check that after logging in, the user is immediately asked to update his/her password.
 13. Check that if creating a new user an email is sent to him/her (requires email server). Also check that when a new
     user is logging in for the first time he/she is asked to change his/her password.
     1. Check that when creating a new user, leading and trailing spaces in the username are stripped.
@@ -43,7 +43,7 @@ When creating or editing a user: (subtest: edit_user)
     3. Check that you can delete one of the additional fields (organization, fax, etc...) that was previously set and that the save is performed.
 14. Check that if generating a new password for a user an email is sent to that user containing the new password (requires
     email server).
-15. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change).
+15. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change). [Automated]
 16. Verify that if the editor does not have permission 'Across all sites add and edit users' then the site drop-down list is populated with
     the editor's associated sites, otherwise all sites are displayed.
 17. Check that if the 'Display additional information' entry is set to false in the Configuration module, fields Degree,
@@ -86,8 +86,8 @@ On the My Preferences page:
 ==========================
 
 36. Check that all users (even those with NO permissions) have access to the My Preferences page.
-37. Change the user’s password.  Check that the password rules are enforced.
-38. Check that if password and confirmed password do not match you get an error.
+37. Change the user’s password.  Check that the password rules are enforced. [Automated]
+38. Check that if password and confirmed password do not match you get an error. [Automated]
 39. Check that saving fails if any field is left blank (except password).
 40. Check that if you do not enter an email address that is syntactically valid you get an error.
 41. Modify any field on the page and save, and go to the User Account page. Check that the modifications are

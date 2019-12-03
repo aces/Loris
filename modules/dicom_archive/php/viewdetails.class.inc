@@ -10,7 +10,7 @@
  * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
-*/
+ */
 namespace LORIS\dicom_archive;
 
 /**
@@ -48,10 +48,10 @@ class ViewDetails extends \NDB_Form
     }
 
     /**
-    * Sets up main parameters
-    *
-    * @return void
-    */
+     * Sets up main parameters
+     *
+     * @return void
+     */
     function setup()
     {
         $this->DB = \Database::singleton();
@@ -79,20 +79,23 @@ class ViewDetails extends \NDB_Form
         }
     }
     /**
-    * Retrieves data for the template from the database
-    *
-    * @param int    $tarchiveID tarchiveID
-    * @param string $table      name of the table to retrieve the data from
-    * @param string $order      column by which to order the query
-    *
-    * @return array $array contains all data
-    */
+     * Retrieves data for the template from the database
+     *
+     * @param int    $tarchiveID tarchiveID
+     * @param string $table      name of the table to retrieve the data from
+     * @param string $order      column by which to order the query
+     *
+     * @return array $array contains all data
+     */
     function _getTarchiveData($tarchiveID, $table, $order)
     {
         switch ($table) {
         case "tarchive":
-            $query = "SELECT * FROM $table WHERE TarchiveID =:ID";
-            $array = $this->DB->pselectRow($query, array('ID' => $tarchiveID));
+            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID";
+            $tarchiveData = $this->DB->pselectRow(
+                $query,
+                array('ID' => $tarchiveID)
+            );
             break;
         case "tarchive_series":
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
@@ -100,8 +103,8 @@ class ViewDetails extends \NDB_Form
             $tarchiveData = $this->DB->pselect(
                 $query,
                 array(
-                 'ID'     => $tarchiveID,
-                 "OField" => $order,
+                    'ID'     => $tarchiveID,
+                    "OField" => $order,
                 )
             );
 
@@ -129,8 +132,8 @@ class ViewDetails extends \NDB_Form
             $tarchiveData = $this->DB->pselect(
                 $query,
                 array(
-                 'ID'     => $tarchiveID,
-                 'OField' => $order,
+                    'ID'     => $tarchiveID,
+                    'OField' => $order,
                 )
             );
             break;
@@ -139,11 +142,11 @@ class ViewDetails extends \NDB_Form
         return $tarchiveData ?? array();
     }
     /**
-    * Validates PatientName and PatientID,
-    * sets INVALID-HIDDEN if not validated.
-    *
-    * @return null
-    */
+     * Validates PatientName and PatientID,
+     * sets INVALID-HIDDEN if not validated.
+     *
+     * @return null
+     */
     function _validateNamesIds()
     {
         $config =& \NDB_Config::singleton();
@@ -187,13 +190,13 @@ class ViewDetails extends \NDB_Form
         )['IsPhantom'] ?? null;
 
         if ($isPhantom === 'Y') {
-             $isValid = preg_match(
-                 "/$legoPhanRegex/",
-                 $this->tpl_data['archive']['PatientName']
-             ) || preg_match(
-                 "/$livingPhanRegex/",
-                 $this->tpl_data['archive']['PatientName']
-             );
+            $isValid = preg_match(
+                "/$legoPhanRegex/",
+                $this->tpl_data['archive']['PatientName']
+            ) || preg_match(
+                "/$livingPhanRegex/",
+                $this->tpl_data['archive']['PatientName']
+            );
         } else if ($isPhantom === 'N') {
             $isValid = preg_match(
                 "/$pNameRegex/",
@@ -219,15 +222,17 @@ class ViewDetails extends \NDB_Form
             $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
         }
 
-        if (preg_match(
-            "/$pIDRegex/",
-            $this->tpl_data['archive']['PatientID']
-        )
-        ) {
-            $this->tpl_data['archive']['patientIDValid'] = 1;
-        } else {
-            $this->tpl_data['archive']['patientIDValid'] = 0;
-            $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
+        if (!is_null($this->tpl_data['archive']['PatientID'])) {
+            if (preg_match(
+                "/$pIDRegex/",
+                $this->tpl_data['archive']['PatientID']
+            )
+            ) {
+                $this->tpl_data['archive']['patientIDValid'] = 1;
+            } else {
+                $this->tpl_data['archive']['patientIDValid'] = 0;
+                $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
+            }
         }
     }
 
@@ -285,9 +290,9 @@ class ViewDetails extends \NDB_Form
      *
      * @param string $seriesRange series parameter to be compared
      * @param string $protocolMin minimum value of protocol's parameter
-     *        to be compared with
+     *                            to be compared with
      * @param string $protocolMax maximum value of protocol's parameter
-     *         to be compared with
+     *                            to be compared with
      *
      * @return bool true if series parameter is in range with
      *         the protocol's one, false otherwise
@@ -356,16 +361,16 @@ class ViewDetails extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dicom_archive/js/view_details_link.js",
+                $baseURL . "/dicom_archive/js/view_details_link.js",
             )
         );
     }
 
     /**
-      * Generate a breadcrumb trail for this page.
-      *
-      * @return \LORIS\BreadcrumbTrail
-      */
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         $label = ucwords(str_replace('_', ' ', $this->name));

@@ -70,8 +70,8 @@ class Stats_MRI extends \NDB_Form
      * @param string  $Subsection        the value of Subsection=''
      * @param string  $disclamer         the value of disclamer=''
      * @param ?string $projectID         the value of projectID is null
-     * @param bool    $scanDoneExists    whether the "Scan done" column exists in
-     *                                   the database
+     * @param bool    $renderTable       whether to render the table or display a
+     *                                   default error message
      *
      * @return string
      */
@@ -87,7 +87,7 @@ class Stats_MRI extends \NDB_Form
         $Subsection="",
         $disclamer='',
         $projectID=null,
-        $scanDoneExists = true
+        $renderTable=true
     ): string {
 
         $tpl_data = array();
@@ -201,7 +201,7 @@ class Stats_MRI extends \NDB_Form
             }
         }
 
-        $tpl_data['scan_done_exists'] = $scanDoneExists;
+        $tpl_data['render_table'] = $renderTable;
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_statistics.tpl");
         return $html;
@@ -216,7 +216,9 @@ class Stats_MRI extends \NDB_Form
     {
         parent::setup();
 
-        $DB =& \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
 
         $bigTable_params = array();
         $this->params    = array();
@@ -224,7 +226,8 @@ class Stats_MRI extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
-        $projects[null] = 'All Projects';
+        $projects     = array();
+        $projects[''] = 'All Projects';
         foreach (\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
@@ -233,10 +236,10 @@ class Stats_MRI extends \NDB_Form
             $currentProject = htmlspecialchars($_REQUEST['MRIProject']);
             $this->tpl_data['CurrentProject']
                 = array(
-                   'ID'   => $currentProject,
-                   'Name' => $projects[$currentProject],
-                  );
-            $sqlVar        = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+                    'ID'   => $currentProject,
+                    'Name' => $projects[$currentProject],
+                );
+            $sqlVar        = 'AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
             $this->params['pid']    = htmlspecialchars($_REQUEST['MRIProject']);
             $bigTable_params['pid'] = htmlspecialchars($_REQUEST['MRIProject']);
@@ -263,26 +266,37 @@ class Stats_MRI extends \NDB_Form
         } else {
             $Param_Site = '';
         }
-        $centers     = $DB->pselect(
+
+        //SITES PERMISSIONS
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+        $sitesString = implode(",", array_keys($list_of_sites));
+
+        $centers   = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
-                AND Study_site = 'Y'",
+                AND Study_site = 'Y'
+	        AND CenterID IN (" . $sitesString . ")",
             array()
         );
-        $sites[null] ="All sites";
+        $sites     = array();
+        $sites[''] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
             if (isset($_REQUEST['MRIsite'])
                 && $_REQUEST['MRIsite'] == $row['NumericID']
             ) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
         }
 
@@ -294,6 +308,7 @@ class Stats_MRI extends \NDB_Form
             array()
         );
 
+        $scan_types = array();
         foreach ($Scan_type_results as $row) {
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
@@ -327,10 +342,10 @@ class Stats_MRI extends \NDB_Form
             return;
         }
         $MRISubcategories = array(
-                             'Complete',
-                             'Partial Run',
-                             'No Scan',
-                            );
+            'Complete',
+            'Partial Run',
+            'No Scan',
+        );
 
         //Check if a specific scan is requested otherwise display first
         //available scan
@@ -371,6 +386,7 @@ class Stats_MRI extends \NDB_Form
                     AND c.Active='Y'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     $suproject_query
                     $Param_Project
                 GROUP BY Subcat,
@@ -415,6 +431,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -433,6 +450,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -462,6 +480,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -482,6 +501,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -512,6 +532,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -532,6 +553,7 @@ class Stats_MRI extends \NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -564,7 +586,7 @@ class Stats_MRI extends \NDB_Form
      * of statistics totals. They will eventually be passed to tpl_data.
      *
      * @param array $subcategories The subcategories being tracked by this
-     *                              module. Keys of the returned array.
+     *                             module. Keys of the returned array.
      *
      * @return array ('total' => 0, $subcat1 => 0, ..., $subcatN => 0)
      */
@@ -592,8 +614,8 @@ class Stats_MRI extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/statistics/js/table_statistics.js",
-             $baseURL . "/statistics/js/form_stats_MRI.js",
+                $baseURL . "/statistics/js/table_statistics.js",
+                $baseURL . "/statistics/js/form_stats_MRI.js",
             )
         );
     }

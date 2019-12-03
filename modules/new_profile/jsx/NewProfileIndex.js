@@ -1,4 +1,3 @@
-import Panel from 'Panel';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 
@@ -20,6 +19,7 @@ class NewProfileIndex extends React.Component {
       isLoaded: false,
       isCreated: false,
       error: false,
+      submitDisabled: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
@@ -56,11 +56,11 @@ class NewProfileIndex extends React.Component {
     let validate = false;
     const formData = this.state.formData;
     if (formData.dobDate !== formData.dobDateConfirm) {
-      swal('Error!', 'Date of Birth fields must match', 'error');
+      swal.fire('Error!', 'Date of Birth fields must match', 'error');
     } else if (this.state.configData['edc'] === 'true' &&
          (formData.edcDate !== formData.edcDateConfirm)
     ) {
-      swal('Error!', 'EDC fields must match', 'error');
+      swal.fire('Error!', 'EDC fields must match', 'error');
     } else {
       validate = true;
     }
@@ -89,6 +89,9 @@ class NewProfileIndex extends React.Component {
       }
       formObject.append('fire_away', 'New Candidate');
 
+      // disable button to prevent form resubmission.
+      this.setState({submitDisabled: true});
+
       fetch(this.props.submitURL, {
         method: 'POST',
         cache: 'no-cache',
@@ -103,7 +106,9 @@ class NewProfileIndex extends React.Component {
           });
         } else {
           resp.json().then((message) => {
-            swal('Error!', message, 'error');
+            // enable button for form resubmission.
+            this.setState({submitDisabled: false});
+            swal.fire('Error!', message, 'error');
           });
         }
       })
@@ -240,6 +245,7 @@ class NewProfileIndex extends React.Component {
             label = "Create"
             id = "button"
             type = "submit"
+            disabled={this.state.submitDisabled}
           />
         </FormElement>
       );
@@ -252,7 +258,11 @@ class NewProfileIndex extends React.Component {
         </div>
       );
     }
-    return (<Panel title="Create a new profile">{profile}</Panel>);
+    return (
+      <FieldsetElement legend={'Create a New Profile'}>
+        {profile}
+      </FieldsetElement>
+    );
   }
 }
 window.addEventListener('load', () => {
