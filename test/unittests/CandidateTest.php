@@ -25,6 +25,10 @@ use LORIS\StudyEntities\Candidate\ProjectAlias;
  */
 class CandidateTest extends TestCase
 {
+    private const PSCID_SITE_VALID = 'AAA0012';
+    private const PSCID_SITE_INVALID = 'AAA001';
+    private const PSCID_PROJECT_VALID = 'BBB0012';
+    private const PSCID_PROJECT_INVALID = 'BBB001';
     /**
      * Candidate Information as available in the Candidate object
      *
@@ -769,14 +773,12 @@ class CandidateTest extends TestCase
             ->will($this->returnValueMap($this->_configMap));
         $siteAlias = new SiteAlias('AAA');
         $projectAlias = new ProjectAlias('BBB');
-        $this->assertEquals(
-            1,
-            Candidate::validatePSCID('AAA0012', $siteAlias, $projectAlias),
+        $this->assertTrue(
+            Candidate::validatePSCID(self::PSCID_SITE_VALID, $siteAlias, $projectAlias),
             'Valid PSCID: validatePSCID should return 1'
         );
-        $this->assertEquals(
-            0,
-            Candidate::validatePSCID('AAA0012', $siteAlias, $projectAlias),
+        $this->assertFalse(
+            Candidate::validatePSCID(self::PSCID_SITE_INVALID, $siteAlias, $projectAlias),
             'Invalid PSCID: validatePSCID should return 0'
         );
     }
@@ -819,15 +821,13 @@ class CandidateTest extends TestCase
             ->will($this->returnValueMap($this->_configMap));
         $siteAlias = new SiteAlias('AAA');
         $projectAlias = new ProjectAlias('BBB');
-        $this->assertEquals(
-            1,
-            Candidate::validatePSCID('BBB0012', $siteAlias, $projectAlias),
-            'Valid PSCID: validatePSCID should return 1'
+        $this->assertTrue(
+            Candidate::validatePSCID(self::PSCID_PROJECT_VALID, $siteAlias, $projectAlias),
+            'Valid PSCID: validatePSCID should return true'
         );
-        $this->assertEquals(
-            0,
-            Candidate::validatePSCID('BBB0012', $siteAlias, $projectAlias),
-            'Invalid PSCID: validatePSCID should return 0'
+        $this->assertFalse(
+            Candidate::validatePSCID(self::PSCID_PROJECT_INVALID, $siteAlias, $projectAlias),
+            'Invalid PSCID: validatePSCID should return false'
         );
     }
 

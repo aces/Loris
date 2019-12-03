@@ -343,10 +343,10 @@ class Utility
                 break;
 
             case 'siteAbbrev':
-                $unit .= $siteAbbrev;
+                $unit .= (string) $siteAbbrev;
                 break;
             case 'projectAbbrev':
-                $unit .= $projectAbbrev;
+                $unit .= (string) $projectAbbrev;
                 break;
             } // end switch
 

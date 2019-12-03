@@ -51,7 +51,7 @@ class ProjectAlias_Test extends TestCase
      */
     public function testContructorInvalidValues($invalidValue): void
     {
-        $alias = new ProjectAlias($invalidValue);
+        new ProjectAlias($invalidValue);
     }
 
     public function testGetType(): void
@@ -69,9 +69,9 @@ class ProjectAlias_Test extends TestCase
     public function testToString(): void
     {
         // Create a valid Project Alias.
-        $validAliasString = str_repeat('A', ProjectAlias::MAX_LENGTH);
+        $validAliasString = 'aaaaa';
         $this->assertEquals(
-            'ProjectAlias',
+            $validAliasString,
             (string) new ProjectAlias($validAliasString)
         );
     }

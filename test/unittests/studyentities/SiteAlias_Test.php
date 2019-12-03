@@ -70,9 +70,8 @@ class SiteAlias_Test extends TestCase
     {
         // Create a valid Site Alias.
         $validAliasString = str_repeat('A', SiteAlias::MAX_LENGTH);
-        echo "Valid alias string is $validAliasString\n";
         $this->assertEquals(
-            'SiteAlias',
+            $validAliasString,
             (string) new SiteAlias($validAliasString)
         );
     }

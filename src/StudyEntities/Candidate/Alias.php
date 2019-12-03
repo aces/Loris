@@ -29,14 +29,14 @@ abstract class Alias extends ValidatableIdentifier
      *
      * @var int
      */
-    public const MAX_LENGTH = 3;
+    public const MIN_LENGTH = 3; 
 
     /*
      * The minimum length of the identifier.
      *
      * @var int
      */
-    public const MIN_LENGTH = 3;
+    public const MAX_LENGTH = 3;
 
     /**
      * Validate that the alias is alphabetical and between MAX_LENGTH and
@@ -51,9 +51,10 @@ abstract class Alias extends ValidatableIdentifier
      */
     protected function validate(string $value): bool
     {
+        $class = get_class($this);
         return ctype_alpha($value)
-            && mb_strlen($value) >= self::MIN_LENGTH
-            && mb_strlen($value) <= self::MAX_LENGTH;
+            && mb_strlen($value) >= $class::MIN_LENGTH
+            && mb_strlen($value) <= $class::MAX_LENGTH;
     }
 
     /**
