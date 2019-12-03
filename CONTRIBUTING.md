@@ -17,16 +17,17 @@ some of the factors we'll consider when reviewing your code.
 
 ## Development branches
 
-You should base your pull requests on `master` when doing a bug fix. These PRs
-should not contain code that introduces a breaking change.
+For the most part, changes to the codebase should be sent to the `master`
+branch, which is the default.
 
-All other pull requests, including enhancements and refactoring, should be based
-on the development branch.
->>>>>>> d67fd79d9... Remove references to old branches
+Small bug fixes for a given version of LORIS should be sent to the branch named
+for that version. For example, fixing a bug in LORIS version 22 should be sent
+to the `22.0-release` branch.
 
-For more information about making well-organized pull requests,
-please read our in-depth Wiki page, 
-["Contributing to the Code"](https://github.com/aces/Loris/wiki/Contributing-to-the-Code).
+When fixing a bug present in multiple versions of LORIS, send your fix to the
+oldest version and our team will push the fix forward into other versions. For
+example if you are fixing a bug on LORIS version 21, send it to the `21.0-release`
+branch and our team will push it forward into `22.0-release`, etc.
 
 ## Pull Request Title and Description
 
