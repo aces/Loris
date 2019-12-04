@@ -1,7 +1,8 @@
 # Subprojects
 
 ## Overview
-The **Subproject** plays an important role in determining the instrument battery that will be assigned to a candidate at a timepoint. **Subprojects** are defined in the `subproject` table of the database.
+**Subprojects** are defined in the front-end by the Configuration module, and are stored in the `subproject` table of the database.
+The **Subproject** plays an important role in determining the instrument battery that will be assigned to a candidate at a timepoint.  The subproject can be used as a variable when determining which instruments are populated -- this allows for subproject-specific batteries to be defined in the `test_battery` table. 
 
 ## Adding Subproject Options
 
