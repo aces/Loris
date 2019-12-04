@@ -1,5 +1,5 @@
 /* exported FormElement, FieldsetElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
-TextboxElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
+TextboxElement, PasswordElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
 CheckboxElement, ButtonElement, LorisElement
 */
 
@@ -470,35 +470,6 @@ class SelectElement extends Component {
   }
 
   /**
-   * Call onUserInput on component rendered to select only option
-   * if autoSelect prop is set to true
-   */
-  componentDidMount() {
-    const optionsArray = Object.keys(this.props.options);
-    if (this.props.autoSelect && optionsArray.length === 1) {
-      this.props.onUserInput(this.props.name, optionsArray[0]);
-    }
-  }
-
-  /**
-   * On component update, if number of options dynamically
-   * changes to 1, call onUserInput to select only option
-   * if autoSelect prop is set to true
-   *
-   * @param {object} prevProps - component props before component update
-   */
-  componentDidUpdate(prevProps) {
-    const options = Object.keys(this.props.options);
-    const prevOptions = Object.keys(prevProps.options);
-    if (options.length !== prevOptions.length ||
-        !options.every((v, i) => v === prevOptions[i])) {
-      if (this.props.autoSelect && options.length === 1) {
-        this.props.onUserInput(this.props.name, options[0]);
-      }
-    }
-  }
-
-  /**
    * Handle change
    *
    * @param {object} e - Event
@@ -634,7 +605,6 @@ SelectElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   emptyOption: PropTypes.bool,
-  autoSelect: PropTypes.bool,
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
@@ -651,7 +621,6 @@ SelectElement.defaultProps = {
   required: false,
   sortByValue: true,
   emptyOption: true,
-  autoSelect: true,
   hasError: false,
   errorMessage: 'The field is required!',
   onUserInput: function() {
@@ -1122,7 +1091,7 @@ class TextboxElement extends Component {
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
     let label = null;
-    let inputClass = 'col-sm-12';
+    let inputClass = this.props.class;
     if (this.props.label || this.props.label == '') {
       label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
@@ -1147,6 +1116,8 @@ class TextboxElement extends Component {
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
+            autoComplete={this.props.autoComplete}
+            placeholder={this.props.placeholder}
           />
           {errorMessage}
         </div>
@@ -1160,6 +1131,9 @@ TextboxElement.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   id: PropTypes.string,
+  class: PropTypes.string,
+  placeholder: PropTypes.string,
+  autoComplete: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1171,8 +1145,172 @@ TextboxElement.defaultProps = {
   name: '',
   value: '',
   id: null,
+  class: 'col-sm-12',
+  placeholder: '',
+  autoComplete: null,
   disabled: false,
   required: false,
+  errorMessage: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  onUserBlur: function() {
+  },
+};
+
+/**
+ * Password Component
+ * React wrapper for a <input type="password"> element.
+ */
+class PasswordElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      on: { // password is visible.
+        icon: 'close',
+        type: 'text',
+      },
+      off: { // password hidden.
+        icon: 'open',
+        type: 'password',
+      },
+      active: false, // is password visible.
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    // callback called to toogle the visibility
+    this.toggleVisibility = this.toggleVisibility.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      e.target.value,
+      e.target.id,
+      this.state.active ? this.state.on.type : this.state.off.type,
+    );
+  }
+
+  /**
+   * Handle blur
+   *
+   * @param {object} e - Event
+   */
+  handleBlur(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
+  }
+
+  /**
+   * Toggle visibility
+   *
+   */
+  toggleVisibility() {
+    this.setState({active: !this.state.active});
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className='text-danger'>*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    let label = null;
+    if (this.props.label) {
+      label = (
+        <label className='col-sm-3 control-label' htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+      );
+    }
+    const passwordDisplayType = this.state.active
+      ? this.state.on.type
+      : this.state.off.type;
+    const passwordDisplayIcon = this.state.active
+      ? this.state.on.icon
+      : this.state.off.icon;
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.class}>
+          <input
+            type={passwordDisplayType}
+            className='form-control'
+            name={this.props.name}
+            id={this.props.id}
+            value={this.props.value || ''}
+            required={required}
+            disabled={disabled}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+            autoComplete={this.props.autoComplete}
+            placeholder={this.props.placeholder}
+          />
+          <span
+            className={'form-control-feedback glyphicon glyphicon-eye-'
+            + passwordDisplayIcon}
+            style={{marginRight: '15px'}}
+            onClick={this.toggleVisibility}
+          />
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+}
+
+PasswordElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  class: PropTypes.string,
+  type: PropTypes.string,
+  placeholder: PropTypes.string,
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  autoComplete: PropTypes.string,
+  errorMessage: PropTypes.string,
+  onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
+};
+
+PasswordElement.defaultProps = {
+  id: null,
+  label: '',
+  value: '',
+  type: 'text',
+  class: 'col-sm-9',
+  placeholder: '',
+  disabled: false,
+  required: false,
+  autoComplete: null,
   errorMessage: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
@@ -1717,13 +1855,21 @@ class StaticElement extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    return (
-      <div className="row form-group">
+    let label = null;
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label">
           {this.props.label}
         </label>
-        <div className="col-sm-9">
-          <p className={this.props.class}>{this.props.text}</p>
+      );
+    }
+    return (
+      <div className="row form-group">
+        {label}
+        <div className={this.props.class}>
+          <p className={this.props.textClass}>
+            {this.props.text}
+          </p>
         </div>
       </div>
     );
@@ -1732,6 +1878,8 @@ class StaticElement extends Component {
 
 StaticElement.propTypes = {
   label: PropTypes.string,
+  class: PropTypes.string,
+  textClass: PropTypes.string,
   text: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element,
@@ -1741,7 +1889,8 @@ StaticElement.propTypes = {
 StaticElement.defaultProps = {
   label: '',
   text: null,
-  class: 'form-control-static',
+  class: 'col-sm-9',
+  textClass: 'form-control-static',
 };
 
 /**
@@ -1868,8 +2017,10 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = this.props.elementClass;
-    let label = null;
+    let elementClass = this.props.class + ' ' + this.props.offset;
+    const divStyle = this.props.class === 'checkbox-inline'
+      ? {paddingRight: '5px'}
+      : {paddingRight: '5px', display: 'inline-block'};
 
     // Add required asterix
     if (required) {
@@ -1879,25 +2030,29 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.elementClass + ' has-error';
+      elementClass = elementClass + ' has-error';
     }
 
     return (
       <div className={elementClass}>
-        <label htmlFor={this.props.id}>
-          <input
-            type="checkbox"
-            name={this.props.name}
-            id={this.props.id}
-            checked={this.props.value}
-            required={required}
-            disabled={disabled}
-            onChange={this.handleChange}
-          />
-          {errorMessage}
-          {this.props.label}
-          {requiredHTML}
-        </label>
+        <div className={'col-sm-12'}>
+          <label htmlFor={this.props.id}>
+            <div style={divStyle}>
+              <input
+                type="checkbox"
+                name={this.props.name}
+                id={this.props.id}
+                checked={this.props.value}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            {errorMessage}
+            {this.props.label}
+            {requiredHTML}
+          </label>
+        </div>
       </div>
     );
   }
@@ -1908,6 +2063,8 @@ CheckboxElement.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.bool.isRequired,
   id: PropTypes.string,
+  class: PropTypes.string,
+  offset: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1920,6 +2077,8 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
+  offset: 'col-sm-offset-3',
+  class: 'checkbox-inline',
   elementClass: 'checkbox-inline col-sm-offset-3',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
@@ -1958,9 +2117,11 @@ class ButtonElement extends Component {
       <div className="row form-group">
         <div className={this.props.columnSize}>
           <button
+            id={this.props.id}
             name={this.props.name}
             type={this.props.type}
             className={this.props.buttonClass}
+            style={this.props.style}
             onClick={this.handleClick}
             disabled={this.props.disabled}
           >
@@ -1973,10 +2134,12 @@ class ButtonElement extends Component {
 }
 
 ButtonElement.propTypes = {
+  id: PropTypes.string,
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
   disabled: PropTypes.bool,
+  style: PropTypes.object,
   onUserInput: PropTypes.func,
 };
 
@@ -2055,6 +2218,9 @@ class LorisElement extends Component {
       case 'text':
         elementHtml = (<TextboxElement {...elementProps} />);
         break;
+      case 'password':
+       elementHtml = (<PasswordElement {...elementProps} />);
+       break;
       case 'tags':
         elementHtml = (<TagsElement {...elementProps} />);
         break;
@@ -2421,6 +2587,7 @@ window.TagsElement = TagsElement;
 window.SearchableDropdown = SearchableDropdown;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
+window.PasswordElement = PasswordElement;
 window.DateElement = DateElement;
 window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
@@ -2443,6 +2610,7 @@ export default {
   SearchableDropdown,
   TextareaElement,
   TextboxElement,
+  PasswordElement,
   DateElement,
   TimeElement,
   NumericElement,
