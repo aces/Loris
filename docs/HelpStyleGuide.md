@@ -8,7 +8,7 @@ Help text exists as an on-screen guide for users, to add context and provide ins
 
 Help text content is stored into the aces/Loris repo as markdown (.md) files within the help/subdirectory of the module it belongs to. For example, the Help text for Imaging Browser main page is located here: `modules/imaging_browser/help/imaging_browser.md`. 
 
-Some modules have more than one Help text file to correspond with subpages. These files exist in the same help/ folder, but are named differently - they must match exactly the php/file name that spawns the page. For example, the Imaging Browser module has a subpage called “ViewSession”. Its help file is stored as: `modules/imaging_browser/help/viewsession.md`. 
+Some modules have more than one Help text file to correspond with subpages. These files exist in the same `help/` folder, but are named differently - they must match exactly the php/file name that spawns the page. For example, the Imaging Browser module has a subpage called “ViewSession”. Its help file is stored as: `modules/imaging_browser/help/viewsession.md`. 
 
 ## Markdown
 
