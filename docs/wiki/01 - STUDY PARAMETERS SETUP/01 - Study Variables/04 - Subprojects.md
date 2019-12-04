@@ -7,7 +7,7 @@ The **Subproject** plays an important role in determining the instrument battery
 ## Adding Subproject Options
 
 ### Front End (Recommended)
-Subprojects are defined in the Configuration module, which can be found in LORIS under the **Admin** menu tab.  Click on _To configure study subprojects click here_ link at the top of the page. Refer to the help section of the module for further instructions.
+Subprojects are defined in the Configuration module, which can be found in LORIS under the **Admin** menu tab.  Click on _To configure study subprojects click here_ link at the top of the page. Refer to the help section of the module for further instructions on how to add or modify subprojects.
    
 ### SQL
 Subprojects can be added directly in SQL using the following command.
