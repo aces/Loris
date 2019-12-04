@@ -24,4 +24,9 @@ namespace LORIS\mri_violations;
  */
 class Module extends \Module
 {
+public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Imaging", "MRI Violated Scans", "mri_violations/"),
+        ];
+    }
 }

@@ -42,13 +42,15 @@ class PageDecorationMiddleware implements MiddlewareInterface
             )->process($request, $handler);
         }
 
+        $DB = \Database::singleton();
         return (new \LORIS\Middleware\UserPageDecorationMiddleware(
             $this->user,
             $baseURL ?? "",
             $page->name ?? "",
             $config,
             $page->getJSDependencies(),
-            $page->getCSSDependencies()
+            $page->getCSSDependencies(),
+            $DB
         )
         )->process($request, $handler);
     }

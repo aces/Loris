@@ -24,4 +24,10 @@ namespace LORIS\genomic_browser;
  */
 class Module extends \Module
 {
+        public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Genomics", "Genomic Browser", "genomic_browser/"),
+        ];
+    }
+
 }

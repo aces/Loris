@@ -24,4 +24,11 @@ namespace LORIS\issue_tracker;
  */
 class Module extends \Module
 {
+            public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Tools", "Issue Tracker", "issue_tracker/"),
+        ];
+    }
+
+
 }

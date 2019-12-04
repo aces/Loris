@@ -36,6 +36,21 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
     protected $dir;
 
     /**
+     * Retrieve all active module descriptors from the given database
+     *
+     * @return \Module[]
+     */
+    static public function getActiveModules(\Database $db): array{
+        $mnames = $db->pselectCol(
+            "SELECT Name FROM modules WHERE Active='Y'",
+            []
+        );
+        return array_map(function($name) {
+            return self::factory($name);
+        }, $mnames);
+    }
+
+    /**
      * Returns a Module instance for the module named $name. The returned
      * value may be a subtype of the base LORIS module class and override
      * it's method.
@@ -370,5 +385,12 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                 )
             )
         );
+    }
+
+    /**
+     * @return \LORIS\GUI\MenuItem[]
+     */
+    public function getMenuItems() : array {
+        return [];
     }
 }

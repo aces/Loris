@@ -26,4 +26,11 @@ namespace LORIS\dataquery;
  */
 class Module extends \Module
 {
+            public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Reports", "Data Query Tool", "dataquery/"),
+        ];
+    }
+
+
 }

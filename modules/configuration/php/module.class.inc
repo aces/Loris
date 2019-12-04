@@ -26,4 +26,9 @@ namespace LORIS\configuration;
  */
 class Module extends \Module
 {
+                public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Admin", "Configuration", "configuration/"),
+        ];
+    }
 }

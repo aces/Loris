@@ -26,4 +26,10 @@ namespace LORIS\imaging_uploader;
  */
 class Module extends \Module
 {
+        public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Imaging", "Imaging Uploader", "imaging_uploader/"),
+        ];
+    }
+
 }

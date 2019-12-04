@@ -23,4 +23,10 @@ namespace LORIS\behavioural_qc;
  */
 class Module extends \Module
 {
+        public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Clinical", "Behavioural Quality Control", "behavioural_qc/"),
+        ];
+    }
+
 }

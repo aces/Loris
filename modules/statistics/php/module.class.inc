@@ -26,4 +26,10 @@ namespace LORIS\statistics;
  */
 class Module extends \Module
 {
+        public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Reports", "Statistics", "statistics/"),
+        ];
+    }
+
 }

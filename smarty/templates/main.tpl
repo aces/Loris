@@ -100,33 +100,15 @@
                </div>
                <div class="collapse navbar-collapse" id="example-navbar-collapse">
                     <ul class="nav navbar-nav">
-                        {foreach from=$tabs item=tab}
-                            {if $tab.Visible == 1 && $tab.subtabs}
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle">
-                                        {$tab.Label} <b class="caret"></b>
-                                    </a>
+                        {foreach from=$menus item=menuitems key=category}
+                             <li class="dropdown">
+                                <a href="#" class="dropdown-toggle"> {$category}
                                     <ul class="dropdown-menu">
-                                        {foreach from=$tab.subtabs item=mySubtab}
-                                            {if $mySubtab.Visible == 1}
-                                                {if substr($mySubtab.Link,0,4) eq 'http'}
-                                                    <li>
-                                                        <a href="{$mySubtab.Link}">
-                                                            {$mySubtab.Label}
-                                                        </a>
-                                                    </li>
-                                                {else}
-                                                    <li>
-                                                        <a href="{$baseurl}/{$mySubtab.Link}">
-                                                            {$mySubtab.Label}
-                                                        </a>
-                                                    </li>
-                                                {/if}
-                                            {/if}
-                                        {/foreach}
+                                        {section name=itemloop loop=$menuitems}
+                                        <li><a href="/{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
+                                        {/section}
                                     </ul>
-                                </li>
-                            {/if}
+                                </a>
                         {/foreach}
                     </ul>
                     <ul class="nav navbar-nav navbar-right" id="nav-right">

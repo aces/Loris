@@ -26,4 +26,10 @@ namespace LORIS\candidate_list;
  */
 class Module extends \Module
 {
+        public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Candidate", "Access Profile", "candidate_list/"),
+        ];
+    }
+
 }

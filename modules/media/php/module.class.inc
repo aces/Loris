@@ -26,4 +26,10 @@ namespace LORIS\media;
  */
 class Module extends \Module
 {
+        public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Clinical", "Media", "media/"),
+        ];
+    }
+
 }

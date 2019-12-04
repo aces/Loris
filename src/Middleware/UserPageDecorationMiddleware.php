@@ -22,7 +22,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         string $pagename,
         \NDB_Config $config,
         array $JS,
-        array $CSS
+        array $CSS,
+        \Database $DB
     ) {
 
         $this->JSFiles  = $JS;
@@ -31,6 +32,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $this->BaseURL  = $baseurl;
         $this->PageName = $pagename;
         $this->user     = $user;
+        $this->DB       = $DB;
     }
 
     /**
@@ -52,11 +54,30 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                      'test_name' => $this->PageName,
                     );
 
+        $modules = \Module::getActiveModules($this->DB);
+        $menu = [];
+        foreach ($modules as $module) {
+            if(!$module->hasAccess($user)) {
+                continue;
+            }
+
+            $items = $module->getMenuItems();
+
+            if(!empty($items)) {
+                foreach($items as $menuitem) {
+                    // $menu[$menuitem->getCategory() ?? 'Other'][$menuitem->getLabel()] = $menuitem->getLink();
+                    $menu[$menuitem->getCategory() ?? 'Other'][] = $menuitem;
+                }
+            }
+        }
+
+        ksort($menu);
+
         // Basic page outline variables
         $tpl_data += array(
                       'study_title' => $this->Config->getSetting('title'),
                       'baseurl'     => $this->BaseURL,
-                      'tabs'        => \NDB_Config::getMenuTabs(),
+                      'menus'        => $menu,
                       'currentyear' => date('Y'),
                       'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                      );

@@ -24,4 +24,11 @@ namespace LORIS\acknowledgements;
  */
 class Module extends \Module
 {
+            public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Tools", "Acknowledgements", "acknowledgements/"),
+        ];
+    }
+
+
 }

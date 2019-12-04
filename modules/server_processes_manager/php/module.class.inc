@@ -78,4 +78,9 @@ class Module extends \Module
             );
         }
     }
+                public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Admin", "Server Processes Manager", "server_processes_manager/"),
+        ];
+    }
 }

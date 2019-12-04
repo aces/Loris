@@ -26,4 +26,11 @@ namespace LORIS\data_release;
  */
 class Module extends \Module
 {
+            public function getMenuItems() : array {
+        return [
+            new \LORIS\GUI\MenuItem("Tools", "Data Release", "data_release/"),
+        ];
+    }
+
+
 }
