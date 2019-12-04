@@ -12,7 +12,9 @@ All LORIS users can view the dashboard.
 
 ## Scope
 
-??
+The Dashboard provides entrypoints to various workflows, but does not provide any tools for directly modifying data in the dashboard.  
+
+The Study Progression chart views at bottom may or may not count `excluded` candidates, and this should be clearly verified and documented/presented for the use of your LORIS users. 
 
 ## Permissions
 
