@@ -45,7 +45,7 @@ Whether a user knows it or not, they will come to recognize styles that are cons
      
 ## Tone
 
-Yes, LORIS is used for high-level research and yes, the people using LORIS are very smart and yes, we want people in the scientific community to take LORIS seriously. At the same time, the easier any user finds a text to read, the more they’ll retain and use the information. And a friendly tone will help them understand that LORIS is built and maintained by humans. There’s a lot of research that shows people will engage and have more patience with a piece of software when they’re reminded that there’s more than just a computer behind it. Using a more conversational tone will subtly have this effect. We’re not talking about humour and exclamation marks—just small tactics that make content as easy to understand as possible.
+LORIS is used by scientific community worldwide, including countries where English is a second, or even third language. Therefore, it is important that LORIS documentation (help text, setup guides, etc.) be written in a way that it comprehensible by people with limited knowledge and understanding of English language and expression.
 
 Please note, this is NOT about “dumbing things down”. It’s simply about using the most direct language and tone to get the information across to the user in the least amount of time, with the least amount of friction. The quicker a user understands something, the happier they are, the more trust they have with the software, and the less silly questions you can expect to get to the dev mailing list! 
 
@@ -58,9 +58,11 @@ Please note, this is NOT about “dumbing things down”. It’s simply about us
   * i.e. clicking the column headers to re-sort a table
   * i.e. clicking a Download button to download something
   * i.e. navigate pages of a table using the arrows provided
-* Use [Plain Language](https://www.plainlanguage.gov/resources/articles/elements-of-plain-language/)
-  * As a guideline, refer to [this list](https://www.plainlanguage.gov/guidelines/words/use-simple-words-phrases/) of words to avoid, and alternate suggestions 
+* Use Plain Language
+  * Avoid words that you wouldn't use in everyday speech
 * Where relevant, introduce an abbreviation once and then use that abbreviation for the rest of the copy in that help text (i.e. introduce Quality Control = QC in a help text title, then only call it QC throughout the text)
   * i.e. DO: “The Imaging Quality Control (QC) module allows you to view the QC status of images in your LORIS.”
   * i.e. DON’T: “The Imaging Quality Control (QC) module allows you to view the Quality Control status of images in your LORIS.”
-* Break up large blocks of text. It's more visually pleasing and less intimidating. 
+* Break up large blocks of text. It's more visually pleasing and less intimidating.
+
+For more information, including research studies conducted, on the use and value of Plain Language, please see [this article](https://www.nngroup.com/articles/plain-language-experts/) and feel free to browse the rest of this website for further helpful details, tips, and tricks. 
