@@ -3,7 +3,6 @@
 ## Overview
 The **Subproject** plays an important role in determining the instrument battery that will be assigned to a candidate at a timepoint. **Subprojects** are defined in the `subproject` table of the database.
 
-
 ## Adding Subproject Options
 
 ### Front End (Recommended)
@@ -28,7 +27,7 @@ INSERT INTO subproject (title) VALUES('SCI');
 
 1. Navigate to the Configuration module
 2. In the upper left corner click on _To configure study projects click here._
-3. Under each project, you should be able to defined the associated subprojects.
+3. Under each project, you should be able to define the associated subprojects.
 
 > Note: If affiliation of subprojects to projects can not be done from the front-end, it could be done directly in SQL as follows. 
 
