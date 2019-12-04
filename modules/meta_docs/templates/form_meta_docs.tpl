@@ -1,7 +1,7 @@
   <link rel="stylesheet" type="text/css" href="/meta_docs/css/swagger-ui.css">
   <script src="/meta_docs/js/swagger-ui-standalone-preset.js"></script>
   <script src="/meta_docs/js/swagger-ui-bundle.js"></script>
-  <div id="swagger-ui"></div>
+  <div id="swagger-ui" class="container"></div>
   <style>
     html
     {

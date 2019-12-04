@@ -21,4 +21,13 @@ namespace LORIS\meta_docs;
  */
 class Module extends \Module
 {
+    /**
+     * This module is publicly available to people who are not logged in to LORIS.
+     *
+     * @return bool
+     */
+    public function isPublicModule()
+    {
+        return true;
+    }
 }
