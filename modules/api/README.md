@@ -26,9 +26,17 @@ NOT in scope:
 
 ## Permissions
 
+The `api` module is a public module so that the `login` endpoint can be accessed,
+but otherwise all requests require a token (retrieved from the `login` endpoint)
+or the user accessing the API to be logged in to LORIS.
+
+The following permissions affect accessing data from the API:
 ????
 
 ## Configurations
+
+The following configuration settings affect the format of data returned from
+the API:
 
 useEDC - This configuration setting determines whether the EDC is returned
   or required for creating/retrieving candidates with the API.
