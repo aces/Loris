@@ -28,4 +28,5 @@ Under the _Dashboard_ section of the Configuration module, you can edit 2 settin
 * _Project Description_ : the blurb that appears at the top of the Dashboard. This text cannot contain HTML characters (such as line breaks), for security reasons.  
 * _Target number of Participants_ : this value is used in the _Recruitment_ panel of the Dashboard. 
 
-In the _Projects_ page of the Configuration module, you can also modify project-specific recruitment targets - these are used in the Project breakdown View in the Dashboard's _Recruitment_ charts panel.  
+In both the _Projects_ and _Subprojects_ pages of the Configuration module, you can modify (sub)project-specific recruitment targets - these are used in the Project breakdown View in the Dashboard's _Recruitment_ charts panel.   
+Note there is currently no relationship enforced between the subproject and parent project recruitment targets -- the former can be larger than the latter. 
