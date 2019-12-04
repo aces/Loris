@@ -183,6 +183,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $usersites = $user->getSiteNames();
+        error_log(print_r($usersites, true));
         if (!in_array($data['Candidate']['Site'], $usersites)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'You are not affiliated with the candidate`s site'

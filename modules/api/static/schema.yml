@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: LORIS - REST API endpoints
-  description: The Loris API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.
+  description: The LORIS API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.
   contact:
     name: LORIS Development Team
     url: 'https://github.com/aces/loris'
@@ -1544,21 +1544,24 @@ components:
     NewCandidate:
       type: object
       properties:
-        Project:
-          type: string
-        PSCID:
-          type: string
-        Site:
-          type: string
-        EDC:
-          type: string
-        DoB:
-          type: string
-        Sex:
-          type: string
-          enum:
-            - Female
-            - Male
+        Candidate:
+          type: object
+          properties:
+            Project:
+              type: string
+            PSCID:
+              type: string
+            Site:
+              type: string
+            EDC:
+              type: string
+            DoB:
+              type: string
+            Sex:
+              type: string
+              enum:
+                - Female
+                - Male
     VisitMeta:
       type: object
       properties:
