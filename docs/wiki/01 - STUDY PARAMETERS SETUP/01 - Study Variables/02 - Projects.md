@@ -10,11 +10,9 @@ The **Project** represents a study in LORIS and can have different subprojects (
 ### Front End (Recommended)
 Projects are defined in the Configuration module, which can be found in LORIS under the **Admin** menu tab. Follow the steps below to create your own study projects.
 
-1. Enable multi-project support. In the Configuration module under the ***Study variables*** section, set the field ***Use Projects*** to true and click the ***Submit*** button at the bottom of the page.  After changing this setting, be sure to refresh the Configuration module page to see the changes.
+1. To define project labels and recruitment targets, within the Configuration module click on the link at the top of the page indicating ***To configure study projects click here***.
 
-2. To define project labels and recruitment targets, within the Configuration module click on the link at the top of the page indicating ***To configure study projects click here***.
-
-3. For each project, enter the _project label_ and _recruitment target (optional)_, and click ***save***. 
+2. For each project, enter the _project label_ and _recruitment target (optional)_, and click ***save***. 
 
 > Deleting a defined project can only be done through the project table in the MySQL back end. 
 
