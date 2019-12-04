@@ -268,6 +268,7 @@ class SNP_Browser extends \NDB_Menu_Filter
                 ''       => 'All',
                 'Male'   => 'Male',
                 'Female' => 'Female',
+                'Other'  => 'Other',
             )
         );
         $this->addSelect(
