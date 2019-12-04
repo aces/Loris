@@ -72,7 +72,6 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Data Dictionary', 'datadict/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 1),
     ('Document Repository', 'document_repository/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 2),
-    ('Data Integrity Flag', 'data_integrity_flag/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 3),
     ('Instrument Builder', 'instrument_builder/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 5),
     ('Data Release', 'data_release/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 7),
     ('Acknowledgements', 'acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 8),
@@ -153,11 +152,6 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='document_repository_view' AND m.Label='Document Repository';
-
-
-INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID
-    FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_integrity_flag' AND m.Label='Data Integrity Flag';
-
 
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='quality_control' AND m.Label='Behavioural Quality Control';

@@ -69,7 +69,6 @@ INSERT INTO `permissions` VALUES
     (18,'data_dict_view','View Data Dictionary (Parameter type descriptions)','2'),
     (19,'violated_scans_view_allsites','Violated Scans: View all-sites Violated Scans','2'),
     (20,'violated_scans_edit','Violated Scans: Edit MRI protocol table','2'),
-    (21,'data_integrity_flag','Data Integrity Flag','2'),
     (22,'config','Edit configuration settings','2'),
     (23,'imaging_browser_view_site','View own-site Imaging Browser pages','2'),
     (24,'imaging_browser_view_allsites', 'View all-sites Imaging Browser pages', '2'),
