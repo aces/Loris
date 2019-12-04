@@ -200,6 +200,7 @@ const config = [
   lorisModule('battery_manager', ['batteryManagerIndex']),
   lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
   lorisModule('behavioural_qc', ['behavioural_qc_module']),
+  lorisModule('create_timepoint', ['createTimepointIndex']),
   lorisModule('candidate_list', [
     'openProfileForm',
     'onLoad',
