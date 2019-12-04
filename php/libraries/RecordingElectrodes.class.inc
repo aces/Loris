@@ -128,7 +128,7 @@ class RecordingElectrodes
     /**
      * Accessor for filepath
      *
-     * @return ?string
+     * @return \SplFileInfo
      */
     public function getFileInfo(): \SplFileInfo
     {

@@ -142,12 +142,12 @@ class RecordingDTO implements \LORIS\Data\DataInstance
     {
         return json_encode(
             array(
-                'fileid'              => $this->fileid,
-                'filename'            => $this->filename,
-                'filelocation'        => $this->filelocation,
-                'outputtype'          => $this->outputtype,
-                'acquisitionmodality' => $this->acquisitionmodality,
-                'filetype'            => $this->filetype,
+             'fileid'              => $this->fileid,
+             'filename'            => $this->filename,
+             'filelocation'        => $this->filelocation,
+             'outputtype'          => $this->outputtype,
+             'acquisitionmodality' => $this->acquisitionmodality,
+             'filetype'            => $this->filetype,
             )
         );
     }

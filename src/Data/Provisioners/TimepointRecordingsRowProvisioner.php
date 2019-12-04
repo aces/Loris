@@ -51,7 +51,7 @@ class TimepointRecordingsRowProvisioner extends DBRowProvisioner
                s.Active=\'Y\'
             ',
             array(
-                'v_sessionid' => $timepoint->getSessionID(),
+             'v_sessionid' => $timepoint->getSessionID(),
             )
         );
     }

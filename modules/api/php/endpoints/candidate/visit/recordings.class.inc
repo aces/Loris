@@ -12,7 +12,6 @@
  */
 namespace LORIS\api\Endpoints\Candidate\Visit;
 
-use LORIS\Data\Models\RecordingDTO;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;

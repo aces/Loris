@@ -91,8 +91,11 @@ class ViewDetails extends \NDB_Form
     {
         switch ($table) {
         case "tarchive":
-            $query = "SELECT * FROM $table WHERE TarchiveID =:ID";
-            $array = $this->DB->pselectRow($query, array('ID' => $tarchiveID));
+            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID";
+            $tarchiveData = $this->DB->pselectRow(
+                $query,
+                array('ID' => $tarchiveID)
+            );
             break;
         case "tarchive_series":
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID

@@ -42,8 +42,8 @@ class Full
     /**
      * Constructor which sets the instance variables based on the provided recording.
      *
-     * @param \Timepoint   $visit     The requested visit
-     * @param \LORIS\Image $recording The requested recording
+     * @param \Timepoint       $visit     The requested visit
+     * @param \LORIS\Recording $recording The requested recording
      */
     public function __construct(\Timepoint $visit, \LORIS\Recording $recording)
     {

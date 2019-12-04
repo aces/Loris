@@ -79,7 +79,7 @@ class Files extends \NDB_Page
                         )
                     );
             }
-            return new \LORIS\Http\Response\Conflict("duplicate file name");
+            return new \LORIS\Http\Response\JSON\Conflict("duplicate file name");
         case "PUT":
             $tmp = $request->getBody();
             $arr = (array)json_decode($tmp);

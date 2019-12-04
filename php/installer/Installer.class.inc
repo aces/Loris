@@ -297,12 +297,16 @@ class Installer
     {
         $DB = Database::singleton();
         try {
-            $DB->connect(
+            $success = $DB->connect(
                 $values['dbname'],
                 $values['dbadminuser'],
                 $values['dbadminpassword'],
                 $values['dbhost']
             );
+
+            if (! $success) {
+                throw new \DatabaseException('Could not connect to database');
+            }
         } catch (\Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
@@ -369,12 +373,15 @@ class Installer
     private function _sourceSchemaFile($DB, $file)
     {
         $sqls = file_get_contents(__DIR__ . "/../../SQL/0000-00-$file");
-        if ($DB->PDO->exec($sqls) === false) {
-            $this->_lastErr = "Unknown error sourcing schema file. $file";
+        $DB->PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        try {
+            $DB->PDO->exec($sqls);
+        } catch (\PDOException $err) {
+            error_log($err->getMessage());
+            $this->_lastErr = $err->getMessage();
             return false;
         }
         return true;
-
     }
 
     /**

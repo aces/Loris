@@ -65,7 +65,7 @@ class Dataquery extends \NDB_Form
                 '`port`, `admin` and `adminpass` values are properly ' .
                 'configured in project/config.xml'
             );
-            throw new \ConfigException(
+            throw new \ConfigurationException(
                 'Missing CouchDB configuration settings. Cannot load ' .
                 'Data Query Tool.'
             );

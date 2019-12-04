@@ -82,14 +82,14 @@ class Create_Timepoint extends \NDB_Form
         }
 
         //Project
-        $projects = \Utility::getProjectList();
-        if (count($projects) == 1) {
+        $user_list_of_projects = $user->getProjectIDs();
+        if (count($user_list_of_projects) == 1) {
             //if there is only one project, autoselect first project from array of 1
             //TODO: change this to array_key_first() when support is only PHP 7.3+
-            $project = \Project::singleton(array_pop($projects));
-        } else if (count($projects) > 1) {
+            $project = \Project::getProjectFromID(array_pop($user_list_of_projects));
+        } else if (count($user_list_of_projects) > 1) {
             $project_id = intval($values['project']);
-            $project    = \Project::singleton($projects[$project_id]);
+            $project    = \Project::getProjectFromID($project_id);
         }
 
         assert(isset($site) && $site !== null);
@@ -174,15 +174,17 @@ class Create_Timepoint extends \NDB_Form
         $this->_setDefaults(array("subprojectID" => $this->subprojectID));
 
         // visit label
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        $visitLabelAdded    = false;
-
+        $visitLabelSettings  = $config->getSetting('visitLabel');
+        $subprojectHasVisits = false;
         foreach (
             \Utility::associativeToNumericArray($visitLabelSettings)
             as $visitLabel
         ) {
             $visitLabel = \Utility::asArray($visitLabel);
             if ($visitLabel['@']['subprojectID'] == $this->subprojectID) {
+                $user = \User::singleton();
+                $DB   = \Database::singleton();
+                $subprojectHasVisits = true;
                 if (isset($visitLabel['generation'])
                     && $visitLabel['generation'] !== 'sequence'
                 ) {
@@ -199,42 +201,57 @@ class Create_Timepoint extends \NDB_Form
                     $labelOptions[$item['@']['value']] = $item['#'];
                 }
                 $this->addSelect('visitLabel', 'Visit label', $labelOptions);
-                $visitLabelAdded = true;
+                $this->addRule('visitLabel', 'Visit label is required', 'required');
+
+                // List of sites for the user
+                $user_list_of_sites = $user->getCenterIDs();
+                $num_sites          = count($user_list_of_sites);
+                if ($num_sites >1) {
+                    $this->tpl_data['pscLabelAdded'] = true;
+                    $psc_labelOptions = [null => ''];
+                    foreach ($user_list_of_sites as $key => $siteID) {
+                        $center = $DB->pselectRow(
+                            "SELECT CenterID as ID, Name FROM psc 
+                        WHERE CenterID =:cid",
+                            ['cid' => $siteID]
+                        );
+                        if (!is_null($center)) {
+                            $psc_labelOptions[$siteID] = $center['Name'];
+                        }
+                    }
+                    $this->addSelect('psc', 'Site', $psc_labelOptions);
+                    $this->addRule(
+                        'psc',
+                        'Site selection is required',
+                        'required'
+                    );
+                }
+
+                // List projects
+                $user_list_of_projects = $user->getProjectIDs();
+                if (count($user_list_of_projects) >1) {
+                    $this->tpl_data['projectAdded'] = true;
+                    $projectOptions = array(null => '');
+                    foreach ($user_list_of_projects as $key => $projectID) {
+                        $project = \Project::getProjectFromID($projectID);
+                        $projectOptions[$projectID] = $project->getName();
+                    }
+                    $this->addSelect('project', 'Project', $projectOptions);
+                    $this->addRule(
+                        'project',
+                        'Project selection is required',
+                        'required'
+                    );
+                }
             }
         }
 
         // label rules
-        if ($visitLabelAdded) {
-            $this->addRule('visitLabel', 'Visit label is required', 'required');
-            // List of sites for the user
-            $user = \User::singleton();
-            $DB   = \Database::singleton();
-            $user_list_of_sites = $user->getData('CenterIDs');
-            $num_sites          = count($user_list_of_sites);
-            $psc_labelOptions   = array();
-            if ($num_sites >1) {
-                $this->tpl_data['pscLabelAdded'] = true;
-                $psc_labelOptions = array(null => '');
-                foreach ($user_list_of_sites as $key => $siteID) {
-                    $center = $DB->pselectRow(
-                        "SELECT CenterID as ID, Name FROM psc 
-                        WHERE CenterID =:cid",
-                        array('cid' => $siteID)
-                    );
-                    if (!is_null($center)) {
-                        $psc_labelOptions[$siteID] = $center['Name'];
-                    }
-                }
-            }
-            $this->addSelect('psc', 'Site', $psc_labelOptions);
-            // List projects
-            $projects = \Utility::getProjectList();
-            if (count($projects) >1) {
-                $this->tpl_data['projectAdded'] = true;
-                $projectOptions = [null => ''] + $projects;
-
-                $this->addSelect('project', 'Project', $projectOptions);
-            }
+        if (isset($this->subprojectID) && !$subprojectHasVisits) {
+            $this->form->errors['subprojectID'] = "No visits have been
+            defined for the subproject selected.
+            If you are an administrator, please assign visits to this subproject in
+            the config.xml file.";
         }
         $this->form->addFormRule(array(&$this, '_validate'));
 
@@ -266,11 +283,11 @@ class Create_Timepoint extends \NDB_Form
         }
 
         //Project
-        $projects = \Utility::getProjectList();
-        if (count($projects) == 0) {
-            $errors['project'] = "No projects are defined in the database, please ".
-            "add projects in order to continue";
-        } else if (count($projects) > 1 && is_null($val['project'])) {
+        $user_list_of_projects = $user->getProjectIDs();
+        if (count($user_list_of_projects) == 0) {
+            $errors['project'] = "You must be affiliated with a project to create a 
+            timepoint.";
+        } else if (count($user_list_of_projects) > 1 && is_null($val['project'])) {
             $errors['project'] = "A project must be selected from the available ".
             "dropdown.";
         }
