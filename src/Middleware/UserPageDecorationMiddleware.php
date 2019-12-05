@@ -54,30 +54,40 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                      'test_name' => $this->PageName,
                     );
 
+        $menu    = [];
         $modules = \Module::getActiveModules($this->DB);
-        $menu = [];
         foreach ($modules as $module) {
-            if(!$module->hasAccess($user)) {
+            if (!$module->hasAccess($user)) {
                 continue;
             }
 
             $items = $module->getMenuItems();
 
-            if(!empty($items)) {
-                foreach($items as $menuitem) {
-                    // $menu[$menuitem->getCategory() ?? 'Other'][$menuitem->getLabel()] = $menuitem->getLink();
+            if (!empty($items)) {
+                foreach ($items as $menuitem) {
                     $menu[$menuitem->getCategory() ?? 'Other'][] = $menuitem;
                 }
             }
         }
 
+        // The order of the menu categories is currently unsorted. We sort them
+        // alphabetically by key to impose an order. As a hack to avoid reordering
+        // menu for users of existing LORIS instances, we move the 'Admin' category
+        // to the end even though it's alphabetically first (we do this by removing
+        // the key before sorting and then adding it back afterwards.)
+        //
+        // Coincidentally, this almost-alphabetic sorting results in the exact same
+        // order that LORIS previously had.
+        $adminmenu = $menu['Admin'];
+        unset($menu['Admin']);
         ksort($menu);
+        $menu['Admin'] = $adminmenu;
 
         // Basic page outline variables
         $tpl_data += array(
                       'study_title' => $this->Config->getSetting('title'),
                       'baseurl'     => $this->BaseURL,
-                      'menus'        => $menu,
+                      'menus'       => $menu,
                       'currentyear' => date('Y'),
                       'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                      );

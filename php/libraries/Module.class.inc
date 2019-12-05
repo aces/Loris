@@ -24,7 +24,8 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-abstract class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterface
+abstract class Module extends \LORIS\Router\PrefixRouter
+    implements RequestHandlerInterface
 {
     const GENERIC_500_ERROR   = "We're sorry, LORIS has encountered an internal "
         . "server error. Please contact your project administrator for more "
@@ -37,6 +38,9 @@ abstract class Module extends \LORIS\Router\PrefixRouter implements RequestHandl
 
     /**
      * Retrieve all active module descriptors from the given database
+     *
+     * @param \Database $db an open connection to a database containing a 'modules'
+     *                      table
      *
      * @return \Module[]
      */
@@ -161,14 +165,31 @@ abstract class Module extends \LORIS\Router\PrefixRouter implements RequestHandl
     }
 
     /**
-     * Return the name of this module.
+     * Return the short name of this module. The short name is used
+     * in places such as the URL and by default matches the name of
+     * the directory that the module is housed in.
      *
-     * @return string The module name
+     * It should not contain special characters.
+     *
+     * @return string The machine friendly module name
      */
     public function getName() : string
     {
         return $this->name;
     }
+
+    /**
+     * Return the long name of this module. The long name is intended
+     * to be the friendly, human-readable name and can not be automatically
+     * derived. It may contain spaces or, capitalization. The long name
+     * of the module is how it should be referred to in user-facing text.
+     *
+     * By default, the long name is used as the name in the LORIS menu
+     * (if the module has a menu category defined by getMenuCategory().
+     *
+     * @return string The human friendly name for this module.
+     */
+    abstract function getLongName() : string;
 
     /**
      * Returns true if this module should be publicly available to people who
@@ -391,14 +412,34 @@ abstract class Module extends \LORIS\Router\PrefixRouter implements RequestHandl
         );
     }
 
+    /**
+     * Return a value which is used as the default menu category
+     * (dropdown) to add this module to in the LORIS frontend.
+     *
+     * Unless overridden, this defaults to the empty string (which
+     * results in the module not being added to the LORIS menu.)
+     *
+     * @return string The category (dropdown) of the LORIS menu to add
+     *                this module to.
+     */
     public function getMenuCategory() : string
     {
         return "";
     }
 
-    abstract function getLongName() : string;
 
     /**
+     * Return a list of \LORIS\GUI\MenuItems to add to the LORIS
+     * menu.
+     *
+     * By default, if getMenuCategory() and getLongName() are both
+     * non-empty strings, a menu entry will be added for the module
+     * under the appropriate category with the long name user as the
+     * name. A module may override this if it wants to override this
+     * behaviour and add more (or differently named) menu items. (In
+     * for a module to not be placed in the menu, it's sufficient to
+     * simply not change the default returned by getMenuCategory().
+     *
      * @return \LORIS\GUI\MenuItem[]
      */
     public function getMenuItems() : array
