@@ -26,4 +26,7 @@ namespace LORIS\dashboard;
  */
 class Module extends \Module
 {
+    public function getLongName() : string {
+        return "Dashboard";
+    }
 }

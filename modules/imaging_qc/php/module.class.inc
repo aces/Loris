@@ -24,10 +24,11 @@ namespace LORIS\imaging_qc;
  */
 class Module extends \Module
 {
-        public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Imaging", "Imaging Quality Control", "imaging_qc/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Imaging";
     }
 
+    public function getLongName() : string {
+        return "Imaging Quality Control";
+    }
 }

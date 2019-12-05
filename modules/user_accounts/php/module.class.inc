@@ -42,11 +42,11 @@ class Module extends \Module
         }
         return parent::handle($request);
     }
-            public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Admin", "User Accounts", "user_accounts/"),
-        ];
+
+    public function getMenuCategory() : string {
+        return "Admin";
     }
-
-
+    public function getLongName() : string {
+        return "User Accounts";
+    }
 }

@@ -104,4 +104,8 @@ class Module extends \Module
         // for the API module.
         return $handler->process($newrequest, $handler);
     }
+
+    public function getLongName() : string {
+        return "API";
+    }
 }

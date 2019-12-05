@@ -26,10 +26,11 @@ namespace LORIS\examiner;
  */
 class Module extends \Module
 {
-        public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Clinical", "Examiner", "examiner/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Clinical";
     }
 
+    public function getLongName() : string {
+        return "Examiner";
+    }
 }

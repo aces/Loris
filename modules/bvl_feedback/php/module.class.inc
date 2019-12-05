@@ -26,4 +26,7 @@ namespace LORIS\bvl_feedback;
  */
 class Module extends \Module
 {
+    public function getLongName() : string {
+        return "Behavioural Feedback";
+    }
 }

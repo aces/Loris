@@ -26,4 +26,7 @@ namespace LORIS\next_stage;
  */
 class Module extends \Module
 {
+    public function getLongName() : string {
+        return "Next Stage";
+    }
 }

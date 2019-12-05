@@ -24,7 +24,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterface
+abstract class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterface
 {
     const GENERIC_500_ERROR   = "We're sorry, LORIS has encountered an internal "
         . "server error. Please contact your project administrator for more "
@@ -387,10 +387,26 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         );
     }
 
+    public function getMenuCategory() : string {
+        return "";
+    }
+
+    abstract function getLongName() : string;
+
     /**
      * @return \LORIS\GUI\MenuItem[]
      */
     public function getMenuItems() : array {
+        $category = $this->getMenuCategory();
+        $name = $this->getLongName();
+        if ($category !== "" && $name !== "") {
+            $factory = \NDB_Factory::singleton();
+            $baseURL = $factory->settings()->getBaseURL();
+            $url = $baseURL . '/' . $this->getName() . '/';
+            return [
+                new \LORIS\GUI\MenuItem($category, $name, $url)
+            ];
+        }
         return [];
     }
 }

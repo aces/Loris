@@ -25,11 +25,11 @@ namespace LORIS\publication;
  */
 class Module extends \Module
 {
-            public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Reports", "Publications", "publication/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Reports";
     }
 
-
+    public function getLongName() : string {
+        return "Publications";
+    }
 }

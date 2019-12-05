@@ -106,6 +106,9 @@ class Module extends \Module
 
         }
         return $page->process($request, $page);
+    }
 
+    public function getLongName() : string {
+        return "Instrument List";
     }
 }

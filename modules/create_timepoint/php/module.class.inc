@@ -25,4 +25,7 @@ namespace LORIS\create_timepoint;
  */
 class Module extends \Module
 {
+    public function getLongName() : string {
+        return "Create Timepoint";
+    }
 }

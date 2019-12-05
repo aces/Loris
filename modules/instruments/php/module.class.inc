@@ -70,4 +70,8 @@ class Module extends \Module
 
         return $instrument->process($request, $instrument);
     }
+
+    public function getLongName() : string {
+        return "Instruments";
+    }
 }

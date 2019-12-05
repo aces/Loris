@@ -24,4 +24,7 @@ namespace LORIS\candidate_parameters;
  */
 class Module extends \Module
 {
+    public function getLongName() : string {
+        return "Candidate Parameters";
+    }
 }

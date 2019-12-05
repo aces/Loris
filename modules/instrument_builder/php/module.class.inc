@@ -24,11 +24,11 @@ namespace LORIS\instrument_builder;
  */
 class Module extends \Module
 {
-            public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Tools", "Instrument Builder", "instrument_builder/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Tools";
     }
 
-
+    public function getLongName() : string {
+        return "Instrument Builder";
+    }
 }

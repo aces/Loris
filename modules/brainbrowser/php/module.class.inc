@@ -26,4 +26,7 @@ namespace LORIS\brainbrowser;
  */
 class Module extends \Module
 {
+    public function getLongName() : string {
+        return "Brainbrowser";
+    }
 }

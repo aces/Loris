@@ -24,9 +24,10 @@ namespace LORIS\instrument_manager;
  */
 class Module extends \Module
 {
-                public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Admin", "Instrument Manager", "instrument_manager/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Admin";
+    }
+    public function getLongName() : string {
+        return "Instrument Manager";
     }
 }

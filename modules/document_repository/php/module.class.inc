@@ -26,11 +26,11 @@ namespace LORIS\document_repository;
  */
 class Module extends \Module
 {
-            public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Tools", "Document Repository", "document_repository/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Tools";
     }
 
-
+    public function getLongName() : string {
+        return "Document Repository";
+    }
 }

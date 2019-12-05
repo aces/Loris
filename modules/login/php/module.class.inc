@@ -37,4 +37,8 @@ class Module extends \Module
     {
         return true;
     }
+
+    public function getLongName() : string {
+        return "Login";
+    }
 }

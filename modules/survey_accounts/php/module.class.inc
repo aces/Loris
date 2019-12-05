@@ -24,11 +24,11 @@ namespace LORIS\survey_accounts;
  */
 class Module extends \Module
 {
-            public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Admin", "Survey Module", "survey_accounts/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Admin";
     }
 
-
+    public function getLongName() : string {
+        return "Survey Module";
+    }
 }

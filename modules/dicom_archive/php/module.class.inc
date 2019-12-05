@@ -91,10 +91,11 @@ class Module extends \Module
         }
     }
 
-    public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Imaging", "DICOM Archive", "dicom_archive/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Imaging";
     }
 
+    public function getLongName() : string {
+        return "DICOM Archive";
+    }
 }

@@ -26,9 +26,10 @@ namespace LORIS\new_profile;
  */
 class Module extends \Module
 {
-    public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Candidate", "New Profile", "new_profile/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Candidate";
+    }
+    public function getLongName() : string {
+        return "New Profile";
     }
 }

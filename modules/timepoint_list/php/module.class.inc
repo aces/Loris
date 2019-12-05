@@ -50,4 +50,8 @@ class Module extends \Module
         $page = $this->loadPage("timepoint_list");
         return $page->process($request, $page);
     }
+
+    public function getLongName() : string {
+        return "Timepoint List";
+    }
 }

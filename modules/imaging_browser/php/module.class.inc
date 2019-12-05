@@ -26,10 +26,11 @@ namespace LORIS\imaging_browser;
  */
 class Module extends \Module
 {
-        public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Imaging", "Imaging Browser", "imaging_browser/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Imaging";
     }
 
+    public function getLongName() : string {
+        return "Imaging Browser";
+    }
 }

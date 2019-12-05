@@ -26,10 +26,11 @@ namespace LORIS\conflict_resolver;
  */
 class Module extends \Module
 {
-        public function getMenuItems() : array {
-        return [
-            new \LORIS\GUI\MenuItem("Clinical", "Conflict Resolver", "conflict_resolver/"),
-        ];
+    public function getMenuCategory() : string {
+        return "Clinical";
     }
 
+    public function getLongName() : string {
+        return "Conflict Resolver";
+    }
 }

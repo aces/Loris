@@ -105,7 +105,7 @@
                                 <a href="#" class="dropdown-toggle"> {$category}
                                     <ul class="dropdown-menu">
                                         {section name=itemloop loop=$menuitems}
-                                        <li><a href="/{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
+                                        <li><a href="{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
                                         {/section}
                                     </ul>
                                 </a>
