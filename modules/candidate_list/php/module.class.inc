@@ -26,6 +26,13 @@ namespace LORIS\candidate_list;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasAnyPermission(['data_entry', 'access_all_profiles']);
+    }
+
     public function getMenuCategory() : string {
         return "Candidate";
     }

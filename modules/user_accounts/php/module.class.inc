@@ -26,6 +26,13 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasPermission('user_accounts');
+    }
+
     /**
      * The edit_user page overrides the default handler in order to delegate
      * edit_user/$identifeir to the edit_user page.

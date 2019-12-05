@@ -26,6 +26,13 @@ namespace LORIS\examiner;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasAnyPermission(['examiner_view', 'examiner_multisite' ]);
+    }
+
     public function getMenuCategory() : string {
         return "Clinical";
     }

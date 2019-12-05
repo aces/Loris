@@ -25,6 +25,13 @@ namespace LORIS\publication;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasAnyPermission(['publication_view', 'publication_propose', 'publication_approve']);
+    }
+
     public function getMenuCategory() : string {
         return "Reports";
     }

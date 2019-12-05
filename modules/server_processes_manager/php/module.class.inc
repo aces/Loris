@@ -28,6 +28,14 @@ class Module extends \Module
 {
     const ERR_MSG_CONFIG_MISSING = 'Required configuration settings for Server '
         . 'Processes Manager are missing. Cannot continue.';
+
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasPermission('server_processes_manager');
+    }
+
     /**
      * Handle a PSR7 Request for the serverprocessesmanager endpoint. Also calls a
      * validation function to ensure necessary configuration settings exist.

@@ -26,6 +26,18 @@ namespace LORIS\imaging_browser;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasAnyPermission([
+            'imaging_browser_view_site',
+            'imaging_browser_view_allsites',
+            'imaging_browser_phantom_allsites',
+            'imaging_browser_phantom_ownsite'
+        ]);
+    }
+
     public function getMenuCategory() : string {
         return "Imaging";
     }

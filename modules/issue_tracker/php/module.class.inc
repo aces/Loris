@@ -24,6 +24,13 @@ namespace LORIS\issue_tracker;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasAnyPermission(['issue_tracker_reporter', 'issue_tracker_developer']);
+    }
+
     public function getMenuCategory() : string {
         return "Tools";
     }

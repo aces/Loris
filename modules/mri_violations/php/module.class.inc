@@ -24,6 +24,13 @@ namespace LORIS\mri_violations;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasPermission('violated_scans_view_allsites');
+    }
+
     public function getMenuCategory() : string {
         return "Imaging";
     }

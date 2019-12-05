@@ -24,6 +24,13 @@ namespace LORIS\help_editor;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasPermission('context_help');
+    }
+
     public function getMenuCategory() : string {
         return "Admin";
     }

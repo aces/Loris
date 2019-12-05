@@ -26,6 +26,13 @@ namespace LORIS\imaging_uploader;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasPermission('imaging_uploader');
+    }
+
     public function getMenuCategory() : string {
         return "Imaging";
     }

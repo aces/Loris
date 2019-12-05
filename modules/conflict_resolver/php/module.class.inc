@@ -26,6 +26,13 @@ namespace LORIS\conflict_resolver;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasPermission('conflict_resolver');
+    }
+
     public function getMenuCategory() : string {
         return "Clinical";
     }

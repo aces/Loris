@@ -28,6 +28,13 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasPermission('dicom_archive_view_allsites');
+    }
+
     /**
      * Handle a PSR7 Request for the dicom_archive endpoint. Also calls a
      * validation function to ensure necessary configuration settings exist.

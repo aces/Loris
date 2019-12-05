@@ -26,6 +26,13 @@ namespace LORIS\configuration;
  */
 class Module extends \Module
 {
+    public function hasAccess(\User $user) : bool {
+        if (parent::hasAccess($user) == false) {
+            return false;
+        }
+        return $user->hasPermission('config');
+    }
+
     public function getMenuCategory() : string {
         return "Admin";
     }
