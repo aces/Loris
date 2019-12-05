@@ -30,7 +30,7 @@ INSERT INTO subproject (title) VALUES('SCI');
 2. In the upper left corner click on _To configure study projects click here._
 3. Under each project, you should be able to define the associated subprojects.
 
-> Note: If affiliation of subprojects to projects can not be done from the front-end, it could be done directly in SQL as follows. 
+> Note: Subprohject-Project affiliations can be added as follows directly in SQL when needed (batch data uploads, import from other LORIs of other system...) 
 
   ```sql 
   INSERT INTO project_subproject_rel
