@@ -83,6 +83,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         ksort($menu);
         $menu['Admin'] = $adminmenu;
 
+        // We unconditionally sort within each section because the within-menu
+        // order has never been stable in LORIS, and sorting adds some consistency.
+        foreach ($menu as $cat => $val) {
+            usort($val, function($a, $b) {
+                return strcmp($a->getLabel(), $b->getLabel());
+            });
+            $menu[$cat] = $val;
+        }
         // Basic page outline variables
         $tpl_data += array(
                       'study_title' => $this->Config->getSetting('title'),
