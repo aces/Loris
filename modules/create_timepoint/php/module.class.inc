@@ -25,7 +25,13 @@ namespace LORIS\create_timepoint;
  */
 class Module extends \Module
 {
-    public function getLongName() : string {
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
         return "Create Timepoint";
     }
 }

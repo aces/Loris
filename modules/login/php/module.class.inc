@@ -38,7 +38,13 @@ class Module extends \Module
         return true;
     }
 
-    public function getLongName() : string {
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
         return "Login";
     }
 }

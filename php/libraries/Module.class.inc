@@ -40,14 +40,18 @@ abstract class Module extends \LORIS\Router\PrefixRouter implements RequestHandl
      *
      * @return \Module[]
      */
-    static public function getActiveModules(\Database $db): array{
+    static public function getActiveModules(\Database $db): array
+    {
         $mnames = $db->pselectCol(
             "SELECT Name FROM modules WHERE Active='Y'",
             []
         );
-        return array_map(function($name) {
-            return self::factory($name);
-        }, $mnames);
+        return array_map(
+            function ($name) {
+                return self::factory($name);
+            },
+            $mnames
+        );
     }
 
     /**
@@ -387,7 +391,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter implements RequestHandl
         );
     }
 
-    public function getMenuCategory() : string {
+    public function getMenuCategory() : string
+    {
         return "";
     }
 
@@ -396,13 +401,14 @@ abstract class Module extends \LORIS\Router\PrefixRouter implements RequestHandl
     /**
      * @return \LORIS\GUI\MenuItem[]
      */
-    public function getMenuItems() : array {
+    public function getMenuItems() : array
+    {
         $category = $this->getMenuCategory();
-        $name = $this->getLongName();
+        $name     = $this->getLongName();
         if ($category !== "" && $name !== "") {
             $factory = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
-            $url = $baseURL . '/' . $this->getName() . '/';
+            $url     = $baseURL . '/' . $this->getName() . '/';
             return [
                 new \LORIS\GUI\MenuItem($category, $name, $url)
             ];

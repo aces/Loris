@@ -26,7 +26,15 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
-    public function hasAccess(\User $user) : bool {
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
         if (parent::hasAccess($user) == false) {
             return false;
         }
@@ -50,10 +58,23 @@ class Module extends \Module
         return parent::handle($request);
     }
 
-    public function getMenuCategory() : string {
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The menu category for this module
+     */
+    public function getMenuCategory() : string
+    {
         return "Admin";
     }
-    public function getLongName() : string {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
         return "User Accounts";
     }
 }

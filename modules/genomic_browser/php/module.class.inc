@@ -24,18 +24,43 @@ namespace LORIS\genomic_browser;
  */
 class Module extends \Module
 {
-    public function hasAccess(\User $user) : bool {
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
         if (parent::hasAccess($user) == false) {
             return false;
         }
-        return $user->hasAnyPermission(['genomic_browser_view_site', 'genomic_browser_view_allsites']);
+        return $user->hasAnyPermission(
+            [
+                'genomic_browser_view_site',
+                'genomic_browser_view_allsites'
+            ]
+        );
     }
 
-    public function getMenuCategory() : string {
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The menu category for this module
+     */
+    public function getMenuCategory() : string
+    {
         return "Genomics";
     }
 
-    public function getLongName() : string {
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
         return "Genomic Browser";
     }
 }

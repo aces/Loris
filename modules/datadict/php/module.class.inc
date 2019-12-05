@@ -25,18 +25,38 @@ namespace LORIS\datadict;
  */
 class Module extends \Module
 {
-    public function hasAccess(\User $user) : bool {
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
         if (parent::hasAccess($user) == false) {
             return false;
         }
         return $user->hasAnyPermission(['data_dict_view', 'data_dict_edit']);
     }
 
-    public function getMenuCategory() : string {
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The menu category for this module
+     */
+    public function getMenuCategory() : string
+    {
         return "Tools";
     }
 
-    public function getLongName() : string {
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
         return "Data Dictionary";
     }
 }
