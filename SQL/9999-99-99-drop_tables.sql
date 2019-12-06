@@ -38,6 +38,43 @@ DROP TABLE IF EXISTS `biobank_container_capacity`;
 DROP TABLE IF EXISTS `biobank_unit`; 
 
 -- 0000-00-05-ElectrophysiologyTables.sql
+/*Relational*/
+DROP TABLE IF EXISTS `biobank_container_parent`;
+DROP TABLE IF EXISTS `biobank_container_project_rel`;
+DROP TABLE IF EXISTS `biobank_container_psc_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_pool_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_type_parent`;
+DROP TABLE IF EXISTS `biobank_specimen_parent`;
+DROP TABLE IF EXISTS `biobank_specimen_type_unit_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_protocol_container_type_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_type_container_type_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_protocol_attribute_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_type_attribute_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_method_attribute_rel`;
+/*Pool*/
+DROP TABLE IF EXISTS `biobank_pool`;
+/*Specimen*/
+DROP TABLE IF EXISTS `biobank_specimen_attribute`;
+DROP TABLE IF EXISTS `biobank_specimen_attribute_referencetable`;
+DROP TABLE IF EXISTS `biobank_specimen_attribute_datatype`;
+DROP TABLE IF EXISTS `biobank_specimen_analysis`;
+DROP TABLE IF EXISTS `biobank_specimen_preparation`;
+DROP TABLE IF EXISTS `biobank_specimen_collection`;
+DROP TABLE IF EXISTS `biobank_specimen_freezethaw`;
+DROP TABLE IF EXISTS `biobank_specimen`;
+DROP TABLE IF EXISTS `biobank_specimen_protocol`;
+DROP TABLE IF EXISTS `biobank_specimen_process`;
+DROP TABLE IF EXISTS `biobank_specimen_type`;
+DROP TABLE IF EXISTS `biobank_specimen_method`;
+/*Container*/
+DROP TABLE IF EXISTS `biobank_container`;
+DROP TABLE IF EXISTS `biobank_container_status`;
+DROP TABLE IF EXISTS `biobank_container_type`;
+DROP TABLE IF EXISTS `biobank_container_dimension`;
+DROP TABLE IF EXISTS `biobank_container_capacity`;
+/*Global*/
+DROP TABLE IF EXISTS `biobank_unit`;
+
 DROP TABLE IF EXISTS `physiological_archive`;
 DROP TABLE IF EXISTS `physiological_task_event`;
 DROP TABLE IF EXISTS `physiological_electrode`;
