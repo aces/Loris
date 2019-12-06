@@ -2,6 +2,15 @@ site_name: LORIS
 repo_url: https://github.com/aces/Loris
 pages:
     - Home: index.md
-    - API: API/LorisRESTAPI_v0.0.3.md
     - Wiki: wiki/index.md
+    - Server Install and Configuration: 
+        - 'Prerequisities and Assumptions': '00\ -\ SERVER\ INSTALL\ AND\ CONFIGURATION/00\ -\ Prerequisites\ And\ Assumptions/README.md'
+        - 'Ubuntu Install': '00\ -\ SERVER\ INSTALL\ AND\ CONFIGURATION/01\ -\ LORIS\ Install/Ubuntu/README.md'
+        - 'CentOS Install': '00\ -\ SERVER\ INSTALL\ AND\ CONFIGURATION/01\ -\ LORIS\ Install/CentOS/README.md'
+        - 'Mac Install (for development)': '00\ -\ SERVER\ INSTALL\ AND\ CONFIGURATION/01\ -\ LORIS\ Install/Macintosh/README.md'
+    - Study Parameters Setup:
+    - Getting Started: 
+    - Help and Troubleshooting:
+    - API: API/LorisRESTAPI_v0.0.3.md
+    - Developers:
 theme: readthedocs
