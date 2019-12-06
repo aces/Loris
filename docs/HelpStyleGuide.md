@@ -47,7 +47,7 @@ Whether a user knows it or not, they will come to recognize styles that are cons
 
 LORIS is used by scientific community worldwide, including countries where English is a second, or even third language. Therefore, it is important that LORIS documentation (help text, setup guides, etc.) be written in a way that it comprehensible by people with limited knowledge and understanding of English language and expression.
 
-Please note, this is NOT about “dumbing things down”. It’s simply about using the most direct language and tone to get the information across to the user in the least amount of time, with the least amount of friction. The quicker a user understands something, the happier they are, the more trust they have with the software, and the less silly questions you can expect to get to the dev mailing list! 
+This means using more direct language and tone to get information across to the user in the least amount of time, with the least amount of friction. The quicker a user understands something, the happier they are.  Easily understandable documentation also builds trust in the software, in addition to decreasing the amount of support questions we get.
 
 * Use second person point of view rather than third
   * i.e. “This module allows *you* to browse…” (rather than “This module allows *users* to browse…”)
