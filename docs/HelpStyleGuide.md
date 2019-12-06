@@ -12,7 +12,7 @@ Some modules have more than one Help text file to correspond with subpages. Thes
 
 ## Markdown
 
-Formatting should follow markdown guidelines, with some exceptions. This is because LORIS’s current markdown template may not cover all possible markdown features (e.g. bullets). Help text cannot be formatted with HTML so it should not be included in help text. When creating a markdown file, use only the following styles, or else talk to the LORIS technical team about expanding our Markdown features:
+Formatting should follow markdown guidelines, with some exceptions. This is because LORIS’s current markdown renderer may not cover all possible markdown features (e.g. bullets). Help text cannot be formatted with HTML so it should not be included in help text. When creating a markdown file, use only the following styles, or else talk to the LORIS technical team about expanding our Markdown features:
 
 * `*Italics*`
 * `**Bold**`
