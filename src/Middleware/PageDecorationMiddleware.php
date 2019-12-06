@@ -42,7 +42,8 @@ class PageDecorationMiddleware implements MiddlewareInterface
             )->process($request, $handler);
         }
 
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
+
         return (new \LORIS\Middleware\UserPageDecorationMiddleware(
             $this->user,
             $baseURL ?? "",
