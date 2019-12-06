@@ -19,9 +19,8 @@ DROP TABLE IF EXISTS `help`;
 DROP TABLE IF EXISTS `Config`;
 DROP TABLE IF EXISTS `ConfigSettings`;
 
--- 0000-00-02-Menus.sql
-DROP TABLE IF EXISTS `LorisMenuPermissions`;
-DROP TABLE IF EXISTS `LorisMenu`;
+-- 0000-00-02-Modules.sql
+DROP TABLE IF EXISTS `modules`;
 
 -- 0000-00-01-Permission.sql
 DROP TABLE IF EXISTS `user_perm_rel`;
