@@ -60,7 +60,7 @@ This means using more direct language and tone to get information across to the 
   * e.g. navigate pages of a table using the arrows provided
 * Use Plain Language
   * Avoid words that you wouldn't use in everyday speech
-* Where relevant, introduce an abbreviation once and then use that abbreviation for the rest of the copy in that help text (e.g. introduce Quality Control = QC in a help text title, then only call it QC throughout the text)
+* Where relevant introduce an abbreviation once and then use that abbreviation for the rest of the copy in that help text (e.g. introduce Quality Control = QC in a help text title, then only call it QC throughout the text)
   * e.g. DO: “The Imaging Quality Control (QC) module allows you to view the QC status of images in your LORIS.”
   * e.g. DON’T: “The Imaging Quality Control (QC) module allows you to view the Quality Control status of images in your LORIS.”
 * Break up large blocks of text. It's more visually pleasing and less intimidating.
