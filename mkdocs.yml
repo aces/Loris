@@ -11,7 +11,7 @@ nav:
             - 'Mac Install (for development)': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/01 - LORIS Install/Macintosh/README.md'
         - Website Configuration: 'wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/README.md'
     - Study Parameters Setup:
-        - Study Variables:
+        - Study Variables: 
             - 'Introduction': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/00 - Introduction to Study Variables.md'
             - 'Projects': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/02 - Projects.md'
             - 'Sites': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/03 - Sites.md'
