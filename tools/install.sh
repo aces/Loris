@@ -117,7 +117,6 @@ mkdir -p ../smarty/templates_c
 # Setting 770 permissions for templates_c
 chmod 770 ../smarty/templates_c
 
-# Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module
 # Detecting distribution
 if ! os_distro=$(hostnamectl 2>/dev/null)
 then

@@ -173,16 +173,16 @@ class Files extends \NDB_Page
      */
     function deleteFile($rid): void
     {
-        $config = \NDB_Factory::singleton()->config();
-        $path   = $config->getSetting("documentRepositoryPath");
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
+        $config  = $factory->config();
+        $path    = $config->getSetting("documentRepositoryPath");
         // create Database object
-        $DB       = \Database::singleton();
-        $user     = \User::singleton();
         $Notifier = new \NDB_Notifier(
             "document_repository",
             "delete"
         );
-        $factory  = \NDB_Factory::singleton();
         $baseURL  = $factory->settings()->getBaseURL();
         $fileName = $DB->pselectOne(
             "SELECT File_name FROM document_repository

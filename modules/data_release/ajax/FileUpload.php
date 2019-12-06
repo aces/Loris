@@ -12,9 +12,10 @@
  * @link     https://github.com/aces/Loris
  */
 
-$DB     = \Database::singleton();
-$user   = \User::singleton();
-$config = \NDB_Factory::singleton()->config();
+$factory = \NDB_Factory::singleton();
+$DB      = $factory->database();
+$user    = $factory->user();
+$config  = $factory->config();
 
 if ($_POST['action'] == 'upload'
     && $user->hasPermission("data_release_upload")
@@ -23,7 +24,6 @@ if ($_POST['action'] == 'upload'
     $version     = $_POST['version'];
     $upload_date = date('Y-m-d');
 
-    $factory  = NDB_Factory::singleton();
     $settings = $factory->settings();
 
     $baseURL = $settings->getBaseURL();

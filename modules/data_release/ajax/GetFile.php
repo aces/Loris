@@ -12,8 +12,11 @@
  * @link     https://github.com/aces/Loris
  */
 
-$user   =& User::singleton();
-$config = \NDB_Factory::singleton()->config();
+
+$factory  = \NDB_Factory::singleton();
+$db     = $factory->database();
+$user   = $factory->user();
+$config = $factory->config();
 $path   = $config->getSetting('dataReleasePath');
 
 $File = $_GET['File'];
@@ -31,7 +34,6 @@ if (!file_exists($FullPath)) {
     header("HTTP/1.1 404 Not Found");
     exit(5);
 }
-$db         = \Database::singleton();
 $fileID     = $db->pselectOne(
     "SELECT ID FROM data_release WHERE "
     . "file_name=:fn",
