@@ -26,7 +26,7 @@ Formatting should follow markdown guidelines, with some exceptions. This is beca
   
 ## When to Use Emphasis
   
-Whether a user knows it or not, they will come to recognize styles that are consistent throughout the text. This way, their eyes can jump to a part of the text that addresses their issue, if they don’t need to read the whole thing. Follow these rules on using emphasis:
+Whether a user knows it or not, they will come to recognize styles that are consistent throughout the text. This way, their eyes can jump to a part of the text that addresses their issue, and they don’t need to read the whole thing. Follow these rules on using emphasis:
 
 * *Italicize* when referring to a specific place on the screen
   * e.g. in the Selection Filters section
