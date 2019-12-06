@@ -478,13 +478,10 @@ DELETE FROM ConfigSettings WHERE
     `Name`='biobankPath';
 
 /*Loris Menu*/
-UPDATE LorisMenu SET `OrderNumber`=5 WHERE `Label`='Reports';
-UPDATE LorisMenu SET `OrderNumber`=6 WHERE `Label`='Tools';
-UPDATE LorisMenu SET `OrderNumber`=7 WHERE `Label`='Admin';
-
-INSERT INTO LorisMenu (Label, OrderNumber) VALUES
-    ('Biobank', 4)
-;
+SELECT OrderNumber INTO @ordernumber FROM LorisMenu WHERE Label='Imaging';
+UPDATE LorisMenu SET OrderNumber=(OrderNumber+1) WHERE Parent IS NULL AND OrderNumber>@ordernumber;
+INSERT INTO LorisMenu (Label, OrderNumber)
+SELECT 'Biobank', OrderNumber+1 FROM LorisMenu WHERE Label='Imaging';
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES                  
     ('Specimens', 'biobank#specimens', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 1),

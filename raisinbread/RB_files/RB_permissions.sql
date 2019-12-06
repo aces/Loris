@@ -56,5 +56,14 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (53,'publication_view','Publication - Access to module',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (54,'publication_propose','Publication - Propose a project',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (55,'publication_approve','Publication - Approve or reject proposed publication projects',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (56,'biobank_specimen_view','Biobank: View Specimen Data',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (57,'biobank_specimen_create','Biobank: Create Specimen Data',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (58,'biobank_specimen_update','Biobank: Update Specimen Data',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (59,'biobank_specimen_alter','Biobank: Alter Specimen Data',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (60,'biobank_container_view','Biobank: View Container Data',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (61,'biobank_container_create','Biobank: Create Container Data',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (62,'biobank_container_update','Biobank: Update Container Data',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (63,'biobank_pool_view','Biobank: View Pool Data',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (64,'biobank_pool_create','Biobank: Create Pool Data',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

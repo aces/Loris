@@ -119,7 +119,7 @@ INSERT INTO `permissions` VALUES
     (58, 'biobank_container_create', 'Biobank: Create Container Data', 2),          
     (59, 'biobank_container_update', 'Biobank: Update Container Data', 2),          
     (61, 'biobank_pool_view', 'Biobank: View Pool Data', 2),                        
-    (62, 'biobank_pool_create', 'Biobank: Create Pool Data', 2),                    
+    (62, 'biobank_pool_create', 'Biobank: Create Pool Data', 2);
 
 
 INSERT INTO `user_perm_rel` (userID, permID)

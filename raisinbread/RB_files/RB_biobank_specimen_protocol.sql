@@ -1,0 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `biobank_specimen_protocol`;
+LOCK TABLES `biobank_specimen_protocol` WRITE;
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

@@ -40,11 +40,10 @@ INSERT INTO LorisMenu (Label, OrderNumber) VALUES
      ('Candidate', 1),
      ('Clinical', 2),
      ('Imaging', 3),
-     ('Biobank', 4)
+     ('Biobank', 4),
      ('Reports', 5),
      ('Tools', 6),
      ('Admin', 7);
-
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('New Profile', 'new_profile/', (SELECT ID FROM LorisMenu as L WHERE Label='Candidate'), 1),
@@ -81,9 +80,9 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Issue Tracker', 'issue_tracker/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 9),
     ('Quality Control', 'quality_control/', (SELECT ID FROM LorisMenu as L Where Label='Tools'), 10);
 
-INSERT INTO LorisMenu (Label, Link, Parent OrderNumber) VALUES
-    ('Specimens', '/biobank#specimens', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 1);
-    ('Containers', '/biobank#containers', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 2);
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
+    ('Specimens', '/biobank#specimens', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 1),
+    ('Containers', '/biobank#containers', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 2),
     ('Pools', '/biobank#pools', (SELECT ID FROM LorisMenu as L WHERE Label='Biobank'), 3);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
