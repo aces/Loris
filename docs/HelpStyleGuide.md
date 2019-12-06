@@ -29,15 +29,15 @@ Formatting should follow markdown guidelines, with some exceptions. This is beca
 Whether a user knows it or not, they will come to recognize styles that are consistent throughout the text. This way, their eyes can jump to a part of the text that addresses their issue, if they don’t need to read the whole thing. Follow these rules on using emphasis:
 
 * *Italicize* when referring to a specific place on the screen
-  * i.e. in the Selection Filters section
-  * i.e. in the Metadata column of the table
-  * i.e. in the Imaging menu
+  * e.g. in the Selection Filters section
+  * e.g. in the Metadata column of the table
+  * e.g. in the Imaging menu
 * **Bold** when referring to any clickable button, including modules and tabs
   * DON’T call it a button
-    * i.e. Click **Submit** (rather than “click the **Submit** button”)
+    * e.g. Click **Submit** (rather than “click the **Submit** button”)
   * DO call it a module or tab
-    * i.e. In the **Imaging Browser** module
-    * i.e. Click the **Upload** tab
+    * e.g. In the **Imaging Browser** module
+    * e.g. Click the **Upload** tab
   * You can also use bold when defining features in a list, to separate the term being defined from the definition itself, e.g. when describing columns in a table:<br>
      **Column heading 1**: description<br>
      **Column heading 2**: description<br>
@@ -50,19 +50,19 @@ LORIS is used by scientific community members worldwide, which means it's possib
 This means using more direct language and tone to get information across to the user in the least amount of time, with the least amount of friction. The quicker a user understands something, the happier they are.  Easily understandable documentation also builds trust in the software, in addition to decreasing the amount of support questions we get.
 
 * Use second person point of view rather than third
-  * i.e. “This module allows *you* to browse…” (rather than “This module allows *users* to browse…”)
+  * e.g. “This module allows *you* to browse…” (rather than “This module allows *users* to browse…”)
 * Keep it concise. Avoid unnecessary information.
   * Try not to be repetitive. 
-  * i.e. the Help text for the Imaging Browser module begins with the title Imaging Browser. You don’t need to start text with “In the Imaging Browser module...”, because the user already knows the module based on the title. Instead, keep it short and say “In this module…”
+  * e.g. the Help text for the Imaging Browser module begins with the title Imaging Browser. You don’t need to start text with “In the Imaging Browser module...”, because the user already knows the module based on the title. Instead, keep it short and say “In this module…”
 * Assume the user is tech-savvy enough to know about features that are intuitive or common across modern platforms, so you don’t need to repeat in every Help text
-  * i.e. clicking the column headers to re-sort a table
-  * i.e. clicking a Download button to download something
-  * i.e. navigate pages of a table using the arrows provided
+  * e.g. clicking the column headers to re-sort a table
+  * e.g. clicking a Download button to download something
+  * e.g. navigate pages of a table using the arrows provided
 * Use Plain Language
   * Avoid words that you wouldn't use in everyday speech
-* Where relevant, introduce an abbreviation once and then use that abbreviation for the rest of the copy in that help text (i.e. introduce Quality Control = QC in a help text title, then only call it QC throughout the text)
-  * i.e. DO: “The Imaging Quality Control (QC) module allows you to view the QC status of images in your LORIS.”
-  * i.e. DON’T: “The Imaging Quality Control (QC) module allows you to view the Quality Control status of images in your LORIS.”
+* Where relevant, introduce an abbreviation once and then use that abbreviation for the rest of the copy in that help text (e.g. introduce Quality Control = QC in a help text title, then only call it QC throughout the text)
+  * e.g. DO: “The Imaging Quality Control (QC) module allows you to view the QC status of images in your LORIS.”
+  * e.g. DON’T: “The Imaging Quality Control (QC) module allows you to view the Quality Control status of images in your LORIS.”
 * Break up large blocks of text. It's more visually pleasing and less intimidating.
 
 For more information, including research studies conducted, on the use and value of Plain Language, please see [this article](https://www.nngroup.com/articles/plain-language-experts/) and feel free to browse the rest of this website for further helpful details, tips, and tricks. 
