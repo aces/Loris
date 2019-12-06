@@ -54,7 +54,7 @@ This means using more direct language and tone to get information across to the 
 * Keep it concise. Avoid unnecessary information.
   * Try not to be repetitive. 
   * i.e. the Help text for the Imaging Browser module begins with the title Imaging Browser. You don’t need to start text with “In the Imaging Browser module...”, because the user already knows the module based on the title. Instead, keep it short and say “In this module…”
-* Assume the user is tech-savvy enough in the year 2020 to know about features that are intuitive or common across modern platforms, so you don’t need to repeat in every Help text
+* Assume the user is tech-savvy enough to know about features that are intuitive or common across modern platforms, so you don’t need to repeat in every Help text
   * i.e. clicking the column headers to re-sort a table
   * i.e. clicking a Download button to download something
   * i.e. navigate pages of a table using the arrows provided
