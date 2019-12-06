@@ -12,6 +12,7 @@ nav:
     - Getting Started: '02 - GETTING STARTED/README.md'
     - Help and Troubleshooting: '03 - HELP AND TROUBLESHOOTING/README.md'
     - API: 'API/LorisRESTAPI.md'
-    - Developers: '99 - Developers/README.md'
+    - Developers: 
+        - 'Overview': '99 - Developers/README.md'
         - 'SQL Dictionary': '99 - Developers/SQL Dictionary.md'
 theme: readthedocs
