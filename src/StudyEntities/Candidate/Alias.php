@@ -29,7 +29,7 @@ abstract class Alias extends ValidatableIdentifier
      *
      * @var int
      */
-    public const MIN_LENGTH = 3; 
+    public const MIN_LENGTH = 3;
 
     /*
      * The minimum length of the identifier.
