@@ -291,6 +291,22 @@ paths:
               schema:
                 type: string
               description: The URL of the new visit.
+        '204':
+          description: The visit was updated successfully. 
+          headers:
+            Content-Location:
+              schema:
+                type: string
+              description: The URL of the new visit.
+        '409':
+          description: The visit is already started. It can't be updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
   '/candidates/{candid}/{visit}/instruments':
     get:
       tags:
