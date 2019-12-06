@@ -37,8 +37,9 @@ markComment: >
   for your contributions.
 
 # Comment to post when removing the stale label.
-# unmarkComment: >
-#   Your comment here.
+unmarkComment: >
+  The Stale label is being removed automatically because some activity has occurred or because the
+  developers have decided that this pull request is important and should not continue to be overlooked.
 
 # Comment to post when closing a stale Issue or Pull Request.
 # closeComment: >
