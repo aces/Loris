@@ -24,7 +24,7 @@ Formatting should follow markdown guidelines, with some exceptions. This is beca
 * Avoid using HTML line break (`<br>`) tags—simply use physical line breaks (spaces between lines) where necessary. 
   * Using `<br>` might be necessary only in lists of items
   
-  ## When to Use Emphasis
+## When to Use Emphasis
   
 Whether a user knows it or not, they will come to recognize styles that are consistent throughout the text. This way, their eyes can jump to a part of the text that addresses their issue, if they don’t need to read the whole thing. Follow these rules on using emphasis:
 
