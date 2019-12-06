@@ -45,7 +45,7 @@ Whether a user knows it or not, they will come to recognize styles that are cons
      
 ## Tone
 
-LORIS is used by scientific community worldwide, including countries where English is a second, or even third language. Therefore, it is important that LORIS documentation (help text, setup guides, etc.) be written in a way that it comprehensible by people with limited knowledge and understanding of English language and expression.
+LORIS is used by scientific community members worldwide, which means it's possible that most users are non-native English speakers. Therefore, it is important that LORIS documentation (setup guides, etc.) be written in a way that is quickly comprehensible by people with many different levels of English language and expression.
 
 This means using more direct language and tone to get information across to the user in the least amount of time, with the least amount of friction. The quicker a user understands something, the happier they are.  Easily understandable documentation also builds trust in the software, in addition to decreasing the amount of support questions we get.
 
