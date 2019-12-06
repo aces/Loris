@@ -38,7 +38,7 @@ Whether a user knows it or not, they will come to recognize styles that are cons
   * DO call it a module or tab
     * e.g. In the **Imaging Browser** module
     * e.g. Click the **Upload** tab
-  * You can also use bold when defining features in a list, to separate the term being defined from the definition itself, e.g. when describing columns in a table:<br>
+  * You can also use bold when defining features in a list to separate the term being defined from the definition itself, e.g. when describing columns in a table:<br>
      **Column heading 1**: description<br>
      **Column heading 2**: description<br>
      Etc.
