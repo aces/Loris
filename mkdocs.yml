@@ -1,6 +1,6 @@
 site_name: LORIS
 repo_url: https://github.com/aces/Loris
-pages:
+nav:
     - Home: index.md
     - Wiki: wiki/index.md
     - Server Install and Configuration: 
