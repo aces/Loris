@@ -46,12 +46,7 @@ class NDB_PageTest extends TestCase
     {
         parent::setUp();
 
-        class TestModule extends Module {
-            public function getLongName() : string {
-                return "Test Module";
-            }
-        }
-        $this->_module = new TestModule("test_module", "php/libraries/");
+        $this->_module = new NullModule();
         $this->_page = new NDB_Page(
             $this->_module, "test_page", "515", "123", "test_form"
         );
