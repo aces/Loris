@@ -60,33 +60,33 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
             ON (mpcg.MriProtocolChecksGroupID = l.MriProtocolChecksGroupID)
             WHERE 1=1 ";
         $this->columns  = array(
-                           'l.PatientName',
-                           'l.CandID',
-                           'l.Visit_label',
-                           'm.Scan_type',
-                           'mpcg.Name',
-                           'l.Severity',
-                           'l.Header',
-                           'l.Value',
-                           'l.ValidRange',
-                           'l.ValidRegex',
-                           'l.SeriesUID',
-                           'l.TarchiveID as TarchiveID',
-                          );
+            'l.PatientName',
+            'l.CandID',
+            'l.Visit_label',
+            'm.Scan_type',
+            'mpcg.Name',
+            'l.Severity',
+            'l.Header',
+            'l.Value',
+            'l.ValidRange',
+            'l.ValidRegex',
+            'l.SeriesUID',
+            'l.TarchiveID as TarchiveID',
+        );
         $this->order_by = 'PatientName';
         $this->headers  = array(
-                           'PatientName',
-                           'CandID',
-                           'Visit_label',
-                           'Scan_type',
-                           'MRI_Protocol_Checks_Group',
-                           'Severity',
-                           'Header',
-                           'Value',
-                           'ValidRange',
-                           'ValidRegex',
-                           'SeriesUID',
-                          );
+            'PatientName',
+            'CandID',
+            'Visit_label',
+            'Scan_type',
+            'MRI_Protocol_Checks_Group',
+            'Severity',
+            'Header',
+            'Value',
+            'ValidRange',
+            'ValidRegex',
+            'SeriesUID',
+        );
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->validFilters = array(
             'l.TarchiveID',

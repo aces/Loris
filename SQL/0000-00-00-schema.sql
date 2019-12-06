@@ -614,7 +614,7 @@ CREATE TABLE `mri_protocol` (
 
 
 INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
- TE_max,time_min,time_max, MriProtocolGroupID) VALUES
+ TE_max,time_min,time_max,MriProtocolGroupID) VALUES
    ('ZZZZ',48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
    ('ZZZZ',40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
    ('ZZZZ',44,2000,2500,2,5,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
@@ -623,7 +623,7 @@ INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
 CREATE TABLE `mri_protocol_group_target` (
      `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
      `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
-     `ProjectID`                INT(2)           DEFAULT NULL,
+     `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
      `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`              VARCHAR(255)     DEFAULT NULL,
      PRIMARY KEY (`MriProtocolGroupTargetID`),
@@ -690,7 +690,7 @@ CREATE TABLE `mri_protocol_checks` (
 CREATE TABLE `mri_protocol_checks_group_target` (
      `MriProtocolChecksGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
      `MriProtocolChecksGroupID`       INT(4) UNSIGNED  NOT NULL,
-     `ProjectID`                      INT(2)           DEFAULT NULL,
+     `ProjectID`                      INT(10) UNSIGNED DEFAULT NULL,
      `SubprojectID`                   INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`                    VARCHAR(255)     DEFAULT NULL,
      PRIMARY KEY(`MriProtocolChecksGroupTargetID`),

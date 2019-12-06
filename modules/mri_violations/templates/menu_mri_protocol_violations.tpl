@@ -96,7 +96,7 @@
                 </tr>
                 </thead>
                 <tbody>
-			    {assign var=firstProtocol value=1}
+                {assign var=firstProtocol value=1}
                 {foreach from=$mri_protocol_data item=mpgroup}
                     {if $firstProtocol != 1}
                         {assign var=rowBorder value='style="border-bottom: 1px solid #000;"'}

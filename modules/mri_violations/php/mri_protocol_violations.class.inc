@@ -55,13 +55,15 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns      = array(
+        $user          =& \User::singleton();
+        $this->columns = array(
             'mpv.CandID',
             'mpv.PSCID',
             'mpv.time_run',
             'mpv.series_description',
             'mpv.minc_location',
             'mpv.PatientName',
+            'mpg.Name',
             'mpv.TR_range',
             'mpv.TE_range',
             'mpv.TI_range',
@@ -85,27 +87,27 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'mpv.time_run',
         );
         $this->headers      = array(
-                               'CandID',
-                               'PSCID',
-                               'Time_Run',
-                               'Series_Description',
-                               'Minc_Location',
-                               'PatientName',
-                               'MRI_Protocol_Group',
-                               'TR',
-                               'TE',
-                               'TI',
-                               'Slice_Thickness',
-                               'Xspace',
-                               'Yspace',
-                               'Zspace',
-                               'Xstep',
-                               'Ystep',
-                               'Zstep',
-                               'Time',
-                               'SeriesUID',
-                               'TarchiveID',
-                              );
+            'CandID',
+            'PSCID',
+            'Time_Run',
+            'Series_Description',
+            'Minc_Location',
+            'PatientName',
+            'MRI_Protocol_Group',
+            'TR',
+            'TE',
+            'TI',
+            'Slice_Thickness',
+            'Xspace',
+            'Yspace',
+            'Zspace',
+            'Xstep',
+            'Ystep',
+            'Zstep',
+            'Time',
+            'SeriesUID',
+            'TarchiveID',
+        );
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->query        = " FROM mri_protocol_violated_scans mpv
                  LEFT JOIN mri_protocol_group mpg ON
@@ -113,31 +115,18 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
                  LEFT JOIN tarchive ON
                 (mpv.PatientName = tarchive.PatientName) WHERE 1=1";
         $this->formToFilter = array(
-                               'CandID'            => 'mpv.CandID',
-                               'PSCID'             => 'mpv.PSCID',
-                               'PatientName'       => 'mpv.PatientName',
-                               'SeriesUID'         => 'mpv.SeriesUID',
-                               'SeriesDescription' => 'mpv.series_description',
-                               'TimeRun'           => 'mpv.time_run',
-                              );
+            'CandID'            => 'mpv.CandID',
+            'PSCID'             => 'mpv.PSCID',
+            'PatientName'       => 'mpv.PatientName',
+            'SeriesUID'         => 'mpv.SeriesUID',
+            'SeriesDescription' => 'mpv.series_description',
+            'TimeRun'           => 'mpv.time_run',
+        );
         $this->tpl_data['mri_protocol_data'] = $this->getMRIProtocolData();
-
-        $protocolGroups = array_keys($this->tpl_data['mri_protocol_data']);
-        $this->tpl_data['mri_protocol_header'] = count($protocolGroups)
-            ? array_keys($this->tpl_data['mri_protocol_data'][$protocolGroups[0]][0])
-            : array();
-
-        // Array that contains the last protocol ID of each protocol group, for each
-        // group
-        $this->tpl_data['last_protocol_id_in_group']
-            = $this->getLastProtocolIDInGroup($this->tpl_data['mri_protocol_data']);
-
-        // The ID of the last line in the mri_protocol table
-        $this->tpl_data['last_protocol_id']
-            = $this->tpl_data['mri_protocol_data'][$mriProtocolCount - 1]['ID'];
-
-        $this->tpl_data['mri_protocol_header']
-            = array_keys($this->tpl_data['mri_protocol_data'][0]);
+        $protocolGroupIDs = array_keys($this->tpl_data['mri_protocol_data']);
+        $this->tpl_data['mri_protocol_header'] = array_keys(
+            $this->tpl_data['mri_protocol_data'][$protocolGroupIDs[0]][0]
+        );
 
         return true;
     }
@@ -187,25 +176,26 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         // to mri_protocol's Scan_type
         $rows = $db->pselect(
             "SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID,
-             CONCAT(
-                p.Scan_type,
-                IF(s.Scan_type<>'', CONCAT(' (', s.Scan_type, ')'), '')
-             ) as Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
-             TI_max, slice_thickness_min, slice_thickness_max,
-             xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
-             zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
-             zstep_min, zstep_max, time_min, time_max,series_description_regex
+                    p.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
+                    TI_max, slice_thickness_min, slice_thickness_max,
+                    xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
+                    zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
+                    zstep_min, zstep_max, time_min, time_max,series_description_regex
              FROM mri_protocol as p
              LEFT JOIN mri_protocol_group mpg 
              ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
              LEFT JOIN mri_scan_type as s
              ON p.Scan_type=s.ID
-             ORDER BY mpg.MriProtocolGroupID ASC",
+             ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
             array()
         );
 
         $mri_protocols = array();
         foreach ($rows as $protocol) {
+            // Strip trailing zeros in each column
+            foreach ($protocol as $k => $v) {
+                $protocol[$k] = preg_replace('/\.?0+$/', '', $v);
+            }
             $mri_protocols[$protocol['Protocol Group']][] = $protocol;
         }
 

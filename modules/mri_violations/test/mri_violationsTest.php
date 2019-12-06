@@ -165,37 +165,37 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "mri_protocol_group",
             array(
-             'MriProtocolGroupID' => 11,
-             'Name'               => 'test',
+                'MriProtocolGroupID' => 11,
+                'Name'               => 'test',
             )
         );
 
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
-             'ID'                 => '1001',
-             'CandID'             => '999888',
-             'PatientName'        => '[Test]PatientName_Test1',
-             'time_run'           => '2009-06-29 04:00:44',
-             'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
-             'series_description' => 'Test Description',
-             'SeriesUID'          => '5555',
-             'TarchiveID'         => '263',
-             'MriProtocolGroupID' => 11,
+                'ID'                 => '1001',
+                'CandID'             => '999888',
+                'PatientName'        => '[Test]PatientName_Test1',
+                'time_run'           => '2009-06-29 04:00:44',
+                'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
+                'series_description' => 'Test Description',
+                'SeriesUID'          => '5555',
+                'TarchiveID'         => '263',
+                'MriProtocolGroupID' => 11,
             )
         );
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
-             'ID'                 => '1002',
-             'CandID'             => '999777',
-             'PatientName'        => '[name]test_Test1',
-             'time_run'           => '2008-06-29 04:00:44',
-             'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
-             'series_description' => 'Test Series Description',
-             'SeriesUID'          => '5556',
-             'TarchiveID'         => '264',
-             'MriProtocolGroupID' => 11,
+                'ID'                 => '1002',
+                'CandID'             => '999777',
+                'PatientName'        => '[name]test_Test1',
+                'time_run'           => '2008-06-29 04:00:44',
+                'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
+                'series_description' => 'Test Series Description',
+                'SeriesUID'          => '5556',
+                'TarchiveID'         => '264',
+                'MriProtocolGroupID' => 11,
             )
         );
         $this->DB->insert(

@@ -34,8 +34,8 @@ INSERT INTO `mri_protocol_group` (`Name`) VALUES('Default MRI protocol group');
 -- -----------------------------------------------------------------------------------
 CREATE TABLE `mri_protocol_group_target` (
      `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-     `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
-     `ProjectID`                INT(2)           DEFAULT NULL,
+     `MriProtocolGroupID`       INT(4)  UNSIGNED NOT NULL,
+     `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
      `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`              VARCHAR(255)     DEFAULT NULL,
      PRIMARY KEY (`MriProtocolGroupTargetID`),
@@ -76,8 +76,8 @@ INSERT INTO `mri_protocol_checks_group` (`Name`) VALUES('Default MRI protocol ch
 -- -----------------------------------------------------------------------------------
 CREATE TABLE `mri_protocol_checks_group_target` (
      `MriProtocolChecksGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-     `MriProtocolChecksGroupID`       INT(4) UNSIGNED  NOT NULL,
-     `ProjectID`                      INT(2)           DEFAULT NULL,
+     `MriProtocolChecksGroupID`       INT(4)  UNSIGNED NOT NULL,
+     `ProjectID`                      INT(10) UNSIGNED DEFAULT NULL,
      `SubprojectID`                   INT(10) UNSIGNED DEFAULT NULL,
      `Visit_label`                    VARCHAR(255)     DEFAULT NULL,
      PRIMARY KEY(`MriProtocolChecksGroupTargetID`),
