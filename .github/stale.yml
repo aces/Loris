@@ -18,6 +18,7 @@ exemptLabels:
   - "Security"
   - "Critical to release"
   - "Blocked"
+  - "Blocking"
 
 # Set to true to ignore issues in a project (defaults to false)
 exemptProjects: false
