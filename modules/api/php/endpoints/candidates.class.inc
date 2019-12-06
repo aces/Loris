@@ -120,7 +120,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $candidate = \NDB_Factory::singleton()
                 ->candidate(new CandID($pathparts[1]));
-        } catch (\NotFound | \LorisException $e) {
+        } catch (\NotFound | \LorisException | \DomainException $e) {
             return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
         }
 
