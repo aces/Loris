@@ -29,7 +29,7 @@ INSERT INTO subproject (title) VALUES('SCI');
 1. Navigate to the Configuration module
 2. In the upper left corner click on _To configure study projects click here._
 3. Under each project, you should be able to define the associated subprojects.
-
+Note: the only way to view a list of all the projects affiliated to a subproject is via the MySQL back-end. 
 Sometimes it's useful to add subproject-project affiliations directly in the MySQL back-end, for example when adding datasets to your LORIS.  The following MySQL statement is provided as an example for linking already-defined subprojects with an existing project:  
 
   ```sql 
