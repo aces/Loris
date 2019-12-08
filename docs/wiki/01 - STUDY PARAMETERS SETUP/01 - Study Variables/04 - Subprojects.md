@@ -24,7 +24,7 @@ INSERT INTO subproject (title) VALUES('SCI');
 ## Interaction With LORIS
 
 ### Projects
-**Subprojects** must be associated to Projects in order to be able to create timepoints for candidates. This association should be defined directly on the front end through the Configuration module.
+**Subprojects** must be associated to at least one Projects in order to be able to create timepoints for candidates. This association should be defined directly on the front end through the Configuration module.
 
 1. Navigate to the Configuration module
 2. In the upper left corner click on _To configure study projects click here._
