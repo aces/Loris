@@ -36,21 +36,21 @@ class ResolvedDTO implements \LORIS\Data\DataInstance
     {
         return json_encode(
             array(
-             'ResolvedID'          => $this->resolvedid,
-             'Project'             => $this->project,
-             'Site'                => $this->site,
-             'CandID'              => $this->candid,
-             'PSCID'               => $this->pscid,
-             'Visit Label'         => $this->visitlabel,
-             'Instrument'          => $this->instrument,
-             'Question'            => $this->question,
-             'Value 1'             => $this->value1,
-             'Value 2'             => $this->value2,
-             'Correct Answer'      => $this->correctanswer,
-             'User 1'              => $this->user1,
-             'User 2'              => $this->user2,
-             'Resolver'            => $this->resolver,
-             'ResolutionTimestamp' => $this->resolutiontimestamp,
+                'ResolvedID'          => $this->resolvedid,
+                'Project'             => $this->project,
+                'Site'                => $this->site,
+                'CandID'              => $this->candid,
+                'PSCID'               => $this->pscid,
+                'Visit Label'         => $this->visitlabel,
+                'Instrument'          => $this->instrument,
+                'Question'            => $this->question,
+                'Value 1'             => $this->value1,
+                'Value 2'             => $this->value2,
+                'Correct Answer'      => $this->correctanswer,
+                'User 1'              => $this->user1,
+                'User 2'              => $this->user2,
+                'Resolver'            => $this->resolver,
+                'ResolutionTimestamp' => $this->resolutiontimestamp,
             )
         );
     }

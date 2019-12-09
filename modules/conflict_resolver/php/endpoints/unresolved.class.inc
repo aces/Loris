@@ -76,9 +76,9 @@ class Unresolved extends Endpoint implements ETagCalculator
     protected function allowedMethods() : array
     {
         return array(
-                'GET',
-                'POST',
-               );
+            'GET',
+            'POST',
+        );
     }
 
     /**
@@ -106,11 +106,11 @@ class Unresolved extends Endpoint implements ETagCalculator
         $projects    = array_values(\Utility::getProjectList());
 
         return array(
-                'site'       => array_combine($sites, $sites),
-                'instrument' => \Utility::getAllInstruments(),
-                'visitLabel' => array_combine($visitlabels, $visitlabels),
-                'project'    => array_combine($projects, $projects),
-               );
+            'site'       => array_combine($sites, $sites),
+            'instrument' => \Utility::getAllInstruments(),
+            'visitLabel' => array_combine($visitlabels, $visitlabels),
+            'project'    => array_combine($projects, $projects),
+        );
     }
 
     /**
@@ -161,9 +161,9 @@ class Unresolved extends Endpoint implements ETagCalculator
             ->toArray($user);
 
         $body = array(
-                 'data'         => $conflicts,
-                 'fieldOptions' => $this->_getFieldOptions(),
-                );
+            'data'         => $conflicts,
+            'fieldOptions' => $this->_getFieldOptions(),
+        );
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
 
@@ -225,8 +225,8 @@ class Unresolved extends Endpoint implements ETagCalculator
                ConflictID = :v_conflictid
             ',
             array(
-             'v_conflictid' => $conflictid,
-             'v_value'      => $correctanswer,
+                'v_conflictid' => $conflictid,
+                'v_value'      => $correctanswer,
             )
         );
 
@@ -319,9 +319,9 @@ class Unresolved extends Endpoint implements ETagCalculator
 
         $success = $stmt->execute(
             array(
-             'v_username'   => $user->getUsername(),
-             'v_newvalue'   => $correctanswer,
-             'v_conflictid' => $conflictid,
+                'v_username'   => $user->getUsername(),
+                'v_newvalue'   => $correctanswer,
+                'v_conflictid' => $conflictid,
             )
         );
 

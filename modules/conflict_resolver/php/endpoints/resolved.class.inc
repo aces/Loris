@@ -97,11 +97,11 @@ class Resolved extends Endpoint implements ETagCalculator
         $projects    = array_values(\Utility::getProjectList());
 
         return array(
-                'site'       => array_combine($sites, $sites),
-                'instrument' => \Utility::getAllInstruments(),
-                'visitLabel' => array_combine($visitlabels, $visitlabels),
-                'project'    => array_combine($projects, $projects),
-               );
+            'site'       => array_combine($sites, $sites),
+            'instrument' => \Utility::getAllInstruments(),
+            'visitLabel' => array_combine($visitlabels, $visitlabels),
+            'project'    => array_combine($projects, $projects),
+        );
     }
 
     /**
@@ -119,7 +119,7 @@ class Resolved extends Endpoint implements ETagCalculator
 
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
-                    ->withHeader('Allow', $this->allowedMethods());
+                ->withHeader('Allow', $this->allowedMethods());
 
         default:
             return new \LORIS\Http\Response\MethodNotAllowed(
@@ -149,9 +149,9 @@ class Resolved extends Endpoint implements ETagCalculator
             ->toArray($user);
 
         $body = array(
-                 'data'         => $conflicts,
-                 'fieldOptions' => $this->_getFieldOptions(),
-                );
+            'data'         => $conflicts,
+            'fieldOptions' => $this->_getFieldOptions(),
+        );
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($body);
 
