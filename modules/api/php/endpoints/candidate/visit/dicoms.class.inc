@@ -58,9 +58,9 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function allowedMethods() : array
     {
         return array(
-                'GET',
-                'POST',
-               );
+            'GET',
+            'POST',
+        );
     }
 
     /**
@@ -230,8 +230,8 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // *** Upload file *********
         // *************************
         $incomingpath = \NDB_factory::singleton()
-                ->config()
-                ->getSetting('MRIUploadIncomingPath');
+            ->config()
+            ->getSetting('MRIUploadIncomingPath');
 
         $incomingdir = new \SplFileInfo($incomingpath);
 

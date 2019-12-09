@@ -98,7 +98,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
-                    ->withHeader('Allow', $this->allowedMethods());
+                ->withHeader('Allow', $this->allowedMethods());
 
         default:
             return new \LORIS\Http\Response\MethodNotAllowed(

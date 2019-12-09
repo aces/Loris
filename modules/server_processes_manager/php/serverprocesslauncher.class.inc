@@ -176,8 +176,8 @@ class ServerProcessLauncher
         \NDB_Factory::singleton()->database()->insert(
             'mri_upload_server_processes_rel',
             array(
-             'mri_upload_id' => $mriUploadId,
-             'process_id'    => $dbprocessid,
+                'mri_upload_id' => $mriUploadId,
+                'process_id'    => $dbprocessid,
             )
         );
 

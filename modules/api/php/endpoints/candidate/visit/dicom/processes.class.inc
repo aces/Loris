@@ -67,9 +67,9 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function allowedMethods() : array
     {
         return array(
-                'GET',
-                'POST',
-               );
+            'GET',
+            'POST',
+        );
     }
 
     /**
@@ -231,9 +231,9 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withQuery('');
 
         $body = array(
-                 'link'          => (string) $processlocation,
-                 'process_state' => $processesState,
-                );
+            'link'          => (string) $processlocation,
+            'process_state' => $processesState,
+        );
 
         return new \LORIS\Http\Response\Accepted($body);
     }
