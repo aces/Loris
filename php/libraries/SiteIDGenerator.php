@@ -32,14 +32,6 @@ class SiteIDGenerator extends IdentifierGenerator
     protected $projectAlias;
 
     /**
-     * The abbreviation for a Site to be prepended to the ID. Equivalent to the
-     * `Alias` column in the `psc` table.
-     *
-     * @var string
-     */
-    protected $siteAbbrev = '';
-
-    /**
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
      * ExternalIDs. Relevant properties are extracted from the config.xml file.
      *
@@ -69,16 +61,16 @@ class SiteIDGenerator extends IdentifierGenerator
                 . gettype($this->alphabet)
             );
         }
-        $this->maxValue   = $this->_getIDSetting('max') ??
+        $this->maxValue = $this->_getIDSetting('max') ??
             str_repeat(
-                strval($this->alphabet[count($this->alphabet) - 1]),
-                intval($this->length)
-            );
+            strval($this->alphabet[count($this->alphabet) - 1]),
+            intval($this->length)
+        );
 
         $this->siteAlias    = $siteAlias;
         $this->projectAlias = $projectAlias;
 
-        $this->prefix     = $this->_getIDSetting('prefix');
+        $this->prefix = $this->_getIDSetting('prefix');
         $this->validate();
     }
 
