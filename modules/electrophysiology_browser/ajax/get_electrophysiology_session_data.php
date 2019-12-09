@@ -17,43 +17,75 @@
 require_once 'ElectrophysioFile.class.inc';
 
 /**
+ * Check that sessionID and outputType has been provided in the REQUEST.
+ */
+if ( !isset($_REQUEST['sessionID']) ) {
+    http_response_code(400);
+}
+if ( !isset($_REQUEST['outputType']) ) {
+    http_response_code(400);
+}
+
+/**
+ * Check that sessionID is an int and that outputType has permitted value.
+ */
+if (!is_int($_REQUEST['sessionID'])) {
+    http_response_code(400);
+}
+if (!in_array($_REQUEST['outputType'], ['raw', 'derivatives', 'all_types'])) {
+    http_response_code(400);
+}
+
+
+/**
  * User permission verification:
  * Only users that have the electrophysiology view all sites permission OR
  * have the view site permission and belong to candidates session site
  * are able to fetch the electrophysiology session data.
  */
-$user      = \NDB_Factory::singleton()->user();
+$user = \NDB_Factory::singleton()->user();
+try {
+    $timePoint = \NDB_Factory::singleton()->timepoint(
+        intval($_REQUEST['sessionID'])
+    );
+} catch(\LorisException $e) {
+    return false;
+}
+
 $timePoint = \NDB_Factory::singleton()->timepoint(
     intval($_REQUEST['sessionID'])
 );
-
 // if a user does not have the permission to view all sites' electrophsyiology
 // sessions or if a user does not have permission to view other sites' session
 // then display a Forbidden message.
 
 $hasAccess = $user->hasPermission('electrophysiology_browser_view_allsites')
     || ($user->hasCenter($timePoint->getCenterID())
-    && $user->hasPermission('electrophysiology_browser_view_site'));
+        && $user->hasPermission('electrophysiology_browser_view_site'));
 
 if (!$hasAccess) {
     header('HTTP/1.1 403 Forbidden');
     exit;
 }
 
-$response = getSessionData(intval($_REQUEST['sessionID']));
+$response = getSessionData($timePoint);
 
 echo json_encode($response);
+
+
 
 /**
  * Get the session data information.
  *
- * @param int $sessionID ID of the electrophysiology session
+ * @param \TimePoint $timePoint the timepoint
  *
  * @return array with the session information
  */
-function getSessionData(int $sessionID)
+function getSessionData(\TimePoint $timePoint)
 {
     $db = \NDB_Factory::singleton()->database();
+
+    $sessionID = $timePoint->getSessionID();
 
     $query = 'SELECT 
                 DISTINCT(pf.SessionID) 
@@ -72,7 +104,7 @@ function getSessionData(int $sessionID)
 
     $sessions            = $db->pselect($query, array());
     $sessions            = array_column($sessions, 'SessionID');
-    $response['patient'] = getSubjectData($sessionID);
+    $response['patient'] = getSubjectData($timePoint);
     $response['database']    = array_values(getFilesData($sessionID));
     $response['sessions']    = $sessions;
     $currentIndex            = array_search($sessionID, $sessions);
@@ -85,29 +117,24 @@ function getSessionData(int $sessionID)
 /**
  * Get the subject data information.
  *
- * @param int $sessionID ID of the electrophysiology session
+ * @param \TimePoint $timePoint the timepoint
  *
  * @return array with the subject information
  */
-function getSubjectData(int $sessionID)
+function getSubjectData(\TimePoint $timePoint)
 {
     $subjectData = array();
-    $timePoint   = \NDB_Factory::singleton()->timepoint($sessionID);
     $candidate   = \NDB_Factory::singleton()->candidate($timePoint->getCandID());
 
     $subjectData['pscid']       = $candidate->getPSCID();
     $subjectData['dccid']       = $candidate->getCandID();
     $subjectData['visit_label'] = $timePoint->getVisitLabel();
-    $subjectData['sessionID']   = $sessionID;
+    $subjectData['sessionID']   = $timePoint->getSessionID();
     $subjectData['site']        = $timePoint->getPSC();
     $subjectData['dob']         = $candidate->getCandidateDoB();
     $subjectData['sex']         = $candidate->getCandidateSex();
     $subjectData['subproject']  = $timePoint->getData('SubprojectTitle');
-    $subjectData['output_type'] = htmlentities(
-        $_REQUEST['outputType'],
-        ENT_QUOTES,
-        "UTF-8"
-    );
+    $subjectData['output_type'] = $_REQUEST['outputType'];
 
     return $subjectData;
 }
@@ -137,11 +164,8 @@ function getFilesData(int $sessionID)
         $query .= 'LEFT JOIN physiological_output_type pot ON ';
         $query .= 'pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID ';
         $query .= 'WHERE SessionID=:SID ';
-        if ($outputType == 'raw') {
-            $query .= 'AND pot.OutputTypeName = "raw"';
-        } else if ($outputType == 'derivatives') {
-            $query .= 'AND pot.OutputTypeName = "derivatives"';
-        }
+        $query .= 'AND pot.OutputTypeName = :OTN ';
+        $params['OTN'] = $outputType;
     } else {
         $query .= "WHERE SessionID=:SID";
     }

@@ -10,6 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+
+namespace LORIS\electrophysiology_browser\Models;
+
 /**
  * This object represents an electrophysiology file in the physiological_file table.
  *
@@ -19,10 +22,10 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ElectrophysioFile
+class ElectrophysioFile implements \LORIS\Data\DataInstance
 {
-    var $fileData   = array();
-    var $parameters = array();
+    private $fileData   = array();
+    private $parameters = array();
 
     /**
      * Construct a BIDSFile
@@ -31,6 +34,8 @@ class ElectrophysioFile
      */
     function __construct(int $physiologicalFileID)
     {
+
+
         $db = \NDB_Factory::singleton()->database();
 
         $query    = "SELECT * 
@@ -44,14 +49,12 @@ class ElectrophysioFile
         }
 
         $query        = "SELECT 
-                           Name, 
-                           Value
-                         FROM 
-                           physiological_parameter_file as ppf, 
-                           parameter_type as pt
+                           pt.Name, 
+                           ppf.Value
+                         FROM physiological_parameter_file as ppf
+                           LEFT JOIN parameter_type as pt USING (ParameterTypeID)
                          WHERE 
-                           ppf.ParameterTypeID=pt.ParameterTypeID 
-                           AND PhysiologicalFileID=:PFID";
+                          PhysiologicalFileID=:PFID";
         $parameterRaw = $db->pselect($query, $params);
 
         foreach ($parameterRaw AS $row) {
