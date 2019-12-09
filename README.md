@@ -2,6 +2,8 @@
 
 # LORIS Neuroimaging Platform
 
+![](./loris-logo.svg)
+
 LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web application that provides data- and project-management for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
 * Try the LORIS demo instance at https://demo.loris.ca.
