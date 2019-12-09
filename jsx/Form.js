@@ -1802,7 +1802,7 @@ class RadioElement extends React.Component {
               <input
                 type='radio'
                 name={this.props.name}
-                value={this.props.items[key]}
+                value={this.props.options[key]}
                 id={key}
                 required={required}
                 disabled={disabled}
