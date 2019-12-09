@@ -20,7 +20,6 @@ INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumbe
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (19,4,'Data Query Tool','dataquery/',NULL,2);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (20,5,'Data Dictionary','datadict/',NULL,1);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (21,5,'Document Repository','document_repository/',NULL,2);
-INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (22,5,'Data Integrity Flag','data_integrity_flag/',NULL,3);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (23,2,'Behavioural Quality Control','behavioural_qc/',NULL,6);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (24,5,'Instrument Builder','instrument_builder/',NULL,5);
 INSERT INTO `LorisMenu` (`ID`, `Parent`, `Label`, `Link`, `Visible`, `OrderNumber`) VALUES (25,37,'Genomic Browser','genomic_browser/',NULL,6);
