@@ -1743,7 +1743,7 @@ class LorisElement extends Component {
  * Radio Component
  * React wrapper for a <input type='radio'> element.
  *
- * Example `options` prop: 
+ * Example `options` prop:
  *   {
  *     female: 'Female',
  *     male: 'Male',
@@ -1850,8 +1850,7 @@ class RadioElement extends React.Component {
 
     return (
       <div className={elementClass}>
-        <label className={'col-sm-3 control-label'}
-               htmlFor={this.props.id}>
+        <label className={'col-sm-3 control-label'}>
           {this.props.label}
           {errorMessage}
           {requiredHTML}
@@ -1864,10 +1863,9 @@ class RadioElement extends React.Component {
   }
 }
 RadioElement.propTypes = {
-  id: PropTypes.string,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
+  value: PropTypes.string.isRequired,
   options: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -1876,7 +1874,6 @@ RadioElement.propTypes = {
   onUserInput: PropTypes.func,
 };
 RadioElement.defaultProps = {
-  id: null,
   disabled: false,
   required: false,
   errorMessage: '',
