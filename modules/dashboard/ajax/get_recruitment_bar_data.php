@@ -15,9 +15,20 @@
 header("content-type:application/json");
 ini_set('default_charset', 'utf-8');
 
-$DB            = Database::singleton();
-$sexData       = array();
-$list_of_sites = Utility::getAssociativeSiteList(true, false);
+$DB          = Database::singleton();
+$sexData     = array();
+$currentUser = \User::singleton();
+
+//TODO: Create a permission specific to statistics
+if ($currentUser->hasPermission('access_all_profiles')) {
+    $list_of_sites = \Utility::getSiteList();
+} else {
+    $site_id_arr = $currentUser->getCenterIDs();
+    foreach ($site_id_arr as $key => $val) {
+        $site[$key]          = &Site::singleton($val);
+        $list_of_sites[$val] = $site[$key]->getCenterName();
+    }
+}
 
 foreach ($list_of_sites as $siteID => $siteName) {
     $sexData['labels'][] = $siteName;
