@@ -8,7 +8,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace \LORIS\conflict_resolver;
+namespace LORIS\conflict_resolver;
 
 /**
  * Automated integration tests for conflict resolver module
