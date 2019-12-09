@@ -42,4 +42,3 @@ class SeeOther extends JsonResponse
         parent::__construct(null, 303, $headers);
     }
 }
-

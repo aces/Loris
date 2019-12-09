@@ -37,4 +37,3 @@ class Accepted extends JsonResponse
         parent::__construct($body, 202);
     }
 }
-

@@ -14,29 +14,29 @@ namespace LORIS\Data\Models;
  * This class defines an MRIUploadDTO which is an immutable representation of
  * an MRIUpload object.
  *
- *  @category Imaging
- *  @package  Main
- *  @author   Xavier Lecours <xavier.lecours@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Imaging
+ * @package  Main
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class MRIUploadDTO implements \LORIS\Data\DataInstance
 {
-    private $_mri_upload_id;
-    private $_uploaded_by;
-    private $_upload_date;
-    private $_upload_location;
-    private $_decompress_location;
-    private $_insertion_complete;
-    private $_inserting;
-    private $_patient_name;
-    private $_inserted_minc_count;
-    private $_created_minc_count;
-    private $_tarchive_id;
-    private $_session_id;
-    private $_is_candidate_info_validated;
-    private $_is_tarchive_validated;
-    private $_is_phantom;
+    private $mri_upload_id;
+    private $uploaded_by;
+    private $upload_date;
+    private $upload_location;
+    private $decompress_location;
+    private $insertion_complete;
+    private $inserting;
+    private $patient_name;
+    private $inserted_minc_count;
+    private $created_minc_count;
+    private $tarchive_id;
+    private $session_id;
+    private $is_candidate_info_validated;
+    private $is_tarchive_validated;
+    private $is_phantom;
 
     /**
      * Constructor
@@ -74,21 +74,21 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
         ?bool $is_tarchive_validated,
         ?bool $is_phantom
     ) {
-        $this->_mri_upload_id       = $mri_upload_id;
-        $this->_uploaded_by         = $uploaded_by;
-        $this->_upload_date         = $upload_date;
-        $this->_upload_location     = $upload_location;
-        $this->_decompress_location = $decompress_location;
-        $this->_insertion_complete  = $insertion_complete ?? false;
-        $this->_inserting           = $inserting;
-        $this->_patient_name        = $patient_name;
-        $this->_inserted_minc_count = $inserted_minc_count;
-        $this->_created_minc_count  = $created_minc_count;
-        $this->_tarchive_id         = $tarchive_id;
-        $this->_session_id          = $session_id;
-        $this->_is_candidate_info_validated = $is_candidate_info_validated;
-        $this->_is_tarchive_validated       = $is_tarchive_validated ?? false;
-        $this->_is_phantom = $is_phantom ?? false;
+        $this->mri_upload_id       = $mri_upload_id;
+        $this->uploaded_by         = $uploaded_by;
+        $this->upload_date         = $upload_date;
+        $this->upload_location     = $upload_location;
+        $this->decompress_location = $decompress_location;
+        $this->insertion_complete  = $insertion_complete ?? false;
+        $this->inserting           = $inserting;
+        $this->patient_name        = $patient_name;
+        $this->inserted_minc_count = $inserted_minc_count;
+        $this->created_minc_count  = $created_minc_count;
+        $this->tarchive_id         = $tarchive_id;
+        $this->session_id          = $session_id;
+        $this->is_candidate_info_validated = $is_candidate_info_validated;
+        $this->is_tarchive_validated       = $is_tarchive_validated ?? false;
+        $this->is_phantom = $is_phantom ?? false;
     }
 
     /**
@@ -135,7 +135,7 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
      */
     public function getUploadID(): ?int
     {
-        return $this->_mri_upload_id;
+        return $this->mri_upload_id;
     }
 
     /**
@@ -145,7 +145,7 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
      */
     public function getUploadedBy(): ?string
     {
-        return $this->_uploaded_by;
+        return $this->uploaded_by;
     }
 
     /**
@@ -165,7 +165,7 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
      */
     public function getUploadLocation(): ?string
     {
-        return $this->_upload_location;
+        return $this->upload_location;
     }
 
     /**

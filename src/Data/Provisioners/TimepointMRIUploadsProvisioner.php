@@ -31,7 +31,7 @@ class TimepointMRIUploadsProvisioner extends DBRowProvisioner
      * @param \Timepoint $timepoint The requested timepoint
      * @param string     $filename  The mri_upload basename
      */
-    function __construct(\Timepoint $timepoint, string $filename)
+    public function __construct(\Timepoint $timepoint, string $filename)
     {
         parent::__construct(
             '
@@ -58,8 +58,8 @@ class TimepointMRIUploadsProvisioner extends DBRowProvisioner
                m.UploadLocation LIKE :v_filename
             ',
             array(
-             'v_sessionid' => $timepoint->getSessionID(),
-             'v_filename'  => '%/' . $filename,
+                'v_sessionid' => $timepoint->getSessionID(),
+                'v_filename'  => '%/' . $filename,
             )
         );
     }
@@ -77,4 +77,3 @@ class TimepointMRIUploadsProvisioner extends DBRowProvisioner
         return \LORIS\Data\Models\MRIUploadDTO::fromDBRow($row);
     }
 }
-
