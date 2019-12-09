@@ -94,18 +94,18 @@ class Genomic_Browser extends \NDB_Menu_Filter
           ) THEN 'Y' ELSE 'N' END
         ";
         $this->columns = array(
-                          'psc.Name AS PSC',
-                          'LPAD(candidate.CandID, 6, "0") AS DCCID',
-                          'candidate.PSCID',
-                          'candidate.Sex',
-                          'cohort.SubprojectID as Subproject',
-                          'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
-                          'candidate.ExternalID as externalID',
-                          "$file_subquery as File",
-                          "$snp_subquery as SNP",
-                          "$cnv_subquery as CNV",
-                          "$cpg_subquery as CPG",
-                         );
+            'psc.Name AS PSC',
+            'LPAD(candidate.CandID, 6, "0") AS DCCID',
+            'candidate.PSCID',
+            'candidate.Sex',
+            'cohort.SubprojectID as Subproject',
+            'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
+            'candidate.ExternalID as externalID',
+            "$file_subquery as File",
+            "$snp_subquery as SNP",
+            "$cnv_subquery as CNV",
+            "$cpg_subquery as CPG",
+        );
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -115,10 +115,10 @@ class Genomic_Browser extends \NDB_Menu_Filter
                         return ucwords(str_replace('_', ' ', $header));
                 },
                 array(
-                 'PSC',
-                 'DCCID',
-                 'externalID',
-                 'DoB',
+                    'PSC',
+                    'DCCID',
+                    'externalID',
+                    'DoB',
                 )
             )
         );
@@ -144,40 +144,40 @@ class Genomic_Browser extends \NDB_Menu_Filter
         $this->order_by = 'psc.Name, candidate.CandID DESC';
 
         $this->validFilters = array(
-                               'candidate.RegistrationCenterID',
-                               'candidate.CandID',
-                               'candidate.PSCID',
-                               'candidate.Sex',
-                               'cohort.SubprojectID',
-                               'candidate.DoB',
-                               'candidate.ExternalID',
-                               'show_brief_results',
-                               'File',
-                               'CNV',
-                               'SNP',
-                               'CPG',
-                              );
+            'candidate.RegistrationCenterID',
+            'candidate.CandID',
+            'candidate.PSCID',
+            'candidate.Sex',
+            'cohort.SubprojectID',
+            'candidate.DoB',
+            'candidate.ExternalID',
+            'show_brief_results',
+            'File',
+            'CNV',
+            'SNP',
+            'CPG',
+        );
 
         $this->validHavingFilters = array(
-                                     'File',
-                                     'CNV',
-                                     'SNP',
-                                     'CPG',
-                                    );
+            'File',
+            'CNV',
+            'SNP',
+            'CPG',
+        );
 
         $ftf = array(
-                'centerID'           => 'candidate.RegistrationCenterID',
-                'DCCID'              => 'candidate.CandID',
-                'PSCID'              => 'candidate.PSCID',
-                'sex'                => 'candidate.Sex',
-                'SubprojectID'       => 'cohort.SubprojectID',
-                'External_ID'        => 'candidate.ExternalID',
-                'Show_Brief_Results' => 'show_brief_results',
-                'File'               => 'File',
-                'SNP'                => 'SNP',
-                'CNV'                => 'CNV',
-                'CPG'                => 'CPG',
-               );
+            'centerID'           => 'candidate.RegistrationCenterID',
+            'DCCID'              => 'candidate.CandID',
+            'PSCID'              => 'candidate.PSCID',
+            'sex'                => 'candidate.Sex',
+            'SubprojectID'       => 'cohort.SubprojectID',
+            'External_ID'        => 'candidate.ExternalID',
+            'Show_Brief_Results' => 'show_brief_results',
+            'File'               => 'File',
+            'SNP'                => 'SNP',
+            'CNV'                => 'CNV',
+            'CPG'                => 'CPG',
+        );
 
         $this->formToFilter = $ftf;
 
@@ -222,9 +222,10 @@ class Genomic_Browser extends \NDB_Menu_Filter
             'sex',
             'Sex:',
             array(
-             ''       => 'All',
-             'Male'   => 'Male',
-             'Female' => 'Female',
+                ''       => 'All',
+                'Male'   => 'Male',
+                'Female' => 'Female',
+                'Other'  => 'Other'
             )
         );
         $this->addSelect(
@@ -235,19 +236,19 @@ class Genomic_Browser extends \NDB_Menu_Filter
         $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
 
         $any_options = array(
-                        ''  => null,
-                        'Y' => 'Yes',
-                        'N' => 'No',
-                       );
+            ''  => null,
+            'Y' => 'Yes',
+            'N' => 'No',
+        );
         $this->addSelect('File', 'Files:', $any_options);
         $this->addSelect('SNP', 'SNPs found:', $any_options);
         $this->addSelect('CNV', 'CNVs found:', $any_options);
         $this->addSelect('CPG', 'CPGs found:', $any_options);
 
         $show_results_options = array(
-                                 'brief' => 'Summary fields',
-                                 'full'  => 'All fields',
-                                );
+            'brief' => 'Summary fields',
+            'full'  => 'All fields',
+        );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
     }
 
@@ -305,8 +306,8 @@ class Genomic_Browser extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/genomic_browser/js/genomic_browser.js",
-             $baseURL . "/genomic_browser/js/profileColumnFormatter.js",
+                $baseURL . "/genomic_browser/js/genomic_browser.js",
+                $baseURL . "/genomic_browser/js/profileColumnFormatter.js",
             )
         );
     }

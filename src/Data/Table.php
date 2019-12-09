@@ -16,6 +16,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\Data;
+
 /**
  * A Table Represents a table displayed on the frontend to a user. It's
  * a thin wrapper around a Provisioner to ease creation of frontend

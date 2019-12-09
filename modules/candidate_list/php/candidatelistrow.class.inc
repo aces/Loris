@@ -29,6 +29,7 @@ class CandidateListRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
     protected $CenterID;
+    protected $ProjectID;
 
     /**
      * Create a new CandidateListRow
@@ -36,11 +37,13 @@ class CandidateListRow implements \LORIS\Data\DataInstance
      * @param array   $row The row (in the same format as \Database::pselectRow
      *                     returns
      * @param integer $cid The centerID affiliated with this row.
+     * @param integer $pid The projectID affiliated with this row.
      */
-    public function __construct(array $row, int $cid)
+    public function __construct(array $row, int $cid, int $pid)
     {
-        $this->DBRow    = $row;
-        $this->CenterID = $cid;
+        $this->DBRow     = $row;
+        $this->CenterID  = $cid;
+        $this->ProjectID = $pid;
     }
 
     /**
@@ -62,5 +65,16 @@ class CandidateListRow implements \LORIS\Data\DataInstance
     public function getCenterID(): int
     {
         return $this->CenterID;
+    }
+
+    /**
+     * Returns the ProjectID for this row, for filters such as
+     * \LORIS\Data\Filters\UserProjectMatch to match again.
+     *
+     * @return integer The ProjectID
+     */
+    public function getProjectID(): int
+    {
+        return $this->ProjectID;
     }
 }

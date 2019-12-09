@@ -14,6 +14,7 @@ namespace LORIS\timepoint_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * The timepoint list menu
@@ -39,7 +40,7 @@ class Timepoint_List extends \NDB_Menu
      */
     function _hasAccess(\User $user) : bool
     {
-        $candidate =& \Candidate::singleton($this->candID);
+        $candidate = \Candidate::singleton($this->candID);
 
         // check user permissions
         if ($user->hasPermission('access_all_profiles')
@@ -84,14 +85,8 @@ class Timepoint_List extends \NDB_Menu
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $attribute = $request->getAttribute("CandID");
-        if ($attribute !== null) {
-            // FIXME: Update the code to add the singleton here, not the identifier.
-            $this->candID = $attribute;
-        } else {
-            $gets         = $request->getQueryParams();
-            $this->candID = $gets['candID'];
-        }
+        // FIXME: Update the code to add the singleton here, not the identifier.
+        $this->candID = new CandID($request->getAttribute('CandID'));
         return parent::process($request, $handler);
     }
 
@@ -149,15 +144,6 @@ class Timepoint_List extends \NDB_Menu
                 $this->tpl_data['timePoints'][$x]['currentDate']
                     =   $timePoint->getCurrentDate();
 
-                // get Center Name
-                $centerID = $timePoint->getData('CenterID');
-                $center   = $DB->pselectRow(
-                    "SELECT CenterID as ID, Alias FROM psc WHERE CenterID =:cid",
-                    array('cid' => $centerID)
-                );
-                $this->tpl_data['timePoints'][$x]['CenterName']
-                    = $center['Alias'] ?? '';
-
                 // create feedback object for the time point
                 $feedback = \NDB_BVL_Feedback::singleton(
                     $username,
@@ -185,10 +171,10 @@ class Timepoint_List extends \NDB_Menu
                 if (!in_array(
                     $timePoint->getCurrentStage(),
                     array(
-                     null,
-                     'Not Started',
-                     'Visit',
-                     'Screening',
+                        null,
+                        'Not Started',
+                        'Visit',
+                        'Screening',
                     )
                 )
                 ) {
@@ -262,12 +248,12 @@ class Timepoint_List extends \NDB_Menu
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
      *
-     * @param string $candID    candID
+     * @param CandID $candID    candID
      * @param string $sessionID sessionID
      *
      * @return string
      */
-    function getFeedbackPanel($candID, $sessionID = null)
+    function getFeedbackPanel(CandID $candID, $sessionID = null)
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID);
         $html          = $feedbackPanel->display();

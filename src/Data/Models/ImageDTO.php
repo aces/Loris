@@ -25,17 +25,21 @@ namespace LORIS\Data\Models;
 class ImageDTO implements \LORIS\Data\DataInstance
 {
 
-    private $_fileid;
+    private $fileid;
 
-    private $_filename;
+    private $filename;
 
-    private $_filelocation;
+    private $filelocation;
 
-    private $_outputtype;
+    private $outputtype;
 
-    private $_acquisitionprotocol;
+    private $acquisitionprotocol;
 
-    private $_filetype;
+    private $filetype;
+
+    private $centerid;
+
+    private $entitytype;
 
     /**
      * Constructor
@@ -46,6 +50,8 @@ class ImageDTO implements \LORIS\Data\DataInstance
      * @param ?string $outputtype          The output type
      * @param ?string $acquisitionprotocol The aquisition protocol
      * @param ?string $filetype            The file type
+     * @param ?int    $centerid            The image session's centerid
+     * @param ?string $entitytype          The image candidate's entity_type
      */
     public function __construct(
         ?int $fileid,
@@ -53,14 +59,18 @@ class ImageDTO implements \LORIS\Data\DataInstance
         ?string $filelocation,
         ?string $outputtype,
         ?string $acquisitionprotocol,
-        ?string $filetype
+        ?string $filetype,
+        ?int $centerid,
+        ?string $entitytype
     ) {
-        $this->_fileid       = $fileid;
-        $this->_filename     = $filename;
-        $this->_filelocation = $filelocation;
-        $this->_outputtype   = $outputtype;
-        $this->_acquisitionprotocol = $acquisitionprotocol;
-        $this->_filetype            = $filetype;
+        $this->fileid       = $fileid;
+        $this->filename     = $filename;
+        $this->filelocation = $filelocation;
+        $this->outputtype   = $outputtype;
+        $this->acquisitionprotocol = $acquisitionprotocol;
+        $this->filetype            = $filetype;
+        $this->centerid            = $centerid;
+        $this->entitytype          = $entitytype;
     }
 
     /**
@@ -70,7 +80,7 @@ class ImageDTO implements \LORIS\Data\DataInstance
      */
     public function getFileid(): ?int
     {
-        return $this->_fileid;
+        return $this->fileid;
     }
 
     /**
@@ -80,7 +90,7 @@ class ImageDTO implements \LORIS\Data\DataInstance
      */
     public function getFilename(): ?string
     {
-        return $this->_filename;
+        return $this->filename;
     }
 
     /**
@@ -90,7 +100,7 @@ class ImageDTO implements \LORIS\Data\DataInstance
      */
     public function getFilelocation(): ?string
     {
-        return $this->_filelocation;
+        return $this->filelocation;
     }
 
     /**
@@ -100,7 +110,7 @@ class ImageDTO implements \LORIS\Data\DataInstance
      */
     public function getOutputtype(): ?string
     {
-        return $this->_outputtype;
+        return $this->outputtype;
     }
 
     /**
@@ -110,7 +120,7 @@ class ImageDTO implements \LORIS\Data\DataInstance
      */
     public function getAcquisitionprotocol(): ?string
     {
-        return $this->_acquisitionprotocol;
+        return $this->acquisitionprotocol;
     }
 
     /**
@@ -120,7 +130,7 @@ class ImageDTO implements \LORIS\Data\DataInstance
      */
     public function getFiletype(): ?string
     {
-        return $this->_filetype;
+        return $this->filetype;
     }
 
     /**
@@ -132,14 +142,34 @@ class ImageDTO implements \LORIS\Data\DataInstance
     {
         return json_encode(
             array(
-             'fileid'              => $this->_tarchiveid,
-             'filename'            => $this->_tarname,
-             'filelocation'        => $this->_filelocation,
-             'outputtype'          => $this->_outputtype,
-             'acquisitionprotocol' => $this->_acquisitionprotocol,
-             'filetype'            => $this->_filetype,
+             'fileid'              => $this->tarchiveid,
+             'filename'            => $this->tarname,
+             'filelocation'        => $this->filelocation,
+             'outputtype'          => $this->outputtype,
+             'acquisitionprotocol' => $this->acquisitionprotocol,
+             'filetype'            => $this->filetype,
             )
         );
     }
-}
 
+    /**
+     * Returns the CenterID for this row, for filters such as
+     * \LORIS\Data\Filters\UserSiteMatch to match again.
+     *
+     * @return integer The CenterID
+     */
+    public function getCenterID(): int
+    {
+        return intval($this->centerid);
+    }
+
+    /**
+     * This tells is the image is a phantom.
+     *
+     * @return bool True is the Entity_type is a scanner
+     */
+    public function isPhantom(): bool
+    {
+        return $this->entitytype === 'Scanner';
+    }
+}

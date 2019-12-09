@@ -27,99 +27,99 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 {
     // expect UIs for Browse Tab
     private $_loadingBrowseUI = array(
-                                 array(
-                                  "label"    => "CandID",
-                                  "selector" => "#imaging_filter>div",
-                                 ),
-                                 array(
-                                  "label"    => "PSCID",
-                                  "selector" => "#imaging_filter>div",
-                                 ),
-                                 array(
-                                  "label"    => "Visit Label",
-                                  "selector" => "#imaging_filter>div",
-                                 ),
-                                 array(
-                                  "label"    => "Logs to display",
-                                  "selector" => "#log_panel>div>form>div",
-                                 ),
+        array(
+            "label"    => "CandID",
+            "selector" => "#imaging_filter>div",
+        ),
+        array(
+            "label"    => "PSCID",
+            "selector" => "#imaging_filter>div",
+        ),
+        array(
+            "label"    => "Visit Label",
+            "selector" => "#imaging_filter>div",
+        ),
+        array(
+            "label"    => "Logs to display",
+            "selector" => "#log_panel>div>form>div",
+        ),
                                  // expected_headers
-                                 array(
-                                  "label"    => "No.",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "UploadID",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "Progress",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "CandID",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "PSCID",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "Visit Label",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "UploadLocation",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "UploadDate",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "UploadedBy",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "Tarchive Info",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "Number Of MincCreated",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                 array(
-                                  "label"    => "Number Of MincInserted",
-                                  "selector" => "#dynamictable > thead",
-                                 ),
-                                );
+        array(
+            "label"    => "No.",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "UploadID",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "Progress",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "CandID",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "PSCID",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "Visit Label",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "UploadLocation",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "UploadDate",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "UploadedBy",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "Tarchive Info",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "Number Of MincCreated",
+            "selector" => "#dynamictable > thead",
+        ),
+        array(
+            "label"    => "Number Of MincInserted",
+            "selector" => "#dynamictable > thead",
+        ),
+    );
     // expect UIs for Upload Tab
     private $_loadingUploadUI = array(
-                                 array(
-                                  "label"    => "Upload an imaging scan",
-                                  "selector" => "#upload",
-                                 ),
-                                 array(
-                                  "label"    => "Phantom Scans",
-                                  "selector" => "#upload",
-                                 ),
-                                 array(
-                                  "label"    => "CandID",
-                                  "selector" => "#upload",
-                                 ),
-                                 array(
-                                  "label"    => "PSCID",
-                                  "selector" => "#upload",
-                                 ),
-                                 array(
-                                  "label"    => "Visit Label",
-                                  "selector" => "#upload",
-                                 ),
-                                 array(
-                                  "label"    => "File to Upload",
-                                  "selector" => "#upload",
-                                 ),
-                                );
+        array(
+            "label"    => "Upload an imaging scan",
+            "selector" => "#upload",
+        ),
+        array(
+            "label"    => "Phantom Scans",
+            "selector" => "#upload",
+        ),
+        array(
+            "label"    => "CandID",
+            "selector" => "#upload",
+        ),
+        array(
+            "label"    => "PSCID",
+            "selector" => "#upload",
+        ),
+        array(
+            "label"    => "Visit Label",
+            "selector" => "#upload",
+        ),
+        array(
+            "label"    => "File to Upload",
+            "selector" => "#upload",
+        ),
+    );
 
     /**
      * Tests that, when loading the Imaging_uploader module, some
@@ -191,21 +191,21 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::name("reset")
         )->click();
 
-         $bodyText1 = $this->webDriver->findElement(
-             WebDriverBy::name("CandID")
-         )->getText();
-         $bodyText2 = $this->webDriver->findElement(
-             WebDriverBy::name("PSCID")
-         )->getText();
+        $bodyText1 = $this->webDriver->findElement(
+            WebDriverBy::name("CandID")
+        )->getText();
+        $bodyText2 = $this->webDriver->findElement(
+            WebDriverBy::name("PSCID")
+        )->getText();
 
          $this->assertEquals('', $bodyText1);
          $this->assertEquals('', $bodyText2);
     }
     /**
-      * This function could test UI elements in each Tabs.
-      *
-      * @return void
-      */
+     * This function could test UI elements in each Tabs.
+     *
+     * @return void
+     */
     function testLoadingUIS()
     {
         $this->_testPageUIs("/imaging_uploader/", $this->_loadingBrowseUI);
@@ -213,13 +213,13 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $this->_testPageUIs("/imaging_uploader/#upload", $this->_loadingUploadUI);
     }
     /**
-      * This function could test UI elements in each Tabs.
-      *
-      * @param string $url this is for the url which needs to be tested.
-      * @param array  $uis UI elements in each Tabs.
-      *
-      * @return void
-      */
+     * This function could test UI elements in each Tabs.
+     *
+     * @param string $url this is for the url which needs to be tested.
+     * @param array  $uis UI elements in each Tabs.
+     *
+     * @return void
+     */
     function _testPageUIs($url,$uis)
     {
             $this->markTestSkipped("This method isn't working properly on travis.");

@@ -3,7 +3,7 @@
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * The Loris TimePoint class
@@ -29,45 +30,45 @@ class TimePoint
     var $_timePointInfo;
 
     var $_stageOptions = array(
-                          null,
-                          'Not Started',
-                          'Screening',
-                          'Visit',
-                          'Approval',
-                          'Subject',
-                          'Recycling Bin',
-                         );
+        null,
+        'Not Started',
+        'Screening',
+        'Visit',
+        'Approval',
+        'Subject',
+        'Recycling Bin',
+    );
 
     var $_dynamicStageOptions = array(
-                                 'Screening',
-                                 'Visit',
-                                 'Approval',
-                                );
+        'Screening',
+        'Visit',
+        'Approval',
+    );
 
     var $_statusOptions = array(
-                           null,
-                           'Pass',
-                           'Failure',
-                           'Withdrawal',
-                           'In Progress',
-                          );
+        null,
+        'Pass',
+        'Failure',
+        'Withdrawal',
+        'In Progress',
+    );
 
     var $bvlQcTypes = array(
-                       null,
-                       'Visual',
-                       'Hardcopy',
-                      );
+        null,
+        'Visual',
+        'Hardcopy',
+    );
 
     var $bvlQcStatuses = array(
-                          null,
-                          'Complete',
-                         );
+        null,
+        'Complete',
+    );
 
     var $bvlQcExclusionStatuses = array(
-                                   null,
-                                   'Excluded',
-                                   'Not Excluded',
-                                  );
+        null,
+        'Excluded',
+        'Not Excluded',
+    );
 
 
     /**
@@ -126,10 +127,12 @@ class TimePoint
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
-                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done
+                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
+                         pr.Name as ProjectName, p.Alias as SiteAlias
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
+                        LEFT JOIN Project AS pr USING(ProjectID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
         $row   = $db->pselectRow($query, array('SID' => $sessionID));
 
@@ -194,6 +197,7 @@ class TimePoint
      *                                    being created. If null, consecutive V1, V2,
      *                                    etc will be created.
      * @param \Site       $psc            The center of the timepoint
+     * @param \Project    $project        The project of the timepoint
      *
      * @throws DatabaseException
      *
@@ -203,7 +207,8 @@ class TimePoint
         \Candidate $candidate,
         int $SubprojectID,
         ?string $nextVisitLabel,
-        \Site $psc
+        \Site $psc,
+        \Project $project
     ): void {
 
         // insert into session set CandID=$candID,
@@ -233,18 +238,19 @@ class TimePoint
         }
 
         $insertData = array(
-                       'CandID'          => $candidate->getCandID(),
-                       'SubprojectID'    => $SubprojectID,
-                       'VisitNo'         => $visitNo,
-                       'Visit_label'     => $VisitLabel,
-                       'CenterID'        => $psc->getCenterID(),
-                       'Current_stage'   => 'Not Started',
-                       'Submitted'       => 'N',
-                       'registeredBy'    => $userID,
-                       'UserID'          => $userID,
-                       'Date_registered' => $today,
-                       'Date_active'     => $today,
-                      );
+            'CandID'          => $candidate->getCandID(),
+            'SubprojectID'    => $SubprojectID,
+            'VisitNo'         => $visitNo,
+            'Visit_label'     => $VisitLabel,
+            'CenterID'        => $psc->getCenterID(),
+            'ProjectID'       => $project->getId(),
+            'Current_stage'   => 'Not Started',
+            'Submitted'       => 'N',
+            'registeredBy'    => $userID,
+            'UserID'          => $userID,
+            'Date_registered' => $today,
+            'Date_active'     => $today,
+        );
 
         // insert the data
         $db->insert('session', $insertData);
@@ -254,7 +260,7 @@ class TimePoint
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param integer $candid       The candidate identifier
+     * @param CandID  $candid       The candidate identifier
      * @param integer $subprojectID The subprojectID
      * @param string  $visitLabel   The visit label
      *
@@ -263,7 +269,7 @@ class TimePoint
      * @return void
      */
     static function isValidVisitLabel(
-        int $candid,
+        CandID $candid,
         int $subprojectID,
         string $visitLabel
     ): void {
@@ -343,7 +349,7 @@ class TimePoint
      * use setData.
      *
      * @param array $newData Key-value pair(s) of the field(s) to change and its
-     *                              new value(s).
+     *                       new value(s).
      *
      * @return bool
      *
@@ -365,7 +371,7 @@ class TimePoint
             'session',
             $newData,
             array(
-             'ID' => $this->getData('SessionID'),
+                'ID' => $this->getData('SessionID'),
             )
         );
         // this select updates the timepoint object
@@ -376,15 +382,15 @@ class TimePoint
     /**
      * Returns the CandID for the candidate who had this visit.
      *
-     * @return integer (6 digit) CandID for this timepoint.
+     * @return CandID (6 digit) CandID for this timepoint.
      */
-    function getCandID(): int
+    function getCandID(): CandID
     {
         /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
+         * which returns values in string format. CandID is used here to
+         * ensure we return a validated CandID object.
          */
-        return intval($this->_timePointInfo["CandID"]);
+        return new CandID($this->_timePointInfo["CandID"]);
     }
 
     /**
@@ -752,9 +758,9 @@ class TimePoint
 
         // update session table
         $update_columns = array(
-                           "Date_stage_change" => $today,
-                           'Current_stage'     => $newCurrentStage,
-                          );
+            "Date_stage_change" => $today,
+            'Current_stage'     => $newCurrentStage,
+        );
 
         $db->update(
             'session',
@@ -778,9 +784,9 @@ class TimePoint
     function startStage(string $stage): void
     {
         $setArray = array(
-                     'Current_stage'     => $stage,
-                     'Date_stage_change' => date('Y-m-d'),
-                    );
+            'Current_stage'     => $stage,
+            'Date_stage_change' => date('Y-m-d'),
+        );
 
         if (in_array($stage, $this->_dynamicStageOptions)
             && $this->getData($stage) == null
@@ -959,6 +965,11 @@ class TimePoint
         $provisioner = new \LORIS\Data\Provisioners\TimepointImagesRowProvisioner(
             $this
         );
+
+        $provisioner = $provisioner
+            ->filter(new \LORIS\Data\Filters\ScansFilter())
+            ->filter(new \LORIS\Data\Filters\PhantomsFilter());
+
         $traversable = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->getRows($user);
@@ -1032,8 +1043,8 @@ class TimePoint
                tarchive.SessionID = :v_sessionid AND
                tarchive.ArchiveLocation LIKE :v_basename',
             array(
-             'v_sessionid' => $this->getSessionID(),
-             'v_basename'  => '%' . $tarname,
+                'v_sessionid' => $this->getSessionID(),
+                'v_basename'  => '%' . $tarname,
             )
         );
 
@@ -1062,13 +1073,13 @@ class TimePoint
     ): int {
 
         $values = array(
-                   'UploadedBy'     => $user->getUsername(),
-                   'UploadDate'     => date('Y-m-d H:i:s'),
-                   'UploadLocation' => $file->getPathname(),
-                   'SessionID'      => $this->getSessionID(),
-                   'PatientName'    => $patientname,
-                   'IsPhantom'      => ($isphantom ? 'Y' : 'N'),
-                  );
+            'UploadedBy'     => $user->getUsername(),
+            'UploadDate'     => date('Y-m-d H:i:s'),
+            'UploadLocation' => $file->getPathname(),
+            'SessionID'      => $this->getSessionID(),
+            'PatientName'    => $patientname,
+            'IsPhantom'      => ($isphantom ? 'Y' : 'N'),
+        );
 
         $db = \NDB_Factory::singleton()->database();
         $db->insert('mri_upload', $values);
@@ -1136,8 +1147,8 @@ class TimePoint
                m.UploadID = :v_mriuploadid
             ',
             array(
-             'v_sessionid'   => $this->getSessionID(),
-             'v_mriuploadid' => $mriuploadid,
+                'v_sessionid'   => $this->getSessionID(),
+                'v_mriuploadid' => $mriuploadid,
             )
         );
         if (empty($row)) {
@@ -1199,6 +1210,18 @@ class TimePoint
             array('v_sessionid' => $this->getSessionID())
         );
         return $result;
+    }
+
+    /**
+     * Gets the project of this Timepoint
+     *
+     * @return \Project
+     */
+    public function getProject(): \Project
+    {
+        return \NDB_Factory::singleton()->project(
+            $this->getData('ProjectName')
+        );
     }
 }
 

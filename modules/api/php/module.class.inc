@@ -61,7 +61,7 @@ class Module extends \Module
             $pieces
         ) !== 1
         ) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'You must specify a version of the API to use in the URL'
             );
         };
@@ -95,7 +95,7 @@ class Module extends \Module
             $handler = new \LORIS\api\Endpoints\Projects();
             break;
         default:
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         // This disregards the parent handler from the base module class,

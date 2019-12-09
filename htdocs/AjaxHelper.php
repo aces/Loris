@@ -10,11 +10,11 @@
  *
  * PHP Version 5
  *
- *  @category Loris
- *  @package  MRI
- *  @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license  Loris license
- *  @link     https://github.com/aces/Loris-Trunk
+ * @category Loris
+ * @package  MRI
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
  */
 
 // This error log should be uncommented once a reasonable number of

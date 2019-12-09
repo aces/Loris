@@ -100,8 +100,12 @@ class Database
                 throw new DatabaseException("No database connection exists");
             }
         } else {
-            // name the connection
-            $connection = md5($database.$host.$username.$password.$trackChanges);
+            // name the connection.
+            if ($trackChanges) {
+                $connection = md5($database.$host.$username.$password.'yep');
+            } else {
+                $connection = md5($database.$host.$username.$password.'nope');
+            }
 
             // create the connection if none exists
             if (empty($connections[$connection])) {
@@ -380,7 +384,13 @@ class Database
         bool   $autoescape = true,
         bool   $ignore = false,
         bool   $onDuplicateUpdate = false
-    ): bool {
+    ) : bool {
+        if ($ignore && $onDuplicateUpdate) {
+            throw new DatabaseException(
+                'The Database::_realinsert() function does not accept both ignore
+                and onDuplicateUpdate parameters.'
+            );
+        }
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
@@ -674,8 +684,8 @@ class Database
      *                               while executing it
      * @param array        $options  A list of key=>value pairs.
      *                               - nofetch : to prevent the fetchAll
-     *                                 function to be excuted. Useful for
-     *                                 insert or update prepared statements.
+     *                               function to be excuted. Useful for
+     *                               insert or update prepared statements.
      *
      * @return array An array of rows in the format ColName => Value after
      *               executing the statement.
@@ -717,12 +727,11 @@ class Database
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
      */
-    function pselect(string $query, array $params)
+    function pselect(string $query, array $params): array
     {
         $this->_printQuery($query, $params);
-        $stmt   = $this->prepare($query);
-        $result = $this->execute($stmt, $params);
-        return $result;
+        $stmt = $this->prepare($query);
+        return $this->execute($stmt, $params);
     }
 
     /**
@@ -794,7 +803,6 @@ class Database
 
             // If you get here, we just need to build the new array
             $filteredResult[$row[$uniqueKey]] = $row;
-            unset($filteredResult[$row[$uniqueKey]][$uniqueKey]);
         }
 
         return $filteredResult;
@@ -999,14 +1007,14 @@ class Database
      * or delete query. Generates the string in a prepared statement format.
      *
      * @param string     $glue      The glue used to combine parts of the
-     *                          dataArray (ie " AND ").
+     *                              dataArray (ie " AND ").
      * @param array      $dataArray The array representing the WHERE condition
-     *                          to be glued together into a string.
+     *                              to be glued together into a string.
      * @param array|null $exec_vals The values which are being bound to the
-     *                          query. Used to generate the prepared variable
-     *                          name.
+     *                              query. Used to generate the prepared variable
+     *                              name.
      * @param string     $prefix    A prefix to apply to prepared variable
-     *                          names.
+     *                              names.
      *
      * @return string A string that can be used to generate a prepared statement
      *                with appropriate variable names generated for data
@@ -1275,8 +1283,8 @@ class Database
         $result = $this->pselectOne(
             $query,
             array(
-             'tn' => $test_name,
-             'db' => $database['database'],
+                'tn' => $test_name,
+                'db' => $database['database'],
             )
         );
 
@@ -1306,9 +1314,9 @@ class Database
         $effected = $this->pselectOne(
             $query,
             array(
-             'tn' => $test_name,
-             'cn' => $column,
-             'db' => $database['database'],
+                'tn' => $test_name,
+                'cn' => $column,
+                'db' => $database['database'],
             )
         );
         if ($effected) {
@@ -1332,24 +1340,24 @@ class Database
         if (!empty($tableName) && is_string($tableName)) {
             $stringWithEscapedChars = str_replace(
                 array(
-                 '\\',
-                 "\0",
-                 "\n",
-                 "\r",
-                 "'",
-                 '"',
-                 "\x1a",
-                 "`",
+                    '\\',
+                    "\0",
+                    "\n",
+                    "\r",
+                    "'",
+                    '"',
+                    "\x1a",
+                    "`",
                 ),
                 array(
-                 '\\\\',
-                 '\\0',
-                 '\\n',
-                 '\\r',
-                 "\\'",
-                 '\\"',
-                 '\\Z',
-                 "\\`",
+                    '\\\\',
+                    '\\0',
+                    '\\n',
+                    '\\r',
+                    "\\'",
+                    '\\"',
+                    '\\Z',
+                    "\\`",
                 ),
                 $tableName
             );

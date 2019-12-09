@@ -44,9 +44,20 @@ class Dicom_Archive extends \DataFrameworkMenu
      * Tells the base class that this page's provisioner can support
      * the UserSiteMatch filter.
      *
-     * @return bool always true
+     * @return bool always false
      */
     public function useSiteFilter() : bool
+    {
+        return false;
+    }
+
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool always false
+     */
+    public function useProjectFilter() : bool
     {
         return false;
     }
@@ -61,6 +72,7 @@ class Dicom_Archive extends \DataFrameworkMenu
     {
         // get the list of sites available for the user
         $list_of_sites = \Utility::getSiteList();
+        $site_options  = array();
 
         foreach ($list_of_sites as $id => $name) {
             $site_options[$name] = $name;
@@ -97,7 +109,7 @@ class Dicom_Archive extends \DataFrameworkMenu
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dicom_archive/js/dicom_archive.js",
+                $baseURL . "/dicom_archive/js/dicom_archive.js",
             )
         );
     }

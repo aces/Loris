@@ -14,6 +14,7 @@ class ProbandInfo extends Component {
       sexOptions: {
         Male: 'Male',
         Female: 'Female',
+        Other: 'Other',
       },
       Data: [],
       formData: {},

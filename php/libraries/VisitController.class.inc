@@ -110,10 +110,10 @@ ORDER BY ID
         return array_map(
             function ($row) {
                 return array(
-                        new \LORIS\Visit($row['name'], $row['ID']),
-                        $row['project'],    // will be modified to object when
-                        $row['subproject'], // available
-                       );
+                    new \LORIS\Visit($row['name'], $row['ID']),
+                    $row['project'],    // will be modified to object when
+                    $row['subproject'], // available
+                );
             },
             $this->database->pselect(
                 'SELECT

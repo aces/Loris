@@ -1,11 +1,13 @@
-# [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) LORIS Neuroimaging Platform 
+# [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) [![Documentation Status](https://readthedocs.org/projects/acesloris/badge/?version=latest)](https://acesloris.readthedocs.io/en/latest/?badge=latest)
+
+# LORIS Neuroimaging Platform
 
 LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web application that provides data- and project-management for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
-A demo instance is available at https://demo.loris.ca.
+* Try the LORIS demo instance at https://demo.loris.ca.
 
-This Readme covers installation of the LORIS <b>v21.*</b> release on <b>Ubuntu</b>.
-([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
+This Readme covers installation of the LORIS <b>v22.*</b> release on <b>Ubuntu</b>.
+([CentOS Readme also available](./README.CentOS7.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
@@ -27,75 +29,87 @@ Deploy and log in with username *admin* and the password that's set up during de
  * PHP <b>7.2</b> or higher
  * [Composer](https://getcomposer.org/)
  * NodeJS <b>8.0</b> or higher
+ * NPM
+ * make
 
-These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS.
+These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS. Installing some dependencies may require `sudo` privileges.
 
 ### Install Steps
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
-1. Set up LINUX user lorisadmin and create LORIS base directory:
+1. Set up LINUX user lorisadmin, with `sudo` privilege, and create LORIS base directory:
 
-    ```
-    sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
-    sudo passwd lorisadmin
-    su - lorisadmin
-    ```
+```bash
+sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
+sudo passwd lorisadmin
+su - lorisadmin
+```
 
-    <b>Important: All steps from this point forward must be executed by lorisadmin user</b>
+ <b>Important: All steps from this point forward must be executed by lorisadmin user</b>
 
-    ```
-    sudo mkdir -m 775 -p /var/www/$projectname
-    sudo chown lorisadmin.lorisadmin /var/www/$projectname
-    ```
+ ```bash
+ sudo mkdir -m 775 -p /var/www/$projectname
+ sudo chown lorisadmin.lorisadmin /var/www/$projectname
+ ```
 
-    <i>$projectname ⇾ "loris" or one-word project name</i>
+ <i>$projectname ⇾ "loris" or one-word project name</i>
 
-2. Get code:
-    Download the latest release from the [releases page](https://github.com/aces/Loris/releases) and
-    extract it to `/var/www/$projectname`
+2. Get the code:
+Download the latest release from the [releases page](https://github.com/aces/Loris/releases) and extract it to `/var/www/$projectname`
 
 3. Run installer script to install core code, and libraries. The script will prompt for information and so that it can create directories automatically.
 
-    For more information, please read the [Installing Loris wiki page](https://github.com/aces/Loris/wiki/Installing-Loris).
+For more information, please read the [Installing Loris wiki page](https://github.com/aces/Loris/wiki/Installing-Loris).
 
-    ```
-    cd /var/www/$projectname/tools
-    ./install.sh
-    ```
+ ```bash
+ cd /var/www/$projectname/tools
+ ./install.sh
+ ```
 
-4. Apache configuration and restart 
-LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this module, then restart Apache: 
+4. Run the makefile (use `make dev` if you are setting up a development sandbox)
+ ```bash
+ cd /var/www/$projectname
+ make
+ ```
 
-    ```
-    sudo a2enmod rewrite
-    sudo service apache2 reload
-    ```
+5. Apache configuration
 
-5. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation.
+If your apache configuration was not completed by the Install script, run the following enable rewriting of LORIS, enable your `$projectname` site, and restart apache:  (run by user who has root privileges)
+    
+```bash
+sudo a2enmod rewrite
+sudo a2dissite default
+sudo a2ensite $projectname
+sudo service apache2 reload
+```
+    
+6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation, then restart apache.
 
-    _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. If running an earlier version of Ubuntu, rename these files, then run the following commands. After, restart Apache.
-
-
-    ```
-    sudo a2dissite default
-    sudo a2ensite $projectname
-    ```
-
-6. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
+7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
 ## Community
 
-### GitHub Issues
-Please don't hesitate to create an issue if you're stuck with something. Please
-include details such as the version of LORIS you're using as well as information
-such as the OS you're using, your PHP and Apache versions, etc.
-
 ### Get in touch
-Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions. We may also be able to provide you with installation guidance not covered in the Wiki.
+For questions and troubleshooting guidance beyond what is covered in our GitHub Wiki, please subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) and email us there. 
+
+### GitHub Issues
+For bug reporting and new feature requests, please search and report via our GitHub Issues. 
+Please include details such as the version of LORIS you're using as well as information
+such as the OS you're using, your PHP and Apache versions, etc.
 
 ## Contributing
 
+The [LORIS team](http://loris.ca) at the Montreal Neurological Institute (MNI) is very happy to get code contributions and features from the global LORIS community. 
+
 ### Contributing Code
 If you would like to contribute to LORIS development, please consult our [Contributing Guide](./CONTRIBUTING.md).
+
+## Powered by MCIN
+
+LORIS is made by staff developers at the McGill Centre for Integrative Neuroscience ([MCIN.ca](www.mcin.ca)), led by Alan Evans and Samir Das at the Montreal Neurological Institute. 
+
+See [LORIS.ca](www.loris.ca) for our current team, the history of LORIS, and our **Technical Papers**.
+
+The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, and Samir Das.  
 

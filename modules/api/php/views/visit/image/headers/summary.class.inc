@@ -59,12 +59,12 @@ class Summary
     public function toArray(): array
     {
         return  array(
-                 'Meta'        => $this->_formatMeta(),
-                 'Physical'    => $this->_formatPhysical(),
-                 'Description' => $this->_formatDescription(),
-                 'Dimensions'  => $this->_formatDimensions(),
-                 'ScannerInfo' => $this->_formatScannerInfo(),
-                );
+            'Meta'        => $this->_formatMeta(),
+            'Physical'    => $this->_formatPhysical(),
+            'Description' => $this->_formatDescription(),
+            'Dimensions'  => $this->_formatDimensions(),
+            'ScannerInfo' => $this->_formatScannerInfo(),
+        );
     }
 
     /**
@@ -74,15 +74,15 @@ class Summary
      */
     private function _formatMeta(): array
     {
-        $candid     = $this->_visit->getCandID();
+        $candid     = (string) $this->_visit->getCandID();
         $visitlabel = $this->_visit->getVisitLabel();
         $filename   = $this->_image->getFileInfo()->getFilename();
 
         return array(
-                'CandID' => $candid,
-                'Visit'  => $visitlabel,
-                'File'   => $filename,
-               );
+            'CandID' => $candid,
+            'Visit'  => $visitlabel,
+            'File'   => $filename,
+        );
     }
 
     /**
@@ -98,11 +98,11 @@ class Summary
         $st = $this->_image->getHeader('acquisition:slice_thickness');
 
         return array(
-                'TE'             => $te,
-                'TR'             => $tr,
-                'TI'             => $ti,
-                'SliceThickness' => $st,
-               );
+            'TE'             => $te,
+            'TR'             => $tr,
+            'TI'             => $ti,
+            'SliceThickness' => $st,
+        );
     }
 
     /**
@@ -116,9 +116,9 @@ class Summary
         $sd = $this->_image->getHeader('acquisition:series_description');
 
         return array(
-                'SeriesName'        => $sn,
-                'SeriesDescription' => $sd,
-               );
+            'SeriesName'        => $sn,
+            'SeriesDescription' => $sd,
+        );
     }
 
     /**
@@ -130,10 +130,10 @@ class Summary
     {
 
         $dimensions = array(
-                       'XSpace' => $this->_getDimension('xspace'),
-                       'YSpace' => $this->_getDimension('yspace'),
-                       'ZSpace' => $this->_getDimension('zspace'),
-                      );
+            'XSpace' => $this->_getDimension('xspace'),
+            'YSpace' => $this->_getDimension('yspace'),
+            'ZSpace' => $this->_getDimension('zspace'),
+        );
 
         $order = $this->_image->getHeader("image:dimorder");
         if (count(explode(',', $order)) == 4) {
@@ -153,9 +153,9 @@ class Summary
     private function _getDimension(string $dim): array
     {
         return array(
-                'Length'   => $this->_image->getHeader("$dim:length"),
-                'StepSize' => $this->_image->getHeader("$dim:step"),
-               );
+            'Length'   => $this->_image->getHeader("$dim:length"),
+            'StepSize' => $this->_image->getHeader("$dim:step"),
+        );
     }
 
     /**
@@ -172,12 +172,12 @@ class Summary
         $fieldstrength   = $this->_image->getHeader('study:field_value');
 
         return array(
-                'Manufacturer'    => $manufacturer,
-                'Model'           => $model,
-                'SoftwareVersion' => $softwareversion,
-                'SerialNumber'    => $serialnumber,
-                'FieldStrength'   => $fieldstrength,
-               );
+            'Manufacturer'    => $manufacturer,
+            'Model'           => $model,
+            'SoftwareVersion' => $softwareversion,
+            'SerialNumber'    => $serialnumber,
+            'FieldStrength'   => $fieldstrength,
+        );
     }
 }
 

@@ -67,9 +67,9 @@ class Brainbrowser extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.2',
-                'v0.0.3-dev',
-               );
+            'v0.0.2',
+            'v0.0.3-dev',
+        );
     }
 
     /**
@@ -91,7 +91,7 @@ class Brainbrowser extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withHeader('Allow', $this->allowedMethods());
 
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
 
@@ -115,12 +115,12 @@ class Brainbrowser extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!$info->isFile()) {
             error_log('file in database but not in file system');
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         if (!$info->isReadable()) {
             error_log('file exist but is not readable by webserver');
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $view = (new \LORIS\api\Views\Visit\Image\Format\Brainbrowser(

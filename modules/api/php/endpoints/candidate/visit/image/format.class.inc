@@ -61,9 +61,9 @@ class Format extends Endpoint
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.2',
-                'v0.0.3-dev',
-               );
+            'v0.0.2',
+            'v0.0.3-dev',
+        );
     }
 
     /**
@@ -78,7 +78,7 @@ class Format extends Endpoint
     {
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) !== 1) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $format = array_shift($pathparts);
@@ -93,7 +93,7 @@ class Format extends Endpoint
             $handler = new Format\Thumbnail($this->_image);
             break;
         default:
-            return new \LORIS\Http\Response\UnsupportedMediaType();
+            return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
         }
 
         $newrequest = $request

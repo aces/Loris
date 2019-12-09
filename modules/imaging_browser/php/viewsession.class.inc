@@ -51,17 +51,24 @@ class ViewSession extends \NDB_Form
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
          */
-        return $user->hasAnyPermission(
-            array(
-             'imaging_browser_view_allsites',
-             'imaging_browser_phantom_allsites',
-             'imaging_browser_phantom_ownsite',
-            )
-        )
-        || $user->hasCenterPermission(
-            'imaging_browser_view_site',
-            \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
-        );
+        $candid    = \TimePoint::singleton($_REQUEST['sessionID'])->getCandID();
+        $candidate = \Candidate::singleton($candid);
+
+        if ($candidate->getData('Entity_type') == 'Scanner') {
+            return $user->hasPermission('imaging_browser_phantom_allsites')
+                || $user->hasCenterPermission(
+                'imaging_browser_phantom_ownsite',
+                \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
+            );
+        } elseif ($candidate->getData('Entity_type') == 'Human') {
+            return $user->hasPermission('imaging_browser_view_allsites')
+                || $user->hasCenterPermission(
+                'imaging_browser_view_site',
+                \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
+            );
+        }
+
+        return false;
     }
 
     /**
@@ -111,15 +118,15 @@ class ViewSession extends \NDB_Form
             }
 
             $this->tpl_data['status_options']    = array(
-                                                    ''     => '&nbsp;',
-                                                    'Pass' => 'Pass',
-                                                    'Fail' => 'Fail',
-                                                   );
+                ''     => '&nbsp;',
+                'Pass' => 'Pass',
+                'Fail' => 'Fail',
+            );
             $this->tpl_data['caveat_options']    = array(
-                                                    ''    => '&nbsp;',
-                                                    true  => 'True',
-                                                    false => 'False',
-                                                   );
+                ''    => '&nbsp;',
+                true  => 'True',
+                false => 'False',
+            );
             $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
                                                  true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
@@ -221,11 +228,11 @@ class ViewSession extends \NDB_Form
             $SeriesNumber        = $FileObj->getParameter('series_number');
             $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
-                (int)$FileObj->getParameter('echo_time')*1000,
+                (float)$FileObj->getParameter('echo_time') * 1000,
                 2
             );
             $RepetitionTime      = number_format(
-                (int)$FileObj->getParameter('repetition_time') * 1000,
+                (float)$FileObj->getParameter('repetition_time') * 1000,
                 2
             );
             $SliceThickness      = number_format(
@@ -257,9 +264,18 @@ class ViewSession extends \NDB_Form
                 $FileObj,
                 'intergradient'
             );
-            $Xstep       = number_format(intval($FileObj->getParameter('xstep')), 2);
-            $Ystep       = number_format(intval($FileObj->getParameter('ystep')), 2);
-            $Zstep       = number_format(intval($FileObj->getParameter('zstep')), 2);
+            $Xstep       = number_format(
+                (float)($FileObj->getParameter('xstep')),
+                2
+            );
+            $Ystep       = number_format(
+                (float)($FileObj->getParameter('ystep')),
+                2
+            );
+            $Zstep       = number_format(
+                (float)($FileObj->getParameter('zstep')),
+                2
+            );
             $Selected    = $this->_getSelected(
                 (int) $FileObj->getParameter('FileID')
             );
@@ -277,50 +293,50 @@ class ViewSession extends \NDB_Form
             );
 
             $file = array(
-                     'FileID'                => $FileID,
-                     'Filename'              => $Filename,
-                     'CheckPic'              => $CheckPic,
-                     'FullFilename'          => $FullFilename,
-                     'JivFilename'           => $JivFilename,
-                     'JivAddress'            => $JivAddress,
-                     'New'                   => $New,
-                     'Pipeline'              => $Pipeline,
-                     'OutputType'            => $OutputType,
-                     'AcquisitionProtocol'   => $AcquisitionProtocol,
-                     'CoordinateSpace'       => $CoordinateSpace,
-                     'Algorithm'             => $Algorithm,
-                     'AcquisitionDate'       => $AcquisitionDate,
-                     'ProcDate'              => $ProcDate,
-                     'FileInsertDate'        => $FileInsertDate,
-                     'SeriesDescription'     => $SeriesDescription,
-                     'SeriesNumber'          => $SeriesNumber,
-                     'SeriesUID'             => $SeriesUID,
-                     'EchoTime'              => $EchoTime,
-                     'RepetitionTime'        => $RepetitionTime,
-                     'SliceThickness'        => $SliceThickness,
-                     'Time'                  => $Time,
-                     'Comment'               => $Comment,
-                     'ProcessingPipeline'    => $ProcessingPipeline,
-                     'TotalRejected'         => $TotalRejected,
-                     'SourceFile'            => $SourceFile,
-                     'Tool'                  => $Tool,
-                     'SlicewiseRejected'     => $SlicewiseRejected,
-                     'InterlaceRejected'     => $InterlaceRejected,
-                     'IntergradientRejected' => $IntergradientRejected,
-                     'Xstep'                 => $Xstep,
-                     'Ystep'                 => $Ystep,
-                     'Zstep'                 => $Zstep,
-                     'Selected'              => $Selected,
-                     'QCStatus'              => $QCStatus,
-                     'QCDate'                => $QCDate,
-                     'Caveat'                => $Caveat,
-                     'SNR'                   => $SNR,
-                     'SeriesUID'             => $SeriesUID,
-                     'XMLreport'             => $XMLreport,
-                     'XMLprotocol'           => $XMLprotocol,
-                     'NrrdFile'              => $NrrdFile,
-                     'OtherTimepoints'       => $OtherTimepoints,
-                    );
+                'FileID'                => $FileID,
+                'Filename'              => $Filename,
+                'CheckPic'              => $CheckPic,
+                'FullFilename'          => $FullFilename,
+                'JivFilename'           => $JivFilename,
+                'JivAddress'            => $JivAddress,
+                'New'                   => $New,
+                'Pipeline'              => $Pipeline,
+                'OutputType'            => $OutputType,
+                'AcquisitionProtocol'   => $AcquisitionProtocol,
+                'CoordinateSpace'       => $CoordinateSpace,
+                'Algorithm'             => $Algorithm,
+                'AcquisitionDate'       => $AcquisitionDate,
+                'ProcDate'              => $ProcDate,
+                'FileInsertDate'        => $FileInsertDate,
+                'SeriesDescription'     => $SeriesDescription,
+                'SeriesNumber'          => $SeriesNumber,
+                'SeriesUID'             => $SeriesUID,
+                'EchoTime'              => $EchoTime,
+                'RepetitionTime'        => $RepetitionTime,
+                'SliceThickness'        => $SliceThickness,
+                'Time'                  => $Time,
+                'Comment'               => $Comment,
+                'ProcessingPipeline'    => $ProcessingPipeline,
+                'TotalRejected'         => $TotalRejected,
+                'SourceFile'            => $SourceFile,
+                'Tool'                  => $Tool,
+                'SlicewiseRejected'     => $SlicewiseRejected,
+                'InterlaceRejected'     => $InterlaceRejected,
+                'IntergradientRejected' => $IntergradientRejected,
+                'Xstep'                 => $Xstep,
+                'Ystep'                 => $Ystep,
+                'Zstep'                 => $Zstep,
+                'Selected'              => $Selected,
+                'QCStatus'              => $QCStatus,
+                'QCDate'                => $QCDate,
+                'Caveat'                => $Caveat,
+                'SNR'                   => $SNR,
+                'SeriesUID'             => $SeriesUID,
+                'XMLreport'             => $XMLreport,
+                'XMLprotocol'           => $XMLprotocol,
+                'NrrdFile'              => $NrrdFile,
+                'OtherTimepoints'       => $OtherTimepoints,
+            );
             $this->tpl_data['files'][] = $file;
         }
     }
@@ -395,9 +411,9 @@ class ViewSession extends \NDB_Form
                     $curStatus ='';
                 }
                 $updateSet = array(
-                              'QCStatus'         => $curStatus,
-                              'QCLastChangeTime' => time(),
-                             );
+                    'QCStatus'         => $curStatus,
+                    'QCLastChangeTime' => time(),
+                );
 
                 // set first change time, if it's null only
                 $params          = array('FID' => $curFileID);
@@ -411,13 +427,14 @@ class ViewSession extends \NDB_Form
                     $updateSet['QCFirstChangeTime'] = time();
                 }
 
-                $QCExists  = $this->DB->pselectOne(
+                $QCExists    = $this->DB->pselectOne(
                     "SELECT 'x' 
                     FROM files_qcstatus 
                     WHERE FileID=:FID",
                     $params
                 );
-                $updateSet = \Utility::nullifyEmpty($updateSet, 'QCStatus');
+                $updateSet   = \Utility::nullifyEmpty($updateSet, 'QCStatus');
+                $updateWhere = array();
                 if (!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
                     $this->DB->update(
@@ -453,7 +470,8 @@ class ViewSession extends \NDB_Form
                 );
 
                 if ($curCaveat == true) {
-                    $file = new \MRIFile($curFileID);
+                    $insertSet = array();
+                    $file      = new \MRIFile($curFileID);
                     $insertSet['SeriesUID']   = $file->getParameter(
                         'series_instance_uid'
                     );
@@ -473,6 +491,7 @@ class ViewSession extends \NDB_Form
                         . $user->getUsername();
 
                     $this->DB->insert("mri_violations_log", $insertSet);
+                    unset($insertSet);
                 }
             }
         }
@@ -509,9 +528,9 @@ class ViewSession extends \NDB_Form
                     ) > 0
                     ) {
                         $updateSet = array(
-                                      'Selected'         => $curSelected,
-                                      'QCLastChangeTime' => time(),
-                                     );
+                            'Selected'         => $curSelected,
+                            'QCLastChangeTime' => time(),
+                        );
                         $updateSet = \Utility::nullifyEmpty($updateSet, 'Selected');
                         $this->DB->update(
                             'files_qcstatus',
@@ -520,10 +539,10 @@ class ViewSession extends \NDB_Form
                         );
                     } else {
                         $insertSet = array(
-                                      'FileID'            => $curFileID,
-                                      'Selected'          => $curSelected,
-                                      'QCFirstChangeTime' => time(),
-                                     );
+                            'FileID'            => $curFileID,
+                            'Selected'          => $curSelected,
+                            'QCFirstChangeTime' => time(),
+                        );
                         $insertSet = \Utility::nullifyEmpty($insertSet, 'Selected');
                         $this->DB->insert('files_qcstatus', $insertSet);
                     }
@@ -560,11 +579,11 @@ class ViewSession extends \NDB_Form
             );
 
             $updateSet       = array(
-                                'MRIQCPending'        => $_POST['visit_pending'],
-                                'MRIQCStatus'         => $_POST['visit_status'],
-                                'MRICaveat'           => $_POST['visit_caveat'],
-                                'MRIQCLastChangeTime' => date("Y-m-d H:i:s"),
-                               );
+                'MRIQCPending'        => $_POST['visit_pending'],
+                'MRIQCStatus'         => $_POST['visit_status'],
+                'MRICaveat'           => $_POST['visit_caveat'],
+                'MRIQCLastChangeTime' => date("Y-m-d H:i:s"),
+            );
             $firstChangeTime = $this->DB->pselectOne(
                 "SELECT MRIQCFirstChangeTime 
                 FROM session 
@@ -632,8 +651,8 @@ class ViewSession extends \NDB_Form
             "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
             "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
             array(
-             'initialFileAcquisitionID' => $initialFileAcquisitionID,
-             'initialFileID'            => $initialFileID,
+                'initialFileAcquisitionID' => $initialFileAcquisitionID,
+                'initialFileID'            => $initialFileID,
             )
         );
 
@@ -694,8 +713,9 @@ class ViewSession extends \NDB_Form
      */
     function getSubjectData()
     {
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint = \TimePoint::singleton($_REQUEST['sessionID']);
 
+        $subjectData = array();
         $subjectData['sessionID']       = $_REQUEST['sessionID'];
         $subjectData['SubprojectID']    = $timePoint->getSubprojectID();
         $subjectData['SubprojectTitle'] = $timePoint->getData('SubprojectTitle');
@@ -772,8 +792,8 @@ class ViewSession extends \NDB_Form
         $depends = array_merge(
             $depends,
             array(
-             $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
-             $baseurl . "/imaging_browser/js/ImagePanel.js",
+                $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
+                $baseurl . "/imaging_browser/js/ImagePanel.js",
             )
         );
         return $depends;

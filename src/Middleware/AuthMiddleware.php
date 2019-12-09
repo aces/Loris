@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\Middleware;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;

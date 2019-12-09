@@ -54,7 +54,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             'User ID'                  => '#dynamictable > thead > tr',
             'Start Time'               => '#dynamictable > thead > tr',
             'End Time'                 => '#dynamictable > thead > tr',
-           );
+        );
     /**
      * Tests that the page does not load if config setting mriCodePath has
      * not been set.
@@ -109,10 +109,10 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     }
 
     /**
-      * Testing UI elements when page loads
-      *
-      * @return void
-      */
+     * Testing UI elements when page loads
+     *
+     * @return void
+     */
     function testPageUIs()
     {
         $this->markTestSkipped("Skipping long test");
@@ -126,25 +126,25 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         }
     }
     /**
-      * Testing React filter in this page.
-      *
-      * @return void
-      */
+     * Testing React filter in this page.
+     *
+     * @return void
+     */
     function testFilters()
     {
         $this->markTestSkipped("Skipping long test");
         return;
     }
     /**
-      * This function could test filter function in each Tabs.
-      *
-      * @param string $url            this is for the url which needs to be tested.
-      * @param string $filter         the filter which needs to be tested.
-      * @param string $testData       the test data.
-      * @param string $expectDataRows the expect rows in the table.
-      *
-      * @return void
-      */
+     * This function could test filter function in each Tabs.
+     *
+     * @param string $url            this is for the url which needs to be tested.
+     * @param string $filter         the filter which needs to be tested.
+     * @param string $testData       the test data.
+     * @param string $expectDataRows the expect rows in the table.
+     *
+     * @return void
+     */
     function _testFilter($url,$filter,$testData,$expectDataRows)
     {
         $this->safeGet($this->url . $url);

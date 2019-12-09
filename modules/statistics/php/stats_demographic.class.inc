@@ -174,7 +174,8 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
-        $projects[null] = 'All Projects';
+        $projects     = array();
+        $projects[''] = 'All Projects';
         foreach (\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
@@ -186,10 +187,10 @@ class Stats_Demographic extends \NDB_Form
             $demographicProject = htmlspecialchars($demographicProject);
             $this->tpl_data['CurrentProject']
                 = array(
-                   'ID'   => $demographicProject,
-                   'Name' => $projects[$demographicProject] ?? '',
-                  );
-            $paramProject        ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+                    'ID'   => $demographicProject,
+                    'Name' => $projects[$demographicProject] ?? '',
+                );
+            $paramProject        ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
         }
 
@@ -218,6 +219,18 @@ class Stats_Demographic extends \NDB_Form
             $this->params['sid'] = $demographicSite;
         }
 
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
+
+        //SITES
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+        $sitesString = implode(",", array_keys($list_of_sites));
+
         $centers = $db->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
@@ -225,20 +238,22 @@ class Stats_Demographic extends \NDB_Form
                     Name as ShortName
             FROM psc
             WHERE CenterID <> '1'
-            AND Study_site = 'Y'",
+		    AND Study_site = 'Y'
+	            AND CenterID IN (" . $sitesString . ")",
             array()
         );
 
-        $sites[null] ='All sites';
+        $sites     = array();
+        $sites[''] ='All sites';
 
         if (!empty($centers)) {
             foreach ($centers as $row) {
                 $sites[$row['NumericID']] = $row['ShortName'];
                 if ($demographicSite == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = array(
-                                                      'ID'   => $row['NumericID'],
-                                                      'Name' => $row['LongName'],
-                                                     );
+                        'ID'   => $row['NumericID'],
+                        'Name' => $row['LongName'],
+                    );
                 }
             }
         }
@@ -260,6 +275,7 @@ class Stats_Demographic extends \NDB_Form
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
+	            	  AND s.CenterID IN (" . $sitesString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active = 'Y'
                           $paramProject
@@ -287,6 +303,7 @@ class Stats_Demographic extends \NDB_Form
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
+	            	  AND s.CenterID IN (" . $sitesString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1
@@ -316,6 +333,7 @@ class Stats_Demographic extends \NDB_Form
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
+	            	  AND s.CenterID IN (" . $sitesString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND ps.participant_status=5
@@ -341,6 +359,7 @@ class Stats_Demographic extends \NDB_Form
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
+	            	  AND s.CenterID IN (" . $sitesString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1 OR
@@ -372,6 +391,7 @@ class Stats_Demographic extends \NDB_Form
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
+	            	  AND s.CenterID IN (" . $sitesString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1
@@ -405,6 +425,7 @@ class Stats_Demographic extends \NDB_Form
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
+	            	  AND s.CenterID IN (" . $sitesString . ")
                           AND c.Entity_type != 'Scanner'
                           AND (ps.participant_status=1
                           OR ps.participant_status IS NULL)
@@ -431,9 +452,9 @@ class Stats_Demographic extends \NDB_Form
         if (!empty($demographicInstrument)) {
             $demographicInstrument = htmlspecialchars($demographicInstrument);
             $subcategories         = array(
-                                      'Complete',
-                                      'Incomplete',
-                                     );
+                'Complete',
+                'Incomplete',
+            );
             $result = $db->pselect(
                 "SELECT count(*) as val,
                         f.Data_entry as Subcat,
@@ -448,6 +469,7 @@ class Stats_Demographic extends \NDB_Form
                 WHERE s.Active='Y'
                 AND c.RegistrationCenterID <> '1'
                 AND s.CenterID <> '1'
+		AND s.CenterID IN (" . $sitesString . ")
                 AND f.Data_entry='Complete'
                 AND f.Administration='All'
                 AND f.CommentID NOT LIKE 'DDE%'
@@ -467,6 +489,7 @@ class Stats_Demographic extends \NDB_Form
                 WHERE s.Active='Y' 
                     AND c.RegistrationCenterID <> '1'
                     AND s.CenterID <> '1'
+		    AND s.CenterID IN (" . $sitesString . ")
                     $paramProject
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
@@ -491,9 +514,9 @@ class Stats_Demographic extends \NDB_Form
             );
         } else {
             $subcategories = array(
-                              'Male',
-                              'Female',
-                             );
+                'Male',
+                'Female',
+            );
             $result        = $db->pselect(
                 "SELECT s.CenterID as CenterID,
                         s.SubprojectID as SubprojectID,
@@ -503,6 +526,7 @@ class Stats_Demographic extends \NDB_Form
                 FROM session s
                 JOIN candidate c ON (s.CandID=c.CandID)
                 WHERE s.active='Y' AND s.CenterID <> '1' 
+		AND s.CenterID IN (" . $sitesString . ")
                 AND c.RegistrationCenterID <> '1'
                 AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
                 $subprojectQuery)
@@ -542,8 +566,8 @@ class Stats_Demographic extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . '/statistics/js/table_statistics.js',
-             $baseURL . '/statistics/js/form_stats_demographic.js',
+                $baseURL . '/statistics/js/table_statistics.js',
+                $baseURL . '/statistics/js/form_stats_demographic.js',
             )
         );
     }

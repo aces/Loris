@@ -69,9 +69,9 @@ class Full
         unset($headers['jiv_path']);
 
         return  array(
-                 'Meta'    => $this->_formatMeta(),
-                 'Headers' => $headers,
-                );
+            'Meta'    => $this->_formatMeta(),
+            'Headers' => $headers,
+        );
     }
 
     /**
@@ -81,15 +81,15 @@ class Full
      */
     private function _formatMeta(): array
     {
-        $candid     = $this->_visit->getCandID();
+        $candid     = (string) $this->_visit->getCandID();
         $visitlabel = $this->_visit->getVisitLabel();
         $filename   = $this->_image->getFileInfo()->getFilename();
 
         return array(
-                'CandID' => $candid,
-                'Visit'  => $visitlabel,
-                'File'   => $filename,
-               );
+            'CandID' => $candid,
+            'Visit'  => $visitlabel,
+            'File'   => $filename,
+        );
     }
 }
 

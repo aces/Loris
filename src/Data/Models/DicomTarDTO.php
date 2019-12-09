@@ -25,15 +25,15 @@ namespace LORIS\Data\Models;
  */
 class DicomTarDTO implements \LORIS\Data\DataInstance
 {
-    private $_tarchiveid;
+    private $tarchiveid;
 
-    private $_tarname;
+    private $tarname;
 
-    private $_archivelocation;
+    private $archivelocation;
 
-    private $_patientname;
+    private $patientname;
 
-    private $_series;
+    private $series;
 
     /**
      * Constructor
@@ -51,11 +51,11 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
         ?string $patientname,
         ?DicomSeriesDTO ...$series
     ) {
-        $this->_tarchiveid      = $tarchiveid;
-        $this->_tarname         = $tarname;
-        $this->_archivelocation = $archivelocation;
-        $this->_patientname     = $patientname;
-        $this->_series          = $series;
+        $this->tarchiveid      = $tarchiveid;
+        $this->tarname         = $tarname;
+        $this->archivelocation = $archivelocation;
+        $this->patientname     = $patientname;
+        $this->series          = $series;
     }
 
     /**
@@ -65,7 +65,7 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
      */
     public function getTarname(): ?string
     {
-        return $this->_tarname;
+        return $this->tarname;
     }
     /**
      * Accessor for ArchiveLocation
@@ -74,7 +74,7 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
      */
     public function getArchiveLocation(): ?string
     {
-        return $this->_archivelocation;
+        return $this->archivelocation;
     }
 
     /**
@@ -84,7 +84,7 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
      */
     public function getPatientname(): ?string
     {
-        return $this->_patientname;
+        return $this->patientname;
     }
 
     /**
@@ -94,7 +94,7 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
      */
     public function getSeries(): ?array
     {
-        return $this->_series;
+        return $this->series;
     }
 
     /**
@@ -108,14 +108,14 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
             function ($item) {
                 return $item->toArray();
             },
-            $this->_series
+            $this->series
         );
 
         return json_encode(
             array(
-             'tarchiveid'  => $this->_tarchiveid,
-             'tarname'     => $this->_tarname,
-             'patientname' => $this->_patientname,
+             'tarchiveid'  => $this->tarchiveid,
+             'tarname'     => $this->tarname,
+             'patientname' => $this->patientname,
              'series'      => $series,
             )
         );

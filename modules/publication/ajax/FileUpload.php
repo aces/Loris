@@ -67,16 +67,16 @@ function uploadPublication() : void
         'FROM publication_collaborator '.
         'WHERE Name = :n OR Email = :e',
         array(
-         'n' => $leadInvest,
-         'e' => $leadInvestEmail,
+            'n' => $leadInvest,
+            'e' => $leadInvestEmail,
         )
     );
     if (empty($leadInvID)) {
         $db->insert(
             'publication_collaborator',
             array(
-             'Name'  => $leadInvest,
-             'Email' => $leadInvestEmail,
+                'Name'  => $leadInvest,
+                'Email' => $leadInvestEmail,
             )
         );
 
@@ -90,12 +90,12 @@ function uploadPublication() : void
     $today = date('Y-m-d');
     // insert the title to avoid double escaping
     $fields = array(
-               'UserID'             => $uid,
-               'Title'              => $title,
-               'Description'        => $desc,
-               'LeadInvestigatorID' => $leadInvID,
-               'DateProposed'       => $today,
-              );
+        'UserID'             => $uid,
+        'Title'              => $title,
+        'Description'        => $desc,
+        'LeadInvestigatorID' => $leadInvID,
+        'DateProposed'       => $today,
+    );
 
     $db->insert('publication', $fields);
     $pubID = $db->getLastInsertId();
@@ -162,12 +162,12 @@ function processFiles($pubID) : void
         $pubCitation     = $_POST['publicationCitation_'.$index] ?? null;
         $pubVersion      = $_POST['publicationVersion_'.$index] ?? null;
         $pubUploadInsert = array(
-                            'PublicationID'           => $pubID,
-                            'PublicationUploadTypeID' => $pubTypeID,
-                            'Filename'                => basename($fileName),
-                            'Citation'                => $pubCitation,
-                            'Version'                 => $pubVersion,
-                           );
+            'PublicationID'           => $pubID,
+            'PublicationUploadTypeID' => $pubTypeID,
+            'Filename'                => basename($fileName),
+            'Citation'                => $pubCitation,
+            'Version'                 => $pubVersion,
+        );
 
         if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
             $db->insert('publication_upload', $pubUploadInsert);
@@ -189,7 +189,7 @@ function processFiles($pubID) : void
  */
 function insertCollaborators(int $pubID) : void
 {
-    if (!$_POST['collaborators']) {
+    if (!isset($_POST['collaborators'])) {
         return;
     }
     $db = Database::singleton();
@@ -205,9 +205,9 @@ function insertCollaborators(int $pubID) : void
         // if collaborator does not already exist in table, add them
         if (!$cid) {
             $collabInsert = array(
-                             'Name'  => $c['name'],
-                             'Email' => $c['email'],
-                            );
+                'Name'  => $c['name'],
+                'Email' => $c['email'],
+            );
 
             $db->insert(
                 'publication_collaborator',
@@ -221,9 +221,9 @@ function insertCollaborators(int $pubID) : void
             );
         }
         $collabRelInsert = array(
-                            'PublicationID'             => $pubID,
-                            'PublicationCollaboratorID' => $cid,
-                           );
+            'PublicationID'             => $pubID,
+            'PublicationCollaboratorID' => $cid,
+        );
         $db->insertIgnore(
             'publication_collaborator_rel',
             $collabRelInsert
@@ -248,9 +248,9 @@ function insertEditors(int $pubID) : void
     $usersWithEditPerm = json_decode($_POST['usersWithEditPerm']);
     foreach ($usersWithEditPerm as $uid) {
         $insert = array(
-                   'PublicationID' => $pubID,
-                   'UserID'        => $uid,
-                  );
+            'PublicationID' => $pubID,
+            'UserID'        => $uid,
+        );
 
         $db->insertIgnore(
             'publication_users_edit_perm_rel',
@@ -293,9 +293,9 @@ function insertKeywords(int $pubID) : void
         // add it pub_kw_rel table
         // get publication ID
         $pubKWRelInsert = array(
-                           'PublicationID'        => $pubID,
-                           'PublicationKeywordID' => $kwID,
-                          );
+            'PublicationID'        => $pubID,
+            'PublicationKeywordID' => $kwID,
+        );
 
         $db->insert(
             'publication_keyword_rel',
@@ -336,9 +336,9 @@ function insertVOIs(int $pubID) : void
         // search test_names for value
         if (in_array($vf, $testNames, true)) {
             $pubTNRelInsert = array(
-                               'TestNameID'    => array_search($vf, $testNames),
-                               'PublicationID' => $pubID,
-                              );
+                'TestNameID'    => array_search($vf, $testNames),
+                'PublicationID' => $pubID,
+            );
             $db->insertIgnore(
                 'publication_test_names_rel',
                 $pubTNRelInsert
@@ -346,9 +346,9 @@ function insertVOIs(int $pubID) : void
         } elseif (in_array($vf, $paramTypes, true)) {
             $ptID = array_search($vf, $paramTypes, true);
             $pubParamTypeRelInsert = array(
-                                      'ParameterTypeID' => $ptID,
-                                      'PublicationID'   => $pubID,
-                                     );
+                'ParameterTypeID' => $ptID,
+                'PublicationID'   => $pubID,
+            );
 
             $db->insertIgnore(
                 'publication_parameter_type_rel',
@@ -372,12 +372,12 @@ function cleanup(int $pubID) : void
     $where = array('PublicationID' => $pubID);
 
     $tables = array(
-               'publication_users_edit_perm_rel',
-               'publication_parameter_type_rel',
-               'publication_test_names_rel',
-               'publication_collaborator_rel',
-               'publication_keyword_rel',
-              );
+        'publication_users_edit_perm_rel',
+        'publication_parameter_type_rel',
+        'publication_test_names_rel',
+        'publication_collaborator_rel',
+        'publication_keyword_rel',
+    );
 
     foreach ($tables as $table) {
         $db->delete($table, $where);
@@ -410,10 +410,10 @@ function cleanup(int $pubID) : void
 function notify($pubID, $type) : void
 {
     $acceptedTypes = array(
-                      'submission',
-                      'edit',
-                      'review',
-                     );
+        'submission',
+        'edit',
+        'review',
+    );
 
     if (!in_array($type, $acceptedTypes)) {
         showPublicationError("Unexpected notification type: $type", 400);
@@ -447,11 +447,11 @@ function notify($pubID, $type) : void
     $emailData['URL']         = $url . '/publication/view_project/?id='.$pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
 
-    $sendTo = $_POST['notifyLead'] === 'true'
+    $sendTo = isset($_POST['notifyLead']) && $_POST['notifyLead'] === 'true'
         ? array($data['LeadInvestigatorEmail']) : [];
     // get collaborators to notify
     $collaborators = isset($_POST['collaborators'])
-        ? json_decode($_POST['collaborators'], true) : null;
+        ? json_decode($_POST['collaborators'], true) : [];
 
     foreach ($collaborators as $c) {
         if ($c['notify']) {
@@ -613,8 +613,8 @@ function editEditors($id) : void
             $db->delete(
                 'publication_users_edit_perm_rel',
                 array(
-                 'UserID'        => $uid,
-                 'PublicationID' => $id,
+                    'UserID'        => $uid,
+                    'PublicationID' => $id,
                 )
             );
         }
@@ -662,8 +662,8 @@ function editCollaborators($id) : void
             $db->delete(
                 'publication_collaborator_rel',
                 array(
-                 'PublicationCollaboratorID' => $cid,
-                 'PublicationID'             => $id,
+                    'PublicationCollaboratorID' => $cid,
+                    'PublicationID'             => $id,
                 )
             );
         }
@@ -747,8 +747,8 @@ function editKeywords($id) : void
             $db->delete(
                 'publication_keyword_rel',
                 array(
-                 'PublicationKeywordID' => $kid,
-                 'PublicationID'        => $id,
+                    'PublicationKeywordID' => $kid,
+                    'PublicationID'        => $id,
                 )
             );
         }
@@ -804,8 +804,8 @@ function editVOIs($id) : void
                 $db->delete(
                     'publication_test_names_rel',
                     array(
-                     'PublicationID' => $id,
-                     'TestNameID'    => $tnID,
+                        'PublicationID' => $id,
+                        'TestNameID'    => $tnID,
                     )
                 );
             } else {
@@ -816,8 +816,8 @@ function editVOIs($id) : void
                 $db->delete(
                     'publication_parameter_type_rel',
                     array(
-                     'PublicationID'   => $id,
-                     'ParameterTypeID' => $ptID,
+                        'PublicationID'   => $id,
+                        'ParameterTypeID' => $ptID,
                     )
                 );
             }

@@ -71,9 +71,9 @@ class Specific
     public function toArray(): array
     {
         return  array(
-                 'Meta'  => $this->_formatMeta(),
-                 'Value' => $this->_image->getHeader($this->_headername),
-                );
+            'Meta'  => $this->_formatMeta(),
+            'Value' => $this->_image->getHeader($this->_headername),
+        );
     }
 
     /**
@@ -83,16 +83,16 @@ class Specific
      */
     private function _formatMeta(): array
     {
-        $candid     = $this->_visit->getCandID();
+        $candid     = (string) $this->_visit->getCandID();
         $visitlabel = $this->_visit->getVisitLabel();
         $filename   = $this->_image->getFileInfo()->getFilename();
 
         return array(
-                'CandID' => $candid,
-                'Visit'  => $visitlabel,
-                'File'   => $filename,
-                'Header' => $this->_headername,
-               );
+            'CandID' => $candid,
+            'Visit'  => $visitlabel,
+            'File'   => $filename,
+            'Header' => $this->_headername,
+        );
     }
 }
 

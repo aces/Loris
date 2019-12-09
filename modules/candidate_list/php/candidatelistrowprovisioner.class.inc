@@ -57,8 +57,9 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
                 IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
                 max(s.Current_stage) AS LatestVisitStatus,
-                p.Name AS Project,
-                c.RegistrationCenterID
+                p.Name AS RegistrationProject,
+                c.RegistrationCenterID,
+                c.RegistrationProjectID
                 $maybeEDC
                 FROM candidate c
                     LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
@@ -68,7 +69,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                     LEFT JOIN participant_status_options pso
                         ON (ps.participant_status=pso.ID)
-                    LEFT JOIN Project p ON (c.ProjectID=p.ProjectID)
+                    LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
                     LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
                 WHERE c.Active = 'Y'
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
@@ -93,8 +94,10 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = (int )$row['RegistrationCenterID'];
+        $cid = (int) $row['RegistrationCenterID'];
+        $pid = (int) $row['RegistrationProjectID'];
         unset($row['RegistrationCenterID']);
-        return new CandidateListRow($row, $cid);
+        unset($row['RegistrationProjectID']);
+        return new CandidateListRow($row, $cid, $pid);
     }
 }

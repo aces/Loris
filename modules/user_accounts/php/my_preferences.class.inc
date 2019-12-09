@@ -2,7 +2,7 @@
 /**
  * The user account page
  *
- * PHP Version 5,7
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -23,6 +23,10 @@ namespace LORIS\user_accounts;
  */
 class My_Preferences extends \NDB_Form
 {
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
+    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
+                                        'identical: please choose another one';
     /**
      * Computes the initial values this page will be filled with.
      *
@@ -40,20 +44,20 @@ class My_Preferences extends \NDB_Form
 
         // An array of each field that requires front-end sanitization
         $fieldsThatAreStrings = array(
-                                 'UserID',
-                                 'First_name',
-                                 'Last_name',
-                                 'Real_name',
-                                 'Email',
-                                 'Degree',
-                                 'Institution',
-                                 'Address',
-                                 'City',
-                                 'State',
-                                 'Zip_code',
-                                 'Country',
-                                 'Fax',
-                                );
+            'UserID',
+            'First_name',
+            'Last_name',
+            'Real_name',
+            'Email',
+            'Degree',
+            'Institution',
+            'Address',
+            'City',
+            'State',
+            'Zip_code',
+            'Country',
+            'Fax',
+        );
         // Prevent Javascript injection on all fields
         foreach ($fieldsThatAreStrings as $fieldName) {
             // this check prevents PHP Notices
@@ -123,7 +127,7 @@ class My_Preferences extends \NDB_Form
         $user = \User::factory($this->identifier);
 
         // If editing a user and nothing was specified in the password text field
-        // remove Password_md5 from the value set, otherwise Password_md5
+        // remove the key from the value set, otherwise Password_hash
         // will be set to '' by the system
         if ($values['Password_hash'] == '') {
             unset($values['Password_hash']);
@@ -155,9 +159,9 @@ class My_Preferences extends \NDB_Form
                             $DB->insert(
                                 'users_notifications_rel',
                                 array(
-                                 "module_id"  => $module_id,
-                                 "service_id" => $service_id,
-                                 "user_id"    => $user->getData("ID"),
+                                    "module_id"  => $module_id,
+                                    "service_id" => $service_id,
+                                    "user_id"    => $user->getData("ID"),
                                 )
                             );
                         }
@@ -166,9 +170,9 @@ class My_Preferences extends \NDB_Form
                             $DB->delete(
                                 'users_notifications_rel',
                                 array(
-                                 "module_id"  => $module_id,
-                                 "service_id" => $service_id,
-                                 "user_id"    => $user->getData("ID"),
+                                    "module_id"  => $module_id,
+                                    "service_id" => $service_id,
+                                    "user_id"    => $user->getData("ID"),
                                 )
                             );
                         }
@@ -178,6 +182,7 @@ class My_Preferences extends \NDB_Form
             }
         }
         // END NOTIFICATIONS UPDATE
+        $set = array();
         foreach ($values as $key => $value) {
             // Password updates are handled separately. Password_hash is removed
             // from the initial update as otherwise it will be recorded in the
@@ -193,8 +198,13 @@ class My_Preferences extends \NDB_Form
 
         // Now set the password. Note that this field is named incorrectly at this
         // point in the code and represents a plaintext password, not a hash.
+        // Validation for the password is performed in _validateMyPreferences()
         if (isset($values['Password_hash'])) {
-            $user->updatePassword($values['Password_hash']);
+            $user->updatePassword(
+                new \Password(
+                    htmlspecialchars_decode($values['Password_hash'])
+                )
+            );
         }
 
         // send the user an email
@@ -203,8 +213,9 @@ class My_Preferences extends \NDB_Form
             $config = \NDB_Config::singleton();
 
             // send the user an email
-            $msg_data['study']    = $config->getSetting('title');
-            $msg_data['url']      = $config->getSetting('url');
+            $msg_data          = array();
+            $msg_data['study'] = $config->getSetting('title');
+            $msg_data['url']   = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_hash'];
@@ -251,10 +262,10 @@ class My_Preferences extends \NDB_Form
             'First_name',
             'First name',
             array(
-             'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
-             'onchange'  => "this.setCustomValidity('')",
-             'pattern'   => '^\s*\S.{0,119}\s*$',
-             'required'  => true,
+                'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
+                'onchange'  => "this.setCustomValidity('')",
+                'pattern'   => '^\s*\S.{0,119}\s*$',
+                'required'  => true,
             )
         );
         // The supplied pattern is:
@@ -267,10 +278,10 @@ class My_Preferences extends \NDB_Form
             'Last_name',
             'Last name',
             array(
-             'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
-             'onchange'  => "this.setCustomValidity('')",
-             'pattern'   => '^\s*\S.{0,119}\s*$',
-             'required'  => true,
+                'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
+                'onchange'  => "this.setCustomValidity('')",
+                'pattern'   => '^\s*\S.{0,119}\s*$',
+                'required'  => true,
             )
         );
 
@@ -279,14 +290,13 @@ class My_Preferences extends \NDB_Form
             'Email',
             'Email address',
             array(
-             'oninvalid' => "this.setCustomValidity('Email address is required')",
-             'onchange'  => "this.setCustomValidity('')",
+                'oninvalid' => "this.setCustomValidity('Email address is required')",
+                'onchange'  => "this.setCustomValidity('')",
             )
         );
 
         // email address rules
         $this->addRule('Email', 'Email address is required', 'required');
-        $this->addRule('Email', 'Your email address must be valid', 'email');
         $this->addRule(
             'Email',
             'Your email address must be less than 255 characters long',
@@ -303,6 +313,7 @@ class My_Preferences extends \NDB_Form
         $this->addSelect('language_preference', 'Language preference', $languages);
 
         // Notification headers
+        $nGroup   = array();
         $nGroup[] = $this->createLabel("Module");
         $nGroup[] = $this->createLabel("Operation");
         $nGroup[] = $this->createLabel("Description");
@@ -323,6 +334,7 @@ class My_Preferences extends \NDB_Form
         $notification_rows =array();
         foreach ($notifier_list as $module=>$operation_services) {
             foreach ($operation_services as $operation=>$services) {
+                $nGroup   = array();
                 $nGroup[] = $this->createLabel($module);
                 $nGroup[] = $this->createLabel($operation);
                 $nGroup[] = $this->createLabel($services['desc']);
@@ -370,38 +382,6 @@ class My_Preferences extends \NDB_Form
         $this->form->addFormRule(array(&$this, '_validateMyPreferences'));
     }
 
-    /**
-     * Determines if the new password that the user entered is different
-     * than its current password (the one stored in the database).
-     *
-     * @param \Database $db          database object.
-     * @param string    $newPassword the new password the user entered.
-     *
-     * @return bool  true if the password changed, false otherwise.
-     */
-    function _passwordChanged(\Database $db, $newPassword): bool
-    {
-        //--- Get current password stored in database
-        $passwordQuery
-            = "SELECT Password_hash
-               FROM users
-               WHERE UserID = :UID";
-
-        $passwords = $db->pselectRow(
-            $passwordQuery,
-            array('UID' => $this->identifier)
-        );
-        if (is_null($passwords)) {
-            throw new \LorisException(
-                'No existing password found for user!'
-            );
-        }
-
-        if (!is_null($passwords['Password_hash'])) {
-            return !password_verify($newPassword, $passwords['Password_hash']);
-        }
-        return true;
-    }
 
     /**
      * Validates the data entered in the form when editing one's preferences.
@@ -410,42 +390,45 @@ class My_Preferences extends \NDB_Form
      *
      * @return array $errors all the errors found.
      */
-    function _validateMyPreferences($values)
+    function _validateMyPreferences(array $values): array
     {
         // create DB object
         $DB     = \Database::singleton();
         $errors = array();
 
+        // NOTE The 'Password_hash' key actually represents a plaintext password
+        $plaintext = $values['Password_hash'];
+
+        if ($values['Email'] === $plaintext) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+        }
+
+        // Ensure that the password and confirm password fields match.
+        // TODO This validation should be done on the front-end instead.
+        if ($values['Password_hash'] !== $values['__Confirm']) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_NO_MATCH;
+            return $errors;
+        }
+
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
-
-            // check password strength
-            $isPasswordStrong = \User::isPasswordStrong(
-                $values['Password_hash'],
-                array(
-                 $values['__Confirm'],
-                 $this->identifier,
-                 $values['Email'],
-                ),
-                array(
-                 '==',
-                 '!=',
-                 '!=',
-                )
-            );
-            if (!$isPasswordStrong) {
-                $errors['Password_hash']
-                    = 'The password is weak, or the passwords do not match';
-            } else {
+            try {
+                // The Password class is self-validating and will throw an
+                // InvalidArgumentException if the value passed to it is
+                // bad or the input is too weak to be a good password.
+                //
+                // NOTE 'Password_hash' is actually plaintext, not a hash.
+                $decoded  = htmlspecialchars_decode($plaintext);
+                $password = new \Password($decoded);
                 // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
-                    $errors['Password_hash'] = 'New and old passwords '
-                        . 'are identical: please choose another one';
+                if (! \User::factory($this->identifier)->isPasswordDifferent(
+                    $decoded
+                )
+                ) {
+                    $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
                 }
-            }
-            if (\User::pwnedPassword($values['Password_hash'])) {
-                $errors['Password_hash'] = 'The password you chose is too '
-                    . 'common. Please choose a more unique password.';
+            } catch (\InvalidArgumentException $e) {
+                $errors['Password_Group'] = $e->getMessage();
             }
         }
 

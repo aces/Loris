@@ -1,11 +1,12 @@
 # Publication
 
-Publication is intended for users to propose specific research projects
-and for PIs to review them. When proposing a project, PIs may also specify 
-other users for help with editing and maintaining their project proposals. Only users that are affiliated with the proposal can delete publications.
+This module allows you to view and propose new research projects or publications, and for users who are PIs to review them. 
 
+In the **Browse** tab, use the selection filters to search for a project of interest. 
 
+You can submit a new proposal in the **Propose a Project** tab, and upload specific files to associate with it. 
 
-Navigate to the "__Propose a Project__" tab for proposing research projects based on the data required. You may upload publication media which may then be reviewed by study PIs.
+Pay special attention to user permissions when submitting proposals. 
+Note that PIs can designate other users to edit and later update the project or publication information. Only users affiliated with the proposal can delete publications. 
 
-You should specify which specific variables of interest are relevant to your research so that the reviewers can determine if they should grant access to the data.
+You should also make sure to specify which variables of interest are relevant to your research, so reviewers can properly determine if they should grant access to the data.

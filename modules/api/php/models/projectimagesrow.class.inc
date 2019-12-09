@@ -64,17 +64,17 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
     public function toJSON() : string
     {
         $obj = array(
-                'Candidate'  => $this->_candid,
-                'PSCID'      => $this->_pscid,
-                'Visit'      => $this->_visitlabel,
-                'Visit_date' => $this->_visitdate,
-                'Site'       => $this->_centername,
-                'File'       => $this->_filename,
-                'InsertTime' => $this->_inserttime,
-                'ScanType'   => $this->_scantype,
-                'QC_status'  => $this->_qcstatus,
-                'Selected'   => $this->_selected,
-               );
+            'Candidate'  => $this->_candid,
+            'PSCID'      => $this->_pscid,
+            'Visit'      => $this->_visitlabel,
+            'Visit_date' => $this->_visitdate,
+            'Site'       => $this->_centername,
+            'File'       => $this->_filename,
+            'InsertTime' => $this->_inserttime,
+            'ScanType'   => $this->_scantype,
+            'QC_status'  => $this->_qcstatus,
+            'Selected'   => $this->_selected,
+        );
 
         $filename = basename($obj['File']);
         $candid   = $obj['Candidate'];

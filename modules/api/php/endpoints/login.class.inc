@@ -80,9 +80,9 @@ class Login extends Endpoint
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.2',
-                'v0.0.3-dev',
-               );
+            'v0.0.2',
+            'v0.0.3-dev',
+        );
     }
 
     /**
@@ -95,7 +95,7 @@ class Login extends Endpoint
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if (count($request->getAttribute('pathparts')) !== 1) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         switch ($request->getMethod()) {
@@ -106,7 +106,7 @@ class Login extends Endpoint
             $password = $requestdata['password'] ?? null;
 
             if ($user === null || $password === null) {
-                return new \LORIS\Http\Response\BadRequest(
+                return new \LORIS\Http\Response\JSON\BadRequest(
                     'Missing username or password'
                 );
             }
@@ -120,20 +120,20 @@ class Login extends Endpoint
                         array('token' => $token)
                     );
                 } else {
-                    return new \LORIS\Http\Response\InternalServerError(
+                    return new \LORIS\Http\Response\JSON\InternalServerError(
                         'Unacceptable JWT key'
                     );
                 }
             }
 
-            return new \LORIS\Http\Response\Unauthorized(
+            return new \LORIS\Http\Response\JSON\Unauthorized(
                 $login->_lastError
             );
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
                 ->withHeader('Allow', $this->allowedMethods());
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
         }
@@ -167,16 +167,16 @@ class Login extends Endpoint
 
         $token = array(
             // JWT related tokens to for the JWT library to validate
-                  "iss"  => $baseURL,
-                  "aud"  => $baseURL,
+            "iss"  => $baseURL,
+            "aud"  => $baseURL,
             // Issued at
-                  "iat"  => time(),
-                  "nbf"  => time(),
+            "iat"  => time(),
+            "nbf"  => time(),
             // Expire in 1 day
-                  "exp"  => time() + 86400,
+            "exp"  => time() + 86400,
             // Additional payload data
-                  "user" => $user,
-                 );
+            "user" => $user,
+        );
 
         $key = $config->getSetting("JWTKey");
         if (!self::isKeyStrong($key)) {

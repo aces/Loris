@@ -32,6 +32,7 @@ class Project
      */
     private $_projectId;
     private $_projectName;
+    private $_projectAlias;
     private $_recruitmentTarget;
 
     /**
@@ -64,6 +65,7 @@ class Project
                     SELECT
                       projectId,
                       name,
+                      Alias,
                       recruitmentTarget as recTarget
                     FROM
                       Project
@@ -80,6 +82,7 @@ class Project
 
             $project->_projectId         = (int) $projectData['projectId'];
             $project->_projectName       = $projectData['name'];
+            $project->_projectAlias      = $projectData['Alias'];
             $project->_recruitmentTarget = (integer) $projectData['recTarget'];
 
             self::$_instances[$projectName] = $project;
@@ -89,10 +92,43 @@ class Project
     }
 
     /**
+     * Get a project object from the ID by mapping the ID to a name and using the
+     * singleton function
+     *
+     * @param int $projectID The ID of the project queried
+     *
+     * @return Project
+     *
+     * @throws NotFound
+     */
+    static function getProjectFromID(int $projectID) : \Project
+    {
+        $factory = \NDB_Factory::singleton();
+
+        $projectName = $factory->database()->pSelectOne(
+            "
+                    SELECT
+                      Name
+                    FROM
+                      Project
+                    WHERE ProjectID = :pid
+                    ",
+            array('pid' => $projectID)
+        );
+
+        if (empty($projectName)) {
+            throw new \NotFound("No project with ID: $projectID");
+        }
+
+        return \Project::singleton($projectName);
+    }
+
+    /**
      * This does the work of creating a new Project by inserting a new entry in the
      * Project table and return the object instance of the newly created project.
      *
      * @param string       $projectName       The project name
+     * @param string       $projectAlias      The project alias
      * @param integer|null $recruitmentTarget The number of expected participants
      *
      * @note If the recruitmentTarget is missing or null, this project
@@ -104,6 +140,7 @@ class Project
      */
     static public function createNew(
         string $projectName,
+        string $projectAlias,
         ?int $recruitmentTarget = null
     ): \Project {
 
@@ -132,8 +169,9 @@ class Project
         $factory->database()->insert(
             'Project',
             array(
-             'name'              => $projectName,
-             'recruitmentTarget' => $recruitmentTarget,
+                'Name'              => $projectName,
+                'Alias'             => $projectAlias,
+                'recruitmentTarget' => $recruitmentTarget,
             )
         );
 
@@ -187,6 +225,64 @@ class Project
     }
 
     /**
+     * Set this project's name
+     *
+     * @param string $projectName The new name. Uses class property when null.
+     *
+     * @return void
+     */
+    public function updateName(string $projectName = ''): void
+    {
+        if (!empty($projectName)) {
+            $this->setName($projectName);
+        }
+        $this->_updateField("Name", $this->_projectName);
+    }
+
+    /**
+     * Get this project's alias
+     *
+     * @return string This project's alias
+     */
+    public function getAlias(): string
+    {
+        return $this->_projectAlias;
+    }
+
+    /**
+     * Set this project's alias
+     *
+     * @param string $projectAlias This project's alias
+     *
+     * @return void
+     */
+    public function setAlias(string $projectAlias): void
+    {
+        if (strlen($projectAlias) > 4 ) {
+            throw new InvalidArgumentException(
+                "The length of the project's alias can not be longer than ".
+                "4 characters."
+            );
+        }
+        $this->_projectAlias = $projectAlias;
+    }
+
+    /**
+     * Update the Alias field in the database for this Project.
+     *
+     * @param string $projectAlias The new alias. Uses class property when null.
+     *
+     * @return void
+     */
+    public function updateAlias(string $projectAlias = ''): void
+    {
+        if (!empty($projectAlias)) {
+            $this->setAlias($projectAlias);
+        }
+        $this->_updateField("Alias", $this->_projectAlias);
+    }
+
+    /**
      * Get the project's recruitment target.
      *
      * @note If the database value is null then the return value will be the sum of
@@ -209,6 +305,52 @@ class Project
             $this->_recruitmentTarget = $total;
         }
         return (int)$this->_recruitmentTarget;
+    }
+
+    /**
+     * Set this project's recruitment target
+     *
+     * @param int $target This project's recruitment target
+     *
+     * @return void
+     */
+    public function setRecruitmentTarget(int $target): void
+    {
+        $this->_recruitmentTarget = $target;
+    }
+
+    /**
+     * Update the recruitmentTarget field in the database for this Project.
+     *
+     * @param ?int $target The new recruitmentTarget. Uses class property
+     *                     when null.
+     *
+     * @return void
+     */
+    public function updateRecruitmentTarget(?int $target = null): void
+    {
+        if (isset($target)) {
+            $this->setRecruitmentTarget($target);
+        }
+        $this->_updateField("recruitmentTarget", $this->_recruitmentTarget);
+    }
+
+    /**
+     * Updates a column in the database corresponding to this Project.
+     *
+     * @param string $field The name of the column to update.
+     * @param mixed  $value The new value
+     *
+     * @return void
+     */
+    private function _updateField(string $field, $value): void
+    {
+        \NDB_Factory::singleton()->database()
+            ->update(
+                "Project",
+                array($field => (string) $value),
+                array("ProjectID" => $this->_projectId)
+            );
     }
 
     /**
@@ -240,12 +382,12 @@ class Project
         return array_map(
             function ($row) {
                 return (object) array(
-                                 'subprojectId'      => $row['subprojectId'],
-                                 'title'             => $row['title'],
-                                 'useEDC'            => $row['useEDC'],
-                                 'windowDifference'  => $row['windowDifference'],
-                                 'recruitmentTarget' => $row['recruitmentTarget'],
-                                );
+                    'subprojectId'      => (int) $row['subprojectId'],
+                    'title'             => $row['title'],
+                    'useEDC'            => $row['useEDC'],
+                    'windowDifference'  => $row['windowDifference'],
+                    'recruitmentTarget' => $row['recruitmentTarget'],
+                );
             },
             $subProjectData
         );
@@ -269,7 +411,7 @@ class Project
               candidate
             WHERE
               active = 'Y' AND
-              FIND_IN_SET(IFNULL(projectId, '-1'), :v_project_id)
+              FIND_IN_SET(IFNULL(RegistrationProjectID, '-1'), :v_project_id)
             ",
             array('v_project_id' => implode(',', $p))
         );
@@ -279,5 +421,50 @@ class Project
             },
             $candidatesData
         );
+    }
+
+    /**
+     * Inserts new subproject IDs into the database, creating a relationship
+     * between them and this project.
+     *
+     * @param int[] $ids The new subprojectIDs.
+     *
+     * @return void
+     */
+    public function insertSubprojectIDs(array $ids): void
+    {
+        $db = \NDB_Factory::singleton()->database();
+        foreach ($ids as $id) {
+            $db->insertIgnore(
+                'project_subproject_rel',
+                array(
+                    'ProjectID'    => $this->_projectId,
+                    'SubprojectID' => $id,
+                )
+            );
+        }
+    }
+
+    /**
+     * Deletes subproject IDs from the database.
+     *
+     * @param int[] $ids The old subprojectIDs to delete.
+     *
+     * @return void
+     */
+    public function deleteSubprojectIDs(array $ids): void
+    {
+        $db = \NDB_Factory::singleton()->database();
+        // The following can cause some deletions from the
+        // visit_project_subproject_rel table.
+        foreach ($ids as $id) {
+            $db->delete(
+                'project_subproject_rel',
+                array(
+                    'ProjectID'    => $this->_projectId,
+                    'SubprojectID' => $id,
+                )
+            );
+        }
     }
 }

@@ -1614,6 +1614,7 @@ class ButtonElement extends Component {
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
+            disabled={this.props.disabled}
           >
             {this.props.label}
           </button>
@@ -1627,12 +1628,14 @@ ButtonElement.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
+  disabled: PropTypes.bool,
   onUserInput: PropTypes.func,
 };
 
 ButtonElement.defaultProps = {
   label: 'Submit',
   type: 'submit',
+  disabled: null,
   buttonClass: 'btn btn-primary',
   columnSize: 'col-sm-9 col-sm-offset-3',
   onUserInput: function() {
@@ -1736,6 +1739,137 @@ class LorisElement extends Component {
   }
 }
 
+/**
+ * Slider Component
+ * React wrapper for a <input type='range'> element.
+ */
+class SliderElement extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    // Handles empty, min & max cases.
+    const inputValue = e.target.value
+      ? parseFloat(e.target.value)
+      : this.props.minValue;
+    let value = inputValue > this.props.maxValue
+      ? this.props.maxValue
+      : inputValue;
+    value = value < this.props.minValue
+      ? this.props.minValue
+      : value;
+    this.props.onUserInput(this.props.name, value);
+  }
+
+  render() {
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = this.props.elementClass;
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className='text-danger'>*</span>;
+    }
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = this.props.elementClass + ' has-error';
+    }
+
+    return (
+      <div className={elementClass}>
+        <label className={'col-sm-3 control-label'}
+               htmlFor={this.props.id}>
+          {this.props.label}
+          {errorMessage}
+          {requiredHTML}
+        </label>
+        <div className={'col-sm-9'}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            width: '100%',
+          }}>
+            <div style={{
+              flexGrow: 1000,
+              display: 'flex',
+              flexDirection: 'column',
+              flexBasis: '100%',
+              maxWidth: this.props.maxWidth,
+              marginRight: '5px',
+              flex: 2,
+            }}>
+              <input
+                type='range'
+                name={this.props.name}
+                id={this.props.id}
+                value={this.props.value}
+                min={this.props.minValue}
+                max={this.props.maxValue}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+                style={{width: '100%'}}
+              />
+            </div>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flexBasis: '100%',
+              maxWidth: '50px',
+              flex: 1,
+            }}>
+              <input
+                type='number'
+                name={'input_' + this.props.name}
+                value={this.props.value}
+                min={this.props.minValue}
+                max={this.props.maxValue}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+                style={{
+                  width: '50px',
+                  textAlign: 'center',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+SliderElement.propTypes = {
+  id: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
+  minValue: PropTypes.number.isRequired,
+  maxValue: PropTypes.number.isRequired,
+  maxWidth: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  elementClass: PropTypes.string,
+  onUserInput: PropTypes.func,
+};
+SliderElement.defaultProps = {
+  id: null,
+  maxWidth: 'auto',
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  elementClass: 'row form-group',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+};
+
 window.FormElement = FormElement;
 window.FieldsetElement = FieldsetElement;
 window.SelectElement = SelectElement;
@@ -1750,6 +1884,7 @@ window.FileElement = FileElement;
 window.StaticElement = StaticElement;
 window.HeaderElement = HeaderElement;
 window.LinkElement = LinkElement;
+window.SliderElement = SliderElement;
 window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
 window.CTA = CTA;
@@ -1771,6 +1906,7 @@ export default {
   HeaderElement,
   LinkElement,
   CheckboxElement,
+  SliderElement,
   ButtonElement,
   CTA,
   LorisElement,

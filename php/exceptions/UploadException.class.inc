@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * This class is a wrapper that takes an upload error code
- * an adds the appropriate message to the exception.
+ * and adds the appropriate message to the exception.
  *
  * PHP Version 7
  *
@@ -37,7 +37,7 @@ class UploadException extends \LorisException
     }
 
     /**
-     * Mapper function to retreive the corresponding error message.
+     * Mapper function to retrieve the corresponding error message.
      *
      * @param int $code The error code
      *
@@ -61,7 +61,7 @@ class UploadException extends \LorisException
             $message = 'No file was uploaded';
             break;
         case UPLOAD_ERR_NO_TMP_DIR:
-            $message = 'Missing a temporary folder';
+            $message = 'Temporary folder not found';
             break;
         case UPLOAD_ERR_CANT_WRITE:
             $message = 'Failed to write file to disk';

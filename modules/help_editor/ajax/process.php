@@ -34,12 +34,12 @@ if (!empty($_POST['helpID'])
     // update the help file
     $help_file->update(
         array(
-         'topic'   => $_POST['title'],
-         'content' => $_POST['content'],
-         'updated' => date(
-             'Y-m-d h:i:s',
-             time()
-         ),
+            'topic'   => $_POST['title'],
+            'content' => $_POST['content'],
+            'updated' => date(
+                'Y-m-d h:i:s',
+                time()
+            ),
         )
     );
 } else {
@@ -51,13 +51,13 @@ if (!empty($_POST['helpID'])
         //create parent help section first
         $parentID = HelpFile::insert(
             array(
-             'hash'    => md5($_POST['section']),
-             'topic'   => "",
-             'content' => "Under construction",
-             'created' => date(
-                 'Y-m-d h:i:s',
-                 time()
-             ),
+                'hash'    => md5($_POST['section']),
+                'topic'   => "",
+                'content' => "Under construction",
+                'created' => date(
+                    'Y-m-d h:i:s',
+                    time()
+                ),
             )
         );
          // check errors
@@ -70,14 +70,14 @@ if (!empty($_POST['helpID'])
         // insert the help file
         $helpID = HelpFile::insert(
             array(
-             'parentID' => $_POST['parentID'],
-             'hash'     => md5($_POST['subsection']),
-             'topic'    => $_POST['title'],
-             'content'  => $_POST['content'],
-             'created'  => date(
-                 'Y-m-d h:i:s',
-                 time()
-             ),
+                'parentID' => $_POST['parentID'],
+                'hash'     => md5($_POST['subsection']),
+                'topic'    => $_POST['title'],
+                'content'  => $_POST['content'],
+                'created'  => date(
+                    'Y-m-d h:i:s',
+                    time()
+                ),
             )
         );
 
@@ -87,13 +87,13 @@ if (!empty($_POST['helpID'])
         //default case
         $helpID = HelpFile::insert(
             array(
-             'hash'    => md5($_POST['section']),
-             'topic'   => $_POST['title'],
-             'content' => $_POST['content'],
-             'created' => date(
-                 'Y-m-d h:i:s',
-                 time()
-             ),
+                'hash'    => md5($_POST['section']),
+                'topic'   => $_POST['title'],
+                'content' => $_POST['content'],
+                'created' => date(
+                    'Y-m-d h:i:s',
+                    time()
+                ),
             )
         );
     }

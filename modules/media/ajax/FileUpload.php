@@ -43,7 +43,7 @@ function editFile()
     // Read JSON from STDIN
     $stdin       = file_get_contents('php://input');
     $req         = json_decode($stdin, true);
-    $idMediaFile = $req['idMediaFile'];
+    $idMediaFile = $req['idMediaFile'] ?? '';
 
     if (!$idMediaFile) {
         showMediaError("Media ID $idMediaFile not found", 404);
@@ -53,10 +53,11 @@ function editFile()
     checkDateTaken($dateTaken);
 
     $updateValues = [
-                     'date_taken' => $dateTaken,
-                     'comments'   => $req['comments'],
-                     'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
-                    ];
+        'date_taken'  => $dateTaken,
+        'comments'    => $req['comments'],
+        'language_id' => $req['language'],
+        'hide_file'   => $req['hideFile'] ? $req['hideFile'] : 0,
+    ];
 
     try {
         $db->update('media', $updateValues, ['id' => $idMediaFile]);
@@ -108,13 +109,12 @@ function uploadFile()
     $pscid      = isset($_POST['pscid']) ? $_POST['pscid'] : null;
     $visit      = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
     $instrument = isset($_POST['instrument']) ? $_POST['instrument'] : null;
-    $site       = isset($_POST['forSite']) ? $_POST['forSite'] : null;
     $dateTaken  = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
     $comments   = isset($_POST['comments']) ? $_POST['comments'] : null;
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($site)) {
+    if (!isset($_FILES, $pscid, $visit)) {
         showMediaError("Please fill in all required fields!", 400);
         return;
     }
@@ -135,11 +135,10 @@ function uploadFile()
     $sessionID = $db->pselectOne(
         "SELECT s.ID as session_id FROM candidate c " .
         "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
-        "s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
+        "s.Visit_label = :v_visit_label",
         [
-         'v_pscid'       => $pscid,
-         'v_visit_label' => $visit,
-         'v_center_id'   => $site,
+            'v_pscid'       => $pscid,
+            'v_visit_label' => $visit,
         ]
     );
 
@@ -155,18 +154,18 @@ function uploadFile()
 
     // Build insert query
     $query = [
-              'session_id'    => $sessionID,
-              'instrument'    => $instrument,
-              'date_taken'    => $dateTaken,
-              'comments'      => $comments,
-              'file_name'     => $fileName,
-              'file_type'     => $fileType,
-              'data_dir'      => $mediaPath,
-              'uploaded_by'   => $userID,
-              'hide_file'     => 0,
-              'date_uploaded' => date("Y-m-d H:i:s"),
-              'language_id'   => $language,
-             ];
+        'session_id'    => $sessionID,
+        'instrument'    => $instrument,
+        'date_taken'    => $dateTaken,
+        'comments'      => $comments,
+        'file_name'     => $fileName,
+        'file_type'     => $fileType,
+        'data_dir'      => $mediaPath,
+        'uploaded_by'   => $userID,
+        'hide_file'     => 0,
+        'last_modified' => date("Y-m-d H:i:s"),
+        'language_id'   => $language,
+    ];
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
@@ -230,7 +229,6 @@ function getUploadFields()
     $instrumentsList = toSelect($sessionRecords, "Test_name", null);
     $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $visitList       = Utility::getVisitList();
-    $siteList        = Utility::getSiteList(false);
     $languageList    = Utility::getLanguageList();
     $startYear       = $config->getSetting('startYear');
     $endYear         = $config->getSetting('endYear');
@@ -238,21 +236,6 @@ function getUploadFields()
     // Build array of session data to be used in upload media dropdowns
     $sessionData = array();
     foreach ($sessionRecords as $record) {
-
-        // Populate sites
-        if (!isset($sessionData[$record["PSCID"]]['sites'])) {
-            $sessionData[$record["PSCID"]]['sites'] = [];
-        }
-        if ($record["CenterID"] !== null && !in_array(
-            $record["CenterID"],
-            $sessionData[$record["PSCID"]]['sites'],
-            true
-        )
-        ) {
-            $sessionData[$record["PSCID"]]['sites'][$record["CenterID"]]
-                = $siteList[$record["CenterID"]];
-        }
-
         // Populate visits
         if (!isset($sessionData[$record["PSCID"]]['visits'])) {
             $sessionData[$record["PSCID"]]['visits'] = [];
@@ -323,17 +306,16 @@ function getUploadFields()
     }
 
     $result = [
-               'candidates'  => $candidatesList,
-               'visits'      => $visitList,
-               'instruments' => $instrumentsList,
-               'sites'       => $siteList,
-               'mediaData'   => $mediaData,
-               'mediaFiles'  => array_values(getFilesList()),
-               'sessionData' => $sessionData,
-               'language'    => $languageList,
-               'startYear'   => $startYear,
-               'endYear'     => $endYear,
-              ];
+        'candidates'  => $candidatesList,
+        'visits'      => $visitList,
+        'instruments' => $instrumentsList,
+        'mediaData'   => $mediaData,
+        'mediaFiles'  => array_values(getFilesList()),
+        'sessionData' => $sessionData,
+        'language'    => $languageList,
+        'startYear'   => $startYear,
+        'endYear'     => $endYear,
+    ];
 
     return $result;
 }

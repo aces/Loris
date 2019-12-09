@@ -34,7 +34,7 @@ class CouchDBDemographicsImporter {
         ),
         'Sex' => array(
             'Description' => 'Candidate\'s biological sex',
-            'Type' => "enum('Male', 'Female')"
+            'Type' => "enum('Male', 'Female', 'Other')"
         ),
         'Site' => array(
             'Description' => 'Site that this visit took place at',
@@ -135,7 +135,7 @@ class CouchDBDemographicsImporter {
                                 c.Sex,
                                 s.Current_stage, 
                                 CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, 
-                                c.ProjectID, 
+                                c.RegistrationProjectID, 
                                 c.flagged_caveatemptor as CEF, 
                                 c_o.Description as CEF_reason, 
                                 c.flagged_other as CEF_comment, 
@@ -163,7 +163,7 @@ class CouchDBDemographicsImporter {
                             c.Sex,
                             s.Current_stage,
                             Failure,
-                            c.ProjectID, 
+                            c.RegistrationProjectID, 
                             CEF, 
                             CEF_reason, 
                             CEF_comment, 
@@ -216,7 +216,7 @@ class CouchDBDemographicsImporter {
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Sex_proband"] = array(
                 'Description' => 'Proband\'s biological sex',
-                'Type' => "enum('Male','Female')"
+                'Type' => "enum('Male','Female', 'Other')"
             );
             $this->Dictionary["Age_difference"] = array(
                 'Description' => 'Age difference between the candidate and the proband',

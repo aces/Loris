@@ -79,13 +79,13 @@ class DICOMArchiveAnonymizer implements Mapper
             $newrow['patientName']
         )
             && !preg_match(
-                "/$legoPhanRegex/",
-                $newrow['patientName']
-            )
+            "/$legoPhanRegex/",
+            $newrow['patientName']
+        )
             && !preg_match(
-                "/$livingPhanRegex/",
-                $newrow['patientName']
-            )
+            "/$livingPhanRegex/",
+            $newrow['patientName']
+        )
         ) {
             $newrow['patientName'] = 'INVALID - HIDDEN';
         }

@@ -52,7 +52,7 @@ class CandidatesProvisioner extends DBRowProvisioner
              JOIN psc s
                ON (s.CenterID = c.RegistrationCenterID)
              LEFT JOIN Project p
-               ON (c.ProjectID = p.ProjectID)
+               ON (c.RegistrationProjectID = p.ProjectID)
              WHERE c.Active=\'Y\'
             ',
             array()

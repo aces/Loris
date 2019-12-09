@@ -41,4 +41,3 @@ class UnsupportedMediaType extends JsonResponse
         parent::__construct($body, 415);
     }
 }
-

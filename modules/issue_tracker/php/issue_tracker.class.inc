@@ -41,8 +41,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     {
         return $user->hasAnyPermission(
             array(
-             'issue_tracker_reporter',
-             'issue_tracker_developer',
+                'issue_tracker_reporter',
+                'issue_tracker_developer',
             )
         );
     }
@@ -133,20 +133,20 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         }
 
         $priorities = array(
-                       'normal'    => 'Normal',
-                       'high'      => 'High',
-                       'urgent'    => 'Urgent',
-                       'immediate' => 'Immediate',
-                      );
+            'normal'    => 'Normal',
+            'high'      => 'High',
+            'urgent'    => 'Urgent',
+            'immediate' => 'Immediate',
+        );
 
         $statuses = array(
-                     'new'          => 'New',
-                     'acknowledged' => 'Acknowledged',
-                     'feedback'     => 'Feedback',
-                     'assigned'     => 'Assigned',
-                     'resolved'     => 'Resolved',
-                     'closed'       => 'Closed',
-                    );
+            'new'          => 'New',
+            'acknowledged' => 'Acknowledged',
+            'feedback'     => 'Feedback',
+            'assigned'     => 'Assigned',
+            'resolved'     => 'Resolved',
+            'closed'       => 'Closed',
+        );
 
         $unorgCategories = $db -> pselect(
             "SELECT categoryName
@@ -162,21 +162,21 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         }
 
         $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMdHis',
-                        'addEmptyOption' => true,
-                       );
+            'language'       => 'en',
+            'format'         => 'YMdHis',
+            'addEmptyOption' => true,
+        );
 
         $fieldOptions = [
-                         'modules'    => $modules,
-                         'categories' => $categories,
-                         'reporters'  => $reporters,
-                         'assignees'  => $assignees,
-                         'statuses'   => $statuses,
-                         'priorities' => $priorities,
-                         'sites'      => $sites,
-                         'userID'     => $user->getUsername(),
-                        ];
+            'modules'    => $modules,
+            'categories' => $categories,
+            'reporters'  => $reporters,
+            'assignees'  => $assignees,
+            'statuses'   => $statuses,
+            'priorities' => $priorities,
+            'sites'      => $sites,
+            'userID'     => $user->getUsername(),
+        ];
 
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisioner());
@@ -188,8 +188,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
         return json_encode(
             [
-             'data'         => $arr,
-             'fieldOptions' => $fieldOptions,
+                'data'         => $arr,
+                'fieldOptions' => $fieldOptions,
             ]
         );
     }

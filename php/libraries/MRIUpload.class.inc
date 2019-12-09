@@ -15,11 +15,11 @@ use \LORIS\server_processes_manager\ServerProcessesMonitor;
 /**
  * This is the controler class for an MRIUpload
  *
- *  @category Imaging
- *  @package  Main
- *  @author   Xavier Lecours <xavier.lecours@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Imaging
+ * @package  Main
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class MRIUpload
 {

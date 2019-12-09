@@ -69,9 +69,9 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.2',
-                'v0.0.3-dev',
-               );
+            'v0.0.2',
+            'v0.0.3-dev',
+        );
     }
 
     /**
@@ -94,7 +94,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     ->withHeader('Allow', $this->allowedMethods());
 
             default:
-                return new \LORIS\Http\Response\MethodNotAllowed(
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
             }
@@ -115,7 +115,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (empty($entry)) {
             // The instrument must exists in the flag table. (start next stage)
-            return new \LORIS\Http\Response\NotFound('Instrument not found');
+            return new \LORIS\Http\Response\JSON\NotFound('Instrument not found');
         }
 
         $dde       = array_search('dde', $pathparts) !== false;
@@ -130,7 +130,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 true
             );
         } catch (\Exception $e) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $endpoint = new Instrument\Instrument($this->_visit, $instrument);

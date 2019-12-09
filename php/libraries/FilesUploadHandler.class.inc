@@ -3,7 +3,7 @@
 /**
  * Class to upload files in a safe way.
  *
- * This class uploads files being uploaded to LORIS. It should
+ * This class handles files being uploaded to LORIS. It should
  * serve as the ONLY way that files are uploaded so that all file uploading
  * functionality can occur on a well-tested foundation.
  *
@@ -24,11 +24,11 @@ use \Psr\Http\Server\RequestHandlerInterface;
 /**
  * Class to validate file uploads to LORIS.
  *
- *  @category Main
- *  @package  Behavioural
- *  @author   John Saigle <john.saigle@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris
+ * @category Main
+ * @package  Behavioural
+ * @author   John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris
  */
 class FilesUploadHandler implements RequestHandlerInterface
 {
@@ -136,7 +136,7 @@ class FilesUploadHandler implements RequestHandlerInterface
      * overwritten.
      *
      * If the files need different permissions or need to go in different
-     * directories, the file must be split in different request an passed to a
+     * directories, the file must be split in different request and passed to a
      * FileUploadHandler with the correct variables.
      *
      * @param ServerRequestInterface $request An HTTP Request that contains files.
@@ -146,6 +146,7 @@ class FilesUploadHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $files = $request->getUploadedFiles();
+
         foreach ($files as $file) {
             if ($file->getError() !== \UPLOAD_ERR_OK) {
                 $message = (new \LORIS\UploadException($file->getError()))
@@ -173,7 +174,7 @@ class FilesUploadHandler implements RequestHandlerInterface
              * calling code wants to overwrite the file.
              */
             if (file_exists($targetPath) && $this->overwrite !== true) {
-                return new \LORIS\Http\Response\Conflict(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'This file has already been uploaded.'
                 );
             }

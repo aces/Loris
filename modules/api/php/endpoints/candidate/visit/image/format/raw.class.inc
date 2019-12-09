@@ -62,9 +62,9 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-                'v0.0.2',
-                'v0.0.3-dev',
-               );
+            'v0.0.2',
+            'v0.0.3-dev',
+        );
     }
 
     /**
@@ -86,7 +86,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withHeader('Allow', $this->allowedMethods());
 
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
 
@@ -106,12 +106,12 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!$info->isFile()) {
             error_log('file in database but not in file system');
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         if (!$info->isReadable()) {
             error_log('file exist but is not readable by webserver');
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $mincpath = \NDB_Factory::singleton()->config()
@@ -119,13 +119,13 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $minctooldir = new \SPLFileInfo($mincpath);
         if (!$minctooldir->isDir() || !$minctooldir->isReadable()) {
-            return new \LORIS\Http\Response\InternalServerError(
+            return new \LORIS\Http\Response\JSON\InternalServerError(
                 'Invalid MINCToolsPath configuration setting.'
             );
         }
 
         if (!`$mincpath/bin/minctoraw -v`) {
-            return new \LORIS\Http\Response\InternalServerError(
+            return new \LORIS\Http\Response\JSON\InternalServerError(
                 'minctoraw not installed'
             );
         }
@@ -159,10 +159,10 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
         exec("minctoraw -v 2>&1", $output);
 
         $signature = array(
-                      'minctoraw' => $output,
-                      'mtime'     => $info->getMTime(),
-                      'fullpath'  => $info->getPathname(),
-                     );
+            'minctoraw' => $output,
+            'mtime'     => $info->getMTime(),
+            'fullpath'  => $info->getPathname(),
+        );
 
         return md5(json_encode($signature));
     }

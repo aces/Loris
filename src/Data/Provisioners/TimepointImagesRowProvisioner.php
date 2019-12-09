@@ -33,7 +33,7 @@ class TimepointImagesRowProvisioner extends DBRowProvisioner
      *
      * @param \Timepoint $timepoint The requested timepoint
      */
-    function __construct(\Timepoint $timepoint)
+    public function __construct(\Timepoint $timepoint)
     {
         parent::__construct(
             '
@@ -70,4 +70,3 @@ class TimepointImagesRowProvisioner extends DBRowProvisioner
             ->asDTO();
     }
 }
-

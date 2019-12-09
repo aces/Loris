@@ -15,11 +15,11 @@ namespace LORIS;
 /**
  * This class defines an Image and business logic related to Images.
  *
- *  @category Imaging
- *  @package  Main
- *  @author   Xavier Lecours <xavier.lecours@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Imaging
+ * @package  Main
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Image
 {
@@ -35,6 +35,9 @@ class Image
 
     private $_filetype;
 
+    private $_centerid;
+
+    private $_entitytype;
     /**
      * Constructor
      *
@@ -51,10 +54,16 @@ class Image
                        f.File as filelocation,
                        f.OutputType as outputtype,
                        mst.Scan_type as acquisitionprotocol,
-                       FileType as filetype
+                       FileType as filetype,
+                       s.CenterID as centerid,
+                       c.Entity_type as entitytype
                      FROM
                        files f 
-                     JOIN mri_scan_type mst
+                     LEFT JOIN session s
+                       ON (f.SessionID = s.ID)
+                     LEFT JOIN candidate c
+                       ON (s.CandID = c.CandID)
+                     LEFT JOIN mri_scan_type mst
                        ON (mst.ID = f.AcquisitionProtocolID)
                      WHERE f.FileID = :v_fileid
                     ',
@@ -63,13 +72,15 @@ class Image
             if (empty($dbrow)) {
                 throw new \NotFound('There is no file with that FileID');
             }
-
             $this->_fileid       = $fileid;
             $this->_filename     = basename($dbrow['filelocation']);
             $this->_filelocation = $dbrow['filelocation'];
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionprotocol = $dbrow['acquisitionprotocol'];
             $this->_filetype            = $dbrow['filetype'];
+            $this->_centerid            = (int) $dbrow['centerid'];
+            $this->_entitytype          = $dbrow['entitytype'];
+
         }
     }
 
@@ -83,9 +94,9 @@ class Image
     public function getHeader(string $headername): string
     {
         $dbrow = \NDB_Factory::singleton()
-             ->database()
-                ->pselectRow(
-                    '
+            ->database()
+            ->pselectRow(
+                '
                        SELECT
                          Value
                        FROM
@@ -98,11 +109,11 @@ class Image
                          f.FileID = :v_fileid AND
                          pt.Name = :v_headername
                       ',
-                    array(
-                     'v_fileid'     => $this->_fileid,
-                     'v_headername' => $headername,
-                    )
-                );
+                array(
+                    'v_fileid'     => $this->_fileid,
+                    'v_headername' => $headername,
+                )
+            );
         return $dbrow['Value'] ?? '';
     }
 
@@ -114,9 +125,9 @@ class Image
     public function getHeaders(): array
     {
         $dbrows = \NDB_Factory::singleton()
-             ->database()
-                ->pselect(
-                    '
+            ->database()
+            ->pselect(
+                '
                        SELECT
                          pt.Name as name,
                          pf.Value as value
@@ -129,8 +140,8 @@ class Image
                        WHERE
                          f.FileID = :v_fileid
                       ',
-                    array('v_fileid' => $this->_fileid)
-                );
+                array('v_fileid' => $this->_fileid)
+            );
         return array_reduce(
             $dbrows,
             function ($carry, $row) {
@@ -187,11 +198,11 @@ class Image
     public function saveQcStatus(\LORIS\ImageQcStatus $qcstatus): void
     {
         $values = array(
-                   'QCStatus'         => $qcstatus->getQcStatus(),
-                   'Selected'         => $qcstatus->isSelected() ? 'true' : 'false',
-                   'QCLastChangeTime' => time(),
-                   'FileID'           => $this->_fileid,
-                  );
+            'QCStatus'         => $qcstatus->getQcStatus(),
+            'Selected'         => $qcstatus->isSelected() ? 'true' : 'false',
+            'QCLastChangeTime' => time(),
+            'FileID'           => $this->_fileid,
+        );
 
         \NDB_Factory::singleton()->database()->replace(
             'files_qcstatus',
@@ -281,7 +292,9 @@ class Image
             $this->_filelocation,
             $this->_outputtype,
             $this->_acquisitionprotocol,
-            $this->_filetype
+            $this->_filetype,
+            $this->_centerid,
+            $this->_entitytype
         );
     }
 }
