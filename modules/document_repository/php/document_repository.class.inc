@@ -158,7 +158,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         if (isset($item2)) {
             $optionsValue = $item2;
         }
-        foreach ($options as $key) {
+        foreach (array_keys($options) as $key) {
             $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
         }
         return $selectOptions;
