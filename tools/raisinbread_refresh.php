@@ -136,6 +136,12 @@ array_shift($tables); // remove the column name
 if (count($tables) > 0) {
     echo "\e[33mWARNING: Untracked tables still exist in the database:\e[0m\n";
     array_walk($tables, 'printBulletPoint');
+
+    echo "Do you want to delete them now? (y/N)" . PHP_EOL;
+    $input = trim(fgets(STDIN));
+    if (mb_strtolower($input) === 'y') {
+        dropRemainingTables($tables);
+    }
 }
 
 // Source LORIS core tabes
@@ -205,6 +211,7 @@ function runPatch(string $file): void
  * A wrapper around `exec()` built-in function with basic error reporting.
  *
  * @param string $command Bash command to be executed by `exec()`
+ * jj
  *
  * @return void. Causes script to exit on non-successful status code.
  */
@@ -218,7 +225,9 @@ function runCommand(string $command): void
     // If a non-zero exit code is given, then an error has occurred.
     // In this case, print the output.
     if ($status) {
-        echo $output;
+        foreach ($output as $line) {
+            echo $line . PHP_EOL;
+        }
     }
 }
 
@@ -250,6 +259,18 @@ function restoreConfigSetting(string $name, string $value): void
             "localhost." .
             PHP_EOL;
     }
+}
+
+function dropRemainingTables(array $tables) {
+    global $mysqlCommand;
+    $commands = ["SET FOREIGN_KEY_CHECKS = 0;"];
+    foreach ($tables as $table) {
+        $commands[] = "DROP TABLE IF EXISTS $table;";
+    }
+    $script = <<<SCRIPT
+$mysqlCommand -e '%s'
+SCRIPT;
+    exec(sprintf($script, implode("\n", $commands)));
 }
 
 /**
