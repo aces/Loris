@@ -1868,7 +1868,7 @@ RadioElement.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
-  items: PropTypes.array.isRequired,
+  options: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
