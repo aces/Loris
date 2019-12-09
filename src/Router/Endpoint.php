@@ -7,11 +7,11 @@
  *
  * @category Main
  * @package  Loris
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\api;
+namespace LORIS\Router;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
@@ -23,23 +23,25 @@ use \Psr\Http\Message\ResponseInterface;
  *
  * @category Main
  * @package  Loris
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-abstract class Endpoint extends \LORIS\Router\Endpoint
+abstract class Endpoint implements RequestHandlerInterface
 {
     /**
-     * Return a list of LORIS API versions which this endpoint
-     * supports.
+     * Return an array of valid HTTP methods for this endpoint
      *
-     * @return string[] LORIS API Versions
+     * @return string[] Valid versions
      */
-    abstract protected function supportedVersions() : array;
+    abstract protected function allowedMethods() : array;
 
     /**
-     * An API endpoint overrides the default LORIS Endpoint to add validation
-     * on the supported version of the API passed.
+     * An API endpoint overrides the default LORIS middleware to remove the
+     * PageDecorationMiddleware, since the API only deals with JSON.
+     *
+     * It also acts as its own middleware by validating that an endpoint supports
+     * the HTTP method request type.
      *
      * @param ServerRequestInterface  $request The incoming PSR7 request
      * @param RequestHandlerInterface $handler The PSR15 request handler
@@ -50,12 +52,11 @@ abstract class Endpoint extends \LORIS\Router\Endpoint
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $versions = $this->supportedVersions() ?? [];
-        $version  = $request->getAttribute("LORIS-API-Version") ?? "unknown";
-        if (!in_array($version, $versions)) {
-            return new \LORIS\Http\Response\JSON\BadRequest('Unsupported version');
+
+        if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
+            return (new \LORIS\Middleware\ETag())->process($request, $handler);
         }
 
-        return parent::process($request, $handler);
+        return $handler->handle($request);
     }
 }

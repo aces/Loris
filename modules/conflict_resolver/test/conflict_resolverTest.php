@@ -118,7 +118,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         $this->safeGet($this->url . "/conflict_resolver");
 
         $filters = $this->webDriver->findElement(
-            WebDriverBy::id('tab-unresolved')
+            \WebDriverBy::id('tab-unresolved')
         );
         $this->assertTrue(!empty($filters));
         $this->resetPermissions();
@@ -134,7 +134,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         $this->setupPermissions(array());
         $this->safeGet($this->url . "/conflict_resolver");
         $bodyText = $this->webDriver->findElement(
-            WebDriverBy::id('lorisworkspace')
+            \WebDriverBy::id('lorisworkspace')
         )->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();

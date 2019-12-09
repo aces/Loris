@@ -12,7 +12,7 @@ namespace LORIS\conflict_resolver\Endpoints;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Api\Endpoint;
+use \LORIS\Router\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
 use \LORIS\conflict_resolver\Provisioners\ResolvedProvisioner;
 
@@ -69,19 +69,6 @@ class Resolved extends Endpoint implements ETagCalculator
     protected function allowedMethods() : array
     {
         return ['GET'];
-    }
-
-    /**
-     * Versions of the LORIS API which are supported by this
-     * endpoint.
-     *
-     * This part is not versioned yet.
-     *
-     * @return array
-     */
-    protected function supportedVersions() : array
-    {
-        return array('unknown');
     }
 
     /**
