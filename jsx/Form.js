@@ -1793,7 +1793,7 @@ class RadioElement extends React.Component {
     };
 
     let content = [];
-    for (const key in this.props.items) {
+    for (const key in this.props.options) {
       if (this.props.options.hasOwnProperty(key)) {
         content.push(
           <div key={key}
