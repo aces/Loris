@@ -20,7 +20,6 @@ $recruitmentBySiteData = array();
 $site          = array();
 $list_of_sites = array();
 
-
 //TODO: Create a permission specific to statistics
 if ($currentUser->hasPermission('access_all_profiles')) {
     $list_of_sites = \Utility::getSiteList();

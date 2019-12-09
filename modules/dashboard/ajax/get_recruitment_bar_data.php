@@ -16,11 +16,10 @@ header("content-type:application/json");
 ini_set('default_charset', 'utf-8');
 
 $DB            = Database::singleton();
-$sexData       = array();
 $currentUser   = \User::singleton();
+$sexData       = array();
 $site          = array();
 $list_of_sites = array();
-
 
 //TODO: Create a permission specific to statistics
 if ($currentUser->hasPermission('access_all_profiles')) {
