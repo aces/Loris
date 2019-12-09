@@ -88,7 +88,6 @@ function downloadAttachment() : void
     $uuid     = $_GET['uuid'];
     $issue    = $_GET['issue'];
     $filename = $_GET['filename'];
-//    $DB       = \Database::singleton();
 
     $config = \NDB_Config::singleton();
     $attachment_data_dir = rtrim(
@@ -104,10 +103,6 @@ function downloadAttachment() : void
     if (!is_readable($fileToDownload)) {
         throw new \LorisException('Attachment NOT FOUND');
     }
-
-//    $query   = 'select file_name from issues_attachments WHERE file_uuid=:uuid;';
-//    $stmt    = $DB->prepare($query);
-//    $file_name = $stmt->execute(array('uuid' => $uuid));
 
     $size = filesize($fileToDownload);
     $name = rawurldecode($filename);
