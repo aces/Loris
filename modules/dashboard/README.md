@@ -8,17 +8,18 @@ The Dashboard also provides at-a-glance live visual summaries of the data stored
 
 ## Intended Users
 
-All LORIS users can view the dashboard.  
+All LORIS users can view the dashboard.
 
 ## Scope
 
-The Dashboard provides entrypoints to various workflows, but does not provide any tools for directly modifying data in the dashboard.  
+The Dashboard provides entrypoints to various workflows, but does not provide any tools for directly modifying data in the dashboard. All users, regardless of site or project affiliation, can see data summaries and Tasks/Notifications across sites and projects. 
 
 The Study Progression chart views at bottom may or may not count `excluded` candidates, and this should be clearly verified and documented/presented for the use of your LORIS users. 
 
 ## Permissions
 
-Components of the Dashboard are governed by permissions related to module-specific privileges. For example, the _Document Repository_ notifications panel is displayed if a user has been granted either the `document_repository_view` or `document_repository_delete` permission. Site access privileges are also enforced. 
+Components of the Dashboard are governed by permissions related to module-specific privileges. For example, the _Document Repository_ notifications panel is displayed if a user has been granted either the `document_repository_view` or `document_repository_delete` permission. 
+Site access and Project access privileges are not currently enforced in the display of data or notifications. 
 
 ## Configurations
 
