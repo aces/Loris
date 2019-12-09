@@ -150,10 +150,11 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
     {
         $this->safeGet($this->url . "/conflict_resolver/");
 
-        $wait = new WebDriverWait($this->web_driver, 5);
+        // This page has React component renders after window.onload trigger
+        $wait = new \WebDriverWait($this->web_driver, 5);
         $wait->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                \WebDriverBy::id('unresolved')
+            \WebDriverExpectedCondition::presenceOfElementLocated(
+                \WebDriverBy::id('tab-unresolved')
             )
         );
 
@@ -226,9 +227,27 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
     function testFiltersForResolvedConflicts()
     {
         $this->safeGet($this->url . "/conflict_resolver");
+
+        // This page has React component renders after window.onload trigger
+        $wait = new \WebDriverWait($this->web_driver, 5);
+
+        $wait->until(
+            \WebDriverExpectedCondition::presenceOfElementLocated(
+                \WebDriverBy::id('tab-resolved')
+            )
+        );
+
         $this->webDriver->executescript(
             "document.querySelector('#tab-resolved').click();"
         );
+
+        // Clicking on the tab renders a new tab content.
+        $wait->until(
+            \WebDriverExpectedCondition::presenceOfElementLocated(
+                \WebDriverBy::id('resolved')
+            )
+        );
+
         $this->_testFilter(self::$ForSite, "displayed of 14", '2');
         $this->_testFilter(self::$VisitLabel, "displayed of 33", '1');
         $this->_testFilter(self::$CandID, "1 row", '400167');
