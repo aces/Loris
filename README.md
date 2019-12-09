@@ -1,4 +1,4 @@
-![](./loris-logo.svg)
+![](./loris-logo.svg | width=80)
 [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) [![Documentation Status](https://readthedocs.org/projects/acesloris/badge/?version=latest)](https://acesloris.readthedocs.io/en/latest/?badge=latest)
 
 # LORIS Neuroimaging Platform
@@ -113,4 +113,3 @@ LORIS is made by staff developers at the McGill Centre for Integrative Neuroscie
 See [LORIS.ca](www.loris.ca) for our current team, the history of LORIS, and our **Technical Papers**.
 
 The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, and Samir Das.  
-
