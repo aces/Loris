@@ -267,6 +267,7 @@ function dropRemainingTables(array $tables) {
     foreach ($tables as $table) {
         $commands[] = "DROP TABLE IF EXISTS $table;";
     }
+    $commands = ["SET FOREIGN_KEY_CHECKS = 1;"];
     $script = <<<SCRIPT
 $mysqlCommand -e '%s'
 SCRIPT;
