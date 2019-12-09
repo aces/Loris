@@ -106,10 +106,10 @@ class UploadHelper
         if (is_writable($attachment_data_dir)) {
             $fileToUpload->full_path = $attachment_data_dir .
                                        '/attachments/' .
-                                       strval($this->_values['issueID']) .
-                                       '/' .
-                                       $fileToUpload->uuid;
-            mkdir($fileToUpload->full_path, 0770, true);
+                                       strval($this->_values['issueID']);
+            if (!$fileToUpload->full_path) {
+                mkdir($fileToUpload->full_path, 0770, true);
+            }
         } else {
             throw new \LorisException(
                 'Issue_Tracker attachments directory not writable.'
@@ -142,14 +142,14 @@ class UploadHelper
         try {
             $DB->insert('issues_attachments', $values);
             // Move file from tmp to issue_tracker attachment directory.
-            $path = $fileToUpload->full_path . '/' . $fileToUpload->file;
+            $path = $fileToUpload->full_path . '/' . $fileToUpload->uuid;
             move_uploaded_file($_FILES['file']['tmp_name'], $path);
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
             error_log("DatabaseException: $e");
             $this->_response = json_encode(
                 array(
-                 'message' => 'File registration failed. 
+                 'message' => 'File registration failed.
                     Is the description empty?',
                  'error'   => true,
                 )
