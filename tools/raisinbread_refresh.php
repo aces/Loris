@@ -46,7 +46,7 @@ INFO;
 
 echo $info;
 
-echo "\e[0;31;40m*** WARNING this will result in the LOSS OF DATA ***\e[0m\n";
+echo "\e[0;31m*** Executing this script will result in the LOSS OF DATA! ***\e[0m\n";
 
 $cwd = getcwd();
 if (substr_compare($cwd, 'tools', mb_strlen($cwd) - mb_strlen('tools')) !== 0) {
@@ -123,6 +123,20 @@ CMD;
 echo PHP_EOL .'Dropping LORIS tables....' . PHP_EOL;
 dropTables();
 
+// Print the names of remaining tables, if any. Some tables may remain if they
+// have been created at a different time during development and are not
+// deleted by the above script. Issues with e.g. foreign keys can be a source
+// of error and so it is useful to know what tables remain.
+exec(
+    "$mysqlCommand -e 'SHOW TABLES;'",
+    $tables,
+    $status
+);
+array_shift($tables); // remove the column name
+if (count($tables) > 0) {
+    echo "\e[33mWARNING: Untracked tables still exist in the database:\e[0m\n";
+    array_walk($tables, 'printBulletPoint');
+}
 
 // Source LORIS core tabes
 echo <<<INFO
@@ -236,4 +250,15 @@ function restoreConfigSetting(string $name, string $value): void
             "localhost." .
             PHP_EOL;
     }
+}
+
+/**
+ * Print a formatted and indented bullet point.
+ *
+ * @param string $line
+ *
+ * return @void
+ */
+function printBulletPoint(string $line) {
+    echo "\t* $line\n";
 }
