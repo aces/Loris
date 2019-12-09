@@ -58,8 +58,8 @@ class TimepointMRIUploadsProvisioner extends DBRowProvisioner
                m.UploadLocation LIKE :v_filename
             ',
             array(
-                'v_sessionid' => $timepoint->getSessionID(),
-                'v_filename'  => '%/' . $filename,
+             'v_sessionid' => $timepoint->getSessionID(),
+             'v_filename'  => '%/' . $filename,
             )
         );
     }
