@@ -149,6 +149,14 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
     function testFiltersForUnresolvedConflicts()
     {
         $this->safeGet($this->url . "/conflict_resolver/");
+
+        $wait = new WebDriverWait($this->web_driver, 5);
+        $wait->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                \WebDriverBy::id('unresolved')
+            )
+        );
+
         //testing data
         // site = montreal
         $this->_testFilter(self::$ForSite, "20 rows displayed of 311", '2');
