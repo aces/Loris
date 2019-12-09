@@ -42,7 +42,6 @@ declare -a dependencies=(
 "wget"
 "zip"
 "unzip"
-"php-json"
 "software-properties-common"
 "php$PHP"
 "php$PHP-mysql"
