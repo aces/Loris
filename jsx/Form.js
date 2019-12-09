@@ -1742,6 +1742,12 @@ class LorisElement extends Component {
 /**
  * Radio Component
  * React wrapper for a <input type='radio'> element.
+ *
+ * Example `options` prop: 
+ *   {
+ *     female: 'Female',
+ *     male: 'Male',
+ *   }
  */
 class RadioElement extends React.Component {
   constructor(props) {
