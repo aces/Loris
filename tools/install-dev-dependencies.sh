@@ -43,7 +43,6 @@ declare -a dependencies=(
 "zip"
 "unzip"
 "software-properties-common"
-"php$PHP"
 "php$PHP-mysql"
 "php$PHP-xml"
 "php$PHP-json"
