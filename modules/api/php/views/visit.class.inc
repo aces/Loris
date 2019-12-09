@@ -25,6 +25,7 @@ namespace LORIS\api\Views;
 class Visit
 {
     private $_timepoint;
+
     /**
      * Constructor which sets the instance variables based on the provided timepoint
      *
@@ -47,7 +48,7 @@ class Visit
             'Visit'   => $this->_timepoint->getVisitLabel(),
             'Site'    => $this->_timepoint->getPSC(),
             'Battery' => $this->_timepoint->getData('SubprojectTitle'),
-            'Project' => $this->_timepoint->getProject(),
+            'Project' => $this->_timepoint->getProject()->getName(),
         ];
 
         $stages = [];
