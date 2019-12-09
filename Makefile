@@ -17,7 +17,7 @@ javascript:
 dev: VERSION devdependencies phpdev javascript 
 
 devdependencies:
-	./tools/install_dev_dependencies.sh
+	./tools/install-dev-dependencies.sh
 
 
 clean:
