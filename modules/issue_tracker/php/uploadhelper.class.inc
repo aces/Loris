@@ -73,7 +73,7 @@ class UploadHelper
                 'file'        => $files['file']['name'],
                 'uuid'        => $this->uuid4(),
                 'tmp_name'    => $files['file']['tmp_name'],
-                'size'        => round($this->_bytes / 1048576, 0),
+                'size'        => $this->_bytes,
                 'inserted_by' => $this->_user->getData('UserID'),
                 'description' => $this->_values['fileDescription'] ?? '',
             );
@@ -107,7 +107,7 @@ class UploadHelper
             $fileToUpload->full_path = $attachment_data_dir .
                                        '/attachments/' .
                                        strval($this->_values['issueID']);
-            if (!$fileToUpload->full_path) {
+            if (!is_dir($fileToUpload->full_path)) {
                 mkdir($fileToUpload->full_path, 0770, true);
             }
         } else {

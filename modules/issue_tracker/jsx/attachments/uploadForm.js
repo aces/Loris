@@ -70,6 +70,7 @@ class IssueUploadAttachmentForm extends Component {
       }
     }
     formObj.append('issueID', this.props.issue);
+    console.log(formObj);
     const url = window.location.origin +
       '/issue_tracker/ajax/Attachment.php' +
       '?action=new' +
