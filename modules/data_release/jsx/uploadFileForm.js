@@ -29,20 +29,13 @@ class UploadFileForm extends Component {
 
   componentDidMount() {
     let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        self.setState({
-          data: data,
-          isLoaded: true,
-        });
-      },
-      error: function(data, errorCode, errorMsg) {
-        self.setState({
-          error: 'An error occurred when loading the form!',
-        });
-      },
-    });
+    fetch(this.props.DataURL, {credentials: 'same-origin'})
+      .then( (resp) => resp.json())
+      .then( (data) => self.setState({data: data, isLoaded: true}))
+      .catch( (error) => {
+        self.setState({error: 'An error occurred when loading the form!'});
+        console.error(error);
+      });
   }
 
   render() {
@@ -163,49 +156,34 @@ class UploadFileForm extends Component {
       }
     }
 
-    // ajax call to upload the file
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function() {
-        let xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            let percentage = Math.round((evt.loaded / evt.total) * 100);
-            this.setState({uploadProgress: percentage});
-          }
-        }.bind(this), false);
-        return xhr;
-      }.bind(this),
-      success: function() {
-        // Add file to the list of existing files
-        let files = JSON.parse(JSON.stringify(this.state.data.files));
-        files.push(formData.file.name);
+    // fetch API to upload the file
+    fetch(this.props.action, {
+      method: 'post',
+      body: formObj,
+      cache: 'no-cache',
+    }).then( (response) => {
+      // Add file to the list of existing files
+      let files = JSON.parse(JSON.stringify(this.state.data.files));
+      files.push(formData.file.name);
 
-         // Trigger an update event to update all observers (i.e. DataTable)
-          let event = new CustomEvent('update-datatable');
-          window.dispatchEvent(event);
-          this.setState({
-            files: files,
-            formData: {}, // reset form data after successful file upload
-            uploadProgress: -1,
-          });
-          swal('Upload Successful!', '', 'success');
-          this.props.fetchData();
-        }.bind(this),
-        error: function(err) {
-          let msg = err.responseJSON ? err.responseJSON.message : 'Upload error!';
-          this.setState({
-            errorMessage: msg,
-            uploadProgress: -1,
-          });
-         swal(msg, '', 'error');
-          console.error(err);
-       }.bind(this),
+      // Trigger an update event to update all observers (i.e. DataTable)
+      let event = new CustomEvent('update-datatable');
+      window.dispatchEvent(event);
+      this.setState({
+        files: files,
+        formData: {}, // reset form data after successful file upload
+        uploadProgress: -1,
+      });
+      swal('Upload Successful!', '', 'success');
+      this.props.fetchData();
+    }).catch( (error) => {
+      let msg = error.message ? error.message : 'Upload error!';
+      this.setState({
+        errorMessage: msg,
+        uploadProgress: -1,
+      });
+      swal(msg, '', 'error');
+      console.error(error);
     });
   }
 }
