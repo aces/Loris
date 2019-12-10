@@ -10,7 +10,7 @@ database access.
 
 The module has 2 intended use cases:
 1. Interactions with LORIS data coming from outside the LORIS core
-   software that must extract or import data from LORIS.
+   software that extract or import data from LORIS.
 2. Internal LORIS modules which retrieve data from the API.
 
 ## Scope
