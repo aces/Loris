@@ -1795,6 +1795,7 @@ class RadioElement extends React.Component {
     let content = [];
     for (const key in this.props.items) {
       if (this.props.items.hasOwnProperty(key)) {
+        const checked = this.props.checked === this.props.items[key];
         content.push(
           <div key={key}
                style={styleColumn}>
@@ -1804,6 +1805,7 @@ class RadioElement extends React.Component {
                 name={this.props.name}
                 value={this.props.items[key]}
                 id={key}
+                checked={checked}
                 required={required}
                 disabled={disabled}
                 onChange={this.handleChange}
@@ -1868,6 +1870,7 @@ RadioElement.propTypes = {
   options: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  checked: PropTypes.string,
   errorMessage: PropTypes.string,
   elementClass: PropTypes.string,
   onUserInput: PropTypes.func,
