@@ -83,7 +83,7 @@ class New_Profile extends \NDB_Form
          */
         $candID = \Candidate::createNew(
             (int)$values['site'],
-            $values['dobDate'],
+            $values['dobDate'] ?? null,
             $values['edcDate'] ?? null,
             $values['sex'],
             $values['pscid'] ?? null,
@@ -230,13 +230,10 @@ class New_Profile extends \NDB_Form
         $db           = \Database::singleton();
 
         // Validate DOB fields
-        if (empty($values['dobDate'])) {
-            $errors['dobDate'] = 'Date of Birth field is required.';
-        }
-        if (empty($values['dobDateConfirm'])) {
-            $errors['dobDateConfirm'] = 'Confirm Date of Birth field is required.';
-        }
-        if ($values['dobDate'] != $values['dobDateConfirm']) {
+        if (isset($values['dobDate'])
+            && isset($values['dobDateConfirm'])
+            && $values['dobDate'] != $values['dobDateConfirm']
+        ) {
             $errors['dobDate'] = 'Date of Birth fields must match.';
         }
 
