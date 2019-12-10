@@ -119,8 +119,8 @@ function editIssue()
             $user,
             $_FILES,
             array(
-             'fileDescription' => '',
-             'issueID'         => $issueID,
+                'fileDescription' => '',
+                'issueID'         => $issueID,
             )
         );
     }

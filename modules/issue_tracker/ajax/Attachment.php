@@ -107,21 +107,21 @@ function downloadAttachment() : void
     $size = filesize($fileToDownload);
     $name = rawurldecode($filename);
     $known_mime_types = array(
-                         'htm'  => 'text/html',
-                         'exe'  => 'application/octet-stream',
-                         'zip'  => 'application/zip',
-                         'doc'  => 'application/msword',
-                         'jpg'  => 'image/jpg',
-                         'php'  => 'text/plain',
-                         'xls'  => 'application/vnd.ms-excel',
-                         'ppt'  => 'application/vnd.ms-powerpoint',
-                         'gif'  => 'image/gif',
-                         'pdf'  => 'application/pdf',
-                         'txt'  => 'text/plain',
-                         'html' => 'text/html',
-                         'png'  => 'image/png',
-                         'jpeg' => 'image/jpg',
-                        );
+        'htm'  => 'text/html',
+        'exe'  => 'application/octet-stream',
+        'zip'  => 'application/zip',
+        'doc'  => 'application/msword',
+        'jpg'  => 'image/jpg',
+        'php'  => 'text/plain',
+        'xls'  => 'application/vnd.ms-excel',
+        'ppt'  => 'application/vnd.ms-powerpoint',
+        'gif'  => 'image/gif',
+        'pdf'  => 'application/pdf',
+        'txt'  => 'text/plain',
+        'html' => 'text/html',
+        'png'  => 'image/png',
+        'jpeg' => 'image/jpg',
+    );
 
     $file_extension = strtolower(substr(strrchr($fileToDownload, '.'), 1));
     if (array_key_exists($file_extension, $known_mime_types)) {
