@@ -1752,11 +1752,15 @@ class LorisElement extends Component {
 class RadioElement extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      checked: this.props.checked,
+    };
     this.handleChange = this.handleChange.bind(this);
     this.generateLayout = this.generateLayout.bind(this);
   }
 
   handleChange(e) {
+    this.setState({checked: e.target.value});
     this.props.onUserInput(this.props.name, e.target.value);
   }
 
@@ -1795,7 +1799,7 @@ class RadioElement extends React.Component {
     let content = [];
     for (const key in this.props.options) {
       if (this.props.options.hasOwnProperty(key)) {
-        const checked = this.props.checked === this.props.items[key];
+        const checked = this.state.checked === this.props.options[key];
         content.push(
           <div key={key}
                style={styleColumn}>
