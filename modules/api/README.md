@@ -4,7 +4,7 @@
 
 The api module is intended to provide a stable, versioned REST interface
 for interacting with the core LORIS functionality without requiring backend
-SQL access.
+database access.
 
 ## Intended Users
 
