@@ -151,23 +151,19 @@ class AddPermissionForm extends Component {
       return;
     }
 
-    // ajax call to update the permission
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: (data) => {
+    // fetch API to update the permission
+    fetch(this.props.action, {
+      method: 'post',
+      body: formObj,
+    }).then( (response) => {
+      if (response.ok) {
         swal('Permission Update Success!', '', 'success');
         this.props.fetchData();
-      },
-      error: function(err) {
-        let msg = err.responseJSON ? err.responseJSON.message : 'Submission Error!';
+      } else {
+        let msg = errorMessage ? errorMessage : 'Submission Error!';
         swal(msg, '', 'error');
-        console.error(err);
-      },
+        console.error(errorMessage);
+      }
     });
   }
 

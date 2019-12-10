@@ -43,9 +43,9 @@ class ManagePermissionsForm extends Component {
   fetchData() {
     let self = this;
 
-    return $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
+    return fetch(this.props.DataURL, {credentials: 'same-origin'})
+      .then( (resp) => resp.json())
+      .then( function(data) {
         const formData = data.reduce((result, row) => {
           result[row[0]] = {};
           result[row[0]].index = row[0];
@@ -58,13 +58,13 @@ class ManagePermissionsForm extends Component {
           data: data,
           formData: formData,
         });
-      },
-      error: function(data, errorCode, errorMsg) {
+      })
+      .catch( (error) => {
         self.setState({
           error: 'An error occurred when loading the form!',
         });
-      },
-    });
+        console.error(error);
+      });
   }
 
   render() {
@@ -169,23 +169,20 @@ class ManagePermissionsForm extends Component {
       }
     }
 
-    // ajax call to update the permission
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: (data) => {
+    // fetch API to update the permission
+    fetch(this.props.action, {
+      method: 'post',
+      body: formObj,
+      cache: 'no-cache',
+    }).then( (response) => {
+      if (response.ok) {
         swal('Permission Update Success!', '', 'success');
         this.props.fetchData();
-      },
-      error: function(err) {
-        let msg = err.responseJSON ? err.responseJSON.message : 'Submission Error!';
-        swal(msg, '', 'error');
-        console.error(err);
-      },
+      }
+    }).catch( (error) => {
+      let msg = error.message ? error.message : 'Submission Error!';
+      swal(msg, '', 'error');
+      console.error(error);
     });
   }
 }
