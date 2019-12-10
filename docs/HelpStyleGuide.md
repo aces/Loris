@@ -8,17 +8,17 @@ Help text exists as an on-screen guide for users, to add context and provide ins
 
 Help text content is stored into the aces/Loris repo as markdown (.md) files within the help/subdirectory of the module it belongs to. For example, the Help text for Imaging Browser main page is located here: `modules/imaging_browser/help/imaging_browser.md`. 
 
-Some modules have more than one Help text file to correspond with subpages. These files exist in the same `help/` folder, but are named differently - they must match exactly the php/file name that spawns the page. For example, the Imaging Browser module has a subpage called “ViewSession”. Its help file is stored as: `modules/imaging_browser/help/viewsession.md`. 
+Some modules have more than one Help text file to correspond with subpages. These files exist in the same `help/` folder, but are named differently - they must match exactly the php/file name that spawns the page. For example, the Imaging Browser module has a subpage called “ViewSession”. Its Help file is stored as: `modules/imaging_browser/help/viewsession.md`. 
 
 ## Markdown
 
-Formatting should follow markdown guidelines, with some exceptions. This is because LORIS’s current markdown renderer may not cover all possible markdown features (e.g. bullets). Help text cannot be formatted with HTML so it should not be included in help text. When creating a markdown file, use only the following styles, or else talk to the LORIS technical team about expanding our Markdown features:
+Formatting should follow markdown guidelines, with some exceptions. This is because LORIS’s current markdown renderer may not cover all possible markdown features (e.g. bullets). Help text cannot be formatted with HTML so it should not be included in Help text. When creating a markdown file, use only the following styles, or else talk to the LORIS technical team about expanding our Markdown features:
 
 * `*Italics*`
 * `**Bold**`
 * `***Italics and Bold***`
 * `# Heading 1` up to `###### Heading 6`
-  * Use `#H1` for the name of the module at the beginning of the help text
+  * Use `#H1` for the name of the module at the beginning of the Help text
   * Use `#H2` for any subheadings
   * Use `#H4` for sub-subheadings
 * Avoid using HTML line break (`<br>`) tags—simply use physical line breaks (spaces between lines) where necessary. 
@@ -45,7 +45,7 @@ Whether a user knows it or not, they will come to recognize styles that are cons
      
 ## Tone
 
-LORIS is used by scientific community members worldwide, which means it's possible that most users are non-native English speakers. Therefore, it is important that LORIS documentation (help text, setup guides, etc.) be written in a way that is concise, clear, and free of needlessly ambiguous or complicated words.
+LORIS is used by scientific community members worldwide, which means it's possible that most users are non-native English speakers. Therefore, it is important that LORIS documentation (Help text, setup guides, etc.) be written in a way that is concise, clear, and free of needlessly ambiguous or complicated words.
 
 This means using more direct language and tone to get information across to the user in the least amount of time, with the least amount of friction. The quicker a user understands something, the happier they are. Easily understandable documentation also builds trust in the software, in addition to decreasing the amount of support questions we get.
 
@@ -60,7 +60,7 @@ This means using more direct language and tone to get information across to the 
   * e.g. navigate pages of a table using the arrows provided
 * Use Plain Language
   * Avoid words that you wouldn't use in everyday speech
-* Where relevant introduce an abbreviation once and then use that abbreviation for the rest of the copy in that help text (e.g. introduce Quality Control = QC in a help text title, then only call it QC throughout the text)
+* Where relevant introduce an abbreviation once and then use that abbreviation for the rest of the copy in that help text (e.g. introduce Quality Control = QC in a Help text title, then only call it QC throughout the text)
   * e.g. DO: “The Imaging Quality Control (QC) module allows you to view the QC status of images in your LORIS.”
   * e.g. DON’T: “The Imaging Quality Control (QC) module allows you to view the Quality Control status of images in your LORIS.”
 * Break up large blocks of text. It's more visually pleasing and less intimidating.
