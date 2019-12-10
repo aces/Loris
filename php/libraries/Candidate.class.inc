@@ -178,7 +178,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *
      * @param int         $centerID              centerID of the site to which the
      *                                           candidate will belong
-     * @param string      $dateOfBirth           date of birth written as YYYY-MM-DD
+     * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
      *                                           written as YYYY-MM-DD. Value should
      *                                           be null unless the useEDC setting
