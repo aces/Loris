@@ -1,4 +1,4 @@
-<img src="./htdocs/images/LORIS_logo.png" width="35%">
+<img src="./htdocs/images/LORIS_logo.svg" width="35%">
 
 [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) [![Documentation Status](https://readthedocs.org/projects/acesloris/badge/?version=latest)](https://acesloris.readthedocs.io/en/latest/?badge=latest)
 
