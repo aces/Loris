@@ -2,7 +2,9 @@
 
 ## Purpose
 
-Unknown
+The genomic browser module is intended to allow users to visualize the
+results of already analyzed genetic tests cross-linked with behavioural
+and imaging candidate data.
 
 ## Intended Users
 
