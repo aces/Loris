@@ -1,4 +1,4 @@
-## RELEASE NOTES
+## CHANGELOG
 
 ***This document logs all changes to the core code or individual modules which cause a 
 variation in the behaviour of the software for users. This log will be used to write 
