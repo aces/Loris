@@ -260,7 +260,7 @@ class New_Profile extends \NDB_Form
             // Dates still need to be submitted into the database in format
             // YYYY-DD-MM. This is a last check before _process is called.
             if ($config->getSetting('useEDC') == "true"
-                && strlen($values['edcDate']) < 10
+                && strlen($values['edcDate'] ?? '') < 10
             ) {
                 $errors['edcFormat'] = 'EDC is not in valid date format.';
             }
