@@ -28,7 +28,7 @@
    [Manual Testing]
 14. Edit a file in the repository: check that “Date Uploaded” date is updated.
     [Manual Testing]
-15. Check that preference “Receive Document Repository Notifications” works.
+15. Check that the preference “Receive Document Repository Notifications” works.
     [Manual Testing]
 16. Check that performance is OK with large number of files.
     [Manual Testing]
