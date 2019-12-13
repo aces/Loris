@@ -30,7 +30,7 @@
     [Manual Testing]
 15. Check that the preference “Receive Document Repository Notifications” works.
     [Manual Testing]
-16. Check that performance is OK with large number of files.
+16. Check that the performance is OK with large number of files.
     [Manual Testing]
 17. Check that if you have the 'Receive document repository notification' activated you will receive an email each 
     time one of the following event occurs:
