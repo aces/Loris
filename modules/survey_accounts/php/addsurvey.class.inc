@@ -112,13 +112,12 @@ class AddSurvey extends \NDB_Form
             if ($values['Test_name'] == $instrument['Test_name']) {
                 $test_name = $db->pselectRow(
                     "SELECT Full_name FROM `test_names` WHERE Test_name = :test_name",
-                        array(
-                            'test_name' => $values['Test_name']
-                        )
-                    );
-
+                    array(
+                        'test_name' => $values['Test_name']
+                    )
+                );
                 return array(
-                    'Test_name' => "Instrument ". 
+                    'Test_name' => "Instrument ".
                                        ($test_name? $test_name['Full_name']: $values['Test_name']).
                                        $reminder. $values['VL'],
                 );
