@@ -1282,16 +1282,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "2.4.0",
+            "version": "2.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "9670327691736be2581394fd34a89df0ff008d17"
+                "reference": "12f64e878084244ca92d1ac83e58a668640f6f1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/9670327691736be2581394fd34a89df0ff008d17",
-                "reference": "9670327691736be2581394fd34a89df0ff008d17",
+                "url": "https://api.github.com/repos/phan/phan/zipball/12f64e878084244ca92d1ac83e58a668640f6f1d",
+                "reference": "12f64e878084244ca92d1ac83e58a668640f6f1d",
                 "shasum": ""
             },
             "require": {
@@ -1302,9 +1302,10 @@
                 "ext-tokenizer": "*",
                 "felixfbecker/advanced-json-rpc": "^3.0.4",
                 "microsoft/tolerant-php-parser": "0.0.18",
+                "netresearch/jsonmapper": "^1.6.0",
                 "php": "^7.1.0",
                 "sabre/event": "^5.0",
-                "symfony/console": "^2.3|^3.0|~4.0",
+                "symfony/console": "^2.3|^3.0|^4.0|^5.0",
                 "symfony/polyfill-mbstring": "^1.11.0"
             },
             "require-dev": {
@@ -1350,7 +1351,7 @@
                 "php",
                 "static"
             ],
-            "time": "2019-10-26T17:47:01+00:00"
+            "time": "2019-12-11T01:03:28+00:00"
         },
         {
             "name": "phar-io/manifest",
