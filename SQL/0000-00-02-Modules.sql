@@ -1,6 +1,7 @@
 CREATE TABLE `modules` (
   `Name` varchar(255) NOT NULL,
-  `Active` enum('Y','N') NOT NULL
+  `Active` enum('Y','N') NOT NULL,
+  PRIMARY KEY (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO modules (Name, Active) VALUES ('acknowledgements', 'Y');
