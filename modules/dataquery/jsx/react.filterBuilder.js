@@ -40,7 +40,7 @@ class LogicOperator extends Component {
     return (
       <div className='btn-group' role='group'>
         <button type='button' className={andClass} onClick={this.changeOperator.bind(this, 0)}>And</button>
-        <button type='button' className={orClass} onClick={this.changeOperator.bind(this, 1)}>Or</button>
+        <button type='button' className={orClass} onClick={this.changeOperator.bind(this, 1)} id='filter_or_btn'>Or</button>
       </div>
     );
   }
@@ -572,6 +572,8 @@ class FilterBuilder extends Component {
     this.state = {
       showModalCSV: false,
     };
+    this.openModalCSV = this.openModalCSV.bind(this);
+    this.closeModalCSV = this.closeModalCSV.bind(this);
   }
 
   openModalCSV(e) {
@@ -607,6 +609,10 @@ class FilterBuilder extends Component {
             />
           </div>
         </div>
+        <ButtonElement label='Upload CSV'
+                       columnSize=''
+                       onUserInput={this.openModalCSV}
+        />
       </div>
     );
   }
