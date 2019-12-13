@@ -12,7 +12,7 @@
    [Manual Testing]
 7. Check that the breadcrumbs on the main page and the Edit page work.
    [Manual Testing]
-8. Download a file and check content.
+8. Download a file and check the content.
    [Manual Testing]
 9. Add files in repository to test search according to file name, file type, version, site and uploaded by.
    [Manual Testing]
