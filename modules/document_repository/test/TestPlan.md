@@ -8,7 +8,7 @@
    [Manual Testing]
 5. User is able to delete a file if they have the "Delete files in Document Repository" permission or is the super user.
    [Manual Testing]
-6. Edit document property and save. Check that changes were saved properly.
+6. Edit document properties and save. Check that changes were saved properly.
    [Manual Testing]
 7. Check that the breadcrumbs on the main page and the Edit page work.
    [Manual Testing]
