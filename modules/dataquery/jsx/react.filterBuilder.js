@@ -7,6 +7,7 @@
  */
 
 import React, {Component} from 'react';
+import ModalUploadCSV from './modalUploadCSV';
 
 /*
  *  The following component is used for displaying operator for the group component
@@ -568,12 +569,34 @@ class FilterGroup extends Component {
 class FilterBuilder extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showModalCSV: false,
+    };
+  }
+
+  openModalCSV(e) {
+    e.preventDefault();
+    this.setState({showModalCSV: true});
+  }
+
+  closeModalCSV() {
+    this.setState({showModalCSV: false});
+  }
+
+  defineCSVCandidates(data) {
+    console.log(data);
+    document.getElementById('filter_or_btn').click();
+    this.closeModalCSV();
   }
 
   render() {
     return (
       <div>
+        <ModalUploadCSV
+          showModalCSV={this.state.showModalCSV}
+          closeModalCSV={this.closeModalCSV}
+          defineCSVCandidates={this.defineCSVCandidates}
+        />
         <h1 className='col-xs-12'>Filter</h1>
         <div className='col-xs-12'>
           <div className='well well-primary'>
