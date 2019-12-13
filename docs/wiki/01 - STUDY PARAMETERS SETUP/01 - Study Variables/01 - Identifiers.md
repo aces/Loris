@@ -5,7 +5,7 @@ By default LORIS provides 3 different identifiers for each candidate:
 
 - **CandID**, also known as the **DCCID**, is a unique randomized 6-digit numeric ID (e.g. '436792') assigned automatically by LORIS upon the candidate's registration. The CandID is not configurable.
 - **PSCID** (Project Study Center ID) is a unique configurable ID. It can be set up to be either manually entered when registering a candidate or automatically generated and usually contains the site or project abbreviation followed by sequential or randomized characters (e.g. 'MTL0006'), but its exact format is customizable.
-- **ExternalID** is a unique configurable ID. It can be set up to be either manually entered when registering a candidate or automatically generated and it is generally completely de-identified (no site of project information incorporated) to be used for data dissemination.
+- **ExternalID** is a unique configurable ID. It can be set up to be either manually entered when registering a candidate or automatically generated and it is generally completely de-identified (no site or project information incorporated) to be used for data dissemination.
 
 The format and the generation of the **PSCID** and **ExternalID** must be configured by an admin by editing the `config.xml` file.
 
