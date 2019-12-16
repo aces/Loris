@@ -46,7 +46,7 @@ class NDB_PageTest extends TestCase
     {
         parent::setUp();
 
-        $this->_module = new NullModule();
+        $this->_module = new NullModule("test_module");
         $this->_page = new NDB_Page(
             $this->_module, "test_page", "515", "123", "test_form"
         );

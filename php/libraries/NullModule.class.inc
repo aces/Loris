@@ -26,12 +26,18 @@
  */
 class NullModule extends Module
 {
+    protected $longname;
     /**
-     * The NullModule takes no arguments
+     * The NullModule is used in cases where there is no
+     * directory to pass (such as unit tests) and as such
+     * only takes an (optional) name as an argument.
+     *
+     * @param string $name An optional name to use for this module.
      */
-    public function __construct()
+    public function __construct(string $name='')
     {
-        parent::__construct("", "");
+        $this->longname = $name;
+        parent::__construct($name, "");
     }
 
     /**
@@ -41,6 +47,6 @@ class NullModule extends Module
      */
     public function getLongName() : string
     {
-        return "";
+        return $this->longname;
     }
 }

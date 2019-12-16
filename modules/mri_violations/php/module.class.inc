@@ -36,7 +36,7 @@ class Module extends \Module
         if (parent::hasAccess($user) == false) {
             return false;
         }
-        return $user->hasPermission(
+        return $user->hasAnyPermission(
             'violated_scans_view_allsites',
             'violated_scans_edit'
         );
