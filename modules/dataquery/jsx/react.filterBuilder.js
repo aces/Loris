@@ -588,6 +588,12 @@ class FilterBuilder extends Component {
   defineCSVCandidates(data) {
     console.log(data);
     document.getElementById('filter_or_btn').click();
+    $.get(loris.BaseURL + '/dataquery/ajax/getAllCSV.php', {
+      type: data
+    }, (data) => {
+      console.log('ajax data:');
+      console.log(data);
+    }, 'json');
     this.closeModalCSV();
   }
 

@@ -28,6 +28,7 @@ class SavedQueriesList extends Component {
   }
 
   loadQuery(queryName) {
+    console.log('loadQuery() fired');
     // Loads in the selected query
 
     this.props.onSelectQuery(
@@ -413,6 +414,14 @@ class DataQueryApp extends Component {
 
   loadSavedQuery(fields, criteria) {
     // Used to load a saved query
+
+    console.log('loadSavedQuery() fired!');
+
+    console.log('fields: ');
+    console.log(fields);
+
+    console.log('criteria: ');
+    console.log(criteria);
 
     let filterState = {},
       selectedFields = {},
