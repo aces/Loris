@@ -117,7 +117,7 @@ class AddSurvey extends \NDB_Form
 
                 return array(
                     'Test_name' => "Instrument ".
-                        ($test_name? $test_name:$values['Test_name']).
+                        ($test_name? $test_name: $values['Test_name']).
                         $reminder. $values['VL'],
                 );
             }
