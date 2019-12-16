@@ -19,7 +19,7 @@ _not yet available_
 
 ### Configuration from the config.xml file
 
-Both the format and the generation of PSCIDs can be configured by an administrator in the `config.xml` file of the `%LORIS_ROOT%/project/` directory. these settings are applied to any and all new candidates.
+Both the format and the generation of PSCIDs can be configured by an administrator in the `config.xml` file. These settings are applied to any and all new candidates.
 
 PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated*, *manually entered*, or *randomly generated*.
 
