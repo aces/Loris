@@ -37,8 +37,10 @@ class Module extends \Module
             return false;
         }
         return $user->hasAnyPermission(
-            'violated_scans_view_allsites',
-            'violated_scans_edit'
+            [
+                'violated_scans_view_allsites',
+                'violated_scans_edit'
+            ]
         );
     }
 
