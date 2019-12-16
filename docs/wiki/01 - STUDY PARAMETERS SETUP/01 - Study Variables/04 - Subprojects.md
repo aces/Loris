@@ -38,7 +38,7 @@ front end through the Configuration module.
 > Note: the only way to view a list of all the projects affiliated to a subproject 
 is via the MySQL back-end. 
 
-Sometimes it's useful to add sub  project-project affiliations directly in the MySQL 
+Sometimes it's useful to add project-subproject affiliations directly in the MySQL 
 back-end, for example when adding datasets to your LORIS.  The following MySQL 
 statement is provided as an example for linking already-defined subprojects with an 
 existing project:  
