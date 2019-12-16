@@ -54,7 +54,7 @@
  
 	|         Field        |                  Description                  |                                        Notes                                                 |
 	|:--------------------:|:---------------------------------------------:|:--------------------------------------------------------------------------------------------:|
-	| `ProjectID`          | Identifier of the project                     | Avoid setting this field explicitly when inserting data, it auto increments.                 |
+	| `ProjectID`          | Identifier of the project                     | Avoid setting this field explicitly when inserting data, it auto increments.          |
 	| `Name`               | Full name of the project                      |                                                                                              |
 	| `recruitmentTarget`  | Expected number of candidates to be recruited |                                                                                              |
 
@@ -78,6 +78,6 @@
  
 	|            Field          |                    Description                   |                                     Notes                                    |
 	|:-------------------------:|:------------------------------------------------:|:----------------------------------------------------------------------------:|
-	| `ProjectSubprojectRelID ` | Identifier of the project-subproject relation    | Avoid setting this field explicitly when inserting data, it auto increments. |
+	| `ProjectSubprojectRelID ` | Identifier of the project-subproject relation    | Avoid setting this field explicitly when inserting data, it auto increments. Other tables in the database require this field as a foreign key reference to point o a specific project-subproject tuple.   |
 	| `ProjectID `              | Project identifier                               |                                                                              |
 	| `SubprojectID `           | Subproject identifier                            |                                                                              |
