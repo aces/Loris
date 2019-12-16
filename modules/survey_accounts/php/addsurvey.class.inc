@@ -113,9 +113,9 @@ class AddSurvey extends \NDB_Form
                 $instrument_instance = \NDB_BVL_Instrument::factory(
                     $instrument['Test_name']
                 );
-                $test_name           = $instrument_instance->getFullName();
                 return array(
-                    'Test_name' => "Instrument ". $test_name.
+                    'Test_name' => "Instrument ".
+                        $instrument_instance->getFullName().
                         $reminder. $values['VL'],
                 );
             }
