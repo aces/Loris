@@ -31,7 +31,7 @@ if ($_POST['action'] == 'upload'
 
     if (!file_exists($path)) {
         error_log(
-            "ERROR: File upload failed. Default upload"
+            "ERROR: File upload failed. Upload"
             . " directory not found."
         );
         header("HTTP/1.1 500 Internal Server Error");
@@ -83,5 +83,4 @@ if ($_POST['action'] == 'upload'
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error uploading the file";
 }
-
 
