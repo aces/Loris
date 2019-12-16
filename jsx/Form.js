@@ -1814,7 +1814,7 @@ class RadioElement extends React.Component {
               <label htmlFor={key}
                      style={styleLabel}
               >
-                {key}
+                {this.props.options[key]}
               </label>
             </div>
           </div>
