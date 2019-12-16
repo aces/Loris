@@ -33,7 +33,6 @@ INSERT INTO modules (Name, Active) VALUES ('instruments', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('issue_tracker', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('login', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('media', 'Y');
-INSERT INTO modules (Name, Active) VALUES ('modules', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('mri_violations', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('new_profile', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('next_stage', 'Y');
