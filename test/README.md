@@ -49,7 +49,7 @@ npm run lint:javascript
 ## Advanced Workflow
 
 #### View tests performing in realtime
-You can view the testing process as it happens in realtime with [Selenium Server](https://selenium.dev/downloads/) and using [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/).
+You can view the testing process as it happens with [Selenium Server](https://selenium.dev/downloads/) and using [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/).
 
 Such as an example workflow:
 
