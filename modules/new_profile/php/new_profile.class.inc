@@ -171,7 +171,7 @@ class New_Profile extends \NDB_Form
 
         // Get sites for the select dropdown
         $userSites = $user->getData('CenterIDs');
-        $sites       = array();
+        $sites     = array();
         foreach ($userSites as $key => $siteID) {
             $center = $DB->pselectRow(
                 "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
