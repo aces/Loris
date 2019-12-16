@@ -51,7 +51,6 @@ npm run lint:javascript
 #### View tests in realtime
 You can view the testing process as it happens with [Selenium Server](https://selenium.dev/downloads/) and using [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/).
 
-Such as an example workflow:
 
 1) Start the Selenium Server:
     ```
