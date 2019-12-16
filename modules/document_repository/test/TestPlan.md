@@ -39,8 +39,9 @@
     Also check that the www address contained in the notification email is correct.
     [Manual Testing]
 18. To upload large files, check that the following settings are in php.ini (default: /etc/php/{php_version}/apache2/php.ini):
-      session.gc_maxlifetime 10800
-      max_execution_time  10800
-      upload_max_filesize 1020M
-      post_max_size   1024M
+      session.gc_maxlifetime = 10800
+      max_input_time = 10800
+      max_execution_time = 10800
+      upload_max_filesize = 1024M
+      post_max_size = 1024M 
     [Manual Testing]
