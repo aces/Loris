@@ -37,7 +37,7 @@ if ($_POST['action'] == 'upload'
         header("HTTP/1.1 500 Internal Server Error");
     } elseif (!is_writable($path)) {
         error_log(
-            "File upload failed. Default upload directory"
+            "File upload failed. Upload directory"
             . " does not appear to be writeable."
         );
         header("HTTP/1.1 500 Internal Server Error");
@@ -83,4 +83,3 @@ if ($_POST['action'] == 'upload'
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error uploading the file";
 }
-
