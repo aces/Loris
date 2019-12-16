@@ -61,7 +61,7 @@ More information about this tool can be found at [the PHP Mess Detector website]
 
 eslint is used in a similar way to PHPCS, checking for code style and flagging basic syntax errors. 
 
-LORIS uses the default configuration of this tool.
+Configuration files can be located at `.eslintrc.json` and `.eslintignore`.
 
 Further information can be found at [the eslint website](https://eslint.org/docs/rules/).
 
