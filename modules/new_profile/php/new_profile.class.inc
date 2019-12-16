@@ -68,15 +68,6 @@ class New_Profile extends \NDB_Form
                 $values[$key] = null;
             }
         }
-        /* When a user has only one site and centerID has not been
-         * passed, choose the first one in the User's centerID list.
-         */
-        $centerIDs = \User::singleton()->getData('CenterIDs');
-        if (count($centerIDs) == 1 && !isset($values['site'])) {
-            $values['site'] = $centerIDs[0];
-        }
-        //TODO: add similar logic to projects when user-projects association is
-        //incorporated.
 
         /* Create the candidate and retrieve its ID.
          * Use form values when present, otherwise default to null.
@@ -206,6 +197,125 @@ class New_Profile extends \NDB_Form
             'site'      => $sites,
             'project'   => $project,
         );
+
+        $this->form->addFormRule(array(&$this, '_validateNewCandidate'));
+    }
+
+    /**
+     * Validate function
+     *
+     * @param array $values the value
+     *
+     * @return array $errors
+     */
+    function _validateNewCandidate($values): array
+    {
+        $this->_error = null;
+        $errors       = array();
+        $config       = \NDB_Config::singleton();
+        $user         = \User::singleton();
+        $db           = \Database::singleton();
+
+        // Validate DOB fields, these checks are redundant
+        if (empty($values['dobDate'])) {
+            $errors['dobDate'] = 'Date of Birth field is required.';
+        }
+        if (empty($values['dobDateConfirm'])) {
+            $errors['dobDateConfirm'] = 'Confirm Date of Birth field is required.';
+        }
+
+        if ($values['dobDate'] != $values['dobDateConfirm']) {
+            $errors['dobDate'] = 'Date of Birth fields must match.';
+        }
+
+        // Validate EDC fields
+        if ($config->getSetting('useEDC') == "true") {
+            if (empty($values['edcDate'])) {
+                $errors['edcDate'] = 'Expected Date of Confinement field is
+                                      required.';
+            }
+
+            if (empty($values['edcDateConfirm'])) {
+                $errors['edcDateConfirm'] = 'Confirm EDC field is required.';
+            }
+
+            if ($values['edcDate'] != $values['edcDateConfirm']) {
+                $errors['edDate'] = 'Expected Date of Confinement fields must
+                                     match.';
+            }
+        }
+
+        // Validate date format
+        $dobFormat = $config->getSetting('dobFormat');
+        if (strtolower($dobFormat) == 'ym' || strtolower($dobFormat) == 'my') {
+            // Dates still need to be submitted into the database in format
+            // YYYY-DD-MM. This is a last check before _process is called.
+            if ($config->getSetting('useEDC') == "true"
+                && strlen($values['edcDate']) < 10
+            ) {
+                $errors['edcFormat'] = 'EDC is not in valid date format.';
+            }
+            if (strlen($values['dobDate'] ?? '') < 10) {
+                $errors['dobFormat'] = 'DOB is not in valid date format.';
+            }
+        }
+
+        // Validate sex fields
+        if (empty($values['sex'])) {
+            $errors['sex'] = 'Sex is required.';
+        }
+
+        // Validate pscid
+        $PSCIDsettings = $config->getSetting('PSCID');
+        if ($PSCIDsettings['generation'] == 'user') {
+            if (empty($values['site'])) { // user is in only one site
+                $centerIDs = $user->getData('CenterIDs');
+                $centerID  = $centerIDs[0];
+                $site      =& \Site::singleton($centerID);
+            } else {
+                // user has multiple sites,
+                // so validate PSCID against the Site selected
+                $site =& \Site::singleton((int) $values['site']);
+            }
+
+            $project = \Project::getProjectFromID(intval($values['project']));
+
+            if (empty($values['pscid'])) {
+                $errors['pscid'] = 'PSCID must be specified';
+            } elseif (!\Candidate::validatePSCID(
+                $values['pscid'],
+                $site->getSiteAlias(),
+                $project->getAlias()
+            )
+            ) {
+                $errors['pscid'] = 'PSCID does not match the required structure';
+            } elseif ($db->pselectOne(
+                "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
+                array('V_PSCID' => $values['pscid'])
+            ) > 0
+            ) {
+                $errors['pscid'] = 'PSCID has already been registered';
+            }
+        }
+
+        $psc       = (int)$values['site'] ?? '';
+        $userSites = $user->getData('CenterIDs');
+        if (count($userSites) > 0 && (empty($psc) || !$user->hasCenter($psc))) {
+            $errors['site'] = "Site must be selected from the available dropdown.";
+        }
+        // In fact, this check is not necessary since the field is required.
+        // Only left for double check.
+
+        // Validate project
+        if (empty($values['project'])) {
+            $errors['project'] = "Project is required";
+        }
+
+        if (!empty($errors)) {
+            $this->_error = reset($errors);
+        }
+
+        return $errors;
     }
 
     /**
