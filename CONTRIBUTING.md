@@ -24,11 +24,6 @@ Small bug fixes for a given version of LORIS should be sent to the branch named
 for that version. For example, fixing a bug in LORIS version 22 should be sent
 to the `22.0-release` branch.
 
-When fixing a bug present in multiple versions of LORIS, send your fix to the
-oldest version and our team will push the fix forward into other versions. For
-example if you are fixing a bug on LORIS version 21, send it to the `21.0-release`
-branch and our team will push it forward into `22.0-release`, etc.
-
 ## Pull Request Title and Description
 
 To make it easier for reviewers to locate pull requests with which they have
