@@ -171,20 +171,16 @@ class New_Profile extends \NDB_Form
 
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
-        $num_sites          = count($user_list_of_sites);
-        $psc_labelOptions   = array();
-        if ($num_sites > 0) {
-            foreach ($user_list_of_sites as $key => $siteID) {
-                $center = $DB->pselectRow(
-                    "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                    array('cid' => $siteID)
-                );
-                if (!is_null($center)) {
-                    $psc_labelOptions[$siteID] = $center['Name'];
-                }
+        $site   = array();
+        foreach ($user_list_of_sites as $key => $siteID) {
+            $center = $DB->pselectRow(
+                "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
+                array('cid' => $siteID)
+            );
+            if (!is_null($center)) {
+                $site[$siteID] = $center['Name'];
             }
         }
-        $site = $psc_labelOptions;
 
         // Get projects for the select dropdown
         $projList = array();
@@ -313,10 +309,6 @@ class New_Profile extends \NDB_Form
         // Validate site entered
         $psc = (int)$values['site'] ?? '';
         $user_list_of_sites = $user->getData('CenterIDs');
-        $num_sites          = count($user_list_of_sites);
-        if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {
-            $errors['site'] = "Site must be selected from the available dropdown.";
-        }
 
         // Validate project
         if (empty($values['project'])) {
