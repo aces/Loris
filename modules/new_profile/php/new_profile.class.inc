@@ -72,7 +72,7 @@ class New_Profile extends \NDB_Form
          * passed, choose the first one in the User's centerID list.
          */
         $centerIDs = \User::singleton()->getData('CenterIDs');
-        if (count($centerIDs) <= 1 && !isset($values['site'])) {
+        if (count($centerIDs) == 1 && !isset($values['site'])) {
             $values['site'] = $centerIDs[0];
         }
         //TODO: add similar logic to projects when user-projects association is
@@ -170,9 +170,9 @@ class New_Profile extends \NDB_Form
         $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
         // Get sites for the select dropdown
-        $user_list_of_sites = $user->getData('CenterIDs');
-        $site   = array();
-        foreach ($user_list_of_sites as $key => $siteID) {
+        $user_sites = $user->getData('CenterIDs');
+        $site       = array();
+        foreach ($user_sites as $key => $siteID) {
             $center = $DB->pselectRow(
                 "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
                 array('cid' => $siteID)
@@ -305,10 +305,6 @@ class New_Profile extends \NDB_Form
                 $errors['pscid'] = 'PSCID has already been registered';
             }
         }
-
-        // Validate site entered
-        $psc = (int)$values['site'] ?? '';
-        $user_list_of_sites = $user->getData('CenterIDs');
 
         // Validate project
         if (empty($values['project'])) {
