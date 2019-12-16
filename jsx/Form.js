@@ -1795,7 +1795,7 @@ class RadioElement extends React.Component {
     let content = [];
     for (const key in this.props.options) {
       if (this.props.options.hasOwnProperty(key)) {
-        const checked = this.props.checked === this.props.options[key];
+        const checked = this.props.checked === key;
         content.push(
           <div key={key}
                style={styleColumn}>
