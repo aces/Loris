@@ -298,13 +298,10 @@ class New_Profile extends \NDB_Form
             }
         }
 
-        $psc       = (int)$values['site'] ?? '';
-        $userSites = $user->getData('CenterIDs');
-        if (count($userSites) > 0 && (empty($psc) || !$user->hasCenter($psc))) {
+        $psc = (int)$values['site'] ?? '';
+        if (!$user->hasCenter($psc)) {
             $errors['site'] = "Site must be selected from the available dropdown.";
         }
-        // In fact, this check is not necessary since the field is required.
-        // Only left for double check.
 
         // Validate project
         if (empty($values['project'])) {
