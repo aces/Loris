@@ -110,8 +110,10 @@ class AddSurvey extends \NDB_Form
         $reminder        = " already exists for given candidate for visit ";
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
-                $instrument_instance = \NDB_BVL_Instrument::factory($instrument['Test_name']);
-                $test_name = $instrument_instance->getFullName();
+                $instrument_instance = \NDB_BVL_Instrument::factory(
+                    $instrument['Test_name']
+                );
+                $test_name           = $instrument_instance->getFullName();
                 return array(
                     'Test_name' => "Instrument ". $test_name.
                         $reminder. $values['VL'],
