@@ -3,7 +3,7 @@
  * This file is used by the Dashboard to get the data for
  * the recruitment bar chart via AJAX
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Main
  * @package  Loris
@@ -17,7 +17,7 @@ ini_set('default_charset', 'utf-8');
 
 $DB            = Database::singleton();
 $sexData       = array();
-$list_of_sites = Utility::getAssociativeSiteList(true, false);
+$list_of_sites = Utility::getSiteList(true, false);
 
 foreach ($list_of_sites as $siteID => $siteName) {
     $sexData['labels'][] = $siteName;
