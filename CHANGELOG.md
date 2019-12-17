@@ -8,8 +8,9 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-### Core
+### VERSION
 
+#### Core
 
-### Modules 
-#### module1
+#### Modules 
+##### module1
