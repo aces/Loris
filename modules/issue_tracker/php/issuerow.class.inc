@@ -29,6 +29,7 @@ class IssueRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
     protected $CenterID;
+    protected $Module;
 
     /**
      * Create a new IssueRow
@@ -37,10 +38,13 @@ class IssueRow implements \LORIS\Data\DataInstance
      *                     returns
      * @param integer $cid The centerID affiliated with this row.
      */
-    public function __construct(array $row, $cid)
+    public function __construct(array $row, $cid, \Module $module)
     {
         $this->DBRow    = $row;
         $this->CenterID = $cid;
+        $this->Module   = $module;
+
+        $this->DBRow['module'] = $module->getLongName();
     }
 
     /**
@@ -62,5 +66,9 @@ class IssueRow implements \LORIS\Data\DataInstance
     public function getCenterID()
     {
         return $this->CenterID;
+    }
+
+    public function getModule() : \Module {
+        return $this->Module;
     }
 }

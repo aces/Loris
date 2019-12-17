@@ -1,7 +1,9 @@
 CREATE TABLE `modules` (
+  `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
   `Active` enum('Y','N') NOT NULL,
-  PRIMARY KEY (`Name`)
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `modules_id` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO modules (Name, Active) VALUES ('acknowledgements', 'Y');
