@@ -24,4 +24,5 @@ nav:
     - Developers: 
         - 'Overview': 'wiki/99 - Developers/README.md'
         - 'SQL Dictionary': 'wiki/99 - Developers/SQL Dictionary.md'
+        - 'Documentation Style Guide': 'HelpStyleGuide.md'
 theme: readthedocs
