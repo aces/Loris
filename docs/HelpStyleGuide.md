@@ -66,3 +66,6 @@ This means using more direct language and tone to get information across to the 
 * Break up large blocks of text. It's more visually pleasing and less intimidating.
 
 For more information, including research studies conducted, on the use and value of Plain Language, please see [this article](https://www.nngroup.com/articles/plain-language-experts/) and feel free to browse the rest of this website for further helpful details, tips, and tricks. 
+
+In addition to the above guidelines, we use [Alex JS](https://github.com/get-alex/alex)$
+to help us create documentation that is friendly and accessible.
