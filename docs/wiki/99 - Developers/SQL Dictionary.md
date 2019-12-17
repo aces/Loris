@@ -78,6 +78,6 @@
  
 	|            Field          |                    Description                   |                                     Notes                                    |
 	|:-------------------------:|:------------------------------------------------:|:----------------------------------------------------------------------------:|
-	| `ProjectSubprojectRelID ` | Identifier of the project-subproject relation    | Avoid setting this field explicitly when inserting data, it auto increments. Other tables in the database require this field as a foreign key reference to point o a specific project-subproject tuple.   |
+	| `ProjectSubprojectRelID ` | Identifier of the project-subproject relation    | Avoid setting this field explicitly when inserting data, it auto increments. Other tables in the database require this field as a foreign key reference to point to a specific project-subproject tuple.   |
 	| `ProjectID `              | Project identifier                               |                                                                              |
 	| `SubprojectID `           | Subproject identifier                            |                                                                              |
