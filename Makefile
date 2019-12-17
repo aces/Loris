@@ -1,4 +1,4 @@
-.PHONY: clean dev all check checkstatic unittests test phpdev javascript raisinbread
+.PHONY: clean dev all check checkstatic unittests test phpdev javascript testdata
 
 all: VERSION javascript
 	composer install --no-dev
