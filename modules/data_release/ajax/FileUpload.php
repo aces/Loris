@@ -27,7 +27,7 @@ if ($_POST['action'] == 'upload'
     $settings = $factory->settings();
 
     $baseURL = $settings->getBaseURL();
-    $path    = $config->getSetting('dataReleasePath');
+    $path    = \Utility::appendForwardSlash($config->getSetting('dataReleasePath'));
 
     if (!file_exists($path)) {
         error_log(

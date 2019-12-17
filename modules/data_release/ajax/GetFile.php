@@ -17,7 +17,7 @@ $factory = \NDB_Factory::singleton();
 $db      = $factory->database();
 $user    = $factory->user();
 $config  = $factory->config();
-$path    = $config->getSetting('dataReleasePath');
+$path    = \Utility::appendForwardSlash($config->getSetting('dataReleasePath'));
 
 $File = $_GET['File'];
 // Make sure that the user isn't trying to break out of the $path by

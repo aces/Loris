@@ -1005,5 +1005,17 @@ class Utility
 
         return $scan_types;
     }
+
+    /**
+     * Append a forward slash to a path if it doesn't already exist
+     *
+     * @param string $path path to which the slash should be appended
+     *
+     * @return string
+     */
+    static function appendForwardSlash(string $path) : string
+    {
+        return rtrim($path, '/\\') . '/';
+    }
 }
 
