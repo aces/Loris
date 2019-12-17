@@ -30,7 +30,7 @@ $recruitmentEndDate   = $DB->pselectOne(
 $recruitmentData['labels']
     = createChartLabels($recruitmentStartDate, $recruitmentEndDate);
 
-$list_of_sites = Utility::getAssociativeSiteList(true, false);
+$list_of_sites = Utility::getSiteList(true, false);
 
 foreach ($list_of_sites as $siteID => $siteName) {
     $recruitmentData['datasets'][] = array(
