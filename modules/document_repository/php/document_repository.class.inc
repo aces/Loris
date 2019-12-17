@@ -65,6 +65,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         }
         //site
         $siteList = array();
+        $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
@@ -84,11 +85,11 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             }
         }
         //instrument
-        $instruments     = $db->pselect(
+        $instruments     = $db->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Test_name",
             array()
         );
-        $instrumentsList = $this->toDocSelect($instruments, "Test_name", null);
+        $instrumentsList = array_combine($instruments, $instruments);
 
         //file types
         $fileTypeList  = [];
