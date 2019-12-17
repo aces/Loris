@@ -98,10 +98,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                 $this->assertContains("Data Dictionary", $bodyText);
     }
     /**
-      * Testing UI elements when page loads
-      *
-      * @return void
-      */
+     * Testing UI elements when page loads
+     *
+     * @return void
+     */
     function testPageUIs()
     {
         $this->safeGet($this->url . "/datadict/");

@@ -60,8 +60,8 @@ class Datadict extends \DataFrameworkMenu
     public function getFieldOptions() : array
     {
         return array(
-                'sourceFrom' => \Utility::getAllInstruments(),
-               );
+            'sourceFrom' => \Utility::getAllInstruments(),
+        );
     }
 
     /**
