@@ -38,7 +38,7 @@ For information about a specific phan rule, read their [breakdown of all issues 
 
 We use PHPCS to create a consistent coding style for PHP files. It also ensures that documentation is provided for functions and classes.
 
-A list of rules used by LORIS can be found in the file `docs/LorisCS.xml`. These rules apply to the majority of the codebase. The `src/` folder in LORIS is configured to use different PHPCS rules that conform to the PSR2 standard. These rules can be found in `docs/SrcCS.xml`.
+A list of rules used by LORIS can be found in the file `test/LorisCS.xml`. These rules apply to the majority of the codebase. The `src/` folder in LORIS is configured to use different PHPCS rules that conform to the PSR2 standard. These rules can be found in `test/SrcCS.xml`.
 
 As of this writing, the authors of PHPCS have not created a document that explains each and every rule used by PHPCS. If you have issues with your code and PHPCS, please contact us and we'll try to help.
 
@@ -51,7 +51,7 @@ Currently PHPMD is used by LORIS to check for unused code, e.g. variables that a
 
 Similar to `phan`, we aim to gradually increase the rules used by PHPMD to make LORIS clean and stable.
 
-The configuration file for PHPMD can be found at `docs/LorisPHPMD.xml`.
+The configuration file for PHPMD can be found at `test/LorisPHPMD.xml`.
 
 More information about this tool can be found at [the PHP Mess Detector website](http://phpmd.org/documentation/index.html).
 
