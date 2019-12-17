@@ -16,5 +16,5 @@ changes in the following format: PR #1234
 ### Core
 
 
-### Module 
+### Modules 
 #### module1
