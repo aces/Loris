@@ -6,18 +6,22 @@ if (!$user->hasPermission('dataquery_view')) {
     exit;
 }
 require_once __DIR__ . '/../../../vendor/autoload.php';
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize(__DIR__ . '/../../../project/config.xml');
 
-$user        = User::singleton();
-$config      = \NDB_Config::singleton();
-$couchConfig = $config->getSetting('CouchDB');
-$cdb         = \NDB_Factory::singleton()->couchDB(
-    $couchConfig['dbName'],
-    $couchConfig['hostname'],
-    intval($couchConfig['port']),
-    $couchConfig['admin'],
-    $couchConfig['adminpass']
-);
+$DB    = \Database::singleton();
+$query = $_GET['type'] === 'PSCID'
+    ? 'Select PSCID as `value` from candidate'
+    : 'Select CandID as `value` from candidate';
 
+$statement = $DB->prepare($query);
+$results   = $DB->execute($statement, array(), array());
+
+foreach ($results as &$val) {
+    $val['field'] = $_GET['type'] === 'PSCID'
+    ? 'PSCID'
+    : 'CandID';
+    $val['operator'] = 'equal';
+    $val['instrument'] = 'demographics';
+    $val['visit'] = 'All';
+}
+
+$test = '1234';
