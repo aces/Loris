@@ -88,6 +88,8 @@ sudo service apache2 reload
     
 6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation, then restart apache.
 
+If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli.requirements.php) and also [this](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors).
+
 7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
 ## Community
