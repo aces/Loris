@@ -55,7 +55,7 @@ class CouchDBDemographicsImporter
         ),
         'Sex'              => array(
             'Description' => 'Candidate\'s biological sex',
-            'Type' => "enum('Male', 'Female', 'Other')"
+            'Type'        => "enum('Male', 'Female', 'Other')"
         ),
         'Site'             => array(
             'Description' => 'Site that this visit took place at',
@@ -282,7 +282,7 @@ class CouchDBDemographicsImporter
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Sex_proband"]    = array(
                 'Description' => 'Proband\'s biological sex',
-                'Type' => "enum('Male','Female', 'Other')"
+                'Type'        => "enum('Male','Female', 'Other')"
             );
             $this->Dictionary["Age_difference"] = array(
                 'Description' => 'Age difference between the candidate and ' .
