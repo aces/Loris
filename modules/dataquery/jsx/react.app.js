@@ -147,6 +147,7 @@ class DataQueryApp extends Component {
     this.resetQuery = this.resetQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.uploadCSV = this.uploadCSV.bind(this);
   }
 
   onTabChangeHandler(e) {
@@ -903,6 +904,19 @@ class DataQueryApp extends Component {
     this.setState({filter});
   }
 
+  uploadCSV(data) {
+    console.log('yay data is:');
+    console.log(data);
+    data = {
+      activeOperator: '1',
+      children: data.children,
+      session: data.session,
+    };
+    console.log('check: ');
+    console.log(data);
+    this.loadSavedQuery(null, data);
+  }
+
   render() {
     // Renders the html for the component
 
@@ -942,6 +956,7 @@ class DataQueryApp extends Component {
         Visits={this.props.Visits}
         Loading={this.state.loading}
         Active={this.state.ActiveTab == 'DefineFilters'}
+        uploadCSV={this.uploadCSV}
       />
     );
 

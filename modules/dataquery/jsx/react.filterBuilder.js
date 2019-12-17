@@ -574,6 +574,7 @@ class FilterBuilder extends Component {
     };
     this.openModalCSV = this.openModalCSV.bind(this);
     this.closeModalCSV = this.closeModalCSV.bind(this);
+    this.defineCSVCandidates = this.defineCSVCandidates.bind(this);
   }
 
   openModalCSV(e) {
@@ -593,6 +594,7 @@ class FilterBuilder extends Component {
     }, (data) => {
       console.log('ajax data:');
       console.log(data);
+      this.props.uploadCSV(data);
     }, 'json');
     this.closeModalCSV();
   }

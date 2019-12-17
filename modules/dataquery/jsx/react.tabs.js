@@ -151,6 +151,7 @@ class FilterSelectTabPane extends Component {
                        filter={this.props.filter}
                        Visits={this.props.Visits}
                        Active={this.props.Active}
+                       uploadCSV={this.props.uploadCSV}
         />
       </TabPane>
     );
