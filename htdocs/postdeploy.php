@@ -42,6 +42,10 @@ $path_to_file = '../SQL/0000-00-04-Help.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 
+$path_to_file = '../SQL/0000-00-05-ElectrophysiologyTables.sql';
+$sqls         = file_get_contents($path_to_file);
+$conn->exec($sqls);
+
 $pw = password_hash($password, PASSWORD_DEFAULT);
 
 $conn->query(
@@ -50,15 +54,15 @@ $conn->query(
 );
 $RootDir = dirname(getcwd());
 $conn->query(
-    "UPDATE Config SET Value='$RootDir/' 
+    "UPDATE Config SET Value='$RootDir/'
     WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
 );
 $conn->query(
-    "UPDATE Config SET Value='' 
+    "UPDATE Config SET Value=''
     WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 );
 $conn->query(
-    "UPDATE Config SET Value='' 
+    "UPDATE Config SET Value=''
     WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host')"
 );
 
@@ -78,5 +82,3 @@ $file_contents = str_replace("%DATABASE%", "$db", $file_contents);
 file_put_contents('../project/config.xml', $file_contents);
 
 header("Location: /");
-
-
