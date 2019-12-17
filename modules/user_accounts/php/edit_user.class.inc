@@ -256,8 +256,8 @@ class Edit_User extends \NDB_Form
         unset($values['NA_UserID']);
         // generate new password
         if (!empty($values['NA_Password'])) {
-            $values['Password_hash']   = \Utility::randomString();
-            $values['Password_expiry'] = '1990-04-01';
+            $values['Password_hash']    = \Utility::randomString();
+            $values['Password_expired'] = true;
         }
         unset($values['NA_Password']);
         // If editing a user and nothing was specified in the password text field
@@ -493,17 +493,11 @@ class Edit_User extends \NDB_Form
         // and represents a plaintext password, not a hash.
         if (isset($values['Password_hash'])) {
 
-            // Set custom expiry date if the value is present.
-            // Otherwise, use null which will cause the expiry to be 6 months
-            // from the current date.
-            $expiry = isset($values['Password_expiry']) ?
-                new \DateTime($values['Password_expiry'])
-                : null;
             $user->updatePassword(
                 new \Password(
                     htmlspecialchars_decode($values['Password_hash'])
                 ),
-                $expiry
+                $values['Password_expired'] ?? false
             );
         }
 

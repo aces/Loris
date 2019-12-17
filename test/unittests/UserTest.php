@@ -58,7 +58,7 @@ class UserTest extends TestCase
                 'DBAccess'               => '123',
                 'Active'                 => 'Y',
                 'Password_hash'          => null,
-                'Password_expiry'        => '2020-07-16',
+                'Password_expired'        => false,
                 'Pending_approval'       => 'Y',
                 'Doc_Repo_Notifications' => 'Y',
                 'language_preference'    => 2,
@@ -536,17 +536,17 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that updatePassword updates the 'Password_hash' and 'Password_expiry'
-     * fields when both the new password and expiry date are specified
+     * Test that updatePassword updates the 'Password_hash' and 'Password_expired'
+     * fields when both the new password and expiration are specified
      *
      * @return void
      * @covers User::updatePassword
      */
-    public function testUpdatePasswordWithExpiryDate()
+    public function testUpdatePasswordWithExpiration()
     {
         $this->_user = \User::factory(self::USERNAME);
         $oldHash = $this->_user->getData('Password_hash');
-        $customDate = '2021-07-18';
+        $passwordExpired = true;
 
         // Cause usePwnedPasswordsAPI config option to return false.
         $this->_mockConfig->expects($this->any())
@@ -555,21 +555,20 @@ class UserTest extends TestCase
 
         $this->_user->updatePassword(
             new \Password(\Utility::randomString(16)), 
-            new DateTime($customDate)
+            $passwordExpired
         );
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);
 
-        $this->assertEquals($customDate, $this->_user->getData('Password_expiry'));
+        $this->assertEquals(true, $this->_user->getData('Password_expired'));
         // This checks that the hash has been updated. There is no way to predict
         // what the new hash will be, so simply check that it changed!
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
     }
 
     /**
-     * Test that updatePassword updates the 'Password_hash' and 'Password_expiry'
-     * fields when only the password is specified. The 'Password_expiry' should
-     * be updated to today's date plus 6 months if not specified!
+     * Test that updatePassword causes a new password to not be expired by
+     * default.
      *
      * @return void
      * @covers User::updatePassword
@@ -579,7 +578,6 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
 
         $oldHash = $this->_user->getData('Password_hash');
-        $newDate = date('Y-m-d', strtotime('+6 months'));
 
         // Cause usePwnedPasswordsAPI config option to return false.
         $this->_mockConfig->expects($this->any())
@@ -592,7 +590,7 @@ class UserTest extends TestCase
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);
 
-        $this->assertEquals($newDate, $this->_user->getData('Password_expiry'));
+        $this->assertEquals(false, $this->_user->getData('Password_expired'));
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
     }
 

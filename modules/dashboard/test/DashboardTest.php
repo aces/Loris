@@ -2,7 +2,7 @@
 /**
  * Dashboard automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -17,7 +17,7 @@ require_once __DIR__ .
 /**
  * Dashboard module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -40,12 +40,11 @@ class DashboardTest extends LorisIntegrationTest
         //Insert a pending user
         $this->DB->insert(
             "users",
-            [
-                'UserID'          => 'testUser1',
-                'Email'           => 'test@test.com',
-                'Password'        => 'AA1234567!',
-                'Password_expiry' => '2020-01-06',
-            ]
+            array(
+                'UserID'   => 'testUser1',
+                'Email'    => 'test@test.com',
+                'Password' => 'AA1234567!'
+            )
         );
         $user_id = $this->DB->pselectOne(
             "SELECT ID FROM users WHERE UserID=:test_user_id",
