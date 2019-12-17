@@ -68,7 +68,7 @@
 	| `SubprojectID`     | Identifier of the subproject                  | Avoid setting this field explicitly when inserting data, it auto increments. |
 	| `title`            | Name of the subproject                        |                                                                              |
 	| `useEDC`           | Use the Expected date Of Confinement          |                                                                              |
-	| `WindowDifference` |                                               | Deprecated ??                                                                |
+	| `WindowDifference` |                                               | Deprecated                                                                |
 	| `RecruitmentTarget`| Expected number of candidates to be recruited |                                                                              |
 	
 	
