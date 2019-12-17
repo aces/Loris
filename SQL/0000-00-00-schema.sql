@@ -94,7 +94,7 @@ CREATE TABLE `users` (
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
-  `Password_expired` tinyint(1) NOT NULL default 0;
+  `Password_expired` tinyint(1) NOT NULL default 0,
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
@@ -109,7 +109,7 @@ CREATE TABLE `users` (
 
 
 INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expired)
-VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N','2016-03-30');
+VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N',1);
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,
