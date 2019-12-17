@@ -86,8 +86,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // We unconditionally sort within each section because the within-menu
         // order has never been stable in LORIS, and sorting adds some consistency.
         foreach ($menu as $cat => $val) {
+            $val = $val ?? [];
             usort(
-                $val ?? [],
+                $val,
                 function ($a, $b) {
                     return strcmp($a->getLabel(), $b->getLabel());
                 }
