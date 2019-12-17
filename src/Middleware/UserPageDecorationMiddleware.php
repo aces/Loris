@@ -87,7 +87,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // order has never been stable in LORIS, and sorting adds some consistency.
         foreach ($menu as $cat => $val) {
             usort(
-                $val,
+                $val ?? [],
                 function ($a, $b) {
                     return strcmp($a->getLabel(), $b->getLabel());
                 }
