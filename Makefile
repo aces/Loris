@@ -33,6 +33,6 @@ unittests: phpdev
 # Perform all tests that don't require an install.
 check: checkstatic unittests
 
-raisinbread:
+testdata:
 	cd tools/ && php raisinbread_refresh.php
 	cd ..
