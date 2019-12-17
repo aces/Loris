@@ -68,7 +68,9 @@ class Files extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $config = \NDB_Factory::singleton()->config();
-        $path   = $config->getSetting("documentRepositoryPath");
+        $path   = \Utility::appendForwardSlash(
+            $config->getSetting("documentRepositoryPath")
+        );
         switch ($request->getMethod()) {
         case "POST":
             if ($this->uploadDocFile($request)) {
@@ -177,7 +179,9 @@ class Files extends \NDB_Page
         $DB      = $factory->database();
         $user    = $factory->user();
         $config  = $factory->config();
-        $path    = $config->getSetting("documentRepositoryPath");
+        $path    = \Utility::appendForwardSlash(
+            $config->getSetting("documentRepositoryPath")
+        );
         // create Database object
         $Notifier = new \NDB_Notifier(
             "document_repository",
@@ -353,7 +357,9 @@ class Files extends \NDB_Page
         $baseURL        = $factory->settings()->getBaseURL();
         $config         = $factory->config();
         $base           = $config->getSetting('base');
-        $path           = $config->getSetting("documentRepositoryPath");
+        $path           = \Utility::appendForwardSlash(
+            $config->getSetting("documentRepositoryPath")
+        );
         $name           = \User::singleton()->getUsername();
         $DB       = \Database::singleton();
         $category = $req['category']; // required
