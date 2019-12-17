@@ -404,13 +404,9 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
     function isCandidateFemale($candID)
     {
         $DB     = Database::singleton();
-        $gender = $DB->pselectOne(
+        return $DB->pselectOne(
             "SELECT Sex from candidate WHERE CandID=:candID",
             array('candID' => $candID)
-        );
-        if ($gender == 'female') {
-            return true;
-        }
-        return false;
+        ) == 'female';
     }
 }

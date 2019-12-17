@@ -279,7 +279,7 @@ PSCID is only required if the generation type in the Loris config is set to
 The candidate will be created at the site of the user using the API's site.
 A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, and a 400 Bad Request if any data provided is invalid
-(PSCID format, date format, gender something other than Male|Female|Other, invalid project
+(PSCID format, date format, sex set to something other than Male|Female|Other, invalid project
 name, etc). A successful POST request will return the CandID for the newly
 created candidate in a JSON object of the form: 
 
