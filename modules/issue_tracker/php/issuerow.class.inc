@@ -34,9 +34,10 @@ class IssueRow implements \LORIS\Data\DataInstance
     /**
      * Create a new IssueRow
      *
-     * @param array   $row The row (in the same format as \Database::pselectRow
-     *                     returns
-     * @param integer $cid The centerID affiliated with this row.
+     * @param array   $row    The row (in the same format as \Database::pselectRow
+     *                        returns.
+     * @param integer $cid    The centerID affiliated with this row.
+     * @param \Module $module The module that this issue is for.
      */
     public function __construct(array $row, $cid, \Module $module)
     {
@@ -68,7 +69,13 @@ class IssueRow implements \LORIS\Data\DataInstance
         return $this->CenterID;
     }
 
-    public function getModule() : \Module {
+    /**
+     * Return the module that this issue is an issue for.
+     *
+     * @return \Module the module descriptor
+     */
+    public function getModule() : \Module
+    {
         return $this->Module;
     }
 }

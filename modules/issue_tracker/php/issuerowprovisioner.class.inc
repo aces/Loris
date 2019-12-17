@@ -86,10 +86,11 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         // are likely to appear in multiple issues, keep a cache of descriptors
         // that come from the factory.
         static $modules = [];
-        $mname = $row['module'];
+
+        $mname  = $row['module'];
         $module = new \NullModule();
-        if(!empty($mname)) {
-            if(!isset($modules[$mname])) {
+        if (!empty($mname)) {
+            if (!isset($modules[$mname])) {
                 $modules[$mname] = \Module::factory($mname);
             }
             $module = &$modules[$mname];
