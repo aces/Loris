@@ -1,0 +1,2 @@
+ALTER TABLE users DROP COLUMN Password_expiry;
+ALTER TABLE users ADD COLUMN Password_expired TINYINT(1) NOT NULL DEFAULT 0;
