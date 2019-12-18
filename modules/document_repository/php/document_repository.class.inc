@@ -64,7 +64,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                $categoriesList[$arr['id']] =$arr['name'];
         }
         //site
-        $siteList = array();
+        $siteList  = array();
         $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
