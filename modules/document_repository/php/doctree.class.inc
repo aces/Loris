@@ -152,8 +152,8 @@ class DocTree extends \NDB_Page
 
         $currentcategory    = $db->pselect(
             "SELECT id,category_name,comments
-             FROM document_repository_categories WHERE id=$id",
-            array()
+             FROM document_repository_categories WHERE id=:id",
+            array('id' => $id)
         );
         $allsubcategories[] = array('id' => $id);
         foreach ($pids as $pid) {
