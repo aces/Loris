@@ -220,6 +220,11 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $instrument        = 'bmi';
 
         // Ensure that an instrument must be supplied.
+        $this->safeGet($this->url . "/survey_accounts/");
+        $btn = self::$add;
+        $this->webDriver->executescript(
+            "document.querySelector('$btn').click()"
+        );
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
