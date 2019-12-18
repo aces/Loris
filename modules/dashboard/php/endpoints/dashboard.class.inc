@@ -190,7 +190,6 @@ class Dashboard extends Endpoint implements ETagCalculator
         // Data entry conflicts
         if ($user->hasPermission('conflict_resolver')) {
             if ($user->hasPermission('access_all_profiles')) {
-                // todo conflicts used with myTasks
                 $myTasksData['conflicts']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM conflicts_unresolved cu
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID)
