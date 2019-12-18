@@ -56,6 +56,6 @@ foreach ($results as &$val) {
 }
 $results = array(
     'session' => $sessions,
-    'children' => $results
+    'children' => $results,
 );
 echo json_encode($results);

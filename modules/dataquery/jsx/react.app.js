@@ -407,6 +407,18 @@ class DataQueryApp extends Component {
         group.children[i] = this.loadFilterGroup(group.children[i]);
       } else {
         group.children[i] = this.loadFilterRule(group.children[i]);
+        console.log(group.children[i]);
+      }
+      if (group.repeating) {
+        const filterRule = group.children[i];
+        for (let j=0; j< group.children.length; j++) {
+          const session = group.children[j].session;
+          const value = group.children[j].value;
+          group.children[j] = Object.assign({}, filterRule);
+          group.children[j].session = session;
+          group.children[j].value = value;
+        }
+        break;
       }
     }
     group.session = getSessions(group);
@@ -911,6 +923,7 @@ class DataQueryApp extends Component {
       activeOperator: '1',
       children: data.children,
       session: data.session,
+      repeating: true,
     };
     console.log('check: ');
     console.log(data);
