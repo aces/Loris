@@ -124,7 +124,7 @@ interface ICandidate
      * candidates.
      *
      * @param array $candidateParameters Key-value pair(s) of the field(s) to
-     *                                  change and the new value(s).
+     *                                   change and the new value(s).
      *
      * @return void
      */
