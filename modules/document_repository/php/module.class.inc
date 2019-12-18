@@ -62,9 +62,6 @@ class Module extends \Module
     public function getWidgets(string $type, \User $user) {
         switch($type) {
         case 'dashboard':
-            if(!$this->hasAccess($user)) {
-                return [];
-            }
             $factory = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
             $DB = $factory->database();

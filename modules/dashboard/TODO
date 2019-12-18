@@ -1,13 +1,28 @@
 how to handle 2 columns??
+- verify permissions are working
+- run through test plan
+- getJSDependencies?
+- getCSSDependencies?
 
+Still to fix:
 My Tasks widget
 Recruitment widget - CONVERT TO REACT, FIX D3/C3
-
     recruitment[overall]
     recruitment[not overall]
-
     project?
 
 Study Progression
-    -fix
+    -fix entirely
+
 Behavioural Feedback Notifications
+    - fix hasAccess
+issue tracker
+
+
+Status:
+Welcome (done)
+Recruitment (partial)
+Study Progression (very partial)
+My Tasks (not started)
+Docuemnt Repository (done)
+BVL Feedback (done)

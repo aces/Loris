@@ -40,7 +40,9 @@ class Dashboard extends \NDB_Form
 
         $widgets = [];
         foreach($modules as $module) {
-            $widgets = array_merge($widgets, $module->getWidgets('dashboard', $user));
+            if($module->hasAccess($user)) {
+                $widgets = array_merge($widgets, $module->getWidgets('dashboard', $user));
+            }
         }
         $this->tpl_data['widgets'] = $widgets;
     }
