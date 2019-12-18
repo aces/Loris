@@ -475,7 +475,7 @@ class Dashboard extends Endpoint implements ETagCalculator
      * @return array
      */
     function createProjectProgressBar(
-        $ID,
+        string $ID,
         string $title,
         int $recruitmentTarget,
         int $totalRecruitment,
