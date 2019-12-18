@@ -64,8 +64,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                $categoriesList[$arr['id']] =$arr['name'];
         }
         //site
-        $siteList  = array();
-        $visitList = \Utility::getVisitList();
+        $siteList = array();
+
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
@@ -141,28 +141,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
              "name" => $categoryName,
              "id"   => $id,
          );
-    }
-    /**
-     * Utility function to convert data from database to a
-     * (select) dropdown friendly format
-     *
-     * @param array  $options array of options
-     * @param string $item    key
-     * @param string $item2   value
-     *
-     * @return array
-     */
-    function toDocSelect($options, $item, $item2): array
-    {
-        $selectOptions = array();
-        $optionsValue  = $item;
-        if (isset($item2)) {
-            $optionsValue = $item2;
-        }
-        foreach (array_keys($options) as $key) {
-            $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
-        }
-        return $selectOptions;
     }
 
     /**

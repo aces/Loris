@@ -236,11 +236,11 @@ class Files extends \NDB_Page
         //site
         $siteList = \Utility::getSiteList(false);
         //instrument
-        $instruments     = $db->pselect(
+        $instruments     = $db->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Test_name",
             array()
         );
-        $instrumentsList = $this->toDocSelect($instruments, "Test_name", null);
+        $instrumentsList = array_combine($instruments, $instruments);
         //docFile
         $query   ="SELECT " .
                 "record_id as id, " .
@@ -302,34 +302,7 @@ class Files extends \NDB_Page
             "id"   => $id,
         );
     }
-    /**
-     * Utility function to convert data from database to a
-     * (select) dropdown friendly format
-     *
-     * @param array  $options array of options
-     * @param string $item    key
-     * @param string $item2   value
-     *
-     * @return array
-     */
-    function toDocSelect($options, $item, $item2): array
-    {
-        $selectOptions = array();
 
-        $optionsValue = $item;
-        if (isset($item2)) {
-            $optionsValue = $item2;
-        }
-
-        // FIXME OPTIONSOPTIONSOPTIONS
-        // These variable names should be more descriptive.
-        foreach ($options as $option) {
-            $selectOptions[$options[$option][$optionsValue]]
-                = $options[$option][$item];
-        }
-
-        return $selectOptions;
-    }
     /**
      * Handles the document upload process
      *
