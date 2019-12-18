@@ -108,8 +108,8 @@ CREATE TABLE `users` (
 
 
 
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expired)
-VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N',1);
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expired);
+VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N',0);
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,

@@ -58,7 +58,7 @@ class UserTest extends TestCase
                 'DBAccess'               => '123',
                 'Active'                 => 'Y',
                 'Password_hash'          => null,
-                'Password_expired'        => false,
+                'Password_expired'        => 0,
                 'Pending_approval'       => 'Y',
                 'Doc_Repo_Notifications' => 'Y',
                 'language_preference'    => 2,
@@ -590,7 +590,7 @@ class UserTest extends TestCase
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);
 
-        $this->assertEquals(false, $this->_user->getData('Password_expired'));
+        $this->assertEquals(0, $this->_user->getData('Password_expired'));
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
     }
 
