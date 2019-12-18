@@ -1870,7 +1870,7 @@ RadioElement.propTypes = {
   options: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
-  checked: PropTypes.string,
+  checked: PropTypes.string.isRequired,
   errorMessage: PropTypes.string,
   elementClass: PropTypes.string,
   onUserInput: PropTypes.func,
