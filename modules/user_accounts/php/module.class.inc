@@ -74,4 +74,28 @@ class Module extends \Module
     {
         return "User Accounts";
     }
+
+    public function getWidgets(string $type, \User $user) : array {
+        switch($type) {
+        case "usertasks":
+            $factory = \NDB_Factory::singleton();
+            $DB = $factory->database();
+            $baseURL = $factory->settings()->getBaseURL();
+            return [
+                new \LORIS\GUI\TaskQueryWidget(
+                    $user,
+                    "Pending account approval",
+                    $DB,
+                    "SELECT COUNT(DISTINCT users.UserID) FROM users
+                        LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
+                    WHERE users.Pending_approval='Y'
+                        AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
+                    'user_accounts_multisite',
+                    'upr.CenterID',
+                    $baseURL . "/user_accounts/?pendingApproval=Y"
+                )
+            ];
+        }
+        return [];
+    }
 }

@@ -5,7 +5,7 @@ how to handle 2 columns??
 - getCSSDependencies?
 
 Still to fix:
-My Tasks widget
+All links in my tasks inexplicably go to imaging browser
 Recruitment widget - CONVERT TO REACT, FIX D3/C3
     recruitment[overall]
     recruitment[not overall]
@@ -14,20 +14,17 @@ Recruitment widget - CONVERT TO REACT, FIX D3/C3
 Study Progression
     -fix entirely
 
-Behavioural Feedback Notifications
-
-
 Status:
 Welcome (done)
 Recruitment (partial)
 Study Progression (very partial)
-My Tasks (not started)
-    - add all task types
-        - conflict resolver (partial, need all/vs some sites)
-        - incomplete forms (partial, need all/vs some sites)
-        - imaging browser new and pending
-        - violated scans
-        - pending users
-        - issues assigned
+My Tasks (done with bug)
+    - add all task types - all links go to imaging_browser????
+        - conflict resolver (done)
+        - incomplete forms (done)
+        - imaging browser new and pending (done)
+        - violated scans (done)
+        - pending users (done)
+        - issues assigned (done)
 Docuemnt Repository (done)
 BVL Feedback (done)

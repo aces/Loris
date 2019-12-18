@@ -87,24 +87,18 @@ class Module extends \Module
             $factory = \NDB_Factory::singleton();
             $DB = $factory->database();
             $baseURL = $factory->settings()->getBaseURL();
-
-            $incomplete = $DB->pselectOne(
-                "SELECT COUNT(*) FROM flag
-                LEFT JOIN session s ON (s.ID=flag.SessionID)
-                LEFT JOIN candidate c ON (s.CandID=c.CandID)
-                WHERE flag.Data_entry='In Progress'
-                AND s.Active='Y' AND c.Active='Y' AND s.CenterID <> 1",
-                array()
-            );
-            $label = "Incomplete form";
-            if($incomplete != 1) {
-                $label .= "s";
-
-            }
             return [
-                new \LORIS\GUI\TaskWidget(
-                    $label,
-                    (int )$incomplete,
+                new \LORIS\GUI\TaskQueryWidget(
+                    $user,
+                    "Incomplete form",
+                    $DB,
+                    "SELECT COUNT(*) FROM flag
+                        LEFT JOIN session s ON (s.ID=flag.SessionID)
+                        LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                    WHERE flag.Data_entry='In Progress'
+                        AND s.Active='Y' AND c.Active='Y'",
+                    'access_all_profiles',
+                    's.CenterID',
                     $baseURL . "/statistics/statistics_site/"
                 )
             ];

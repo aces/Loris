@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-xs-4 text-right alert-chevron">
                     <span class="glyphicon glyphicon-chevron-right medium"></span>
-                    <p class="small task-site">Site: xxx</p>
+                    <p class="small task-site">{$task->SiteLabel()}</p>
                 </div>
             </div>
         </a>

@@ -23,6 +23,11 @@ class TaskWidget implements \LORIS\GUI\Widget {
     public function Link() : string {
         return $this->link;
     }
+
+    public function SiteLabel() : string {
+        return "";
+    }
+
     public function __toString() {
         // The dashboard module just uses the methods on this
         // to get metadata, it handles the rendering itself.

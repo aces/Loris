@@ -61,4 +61,29 @@ class Module extends \Module
     {
         return "MRI Violated Scans";
     }
+
+    public function getWidgets(string $type, \User $user) : array {
+        switch($type) {
+        case "usertasks":
+            $factory = \NDB_Factory::singleton();
+            $DB = $factory->database();
+            $baseURL = $factory->settings()->getBaseURL();
+
+            return [
+                new \LORIS\GUI\TaskQueryWidget(
+                    $user,
+                    "Violated scan",
+                    $DB,
+                    "SELECT COUNT(*) FROM mri_protocol_violated_scans
+                        LEFT JOIN candidate c USING (CandID)
+                    WHERE 1 = 1 ",
+                    "violated_scans_view_allsites",
+                    "c.RegistrationCenterID",
+                    $baseURL . "/" . $this->getName()
+                )
+            ];
+
+        }
+        return [];
+    }
 }
