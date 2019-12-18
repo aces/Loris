@@ -201,7 +201,6 @@ class Dashboard extends Endpoint implements ETagCalculator
                 );
                 $myTasksData['conflicts_site'] = 'Sites: all';
             } else {
-                // todo
                 $myTasksData['conflicts']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM conflicts_unresolved cu
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID)
