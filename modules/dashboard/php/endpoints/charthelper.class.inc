@@ -236,7 +236,7 @@ class ChartHelper extends Endpoint implements ETagCalculator
     {
         $DB            = \NDB_Factory::singleton()->database();
         $sexData       = array();
-        $list_of_sites = \Utility::getAssociativeSiteList(true, false);
+        $list_of_sites = \Utility::getSiteList(true, false);
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
