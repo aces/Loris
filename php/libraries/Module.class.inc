@@ -459,4 +459,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
         return [];
     }
+
+    public function getWidgets(string $type, \User $user) {
+        return [];
+    }
 }

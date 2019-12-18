@@ -35,4 +35,40 @@ class Module extends \Module
     {
         return "Dashboard";
     }
+
+    public function getWidgets(string $type, \User $user) {
+        switch($type) {
+        case 'dashboard':
+            $factory = \NDB_Factory::singleton();
+            $DB = $factory->database();
+            $config = $factory->config();
+            $last_login = $user->getLastLogin($DB);
+            $projectdesc = $config->getSetting('projectDescription');
+            $dashboard_links = $config->getExternalLinks('dashboard');
+            $links = [];
+            foreach ($dashboard_links as $text => $url) {
+                $links[] = array(
+                            'url'        => $url,
+                            'label'      => $text,
+                            'WindowName' => md5($url),
+                        );
+            }
+
+            return [
+                new \LORIS\GUI\SmartyWidget(
+                    $this,
+                    "welcome.tpl",
+                    [
+                        'username' => $user->getFullname(),
+                        'last_login' => $last_login ?? "...never. Welcome!",
+                        'project_description' => $projectdesc,
+                        'dashboard_links' => $links,
+                    ],
+                )
+            ];
+        }
+        return [];
+        
+    }
+
 }

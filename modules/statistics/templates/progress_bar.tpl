@@ -19,7 +19,6 @@
             </div>
             <p class="pull-right small target">Target: {$project['recruitment_target']}</p>
         </div>
-
     {else}
         <div class="progress">
             <div class="progress-bar progress-bar-female" role="progressbar" style="width: {$project['female_percent']}%" data-toggle="tooltip" data-placement="bottom" title="{$project['female_percent']}%">

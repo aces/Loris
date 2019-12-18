@@ -58,4 +58,44 @@ class Module extends \Module
     {
         return "Document Repository";
     }
+
+    public function getWidgets(string $type, \User $user) {
+        switch($type) {
+        case 'dashboard':
+            if(!$this->hasAccess($user)) {
+                return [];
+            }
+            $factory = \NDB_Factory::singleton();
+            $baseURL = $factory->settings()->getBaseURL();
+            $DB = $factory->database();
+
+            $last_login = $user->getLastLogin($DB);
+
+            $docs= $DB->pselect(
+                "SELECT File_name, Date_uploaded, Data_dir FROM document_repository
+                 ORDER BY Date_uploaded DESC LIMIT 4",
+                array()
+            );
+            for ($i=0; $i < sizeof($docs); $i++) {
+                if ($docs[$i]['Date_uploaded'] > $last_login) {
+                    $docs[$i]['new'] = true;
+                } else {
+                    $docs[$i]['new'] = false;
+                }
+            }
+
+            return [
+                new \LORIS\GUI\SmartyWidget(
+                    $this,
+                    "docnotifications.tpl",
+                    [
+                        'baseURL' => $baseURL,
+                        'notifications' => $docs
+                    ]
+                )
+            ];
+        }
+        return [];
+    }
+
 }

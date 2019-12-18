@@ -533,7 +533,6 @@ class User extends UserPermissions
         );
     }
 
-
     /**
      * Return the last login of this user to the given database.
      *
@@ -558,6 +557,5 @@ class User extends UserPermissions
         }
         return new \DateTime($time);
     }
-
 }
 
