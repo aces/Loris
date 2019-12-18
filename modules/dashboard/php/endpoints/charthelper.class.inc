@@ -92,7 +92,7 @@ class ChartHelper extends Endpoint implements ETagCalculator
      *
      * @return array
      */
-    function populateDataForScanLineChart($values) : array
+    function populateDataForScanLineChart(array $values) : array
     {
         $DB = \NDB_Factory::singleton()->database();
 
