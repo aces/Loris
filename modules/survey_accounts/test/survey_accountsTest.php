@@ -208,8 +208,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     * Tests that, when add a survey without visit tag
-     * it should appear the error message
+     * Tests that errors are correctly displayed when the user enters incorrect
+     * or invalid values.
+     * The error messages used in this function come from the file
+     * modules/survey_accounts/php/addsurvey.class.inc
      *
      * @return void
      */
@@ -234,6 +236,35 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("VL")
         )->sendKeys($visitLabel);
+        $this->safeFindElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+        $bodyText =  $this->safeFindElement(
+            WebDriverBy::cssSelector(".error")
+        )->getText();
+        $this->assertContains(
+            "Please choose an instrument.",
+            $bodyText
+        );
+
+        // Ensure visit label exists for a candidate.
+        $this->safeGet($this->url . "/survey_accounts/");
+        $btn = self::$add;
+        $this->webDriver->executescript(
+            "document.querySelector('$btn').click()"
+        );
+        $this->safeFindElement(
+            WebDriverBy::Name("CandID")
+        )->sendKeys("999999");
+        $this->safeFindElement(
+            WebDriverBy::Name("PSCID")
+        )->sendKeys("8889");
+        $this->safeFindElement(
+            WebDriverBy::Name("VL")
+        )->sendKeys($visitLabel);
+        $this->safeFindElement(
+            WebDriverBy::Name("Test_name")
+        )->sendKeys($instrument);
         $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
