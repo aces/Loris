@@ -42,6 +42,16 @@ class Module extends \Module
             $factory = \NDB_Factory::singleton();
             $DB = $factory->database();
             $config = $factory->config();
+            return [
+                $this->getWelcomeWidget($DB, $config, $user),
+                $this->getTasksWidget()
+            ];
+        }
+        return [];
+        
+    }
+
+    private function getWelcomeWidget(\Database $DB, \NDB_Config $config, \User $user) {
             $last_login = $user->getLastLogin($DB);
             $projectdesc = $config->getSetting('projectDescription');
             $dashboard_links = $config->getExternalLinks('dashboard');
@@ -54,21 +64,34 @@ class Module extends \Module
                         );
             }
 
-            return [
-                new \LORIS\GUI\SmartyWidget(
-                    $this,
-                    "welcome.tpl",
-                    [
-                        'username' => $user->getFullname(),
-                        'last_login' => $last_login ?? "...never. Welcome!",
-                        'project_description' => $projectdesc,
-                        'dashboard_links' => $links,
-                    ],
-                )
-            ];
-        }
-        return [];
-        
+        return new \LORIS\GUI\SmartyWidget(
+            $this,
+            "welcome.tpl",
+            [
+                'username' => $user->getFullname(),
+                'last_login' => $last_login ?? "...never. Welcome!",
+                'project_description' => $projectdesc,
+                'dashboard_links' => $links,
+            ],
+        );
     }
+    private function getTasksWidget() {
+        $DB      = \NDB_Factory::singleton()->database();
+        $modules = \Module::getActiveModules($DB);
+        $user   = \User::singleton();
 
+        $widgets = [];
+        foreach($modules as $module) {
+            if($module->hasAccess($user)) {
+                $widgets = array_merge($widgets, $module->getWidgets('usertasks', $user));
+            }
+        }
+        return new \LORIS\GUI\SmartyWidget(
+            $this,
+            "mytasks.tpl",
+            [
+                'tasks' => $widgets
+            ],
+        );
+    }
 }

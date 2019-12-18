@@ -58,4 +58,34 @@ class Module extends \Module
     {
         return "Conflict Resolver";
     }
+
+    public function getWidgets(string $type, \User $user) : array {
+        switch($type) {
+        case 'usertasks':
+            $factory = \NDB_Factory::singleton();
+            $baseURL = $factory->settings()->getBaseURL();
+            $DB = $factory->database();
+            $conflicts = $DB->pselectOne("SELECT COUNT(*) FROM conflicts_unresolved cu
+                     LEFT JOIN flag ON (cu.CommentId1=flag.CommentID)
+                     LEFT JOIN session s ON (flag.SessionID=s.ID)
+			         LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                     WHERE s.CenterID <> 1
+			         AND s.Active='Y' AND c.Active='Y'",
+                    array()
+            );
+            
+            $label = "Data entry conflict";
+            if($conflicts != 1) {
+                $label .= "s";
+            }
+            return [
+                new \LORIS\GUI\TaskWidget(
+                    $label,
+                    (int )$conflicts,
+                    $baseURL . "/" . $this->getName()
+                )
+            ];
+        }
+        return [];
+    }
 }

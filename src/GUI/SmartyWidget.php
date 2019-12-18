@@ -2,7 +2,7 @@
 
 namespace LORIS\GUI;
 
-class SmartyWidget {
+class SmartyWidget implements Widget {
     protected $renderer;
     protected $tpl_data;
     protected $template;

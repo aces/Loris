@@ -2,6 +2,6 @@
 
 namespace LORIS\GUI;
 
-abstract class Widget {
-    abstract public function __toString();
+interface Widget {
+    public function __toString();
 }
