@@ -65,7 +65,7 @@ class Dashboard extends Endpoint implements ETagCalculator
         $response = $this->initializeSetup();
 
         return new \LORIS\Http\Response\JsonResponse(
-            $response
+            $this->initializeSetup();
         );
     }
 
