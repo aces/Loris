@@ -152,7 +152,7 @@ class Dashboard extends Endpoint implements ETagCalculator
                 );
             }
             $recruitmentData = $this->createProjectProgressBar(
-                $projectID,
+                strval($projectID),
                 $projectInfo['Name'],
                 intval($projectInfo['recruitmentTarget']),
                 $this->getTotalRecruitmentByProject($projectID),
