@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
 /**
- * POST request methods.
- *
- * Used with c3.js for the Dashboard.
+ * Used with c3.js for the Dashboard
+ * such as for building charts & graphs.
  *
  * PHP Version 7
  *
@@ -20,7 +19,8 @@ use \LORIS\api\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
 
 /**
- * The NDB_Page for the POST requests.
+ * Used with c3.js for the Dashboard
+ * such as for building charts & graphs.
  *
  * @category Loris
  * @package  Dashboard
@@ -261,7 +261,7 @@ class ChartHelper extends Endpoint implements ETagCalculator
 
     /**
      * Returns true if the user has permission to access
-     * the Genomic Browser module
+     * the Dashboard module
      *
      * @param \User $user The user whose access is being checked
      *

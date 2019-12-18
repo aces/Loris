@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 /**
- * POST request methods.
- *
- * Used for populating the Dashboard.
+ * Used for populating the Dashboard with panels
+ * such as welcome, recruitment, study progress, tasks,
+ * document repository and behavioural_qc.
  *
  * PHP Version 7
  *
@@ -20,7 +20,9 @@ use \LORIS\api\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
 
 /**
- * The NDB_Page for the POST requests.
+ * Used for populating the Dashboard with panels
+ * such as welcome, recruitment, study progress, tasks,
+ * document repository and behavioural_qc.
  *
  * @category Loris
  * @package  Dashboard
@@ -64,7 +66,7 @@ class Dashboard extends Endpoint implements ETagCalculator
     {
 
         return new \LORIS\Http\Response\JsonResponse(
-            $this->initializeSetup();
+            $this->initializeSetup()
         );
     }
 
@@ -102,26 +104,26 @@ class Dashboard extends Endpoint implements ETagCalculator
         );
 
         $siteID = $user->getCenterIDs();
-        // todo user_site used with myTasks
+        // user_site used with myTasks
         $myTasksData['user_site'] = $siteID;
 
         // Welcome panel
-        // todo username used with welcome
+        // username used with welcome
         $welcomeData['username'] = $user->getFullname();
         if ($lastLogin) {
-            // todo lastLogin used with welcome
+            // lastLogin used with welcome
             $welcomeData['lastLogin'] = $lastLogin;
         } else {
-            // todo
+            // first login ever for the user.
             $welcomeData['lastLogin'] = '...never. Welcome!';
         }
-        // todo projectDescription used with welcome
+        // projectDescription used with welcome
         $welcomeData['projectDescription']
             = $config->getSetting('projectDescription');
         $dashboard_links = $config->getExternalLinks('dashboard');
         if (!empty($dashboard_links)) {
             foreach ($dashboard_links as $text => $url) {
-                // todo dashboard_links used with welcome
+                // dashboard_links used with welcome
                 $welcomeData['links'][]
                     = array(
                         'url'        => $url,
@@ -158,8 +160,7 @@ class Dashboard extends Endpoint implements ETagCalculator
             );
         }
 
-        // Charts
-        // todo total_scans used with recruitment
+        // Charts - total_scans used with recruitment
         $recruitmentData['total_scans'] = $DB->pselectOne(
             "SELECT COUNT(*) FROM files f
 		LEFT JOIN session s ON (s.ID=f.SessionID)
@@ -169,11 +170,8 @@ class Dashboard extends Endpoint implements ETagCalculator
             array()
         );
 
-        // Tasks
-
-        // New scans
+        // New scans - new_scans used with myTasks
         if ($user->hasPermission('imaging_browser_qc')) {
-            // todo new_scans used with myTasks
             $myTasksData['new_scans']      = $DB->pselectOne(
                 "SELECT COUNT(DISTINCT s.ID)
                  FROM files f
@@ -489,7 +487,7 @@ class Dashboard extends Endpoint implements ETagCalculator
             if ($ID == 'overall') {
                 $totalFemales = $this->getTotalSex('Female');
             } else {
-                $totalFemales = $this->getTotalSexByProject('Female', $ID);
+                $totalFemales = $this->getTotalSexByProject('Female', intval($ID));
             }
             $recruitmentData['progress'][$ID]['female_total']   = $totalFemales;
             $recruitmentData['progress'][$ID]['female_percent']
@@ -498,7 +496,7 @@ class Dashboard extends Endpoint implements ETagCalculator
             if ($ID == 'overall') {
                 $totalMales = $this->getTotalSex('Male');
             } else {
-                $totalMales = $this->getTotalSexByProject('Male', $ID);
+                $totalMales = $this->getTotalSexByProject('Male', intval($ID));
             }
             $recruitmentData['progress'][$ID]['male_total']   = $totalMales;
             $recruitmentData['progress'][$ID]['male_percent']
@@ -520,7 +518,7 @@ class Dashboard extends Endpoint implements ETagCalculator
 
     /**
      * Returns true if the user has permission to access
-     * the Genomic Browser module
+     * the Dashboard module
      *
      * @param \User $user The user whose access is being checked
      *
