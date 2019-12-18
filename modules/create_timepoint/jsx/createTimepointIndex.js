@@ -216,12 +216,12 @@ class CreateTimepoint extends React.Component {
         },
         body: send,
       }).then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else if (response.statusText === 'Conflict') {
-          return response.json();
-        }
-      })
+      if (response.ok) {
+        return response.json();
+      } else if (response.statusText === 'Conflict') {
+        return response.json();
+      }
+    })
       .then((data) => {
         if (data.error) {
           // display conflicts on form.
