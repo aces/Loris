@@ -461,7 +461,7 @@ class Dashboard extends Endpoint implements ETagCalculator
     /**
      * Creates the template data for a progress bar
      *
-     * @param string  $ID                ID for the progress bar
+     * @param string $ID                ID for the progress bar
      * @param string $title             Title for the progress bar
      * @param int    $recruitmentTarget Target number of candidates
      * @param int    $totalRecruitment  Total number of candidates
