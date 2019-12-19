@@ -81,7 +81,8 @@ const config = [{
       },
       {
         test: /\.json$/,
-        loader: 'json',
+        type: 'javascript/auto',
+        loader: 'json-loader',
       },
     ],
   },
