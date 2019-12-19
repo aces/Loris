@@ -119,47 +119,13 @@ class Utility
     /**
      * Returns a list of sites in the database
      *
-     * @param bool $study_site If true only return sites that are
-     *                         study sites according to the psc
-     *                         table
-     *
-     * @return array an associative array("center ID" => "site name")
-     */
-    static function getSiteList(bool $study_site = true): array
-    {
-        $factory = NDB_Factory::singleton();
-        $DB      = $factory->database();
-
-        // get the list of study sites - to be replaced by the Site object
-        $query = "SELECT CenterID, Name FROM psc ";
-        if ($study_site) {
-            $query .= "WHERE Study_site='Y'";
-        }
-        $result = $DB->pselect($query, array());
-
-        // fix the array
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
-        }
-        natcasesort($list);
-        return $list;
-    }
-
-
-    /**
-     * Get the list of sites as an associative array
-     *
      * @param boolean $study_site if true only return study sites from psc
      *                            table
      * @param boolean $DCC        Whether the DCC should be included or not
      *
-     * @return array of the form CenterID => Site Name.
-     *         Note that even though CenterID is numeric, the array
-     *         should be interpreted as an associative array since the keys
-     *         refer to the centerID, not the array index.
+     * @return array an associative array("center ID" => "site name")
      */
-    static function getAssociativeSiteList(
+    static function getSiteList(
         bool $study_site = true,
         bool $DCC = true
     ): array {
@@ -183,6 +149,31 @@ class Utility
             $list[$row["CenterID"]] = $row["Name"];
         }
         return $list;
+    }
+
+
+    /**
+     * Get the list of sites as an associative array
+     *
+     * @param boolean $study_site if true only return study sites from psc
+     *                            table
+     * @param boolean $DCC        Whether the DCC should be included or not
+     *
+     * @return array of the form CenterID => Site Name.
+     *         Note that even though CenterID is numeric, the array
+     *         should be interpreted as an associative array since the keys
+     *         refer to the centerID, not the array index.
+     *
+     * @deprecated
+     */
+    static function getAssociativeSiteList(
+        bool $study_site = true,
+        bool $DCC = true
+    ): array {
+        throw new \DeprecatedException(
+            ' This function is deprecated. Please use \Utility::getSiteList()'
+            . ' instead.'
+        );
     }
 
     /**
