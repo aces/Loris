@@ -52,7 +52,7 @@ class Welcome extends Component {
           )}
         >
           <h3 className='welcome'>Welcome,
-            &nbsp;{this.props.data ? this.props.data.username : null}
+            &nbsp;{this.props.data ? this.props.data.username : null}!
           </h3>
           <p className='pull-right small login-time'>
             Last login: {this.props.data ? this.props.data.lastLogin : null}
