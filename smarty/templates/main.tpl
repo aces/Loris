@@ -102,7 +102,7 @@
                     <ul class="nav navbar-nav">
                         {foreach from=$menus item=menuitems key=category}
                              <li class="dropdown">
-                                <a href="#" class="dropdown-toggle"> {$category}
+                                <a href="#" class="dropdown-toggle">{$category}<b class="caret"></b>
                                     <ul class="dropdown-menu">
                                         {section name=itemloop loop=$menuitems}
                                         <li><a href="{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
