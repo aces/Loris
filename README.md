@@ -92,6 +92,22 @@ If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli
 
 7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
+### Upgrade Step
+
+Backing Up the Database Before Upgrading the Database Schemas.
+If you have installed previous version Loris, you can upgrade Loris to the latest in the following ways:
+
+1. Using Git command checkout to the latest version of Loris. 
+ ```bash
+ git checkout aces/22.0-release
+ ```
+2.-- Manual upgrade(optional): Run upgrade.sql files in your database in the /var/www/$projectname/SQL/Release_patches/ directory.
+  -- Automatic upgrade(optional): Run loris_db_upgrade.php in /var/www/$projectname/tools/ directory.
+ ```bash
+ cd /var/www/$projectname/tools/
+ php loris_db_upgrade.php 
+ ```
+
 ## Community
 
 ### Get in touch
