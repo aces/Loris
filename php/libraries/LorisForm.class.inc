@@ -2200,10 +2200,9 @@ class LorisForm
      *
      * @param string         $el    The name of the element which has an error.
      * @param (string|array) $error The error to display with the element.
-     *                              if $error is string: the error message to show;
-     *                              if $error is array: an array of element to
-     *                              error message, multiple items in one section
-     *                              supported.
+     *                              string: the error message to show;
+     *                              array : an array of element to error message,
+     *                              multiple items in one section supported.
      *
      * @return void
      */
