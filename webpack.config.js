@@ -79,11 +79,6 @@ const config = [{
         ],
         enforce: 'pre',
       },
-      {
-        test: /\.json$/,
-        type: 'javascript/auto',
-        loader: 'json-loader',
-      },
     ],
   },
   resolve: {
