@@ -1,11 +1,14 @@
+bugs fixed in mytasks
+    - assigned issues did not show up unless developer 
+    - no multisite permission for 
+        - violated scans
+        - imaging browser qc
 how to handle 2 columns??
-- verify permissions are working
 - run through test plan
 - getJSDependencies?
 - getCSSDependencies?
 
 Still to fix:
-All links in my tasks inexplicably go to imaging browser
 Recruitment widget - CONVERT TO REACT, FIX D3/C3
     recruitment[overall]
     recruitment[not overall]
@@ -18,13 +21,6 @@ Status:
 Welcome (done)
 Recruitment (partial)
 Study Progression (very partial)
-My Tasks (done with bug)
-    - add all task types - all links go to imaging_browser????
-        - conflict resolver (done)
-        - incomplete forms (done)
-        - imaging browser new and pending (done)
-        - violated scans (done)
-        - pending users (done)
-        - issues assigned (done)
+My Tasks (done)
 Docuemnt Repository (done)
 BVL Feedback (done)

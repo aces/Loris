@@ -7,7 +7,7 @@
     {if !empty($tasks)}
     {foreach from=$tasks item=task}
     {if $task->Number() neq 0}
-        <a href="{$task->Link()}" class="list-group-item new-scans">
+        <a href="{$task->Link()}" class="list-group-item">
             <div class="row">
                 <div class="col-xs-8 text-left">
                     <div class="huge">{$task->Number()}</div>
