@@ -2198,17 +2198,33 @@ class LorisForm
      * Sets an error for the given element to be displayed to the
      * user
      *
-     * @param string $el    The name of the element which has an error
-     * @param string $error The error to display with the element.
+     * @param string       $el    The name of the element which has an error.
+     * @param string/array $error The error to display with the element.
+     *                            if $error is string: the error message to show;
+     *                            if $error is array: an array of element to message,
+     *                            multiple items in one section supported.
      *
      * @return void
      */
     function setElementError($el, $error)
     {
-        if (isset($this->form[$el]) && $this->form[$el]) {
-            $this->form[$el]["error"] = $error;
+        if (is_array($error)) {
+            $items = $this->form[$el];
+            foreach ($items['elements'] as $idx => $itm) {
+                foreach ($error as $key => $message) {
+                    if ($itm['name'] == $key) {
+                        $this->errors[$key] = $message;
+                        $this->form[$el]['elements'][$idx]["error"] = $message;
+                        break;
+                    }
+                }
+            }
+        } else {
+            if (isset($this->form[$el]) && $this->form[$el]) {
+                $this->form[$el]["error"] = $error;
+            }
+            $this->errors[$el] = $error;
         }
-        $this->errors[$el] = $error;
     }
 
     /**
