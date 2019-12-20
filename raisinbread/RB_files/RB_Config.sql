@@ -94,5 +94,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (97,70,'/data-raisinbrea
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (98,93,'V1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (99,101,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (102,19,'false');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (103,102,'/data/document_repository_uploads/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (104,103,'/data/data_release_uploads/');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
