@@ -20,8 +20,8 @@
         <username>%USERNAME%</username>
         <password>%PASSWORD%</password>
         <database>%DATABASE%</database>
-        <quatUser>%USERNAME%</quatUser>
-        <quatPassword>%PASSWORD%</quatPassword>
+        <adminUser>%USERNAME%</adminUser>
+        <adminPassword>%PASSWORD%</adminPassword>
         <name>Example database</name>
     </database>
 
@@ -43,7 +43,7 @@
                 <seq type="alphanumeric" length="4"/> <!-- Ex: AAA0001-->
             </structure>
         </PSCID>
-        
+
         <ExternalID>
             <generation>random</generation>
             <structure>
@@ -116,8 +116,5 @@
             <permission>sampleInstrument2PermissionName</permission>
         </instrument>
     </instrumentPermissions>
-
-    <!-- MINC TOOLS PATH -->
-    <MINCToolsPath>%MINCTOOLSPATH%</MINCToolsPath>
 
 </config>

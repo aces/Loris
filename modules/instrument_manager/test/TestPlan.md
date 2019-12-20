@@ -4,10 +4,10 @@
    [Automation Testing]
 2. Check that `Instrument Manager` menu-item exists on a default install under Admin menu-item 
    [Automation Testing]
-3. Check that the warning text is accurate if the `project/instruments` or `project/sql_tables` directories are not writable by Apache. The select file/upload panel should only be there if it's writable.
+3. Check that the warning text is accurate if the `project/instruments` or `project/tables_sql` directories are not writable by Apache. The select file/upload panel should only be there if it's writable.
    [Manual Testing]
-4. Take the sample .linst instrument file `test_all_fields.linst` in `docs/instruments` and upload it in Instrument Manager.
-Check that instrument gets installed properly - instruments/ tables_sql/ . 
+4. Take the sample .linst instrument file `test_all_fields.linst` in `docs/instruments` and upload it in Instrument Manager. This must be done be a user with the `superuser` permission.
+Check that instrument gets installed properly. (New files should exist in `project/instruments/` & `project/tables_sql/`.) 
 Also check the paths in the code - eg uploaded instruments in the instruments directory with right permissions.
    [Manual Testing]
 5. Upload the same instrument again. Ensure that a 409 Conflict response is returned and that an appropriate error message is displayed.

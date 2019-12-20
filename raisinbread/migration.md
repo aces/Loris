@@ -41,11 +41,21 @@
 2019-05-13-RemoveTraining.sql
 2019-05-15-Reliability_link.sql
 
-# NEW
+# 22.0
 2019-04-30-project-rel-rename.sql
 2019-07-01_add_projects_to_sessions.sql
+2019-07-04-remove_header_row_from_parameter_file_and_convert_back_to_Value_field_to_text.sql
 2019-07-10-subproject-session-FK.sql
 2019-07-17_remove_mri_acquisition_dates_table.sql
-2019_07_04_remove_header_row_from_parameter_file_and_convert_back_to_Value_field_to_text.sql
+2019-08-05-add_projects_to_users.sql
+2019-10-01_Rename-media-column.sql
+2019-10-05-Add_alias_to_projects.sql
+2019-11-01-Add_data_release_permissions.sql
+2019-11-12-Rename_modules_QC_and_DTH.sql
+2019-11-25-Default_value_for_session_submitted.sql
+
+# NEW
+2019-10-09_move_MINCToolsPath_configuration_to_Config_tables.sql
+2019-11-29-Add_upload_directory_configuration.sql
 
 # CLEAN-UP

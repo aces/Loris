@@ -67,6 +67,10 @@ class Files extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $config = \NDB_Factory::singleton()->config();
+        $path   = \Utility::appendForwardSlash(
+            $config->getSetting("documentRepositoryPath")
+        );
         switch ($request->getMethod()) {
         case "POST":
             if ($this->uploadDocFile($request)) {
@@ -79,7 +83,7 @@ class Files extends \NDB_Page
                         )
                     );
             }
-            return new \LORIS\Http\Response\Conflict("duplicate file name");
+            return new \LORIS\Http\Response\JSON\Conflict("duplicate file name");
         case "PUT":
             $tmp = $request->getBody();
             $arr = (array)json_decode($tmp);
@@ -107,7 +111,7 @@ class Files extends \NDB_Page
             $name   = \User::singleton()->getUsername();
             $record = urldecode(basename($request->getUri()->getPath()));
             if (!is_numeric($record)) {
-                $file = __DIR__ . "/../user_uploads/$name/$record";
+                $file = $path. "$name/$record";
                 return (new \LORIS\Http\Response())
                     ->withHeader('Content-Type', 'application/octet-stream')
                     ->withHeader(
@@ -171,14 +175,18 @@ class Files extends \NDB_Page
      */
     function deleteFile($rid): void
     {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
+        $config  = $factory->config();
+        $path    = \Utility::appendForwardSlash(
+            $config->getSetting("documentRepositoryPath")
+        );
         // create Database object
-        $DB       = \Database::singleton();
-        $user     = \User::singleton();
         $Notifier = new \NDB_Notifier(
             "document_repository",
             "delete"
         );
-        $factory  = \NDB_Factory::singleton();
         $baseURL  = $factory->settings()->getBaseURL();
         $fileName = $DB->pselectOne(
             "SELECT File_name FROM document_repository
@@ -205,7 +213,7 @@ class Files extends \NDB_Page
             $Notifier->notify($msg_data);
         }
 
-        $path = __DIR__ . "/../user_uploads/$dataDir";
+        $path = $path.$dataDir;
 
         if (file_exists($path)) {
             unlink($path);
@@ -349,6 +357,9 @@ class Files extends \NDB_Page
         $baseURL        = $factory->settings()->getBaseURL();
         $config         = $factory->config();
         $base           = $config->getSetting('base');
+        $path           = \Utility::appendForwardSlash(
+            $config->getSetting("documentRepositoryPath")
+        );
         $name           = \User::singleton()->getUsername();
         $DB       = \Database::singleton();
         $category = $req['category']; // required
@@ -368,7 +379,7 @@ class Files extends \NDB_Page
         $fileSize     = $uploadedFile->getSize();
         $fileName     = $uploadedFile->getClientFileName();
         $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
-        $uploadPath   = "$base/modules/document_repository/user_uploads/$name/";
+        $uploadPath   = $path.$name."/";
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
         if (intval($category) < 0) {

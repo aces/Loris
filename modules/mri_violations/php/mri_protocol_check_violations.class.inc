@@ -8,7 +8,7 @@
  * Inability to determine the scan type is logged in the mri_protocol_violations
  * table to which the NDB_Menu_Filter_mri_protocol_violations provides a frontend.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main
@@ -38,7 +38,12 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('violated_scans_view_allsites');
+        return $user->hasAnyPermission(
+            array(
+                'violated_scans_view_allsites',
+                'violated_scans_edit'
+            )
+        );
     }
 
     /**

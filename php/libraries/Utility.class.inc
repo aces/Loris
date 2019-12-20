@@ -119,47 +119,13 @@ class Utility
     /**
      * Returns a list of sites in the database
      *
-     * @param bool $study_site If true only return sites that are
-     *                         study sites according to the psc
-     *                         table
-     *
-     * @return array an associative array("center ID" => "site name")
-     */
-    static function getSiteList(bool $study_site = true): array
-    {
-        $factory = NDB_Factory::singleton();
-        $DB      = $factory->database();
-
-        // get the list of study sites - to be replaced by the Site object
-        $query = "SELECT CenterID, Name FROM psc ";
-        if ($study_site) {
-            $query .= "WHERE Study_site='Y'";
-        }
-        $result = $DB->pselect($query, array());
-
-        // fix the array
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
-        }
-        natcasesort($list);
-        return $list;
-    }
-
-
-    /**
-     * Get the list of sites as an associative array
-     *
      * @param boolean $study_site if true only return study sites from psc
      *                            table
      * @param boolean $DCC        Whether the DCC should be included or not
      *
-     * @return array of the form CenterID => Site Name.
-     *         Note that even though CenterID is numeric, the array
-     *         should be interpreted as an associative array since the keys
-     *         refer to the centerID, not the array index.
+     * @return array an associative array("center ID" => "site name")
      */
-    static function getAssociativeSiteList(
+    static function getSiteList(
         bool $study_site = true,
         bool $DCC = true
     ): array {
@@ -183,6 +149,31 @@ class Utility
             $list[$row["CenterID"]] = $row["Name"];
         }
         return $list;
+    }
+
+
+    /**
+     * Get the list of sites as an associative array
+     *
+     * @param boolean $study_site if true only return study sites from psc
+     *                            table
+     * @param boolean $DCC        Whether the DCC should be included or not
+     *
+     * @return array of the form CenterID => Site Name.
+     *         Note that even though CenterID is numeric, the array
+     *         should be interpreted as an associative array since the keys
+     *         refer to the centerID, not the array index.
+     *
+     * @deprecated
+     */
+    static function getAssociativeSiteList(
+        bool $study_site = true,
+        bool $DCC = true
+    ): array {
+        throw new \DeprecatedException(
+            ' This function is deprecated. Please use \Utility::getSiteList()'
+            . ' instead.'
+        );
     }
 
     /**
@@ -299,9 +290,10 @@ class Utility
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
-     * @param array       $structure  the structure root
-     * @param string|null $siteAbbrev the site abbreviation, sometimes used as part
-     *                                of the PSCID
+     * @param array       $structure     the structure root
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
      *
      * @return string the regex pattern
      *
@@ -311,7 +303,8 @@ class Utility
      */
     static function structureToPCRE(
         array $structure,
-        ?string $siteAbbrev = null
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
     ): string {
         $seqs = $structure['seq'];
         // handle the situation where there exists only one seq
@@ -349,6 +342,9 @@ class Utility
 
             case 'siteAbbrev':
                 $unit .= $siteAbbrev;
+                break;
+            case 'projectAbbrev':
+                $unit .= $projectAbbrev;
                 break;
             } // end switch
 
@@ -658,7 +654,7 @@ class Utility
      *
      * @return  string (Non-associative array of the form array(Test1, Test2, ..))
      * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Data team helper?)
+     *       module uses it. (Behavioural Quality Control?)
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
@@ -695,7 +691,7 @@ class Utility
      *              )
      *         )
      * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Data team helper, BVL_Feedback_panel)
+     *       module uses it. (Behavioural Quality Control, BVL_Feedback_panel)
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
@@ -798,8 +794,8 @@ class Utility
      * @note    Function comment written by Dave, not the author of this function.
      *       The return value format seems weird. Should possibly be refactored.
      * @note    Used in:
-     *      - data_team_helper/php/NDB_Form_data_team_helper.class.inc
-     *      - data_team_helper/ajax/GetInstruments.php
+     *      - behavioural_qc/php/NDB_Form_behavioural_qc.class.inc
+     *      - behavioural_qc/ajax/GetInstruments.php
      * @cleanup
      */
     static function getVisitInstruments(string $visit_label): array
@@ -999,6 +995,18 @@ class Utility
         }
 
         return $scan_types;
+    }
+
+    /**
+     * Append a forward slash to a path if it doesn't already exist
+     *
+     * @param string $path path to which the slash should be appended
+     *
+     * @return string
+     */
+    static function appendForwardSlash(string $path) : string
+    {
+        return rtrim($path, '/\\') . '/';
     }
 }
 

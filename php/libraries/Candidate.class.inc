@@ -189,7 +189,7 @@ class Candidate
      *                                           written as YYYY-MM-DD. Value should
      *                                           be null unless the useEDC setting
      *                                           is configured to be true.
-     * @param string      $sex                   sex, either 'Male' or 'Female'
+     * @param string      $sex                   sex, 'Male', 'Female', or 'Other'
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
      * @param int|null    $registrationProjectID The project ID, if available
@@ -209,6 +209,8 @@ class Candidate
         $factory = NDB_Factory::singleton();
 
         $site = \Site::singleton($centerID);
+
+        $project = \Project::getProjectFromID($registrationProjectID);
 
         $user = \User::singleton($_SESSION['State']->getUsername());
 
@@ -234,7 +236,12 @@ class Candidate
             }
 
             // check pscid structure
-            if (!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
+            if (!Candidate::validatePSCID(
+                $PSCID,
+                $site->getSiteAlias(),
+                $project->getAlias()
+            )
+            ) {
                 throw new LorisException(
                     "PSCID has an invalid structure",
                     PSCID_INVALID_STRUCTURE
@@ -242,7 +249,11 @@ class Candidate
             }
 
         } else {
-            $PSCID = (new \PSCIDGenerator($site->getSiteAlias()))->generate();
+            $PSCID = (new \PSCIDGenerator(
+                $site->getSiteAlias(),
+                $project->getAlias()
+            )
+            )->generate();
         }
 
         // Insert the new candidate into the database if everything is fine.
@@ -261,7 +272,10 @@ class Candidate
         );
 
         if ($config->getSetting('useExternalID') === 'true') {
-            $externalID = (new \ExternalIDGenerator())->generate();
+            $externalID = (new \ExternalIDGenerator(
+                $site->getSiteAlias(),
+                $project->getAlias()
+            ))->generate();
             $setArray['ExternalID'] = $externalID;
         }
 
@@ -490,7 +504,7 @@ class Candidate
     /**
      * Return the candidate's sex
      *
-     * @return string|null Male|Female String describing the sex
+     * @return string|null Male|Female|Other String describing the sex
      *                     and null if scanner
      */
     function getCandidateSex(): ?string
@@ -670,16 +684,21 @@ class Candidate
      * Validate's that a PSCID matches the format defined by project
      * config
      *
-     * @param string      $PSCID      The PSCID to validate
-     * @param string|null $siteAbbrev (optional) The site of the candidate
-     *                                being validated to check against appropriate
-     *                                parts of PSCID definition
+     * @param string $PSCID         The PSCID to validate
+     * @param string $siteAbbrev    The site of the candidate
+     *                              being validated to check
+     *                              against appropriate parts
+     *                              of PSCID definition
+     * @param string $projectAbbrev The project of the candidate
+     *                              being validated to check against appropriate
+     *                              parts of PSCID definition
      *
      * @return boolean True if PSCID is valid, false otherwise
      */
     static public function validatePSCID(
         string $PSCID,
-        ?string $siteAbbrev = null
+        string $siteAbbrev,
+        string $projectAbbrev
     ): bool {
 
         $factory = NDB_Factory::singleton();
@@ -688,7 +707,8 @@ class Candidate
         $PSCIDSettings = $config->getSetting('PSCID');
         $regex         = Utility::structureToPCRE(
             $PSCIDSettings['structure'],
-            $siteAbbrev
+            $siteAbbrev,
+            $projectAbbrev
         );
         //preg_match returns 1 on success.
         return preg_match($regex, $PSCID) === 1;

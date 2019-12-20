@@ -5,11 +5,12 @@
 CREATE TABLE `Project` (
     `ProjectID` INT(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` VARCHAR(255) NULL,
+    `Alias` char(4) NOT NULL,
     `recruitmentTarget` INT(6) Default NULL,
     PRIMARY KEY (`ProjectID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `Project` (Name) VALUES ('loris');
+INSERT INTO `Project` (Name,Alias) VALUES ('loris','LORI');
 
 CREATE TABLE `subproject` (
     `SubprojectID` int(10) unsigned NOT NULL auto_increment,
@@ -145,7 +146,7 @@ CREATE TABLE `candidate` (
   `ExternalID` varchar(255) DEFAULT NULL,
   `DoB` date DEFAULT NULL,
   `EDC` date DEFAULT NULL,
-  `Sex` enum('Male','Female') DEFAULT NULL,
+  `Sex` enum('Male','Female','Other') DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
   `RegistrationProjectID` int(10) unsigned DEFAULT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
@@ -160,7 +161,7 @@ CREATE TABLE `candidate` (
   `flagged_other_status` enum('not_answered') DEFAULT NULL,
   `Testdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Entity_type` enum('Human','Scanner') NOT NULL DEFAULT 'Human',
-  `ProbandSex` enum('Male','Female') DEFAULT NULL,
+  `ProbandSex` enum('Male','Female','Other') DEFAULT NULL,
   `ProbandDoB` date DEFAULT NULL,
   PRIMARY KEY (`CandID`),
   UNIQUE KEY `ID` (`ID`),
@@ -178,11 +179,11 @@ CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `CenterID` integer unsigned NOT NULL,
-  `ProjectID` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
   `SubprojectID` int(10) unsigned DEFAULT NULL,
-  `Submitted` enum('Y','N') DEFAULT NULL,
+  `Submitted` enum('Y','N') NOT NULL DEFAULT 'N',
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
   `Date_stage_change` date DEFAULT NULL,
   `Screening` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,
@@ -1175,27 +1176,6 @@ CREATE TABLE `certification_history` (
   `type` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='primaryVals should always contain a valid certID from the certification table';
-
--- ********************************
--- data_intergrity_flag tables
--- ********************************
-
-
-CREATE TABLE `data_integrity_flag` (
-  `dataflag_id` int(11) NOT NULL AUTO_INCREMENT,
-  `dataflag_visitlabel` varchar(255) NOT NULL,
-  `dataflag_instrument` varchar(255) NOT NULL,
-  `dataflag_date` date NOT NULL,
-  `dataflag_status` int(11) NOT NULL,
-  `dataflag_comment` text,
-  `latest_entry` tinyint(1) NOT NULL DEFAULT '1',
-  `dataflag_fbcreated` int(11) NOT NULL DEFAULT '0',
-  `dataflag_fbclosed` int(11) NOT NULL DEFAULT '0',
-  `dataflag_fbcomment` int(11) NOT NULL DEFAULT '0',
-  `dataflag_fbdeleted` int(11) NOT NULL DEFAULT '0',
-  `dataflag_userid` varchar(255) NOT NULL,
-  PRIMARY KEY (`dataflag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- user_account_history tables

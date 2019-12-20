@@ -29,6 +29,11 @@ use \LORIS\Http\EmptyStream;
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {
+    const PERMISSIONS = array(
+        'instrument_manager_read',
+        'instrument_manager_write'
+    );
+    // Error messages
     const ALREADY_INSTALLED     = 'This instrument already exists in the ' .
                                   'test battery.';
     const CANNOT_WRITE_FILES    = 'Automatic installation of instruments is ' .
@@ -77,12 +82,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            array(
-                'instrument_manager_read',
-                'instrument_manager_write',
-            )
-        );
+        return $user->hasAnyPermission(self::PERMISSIONS);
     }
 
     /**
@@ -116,7 +116,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
         // Ensure the user is allowed to upload.
-        if (! \User::singleton()->hasPermission('instrument_manager_write')) {
+        if (! \User::singleton()->hasPermission('superuser')) {
             return (new \LORIS\Http\Response())
                 ->withStatus(403, 'Forbidden')
                 ->withBody(
@@ -149,7 +149,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         if ($this->instrumentExists($instrument)) {
             // An instrument with this name already exists in the test_names
             // table. Abort upload.
-            return new \LORIS\Http\Response\Conflict(self::ALREADY_INSTALLED);
+            return new \LORIS\Http\Response\JSON\Conflict(self::ALREADY_INSTALLED);
         }
 
         /* Although only .linst files should be uploaded to this module, and
@@ -169,9 +169,11 @@ class Instrument_Manager extends \NDB_Menu_Filter
                  * Instead, inform users that an administrator must install it
                  * on their behalf.
                  * This should only happen for users on a system where automatic
-                 * installation is disabled (ie. has no quatUser).
+                 * installation is disabled (ie. has no adminUser).
                  */
-                return new \LORIS\Http\Response\Conflict(self::FILE_ALREADY_EXISTS);
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    self::FILE_ALREADY_EXISTS
+                );
             }
             return $response;
         }
@@ -187,7 +189,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         );
 
         if (!$this->isQuatUserConfigured()) {
-            // If no quatUser is configured, automatic installation is not
+            // If no adminUser is configured, automatic installation is not
             // possible, so this is the last step.
             return (new \LORIS\Http\Response())
                 ->withStatus(200, 'OK')
@@ -206,14 +208,24 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // silently. Otherwise, it will return the exit code and error
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
-        $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        try {
+            $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+        } catch (\NotFound $e) {
+            return (new \LORIS\Http\Response\JSON\NotFound(
+                $e->getMessage()
+            ));
+        } catch (\Exception $e) {
+            return (new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
+            ));
+        }
 
         $db_config = $this->factory->config()->getSetting('database');
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).
-            " -u" . escapeshellarg($db_config['quatUser']).
-            " -p" . escapeshellarg($db_config['quatPassword']).
+            " -u" . escapeshellarg($db_config['adminUser']).
+            " -p" . escapeshellarg($db_config['adminPassword']).
             " " . escapeshellarg($db_config['database']).
             " < " . $this->path . "project/tables_sql/".
             escapeshellarg($table_name . '.sql'),
@@ -579,21 +591,21 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-     * Return whether the quatUser is properly configured, ie. credentials are
+     * Return whether the adminUser is properly configured, ie. credentials are
      * set and are valid.
-     * The quatUser is a MySQL user with CREATE table permissions.
+     * The adminUser is a MySQL user with CREATE table permissions.
      * `empty` is used instead of `isset` as blank values in the config file
      * are still considered set.
      *
-     * @return bool True if a quatUser is configured properly. False if not.
+     * @return bool True if a adminUser is configured properly. False if not.
      */
     protected function isQuatUserConfigured() : bool
     {
         $db        = $this->factory->database();
         $db_config = $this->factory->config()->getSetting('database');
 
-        $credentials_set = !empty($db_config['quatUser'])
-            && !empty($db_config['quatPassword']);
+        $credentials_set = !empty($db_config['adminUser'])
+            && !empty($db_config['adminPassword']);
         if (!$credentials_set) {
             return false;
         }
@@ -603,8 +615,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
         try {
             $connected = $db->connect(
                 $db_config['database'],
-                $db_config['quatUser'],
-                $db_config['quatPassword'],
+                $db_config['adminUser'],
+                $db_config['adminPassword'],
                 $db_config['host'],
                 false
             );

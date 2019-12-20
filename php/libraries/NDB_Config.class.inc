@@ -462,6 +462,7 @@ class NDB_Config
             : array(
                 'id'                => $info['ProjectID'],
                 'Name'              => $info['Name'],
+                'Alias'             => $info['Alias'],
                 'recruitmentTarget' => $info['recruitmentTarget'],
             );
     }
