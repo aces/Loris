@@ -334,17 +334,14 @@ class NDB_Page implements RequestHandlerInterface
     {
         $radGroup = array();
         foreach ($radios as $radElement) {
-            $tempOptions = array_merge(
+            $radGroup[] = $this->createRadio(
+                $name,
+                $radElement['label'],
+                $options,
                 array(
                     'class' => 'form-control input-sm',
                     'value' => $radElement['value'],
-                ),
-                $options
-            );
-            $radGroup[]  = $this->createRadio(
-                $name,
-                $radElement['label'],
-                $tempOptions
+                )
             );
         }
         $this->addGroup($radGroup, $name . '_group', $groupLabel, null, false);
@@ -530,7 +527,7 @@ class NDB_Page implements RequestHandlerInterface
         $attribs=array()
     ) {
         $attr =array_merge($attribs, array('class' => 'form-control input-sm'));
-        return $this->form->createElement("text", $field, $label, $attr);
+        return $this->form->createElement("text", $field, $label, null, $attr);
     }
 
     /**
@@ -547,6 +544,7 @@ class NDB_Page implements RequestHandlerInterface
             "textarea",
             $field,
             $label,
+            null,
             array('class' => 'form-control input-sm')
         );
     }
@@ -612,17 +610,19 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field   The fieldname for this radio button
      * @param string $label   The label to attach to this radio button
      * @param string $options Options to pass to LorisForm
+     * @param array  $attribs An array of extra HTML attributes to
+     *                        add to the element.
      *
      * @return array representing radio button
      */
-    function createRadio($field, $label, $options=null)
+    function createRadio($field, $label, $options=null, $attribs=null)
     {
         return $this->form->createElement(
             "radio",
             $field,
             $label,
             $options,
-            array()
+            $attribs
         );
     }
 
@@ -640,7 +640,7 @@ class NDB_Page implements RequestHandlerInterface
         $label=null,
         $attr=array('class' => 'form-control input-sm')
     ) {
-        return $this->form->createElement('password', $field, $label, $attr);
+        return $this->form->createElement('password', $field, $label, null, $attr);
     }
 
     /**
