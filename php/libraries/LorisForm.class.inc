@@ -1968,7 +1968,7 @@ class LorisForm
             /* Label seems to usually be the wrong attribute for static
              * elements?
              */
-            $el         = $this->createBase($elname, $options, $attribs);
+            $el         = $this->createBase($elname, $label, $attribs);
             $el['type'] = 'static';
             break;
         case 'advcheckbox':
