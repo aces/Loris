@@ -1959,11 +1959,11 @@ class LorisForm
     ) {
         switch($type) {
         case 'text':
-            return $this->createText($elname, $label, $options);
+            return $this->createText($elname, $label, $attribs);
         case 'select':
             return $this->createSelect($elname, $label, $options, $attribs);
         case 'submit':
-            return $this->createSubmit($elname, $label, $options);
+            return $this->createSubmit($elname, $label, $attribs);
         case 'static':
             /* Label seems to usually be the wrong attribute for static
              * elements?
@@ -1995,7 +1995,7 @@ class LorisForm
                 $el['checkStates'] = $args[5];
                 $el['_text']       = $args[3];
             } else {
-                $el         = $this->createBase($elname, $label, $options);
+                $el         = $this->createBase($elname, $label, $attribs);
                 $el['type'] = 'advcheckbox';
             }
             break;
@@ -2006,13 +2006,13 @@ class LorisForm
             $el['options'] = $options;
             break;
         case 'radio':
-            $el         = $this->createBase($elname, $label, $options);
+            $el         = $this->createBase($elname, $label, $attribs);
             $el['type'] = 'radio';
             break;
         case 'time':
         case 'textarea':
         case 'password':
-            $el         = $this->createBase($elname, $label, $options);
+            $el         = $this->createBase($elname, $label, $attribs);
             $el['type'] = $type;
             break;
         default:
