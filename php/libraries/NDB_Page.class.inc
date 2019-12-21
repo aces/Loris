@@ -533,7 +533,7 @@ class NDB_Page implements RequestHandlerInterface
         $attribs=array()
     ) {
         $attr =array_merge($attribs, array('class' => 'form-control input-sm'));
-        return $this->form->createElement("text", $field, $label, null, $attr);
+        return $this->form->createElement("text", $field, $label, array(), $attr);
     }
 
     /**
@@ -646,7 +646,7 @@ class NDB_Page implements RequestHandlerInterface
         $label=null,
         $attr=array('class' => 'form-control input-sm')
     ) {
-        return $this->form->createElement('password', $field, $label, null, $attr);
+        return $this->form->createElement('password', $field, $label, array(), $attr);
     }
 
     /**
