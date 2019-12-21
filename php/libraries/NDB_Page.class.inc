@@ -298,26 +298,18 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $name    The field name of this checkbox
      * @param string $label   The label to attach to this checkbox
-     * @param array  $options Options to pass to QuickForm for this
-     *                        checkbox
      * @param array  $attribs Optional extra HTML attributes to add
      *                        to the checkbox
      *
      * @return void
-     *
-     * @note The optional array is never actually put into the element
-     *       because LorisForm::addHeader does not take it as a parameter.
-     *       The 'class' attribute is now added to the $options array instead
-     *       whereas before it was in the $optional array.
-     *        - Alexandra Livadas
      */
-    function addCheckbox($name, $label, $options, $attribs=array())
+    function addCheckbox($name, $label, $attribs=array())
     {
         $attribs = array_merge(
             array('class' => 'form-control input-sm'),
             $attribs
         );
-        $this->form->addElement('advcheckbox', $name, $label, $options, $attribs);
+        $this->form->addElement('advcheckbox', $name, $label, null, $attribs);
     }
 
     /**
@@ -556,7 +548,7 @@ class NDB_Page implements RequestHandlerInterface
             "textarea",
             $field,
             $label,
-            null,
+            array(),
             array('class' => 'form-control input-sm')
         );
     }
@@ -567,7 +559,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field       The fieldname for this date field
      * @param string $label       The label to attach to this date
      * @param array  $dateOptions List of options to pass to QuickForm
-     * @param array  $attr        List of HTML attributes to add to the date
+     * @param array  $attribs     List of HTML attributes to add to the date
      *                            group.
      *
      * @return array representing date element
@@ -579,7 +571,7 @@ class NDB_Page implements RequestHandlerInterface
         $field,
         $label,
         $dateOptions=null,
-        $attr=array(
+        $attribs=array(
             'class' => 'form-control input-sm',
             'style' => 'max-width:33%; display:inline-block;',
         )
@@ -589,7 +581,7 @@ class NDB_Page implements RequestHandlerInterface
             $field,
             $label,
             $dateOptions,
-            $attr
+            $attribs
         );
     }
 
@@ -600,19 +592,19 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
-     * @param string $options Options to pass to HTML_QuickForm
+     * @param string $attribs Attributes to pass to HTML_QuickForm
      * @param string $closer  ?????
      *
      * @return array representing checkbox
      */
-    function createCheckbox($field, $label, $options=null, $closer='</label>')
+    function createCheckbox($field, $label, $attribs=null, $closer='</label>')
     {
         return $this->form->createElement(
             "advcheckbox",
             $field,
             $label,
-            $options,
-            array()
+            array(),
+            $attribs
         );
     }
 
