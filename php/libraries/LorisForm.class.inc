@@ -176,15 +176,15 @@ class LorisForm
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
+     * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
      * @return &array
      */
-    public function addPassword($name, $label, $options=array())
+    public function addPassword($name, $label, $attribs=array())
     {
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'password';
         return $el;
     }
@@ -192,18 +192,18 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addHidden" API.
      *
-     * @param string $name       The element name.
-     * @param string $value      The element value.
-     * @param array  $attributes Additional html attributes for element
+     * @param string $name    The element name.
+     * @param string $value   The element value.
+     * @param array  $attribs Additional html attributes for element
      *
      * @return &array
      */
-    public function addHidden($name, $value, $attributes=array())
+    public function addHidden($name, $value, $attribs=array())
     {
         $el         =& $this->addBase(
             $name,
             null,
-            array_merge(array('value' => $value), $attributes)
+            array_merge(array('value' => $value), $attribs)
         );
         $el['type'] = 'hidden';
         return $el;
@@ -214,15 +214,15 @@ class LorisForm
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
+     * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
      * @return &array
      */
-    public function addText($name, $label, $options=array())
+    public function addText($name, $label, $attribs=array())
     {
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'text';
         return $el;
     }
@@ -236,12 +236,15 @@ class LorisForm
      *                        get added. Currently only the "class",
      *                        "rows", and "cols" attributes will get
      *                        added.
+     * @param array  $attribs An array of other attributes that should
+     *                        get added. Currently only the "class"
+     *                        attribute gets added.
      *
      * @return &array
      */
-    public function addTextArea($elname, $label, $options=array())
+    public function addTextArea($elname, $label, $options=array(), $attribs=array())
     {
-        $el         =& $this->addBase($elname, $label, $options);
+        $el         =& $this->addBase($elname, $label, $attribs);
         $el['type'] = 'textarea';
         if (isset($options['cols'])) {
             $el['cols'] = $options['cols'];
@@ -280,17 +283,17 @@ class LorisForm
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
+     * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
      * @return &array
      */
-    function addFile($name, $label, $options)
+    function addFile($name, $label, $attribs)
     {
         $this->enctype = 'enctype="multipart/form-data"';
 
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'file';
         return $el;
     }
@@ -300,15 +303,15 @@ class LorisForm
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
+     * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "value"
      *                        attribute gets added.
      *
      * @return &array
      */
-    function &addCheckbox($name, $label, $options)
+    function &addCheckbox($name, $label, $attribs)
     {
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'advcheckbox';
         return $el;
     }
@@ -341,13 +344,13 @@ class LorisForm
      *
      * @param string $name    The name of the header element, may be null
      * @param string $label   The description for the header
-     * @param array  $options Other options for this header element
+     * @param array  $attribs Other attributes for this header element
      *
      * @return &array
      */
-    function addHeader($name, $label, $options = array())
+    function addHeader($name, $label, $attribs = array())
     {
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'header';
         return $el;
     }
@@ -423,19 +426,19 @@ class LorisForm
             $el = $this->addDate($name, $label, $options, $attribs);
             break;
         case 'file':
-            $el = $this->addFile($name, $label, $options);
+            $el = $this->addFile($name, $label, $attribs);
             break;
         case 'static':
             $el = $this->addStatic($name, $label);
             break;
         case 'textarea':
-            $el = $this->addTextArea($name, $label, $options);
+            $el = $this->addTextArea($name, $label, $options, $attribs);
             break;
         case 'password':
-            $el = $this->addPassword($name, $label, $options);
+            $el = $this->addPassword($name, $label, $attribs);
             break;
         case 'header':
-            $el = $this->addHeader($name, $label, $options);
+            $el = $this->addHeader($name, $label, $attribs);
             break;
         case 'advcheckbox':
             $args = func_get_args();
@@ -460,21 +463,21 @@ class LorisForm
                 $el['checkStates'] = $args[5];
                 $el['_text']       = $args[3];
             } else {
-                $el = $this->addCheckbox($name, $label, $options);
+                $el = $this->addCheckbox($name, $label, $attribs);
             }
             break;
         case 'radio':
             $el = $this->addRadio($name, $label, $options, $attribs);
             break;
         case 'hidden':
-            $el = $this->addHidden($name, $label, $options);
+            $el = $this->addHidden($name, $label, $attribs);
             break;
         case 'link':
             $el = $this->addLink($name, $label, $options, $attribs);
             break;
         case 'text':
         default:
-            $el = $this->addText($name, $label, $options);
+            $el = $this->addText($name, $label, $attribs);
             break;
         }
     }
