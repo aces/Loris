@@ -483,7 +483,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field   The field name for this select
      * @param string $label   The label to attach to the element
      * @param array  $options Extra options to pass to QuickForm
-     * @param array  $attr    Extra HTML attributes to add to the element
+     * @param array  $attribs Extra HTML attributes to add to the element
      *
      * @return array representing select element
      */
@@ -491,9 +491,15 @@ class NDB_Page implements RequestHandlerInterface
         $field,
         $label,
         $options=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attribs=array('class' => 'form-control input-sm')
     ) {
-        return $this->form->createElement("select", $field, $label, $options, $attr);
+        return $this->form->createElement(
+            "select",
+            $field,
+            $label,
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -635,18 +641,24 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates a password form element but does not add it to the page
      *
-     * @param string $field The fieldname for the password box
-     * @param string $label The label to attach to the form element
-     * @param array  $attr  List of HTML attributes to add to the element
+     * @param string $field   The fieldname for the password box
+     * @param string $label   The label to attach to the form element
+     * @param array  $attribs List of HTML attributes to add to the element
      *
      * @return array representing form element
      */
     function createPassword(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attribs=array('class' => 'form-control input-sm')
     ) {
-        return $this->form->createElement('password', $field, $label, array(), $attr);
+        return $this->form->createElement(
+            'password',
+            $field,
+            $label,
+            array(),
+            $attribs
+        );
     }
 
     /**

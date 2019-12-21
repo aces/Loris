@@ -232,25 +232,22 @@ class LorisForm
      *
      * @param string $elname  The element name.
      * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
-     *                        get added. Currently only the "class",
-     *                        "rows", and "cols" attributes will get
-     *                        added.
      * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     *                        get added. Currently only the "class",
+     *                        "rows", "cols" and "disabled" attributes will get
+     *                        added.
      *
      * @return &array
      */
-    public function addTextArea($elname, $label, $options=array(), $attribs=array())
+    public function addTextArea($elname, $label, $attribs=array())
     {
         $el         =& $this->addBase($elname, $label, $attribs);
         $el['type'] = 'textarea';
-        if (isset($options['cols'])) {
-            $el['cols'] = $options['cols'];
+        if (isset($attribs['cols'])) {
+            $el['cols'] = $attribs['cols'];
         }
-        if (isset($options['rows'])) {
-            $el['rows'] = $options['rows'];
+        if (isset($attribs['rows'])) {
+            $el['rows'] = $attribs['rows'];
         }
         return $el;
     }
@@ -432,7 +429,7 @@ class LorisForm
             $el = $this->addStatic($name, $label);
             break;
         case 'textarea':
-            $el = $this->addTextArea($name, $label, $options, $attribs);
+            $el = $this->addTextArea($name, $label, $attribs);
             break;
         case 'password':
             $el = $this->addPassword($name, $label, $attribs);
