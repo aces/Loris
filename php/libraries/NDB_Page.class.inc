@@ -588,16 +588,13 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates an HTML checkbox but does not add it to the form.
      *
-     * FIXME: $closer is never used or explained. - Alexandra Livadas
-     *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
      * @param string $attribs Attributes to pass to HTML_QuickForm
-     * @param string $closer  ?????
      *
      * @return array representing checkbox
      */
-    function createCheckbox($field, $label, $attribs=null, $closer='</label>')
+    function createCheckbox($field, $label, $attribs=null)
     {
         return $this->form->createElement(
             "advcheckbox",

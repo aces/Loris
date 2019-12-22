@@ -116,8 +116,7 @@ class LorisForm
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
      * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     *                        get added, for example "class" attribute.
      *
      * @return &array A reference to the array that was added to $this->form
      */
@@ -137,8 +136,7 @@ class LorisForm
      * @param array  $options An array of the options (values) to add
      *                        to this select dropdown.
      * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     *                        get added, for example "class" attribute.
      *
      * @return &array
      */
@@ -232,10 +230,8 @@ class LorisForm
      *
      * @param string $elname  The element name.
      * @param string $label   The label to attach to this element.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "class",
-     *                        "rows", "cols" and "disabled" attributes will get
-     *                        added.
+     * @param array  $attribs An array of other attributes that should get added,
+     *                        including "class", "rows", "cols" and "disabled", etc.
      *
      * @return &array
      */
@@ -262,8 +258,7 @@ class LorisForm
      * @param array  $options An array of options that should get added,
      *                        such as the date format, min or max date etc.
      * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     *                        get added, for example "class" attribute.
      *
      * @return &array
      */
@@ -281,8 +276,7 @@ class LorisForm
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
      * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     *                        get added, for example "class" attribute.
      *
      * @return &array
      */
@@ -301,8 +295,7 @@ class LorisForm
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
      * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "value"
-     *                        attribute gets added.
+     *                        get added, for example "value" attribute.
      *
      * @return &array
      */
