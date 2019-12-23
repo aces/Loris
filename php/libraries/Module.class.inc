@@ -463,4 +463,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     public function getWidgets(string $type, \User $user) {
         return [];
     }
+
+    public function renderTemplate($template, $tpl_data) {
+        $renderer = new \Smarty_NeuroDB($this->getName());
+        $renderer->assign($tpl_data);
+        return $renderer->fetch($template);
+    }
 }

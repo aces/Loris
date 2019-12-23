@@ -65,15 +65,16 @@ class Module extends \Module
             }
 
         return new SmartyWidget(
-            $this,
-            "welcome.tpl",
-            [
-                'username' => $user->getFullname(),
-                'last_login' => $last_login ?? "...never. Welcome!",
-                'project_description' => $projectdesc,
-                'dashboard_links' => $links,
-            ],
             "",
+            $this->renderTemplate(
+                "welcome.tpl",
+                [
+                    'username' => $user->getFullname(),
+                    'last_login' => $last_login ?? "...never. Welcome!",
+                    'project_description' => $projectdesc,
+                    'dashboard_links' => $links,
+                ],
+            ),
             "normal",
             0,
         );
@@ -90,12 +91,13 @@ class Module extends \Module
             }
         }
         return new SmartyWidget(
-            $this,
-            "mytasks.tpl",
-            [
-                'tasks' => $widgets
-            ],
             "My Tasks",
+            $this->renderTemplate(
+                "mytasks.tpl",
+                [
+                    'tasks' => $widgets
+                ],
+            ),
             "small",
             1,
         );

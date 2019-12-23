@@ -92,13 +92,14 @@ class Module extends \Module
             }
             return [
                 new \LORIS\dashboard\SmartyWidget(
-                    $this,
-                    "dashboardwidget.tpl",
-                    [
-                        'baseURL' => $baseURL,
-                        'notifications' => $frontend_feedback
-                    ],
                     "Behavioural Feedback Notifications",
+                    $this->renderTemplate(
+                        "dashboardwidget.tpl",
+                        [
+                            'baseURL' => $baseURL,
+                            'notifications' => $frontend_feedback
+                        ],
+                    ),
                     "small",
                 )
             ];
