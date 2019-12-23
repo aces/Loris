@@ -64,7 +64,7 @@ class Module extends \Module
                         );
             }
 
-        return new \LORIS\GUI\SmartyWidget(
+        return new SmartyWidget(
             $this,
             "welcome.tpl",
             [
@@ -73,6 +73,9 @@ class Module extends \Module
                 'project_description' => $projectdesc,
                 'dashboard_links' => $links,
             ],
+            "",
+            "normal",
+            0,
         );
     }
     private function getTasksWidget() {
@@ -86,12 +89,15 @@ class Module extends \Module
                 $widgets = array_merge($widgets, $module->getWidgets('usertasks', $user));
             }
         }
-        return new \LORIS\GUI\SmartyWidget(
+        return new SmartyWidget(
             $this,
             "mytasks.tpl",
             [
                 'tasks' => $widgets
             ],
+            "My Tasks",
+            "small",
+            1,
         );
     }
 }

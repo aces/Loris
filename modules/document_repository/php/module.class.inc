@@ -82,14 +82,17 @@ class Module extends \Module
             }
 
             return [
-                new \LORIS\GUI\SmartyWidget(
+                new \LORIS\dashboard\SmartyWidget(
                     $this,
                     "docnotifications.tpl",
                     [
                         'baseURL' => $baseURL,
                         'notifications' => $docs
-                    ]
-                )
+                    ],
+                    "Document Repository Notifications",
+                    "small",
+                    3
+                ),
             ];
         }
         return [];

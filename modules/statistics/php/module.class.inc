@@ -97,17 +97,21 @@ class Module extends \Module
 
 
             return [
-                new \LORIS\GUI\SmartyWidget(
+                new \LORIS\dashboard\SmartyWidget(
                     $this,
                     "recruitment.tpl",
                     [
                         'recruitment' => $recruitment
-                    ]
+                    ],
+                    "Recruitment",
+                    "normal",
                 ),
-                new \LORIS\GUI\SmartyWidget(
+                new \LORIS\dashboard\SmartyWidget(
                     $this,
                     "studyprogression.tpl",
-                    [ ]
+                    [ ],
+                    "Study Progression",
+                    "normal",
                 )
             ];
         }

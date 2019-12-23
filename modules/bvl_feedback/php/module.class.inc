@@ -91,13 +91,15 @@ class Module extends \Module
                 $frontend_feedback[] = $row;
             }
             return [
-                new \LORIS\GUI\SmartyWidget(
+                new \LORIS\dashboard\SmartyWidget(
                     $this,
                     "dashboardwidget.tpl",
                     [
                         'baseURL' => $baseURL,
                         'notifications' => $frontend_feedback
-                    ]
+                    ],
+                    "Behavioural Feedback Notifications",
+                    "small",
                 )
             ];
         }

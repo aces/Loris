@@ -24,7 +24,7 @@ namespace LORIS\dashboard;
  * @link     https://www.github.com/aces/Loris
  */
 
-class Dashboard extends \NDB_Form
+class Dashboard extends \NDB_Page
 {
 
     /**
@@ -38,13 +38,37 @@ class Dashboard extends \NDB_Form
         $modules = \Module::getActiveModules($DB);
         $user   = \User::singleton();
 
-        $widgets = [];
-        foreach($modules as $module) {
-            if($module->hasAccess($user)) {
-                $widgets = array_merge($widgets, $module->getWidgets('dashboard', $user));
+        $smallwidgets = [];
+        $mainwidgets = [];
+        foreach ($modules as $module) {
+            if ($module->hasAccess($user)) {
+                $widgets = $module->getWidgets('dashboard', $user);
+                foreach ($widgets as $widget) {
+                    switch ($widget->getSize()) {
+                    case "small":
+                        $smallwidgets[] = $widget;
+                        break;
+                    default:
+                        $mainwidgets[] = $widget;
+                        break;
+                    }
+                }
             }
         }
-        $this->tpl_data['widgets'] = $widgets;
+        usort(
+            $smallwidgets,
+            function($a, $b) {
+                return $a->getOrder() <=> $b->getOrder();
+            }
+        );
+        usort(
+            $mainwidgets,
+            function($a, $b) {
+                return $a->getOrder() <=> $b->getOrder();
+            }
+        );
+        $this->tpl_data['smallwidgets'] = $smallwidgets;
+        $this->tpl_data['mainwidgets'] = $mainwidgets;
     }
 
     /**
