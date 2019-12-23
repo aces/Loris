@@ -6,8 +6,7 @@ bugs fixed in mytasks
 
 Still to fix:
 Recruitment widget
-    - move C3/D3 deps to widget
-    - fix menu hackCONVERT TO REACT, FIX D3/C3
+    - fix menu hack
     - convert from ajax scripts to real endpoints
     
 Study Progression

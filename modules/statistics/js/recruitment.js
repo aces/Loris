@@ -6,7 +6,7 @@ $(document).ready(function() {
         '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'
     ];
     // Colours for the recruitment bar chart: breakdown by sex
-var sexColours = ['#2FA4E7', '#1C70B6'];
+    var sexColours = ['#2FA4E7', '#1C70B6'];
     $('.progress-bar').tooltip();
 
     // Open the appropriate charts from the "views" dropdown menus
@@ -41,20 +41,20 @@ var sexColours = ['#2FA4E7', '#1C70B6'];
     }
 
     function formatBarData(data) {
-    "use strict";
-    var processedData = new Array();
-    if (data.datasets) {
-      var females = ['Female'];
-      processedData.push(females.concat(data.datasets.female));
-      var males = ['Male'];
-      processedData.push(males.concat(data.datasets.male));
+        "use strict";
+        var processedData = new Array();
+        if (data.datasets) {
+            var females = ['Female'];
+            processedData.push(females.concat(data.datasets.female));
+            var males = ['Male'];
+            processedData.push(males.concat(data.datasets.male));
+        }
+        return processedData;
     }
-    return processedData;
-}
     // AJAX to get pie chart data
     $.ajax({
-        url: loris.BaseURL + '/statistics/ajax/get_recruitment_pie_data.php',
-        type: 'post',
+        url: loris.BaseURL + '/statistics/charts/siterecruitment_pie',
+        type: 'get',
         success: function(data) {
             var jsonData = $.parseJSON(data);
             var recruitmentPieData = formatPieData(jsonData);
@@ -76,36 +76,36 @@ var sexColours = ['#2FA4E7', '#1C70B6'];
     });
 
     // AJAX to get bar chart data
-$.ajax({
-    url: loris.BaseURL + '/statistics/ajax/get_recruitment_bar_data.php',
-    type: 'post',
-    success: function(data) {
-        var recruitmentBarData = formatBarData(data);
-        var recruitmentBarLabels = data.labels;
-        recruitmentBarChart = c3.generate({
-            bindto: '#recruitmentBarChart',
-            data: {
-                columns: recruitmentBarData,
-                type: 'bar'
-            },
-            axis: {
-                x: {
-                    type : 'categorized',
-                    categories: recruitmentBarLabels
+    $.ajax({
+        url: loris.BaseURL + '/statistics/ajax/get_recruitment_bar_data.php',
+        type: 'post',
+        success: function(data) {
+            var recruitmentBarData = formatBarData(data);
+            var recruitmentBarLabels = data.labels;
+            recruitmentBarChart = c3.generate({
+                bindto: '#recruitmentBarChart',
+                data: {
+                    columns: recruitmentBarData,
+                    type: 'bar'
                 },
-                y: {
-                    label: 'Candidates registered'
+                axis: {
+                    x: {
+                        type : 'categorized',
+                        categories: recruitmentBarLabels
+                    },
+                    y: {
+                        label: 'Candidates registered'
+                    }
+                },
+                color: {
+                    pattern: sexColours
                 }
-            },
-            color: {
-                pattern: sexColours
-            }
-        });
-    },
-    error: function(xhr, desc, err) {
-        console.log(xhr);
-        console.log("Details: " + desc + "\nError:" + err);
-    }
-});
+            });
+        },
+        error: function(xhr, desc, err) {
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+    });
 }
 );
