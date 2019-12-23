@@ -124,7 +124,11 @@ class Module extends \Module
                     10,
                     "",
                     [ $baseURL . "/statistics/css/recruitment.css" ],
-                    [ $baseURL . "/statistics/js/recruitment.js" ],
+                    [
+                        $baseURL. '/js/d3.min.js',
+                        $baseURL . '/js/c3.min.js',
+                        $baseURL . "/statistics/js/recruitment.js"
+                    ],
                 ),
                 new \LORIS\dashboard\Widget(
                     "Study Progression",
