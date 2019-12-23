@@ -24,8 +24,61 @@ namespace LORIS\dashboard;
  * @link     https://www.github.com/aces/Loris
  */
 
-class Dashboard extends \NDB_Page
+class Dashboard extends \NDB_Form
 {
+
+    protected $widgetcss = [];
+
+    function __construct(
+        \Module $module,
+        string $page,
+        string $identifier,
+        string $commentID,
+        string $formname
+    ) {
+        parent::__construct($module, $page, $identifier, $commentID, $formname);
+
+        // This needs to be done before setup so that the widget specific CSS and
+        // javascript are available for getCSSDependencies and getJSDependencies,
+        // otherwise setup() only gets called by handle() of NDB_Page while calculating
+        // the body. 
+        $DB      = \NDB_Factory::singleton()->database();
+        $user   = \User::singleton();
+
+        $this->modules = \Module::getActiveModules($DB);
+
+        $this->smallwidgets = [];
+        $this->mainwidgets = [];
+        foreach ($this->modules as $module) {
+            if ($module->hasAccess($user)) {
+                $widgets = $module->getWidgets('dashboard', $user);
+                foreach ($widgets as $widget) {
+                    switch ($widget->getSize()) {
+                    case "small":
+                        $this->smallwidgets[] = $widget;
+                        break;
+                    default:
+                        $this->mainwidgets[] = $widget;
+                        break;
+                    }
+                    $this->widgetcss = array_merge($this->widgetcss, $widget->getCSSDependencies());
+                }
+
+            }
+        }
+        usort(
+            $this->smallwidgets,
+            function($a, $b) {
+                return $a->getOrder() <=> $b->getOrder();
+            }
+        );
+        usort(
+            $this->mainwidgets,
+            function($a, $b) {
+                return $a->getOrder() <=> $b->getOrder();
+            }
+        );
+    }
 
     /**
      * Creates the template data for the dashboard
@@ -34,41 +87,9 @@ class Dashboard extends \NDB_Page
      */
     function setup()
     {
-        $DB      = \NDB_Factory::singleton()->database();
-        $modules = \Module::getActiveModules($DB);
-        $user   = \User::singleton();
 
-        $smallwidgets = [];
-        $mainwidgets = [];
-        foreach ($modules as $module) {
-            if ($module->hasAccess($user)) {
-                $widgets = $module->getWidgets('dashboard', $user);
-                foreach ($widgets as $widget) {
-                    switch ($widget->getSize()) {
-                    case "small":
-                        $smallwidgets[] = $widget;
-                        break;
-                    default:
-                        $mainwidgets[] = $widget;
-                        break;
-                    }
-                }
-            }
-        }
-        usort(
-            $smallwidgets,
-            function($a, $b) {
-                return $a->getOrder() <=> $b->getOrder();
-            }
-        );
-        usort(
-            $mainwidgets,
-            function($a, $b) {
-                return $a->getOrder() <=> $b->getOrder();
-            }
-        );
-        $this->tpl_data['smallwidgets'] = $smallwidgets;
-        $this->tpl_data['mainwidgets'] = $mainwidgets;
+        $this->tpl_data['smallwidgets'] = $this->smallwidgets;
+        $this->tpl_data['mainwidgets'] = $this->mainwidgets;
     }
 
     /**
@@ -84,7 +105,8 @@ class Dashboard extends \NDB_Page
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/dashboard/css/dashboard.css"]
+            [$baseURL . "/dashboard/css/dashboard.css"],
+            $this->widgetcss,
         );
     }
 

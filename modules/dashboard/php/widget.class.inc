@@ -2,7 +2,7 @@
 namespace LORIS\dashboard;
 
 class Widget implements \LORIS\GUI\Widget {
-    public function __construct(string $title, string $body, string $size, int $order=10, string $footer="") {
+    public function __construct(string $title, string $body, string $size, int $order=10, string $footer="", array $extracss = [], array $extrajs = []) {
         if (!in_array($size, ["small", "normal", "huge"])) {
             throw new \DomainException("Invalid value for size");
         }
@@ -11,6 +11,7 @@ class Widget implements \LORIS\GUI\Widget {
         $this->body = $body;
         $this->order = $order;
         $this->footer = $footer;
+        $this->css = $extracss;
     }
 
     public function getSize() : string {
@@ -21,6 +22,11 @@ class Widget implements \LORIS\GUI\Widget {
         return $this->order;
 
     }
+
+    public function getCSSDependencies() {
+        return $this->css;
+    }
+
     public function __toString() {
         $renderer = new \Smarty_NeuroDB("dashboard");
         $renderer->assign([

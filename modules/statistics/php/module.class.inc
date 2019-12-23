@@ -64,6 +64,7 @@ class Module extends \Module
             $factory = \NDB_Factory::singleton();
             $config = $factory->config();
             $db = $factory->database();
+            $baseURL = $factory->settings()->getBaseURL();
 
             $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
@@ -106,6 +107,11 @@ class Module extends \Module
                         ]
                     ),
                     "normal",
+                    10,
+                    "",
+                    [ $baseURL . "/statistics/css/recruitment.css" ],
+                    [],
+
                 ),
                 new \LORIS\dashboard\Widget(
                     "Study Progression",
