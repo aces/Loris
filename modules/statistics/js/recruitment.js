@@ -53,7 +53,7 @@ var sexColours = ['#2FA4E7', '#1C70B6'];
 }
     // AJAX to get pie chart data
     $.ajax({
-        url: loris.BaseURL + '/dashboard/ajax/get_recruitment_pie_data.php',
+        url: loris.BaseURL + '/statistics/ajax/get_recruitment_pie_data.php',
         type: 'post',
         success: function(data) {
             var jsonData = $.parseJSON(data);
@@ -77,7 +77,7 @@ var sexColours = ['#2FA4E7', '#1C70B6'];
 
     // AJAX to get bar chart data
 $.ajax({
-    url: loris.BaseURL + '/dashboard/ajax/get_recruitment_bar_data.php',
+    url: loris.BaseURL + '/statistics/ajax/get_recruitment_bar_data.php',
     type: 'post',
     success: function(data) {
         var recruitmentBarData = formatBarData(data);
