@@ -1241,7 +1241,7 @@ class LorisForm
                 } elseif (isset($el['name'])) {
                     $value = $this->getValue($el['name']);
                 } else { // If the form element is a static label
-                    $val = null;
+                    $value = null;
                 }
 
                 if (isset($el['required'])
