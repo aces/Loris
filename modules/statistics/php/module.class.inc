@@ -129,6 +129,14 @@ class Module extends \Module
                         [ ]
                     ),
                     "normal",
+                    10,
+                    "",
+                    [],
+                    [],
+                    [
+                        'scan-line-chart-panel' => 'View scans per site',
+                        'recruitment-line-chart-panel' => 'View recruitment per site'
+                    ]
                 )
             ];
         }
