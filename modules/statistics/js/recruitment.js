@@ -55,8 +55,7 @@ $(document).ready(function() {
     $.ajax({
         url: loris.BaseURL + '/statistics/charts/siterecruitment_pie',
         type: 'get',
-        success: function(data) {
-            var jsonData = $.parseJSON(data);
+        success: function(jsonData) {
             var recruitmentPieData = formatPieData(jsonData);
             recruitmentPieChart = c3.generate({
                 bindto: '#recruitmentPieChart',
@@ -77,8 +76,8 @@ $(document).ready(function() {
 
     // AJAX to get bar chart data
     $.ajax({
-        url: loris.BaseURL + '/statistics/ajax/get_recruitment_bar_data.php',
-        type: 'post',
+        url: loris.BaseURL + '/statistics/charts/siterecruitment_bysex',
+        type: 'get',
         success: function(data) {
             var recruitmentBarData = formatBarData(data);
             var recruitmentBarLabels = data.labels;
