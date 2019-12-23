@@ -52,31 +52,40 @@ class Module extends \Module
     }
 
     private function getWelcomeWidget(\Database $DB, \NDB_Config $config, \User $user) {
-            $last_login = $user->getLastLogin($DB);
-            $projectdesc = $config->getSetting('projectDescription');
-            $dashboard_links = $config->getExternalLinks('dashboard');
-            $links = [];
-            foreach ($dashboard_links as $text => $url) {
-                $links[] = array(
-                            'url'        => $url,
-                            'label'      => $text,
-                            'WindowName' => md5($url),
-                        );
-            }
+        $last_login = $user->getLastLogin($DB);
+        $projectdesc = $config->getSetting('projectDescription');
+        $dashboard_links = $config->getExternalLinks('dashboard');
+        $links = [];
+        foreach ($dashboard_links as $text => $url) {
+            $links[] = array(
+                'url'        => $url,
+                'label'      => $text,
+                'WindowName' => md5($url),
+            );
+        }
 
+        $footer = "";
+        if (!empty($links)) {
+            $footer = $this->renderTemplate(
+                "welcomefooter.tpl",
+                [
+                    'dashboard_links' => $links,
+                ]
+            );
+        }
         return new Widget(
             "",
             $this->renderTemplate(
-                "welcome.tpl",
+                "welcomebody.tpl",
                 [
                     'username' => $user->getFullname(),
                     'last_login' => $last_login ?? "...never. Welcome!",
                     'project_description' => $projectdesc,
-                    'dashboard_links' => $links,
                 ],
             ),
             "normal",
             0,
+            $footer
         );
     }
     private function getTasksWidget() {
