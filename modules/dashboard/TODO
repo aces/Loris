@@ -5,16 +5,9 @@ bugs fixed in mytasks
         - imaging browser qc
 
 Still to fix:
-Recruitment widget
-    - fix menu hack
+    - Refactor constructor for widget to not take so many optional
+      parameters
     
 Study Progression
     -fix entirely
 
-Status:
-Welcome (done)
-Recruitment (partial)
-Study Progression (very partial)
-My Tasks (done)
-Docuemnt Repository (done)
-BVL Feedback (done)

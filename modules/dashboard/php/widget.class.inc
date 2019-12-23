@@ -2,7 +2,13 @@
 namespace LORIS\dashboard;
 
 class Widget implements \LORIS\GUI\Widget {
-    public function __construct(string $title, string $body, string $size, int $order=10, string $footer="", array $extracss = [], array $extrajs = []) {
+    public function __construct(
+        string $title, string $body, string $size, int $order=10, string $footer="", array $extracss = [], array $extrajs = [],
+        array $menus = []
+    ) {
+        // FIXME: Find a better way to handle all these parameters. There's a definition separation of concerns missing
+        // Maybe a content object (title, body, footer), a display object (size, order, menus), and a dependencies object
+        // (extra css/js)?
         if (!in_array($size, ["small", "normal", "huge"])) {
             throw new \DomainException("Invalid value for size");
         }
@@ -13,6 +19,7 @@ class Widget implements \LORIS\GUI\Widget {
         $this->footer = $footer;
         $this->css = $extracss;
         $this->js = $extrajs;
+        $this->menus = $menus;
     }
 
     public function getSize() : string {
@@ -37,7 +44,8 @@ class Widget implements \LORIS\GUI\Widget {
         $renderer->assign([
             'title' => $this->title,
             'body' => $this->body,
-            'footer' => $this->footer
+            'footer' => $this->footer,
+            'menus' => $this->menus
         ]);
         return $renderer->fetch("panel.tpl");
     }

@@ -100,20 +100,7 @@ class Module extends \Module
             return [
                 // FIXME: Do not include HTML in the title attribute.
                 new \LORIS\dashboard\Widget(
-                    "Recruitment" . '
-                              <div class="pull-right">
-                    <div class="btn-group views">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Views
-                            <span class="caret"></span>
-                        </button>
-                                            <ul class="dropdown-menu pull-right" role="menu">
-                            <li class="active"><a data-target="overall-recruitment">View overall recruitment</a></li>
-                            <li><a data-target="recruitment-site-breakdown">View site breakdown</a></li>
-                            <li><a data-target="recruitment-project-breakdown">View project breakdown</a></li>
-                        </ul>
-</div></div>
-',
+                    "Recruitment",
                     $this->renderTemplate(
                         "recruitment.tpl",
                         [
@@ -129,6 +116,11 @@ class Module extends \Module
                         $baseURL . '/js/c3.min.js',
                         $baseURL . "/statistics/js/recruitment.js"
                     ],
+                    [
+                        'overall-recruitment' => 'View overall recruitment',
+                        'recruitment-site-breakdown' => 'View site breakdown',
+                        'recruitment-project-breakdown' => 'View project breakdown'
+                    ]
                 ),
                 new \LORIS\dashboard\Widget(
                     "Study Progression",
