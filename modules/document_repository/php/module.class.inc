@@ -82,7 +82,7 @@ class Module extends \Module
             }
 
             return [
-                new \LORIS\dashboard\SmartyWidget(
+                new \LORIS\dashboard\Widget(
                     "Document Repository Notifications",
                     $this->renderTemplate(
                         "docnotifications.tpl",

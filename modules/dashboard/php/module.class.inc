@@ -64,7 +64,7 @@ class Module extends \Module
                         );
             }
 
-        return new SmartyWidget(
+        return new Widget(
             "",
             $this->renderTemplate(
                 "welcome.tpl",
@@ -90,7 +90,7 @@ class Module extends \Module
                 $widgets = array_merge($widgets, $module->getWidgets('usertasks', $user));
             }
         }
-        return new SmartyWidget(
+        return new Widget(
             "My Tasks",
             $this->renderTemplate(
                 "mytasks.tpl",

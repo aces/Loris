@@ -1,9 +1,8 @@
 <?php
 namespace LORIS\dashboard;
 
-class SmartyWidget implements DashboardWidget {
+class Widget implements \LORIS\GUI\Widget {
     public function __construct(string $title, string $body, string $size, int $order=10) {
-        //FIXME: Validate size is a valid value.
         if (!in_array($size, ["small", "normal", "huge"])) {
             throw new \DomainException("Invalid value for size");
         }

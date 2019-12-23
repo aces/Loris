@@ -91,7 +91,7 @@ class Module extends \Module
                 $frontend_feedback[] = $row;
             }
             return [
-                new \LORIS\dashboard\SmartyWidget(
+                new \LORIS\dashboard\Widget(
                     "Behavioural Feedback Notifications",
                     $this->renderTemplate(
                         "dashboardwidget.tpl",

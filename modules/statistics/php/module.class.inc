@@ -97,7 +97,7 @@ class Module extends \Module
 
 
             return [
-                new \LORIS\dashboard\SmartyWidget(
+                new \LORIS\dashboard\Widget(
                     "Recruitment",
                     $this->renderTemplate(
                         "recruitment.tpl",
@@ -107,7 +107,7 @@ class Module extends \Module
                     ),
                     "normal",
                 ),
-                new \LORIS\dashboard\SmartyWidget(
+                new \LORIS\dashboard\Widget(
                     "Study Progression",
                     $this->renderTemplate(
                         "studyprogression.tpl",
