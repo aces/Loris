@@ -28,6 +28,7 @@ class Dashboard extends \NDB_Form
 {
 
     protected $widgetcss = [];
+    protected $widgetjs = [];
 
     function __construct(
         \Module $module,
@@ -62,6 +63,7 @@ class Dashboard extends \NDB_Form
                         break;
                     }
                     $this->widgetcss = array_merge($this->widgetcss, $widget->getCSSDependencies());
+                    $this->widgetjs = array_merge($this->widgetjs, $widget->getJSDependencies());
                 }
 
             }
@@ -133,7 +135,8 @@ class Dashboard extends \NDB_Form
                 $baseurl . '/js/d3.min.js',
                 $baseurl . '/js/c3.min.js',
                 $baseurl . '/dashboard/js/dashboard-helper.js',
-            )
+            ),
+            $this->widgetjs,
         );
     }
 

@@ -3,6 +3,9 @@
     <div class="panel-heading">
         <h3 class="panel-title">{$title}</h3>
         <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
+        {if !empty($menus)}
+                Menus
+        {/if}
     </div>
     {/if}
     <div class="panel-body">

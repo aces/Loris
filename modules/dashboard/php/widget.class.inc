@@ -12,6 +12,7 @@ class Widget implements \LORIS\GUI\Widget {
         $this->order = $order;
         $this->footer = $footer;
         $this->css = $extracss;
+        $this->js = $extrajs;
     }
 
     public function getSize() : string {
@@ -25,6 +26,10 @@ class Widget implements \LORIS\GUI\Widget {
 
     public function getCSSDependencies() {
         return $this->css;
+    }
+
+    public function getJSDependencies() {
+        return $this->js;
     }
 
     public function __toString() {

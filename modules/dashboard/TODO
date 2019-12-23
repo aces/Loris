@@ -3,17 +3,13 @@ bugs fixed in mytasks
     - no multisite permission for 
         - violated scans
         - imaging browser qc
-how to handle 2 columns??
-- run through test plan
-- getJSDependencies?
-- getCSSDependencies?
 
 Still to fix:
-Recruitment widget - CONVERT TO REACT, FIX D3/C3
-    recruitment[overall]
-    recruitment[not overall]
-    project?
-
+Recruitment widget
+    - move C3/D3 deps to widget
+    - fix menu hackCONVERT TO REACT, FIX D3/C3
+    - convert from ajax scripts to real endpoints
+    
 Study Progression
     -fix entirely
 
