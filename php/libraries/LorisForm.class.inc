@@ -1238,8 +1238,10 @@ class LorisForm
             } else {
                 if ($el['type'] === 'file') {
                     $value = $_FILES[$el['name']]['name'];
-                } else {
+                } elseif (isset($el['name'])) {
                     $value = $this->getValue($el['name']);
+                } else { // If the form element is a static label
+                    $val = null;
                 }
 
                 if (isset($el['required'])
