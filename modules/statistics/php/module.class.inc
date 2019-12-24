@@ -68,12 +68,13 @@ class Module extends \Module
 
             $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
+            $totalScans = $this->getTotalRecruitment($db);
             $recruitment = [
                 'overall' => $this->createProjectProgressBar(
                     'overall',
                     "Overall Recruitment",
                     $recruitmentTarget,
-                    $this->getTotalRecruitment($db),
+                    $totalScans,
                     $db,
                 )
             ];
@@ -126,13 +127,19 @@ class Module extends \Module
                     "Study Progression",
                     $this->renderTemplate(
                         "studyprogression.tpl",
-                        [ ]
+                        [
+                            'total_scans' => $totalScans
+                        ]
                     ),
                     "normal",
                     10,
                     "",
                     [],
-                    [],
+                    [
+                        $baseURL. '/js/d3.min.js',
+                        $baseURL . '/js/c3.min.js',
+                        $baseURL . "/statistics/js/studyprogression.js"
+                    ],
                     [
                         'scan-line-chart-panel' => 'View scans per site',
                         'recruitment-line-chart-panel' => 'View recruitment per site'
