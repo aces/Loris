@@ -82,8 +82,8 @@ $(document).ready(function() {
     });
     // AJAX to get recruitment line chart data
     $.ajax({
-        url: loris.BaseURL + '/dashboard/ajax/get_recruitment_line_data.php',
-        type: 'post',
+        url: loris.BaseURL + '/statistics/charts/siterecruitment_line',
+        type: 'get',
         success: function(data) {
             var recruitmentLineData = formatLineData(data);
             recruitmentLineChart = c3.generate({
