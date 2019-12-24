@@ -128,7 +128,8 @@ class Module extends \Module
                     $this->renderTemplate(
                         "studyprogression.tpl",
                         [
-                            'total_scans' => $totalScans
+                            'total_scans' => $totalScans,
+                            'recruitment' => $recruitment
                         ]
                     ),
                     "normal",

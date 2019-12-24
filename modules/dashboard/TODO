@@ -7,6 +7,7 @@ bugs fixed in mytasks
 Still to fix:
     - Refactor constructor for widget to not take so many optional
       parameters
+    - convert from $.ajax to fetch API
     
 Study Progression
     -fix entirely

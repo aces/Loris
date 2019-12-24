@@ -1,4 +1,4 @@
-<div id="scans-line-chart-panel">
+<div id="scan-line-chart-panel">
     <h5 class="chart-title">Scan sessions per site</h5>
     {if $total_scans neq 0}
         <div id="scanChart"></div>
