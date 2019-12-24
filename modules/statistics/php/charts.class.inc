@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 <?php declare(strict_types=1);
-=======
-<?php
->>>>>>> Convert stats widget endpoints to real endpoints
 /**
  * The module to display study statistics
  *
