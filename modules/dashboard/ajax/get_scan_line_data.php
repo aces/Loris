@@ -40,79 +40,58 @@ $scanEndDate        = $DB->pselectOne(
      WHERE pt.Name='acquisition_date'",
     array()
 );
-$scanData['labels']
-    = createLineChartLabels($scanStartDate, $scanEndDate);
+
+// Run a query to get all the data. Order matters to ensure that the labels are calculated
+// in the correct order.
+$data= $DB->pselect("SELECT s.CenterID, CONCAT(MONTH(pf.Value), '-', YEAR(pf.Value)) as datelabel, COUNT(distinct s.ID) as count
+        FROM files f
+        LEFT JOIN parameter_file pf USING (FileID)
+        LEFT JOIN session s ON (s.ID=f.SessionID)
+        JOIN parameter_type pt USING (ParameterTypeID)
+        WHERE pt.Name='acquisition_date'
+        GROUP BY MONTH(pf.Value), YEAR(pf.Value), s.CenterID
+        ORDER BY YEAR(pf.Value), MONTH(pf.Value), s.CenterID",
+        array()
+    );
+
+$scanData['labels'] = createLineChartLabels($data);
+
 $list_of_sites      = Utility::getSiteList(true, false);
 foreach ($list_of_sites as $siteID => $siteName) {
     $scanData['datasets'][] = array(
         "name" => $siteName,
-        "data" => getScanData($siteID, $scanData['labels']),
+        "data" => getScanData2($data, $siteID, $scanData['labels'])
     );
+}
+
+function getScanData(array $data, int $siteID, array $labels) {
+    $sitedata = array_filter($data, function($row) use ($siteID) {
+        return $row['CenterID'] == $siteID;
+    });
+    $mappeddata = [];
+    foreach ($sitedata as $row) {
+        $mappeddata[$row['datelabel']] = $row['count'];
+    }
+
+    $data = [];
+    foreach($labels as $i => $label) {
+        $data[$i] = $mappeddata[$label] ?? 0;
+    }
+    return $data;
+}
+
+function createLineChartLabels(array $data) {
+    // Order was determined by the SQL statement. This should
+    // ensure that duplicates (for different sites) are stripped
+    // out.
+    $labels = [];
+    foreach ($data as $row) {
+        $labels[$row['datelabel']] = true;
+    }
+    return array_keys($labels);
 }
 
 print json_encode($scanData);
 
 return 0;
-
-/**
- * Create chart labels (dates)
- *
- * @param string $startDate start date of scans
- * @param string $endDate   end date of scans
- *
- * @return array
- */
-function createLineChartLabels($startDate, $endDate)
-{
-    $startDateYear  = substr($startDate, 0, 4);
-    $endDateYear    = substr($endDate, 0, 4);
-    $startDateMonth = substr($startDate, 4, 2);
-    $endDateMonth   = substr($endDate, 4, 2);
-    $labels         = array();
-    for ($year = (int)$startDateYear; $year <= (int)$endDateYear; $year++) {
-        $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;
-        $endMonth   = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
-        for ($month = $startMonth; $month <= $endMonth; $month++) {
-            $labels[] = $month . "-" . $year;
-        }
-    }
-    return $labels;
-}
-
-/**
- * Get scan data for each month in the label array
- *
- * @param string $siteID ID of a site
- * @param array  $labels chart labels (months to query)
- *
- * @return array
- */
-function getScanData($siteID, $labels)
-{
-    $DB   = Database::singleton();
-    $data = array();
-    foreach ($labels as $label) {
-        $month  = (strlen($label) == 6)
-            ? substr($label, 0, 1) : substr($label, 0, 2);
-        $year   = substr($label, -4, 4);
-        $data[] = $DB->pselectOne(
-            "SELECT COUNT(distinct s.ID) 
-             FROM files f
-             LEFT JOIN parameter_file pf USING (FileID)
-             LEFT JOIN session s ON (s.ID=f.SessionID) 
-             JOIN parameter_type pt USING (ParameterTypeID)
-             WHERE s.CenterID=:Site
-             AND pt.Name='acquisition_date'
-             AND MONTH(pf.Value)=:Month 
-             AND YEAR(pf.Value)=:Year",
-            array(
-                'Site'  => $siteID,
-                'Month' => $month,
-                'Year'  => $year,
-            )
-        );
-    }
-    return $data;
-}
-
 
