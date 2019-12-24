@@ -111,7 +111,10 @@ class Module extends \Module
                     "normal",
                     10,
                     "",
-                    [ $baseURL . "/statistics/css/recruitment.css" ],
+                    [
+                        $baseURL . "/css/c3.css",
+                        $baseURL . "/statistics/css/recruitment.css"
+                    ],
                     [
                         $baseURL. '/js/d3.min.js',
                         $baseURL . '/js/c3.min.js',
@@ -135,9 +138,11 @@ class Module extends \Module
                     "normal",
                     10,
                     "",
-                    [],
                     [
-                        $baseURL. '/js/d3.min.js',
+                        $baseURL . "/css/c3.css"
+                    ],
+                    [
+                        $baseURL . '/js/d3.min.js',
                         $baseURL . '/js/c3.min.js',
                         $baseURL . "/statistics/js/studyprogression.js"
                     ],
