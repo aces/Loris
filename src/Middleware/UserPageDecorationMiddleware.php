@@ -89,7 +89,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
 
-        $tpl_data['subtest'] = $request->getAttribute("pageclass")->page;
+        // Some page might call without pageclass
+        if (!is_null($request->getAttribute("pageclass"))) {
+            $tpl_data['subtest'] = $request->getAttribute("pageclass")->page;
+        }
 
         $page = $request->getAttribute("pageclass");
         if (method_exists($page, 'getFeedbackPanel')
