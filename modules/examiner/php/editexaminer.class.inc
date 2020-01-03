@@ -274,8 +274,8 @@ class EditExaminer extends \NDB_Form
         $baseURL = $factory->settings()->getBaseURL();
         $url = $baseURL."/examiner/editExaminer/?identifier="
                . $examinerID;
-        header("Refresh:0;url= $url");
-
+        header("Location: " . $url, true, 303);
+        exit();
     }
 
     /**
