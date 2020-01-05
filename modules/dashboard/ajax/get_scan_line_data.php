@@ -23,7 +23,21 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$DB = Database::singleton();
+$DB            = Database::singleton();
+$currentUser   = \User::singleton();
+$site          = array();
+$list_of_sites = array();
+
+//TODO: Create a permission specific to statistics
+if ($currentUser->hasPermission('access_all_profiles')) {
+    $list_of_sites = \Utility::getSiteList();
+} else {
+    $site_id_arr = $currentUser->getCenterIDs();
+    foreach ($site_id_arr as $key => $val) {
+        $site[$key]          = &Site::singleton($val);
+        $list_of_sites[$val] = $site[$key]->getCenterName();
+    }
+}
 
 $scanData           = array();
 $scanStartDate      = $DB->pselectOne(
@@ -42,7 +56,6 @@ $scanEndDate        = $DB->pselectOne(
 );
 $scanData['labels']
     = createLineChartLabels($scanStartDate, $scanEndDate);
-$list_of_sites      = Utility::getAssociativeSiteList(true, false);
 foreach ($list_of_sites as $siteID => $siteName) {
     $scanData['datasets'][] = array(
         "name" => $siteName,
