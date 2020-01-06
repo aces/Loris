@@ -10,8 +10,8 @@ class MenuItem
     /**
      * Constructs a menu item in a given category.
      *
-     * @param string $category The category (dropdown section) for the menu item
-     * @param string $label    The label to use for the menu item
+     * @param string $category The category (dropdown section) for the menu item.
+     * @param string $label    The label to use for the menu item.
      * @param string $link     The URL that the menu should point to.
      */
     public function __construct(string $category, string $label, string $link)
