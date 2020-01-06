@@ -12,7 +12,7 @@ Generally there are two categories of testing, **static** and **dynamic**. The f
 
 ## Static Tests
 
-**Static tests** analyze the code without running it, checking for consistency between documentation and the source code.
+**Static tests** analyze the code without running it.
 
 Static tests can be executed by running `make checkstatic` in the LORIS root diretory. This command will also use PHP's default linter (`php -l`) to check for basic syntax errors.
 
