@@ -617,7 +617,7 @@ class FilterBuilder extends Component {
             />
           </div>
         </div>
-        <ButtonElement label='Upload CSV'
+        <ButtonElement label='All Candidates'
                        columnSize=''
                        onUserInput={this.openModalCSV}
         />
