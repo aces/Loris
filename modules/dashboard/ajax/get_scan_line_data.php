@@ -68,14 +68,14 @@ foreach ($list_of_sites as $siteID => $siteName) {
 }
 
 /**
- * Massages the data passed into the format expected by C3.
- * Extracts the data for $siteID from $data, and ensures
- * that each label has a value in the correct index of the
- * returned array. Labels not in $data for site are given
- * a value of 0.
+ * Massages the data passed into the format expected by the
+ * C3 library. Extracts the data for $siteID from $data, and
+ * ensures that each label has a value in the correct index
+ * of the returned array. Labels not in $data for site are
+ * given a value of 0.
  *
- * @param array $data   The data to be extracted from
- * @param int   $siteID The siteID to be extracted
+ * @param array $data   The data to be extracted from.
+ * @param int   $siteID The siteID to be extracted.
  * @param array $labels A list of labels that should appear
  *                      in the result in the correct order.
  *
