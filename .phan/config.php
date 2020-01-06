@@ -17,6 +17,7 @@ return [
 	"ignore_undeclared_variables_in_global_scope" => false,
 	"suppress_issue_types" => [
         "PhanTypeInvalidDimOffset",
+        "PhanTypePossiblyInvalidDimOffset",
 		"PhanUndeclaredMethod",
         "PhanTypeMismatchDimFetch",
 		"PhanTypeMismatchReturn",
@@ -24,7 +25,8 @@ return [
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
-        "PhanNoopNew"
+        "PhanPossiblyUndeclaredVariable",
+        "PhanNoopNew",
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
