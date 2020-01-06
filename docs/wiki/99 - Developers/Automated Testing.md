@@ -16,7 +16,7 @@ Generally there are two categories of testing, **static** and **dynamic**. The f
 
 Static tests can be executed by running `make checkstatic` in the LORIS root diretory. This command will also use PHP's default linter (`php -l`) to check for basic syntax errors.
 
-We use the following tools for static testing.
+We use the following tools for static analysis.
 
 ### PHP
 
