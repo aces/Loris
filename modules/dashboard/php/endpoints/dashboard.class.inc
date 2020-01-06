@@ -56,7 +56,7 @@ class Dashboard extends Endpoint implements ETagCalculator
 
     /**
      * Initialize setup, the extra values for the
-     * create timepoint form. (psc & errors)
+     * dashboard module
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *

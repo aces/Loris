@@ -54,7 +54,7 @@ class ChartHelper extends Endpoint implements ETagCalculator
 
     /**
      * Initialize setup, the extra values for the
-     * create timepoint form. (psc & errors)
+     * Dashboard module.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
