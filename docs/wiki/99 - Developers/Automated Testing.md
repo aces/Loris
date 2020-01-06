@@ -2,7 +2,7 @@
 
 
 ## Overview
-We make use of TravisCI and various automated testing tools in order to make sure LORIS is clean, stable, and secure.
+We make use of TravisCI and various tools in order to make sure LORIS is clean, stable, and secure.
 
 We require that any pull request sent to the repository passes our entire suite of automated tests. If the code fails these tests, it cannot be merged as it is likely to break some functionality of the application.
 
