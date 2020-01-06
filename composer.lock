@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "197bb71364923c86ba65e1cde21aa424",
+    "content-hash": "f870fcb615995afe5720bd29ff2d5232",
     "packages": [
         {
             "name": "bjeavons/zxcvbn-php",
@@ -857,6 +857,7 @@
                 "psr",
                 "psr-7"
             ],
+            "abandoned": "laminas/laminas-diactoros",
             "time": "2019-08-06T17:53:53+00:00"
         }
     ],
@@ -1282,16 +1283,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "2.4.0",
+            "version": "2.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "9670327691736be2581394fd34a89df0ff008d17"
+                "reference": "85f142379813cf0a24a19237e9fbe6f77f0251db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/9670327691736be2581394fd34a89df0ff008d17",
-                "reference": "9670327691736be2581394fd34a89df0ff008d17",
+                "url": "https://api.github.com/repos/phan/phan/zipball/85f142379813cf0a24a19237e9fbe6f77f0251db",
+                "reference": "85f142379813cf0a24a19237e9fbe6f77f0251db",
                 "shasum": ""
             },
             "require": {
@@ -1302,9 +1303,10 @@
                 "ext-tokenizer": "*",
                 "felixfbecker/advanced-json-rpc": "^3.0.4",
                 "microsoft/tolerant-php-parser": "0.0.18",
+                "netresearch/jsonmapper": "^1.6.0",
                 "php": "^7.1.0",
                 "sabre/event": "^5.0",
-                "symfony/console": "^2.3|^3.0|~4.0",
+                "symfony/console": "^2.3|^3.0|^4.0|^5.0",
                 "symfony/polyfill-mbstring": "^1.11.0"
             },
             "require-dev": {
@@ -1350,7 +1352,7 @@
                 "php",
                 "static"
             ],
-            "time": "2019-10-26T17:47:01+00:00"
+            "time": "2019-12-29T17:44:25+00:00"
         },
         {
             "name": "phar-io/manifest",
