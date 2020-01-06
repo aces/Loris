@@ -518,7 +518,7 @@ class Dashboard extends Endpoint implements ETagCalculator
 
     /**
      * Returns true if the user has permission to access
-     * the Dashboard module
+     * the Dashboard module.
      *
      * @param \User $user The user whose access is being checked
      *
