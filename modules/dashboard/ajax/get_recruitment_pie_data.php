@@ -17,7 +17,7 @@ ini_set('default_charset', 'utf-8');
 $DB = Database::singleton();
 
 $recruitmentBySiteData = array();
-$list_of_sites         = Utility::getAssociativeSiteList(true, false);
+$list_of_sites         = Utility::getSiteList(true, false);
 
 foreach ($list_of_sites as $siteID => $siteName) {
 

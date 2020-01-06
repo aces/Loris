@@ -14,6 +14,8 @@ nav:
             - 'Introduction': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/00 - Introduction to Study Variables.md'
             - 'Projects': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/02 - Projects.md'
             - 'Sites': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/03 - Sites.md'
+            - 'Subprojects': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/04 - Subprojects.md'
+            - 'Timepoints': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/05 - Timepoints.md'
         - Clinical Instruments: 'wiki/01 - STUDY PARAMETERS SETUP/02 - Clinical Instruments/README.md'
         - Modules: 'wiki/01 - STUDY PARAMETERS SETUP/03 - Loris Modules/README.md'
 
@@ -24,4 +26,5 @@ nav:
     - Developers: 
         - 'Overview': 'wiki/99 - Developers/README.md'
         - 'SQL Dictionary': 'wiki/99 - Developers/SQL Dictionary.md'
+        - 'Style Guide (for help text)': 'HelpStyleGuide.md'
 theme: readthedocs
