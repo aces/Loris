@@ -163,14 +163,24 @@ class New_Profile extends \NDB_Form
         // Get sites for the select dropdown
         $userSites = $user->getData('CenterIDs');
         $sites     = array();
+
+        // variables for db access internal usage
+        $params = array();
+        $values = array();
         foreach ($userSites as $key => $siteID) {
-            $center = $DB->pselectRow(
-                "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                array('cid' => $siteID)
-            );
-            if (!is_null($center)) {
-                $sites[$siteID] = $center['Name'];
-            }
+            $para          = "cid$key";
+            $params[]      = ":$para";
+            $values[$para] = $siteID;
+        }
+
+        $centers = $DB->pselect(
+            "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
+            implode(', ', $params) . ")",
+            $values
+        );
+
+        foreach ($centers as $center) {
+            $sites[$center['ID']] = $center['Name'];
         }
 
         // Get projects for the select dropdown
@@ -216,7 +226,7 @@ class New_Profile extends \NDB_Form
         $user         = \User::singleton();
         $db           = \Database::singleton();
 
-        // Validate DOB fields, these checks are redundant
+        // Validate DOB fields
         if (empty($values['dobDate'])) {
             $errors['dobDate'] = 'Date of Birth field is required.';
         }
