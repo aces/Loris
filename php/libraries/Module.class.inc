@@ -181,8 +181,9 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     /**
      * Return the long name of this module. The long name is intended
      * to be the friendly, human-readable name and can not be automatically
-     * derived. It may contain spaces or, capitalization. The long name
-     * of the module is how it should be referred to in user-facing text.
+     * derived. It may contain spaces, punctuation, or capitalization. The
+     * long name of the module is how it should be referred to in
+     * user-facing text.
      *
      * By default, the long name is used as the name in the LORIS menu
      * (if the module has a menu category defined by getMenuCategory().
@@ -434,11 +435,13 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      *
      * By default, if getMenuCategory() and getLongName() are both
      * non-empty strings, a menu entry will be added for the module
-     * under the appropriate category with the long name user as the
+     * under the appropriate category with the long name used as the
      * name. A module may override this if it wants to override this
-     * behaviour and add more (or differently named) menu items. (In
-     * for a module to not be placed in the menu, it's sufficient to
-     * simply not change the default returned by getMenuCategory().
+     * behaviour and add more (or differently named) menu items.
+     *
+     * In order for a module to not be placed in the LORIS menu, it's
+     * sufficient to simply not change the default returned by
+     * getMenuCategory() without overriding getMenuItems.
      *
      * @return \LORIS\GUI\MenuItem[]
      */
