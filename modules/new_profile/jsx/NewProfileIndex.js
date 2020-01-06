@@ -144,7 +144,16 @@ class NewProfileIndex extends React.Component {
     let profile = null;
     let edc = null;
     let pscid = null;
-    let site = null;
+    let site =
+    <SelectElement
+      name = "site"
+      label = "Site"
+      options = {this.state.configData.site}
+      onUserInput = {this.setFormData}
+      value = {this.state.formData.site}
+      required = {true}
+    />;
+
     let minYear = this.state.configData.minYear;
     let maxYear = this.state.configData.maxYear;
     let dateFormat = this.state.configData.dobFormat;
@@ -181,17 +190,6 @@ class NewProfileIndex extends React.Component {
           label = "PSCID"
           onUserInput = {this.setFormData}
           value = {this.state.formData.pscid}
-          required = {true}
-        />;
-    }
-    if (this.state.configData['site'] !== null) {
-      site =
-        <SelectElement
-          name = "site"
-          label = "Site"
-          options = {this.state.configData.site}
-          onUserInput = {this.setFormData}
-          value = {this.state.formData.site}
           required = {true}
         />;
     }

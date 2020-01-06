@@ -68,15 +68,6 @@ class New_Profile extends \NDB_Form
                 $values[$key] = null;
             }
         }
-        /* When a user has only one site and centerID has not been
-         * passed, choose the first one in the User's centerID list.
-         */
-        $centerIDs = \User::singleton()->getData('CenterIDs');
-        if (count($centerIDs) <= 1 && !isset($values['site'])) {
-            $values['site'] = $centerIDs[0];
-        }
-        //TODO: add similar logic to projects when user-projects association is
-        //incorporated.
 
         /* Create the candidate and retrieve its ID.
          * Use form values when present, otherwise default to null.
@@ -170,21 +161,17 @@ class New_Profile extends \NDB_Form
         $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
         // Get sites for the select dropdown
-        $user_list_of_sites = $user->getData('CenterIDs');
-        $num_sites          = count($user_list_of_sites);
-        $psc_labelOptions   = array();
-        if ($num_sites > 1) {
-            foreach ($user_list_of_sites as $key => $siteID) {
-                $center = $DB->pselectRow(
-                    "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                    array('cid' => $siteID)
-                );
-                if (!is_null($center)) {
-                    $psc_labelOptions[$siteID] = $center['Name'];
-                }
+        $userSites = $user->getData('CenterIDs');
+        $sites     = array();
+        foreach ($userSites as $key => $siteID) {
+            $center = $DB->pselectRow(
+                "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
+                array('cid' => $siteID)
+            );
+            if (!is_null($center)) {
+                $sites[$siteID] = $center['Name'];
             }
         }
-        $site = $psc_labelOptions;
 
         // Get projects for the select dropdown
         $projList = array();
@@ -207,7 +194,7 @@ class New_Profile extends \NDB_Form
             'edc'       => $edc,
             'sex'       => $sex,
             'pscidSet'  => $pscidSet,
-            'site'      => $site,
+            'site'      => $sites,
             'project'   => $project,
         );
 
@@ -229,13 +216,14 @@ class New_Profile extends \NDB_Form
         $user         = \User::singleton();
         $db           = \Database::singleton();
 
-        // Validate DOB fields
+        // Validate DOB fields, these checks are redundant
         if (empty($values['dobDate'])) {
             $errors['dobDate'] = 'Date of Birth field is required.';
         }
         if (empty($values['dobDateConfirm'])) {
             $errors['dobDateConfirm'] = 'Confirm Date of Birth field is required.';
         }
+
         if ($values['dobDate'] != $values['dobDateConfirm']) {
             $errors['dobDate'] = 'Date of Birth fields must match.';
         }
@@ -310,11 +298,8 @@ class New_Profile extends \NDB_Form
             }
         }
 
-        // Validate site entered
         $psc = (int)$values['site'] ?? '';
-        $user_list_of_sites = $user->getData('CenterIDs');
-        $num_sites          = count($user_list_of_sites);
-        if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {
+        if (!$user->hasCenter($psc)) {
             $errors['site'] = "Site must be selected from the available dropdown.";
         }
 
