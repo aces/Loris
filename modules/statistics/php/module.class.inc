@@ -58,19 +58,28 @@ class Module extends \Module
         return "Statistics";
     }
 
-    public function getWidgets(string $type, \User $user) {
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user)
+    {
         switch($type) {
         case 'dashboard':
             $factory = \NDB_Factory::singleton();
-            $config = $factory->config();
-            $db = $factory->database();
+            $config  = $factory->config();
+            $db      = $factory->database();
             $baseURL = $factory->settings()->getBaseURL();
 
             $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
-            $totalScans = $this->getTotalRecruitment($db);
+            $totalScans  = $this->_getTotalRecruitment($db);
             $recruitment = [
-                'overall' => $this->createProjectProgressBar(
+                'overall' => $this->_createProjectProgressBar(
                     'overall',
                     "Overall Recruitment",
                     $recruitmentTarget,
@@ -88,7 +97,7 @@ class Module extends \Module
                         'project ID ' . intval($projectID)
                     );
                 }
-                $recruitment[$projectID] = $this->createProjectProgressBar(
+                $recruitment[$projectID] = $this->_createProjectProgressBar(
                     $projectID,
                     $projectInfo['Name'],
                     $projectInfo['recruitmentTarget'],
@@ -97,9 +106,9 @@ class Module extends \Module
                 );
             }
 
-
+            // This is just here to avoid phpcs complaining about line length.
+            $overallstring = 'View overall recruitment';
             return [
-                // FIXME: Do not include HTML in the title attribute.
                 new \LORIS\dashboard\Widget(
                     "Recruitment",
                     $this->renderTemplate(
@@ -121,8 +130,8 @@ class Module extends \Module
                         $baseURL . "/statistics/js/recruitment.js"
                     ],
                     [
-                        'overall-recruitment' => 'View overall recruitment',
-                        'recruitment-site-breakdown' => 'View site breakdown',
+                        'overall-recruitment'           => $overallstring,
+                        'recruitment-site-breakdown'    => 'View site breakdown',
                         'recruitment-project-breakdown' => 'View project breakdown'
                     ]
                 ),
@@ -147,7 +156,7 @@ class Module extends \Module
                         $baseURL . "/statistics/js/studyprogression.js"
                     ],
                     [
-                        'scan-line-chart-panel' => 'View scans per site',
+                        'scan-line-chart-panel'        => 'View scans per site',
                         'recruitment-line-chart-panel' => 'View recruitment per site'
                     ]
                 )
@@ -159,9 +168,11 @@ class Module extends \Module
     /**
      * Gets the total count of candidates associated with a specific project
      *
+     * @param \Database $DB The database connection to get the count from.
+     *
      * @return int
      */
-    private function getTotalRecruitment(\Database $DB)
+    private function _getTotalRecruitment(\Database $DB)
     {
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*) FROM candidate c
@@ -172,20 +183,36 @@ class Module extends \Module
         return $totalRecruitment;
     }
 
-    private function createProjectProgressBar(
-        $ID, $title, $recruitmentTarget, $totalRecruitment, \Database $db
+    /**
+     * Generates the template data for a progress bar.
+     *
+     * @param $ID                The name of the progress bar being
+     *                           created.
+     * @param $title             The title to add to the template variables.
+     * @param $recruitmentTarget The target for this recruitment type.
+     * @param $totalRecruitment  The total number of candidates of all types.
+     * @param \Database $db                The database connection to get data from.
+     *
+     * @return array Smarty template data
+     */
+    private function _createProjectProgressBar(
+        $ID,
+        $title,
+        $recruitmentTarget,
+        $totalRecruitment,
+        \Database $db
     ) {
         $rv = [
             'total_recruitment' => $totalRecruitment,
-            'title' => $title,
+            'title'             => $title,
         ];
-        if(empty($recruitmentTarget)) {
+        if (empty($recruitmentTarget)) {
             return $rv;
         }
 
         $rv['recruitment_target'] = $recruitmentTarget;
         if ($ID == 'overall') {
-            $totalFemales = $this->getTotalSex($db, "Female");
+            $totalFemales = $this->_getTotalSex($db, "Female");
         } else {
             $totalFemales = $this->getTotalSexByProject($db, "Female", $ID);
         }
@@ -202,8 +229,10 @@ class Module extends \Module
             = round($totalMales / $recruitmentTarget * 100);
         if ($totalRecruitment > $recruitmentTarget) {
             $rv['surpassed_recruitment'] = "true";
+
             $rv['female_full_percent']
                 = round($totalFemales / $totalRecruitment * 100);
+
             $rv['male_full_percent']
                 = round($totalMales / $totalRecruitment * 100);
         }
@@ -213,11 +242,13 @@ class Module extends \Module
     /**
      * Gets the total count of candidates of a specific sex
      *
-     * @param string $sex Biological sex (male or female)
+     * @param \Database $db  A database connection to retrieve information
+     *                       from.
+     * @param string    $sex Biological sex (male or female)
      *
      * @return int
      */
-    private function getTotalSex(\Database $db, string $sex) : int
+    private function _getTotalSex(\Database $db, string $sex) : int
     {
         return $db->pselectOne(
             "SELECT COUNT(c.CandID)
@@ -228,12 +259,14 @@ class Module extends \Module
         );
     }
 
-        /**
+    /**
      * Gets the total count of candidates of a specific sex,
      * associated with a specific project
      *
-     * @param string $sex       A biological sex (male or female)
-     * @param int    $projectID Project ID
+     * @param \Database $DB        A database connection to retrieve information
+     *                             from.
+     * @param string    $sex       A biological sex (male or female)
+     * @param int       $projectID Project ID
      *
      * @return int
      */
@@ -252,10 +285,12 @@ class Module extends \Module
     }
 
 
-        /**
-     * Gets the total count of candidates associated with a specific project
+    /**
+     * Gets the total count of candidates associated with a specific project.
      *
-     * @param int $projectID Project ID
+     * @param \Database $db        A database connection to retrieve information
+     *                             from.
+     * @param int       $projectID The Project ID to get recruitment for.
      *
      * @return int
      */

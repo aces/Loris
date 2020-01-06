@@ -2,6 +2,7 @@
 
 namespace LORIS\GUI;
 
-interface Widget {
+interface Widget
+{
     public function __toString();
 }

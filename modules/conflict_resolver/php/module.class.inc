@@ -59,15 +59,24 @@ class Module extends \Module
         return "Conflict Resolver";
     }
 
-    public function getWidgets(string $type, \User $user) : array {
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user) : array
+    {
         switch($type) {
         case 'usertasks':
             $factory = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
-            $DB = $factory->database();
+            $DB      = $factory->database();
             return [
                 new \LORIS\GUI\TaskQueryWidget(
-                    $user, 
+                    $user,
                     "Data entry conflict",
                     $DB,
                     "SELECT COUNT(*) FROM conflicts_unresolved cu

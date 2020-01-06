@@ -26,7 +26,15 @@ namespace LORIS\bvl_feedback;
  */
 class Module extends \Module
 {
-    public function hasAccess(\User $user) : bool {
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    public function hasAccess(\User $user) : bool
+    {
         if (parent::hasAccess($user) === false) {
             return false;
         }
@@ -43,12 +51,21 @@ class Module extends \Module
         return "Behavioural Feedback";
     }
 
-    public function getWidgets(string $type, \User $user) {
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user)
+    {
         switch($type) {
         case 'dashboard':
             $factory = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
-            $DB = $factory->database();
+            $DB      = $factory->database();
 
             $last_login = $user->getLastLogin($DB);
 
@@ -96,7 +113,7 @@ class Module extends \Module
                     $this->renderTemplate(
                         "dashboardwidget.tpl",
                         [
-                            'baseURL' => $baseURL,
+                            'baseURL'       => $baseURL,
                             'notifications' => $frontend_feedback
                         ],
                     ),

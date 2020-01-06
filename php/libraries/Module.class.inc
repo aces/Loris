@@ -460,11 +460,38 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         return [];
     }
 
-    public function getWidgets(string $type, \User $user) {
+    /**
+     * Return a list of widgets of type $type that this module
+     * can provide for user $user.
+     *
+     * Widgets are things that can be rendered into other modules.
+     * They serve as a somewhat abstract link that can be used
+     * to loosely couple modules.
+     *
+     * As such, the exact type and nature of a widget can vary based
+     * on $type, and the contract between the caller and callee is
+     * implicit.
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user)
+    {
         return [];
     }
 
-    public function renderTemplate($template, $tpl_data) {
+    /**
+     * Render a template from within this module's namespace.
+     *
+     * @param string $template The template file name.
+     * @param array  $tpl_data The data to bind to the rendering.
+     *
+     * @return string The rendered template
+     */
+    public function renderTemplate(string $template, array $tpl_data) : string
+    {
         $renderer = new \Smarty_NeuroDB($this->getName());
         $renderer->assign($tpl_data);
         return $renderer->fetch($template);

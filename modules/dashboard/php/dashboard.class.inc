@@ -27,9 +27,29 @@ namespace LORIS\dashboard;
 class Dashboard extends \NDB_Form
 {
 
+    /**
+     * Extra CSS URLs that are required for widgets.
+     *
+     * @var array
+     */
     protected $widgetcss = [];
+
+    /**
+     * Extra JS URLs that are required for widgets.
+     *
+     * @var array
+     */
     protected $widgetjs = [];
 
+    /**
+     * Page constructor for the dashboard main page.
+     *
+     * @param \Module $module     The test name being accessed
+     * @param string  $page       The subtest being accessed (may be an empty string)
+     * @param string  $identifier The identifier for the data to load on this page
+     * @param string  $commentID  The CommentID to load the data for
+     * @param string  $formname   The name to give this form
+     */
     function __construct(
         \Module $module,
         string $page,
@@ -41,15 +61,15 @@ class Dashboard extends \NDB_Form
 
         // This needs to be done before setup so that the widget specific CSS and
         // javascript are available for getCSSDependencies and getJSDependencies,
-        // otherwise setup() only gets called by handle() of NDB_Page while calculating
-        // the body. 
-        $DB      = \NDB_Factory::singleton()->database();
-        $user   = \User::singleton();
+        // otherwise setup() only gets called by handle() of NDB_Page while
+        // calculating the body.
+        $DB   = \NDB_Factory::singleton()->database();
+        $user = \User::singleton();
 
         $this->modules = \Module::getActiveModules($DB);
 
         $this->smallwidgets = [];
-        $this->mainwidgets = [];
+        $this->mainwidgets  = [];
         foreach ($this->modules as $module) {
             if ($module->hasAccess($user)) {
                 $widgets = $module->getWidgets('dashboard', $user);
@@ -62,21 +82,28 @@ class Dashboard extends \NDB_Form
                         $this->mainwidgets[] = $widget;
                         break;
                     }
-                    $this->widgetcss = array_merge($this->widgetcss, $widget->getCSSDependencies());
-                    $this->widgetjs = array_merge($this->widgetjs, $widget->getJSDependencies());
+                    $this->widgetcss = array_merge(
+                        $this->widgetcss,
+                        $widget->getCSSDependencies()
+                    );
+
+                    $this->widgetjs = array_merge(
+                        $this->widgetjs,
+                        $widget->getJSDependencies()
+                    );
                 }
 
             }
         }
         usort(
             $this->smallwidgets,
-            function($a, $b) {
+            function ($a, $b) {
                 return $a->getOrder() <=> $b->getOrder();
             }
         );
         usort(
             $this->mainwidgets,
-            function($a, $b) {
+            function ($a, $b) {
                 return $a->getOrder() <=> $b->getOrder();
             }
         );
@@ -91,7 +118,7 @@ class Dashboard extends \NDB_Form
     {
 
         $this->tpl_data['smallwidgets'] = $this->smallwidgets;
-        $this->tpl_data['mainwidgets'] = $this->mainwidgets;
+        $this->tpl_data['mainwidgets']  = $this->mainwidgets;
     }
 
     /**
@@ -118,7 +145,6 @@ class Dashboard extends \NDB_Form
      *
      * @return array of javascript files to be included
      */
-
     function getJSDependencies()
     {
         $factory = \NDB_Factory::singleton();

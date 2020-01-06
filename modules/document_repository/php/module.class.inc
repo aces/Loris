@@ -59,16 +59,25 @@ class Module extends \Module
         return "Document Repository";
     }
 
-    public function getWidgets(string $type, \User $user) {
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user)
+    {
         switch($type) {
         case 'dashboard':
             $factory = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
-            $DB = $factory->database();
+            $DB      = $factory->database();
 
             $last_login = $user->getLastLogin($DB);
 
-            $docs= $DB->pselect(
+            $docs = $DB->pselect(
                 "SELECT File_name, Date_uploaded, Data_dir FROM document_repository
                  ORDER BY Date_uploaded DESC LIMIT 4",
                 array()
@@ -87,7 +96,7 @@ class Module extends \Module
                     $this->renderTemplate(
                         "docnotifications.tpl",
                         [
-                            'baseURL' => $baseURL,
+                            'baseURL'       => $baseURL,
                             'notifications' => $docs
                         ],
                     ),

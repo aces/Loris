@@ -62,11 +62,20 @@ class Module extends \Module
         return "Issue Tracker";
     }
 
-    public function getWidgets(string $type, \User $user) : array {
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user) : array
+    {
         switch($type) {
         case 'usertasks':
             $factory = \NDB_Factory::singleton();
-            $DB = $factory->database();
+            $DB      = $factory->database();
             $baseURL = $factory->settings()->getBaseURL();
             return [
                 new \LORIS\GUI\TaskQueryWidget(
@@ -75,7 +84,7 @@ class Module extends \Module
                     $DB,
                     "SELECT COUNT(*) FROM issues
                      WHERE status != 'closed' AND assignee="
-                     . $DB->quote($user->getData('UserID')) ,
+                     . $DB->quote($user->getData('UserID')),
                     '',
                     '',
                     $baseURL . "/issue_tracker/?#My%20Issues"

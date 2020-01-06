@@ -36,26 +36,50 @@ class Module extends \Module
         return "Dashboard";
     }
 
-    public function getWidgets(string $type, \User $user) {
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user)
+    {
         switch($type) {
         case 'dashboard':
             $factory = \NDB_Factory::singleton();
-            $DB = $factory->database();
-            $config = $factory->config();
+            $DB      = $factory->database();
+            $config  = $factory->config();
             return [
-                $this->getWelcomeWidget($DB, $config, $user),
-                $this->getTasksWidget()
+                $this->_getWelcomeWidget($DB, $config, $user),
+                $this->_getTasksWidget()
             ];
         }
         return [];
-        
+
     }
 
-    private function getWelcomeWidget(\Database $DB, \NDB_Config $config, \User $user) {
-        $last_login = $user->getLastLogin($DB);
-        $projectdesc = $config->getSetting('projectDescription');
+    /**
+     * Get the content for the welcome widget which appears on the dashboard.
+     * The welcome widget is (usually) the first widget on the dashboard with
+     * a few words about the project.
+     *
+     * @param \Database   $DB     The database with the welcome message
+     * @param \NDB_Config $config The config object with the external links
+     * @param \User       $user   The user accessing the dashboard.
+     *
+     * @return \LORIS\GUI\Widget
+     */
+    private function _getWelcomeWidget(
+        \Database $DB,
+        \NDB_Config $config,
+        \User $user
+    ) {
+        $last_login      = $user->getLastLogin($DB);
+        $projectdesc     = $config->getSetting('projectDescription');
         $dashboard_links = $config->getExternalLinks('dashboard');
-        $links = [];
+        $links           = [];
         foreach ($dashboard_links as $text => $url) {
             $links[] = array(
                 'url'        => $url,
@@ -78,8 +102,8 @@ class Module extends \Module
             $this->renderTemplate(
                 "welcomebody.tpl",
                 [
-                    'username' => $user->getFullname(),
-                    'last_login' => $last_login ?? "...never. Welcome!",
+                    'username'            => $user->getFullname(),
+                    'last_login'          => $last_login ?? "...never. Welcome!",
                     'project_description' => $projectdesc,
                 ],
             ),
@@ -88,15 +112,27 @@ class Module extends \Module
             $footer
         );
     }
-    private function getTasksWidget() {
+
+    /**
+     * Get task widget for the dashboard. The task widget is the list of "My Tasks"
+     * in the sidebar. It further uses "usertask" type widgets to display a list
+     * of tasks for the user.
+     *
+     * @return \LORIS\GUI\Widget
+     */
+    private function _getTasksWidget()
+    {
         $DB      = \NDB_Factory::singleton()->database();
         $modules = \Module::getActiveModules($DB);
-        $user   = \User::singleton();
+        $user    = \User::singleton();
 
         $widgets = [];
-        foreach($modules as $module) {
-            if($module->hasAccess($user)) {
-                $widgets = array_merge($widgets, $module->getWidgets('usertasks', $user));
+        foreach ($modules as $module) {
+            if ($module->hasAccess($user)) {
+                $widgets = array_merge(
+                    $widgets,
+                    $module->getWidgets('usertasks', $user)
+                );
             }
         }
         return new Widget(
