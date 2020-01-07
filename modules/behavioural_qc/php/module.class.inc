@@ -32,10 +32,8 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        if (parent::hasAccess($user) == false) {
-            return false;
-        }
-        return $user->hasPermission('quality_control');
+        return parent::hasAccess($user) &&
+            $user->hasPermission('quality_control');
     }
 
     /**

@@ -35,10 +35,8 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        if (parent::hasAccess($user) == false) {
-            return false;
-        }
-        return $user->hasAnyPermission(['examiner_view', 'examiner_multisite' ]);
+        return parent::hasAccess($user) &&
+            $user->hasAnyPermission(['examiner_view', 'examiner_multisite' ]);
     }
 
     /**

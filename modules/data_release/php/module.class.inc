@@ -35,10 +35,8 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        if (parent::hasAccess($user) == false) {
-            return false;
-        }
-        return $user->hasAnyPermission(
+        return parent::hasAccess($user) &&
+            $user->hasAnyPermission(
             [
                 'data_release_view',
                 'data_release_upload',

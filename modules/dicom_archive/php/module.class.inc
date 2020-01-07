@@ -37,10 +37,8 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        if (parent::hasAccess($user) == false) {
-            return false;
-        }
-        return $user->hasPermission('dicom_archive_view_allsites');
+        return parent::hasAccess($user) &&
+            $user->hasPermission('dicom_archive_view_allsites');
     }
 
     /**

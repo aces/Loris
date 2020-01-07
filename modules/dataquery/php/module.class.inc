@@ -35,10 +35,7 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        if (parent::hasAccess($user) == false) {
-            return false;
-        }
-        return $user->hasPermission('dataquery_view');
+        return parent::hasAccess($user) && $user->hasPermission('dataquery_view');
     }
 
     /**

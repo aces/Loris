@@ -35,10 +35,8 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        if (parent::hasAccess($user) == false) {
-            return false;
-        }
-        return $user->hasAnyPermission(['data_entry', 'access_all_profiles']);
+        return parent::hasAccess($user) &&
+            $user->hasAnyPermission(['data_entry', 'access_all_profiles']);
     }
 
     /**

@@ -34,10 +34,8 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        if (parent::hasAccess($user) == false) {
-            return false;
-        }
-        return $user->hasAnyPermission(['data_dict_view', 'data_dict_edit']);
+        return parent::hasAccess($user) &&
+            $user->hasAnyPermission(['data_dict_view', 'data_dict_edit']);
     }
 
     /**

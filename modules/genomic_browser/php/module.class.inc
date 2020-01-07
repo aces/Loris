@@ -33,10 +33,8 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        if (parent::hasAccess($user) == false) {
-            return false;
-        }
-        return $user->hasAnyPermission(
+        return parent::hasAccess($user) &&
+            $user->hasAnyPermission(
             [
                 'genomic_browser_view_site',
                 'genomic_browser_view_allsites'
