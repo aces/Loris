@@ -371,4 +371,19 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
             )
         );
     }
+
+    /**
+     * Render a template from within this module's namespace.
+     *
+     * @param string $template The template file name.
+     * @param array  $tpl_data The data to bind to the rendering.
+     *
+     * @return string The rendered template
+     */
+    public function renderTemplate(string $template, array $tpl_data) : string
+    {
+        $renderer = new \Smarty_NeuroDB($this->getName());
+        $renderer->assign($tpl_data);
+        return $renderer->fetch($template);
+    }
 }
