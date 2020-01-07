@@ -169,15 +169,18 @@ class ChartHelper extends Endpoint implements ETagCalculator
                 ? substr($label, 0, 1) : substr($label, 0, 2);
             $year   = substr($label, -4, 4);
             $data[] = $DB->pselectOne(
-                "SELECT COUNT(distinct s.ID)
-             FROM files f
-             LEFT JOIN parameter_file pf USING (FileID)
-             LEFT JOIN session s ON (s.ID=f.SessionID)
-             JOIN parameter_type pt USING (ParameterTypeID)
-             WHERE s.CenterID=:Site
-             AND pt.Name='acquisition_date'
-             AND MONTH(pf.Value)=:Month
-             AND YEAR(pf.Value)=:Year",
+                "SELECT
+                            COUNT(DISTINCT s.ID)
+                        FROM
+                            files f
+                            LEFT JOIN parameter_file pf USING (FileID)
+                            LEFT JOIN session s ON (s.ID = f.SessionID)
+                            JOIN parameter_type pt USING (ParameterTypeID)
+                        WHERE
+                            s.CenterID = :Site
+                            AND pt.Name = 'acquisition_date'
+                            AND MONTH(pf.Value) = :Month
+                            AND YEAR(pf.Value) = :Year",
                 array(
                     'Site'  => $siteID,
                     'Month' => $month,
@@ -206,12 +209,14 @@ class ChartHelper extends Endpoint implements ETagCalculator
         foreach ($list_of_sites as $siteID => $siteName) {
 
             $totalRecruitment = $DB->pselectOne(
-                "SELECT COUNT(c.CandID)
-         FROM candidate c
-         WHERE
-           c.RegistrationCenterID=:Site AND
-           c.Active='Y' AND
-           c.Entity_type='Human'",
+                "SELECT
+                            COUNT(c.CandID)
+                        FROM
+                            candidate c
+                        WHERE
+                            c.RegistrationCenterID = :Site
+                            AND c.Active = 'Y'
+                            AND c.Entity_type = 'Human'",
                 array('Site' => $siteID)
             );
 
@@ -241,17 +246,27 @@ class ChartHelper extends Endpoint implements ETagCalculator
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
             $sexData['datasets']['female'][] = $DB->pselectOne(
-                "SELECT COUNT(c.CandID)
-         FROM candidate c
-         WHERE c.RegistrationCenterID=:Site AND c.Sex='female' AND c.Active='Y'
-         AND c.Entity_type='Human'",
+                "SELECT
+                            COUNT(c.CandID)
+                        FROM
+                            candidate c
+                        WHERE
+                            c.RegistrationCenterID = :Site
+                            AND c.Sex = 'female'
+                            AND c.Active = 'Y'
+                            AND c.Entity_type = 'Human'",
                 array('Site' => $siteID)
             );
             $sexData['datasets']['male'][]   = $DB->pselectOne(
-                "SELECT COUNT(c.CandID)
-         FROM candidate c
-         WHERE c.RegistrationCenterID=:Site AND c.Sex='male' AND c.Active='Y'
-         AND c.Entity_type='Human'",
+                "SELECT
+                            COUNT(c.CandID)
+                        FROM
+                            candidate c
+                        WHERE
+                            c.RegistrationCenterID = :Site
+                            AND c.Sex = 'male'
+                            AND c.Active = 'Y'
+                            AND c.Entity_type = 'Human'",
                 array('Site' => $siteID)
             );
         }
