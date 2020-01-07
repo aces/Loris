@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This file contains a stub class which extends "Module" to be
  * non-abstract and instantiatable. It's intended for use in
