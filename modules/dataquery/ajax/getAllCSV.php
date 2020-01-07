@@ -1,4 +1,15 @@
 <?php
+/**
+ * Data Querying for CSVs
+ *
+ * PHP Version 7
+ *
+ * @category Data_Querying_Module
+ * @package  Loris
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 $user =& User::singleton();
 if (!$user->hasPermission('dataquery_view')) {
@@ -18,19 +29,19 @@ $results   = $DB->execute($statement, array());
 $sessions = array();
 
 foreach ($results as &$val) {
-    $val['field'] = $_GET['type'] === 'PSCID'
+    $val['field']      = $_GET['type'] === 'PSCID'
     ? 'PSCID'
     : 'CandID';
-    $val['fieldType'] = 'varchar(255)';
+    $val['fieldType']  = 'varchar(255)';
     $val['instrument'] = 'demographics';
-    $val['operator'] = 'equal';
-    $val['type'] = 'rule';
-    $val['visit'] = 'All';
-    $val['session'] = array($val['value']);
+    $val['operator']   = 'equal';
+    $val['type']       = 'rule';
+    $val['visit']      = 'All';
+    $val['session']    = array($val['value']);
     array_push($sessions, $val['value']);
 }
 $results = array(
-    'session' => $sessions,
+    'session'  => $sessions,
     'children' => $results,
 );
 echo json_encode($results);
