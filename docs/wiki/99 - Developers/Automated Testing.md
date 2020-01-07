@@ -49,8 +49,6 @@ PHPCS documentation can be found on [their GitHub wiki](https://github.com/squiz
 
 Currently PHPMD is used by LORIS to check for unused code, e.g. variables that are declared but never use.
 
-Similar to `phan`, we aim to gradually increase the rules used by PHPMD to make LORIS clean and stable.
-
 The configuration file for PHPMD can be found at `test/LorisPHPMD.xml`.
 
 More information about this tool can be found at [the PHP Mess Detector website](http://phpmd.org/documentation/index.html).
