@@ -12,7 +12,7 @@ onlyLabels: []
 
 # Issues or Pull Requests with these labels will never be considered stale. Set to `[]` to disable
 exemptLabels:
-  - "Bug Fix"
+  - "Bug"
   - "Security"
   - "Critical to release"
   - "Blocked"
