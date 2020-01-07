@@ -106,15 +106,34 @@ class UploadFileForm extends Component {
 
     let errorMessage = {
       Filename: undefined,
+      Filesize: undefined,
     };
 
     let hasError = {
       Filename: undefined,
+      Filesize: undefined,
     };
 
     if (!formData.file) {
       errorMessage.Filename = 'You must select a file to upload';
       hasError.Filename = true;
+      this.setState({errorMessage, hasError});
+      return;
+    }
+
+    // Check that the size of the file is not bigger than the allowed size
+    let fileSize = formData.file ? Math.round((formData.file.size/1024)) : null;
+    const maxSizeAllowed = this.state.data.maxUploadSize;
+    if (parseInt(fileSize, 10) > parseInt(maxSizeAllowed, 10)*1024) {
+      let msg = 'File size exceeds the maximumn allowed (' + maxSizeAllowed + ')';
+      errorMessage['Filesize'] = msg;
+      hasError['Filesize'] = true;
+      swal({
+        title: 'Error',
+        text: msg,
+        type: 'error',
+        showCancelButton: true,
+      });
       this.setState({errorMessage, hasError});
       return;
     }

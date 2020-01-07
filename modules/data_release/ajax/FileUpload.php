@@ -105,7 +105,8 @@ if ($_GET['action'] == 'upload') {
     }
 
     $results = [
-        'files' => array_values($dataReleaseFiles),
+        'files'         => array_values($dataReleaseFiles),
+        'maxUploadSize' => \Utility::getMaxUploadSize(),
     ];
     echo json_encode($results);
 
