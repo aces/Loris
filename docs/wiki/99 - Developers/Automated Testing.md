@@ -6,7 +6,7 @@ We make use of TravisCI and various tools in order to make sure LORIS is clean, 
 
 We require that any pull request sent to the repository passes our entire suite of automated tests. If the code fails these tests, it cannot be merged as it is likely to break some functionality of the application.
 
-This guide provides a high-level overview of the tools we use for testing. It should help to demystify the process of understanding an automated test report and point the way to possible solutions by linking to the documentation fo the tools we use.
+This guide provides a high-level overview of the tools we use for testing. It should help to demystify the process of understanding an automated test report and point the way to possible solutions by linking to the documentation for the tools we use.
 
 Generally there are two categories of testing, **static** and **dynamic**. The following section breaks down the differences between the two and which tools are used for each.
 
