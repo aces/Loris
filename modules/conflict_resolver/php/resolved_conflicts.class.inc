@@ -108,7 +108,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     {
         parent::setup();
         // Create user object
-        $user = \User::singleton();
+        $user = \NDB_Factory::singleton()->user();
 
         // Get instruments
         $instruments = \Utility::getAllInstruments();

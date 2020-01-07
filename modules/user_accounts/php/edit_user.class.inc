@@ -1200,8 +1200,8 @@ class Edit_User extends \NDB_Form
         //======================================
         if ($editor->hasPermission('examiner_multisite')) {
             $matched = false;
-            foreach ($values as $v) {
-                if (preg_match("/^ex_[0-9]+$/", $v)) {
+            foreach (array_keys($values) as $k) {
+                if (preg_match("/^ex_[0-9]+$/", $k)) {
                     $matched = true;
                     if ($values['examiner_radiologist'] == '') {
                         $errors['examiner_group'] = "Please specify if examiner " .

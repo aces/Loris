@@ -311,7 +311,7 @@ class My_Preferences extends \NDB_Form
         $nGroup[] = $this->createLabel("Operation");
         $nGroup[] = $this->createLabel("Description");
 
-        foreach (array_values($notifier_services) as $serv) {
+        foreach ($notifier_services as $serv) {
             $nGroup[] = $this->createLabel($serv);
         }
         $this->addGroup(
@@ -335,7 +335,7 @@ class My_Preferences extends \NDB_Form
 
                 // Check for permissions
                 $display =true;
-                foreach (array_values($services['perm']) as $permission) {
+                foreach ($services['perm'] as $permission) {
                     if (!$user->hasPermission($permission)) {
                         $display =false;
                         break;

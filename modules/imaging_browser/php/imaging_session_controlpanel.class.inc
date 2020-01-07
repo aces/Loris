@@ -78,7 +78,7 @@ class Imaging_Session_ControlPanel
         }
 
         $links = array();
-        foreach (array_values($linkedInstruments) as $v) {
+        foreach ($linkedInstruments as $v) {
             $qresult = $DB->pselectRow(
                 "SELECT f.CommentID, tn.Full_name FROM flag f
             JOIN test_names tn ON f.Test_name = tn.Test_name 

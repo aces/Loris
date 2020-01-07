@@ -55,7 +55,7 @@ class EditExaminer extends \NDB_Form
                 array('EID' => $this->identifier)
             );
             $centerIDs =array();
-            foreach (array_values($cids) as $row) {
+            foreach ($cids as $row) {
                 $centerIDs[] = $row['centerID'];
             }
 

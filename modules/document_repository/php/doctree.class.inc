@@ -99,7 +99,7 @@ class DocTree extends \NDB_Page
         if ($is_first_time) {
             $arr = [];
         }
-        foreach (array_values($data) as $val) {
+        foreach ($data as $val) {
             if ($val['parent_id'] == $parent_id) {
                 $arr[] = $val['id'];
                 $this->getAllNodesID($data, $val['id'], false);
@@ -145,10 +145,10 @@ class DocTree extends \NDB_Page
     {
         $result           = array();
         $allsubcategories = array();
-        $db = \Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $tree = $this->getTreeData();
-        $pids = array_values($this->getAllNodesID($tree, $id));
+        $pids = $this->getAllNodesID($tree, $id);
 
         $currentcategory    = $db->pselect(
             "SELECT id,category_name,comments

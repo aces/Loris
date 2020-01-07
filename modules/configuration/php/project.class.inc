@@ -53,7 +53,7 @@ class Project extends \NDB_Form
         $projectList    = \Utility::getProjectList();
         $subprojectList = \Utility::getSubprojectList();
         $projects       = array();
-        foreach ($projectList as $ProjectID) {
+        foreach (array_keys($projectList) as $ProjectID) {
             $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
             $projects[$ProjectID]['projectSubprojects']
                 = \Utility::getSubprojectsForProject($ProjectID);

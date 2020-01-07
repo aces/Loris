@@ -84,7 +84,7 @@ class HelpFile
     static public function insert($set)
     {
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // insert a help file
         $DB->insert('help', $set);

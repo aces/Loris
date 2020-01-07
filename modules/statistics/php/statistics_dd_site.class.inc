@@ -72,7 +72,7 @@ class Statistics_DD_Site extends statistics_site
     function _setInstrumentName()
     {
         $this->instruments = \Utility::getAllInstruments();
-        foreach ($this->instruments as $k) {
+        foreach (array_keys($this->instruments) as $k) {
             $this->instruments[$k] = $k;
         }
 

@@ -358,7 +358,7 @@ function toSelect($options, $item, $item2)
         $optionsValue = $item2;
     }
 
-    foreach ($options as $key) {
+    foreach (array_keys($options) as $key) {
         $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
     }
 
