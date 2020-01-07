@@ -8,9 +8,11 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-### VERSION
+### LORIS 23.0 (Released: ??)
+
 
 #### Core
+- Menus are now maintained by modules and no longer in the SQL database
 
 #### Modules 
 ##### module1
