@@ -100,8 +100,8 @@ function formatLineData(data) {
 
 // AJAX to get scan line chart data
 $.ajax({
-    url: loris.BaseURL + '/dashboard/ajax/get_scan_line_data.php',
-    type: 'post',
+    url: loris.BaseURL + '/statistics/charts/scans_bymonth',
+    type: 'get',
     success: function(data) {
         var scanLineData = formatLineData(data);
         scanLineChart = c3.generate({
@@ -139,8 +139,8 @@ $.ajax({
 
 // AJAX to get pie chart data
 $.ajax({
-    url: loris.BaseURL + '/dashboard/ajax/get_recruitment_pie_data.php',
-    type: 'post',
+    url: loris.BaseURL + '/statistics/charts/siterecruitment_pie',
+    type: 'get',
         success: function(data) {
         var jsonData = $.parseJSON(data);
         var recruitmentPieData = formatPieData(jsonData);
@@ -163,8 +163,8 @@ $.ajax({
 
 // AJAX to get bar chart data
 $.ajax({
-    url: loris.BaseURL + '/dashboard/ajax/get_recruitment_bar_data.php',
-    type: 'post',
+    url: loris.BaseURL + '/statistics/charts/siterecruitment_bysex',
+    type: 'get',
     success: function(data) {
         var recruitmentBarData = formatBarData(data);
         var recruitmentBarLabels = data.labels;
@@ -196,8 +196,8 @@ $.ajax({
 
 // AJAX to get recruitment line chart data
 $.ajax({
-    url: loris.BaseURL + '/dashboard/ajax/get_recruitment_line_data.php',
-    type: 'post',
+    url: loris.BaseURL + 'statistics/charts/scans_bymonth',
+    type: 'get',
     success: function(data) {
         var recruitmentLineData = formatLineData(data);
         recruitmentLineChart = c3.generate({
