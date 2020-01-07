@@ -11,12 +11,15 @@ daysUntilClose: false
 onlyLabels: []
 
 # Issues or Pull Requests with these labels will never be considered stale. Set to `[]` to disable
-exemptLabels:
-  - "Bug Fix"
-  - "Security"
-  - "Critical to release"
-  - "Blocked"
-  - "Blocking"
+# If auto-closing is enabled for stale LORIS issues in the future, uncomment
+# the lines below. For now, do want these to be marked as stale but we do not
+# want them being closed if auto-close is enabled.
+#exemptLabels:
+#  - "Bug"
+#  - "Security"
+#  - "Critical to release"
+#  - "Blocked"
+#  - "Blocking"
 
 # Set to true to ignore issues in a project (defaults to false)
 exemptProjects: false
