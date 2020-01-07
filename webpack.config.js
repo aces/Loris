@@ -24,7 +24,6 @@ const config = [{
     './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
     './modules/candidate_list/js/candidateListIndex.js': './modules/candidate_list/jsx/candidateListIndex.js',
     './modules/datadict/js/dataDictIndex.js': './modules/datadict/jsx/dataDictIndex.js',
-    './modules/data_integrity_flag/js/dataIntegrityFlagIndex.js': './modules/data_integrity_flag/jsx/dataIntegrityFlagIndex.js',
     './modules/data_release/js/dataReleaseIndex.js': './modules/data_release/jsx/dataReleaseIndex.js',
     './modules/data_release/js/uploadFileForm.js': './modules/data_release/jsx/uploadFileForm.js',
     './modules/data_release/js/addPermissionForm.js': './modules/data_release/jsx/addPermissionForm.js',
