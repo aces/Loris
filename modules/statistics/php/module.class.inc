@@ -220,7 +220,7 @@ class Module extends \Module
         $rv['female_percent']
             = round($totalFemales / $recruitmentTarget * 100);
         if ($ID == 'overall') {
-            $totalMales = $this->getTotalSex($db, "Male");
+            $totalMales = $this->_getTotalSex($db, "Male");
         } else {
             $totalMales = $this->getTotalSexByProject($db, "Male", $ID);
         }

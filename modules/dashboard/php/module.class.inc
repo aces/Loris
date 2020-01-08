@@ -97,13 +97,23 @@ class Module extends \Module
                 ]
             );
         }
+
+        $logindatestring = "";
+        if($last_login === null) {
+            $logindatestring = "...never. Welcome!";
+        } else {
+            // Note: This is the format from MySQL for historical reasons.
+            // We might want to make it a more human-friendly since we have
+            // a \DateTime object.
+            $logindatestring = $last_login->format('Y-m-d H:i:s');
+        }
         return new Widget(
             "",
             $this->renderTemplate(
                 "welcomebody.tpl",
                 [
                     'username'            => $user->getFullname(),
-                    'last_login'          => $last_login ?? "...never. Welcome!",
+                    'last_login'          => $logindatestring,
                     'project_description' => $projectdesc,
                 ],
             ),
