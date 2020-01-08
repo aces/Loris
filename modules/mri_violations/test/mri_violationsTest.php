@@ -27,9 +27,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * UI elements and locations
-     * breadcrumb - 'Mri Violations'
+     * breadcrumb - 'MRI Violated Scans'
      */
-    private $_loadingUI = array('Mri Violations' => '#bc2 > a:nth-child(2) > div');
+    private $_loadingUI = array('MRI Violated Scans' => '#bc2 > a:nth-child(2) > div');
     /**
      * Insert testing data
      *
