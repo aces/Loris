@@ -48,11 +48,6 @@ return [
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
-        // This doesn't include php/installer, because there's
-        //  (intentionally) classes in the installer namespace
-    ],
-    "analyzed_file_extensions" => ["php", "inc"],
-    "directory_list" => [
         /* This doesn't include php/installer, because there's
            (intentionally) classes in the installer namespace
            which redeclare classes from php/libraries, in order
