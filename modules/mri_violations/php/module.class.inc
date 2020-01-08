@@ -35,11 +35,11 @@ class Module extends \Module
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
-            [
-                'violated_scans_view_allsites',
-                'violated_scans_edit'
-            ]
-        );
+                [
+                    'violated_scans_view_allsites',
+                    'violated_scans_edit'
+                ]
+            );
     }
 
     /**

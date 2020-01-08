@@ -388,9 +388,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         // make sure user belongs to same site as timepoint
         if (!$user->hasPermission('data_entry')
             || !in_array(
-            $timePoint->getData('CenterID'),
-            $user->getData('CenterIDs')
-        )
+                $timePoint->getData('CenterID'),
+                $user->getData('CenterIDs')
+            )
         ) {
             return false;
         }
