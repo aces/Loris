@@ -35,11 +35,11 @@ class Module extends \Module
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
-            [
-                'genomic_browser_view_site',
-                'genomic_browser_view_allsites'
-            ]
-        );
+                [
+                    'genomic_browser_view_site',
+                    'genomic_browser_view_allsites'
+                ]
+            );
     }
 
     /**

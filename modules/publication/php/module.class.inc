@@ -36,12 +36,12 @@ class Module extends \Module
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
-            [
-                'publication_view',
-                'publication_propose',
-                'publication_approve'
-            ]
-        );
+                [
+                    'publication_view',
+                    'publication_propose',
+                    'publication_approve'
+                ]
+            );
     }
 
     /**

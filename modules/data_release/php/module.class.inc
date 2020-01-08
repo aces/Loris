@@ -37,12 +37,12 @@ class Module extends \Module
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
-            [
-                'data_release_view',
-                'data_release_upload',
-                'data_release_edit_file_access'
-            ]
-        );
+                [
+                    'data_release_view',
+                    'data_release_upload',
+                    'data_release_edit_file_access'
+                ]
+            );
     }
 
     /**

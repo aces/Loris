@@ -37,13 +37,13 @@ class Module extends \Module
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
-            [
-                'imaging_browser_view_site',
-                'imaging_browser_view_allsites',
-                'imaging_browser_phantom_allsites',
-                'imaging_browser_phantom_ownsite'
-            ]
-        );
+                [
+                    'imaging_browser_view_site',
+                    'imaging_browser_view_allsites',
+                    'imaging_browser_phantom_allsites',
+                    'imaging_browser_phantom_ownsite'
+                ]
+            );
     }
 
     /**
