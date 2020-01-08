@@ -273,8 +273,8 @@ class Charts extends \NDB_Page
             && $recruitmentEndDate !== null
         ) {
             $recruitmentData['labels'] = $this->_createSiteLineChartLabels(
-                new \DateTime($recruitmentStartDate),
-                new \DateTime($recruitmentEndDate)
+                new \DateTimeImmutable($recruitmentStartDate),
+                new \DateTimeImmutable($recruitmentEndDate)
             );
         }
 
@@ -295,23 +295,21 @@ class Charts extends \NDB_Page
     /**
      * Helper to generate labels for every month between startDate and endDate.
      *
-     * @param \DateTime $startDate The start date for the labels in
-     *                             YYYY-MM-DD format.
-     * @param \DateTime $endDate   The end date for the labels in
-     *                             YYYY-MM-DD format.
+     * @param \DateTimeImmutable $startDate The start date for the labels.
+     * @param \DateTimeImmutable $endDate   The end date for the labels.
      *
      * @return array
      */
     private function _createSiteLineChartLabels(
-        \DateTime $startDate,
-        \DateTime $endDate
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate
     ) : array {
         $month = date_interval_create_from_date_string('1 month');
 
         // Since we're only concerned with months, act as if $startDate
         // is always the first of the month so that the last month doesn't
         // get truncated.
-        $betweenDate = new \DateTime($startDate->format('Y-m-01'));
+        $betweenDate = new \DateTimeImmutable($startDate->format('Y-m-01'));
 
         $labels = [];
 
