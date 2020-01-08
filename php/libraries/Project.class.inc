@@ -27,13 +27,6 @@ class Project
     private static $_instances = array();
 
     /**
-     * A short name for the Project.
-     *
-     * @var ProjectAlias
-     */
-    var $alias;
-
-    /**
      * The id of the project in database.
      *
      * @var int
