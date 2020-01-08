@@ -40,14 +40,15 @@ class Dashboard extends \NDB_Form
         $site   = $user->getSiteNames();
 
         $userID     = $user->getUsername();
-        $last_login = $user->getLastLogin($DB)->format('Y-m-d H:i:s');
+        $last_login = $user->getLastLogin($DB);
 
         $siteID = $user->getCenterIDs();
         $this->tpl_data['user_site'] = $siteID;
 
         // Welcome panel
         $this->tpl_data['username'] = $user->getFullname();
-        if ($last_login) {
+        if ($last_login !== null) {
+            $last_login = $last_login->format('Y-m-d H:i:s');
             $this->tpl_data['last_login'] = $last_login;
         } else {
             $this->tpl_data['last_login'] = "...never. Welcome!";
