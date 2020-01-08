@@ -269,10 +269,12 @@ class Charts extends \NDB_Page
             array()
         );
 
-        $recruitmentData['labels'] = $this->_createSiteLineChartLabels(
-            $recruitmentStartDate,
-            $recruitmentEndDate
-        );
+        if( $recruitmentStartDate !== null && $recruitmentEndDate !== null)  {
+            $recruitmentData['labels'] = $this->_createSiteLineChartLabels(
+                new \DateTime($recruitmentStartDate),
+                new \DateTime($recruitmentEndDate)
+            );
+        }
 
         $list_of_sites = \Utility::getSiteList(true, false);
 
@@ -291,26 +293,22 @@ class Charts extends \NDB_Page
     /**
      * Helper to generate labels for every month between startDate and endDate.
      *
-     * @param string $startDate The start date for the labels in YYYY-MM-DD format.
-     * @param string $endDate   The end date for the labels in YYYY-MM-DD format.
+     * @param \DateTime $startDate The start date for the labels in YYYY-MM-DD format.
+     * @param \DateTime $endDate   The end date for the labels in YYYY-MM-DD format.
      *
      * @return array
      */
-    private function _createSiteLineChartLabels(string $startDate, string $endDate)
+    private function _createSiteLineChartLabels(\DateTime $startDate, \DateTime $endDate) : array
     {
-        $startDateYear  = substr($startDate, 0, 4);
-        $endDateYear    = substr($endDate, 0, 4);
-        $startDateMonth = substr($startDate, 5, 2);
-        $endDateMonth   = substr($endDate, 5, 2);
-        $labels         = array();
+        $month = date_interval_create_from_date_string('1 month');
+        // Since we're only concerned with months, act as if $startDate
+        // is always the first of the month so that the last month doesn't
+        // get truncated.
+        $betweenDate = new \DateTime($startDate->format('Y-m-01'));
 
-        for ($year = (int)$startDateYear; $year <= (int)$endDateYear; $year++) {
-            $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;
-            $endMonth   = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
-
-            for ($month = $startMonth; $month <= $endMonth; $month++) {
-                $labels[] = $month . "-" . $year;
-            }
+        while ($betweenDate <= $endDate) {
+            $labels[] = $betweenDate->format('n-Y');
+            $betweenDate = $betweenDate->add($month);
         }
         return $labels;
     }
