@@ -78,7 +78,7 @@ class CouchDBMRIImporter
     public function getDataDictionary($types)
     {
         $this->_buildDataDictionary($types);
-        return $this->Dictionary;
+        return $this->_Dictionary;
     }
 
     /**
@@ -440,7 +440,7 @@ class CouchDBMRIImporter
     private function _buildDataDictionary($types)
     {
 
-        $this->Dictionary = array(
+        $this->_Dictionary = array(
             'QCComment' => array(
                 'Type'        => 'varchar(255)',
                 'Description' => 'QC Comment for Session',
@@ -463,8 +463,8 @@ class CouchDBMRIImporter
                 'Description' => "QC Status for $ScanType file",
             );
 
-            $this->Dictionary["Selected_$ScanType"]    = $SelectedArray;
-            $this->Dictionary[$ScanType . "_QCStatus"] = $QCStatusArray;
+            $this->_Dictionary["Selected_$ScanType"]    = $SelectedArray;
+            $this->_Dictionary[$ScanType . "_QCStatus"] = $QCStatusArray;
 
             $feedback_types = $mri_feedback->getAllCommentTypes();
             foreach ($feedback_types as $CommentTypeID => $comments) {
@@ -481,7 +481,7 @@ class CouchDBMRIImporter
                         'Description' => "Overall Comment for $scanfield",
                     );
 
-                    $this->Dictionary[$cmt_field] = $cmt_Array;
+                    $this->_Dictionary[$cmt_field] = $cmt_Array;
                 } else {
                     $fieldName = $comments['name'];
                     $type      = 'varchar(255)';
@@ -493,7 +493,7 @@ class CouchDBMRIImporter
                     'Description' => $comments['name'] . " $ScanType",
                 );
 
-                $this->Dictionary[$fieldName . "_$ScanType"] = $cmt_scanArray;
+                $this->_Dictionary[$fieldName . "_$ScanType"] = $cmt_scanArray;
                 $preDefinedComments = $mri_feedback->getAllPredefinedComments(
                     $CommentTypeID
                 );
@@ -511,8 +511,8 @@ class CouchDBMRIImporter
                         'Type'        => "enum('Yes', 'No')",
                         'Description' => "$preDef_cmt $ScanType",
                     );
-                    $this->Dictionary[$preDef_field] = $preDef_Array;
-                    $pre[$preDefinedCommentTypeID]   = $preDefinedComment['field'];
+                    $this->_Dictionary[$preDef_field] = $preDef_Array;
+                    $pre[$preDefinedCommentTypeID]    = $preDefinedComment['field'];
                 }
                 $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
 
@@ -543,7 +543,7 @@ class CouchDBMRIImporter
             $this->mri_header_fields = $mri_array;
             foreach ($this->mri_header_fields as $field => $desc) {
                 $mri_field = $field . "_$ScanType";
-                $this->Dictionary[$mri_field] = array(
+                $this->_Dictionary[$mri_field] = array(
                     'Type'        => "varchar(255)",
                     'Description' => $desc . " $ScanType",
                 );
