@@ -117,7 +117,7 @@ class Module extends \Module
                         ),
                         "",
                     ),
-                    "small",
+                    new \LORIS\dashboard\WidgetDisplayProps("small")
                 )
             ];
         }

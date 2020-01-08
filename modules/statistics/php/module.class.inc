@@ -120,8 +120,15 @@ class Module extends \Module
                         ),
                         "",
                     ),
-                    "normal",
-                    10,
+                    new \LORIS\dashboard\WidgetDisplayProps(
+                        "normal",
+                        10,
+                        [
+                            'overall-recruitment'           => $overallstring,
+                            'recruitment-site-breakdown'    => 'View site breakdown',
+                            'recruitment-project-breakdown' => 'View project breakdown'
+                        ]
+                    ),
                     [
                         $baseURL . "/css/c3.css",
                         $baseURL . "/statistics/css/recruitment.css"
@@ -131,11 +138,6 @@ class Module extends \Module
                         $baseURL . '/js/c3.min.js',
                         $baseURL . "/statistics/js/recruitment.js"
                     ],
-                    [
-                        'overall-recruitment'           => $overallstring,
-                        'recruitment-site-breakdown'    => 'View site breakdown',
-                        'recruitment-project-breakdown' => 'View project breakdown'
-                    ]
                 ),
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
@@ -149,8 +151,14 @@ class Module extends \Module
                         ),
                         "",
                     ),
+                    new \LORIS\dashboard\WidgetDisplayProps(
                     "normal",
                     10,
+                    [
+                        'scan-line-chart-panel'        => 'View scans per site',
+                        'recruitment-line-chart-panel' => 'View recruitment per site'
+                    ]
+                ),
                     [
                         $baseURL . "/css/c3.css"
                     ],
@@ -159,10 +167,6 @@ class Module extends \Module
                         $baseURL . '/js/c3.min.js',
                         $baseURL . "/statistics/js/studyprogression.js"
                     ],
-                    [
-                        'scan-line-chart-panel'        => 'View scans per site',
-                        'recruitment-line-chart-panel' => 'View recruitment per site'
-                    ]
                 )
             ];
         }

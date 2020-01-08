@@ -120,8 +120,7 @@ class Module extends \Module
                 ),
                 $footer
             ),
-            "normal",
-            0,
+            new WidgetDisplayProps("normal", 0)
         );
     }
 
@@ -158,8 +157,7 @@ class Module extends \Module
                 ),
                 ""
             ),
-            "small",
-            1,
+            new WidgetDisplayProps("small", 1)
         );
     }
 }

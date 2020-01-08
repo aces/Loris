@@ -46,21 +46,15 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function __construct(
         WidgetContent $content,
-        string $size,
-        int $order=10,
+        WidgetDisplayProps $props,
         array $extracss = [],
-        array $extrajs = [],
-        array $menus = []
+        array $extrajs = []
     ) {
-        if (!in_array($size, ["small", "normal", "huge"])) {
-            throw new \DomainException("Invalid value for size");
-        }
-        $this->content = $content;
-        $this->size   = $size;
-        $this->order  = $order;
+        $this->content      = $content;
+        $this->displayprops = $props;
+
         $this->css    = $extracss;
         $this->js     = $extrajs;
-        $this->menus  = $menus;
     }
 
     /**
@@ -70,7 +64,7 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getSize() : string
     {
-        return $this->size;
+        return $this->displayprops->getSize();
     }
 
     /**
@@ -83,7 +77,7 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getOrder() : int
     {
-        return $this->order;
+        return $this->displayprops->getOrder();
 
     }
 
