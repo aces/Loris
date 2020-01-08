@@ -242,7 +242,17 @@ class DataQueryApp extends Component {
   saveCurrentQuery(name, shared, override) {
     // Used to save the current query
 
+    console.log('inside saveCurrentQuery');
     let filter = this.saveFilterGroup(this.state.filter);
+
+    console.log('Fields is: ');
+    console.log(this.state.selectedFields);
+    console.log('Filters is: ');
+    console.log(filter);
+
+    console.log('QueryName is: ' + name);
+    console.log('SharedQuery is: ' + shared);
+    console.log('OverwriteQuery is: ' + override);
 
     $.post(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
       Fields: this.state.selectedFields,
@@ -251,6 +261,8 @@ class DataQueryApp extends Component {
       SharedQuery: shared,
       OverwriteQuery: override
     }, (data) => {
+      console.log('woah data');
+      console.log(data);
       // Once saved, add the query to the list of saved queries
       let id = JSON.parse(data).id,
         queryIDs = this.state.queryIDs;
@@ -263,6 +275,8 @@ class DataQueryApp extends Component {
       }
       $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
         (value) => {
+          console.log('woah value:');
+          console.log(value);
           let queries = this.state.savedQueries;
 
           queries[value._id] = value;
@@ -521,6 +535,7 @@ class DataQueryApp extends Component {
       ];
       filterState.session = this.props.AllSessions;
     }
+    console.log('YAY');
     this.setState({
       fields: fieldsList,
       selectedFields: selectedFields,
@@ -537,6 +552,7 @@ class DataQueryApp extends Component {
             let key = data[0].key[0] + ',' + data[0].key[1];
             let downloadable = this.state.downloadableFields;
             downloadable[key] = true;
+            console.log('YAY 1');
             this.setState({
               downloadableFields: downloadable,
             })
