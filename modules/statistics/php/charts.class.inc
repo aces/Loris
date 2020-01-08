@@ -187,7 +187,15 @@ class Charts extends \NDB_Page
             array()
         );
 
-        // Create the labels
+        // Create the labels.
+        //
+        // We want to ensure that every month label appear exactly once and
+        // in order, but the same label may appear multiple times across different
+        // sites. Since the query was ordered, we use a new associative array
+        // of labels and set the keys to to an arbitrary value (true) in order to
+        // strip out duplicates, then take the keys of the resulting array once
+        // done. The result should be an ordered numeric array with each label
+        // for the chart in it exactly once.
         $labels = [];
         foreach ($data as $row) {
             $labels[$row['datelabel']] = true;
