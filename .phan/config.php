@@ -44,9 +44,7 @@ return [
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
         "PhanPossiblyUndeclaredVariable",
-        "PhanNoopNew",
-        "PhanNonClassMethodCall",
-        "PhanTypeSuspiciousStringExpression"
+        "PhanNoopNew"
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
