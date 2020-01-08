@@ -100,10 +100,22 @@ mv aces-Loris-9e30cf0 loris
 Then move this folder to the web root (e.g. `/var/www/`) and go to this 
 directory.
 
+### If installing LORIS for production
+
+```bash
+cd `/var/www/loris/`; make
 ```
-mv ./loris /var/www/loris/
-cd /var/www/loris/
+
+### If installing LORIS for development
+
+```bash
+# This is necessary for 'phan', a static analysis tool
+sudo pecl install ast-1.0.3
+cd `/var/www/loris/`; make dev
 ```
+
+The `dev` target for `make` will install additional libraries that are needed 
+for development process but not for production installs.
 
 ## Running the install script
 
@@ -123,36 +135,11 @@ cd tools/
 ./install.sh
 ```
 
-## Compiling source code and installing dependencies
-Once this step is complete, run the `make` command to install additional
-dependencies and compile JavaScript needed to properly render the LORIS
-front-end.
-
-`make` must be run from the LORIS root, not `tools/`
-
-### Installing LORIS for production
-
-```bash
-cd `/var/www/loris/`; make
-```
-
-### Installing LORIS for development
-
-```bash
-# This is necessary for 'phan', a static analysis tool
-sudo pecl install ast-1.0.3
-cd `/var/www/loris/`; make dev
-```
-
-The `dev` target for `make` will install additional libraries that are needed 
-for development process but not for production installs.
-
 ## Configuring the database
 
-Open your browser and go to: `http://%IPADDRESS%/installdb.php` where 
-`%IPADDRESS%` is the IP address of the server on which LORIS is being hosted.
+The install script will tell you to navigate to <loris-url>/installdb.php.
 
-The web page will prompt you for the following information:
+This web page will prompt you for the following information:
 
  * `Server Hostname` localhost if your database is hosted on your VM or the IP address of your database server
 
