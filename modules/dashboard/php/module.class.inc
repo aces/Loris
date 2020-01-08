@@ -99,7 +99,7 @@ class Module extends \Module
         }
 
         $logindatestring = "";
-        if($last_login === null) {
+        if ($last_login === null) {
             $logindatestring = "...never. Welcome!";
         } else {
             // Note: This is the format from MySQL for historical reasons.

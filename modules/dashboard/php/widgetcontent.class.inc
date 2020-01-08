@@ -13,8 +13,8 @@
 namespace LORIS\dashboard;
 
 /**
- * A WidgetContent is a value object which contains the content
- * related properties for a dashboard widget.
+ * A WidgetContent is an object which contains the content of
+ * properties for a dashboard panel.
  *
  * @category Main
  * @package  Loris
@@ -27,9 +27,9 @@ class WidgetContent
     /**
      * Construct a WidgetContent with the specified properties.
      *
-     * @param string $title    The title of the widget
-     * @param string $body     The content for the body of the widget
-     * @param string $footer   The content of the footer of the dashboard panel.
+     * @param string $title  The title of the widget
+     * @param string $body   The content for the body of the widget
+     * @param string $footer The content of the footer of the dashboard panel.
      */
     public function __construct(
         string $title,

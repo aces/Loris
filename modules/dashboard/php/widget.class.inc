@@ -32,6 +32,13 @@ class Widget implements \LORIS\GUI\Widget
 {
     /**
      * Construct a dashboard widget with the specified properties.
+     *
+     * @param WidgetContent       $content The content to display in a dashboard
+     *                                     panel.
+     * @param WidgetDisplayProps  $props   Display related properties such as size
+     *                                     and order.
+     * @param ?WidgetDependencies $deps    Optional dependencies such as CSS or JS
+     *                                     for this widget.
      */
     public function __construct(
         WidgetContent $content,

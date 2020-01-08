@@ -27,20 +27,37 @@ class WidgetDependencies
 {
     /**
      * Construct a WidgetDependencies object with the specified properties.
+     *
+     * @param array $css An array of CSS requirements that must be loaded for
+     *                   the widget
+     * @param array $js  An array of JS requirements that must be loaded for
+     *                   the widget
      */
     public function __construct(
         array $css,
         array $js
     ) {
         $this->css = $css;
-        $this->js = $js;
+        $this->js  = $js;
     }
 
+    /**
+     * Return a list of javascript dependencies URLs which are required for the
+     * widget to load.
+     *
+     * @return string[]
+     */
     public function getJSDependencies() : array
     {
         return $this->js;
     }
 
+    /**
+     * Return a list of CSS dependencies which are required for the
+     * widget to display correctly.
+     *
+     * @return string[]
+     */
     public function getCSSDependencies() : array
     {
         return $this->css;
