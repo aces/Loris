@@ -254,53 +254,116 @@ class DataQueryApp extends Component {
     console.log('SharedQuery is: ' + shared);
     console.log('OverwriteQuery is: ' + override);
 
-    $.post(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
+    const send = {
       Fields: this.state.selectedFields,
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,
       OverwriteQuery: override
-    }, (data) => {
-      console.log('woah data');
-      console.log(data);
-      // Once saved, add the query to the list of saved queries
-      let id = JSON.parse(data).id,
-        queryIDs = this.state.queryIDs;
-      if (!override) {
-        if (shared === true) {
-          queryIDs.Shared.push(id);
-        } else {
-          queryIDs.User.push(id);
-        }
-      }
-      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
-        (value) => {
-          console.log('woah value:');
-          console.log(value);
-          let queries = this.state.savedQueries;
+    };
 
-          queries[value._id] = value;
-          this.setState({
-            savedQueries: queries,
-            queryIDs: queryIDs,
-            alertLoaded: false,
-            alertSaved: true,
-            alertConflict: {
-              show: false
-            }
-          });
-        });
-    }).fail((data) => {
-      if (data.status === 409) {
-        this.setState({
-          alertConflict: {
-            show: true,
-            QueryName: name,
-            SharedQuery: shared
-          }
-        })
+    let formObj = new FormData();
+    for (let key in send) {
+      if (send.hasOwnProperty(key)) {
+        formObj.append(key, send[key]);
       }
+    }
+
+    fetch(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php',
+      {
+        credentials: 'same-origin',
+        method: 'POST',
+        body: formObj
+    }).then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
+        // Once saved, add the query to the list of saved queries
+        let id = JSON.parse(data).id,
+          queryIDs = this.state.queryIDs;
+        if (!override) {
+          if (shared === true) {
+            queryIDs.Shared.push(id);
+          } else {
+            queryIDs.User.push(id);
+          }
+        }
+        $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
+          (value) => {
+            console.log('woah value:');
+            console.log(value);
+            let queries = this.state.savedQueries;
+
+            queries[value._id] = value;
+            this.setState({
+              savedQueries: queries,
+              queryIDs: queryIDs,
+              alertLoaded: false,
+              alertSaved: true,
+              alertConflict: {
+                show: false
+              }
+            });
+          });
+      }).catch((error) => {
+        console.error(error);
+        if (data.status === 409) {
+          this.setState({
+            alertConflict: {
+              show: true,
+              QueryName: name,
+              SharedQuery: shared
+            }
+          })
+        }
     });
+
+    // $.post(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
+    //   Fields: this.state.selectedFields,
+    //   Filters: filter,
+    //   QueryName: name,
+    //   SharedQuery: shared,
+    //   OverwriteQuery: override
+    // }, (data) => {
+    //   console.log('woah data');
+    //   console.log(data);
+    //   // Once saved, add the query to the list of saved queries
+    //   let id = JSON.parse(data).id,
+    //     queryIDs = this.state.queryIDs;
+    //   if (!override) {
+    //     if (shared === true) {
+    //       queryIDs.Shared.push(id);
+    //     } else {
+    //       queryIDs.User.push(id);
+    //     }
+    //   }
+    //   $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
+    //     (value) => {
+    //       console.log('woah value:');
+    //       console.log(value);
+    //       let queries = this.state.savedQueries;
+    //
+    //       queries[value._id] = value;
+    //       this.setState({
+    //         savedQueries: queries,
+    //         queryIDs: queryIDs,
+    //         alertLoaded: false,
+    //         alertSaved: true,
+    //         alertConflict: {
+    //           show: false
+    //         }
+    //       });
+    //     });
+    // }).fail((data) => {
+    //   if (data.status === 409) {
+    //     this.setState({
+    //       alertConflict: {
+    //         show: true,
+    //         QueryName: name,
+    //         SharedQuery: shared
+    //       }
+    //     })
+    //   }
+    // });
   }
 
   overrideQuery() {
