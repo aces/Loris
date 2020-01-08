@@ -108,18 +108,20 @@ class Module extends \Module
             $logindatestring = $last_login->format('Y-m-d H:i:s');
         }
         return new Widget(
-            "",
-            $this->renderTemplate(
-                "welcomebody.tpl",
-                [
-                    'username'            => $user->getFullname(),
-                    'last_login'          => $logindatestring,
-                    'project_description' => $projectdesc,
-                ],
+            new WidgetContent(
+                "",
+                $this->renderTemplate(
+                    "welcomebody.tpl",
+                    [
+                        'username'            => $user->getFullname(),
+                        'last_login'          => $logindatestring,
+                        'project_description' => $projectdesc,
+                    ],
+                ),
+                $footer
             ),
             "normal",
             0,
-            $footer
         );
     }
 
@@ -146,12 +148,15 @@ class Module extends \Module
             }
         }
         return new Widget(
-            "My Tasks",
-            $this->renderTemplate(
-                "mytasks.tpl",
-                [
-                    'tasks' => $widgets
-                ],
+            new WidgetContent(
+                "My Tasks",
+                $this->renderTemplate(
+                    "mytasks.tpl",
+                    [
+                        'tasks' => $widgets
+                    ],
+                ),
+                ""
             ),
             "small",
             1,

@@ -110,16 +110,18 @@ class Module extends \Module
             $overallstring = 'View overall recruitment';
             return [
                 new \LORIS\dashboard\Widget(
-                    "Recruitment",
-                    $this->renderTemplate(
-                        "recruitment.tpl",
-                        [
-                            'recruitment' => $recruitment
-                        ]
+                    new \LORIS\dashboard\WidgetContent(
+                        "Recruitment",
+                        $this->renderTemplate(
+                            "recruitment.tpl",
+                            [
+                                'recruitment' => $recruitment
+                            ]
+                        ),
+                        "",
                     ),
                     "normal",
                     10,
-                    "",
                     [
                         $baseURL . "/css/c3.css",
                         $baseURL . "/statistics/css/recruitment.css"
@@ -136,17 +138,19 @@ class Module extends \Module
                     ]
                 ),
                 new \LORIS\dashboard\Widget(
-                    "Study Progression",
-                    $this->renderTemplate(
-                        "studyprogression.tpl",
-                        [
-                            'total_scans' => $totalScans,
-                            'recruitment' => $recruitment
-                        ]
+                    new \LORIS\dashboard\WidgetContent(
+                        "Study Progression",
+                        $this->renderTemplate(
+                            "studyprogression.tpl",
+                            [
+                                'total_scans' => $totalScans,
+                                'recruitment' => $recruitment
+                            ]
+                        ),
+                        "",
                     ),
                     "normal",
                     10,
-                    "",
                     [
                         $baseURL . "/css/c3.css"
                     ],

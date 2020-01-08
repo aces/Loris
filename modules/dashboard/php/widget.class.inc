@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * File contains the \LORIS\dashboard\Widget class.
  *
@@ -45,11 +45,9 @@ class Widget implements \LORIS\GUI\Widget
      * @param array  $menus    Menus to display in the header of this widget.
      */
     public function __construct(
-        string $title,
-        string $body,
+        WidgetContent $content,
         string $size,
         int $order=10,
-        string $footer="",
         array $extracss = [],
         array $extrajs = [],
         array $menus = []
@@ -57,11 +55,9 @@ class Widget implements \LORIS\GUI\Widget
         if (!in_array($size, ["small", "normal", "huge"])) {
             throw new \DomainException("Invalid value for size");
         }
-        $this->title  = $title;
+        $this->content = $content;
         $this->size   = $size;
-        $this->body   = $body;
         $this->order  = $order;
-        $this->footer = $footer;
         $this->css    = $extracss;
         $this->js     = $extrajs;
         $this->menus  = $menus;
@@ -122,9 +118,9 @@ class Widget implements \LORIS\GUI\Widget
         $renderer = new \Smarty_NeuroDB("dashboard");
         $renderer->assign(
             [
-                'title'  => $this->title,
-                'body'   => $this->body,
-                'footer' => $this->footer,
+                'title'  => $this->content->getTitle(),
+                'body'   => $this->content->getBody(),
+                'footer' => $this->content->getFooter(),
                 'menus'  => $this->menus
             ]
         );

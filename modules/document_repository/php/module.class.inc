@@ -92,13 +92,16 @@ class Module extends \Module
 
             return [
                 new \LORIS\dashboard\Widget(
-                    "Document Repository Notifications",
-                    $this->renderTemplate(
-                        "docnotifications.tpl",
-                        [
-                            'baseURL'       => $baseURL,
-                            'notifications' => $docs
-                        ],
+                    new \LORIS\dashboard\WidgetContent(
+                        "Document Repository Notifications",
+                        $this->renderTemplate(
+                            "docnotifications.tpl",
+                            [
+                                'baseURL'       => $baseURL,
+                                'notifications' => $docs
+                            ],
+                        ),
+                        ""
                     ),
                     "small",
                     3

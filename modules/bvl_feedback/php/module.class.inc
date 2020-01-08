@@ -106,13 +106,16 @@ class Module extends \Module
             }
             return [
                 new \LORIS\dashboard\Widget(
-                    "Behavioural Feedback Notifications",
-                    $this->renderTemplate(
-                        "dashboardwidget.tpl",
-                        [
-                            'baseURL'       => $baseURL,
-                            'notifications' => $frontend_feedback
-                        ],
+                    new \LORIS\dashboard\WidgetContent(
+                        "Behavioural Feedback Notifications",
+                        $this->renderTemplate(
+                            "dashboardwidget.tpl",
+                            [
+                                'baseURL'       => $baseURL,
+                                'notifications' => $frontend_feedback
+                            ],
+                        ),
+                        "",
                     ),
                     "small",
                 )
