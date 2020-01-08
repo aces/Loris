@@ -322,7 +322,6 @@ class Files extends \NDB_Page
         $factory        = \NDB_Factory::singleton();
         $baseURL        = $factory->settings()->getBaseURL();
         $config         = $factory->config();
-        $base           = $config->getSetting('base');
         $path           = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
         );
