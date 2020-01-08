@@ -74,6 +74,9 @@ class Dashboard extends \NDB_Form
             if ($module->hasAccess($user)) {
                 $widgets = $module->getWidgets('dashboard', $user);
                 foreach ($widgets as $widget) {
+                    if(!($widget instanceof Widget)) {
+                        continue;
+                    }
                     switch ($widget->getSize()) {
                     case "small":
                         $this->smallwidgets[] = $widget;

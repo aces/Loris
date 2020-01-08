@@ -129,15 +129,17 @@ class Module extends \Module
                             'recruitment-project-breakdown' => 'View project breakdown'
                         ]
                     ),
-                    [
-                        $baseURL . "/css/c3.css",
-                        $baseURL . "/statistics/css/recruitment.css"
-                    ],
-                    [
-                        $baseURL. '/js/d3.min.js',
-                        $baseURL . '/js/c3.min.js',
-                        $baseURL . "/statistics/js/recruitment.js"
-                    ],
+                    new \LORIS\dashboard\WidgetDependencies(
+                        [
+                            $baseURL . "/css/c3.css",
+                            $baseURL . "/statistics/css/recruitment.css"
+                        ],
+                        [
+                            $baseURL. '/js/d3.min.js',
+                            $baseURL . '/js/c3.min.js',
+                            $baseURL . "/statistics/js/recruitment.js"
+                        ],
+                    )
                 ),
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
@@ -152,21 +154,23 @@ class Module extends \Module
                         "",
                     ),
                     new \LORIS\dashboard\WidgetDisplayProps(
-                    "normal",
-                    10,
-                    [
-                        'scan-line-chart-panel'        => 'View scans per site',
-                        'recruitment-line-chart-panel' => 'View recruitment per site'
-                    ]
-                ),
-                    [
-                        $baseURL . "/css/c3.css"
-                    ],
-                    [
-                        $baseURL . '/js/d3.min.js',
-                        $baseURL . '/js/c3.min.js',
-                        $baseURL . "/statistics/js/studyprogression.js"
-                    ],
+                        "normal",
+                        10,
+                        [
+                            'scan-line-chart-panel'        => 'View scans per site',
+                            'recruitment-line-chart-panel' => 'View recruitment per site'
+                        ]
+                    ),
+                    new \LORIS\dashboard\WidgetDependencies(
+                        [
+                            $baseURL . "/css/c3.css"
+                        ],
+                        [
+                            $baseURL . '/js/d3.min.js',
+                            $baseURL . '/js/c3.min.js',
+                            $baseURL . "/statistics/js/studyprogression.js"
+                        ],
+                    )
                 )
             ];
         }

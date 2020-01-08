@@ -47,14 +47,11 @@ class Widget implements \LORIS\GUI\Widget
     public function __construct(
         WidgetContent $content,
         WidgetDisplayProps $props,
-        array $extracss = [],
-        array $extrajs = []
+        ?WidgetDependencies $deps=null
     ) {
         $this->content      = $content;
         $this->displayprops = $props;
-
-        $this->css    = $extracss;
-        $this->js     = $extrajs;
+        $this->dependencies = $deps;
     }
 
     /**
@@ -88,7 +85,10 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getCSSDependencies() : array
     {
-        return $this->css;
+        if ($this->dependencies !== null) {
+            return $this->dependencies->getCSSDependencies();
+        }
+        return [];
     }
 
     /**
@@ -98,7 +98,10 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getJSDependencies() : array
     {
-        return $this->js;
+        if ($this->dependencies !== null) {
+            return $this->dependencies->getJSDependencies();
+        }
+        return [];
     }
 
     /**
@@ -115,7 +118,7 @@ class Widget implements \LORIS\GUI\Widget
                 'title'  => $this->content->getTitle(),
                 'body'   => $this->content->getBody(),
                 'footer' => $this->content->getFooter(),
-                'menus'  => $this->menus
+                'menus'  => $this->displayprops->getMenus(),
             ]
         );
         return $renderer->fetch("panel.tpl");
