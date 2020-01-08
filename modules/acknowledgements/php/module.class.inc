@@ -35,11 +35,11 @@ class Module extends \Module
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
-            [
-                'acknowledgements_view',
-                'acknowledgements_edit'
-            ]
-        );
+                [
+                    'acknowledgements_view',
+                    'acknowledgements_edit'
+                ]
+            );
     }
 
     /**

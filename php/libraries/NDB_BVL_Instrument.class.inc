@@ -907,8 +907,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $CertificationConfig['CertificationProjects']
             )
                 || !is_array(
-                $CertificationConfig['CertificationInstruments']
-            )
+                    $CertificationConfig['CertificationInstruments']
+                )
             ) {
                 throw new \ConfigurationException(
                     self::ERROR_CERTIFICATION_BAD_FORMATTING
