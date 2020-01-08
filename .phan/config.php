@@ -38,7 +38,6 @@ return [
         "PhanUndeclaredMethod",
         "PhanTypeMismatchDimFetch",
         "PhanTypeMismatchReturn",
-        "PhanUndeclaredVariableDim",
         "PhanUndeclaredClassMethod",
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchProperty",
