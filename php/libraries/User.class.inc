@@ -532,5 +532,32 @@ class User extends UserPermissions
             (string) $this->userInfo['Password_hash']
         );
     }
+
+
+    /**
+     * Return the last login of this user to the given database.
+     *
+     * @param \Database $DB The database connection to check
+     *
+     * @return ?\DateTime
+     */
+    function getLastLogin(\Database $DB) : ?\DateTime
+    {
+        $time = $DB->pselectOne(
+            "SELECT MAX(Login_timestamp)
+            FROM user_login_history
+            WHERE Login_timestamp <
+                (SELECT MAX(Login_timestamp)
+                    FROM user_login_history
+                    WHERE userID=:UserID AND Success='Y')
+                AND userID=:UserID AND Success='Y'",
+            array('UserID' => $this->getUsername())
+        );
+        if (empty($time)) {
+            return null;
+        }
+        return new \DateTime($time);
+    }
+
 }
 
