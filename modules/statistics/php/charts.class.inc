@@ -199,7 +199,7 @@ class Charts extends \NDB_Page
         foreach ($list_of_sites as $siteID => $siteName) {
             $scanData['datasets'][] = array(
                 "name" => $siteName,
-                "data" => $this->getScansPerMonthData(
+                "data" => $this->_getScansPerMonthData(
                     $data,
                     $siteID,
                     $scanData['labels']
@@ -261,7 +261,7 @@ class Charts extends \NDB_Page
             array()
         );
 
-        $recruitmentData['labels'] = $this->createSiteLineChartLabels(
+        $recruitmentData['labels'] = $this->_createSiteLineChartLabels(
             $recruitmentStartDate,
             $recruitmentEndDate
         );
@@ -271,7 +271,7 @@ class Charts extends \NDB_Page
         foreach ($list_of_sites as $siteID => $siteName) {
             $recruitmentData['datasets'][] = array(
                 "name" => $siteName,
-                "data" => $this->getSiteLineRecruitmentData(
+                "data" => $this->_getSiteLineRecruitmentData(
                     $siteID,
                     $recruitmentData['labels']
                 ),

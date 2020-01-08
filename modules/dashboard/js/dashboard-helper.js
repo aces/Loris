@@ -142,8 +142,7 @@ $.ajax({
     url: loris.BaseURL + '/statistics/charts/siterecruitment_pie',
     type: 'get',
         success: function(data) {
-        var jsonData = $.parseJSON(data);
-        var recruitmentPieData = formatPieData(jsonData);
+        var recruitmentPieData = formatPieData(data);
         recruitmentPieChart = c3.generate({
             bindto: '#recruitmentPieChart',
             data: {
@@ -196,7 +195,7 @@ $.ajax({
 
 // AJAX to get recruitment line chart data
 $.ajax({
-    url: loris.BaseURL + 'statistics/charts/scans_bymonth',
+    url: loris.BaseURL + '/statistics/charts/siterecruitment_line',
     type: 'get',
     success: function(data) {
         var recruitmentLineData = formatLineData(data);
