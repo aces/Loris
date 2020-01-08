@@ -26,4 +26,13 @@ namespace LORIS\dashboard;
  */
 class Module extends \Module
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "Dashboard";
+    }
 }

@@ -50,4 +50,14 @@ class Module extends \Module
         $page = $this->loadPage("timepoint_list");
         return $page->process($request, $page);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "Timepoint List";
+    }
 }

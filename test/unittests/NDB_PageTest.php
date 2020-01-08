@@ -45,7 +45,8 @@ class NDB_PageTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->_module = new Module("test_module", "php/libraries/");
+
+        $this->_module = new NullModule("test_module");
         $this->_page = new NDB_Page(
             $this->_module, "test_page", "515", "123", "test_form"
         );

@@ -27,6 +27,18 @@ use \Psr\Http\Message\ResponseInterface;
 class Module extends \Module
 {
     /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) && $user->hasPermission('user_accounts');
+    }
+
+    /**
      * The edit_user page overrides the default handler in order to delegate
      * edit_user/$identifeir to the edit_user page.
      *
@@ -41,5 +53,25 @@ class Module extends \Module
             return $page->process($request, $page);
         }
         return parent::handle($request);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The menu category for this module
+     */
+    public function getMenuCategory() : string
+    {
+        return "Admin";
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "User Accounts";
     }
 }
