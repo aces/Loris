@@ -32,17 +32,6 @@ class Widget implements \LORIS\GUI\Widget
 {
     /**
      * Construct a dashboard widget with the specified properties.
-     *
-     * @param string $title    The title of the widget
-     * @param string $body     The content for the body of the widget
-     * @param string $size     The approximate size of the widget. Either
-     *                         "small" or "normal".
-     * @param int    $order    The ordering priority of this widget relative
-     *                         to other widgets on the dashboard.
-     * @param string $footer   The content of the footer of the dashboard panel.
-     * @param array  $extracss CSS requirements for this widget
-     * @param array  $extrajs  JS requirements for this widget
-     * @param array  $menus    Menus to display in the header of this widget.
      */
     public function __construct(
         WidgetContent $content,
