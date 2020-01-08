@@ -539,11 +539,11 @@ class User extends UserPermissions
      *
      * @param \Database $DB The database connection to check
      *
-     * @return string The date in YYYY-MM-DD format.
+     * @return ?\DateTime
      */
-    function getLastLogin(\Database $DB)
+    function getLastLogin(\Database $DB) : ?\DateTime
     {
-        return $DB->pselectOne(
+        $time = $DB->pselectOne(
             "SELECT MAX(Login_timestamp)
             FROM user_login_history
             WHERE Login_timestamp <
@@ -553,6 +553,11 @@ class User extends UserPermissions
                 AND userID=:UserID AND Success='Y'",
             array('UserID' => $this->getUsername())
         );
+        if (empty($time)) {
+            return null;
+        }
+        return new \DateTime($time);
+    }
 
 }
 

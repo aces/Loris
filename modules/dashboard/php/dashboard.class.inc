@@ -40,7 +40,7 @@ class Dashboard extends \NDB_Form
         $site   = $user->getSiteNames();
 
         $userID     = $user->getUsername();
-        $last_login = $user->getLastLogin($DB);
+        $last_login = $user->getLastLogin($DB)->format('Y-m-d H:i:s');
 
         $siteID = $user->getCenterIDs();
         $this->tpl_data['user_site'] = $siteID;
