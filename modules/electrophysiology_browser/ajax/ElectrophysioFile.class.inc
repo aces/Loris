@@ -24,8 +24,8 @@ namespace LORIS\electrophysiology_browser\Models;
  */
 class ElectrophysioFile implements \LORIS\Data\DataInstance
 {
-    private $fileData   = array();
-    private $parameters = array();
+    private $_fileData   = array();
+    private $_parameters = array();
 
     /**
      * Construct a BIDSFile
@@ -34,7 +34,6 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
      */
     function __construct(int $physiologicalFileID)
     {
-
 
         $db = \NDB_Factory::singleton()->database();
 
@@ -45,7 +44,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
         $fileData = $db->pselectRow($query, $params);
 
         foreach ($fileData AS $key=>$value) {
-            $this->fileData[$key] = $value;
+            $this->_fileData[$key] = $value;
         }
 
         $query        = "SELECT 
@@ -58,7 +57,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
         $parameterRaw = $db->pselect($query, $params);
 
         foreach ($parameterRaw AS $row) {
-            $this->parameters[$row['Name']] = $row['Value'];
+            $this->_parameters[$row['Name']] = $row['Value'];
         }
     }
 
@@ -71,7 +70,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
      */
     function getParameter(string $parameterName): string
     {
-        return $this->fileData[$parameterName] ??
-            ($this->parameters[$parameterName] ?? '');
+        return $this->_fileData[$parameterName] ??
+            ($this->_parameters[$parameterName] ?? '');
     }
 }

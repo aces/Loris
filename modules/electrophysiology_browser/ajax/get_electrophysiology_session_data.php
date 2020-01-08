@@ -19,10 +19,10 @@ require_once 'ElectrophysioFile.class.inc';
 /**
  * Check that sessionID and outputType has been provided in the REQUEST.
  */
-if ( !isset($_REQUEST['sessionID']) ) {
+if (!isset($_REQUEST['sessionID']) ) {
     http_response_code(400);
 }
-if ( !isset($_REQUEST['outputType']) ) {
+if (!isset($_REQUEST['outputType']) ) {
     http_response_code(400);
 }
 
@@ -161,10 +161,10 @@ function getFilesData(int $sessionID)
                          physiological_file pf ';
 
     if ($outputType != 'all_types') {
-        $query .= 'LEFT JOIN physiological_output_type pot ON ';
-        $query .= 'pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID ';
-        $query .= 'WHERE SessionID=:SID ';
-        $query .= 'AND pot.OutputTypeName = :OTN ';
+        $query        .= 'LEFT JOIN physiological_output_type pot ON ';
+        $query        .= 'pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID ';
+        $query        .= 'WHERE SessionID=:SID ';
+        $query        .= 'AND pot.OutputTypeName = :OTN ';
         $params['OTN'] = $outputType;
     } else {
         $query .= "WHERE SessionID=:SID";
