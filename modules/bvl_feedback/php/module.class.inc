@@ -78,7 +78,7 @@ class Module extends \Module
             );
             $frontend_feedback = array();
             foreach ($bvl_feedback as $row) {
-                if ($row['Testdate'] > $last_login) {
+                if (new \DateTime($row['Testdate']) > $last_login) {
                     $row['new'] = true;
                 } else {
                     $row['new'] = false;

@@ -83,7 +83,7 @@ class Module extends \Module
                 array()
             );
             for ($i=0; $i < sizeof($docs); $i++) {
-                if ($docs[$i]['Date_uploaded'] > $last_login) {
+                if (new \DateTime($docs[$i]['Date_uploaded']) > $last_login) {
                     $docs[$i]['new'] = true;
                 } else {
                     $docs[$i]['new'] = false;
