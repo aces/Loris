@@ -29,18 +29,23 @@ class IssueRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
     protected $CenterID;
+    protected $Module;
 
     /**
      * Create a new IssueRow
      *
-     * @param array   $row The row (in the same format as \Database::pselectRow
-     *                     returns
-     * @param integer $cid The centerID affiliated with this row.
+     * @param array   $row    The row (in the same format as \Database::pselectRow
+     *                        returns.
+     * @param integer $cid    The centerID affiliated with this row.
+     * @param \Module $module The module that this issue is for.
      */
-    public function __construct(array $row, $cid)
+    public function __construct(array $row, $cid, \Module $module)
     {
         $this->DBRow    = $row;
         $this->CenterID = $cid;
+        $this->Module   = $module;
+
+        $this->DBRow['module'] = $module->getLongName();
     }
 
     /**
@@ -62,5 +67,15 @@ class IssueRow implements \LORIS\Data\DataInstance
     public function getCenterID()
     {
         return $this->CenterID;
+    }
+
+    /**
+     * Return the module that this issue is an issue for.
+     *
+     * @return \Module the module descriptor
+     */
+    public function getModule() : \Module
+    {
+        return $this->Module;
     }
 }

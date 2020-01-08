@@ -26,4 +26,42 @@ namespace LORIS\data_release;
  */
 class Module extends \Module
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) &&
+            $user->hasAnyPermission(
+            [
+                'data_release_view',
+                'data_release_upload',
+                'data_release_edit_file_access'
+            ]
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The menu category for this module
+     */
+    public function getMenuCategory() : string
+    {
+        return "Tools";
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "Data Release";
+    }
 }

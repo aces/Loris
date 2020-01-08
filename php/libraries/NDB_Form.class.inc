@@ -65,15 +65,10 @@ class NDB_Form extends NDB_Page
             throw new Exception("The form class ($name) is not defined.");
         }
 
-        // create a new menu object
-        try {
-            if (isset($_REQUEST['test_name'])) {
-                $module = \Module::factory($_REQUEST['test_name']);
-            } else {
-                $module = \Module::factory($name);
-            }
-        } catch(\LorisModuleMissingException $e) {
-            $module = new Module($name, "");
+        if (isset($_REQUEST['test_name'])) {
+            $module = \Module::factory($_REQUEST['test_name']);
+        } else {
+            $module = \Module::factory($name);
         }
 
         // create a form instance
