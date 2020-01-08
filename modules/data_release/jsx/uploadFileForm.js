@@ -155,7 +155,7 @@ class UploadFileForm extends Component {
         if (isConfirm) {
           this.uploadFile();
         } else {
-          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
+          swal('Cancelled', 'Your file is safe :)', 'error');
         }
       }.bind(this));
     } else {
