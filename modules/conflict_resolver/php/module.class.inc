@@ -75,7 +75,7 @@ class Module extends \Module
             $baseURL = $factory->settings()->getBaseURL();
             $DB      = $factory->database();
             return [
-                new \LORIS\GUI\TaskQueryWidget(
+                new \LORIS\dashboard\TaskQueryWidget(
                     $user,
                     "Data entry conflict",
                     $DB,

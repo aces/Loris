@@ -97,7 +97,7 @@ class Module extends \Module
             $DB      = $factory->database();
             $baseURL = $factory->settings()->getBaseURL();
             return [
-                new \LORIS\GUI\TaskQueryWidget(
+                new \LORIS\dashboard\TaskQueryWidget(
                     $user,
                     "Incomplete form",
                     $DB,

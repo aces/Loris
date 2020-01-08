@@ -1,5 +1,5 @@
 <?php
-namespace LORIS\GUI;
+namespace LORIS\dashboard;
 
 /**
  * A TaskWidget is a type of dashboard widget which displays a task in

@@ -1,5 +1,5 @@
 <?php
-namespace LORIS\GUI;
+namespace LORIS\dashboard;
 
 /**
  * A TaskQueryWidget is a special type of TaskWidget which gets its data from

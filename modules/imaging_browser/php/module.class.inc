@@ -83,7 +83,7 @@ class Module extends \Module
             $baseURL = $factory->settings()->getBaseURL();
 
             return [
-                new \LORIS\GUI\TaskQueryWidget(
+                new \LORIS\dashboard\TaskQueryWidget(
                     $user,
                     "New and pending imaging session",
                     $DB,
