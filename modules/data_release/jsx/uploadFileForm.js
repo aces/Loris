@@ -125,7 +125,7 @@ class UploadFileForm extends Component {
     let fileSize = formData.file ? Math.round((formData.file.size/1024)) : null;
     const maxSizeAllowed = this.state.data.maxUploadSize;
     if (parseInt(fileSize, 10) > parseInt(maxSizeAllowed, 10)*1024) {
-      let msg = 'File size exceeds the maximumn allowed (' + maxSizeAllowed + ')';
+      let msg = 'File size exceeds the maximum allowed (' + maxSizeAllowed + ')';
       errorMessage['Filesize'] = msg;
       hasError['Filesize'] = true;
       swal({
