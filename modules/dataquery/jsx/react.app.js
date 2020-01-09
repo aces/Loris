@@ -261,8 +261,6 @@ class DataQueryApp extends Component {
       })
       .then((response) => response.json())
       .then((data) => {
-        console.log('data!');
-        console.log(data);
         // Once saved, add the query to the list of saved queries
         let id = JSON.parse(data).id,
           queryIDs = this.state.queryIDs;
