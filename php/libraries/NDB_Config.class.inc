@@ -440,16 +440,15 @@ class NDB_Config
      */
     function getProjectSettings(int $ProjectID): ?array
     {
-        try {
-            $info = \NDB_Factory::singleton()
-                ->database()
-                ->pselectRow(
-                    "SELECT * FROM Project WHERE ProjectID=:sp",
-                    array('sp' => $ProjectID)
-                );
-        } catch (\DatabaseException $e) {
-            return null;
-        }
+        $info = \NDB_Factory::singleton()
+            ->database()
+            ->pselectRow(
+                "SELECT ProjectID, Name, Alias, recruitmentTarget
+                 FROM Project
+                 WHERE ProjectID=:sp",
+                array('sp' => $ProjectID)
+            );
+
         //Format the result into config.xml format.
         return is_null($info) ?
             null
