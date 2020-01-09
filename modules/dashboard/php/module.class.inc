@@ -116,7 +116,7 @@ class Module extends \Module
                         'username'            => $user->getFullname(),
                         'last_login'          => $logindatestring,
                         'project_description' => $projectdesc,
-                    ],
+                    ]
                 ),
                 $footer
             ),
