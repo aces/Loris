@@ -1,4 +1,6 @@
-SET FOREIGN_KEY_CHECKS=0;nTRUNCATE TABLE `modules`;nLOCK TABLES `modules` WRITE;
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `modules`;
+LOCK TABLES `modules` WRITE;
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (1,'acknowledgements','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (2,'api','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (3,'behavioural_qc','Y');
