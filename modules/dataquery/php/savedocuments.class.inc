@@ -10,11 +10,11 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\dataquery\endpoints;
+namespace LORIS\dataquery;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\api\Endpoint;
-use \LORIS\Middleware\ETagCalculator;
+
 /**
  * The Save class for POST requests.
  *
@@ -24,9 +24,10 @@ use \LORIS\Middleware\ETagCalculator;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class SaveDocuments extends Endpoint implements ETagCalculator
+class SaveDocuments extends \NDB_Page
 {
     public $skipTemplate = true;
+
     /**
      * This function will return a json response.
      *
@@ -141,41 +142,5 @@ class SaveDocuments extends Endpoint implements ETagCalculator
         return (
         $user->hasPermission('dataquery_view')
         );
-    }
-    /**
-     * An ETagCalculator provides the ability to calculate an ETag for
-     * an incoming HTTP request.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     *
-     * @return string The value to use for the ETag header.
-     */
-    public function ETag(ServerRequestInterface $request): string
-    {
-        if ($request->getMethod() === 'POST') {
-            return 'Etag not calculated on POST request';
-        }
-        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
-    }
-    /**
-     * Return an array of valid HTTP methods for this endpoint
-     *
-     * @return string[] Valid versions
-     */
-    protected function allowedMethods(): array
-    {
-        return array(
-            'POST',
-        );
-    }
-    /**
-     * Return a list of LORIS API versions which this endpoint
-     * supports.
-     *
-     * @return string[] LORIS API Versions
-     */
-    protected function supportedVersions(): array
-    {
-        return array('unknown');
     }
 }
