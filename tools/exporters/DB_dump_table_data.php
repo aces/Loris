@@ -28,13 +28,19 @@ require_once __DIR__ . '/../generic_includes.php';
 $config = NDB_Config::singleton();
 $databaseInfo = $config->getSetting('database');
 
-// Get all tables in the database
-$tableNames = $DB->pselectCol("
+$tableNames = [];
+
+if ($argc < 2) {
+    // Get all tables in the database
+    $tableNames = $DB->pselectCol("
                       SELECT TABLE_NAME 
                       FROM INFORMATION_SCHEMA.TABLES
                       WHERE TABLE_SCHEMA =:dbn",
-    array("dbn"=>$databaseInfo['database'])
-);
+        array("dbn"=>$databaseInfo['database'])
+    );
+} else {
+    $tableNames = array_slice($argv, 1);
+}
 
 $adminUser = $databaseInfo["adminUser"];
 $adminPassword = $databaseInfo["adminPassword"];
