@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 namespace LORIS\GUI;
+
 /**
  * A widget is a mechanism of loosely coupling module interactions
  * which affect the GUI.

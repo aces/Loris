@@ -106,8 +106,13 @@ class Module extends \Module
                 );
             }
 
-            // This is just here to avoid phpcs complaining about line length.
-            $overallstring = 'View overall recruitment';
+            // These are just here to avoid phpcs complaining about line length.
+            $overallstring       = 'View overall recruitment';
+            $sitebreakdownstring = 'View site breakdown';
+            $projbreakdownstring = 'View project breakdown';
+
+            $recpersite = 'View recruitment per site';
+
             return [
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
@@ -125,8 +130,8 @@ class Module extends \Module
                         10,
                         [
                             'overall-recruitment'           => $overallstring,
-                            'recruitment-site-breakdown'    => 'View site breakdown',
-                            'recruitment-project-breakdown' => 'View project breakdown'
+                            'recruitment-site-breakdown'    => $sitebreakdownstring,
+                            'recruitment-project-breakdown' => $projbreakdownstring,
                         ]
                     ),
                     new \LORIS\dashboard\WidgetDependencies(
@@ -158,7 +163,7 @@ class Module extends \Module
                         10,
                         [
                             'scan-line-chart-panel'        => 'View scans per site',
-                            'recruitment-line-chart-panel' => 'View recruitment per site'
+                            'recruitment-line-chart-panel' => $recpersite
                         ]
                     ),
                     new \LORIS\dashboard\WidgetDependencies(
