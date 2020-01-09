@@ -40,8 +40,6 @@ class Documents extends Endpoint implements ETagCalculator
         switch ($request->getMethod()) {
         case 'GET':
             return $this->_handleGET($request);
-        case 'POST':
-            return $this->_handlePOST($request);
         default:
             return new \LORIS\Http\Response\MethodNotAllowed(
                 $this->allowedMethods()
@@ -85,24 +83,6 @@ class Documents extends Endpoint implements ETagCalculator
             $values
         );
     }
-    /**
-     * Processes the values & saves to database and return a json response.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     *
-     * @return ResponseInterface The outgoing PSR7 response
-     */
-    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
-    {
-        // Parse POST request body.
-        $values = json_decode((string) $request->getBody(), true);
-
-        $response = array();
-
-        return new \LORIS\Http\Response\JsonResponse(
-            $response
-        );
-    }
 
     /**
      * Returns true if the user has permission to access
@@ -142,7 +122,6 @@ class Documents extends Endpoint implements ETagCalculator
     {
         return array(
             'GET',
-            'POST',
         );
     }
     /**
