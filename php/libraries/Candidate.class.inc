@@ -283,6 +283,7 @@ class Candidate
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
         $invalidID = false;
+        $attemptcount = 0;
         do {
             // Reset on each iteration
             $invalidID = false;
@@ -296,6 +297,12 @@ class Candidate
                 // with the same value has been inserted into the DB before this
                 // one.
                 $invalidID = true;
+                $attemptcount++;
+                if ($attemptcount > 2) {
+                    throw new LorisException(
+                        $e->getMessage()
+                    );
+                }
             }
         } while ($invalidID);
 
