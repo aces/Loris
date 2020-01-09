@@ -73,4 +73,14 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
         return $this->_fileData[$parameterName] ??
             ($this->_parameters[$parameterName] ?? '');
     }
+
+    /**
+     * Implements \LORIS\Data\DataInstance interface
+     *
+     * @return string
+     */
+    public function toJSON(): string
+    {
+        return '';
+    }
 }

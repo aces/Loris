@@ -72,18 +72,17 @@ class ElectrophysiologyBrowserIndex extends Component {
         let cellLinks = [];
         for (let i = 0; i < cellTypes.length; i += 1) {
           cellLinks.push(<a key={i} href={loris.BaseURL +
-            '/electrophysiology_browser/electrophysiology_session/?sessionID=' +
-            row.SessionID + '&outputType=' +
-            cellTypes[i] + '&backURL=/electrophysiology_browser/'}>
+            '/electrophysiology_browser/sessions/' +
+            row.SessionID + '?outputType=' +
+            cellTypes[i]}>
               {cellTypes[i]}
             </a>);
             cellLinks.push(' | ');
         }
 
         cellLinks.push(<a key="all" href={loris.BaseURL +
-        '/electrophysiology_browser/electrophysiology_session/?sessionID=' +
-        row.SessionID +
-        '&backURL=/electrophysiology_browser/'}>
+        '/electrophysiology_browser/sessions/' +
+        row.SessionID}>
           all types
         </a>);
         result = (<td>{cellLinks}</td>);

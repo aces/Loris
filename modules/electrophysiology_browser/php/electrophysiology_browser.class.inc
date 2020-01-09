@@ -27,10 +27,6 @@ namespace LORIS\electrophysiology_browser;
 
 class Electrophysiology_Browser extends \DataFrameworkMenu
 {
-
-    public $AjaxModule   = true; // stops from running the query twice
-    public $skipTemplate = true; // stops from looking for a smarty template
-
     /**
      * Determine whether the user has permission to view this page
      *

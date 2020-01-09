@@ -36,10 +36,10 @@ class Module extends \Module
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
-                    [
-                        'electrophysiology_browser_view_allsites',
-                        'electrophysiology_browser_view_site'
-                    ]
+                [
+                    'electrophysiology_browser_view_allsites',
+                    'electrophysiology_browser_view_site'
+                ]
             );
     }
 

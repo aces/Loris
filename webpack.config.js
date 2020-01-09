@@ -33,7 +33,7 @@ const config = [{
     './modules/dicom_archive/js/dicom_archive.js': './modules/dicom_archive/jsx/dicom_archive.js',
     './modules/genomic_browser/js/FileUploadModal.js': './modules/genomic_browser/jsx/FileUploadModal.js',
     './modules/electrophysiology_browser/js/electrophysiologyBrowserIndex.js': './modules/electrophysiology_browser/jsx/electrophysiologyBrowserIndex.js',
-    './modules/electrophysiology_browser/js/electrophysiology_session_view.js': './modules/electrophysiology_browser/jsx/electrophysiology_session_view.js',
+    './modules/electrophysiology_browser/js/electrophysiologySessionView.js': './modules/electrophysiology_browser/jsx/electrophysiologySessionView.js',
     './modules/electrophysiology_browser/js/components/electrophysiology_session_panels.js': './modules/electrophysiology_browser/jsx/components/electrophysiology_session_panels.js',
     './modules/electrophysiology_browser/js/components/Sidebar.js': './modules/electrophysiology_browser/jsx/components/Sidebar.js',
     './modules/electrophysiology_browser/js/components/SidebarContent.js': './modules/electrophysiology_browser/jsx/components/SidebarContent.js',

@@ -147,8 +147,8 @@ class ElectrophysiologySessionView extends Component {
     };
 
     // Bind component instance to custom methods
-    this.fetchData = this.fetchData.bind(this);
     this.collectParams = this.collectParams.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
 
   /**
@@ -176,50 +176,44 @@ class ElectrophysiologySessionView extends Component {
     const url = new URL(window.location.href);
     const outputType = url.searchParams.get('outputType');
     this.state.url.params = {
-      sessionID: url.searchParams.get('sessionID'),
       outputType: outputType === null ? 'all_types' : outputType,
     };
   }
 
   /**
    * Retrieve data from the provided URL and save it in state.
+   *
+   * @return {object}
    */
   fetchData() {
-    $.ajax(loris.BaseURL + '/electrophysiology_browser/ajax/get_electrophysiology_session_data.php', {
-      method: 'GET',
-      dataType: 'json',
-      data: this.state.url.params,
-      success: function(data) {
-        console.log(data);
-        this.getState((appState) => {
-          appState.setup = {
-            data,
-          };
-          appState.isLoaded = true;
-          appState.patient.info = data.patient;
-          let database = [];
-          for (let i = 0; i < data.database.length; i++) {
-            database.push(data.database[i]);
-          }
-          appState.database = database;
-          this.setState(appState);
-          document.getElementById('nav_next').href =
-            window.location.origin + '/electrophysiology_browser/electrophysiology_session/?sessionID=' + data.nextSession + '&backURL=/electrophysiology_browser/';
-          document.getElementById('nav_previous').href =
-            window.location.origin + '/electrophysiology_browser/electrophysiology_session/?sessionID=' + data.prevSession + '&backURL=/electrophysiology_browser/';
-          if (data.prevSession !== '') {
-            document.getElementById('nav_previous').style.display = 'block';
-          }
-          if (data.nextSession !== '') {
-            document.getElementById('nav_next').style.display = 'block';
-          }
-        });
-      }.bind(this),
-      error: function(error) {
-        console.log('ajax (get) - error!');
-        console.log(JSON.stringify(error));
-      },
-    });
+    const dataURL = loris.BaseURL + '/electrophysiology_browser/sessions/';
+    const sessionID = this.props.sessionid;
+    const outputTypeArg = '?outputType=' + this.state.url.params['outputType'];
+    return fetch(dataURL + sessionID + outputTypeArg, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.getState((appState) => {
+        appState.setup = {data};
+        appState.isLoaded = true;
+        appState.patient.info = data.patient;
+        let database = [];
+        for (let i = 0; i < data.database.length; i++) {
+          database.push(data.database[i]);
+        }
+        appState.database = database;
+        this.setState(appState);
+        document.getElementById('nav_next').href = dataURL + data.nextSession + outputTypeArg;
+        document.getElementById('nav_previous').href = dataURL + data.prevSession + outputTypeArg;
+        if (data.prevSession !== '') {
+          document.getElementById('nav_previous').style.display = 'block';
+        }
+        if (data.nextSession !== '') {
+          document.getElementById('nav_next').style.display = 'block';
+        }
+      }))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
   }
 
   /**
@@ -336,9 +330,11 @@ window.onload = function() {
   const wrapDOM = document.getElementById('wrap');
   wrapDOM.insertBefore(eegSidebarDOM, page);
 
+  const pathparts = window.location.pathname.split('/');
   const eegSessionView = (
     <ElectrophysiologySessionView
       module={'eegSessionView'}
+      sessionid={pathparts[pathparts.length - 1]}
     />
   );
   // Create a wrapper div in which react component will be loaded.
