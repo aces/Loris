@@ -183,7 +183,7 @@ class DataQueryApp extends Component {
         curRequest = Promise.resolve(
           fetch(
             window.location.origin
-            + '/dataquery/GetDocument&DocID='
+            + '/dataquery/GetDocuments&DocID='
             + encodeURIComponent(this.state.queryIDs[key][i]),
             {credentials: 'same-origin'}
           ).then((resp) => resp.json()
@@ -244,56 +244,68 @@ class DataQueryApp extends Component {
 
     let filter = this.saveFilterGroup(this.state.filter);
 
-    $.post(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
-      Fields: this.state.selectedFields,
-      Filters: filter,
-      QueryName: name,
-      SharedQuery: shared,
-      OverwriteQuery: override
-    }, (data) => {
-      // Once saved, add the query to the list of saved queries
-      let id = JSON.parse(data).id,
-        queryIDs = this.state.queryIDs;
-      if (!override) {
-        if (shared === true) {
-          queryIDs.Shared.push(id);
-        } else {
-          queryIDs.User.push(id);
-        }
-      }
-      fetch(
-        window.location.origin
-        + '/dataquery/GetDocument&DocID='
-        + id,
-        {credentials: 'same-origin'}
-        ).then((resp) => resp.json()
-      ).then((json) => {
-        let queries = this.state.savedQueries;
-
-        queries[json._id] = json;
-        this.setState({
-          savedQueries: queries,
-          queryIDs: queryIDs,
-          alertLoaded: false,
-          alertSaved: true,
-          alertConflict: {
-            show: false
+    fetch(
+      window.location.origin + '/dataquery/SaveDocuments', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          Fields: this.state.selectedFields,
+          Filters: filter,
+          QueryName: name,
+          SharedQuery: shared,
+          OverwriteQuery: override
+        }),
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('data!');
+        console.log(data);
+        // Once saved, add the query to the list of saved queries
+        let id = JSON.parse(data).id,
+          queryIDs = this.state.queryIDs;
+        if (!override) {
+          if (shared === true) {
+            queryIDs.Shared.push(id);
+          } else {
+            queryIDs.User.push(id);
           }
+        }
+        fetch(
+          window.location.origin
+          + '/dataquery/GetDocuments&DocID='
+          + id,
+          {credentials: 'same-origin'}
+        ).then((resp) => resp.json()
+        ).then((json) => {
+          let queries = this.state.savedQueries;
+
+          queries[json._id] = json;
+          this.setState({
+            savedQueries: queries,
+            queryIDs: queryIDs,
+            alertLoaded: false,
+            alertSaved: true,
+            alertConflict: {
+              show: false
+            }
+          });
+        }).catch((error) => {
+          console.error(error);
         });
-      }).catch((error) => {
-        console.error(error);
-      });
-    }).fail((data) => {
-      if (data.status === 409) {
+      })
+      .catch((error) => {
+        console.error('Error! ' + error);
         this.setState({
           alertConflict: {
             show: true,
             QueryName: name,
             SharedQuery: shared
           }
-        })
-      }
-    });
+        });
+      });
   }
 
   overrideQuery() {
