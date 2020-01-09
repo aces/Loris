@@ -113,9 +113,9 @@ class Module extends \Module
                             [
                                 'baseURL'       => $baseURL,
                                 'notifications' => $frontend_feedback
-                            ],
+                            ]
                         ),
-                        "",
+                        ""
                     ),
                     new \LORIS\dashboard\WidgetDisplayProps("small"),
                 )
