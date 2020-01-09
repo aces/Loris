@@ -226,7 +226,6 @@ function getManagePermissionsData(): void
         ''
     );
 
-
     $DB     = \Database::singleton();
     $users  = $data_release->getUsersList($DB);
     $vFiles = $data_release->getVersionedFiles($DB);
