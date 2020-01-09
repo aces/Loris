@@ -181,17 +181,19 @@ class DataQueryApp extends Component {
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
         curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
-            data: {
-              DocID: this.state.queryIDs[key][i]
-            },
-            dataType: 'json'
-          }).then((value) => {
-          let queries = this.state.savedQueries;
-
-          queries[value._id] = value;
-          this.setState({savedQueries: queries});
-        });
+          fetch(
+            window.location.origin
+            + '/dataquery/GetDocument&DocID='
+            + encodeURIComponent(this.state.queryIDs[key][i]),
+            {credentials: 'same-origin'}
+          ).then((resp) => resp.json()
+          ).then((json) => {
+            let queries = this.state.savedQueries;
+            queries[json._id] = json;
+            this.setState({savedQueries: queries});
+          }).catch((error) => {
+            console.error(error);
+          }));
         promises.push(curRequest);
       }
     }
@@ -259,21 +261,28 @@ class DataQueryApp extends Component {
           queryIDs.User.push(id);
         }
       }
-      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
-        (value) => {
-          let queries = this.state.savedQueries;
+      fetch(
+        window.location.origin
+        + '/dataquery/GetDocument&DocID='
+        + id,
+        {credentials: 'same-origin'}
+        ).then((resp) => resp.json()
+      ).then((json) => {
+        let queries = this.state.savedQueries;
 
-          queries[value._id] = value;
-          this.setState({
-            savedQueries: queries,
-            queryIDs: queryIDs,
-            alertLoaded: false,
-            alertSaved: true,
-            alertConflict: {
-              show: false
-            }
-          });
+        queries[json._id] = json;
+        this.setState({
+          savedQueries: queries,
+          queryIDs: queryIDs,
+          alertLoaded: false,
+          alertSaved: true,
+          alertConflict: {
+            show: false
+          }
         });
+      }).catch((error) => {
+        console.error(error);
+      });
     }).fail((data) => {
       if (data.status === 409) {
         this.setState({
