@@ -71,6 +71,6 @@ class Module extends \Module
      */
     function getLongName(): string
     {
-        return 'DataQuery';
+        return 'Data Query Tool';
     }
 }
