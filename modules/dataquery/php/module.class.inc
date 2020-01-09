@@ -52,9 +52,9 @@ class Module extends \Module
             $path = substr($path, 0, strpos($path, '&'));
         }
         switch ($path) {
-        case 'GetDocument':
+        case 'GetDocuments':
             \Module::factory('api');
-            $handler = new endpoints\Documents();
+            $handler = new endpoints\GetDocuments();
             break;
         default:
             return parent::handle($request);

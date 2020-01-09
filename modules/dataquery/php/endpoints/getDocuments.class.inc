@@ -24,7 +24,7 @@ use \LORIS\Middleware\ETagCalculator;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Documents extends Endpoint implements ETagCalculator
+class GetDocuments extends Endpoint implements ETagCalculator
 {
     public $skipTemplate = true;
     /**
