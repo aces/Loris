@@ -107,7 +107,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * class, add only the dates from the current page to the array using the
      * instruments switch($page) otherwise you'll end up overwriting (NULLing)
      * all other dates in the table that appear on other pages (if they are
-     * listed in the array of date fields) - note by Dario
+     * listed in the array of date fields) - note by @dariovins
      */
     var $dateTimeFields = array();
 
