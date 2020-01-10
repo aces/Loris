@@ -429,14 +429,14 @@ class DashboardTest extends LorisIntegrationTest
         $assertText1 = $this->webDriver
             ->findElement(
                 WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div/div[1]".
+                    "//*[@id='lorisworkspace']/div[1]".
                     "/div[2]/div[1]/div/div/ul/li[1]/a"
                 )
             )->getText();
         $assertText2 = $this->webDriver
             ->findElement(
                 WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div/div[1]".
+                    "//*[@id='lorisworkspace']/div[1]".
                     "/div[2]/div[1]/div/div/ul/li[2]/a"
                 )
             )->getText();
