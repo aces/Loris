@@ -105,10 +105,16 @@ class Charts extends \NDB_Page
      */
     private function _handleSitePieData()
     {
-        $DB = \NDB_Factory::singleton()->database();
+        $DB          = \NDB_Factory::singleton()->database();
+        $currentUser = \NDB_Factory::singleton()->user();
 
         $recruitmentBySiteData = array();
-        $list_of_sites         = \Utility::getSiteList(true, false);
+
+        if ($currentUser->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList(true, false);
+        } else {
+            $list_of_sites = $currentUser->getSiteList(true, false);
+        }
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $totalRecruitment = $DB->pselectOne(
@@ -136,9 +142,16 @@ class Charts extends \NDB_Page
      */
     private function _handleSiteSexBreakdown()
     {
-        $DB            = \NDB_Factory::singleton()->database();
-        $sexData       = array();
-        $list_of_sites = \Utility::getSiteList(true, false);
+        $DB          = \NDB_Factory::singleton()->database();
+        $currentUser = \NDB_Factory::singleton()->user();
+
+        $sexData = array();
+
+        if ($currentUser->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList(true, false);
+        } else {
+            $list_of_sites = $currentUser->getSiteList(true, false);
+        }
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
@@ -202,8 +215,15 @@ class Charts extends \NDB_Page
         }
         $scanData['labels'] = array_keys($labels);
 
+        $currentUser = \NDB_Factory::singleton()->user();
+
+        if ($currentUser->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList(true, false);
+        } else {
+            $list_of_sites = $currentUser->getSiteList(true, false);
+        }
+
         // Massage the data into the appropriate format per site.
-        $list_of_sites = \Utility::getSiteList(true, false);
         foreach ($list_of_sites as $siteID => $siteName) {
             $scanData['datasets'][] = array(
                 "name" => $siteName,
@@ -257,15 +277,28 @@ class Charts extends \NDB_Page
      */
     private function _handleSiteLineData()
     {
-        $DB = \NDB_Factory::singleton()->database();
+        $DB          = \NDB_Factory::singleton()->database();
+        $currentUser = \NDB_Factory::singleton()->user();
+
+        if ($currentUser->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList(true, false);
+        } else {
+            $list_of_sites = $currentUser->getSiteList(true, false);
+        }
+
+        $listOfSitesString = implode(",", array_keys($list_of_sites));
 
         $recruitmentData      = array();
         $recruitmentStartDate = $DB->pselectOne(
-            "SELECT MIN(Date_registered) FROM candidate",
+            "SELECT MIN(Date_registered)
+             FROM candidate
+             WHERE RegistrationCenterID IN (" . $listOfSitesString . ")",
             array()
         );
         $recruitmentEndDate   = $DB->pselectOne(
-            "SELECT MAX(Date_registered) FROM candidate",
+            "SELECT MAX(Date_registered)
+             FROM candidate
+             WHERE RegistrationCenterID IN (" . $listOfSitesString . ")",
             array()
         );
 
@@ -277,8 +310,6 @@ class Charts extends \NDB_Page
                 new \DateTimeImmutable($recruitmentEndDate)
             );
         }
-
-        $list_of_sites = \Utility::getSiteList(true, false);
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $recruitmentData['datasets'][] = array(

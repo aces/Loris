@@ -363,6 +363,45 @@ class User extends UserPermissions
     }
 
     /**
+     * Returns a list with the user's sites
+     *
+     * @param boolean $study_site if true only return study sites
+     * @param boolean $DCC        Whether the DCC should be included or not
+     *
+     * @return array an associative array("center ID" => "site name")
+     */
+    function getSiteList(
+        bool $study_site = true,
+        bool $DCC = true
+    ): array {
+        $site_arr   = $this->getCenterIDs();
+        $user_sites = array();
+
+        if ($study_site) {
+            $site = array();
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $user_sites[$val] = $site[$key]->getCenterName();
+                }
+            }
+        } else {
+            $site = array();
+            foreach ($site_arr as $key => $val) {
+                $site[$key]       = &Site::singleton($val);
+                $user_sites[$val] = $site[$key]->getCenterName();
+            }
+        }
+
+        if (!$DCC) {
+            unset($user_sites["1"]);
+        }
+
+        natcasesort($user_sites);
+        return $user_sites;
+    }
+
+    /**
      * Checks if the user is in at least one study site
      *
      * @return boolean
