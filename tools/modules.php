@@ -1,5 +1,23 @@
 #!/usr/bin/env php
 <?php
+/**
+ * The modules.php script a database and automatically adds any new modules from
+ * either the project/modules or loris/modules directory and maintains the
+ * modules table based on the filesystem state.
+ *
+ * If the --add parameter is provided, it will add any new directories that
+ * have a valid \Module descriptor to the modules table.
+ *
+ * If the --remove parameter is provided, it will remove anything in the
+ * modules table that can not be instantiated with Module::factory from
+ * the modules table.
+ *
+ * If the -n flag is provided, it will not actually add/delete from the
+ * table, but only tell you what it would otherwise do.
+ *
+ * PHP Version 7
+ */
+
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 
@@ -26,14 +44,29 @@ if(isset($flags['remove'])) {
 }
 
 if(isset($flags['add'])) {
-    $moduledir = __DIR__ . "/../modules";
-    $modules = scandir(__DIR__ . "/../modules");
+    addDir(__DIR__ . "/../modules");
+    addDir(__DIR__ . "/../project/modules");
+}
+
+function addDir(string $moduledir) {
+    global $DB;
+    global $dryrun;
+    global $currentModules;
+
+    $modules = scandir($moduledir);
     foreach ($modules as $module) {
         if(in_array($module, [".", ".."], true)) {
             continue;
         }
         if(!in_array($module, $currentModules, true)) {
             if(is_dir("$moduledir/$module")) {
+                try {
+                    Module::factory($module);
+                } catch(\LorisModuleMissingException $e) {
+                    // Wasn't a valid module, so don't add it.
+                    continue;
+                }
+
                 print "Adding $module\n";
                 if($dryrun) {
                     continue;
