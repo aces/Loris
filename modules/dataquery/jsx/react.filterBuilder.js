@@ -141,7 +141,15 @@ class FilterRule extends Component {
     // Update the value to filter for, and runs the query for the rules parameters
     let rule = JSON.parse(JSON.stringify(this.props.rule));
     if (this.state.value) {
-      let responseHandler = (data) => {
+      fetch(
+        window.location.origin
+        + '/dataquery/View/search?category=' + rule.instrument
+        + '&field=' + rule.field
+        + '&value=' + this.state.value
+        + '&operator=' + rule.operator,
+        {credentials: 'same-origin'}
+      ).then((resp) => resp.json()
+      ).then((data) => {
         let i;
         let allSessions = {};
         let allCandiates = {};
@@ -164,42 +172,9 @@ class FilterRule extends Component {
         rule.session = Object.keys(allCandiates);
         rule.visit = 'All';
         this.props.updateSessions(this.props.index, rule);
-      };
-      let ajaxRetrieve = (script) => {
-        $.get(loris.BaseURL + '/dataquery/ajax/' + script,
-          {
-            category: rule.instrument,
-            field: rule.field,
-            value: this.state.value,
-          },
-          responseHandler,
-          'json',
-        );
-      };
-      switch (rule.operator) {
-        case 'equal':
-        case 'isNull':
-          ajaxRetrieve('queryEqual.php');
-          break;
-        case 'notEqual':
-        case 'isNotNull':
-          ajaxRetrieve('queryNotEqual.php');
-          break;
-        case 'lessThanEqual':
-          ajaxRetrieve('queryLessThanEqual.php');
-          break;
-        case 'greaterThanEqual':
-          ajaxRetrieve('queryGreaterThanEqual.php');
-          break;
-        case 'startsWith':
-          ajaxRetrieve('queryStartsWith.php');
-          break;
-        case 'contains':
-          ajaxRetrieve('queryContains.php');
-          break;
-        default:
-          break;
-      }
+      }).catch((error) => {
+        console.error(error);
+      });
     }
   }
 

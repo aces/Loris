@@ -323,71 +323,44 @@ class DataQueryApp extends Component {
       }
     }
 
-    // Get the sessions which meet the rules criterias.
-    // TODO:    Build the sessions in the new format
-    switch (rule.operator) {
-      case 'equal':
-      case 'isNull':
-        script = 'queryEqual.php';
-        break;
-      case 'notEqual':
-      case 'isNotNull':
-        script = 'queryNotEqual.php';
-        break;
-      case 'lessThanEqual':
-        script = 'queryLessThanEqual.php';
-        break;
-      case 'greaterThanEqual':
-        script = 'queryGreaterThanEqual.php';
-        break;
-      case 'startsWith':
-        script = 'queryStartsWith.php';
-        break;
-      case 'contains':
-        script = 'queryContains.php';
-        break;
-      default:
-        break;
-    }
-    $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
-      success: (data) => {
-        let i,
-          allSessions = {},
-          allCandiates = {};
-        // Loop through data and divide into individual visits with unique PSCIDs
-        // storing a master list of unique PSCIDs
-        for (i = 0; i < data.length; i++) {
-          if (!allSessions[data[i][1]]) {
-            allSessions[data[i][1]] = [];
-          }
-          allSessions[data[i][1]].push(data[i][0]);
-          if (!allCandiates[data[i][0]]) {
-            allCandiates[data[i][0]] = []
-          }
-          allCandiates[data[i][0]].push(data[i][1]);
+    // Get the sessions which meet the rules criteria.
+    fetch(
+      window.location.origin
+      + '/dataquery/View/search?category=' + rule.instrument
+      + '&field=' + rule.field
+      + '&value=' + rule.value
+      + '&operator=' + rule.operator,
+      {credentials: 'same-origin'}
+    ).then((resp) => resp.json()
+    ).then((data) => {
+      let i, allSessions = {}, allCandiates = {};
+      // Loop through data and divide into individual visits with unique PSCIDs
+      // storing a master list of unique PSCIDs
+      for (i = 0; i < data.length; i++) {
+        if (!allSessions[data[i][1]]) {
+          allSessions[data[i][1]] = [];
         }
-        rule.candidates = {
-          allCandiates: allCandiates,
-          allSessions: allSessions
-        };
-        if (rule.visit === 'All') {
-          rule.session = Object.keys(allCandiates);
+        allSessions[data[i][1]].push(data[i][0]);
+        if (!allCandiates[data[i][0]]) {
+          allCandiates[data[i][0]] = []
+        }
+        allCandiates[data[i][0]].push(data[i][1]);
+      }
+      rule.candidates = {
+        allCandiates: allCandiates,
+        allSessions: allSessions
+      };
+      if (rule.visit === 'All') {
+        rule.session = Object.keys(allCandiates);
+      } else {
+        if (allSessions[rule.visit]) {
+          rule.session = allSessions[rule.visit];
         } else {
-          if (allSessions[rule.visit]) {
-            rule.session = allSessions[rule.visit];
-          } else {
-            rule.session = [];
-          }
+          rule.session = [];
         }
-      },
-      async: false,
-      data: {
-        category: rule.instrument,
-        field: rule.field,
-        value: rule.value
-      },
-      dataType: 'json'
+      }
+    }).catch((error) => {
+      console.error(error);
     });
 
     return rule;
