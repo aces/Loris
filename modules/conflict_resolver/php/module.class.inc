@@ -83,7 +83,8 @@ class Module extends \Module
                          LEFT JOIN flag ON (cu.CommentId1=flag.CommentID)
                          LEFT JOIN session s ON (flag.SessionID=s.ID)
                          LEFT JOIN candidate c ON (s.CandID=c.CandID)
-                     WHERE s.Active='Y' AND c.Active='Y'",
+                     WHERE s.Active='Y' AND c.Active='Y' AND
+                         s.CenterID <> 1",
                     'access_all_profiles',
                     's.CenterID',
                     $baseURL . '/' . $this->getName(),
