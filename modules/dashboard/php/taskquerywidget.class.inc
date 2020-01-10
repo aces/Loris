@@ -54,6 +54,8 @@ class TaskQueryWidget extends TaskWidget
      * @param string    $sitefield The field to use in the query to site-restrict
      *                             the results.
      * @param string    $link      The link for the widget to go to when clicked.
+     * @param string    $cssclass  An optional css class to add to the task for
+     *                             testing.
      */
     public function __construct(
         \User $user,
@@ -62,7 +64,8 @@ class TaskQueryWidget extends TaskWidget
         string $dbquery,
         string $allperm,
         string $sitefield,
-        string $link
+        string $link,
+        string $cssclass
     ) {
         $queryparams     = [];
         $this->sitelabel = "Site: All";
@@ -80,7 +83,7 @@ class TaskQueryWidget extends TaskWidget
             $label .= "s";
         }
 
-        parent::__construct($label, $number, $link);
+        parent::__construct($label, $number, $link, $cssclass);
     }
 
     /**

@@ -88,7 +88,8 @@ class Module extends \Module
                     WHERE 1 = 1 ",
                     "violated_scans_view_allsites",
                     "c.RegistrationCenterID",
-                    $baseURL . "/" . $this->getName()
+                    $baseURL . "/" . $this->getName(),
+                    ""
                 )
             ];
 

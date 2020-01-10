@@ -86,7 +86,8 @@ class Module extends \Module
                      WHERE s.Active='Y' AND c.Active='Y'",
                     'access_all_profiles',
                     's.CenterID',
-                    $baseURL . '/' . $this->getName()
+                    $baseURL . '/' . $this->getName(),
+                    'conflict_resolver'
                 )
             ];
         }

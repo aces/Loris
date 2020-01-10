@@ -96,7 +96,8 @@ class Module extends \Module
                          AND s.CenterID <> 1",
                     'imaging_browser_view_allsites',
                     's.CenterID',
-                    $baseURL . "/imaging_browser/?pendingNew=N&pendingNew=P"
+                    $baseURL . "/imaging_browser/?pendingNew=N&pendingNew=P",
+                    "new-scans"
                 )
             ];
         }

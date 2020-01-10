@@ -108,8 +108,10 @@ class Module extends \Module
                         AND s.Active='Y' AND c.Active='Y'",
                     'access_all_profiles',
                     's.CenterID',
-                    $baseURL . "/statistics/statistics_site/"
-                )
+                    $baseURL . "/statistics/statistics_site/",
+                    ""
+                ),
+
             ];
         }
         return [];

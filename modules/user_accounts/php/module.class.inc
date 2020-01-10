@@ -101,7 +101,8 @@ class Module extends \Module
                         AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
                     'user_accounts_multisite',
                     'upr.CenterID',
-                    $baseURL . "/user_accounts/?pendingApproval=Y"
+                    $baseURL . "/user_accounts/?pendingApproval=Y",
+                    "pending-accounts"
                 )
             ];
         }
