@@ -296,6 +296,125 @@ class DataQueryApp extends Component {
   }
 
   loadFilterRule(rule) {
+    // // Used to load in a filter rule
+    //
+    // let script;
+    // if (!rule.type) {
+    //   rule.type = 'rule'
+    // }
+    //
+    // // Get given fields of the instrument for the rule.
+    // console.log(1);
+    // const fetchFields = (rule) => {
+    //   return fetch(
+    //     window.location.origin
+    //     + '/dataquery/View/datadictionary?category=' + rule.instrument,
+    //     {credentials: 'same-origin'}
+    //   ).then((resp) => resp.json()
+    //   ).then((data) => {
+    //     console.log(2);
+    //     rule.fields = data;
+    //     return rule;
+    //   }).catch((error) => {
+    //     console.error(error);
+    //     return rule;
+    //   });
+    // };
+    //
+    // const findDataType = (rule) => {
+    //   console.log(3);
+    //   // Find the rules selected field's data type
+    //   for (let i = 0; i < rule.fields.length; i++) {
+    //     if (rule.fields[i].key[1] === rule.field) {
+    //       rule.fieldType = rule.fields[i].value.Type;
+    //       break;
+    //     }
+    //   }
+    //   return rule;
+    // };
+    //
+    // const getSessions = (rule) => {
+    //   console.log(4);
+    //   // Get the sessions which meet the rules criterias.
+    //   // TODO:    Build the sessions in the new format
+    //   switch (rule.operator) {
+    //     case 'equal':
+    //     case 'isNull':
+    //       script = 'queryEqual.php';
+    //       break;
+    //     case 'notEqual':
+    //     case 'isNotNull':
+    //       script = 'queryNotEqual.php';
+    //       break;
+    //     case 'lessThanEqual':
+    //       script = 'queryLessThanEqual.php';
+    //       break;
+    //     case 'greaterThanEqual':
+    //       script = 'queryGreaterThanEqual.php';
+    //       break;
+    //     case 'startsWith':
+    //       script = 'queryStartsWith.php';
+    //       break;
+    //     case 'contains':
+    //       script = 'queryContains.php';
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    //   $.ajax({
+    //     url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
+    //     success: (data) => {
+    //       let i,
+    //         allSessions = {},
+    //         allCandiates = {};
+    //       // Loop through data and divide into individual visits with unique PSCIDs
+    //       // storing a master list of unique PSCIDs
+    //       for (i = 0; i < data.length; i++) {
+    //         if (!allSessions[data[i][1]]) {
+    //           allSessions[data[i][1]] = [];
+    //         }
+    //         allSessions[data[i][1]].push(data[i][0]);
+    //         if (!allCandiates[data[i][0]]) {
+    //           allCandiates[data[i][0]] = []
+    //         }
+    //         allCandiates[data[i][0]].push(data[i][1]);
+    //       }
+    //       rule.candidates = {
+    //         allCandiates: allCandiates,
+    //         allSessions: allSessions
+    //       };
+    //       if (rule.visit === 'All') {
+    //         rule.session = Object.keys(allCandiates);
+    //       } else {
+    //         if (allSessions[rule.visit]) {
+    //           rule.session = allSessions[rule.visit];
+    //         } else {
+    //           rule.session = [];
+    //         }
+    //       }
+    //       console.log(44);
+    //       return rule;
+    //     },
+    //     async: false,
+    //     data: {
+    //       category: rule.instrument,
+    //       field: rule.field,
+    //       value: rule.value
+    //     },
+    //     dataType: 'json'
+    //   });
+    // };
+    //
+    // const multi = async () => {
+    //   rule = await fetchFields(rule);
+    //   rule = await findDataType(rule);
+    //   rule = await getSessions(rule);
+    //   console.log(5);
+    //   return rule;
+    // };
+    // return multi();
+
+
     // Used to load in a filter rule
 
     let script;
@@ -390,7 +509,7 @@ class DataQueryApp extends Component {
       dataType: 'json'
     });
 
-    return rule;
+
   }
 
   loadFilterGroup(group) {
@@ -507,6 +626,25 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
+    // for (let i = 0; i < fieldsList.length; i++) {
+    //   fetch(
+    //     window.location.origin
+    //     + '/dataquery/View/datadictionary?key=' + fieldsList[i],
+    //     {credentials: 'same-origin'}
+    //   ).then((resp) => resp.json()
+    //   ).then((data) => {
+    //     if (data[0].value.IsFile) {
+    //       let key = data[0].key[0] + ',' + data[0].key[1];
+    //       let downloadable = this.state.downloadableFields;
+    //       downloadable[key] = true;
+    //       this.setState({
+    //         downloadableFields: downloadable,
+    //       })
+    //     }
+    //   }).catch((error) => {
+    //     console.error(error);
+    //   });
+    // }
     for (let i = 0; i < fieldsList.length; i++) {
       $.ajax({
         url: loris.BaseURL + '/dataquery/ajax/datadictionary.php',

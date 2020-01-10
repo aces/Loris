@@ -81,6 +81,17 @@ class FilterRule extends Component {
     let rule = this.props.rule;
     if (event.target.value) {
       rule.instrument = event.target.value;
+      // fetch(
+      //   window.location.origin
+      //   + '/dataquery/View/datadictionary?category=' + rule.instrument,
+      //   {credentials: 'same-origin'}
+      // ).then((resp) => resp.json()
+      // ).then((data) => {
+      //   rule.fields = data;
+      //   this.props.updateRule(this.props.index, rule);
+      // }).catch((error) => {
+      //   console.error(error);
+      // });
       $.get(loris.BaseURL + '/dataquery/ajax/datadictionary.php', {category: rule.instrument}, (data) => {
         rule.fields = data;
         this.props.updateRule(this.props.index, rule);
