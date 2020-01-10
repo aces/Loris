@@ -230,8 +230,11 @@ class Charts extends \NDB_Page
      *
      * @return array An indexed array of data for site in the order of $labels
      */
-    private function _getScansPerMonthData(array $data, int $siteID, array $labels) : array
-    {
+    private function _getScansPerMonthData(
+        array $data,
+        int $siteID,
+        array $labels
+    ) : array {
         $sitedata   = array_filter(
             $data,
             function ($row) use ($siteID) {
