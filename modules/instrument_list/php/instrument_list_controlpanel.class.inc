@@ -697,14 +697,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             return true;
         } elseif ($user->hasPermission('send_to_dcc')
-<<<<<<< HEAD
-            && in_array(
-                $this->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
-=======
             && $user->hasCenter($this->getData('CenterID'))
->>>>>>> f089b6967... Fix phpcs/phan and rebase
             && $this->getData('Submitted')=='N'
             && in_array(
                 $this->getData('Current_stage'),
@@ -720,7 +713,6 @@ class Instrument_List_ControlPanel extends \TimePoint
                     'In Progress',
                 ]
             )
-        )
             && ! $config->settingEnabled("useScanDone")
             || $this->getData('Current_stage') == 'Screening'
             || !empty($scanDone)
