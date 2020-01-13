@@ -45,5 +45,5 @@ useEDC - This configuration setting determines whether the EDC is returned
 ## Interactions with LORIS
 
 - A token retrieved from the login endpoint bypasses the normal cookie based
-  authentication of LORIS when provided in as "Authorization" bearer token. See
+  authentication of LORIS when provided in an "Authorization" bearer token. See
   API documentation for details.
