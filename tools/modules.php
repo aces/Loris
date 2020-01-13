@@ -18,7 +18,6 @@
  * PHP Version 7
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 
 $flags = getopt("n", ['add', 'remove', 'dry-run']);
