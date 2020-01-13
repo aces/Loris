@@ -29,9 +29,9 @@ class Sex
     public $value;
 
     private const VALID_VALUES = array(
-                                  'Male',
-                                  'Female',
-                                  'Other',
+                                  'male',
+                                  'female',
+                                  'other',
                                  );
 
     /**
@@ -61,7 +61,7 @@ class Sex
      */
     private function validate(string $value): bool
     {
-        return in_array($value, self::VALID_VALUES, true);
+        return in_array(strtolower($value), self::VALID_VALUES, true);
     }
 
     /**
