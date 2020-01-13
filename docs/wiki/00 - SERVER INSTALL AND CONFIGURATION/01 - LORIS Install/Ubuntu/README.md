@@ -148,30 +148,15 @@ Click submit, and on the next screen that is presented, follow instructions to e
 
 If you encounter issues creating/generating your config file, you may have to manually paste the xml output that appears on the screen into the file `/var/www/loris/project/config.xml`
 
-Your LORIS instance should now be accessible by pointing your browser URL to `http://%IPADDRESS%`
+Your LORIS instance should now be accessible by pointing your browser URL to `http://%IPADDRESS%`.
 
-If there are any errors or you get a blank page, troubleshoot the errors in your apache error log - by default
- `/var/log/apache2/loris-error.log`
 
-## Configuring MySQL
-
-Please [go here](https://github.com/aces/Loris/wiki/Hosting-the-Database-Myself)
-for information on configuring MySQL.
+Now that the installation is complete, follow the [Setup process](https://github.com/aces/Loris/wiki/Setup) to customize your project.
 
 ### Development
 
-The name of our database filled with dummy test data is "Raisinbread". This 
-can be used by developers to populate LORIS with useable data for testing
-changes to the codebase.
+We provide test data that can be used by developers to populate LORIS with useable data for testing
+purposes.
 
-Instructions on installing Raisinbread can be found in the LORIS root folder
+Instructions on installing this test data can be found in the LORIS root folder 
 at `raisinbread/README.md`
-
-## Troubleshooting
-
-If errors are encountered during the section "Running the install script",
-ensure that all the prequisites for LORIS are installed and meet the minimum
-required versions.
-
-Next: follow the [Setup process](https://github.com/aces/Loris/wiki/Setup) to customize your LORIS.
-after completing this guide.
