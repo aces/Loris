@@ -31,7 +31,8 @@ but otherwise all requests require a token (retrieved from the `login` endpoint)
 or the user accessing the API to be logged in to LORIS.
 
 The following permissions affect accessing data from the API:
-????
+- The `data_entry` permission is required to access the candidates portion of
+  the API.
 
 ## Configurations
 
@@ -46,5 +47,3 @@ useEDC - This configuration setting determines whether the EDC is returned
 - A token retrieved from the login endpoint bypasses the normal cookie based
   authentication of LORIS when provided in as "Authorization" bearer token. See
   API documentation for details.
-
-- ??? (describe other interactions here)
