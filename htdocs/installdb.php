@@ -124,11 +124,11 @@ case 'validaterootaccount':
         && isset($_POST['dbadminuser'])
         && isset($_POST['dbadminpassword'])
         && !Database::canLogIn(
-        $_POST['dbhost'],
-        $_POST['dbname'],
-        $_POST['dbadminuser'],
-        $_POST['dbadminpassword']
-    )
+            $_POST['dbhost'],
+            $_POST['dbname'],
+            $_POST['dbadminuser'],
+            $_POST['dbadminpassword']
+        )
     ) {
         $tpl_data['error'] = 'The specified user does not exist or '.
             'is using an incorrect password or the database does not exist';

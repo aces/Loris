@@ -268,6 +268,7 @@ class SNP_Browser extends \NDB_Menu_Filter
                 ''       => 'All',
                 'Male'   => 'Male',
                 'Female' => 'Female',
+                'Other'  => 'Other',
             )
         );
         $this->addSelect(
@@ -354,9 +355,9 @@ class SNP_Browser extends \NDB_Menu_Filter
         $DB = \Database::singleton();
         $platform_results
             = $DB->pselect(
-            "SELECT distinct Name FROM genotyping_platform ",
-            array()
-        );
+                "SELECT distinct Name FROM genotyping_platform ",
+                array()
+            );
 
         $platform_options = array('' => 'Any');
         foreach ($platform_results as $row => $result ) {

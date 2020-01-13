@@ -169,7 +169,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                  * Instead, inform users that an administrator must install it
                  * on their behalf.
                  * This should only happen for users on a system where automatic
-                 * installation is disabled (ie. has no quatUser).
+                 * installation is disabled (ie. has no adminUser).
                  */
                 return new \LORIS\Http\Response\JSON\Conflict(
                     self::FILE_ALREADY_EXISTS
@@ -189,7 +189,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         );
 
         if (!$this->isQuatUserConfigured()) {
-            // If no quatUser is configured, automatic installation is not
+            // If no adminUser is configured, automatic installation is not
             // possible, so this is the last step.
             return (new \LORIS\Http\Response())
                 ->withStatus(200, 'OK')
@@ -224,8 +224,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).
-            " -u" . escapeshellarg($db_config['quatUser']).
-            " -p" . escapeshellarg($db_config['quatPassword']).
+            " -u" . escapeshellarg($db_config['adminUser']).
+            " -p" . escapeshellarg($db_config['adminPassword']).
             " " . escapeshellarg($db_config['database']).
             " < " . $this->path . "project/tables_sql/".
             escapeshellarg($table_name . '.sql'),
@@ -591,21 +591,21 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-     * Return whether the quatUser is properly configured, ie. credentials are
+     * Return whether the adminUser is properly configured, ie. credentials are
      * set and are valid.
-     * The quatUser is a MySQL user with CREATE table permissions.
+     * The adminUser is a MySQL user with CREATE table permissions.
      * `empty` is used instead of `isset` as blank values in the config file
      * are still considered set.
      *
-     * @return bool True if a quatUser is configured properly. False if not.
+     * @return bool True if a adminUser is configured properly. False if not.
      */
     protected function isQuatUserConfigured() : bool
     {
         $db        = $this->factory->database();
         $db_config = $this->factory->config()->getSetting('database');
 
-        $credentials_set = !empty($db_config['quatUser'])
-            && !empty($db_config['quatPassword']);
+        $credentials_set = !empty($db_config['adminUser'])
+            && !empty($db_config['adminPassword']);
         if (!$credentials_set) {
             return false;
         }
@@ -615,8 +615,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
         try {
             $connected = $db->connect(
                 $db_config['database'],
-                $db_config['quatUser'],
-                $db_config['quatPassword'],
+                $db_config['adminUser'],
+                $db_config['adminPassword'],
                 $db_config['host'],
                 false
             );

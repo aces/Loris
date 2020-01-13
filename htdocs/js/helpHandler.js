@@ -93,7 +93,7 @@ $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
         };
         $.ajax({
           type: 'post',
-          url: loris.BaseURL + '/main.php',
+          url: loris.BaseURL,
           data: data,
           success: function() {
             $('#login-modal-error').hide();

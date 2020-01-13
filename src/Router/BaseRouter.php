@@ -79,6 +79,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $request = $request->withURI($uri->withPath($path));
         }
 
+        $components = [];
         if (empty($modulename)) {
             $components = preg_split("/\/+?/", $path);
             $modulename = $components[0];

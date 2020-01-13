@@ -24,7 +24,6 @@ const config = [{
     './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
     './modules/candidate_list/js/candidateListIndex.js': './modules/candidate_list/jsx/candidateListIndex.js',
     './modules/datadict/js/dataDictIndex.js': './modules/datadict/jsx/dataDictIndex.js',
-    './modules/data_integrity_flag/js/dataIntegrityFlagIndex.js': './modules/data_integrity_flag/jsx/dataIntegrityFlagIndex.js',
     './modules/dataquery/js/react.app.js': './modules/dataquery/jsx/react.app.js',
     './modules/dataquery/js/react.fieldselector.js': './modules/dataquery/jsx/react.fieldselector.js',
     './modules/dataquery/js/react.filterBuilder.js': './modules/dataquery/jsx/react.filterBuilder.js',

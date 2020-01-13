@@ -111,7 +111,7 @@ class InstrumentManagerIndex extends Component {
         return (
           <div className='alert alert-warning'>
             Instrument installation is not possible given the current server
-            configuration; the LORIS 'quatUser' is not configured properly.
+            configuration; the LORIS 'adminUser' is not configured properly.
             File upload is still possible but instruments will need to be
             installed manually
           </div>

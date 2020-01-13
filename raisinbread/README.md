@@ -37,7 +37,7 @@ directory.
 ```bash
 cat SQL/0000-00-00-schema.sql \
     SQL/0000-00-01-Permission.sql \
-    SQL/0000-00-02-Menus.sql \
+    SQL/0000-00-02-Modules.sql \
     SQL/0000-00-03-ConfigTables.sql \
     SQL/0000-00-04-Help.sql \
     SQL/0000-00-05-ElectrophysiologyTables.sql \

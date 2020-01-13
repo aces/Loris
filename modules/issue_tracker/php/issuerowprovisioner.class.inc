@@ -41,7 +41,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         parent::__construct(
             "SELECT i.issueID,
                     i.title,
-                    l.Label as module,
+                    m.name as module,
                     i.category,
                     i.reporter,
                     i.assignee,
@@ -56,10 +56,10 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     c.CandID as candidateId,
                     w.userID as userId
             FROM issues as i
+            LEFT JOIN modules m
+              ON (m.ID=i.module)
             LEFT JOIN candidate c 
               ON (i.candID=c.CandID)
-            LEFT JOIN LorisMenu l
-              ON (i.module=l.ID)
             LEFT JOIN session s
               ON (i.sessionID = s.ID)
             LEFT JOIN issues_watching w
@@ -82,7 +82,21 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            $cid = $row['centerId'];
-            return new IssueRow($row, $cid);
+        // We need the module descriptor to get the full name. Since modules
+        // are likely to appear in multiple issues, keep a cache of descriptors
+        // that come from the factory.
+        static $modules = [];
+
+        $mname  = $row['module'];
+        $module = new \NullModule();
+        if (!empty($mname)) {
+            if (!isset($modules[$mname])) {
+                $modules[$mname] = \Module::factory($mname);
+            }
+            $module = &$modules[$mname];
+        }
+
+        $cid = $row['centerId'];
+        return new IssueRow($row, $cid, $module);
     }
 }

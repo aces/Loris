@@ -189,7 +189,7 @@ class Candidate
      *                                           written as YYYY-MM-DD. Value should
      *                                           be null unless the useEDC setting
      *                                           is configured to be true.
-     * @param string      $sex                   sex, either 'Male' or 'Female'
+     * @param string      $sex                   sex, 'Male', 'Female', or 'Other'
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
      * @param int|null    $registrationProjectID The project ID, if available
@@ -504,7 +504,7 @@ class Candidate
     /**
      * Return the candidate's sex
      *
-     * @return string|null Male|Female String describing the sex
+     * @return string|null Male|Female|Other String describing the sex
      *                     and null if scanner
      */
     function getCandidateSex(): ?string
