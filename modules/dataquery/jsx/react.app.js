@@ -295,126 +295,7 @@ class DataQueryApp extends Component {
     )
   }
 
-  loadFilterRule(rule) {
-    // // Used to load in a filter rule
-    //
-    // let script;
-    // if (!rule.type) {
-    //   rule.type = 'rule'
-    // }
-    //
-    // // Get given fields of the instrument for the rule.
-    // console.log(1);
-    // const fetchFields = (rule) => {
-    //   return fetch(
-    //     window.location.origin
-    //     + '/dataquery/View/datadictionary?category=' + rule.instrument,
-    //     {credentials: 'same-origin'}
-    //   ).then((resp) => resp.json()
-    //   ).then((data) => {
-    //     console.log(2);
-    //     rule.fields = data;
-    //     return rule;
-    //   }).catch((error) => {
-    //     console.error(error);
-    //     return rule;
-    //   });
-    // };
-    //
-    // const findDataType = (rule) => {
-    //   console.log(3);
-    //   // Find the rules selected field's data type
-    //   for (let i = 0; i < rule.fields.length; i++) {
-    //     if (rule.fields[i].key[1] === rule.field) {
-    //       rule.fieldType = rule.fields[i].value.Type;
-    //       break;
-    //     }
-    //   }
-    //   return rule;
-    // };
-    //
-    // const getSessions = (rule) => {
-    //   console.log(4);
-    //   // Get the sessions which meet the rules criterias.
-    //   // TODO:    Build the sessions in the new format
-    //   switch (rule.operator) {
-    //     case 'equal':
-    //     case 'isNull':
-    //       script = 'queryEqual.php';
-    //       break;
-    //     case 'notEqual':
-    //     case 'isNotNull':
-    //       script = 'queryNotEqual.php';
-    //       break;
-    //     case 'lessThanEqual':
-    //       script = 'queryLessThanEqual.php';
-    //       break;
-    //     case 'greaterThanEqual':
-    //       script = 'queryGreaterThanEqual.php';
-    //       break;
-    //     case 'startsWith':
-    //       script = 'queryStartsWith.php';
-    //       break;
-    //     case 'contains':
-    //       script = 'queryContains.php';
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    //   $.ajax({
-    //     url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
-    //     success: (data) => {
-    //       let i,
-    //         allSessions = {},
-    //         allCandiates = {};
-    //       // Loop through data and divide into individual visits with unique PSCIDs
-    //       // storing a master list of unique PSCIDs
-    //       for (i = 0; i < data.length; i++) {
-    //         if (!allSessions[data[i][1]]) {
-    //           allSessions[data[i][1]] = [];
-    //         }
-    //         allSessions[data[i][1]].push(data[i][0]);
-    //         if (!allCandiates[data[i][0]]) {
-    //           allCandiates[data[i][0]] = []
-    //         }
-    //         allCandiates[data[i][0]].push(data[i][1]);
-    //       }
-    //       rule.candidates = {
-    //         allCandiates: allCandiates,
-    //         allSessions: allSessions
-    //       };
-    //       if (rule.visit === 'All') {
-    //         rule.session = Object.keys(allCandiates);
-    //       } else {
-    //         if (allSessions[rule.visit]) {
-    //           rule.session = allSessions[rule.visit];
-    //         } else {
-    //           rule.session = [];
-    //         }
-    //       }
-    //       console.log(44);
-    //       return rule;
-    //     },
-    //     async: false,
-    //     data: {
-    //       category: rule.instrument,
-    //       field: rule.field,
-    //       value: rule.value
-    //     },
-    //     dataType: 'json'
-    //   });
-    // };
-    //
-    // const multi = async () => {
-    //   rule = await fetchFields(rule);
-    //   rule = await findDataType(rule);
-    //   rule = await getSessions(rule);
-    //   console.log(5);
-    //   return rule;
-    // };
-    // return multi();
-
-
+  async loadFilterRule(rule) {
     // Used to load in a filter rule
 
     let script;
@@ -423,93 +304,235 @@ class DataQueryApp extends Component {
     }
 
     // Get given fields of the instrument for the rule.
-    // This call is made synchronously
-    $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
-      success: (data) => {
+    console.log(1);
+    const fetchFields = async (rule) => {
+      await fetch(
+        window.location.origin
+        + '/dataquery/View/datadictionary?category=' + rule.instrument,
+        {credentials: 'same-origin'}
+      ).then((resp) => resp.json()
+      ).then((data) => {
+        console.log(2);
         rule.fields = data;
-      },
-      async: false,
-      data: {category: rule.instrument},
-      dataType: 'json'
-    });
+      }).catch((error) => {
+        console.error(error);
+      });
+      return await rule;
+    };
 
-    // Find the rules selected field's data type
-    for (let i = 0; i < rule.fields.length; i++) {
-      if (rule.fields[i].key[1] === rule.field) {
-        rule.fieldType = rule.fields[i].value.Type;
-        break;
+    const findDataType = async (rule) => {
+      console.log(3);
+      // Find the rules selected field's data type
+      for (let i = 0; i < rule.fields.length; i++) {
+        if (rule.fields[i].key[1] === rule.field) {
+          rule.fieldType = rule.fields[i].value.Type;
+          break;
+        }
       }
-    }
+      return await rule;
+    };
 
-    // Get the sessions which meet the rules criterias.
-    // TODO:    Build the sessions in the new format
-    switch (rule.operator) {
-      case 'equal':
-      case 'isNull':
-        script = 'queryEqual.php';
-        break;
-      case 'notEqual':
-      case 'isNotNull':
-        script = 'queryNotEqual.php';
-        break;
-      case 'lessThanEqual':
-        script = 'queryLessThanEqual.php';
-        break;
-      case 'greaterThanEqual':
-        script = 'queryGreaterThanEqual.php';
-        break;
-      case 'startsWith':
-        script = 'queryStartsWith.php';
-        break;
-      case 'contains':
-        script = 'queryContains.php';
-        break;
-      default:
-        break;
-    }
-    $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
-      success: (data) => {
-        let i,
-          allSessions = {},
-          allCandiates = {};
-        // Loop through data and divide into individual visits with unique PSCIDs
-        // storing a master list of unique PSCIDs
-        for (i = 0; i < data.length; i++) {
-          if (!allSessions[data[i][1]]) {
-            allSessions[data[i][1]] = [];
-          }
-          allSessions[data[i][1]].push(data[i][0]);
-          if (!allCandiates[data[i][0]]) {
-            allCandiates[data[i][0]] = []
-          }
-          allCandiates[data[i][0]].push(data[i][1]);
+    const getSessions = async (rule) => {
+      console.log(4);
+      // Get the sessions which meet the rules criterias.
+      // TODO:    Build the sessions in the new format
+      switch (rule.operator) {
+        case 'equal':
+        case 'isNull':
+          script = 'queryEqual.php';
+          break;
+        case 'notEqual':
+        case 'isNotNull':
+          script = 'queryNotEqual.php';
+          break;
+        case 'lessThanEqual':
+          script = 'queryLessThanEqual.php';
+          break;
+        case 'greaterThanEqual':
+          script = 'queryGreaterThanEqual.php';
+          break;
+        case 'startsWith':
+          script = 'queryStartsWith.php';
+          break;
+        case 'contains':
+          script = 'queryContains.php';
+          break;
+        default:
+          break;
+      }
+      const getDataquery = async (rule) => {
+        await $.ajax({
+          url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
+          success: (data) => {
+            let i,
+              allSessions = {},
+              allCandiates = {};
+            // Loop through data and divide into individual visits with unique PSCIDs
+            // storing a master list of unique PSCIDs
+            for (i = 0; i < data.length; i++) {
+              if (!allSessions[data[i][1]]) {
+                allSessions[data[i][1]] = [];
+              }
+              allSessions[data[i][1]].push(data[i][0]);
+              if (!allCandiates[data[i][0]]) {
+                allCandiates[data[i][0]] = []
+              }
+              allCandiates[data[i][0]].push(data[i][1]);
+            }
+            console.log('check rule:');
+            console.log(rule);
+            rule.candidates = {
+              allCandiates: allCandiates,
+              allSessions: allSessions
+            };
+            if (rule.visit === 'All') {
+              rule.session = Object.keys(allCandiates);
+            } else {
+              if (allSessions[rule.visit]) {
+                rule.session = allSessions[rule.visit];
+              } else {
+                rule.session = [];
+              }
+            }
+            console.log('check rule:');
+            console.log(rule);
+            console.log(44);
+          },
+          async: false,
+          data: {
+            category: rule.instrument,
+            field: rule.field,
+            value: rule.value
+          },
+          dataType: 'json'
+        });
+        return await rule;
+      };
+
+      return await getDataquery(rule);
+    };
+
+    const multi = async () => {
+      return await fetchFields(rule
+      ).then((rule) => {
+          return findDataType(rule);
         }
-        rule.candidates = {
-          allCandiates: allCandiates,
-          allSessions: allSessions
-        };
-        if (rule.visit === 'All') {
-          rule.session = Object.keys(allCandiates);
-        } else {
-          if (allSessions[rule.visit]) {
-            rule.session = allSessions[rule.visit];
-          } else {
-            rule.session = [];
-          }
-        }
-      },
-      async: false,
-      data: {
-        category: rule.instrument,
-        field: rule.field,
-        value: rule.value
-      },
-      dataType: 'json'
+      ).then((rule) => {
+        return getSessions(rule);
+      });
+      // console.log(rule);
+      // rule = await findDataType(rule);
+      // console.log(rule);
+      // rule = await getSessions(rule);
+      // console.log(5);
+      // console.log(rule);
+    };
+    await multi().then((rule) => {
+      console.log('final what do you thiink');
+      console.log(rule);
     });
 
+    console.log('what do we have hereL');
+    console.log(rule);
 
+
+    // // Used to load in a filter rule
+    //
+    // let script;
+    // if (!rule.type) {
+    //   rule.type = 'rule'
+    // }
+    //
+    // // Get given fields of the instrument for the rule.
+    // // This call is made synchronously
+    // $.ajax({
+    //   url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
+    //   success: (data) => {
+    //     rule.fields = data;
+    //   },
+    //   async: false,
+    //   data: {category: rule.instrument},
+    //   dataType: 'json'
+    // });
+    //
+    // // Find the rules selected field's data type
+    // for (let i = 0; i < rule.fields.length; i++) {
+    //   if (rule.fields[i].key[1] === rule.field) {
+    //     rule.fieldType = rule.fields[i].value.Type;
+    //     break;
+    //   }
+    // }
+    //
+    // // Get the sessions which meet the rules criterias.
+    // // TODO:    Build the sessions in the new format
+    // switch (rule.operator) {
+    //   case 'equal':
+    //   case 'isNull':
+    //     script = 'queryEqual.php';
+    //     break;
+    //   case 'notEqual':
+    //   case 'isNotNull':
+    //     script = 'queryNotEqual.php';
+    //     break;
+    //   case 'lessThanEqual':
+    //     script = 'queryLessThanEqual.php';
+    //     break;
+    //   case 'greaterThanEqual':
+    //     script = 'queryGreaterThanEqual.php';
+    //     break;
+    //   case 'startsWith':
+    //     script = 'queryStartsWith.php';
+    //     break;
+    //   case 'contains':
+    //     script = 'queryContains.php';
+    //     break;
+    //   default:
+    //     break;
+    // }
+    // $.ajax({
+    //   url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
+    //   success: (data) => {
+    //     let i,
+    //       allSessions = {},
+    //       allCandiates = {};
+    //     // Loop through data and divide into individual visits with unique PSCIDs
+    //     // storing a master list of unique PSCIDs
+    //     for (i = 0; i < data.length; i++) {
+    //       if (!allSessions[data[i][1]]) {
+    //         allSessions[data[i][1]] = [];
+    //       }
+    //       allSessions[data[i][1]].push(data[i][0]);
+    //       if (!allCandiates[data[i][0]]) {
+    //         allCandiates[data[i][0]] = []
+    //       }
+    //       allCandiates[data[i][0]].push(data[i][1]);
+    //     }
+    //     rule.candidates = {
+    //       allCandiates: allCandiates,
+    //       allSessions: allSessions
+    //     };
+    //     if (rule.visit === 'All') {
+    //       rule.session = Object.keys(allCandiates);
+    //     } else {
+    //       if (allSessions[rule.visit]) {
+    //         rule.session = allSessions[rule.visit];
+    //       } else {
+    //         rule.session = [];
+    //       }
+    //     }
+    //   },
+    //   async: false,
+    //   data: {
+    //     category: rule.instrument,
+    //     field: rule.field,
+    //     value: rule.value
+    //   },
+    //   dataType: 'json'
+    // });
+
+    console.log('OMG');
+    console.log(rule);
+    return rule;
   }
 
   loadFilterGroup(group) {
@@ -524,13 +547,14 @@ class DataQueryApp extends Component {
         group.children[i] = this.loadFilterGroup(group.children[i]);
       } else {
         group.children[i] = this.loadFilterRule(group.children[i]);
+        console.log('TEST');
       }
     }
     group.session = getSessions(group);
     return group;
   }
 
-  loadSavedQuery(fields, criteria) {
+  async loadSavedQuery(fields, criteria) {
     // Used to load a saved query
 
     let filterState = {},
@@ -609,7 +633,12 @@ class DataQueryApp extends Component {
       }
     }
     if (filterState.children && filterState.children.length > 0) {
-      filterState = this.loadFilterGroup(filterState);
+      const loadFilter = async (filterState) => {
+        return await this.loadFilterGroup(filterState);
+      };
+      filterState = await loadFilter(filterState);
+      await console.log('alizee');
+      console.log(filterState);
     } else {
       filterState.children = [
         {
@@ -618,7 +647,7 @@ class DataQueryApp extends Component {
       ];
       filterState.session = this.props.AllSessions;
     }
-    this.setState({
+    await this.setState({
       fields: fieldsList,
       selectedFields: selectedFields,
       filter: filterState,
@@ -646,7 +675,7 @@ class DataQueryApp extends Component {
     //   });
     // }
     for (let i = 0; i < fieldsList.length; i++) {
-      $.ajax({
+      await $.ajax({
         url: loris.BaseURL + '/dataquery/ajax/datadictionary.php',
         success: (data) => {
           if (data[0].value.IsFile) {
