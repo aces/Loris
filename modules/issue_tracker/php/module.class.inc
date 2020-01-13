@@ -24,4 +24,41 @@ namespace LORIS\issue_tracker;
  */
 class Module extends \Module
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) &&
+            $user->hasAnyPermission(
+                [
+                    'issue_tracker_reporter',
+                    'issue_tracker_developer'
+                ]
+            );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The menu category for this module
+     */
+    public function getMenuCategory() : string
+    {
+        return "Tools";
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "Issue Tracker";
+    }
 }

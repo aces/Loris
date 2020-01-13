@@ -52,9 +52,9 @@ class Next_Stage extends \NDB_Form
         // check user permissions
         if (!$user->hasPermission('data_entry')
             || !in_array(
-            $timePoint->getData('CenterID'),
-            $user->getData('CenterIDs')
-        )
+                $timePoint->getData('CenterID'),
+                $user->getData('CenterIDs')
+            )
         ) {
             return false;
         }

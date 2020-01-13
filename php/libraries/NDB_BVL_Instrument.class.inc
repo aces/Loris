@@ -107,7 +107,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * class, add only the dates from the current page to the array using the
      * instruments switch($page) otherwise you'll end up overwriting (NULLing)
      * all other dates in the table that appear on other pages (if they are
-     * listed in the array of date fields) - note by Dario
+     * listed in the array of date fields) - note by @dariovins
      */
     var $dateTimeFields = array();
 
@@ -213,7 +213,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 // The module directory we use for instruments is arbitrary,
                 // since it isn't a real module, but it's required for the page
                 // constructor.
-                new Module($instrument, $base ."project/"),
+                Module::factory("instruments"),
                 $page,
                 $commentID,
                 $commentID,
@@ -232,7 +232,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             // Now go ahead and instantiate it
             $obj = new $class(
-                new Module($instrument, $base ."project/"),
+                Module::factory("instruments"),
                 $page,
                 $commentID,
                 $commentID,
@@ -907,8 +907,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $CertificationConfig['CertificationProjects']
             )
                 || !is_array(
-                $CertificationConfig['CertificationInstruments']
-            )
+                    $CertificationConfig['CertificationInstruments']
+                )
             ) {
                 throw new \ConfigurationException(
                     self::ERROR_CERTIFICATION_BAD_FORMATTING
