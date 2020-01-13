@@ -20,15 +20,28 @@
 
 require_once 'generic_includes.php';
 
-$flags = getopt("n", ['add', 'remove', 'dry-run']);
+$flags = getopt("nh", ['add', 'remove', 'dry-run', 'help']);
+
+
+$dryrun = isset($flags['n']) || isset($flags['dry-run']);
+$help   = isset($flags['h']) || isset($flags['help']);
+
+if($help) {
+    usage();
+    exit(0);
+}
+
+if(!isset($flags['add']) && !isset($flags['remove'])) {
+    usage();
+    fwrite(STDERR, "\nMust specify --add or --remove flag\n");
+    exit(1);
+
+}
 
 $currentModules = $DB->pselectCol(
     "SELECT Name FROM modules",
     []
 );
-
-$dryrun = isset($flags['n']) || isset($flags['dry-run']);
-
 if(isset($flags['remove'])) {
     foreach($currentModules as $module) {
         try {
@@ -81,4 +94,20 @@ function addDir(string $moduledir) {
             }
         }
     }
+}
+
+function usage() {
+    global $argv;
+    print <<<ENDHELP
+usage: $argv[0] [-n] [--add] [--remove]
+
+Options:
+    -n/--dry-run  Do not make any changes to database, only print what would be done
+    -h/--help     Show this screen
+    --add         Add modules in modules directory not in modules table if they have
+                  a valid module descriptor
+    --remove      Remove any modules from modules table that can not be instantiated
+
+ENDHELP;
+
 }
