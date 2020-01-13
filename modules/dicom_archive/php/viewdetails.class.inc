@@ -222,7 +222,9 @@ class ViewDetails extends \NDB_Form
             $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
         }
 
-        if (!is_null($this->tpl_data['archive']['PatientID'])) {
+        if (isset($this->tpl_data['archive']['PatientID'])
+            && $this->tpl_data['archive']['PatientID'] !== null
+        ) {
             if (preg_match(
                 "/$pIDRegex/",
                 $this->tpl_data['archive']['PatientID']
