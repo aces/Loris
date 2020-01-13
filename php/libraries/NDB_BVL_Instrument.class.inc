@@ -1122,10 +1122,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getDatabaseDate(array $formDateValue): string
     {
+        $databaseValue = "";
         if (!empty($formDateValue)) {
-
-            $databaseValue = "";
-
             if (array_key_exists("Y", $formDateValue)
                 || array_key_exists("M", $formDateValue)
                 || array_key_exists("d", $formDateValue)
