@@ -24,7 +24,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Document extends \NDB_Page
+class Documents extends \NDB_Page
 {
     public $skipTemplate = true;
 
@@ -72,21 +72,9 @@ class Document extends \NDB_Page
         // Parse GET query params.
         $values = $request->getQueryParams();
 
-        // Access CouchDB credentials
-        $client = new \NDB_Client();
-        $client->makeCommandLine();
-        $client->initialize(__DIR__ . '/../../../project/config.xml');
-
         // Start Connecting to CouchDB
-        $config      = \NDB_Config::singleton();
-        $couchConfig = $config->getSetting('CouchDB');
-        $cdb         = \NDB_Factory::singleton()->couchDB(
-            $couchConfig['dbName'],
-            $couchConfig['hostname'],
-            intval($couchConfig['port']),
-            $couchConfig['admin'],
-            $couchConfig['adminpass']
-        );
+        $cdb = \NDB_Factory::singleton()->couchDB();
+
         // Retrieve the Document from CouchDB
         $docID  = urlencode($values['DocID']);
         $values = $cdb->getDoc(
