@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php declare(strict_types=1);
 /**
  * This script generates data-only dumps for all tables in the currently active database.
@@ -30,16 +31,26 @@ $databaseInfo = $config->getSetting('database');
 
 $tableNames = [];
 
-if ($argc < 2) {
-    // Get all tables in the database
-    $tableNames = $DB->pselectCol("
+$allTables = $DB->pselectCol("
                       SELECT TABLE_NAME 
                       FROM INFORMATION_SCHEMA.TABLES
                       WHERE TABLE_SCHEMA =:dbn",
         array("dbn"=>$databaseInfo['database'])
     );
+if ($argc < 2) {
+    $tableNames = $allTables;
 } else {
     $tableNames = array_slice($argv, 1);
+    $hasErr = false;
+    foreach ($tableNames as $table) {
+        if (!in_array($table, $allTables, true)) {
+            fprintf(STDERR, "Invalid table $table\n");
+            $hasErr = true;
+        }
+    }
+    if ($hasErr) {
+        exit(1);
+    }
 }
 
 $adminUser = $databaseInfo["adminUser"];
