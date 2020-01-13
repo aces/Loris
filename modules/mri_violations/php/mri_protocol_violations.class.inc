@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements a menu filter which acts as a front end to all the different
  * table which logs the mri_protocol table violations. This means that the

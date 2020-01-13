@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This page implements a front end which is used to unify all
  * of the different MRI violation types (could not identify scan,

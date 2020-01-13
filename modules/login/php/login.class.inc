@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements the main LORIS user login page to handle authentication
  * of users.

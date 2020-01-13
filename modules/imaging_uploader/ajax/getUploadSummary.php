@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Ajax script used to get the progress of an MRI pipeline run for a specific MRI
  * scan. The upload progress for a scan (identified by its uploadId) consists of:

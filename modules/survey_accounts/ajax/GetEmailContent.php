@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This is used by the Loris survey module to retrieve the email
  * template for the current instrument. It is used in the survey_accounts

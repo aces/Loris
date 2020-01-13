@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This is a file called used by the behavioural qc browser
  * auto-complete to retrieve candidates for a given

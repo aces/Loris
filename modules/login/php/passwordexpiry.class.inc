@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Implements the user password expiry page in LORIS, to reset
  * expired passwords.

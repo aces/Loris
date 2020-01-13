@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This implements the portion of Loris which is user-facing for the survey
  * module. Survey participants should have received an email with a URL

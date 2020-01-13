@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Get the MINC tools path for bin, lib, and pipeline
  *

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * It includes two functions.
  * Post method handles updating a file.

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains a wrapper around imaging comments for a session or File.
  *

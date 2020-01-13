@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements the add_survey page which is used by the Loris
  * survey module, for creating user account/keys that are tied to a

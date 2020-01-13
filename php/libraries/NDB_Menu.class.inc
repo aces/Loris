@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the base class for an NDB_Menu. An NDB_Menu is the
  * base class for any menu page for a Loris module.

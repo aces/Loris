@@ -1,5 +1,6 @@
-<?php
- /**
+<?php declare(strict_types=1);
+
+/**
   * Automated integration tests for conflict resolver module
   *
   * PHP Version 5

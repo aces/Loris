@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * For snp_browser class file, a subtab in the Genomic Browser
  * Displays SNP genomic variant data.

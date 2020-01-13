@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * The UserPermissions class manages checking of user permissions
  *

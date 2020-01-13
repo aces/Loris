@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the visit's images endpoint class.
  *

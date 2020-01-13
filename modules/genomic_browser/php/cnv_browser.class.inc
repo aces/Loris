@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * For cnv_browser class file, a subtab in the Genomic Browser
  * Displays CNV (Copy Number Variant) genomic data

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Provides a default way to obtain access to the database for
  * the classes related to the ServerProcessLauncher

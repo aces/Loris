@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Used by genomic_browser modules for accessing genomic_files
  *

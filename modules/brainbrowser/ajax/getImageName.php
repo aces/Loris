@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This is an AJAX script which returns the file name for a MINC or NIfTI file,
  * given a file_id request parameter

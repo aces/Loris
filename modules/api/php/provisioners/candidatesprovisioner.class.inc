@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get the candidate information
  * of all active candidates accessible to a given user.

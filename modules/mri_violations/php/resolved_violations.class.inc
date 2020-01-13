@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This page displays the list of Resolved violations which have been
  * marked as resolved by one of the following methods: Reran,

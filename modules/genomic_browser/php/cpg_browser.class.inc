@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * For cpg_browser class file
  * Displays targeted CpG islands data.

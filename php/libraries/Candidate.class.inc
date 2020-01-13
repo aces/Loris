@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.

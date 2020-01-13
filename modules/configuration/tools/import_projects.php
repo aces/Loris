@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script should be used to migrate existing ProjectIDs and
  * SubprojectIDs from the config.xml to the subprojects table, so that

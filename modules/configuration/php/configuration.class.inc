@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The configuration module is used to manage the configuration of Loris.
  *

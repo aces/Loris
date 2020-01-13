@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This provides the implementation of the Smarty_neurodb class
  *

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This is a file called used by the behavioural qc browser
  * and called from it's js file. When a visit is selected

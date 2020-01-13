@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * File that returns the summary of the feedback for a given candidate,
  * timepoint and instrument.

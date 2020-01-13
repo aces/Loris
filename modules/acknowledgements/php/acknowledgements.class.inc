@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class provides the code to create the menu filter form that allows
  * for data entry of entities that should be acknowledged in publications

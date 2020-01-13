@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Contains the Genomic_File class used for LORIS Genomic data
  *

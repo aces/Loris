@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This implements a menu filter to be used for viewing the Loris survey
  * keys that have been created

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Will handle all client requests for information on specific tasks.
  * The information returned will contain

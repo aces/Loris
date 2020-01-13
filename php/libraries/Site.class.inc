@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains the class for the Site object
  *

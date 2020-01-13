@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class provides the php code to create the menu filter to display resolved
  * conflicts as part of the conflict resolver

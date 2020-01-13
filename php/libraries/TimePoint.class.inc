@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.

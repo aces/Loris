@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Contains the MRIFile class used for NeuroDB imaging
  *

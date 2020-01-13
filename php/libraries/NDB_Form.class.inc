@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Contains the base code to use for all NeuroDB forms
  *

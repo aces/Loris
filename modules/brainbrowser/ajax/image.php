@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file extracts the data from a MINC or NIfTI file in a way that
  * BrainBrowser volume viewer will understand.

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Used to keep the sorted order of rows in imaging_browser menu for
  * the navigation links in the imaging viewer
