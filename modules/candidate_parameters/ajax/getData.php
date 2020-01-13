@@ -521,7 +521,6 @@ function getDOBFields(): array
  /**
  * Handles the fetching of candidate's date of death.
  *
- * @throws DatabaseException
  *
  * @return array
  */
