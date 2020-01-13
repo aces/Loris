@@ -9,9 +9,8 @@ We also have instructions for how to set up LORIS for macOS. However, only
  Ubuntu and CentOS are officially supported by the team so we may be unable to
  help you with issues arising on other systems.
 
-When you've completed this guide, you should be able to load and log into LORIS in your browser.  Further setup to customize LORIS for your project will be required after that -Please visit
-[the Setup page](https://github.com/aces/Loris/wiki/Setup) in order to be
-able to use LORIS properly.
+When you've completed this guide, you should be able to load and log into LORIS in your browser.  Further setup to customize LORIS for your project will be required after tha. Please visit
+[the Setup page](https://github.com/aces/Loris/wiki/Setup) in order to complete the setup for LORIS.
 
 ## Prequisities
 
@@ -45,11 +44,6 @@ The following Ubuntu packages are required and should be installed using
 * php7.3-mbstring
 * php7.3-gd
 * libapache2-mod-php7.3
-
-### Database set up
-
-MySQL (or MariaDB) must be installed and a root or admin-level MySQL user must
-be created before continuing. (This is not the same as a unix root credential.)
 
 ## Getting the source code
 
@@ -137,15 +131,18 @@ cd tools/
 
 The install script will tell you to navigate to <loris-url>/installdb.php.
 
+MySQL (or MariaDB) must be installed and a root or admin-level MySQL user must
+be created before continuing. (This is not the same as a unix root credential.)
+
 This web page will prompt you for the following information:
 
- * `Server Hostname` localhost if your database is hosted on your VM or the IP address of your database server
+ * `Server Hostname`. Use `localhost` if your database is hosted on your locally. Use the IP address of your database server otherwise.
 
- * `Admin Username` e.g. `root` or a database user with permission to create databases and tables
+ * `Admin Username` A database user with permission to create databases and tables.
 
  * `Admin Password` The password for the above database user.
 
- * `Database Name` set to "LORIS" by default, can be customised
+ * `Database Name` Defaults to "LORIS".
 
 Click submit, and on the next screen that is presented, follow instructions to enter the username and password of your LORIS database user and front-end `admin` user.
 
