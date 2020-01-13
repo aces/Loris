@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements ModuleFileRouter, a class for routing to files
  * directly stored on the file system.

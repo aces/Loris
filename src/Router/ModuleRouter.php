@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements ModuleRouter, a class for routing to a specific
  * module.
