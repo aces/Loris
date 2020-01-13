@@ -104,4 +104,8 @@ class Datadict extends \DataFrameworkMenu
             new \LORIS\Breadcrumb('Data Dictionary', "/$this->name")
         );
     }
+
+    public function useProjectFilter() : bool {
+        return false;
+    }
 }

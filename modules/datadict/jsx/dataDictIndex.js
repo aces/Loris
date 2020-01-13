@@ -77,7 +77,7 @@ class DataDictIndex extends Component {
         <td
           contentEditable="true"
           className="description"
-          onBlur={updateDict(rowData[1])}>
+          onBlur={updateDict(rowData.Name)}>
             {cell}
         </td>
       );
