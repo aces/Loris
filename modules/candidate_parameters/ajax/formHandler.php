@@ -542,7 +542,7 @@ function editConsentStatusFields($db, $user)
  */
 function editCandidateDOB(\Database $db, \User $user): void
 {
-    $candID       = $_POST['candID'];
+    $candID       = new CandID($_POST['candID']);
     $dob          = $_POST['dob'];
     $strippedDate = null;
     if (!empty($dob)) {
@@ -554,7 +554,7 @@ function editCandidateDOB(\Database $db, \User $user): void
         $db->update(
             'candidate',
             array('DoB' => $strippedDate ?? $dob),
-            array('CandID' => $candID)
+            array('CandID' => $candID->__toString())
         );
     }
 }
