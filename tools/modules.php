@@ -21,14 +21,15 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 
-$flags = getopt("n", ['add', 'remove', ]);
+$flags = getopt("n", ['add', 'remove', 'dry-run']);
 
 $currentModules = $DB->pselectCol(
     "SELECT Name FROM modules",
     []
 );
 
-$dryrun = isset($flags['n']);
+$dryrun = isset($flags['n']) || isset($flags['dry-run']);
+
 if(isset($flags['remove'])) {
     foreach($currentModules as $module) {
         try {
