@@ -36,7 +36,6 @@ return [
         "PhanTypePossiblyInvalidDimOffset",
         "PhanUndeclaredMethod",
         "PhanTypeMismatchDimFetch",
-        "PhanTypeMismatchReturn",
         "PhanUndeclaredClassMethod",
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchProperty",
