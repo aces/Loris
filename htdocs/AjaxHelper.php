@@ -84,20 +84,19 @@ if (is_dir($basePath . "project/modules/$Module")
     error_log("ERROR: Module does not exist");
     header("HTTP/1.1 400 Bad Request");
     exit(5);
-}
- 
-  $public = false;
-   try {
-      $m = Module::factory($Module);
+} 
+$public = false;
+try {
+    $m = Module::factory($Module);
 
-      $public = $m->isPublicModule();
-   } catch(LorisModuleMissingException $e) {
-      $public = false;
-   }
-   if ($anonymous === true && $m->isPublicModule() === false) {
-        header("HTTP/1.1 403 Forbidden");
-        exit(6);
-   }
+    $public = $m->isPublicModule();
+} catch(LorisModuleMissingException $e) {
+    $public = false;
+}
+if ($anonymous === true && $m->isPublicModule() === false) {
+    header("HTTP/1.1 403 Forbidden");
+    exit(6);
+}
 
 
 // Also check the module directory for PHP files
