@@ -230,7 +230,7 @@ class Candidate
             && (DateTime::createFromFormat('Y-m-d', $dateOfBirth) === false
             || empty($dateOfBirth))
         ) {
-            throw new Exception(
+            throw new InvalidArgumentException(
                 "Date of Birth must be specified",
                 DOB_NOT_SPECIFIED
             );
@@ -771,4 +771,3 @@ class Candidate
     }
 
 }
-
