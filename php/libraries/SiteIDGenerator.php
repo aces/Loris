@@ -63,9 +63,9 @@ class SiteIDGenerator extends IdentifierGenerator
         }
         $this->maxValue = $this->_getIDSetting('max') ??
             str_repeat(
-            strval($this->alphabet[count($this->alphabet) - 1]),
-            intval($this->length)
-        );
+                strval($this->alphabet[count($this->alphabet) - 1]),
+                intval($this->length)
+            );
 
         $this->siteAlias    = $siteAlias;
         $this->projectAlias = $projectAlias;
