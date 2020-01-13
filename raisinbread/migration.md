@@ -55,5 +55,7 @@
 2019-11-25-Default_value_for_session_submitted.sql
 
 # NEW
+2019-10-09_move_MINCToolsPath_configuration_to_Config_tables.sql
+2019-11-29-Add_upload_directory_configuration.sql
 
 # CLEAN-UP

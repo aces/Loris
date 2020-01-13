@@ -49,7 +49,7 @@ class Qc
     public function toArray(): array
     {
         $meta = array(
-            'CandID' => $this->_timepoint->getCandID(),
+            'CandID' => (string) $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
         );
 

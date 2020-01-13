@@ -16,7 +16,7 @@
  */
 namespace LORIS\Http;
 
-use \Zend\Diactoros\Response\HtmlResponse;
+use \Laminas\Diactoros\Response\HtmlResponse;
 use \Psr\Http\Message\ServerRequestInterface;
 
 /**

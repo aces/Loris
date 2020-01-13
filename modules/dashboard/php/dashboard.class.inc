@@ -40,22 +40,15 @@ class Dashboard extends \NDB_Form
         $site   = $user->getSiteNames();
 
         $userID     = $user->getUsername();
-        $last_login = $DB->pselectOne(
-            "SELECT MAX(Login_timestamp)
-             FROM user_login_history
-             WHERE Login_timestamp < (SELECT MAX(Login_timestamp)
-                FROM user_login_history
-                WHERE userID=:UserID AND Success='Y')
-             AND userID=:UserID AND Success='Y'",
-            array('UserID' => $userID)
-        );
+        $last_login = $user->getLastLogin($DB);
 
         $siteID = $user->getCenterIDs();
         $this->tpl_data['user_site'] = $siteID;
 
         // Welcome panel
         $this->tpl_data['username'] = $user->getFullname();
-        if ($last_login) {
+        if ($last_login !== null) {
+            $last_login = $last_login->format('Y-m-d H:i:s');
             $this->tpl_data['last_login'] = $last_login;
         } else {
             $this->tpl_data['last_login'] = "...never. Welcome!";

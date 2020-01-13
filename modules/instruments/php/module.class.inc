@@ -70,4 +70,14 @@ class Module extends \Module
 
         return $instrument->process($request, $instrument);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "Instruments";
+    }
 }

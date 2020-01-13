@@ -764,24 +764,24 @@ class Instrument_List_ControlPanel extends \TimePoint
             return true;
         } elseif ($user->hasPermission('send_to_dcc')
             && in_array(
-            $this->getData('CenterID'),
-            $user->getData('CenterIDs')
-        )
+                $this->getData('CenterID'),
+                $user->getData('CenterIDs')
+            )
             && $this->getData('Submitted')=='N'
             && in_array(
-            $this->getData('Current_stage'),
-            array(
-                'Screening',
-                'Visit',
+                $this->getData('Current_stage'),
+                array(
+                    'Screening',
+                    'Visit',
+                )
             )
-        )
             && !in_array(
-            $this->getData($this->getData('Current_stage')),
-            array(
-                null,
-                'In Progress',
+                $this->getData($this->getData('Current_stage')),
+                array(
+                    null,
+                    'In Progress',
+                )
             )
-        )
             && ($config->getSetting("useScanDone")==="false"
             || ($this->getData('Current_stage') == 'Screening'
             || !empty($scanDone)            )            )

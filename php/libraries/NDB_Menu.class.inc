@@ -79,15 +79,10 @@ class NDB_Menu extends NDB_Page
             throw new Exception("The menu class ($menu) is not defined.");
         }
 
-        // create a new menu object
-        try {
-            if (isset($_REQUEST['test_name'])) {
-                $module = \Module::factory($_REQUEST['test_name']);
-            } else {
-                $module = \Module::factory($menu);
-            }
-        } catch(\LorisModuleMissingException $e) {
-            $module = new Module($menu, "");
+        if (isset($_REQUEST['test_name'])) {
+            $module = \Module::factory($_REQUEST['test_name']);
+        } else {
+            $module = \Module::factory($menu);
         }
 
         $obj = new $class($module, $menu, '', '', 'menu');
