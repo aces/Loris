@@ -105,7 +105,13 @@ class Datadict extends \DataFrameworkMenu
         );
     }
 
-    public function useProjectFilter() : bool {
+    /**
+     * The datadict module does not have any concept of a project.
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
         return false;
     }
 }
