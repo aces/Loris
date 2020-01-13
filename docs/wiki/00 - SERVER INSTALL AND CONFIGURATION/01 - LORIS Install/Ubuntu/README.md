@@ -9,8 +9,7 @@ We also have instructions for how to set up LORIS for macOS. However, only
  Ubuntu and CentOS are officially supported by the team so we may be unable to
  help you with issues arising on other systems.
 
-
-When you've completed this guide, further set up is required. Please visit
+When you've completed this guide, you should be able to load and log into LORIS in your browser.  Further setup to customize LORIS for your project will be required after that -Please visit
 [the Setup page](https://github.com/aces/Loris/wiki/Setup) in order to be
 able to use LORIS properly.
 
@@ -20,7 +19,7 @@ able to use LORIS properly.
 
 LORIS requires a LAMP stack in order to run, specifically:
 * Apache 2.4
-* MySQL 5.7 (or MariaDB 10.1) (or higher)
+* MySQL 5.7 (or MariaDB 10.3) (or higher)
 * PHP 7.3 (or higher)
 
 Additionally, LORIS requires the following package managers:
@@ -43,7 +42,6 @@ The following Ubuntu packages are required and should be installed using
 * software-properties-common
 * php7.3-mysql
 * php7.3-xml
-* php7.3-json
 * php7.3-mbstring
 * php7.3-gd
 * libapache2-mod-php7.3
@@ -68,7 +66,7 @@ cd /var/www/loris/
 
 ### LORIS for Production
 
-Visit the releases page and download the zipped file of the latest LORIS
+Visit the [releases](github.com/aces/loris/releases) page and download the zipped file of the latest LORIS
 release. The below command will download the latest LORIS release and save 
 it to a file named `loris-src.tar.gz`.
 
@@ -125,7 +123,7 @@ The next step in setting up LORIS is running the script `install.sh` in the
 This will begin an interactive setup process that will configure files and
 permissions required to get LORIS up and running.
 
-The install script will prompt for a `root` password in order to configure
+The install script will prompt for a the user password in order to use `sudo` permission for configuring
 certain file permissions as well as Apache. However, the script should not
 be run as `root` and will exit automatically if it detects that it has been
 executed with superuser permissions.
@@ -178,5 +176,5 @@ If errors are encountered during the section "Running the install script",
 ensure that all the prequisites for LORIS are installed and meet the minimum
 required versions.
 
-Ensure you've followed the [Setup process](https://github.com/aces/Loris/wiki/Setup)
+Next: follow the [Setup process](https://github.com/aces/Loris/wiki/Setup) to customize your LORIS.
 after completing this guide.
