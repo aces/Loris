@@ -62,21 +62,9 @@ class Document extends \NDB_Page
         // Parse GET query params.
         $values = $request->getQueryParams();
 
-        // Access CouchDB credentials
-        $client = new \NDB_Client();
-        $client->makeCommandLine();
-        $client->initialize(__DIR__ . '/../../../project/config.xml');
-
         // Start Connecting to CouchDB
-        $config      = \NDB_Config::singleton();
-        $couchConfig = $config->getSetting('CouchDB');
-        $cdb         = \NDB_Factory::singleton()->couchDB(
-            $couchConfig['dbName'],
-            $couchConfig['hostname'],
-            intval($couchConfig['port']),
-            $couchConfig['admin'],
-            $couchConfig['adminpass']
-        );
+        $cdb = \NDB_Factory::singleton()->couchDB();
+
         // Retrieve the Document from CouchDB
         $docID  = urlencode($values['DocID']);
         $values = $cdb->getDoc(
@@ -100,22 +88,11 @@ class Document extends \NDB_Page
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
 
-        // Access CouchDB credentials
-        $client = new \NDB_Client();
-        $client->makeCommandLine();
-        $client->initialize(__DIR__ . '/../../../project/config.xml');
+        // Start Connecting to CouchDB
+        $cdb = \NDB_Factory::singleton()->couchDB();
 
-        $user        = \User::singleton();
-        $config      = \NDB_Config::singleton();
-        $couchConfig = $config->getSetting('CouchDB');
-        $cdb         = \NDB_Factory::singleton()->couchDB(
-            $couchConfig['dbName'],
-            $couchConfig['hostname'],
-            intval($couchConfig['port']),
-            $couchConfig['admin'],
-            $couchConfig['adminpass']
-        );
-        $qid         = $user->getUserName() . '_' . $values['QueryName'];
+        $user = \User::singleton();
+        $qid  = $user->getUserName() . '_' . $values['QueryName'];
 
         if ($values['SharedQuery'] === 'true') {
             $qid = 'global:' . $qid;
@@ -128,8 +105,9 @@ class Document extends \NDB_Page
 
             if (!empty($results)) {
                 error_log($values['SharedQuery']);
-                header('HTTP/1.1 409 Conflict');
-                exit;
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    'SharedQuery Conflict'
+                );
             }
         }
 

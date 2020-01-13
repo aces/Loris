@@ -188,6 +188,9 @@ class DataQueryApp extends Component {
             {credentials: 'same-origin'}
           ).then((resp) => resp.json()
           ).then((json) => {
+            if (json.error) {
+              throw json.error;
+            }
             let queries = this.state.savedQueries;
             queries[json._id] = json;
             this.setState({savedQueries: queries});
