@@ -70,7 +70,7 @@ issues and/or Redmine tickets (if applicable).
 * Before sending any pull request, make sure you run our static analysis tools 
 using the command `make checkstatic` and fix any resulting errors. Otherwise,
   your pull request will fail our automatic testing and we will not be able
-  to merge it. If you run the command `make githooks`, git will automatically
+  to merge it. If you run the command `git config core.hooksPath .githooks`, git will automatically
   run `make checkstatic` when you do a git push.
 * Try and make all changes backwards-compatible with existing installations.  
 * If you must change something in a non-backwards-compatible way - or if it 
