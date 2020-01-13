@@ -228,7 +228,7 @@ class Candidate
         }
         if ($dateOfBirth !== null
             && (DateTime::createFromFormat('Y-m-d', $dateOfBirth) === false
-                || empty($dateOfBirth))
+            || empty($dateOfBirth))
         ) {
             throw new Exception(
                 "Date of Birth must be specified",
