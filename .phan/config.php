@@ -33,7 +33,6 @@ return [
     // unused_variable_detection. It might be a good idea to enable this first.
     "unused_variable_detection" => false,
     "suppress_issue_types" => [
-        "PhanTypeInvalidDimOffset",
         "PhanTypePossiblyInvalidDimOffset",
         "PhanUndeclaredMethod",
         "PhanTypeMismatchDimFetch",
@@ -43,15 +42,9 @@ return [
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
         "PhanPossiblyUndeclaredVariable",
-        "PhanNoopNew"
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
-        /* This doesn't include php/installer, because there's
-           (intentionally) classes in the installer namespace
-           which redeclare classes from php/libraries, in order
-           to bootstrap the installer before the config/database
-           is set up */
         "php",
         "htdocs",
         "modules",
