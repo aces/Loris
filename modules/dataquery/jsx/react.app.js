@@ -183,7 +183,7 @@ class DataQueryApp extends Component {
         curRequest = Promise.resolve(
           fetch(
             window.location.origin
-            + '/dataquery/Document?DocID='
+            + '/dataquery/documents?DocID='
             + encodeURIComponent(this.state.queryIDs[key][i]),
             {credentials: 'same-origin'}
           ).then((resp) => resp.json()
@@ -248,7 +248,7 @@ class DataQueryApp extends Component {
     let filter = this.saveFilterGroup(this.state.filter);
 
     fetch(
-      window.location.origin + '/dataquery/Document', {
+      window.location.origin + '/dataquery/documents', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -276,7 +276,7 @@ class DataQueryApp extends Component {
         }
         fetch(
           window.location.origin
-          + '/dataquery/Document?DocID='
+          + '/dataquery/documents?DocID='
           + id,
           {credentials: 'same-origin'}
         ).then((resp) => resp.json()
