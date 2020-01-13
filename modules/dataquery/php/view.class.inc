@@ -77,8 +77,8 @@ class View extends \NDB_Page
         //            case 'datadictionary':
         //                return;
         default:
-            return new \LORIS\Http\Response\JsonResponse(
-                $values
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid type of request'
             );
         }
     }
@@ -95,21 +95,8 @@ class View extends \NDB_Page
         // Parse GET query params.
         $values = $request->getQueryParams();
 
-        // Access CouchDB credentials
-        $client = new \NDB_Client();
-        $client->makeCommandLine();
-        $client->initialize(__DIR__ . '/../../../project/config.xml');
-
         // Start Connecting to CouchDB
-        $config      = \NDB_Config::singleton();
-        $couchConfig = $config->getSetting('CouchDB');
-        $cdb         = \NDB_Factory::singleton()->couchDB(
-            $couchConfig['dbName'],
-            $couchConfig['hostname'],
-            intval($couchConfig['port']),
-            $couchConfig['admin'],
-            $couchConfig['adminpass']
-        );
+        $cdb = \NDB_Factory::singleton()->couchDB();
 
         // Retrieve the Query params for CouchDB
         $operator       = $values['operator'];
