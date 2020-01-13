@@ -333,6 +333,9 @@ class DataQueryApp extends Component {
       {credentials: 'same-origin'}
     ).then((resp) => resp.json()
     ).then((data) => {
+      if (data.error) {
+        throw data.error;
+      }
       let i, allSessions = {}, allCandiates = {};
       // Loop through data and divide into individual visits with unique PSCIDs
       // storing a master list of unique PSCIDs
