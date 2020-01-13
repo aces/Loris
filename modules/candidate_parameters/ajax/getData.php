@@ -500,7 +500,6 @@ function getConsentStatusHistory($pscid)
 /**
  * Handles the fetching of candidate's date of birth.
  *
- * @throws DatabaseException
  *
  * @return array
  */
