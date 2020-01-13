@@ -14,9 +14,6 @@
  */
 use \LORIS\StudyEntities\Candidate\CandID;
 
-use \LORIS\StudyEntities\Candidate\CandID;
-
-
 $user = \User::singleton();
 if (!$user->hasPermission('candidate_parameter_edit')) {
     header("HTTP/1.1 403 Forbidden");
@@ -597,7 +594,7 @@ function editCandidateDOD(\Database $db, \User $user): void
         $db->update(
             'candidate',
             array('DoD' => $strippedDate ?? $dodString),
-            array('CandID' => $candID)
+            array('CandID' => $candID->__toString())
         );
     }
 }

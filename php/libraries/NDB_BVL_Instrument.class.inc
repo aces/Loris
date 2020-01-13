@@ -166,6 +166,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     var $WrapperDateWithStatusElements = array();
 
     /**
+     * True if the instrument is administered after the candidate's death.
+     * This is used to determine which candidate age should be displayed as
+     * part of metadata fields. (Either Candidate Age or Candidate Age at Death).
+     * To be called from within individual instrument forms.
+     *
+     * @var bool
+     * @access private
+     */
+    var $postMortem = false;
+
+    /**
      * True if the page is being previewed from the instrument builder,
      * and not really loaded. only applies to LINST instrument.
      */
@@ -863,15 +874,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
         if (strrpos($this->testName, '_proband') === false) {
-            $dates = array(
-                      'Date_taken' => $this->getFieldValue('Date_taken'),
-                      'DoD'        => $this->getDoD(),
-                     );
-
-            if (empty($dates['DoD'])
-                || empty($dates['Date_taken'])
-                || $dates['DoD'] > $dates['Date_taken']
-            ) {
+            if(!this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
                     'Candidate Age (Months)'
@@ -2186,9 +2189,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Get the candidates DOD.
      *
-     * @return string The candidate's DOD.
+     * @return ?string The candidate's DOD.
      */
-    function getDoD(): string
+    function getDoD(): ?string
     {
         $db        = \Database::singleton();
         $CommentID = $this->getCommentID();
@@ -2199,7 +2202,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             WHERE f.CommentID=:CID",
             array('CID' => $CommentID)
         );
-        return $dod;
+        return $dod ?? null;
     }
 
     /**

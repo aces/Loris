@@ -1,130 +1,82 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import Loader from 'Loader';
 
 class CandidateDOD extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      Data: [],
+      data: [],
       formData: {},
-      updateResult: null,
-      errorMessage: null,
+      error: false,
       isLoaded: false,
-      loadedData: 0,
     };
+
+    this.fetchData = this.fetchData.bind(this);
     this.setFormData = this.setFormData.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   componentDidMount() {
-    let that = this;
-    $.ajax(
-      this.props.dataURL,
-      {
-        dataType: 'json',
-        success: function(data) {
-          let formData = {
-            dod: data.dod,
-          };
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
+  }
 
-          // Add parameter values to formData
-          Object.assign(formData, data.parameter_values);
-
-          that.setState({
-            Data: data,
-            isLoaded: true,
-            formData: formData,
-          });
-        },
-        error: function(data, errorCode, errorMsg) {
-          that.setState({
-            error: 'An error occurred when loading the form!',
-          });
-        },
-      }
-    );
+  fetchData() {
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({data: data, formData: data}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
   }
 
   setFormData(formElement, value) {
-    let formData = JSON.parse(JSON.stringify(this.state.formData));
+    let formData = this.state.formData;
     formData[formElement] = value;
-
     this.setState({
       formData: formData,
     });
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-  }
-
   render() {
-    if (!this.state.isLoaded) {
-      if (this.state.error !== undefined) {
-        return (
-          <div className='alert alert-danger text-center'>
-            <strong>
-              {this.state.error}
-            </strong>
-          </div>
-        );
-      }
+    if (this.state.error) {
+      return <h3>An error occured while loading the page.</h3>;
+    }
 
-      return (
-        <button className='btn-info has-spinner'>
-          Loading
-          <span
-            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
-          </span>
-        </button>
-      );
+    if (!this.state.isLoaded) {
+      return <Loader/>;
     }
 
     let disabled = true;
     let updateButton = null;
-    if (loris.userHasPermission('candidate_parameter_edit') &&
-      loris.userHasPermission('candidate_dod_edit')) {
+    if (loris.userHasPermission('candidate_dod_edit')) {
       disabled = false;
       updateButton = <ButtonElement label="Update"/>;
     }
 
-    let alertMessage = '';
-    let alertClass = 'alert text-center hide';
-    if (this.state.updateResult) {
-      if (this.state.updateResult === 'success') {
-        alertClass = 'alert alert-success text-center';
-        alertMessage = 'Update Successful!';
-      } else if (this.state.updateResult === 'error') {
-        let errorMessage = this.state.errorMessage;
-        alertClass = 'alert alert-danger text-center';
-        alertMessage = errorMessage ? errorMessage : 'Failed to update!';
-      }
-    }
-
     return (
       <div className='row'>
-        <div className={alertClass} role='alert' ref='alert-message'>
-          {alertMessage}
-        </div>
         <FormElement
           name='candidateDOD'
           onSubmit={this.handleSubmit}
           ref='form'
-          className='col-md-6'>
+          class='col-md-6'>
           <StaticElement
             label='PSCID'
-            text={this.state.Data.pscid}
+            text={this.state.data.pscid}
           />
           <StaticElement
             label='DCCID'
-            text={this.state.Data.candID}
+            text={this.state.data.candID}
           />
           <StaticElement
             label='Disclaimer:'
             text='Any changes to the date of death requires an
             administrator to run the fix_candidate_age script.'
+            // class='form-control-static text-danger bg-danger col-sm-10'
           />
           <DateElement
             label='Date Of Death:'
@@ -160,22 +112,32 @@ class CandidateDOD extends Component {
       this.state.data.dob : null;
 
     if (dod > today) {
-      swal('Error!', 'Date of death cannot be later than today!', 'error');
+      swal({
+        title: 'Invalid date',
+        text: 'Date of death cannot be later than today!',
+        type: 'error',
+        confrimButtonText: 'OK',
+      });
       return;
     }
 
     if (dob > dod) {
-      swal('Error!', 'Date of death must be after date of birth!', 'error');
+      swal({
+        title: 'Invalid date',
+        text: 'Date of death must be after date of birth!',
+        type: 'error',
+        confrimButtonText: 'OK',
+      });
       return;
     }
 
     // Set form data and upload the media file
-    let self = this;
-    let formData = new FormData();
-    for (let key in myFormData) {
-      if (myFormData.hasOwnProperty(key)) {
-        if (myFormData[key]) {
-          formData.append(key, myFormData[key]);
+    let formData = this.state.formData;
+    let formObject = new FormData();
+    for (let key in formData) {
+      if (formData.hasOwnProperty(key)) {
+        if (formData[key] !== '') {
+          formObject.append(key, formData[key]);
         }
       }
     }
@@ -190,49 +152,27 @@ class CandidateDOD extends Component {
     })
       .then((resp) => {
         if (resp.ok && resp.status === 200) {
-          swal('Success!', 'Date of birth updated.', 'success').then((result) => {
+            swal({
+              title: 'Success!',
+              text: 'Date of death updated!',
+              type: 'success',
+              confrimButtonText: 'OK',
+            });
             if (result.value) {
               this.fetchData();
             }
-          );
-          self.showAlertMessage();
-        },
-        error: function(err) {
-          if (err.responseText !== '') {
-            let errorMessage = JSON.parse(err.responseText).message;
-            self.setState(
-              {
-                updateResult: 'error',
-                errorMessage: errorMessage,
-              }
-            );
-            self.showAlertMessage();
-          }
-        },
-      }
-    );
-  }
-
-  /**
-   * Display a success/error alert message after form submission
-   */
-  showAlertMessage() {
-    let self = this;
-    if (this.refs['alert-message'] === null) {
-      return;
-    }
-
-    let alertMsg = this.refs['alert-message'];
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-      500,
-      function() {
-        self.setState(
-          {
-            updateResult: null,
-          }
-        );
-      }
-    );
+        } else {
+            swal({
+              title: 'Error!',
+              text: 'Something went wrong.',
+              type: 'error',
+              confrimButtonText: 'OK',
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 }
 CandidateDOD.propTypes = {
