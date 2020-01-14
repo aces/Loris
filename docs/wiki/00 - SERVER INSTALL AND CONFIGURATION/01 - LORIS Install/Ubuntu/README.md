@@ -9,7 +9,7 @@ We also have instructions for how to set up LORIS for macOS. However, only
  Ubuntu and CentOS are officially supported by the team so we may be unable to
  help you with issues arising on other systems.
 
-When you've completed this guide, you should be able to load and log into LORIS in your browser.  Further setup to customize LORIS for your project will be required after tha. Please visit
+When you've completed this guide, you should be able to load and log into LORIS in your browser. Further setup to customize LORIS for your project will be required after tha. Please visit
 [the Setup page](https://github.com/aces/Loris/wiki/Setup) in order to complete the setup for LORIS.
 
 ## Prequisities
