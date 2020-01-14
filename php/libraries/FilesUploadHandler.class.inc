@@ -72,13 +72,13 @@ class FilesUploadHandler implements RequestHandlerInterface
         $this->overwrite       = false;
 
         if (! $this->uploadDirectory->isDir()) {
-            throw new \LorisException(
+            throw new \ConfigurationException(
                 'Upload directory is not a directory'
             );
         }
 
         if (! $this->uploadDirectory->isWritable()) {
-            throw new \LorisException(
+            throw new \ConfigurationException(
                 'Upload directory is not writable'
             );
         }

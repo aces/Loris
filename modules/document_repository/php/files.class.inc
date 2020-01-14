@@ -96,7 +96,7 @@ class Files extends \NDB_Page
         $user    = $factory->user();
         $db           = $factory->database();
         if (! $user->hasPermission('document_repository_edit')) {
-            return new \Loris\Http\Response\JSON\Forbidden();
+            return new \LORIS\Http\Response\JSON\Forbidden();
         }
         $updateValues = [
             'instrument' => $req['instrument'] ?? null,
@@ -115,7 +115,7 @@ class Files extends \NDB_Page
                 ['message' => 'File updated.']
             ));
         } catch (\Exception $e) {
-            return new \Loris\Http\Response\JSON\InternalServerError(
+            return new \LORIS\Http\Response\JSON\InternalServerError(
                 "Could not update the file: {$e->getMessage()}"
             );
         }
@@ -283,7 +283,10 @@ class Files extends \NDB_Page
 
         // Do some validation and fail early on bad inputs.
         $body         = $request->getParsedBody();
-        $uploadedFile = $request->getUploadedFiles()['file'];
+        $uploadedFile = $request->getUploadedFiles()['file'] ?? null;
+        if (is_null($uploadedFile)) {
+            return new \LORIS\Http\Response\JSON\BadRequest();
+        }
         $filename     = $uploadedFile->getClientFilename();
 
         $category = $body['category']; // required
@@ -311,15 +314,21 @@ class Files extends \NDB_Page
         $fileSize = $uploadedFile->getSize();
         $fileName = $uploadedFile->getClientFileName();
         $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
-        $uploader = (new \LORIS\FilesUploadHandler($targetdir))
-            ->withPermittedMIMETypes(
-                'application/pdf',
-                'image/jpeg',
-                'image/png',
-                'image/gif',
-                'image/svg+xml',
-                'text/plain'
+        try{
+            $uploader = (new \LORIS\FilesUploadHandler($targetdir))
+                ->withPermittedMIMETypes(
+                    'application/pdf',
+                    'image/jpeg',
+                    'image/png',
+                    'image/gif',
+                    'image/svg+xml',
+                    'text/plain'
+                );
+        } catch (\ConfigurationException $e) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
             );
+        }
 
         $response = $uploader->handle($request);
         if (!in_array($response->getStatusCode(), array(200, 201), true)) {
