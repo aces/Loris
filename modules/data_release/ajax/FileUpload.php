@@ -22,22 +22,6 @@ if (!$user->hasPermission('data_release_upload')) {
     exit;
 }
 
-if (!file_exists(__DIR__ . "/../user_uploads/")) {
-    error_log(
-        "ERROR: File upload failed. Default user_uploads"
-        . " directory not found."
-    );
-    header("HTTP/1.1 500 Internal Server Error");
-    exit;
-} elseif (!is_writable(__DIR__ . "/../user_uploads/")) {
-    error_log(
-        "File upload failed. Default user_uploads directory"
-        . " does not appear to be writeable."
-    );
-    header("HTTP/1.1 500 Internal Server Error");
-    exit;
-}
-
 if ($_GET['action'] == 'upload') {
     $fileName    = $_FILES["file"]["name"];
     $version     = !empty($_POST['version']) ? $_POST['version'] : null;
