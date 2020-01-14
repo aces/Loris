@@ -127,7 +127,7 @@ Finally, restart apache:
 sudo systemctl restart httpd
 sudo systemctl status httpd
 ```
-d# Install LORIS
+# Install LORIS
 
 For the purpose of following LORIS conventions and easy understanding of all LORIS documentation, we recommend the following account names: 
 
