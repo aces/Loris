@@ -120,7 +120,7 @@ CMD;
 }
 
 // Drop tables
-echo PHP_EOL .'Dropping LORIS tables....' . PHP_EOL;
+echo PHP_EOL .'[*] Dropping LORIS tables....' . PHP_EOL;
 dropTables();
 
 // Print the names of remaining tables, if any. Some tables may remain if they
@@ -181,6 +181,7 @@ if (isset($hostConfigSetting)) {
 
 // Trigger a password reset because the password for `admin` in the Raisinbread
 // database is public.
+echo "[*] Changing the admin password..." . PHP_EOL;
 echo 'Please choose a new password for the admin user:' . PHP_EOL;
 runCommand('php resetpassword.php admin');
 
@@ -243,6 +244,7 @@ function runCommand(string $command): void
  */
 function restoreConfigSetting(string $name, string $value): void 
 {
+    echo "[*] Restoring config settings..." . PHP_EOL;
     echo "Restoring config setting `$name` to value `$value`"
         . PHP_EOL . PHP_EOL;
     try {
