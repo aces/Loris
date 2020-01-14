@@ -169,7 +169,6 @@ class DocUploadForm extends Component {
       return resp.json();
     })
     .then((data) => {
-        console.log(data);
       if (data.message) {
          swal({
           title: 'Upload Successful!',

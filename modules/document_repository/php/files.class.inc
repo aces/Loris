@@ -48,7 +48,7 @@ class Files extends \NDB_Page
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $config       = \NDB_Factory::singleton()->config();
         $downloadpath = \Utility::appendForwardSlash(
@@ -64,14 +64,9 @@ class Files extends \NDB_Page
         case "DELETE":
             $id = basename($request->getUri()->getPath());
             $this->deleteFile($id);
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(array('message' => "File deleted."))
-                    )
-                );
+            return (new \LORIS\Http\Response\JSON\OK(
+                ['message' => 'File deleted.']
+            ));
         case "GET":
             $filename   = urldecode(basename($request->getUri()->getPath()));
             $downloader = new \LORIS\FilesDownloadHandler(
@@ -83,7 +78,7 @@ class Files extends \NDB_Page
                 $request->withAttribute('filename', $filename)
             );
         default:
-            return (new \LORIS\Http\Response\MethodNotAllowed(
+            return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 array("GET,POST,PUT,DELETE")
             ));
         }
@@ -101,7 +96,7 @@ class Files extends \NDB_Page
         $user    = $factory->user();
         $db           = $factory->database();
         if (! $user->hasPermission('document_repository_edit')) {
-            return new \Loris\Http\Response\Forbidden();
+            return new \Loris\Http\Response\JSON\Forbidden();
         }
         $updateValues = [
             'instrument' => $req['instrument'] ?? null,
@@ -116,16 +111,11 @@ class Files extends \NDB_Page
                 $updateValues,
                 ['record_id' => $req['id']]
             );
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(array('message' => "File updated."))
-                    )
-                );
+            return (new \LORIS\Http\Response\JSON\OK(
+                ['message' => 'File updated.']
+            ));
         } catch (\Exception $e) {
-            return new \Loris\Http\Response\InternalServerError(
+            return new \Loris\Http\Response\JSON\InternalServerError(
                 "Could not update the file: {$e->getMessage()}"
             );
         }
@@ -281,79 +271,55 @@ class Files extends \NDB_Page
     {
         $req            = $request->getParsedBody();
         $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $baseURL = $factory->settings()->getBaseURL();
+        $config  = $factory->config();
         $user    = $factory->user();
+        $name    = $user->getUsername();
+
         if (! $user->hasPermission('document_repository_edit')) {
-            return new \LORIS\Http\Response\Forbidden();
+            return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
+        // Do some validation and fail early on bad inputs.
         $body         = $request->getParsedBody();
         $uploadedFile = $request->getUploadedFiles()['file'];
         $filename     = $uploadedFile->getClientFilename();
 
-        // Do some validation and fail early on bad inputs.
         $category = $body['category']; // required
         if (intval($category) < 0) {
             // $category is a string representation of an ID, and so should be
             // at least equal to zero.
-            return new \LORIS\Http\Response\BadRequest(self::BAD_CATEGORY);
+            return new \LORIS\Http\Response\JSON\BadRequest(self::BAD_CATEGORY);
         }
 
         if ($this->existFilename($filename)) {
             // If a record of this a file with the same name already exists
             // in the database, don't proceed with upload.
-            return new \LORIS\Http\Response\Conflict(self::FILE_EXISTS_IN_DB);
+            return new \LORIS\Http\Response\JSON\Conflict(
+                self::FILE_EXISTS_IN_DB
+            );
         }
 
-        $editNotifier   = new \NDB_Notifier(
-            "document_repository",
-            "edit"
-        );
-        $uploadNotifier = new \NDB_Notifier(
-            "document_repository",
-            "upload"
-        );
-        $factory        = \NDB_Factory::singleton();
-        $DB             = $factory->database();
-        $baseURL        = $factory->settings()->getBaseURL();
-        $config         = $factory->config();
-        $path           = \Utility::appendForwardSlash(
+        // Initialize FilesUploadHandler
+        $path = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
         );
-        $name           = \User::singleton()->getUsername();
-
-        $site       = $DB->pselectOne(
-            "SELECT CenterID FROM psc WHERE Name=:name",
-            ['name' => $site]
-        );
-        $instrument = !empty($req['instrument']) ? $req['instrument'] : null;
-        $pscid      = !empty($req['pscid'])      ? $req['pscid']      : null;
-        $visit      = !empty($req['visitLabel']) ? $req['visitLabel'] : null;
-        $comments   = !empty($req['comments'])   ? $req['comments']   : null;
-        $version    = !empty($req['version'])    ? $req['version']    : null;
 
         $targetdir = new \SplFileInfo($path . $name . "/");
-        $fullpath  = $targetdir->getPathname() . '/' . $filename;
 
-        $uploadedFile = $uploadedFiles['file'];
-        $fileSize     = $uploadedFile->getSize();
-        $fileName     = $uploadedFile->getClientFileName();
-        $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
-        // $category is a string representation of an ID, and so should be at
-        // least equal to zero.
-        if (intval($category) < 0) {
-            throw new \LorisException(
-                "'Category' parameter must be a positive integer."
-                $uploader = (new \LORIS\FilesUploadHandler($targetdir))
-                ->withPermittedMIMETypes(
-                    'application/pdf',
-                    'image/jpeg',
-                    'image/png',
-                    'image/gif',
-                    'image/svg+xml',
-                    'text/plain'
-                )
-            )
-        }
+        $fileSize = $uploadedFile->getSize();
+        $fileName = $uploadedFile->getClientFileName();
+        $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+        $uploader = (new \LORIS\FilesUploadHandler($targetdir))
+            ->withPermittedMIMETypes(
+                'application/pdf',
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/svg+xml',
+                'text/plain'
+            );
 
         $response = $uploader->handle($request);
         if (!in_array($response->getStatusCode(), array(200, 201), true)) {
@@ -398,7 +364,15 @@ class Files extends \NDB_Page
         );
 
         // Notify users of event
-        $msg_data = array(
+        $editNotifier   = new \NDB_Notifier(
+            "document_repository",
+            "edit"
+        );
+        $uploadNotifier = new \NDB_Notifier(
+            "document_repository",
+            "upload"
+        );
+        $msg_data       = array(
             'newDocument' => 'Document Repository',
             'document'    => $filename,
         );
