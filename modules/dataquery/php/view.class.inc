@@ -70,6 +70,8 @@ class View extends \NDB_Page
 
         // Process the 'type' of request.
         switch ($type) {
+            case 'search':
+                return $this->_search($request);
             case 'datadictionary':
                 return $this->_datadictionary($request);
             default:
@@ -77,6 +79,185 @@ class View extends \NDB_Page
                     $values
                 );
         }
+    }
+
+    /**
+     * Search the DataQueryTool.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _search(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Parse GET query params.
+        $values = $request->getQueryParams();
+        // Start Connecting to CouchDB
+        $cdb = \NDB_Factory::singleton()->couchDB();
+        // Retrieve the Query params for CouchDB
+        $operator       = $values['operator'];
+        $category       = $values['category'];
+        $field          = $values['field'];
+        $value          = $values['value'];
+        $sessionResults = array();
+        // Process Query depending on operator.
+        switch ($operator) {
+            case 'equal':
+            case 'isNull':
+                if (!is_numeric($value) && $value !== 'null') {
+                    $value = "\"$value\"";
+                }
+                $results        = $cdb->queryView(
+                    'DQG-2.0',
+                    'search',
+                    array(
+                        'reduce' => 'false',
+                        'key'    => "[\"$category\", \"$field\", $value]",
+                    )
+                );
+                $sessionResults = array_map(
+                    function ($element) {
+                        return $element['value'];
+                    },
+                    $results
+                );
+                break;
+            case 'notEqual':
+            case 'isNotNull':
+                // There's no way to do "not" in an index, so we need to
+                // get all the values of the field name, and then iterate
+                // through them and exclude the ones where the value is
+                // equal in PHP.
+                $results = $cdb->queryView(
+                    'DQG-2.0',
+                    'search',
+                    array(
+                        'reduce'   => 'false',
+                        'startkey' => "[\"$category\", \"$field\"]",
+                        'endkey'   => "[\"$category\", \"$field\", {}]",
+                    )
+                );
+                // TODO: Rewrite this using array_filter and array_map.
+                $sessionResults = array();
+                foreach ($results as $row) {
+                    if ($row['key'][2] == $value) {
+                        continue;
+                    }
+                    if ($value === 'null' && is_null($row['key'][2])) {
+                        continue;
+                    }
+                    $sessionResults[] = $row['value'];
+                }
+                break;
+            case 'lessThanEqual':
+                $results        = $cdb->queryView(
+                    'DQG-2.0',
+                    'search',
+                    array(
+                        'reduce'   => 'false',
+                        'startkey' => "[\"$category\", \"$field\"]",
+                        'endkey'   => "[\"$category\", \"$field\", $value]",
+                    )
+                );
+                $sessionResults = array_map(
+                    function ($element) {
+                        return $element['value'];
+                    },
+                    $results
+                );
+                break;
+            case 'greaterThanEqual':
+                $results        = $cdb->queryView(
+                    'DQG-2.0',
+                    'search',
+                    array(
+                        'reduce'   => 'false',
+                        'startkey' => "[\"$category\", \"$field\", $value]",
+                        'endkey'   => "[\"$category\", \"$field\", {}]",
+                    )
+                );
+                $sessionResults = array_map(
+                    function ($element) {
+                        return $element['value'];
+                    },
+                    $results
+                );
+                break;
+            case 'startsWith':
+                $results        = $cdb->queryView(
+                    'DQG-2.0',
+                    'search',
+                    array(
+                        'reduce'   => 'false',
+                        'startkey' => "[\"$category\", \"$field\", \"$value\"]",
+                        'endkey'   => "[\"$category\", \"$field\", \"$value"
+                            // PHP doesn't have any /u9999 unicode escaping, so
+                            //  we use mb_convert_encoding to embed a high
+                            //  unicode character
+                            . mb_convert_encoding(
+                                '&#x9999;',
+                                'UTF-8',
+                                'HTML-ENTITIES'
+                            )
+                            . "\"]",
+                    )
+                );
+                $sessionResults = array_map(
+                    function ($element) {
+                        return $element['value'];
+                    },
+                    $results
+                );
+                break;
+            case 'contains':
+                $results        = $cdb->queryView(
+                    'DQG-2.0',
+                    'search',
+                    array(
+                        'reduce'   => 'false',
+                        'startkey' => "[\"$category\", \"$field\"]",
+                        'endkey'   => "[\"$category\", \"$field\", {} ]",
+                    )
+                );
+                $sessionResults = array_filter(
+                    $results,
+                    function ($element) use ($value) {
+                        /* Element is of the form:
+                        Array
+                            (
+                                [id] => 929342e78fd78dfe38e2732d7207b82e
+                                [key] => Array
+                                (
+                                    [0] => adi_r_proband
+                                    [1] => Administration
+                                    [2] => All
+                                )
+                                    [value] => Array
+                                (
+                                    [0] => STL0138
+                                    [1] => V06
+                                )
+                                );
+                         */
+                        $fieldVal = $element['key'][2];
+                        return strpos($fieldVal, $value) !== false;
+                    }
+                );
+                $sessionResults = array_values(
+                    array_map(
+                        function ($element) {
+                            return $element['value'];
+                        },
+                        $sessionResults
+                    )
+                );
+                break;
+            default:
+        }
+        // Return Query results to the user.
+        return new \LORIS\Http\Response\JsonResponse(
+            $sessionResults
+        );
     }
 
     /**
@@ -91,21 +272,8 @@ class View extends \NDB_Page
         // Parse GET query params.
         $values = $request->getQueryParams();
 
-        // Access CouchDB credentials
-        $client = new \NDB_Client();
-        $client->makeCommandLine();
-        $client->initialize(__DIR__ . '/../../../project/config.xml');
-
         // Start Connecting to CouchDB
-        $config      = \NDB_Config::singleton();
-        $couchConfig = $config->getSetting('CouchDB');
-        $cdb         = \NDB_Factory::singleton()->couchDB(
-            $couchConfig['dbName'],
-            $couchConfig['hostname'],
-            intval($couchConfig['port']),
-            $couchConfig['admin'],
-            $couchConfig['adminpass']
-        );
+        $cdb = \NDB_Factory::singleton()->couchDB();
 
         // Retrieve the Query params for CouchDB
         $category = $values['category'] ?? null;
@@ -114,15 +282,15 @@ class View extends \NDB_Page
 
         // Process Query depending on category or key.
         if ($category) {
-            $category = urlencode($_REQUEST['category']);
+            $category = urlencode($values['category']);
 
             $results = $cdb->queryView(
-                'DQG-2.0',
-                'datadictionary',
+                "DQG-2.0",
+                "datadictionary",
                 array(
-                    'reduce'   => "false",
-                    'startkey' => "[\"$category\"]",
-                    'endkey'   => "[\"$category\", \"ZZZZZZZZ\"]",
+                    "reduce"   => "false",
+                    "startkey" => "[\"$category\"]",
+                    "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
                 )
             );
         } else if ($key) {
