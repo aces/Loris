@@ -16,6 +16,13 @@
  * table, but only tell you what it would otherwise do.
  *
  * PHP Version 7
+ *
+ * @category   Data
+ * @package    Main
+ * @subpackage Data
+ * @author     Dave MacFarlane <driusan@gmail.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
  */
 
 require_once 'generic_includes.php';
