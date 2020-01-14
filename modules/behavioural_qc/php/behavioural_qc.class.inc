@@ -491,14 +491,12 @@ class Behavioural_QC extends \NDB_Form
         $config = \NDB_Factory::singleton()->config();
         $DB     = \NDB_Factory::singleton()->database();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-        // Apply Database::quote() to each element of the ddeInstruments array
-        array_walk(
-            $ddeInstruments,
-            array(
-                $DB,
-                'quote'
-            )
-        );
+
+        // Why is the first instrument skipped?
+        $numberOfInstruments = count($ddeInstruments);
+        for ($i = 0;$i < $numberOfInstruments; ++$i) {
+            $ddeInstruments[$i] = \Database::singleton()->quote($ddeInstruments[$i]);
+        }
 
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid,".
             " f.SessionID, f.test_name,f.data_entry,f.commentid,".
