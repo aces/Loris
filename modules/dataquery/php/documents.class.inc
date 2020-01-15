@@ -50,7 +50,7 @@ class Documents extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // Ensure GET or POST request.
+        // Ensure GET request.
         switch ($request->getMethod()) {
         case 'GET':
             return $this->_handleGET($request);
