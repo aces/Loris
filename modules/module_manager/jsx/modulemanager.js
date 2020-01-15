@@ -66,6 +66,7 @@ class ModuleManagerIndex extends Component {
         return <td><SelectElement
               name='active'
               label=''
+              emptyOption={false}
               options={{'Y': 'Yes', 'N': 'No'}}
               value={cell}
             /></td>;
