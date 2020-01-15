@@ -198,7 +198,7 @@ class TimePoint
      *                                    etc will be created.
      * @param \Site       $psc            The center of the timepoint
      * @param \Project    $project        The project of the timepoint
-     * @param string      $lang           The language code
+     * @param integer     $lang           The language id
      *
      * @throws DatabaseException
      *
@@ -210,7 +210,7 @@ class TimePoint
         ?string $nextVisitLabel,
         \Site $psc,
         \Project $project,
-        string $lang = 'en-CA'
+        int $lang
     ): void {
 
         // insert into session set CandID=$candID,
@@ -252,7 +252,7 @@ class TimePoint
             'UserID'          => $userID,
             'Date_registered' => $today,
             'Date_active'     => $today,
-            'language_code'   => $lang,
+            'language_id'     => $lang,
         );
 
         // insert the data
