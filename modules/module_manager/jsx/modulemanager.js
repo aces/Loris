@@ -65,7 +65,7 @@ class ModuleManagerIndex extends Component {
       {label: 'ShortName', show: true, filter: {
         name: 'Short Name',
         type: 'text',
-      }
+      }},
       {label: 'Module Name', show: true, filter: {
         name: 'Module Name',
         type: 'text',
@@ -74,7 +74,6 @@ class ModuleManagerIndex extends Component {
         name: 'Active',
         type: 'text',
       }},
-      },
     ];
     return (
       <FilterableDataTable
