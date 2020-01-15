@@ -22,6 +22,7 @@
     </rule>
 
     <rule ref="rulesets/design.xml">
+        <exclude name="EmptyCatchBlock" />
         <exclude name="CouplingBetweenObjects" />
         <exclude name="GotoStatement" />
         <exclude name="NumberOfChildren" />
