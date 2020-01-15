@@ -14,11 +14,11 @@ class CouchDBDemographicsImporter {
     var $Dictionary = array(
         'DoB' => array(
             'Description' => 'Date of Birth',
-            'Type' => 'varchar(255)'
+            'Type' => 'date'
         ),
         'DoD' => array(
             'Description' => 'Date of Death',
-            'Type' => 'varchar(255)'
+            'Type' => 'date'
         ),
         'CandID' => array(
             'Description' => 'DCC Candidate Identifier',
