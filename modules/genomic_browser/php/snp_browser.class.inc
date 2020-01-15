@@ -359,7 +359,7 @@ class SNP_Browser extends \NDB_Menu_Filter
             );
 
         $platform_options = array('' => 'Any');
-        foreach (array_values($platform_results) as $result ) {
+        foreach ($platform_results as $result ) {
             $name = $result['Name'];
             $platform_options[$name] = $name;
         }

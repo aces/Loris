@@ -103,7 +103,7 @@ class HelpFile
     function update($set)
     {
         // update the help file
-        \Database::singleton()
+        \NDB_Factory::singleton()->database()
             ->update('help', $set, array('helpID' => $this->helpID));
 
         return true;
@@ -328,4 +328,3 @@ class HelpFile
         return $helpID;
     }
 }
-

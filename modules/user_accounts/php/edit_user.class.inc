@@ -386,7 +386,7 @@ class Edit_User extends \NDB_Form
                 );
 
                 //get sites where user is already an examiner at for compare
-                foreach (array_values($prev_sites) as $center) {
+                foreach ($prev_sites as $center) {
                     array_push($ex_prev_sites, $center['centerID']);
                 }
             }
@@ -1315,4 +1315,3 @@ class Edit_User extends \NDB_Form
         );
     }
 }
-
