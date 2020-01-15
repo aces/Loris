@@ -46,7 +46,7 @@ class ModuleManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    return <td className="xxx">Foo</td>;
+    return <td>{cell}</td>;
   }
 
   render() {
