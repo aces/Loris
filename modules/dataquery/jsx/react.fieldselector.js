@@ -280,27 +280,20 @@ class FieldSelector extends Component {
     if (this.state.categoryFields[category]) {
     } else {
       // Retrieve the data dictionary
-      // fetch(
-      //   window.location.origin
-      //   + '/dataquery/View/datadictionary?category=' + category,
-      //   {credentials: 'same-origin'}
-      // ).then((resp) => resp.json()
-      // ).then((data) => {
-      //   let cf = this.state.categoryFields;
-      //   cf[category] = data;
-      //   this.setState({
-      //     categoryFields: cf
-      //   });
-      // }).catch((error) => {
-      //   console.error(error);
-      // });
-      $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", {category: category}, (data) => {
+      fetch(
+        window.location.origin
+        + '/dataquery/View/datadictionary?category=' + category,
+        {credentials: 'same-origin'}
+      ).then((resp) => resp.json()
+      ).then((data) => {
         let cf = this.state.categoryFields;
         cf[category] = data;
         this.setState({
           categoryFields: cf
         });
-      }, 'json');
+      }).catch((error) => {
+        console.error(error);
+      });
     }
     this.setState({
       selectedCategory: category,
