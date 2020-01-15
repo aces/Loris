@@ -14,6 +14,8 @@ class ModuleManagerIndex extends Component {
     };
 
     this.fetchData = this.fetchData.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
+    this.mapColumn = this.mapColumn.bind(this);
   }
 
   componentDidMount() {
@@ -36,6 +38,20 @@ class ModuleManagerIndex extends Component {
       });
   }
 
+    mapColumn(column, cell) {
+      switch (column) {
+      case 'Active':
+              if (cell === 'Y') {
+                  return 'Yes';
+              } else if (cell === 'N') {
+                  return 'No';
+              }
+              // This shouldn't happen, it's a non-nullable
+              // enum in the backend.
+              return '?';
+          default: return cell;
+      }
+  }
   /**
    * Modify behaviour of specified column cells in the Data Table component
    *
@@ -46,6 +62,16 @@ class ModuleManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    if (column == 'Active') {
+        return <td><SelectElement
+              name='active'
+              label=''
+              options={{'Y': 'Yes', 'N': 'No'}}
+              value={cell}
+            /></td>;
+    }
+    cell = this.mapColumn(column, cell);
+
     return <td>{cell}</td>;
   }
 
@@ -62,17 +88,21 @@ class ModuleManagerIndex extends Component {
     }
 
     const fields = [
-      {label: 'ShortName', show: true, filter: {
-        name: 'Short Name',
+      {label: 'Name', show: true, filter: {
+        name: 'Name',
         type: 'text',
       }},
-      {label: 'Module Name', show: true, filter: {
-        name: 'Module Name',
+      {label: 'Full Name', show: true, filter: {
+        name: 'Full Name',
         type: 'text',
       }},
       {label: 'Active', show: true, filter: {
         name: 'Active',
-        type: 'text',
+        type: 'select',
+        options: {
+            'Y': 'Yes',
+            'N': 'No',
+        },
       }},
     ];
     return (
