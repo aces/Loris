@@ -80,4 +80,40 @@ class Module extends \Module
     {
         return "Instruments";
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user) : array
+    {
+        switch($type) {
+        case "usertasks":
+            $factory = \NDB_Factory::singleton();
+            $DB      = $factory->database();
+            $baseURL = $factory->settings()->getBaseURL();
+            return [
+                new \LORIS\dashboard\TaskQueryWidget(
+                    $user,
+                    "Incomplete form",
+                    $DB,
+                    "SELECT COUNT(*) FROM flag
+                        LEFT JOIN session s ON (s.ID=flag.SessionID)
+                        LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                    WHERE flag.Data_entry='In Progress'
+                        AND s.Active='Y' AND c.Active='Y'",
+                    'access_all_profiles',
+                    's.CenterID',
+                    $baseURL . "/statistics/statistics_site/",
+                    ""
+                ),
+
+            ];
+        }
+        return [];
+    }
 }
