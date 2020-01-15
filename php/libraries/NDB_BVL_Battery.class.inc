@@ -305,7 +305,7 @@ class NDB_BVL_Battery
 
         // craft the select query
         $query = "SELECT f.Test_name,
-                    tl.Full_name,
+                    t.Full_name,
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
                     ts.Subgroup_name as Sub_group,
@@ -316,9 +316,7 @@ class NDB_BVL_Battery
         }
         $query  .= " FROM flag f
             	JOIN test_names t ON (f.Test_name=t.Test_name)
-            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group) 
-            	JOIN test_names_language_rel tl ON (t.ID=tl.Test_name_ID) 
-            	JOIN session s ON (f.SessionID=s.ID)";
+            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group) ";
         $qparams = array('SID' => $this->sessionID);
 
         if (!is_null($stage)) {
@@ -326,8 +324,7 @@ class NDB_BVL_Battery
             	LEFT JOIN test_battery b ON (t.Test_name=b.Test_name) ";
         }
         $query .= " WHERE f.SessionID=:SID
-            AND f.CommentID NOT LIKE 'DDE%'
-            AND tl.language_code=s.language_code ";
+            AND f.CommentID NOT LIKE 'DDE%'";
         if (!is_null($stage) && !is_null($SubprojectID)) {
                 $query .= " AND (
                     b.SubprojectID IS NULL
