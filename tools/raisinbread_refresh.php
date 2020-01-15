@@ -61,7 +61,7 @@ try {
     if (! $config->getSetting('dev')['sandbox']) {
         throw new \LorisException(
             "Config file indicates that this is not a sandbox. Aborting to " .
-            "prevent accidental data loss."
+            "prevent accidental data loss." . PHP_EOL
         );
     }
     $dbname = $dbInfo['database'];
@@ -79,7 +79,7 @@ try {
     echo 'Could not connect to the database in the Config file.' .
         'It\'s possible that the LORIS tables have already been dropped.' .
         PHP_EOL;
-    echo 'Continue attempting to install Raisinbread database? (yN)' . PHP_EOL;
+    echo 'Continue attempting to install Raisinbread database? (y/N)' . PHP_EOL;
     $input = trim(fgets(STDIN));
 
     if (mb_strtolower($input) !== 'y') {
@@ -108,7 +108,7 @@ $mysqlCommand = <<<CMD
 mysql -A $dbname
 CMD;
 
-// Test whether a connection to MySQL is possible via a config file.
+// Test whether a connection to MySQL is possible via a MySQL config file.
 // If not, read DB information from the config file. This method is not as 
 // preferable because it generates MySQL warnings due to the password being
 // supplied via a command-line argument.
@@ -256,8 +256,8 @@ function restoreConfigSetting(string $name, string $value): void
             IN (SELECT cs.ID FROM ConfigSettings cs WHERE cs.Name = '$name')"
         );
     } catch (\DatabaseException $e) {
-        echo "Couldn't config setting. " .
-            "This may need to be manually if your LORIS is not hosted at " .
+        echo "Couldn't restore config setting $name." .
+            "This may need to be set manually if your LORIS is not hosted at " .
             "localhost." .
             PHP_EOL;
     }
