@@ -478,7 +478,7 @@ class SelectElement extends Component {
     // element will take up the whole row.
     let label = null;
     let inputClass = 'col-sm-12';
-    if (this.props.label || this.props.label == '') {
+    if (this.props.label && this.props.label != '') {
       label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
