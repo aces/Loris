@@ -270,17 +270,6 @@ class Timepoint_List extends \NDB_Menu
     }
 
     /**
-     * Get dependencies to timepoint_list for image browsing link
-     *
-     * @return array of javascript to be inserted
-     */
-    function getJSDependencies()
-    {
-        $deps = parent::getJSDependencies();
-        return $deps;
-    }
-
-    /**
      * Generate a breadcrumb trail for this page.
      *
      * @return \LORIS\BreadcrumbTrail
