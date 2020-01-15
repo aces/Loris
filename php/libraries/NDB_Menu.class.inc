@@ -122,7 +122,6 @@ class NDB_Menu extends NDB_Page
 
     /**
      * {@inheritDoc}
-     * TODO
      *
      * @return string
      */
@@ -131,4 +130,3 @@ class NDB_Menu extends NDB_Page
         return json_encode(array('error' => 'Not implemented'));
     }
 }
-

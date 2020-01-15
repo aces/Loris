@@ -383,7 +383,7 @@ class NDB_BVL_Battery
      */
     public static function getInstrumentNameForCommentId($commentId)
     {
-        return \Database::singleton()
+        return \NDB_Factory::singleton()->database()
             ->pselectOne(
                 "SELECT Test_name FROM flag WHERE CommentID=:CID",
                 array('CID' => $commentId)

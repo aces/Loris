@@ -722,7 +722,6 @@ class NDB_Page implements RequestHandlerInterface
     {
         switch($this->format) {
         case 'json':
-            // NOTE this function doesn't actually exist but seems to work?!
             return $this->toJSON();
         }
         if ($this->skipTemplate) {
@@ -918,4 +917,3 @@ class NDB_Page implements RequestHandlerInterface
         return json_encode(array('error' => 'Not implemented'));
     }
 }
-
