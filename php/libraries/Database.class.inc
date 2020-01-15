@@ -425,7 +425,7 @@ class Database
         if ($result === false) {
             throw new DatabaseException(
                 "Insert statement did not execute successfully: "
-                . $this->createPDOErrorString(),
+                . $this->_createPDOErrorString(),
                 $prepQ,
                 $exec_params
             );
@@ -631,7 +631,7 @@ class Database
         if ($result === false) {
             throw new DatabaseException(
                 "Database DELETE did not execute successfully."
-                . $this->createPDOErrorString(),
+                . $this->_createPDOErrorString(),
                 $query,
                 $where
             );
@@ -653,7 +653,7 @@ class Database
         if ($result === false) {
             throw new DatabaseException(
                 "Could not run query $query"
-                . $this->createPDOErrorString()
+                . $this->_createPDOErrorString()
             );
         }
 
@@ -1452,7 +1452,7 @@ class Database
      *
      * @return string Printable representation of the error message.
      */
-    public function createPDOErrorString(): string
+    private function _createPDOErrorString(): string
     {
         return sprintf(
             "SQLSTATE: %s. ERROR CODE: %s. ERROR MESSAGE: %s",
