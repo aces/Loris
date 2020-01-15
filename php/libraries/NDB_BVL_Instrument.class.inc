@@ -171,7 +171,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * part of metadata fields. (Either Candidate Age or Candidate Age at Death).
      * To be called from within individual instrument forms.
      *
-     * @var bool
+     * @var    bool
      * @access private
      */
     var $postMortem = false;
@@ -874,16 +874,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
         if (strrpos($this->testName, '_proband') === false) {
-            if(!this->postMortem) {
+            if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
                     'Candidate Age (Months)'
                 );
             } else {
-                 $this->addScoreColumn(
-                     'Candidate_Age',
-                     'Candidate Age at Death (Months)'
-                 );
+                $this->addScoreColumn(
+                    'Candidate_Age',
+                    'Candidate Age at Death (Months)'
+                );
             }
             $this->addScoreColumn(
                 'Window_Difference',
@@ -2150,10 +2150,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getCandidateAge(?string $date = null): array
     {
         $dates     = array(
-                      'Date_taken' => $this->getFieldValue('Date_taken'),
-                      'DoB'        => $this->getDoB(),
-                      'DoD'        => $this->getDoD(),
-                     );
+            'Date_taken' => $this->getFieldValue('Date_taken'),
+            'DoB'        => $this->getDoB(),
+            'DoD'        => $this->getDoD(),
+        );
         $dateTaken = empty($date) ? $dates['Date_taken'] : $date;
 
         $age = array();
@@ -2203,36 +2203,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             array('CID' => $CommentID)
         );
         return $dod ?? null;
-    }
-
-    /**
-     * Calculates the time since candidate's death.
-     * If $date is passed, this function  will calculate the age as of
-     * the value of that argument. Otherwise the date will be calculated
-     * based on the value of the Date_taken field in the database.
-     *
-     * @param string $date (optional) The date that the age is to
-     *                     be calculated based on.
-     *
-     * @return array The time since candidate's death in an array containing
-     *         years, months and days.
-     */
-    function getTimeSinceDeath(string $date) : array
-    {
-        $dates          = array(
-                           'Date_taken' => $this->getFieldValue('Date_taken'),
-                           'DoD'        => $this->getDoD(),
-                          );
-        $timeSinceDeath = array();
-        if (empty($date)) {
-            $timeSinceDeath = Utility::calculateAge(
-                $dates['DoD'],
-                $dates['Date_taken']
-            );
-        } else {
-            $timeSinceDeath = Utility::calculateAge($dates['DoD'], $date);
-        }
-        return $timeSinceDeath;
     }
 
     /**

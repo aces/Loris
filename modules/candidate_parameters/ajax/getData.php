@@ -535,10 +535,10 @@ function getDODFields(): array
         array('candid' => $candID)
     );
     $result        = [
-                      'pscid'  => $candidateData['PSCID'],
-                      'candID' => $candID->__toString(),
-                      'dod'    => $candidateData['DoD'],
-                      'dob'    => $candidateData['DoB'],
-                     ];
+        'pscid'  => $candidateData['PSCID'],
+        'candID' => $candID->__toString(),
+        'dod'    => $candidateData['DoD'],
+        'dob'    => $candidateData['DoB'],
+    ];
     return $result;
 }

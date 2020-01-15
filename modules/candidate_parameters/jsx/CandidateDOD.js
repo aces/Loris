@@ -76,7 +76,7 @@ class CandidateDOD extends Component {
             label='Disclaimer:'
             text='Any changes to the date of death requires an
             administrator to run the fix_candidate_age script.'
-            // class='form-control-static text-danger bg-danger col-sm-10'
+            class='form-control-static text-danger bg-danger col-sm-10'
           />
           <DateElement
             label='Date Of Death:'

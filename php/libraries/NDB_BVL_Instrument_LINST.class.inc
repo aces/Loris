@@ -80,9 +80,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
         if (strrpos($this->testName, '_proband') === false) {
             $dates = array(
-                      'Date_taken' => $this->getFieldValue('Date_taken'),
-                      'DoD'        => $this->getDoD(),
-                     );
+                'Date_taken' => $this->getFieldValue('Date_taken'),
+                'DoD'        => $this->getDoD(),
+            );
 
             if (empty($dates['DoD'])
                 || empty($dates['Date_taken'])
