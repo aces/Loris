@@ -96,23 +96,81 @@ class CouchDBMRIImporter
 
         foreach($s as $scan){
             $scantype=$scan['ScanType'];
-            $Query .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
-              ON (msc.ID= f.AcquisitionProtocolID)
-              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
-                    as `Selected_$scantype`, (SELECT fqc.QCStatus
-                    FROM files f 
-                    LEFT JOIN files_qcstatus fqc USING(FileID)
-                    LEFT JOIN mri_scan_type msc ON(msc.ID= f.AcquisitionProtocolID)
-              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
-                     as `$scantype"."_QCStatus`";
+
+            //-------------------------------------------------------------------------//
+            // Add to the query a subselect that will compute the selected file        //
+            // for the given session/modality. If more than one selected file exists,  //
+            // the subquery will return 'Multiple Selected files'. If no selected file //
+            // exists, the subselect will return 'No selected file'. Otherwise the     //
+            // file path of the selected file is returned by the subselect             //
+            //-------------------------------------------------------------------------//
+            $Query .= ', '
+                    . '('
+                    . ' CASE ('. $this->_getQueryForSelectedFiles('count(*)', $scantype) . ') '
+                    . '  WHEN 1 '
+                    . '    THEN (' . $this->_getQueryForSelectedFiles('f.File', $scantype) . ') '
+                    . '  WHEN 0 '
+                    . '    THEN "No selected file" '
+                    . '  ELSE "Multiple Selected files"'
+                    . ' END'
+                    . ") as Selected_$scantype";
+
+            //---------------------------------------------------------------------------//
+            // Add to the query a subselect that will compute the Qc status of the       //
+            // selected file for the given session/modality. If more than one selected   //
+            // file exists, the subquery will return 'Unknown: multiple Selected files'. //
+            // If no selected file exists, the subselect will return 'No selected file'. //
+            // Otherwise the subselect will return the Qc status of the selected file (or//
+            // 'No Qc on selected file' if the file has not been Qced)                   //
+            //---------------------------------------------------------------------------//
+            $Query  .= ', '
+                    . '('
+                    . ' CASE (' . $this->_getQueryForSelectedFiles('count(*)', $scantype) . ') '
+                    . '  WHEN 1 '
+                    . '    THEN ('
+                    .        $this->_getQueryForSelectedFiles(
+                                 'COALESCE(fqs.QCStatus, "No Qc on selected file")',
+                                 $scantype,
+                                 's.ID'
+                             )
+                    .     ') '
+                    . '  WHEN 0 '
+                    . '    THEN "No selected file" '
+                    . '  ELSE "Unknown: multiple Selected files"'
+                    . ' END'
+                    . ") as {$scantype}_QCStatus";
         }
-        $Query .= " FROM session s JOIN candidate c USING (CandID)
-            LEFT JOIN feedback_mri_comments fmric
-            ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)
-            WHERE c.Entity_type != 'Scanner' AND c.PSCID NOT LIKE '%9999'
-                  AND c.Active='Y' AND s.Active='Y' AND s.CenterID <> 1";
+
+        $Query .= " FROM session s"
+                . " JOIN candidate c USING (CandID)"
+                . " LEFT JOIN feedback_mri_comments fmric"
+                . " ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)"
+                . " WHERE c.Entity_type != 'Scanner' AND c.PSCID NOT LIKE '%9999'"
+                . " AND c.Active='Y' AND s.Active='Y' AND s.CenterID <> 1";
+
         return $Query;
     }
+
+    /**
+     * Build a query to find specific information on the MRI files that were selected
+     * for a given session/scan type.
+     *
+     * @param string $whatToSelect the comma separated list of fields to select.
+     * @param string $scantype     name of the scan type.
+     *
+     * @return string built query.
+     */
+    function _getQueryForSelectedFiles($whatToSelect, $scanType)
+    {
+        return "SELECT $whatToSelect "
+             . 'FROM files f '
+             . 'LEFT JOIN mri_scan_type msc ON (f.AcquisitionProtocolID=msc.ID) '
+             . 'LEFT JOIN files_qcstatus fqs USING (fileid) '
+             . 'WHERE f.SessionID=s.ID '
+             . "AND msc.Scan_type='$scanType' "
+             . 'AND fqs.selected=\'true\'';
+    }
+
 
     /**
      * Add mri header information  to each selected scan
