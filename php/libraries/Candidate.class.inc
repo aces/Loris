@@ -598,8 +598,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $subprojList = array();
 
         $projID  = $this->getProjectID();
-        $query   = "SELECT SubprojectID
-                    FROM project_subproject_rel
+        $query   = "SELECT SubprojectID 
+                    FROM project_subproject_rel 
                     WHERE ProjectID = :prj";
         $params  = array('prj' => $projID);
         $subproj = \NDB_Factory::singleton()
