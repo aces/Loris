@@ -11,7 +11,7 @@ After running the install script, you will be prompted to visit the
 Completing the form on this page will create a new database and user account
 that will be used to execute transactions coming from LORIS's PHP code.
 
-### Administrative Account
+## Administrative Account
 
 We recommend creating a separate administrative database account for sensitive
 transactions. In practice, this means creating and deleting new tables in the
