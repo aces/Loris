@@ -252,7 +252,7 @@ class TimePoint
             'UserID'          => $userID,
             'Date_registered' => $today,
             'Date_active'     => $today,
-            'language_id'     => $lang,
+            'languageID'      => $lang,
         );
 
         // insert the data

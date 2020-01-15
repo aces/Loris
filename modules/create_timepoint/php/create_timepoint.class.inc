@@ -98,7 +98,7 @@ class Create_Timepoint extends \NDB_Form
             $values['visitLabel'] ?? null,
             $site,
             $project,
-            $values['language_id']
+            $values['languageID']
         );
 
         $this->tpl_data['success'] = true;
@@ -183,7 +183,7 @@ class Create_Timepoint extends \NDB_Form
             $visitLabel = \Utility::asArray($visitLabel);
             if ($visitLabel['@']['subprojectID'] == $this->subprojectID) {
                 $user = \User::singleton();
-                $DB = \Database::singleton();
+                $DB   = \Database::singleton();
                 $subprojectHasVisits = true;
                 if (isset($visitLabel['generation'])
                     && $visitLabel['generation'] !== 'sequence'
@@ -194,7 +194,7 @@ class Create_Timepoint extends \NDB_Form
                     );
                 }
                 $labelOptions = array('' => null);
-                $items = \Utility::associativeToNumericArray(
+                $items        = \Utility::associativeToNumericArray(
                     $visitLabel['labelSet']['item']
                 );
                 foreach ($items as $item) {
@@ -205,7 +205,7 @@ class Create_Timepoint extends \NDB_Form
 
                 // List of sites for the user
                 $user_list_of_sites = $user->getCenterIDs();
-                $num_sites = count($user_list_of_sites);
+                $num_sites          = count($user_list_of_sites);
                 if ($num_sites > 1) {
                     $this->tpl_data['pscLabelAdded'] = true;
                     $psc_labelOptions = [null => ''];
@@ -229,12 +229,12 @@ class Create_Timepoint extends \NDB_Form
                     $languages = \Utility::getLanguageList();
                     array_unshift($languages, null);
                     $this->addSelect(
-                        'language_id',
+                        'languageID',
                         'Language',
                         $languages
                     );
                     $this->addRule(
-                        'language_id',
+                        'languageID',
                         'Language is required',
                         'required'
                     );
@@ -316,8 +316,9 @@ class Create_Timepoint extends \NDB_Form
             $errors['visitLabel'] = $e->getMessage();
         }
 
-        if (!isset($val['language_id'])) {
-            $errors = "A language must be selected.";
+        // validate language
+        if (empty($val['languageID'])) {
+            $errors['languageID'] = "A language must be selected.";
         }
 
         return $errors;

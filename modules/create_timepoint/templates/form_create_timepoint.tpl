@@ -41,8 +41,8 @@
 	</div>
 
 	<div class="form-group col-sm-12">
-		<label class="col-sm-2">{$form.language_id.label}</label>
-		<div class="col-sm-2">{$form.language_id.html}</div>
+		<label class="col-sm-2">{$form.languageID.label}</label>
+		<div class="col-sm-2">{$form.languageID.html}</div>
 	</div>
 
 	<div class="form-group col-sm-12">
