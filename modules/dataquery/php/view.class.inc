@@ -16,7 +16,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * The View class for GET & POST requests.
+ * The View class for GET requests.
  *
  * @category Loris
  * @package  DQT
@@ -41,8 +41,6 @@ class View extends \NDB_Page
         switch ($request->getMethod()) {
         case 'GET':
             return $this->_handleGET($request);
-        case 'POST':
-            return $this->_handlePOST($request);
         default:
             return new \LORIS\Http\Response\MethodNotAllowed(
                 $this->allowedMethods()
@@ -74,6 +72,8 @@ class View extends \NDB_Page
             return $this->_search($request);
         case 'datadictionary':
             return $this->_datadictionary($request);
+        case 'session':
+            return $this->_session($request);
         default:
             return new \LORIS\Http\Response\JsonResponse(
                 $values
@@ -312,19 +312,36 @@ class View extends \NDB_Page
     }
 
     /**
-     * Save data for the DataQueryTool.
+     * Access the session of the DataQueryTool.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
+    private function _session(ServerRequestInterface $request) : ResponseInterface
     {
-        // Parse POST request body.
-        $values = json_decode((string) $request->getBody(), true);
+        // Start Connecting to CouchDB
+        $cdb = \NDB_Factory::singleton()->couchDB();
 
+        // Obtain the sessions
+        $results        = $cdb->queryView(
+            "DQG-2.0",
+            "sessions",
+            array(
+                "reduce" => "true",
+                "group"  => "true",
+            )
+        );
+        $sessionResults = array_map(
+            function ($element) {
+                return $element['key'];
+            },
+            $results
+        );
+
+        // Return Query results to the user.
         return new \LORIS\Http\Response\JsonResponse(
-            json_encode($values)
+            $sessionResults
         );
     }
 
