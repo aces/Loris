@@ -47,12 +47,6 @@ class Module extends \Module
                   return $resp;
             }
         } catch (\NotFound $e) {
-            /**
-             * This will suppress EmptyCatchBlock
-             * warnings in this method
-             *
-             * @SuppressWarnings(PHPMD.EmptyCatchBlock)
-             */
         }
         $page = $this->loadPage("timepoint_list");
         return $page->process($request, $page);
