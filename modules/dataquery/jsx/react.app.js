@@ -470,10 +470,7 @@ class DataQueryApp extends Component {
       }
     }
     if (filterState.children && filterState.children.length > 0) {
-      const loadFilter = async (filterState) => {
-        return await this.loadFilterGroup(filterState);
-      };
-      filterState = await loadFilter(filterState);
+      filterState = await this.loadFilterGroup(filterState);
     } else {
       filterState.children = [
         {
