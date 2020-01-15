@@ -56,7 +56,7 @@ class Module extends \Module
         $params    = $request->getQueryParams();
         $commentID = $params['commentID'] ?? null;
         if (empty($commentID)) {
-            return (new \Zend\Diactoros\Response())
+            return (new \Laminas\Diactoros\Response())
                 ->withBody(new \LORIS\Http\StringStream("Missing CommentID"))
                 ->withStatus(400);
         }
