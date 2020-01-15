@@ -491,20 +491,22 @@ class DataQueryApp extends Component {
       loading: false,
     });
     for (let i = 0; i < fieldsList.length; i++) {
-      await $.ajax({
-        url: loris.BaseURL + '/dataquery/ajax/datadictionary.php',
-        success: (data) => {
-          if (data[0].value.IsFile) {
-            let key = data[0].key[0] + ',' + data[0].key[1];
-            let downloadable = this.state.downloadableFields;
-            downloadable[key] = true;
-            this.setState({
-              downloadableFields: downloadable,
-            })
-          }
-        },
-        data: {key: fieldsList[i]},
-        dataType: 'json'
+      await fetch(
+        window.location.origin
+        + '/dataquery/View/datadictionary?key=' + fieldsList[i],
+        {credentials: 'same-origin'}
+      ).then((resp) => resp.json()
+      ).then((data) => {
+        if (data[0].value.IsFile) {
+          let key = data[0].key[0] + ',' + data[0].key[1];
+          let downloadable = this.state.downloadableFields;
+          downloadable[key] = true;
+          this.setState({
+            downloadableFields: downloadable,
+          })
+        }
+      }).catch((error) => {
+        console.error(error);
       });
     }
   }
