@@ -1,7 +1,7 @@
 # Database Configuration
 
 ## Creating the Database
-MySQL or MariaDB must be installed and a `root` or admin-level MySQL user 
+MySQL or MariaDB must be installed and a `root` or admin-level user 
 credential must be created before continuing. (This is not the same as a unix 
         `root` credential.) 
 
