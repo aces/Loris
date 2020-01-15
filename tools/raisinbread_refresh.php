@@ -37,6 +37,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+require_once 'generic_includes.php';
 $info = <<<INFO
 This script is used by LORIS developers to DELETE DATA and replace
 them with new test data.
@@ -54,8 +55,6 @@ if (substr_compare($cwd, 'tools', mb_strlen($cwd) - mb_strlen('tools')) !== 0) {
 }
 
 try {
-    require_once 'generic_includes.php';
-
     $dbInfo = $config->getSettingFromXML('database');
 
     if (! $config->getSetting('dev')['sandbox']) {
@@ -66,14 +65,24 @@ try {
     }
     $dbname = $dbInfo['database'];
     $host = $dbInfo['host'];
-    // The "quat" user and password should be configured to a user with DROP
+    // The admin user and password should be configured to a user with DROP
     // and CREATE permissions for the database.
-    $username = $dbInfo['quatUser'];
-    $password = $dbInfo['quatPassword'];
+    $username = $dbInfo['adminUser'];
+    $password = $dbInfo['adminPassword'];
 
     $urlConfigSetting = $config->getSetting('url');
     $baseConfigSetting = $config->getSetting('base');
     $hostConfigSetting = $config->getSetting('host');
+
+    echo <<<CONFIRMATION
+    Please type the database name `$dbname` to confirm you wish to drop tables
+    and import test data: 
+CONFIRMATION;
+    
+    $input = trim(fgets(STDIN));
+    if ($input !== $dbname) {
+        die('Input did not match database name. Exiting.');
+    }
 
 } catch (\DatabaseException $e) {
     echo 'Could not connect to the database in the Config file.' .
@@ -93,16 +102,6 @@ try {
     die("Could not load project/config.xml");
 }
 
-
-echo <<<CONFIRMATION
-Please type the database name `$dbname` to confirm you wish to drop tables
-and import test data: 
-CONFIRMATION;
-
-$input = trim(fgets(STDIN));
-if ($input !== $dbname) {
-    die('Input did not match database name. Exiting.');
-}
 
 $mysqlCommand = <<<CMD
 mysql -A $dbname
@@ -191,6 +190,8 @@ runCommand('php resetpassword.php admin');
 
 /**
  * Drops core LORIS tables as well as Raisinbread instrument tables
+ * 
+ * @return void
  */
 function dropTables(): void
 {
@@ -200,6 +201,12 @@ function dropTables(): void
     runPatch('../SQL/9999-99-99-drop_tables.sql');
 }
 
+/**
+ * Wrapper for runCommand() that pipes the content of an SQL file to an CLI 
+ * instance of MySQL.
+ * 
+ * @return void
+ */
 function runPatch(string $file): void
 {
     global $mysqlCommand;
@@ -212,7 +219,6 @@ function runPatch(string $file): void
  * A wrapper around `exec()` built-in function with basic error reporting.
  *
  * @param string $command Bash command to be executed by `exec()`
- * jj
  *
  * @return void. Causes script to exit on non-successful status code.
  */
@@ -279,10 +285,22 @@ SCRIPT;
 /**
  * Print a formatted and indented bullet point.
  *
- * @param string $line
+ * @param string $line The output.
  *
- * return @void
+ * @return void
  */
-function printBulletPoint(string $line) {
+function printBulletPoint(string $line): void {
     echo "\t* $line\n";
+}
+
+/**
+ * Print the input formatted as a header for outut.
+ *
+ * @param string $line The output.
+ *
+ * @return void
+ */
+function printHeader(string $line) {
+    // Takes 'input', prints '[*] input...' in green text.
+    fwrite(STDOUT, "\e[32m[*] $line... \e[0m\n");
 }
