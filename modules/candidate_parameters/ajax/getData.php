@@ -500,7 +500,6 @@ function getConsentStatusHistory($pscid)
 /**
  * Handles the fetching of candidate's date of birth.
  *
- *
  * @return array
  */
 function getDOBFields(): array
@@ -515,9 +514,9 @@ function getDOBFields(): array
     $pscid         = $candidateData['PSCID'] ?? null;
     $dob           = $candidateData['DoB'] ?? null;
     $result        = [
-                      'pscid'  => $pscid,
-                      'candID' => $candID->__toString(),
-                      'dob'    => $dob,
-                     ];
+        'pscid'  => $pscid,
+        'candID' => $candID->__toString(),
+        'dob'    => $dob,
+    ];
     return $result;
 }
