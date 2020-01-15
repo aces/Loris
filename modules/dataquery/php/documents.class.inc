@@ -55,7 +55,7 @@ class Documents extends \NDB_Page
         case 'GET':
             return $this->_handleGET($request);
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
         }
