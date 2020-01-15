@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The api module is intended to provide a stable, versioned REST interface
+The API module is intended to provide a stable, versioned REST interface
 for interacting with the core LORIS functionality without requiring backend
 database access.
 
