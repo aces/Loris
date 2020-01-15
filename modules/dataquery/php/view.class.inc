@@ -16,7 +16,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * The View class for GET & POST requests.
+ * The View class for GET requests.
  *
  * @category Loris
  * @package  DQT
@@ -41,8 +41,6 @@ class View extends \NDB_Page
         switch ($request->getMethod()) {
         case 'GET':
             return $this->_handleGET($request);
-        case 'POST':
-            return $this->_handlePOST($request);
         default:
             return new \LORIS\Http\Response\MethodNotAllowed(
                 $this->allowedMethods()
@@ -308,23 +306,6 @@ class View extends \NDB_Page
         // Return Query results to the user.
         return new \LORIS\Http\Response\JsonResponse(
             $results
-        );
-    }
-
-    /**
-     * Save data for the DataQueryTool.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     *
-     * @return ResponseInterface The outgoing PSR7 response
-     */
-    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
-    {
-        // Parse POST request body.
-        $values = json_decode((string) $request->getBody(), true);
-
-        return new \LORIS\Http\Response\JsonResponse(
-            json_encode($values)
         );
     }
 
