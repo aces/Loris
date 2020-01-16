@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 /**
  * The modules.php script a database and automatically adds any new modules from
  * either the project/modules or loris/modules directory and maintains the
