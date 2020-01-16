@@ -31,7 +31,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 class Error extends HtmlResponse
 {
     /**
-     * Takes the status code and and use the Zend\Response constructor to provide
+     * Takes the status code and and use the Laminas\Response constructor to provide
      * the approcriate reason phrase. It also add the appropriate body using
      * smarty templates based on status code.
      *
