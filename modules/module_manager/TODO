@@ -1,4 +1,1 @@
-Missing proper permission
-    - Add SQL patch/permissions to default schema
-    - Manually test hasAccess for modules endpoint
 Missing integration tests

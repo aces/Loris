@@ -4,13 +4,21 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 class Modules extends \NDB_Page {
-    public function hasAccess(\User $user) : bool {
-        return parent::hasAccess($user) &&
+    public function _hasAccess(\User $user) : bool {
+        return parent::_hasAccess($user) &&
              $user->hasPermission('module_manager_edit');
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $user = $request->getAttribute("user");
+        if($user === null && !($user instanceof \User))  {
+            return new \LORIS\Http\Response\JSON\InternalServerError("No valid user");
+        }
+        if (!($this->_hasAccess($user))) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
+        }
+
         switch ($request->getMethod()) {
         case 'PATCH':
             return $this->_handlePatch($request);
