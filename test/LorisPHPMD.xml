@@ -27,6 +27,7 @@
         <exclude name="GotoStatement" />
         <exclude name="NumberOfChildren" />
         <exclude name="DepthOfInheritance" />
+        <exclude name="CountInLoopExpression" />
         <exclude name="ExitExpression" />
     </rule>
 </ruleset>

@@ -492,9 +492,7 @@ class Behavioural_QC extends \NDB_Form
         $DB     = \NDB_Factory::singleton()->database();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
-        // Why is the first instrument skipped?
-        $numberOfInstruments = count($ddeInstruments);
-        for ($i = 0;$i < $numberOfInstruments; ++$i) {
+        for ($i = 0;$i < count($ddeInstruments); ++$i) {
             $ddeInstruments[$i] = \Database::singleton()->quote($ddeInstruments[$i]);
         }
 
