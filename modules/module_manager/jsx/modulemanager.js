@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import swal from 'sweetalert2';
 
 class ModuleManagerIndex extends Component {
   constructor(props) {
@@ -14,8 +15,12 @@ class ModuleManagerIndex extends Component {
     };
 
     this.fetchData = this.fetchData.bind(this);
+
     this.formatColumn = this.formatColumn.bind(this);
     this.mapColumn = this.mapColumn.bind(this);
+
+    this.toggleActive = this.toggleActive.bind(this);
+    this.setModuleDisplayStatus = this.setModuleDisplayStatus.bind(this);
   }
 
   componentDidMount() {
@@ -52,6 +57,51 @@ class ModuleManagerIndex extends Component {
           default: return cell;
       }
   }
+
+  toggleActive(name, value, id) {
+      fetch(
+          this.props.BaseURL + '/module_manager/modules/' + id,
+          {
+              method: 'PATCH',
+              body: JSON.stringify({
+                  'Active': value,
+              }),
+              mode: 'same-origin',
+              credentials: 'same-origin',
+              cache: 'no-cache',
+          }
+      ).then((response) => {
+          if (response.status != 205) {
+              swal.fire('Error!', 'Could not update ' + id + '.', 'error');
+          } else {
+              const success = this.setModuleDisplayStatus(id, value);
+              if (success === true) {
+                  swal.fire('Success!', 'Updated ' + id + ' status!', 'success');
+              } else {
+                  // If we get here something went very wrong, because somehow
+                  // a module was toggled that isn't in the table.
+                  swal.fire('Error!', 'Could not find module ' + id + '.', 'error');
+              }
+          }
+      });
+  }
+
+  setModuleDisplayStatus(modulename, value) {
+      let data = this.state.data;
+      for (let i = 0; i < data.Data.length; i++) {
+          let row = data.Data[i];
+          if (row[0] == modulename) {
+              // Module names are unique, so there's
+              // no reason to keep going once we update
+              // one.
+              row[2] = value;
+              this.setState({data});
+              return true;
+          }
+      }
+      return false;
+  }
+
   /**
    * Modify behaviour of specified column cells in the Data Table component
    *
@@ -65,10 +115,12 @@ class ModuleManagerIndex extends Component {
     if (column == 'Active') {
         return <td><SelectElement
               name='active'
+              id={row.Name}
               label=''
               emptyOption={false}
               options={{'Y': 'Yes', 'N': 'No'}}
               value={cell}
+              onUserInput={this.toggleActive}
             /></td>;
     }
     cell = this.mapColumn(column, cell);
@@ -126,6 +178,7 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <ModuleManagerIndex
       dataURL={`${loris.BaseURL}/module_manager/?format=json`}
+      BaseURL={loris.BaseURL}
     />,
     document.getElementById('lorisworkspace')
   );
