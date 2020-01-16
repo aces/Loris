@@ -12,8 +12,8 @@ CREATE TABLE `issues_attachments` (
 
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`)
 VALUES
-(101, 'IssueTrackerDataPath', 'Path to Issue Tracker data files', 1, 0, 'web_path', 26, 'Issue Tracker Data Path', 8);
+(105, 'IssueTrackerDataPath', 'Path to Issue Tracker data files', 1, 0, 'web_path', 26, 'Issue Tracker Data Path', 8);
 
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`)
 VALUES
-(101, 101, '/data/issue_tracker/');
+(105, 105, '/data/issue_tracker/');
