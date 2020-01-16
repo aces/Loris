@@ -1,5 +1,4 @@
 Missing proper permission
-    - Add SQL patches for permissions
+    - Add SQL patch/permissions to default schema
     - Manually test hasAccess for modules endpoint
-    - Do not show dropdown in frontend if only view permission
 Missing integration tests

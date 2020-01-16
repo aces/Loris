@@ -102,7 +102,9 @@ INSERT INTO `permissions` VALUES
     (54,'publication_view', 'Publication - Access to module', 2),
     (55,'publication_propose', 'Publication - Propose a project', 2),
     (56,'publication_approve', 'Publication - Approve or reject proposed publication projects', 2),
-    (57, 'candidate_dob_edit', 'Edit dates of birth', 2);
+    (57, 'candidate_dob_edit', 'Edit dates of birth', 2),
+    (58,'module_manager_view', 'Access the module_manager module', 2),
+    (59,'module_manager_edit', 'Modify modules in the module_manager module', 2);
 
 
 INSERT INTO `user_perm_rel` (userID, permID)

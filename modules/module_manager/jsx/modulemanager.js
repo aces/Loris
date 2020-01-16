@@ -112,7 +112,7 @@ class ModuleManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column == 'Active') {
+    if (column == 'Active' && this.props.hasEditPermission) {
         return <td><SelectElement
               name='active'
               id={row.Name}
@@ -124,7 +124,6 @@ class ModuleManagerIndex extends Component {
             /></td>;
     }
     cell = this.mapColumn(column, cell);
-
     return <td>{cell}</td>;
   }
 
@@ -179,6 +178,7 @@ window.addEventListener('load', () => {
     <ModuleManagerIndex
       dataURL={`${loris.BaseURL}/module_manager/?format=json`}
       BaseURL={loris.BaseURL}
+      hasEditPermission={loris.userHasPermission('module_manager_edit')}
     />,
     document.getElementById('lorisworkspace')
   );
