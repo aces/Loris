@@ -56,7 +56,7 @@ class Documents extends \NDB_Page
             return $this->_handleGET($request);
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                $this->allowedMethods()
+                array('GET')
             );
         }
     }
