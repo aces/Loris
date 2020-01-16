@@ -42,8 +42,8 @@ class View extends \NDB_Page
         case 'GET':
             return $this->_handleGET($request);
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
-                $this->allowedMethods()
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                array('GET')
             );
         }
     }
