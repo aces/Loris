@@ -180,11 +180,12 @@ class DataQueryApp extends Component {
     for (let key in this.state.queryIDs) {
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
+        const url = new URL(`${window.location.origin}/dataquery/documents`);
+        const params = {DocID: encodeURIComponent(this.state.queryIDs[key][i])};
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
         curRequest = Promise.resolve(
           fetch(
-            window.location.origin
-            + '/dataquery/documents/?DocID='
-            + encodeURIComponent(this.state.queryIDs[key][i]),
+            url,
             {credentials: 'same-origin'}
           ).then((resp) => resp.json()
           ).then((json) => {
