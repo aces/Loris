@@ -84,7 +84,7 @@ if (is_dir($basePath . "project/modules/$Module")
     error_log("ERROR: Module does not exist");
     header("HTTP/1.1 400 Bad Request");
     exit(5);
-} 
+}
 $public = false;
 try {
     $m = Module::factory($Module);
