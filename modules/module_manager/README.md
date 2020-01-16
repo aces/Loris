@@ -22,7 +22,9 @@ The module manager does not install new modules
 
 ## Permissions
 
-The superuser permission is required to manage modules.
+The `module_manager_view` permission allows a user to
+view the list of modules, and the `module_manager_edit`
+allows the user to modify the state of installed modules.
 
 ## Configurations
 
