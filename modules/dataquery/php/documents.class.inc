@@ -69,14 +69,18 @@ class Documents extends \NDB_Page
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        // Parse GET query params.
-        $values = $request->getQueryParams();
+        // Parse GET document from Uri Path.
+        $path     = $request->getUri()->getPath();
+        $document = substr(
+            $path,
+            strpos($path, '/documents/') + strlen('/documents/')
+        );
 
         // Start Connecting to CouchDB
         $cdb = \NDB_Factory::singleton()->couchDB();
 
         // Retrieve the Document from CouchDB
-        $docID  = urlencode($values['DocID']);
+        $docID  = urlencode($document);
         $values = $cdb->getDoc(
             $docID
         );
