@@ -128,13 +128,13 @@ fi
 debian=("Debian" "Ubuntu")
 redhat=("Red" "CentOS" "Fedora" "Oracle")
 
-if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
+if [[ " ${debian[*]} " == *" $os_distro "* ]]; then
     sudo chown www-data.www-data ../smarty/templates_c
     # Make Apache the group for project directory, so that the web based install
     # can write the config.xml file.
     sudo chgrp www-data ../project
     sudo chmod 770 ../project
-elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
+elif [[ " ${redhat[*]} " == *" $os_distro "* ]]; then
     sudo chown apache.apache ../smarty/templates_c
     # Make Apache the group for project directory, so that the web based install
     # can write the config.xml file.
@@ -151,9 +151,9 @@ fi
 if [ -d logs ]; then
     chmod 770 logs
     # Set the group to 'www-data' or 'apache' for tools/logs directory:
-    if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
+    if [[ " ${debian[*]} " == *" $os_distro "* ]]; then
         sudo chgrp www-data logs
-    elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
+    elif [[ " ${redhat[*]} " == *" $os_distro "* ]]; then
         sudo chgrp apache logs
     else
         echo "$os_distro Linux distribution detected. We currently do not support this. Please manually set the permissions for the directory tools/logs/"
@@ -162,7 +162,7 @@ fi
 
 echo ""
 
-if [[ " ${debian[*]} " =~ " $os_distro " ]]; then
+if [[ " ${debian[*]} " == *" $os_distro "* ]]; then
 echo "Ubuntu distribution detected."
     # for CentOS, the log directory is called httpd
     logdirectory=/var/log/apache2
@@ -204,7 +204,7 @@ echo "Ubuntu distribution detected."
             * ) echo "Please enter 'y' or 'n'."
         esac
     done;
-elif [[ " ${redhat[*]} " =~ " $os_distro " ]]; then
+elif [[ " ${redhat[*]} " == *" $os_distro "* ]]; then
 echo "CentOS distribution detected."
 # for CentOS, the log directory is called httpd
 logdirectory=/var/log/httpd

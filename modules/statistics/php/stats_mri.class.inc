@@ -248,12 +248,8 @@ class Stats_MRI extends \NDB_Form
         }
 
         //SUBPROJECTS
-        $subprojList ="";
         $subprojects = \Utility::getSubprojectsForProject($currentProject);
-        foreach ($subprojects as $key=>$val) {
-            $subprojList .= $key.",";
-        }
-        $subprojList = substr($subprojList, 0, -1);
+        $subprojList = implode(',', array_keys($subprojects));
         if (!empty($subprojList)) {
             $suproject_query ="AND s.SubprojectID IN ($subprojList)";
         } else {

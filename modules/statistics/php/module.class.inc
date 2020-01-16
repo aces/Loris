@@ -89,7 +89,7 @@ class Module extends \Module
             ];
 
             $projects = \Utility::getProjectList();
-            foreach ($projects as $projectID => $project) {
+            foreach (array_keys($projects) as $projectID) {
                 $projectInfo = $config->getProjectSettings($projectID);
                 if (is_null($projectInfo)) {
                     throw new \LorisException(

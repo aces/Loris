@@ -404,7 +404,6 @@ function getConsentStatusFields()
 {
     $candID = new CandID($_GET['candID']);
 
-    $db        = \Database::singleton();
     $candidate = \Candidate::singleton($candID);
 
     // get pscid

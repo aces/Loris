@@ -55,9 +55,7 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        // create user object
-        $user          =& \User::singleton();
-        $this->columns = array(
+        $this->columns      = array(
             'mpv.CandID',
             'mpv.PSCID',
             'mpv.time_run',
@@ -78,7 +76,6 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'mpv.SeriesUID',
             'tarchive.TarchiveID',
         );
-        $config        =&\NDB_Config::singleton();
         $this->validFilters = array(
             'mpv.CandID',
             'mpv.PSCID',

@@ -13,7 +13,7 @@ Default dependencies installed by CentOS 7.x may not meet the version requiremen
 * MariaDB 10.3 is supported for LORIS 23.* 
 * PHP 7.3 is supported for LORIS 23.*
 
-In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](./README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
+In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](../../../../../README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
  * Apache 2.4 or higher
  * [Composer](https://getcomposer.org)
  * NodeJS 8.0 or higher
@@ -173,4 +173,4 @@ If there are any errors or you get a blank page, troubleshoot the errors in your
 **Next:** Follow the [**Setup Guide** in the LORIS wiki](https://github.com/aces/Loris/wiki/Setup) for all post-install steps and troubleshooting.  
 Config settings can be accessed via the front-end Config module under the Admin drop-down menu.
 
-Please see the main (Ubuntu) [LORIS Readme](./README.md) for info on our Community, Contributing, and who we are. 
+Please see the main (Ubuntu) [LORIS Readme](../../../../../README.md) for info on our Community, Contributing, and who we are. 

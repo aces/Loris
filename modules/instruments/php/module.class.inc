@@ -44,19 +44,22 @@ class Module extends \Module
 
         $pathComponents = array();
 
-        $breakdown = preg_match(
+        // Breakdown path information from the request.
+        preg_match(
             "#(/*)([a-zA-Z0-9_-]+)(/*)(.*)#",
             $request->getURI()->getPath(),
             $pathComponents
         );
 
+        // TODO These magic numbers should be changed to constants so that
+        // it's easier to tell what they're referring to.
         $instrumentName = $pathComponents[2];
         $page           = $pathComponents[4];
 
         $params    = $request->getQueryParams();
         $commentID = $params['commentID'] ?? null;
         if (empty($commentID)) {
-            return (new \Zend\Diactoros\Response())
+            return (new \Laminas\Diactoros\Response())
                 ->withBody(new \LORIS\Http\StringStream("Missing CommentID"))
                 ->withStatus(400);
         }
