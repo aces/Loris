@@ -132,24 +132,24 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
 
-        // Some page might call without pageclass
+        $page = null;
         if (!is_null($request->getAttribute("pageclass"))) {
             $tpl_data['subtest'] = $request->getAttribute("pageclass")->page;
-        }
 
-        $page = $request->getAttribute("pageclass");
-        if (method_exists($page, 'getFeedbackPanel')
-            && $user->hasPermission('bvl_feedback')
-            && $candID !== null
-        ) {
-            $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
-                $candID,
-                $get['sessionID'] ?? null
-            );
+            $page = $request->getAttribute("pageclass");
+            if (method_exists($page, 'getFeedbackPanel')
+                && $user->hasPermission('bvl_feedback')
+                && $candID !== null
+                ) {
+                $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
+                    $candID,
+                    $get['sessionID'] ?? null
+                );
 
-            $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
-                $this->PageName
-            );
+                $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
+                    $this->PageName
+                );
+            }
         }
 
         // This shouldn't exist. (And if it does, it shouldn't reference
@@ -241,20 +241,22 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             return $undecorated;
         }
 
-        // This should be moved out of the middleware and into the modules that need it,
-        // but is currently required for backwards compatibility.
-        // This should also come after the above call to handle() in order for updated data
-        // on the controlPanel to be properly displayed.
-        if (method_exists($page, 'getControlPanel')) {
-            $tpl_data['control_panel'] = $page->getControlPanel();
-        }
+        if (!is_null($page)) {
+            // This should be moved out of the middleware and into the modules that need it,
+            // but is currently required for backwards compatibility.
+            // This should also come after the above call to handle() in order for updated data
+            // on the controlPanel to be properly displayed.
+            if (method_exists($page, 'getControlPanel')) {
+                $tpl_data['control_panel'] = $page->getControlPanel();
+            }
 
-        // This seems to only be used in imaging_browser, it can probably be
-        // moved to properly use OOP.
-        $tpl_data['FormAction'] = $page->FormAction ?? '';
+            // This seems to only be used in imaging_browser, it can probably be
+            // moved to properly use OOP.
+            $tpl_data['FormAction'] = $page->FormAction ?? '';
 
-        if ($page instanceof \NDB_Page) {
-            $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
+            if ($page instanceof \NDB_Page) {
+                $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
+            }
         }
 
         // Assign the console template variable as the very, very last thing.
