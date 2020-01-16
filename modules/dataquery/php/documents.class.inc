@@ -44,8 +44,8 @@ class Documents extends \NDB_Page
         case 'POST':
             return $this->_handlePOST($request);
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
-                $this->allowedMethods()
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                array('GET', 'POST')
             );
         }
     }
@@ -60,13 +60,17 @@ class Documents extends \NDB_Page
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse GET query params.
-        $values = $request->getQueryParams();
+        $path     = $request->getUri()->getPath();
+        $document = substr(
+            $path,
+            strpos($path, '/documents/') + strlen('/documents/')
+        );
 
         // Start Connecting to CouchDB
         $cdb = \NDB_Factory::singleton()->couchDB();
 
         // Retrieve the Document from CouchDB
-        $docID  = urlencode($values['DocID']);
+        $docID  = urlencode($document);
         $values = $cdb->getDoc(
             $docID
         );

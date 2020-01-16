@@ -182,9 +182,7 @@ class DataQueryApp extends Component {
         let curRequest;
         curRequest = Promise.resolve(
           fetch(
-            window.location.origin
-            + '/dataquery/documents/?DocID='
-            + encodeURIComponent(this.state.queryIDs[key][i]),
+            `${window.location.origin}/dataquery/documents/${document}`,
             {credentials: 'same-origin'}
           ).then((resp) => resp.json()
           ).then((json) => {
