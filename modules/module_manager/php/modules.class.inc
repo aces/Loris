@@ -4,6 +4,11 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 class Modules extends \NDB_Page {
+    public function hasAccess(\User $user) : bool {
+        return parent::hasAccess($user) &&
+             $user->hasPermission('module_manager_edit');
+    }
+
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         switch ($request->getMethod()) {

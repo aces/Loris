@@ -1,3 +1,5 @@
-Missing help
-Missing integration tests
 Missing proper permission
+    - Add SQL patches for permissions
+    - Manually test hasAccess for modules endpoint
+    - Do not show dropdown in frontend if only view permission
+Missing integration tests
