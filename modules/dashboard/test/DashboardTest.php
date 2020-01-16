@@ -599,7 +599,6 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("test.jpg", $bodyText);
-        $this->assertContains("NEW", $bodyText);
         $this->resetPermissions();
     }
     /**

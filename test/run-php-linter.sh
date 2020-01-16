@@ -17,4 +17,4 @@ vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ m
 # Run PHPCS on src/ directory using a different ruleset conforming to PSR2.
 vendor/bin/phpcs --standard=test/SrcCS.xml --extensions=php/php src/ || exit $?;
 
-vendor/bin/phpmd php/libraries text 'test/LorisPHPMD.xml' || exit $?;
+vendor/bin/phpmd php/,modules/,src/ text 'test/LorisPHPMD.xml' || exit $?;

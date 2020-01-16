@@ -131,7 +131,6 @@ class Genomic_Browser extends \NDB_Menu_Filter
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
-        $DB   = \Database::singleton();
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // allow only to view own site data

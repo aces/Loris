@@ -167,9 +167,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 || $ImagingUploaderAutoLaunch == 'true'
             ) {
                 try {
-                    // Instantiate the server process module to autoload
-                    // its namespace classes
-                    $spm_module = \Module::factory('server_processes_manager');
                     // Perform the real upload on the server
                     $serverProcessLauncher = new SP\ServerProcessLauncher();
                     $serverProcessLauncher->mriUpload(
@@ -223,7 +220,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *
      * @param array $values the array of values from the form
      *
-     * @return true on success, false otherwise
+     * @return true
      */
     function _saveFile($values)
     {

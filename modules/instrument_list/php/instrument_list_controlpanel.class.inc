@@ -379,12 +379,6 @@ class Instrument_List_ControlPanel extends \TimePoint
             return false;
         }
 
-        // new DB Object
-        $db =& \Database::singleton();
-
-        // create user object
-        $user =& \User::singleton();
-
         $hasAccess = $this->_hasAccessStatus();
 
         // check that all the instruments' Data Entry is market Complete
