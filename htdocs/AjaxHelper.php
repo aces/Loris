@@ -98,7 +98,6 @@ if ($anonymous === true && $m->isPublicModule() === false) {
     exit(6);
 }
 
-
 // Also check the module directory for PHP files
 $FullPath = "$ModuleDir/ajax/$File";
 
