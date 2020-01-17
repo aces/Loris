@@ -286,22 +286,27 @@ class Charts extends \NDB_Page
             $list_of_sites = $currentUser->getSiteList(true, false);
         }
 
-        $listOfSitesString = implode(",", array_keys($list_of_sites));
-
-        $recruitmentData      = array();
+        $params            = array();
+        $centerIDs         = array();
+        $list_of_sites_ids = array_keys($list_of_sites);
+        foreach ($list_of_sites_ids as $key => $siteID) {
+            $params[]            = ":id$key";
+            $centerIDs["id$key"] = $siteID;
+        }
         $recruitmentStartDate = $DB->pselectOne(
             "SELECT MIN(Date_registered)
              FROM candidate
-             WHERE RegistrationCenterID IN (" . $listOfSitesString . ")",
-            array()
+             WHERE RegistrationCenterID IN (" . implode(',', $params) . ")",
+            $centerIDs
         );
         $recruitmentEndDate   = $DB->pselectOne(
             "SELECT MAX(Date_registered)
              FROM candidate
-             WHERE RegistrationCenterID IN (" . $listOfSitesString . ")",
-            array()
+             WHERE RegistrationCenterID IN (" . implode(',', $params) . ")",
+            $centerIDs
         );
 
+        $recruitmentData = array();
         if ($recruitmentStartDate !== null
             && $recruitmentEndDate !== null
         ) {
