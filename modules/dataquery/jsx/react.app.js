@@ -4,93 +4,18 @@
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ *   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://github.com/mohadesz/Loris-Trunk
  */
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
-/*
- *  The following component is for saved queries dropdown which appears in the
- *  tab bar of the base component.
- */
-class SavedQueriesList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-
-    this.loadQuery = this.loadQuery.bind(this);
-  }
-
-  componentDidMount() {
-
-  }
-
-  loadQuery(queryName) {
-    // Loads in the selected query
-
-    this.props.onSelectQuery(
-      this.props.queryDetails[queryName].Fields,
-      this.props.queryDetails[queryName].Conditions
-    );
-  }
-
-  render() {
-    // Renders the html for the component
-
-    let userSaved = [];
-    let globalSaved = [];
-    let queryName, curQuery;
-
-    if (this.props.queriesLoaded === false) {
-      return <div/>;
-    }
-    // Build the list for the user queries
-    for (let i = 0; i < this.props.userQueries.length; i += 1) {
-      curQuery = this.props.queryDetails[this.props.userQueries[i]];
-      if (curQuery.Meta && curQuery.Meta.name) {
-        queryName = curQuery.Meta.name;
-      } else {
-        queryName = this.props.userQueries[i];
-      }
-      userSaved.push(<li key={this.props.userQueries[i]}><a href='#' onClick={this.loadQuery.bind(this, this.props.userQueries[i])}>{queryName}</a></li>);
-    }
-    // Build the list for the global queries
-    for (let i = 0; i < this.props.globalQueries.length; i += 1) {
-      curQuery = this.props.queryDetails[this.props.globalQueries[i]];
-      if (curQuery.Meta && curQuery.Meta.name) {
-        queryName = curQuery.Meta.name;
-      } else {
-        queryName = this.props.globalQueries[i];
-      }
-      globalSaved.push(<li key={this.props.globalQueries[i]}><a href='#' onClick={this.loadQuery.bind(this, this.props.globalQueries[i])}>{queryName}</a></li>);
-    }
-    return (
-      <ul className='nav nav-tabs navbar-right'>
-        <li className='dropdown'>
-          <a href='#' className='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>Load Saved Query <span className='caret'></span></a>
-          <ul className='dropdown-menu' role='menu'>
-            <li role='presentation' className='dropdown-header'>User Saved Queries</li>
-            {userSaved}
-            <li role='presentation' className='dropdown-header'>Shared Saved Queries</li>
-            {globalSaved}
-          </ul>
-        </li>
-        <li role='presentation' id='presentationMSQ'><a href='#SavedQueriesTab' data-toggle='tab'>Manage Saved Queries</a></li>
-      </ul>
-    );
-  }
-}
-
-SavedQueriesList.propTypes = {
-  queryDetails: PropTypes.array,
-  queriesLoaded: PropTypes.bool,
-};
-SavedQueriesList.defaultProps = {
-  queryDetails: [],
-  queriesLoaded: false,
-};
+import {NavigationStepper, NavigationWithSave} from './react.navigationStepper';
+import {StepperPanel} from './components/stepper';
+import SavedQueriesList from './react.savedqueries';
+import ExpansionPanels from './components/expansionpanels';
+import NoticeMessage from './react.notice';
 
 /*
  *  The following component is the data queries base element. It controls which tab is currently
@@ -128,7 +53,16 @@ class DataQueryApp extends Component {
       },
       selectedFields: {},
       downloadableFields: {},
-      loading: false
+      loading: false,
+      savePrompt: false,
+      navigation: {
+        disable: {
+          previous: true,
+          save: false,
+          next: false,
+        },
+        index: 0,
+      }
     };
     this.saveFilterRule = this.saveFilterRule.bind(this);
     this.saveFilterGroup = this.saveFilterGroup.bind(this);
@@ -146,14 +80,17 @@ class DataQueryApp extends Component {
     this.resetQuery = this.resetQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.stepperClicked = this.stepperClicked.bind(this);
+    this.navigationClicked = this.navigationClicked.bind(this);
+    this.getSideBarVisibleStatus = this.getSideBarVisibleStatus.bind(this);
+    this.displayVisualizedData = this.displayVisualizedData.bind(this);
   }
 
-  onTabChangeHandler(e) {
-    if (e.target.innerHTML !== 'Manage Saved Queries') {
-      document.getElementById(
-        'presentationMSQ'
-      ).classList.remove('active');
-    }
+  displayVisualizedData() {
+    const state = Object.assign({}, this.state);
+    state.ActiveTab = 'Statistics';
+    state.navigation.index = 4;
+    this.setState(state);
   }
 
   componentDidMount() {
@@ -208,15 +145,13 @@ class DataQueryApp extends Component {
 
   saveFilterRule(rule) {
     // Used to build a filter rule for saving query
-
-    let savedRule = {
+    return {
       field: rule.field,
       operator: rule.operator,
       value: rule.value,
       instrument: rule.instrument,
       visit: rule.visit
     };
-    return savedRule;
   }
 
   saveFilterGroup(group) {
@@ -569,7 +504,9 @@ class DataQueryApp extends Component {
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
         for (let key in this.props.Visits) {
-          selectedFields[category].allVisits[key] = 1;
+          if (this.props.Visits.hasOwnProperty(key)) {
+            selectedFields[category].allVisits[key] = 1;
+          }
         }
 
         // Add field to the field list
@@ -582,11 +519,13 @@ class DataQueryApp extends Component {
       } else if (selectedFields[category][fieldName]) {
         // Remove the field from the selectedFields
         for (let key in selectedFields[category][fieldName]) {
-          // Decrement the count of field's visits, delete visit if count is 1
-          if (selectedFields[category].allVisits[key] === 1) {
-            delete selectedFields[category].allVisits[key];
-          } else {
-            selectedFields[category].allVisits[key]--;
+          if (selectedFields[category][fieldName].hasOwnProperty(key)) {
+            // Decrement the count of field's visits, delete visit if count is 1
+            if (selectedFields[category].allVisits[key] === 1) {
+              delete selectedFields[category].allVisits[key];
+            } else {
+              selectedFields[category].allVisits[key]--;
+            }
           }
         }
         delete selectedFields[category][fieldName];
@@ -616,8 +555,10 @@ class DataQueryApp extends Component {
           if (key === 'allVisits') {
             continue;
           }
-          selectedFields[category].allVisits[key]++;
-          selectedFields[category][fieldName][key] = key;
+          if (selectedFields[category].allVisits.hasOwnProperty(key)) {
+            selectedFields[category].allVisits[key]++;
+            selectedFields[category][fieldName][key] = key;
+          }
         }
         fields.push(category + ',' + fieldName);
         if (downloadable) {
@@ -824,34 +765,36 @@ class DataQueryApp extends Component {
 
       // Build the row data for the giving identifiers and headers
       for (identifier in Identifiers) {
-        currow = [];
-        for (colHeader in RowHeaders) {
-          temp = Identifiers[identifier] + ',' + RowHeaders[colHeader].split(' ')[0];
-          index = sessiondata[temp];
-          if (!index) {
-            currow.push('.');
-          } else {
-            temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
-            fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
-            if (temp) {
-              if (temp.data[RowHeaders[colHeader].split(',')[1]] && downloadableFields[fieldSplit[0] + ',' + fieldSplit[1]]) {
-                // Add a downloadable link if the field is set and downloadable
-                href = loris.BaseURL + '/mri/jiv/get_file.php?file=' + temp.data[RowHeaders[colHeader].split(',')[1]];
-                temp = (
-                  <a href={href}>
-                    {temp.data[RowHeaders[colHeader].split(',')[1]]}
-                  </a>
-                );
-              } else {
-                temp = temp.data[RowHeaders[colHeader].split(',')[1]];
-              }
+        if (Identifiers.hasOwnProperty(identifier)) {
+          currow = [];
+          for (colHeader in RowHeaders) {
+            temp = Identifiers[identifier] + ',' + RowHeaders[colHeader].split(' ')[0];
+            index = sessiondata[temp];
+            if (!index) {
+              currow.push('.');
             } else {
-              temp = '.';
+              temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
+              fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
+              if (temp) {
+                if (temp.data[RowHeaders[colHeader].split(',')[1]] && downloadableFields[fieldSplit[0] + ',' + fieldSplit[1]]) {
+                  // Add a downloadable link if the field is set and downloadable
+                  href = loris.BaseURL + '/mri/jiv/get_file.php?file=' + temp.data[RowHeaders[colHeader].split(',')[1]];
+                  temp = (
+                    <a href={href}>
+                      {temp.data[RowHeaders[colHeader].split(',')[1]]}
+                    </a>
+                  );
+                } else {
+                  temp = temp.data[RowHeaders[colHeader].split(',')[1]];
+                }
+              } else {
+                temp = '.';
+              }
+              currow.push(temp);
             }
-            currow.push(temp);
           }
+          rowdata.push(currow);
         }
-        rowdata.push(currow);
       }
     }
     return {rowdata: rowdata, Identifiers: Identifiers, RowHeaders: RowHeaders, fileData: fileData};
@@ -882,7 +825,7 @@ class DataQueryApp extends Component {
     let rowdata = this.getRowData(displayID);
     this.setState({
       grouplevel: displayID,
-      rowData: rowdata
+      ...(rowdata.rowdata.length > 0 ? {rowData: rowdata} : {rowData: {}})
     });
   }
 
@@ -894,188 +837,294 @@ class DataQueryApp extends Component {
     this.setState({filter});
   }
 
+  navigationClicked(command) {
+    let state = Object.assign({}, this.state);
+    let step = state.ActiveTab;
+    const steps = ['Info', 'DefineFields', 'DefineFilters', 'ViewData', 'Statistics'];
+    let index = steps.indexOf(step);
+    switch (command) {
+      case 'previous':
+        index--;
+        step = steps[index];
+        this.stepperClicked(step, index);
+        break;
+      case 'next':
+        index++;
+        step = steps[index];
+        this.stepperClicked(step, index);
+        break;
+      case 'save':
+        this.setState({savePrompt: true});
+        break;
+      default:
+        break;
+    }
+  }
+
+  stepperClicked(step, index) {
+    switch (step) {
+      case 'Info':
+        this.setState({navigation: {
+            disable: {
+              previous: true,
+              save: false,
+              next: false,
+            },
+            index: index,
+          }});
+        break;
+      case 'ViewData':
+        this.setState({navigation: {
+            disable: {
+              previous: false,
+              save: false,
+              next: true,
+            },
+            index: index,
+          }});
+        break;
+      case 'Statistics':
+        break;
+      default:
+        this.setState({navigation: {
+            disable: {
+              previous: false,
+              save: false,
+              next: false,
+            },
+            index: index,
+          }});
+        break;
+    }
+    this.setState({ActiveTab: step})
+  }
+
+  getSideBarVisibleStatus() {
+    return (this.state.fields.length > 0
+      && this.state.ActiveTab !== 'ViewData'
+      && this.state.ActiveTab !== 'Statistics'
+      && this.state.ActiveTab !== 'Info');
+  }
+
   render() {
     // Renders the html for the component
-
     let tabs = [];
-    let tabsNav = [];
-    let alert = <div/>;
 
-    // Add the info tab
-    tabs.push(<InfoTabPane
-      key='Info'
-      TabId='Info'
-      UpdatedTime={this.props.UpdatedTime}
-      Loading={this.state.loading}
-      Active={this.state.ActiveTab == 'Info'}
-    />);
-
-    // Add the field select tab
-    tabs.push(<FieldSelectTabPane
-      key='DefineFields'
-      TabId='DefineFields'
-      categories={this.props.categories}
-      onFieldChange={this.fieldChange}
-      selectedFields={this.state.selectedFields}
-      Visits={this.props.Visits}
-      fieldVisitSelect={this.fieldVisitSelect}
-      Loading={this.state.loading}
-      Active={this.state.ActiveTab == 'DefineFields'}
-    />);
-
-    // Add the filter builder tab
-    tabs.push(<FilterSelectTabPane
-        key='DefineFilters'
+    // Create or Load tab.
+    tabs.push(
+      <StepperPanel
+        key={'Info'}
+        TabId='Info'
+        active={this.state.ActiveTab === 'Info'}
+        content={(
+          <>
+            <h1 style={{
+              color: '#0a3572',
+              textAlign: 'center',
+              padding: '30px 0 0 0'
+            }}>
+              Welcome to the Data Query Tool
+            </h1>
+            <p style={{textAlign: 'center', margin: '10px 0 20px 0'}}>
+              Data was last updated on {this.props.UpdatedTime}.
+            </p>
+            <ExpansionPanels
+              panels={[
+                {
+                  title: 'Instructions on how to create a query',
+                  content: (
+                    <>
+                      <p>To start a new query, use the above navigation and or click on <i style={{color:'#596978'}}>"Define Fields"</i> to begin building the fields for the query.</p>
+                      <p>You may choose to then click the navigation again for the <i style={{color:'#596978'}}>"Define Filters (Optional)"</i> and define how you will filter the query data.</p>
+                      <p>Lastly, navigate to the <i style={{color:'#596978'}}>"Run Query"</i> and run the query you built. 🙂</p>
+                    </>
+                  ),
+                  alwaysOpen: true,
+                },
+                {
+                  title: 'Load Existing Query',
+                  content: (
+                    <>
+                      <ManageSavedQueriesTabPane
+                        key='SavedQueriesTab'
+                        TabId='SavedQueriesTab'
+                        userQueries={this.state.queryIDs.User}
+                        globalQueries={this.state.queryIDs.Shared}
+                        onSaveQuery={this.saveCurrentQuery}
+                        queryDetails={this.state.savedQueries}
+                        onSelectQuery={this.loadSavedQuery}
+                        queriesLoaded={this.state.queriesLoaded}
+                        Loading={this.state.loading}
+                        savePrompt={this.state.savePrompt}
+                      />
+                      <SavedQueriesList
+                        userQueries={this.state.queryIDs.User}
+                        globalQueries={this.state.queryIDs.Shared}
+                        queryDetails={this.state.savedQueries}
+                        queriesLoaded={this.state.queriesLoaded}
+                        onSelectQuery={this.loadSavedQuery}
+                        loadedQuery={this.state.loadedQuery}
+                      />
+                    </>
+                  ),
+                }
+              ]}
+            />
+          </>
+        )}
+      />
+    );
+    // Define Fields tab.
+    tabs.push(
+      <StepperPanel
+        key={'DefineFields'}
+        TabId='DefineFields'
+        active={this.state.ActiveTab === 'DefineFields'}
+        content={(
+          <FieldSelectTabPane
+            key='DefineFields'
+            TabId='DefineFields'
+            categories={this.props.categories}
+            onFieldChange={this.fieldChange}
+            selectedFields={this.state.selectedFields}
+            Visits={this.props.Visits}
+            fieldVisitSelect={this.fieldVisitSelect}
+            Loading={this.state.loading}
+            Active={this.state.ActiveTab === 'DefineFields'}
+          />
+        )}
+      />
+    );
+    // Define Filters (Optional) tab.
+    tabs.push(
+      <StepperPanel
+        key={'DefineFilters'}
         TabId='DefineFilters'
-        categories={this.props.categories}
-        filter={this.state.filter}
-        updateFilter={this.updateFilter}
-        Visits={this.props.Visits}
-        Loading={this.state.loading}
-        Active={this.state.ActiveTab == 'DefineFilters'}
+        active={this.state.ActiveTab === 'DefineFilters'}
+        content={(
+          <FilterSelectTabPane
+            key='DefineFilters'
+            TabId='DefineFilters'
+            categories={this.props.categories}
+            filter={this.state.filter}
+            updateFilter={this.updateFilter}
+            Visits={this.props.Visits}
+            Loading={this.state.loading}
+            Active={this.state.ActiveTab === 'DefineFilters'}
+          />
+        )}
       />
     );
 
     // Define the data displayed type and add the view data tab
-    let displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudinal";
-    tabs.push(<ViewDataTabPane
-      key='ViewData'
-      TabId='ViewData'
-      Active={this.state.ActiveTab == 'ViewData'}
-      Fields={this.state.fields}
-      Criteria={this.state.criteria}
-      Sessions={this.getSessions()}
-      Data={this.state.rowData.rowdata}
-      RowInfo={this.state.rowData.Identifiers}
-      RowHeaders={this.state.rowData.RowHeaders}
-      FileData={this.state.rowData.fileData}
-      onRunQueryClicked={this.runQuery}
-      displayType={displayType}
-      changeDataDisplay={this.changeDataDisplay}
-      Loading={this.state.loading}
-      runQuery={this.runQuery}
-    />);
+    let displayType = (this.state.grouplevel === 0)
+      ? 'Cross-sectional'
+      : 'Longitudinal';
+
+    // Run Query tab.
+    tabs.push(
+      <StepperPanel
+        key={'ViewData'}
+        TabId='ViewData'
+        active={this.state.ActiveTab === 'ViewData'}
+        content={(
+          <ViewDataTabPane
+            key='ViewData'
+            TabId='ViewData'
+            Active={this.state.ActiveTab === 'ViewData'}
+            Fields={this.state.fields}
+            Criteria={this.state.criteria}
+            Sessions={this.getSessions()}
+            Data={this.state.rowData.rowdata}
+            RowInfo={this.state.rowData.Identifiers}
+            RowHeaders={this.state.rowData.RowHeaders}
+            FileData={this.state.rowData.fileData}
+            onRunQueryClicked={this.runQuery}
+            displayType={displayType}
+            changeDataDisplay={this.changeDataDisplay}
+            Loading={this.state.loading}
+            runQuery={this.runQuery}
+            displayVisualizedData={this.displayVisualizedData}
+          />
+        )}
+      />
+    );
 
     // Add the stats tab
     tabs.push(<StatsVisualizationTabPane
       key='Statistics'
       TabId='Statistics'
-      Active={this.state.ActiveTab == 'Statistics'}
+      Active={this.state.ActiveTab === 'Statistics'}
       Fields={this.state.rowData.RowHeaders}
       Data={this.state.rowData.rowdata}
       Loading={this.state.loading}
     />);
 
-    // Add the manage saved queries tab
-    tabs.push(<ManageSavedQueriesTabPane
-      key='SavedQueriesTab'
-      TabId='SavedQueriesTab'
-      userQueries={this.state.queryIDs.User}
-      globalQueries={this.state.queryIDs.Shared}
-      onSaveQuery={this.saveCurrentQuery}
-      queryDetails={this.state.savedQueries}
-      queriesLoaded={this.state.queriesLoaded}
-      Loading={this.state.loading}
-    />);
-
-    // Display load alert if alert is present
-    if (this.state.alertLoaded) {
-      alert = (
-        <div className='alert alert-success' role='alert'>
-          <button type='button' className='close' aria-label='Close' onClick={this.dismissAlert}>
-            <span aria-hidden='true'>&times;</span>
-          </button>
-          <strong>Success</strong> Query Loaded.
-        </div>
-      )
-    }
-
-    // Display save alert if alert is present
-    if (this.state.alertSaved) {
-      alert = (
-        <div className='alert alert-success' role='alert'>
-          <button type='button' className='close' aria-label='Close' onClick={this.dismissAlert}>
-            <span aria-hidden='true'>&times;</span>
-          </button>
-          <strong>Success</strong> Query Saved.
-        </div>
-      )
-    }
-
-    // Display Conflict Query alert
-    if (this.state.alertConflict.show) {
-      alert = (
-        <div className='alert alert-warning' role='alert'>
-          <button type='button' className='close' aria-label='Close' onClick={this.dismissAlert}>
-            <span aria-hidden='true'>&times;</span>
-          </button>
-          <button type='button' className='close' aria-label='Close' onClick={this.dismissAlert}>
-            <span aria-hidden='true'>Override</span>
-          </button>
-          <strong>Error</strong> Query with the same name already exists.
-          <a href='#' class='alert-link' onClick={this.overrideQuery}>Click here to override</a>
-        </div>
-      )
-    }
-
-    let widthClass = 'col-md-12';
-    let sideBar = <div/>;
-
-    // Display the field sidebar for certain tabs
-    if (this.state.fields.length > 0
-      && this.state.ActiveTab !== 'ViewData'
-      && this.state.ActiveTab !== 'Statistics'
-      && this.state.ActiveTab !== 'Info'
-    ) {
-      widthClass = 'col-md-10';
-      sideBar = <div className='col-md-2'>
-        <FieldsSidebar
-          Fields={this.state.fields}
-          Criteria={this.state.criteria}
-          resetQuery={this.resetQuery}
-        />
-      </div>;
-    }
-    return <div>
-      {alert}
-      <div className={widthClass}>
-        <nav className='nav nav-tabs'>
-          <ul className='nav nav-tabs navbar-left' data-tabs='tabs'>
-            <li role='presentation' onClick={this.onTabChangeHandler} className='active'><a href='#Info' data-toggle='tab'>Info</a></li>
-            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#DefineFields' data-toggle='tab'>Define Fields</a></li>
-            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#DefineFilters' data-toggle='tab'>Define Filters</a></li>
-            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#ViewData' data-toggle='tab'>View Data</a></li>
-            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#Statistics' data-toggle='tab'>Statistical Analysis</a></li>
-          </ul>
-          <SavedQueriesList
-            userQueries={this.state.queryIDs.User}
-            globalQueries={this.state.queryIDs.Shared}
-            queryDetails={this.state.savedQueries}
-            queriesLoaded={this.state.queriesLoaded}
-            onSelectQuery={this.loadSavedQuery}
-            loadedQuery={this.state.loadedQuery}
+    let sideBar = this.getSideBarVisibleStatus()
+      ? (
+        <div className='col-md-2'>
+          <FieldsSidebar
+            Fields={this.state.fields}
+            Criteria={this.state.criteria}
+            resetQuery={this.resetQuery}
           />
-        </nav>
-        <div className='tab-content'>
-          {tabs}
         </div>
-      </div>
-      {sideBar}
+      )
+      : null;
 
-    </div>;
+    let widthClass = this.getSideBarVisibleStatus()
+      ? 'col-md-10'
+      : 'col-md-12';
+
+    let mySavePrompt = this.state.savePrompt ? (
+      <SaveQueryDialog
+        onDismissClicked={() => {
+          this.setState({savePrompt: false});
+        }}
+        onSaveClicked={(name, shared) => {
+          this.saveCurrentQuery(name, shared, 'false');
+          this.setState({savePrompt: false});
+        }}
+      />
+    ) : null;
+
+    return (
+      <>
+        <NavigationWithSave
+          index={this.state.navigation.index}
+          disable={this.state.navigation.disable}
+          onClickHandler={this.navigationClicked}
+        />
+        <NavigationStepper
+          setIndex={this.state.ActiveTab}
+          stepperClicked={this.stepperClicked}
+        />
+        <NoticeMessage
+          dismissAlert={this.dismissAlert}
+          overrideQuery={this.overrideQuery}
+          alertConflict={this.state.alertConflict}
+          alertSaved={this.state.alertSaved}
+          alertLoaded={this.state.alertLoaded}
+        />
+        {mySavePrompt}
+        <div className={widthClass}>
+          <div className='tab-content'>
+            {tabs}
+          </div>
+        </div>
+        {sideBar}
+      </>
+    );
   }
 }
-
 DataQueryApp.propTypes = {
   SavedQueries: PropTypes.array,
   AllSessions: PropTypes.array,
 };
-
 DataQueryApp.defaultProps = {
   SavedQueries: [],
   AllSessions: [],
 };
-
 
 window.SavedQueriesList = SavedQueriesList;
 window.DataQueryApp = DataQueryApp;

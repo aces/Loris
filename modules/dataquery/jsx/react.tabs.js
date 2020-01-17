@@ -3,159 +3,127 @@
  *
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  *  @author   Jordan Stirling <jstirling91@gmail.com>
+ *   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://github.com/mohadesz/Loris-Trunk
  */
 
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 
 /*
- *  The following componet is used to indicate to users that their data is currently
- *  loading
+ *  The following component is used to indicate to users
+ *  that their data is currently loading.
  */
-class Loading extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-
-  }
-
-  render() {
-    return (
-      <div className='row'>
-        <h3 className='text-center loading-header'>
-          We are currently working hard to load your data. Please be patient.
-        </h3>
-        <div className='spinner'>
-          <div className='bounce1'></div>
-          <div className='bounce2'></div>
-          <div className='bounce3'></div>
-        </div>
+const Loading = (props) => {
+  return (
+    <div className='row' style={{padding: '60px 0 0 0'}}>
+      <h2 className='text-center loading-header'>
+        We are currently working hard to load your data.
+      </h2>
+      <h3 className='text-center loading-header'>
+        Please be patient 😴
+      </h3>
+      <div className='spinner'>
+        <div className='bounce1'/>
+        <div className='bounce2'/>
+        <div className='bounce3'/>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 /*
  *  The following component is the base component for displaying the tab's contnet
  */
-class TabPane extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
+const TabPane = (props) => {
+  let classList = 'tab-pane';
+  if (props.Active) {
+    classList += ' active'
   }
-
-  render() {
-    let classList = 'tab-pane';
-    if (this.props.Active) {
-      classList += ' active'
-    }
-    if (this.props.Loading) {
-      return (
-        <div className={classList} id={this.props.TabId}>
-          <Loading/>
-        </div>
-      );
-    }
+  if (props.Loading) {
     return (
-      <div key={this.props.TabId}className={classList} id={this.props.TabId}>
-        <h1>{this.props.Title}</h1>
-        {this.props.children}
+      <div className={classList} id={props.TabId}>
+        <Loading/>
       </div>
     );
   }
-}
+  return (
+    <div key={props.TabId}className={classList} id={props.TabId}>
+      <h1>{props.Title}</h1>
+      {props.children}
+    </div>
+  );
+};
 
 /*
  *  The following component is used for displaying the info tab content
  */
-class InfoTabPane extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    return (
-      <TabPane
-        Title='Welcome to the Data Query Tool'
-        TabId={this.props.TabId}
-        Active={this.props.Active}
-        Loading={this.props.Loading}
-      >
-        <p>Data was last updated on {this.props.UpdatedTime}.</p>
-        <p>Please define or use your query by using the following tabs.</p>
-        <dl>
-          <dt>Define Fields</dt>
-          <dd>Define the fields to be added to your query here.</dd>
-          <dt>Define Filters</dt>
-          <dd>Define the criteria to filter the data for your query here.</dd>
-          <dt>View Data</dt>
-          <dd>See the results of your query.</dd>
-          <dt>Statistical Analysis</dt>
-          <dd>Visualize or see basic statistical measures from your query here.</dd>
-          <dt>Load Saved Query</dt>
-          <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
-          <dt>Manage Saved Queries</dt>
-          <dd>Either save your current query or see the criteria of previously saved quer ies here.</dd>
-        </dl>
-      </TabPane>
-    );
-  }
-}
+const InfoTabPane = (props) => {
+  return (
+    <TabPane
+      Title='Welcome to the Data Query Tool'
+      TabId={props.TabId}
+      Active={props.Active}
+      Loading={props.Loading}
+    >
+      <p>Data was last updated on {props.UpdatedTime}.</p>
+      <p>Please define or use your query by using the following tabs.</p>
+      <dl>
+        <dt>Define Fields</dt>
+        <dd>Define the fields to be added to your query here.</dd>
+        <dt>Define Filters</dt>
+        <dd>Define the criteria to filter the data for your query here.</dd>
+        <dt>View Data</dt>
+        <dd>See the results of your query.</dd>
+        <dt>Statistical Analysis</dt>
+        <dd>Visualize or see basic statistical measures from your query here.</dd>
+        <dt>Load Saved Query</dt>
+        <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
+        <dt>Manage Saved Queries</dt>
+        <dd>Either save your current query or see the criteria of previously saved quer ies here.</dd>
+      </dl>
+    </TabPane>
+  );
+};
 
 /*
  *  The following component is used for displaying the field select tab content
  */
-class FieldSelectTabPane extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    return (
-      <TabPane
-        TabId={this.props.TabId}
-        Loading={this.props.Loading}
-        Active={this.props.Active}
-      >
-        <FieldSelector
-          title='Fields'
-          items={this.props.categories}
-          onFieldChange={this.props.onFieldChange}
-          selectedFields={this.props.selectedFields}
-          Visits={this.props.Visits}
-          fieldVisitSelect={this.props.fieldVisitSelect}
-        />
-      </TabPane>
-    );
-  }
-}
+const FieldSelectTabPane = (props) => {
+  return (
+    <TabPane
+      TabId={props.TabId}
+      Loading={props.Loading}
+      Active={props.Active}
+    >
+      <FieldSelector
+        title='Fields'
+        items={props.categories}
+        onFieldChange={props.onFieldChange}
+        selectedFields={props.selectedFields}
+        Visits={props.Visits}
+        fieldVisitSelect={props.fieldVisitSelect}
+      />
+    </TabPane>
+  );
+};
 
 /*
  *  The following component is used for displaying the filter builder tab content
  */
-class FilterSelectTabPane extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    return (
-      <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
-        <FilterBuilder items={this.props.categories}
-                       updateFilter={this.props.updateFilter}
-                       filter={this.props.filter}
-                       Visits={this.props.Visits}
-                       Active={this.props.Active}
-        />
-      </TabPane>
-    );
-  }
-}
+const FilterSelectTabPane = (props) => {
+  return (
+    <TabPane TabId={props.TabId} Loading={props.Loading}>
+      <FilterBuilder items={props.categories}
+                     updateFilter={props.updateFilter}
+                     filter={props.filter}
+                     Visits={props.Visits}
+                     Active={props.Active}
+      />
+    </TabPane>
+  );
+};
 
 /*
  *  The following component is used for displaying the view data tab content
@@ -164,16 +132,40 @@ class ViewDataTabPane extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sessions: []
+      sessions: [],
+      dataDisplay: 'Cross-sectional',
+      runQueryClicked: false,
     };
     this.runQuery = this.runQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
     this.getOrCreateProgressElement = this.getOrCreateProgressElement.bind(this);
     this.getOrCreateDownloadLink = this.getOrCreateDownloadLink.bind(this);
     this.downloadData = this.downloadData.bind(this);
+    this.handleDataDisplay = this.handleDataDisplay.bind(this);
+    this.setDataForCSV = this.setDataForCSV.bind(this);
+    this.downloadDataCSV = this.downloadDataCSV.bind(this);
+  }
+
+  handleDataDisplay(formElement, value) {
+    const state = Object.assign({}, this.state);
+    state.dataDisplay = value;
+    this.setState(state);
+    switch (value) {
+      case 'Cross-sectional':
+        this.changeDataDisplay(0);
+        break;
+      case 'Longitudinal':
+        this.changeDataDisplay(1);
+        break;
+      default:
+        break;
+    }
   }
 
   runQuery() {
+    this.setState({
+      runQueryClicked: true
+    });
     this.props.runQuery(this.props.Fields, this.props.Sessions);
   }
 
@@ -256,6 +248,10 @@ class ViewDataTabPane extends Component {
     // to the object URL?
     window.dataBlobs = [];
 
+    if (FileList.length === 0) {
+      alert('No Imaging Files to download');
+    }
+
     if (FileList.length < 100 || confirm('You are trying to download more than 100 files. This may be slow or crash your web browser.\n\nYou may want to consider splitting your query into more, smaller queries by defining more restrictive filters.\n\nPress OK to continue with attempting to download current files or cancel to abort.')) {
       saveworker = new Worker(loris.BaseURL + '/dataquery/js/workers/savezip.js');
       saveworker.addEventListener('message', (e) => {
@@ -317,22 +313,100 @@ class ViewDataTabPane extends Component {
     }
   }
 
+  setDataForCSV(csvData) {
+    this.setState({csvData: csvData});
+  }
+
+  downloadDataCSV() {
+    const csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
+
+    csvworker.addEventListener('message', (e) => {
+      if (e.data.cmd === 'SaveCSV') {
+        const dataDate = new Date().toISOString();
+        const dataURL = window.URL.createObjectURL(e.data.message);
+        const link = document.createElement('a');
+        link.download = 'data-' + dataDate + '.csv';
+        link.type = 'text/csv';
+        link.href = dataURL;
+        document.body.appendChild(link);
+        $(link)[0].click();
+        document.body.removeChild(link);
+      }
+    });
+    csvworker.postMessage({
+      cmd: 'SaveFile',
+      data: this.state.csvData,
+      headers: this.props.Headers,
+      identifiers: this.props.RowNameMap,
+    });
+  }
+
   render() {
-    let downloadData;
+
+    let otherButtons = this.state.runQueryClicked ? (
+      <>
+        <div className='flex-row-item'>
+          <button className='visualized-data'
+                  onClick={this.props.displayVisualizedData}>
+            <span className='glyphicon glyphicon-picture'/>
+            &nbsp;&nbsp;Visualized Data
+          </button>
+        </div>
+        <div className='flex-row-item'>
+          <div style={{
+            width: 'auto',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+          }}>
+            <button className='btn btn-primary'
+                    onClick={this.downloadDataCSV}
+                    style={{minWidth: '200px',
+                      minHeight: '30px',
+                      alignSelf: 'center',
+                      margin: '10px 0 10px 0'
+                    }}>
+              Download Table as CSV <span className='glyphicon glyphicon-download-alt'/>
+            </button>
+            <button className='btn btn-primary'
+                    style={{
+                      minWidth: '200px',
+                      minHeight: '30px',
+                      alignSelf: 'center'
+                    }}
+                    onClick={this.downloadData}>
+              Download Imaging Files <span className='glyphicon glyphicon-download-alt'/>
+            </button>
+          </div>
+        </div>
+      </>
+    ) : null;
+
     let buttons = (
-      <div className='row'>
-        <div className='commands col-xs-12 form-group'>
-          <button className='btn btn-primary' onClick={this.runQuery}>Run Query</button>
-          <button className='btn btn-primary' onClick={this.downloadData}>Download Data as ZIP</button>
+      <>
+        <div className='flex-row-container'>
+          <div className='flex-row-item'>
+            <button className='run-query'
+                    onClick={this.runQuery}
+                    disabled={(this.props.Fields === undefined || this.props.Fields.length === 0) ?? true}
+            >
+              <span className='glyphicon glyphicon-play'/>
+              &nbsp;&nbsp;Run Query
+            </button>
+          </div>
+          {otherButtons}
         </div>
-        <div id='progress' className='col-xs-12'></div>
-        <div id='downloadlinks' className='col-xs-12'>
-          <ul id='downloadlinksUL'></ul>
+        <div className='row'>
+          <div id='progress' className='col-xs-12'/>
+          <div id='downloadlinks' className='col-xs-12'>
+            <ul id='downloadlinksUL'/>
+          </div>
         </div>
-      </div>
+      </>
     );
     let criteria = [];
-    for (let el in  this.props.Criteria) {
+    for (let el in this.props.Criteria) {
       if (!this.props.Criteria.hasOwnProperty(el)) {
         continue;
       }
@@ -352,46 +426,51 @@ class ViewDataTabPane extends Component {
           </div>
         );
       }
-
     }
+
+    const queryTable = this.state.runQueryClicked ? (
+      <StaticDataTable
+        Headers={this.props.RowHeaders}
+        RowNumLabel='Identifiers'
+        Data={this.props.Data}
+        RowNameMap={this.props.RowInfo}
+        displayCSV={false}
+        getDataCSV={this.setDataForCSV}
+      />
+    ) : (
+      <>
+        <h2 className='col-xs-12' style={{color: '#0A3572'}}>
+          The Query still needs to be run.
+        </h2>
+      </>
+    );
+
     return (
       <TabPane
         TabId={this.props.TabId}
         Loading={this.props.Loading}
         Active={this.props.Active}
       >
-        <h2>Query Criteria</h2>
         {criteria}
         {buttons}
-        <div className='form-group form-horizontal row'>
-          <label htmlFor='selected-input' className='col-sm-1 control-label'>Data</label>
-          <div className='col-sm-4'>
-            <div className='btn-group'>
-              <button id='selected-input' type='button' className='btn btn-default dropdown-toggle' data-toggle='dropdown'>
-                <span id='search_concept'>{this.props.displayType}</span>
-                <span className='caret'></span>
-              </button>
-              <ul className='dropdown-menu' role='menu'>
-                <li onClick={this.changeDataDisplay.bind(this, 0)}>
-                  <div className='col-sm-12'>
-                    <h5 className="">Cross-sectional</h5>
-                  </div>
-                </li>
-                <li onClick={this.changeDataDisplay.bind(this, 1)}>
-                  <div className='col-sm-12'>
-                    <h5 className=''>Longitudinal</h5>
-                  </div>
-                </li>
-              </ul>
-            </div>
+        <div className='flex-row-container-second'>
+          <div style={{
+            maxWidth: '500px',
+            border: '1px solid #b7ccd2',
+            boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.05)'
+          }}>
+            <RadioElement
+              name='dataDisplayRadioElement'
+              options={{
+                'Cross-sectional': 'Cross-sectional',
+                'Longitudinal': 'Longitudinal'
+              }}
+              checked={this.state.dataDisplay}
+              onUserInput={this.handleDataDisplay}
+            />
           </div>
         </div>
-        <StaticDataTable
-          Headers={this.props.RowHeaders}
-          RowNumLabel='Identifiers'
-          Data={this.props.Data}
-          RowNameMap={this.props.RowInfo}
-        />
+        {queryTable}
       </TabPane>
     );
   }
@@ -544,14 +623,16 @@ class ScatterplotGraph extends Component {
     }
 
     $('#correlationtbl tbody').children().remove();
-    $('#correlationtbl tbody').append('<tr><td>' + jStat.covariance(field1, field2) + '</td><td>' + jStat.corrcoeff(field1, field2) + '</td></tr>');
+    $('#correlationtbl tbody').append(
+      '<tr><td>' + jStat.covariance(field1, field2) + '</td><td>' + jStat.corrcoeff(field1, field2) + '</td></tr>'
+    );
   }
 
   render() {
     let options = this.props.Fields.map((element, key) => {
-        console.log(element);
         return (
-          <option value={key}>
+          <option key={key}
+                  value={key}>
             {element}
           </option>
         );
@@ -623,16 +704,13 @@ class StatsVisualizationTabPane extends Component {
   }
 
   render() {
-    let content = (
-      <div>Statistics not yet calculated.</div>
-    );
-    // if(this.state.displayed === false) {
-    //     var content = <div>Statistics not yet calculated.</div>;
-    //     // return <TabPane content={content} TabId={this.props.TabId} />;
-    // } else
+    let content;
     if (this.props.Data.length === 0) {
-      let content = <div>Could not calculate stats, query not run</div>;
-      // return <TabPane content={content} TabId={this.props.TabId} />;
+      content = (
+        <h1 className='col-xs-12' style={{color: '#0A3572'}}>
+          Visualized Data cannot be calculated until query is run.
+        </h1>
+      );
     } else {
       let stats = jStat(this.props.Data),
         min = stats.min(),
@@ -646,7 +724,6 @@ class StatsVisualizationTabPane extends Component {
 
       for (let i = 0; i < this.props.Fields.length; i += 1) {
         rows.push(<tr key={'fields_' + i}>
-          <td>{this.props.Fields[i]}</td>
           <td>{min && min[i] ? min[i].toString() : ''}</td>
           <td>{max && max[i] ? max[i].toString() : ''}</td>
           <td>{stddev && stddev[i] ? stddev[i].toString() : ''}</td>
@@ -700,79 +777,96 @@ class StatsVisualizationTabPane extends Component {
     );
   }
 }
-StatsVisualizationTabPane.propTypes = {
-  Data: PropTypes.array,
-};
 StatsVisualizationTabPane.defaultProps = {
   Data: []
+};
+StatsVisualizationTabPane.propTypes = {
+  Data: PropTypes.array,
 };
 
 /*
  *  The following component is used for displaying a popout dialog for saving the current
  *  query
  */
-class SaveQueryDialog extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      queryName: '',
-      shared: false
-    };
-    this.editName = this.editName.bind(this);
-    this.editPublic = this.editPublic.bind(this);
-    this.onSaveClicked = this.onSaveClicked.bind(this);
-    this.onDismissClicked = this.onDismissClicked.bind(this);
-  }
+const SaveQueryDialog = (props) => {
 
-  editName(e) {
-    this.setState({queryName: e.target.value});
-  }
+  const [queryName, setQueryName] = useState('');
+  const [shared, setShared] = useState(false);
 
-  editPublic(e) {
-    this.setState({shared: e.target.checked});
-  }
+  const editName = (e) => {
+    setQueryName(e.target.value);
+  };
 
-  onSaveClicked() {
+  const editPublic = (e) => {
+    setShared(e.target.checked);
+  };
+
+  const onSaveClicked = () => {
     // Should do validation before doing anything here.. ie query name is entered, doesn't already
     // exist, there are fields selected..
-    if (this.props.onSaveClicked) {
-      this.props.onSaveClicked(this.state.queryName, this.state.shared);
+    if (props.onSaveClicked) {
+      props.onSaveClicked(queryName, shared);
     }
-  }
+  };
 
-  onDismissClicked() {
-    if (this.props.onDismissClicked) {
-      this.props.onDismissClicked();
+  const onDismissClicked = () => {
+    if (props.onDismissClicked) {
+      props.onDismissClicked();
     }
-  }
+  };
 
-  render() {
-    return (
-      <div className='modal show'>
-        <div className='modal-dialog'>
-          <div className='modal-content'>
-            <div className='modal-header'>
-              <button type='button' className='close' aria-label='Close' onClick={this.onDismissClicked}><span aria-hidden='true'>&times;</span></button>
-              <h4 className='modal-title' id='myModalLabel'>Save Current Query</h4>
+  return (
+    <div className='modal show' style={{marginTop: '100px'}}>
+      <div className='modal-dialog'>
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <button type='button'
+                    className='close'
+                    aria-label='Close'
+                    onClick={onDismissClicked}
+            >
+              <span aria-hidden='true'>&times;</span>
+            </button>
+            <h4 className='modal-title'
+                id='myModalLabel'
+                style={{color:'#fff'}}>
+              Save Current Query
+            </h4>
+          </div>
+          <div className='modal-body'>
+            <p>Enter the name you would like to save your query under here:</p>
+            <div className='input-group'>
+              Query Name:&nbsp;
+              <input type='text'
+                     className='form-control'
+                     placeholder='My Query'
+                     value={queryName}
+                     onChange={editName}/>
             </div>
-            <div className='modal-body'>
-              <p>Enter the name you would like to save your query under here:</p>
-              <div className='input-group'>
-                Query Name: <input type='text' className='form-control' placeholder='My Query' value={this.state.queryName} onChange={this.editName}/>
-              </div>
-              <p>Make query a publicly shared query? <input type='checkbox' checked={this.state.shared ? 'checked' : ''} onChange={this.editPublic} aria-label='Shared Query'/></p>
-
-            </div>
-            <div className='modal-footer'>
-              <button type='button' className='btn btn-default' onClick={this.onDismissClicked}>Close</button>
-              <button type='button' className='btn btn-primary' onClick={this.onSaveClicked}>Save changes</button>
-            </div>
+            <p>Make query a publicly shared query?&nbsp;
+              <input type='checkbox'
+                     checked={shared ? 'checked' : ''}
+                     onChange={editPublic}
+                     aria-label='Shared Query'/>
+            </p>
+          </div>
+          <div className='modal-footer'>
+            <button type='button'
+                    className='btn btn-default'
+                    onClick={onDismissClicked}>
+              Close
+            </button>
+            <button type='button'
+                    className='btn btn-primary'
+                    onClick={onSaveClicked}>
+              Save changes
+            </button>
           </div>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 /*
  *  The following component is used for displaying the filter of a individual query in a tree
@@ -788,15 +882,14 @@ class ManageSavedQueryFilter extends Component {
     let filterItem,
       filter = this.props.filterItem;
     if (filter.activeOperator) {
-      let logicOp = 'AND',
-        children = filter.children.map((element, key) => {
-          return <ManageSavedQueryFilter
-            filterItem={element}
-          />
-        });
-      if (filter.activeOperator === 1) {
-        logicOp = 'OR'
-      }
+      let children = filter.children.map((element, key) => {
+        return <ManageSavedQueryFilter
+          filterItem={element}
+        />
+      });
+      let logicOp = filter.activeOperator === 1
+        ? 'OR'
+        : 'AND';
       return (
         <li>
           <span>{logicOp}</span>
@@ -856,22 +949,24 @@ class ManageSavedQueryRow extends Component {
     let filters;
     if (this.props.Query.Fields && Array.isArray(this.props.Query.Fields)) {
       for (let i = 0; i < this.props.Query.Fields.length; i += 1) {
-        fields.push(<li>{this.props.Query.Fields[i]}</li>);
+        fields.push(<li key={i}>{this.props.Query.Fields[i]}</li>);
       }
     } else if (this.props.Query.Fields) {
       for (let instrument in this.props.Query.Fields) {
-        for (let field in this.props.Query.Fields[instrument]) {
-          if (field === "allVisits") {
-            continue;
-          } else {
-            fields.push(<li>{instrument},{field}</li>);
+        if (this.props.Query.Fields.hasOwnProperty(instrument)) {
+          for (let field in this.props.Query.Fields[instrument]) {
+            if (this.props.Query.Fields[instrument].hasOwnProperty(field)
+              && field !== 'allVisits'
+            ) {
+              fields.push(<li key={instrument}>{instrument},{field}</li>);
+            }
           }
         }
       }
     }
 
     if (fields.length === 0) {
-      fields.push(<li>No fields defined</li>);
+      fields.push(<li key={'no_fields_defined'}>No fields defined</li>);
     }
 
     if (this.props.Query.Conditions) {
@@ -951,97 +1046,80 @@ ManageSavedQueryRow.defaultProps = {
 /*
  *  The following component is used for displaying the manage saved queries tab content
  */
-class ManageSavedQueriesTabPane extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      savePrompt: false,
-      queriesLoaded: false,
-      queries: {}
-    };
-    this.dismissDialog = this.dismissDialog.bind(this);
-    this.saveQuery = this.saveQuery.bind(this);
-    this.savedQuery = this.savedQuery.bind(this);
-  }
+const ManageSavedQueriesTabPane = (props) => {
 
-  dismissDialog() {
-    this.setState({savePrompt: false});
-  }
+  const loadQuery = (queryName) => {
+    // Loads in the selected query
+    props.onSelectQuery(
+      props.queryDetails[queryName].Fields,
+      props.queryDetails[queryName].Conditions
+    );
+  };
 
-  saveQuery() {
-    this.setState({savePrompt: true});
-  }
-
-  savedQuery(name, shared) {
-    if (this.props.onSaveQuery) {
-      this.props.onSaveQuery(name, shared, 'false');
-    }
-    this.setState({savePrompt: false});
-  }
-
-  render() {
-    let queryRows = [];
-    if (this.props.queriesLoaded) {
-      for (let i = 0; i < this.props.userQueries.length; i += 1) {
-        let query = this.props.queryDetails[this.props.userQueries[i]];
-        let name = 'Unnamed Query: ' + this.props.userQueries[i];
-        if (query.Meta.name) {
-          name = query.Meta.name;
-        }
-        queryRows.push(
-          <ManageSavedQueryRow Name={name} Query={query}/>
-        );
+  let queryRows = [];
+  if (props.queriesLoaded) {
+    for (let i = 0; i < props.userQueries.length; i += 1) {
+      let query = props.queryDetails[props.userQueries[i]];
+      let name = 'Unnamed Query: ' + props.userQueries[i];
+      if (query.Meta.name) {
+        name = query.Meta.name;
       }
-    } else {
+      const queryName = (
+        <a href='#' onClick={() => loadQuery(props.userQueries[i])}>
+          {name}
+        </a>
+      );
       queryRows.push(
-        <tr key='loading'>
-          <td colSpan="3">Loading saved query details</td>
-        </tr>
+        <ManageSavedQueryRow key={name} Name={queryName} Query={query}/>
       );
     }
-
-    let savePrompt = '';
-    if (this.state.savePrompt) {
-      savePrompt = <SaveQueryDialog onDismissClicked={this.dismissDialog} onSaveClicked={this.savedQuery}/>;
-
-    }
-    let content = (
-      <div>
-        <h2>Your currently saved queries</h2>
-        <button onClick={this.saveQuery}>Save Current Query</button>
-        <table className='table table-hover table-primary table-bordered colm-freeze'>
-          <thead>
-          <tr key='info' className='info'>
-            <th>Query Name</th>
-            <th>Fields</th>
-            <th>Filters</th>
-          </tr>
-          </thead>
-          <tbody>
-          {queryRows}
-          </tbody>
-        </table>
-        {savePrompt}
-      </div>
-    );
-    return (
-      <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
-        {content}
-      </TabPane>
+  } else {
+    queryRows.push(
+      <tr key='loading'>
+        <td colSpan='3'>Loading saved query details</td>
+      </tr>
     );
   }
-}
-ManageSavedQueriesTabPane.propTypes = {
-  userQueries: PropTypes.array,
-  globalQueries: PropTypes.array,
-  queriesLoaded: PropTypes.bool,
-  queryDetails: PropTypes.object,
+
+  let content = (
+    <>
+      <h2 style={{
+        color: 'rgb(10, 53, 114)',
+        textAlign: 'center',
+        paddingTop: '0'
+      }}>User Saved Queries</h2>
+      <table className='table table-hover table-primary table-bordered colm-freeze'>
+        <thead>
+        <tr key='info' className='info'>
+          <th>Query Name</th>
+          <th>Fields</th>
+          <th>Filters</th>
+        </tr>
+        </thead>
+        <tbody>
+        {queryRows}
+        </tbody>
+      </table>
+    </>
+  );
+
+  return (
+    <TabPane TabId={props.TabId} Loading={props.Loading}>
+      {content}
+    </TabPane>
+  );
 };
 ManageSavedQueriesTabPane.defaultProps = {
   userQueries: [],
   globalQueries: [],
   queriesLoaded: false,
   queryDetails: {}
+};
+ManageSavedQueriesTabPane.propTypes = {
+  userQueries: PropTypes.array,
+  globalQueries: PropTypes.array,
+  queriesLoaded: PropTypes.bool,
+  queryDetails: PropTypes.object,
 };
 
 window.Loading = Loading;
