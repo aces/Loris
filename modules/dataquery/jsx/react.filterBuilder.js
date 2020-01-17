@@ -2,6 +2,7 @@
  *  The following file contains the components used for the filter builder tab
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
+*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://github.com/mohadesz/Loris-Trunk
  */
@@ -246,19 +247,21 @@ class FilterRule extends Component {
 
       if (this.props.rule.fieldType) {
         // Only display operators if field is selected
-        inputType = this.props.rule.fieldType.split("(");
-        operatorKey = inputType[0]
+        inputType = this.props.rule.fieldType.split('(');
+        operatorKey = inputType[0];
         for (let key in this.state.operators) {
-          operators.push(
-            <option value={key} onChange={this.operatorSelect}>
-              {this.state.operators[key]}
-            </option>
-          );
+          if (this.state.operators.hasOwnProperty(key)) {
+            operators.push(
+              <option key={key} value={key} onChange={this.operatorSelect}>
+                {this.state.operators[key]}
+              </option>
+            );
+          }
         }
-        value = (this.props.rule.operator) ? this.props.rule.operator : "";
+        value = (this.props.rule.operator) ? this.props.rule.operator : '';
         operatorSelect = (
-          <select className="input-sm col-xs-3 " onChange={this.operatorSelect} value={value}>
-            <option value=""></option>
+          <select className='input-sm col-xs-3 ' onChange={this.operatorSelect} value={value}>
+            <option value=''/>
             {operators}
           </select>
         );
@@ -281,7 +284,7 @@ class FilterRule extends Component {
               value = (this.props.rule.value) ? this.props.rule.value : '';
               input = (
                 <select className='input-sm col-xs-3' onChange={this.valueChange} value={value}>
-                  <option value=''></option>
+                  <option value=''/>
                   {options}
                 </select>
               );
@@ -291,7 +294,7 @@ class FilterRule extends Component {
                 <input type='text'
                        className='input-sm col-xs-3'
                        onChange={this.valueChange}
-                       value={this.props.rule.value}
+                       value={this.props.rule.value ?? ''}
                 />
               );
               break;
@@ -322,7 +325,7 @@ class FilterRule extends Component {
           </div>
           <div className='col-xs-10'>
             <select className='input-sm col-xs-3' onChange={this.fieldSelect} value={fieldIndex}>
-              <option value=''></option>
+              <option value=''/>
               {fields}
             </select>
             {operatorSelect}
@@ -340,7 +343,7 @@ class FilterRule extends Component {
       });
       rule = (
         <select onChange={this.selectInstrument} className="input-sm col-xs-10">
-          <option value=''></option>
+          <option value=''/>
           {options}
         </select>
       )
@@ -353,7 +356,7 @@ class FilterRule extends Component {
             <button className='btn btn-danger btn-sm pull-right'
                     onClick={this.props.deleteRule.bind(this, this.props.index)}
             >
-              <span className='glyphicon glyphicon-remove'></span> Delete
+              <span className='glyphicon glyphicon-remove'/> Delete
             </button>
           </div>
         </div>
@@ -574,14 +577,21 @@ class FilterBuilder extends Component {
   render() {
     return (
       <div>
-        <h1 className='col-xs-12'>Filter</h1>
-        <div className='col-xs-12'>
-          <div className='well well-primary'>
-            <FilterGroup group={this.props.filter}
-                         items={this.props.items}
-                         updateFilter={this.props.updateFilter}
-                         Visits={this.props.Visits}
-            />
+        <div className='row'>
+          <h1 className='col-xs-6' style={{color: '#0A3572'}}>The Query's Filter</h1>
+          <button className='import-csv'>
+            Import Population from CSV&nbsp;&nbsp;<span className='glyphicon glyphicon-file'/>
+          </button>
+        </div>
+        <div className='row'>
+          <div className='col-xs-12'>
+            <div className='well well-primary'>
+              <FilterGroup group={this.props.filter}
+                           items={this.props.items}
+                           updateFilter={this.props.updateFilter}
+                           Visits={this.props.Visits}
+              />
+            </div>
           </div>
         </div>
       </div>

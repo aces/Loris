@@ -3,7 +3,7 @@
  *
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  *  @author   Jordan Stirling <jstirling91@gmail.com>
- *   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://github.com/mohadesz/Loris-Trunk
  */
@@ -397,7 +397,7 @@ class ViewDataTabPane extends Component {
           </div>
           {otherButtons}
         </div>
-        <div className='row'>
+      <div className='row'>
           <div id='progress' className='col-xs-12'/>
           <div id='downloadlinks' className='col-xs-12'>
             <ul id='downloadlinksUL'/>

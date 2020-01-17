@@ -3,12 +3,16 @@
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://github.com/mohadesz/Loris-Trunk
  */
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import SearchableDropdown from './components/searchabledropdown';
+import SelectDropdown from './components/selectdropdown';
 
 /*
  *  The following component is used for displaying individual categories in the
@@ -140,7 +144,10 @@ class FieldItem extends Component {
 
     if (this.props.downloadable) {
       // Add download icon if field is downloadable
-      downloadIcon = <span className='glyphicon glyphicon-download-alt pull-right' title='Downloadable File'></span>
+      downloadIcon = (
+        <span className='glyphicon glyphicon-download-alt pull-right'
+              title='Downloadable File'/>
+      );
     }
     // Don't display the category in the field selector
     let displayName = this.props.FieldName;
@@ -180,7 +187,7 @@ class FieldList extends Component {
     let fields = [];
     let items = this.props.items || [];
     let fieldName, desc, isFile, type, selected;
-    let rowsPerPage = this.props.FieldsPerPage || 20;
+    let rowsPerPage = this.props.FieldsPerPage || 8;
 
     let start = (this.props.PageNumber - 1) * rowsPerPage;
     let filter = this.props.Filter.toLowerCase();
@@ -190,10 +197,10 @@ class FieldList extends Component {
     }
 
     let filteredItems = items.filter((item) => {
-        fieldName = item.key[1];
-        desc = item.value.Description;
-        return (fieldName.toLowerCase().indexOf(filter) != -1 ||
-            desc.toLowerCase().indexOf(filter) != -1);
+      fieldName = item.key[1];
+      desc = item.value.Description;
+      return (fieldName.toLowerCase().indexOf(filter) != -1 ||
+        desc.toLowerCase().indexOf(filter) != -1);
     });
 
     // Display the fields using the FieldItem component
@@ -208,30 +215,27 @@ class FieldList extends Component {
       }
 
       // Check if field is selected, if so set flag to true
-      selected = false;
-      if (this.props.selected && this.props.selected[fieldName]) {
-        selected = true;
-      }
+      selected = !!(this.props.selected && this.props.selected[fieldName]);
 
       // Get the fields selected visits, set to empty object if none
-      if (this.props.selected && this.props.selected[fieldName]) {
-        selectedFields = this.props.selected[fieldName]
-      } else {
-        selectedFields = {}
-      }
+      selectedFields = this.props.selected && this.props.selected[fieldName]
+        ? this.props.selected[fieldName]
+        : {};
 
-      fields.push(<FieldItem key={fieldName}
-                             FieldName={fieldName}
-                             Category={this.props.category}
-                             Description={desc}
-                             ValueType={type}
-                             onClick={this.onFieldClick.bind(this, fieldName, isFile)}
-                             selected={selected}
-                             downloadable={isFile}
-                             Visits={this.props.Visits}
-                             selectedVisits={selectedFields}
-                             fieldVisitSelect={this.props.fieldVisitSelect}
-      />);
+      fields.push(
+        <FieldItem key={fieldName}
+                   FieldName={fieldName}
+                   Category={this.props.category}
+                   Description={desc}
+                   ValueType={type}
+                   onClick={this.onFieldClick.bind(this, fieldName, isFile)}
+                   selected={selected}
+                   downloadable={isFile}
+                   Visits={this.props.Visits}
+                   selectedVisits={selectedFields}
+                   fieldVisitSelect={this.props.fieldVisitSelect}
+        />
+      );
       if (fields.length > rowsPerPage) {
         break;
       }
@@ -239,8 +243,11 @@ class FieldList extends Component {
 
     return (
       <div className='list-group col-md-9 col-sm-12'>
+        <PaginationLinks Total={filteredItems.length}
+                         Active={this.props.PageNumber}
+                         onChangePage={this.props.changePage}
+                         RowsPerPage={rowsPerPage}/>
         {fields}
-        <PaginationLinks Total={filteredItems.length} Active={this.props.PageNumber} onChangePage={this.props.changePage} RowsPerPage={rowsPerPage}/>
       </div>
     );
   }
@@ -379,43 +386,76 @@ class FieldSelector extends Component {
     }
 
     return (
-      <div>
-        <div className='row'>
-          <h1 className='col-md-8'>{this.props.title}</h1>
-          <div className='form-group col-sm-4 search'>
-            <label className='col-sm-12 col-md-4'>Search within instrument:</label>
-            <div className='col-sm-12 col-md-8'>
-              <input type='text' onChange={this.filterChange} className='form-control input-sm'/>
-            </div>
-          </div>
+      <>
+        <div style={{margin: '0 auto', maxWidth: '1300px'}}>
+          <h1 className='col-xs-12' style={{color: '#0A3572'}}>
+            The Query's Fields
+          </h1>
         </div>
-        <div className='row form-group'>
-          <div className='col-md-8'>
-            <button type='button' className='btn btn-primary' onClick={this.addAll}>Add All</button>
-            <button type='button' className='btn btn-primary' onClick={this.deleteAll}>Remove All</button>
-          </div>
+        <div className='row' style={{marginTop: '20px'}}>
+          <SearchableDropdown
+            name='fieldsDropdown'
+            options={this.state.instruments}
+            onUserInput={this.onCategorySelect}
+            placeHolder='Select a Category or Instrument'
+          />
         </div>
-        <div className='row form-group'>
-          <div className='form-group col-sm-8 search'>
-            <label className='col-sm-12 col-md-2'>Instrument:</label>
-            <div className='col-sm-12 col-md-8'>
-              <SearchableDropdown
-                name="fieldsDropdown"
-                options={this.state.instruments}
-                onUserInput={this.onCategorySelect}
-                placeHolder="Select One"
+        <div className='container-fluid'
+             style={{
+               visibility: this.state.selectedCategory ? 'visible' : 'hidden',
+               margin: '0 auto',
+               maxWidth: '800px'
+             }}>
+          <div className='form-group has-feedback'>
+            <div className='input-group'>
+            <span className='input-group-addon'
+                  style={{
+                    height: '40px',
+                    backgroundColor: '#FFFFFF',
+                    borderTopLeftRadius: '20px',
+                    borderBottomLeftRadius: '20px',
+                  }}
+            >
+              <span className='glyphicon glyphicon-search'/>
+            </span>
+              <input type='text'
+                     className='form-control'
+                     onChange={this.filterChange}
+                     style={{
+                       height: '40px',
+                       borderLeft: '0',
+                       fontSize: '14pt',
+                       borderTopRightRadius: '20px',
+                       borderBottomRightRadius: '20px',
+                     }}
+                     placeholder={'Search within Fields'}
               />
             </div>
           </div>
-          <div className='form-group col-sm-4 search'>
-            <label className='col-sm-12 col-md-4'>Visits:</label>
-            <div className='col-sm-12 col-md-8'>
-              <SelectDropdown
-                multi={true}
-                options={categoryVisits}
-                onFieldClick={this.modifyCategoryFieldVists}
-              />
+        </div>
+        <div className='row form-group' style={{
+          visibility: this.state.selectedCategory ? 'visible' : 'hidden'
+        }}>
+          <div className='col-md-8 col-sm-8'>
+            <div style={{position: 'absolute', right: '0'}}>
+              <button type='button'
+                      className='btn btn-primary'
+                      onClick={this.addAll}>
+                Add All
+              </button>
+              <button type='button'
+                      className='btn btn-primary'
+                      onClick={this.deleteAll}>
+                Remove All
+              </button>
             </div>
+          </div>
+          <div className={'col-md-4 col-sm-4'}>
+            <SelectDropdown
+              multi={true}
+              options={categoryVisits}
+              onFieldClick={this.modifyCategoryFieldVists}
+            />
           </div>
         </div>
         <div className='row'>
@@ -424,7 +464,7 @@ class FieldSelector extends Component {
             category={this.state.selectedCategory}
             Criteria={this.props.Criteria}
             onFieldSelect={this.onFieldSelect}
-            FieldsPerPage='15'
+            FieldsPerPage={8}
             selected={this.props.selectedFields[this.state.selectedCategory]}
             Filter={this.state.filter}
             Visits={this.props.Visits}
@@ -433,7 +473,7 @@ class FieldSelector extends Component {
             PageNumber={this.state.PageNumber}
           />
         </div>
-      </div>
+      </>
     );
   }
 }

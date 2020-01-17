@@ -4,7 +4,7 @@
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://github.com/mohadesz/Loris-Trunk
  */
@@ -865,13 +865,13 @@ class DataQueryApp extends Component {
     switch (step) {
       case 'Info':
         this.setState({navigation: {
-            disable: {
-              previous: true,
-              save: false,
-              next: false,
-            },
-            index: index,
-          }});
+          disable: {
+            previous: true,
+            save: false,
+            next: false,
+          },
+          index: index,
+        }});
         break;
       case 'ViewData':
         this.setState({navigation: {
@@ -881,7 +881,7 @@ class DataQueryApp extends Component {
               next: true,
             },
             index: index,
-          }});
+        }});
         break;
       case 'Statistics':
         break;

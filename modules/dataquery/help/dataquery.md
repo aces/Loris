@@ -39,9 +39,10 @@ Click **Add Rule** to define your next rule, and then define how your filters wi
 This tab executes your query, displays the query results, and allows you to download data. 
 Use the "Data" dropdown to organize the results table: _cross-sectional_ by timepoint, or _longitudinal_ across all timepoints. Click **Run Query** to execute the current query on the database, based on the defined fields and filters.
 
-## Statistical Analysis
+## Visualized Data
 
-This tab shows basic statistical calculations and scatterplot visualizations of data from your query. 
+This panel is found when clicking the "Visualized Data" button in Run Query tab.
+The Visualized Data shows basic statistical calculations and scatterplot visualizations of data from your query. 
 
 ## Load Saved Query
 
