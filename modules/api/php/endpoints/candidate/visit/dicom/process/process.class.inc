@@ -116,6 +116,10 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
+        if (isset($this->_cache)) {
+            return $this->_cache;
+        }
+
         // *************************
         // *** Permission checks ***
         // *************************
@@ -141,9 +145,11 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
             null
         );
 
-        $body = array('process_state' => $processesState);
+        $this->_cache = new \LORIS\Http\Response\JsonResponse(
+            array('process_state' => $processesState)
+        );
 
-        return new \LORIS\Http\Response\JsonResponse($body);
+        return $this->_cache;
     }
 
     /**

@@ -133,6 +133,10 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
+        if (isset($this->_cache)) {
+            return $this->_cache;
+        }
+
         // *************************
         // *** Permission checks ***
         // *************************
@@ -153,7 +157,9 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $array = (new \LORIS\api\Views\Visit\Dicom\Processes($mriuploads))
             ->toArray();
 
-        return new \LORIS\Http\Response\JsonResponse($array);
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($array);
+
+        return $this->_cache;
     }
 
     /**
