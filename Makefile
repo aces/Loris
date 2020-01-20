@@ -34,5 +34,4 @@ unittests: phpdev
 check: checkstatic unittests
 
 testdata:
-	cd tools/ && php raisinbread_refresh.php
-	cd ..
+	php tools/raisinbread_refresh.php

@@ -44,24 +44,22 @@ them with new test data.
 
 
 INFO;
-
 echo $info;
 
 echo "\e[0;31m*** Executing this script will result in the LOSS OF DATA! ***\e[0m\n";
 
 $cwd = getcwd();
-if (substr_compare($cwd, 'tools', mb_strlen($cwd) - mb_strlen('tools')) !== 0) {
-    die('Please run this script from the tools/ directory.' . PHP_EOL);
-}
 
 try {
     $dbInfo = $config->getSettingFromXML('database');
 
     if (! $config->getSetting('dev')['sandbox']) {
-        throw new \LorisException(
+        fwrite(
+            STDERR,
             "Config file indicates that this is not a sandbox. Aborting to " .
             "prevent accidental data loss." . PHP_EOL
         );
+        exit(1);
     }
     $dbname = $dbInfo['database'];
     $host   = $dbInfo['host'];
@@ -96,8 +94,6 @@ CONFIRMATION;
     }
     echo PHP_EOL . 'Please enter the name of your database:' . PHP_EOL;
     $dbname = trim(fgets(STDIN));
-} catch (\LorisException $e) {
-    die($e->getMessage());
 } catch (Exception $e) {
     die("Could not load project/config.xml");
 }
@@ -146,18 +142,20 @@ if (count($tables) > 0) {
 // Source LORIS core tabes
 printHeader('Creating LORIS core tables...');
 
-$coreTables = glob("../SQL/0000-*.sql");
+$coreTables = glob(__DIR__ . "/../SQL/0000-*.sql");
 array_walk($coreTables, 'runPatch');
 
 // Create instrument tables
 printHeader('Creating instrument tables...');
 
-$rbInstrumentTables = glob("../raisinbread/instruments/instrument_sql/*.sql");
+$rbInstrumentTables = glob(
+    __DIR__ . "/../raisinbread/instruments/instrument_sql/*.sql"
+);
 array_walk($rbInstrumentTables, 'runPatch');
 
 // Import Raisinbread data
 printHeader('Importing Raisinbread data...');
-$rbData = glob("../raisinbread/RB_files/*.sql");
+$rbData = glob(__DIR__ . "/../raisinbread/RB_files/*.sql");
 
 array_walk($rbData, 'runPatch');
 
@@ -176,13 +174,13 @@ if (isset($hostConfigSetting)) {
 // database is public.
 printHeader('Changing the admin password...');
 echo 'Please choose a new password for the admin user:' . PHP_EOL;
-runCommand('php resetpassword.php admin');
+flush();
+// Invoke the script `tools/resetpassword.php` for user 'admin'.
+$cmd = implode(' ', array('php', __DIR__ . '/resetpassword.php', 'admin'));
+exec($cmd);
 
 printHeader('Test data successfully installed.');
-
-
 // END SCRIPT
-
 
 /**
  * Drops core LORIS tables as well as Raisinbread instrument tables
@@ -192,10 +190,10 @@ printHeader('Test data successfully installed.');
 function dropTables(): void
 {
     runPatch(
-        '../raisinbread/instruments/instrument_sql/'
+        __DIR__ . '/../raisinbread/instruments/instrument_sql/'
         . '9999-99-99-drop_instrument_tables.sql'
     );
-    runPatch('../SQL/9999-99-99-drop_tables.sql');
+    runPatch(__DIR__ . '/../SQL/9999-99-99-drop_tables.sql');
 }
 
 /**
@@ -284,9 +282,7 @@ function dropRemainingTables(array $tables): void
         $commands[] = "DROP TABLE IF EXISTS $table;";
     }
     $commands[] = "SET FOREIGN_KEY_CHECKS = 1;";
-    $script     = <<<SCRIPT
-$mysqlCommand -e '%s'
-SCRIPT;
+    $script     = "$mysqlCommand -e '%s'";
     exec(sprintf($script, implode("\n", $commands)));
 }
 
