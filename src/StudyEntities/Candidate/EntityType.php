@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This defines the entity type for a Candidate. It is a Value Object used
+ * This defines the entity type property for a Candidate. It is a Value Object used
  * to assist with validation.
  *
  * PHP Version 7
