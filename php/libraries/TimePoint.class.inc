@@ -210,7 +210,7 @@ class TimePoint
         ?string $nextVisitLabel,
         \Site $psc,
         \Project $project,
-        int $lang
+        int $lang = 1
     ): void {
 
         // insert into session set CandID=$candID,
