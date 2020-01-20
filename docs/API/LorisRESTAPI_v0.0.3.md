@@ -853,7 +853,7 @@ A successful request will be answered by a `303 See Other` response with its
 
 ### 5.2 Tar Level Data  
 
-This section describe how to upload dicoms files and how to start and monitor
+This section describe how to upload DICOM studies and how to start and monitor
 mri_upload processes.
 
 Dicoms that have been successfuly uploaded and processed can be downloaded with 
@@ -945,4 +945,3 @@ Response shape:
   ]
 }
 ```
-
