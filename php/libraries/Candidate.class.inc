@@ -690,7 +690,7 @@ class Candidate
      * @param ?SiteAlias    $siteAbbrev    The site of the candidate
      *                                     being validated to check
      *                                     against appropriate parts
-     *                                     of PSCID definition>
+     *                                     of PSCID definition.
      * @param ?ProjectAlias $projectAbbrev The project of the candidate
      *                                     being validated to check against
      *                                     appropriate parts of PSCID
@@ -764,4 +764,3 @@ class Candidate
     }
 
 }
-

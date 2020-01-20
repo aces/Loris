@@ -30,7 +30,7 @@ class ExternalIDGenerator extends SiteIDGenerator
      * Generates ExternalIDs.
      *
      * @param ?SiteAlias    $siteAlias    The site prefix to prepend to the ID value.
-     * @param ?ProjectAlias $projectAlias To be appended to the ID value.
+     * @param ?ProjectAlias $projectAlias The project prefix to prepend to the ID value.
      *
      * @return void
      */

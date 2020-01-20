@@ -951,7 +951,7 @@ class Utility
     }
 
     /**
-     * Generate a random alphanumeric string.
+     * Generate a random alphabetical string.
      *
      * @param int $length How many characters do we want?
      *
@@ -1033,4 +1033,3 @@ class Utility
         return rtrim($path, '/\\') . '/';
     }
 }
-
