@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php declare(strict_types=1);
 /**
  * This script generates data-only dumps for all tables in the currently active database.
@@ -28,21 +29,37 @@ require_once __DIR__ . '/../generic_includes.php';
 $config = NDB_Config::singleton();
 $databaseInfo = $config->getSetting('database');
 
-// Get all tables in the database
-$tableNames = $DB->pselectCol("
+$tableNames = [];
+
+$allTables = $DB->pselectCol("
                       SELECT TABLE_NAME 
                       FROM INFORMATION_SCHEMA.TABLES
                       WHERE TABLE_SCHEMA =:dbn",
-    array("dbn"=>$databaseInfo['database'])
-);
+        array("dbn"=>$databaseInfo['database'])
+    );
+if ($argc < 2) {
+    $tableNames = $allTables;
+} else {
+    $tableNames = array_slice($argv, 1);
+    $hasErr = false;
+    foreach ($tableNames as $table) {
+        if (!in_array($table, $allTables, true)) {
+            fprintf(STDERR, "Invalid table $table\n");
+            $hasErr = true;
+        }
+    }
+    if ($hasErr) {
+        exit(1);
+    }
+}
 
-$dbUser = $databaseInfo["quatUser"];
-$dbPassword = $databaseInfo["quatPassword"];
+$adminUser = $databaseInfo["adminUser"];
+$adminPassword = $databaseInfo["adminPassword"];
 $dbHost = $databaseInfo["host"];
 
-if (empty($dbUser) || empty($dbPassword) || empty($dbHost)) {
+if (empty($adminUser) || empty($adminPassword) || empty($dbHost)) {
     echo "\n\n Some database credentials are missing, please ensure administrator 
-    credentials (quatUser, quatPassword) and a host value are available in your 
+    credentials (adminUser, adminPassword) and a host value are available in your 
     configuration file. \n\n";
     die();
 }
@@ -71,7 +88,7 @@ if (empty($dbUser) || empty($dbPassword) || empty($dbHost)) {
 foreach ($tableNames as $tableName) {
     $paths = \NDB_Config::singleton()->getSetting('paths');
     $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
-    exec('mysqldump -u '.escapeshellarg($dbUser).' -p'.escapeshellarg($dbPassword).' -h '.escapeshellarg($dbHost).' '.
+    exec('mysqldump -u '.escapeshellarg($adminUser).' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
         escapeshellarg($databaseInfo['database']).' '.
         '--complete-insert '.
         '--no-create-db '.

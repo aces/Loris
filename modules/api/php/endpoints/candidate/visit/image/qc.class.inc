@@ -144,7 +144,6 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request): ResponseInterface
     {
-        $user = $request->getAttribute('user');
         $data = json_decode((string) $request->getBody(), true);
 
         $inputcandid = $data['Meta']['CandID'] ?? null;

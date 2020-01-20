@@ -386,7 +386,7 @@ class Edit_User extends \NDB_Form
                 );
 
                 //get sites where user is already an examiner at for compare
-                foreach ($prev_sites as $row => $center) {
+                foreach ($prev_sites as $center) {
                     array_push($ex_prev_sites, $center['centerID']);
                 }
             }
@@ -1120,8 +1120,8 @@ class Edit_User extends \NDB_Form
                 // The Password class is self-validating and will throw an
                 // InvalidArgumentException if the value passed to it is
                 // bad or the input is too weak to be a good password.
-                $decoded  = htmlspecialchars_decode($plaintext);
-                $password = new \Password($decoded);
+                $decoded = htmlspecialchars_decode($plaintext);
+                new \Password($decoded);
                 $isPasswordDifferent = \User::factory($this->identifier)
                     ->isPasswordDifferent($decoded);
                 if (! $isPasswordDifferent) {
@@ -1200,7 +1200,7 @@ class Edit_User extends \NDB_Form
         //======================================
         if ($editor->hasPermission('examiner_multisite')) {
             $matched = false;
-            foreach ($values as $k => $v) {
+            foreach (array_keys($values) as $k) {
                 if (preg_match("/^ex_[0-9]+$/", $k)) {
                     $matched = true;
                     if ($values['examiner_radiologist'] == '') {
@@ -1286,19 +1286,17 @@ class Edit_User extends \NDB_Form
      *
      * @return string the description.
      */
-    function getDescriptionUsingPermID($permID)
+    function getDescriptionUsingPermID($permID): string
     {
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        $permission = $db->pselectOne(
+        $description = $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             array('pID' => $permID)
         );
-        if (is_array($permission) && count($permission)) {
-            list(,$description) = each($permission[0]);
-        }
-        return $permission;
+
+        return $description;
     }
 
     /**
@@ -1317,4 +1315,3 @@ class Edit_User extends \NDB_Form
         );
     }
 }
-

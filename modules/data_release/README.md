@@ -44,15 +44,8 @@ Note: At the moment, the only way to remove a user's permission to a specific
 
 ## Configurations
 
-- Data release uploads are stored under the
-  `modules/data_release/user_uploads directory`, which can easily be symlinked
-  to another location if necessary. Note that this directory needs to be
-  writable by your web server.
+- `dataReleasePath` designates the target location for release file uploads.
 
 ## Other notes:
 
-- Uploads are stored under the `modules/data_release/user_uploads` directory which 
-can easily be symlinked to another location if necessary, ensure that it can be written 
-to by your web server.
-- Remove permissions by deleting rows in the data_release_permissions table.
 - Upload date will automatically be added during file upload.

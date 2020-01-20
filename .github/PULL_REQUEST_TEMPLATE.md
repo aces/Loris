@@ -5,6 +5,6 @@
 
 1.
 
-#### Links to related tickets (GitHub, Redmine, ...)
+#### Link(s) to related issue(s)
 
-*
+* Resolves #  (Reference the issue this fixes, if any.)

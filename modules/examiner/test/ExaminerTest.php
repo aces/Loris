@@ -171,7 +171,7 @@ class ExaminerTest extends LorisIntegrationTest
         $select  = $this->safeFindElement(WebDriverBy::Name("addSite"));
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("Montreal");
-        $bodyText = $this->safeFindElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
         $this->safeGet($this->url . "/examiner/");
@@ -200,9 +200,6 @@ class ExaminerTest extends LorisIntegrationTest
             'Skipped tests until Travis and React get along better'
         );
         $this->safeGet($this->url . "/examiner/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"

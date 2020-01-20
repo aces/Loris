@@ -10,14 +10,6 @@
     cursor: pointer;
 }
 
-.document-repository-item {
-    word-wrap: break-word;
-}
-
-.bvl-feedback-item {
-    word-wrap: break-word;
-}
-
 .huge {
     font-size: 30px;
 }
@@ -37,19 +29,6 @@
     margin-bottom: 0;
     font-size: 16px;
     color: inherit
-}
-
-.progress {
-    height: 40px;
-    margin-bottom: 0;
-}
-
-.progress-bar-male {
-    background-color: #1C70B6;
-}
-
-.progress-bar-female {
-    background-color: #2FA4E7;
 }
 
 .project-description {

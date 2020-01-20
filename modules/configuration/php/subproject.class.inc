@@ -51,9 +51,9 @@ class Subproject extends \NDB_Form
 
         $subprojectList = \Utility::getSubprojectList();
         $subprojects    = array();
-        foreach ($subprojectList as $subprojectID => $title) {
+        foreach (array_keys($subprojectList) as $subprojectID) {
             $subprojects[$subprojectID]
-                = $config->getSubprojectSettings($subprojectID);
+                = $config->getSubprojectSettings(intval($subprojectID));
         }
         $this->tpl_data['subprojects'] = $subprojects;
 
