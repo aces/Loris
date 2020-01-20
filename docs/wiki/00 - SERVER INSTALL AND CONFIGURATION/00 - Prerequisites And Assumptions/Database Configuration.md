@@ -6,7 +6,7 @@ credential must be created before continuing. (This is not the same as a unix
         `root` credential.) 
 
 After running the install script, you will be prompted to visit the 
-`installdb.php` page at the IP address that LORIS is hosted at.
+`installdb.php` page at the canonical domain of your LORIS instance.
 
 Completing the form on this page will create a new database and user account
 that will be used to execute transactions coming from LORIS's PHP code.
