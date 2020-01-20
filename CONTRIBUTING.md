@@ -17,35 +17,12 @@ some of the factors we'll consider when reviewing your code.
 
 ## Development branches
 
-Please create a fork of the LORIS repository on your own GitHub account and
-push changes to local branches rather than pushing new branches directly 
-to our repository.
+For the most part, changes to the codebase should be sent to the `master`
+branch, which is the default.
 
-You should base your pull requests on one of the following branches
-depending on the kind of change you are making:
-
-#### Bug Fixes
-   - Branch: `bugfix` 
-   - Content: Generally these changes do not require SQL scripts
-   and are concise with the sole objective to correct a single problem
-   in the code.
-
-#### Minor Changes and Small Features
-   - Branch: `minor` 
-   - Content: Features affecting self-contained components such
-   as modules. Additions to Libraries, API, or modules that do not change
-   any function signatures.
-
-#### Major Changes, Non Backwards-Compatible Changes and Large Features
-   - Branch: `major` 
-   - Content: Any change modifying a function signature in a
-   library class. Features require extensive LORIS-wide testing. New
-   complex systems and features spanning across multiple modules and
-   libraries. Deprecated functions clean-up.
-
-For more information about making well-organized pull requests,
-please read our in-depth Wiki page, 
-["Contributing to the Code"](https://github.com/aces/Loris/wiki/Contributing-to-the-Code).
+Small bug fixes for a given version of LORIS should be sent to the branch named
+for that version. For example, fixing a bug in LORIS version 22 should be sent
+to the `22.0-release` branch.
 
 ## Pull Request Title and Description
 
@@ -92,8 +69,9 @@ issues and/or Redmine tickets (if applicable).
 * Add your new automated tests to TravisCI in the `.travis.yml`.
 * Before sending any pull request, make sure you run our static analysis tools 
 using the command `make checkstatic` and fix any resulting errors. Otherwise,
-      your pull request will fail our automatic testing and we will not be able
-      to merge it.
+  your pull request will fail our automatic testing and we will not be able
+  to merge it. If you run the command `git config core.hooksPath .githooks`, git will automatically
+  run `make checkstatic` when you do a git push.
 * Try and make all changes backwards-compatible with existing installations.  
 * If you must change something in a non-backwards-compatible way - or if it 
 would affect the data or custom code of a study - document this in your pull 

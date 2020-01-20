@@ -198,7 +198,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $centerid = array_search(
             $data['Candidate']['Site'],
-            \Utility::getAssociativeSiteList()
+            \Utility::getSiteList()
         );
 
         $pscid = $data['Candidate']['PSCID'] ?? null;

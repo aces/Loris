@@ -98,7 +98,7 @@ class Installer
     {
         return file_exists(__DIR__ . "/../../SQL/0000-00-00-schema.sql")
         && file_exists(__DIR__ . "/../../SQL/0000-00-01-Permission.sql")
-        && file_exists(__DIR__ . "/../../SQL/0000-00-02-Menus.sql")
+        && file_exists(__DIR__ . "/../../SQL/0000-00-02-Modules.sql")
         && file_exists(__DIR__ . "/../../SQL/0000-00-03-ConfigTables.sql")
         && file_exists(__DIR__ . "/../../SQL/0000-00-04-Help.sql");
     }
@@ -237,7 +237,7 @@ class Installer
         if ($this->_sourceSchemaFile($DB, "01-Permission.sql") == false) {
             return false;
         };
-        if ($this->_sourceSchemaFile($DB, "02-Menus.sql") == false) {
+        if ($this->_sourceSchemaFile($DB, "02-Modules.sql") == false) {
             return false;
         };
         if ($this->_sourceSchemaFile($DB, "03-ConfigTables.sql") == false) {
@@ -449,8 +449,7 @@ class Installer
                 'q_host' => $connectHost,
             ]
         );
-        $results    = $userExistsQ->fetchAll(\PDO::FETCH_ASSOC);
-        $userExists = false;
+        $results = $userExistsQ->fetchAll(\PDO::FETCH_ASSOC);
 
         $quotedUser = $DB->PDO->quote($values['lorismysqluser']) .
         '@' . $DB->PDO->quote($connectHost);

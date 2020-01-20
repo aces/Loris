@@ -138,7 +138,6 @@ class ServerProcessesMonitor
         // retrieved from the database
         //---------------------------------------------------
         $serverProcessFactory = new ServerProcessFactory();
-        $processes            = array();
         $savedProcesses       = array();
         foreach ($rows as $row) {
             $savedProcesses[$row['id']] = $serverProcessFactory->getServerProcess(
@@ -175,11 +174,11 @@ class ServerProcessesMonitor
 
             if (is_null($matchingProcess)) {
                 // No process with this id. Unknown id = unknown state
-                $state     = 'UNKNOWN_ID';
-                $progress  = null;
-                $exit_code = null;
-                $endTime   = null;
-                $exitText  = null;
+                $state    = 'UNKNOWN_ID';
+                $progress = null;
+                $exitCode = null;
+                $endTime  = null;
+                $exitText = null;
             } elseif ($matchingProcess->isRunning()) {
                 // We found a matching process. If it is running, compute current
                 // progress

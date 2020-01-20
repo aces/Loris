@@ -286,7 +286,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-            return (new \Zend\Diactoros\Response())
+            return (new \Laminas\Diactoros\Response())
                         ->withBody($this);
     }
 }

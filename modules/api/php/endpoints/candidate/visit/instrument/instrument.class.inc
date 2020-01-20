@@ -152,7 +152,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
-        $user = $request->getAttribute('user');
         // TODO :: Check permissions. How??
 
         if (!$this->_instrument->determineDataEntryAllowed()) {
@@ -191,7 +190,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
-        $user = $request->getAttribute('user');
         // TODO :: Check permissions. How??
 
         if (!$this->_instrument->determineDataEntryAllowed()) {

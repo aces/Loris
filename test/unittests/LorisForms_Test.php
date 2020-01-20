@@ -26,6 +26,8 @@ use PHPUnit\Framework\TestCase;
  */
 class LorisForms_Test extends TestCase
 {
+    protected $form;
+
     /**
      * Creates a new LorisForm to use for testing
      *

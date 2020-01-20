@@ -632,20 +632,20 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             if ($type == 'multiple') {
                                 $Group['Elements'][]
                                     = $this->form->createElement(
-                                    'select',
-                                    $pieces[1],
-                                    $pieces[2],
-                                    $opt,
-                                    "multiple"
-                                );
+                                        'select',
+                                        $pieces[1],
+                                        $pieces[2],
+                                        $opt,
+                                        "multiple"
+                                    );
                             } else {
                                 $Group['Elements'][]
                                     = $this->form->createElement(
-                                    'select',
-                                    $pieces[1],
-                                    $pieces[2],
-                                    $opt
-                                );
+                                        'select',
+                                        $pieces[1],
+                                        $pieces[2],
+                                        $opt
+                                    );
                             }
                         } else {
                             if ($type == 'multiple') {
@@ -685,11 +685,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             print "Creating $pieces[1] with label: $pieces[2]";
                             $Group['Elements'][]
                                 = $this->form->createElement(
-                                'static',
-                                $pieces[1],
-                                null,
-                                $pieces[2]
-                            );
+                                    'static',
+                                    $pieces[1],
+                                    null,
+                                    $pieces[2]
+                                );
                         } else {
                             $this->form->addElement(
                                 'static',

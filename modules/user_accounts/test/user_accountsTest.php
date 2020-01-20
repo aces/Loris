@@ -41,23 +41,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private const ADMIN_EMAIL     = 'admin@example.com';
     private const ADMIN_EMAIL_NEW = 'tester@example.com';
 
-
-    private static $_UNITTESTER = array(
-        'Data Coordinating Center',
-        'UnitTester',
-        'Unit Tester',
-        'tester@example.com',
-        'Y',
-        'N',
-    );
-    private static $_ADMIN      = array(
-        'Data Coordinating Center',
-        'admin',
-        'Admin account',
-        'admin@example.com',
-        'Y',
-        'N',
-    );
     private $_name        = "#userAccounts_filter".
                                 " > div > div > fieldset > div:nth-child(3)".
                                 " > div > div > input";

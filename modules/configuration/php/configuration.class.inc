@@ -139,7 +139,7 @@ class Configuration extends \NDB_Form
             if ($setting['Disabled'] == 'No') {
                 $value = $this->DB->pselect(
                     "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
-                    array('ID' => $setting{'ID'})
+                    array('ID' => $setting['ID'])
                 );
                 if ($value) {
                     foreach ($value as $subvalue) {

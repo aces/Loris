@@ -5,11 +5,8 @@ language: php
 
 matrix:
   include:
-  - php: "7.2"
   - php: "7.3"
-  - php: "7.4snapshot"
-  allow_failures:
-  - php: "7.4snapshot"
+  - php: "7.4"
 
 services:
 - docker
@@ -22,7 +19,7 @@ install:
 - make dev
 
 before_script:
-- sed -i "s/7.2/$TRAVIS_PHP_VERSION/g" Dockerfile.test.php7
+- sed -i "s/7.3/$TRAVIS_PHP_VERSION/g" Dockerfile.test.php7
 
 script:
 # Unable to initialize database, use the following code to debug. - docker-compose up --build

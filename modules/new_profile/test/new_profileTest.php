@@ -127,10 +127,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$this->dtc').value='2015-01-01'"
         );
 
-        $startVisit =  $this->webDriver->executescript(
+        $this->webDriver->executescript(
             "document.querySelector('$this->btn').click()"
         );
-        $bodyText   = $this->webDriver->executescript(
+        $bodyText = $this->webDriver->executescript(
             "return document.querySelector('#default-panel').textContent"
         );
 

@@ -70,19 +70,21 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     private function _validateSessionTableContents($expectedSessions)
     {
-        $sessionTable   = $this->webDriver->findElements(
+        $sessionTable        = $this->webDriver->findElements(
             WebDriverBy::ClassName('dynamictable')
         );
-        $actualSessions = $sessionTable[1]->findElements(
+        $actualSessions      = $sessionTable[1]->findElements(
             WebDriverBy::xpath('.//tbody//tr')
         );
+        $numActualSessions   = count($actualSessions);
+        $numExpectedSessions = count($expectedSessions);
         $this->assertEquals(
-            count($actualSessions),
-            count($expectedSessions),
-            "Number of visits should be " . count($expectedSessions)
-            . ", not " . count($actualSessions)
+            $numActualSessions,
+            $numExpectedSessions,
+            "Number of visits should be " . $numExpectedSessions
+            . ", not " . $numActualSessions
         );
-        for ($i=0; $i<count($actualSessions); $i++) {
+        for ($i=0; $i<$numActualSessions; $i++) {
             $elements      = $actualSessions[$i]->findElements(
                 WebDriverBy::xpath('.//td')
             );

@@ -121,9 +121,6 @@ class GWAS_Browser extends \NDB_Menu_Filter
     {
         parent::setup();
 
-        // create user object
-        $user = \User::singleton();
-
         // add form elements
         $show_results_options = array(
             'brief' => 'Summary fields',

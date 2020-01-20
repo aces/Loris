@@ -247,6 +247,7 @@ class CandidateListIndex extends Component {
           options: {
             'Male': 'Male',
             'Female': 'Female',
+            'Other': 'Other',
           },
         },
       },

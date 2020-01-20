@@ -50,7 +50,7 @@ class Process
      *
      * @var string
      */
-    private $_errfile;
+    private $_errFile;
 
     /**
      * Full path ot the file containing the command exit code.
@@ -161,6 +161,7 @@ class Process
             throw new \RuntimeException(
                 "Command ($mainCmd ; $getExitCodeCmd) > /dev/null 2> /dev/null"
                 . " & echo $! could not be started: error code = $returnStatus"
+                . ". Output from exec = " . implode("\n", $execOutput)
             );
         }
     }

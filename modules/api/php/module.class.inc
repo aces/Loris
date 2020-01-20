@@ -104,4 +104,14 @@ class Module extends \Module
         // for the API module.
         return $handler->process($newrequest, $handler);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "API";
+    }
 }

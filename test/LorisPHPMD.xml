@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<ruleset name="LORIS Codebase PHPMD ruleset"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0
+                     http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="
+                     http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>
+            LORIS Codebase PHPMD ruleset
+    </description>
+
+    <!-- Import the entire unused code rule set -->
+    <rule ref="rulesets/unusedcode.xml">
+        <!-- This rule has known bugs in the PHPMD tool and doesn't correctly
+             recognize when methods are used as callbacks. When this is fixed
+             by the maintainers of PHPMD we should use this rule. -->
+        <exclude name="UnusedPrivateMethod" />
+        <!-- parameters are sometimes necessary for interfaces, so don't worry
+            about them not being used -->
+        <exclude name="UnusedFormalParameter" />
+    </rule>
+
+    <rule ref="rulesets/design.xml">
+        <exclude name="EmptyCatchBlock" />
+        <exclude name="CouplingBetweenObjects" />
+        <exclude name="GotoStatement" />
+        <exclude name="NumberOfChildren" />
+        <exclude name="DepthOfInheritance" />
+        <exclude name="CountInLoopExpression" />
+        <exclude name="ExitExpression" />
+    </rule>
+</ruleset>

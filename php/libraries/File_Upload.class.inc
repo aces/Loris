@@ -512,7 +512,7 @@ class File_Upload
     {
         $done = false;
         $i    = 0;
-        while ($done==false) {
+        do {
             $ext      =str_pad((string) $i, 3, "0", STR_PAD_LEFT);
             $filename =$this->getSplitFilename($name);
             $new_name =$filename['name']."-".$ext.$filename['ext'];
@@ -520,7 +520,7 @@ class File_Upload
                 $done =true;
             }
             $i++;
-        }
+        } while ($done==false);
         return $new_name;
     }
 
