@@ -159,8 +159,8 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Upload the dicom file and add it to the timepoint's MRIUploads
-     * A successful upload should return a 303 response toward this dicom
+     * Upload the DICOM study file and add it to the timepoint's MRIUploads
+     * A successful upload should return a 303 response toward this DICOM
      * processes.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request

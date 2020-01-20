@@ -854,9 +854,9 @@ A successful request will be answered by a `303 See Other` response with its
 ### 5.2 Tar Level Data  
 
 This section describe how to upload DICOM studies and how to start and monitor
-mri_upload processes.
+`mri_upload` processes.
 
-Dicoms that have been successfuly uploaded and processed can be downloaded with 
+DICOM studies that have been successfully uploaded and processed can be downloaded with 
 the following `GET` request:
 
 ```
@@ -868,13 +868,13 @@ files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
 scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
 
-To get a list of the processes and their status, run on that dicom use the following:
+To get a list of the processes and their status for a given DICOM study previously uploaded use the following:
 
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes
 ```
 
-The response contain all mri_upload attemps with the specified `$tarname`. And for
+The response contain all `mri_upload` attempts with the specified `$tarname`. And for
  each of them, a list of processes status.
 
 
@@ -905,8 +905,8 @@ Response shape:
 that `mri_upload`.
 
 
-To start an mri_upload process on a previously uploaded dicom, a POST request
-containing the mri_upload_id in the request body should be sent.
+To start an `mri_upload` process on a previously uploaded DICOM study, a POST request
+containing the `mri_upload_id` in the request body should be sent.
 
 ```
 POST /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes

@@ -18,7 +18,7 @@ use \LORIS\server_processes_manager\ServerProcessLauncher;
 use \LORIS\server_processes_manager\ServerProcessesMonitor;
 
 /**
- * A class for handling request for a visit specific dicom processes.
+ * A class for handling request for a visit specific DICOM processes.
  *
  * @category API
  * @package  Loris
@@ -36,7 +36,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private $_visit;
 
     /**
-     * The requested dicom filename
+     * The requested DICOM filename
      *
      * @var string
      */
@@ -51,7 +51,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Contructor
      *
      * @param \Timepoint $visit   The requested visit
-     * @param string     $tarname The dicom filename
+     * @param string     $tarname The DICOM study filename
      */
     public function __construct(\Timepoint $visit, string $tarname)
     {
@@ -84,7 +84,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request to a Dicom file processes.
+     * Handles a request to a DICOM file processes.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -157,7 +157,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Launch the MRI pipeline for the dicom.
+     * Launch the MRI pipeline on the DICOM study.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
