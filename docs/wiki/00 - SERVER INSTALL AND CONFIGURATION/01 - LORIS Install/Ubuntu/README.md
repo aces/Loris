@@ -9,7 +9,7 @@ We also have instructions for how to set up LORIS for macOS. However, only
  Ubuntu and CentOS are officially supported by the team so we may be unable to
  help you with issues arising on other systems.
 
-When you've completed this guide, you should be able to load and log into LORIS in your browser. Further setup to customize LORIS for your project will be required after tha. Please visit
+When you've completed this guide, you should be able to load and log into LORIS in your browser. Further setup to customize LORIS for your project will be required after that. Please visit
 [the Setup page](https://github.com/aces/Loris/wiki/Setup) in order to complete the setup for LORIS.
 
 ## Prequisities
@@ -92,6 +92,9 @@ mv aces-Loris-9e30cf0 loris
 Then move this folder to the web root (e.g. `/var/www/`) and go to this 
 directory.
 
+```bash
+mv ./loris /var/www/; cd /var/www/loris
+
 ### If installing LORIS for production
 
 ```bash
@@ -117,7 +120,7 @@ The next step in setting up LORIS is running the script `install.sh` in the
 This will begin an interactive setup process that will configure files and
 permissions required to get LORIS up and running.
 
-The install script will prompt for a the user password in order to use `sudo` permission for configuring
+The install script will prompt for the user password in order to use `sudo` permission for configuring
 certain file permissions as well as Apache. However, the script should not
 be run as `root` and will exit automatically if it detects that it has been
 executed with superuser permissions.
