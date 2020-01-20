@@ -181,20 +181,30 @@ class UploadFileForm extends Component {
       body: formObj,
       cache: 'no-cache',
     }).then( (response) => {
-      // Add file to the list of existing files
-      let files = JSON.parse(JSON.stringify(this.state.data.files));
-      files.push(formData.file.name);
-
-      // Trigger an update event to update all observers (i.e. DataTable)
-      let event = new CustomEvent('update-datatable');
-      window.dispatchEvent(event);
-      this.setState({
-        files: files,
-        formData: {}, // reset form data after successful file upload
-        uploadProgress: -1,
-      });
-      swal('Upload Successful!', '', 'success');
-      this.props.fetchData();
+      console.log(response);
+      if (!response.ok) {
+        let msg = response.statusText ? response.statusText : 'Upload error!';
+        this.setState({
+          errorMessage: msg,
+          uploadProgress: -1,
+        });
+        swal(msg, '', 'error');
+        console.error(msg);
+      } else {
+        // Add file to the list of existing files
+        let files = JSON.parse(JSON.stringify(this.state.data.files));
+        files.push(formData.file.name);
+        // Trigger an update event to update all observers (i.e. DataTable)
+        let event = new CustomEvent('update-datatable');
+        window.dispatchEvent(event);
+        this.setState({
+          files: files,
+          formData: {}, // reset form data after successful file upload
+          uploadProgress: -1,
+        });
+        swal('Upload Successful!', '', 'success');
+        this.props.fetchData();
+      }
     }).catch( (error) => {
       let msg = error.message ? error.message : 'Upload error!';
       this.setState({
