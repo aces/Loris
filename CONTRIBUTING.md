@@ -77,8 +77,8 @@ using the command `make checkstatic` and fix any resulting errors. Otherwise,
 would affect the data or custom code of a study - document this in your pull 
 request description and tag it with **Caveat for Existing Projects**. 
 This helps us to document our release notes.
-* In addition to the above guidelines, we use [Alex JS](https://github.com/get-alex/alex) 
-to help us create documentation that is friendly and accessible.
+* You can run the command `make checklanguage` to ensure that documentation
+you've contributed contains language that is friendly and accessible.
 
 If you're unsure about any of the above, feel free to ask us for
 clarification via the mailing list.
