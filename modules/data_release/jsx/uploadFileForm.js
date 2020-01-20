@@ -181,7 +181,6 @@ class UploadFileForm extends Component {
       body: formObj,
       cache: 'no-cache',
     }).then( (response) => {
-      console.log(response);
       if (!response.ok) {
         let msg = response.statusText ? response.statusText : 'Upload error!';
         this.setState({
@@ -202,7 +201,13 @@ class UploadFileForm extends Component {
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal('Upload Successful!', '', 'success');
+        swal({
+          text: 'Upload Successful!',
+          title: '',
+          type: 'success',
+        }, function() {
+          window.location.assign('/data_release');
+        });
         this.props.fetchData();
       }
     }).catch( (error) => {

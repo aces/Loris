@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import DataTable from 'jsx/DataTable.js';
-import swal from 'sweetalert2';
 
 /**
  * Manage Permissions Form
@@ -176,13 +175,19 @@ class ManagePermissionsForm extends Component {
       cache: 'no-cache',
     }).then( (response) => {
       if (response.ok) {
-        swal('Permission Update Success!', '', 'success');
+        swal({
+          text: 'Permission Update Success!',
+          title: '',
+          type: 'success',
+        }, function() {
+          window.location.assign('/data_release');
+        });
         this.props.fetchData();
+      } else {
+        let msg = response.statusText ? response.statusText : 'Submission Error!';
+        swal(msg, '', 'error');
+        console.error(msg);
       }
-    }).catch( (error) => {
-      let msg = error.message ? error.message : 'Submission Error!';
-      swal(msg, '', 'error');
-      console.error(error);
     });
   }
 }

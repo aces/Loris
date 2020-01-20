@@ -84,7 +84,10 @@ class DataReleaseIndex extends Component {
     let result = <td>{cell}</td>;
     switch (column) {
       case 'File Name':
-        if (this.props.hasPermission('superuser')) {
+        if (this.props.hasPermission('superuser')
+            || this.props.hasPermission('data_release_view')
+            || this.props.hasPermission('data_release_upload')
+            || this.props.hasPermission('data_release_edit_file_access')) {
           const downloadURL = loris.BaseURL + '/data_release/ajax/GetFile.php?File=' +
             encodeURIComponent(row['File Name']);
           result = (

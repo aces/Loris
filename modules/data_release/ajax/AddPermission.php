@@ -58,12 +58,12 @@ if ($_GET['action'] == 'addpermission') {
         $userid = $_POST['userid'];
         $data_release_version = $_POST['data_release_version'] == 'Unversioned'
                                 ? '' : $_POST['data_release_version'];
-
-        $IDs = $DB->pselectCol(
-            "SELECT id 
-                    FROM data_release 
-                    WHERE version=:drv",
-            array('drv' => $data_release_version)
+        $query  = "SELECT id FROM data_release WHERE ";
+        $query .= $data_release_version == ''
+                  ? "version IS NULL OR version=:drv" : "version=:drv";
+        $IDs    = $DB->pselectCol(
+            $query,
+            array(':drv' => $data_release_version)
         );
         foreach ($IDs as $ID) {
             $DB->insertIgnore(
@@ -233,8 +233,8 @@ function getManagePermissionsData(): void
 
     $data_table_values = [];
     $index = 0;
-    foreach ($users as $userid => $username) {
-        foreach ($vFiles as $versionName => $versionFiles) {
+    foreach ($users as $username) {
+        foreach (array_keys($vFiles) as $versionName) {
             $hasPermission = false;
             if (in_array($versionName, $prePermissions[$username])) {
                 $hasPermission = true;

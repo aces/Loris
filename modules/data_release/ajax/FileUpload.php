@@ -46,8 +46,8 @@ if ($_GET['action'] == 'upload') {
             $DB->insert(
                 'data_release',
                 array(
-                    'file_name' => $fileName,
-                    'version' => $version,
+                    'file_name'   => $fileName,
+                    'version'     => $version,
                     'upload_date' => $upload_date,
                 )
             );
@@ -58,7 +58,7 @@ if ($_GET['action'] == 'upload') {
             );
             // get the ID of the file inserted in the data_release table
             $version_where = $version ? "version=:version" : "version IS :version";
-            $ID = $DB->pselectOne(
+            $ID            = $DB->pselectOne(
                 "SELECT 
                id 
              FROM 
@@ -68,8 +68,8 @@ if ($_GET['action'] == 'upload') {
                AND $version_where
                AND upload_date=:upload_date",
                 array(
-                    'file_name' => $fileName,
-                    'version' => $version,
+                    'file_name'   => $fileName,
+                    'version'     => $version,
                     'upload_date' => $upload_date,
                 )
             );
@@ -77,7 +77,7 @@ if ($_GET['action'] == 'upload') {
             $DB->insert(
                 'data_release_permissions',
                 array(
-                    'userid' => $user_ID,
+                    'userid'          => $user_ID,
                     'data_release_id' => $ID,
                 )
             );
