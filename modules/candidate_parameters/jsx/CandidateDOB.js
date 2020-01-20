@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
-import swal from 'sweetalert2';
 
 class CandidateDOB extends Component {
   constructor(props) {
@@ -111,7 +110,12 @@ class CandidateDOB extends Component {
     let dob = this.state.formData.dob ?
       this.state.formData.dob : null;
     if (dob > today) {
-      swal('Error!', 'Date of birth cannot be later than today!', 'error');
+      swal({
+        title: 'Error!',
+        text: 'Date of birth cannot be later than today!',
+        type: 'error',
+        confrimButtonText: 'OK',
+      });
       return;
     }
     // Set form data and upload the media file
@@ -135,13 +139,22 @@ class CandidateDOB extends Component {
     })
     .then((resp) => {
         if (resp.ok && resp.status === 200) {
-            swal('Success!', 'Date of birth updated.', 'success').then((result) => {
-                if (result.value) {
-                    this.fetchData();
-                }
-            });
+          swal({
+            title: 'Success!',
+            text: 'Date of birth updated!',
+            type: 'success',
+            confrimButtonText: 'OK',
+          });
+          if (result.value) {
+              this.fetchData();
+          }
         } else {
-            swal('Error!', 'Something went wrong', 'error');
+          swal({
+            title: 'Error!',
+            text: 'Something went wrong.',
+            type: 'error',
+            confrimButtonText: 'OK',
+          });
         }
     })
     .catch((error) => {
