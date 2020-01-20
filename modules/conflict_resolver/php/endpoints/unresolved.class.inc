@@ -233,7 +233,7 @@ class Unresolved extends Endpoint implements ETagCalculator
 
         $instrument->_saveValues(array($conflict['FieldName'] => $correctanswer));
 
-        // Using an output buffer because the scode function prints to STDOUT
+        // Using an output buffer because the score function prints to STDOUT
         ob_start();
         $instrument->score();
         $error = ob_get_contents();

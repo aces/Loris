@@ -64,7 +64,7 @@ class Module extends \Module
         return $handler->process($request, $handler);
     }
 
-    /*
+    /**
      * {@inheritDoc}
      *
      * @param \User $user The user whose access is being checked.

@@ -1,0 +1,260 @@
+openapi: 3.0.1
+info:
+  title: LORIS - Conflict Resolver Module
+  description: Endpoints available for the Conflict Resolver module
+  contact:
+    name: LORIS Development Team
+    url: 'https://github.com/aces/loris'
+  license:
+    name: 'GNU Public License, Version 3'
+    url: 'https://opensource.org/licenses/GPL-3.0'
+  version: 1.0.0
+servers:
+  - url: /
+paths:
+  /conflict_resolver:
+    get:
+      tags:
+        - Conflict Resolver
+      summary: Generates the html page for this module including the React component. 
+      responses:
+        '200':
+          description: The html page with menu, breadcrumbs and the React component that interact with the backend for data requests and submission.
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /conflict_resolver/unresolved:
+    get:
+      tags:
+        - Conflict Resolver
+      summary: Get all unresolved conflicts
+      responses:
+        '200':
+          description: An object containing the data and fieldOptions where data are the conflicts and fieldOptions are the options for the available filters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnresolvedMenuFilterResponse'
+    post:
+      tags:
+        - Conflict Resolver
+      summary: Fix a given conflict by providing the correct answer.
+      description: user to add to the system
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FixConflictRequestBody'
+      responses:
+        200:
+          description: Conflicx fixed
+
+  /conflict_resolver/resolved:
+    get:
+      tags:
+        - Conflict Resolver
+      summary: Get all resolved conflicts
+      responses:
+        '200':
+          description: An object containing the data and fieldOptions where data are the conflicts and fieldOptions are the options for the available filters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResolvedMenuFilterResponse'          
+components:
+  schemas:
+    FixConflictRequestBody:
+      type: object
+      properties:
+        conflictid:
+          type: integer
+        correctanswer:
+          type: string
+          
+    ResolvedMenuFilterResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ResolvedMenuData'
+        fieldOptions:
+          $ref: '#/components/schemas/ResolvedFiltersOptions'
+      example:
+        data:
+          - ResolvedID: '1126'
+            Project: Pumpernickel
+            Site: Montreal
+            CandID: '300054'
+            PSCID: MTL054
+            Visit Label: V1
+            Instrument: bmi
+            Question: height_inches
+            Value 1: '2'
+            Value 2: '5'
+            Correct Answer: '1'
+            User 1: admin
+            User 2: admin
+            Resolver: admin
+            ResolutionTimestamp: '2019-09-09 16:16:00'
+        fieldOptions:
+          site:
+            Data Coordinating Center: Data Coordinating Center
+            Montreal: Montreal
+            Ottawa: Ottawa
+            Rome: Rome
+          instrument:
+            aosi: AOSI
+            bmi: BMI Calculator
+            medical_history: Medical History
+            mri_parameter_form: MRI Parameter Form
+            radiology_review: Radiology review
+            your_name: your (best) name
+          visitLabel:
+            V1: V1
+            V2: V2
+            V3: V3
+            V4: V4
+            V5: V5
+            V6: V6
+          project:
+            Pumpernickel: Pumpernickel
+            Rye: Rye
+            Challah: Challah
+            loris: loris
+            
+    ResolvedMenuData:
+      type: array
+      items:
+        type: object
+        properties:
+          ResolvedID:
+            type: string
+          Project:
+            type: string
+          Site:
+            type: string
+          CandID:
+            type: string
+          PSCID:
+            type: string
+          Visit Label:
+            type: string
+          Instrument:
+            type: string
+          Question:
+            type: string
+          Value 1:
+            type: string
+          Value 2:
+            type: string
+          Correct Answer:
+            type: string
+          User 1:
+            type: string
+          User 2:
+            type: string
+          Resolver:
+            type: string
+          ResolutionTimestamp:
+            type: string
+            
+    ResolvedFiltersOptions:
+      type: object
+      properties:
+        site: 
+          type: object
+        instrument: 
+          type: object
+        visitLabel: 
+          type: object
+        project: 
+          type: object
+          
+    UnresolvedMenuFilterResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UnresolvedMenuData'
+        fieldOptions:
+          $ref: '#/components/schemas/UnresolvedFiltersOptions'
+      example:
+        data:
+          ConflictID: '2087'
+          Project: Pumpernickel
+          Site: Montreal
+          CandID: '300114'
+          PSCID: MTL114
+          Visit Label: V1
+          Instrument: bmi
+          Question: height_feet
+          Value 1: '5'
+          Value 2: '4'
+        fieldOptions:
+          site:
+            Data Coordinating Center: Data Coordinating Center
+            Montreal: Montreal
+            Ottawa: Ottawa
+            Rome: Rome
+          instrument:
+            aosi: AOSI
+            bmi: BMI Calculator
+            medical_history: Medical History
+            mri_parameter_form: MRI Parameter Form
+            radiology_review: Radiology review
+          visitLabel:
+            V1: V1
+            V2: V2
+            V3: V3
+            V4: V4
+            V5: V5
+            V6: V6
+          project:
+            Pumpernickel: Pumpernickel
+            Rye: Rye
+            Challah: Challah
+            loris: loris
+        
+    UnresolvedMenuData:
+      type: array
+      items:
+        type: object
+        properties:
+          ConflictID:
+            type: string
+          Project:
+            type: string
+          Site:
+            type: string
+          CandID:
+            type: string
+          PSCID:
+            type: string
+          Visit Label:
+            type: string
+          Instrument:
+            type: string
+  
+    UnresolvedFiltersOptions:
+      type: object
+      properties:
+        site:
+          type: object
+        instrument:
+          type: object
+        visitLabel: 
+          type: object
+        project: 
+          type: object
+          
+    
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+security:
+  - ApiKeyAuth: []
+
