@@ -59,7 +59,7 @@ class DICOMArchiveRow implements \LORIS\Data\DataInstance
      *
      * @return integer The CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID()
     {
         return $this->CenterID;
     }
