@@ -689,6 +689,20 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     }
 
     /**
+     * Returns the candidate's calculated age today
+     *
+     * @return int The candidate's age today
+     */
+    public function getAge(): int
+    {
+        $ageArray = \Utility::calculateAge(
+            $this->candidateInfo["DoB"],
+            (new DateTime())->format('Y-m-d')
+        );
+        return $ageArray['year'];
+    }
+
+    /**
      * Returns list of consents and their respective statuses for this candidate
      *
      * @return array List of consents and their associated values for this candidate
