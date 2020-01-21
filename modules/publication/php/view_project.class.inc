@@ -91,9 +91,7 @@ class View_Project extends \NDB_Form
      */
     function getCSSDependencies() : array
     {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
+        $deps = parent::getCSSDependencies();
         return array_merge(
             $deps,
             array()

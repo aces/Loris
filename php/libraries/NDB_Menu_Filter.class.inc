@@ -595,14 +595,19 @@ class NDB_Menu_Filter extends NDB_Menu
         $this->setTemplateVar('rowsPerPage', $rowsPerPage);
         $this->setTemplateVar('pageID', $pageID);
 
-        $this->setTemplateVar(
-            'filterfield',
-            $_GET['filter']['order']['field'] ?? ''
-        );
-        $this->setTemplateVar(
-            'filterfieldOrder',
-            $_GET['filter']['order']['fieldOrder'] ?? ''
-        );
+        if (is_array($_GET['filter']['order'])) {
+            $this->setTemplateVar(
+                'filterfield',
+                $_GET['filter']['order']['field'] ?? ''
+            );
+            $this->setTemplateVar(
+                'filterfieldOrder',
+                $_GET['filter']['order']['fieldOrder'] ?? ''
+            );
+        } else {
+            $this->setTemplateVar('filterfield', '');
+            $this->setTemplateVar('filterfieldOrder', '');
+        }
 
         // print out column headings
         $i = 0;

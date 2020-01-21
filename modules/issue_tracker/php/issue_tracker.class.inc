@@ -115,22 +115,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             $assignees[$a_row['UserID']] = $a_row['Real_name'];
         }
 
-        //modules
-        $modules          = [];
-        $modules_expanded = $db->pselect(
-            "SELECT DISTINCT Label,
-                    ID 
-             FROM LorisMenu 
-             WHERE Parent IS NOT NULL
-             ORDER BY Label",
-            []
-        );
-        foreach ($modules_expanded as $r_row) {
-            $resultValue = $r_row['Label'];
-            if ($resultValue) {
-                $modules[$resultValue] = $resultValue;
-            }
-        }
+        $modules = \Module::getActiveModules($db);
 
         $priorities = array(
             'normal'    => 'Normal',
@@ -160,12 +145,6 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
                 $categories[$categoryName] = $categoryName;
             }
         }
-
-        $dateOptions = array(
-            'language'       => 'en',
-            'format'         => 'YMdHis',
-            'addEmptyOption' => true,
-        );
 
         $fieldOptions = [
             'modules'    => $modules,

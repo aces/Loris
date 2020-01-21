@@ -20,9 +20,6 @@ Note that integration tests are run by Travis via GitHub and out of the scope of
 
 ## Setup
 
-**<span style="text-decoration:underline;">A note on Branching:</span>** LORIS test development should be done on the _major_ branch by convention.  However links in this guide sometimes point to the branch holding the latest release (_master)_.
-
-
 ### **Setting up your Test Dev Environment**
 
 A very similar set-up guide can be found in the [README.md](https://github.com/aces/Loris/blob/master/test/README.md) in the test directory. 
@@ -57,7 +54,7 @@ Run the command `npm run tests:unit` to execute all unit tests. The first time t
 
 ### **How to Run Tests**
 
-To run all unit tests under [test/unittests](https://github.com/aces/Loris/tree/major/test/unittests), use the command below. (Run this from the LORIS root directory and NOT inside the test directory.)
+To run all unit tests under [test/unittests](https://github.com/aces/Loris/tree/master/test/unittests), use the command below. (Run this from the LORIS root directory and NOT inside the test directory.)
 
 
    `npm run tests:unit`
@@ -123,19 +120,19 @@ If any tests produce a failure or error, a big red error message will appear in 
 `"tests:unit": "./test/dockerized-unit-tests.sh"`
 
 
-So, the script runs the contents of [test/dockerized-unit-tests.sh](https://github.com/aces/Loris/blob/major/test/dockerized-unit-tests.sh). If we take a look at this file, it runs the unit tests using docker-compose and vendor/bin/phpunit. It specifies which tests to run with this line: 
+So, the script runs the contents of [test/dockerized-unit-tests.sh](https://github.com/aces/Loris/blob/master/test/dockerized-unit-tests.sh). If we take a look at this file, it runs the unit tests using docker-compose and vendor/bin/phpunit. It specifies which tests to run with this line: 
 
 
 `--configuration test/phpunit.xml --testsuite LorisUnitTests $*`
 
 
-The list of tests to run is defined in [test/phpunit.xml](https://github.com/aces/Loris/blob/major/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the `test/unittests/` directory!
+The list of tests to run is defined in [test/phpunit.xml](https://github.com/aces/Loris/blob/master/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the `test/unittests/` directory!
 
 
 ### **Troubleshooting**
 **General Errors:**
 
-If  the _major_ branch has been updated on the Loris repo, and your test-dev environment is now out of sync (branch and/or database) you will see seemingly unrelated errors like: 	
+If the remote branch has been updated on the LORIS repository and your test-dev environment is now out of sync (branch and/or database) you will see seemingly unrelated errors like:
 
 Example A:
 
@@ -150,9 +147,9 @@ ERROR: Service 'unit-tests' failed to build: The command '/bin/sh -c apt-get upd
 
 **How to fix:**
 
-You will need to update your environment to the major branch: 
+You will need to update your environment to include the latest changes from LORIS.
 
-Rebase your branch and update your database. It is convenient to reload a backup of your database and then run the patches needed to update it to _major_. **Only** reload a backup of your database if nothing else is working!
+Rebase your branch and update your database. It is convenient to reload a backup of your database and then run the patches needed to update it. **Only** reload a backup of your database if nothing else is working!
 
 After rebasing, you will need to run these commands, which resets your docker-compose environment. 
 
@@ -278,7 +275,7 @@ Here is an example of this, taken from [Loris_PHPUnit_Database_TestCase.php](htt
 
 [PHPUnit documentation](https://phpunit.readthedocs.io/en/8.2/writing-tests-for-phpunit.html#data-providers)
 
-Example Implementation: [test/unittests/UtilityTest.php::testCalculateAgeFormat](https://github.com/aces/Loris/blob/major/test/unittests/UtilityTest.php#L200)
+Example Implementation: [test/unittests/UtilityTest.php::testCalculateAgeFormat](https://github.com/aces/Loris/blob/master/test/unittests/UtilityTest.php#L200)
 
 Data providers are used to provide an array of different inputs to a test. 
 
@@ -432,7 +429,7 @@ This will make testing a lot easier. See issues #[4989](https://github.com/aces/
 
 **1. With the ‘pselect’-style database method**
 
-   Example implementation: [test/unittests/UtilityTest.php](https://github.com/aces/Loris/blob/major/test/unittests/UtilityTest.php) -- Not including the first 2 tests!
+   Example implementation: [test/unittests/UtilityTest.php](https://github.com/aces/Loris/blob/master/test/unittests/UtilityTest.php) -- Not including the first 2 tests!
 
 
 	
@@ -519,7 +516,7 @@ public function testExample()
 
 **2. With the ‘setFakeTableData’ database method**
 
-Example implementation: [test/unittests/UserTest.php](https://github.com/aces/Loris/blob/major/test/unittests/UserTest.php)
+Example implementation: [test/unittests/UserTest.php](https://github.com/aces/Loris/blob/master/test/unittests/UserTest.php)
 
 **This is not a ‘pure’ unit test because it does not use a mock database! Instead, you are
 essentially creating a database object and inputting fake tables into it, which means that these tests usually take longer to execute.**
@@ -620,7 +617,7 @@ $this->_dbMock->setFakeTableData(
 
 **Important:**
 
-**The table should only be added once**. So, setFakeTableData should never be included in the setUp method because you will get a “Table already exists” error after the first test is run. If you create some helper method, like “_setUpFakeTables” that adds tables that will be used in every test, **it should still only be run once**, like in the first test. See [test/unittests/UserTest.php](https://github.com/aces/Loris/blob/major/test/unittests/UserTest.php) on the major branch for an example. 
+**The table should only be added once**. So, setFakeTableData should never be included in the setUp method because you will get a “Table already exists” error after the first test is run. If you create some helper method, like “_setUpFakeTables” that adds tables that will be used in every test, **it should still only be run once**, like in the first test. See [test/unittests/UserTest.php](https://github.com/aces/Loris/blob/master/test/unittests/UserTest.php) for an example. 
 
 
  Once the tables that the query uses are added, you can test the method as normal, and 	the query should run on the “fake” database you’ve created!

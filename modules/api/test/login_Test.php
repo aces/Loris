@@ -14,7 +14,7 @@
 namespace LORIS\api\Test;
 
 use \PHPUnit\Framework\TestCase;
-use \Zend\Diactoros\ServerRequest;
+use \Laminas\Diactoros\ServerRequest;
 
 /**
  * PHPUnit class for API Login tests

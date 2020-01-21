@@ -164,10 +164,6 @@ function setFullPath(&$fileToUpload)
  */
 function moveFileToFS(&$fileToUpload)
 {
-
-    $config           = NDB_Config::singleton();
-    $genomic_data_dir = $config->getSetting('GenomicDataPath');
-
     $dest_dir = dirname($fileToUpload->full_path);
     // update ui to show we are trying to move the file
     reportProgress(98, "Copying file...");
@@ -220,10 +216,7 @@ function moveFileToFS(&$fileToUpload)
  */
 function registerFile(&$fileToUpload)
 {
-    $DB     =& Database::singleton();
-    $config = NDB_Config::singleton();
-    $genomic_data_dir = $config->getSetting('GenomicDataPath');
-
+    $DB     = \Database::singleton();
     $values = array(
         'FileName'         => $fileToUpload->full_path,
         'Description'      => $fileToUpload->description,
@@ -303,7 +296,7 @@ function createSampleCandidateRelations(&$fileToUpload)
     $sample_label_prefix = date('U', strtotime($fileToUpload->date_inserted));
     array_walk(
         $headers,
-        function (&$item, $key, $prefix) {
+        function (&$item, $prefix) {
             $item = $prefix . '_' . trim($item);
         },
         $sample_label_prefix
@@ -322,7 +315,7 @@ function createSampleCandidateRelations(&$fileToUpload)
 
     try {
         foreach ($headers as $pscid) {
-            $success = $stmt->execute(
+            $stmt->execute(
                 array(
                     "sample_label" => $pscid,
                     "pscid"        => explode(
@@ -393,8 +386,6 @@ function insertBetaValues(&$fileToUpload)
             },
             $sample_label_prefix
         );
-
-        $sample_count = count($headers);
 
         $stmt = $DB->prepare(
             "

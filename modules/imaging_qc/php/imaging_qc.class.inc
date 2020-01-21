@@ -287,10 +287,10 @@ class Imaging_QC extends \NDB_Menu_Filter
         foreach ($scan_types as $scan_type) {
             $scan_types[$scan_type]
                 = $this->_buildQuery(
-                $scan_type,
-                $scans_done[$scan_type],
-                $acq_IDs[$scan_type]
-            );
+                    $scan_type,
+                    $scans_done[$scan_type],
+                    $acq_IDs[$scan_type]
+                );
         }
 
         $query = implode(

@@ -9,7 +9,7 @@ LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web app
 * Try the LORIS demo instance at https://demo.loris.ca.
 
 This Readme covers installation of the LORIS <b>v22.*</b> release on <b>Ubuntu</b>.
-([CentOS Readme also available](./README.CentOS7.md)).
+([CentOS Readme also available](./docs/wiki/00%20-%20SERVER%20INSTALL%20AND%20CONFIGURATION/01%20-%20LORIS%20Install/CentOS/README.CentOS7.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
@@ -28,8 +28,8 @@ Deploy and log in with username *admin* and the password that's set up during de
 
  * Apache **2.4** or higher
  * MySQL >= 5.7 (or MariaDB >= 10.3) 
- * PHP <b>7.2</b> or higher
- * [Composer](https://getcomposer.org/)
+ * PHP <b>7.3</b> or higher
+ * [Composer](https://getcomposer.org/) <b>1.4</b> or higher
  * NodeJS <b>8.0</b> or higher
  * NPM
  * make

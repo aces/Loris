@@ -10,10 +10,10 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 # System Requirements - Install dependencies
 
 Default dependencies installed by CentOS 7.x may not meet the version requirements for LORIS deployment or development:
-* MariaDB 10.3 is supported for LORIS 21.* 
-* PHP 7.2 is supported for LORIS 21.*
+* MariaDB 10.3 is supported for LORIS 23.* 
+* PHP 7.3 is supported for LORIS 23.*
 
-In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](./README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
+In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](../../../../../README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
  * Apache 2.4 or higher
  * [Composer](https://getcomposer.org)
  * NodeJS 8.0 or higher
@@ -26,13 +26,13 @@ sudo yum install httpd
 sudo systemctl enable httpd
 sudo systemctl start httpd
 ```
-## PHP 7.2
+## PHP 7.3
 ```bash
 sudo yum install epel-release
 sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 sudo yum install yum-utils
 sudo yum update
-sudo yum --enablerepo=remi-php72 install php php-pdo php-pdo_mysql php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php72-php-mysql
+sudo yum --enablerepo=remi-php73 install php php-pdo php-pdo_mysql php73-php-fpm php73-php-gd php73-php-json php73-php-mbstring php73-php-mysqlnd php73-php-xml php73-php-xmlrpc php73-php-opcache php73-php-mysql
 ```
 ## MariaDB
 
@@ -173,4 +173,4 @@ If there are any errors or you get a blank page, troubleshoot the errors in your
 **Next:** Follow the [**Setup Guide** in the LORIS wiki](https://github.com/aces/Loris/wiki/Setup) for all post-install steps and troubleshooting.  
 Config settings can be accessed via the front-end Config module under the Admin drop-down menu.
 
-Please see the main (Ubuntu) [LORIS Readme](./README.md) for info on our Community, Contributing, and who we are. 
+Please see the main (Ubuntu) [LORIS Readme](../../../../../README.md) for info on our Community, Contributing, and who we are. 

@@ -142,7 +142,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/x.raw')
             ->withHeader('Content-Disposition', "attachment; filename=${filename}")
-            ->withBody(new \Zend\Diactoros\CallbackStream($callback));
+            ->withBody(new \Laminas\Diactoros\CallbackStream($callback));
     }
 
     /**

@@ -44,9 +44,6 @@ class EditExaminer extends \NDB_Form
         $DB     = \Database::singleton();
         $config = \NDB_Config::singleton();
 
-        $userFullName = $user->getFullname();
-        $userCenter   = $user->getCenterIDs();
-
         $certification = $config->getSetting('Certification');
 
         if ($certification['EnableCertification'] ?? false) {
@@ -58,7 +55,7 @@ class EditExaminer extends \NDB_Form
                 array('EID' => $this->identifier)
             );
             $centerIDs =array();
-            foreach ($cids as $k=>$row) {
+            foreach ($cids as $row) {
                 $centerIDs[] = $row['centerID'];
             }
 
