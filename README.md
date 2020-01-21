@@ -94,18 +94,18 @@ If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli
 
 ### Upgrade Step
 
-Backing Up the Database Before Upgrading the Database Schemas.
-If you have installed previous version Loris, you can upgrade Loris to the latest in the following ways:
+It is recommended to do a backup of the Database before upgrading the database schemas.
+If you have installed a previous version Loris, you can upgrade Loris to the latest in the following ways:
 
-1. Using Git command checkout to the latest version of Loris. 
+1. Using Git command checkout to the latest version of Loris.
  ```bash
- git checkout aces/22.0-release
+ git checkout <loris-repo>/<loris-branch>
  ```
 2.-- Manual upgrade(optional): Run upgrade.sql files in your database in the /var/www/$projectname/SQL/Release_patches/ directory.
-  -- Automatic upgrade(optional): Run loris_db_upgrade.php in /var/www/$projectname/tools/ directory.
+  -- Automatic upgrade(optional): Run Ex.(php loris_db_upgrade.php 21.0) in /var/www/$projectname/tools/ directory.
  ```bash
  cd /var/www/$projectname/tools/
- php loris_db_upgrade.php 
+ php loris_db_upgrade.php $release_version
  ```
 
 ## Community
