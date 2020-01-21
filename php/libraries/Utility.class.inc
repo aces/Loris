@@ -587,24 +587,6 @@ class Utility
     }
 
     /**
-     * Looks up visit stage using candidate ID.
-     *
-     * @param string $Cand_id candidate ID
-     *
-     * @return int
-     * @throws DatabaseException
-     */
-    static function getSubprojectIDUsingCandID(string $Cand_id): int
-    {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
-        $stage = $db->pselect($query, ['CandID' => $Cand_id]);
-        return intval($stage[0]['SubprojectID']);
-    }
-
-    /**
      * Returns all the sourcefrom instruments from parameter_type
      *
      * @param string|null $instrument If specified, return fields from this

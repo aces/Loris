@@ -37,7 +37,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
-- *Add item here*
+- New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 ### Notes For Developers
 - *Add item here*
 

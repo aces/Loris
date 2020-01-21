@@ -598,6 +598,74 @@ class CandidateTest extends TestCase
     }
 
     /**
+     * Test getSubprojectForMostRecentVisit returns most recent visit's label
+     *
+     * @covers Candidate::getSubprojectForMostRecentVisit
+     * @return void
+     */
+    public function testGetSubprojectForMostRecentVisitReturnsMostRecentVisitLabel()
+    {
+        $subproject = array(
+            array(
+                'SubprojectID' => 1,
+                'title'        => 'testSubproject' 
+            )
+        );
+
+        $this->_setUpTestDoublesForSelectCandidate();
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with(
+                $this->stringContains(
+                   "SELECT SubprojectID, title 
+                    FROM subproject 
+                    WHERE SubprojectID = :subprj"
+                )
+            )
+            ->willReturn(
+                $subproject
+            );
+
+        $expectedSubproject = array(
+            'SubprojectID' => 1,
+            'title'        => 'testSubproject'
+        );
+
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+        $this->assertEquals(
+            $expectedSubproject,
+            $this->_candidate->getSubprojectForMostRecentVisit()
+        );
+    }
+
+    /**
+     * Test getSubprojectForMostRecentVisit returns null if there is no visit with a Date_visit
+     *
+     * @covers Candidate::getSubprojectForMostRecentVisit
+     * @return void
+     */
+    public function testGetSubprojectForMostRecentVisitReturnsNull()
+    {
+        $subproject = array();
+        $this->_setUpTestDoublesForSelectCandidate();
+        
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with(
+                $this->stringContains(
+                   "SELECT SubprojectID, title 
+                    FROM subproject 
+                    WHERE SubprojectID = :subprj"
+                )
+            )
+            ->willReturn($subproject);
+
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+        $this->assertEquals(null, $this->_candidate->getSubprojectForMostRecentVisit());
+    }
+
+    /**
      * Test getFirstVisit returns first visit's label
      *
      * @covers Candidate::getFirstVisit
