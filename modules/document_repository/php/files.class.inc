@@ -94,7 +94,7 @@ class Files extends \NDB_Page
     {
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
-        $db           = $factory->database();
+        $db      = $factory->database();
         if (! $user->hasPermission('document_repository_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
@@ -269,10 +269,8 @@ class Files extends \NDB_Page
      */
     function uploadDocFile($request): ResponseInterface
     {
-        $req            = $request->getParsedBody();
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-        $baseURL = $factory->settings()->getBaseURL();
         $config  = $factory->config();
         $user    = $factory->user();
         $name    = $user->getUsername();
@@ -287,7 +285,7 @@ class Files extends \NDB_Page
         if (is_null($uploadedFile)) {
             return new \LORIS\Http\Response\JSON\BadRequest();
         }
-        $filename     = $uploadedFile->getClientFilename();
+        $filename = $uploadedFile->getClientFilename();
 
         $category = $body['category']; // required
         if (intval($category) < 0) {
@@ -372,11 +370,6 @@ class Files extends \NDB_Page
             ]
         );
 
-        // Notify users of event
-        $editNotifier   = new \NDB_Notifier(
-            "document_repository",
-            "edit"
-        );
         $uploadNotifier = new \NDB_Notifier(
             "document_repository",
             "upload"
