@@ -219,9 +219,9 @@ class SiteIDGenerator extends IdentifierGenerator
                     }
                 }
             } elseif ($seqValue === 'siteAbbrev') {
-                return $this->siteAlias;
+                return (string) $this->siteAlias;
             } elseif ($seqValue === 'projectAbbrev') {
-                return $this->projectAlias;
+                return (string) $this->projectAlias;
             } else {
                 throw new ConfigurationException(
                     "Incorrect option $seqValue selected for PSCID generation."
