@@ -53,28 +53,9 @@ try {
     // database connection.
     require_once 'generic_includes.php';
 
-    if (! $config->getSetting('dev')['sandbox']) {
-        fwrite(
-            STDERR,
-            "Config file indicates that this is not a sandbox. Aborting to " .
-            "prevent accidental data loss." . PHP_EOL
-        );
-        exit(1);
-    }
-
     $urlConfigSetting  = $config->getSetting('url');
     $baseConfigSetting = $config->getSetting('base');
     $hostConfigSetting = $config->getSetting('host');
-
-    echo <<<CONFIRMATION
-    Please type the name of your database to confirm you wish to drop tables
-    and import test data: 
-CONFIRMATION;
-
-    $input = trim(fgets(STDIN));
-    if ($input !== $dbname) {
-        die(printWarning('Input did not match database name. Exiting.'));
-    }
 
 } catch (\DatabaseException $e) {
     printWarning(
@@ -99,6 +80,24 @@ $host   = $dbInfo['host'];
 $username = $dbInfo['adminUser'];
 $password = $dbInfo['adminPassword'];
 
+if (! $config->getSetting('dev')['sandbox']) {
+    fwrite(
+        STDERR,
+        "Config file indicates that this is not a sandbox. Aborting to " .
+        "prevent accidental data loss." . PHP_EOL
+    );
+    exit(1);
+}
+
+echo <<<CONFIRMATION
+Please type the name of your database `$dbname` to confirm you wish to drop
+tables and import test data: 
+CONFIRMATION;
+
+$input = trim(fgets(STDIN));
+if ($input !== $dbname) {
+    die(printWarning('Input did not match database name. Exiting.'));
+}
 
 printHeader('Testing connection to database.');
 $mysqlCommand = <<<CMD
