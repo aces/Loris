@@ -67,7 +67,7 @@ try {
     $hostConfigSetting = $config->getSetting('host');
 
     echo <<<CONFIRMATION
-    Please type the database name `$dbname` to confirm you wish to drop tables
+    Please type the name of your database to confirm you wish to drop tables
     and import test data: 
 CONFIRMATION;
 
