@@ -689,17 +689,52 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     }
 
     /**
-     * Returns the candidate's calculated age today
+     * Returns the candidate's calculated age today in years, months, days
      *
-     * @return int The candidate's age today
+     * @return array The candidate's age today in an array with values for keys 'year',
+     *               'mon', and 'day'
      */
-    public function getAge(): int
+    public function getAge(): array
     {
-        $ageArray = \Utility::calculateAge(
+        return \Utility::calculateAge(
             $this->candidateInfo["DoB"],
             (new DateTime())->format('Y-m-d')
         );
-        return $ageArray['year'];
+    }
+
+    /**
+     * Returns the candidate's calculated age today in int years
+     *
+     * @return int The candidate's age today as years
+     */
+    public function getAgeYears(): int
+    {
+        return $this->getAge()['year'];
+    }
+
+    /**
+     * Returns the candidate's calculated age today in total number of months
+     *
+     * @return int The candidate's age today in months
+     */
+    public function getAgeInMonths(): int
+    {
+        $age    = $this->getAge();
+        $months = $age['year']*12 + $age['mon'] + ($age['day']/30);
+
+        return (round($months*10) / 10.0);
+    }
+
+    /**
+     * Returns the candidate's calculated age today in total number of days
+     *
+     * @return int The candidate's age today in days
+     */
+    public function getAgeInDays(): int
+    {
+        $age    = $this->getAge();
+
+        return $age['year']*365 + $age['mon']*30 + $age['day'];
     }
 
     /**
