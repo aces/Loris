@@ -37,7 +37,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'generic_includes.php';
 $info = <<<INFO
 This script is used by LORIS developers to DELETE DATA and replace
 them with new test data.
@@ -48,10 +47,11 @@ echo $info;
 
 echo "\e[0;31m*** Executing this script will result in the LOSS OF DATA! ***\e[0m\n";
 
-$cwd = getcwd();
-
 try {
-    $dbInfo = $config->getSettingFromXML('database');
+    // Require generic libraries. In some cases, this can fail if this script
+    // has already dropped tables as the generic_includes.php requires a
+    // database connection.
+    require_once 'generic_includes.php';
 
     if (! $config->getSetting('dev')['sandbox']) {
         fwrite(
@@ -61,12 +61,6 @@ try {
         );
         exit(1);
     }
-    $dbname = $dbInfo['database'];
-    $host   = $dbInfo['host'];
-    // The admin user and password should be configured to a user with DROP
-    // and CREATE permissions for the database.
-    $username = $dbInfo['adminUser'];
-    $password = $dbInfo['adminPassword'];
 
     $urlConfigSetting  = $config->getSetting('url');
     $baseConfigSetting = $config->getSetting('base');
@@ -79,13 +73,14 @@ CONFIRMATION;
 
     $input = trim(fgets(STDIN));
     if ($input !== $dbname) {
-        die('Input did not match database name. Exiting.');
+        die(printWarning('Input did not match database name. Exiting.'));
     }
 
 } catch (\DatabaseException $e) {
-    echo 'Could not connect to the database in the Config file.' .
-        'It\'s possible that the LORIS tables have already been dropped.' .
-        PHP_EOL;
+    printWarning(
+        "Could not connect to the database in the Config file. " .
+        "It's possible that the LORIS tables have already been dropped."
+    );
     echo 'Continue attempting to install Raisinbread database? (y/N)' . PHP_EOL;
     $input = trim(fgets(STDIN));
 
@@ -94,24 +89,61 @@ CONFIRMATION;
     }
     echo PHP_EOL . 'Please enter the name of your database:' . PHP_EOL;
     $dbname = trim(fgets(STDIN));
-} catch (Exception $e) {
-    die("Could not load project/config.xml");
 }
 
+// Get database information from project's configuration file.
+$config = $config ?? \NDB_Factory::singleton()->config();
+$dbInfo = $config->getSettingFromXML('database');
+$dbname = $dbInfo['database'];
+$host   = $dbInfo['host'];
+$username = $dbInfo['adminUser'];
+$password = $dbInfo['adminPassword'];
 
+
+printHeader('Testing connection to database.');
 $mysqlCommand = <<<CMD
 mysql -A $dbname
 CMD;
 
+echo 'Checking connection via MySQL configuration file...' . PHP_EOL;
 // Test whether a connection to MySQL is possible via a MySQL config file.
-// If not, read DB information from the config file. This method is not as
-// preferable because it generates MySQL warnings due to the password being
-// supplied via a command-line argument.
 exec($mysqlCommand . ' -e "show tables;" 2>&1 1>/dev/null', $output, $status);
 if ($status != 0) {
+    echo 'Checking connection via project configuration file...' . PHP_EOL;
+    // If not, read DB information from the project's config file. This method
+    // is not as preferable because it generates MySQL warnings due to the
+    // password being supplied via a command-line argument
+
+    // If any of the following variables are null or empty strings, the script
+    // must exit because a connection to the database is impossible.
+    if (empty($host)
+        || empty($dbname)
+        || empty($username)
+        || empty($password)
+    ) {
+        die(
+            printWarning(
+                "Could not connect to database. One of the settings: "
+                . "`host`, `database`, `username` or `password` "
+                . " are missing from your project's configuration file."
+            )
+        );
+    }
+
+    // Try connecting by supplying parameters on command line.
     $mysqlCommand = <<<CMD
 mysql -A "$dbname" -u "$username" -h "$host" -p$password
 CMD;
+    exec($mysqlCommand . ' -e "show tables;" 2>&1 1>/dev/null', $output, $status);
+    print_r($output);
+    if ($status != 0) {
+        die(
+            printWarning(
+                "Could not connect to database. This is most likely due to "
+                . "invalid settings in your project's configuration file."
+            )
+        );
+    }
 }
 
 // Drop tables
@@ -129,7 +161,7 @@ exec(
 );
 array_shift($tables); // remove the column name
 if (count($tables) > 0) {
-    echo "\e[33mWARNING: Untracked tables still exist in the database:\e[0m\n";
+    printWarning("WARNING: Untracked tables still exist in the database:");
     array_walk($tables, 'printBulletPoint');
 
     echo "Do you want to delete them now? (y/N)" . PHP_EOL;
@@ -160,14 +192,19 @@ $rbData = glob(__DIR__ . "/../raisinbread/RB_files/*.sql");
 array_walk($rbData, 'runPatch');
 
 // Restore config settings if they were successfully found before.
-if (isset($urlConfigSetting)) {
-    restoreConfigSetting('url', $urlConfigSetting);
-}
-if (isset($baseConfigSetting)) {
-    restoreConfigSetting('base', $baseConfigSetting);
-}
-if (isset($hostConfigSetting)) {
-    restoreConfigSetting('host', $hostConfigSetting);
+$configSettings = [
+    'url'  => $urlConfigSetting ?? null,
+    'base' => $baseConfigSetting ?? null,
+    'host' => $hostConfigSetting ?? null,
+];
+foreach ($configSettings as $name => $value) {
+    if (!isset($value)) {
+        printWarning(
+            "Could not restore configuration setting `$name`"
+        );
+        continue;
+    }
+    restoreConfigSetting($name, $value);
 }
 
 // Trigger a password reset because the password for `admin` in the Raisinbread
@@ -299,7 +336,7 @@ function printBulletPoint(string $line): void
 }
 
 /**
- * Print the input formatted as a header for outut.
+ * Print the input formatted as a header for output.
  *
  * @param string $line The output.
  *
@@ -309,4 +346,17 @@ function printHeader(string $line): void
 {
     // Takes 'input', prints '[*] input' in green text.
     fwrite(STDOUT, PHP_EOL . "\e[32m[*] $line\e[0m" . PHP_EOL);
+}
+
+/**
+ * Print the input formatted in yellow text.
+ *
+ * @param string $line The output.
+ *
+ * @return void
+ */
+function printWarning(string $line): void
+{
+    // Takes 'input', prints '[*] input' in green text.
+    fwrite(STDOUT, PHP_EOL . "\e[33m[-] $line\e[0m" . PHP_EOL);
 }
