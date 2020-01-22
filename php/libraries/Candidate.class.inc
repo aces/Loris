@@ -691,8 +691,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the candidate's calculated age today in years, months, days
      *
-     * @return array The candidate's age today in an array with values for keys 'year',
-     *               'mon', and 'day'
+     * @return array The candidate's age today in an array with values for
+     *               keys 'year', 'mon', and 'day'
      */
     public function getAge(): array
     {
@@ -700,8 +700,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $age = $dob->diff(new DateTime('now'))->format('%y,%m,%d');
 
         return array_combine(
-          array('year', 'mon', 'day'),
-          explode(",", $age)
+            array('year', 'mon', 'day'),
+            explode(",", $age)
         );
     }
 
@@ -726,7 +726,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     {
         $dob = new DateTime($this->candidateInfo["DoB"]);
 
-        return (int)$dob->diff(new DateTime('now'))->format('%m') + 12 * $this->getAgeYears();
+        return (int)$dob->diff(new DateTime('now'))->format('%m') +
+            12 * $this->getAgeYears();
     }
 
     /**
