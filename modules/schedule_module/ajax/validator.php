@@ -1,0 +1,18 @@
+<?php
+/**
+ * This is used by the Schedule Module to edit an already existing appointment
+ *
+ * PHP Version 5
+ *
+ * @category Schedule
+ * @package  Loris
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris
+ */
+function isDateValid($date, $format = 'Y-m-d H:i:s')
+{
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) === $date;
+}
+?>
