@@ -299,20 +299,18 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $name    The field name of this checkbox
      * @param string $label   The label to attach to this checkbox
-     * @param array  $options Options to pass to QuickForm for this
-     *                        checkbox
      * @param array  $attribs Optional extra HTML attributes to add
      *                        to the checkbox
      *
      * @return void
      */
-    function addCheckbox($name, $label, $options=array(), $attribs=array())
+    function addCheckbox($name, $label, $attribs=array())
     {
         $attribs = array_merge(
             array('class' => 'form-control input-sm'),
             $attribs
         );
-        $this->form->addElement('advcheckbox', $name, $label, $options, $attribs);
+        $this->form->addElement('advcheckbox', $name, $label, array(), $attribs);
     }
 
     /**
