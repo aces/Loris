@@ -696,9 +696,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function getAge(): array
     {
-        return \Utility::calculateAge(
-            $this->candidateInfo["DoB"],
-            (new DateTime())->format('Y-m-d')
+        $dob = new DateTime($this->candidateInfo["DoB"]);
+        $age = $dob->diff(new DateTime('now'))->format('%y,%m,%d');
+
+        return array_combine(
+          array('year', 'mon', 'day'),
+          explode(",", $age)
         );
     }
 
@@ -709,7 +712,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function getAgeYears(): int
     {
-        return $this->getAge()['year'];
+        $dob = new DateTime($this->candidateInfo["DoB"]);
+
+        return (int)$dob->diff(new DateTime('now'))->format('%y');
     }
 
     /**
@@ -719,10 +724,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function getAgeInMonths(): int
     {
-        $age    = $this->getAge();
-        $months = $age['year']*12 + $age['mon'] + ($age['day']/30);
+        $dob = new DateTime($this->candidateInfo["DoB"]);
 
-        return (round($months*10) / 10.0);
+        return (int)$dob->diff(new DateTime('now'))->format('%m') + 12 * $this->getAgeYears();
     }
 
     /**
@@ -732,9 +736,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function getAgeInDays(): int
     {
-        $age    = $this->getAge();
+        $dob = new DateTime($this->candidateInfo["DoB"]);
 
-        return $age['year']*365 + $age['mon']*30 + $age['day'];
+        return (int)$dob->diff(new DateTime('now'))->days;
     }
 
     /**

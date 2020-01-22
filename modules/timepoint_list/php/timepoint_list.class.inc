@@ -79,7 +79,10 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candID'] = $this->candID;
         $this->tpl_data['PSCID']  = $candidate->getPSCID();
         $listOfTimePoints         = $candidate->getListOfTimePoints();
-        $this->tpl_data['candidate'] = $candidate->getData();
+        $this->tpl_data['candidate'] = array_merge(
+            $candidate->getData(),
+            array('Age' => $candidate->getAgeInMonths())
+        );
 
         if (!empty($listOfTimePoints)) {
             $user     =& \User::singleton();
