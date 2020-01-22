@@ -47,6 +47,9 @@ echo $info;
 
 echo "\e[0;31m*** Executing this script will result in the LOSS OF DATA! ***\e[0m\n";
 
+printHeader(
+    'Testing connection to database. No data will be affected at this point.'
+);
 try {
     // Require generic libraries. In some cases, this can fail if this script
     // has already dropped tables as the generic_includes.php requires a
@@ -56,7 +59,6 @@ try {
     $urlConfigSetting  = $config->getSetting('url');
     $baseConfigSetting = $config->getSetting('base');
     $hostConfigSetting = $config->getSetting('host');
-
 } catch (\DatabaseException $e) {
     printWarning(
         "Could not connect to the database in the Config file. " .
@@ -68,8 +70,6 @@ try {
     if (mb_strtolower($input) !== 'y') {
         die;
     }
-    echo PHP_EOL . 'Please enter the name of your database:' . PHP_EOL;
-    $dbname = trim(fgets(STDIN));
 }
 
 // Get database information from project's configuration file.
@@ -99,7 +99,6 @@ if ($input !== $dbname) {
     die(printWarning('Input did not match database name. Exiting.'));
 }
 
-printHeader('Testing connection to database.');
 $mysqlCommand = <<<CMD
 mysql -A $dbname
 CMD;
