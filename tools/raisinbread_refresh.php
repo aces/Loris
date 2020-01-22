@@ -296,10 +296,8 @@ function restoreConfigSetting(string $name, string $value): void
             IN (SELECT cs.ID FROM ConfigSettings cs WHERE cs.Name = '$name')"
         );
     } catch (\DatabaseException $e) {
-        echo "Couldn't restore config setting $name." .
-            "This may need to be set manually if your LORIS is not hosted at " .
-            "localhost." .
-            PHP_EOL;
+        echo "Couldn't restore setting $name. This may need to be set manually."
+            . PHP_EOL;
     }
 }
 
