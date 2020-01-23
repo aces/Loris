@@ -693,7 +693,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *
      * @return DateInterval Between DoB and now
      */
-    public function getAgeDiff(): DateInterval
+    public function getAge(): DateInterval
     {
         $dob = new DateTime($this->candidateInfo["DoB"]);
 
@@ -707,7 +707,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function getAgeYears(): int
     {
-        return (int)$this->getAgeDiff()->format('%y');
+        return (int)$this->getAge()->format('%y');
     }
 
     /**
@@ -717,7 +717,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function getAgeInMonths(): int
     {
-        return (int)$this->getAgeDiff()->format('%m') +
+        return (int)$this->getAge()->format('%m') +
             12 * $this->getAgeYears();
     }
 
@@ -728,7 +728,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function getAgeInDays(): int
     {
-        return (int)$this->getAgeDiff()->days;
+        return (int)$this->getAge()->days;
     }
 
     /**
