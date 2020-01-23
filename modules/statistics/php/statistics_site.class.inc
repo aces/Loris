@@ -134,10 +134,17 @@ class Statistics_Site extends \NDB_Menu
                     }
                 }
             }
-            $sitesString = implode(",", $list_of_permitted_sites);
 
-            $this->query_criteria    .= " AND s.CenterID IN (:cids) ";
-            $this->query_vars['cids'] = $sitesString;
+            $params    = array();
+            $centerIDs = array();
+            foreach ($list_of_permitted_sites as $key => $siteID) {
+                $params[]            = ":id$key";
+                $centerIDs["id$key"] = $siteID;
+            }
+
+            $this->query_criteria .=
+                " AND s.CenterID IN (" . implode(',', $params) . ")";
+            $this->query_vars     += $centerIDs;
         }
 
         if (!empty($projectID)) {
