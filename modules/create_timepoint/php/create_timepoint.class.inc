@@ -203,6 +203,19 @@ class Create_Timepoint extends \NDB_Form
                 $this->addSelect('visitLabel', 'Visit label', $labelOptions);
                 $this->addRule('visitLabel', 'Visit label is required', 'required');
 
+                $languages = \Utility::getLanguageList();
+                array_unshift($languages, null);
+                $this->addSelect(
+                    'languageID',
+                    'Language',
+                    $languages
+                );
+                $this->addRule(
+                    'languageID',
+                    'Language is required',
+                    'required'
+                );
+                
                 // List of sites for the user
                 $user_list_of_sites = $user->getCenterIDs();
                 $num_sites          = count($user_list_of_sites);
@@ -223,19 +236,6 @@ class Create_Timepoint extends \NDB_Form
                     $this->addRule(
                         'psc',
                         'Site selection is required',
-                        'required'
-                    );
-
-                    $languages = \Utility::getLanguageList();
-                    array_unshift($languages, null);
-                    $this->addSelect(
-                        'languageID',
-                        'Language',
-                        $languages
-                    );
-                    $this->addRule(
-                        'languageID',
-                        'Language is required',
                         'required'
                     );
                 }
