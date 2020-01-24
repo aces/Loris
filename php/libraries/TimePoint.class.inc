@@ -191,14 +191,15 @@ class TimePoint
     /**
      * Registers a new timepoint into the session table
      *
-     * @param \Candidate  $candidate      The Candidate to create this timepoint for
-     * @param integer     $SubprojectID   The subprojectID of the new timepoint
-     * @param string|null $nextVisitLabel The visit label of the timepoint
-     *                                    being created. If null, consecutive V1, V2,
-     *                                    etc will be created.
-     * @param \Site       $psc            The center of the timepoint
-     * @param \Project    $project        The project of the timepoint
-     * @param integer     $lang           The language id
+     * @param \Candidate   $candidate      The Candidate to create this timepoint for
+     * @param integer      $SubprojectID   The subprojectID of the new timepoint
+     * @param string|null  $nextVisitLabel The visit label of the timepoint
+     *                                     being created. If null,
+     *                                     consecutive V1, V2, etc will be
+     *                                     created.
+     * @param \Site        $psc            The center of the timepoint
+     * @param \Project     $project        The project of the timepoint
+     * @param integer|null $lang           The language id
      *
      * @throws DatabaseException
      *
