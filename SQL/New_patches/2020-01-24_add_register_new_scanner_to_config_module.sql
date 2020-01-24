@@ -1,0 +1,2 @@
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'register_new_scanner', 'Determines whether new scanners should be created by the imaging pipeline', 1, 0, 'boolean', ID, 'Register new scanner', 25 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 1 FROM ConfigSettings cs WHERE cs.Name="register_new_scanner";
