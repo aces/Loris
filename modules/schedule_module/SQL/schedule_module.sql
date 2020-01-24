@@ -110,7 +110,7 @@ ALTER TABLE `appointment`
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
-INSERT INTO `permissions` (`code`, `description`, `type`, `categoryID`) values ('schedule_module', 'Schedule Module', 'permission', 2);
+INSERT INTO `permissions` (`code`, `description`, `categoryID`) values ('schedule_module', 'Schedule Module', 2);
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 ('Schedule Module', 'schedule_module/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 11);
 INSERT INTO LorisMenuPermissions (MenuID, PermID)

@@ -27,12 +27,5 @@ $DB->delete(
     )
 );
 
-if ($DB->getAffected() != 1) {
-    http_response_code(404);
-    die(json_encode([
-        "error" => "Appointment does not exist."
-    ]));
-} else {
     http_response_code(204);
-}
 ?>
