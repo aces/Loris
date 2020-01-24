@@ -72,7 +72,14 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('900000', 'Stale', 'V1');
+        $this->_createTimepoint(
+            '900000',
+            'Stale',
+            'Montreal',
+            'Rye',
+            'V1',
+            'English'
+        );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -85,12 +92,21 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      *
      * @param string $canID      ID of candidate
      * @param string $subproject text of subproject
+     * @param string $psc        text of site
+     * @param string $project    text of project
      * @param string $visitlabel text of visit label
+     * @param string $lang       text of language
      *
      * @return void
      */
-    private function _createTimepoint($canID, $subproject, $visitlabel)
-    {
+    private function _createTimepoint(
+        $canID,
+        $subproject,
+        $psc,
+        $project,
+        $visitlabel,
+        $lang
+    ) {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
@@ -99,8 +115,17 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText($subproject);
         $this->webDriver->findElement(
+            WebDriverBy::Name("psc")
+        )->sendKeys($psc);
+        $this->webDriver->findElement(
+            WebDriverBy::Name("project")
+        )->sendKeys($project);
+        $this->webDriver->findElement(
             WebDriverBy::Name("visitLabel")
         )->sendKeys($visitlabel);
+        $this->webDriver->findElement(
+            WebDriverBy::Name("languageID")
+        )->sendKeys($lang);
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();

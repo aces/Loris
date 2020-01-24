@@ -210,7 +210,7 @@ class TimePoint
         ?string $nextVisitLabel,
         \Site $psc,
         \Project $project,
-        int $lang = 1
+        ?int $lang = null
     ): void {
 
         // insert into session set CandID=$candID,
@@ -239,6 +239,12 @@ class TimePoint
             $VisitLabel = "V$visitNo";
         }
 
+        $language = $lang;
+        if ($language === null) {
+            $langList = Utility::getLanguageList();
+            $language = array_key_first($langList);
+        }
+
         $insertData = array(
             'CandID'          => $candidate->getCandID(),
             'SubprojectID'    => $SubprojectID,
@@ -252,7 +258,7 @@ class TimePoint
             'UserID'          => $userID,
             'Date_registered' => $today,
             'Date_active'     => $today,
-            'languageID'      => $lang,
+            'languageID'      => $language,
         );
 
         // insert the data
