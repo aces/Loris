@@ -100,5 +100,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (101,'MINCToolsPath','Path to the MINC tools',1,0,'web_path',26,'Path to the MINC tools',12);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (102,'documentRepositoryPath','Path to uploaded document repository files',1,0,'text',26,'Document Repository Upload Path',13);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (103,'dataReleasePath','Path to uploaded data release files',1,0,'text',26,'Data Release Upload Path',14);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (104,'register_new_scanner','Determines whether new scanners should be created by the imaging pipeline',1,0,'boolean',69,'Register new scanner',25);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

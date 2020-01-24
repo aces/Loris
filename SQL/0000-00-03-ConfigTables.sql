@@ -151,6 +151,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'reference_scan_type_for_defacing', 'Scan type to use as a reference for registration when defacing anatomical images (typically a T1W image)', 1, 0, 'scan_type', ID, 'Scan type to use as a reference for defacing (typically a T1W image)', 22 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'modalities_to_deface', 'Modalities for which defacing should be run and defaced image inserted in the database', 1, 1, 'scan_type', ID, 'Modalities on which to run the defacing pipeline', 23 FROM ConfigSettings WHERE Name="imaging_pipeline";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'default_bids_vl', 'Default visit label to use when no visit label set in the BIDS dataset', 1, 0, 'text', ID, 'Default visit label for BIDS dataset', 24 FROM ConfigSettings WHERE Name="imaging_pipeline";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'register_new_scanner', 'Determines whether new scanners should be created by the imaging pipeline', 1, 0, 'boolean', ID, 'Register new scanner', 25 FROM ConfigSettings WHERE Name="imaging_pipeline";
 
 --
 -- Filling Config table with default values
@@ -258,3 +259,5 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, 't2'    FROM ConfigSettings WHERE Name="modalities_to_deface";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'pd'    FROM ConfigSettings WHERE Name="modalities_to_deface";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false'  FROM ConfigSettings WHERE Name="usePwnedPasswordsAPI";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 1 FROM ConfigSettings cs WHERE cs.Name="register_new_scanner";
+
