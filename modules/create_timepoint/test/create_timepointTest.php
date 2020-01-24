@@ -115,12 +115,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText($subproject);
         $this->webDriver->findElement(
-            WebDriverBy::Name("psc")
-        )->sendKeys($psc);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("project")
-        )->sendKeys($project);
-        $this->webDriver->findElement(
             WebDriverBy::Name("visitLabel")
         )->sendKeys($visitlabel);
         $this->webDriver->findElement(
