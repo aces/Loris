@@ -59,6 +59,30 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     }
 
     /**
+     * Retrieve all active module descriptors from the given database, indexed
+     * by their primary key in the database.
+     *
+     * @param \Database $db an open connection to a database containing a 'modules'
+     *                      table
+     *
+     * @return \Module[]
+     */
+    static public function getActiveModulesIndexed(\Database $db): array
+    {
+        $mnames = $db->pselect(
+            "SELECT ID, Name FROM modules WHERE Active='Y'",
+            []
+        );
+
+        $rv = [];
+        foreach ($mnames as $row) {
+            $rv[$row['ID']] = self::factory($row['Name']);
+        }
+        return $rv;
+    }
+
+
+    /**
      * Returns a Module instance for the module named $name. The returned
      * value may be a subtype of the base LORIS module class and override
      * it's method.
