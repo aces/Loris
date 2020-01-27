@@ -60,6 +60,7 @@ class Edit_User extends \NDB_Form
             return true;
         }
 
+        // Make sure that the editor and the user share site associations.
         if ($editor->hasPermission('user_accounts')) {
             if ($this->isCreatingNewUser()) {
                 return true;
