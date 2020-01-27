@@ -41,8 +41,6 @@ class MediaTest extends LorisIntegrationTest
     static $Site        = "#media_filter > div > div > fieldset".
                               " > div:nth-child(7) > div > div > select";
     static $clearFilter = ".col-sm-4 .btn";
-    // first row of react table
-    static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
     static $display = "#browse > div > div > div > div:nth-child(2) >".
                       " div:nth-child(1) > div > div > div:nth-child(1)";
@@ -86,12 +84,19 @@ class MediaTest extends LorisIntegrationTest
     function testBrowseFilter()
     {
         $this->safeGet($this->url . "/media/");
-        $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
-        $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
-        $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
-        $this->_testFilter(self::$Language, self::$table, "26", "2");
-        $this->_testFilter(self::$Instrument, self::$table, "4 rows", "2");
-        $this->_testFilter(self::$Site, self::$table, "12 rows", "2");
+        $this->_filterTest(self::$PSCID,self::$display,self::$clearFilter,"MTL002","2 rows");
+        $this->_filterTest(self::$FileName,self::$display,self::$clearFilter,"MTL002_V1.txt","1 row");
+        $this->_filterTest(self::$VisitLabel,self::$display,self::$clearFilter,"V2","3 rows");
+        $this->_filterTest(self::$Language,self::$display,self::$clearFilter,"English","0 row");
+        $this->_filterTest(self::$Instrument,self::$display,self::$clearFilter,"BMI Calculator","4 rows");
+        $this->_filterTest(self::$Site,self::$display,self::$clearFilter,"Montreal","12 rows");
+
+
+      //  $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
+      //  $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
+      //  $this->_testFilter(self::$Language, self::$table, "26", "2");
+      //  $this->_testFilter(self::$Instrument, self::$table, "4 rows", "2");
+      //  $this->_testFilter(self::$Site, self::$table, "12 rows", "2");
 
     }
     /**
@@ -126,58 +131,6 @@ class MediaTest extends LorisIntegrationTest
         );
         $this->assertContains("Edit Media File", $text);
 
-    }
-    /**
-     * Testing filter funtion and clear button
-     *
-     * @param string $element The input element loaction
-     * @param string $table   The first row location in the table
-     * @param string $records The records number in the table
-     * @param string $value   The test value
-     *
-     * @return void
-     */
-    function _testFilter($element,$table,$records,$value)
-    {
-        // get element from the page
-        if (strpos($element, "select") == false) {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
-            );
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$table').textContent"
-            );
-            $this->assertContains($value, $bodyText);
-        } else {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                 event = new Event('change', { bubbles: true });
-                 input.dispatchEvent(event);
-                "
-            );
-            $row      = self::$display;
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$row').textContent"
-            );
-            // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
-        }
-        //test clear filter
-        $btn = self::$clearFilter;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
-        $inputText = $this->webDriver->executescript(
-            "return document.querySelector('$element').value"
-        );
-        $this->assertEquals("", $inputText);
     }
 }
 
