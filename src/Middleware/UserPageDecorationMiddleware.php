@@ -78,10 +78,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         //
         // Coincidentally, this almost-alphabetic sorting results in the exact same
         // order that LORIS previously had.
-        $adminmenu = $menu['Admin'];
+        $adminmenu = $menu['Admin'] ?? [];
         unset($menu['Admin']);
         ksort($menu);
-        $menu['Admin'] = $adminmenu;
+        if (!empty($adminmenu)) {
+            $menu['Admin'] = $adminmenu;
+        }
 
         // We unconditionally sort within each section because the within-menu
         // order has never been stable in LORIS, and sorting adds some consistency.
