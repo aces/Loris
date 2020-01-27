@@ -98,8 +98,17 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         }
 
         // store user data in object property
-        foreach ($row AS $key=>$value) {
-            $this->candidateInfo[$key] = $value;
+        foreach ($row as $key=>$value) {
+            switch ($key){
+            case 'Sex':
+                $this->candidateInfo[$key] = new Sex($value);
+                break;
+            case 'EntityType':
+                $this->candidateInfo[$key] = new EntityType($value);
+                break;
+            default:
+                $this->candidateInfo[$key] = $value;
+            }
         }
 
         $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
@@ -505,7 +514,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     function getCandidateSex(): ?Sex
     {
-        return new Sex($this->candidateInfo["Sex"]);
+        return $this->candidateInfo["Sex"];
     }
 
     /**
@@ -515,7 +524,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     function getEntityType(): ?EntityType
     {
-        return new EntityType($this->candidateInfo["EntityType"]);
+        return $this->candidateInfo["EntityType"];
     }
 
     /**
