@@ -158,78 +158,25 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testFilters()
     {
         $this->safeGet($this->url . "/candidate_list/");
+        $this->_filterTest(self::$PSCID, self::$display,self::$clearFilter,
+                      'test',"0 rows",);
+        $this->_filterTest(self::$PSCID, self::$display,self::$clearFilter,
+                      'MTL001',"1 rows");
+        $this->_filterTest(self::$DCCID, self::$display,self::$clearFilter,
+                      '300001',"1 rows");
+        $this->_filterTest(self::$DCCID, self::$display,self::$clearFilter,
+                      'test','0 row');
+        $this->_filterTest(self::$visitLabel, self::$display,self::$clearFilter,
+                      'V1',"362");
+        $this->_filterTest(self::$visitLabel, self::$display,self::$clearFilter,
+                      'V2',"223");
+        $this->_filterTest(self::$site, self::$display,self::$clearFilter,
+                      'Data Coordinating Center', '7 rows');
+        $this->_filterTest(self::$site, self::$display,self::$clearFilter,
+                      "Montreal", '165');
+        $this->_filterTest(self::$entityType, self::$display,self::$clearFilter,
+                      "Human", '436');
 
-        //testing is done with user affiliated to only site=1 and project=1
-        //numbers below should reflect these affiliations.
-
-        $this-> _testFilter(self::$PSCID, "0 rows", 'test');
-        $this-> _testFilter(self::$PSCID, "1 rows", 'MTL001');
-        $this-> _testFilter(self::$DCCID, "1 rows", '300001');
-        $this-> _testFilter(self::$DCCID, "0 rows", 'test');
-        $this-> _testFilter(self::$visitLabel, "362", '1');
-        $this-> _testFilter(self::$visitLabel, "223", '2');
-        $this-> _testFilter(self::$site, "7 rows", '1');
-        $this-> _testFilter(self::$site, "165", '2');
-        $this-> _testFilter(self::$entityType, "436", '1');
-
-        // test advanced filter - sex
-        // Switch to Advanced mode
-         $btn = self::$advancedFilter;
-        $this->webDriver->executescript(
-            "return document.querySelector('$btn').click()"
-        );
-           //female
-           $this-> _testFilter(self::$sex, "20 rows displayed of 225", '1');
-           // male
-           $this-> _testFilter(self::$sex, "20 rows displayed of 210", '2');
-
-    }
-    /**
-     * Testing filter funtion and clear button
-     *
-     * @param string $element The input element loaction
-     * @param string $records The records number in the table
-     * @param string $value   The test value
-     *
-     * @return void
-     */
-    function _testFilter($element,$records,$value)
-    {
-        // get element from the page
-        if (strpos($element, "select") === false) {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
-            );
-        } else {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                 event = new Event('change', { bubbles: true });
-                 input.dispatchEvent(event);
-                "
-            );
-        }
-            $row      = self::$display;
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$row').textContent"
-            );
-            // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
-            //test clear filter
-            $btn = self::$clearFilter;
-            $this->webDriver->executescript(
-                "document.querySelector('$btn').click();"
-            );
-            $inputText = $this->webDriver->executescript(
-                "return document.querySelector('$element').value"
-            );
-            $this->assertEquals("", $inputText);
     }
     /**
      * Tests that, when user only has data_entry permisson, user
