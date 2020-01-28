@@ -1,8 +1,7 @@
 ## Brief summary of changes
 
 
-#### Documentation files changed: 
-
+- [ ] Have you updated related documentation?  
 
 #### Testing instructions: (if applicable)
 
