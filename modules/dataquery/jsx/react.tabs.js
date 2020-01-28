@@ -166,8 +166,6 @@ class ViewDataTabPane extends Component {
     this.setState({
       runQueryClicked: true
     });
-    console.log('check:');
-    console.log(this.props.Fields);
     this.props.runQuery(this.props.Fields, this.props.Sessions);
   }
 
