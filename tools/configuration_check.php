@@ -21,15 +21,7 @@ $helper->enableLogging(basename($argv[0]));
 
 $helper->printLine('Checking PHP version....');
 // Make sure the right PHP version is used.
-PHP_VERSION >= MINIMUM_PHP_VERSION ?
-    $helper->printSuccess("PHP Version requirement met.")
-    : $helper->printError(
-        sprintf(
-            "PHP minimum version not met (found: %s. required: %s)",
-            PHP_VERSION,
-            MINIMUM_PHP_VERSION
-        )
-    );
+evaluateVersionRequirement('PHP', PHP_VERSION, MINIMUM_PHP_VERSION);
 
 $helper->printLine('Checking Apache version....');
 if (function_exists('apache_get_version')) {
@@ -41,17 +33,8 @@ if (function_exists('apache_get_version')) {
         0,
         len('Apache/')
     );
+    evaluateVersionRequirement('Apache', $apacheVersion, MINIMUM_APACHE_VERSION);
 
-    // Make sure the right Apache version is used.
-    $apacheVersion >= MINIMUM_APACHE_VERSION ?
-        $helper->printSuccess("Apache Version requirement met.")
-        : $helper->printError(
-            sprintf(
-                "Apache minimum version not met (found: %s. required: %s)",
-                $apacheVersion,
-                MINIMUM_APACHE_VERSION
-            )
-        );
 } else {
     $helper->printWarning('Not running on an Apache server.');
 }
@@ -129,7 +112,13 @@ function evaluateVersionRequirement(
     global $helper;
     // Make sure the right Apache version is used.
     $versionRequired >= $versionInstalled ?
-        $helper->printSuccess("$software Version requirement met.")
+        $helper->printSuccess(
+            sprintf(
+                "$software version requirment met (found: %s. required: %s)",
+                $versionInstalled,
+                $versionRequired
+            )
+        )
         : $helper->printError(
             sprintf(
                 "$software minimum version not met (found: %s. required: %s)",
