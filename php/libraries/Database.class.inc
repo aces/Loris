@@ -59,7 +59,7 @@ class Database
     var $_preparedStoreHistory;
 
     /**
-     * The name of the database.
+     * The name of the database. Used internally for printing log messages.
      *
      * @access private
      */
@@ -1469,4 +1469,3 @@ class Database
         );
     }
 }
-

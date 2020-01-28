@@ -35,12 +35,12 @@ class BVL_Feedback_Panel
      *
      * @private NDB_BVL_Feedback
      */
-    private $_feedbackThread;
+    protected $_feedbackThread;
 
     /**
      * An array containing data that will be passed to the Smarty template.
      *
-     * @var array
+     * @public array
      */
     public $tpl_data;
 

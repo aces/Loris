@@ -29,7 +29,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     public $tpl_data;
     public $validityEnabled;
     public $validityRequired;
-    private $_instrument;
+    protected $_instrument;
     /**
      * Construct a controller for the instrument status control panel
      *
@@ -414,4 +414,3 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         return (!$timePoint->isSubmitted() || $maxThreadStatus == 'opened');
     }
 }
-
