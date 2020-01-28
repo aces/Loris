@@ -182,7 +182,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // *************************
         $files = $request->getUploadedFiles();
         if (count($files) !== 1) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'There should be 1 and only 1 file uploaded per POST request.'
             );
         }
@@ -190,16 +190,16 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $data = $request->getParsedBody();
 
-        $candid = $data['CandID'] ?? null;
-        if (intval($candid) !== $this->_visit->getCandID()) {
-            return new \LORIS\Http\Response\BadRequest(
+        $candid = new \LORIS\StudyEntities\Candidate\CandID($data['CandID']) ?? null;
+        if ($candid != $this->_visit->getCandID()) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'CandID in POST data do not match URL.'
             );
         }
 
         $pscid = $data['PSCID'] ?? null;
-        if (!\Candidate::candidateExists(intval($candid), $pscid)) {
-            return new \LORIS\Http\Response\BadRequest(
+        if (!\Candidate::candidateExists($candid, $pscid)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'PSCID and CandID in POST data do not refer to the same candidate.'
             );
         }
