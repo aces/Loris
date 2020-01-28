@@ -12,9 +12,14 @@
 require_once __DIR__ . '/cli_helper.class.inc';
 
 define('MINIMUM_PHP_VERSION', 7.3);
+define('MINIMUM_APACHE_VERSION', 2.4);
+define('MINIMUM_MYSQL_VERSION', 5.7);
+define('MINIMUM_MARIADB_VERSION', 10.3);
+
 $helper = new CLI_Helper();
 $helper->enableLogging(basename($argv[0]));
 
+$helper->printLine('Checking PHP version....');
 // Make sure the right PHP version is used.
 PHP_VERSION >= MINIMUM_PHP_VERSION ?
     $helper->printSuccess("PHP Version requirement met.")
@@ -25,6 +30,45 @@ PHP_VERSION >= MINIMUM_PHP_VERSION ?
             MINIMUM_PHP_VERSION
         )
     );
+
+$helper->printLine('Checking Apache version....');
+if (function_exists('apache_get_version')) {
+    // Output format: Apache/1.3.29 (Unix) PHP/4.3.4
+    // Parse this to get just the APACHE version number.
+    $apacheVersion = substr(
+        // Extract 'Apache/x.x.x' from output of apache_get_version()
+        explode(' ', apache_get_version())[0],
+        0,
+        len('Apache/')
+    );
+
+    // Make sure the right Apache version is used.
+    $apacheVersion >= MINIMUM_APACHE_VERSION ?
+        $helper->printSuccess("Apache Version requirement met.")
+        : $helper->printError(
+            sprintf(
+                "Apache minimum version not met (found: %s. required: %s)",
+                $apacheVersion,
+                MINIMUM_APACHE_VERSION
+            )
+        );
+} else {
+    $helper->printWarning('Not running on an Apache server.');
+}
+
+$helper->printLine('Checking database version');
+// This variable should contain "MySQL" or "MariaDB"
+$architecture = \NDB_Factory::singleton()->database()->getArchitecture();
+// Numeric version information
+$version = \NDB_Factory::singleton()->database()->getVersion();
+
+if (strpos(strtolower($architecture), 'mysql') !== false) {
+    evaluateVersionRequirement('MySQL', $version, MINIMUM_MYSQL_VERSION);
+} else if (strpos(strtolower($architecture), 'mariadb') !== false) {
+    evaluateVersionRequirement('MariaDB', $version, MINIMUM_MARIADB_VERSION);
+} else {
+    $helper->printError('Neither MariaDB nor MySQL installation detected');
+}
 
 // Check "web paths". This is a data type found in the ConfigSettings table.
 // Settings with this Data Type are expected to exist on the file system and
@@ -58,8 +102,8 @@ foreach ($result as $setting) {
     // certain paths.
     if (!is_dir($path)) {
         $helper->printWarning(
-            "Setting `$name` has the value `$path` which does not exist on "
-            . " the filesystem."
+            "Setting `$name` has the value `$path` which is not a directory "
+            . " on the filesystem."
         );
         continue;
     }
@@ -72,6 +116,27 @@ foreach ($result as $setting) {
             . "by user `$username`."
         );
     }
+}
+
+/**
+ * Evaluate version requirement. Print result.
+ */
+function evaluateVersionRequirement(
+    string $software, 
+    $versionInstalled, 
+    $versionRequired
+) {
+    global $helper;
+    // Make sure the right Apache version is used.
+    $versionRequired >= $versionInstalled ?
+        $helper->printSuccess("$software Version requirement met.")
+        : $helper->printError(
+            sprintf(
+                "$software minimum version not met (found: %s. required: %s)",
+                $versionInstalled,
+                $versionRequired
+            )
+        );
 }
 
 exit;
