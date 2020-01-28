@@ -54,7 +54,10 @@ class Dicoms
         return array(
             'Tarname'    => $dicom->getTarname(),
             'SeriesInfo' => array_map(
-                'self::_formatSeries',
+                array(
+                    'self',
+                    '_formatSeries'
+                ),
                 $dicom->getSeries()
             ),
         );
@@ -90,7 +93,7 @@ class Dicoms
     public function toArray(): array
     {
         $meta = array(
-            'CandID' => $this->_timepoint->getCandID(),
+            'CandID' => (string) $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
         );
 

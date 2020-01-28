@@ -1,12 +1,12 @@
 <br />
 <form method="post" name="edit_user" id="edit_user">
     <h3>Password Rules</h3>
-    <ul>
-        <li>The password must be at least 8 characters long</li>
-        <li>The password must contain at least 1 letter, 1 number and 1 character from   !@#$%^&amp;*()</li>
-        <li>The password and the user name must not be the same</li>
-        <li>The password and the email address must not be the same</li>
-    </ul>
+      <ul>
+        <li>The password must be at least 8 characters long.</li>
+        <li>The password cannot be your username or email address.</li>
+      </ul>
+        <p>Please choose a unique password.</p>
+        <p>We suggest using a password manager to generate one for you.</p>
     <h3>Edit My Information</h3>
     {foreach from=$form.errors item=error}
         <ul>

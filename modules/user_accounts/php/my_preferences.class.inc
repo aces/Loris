@@ -23,6 +23,10 @@ namespace LORIS\user_accounts;
  */
 class My_Preferences extends \NDB_Form
 {
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
+    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
+                                        'identical: please choose another one';
     /**
      * Computes the initial values this page will be filled with.
      *
@@ -113,10 +117,6 @@ class My_Preferences extends \NDB_Form
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
 
-        //The arrays that contain the edited permissions
-        $permissionsRemoved = array();
-        $permissionsAdded   = array();
-
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
 
@@ -192,27 +192,31 @@ class My_Preferences extends \NDB_Form
         // update the user
         $user->update($set);
 
+        // Now set the password. Note that this field is named incorrectly at this
+        // point in the code and represents a plaintext password, not a hash.
+        // Validation for the password is performed in _validateMyPreferences()
         if (isset($values['Password_hash'])) {
-            $user->updatePassword(new \Password($values['Password_hash']));
+            $user->updatePassword(
+                new \Password(
+                    htmlspecialchars_decode($values['Password_hash'])
+                )
+            );
         }
+
+        // create an instance of the config object
+        $config = \NDB_Factory::singleton()->config();
 
         // send the user an email
-        if (!empty($send)) {
-            // create an instance of the config object
-            $config = \NDB_Config::singleton();
+        $msg_data          = array();
+        $msg_data['study'] = $config->getSetting('title');
+        $msg_data['url']   = $config->getSetting('url');
+        $msg_data['realname'] = $values['Real_name'];
+        $msg_data['username'] = $user->getUsername();
+        $msg_data['password'] = $values['Password_hash'];
 
-            // send the user an email
-            $msg_data          = array();
-            $msg_data['study'] = $config->getSetting('title');
-            $msg_data['url']   = $config->getSetting('url');
-            $msg_data['realname'] = $values['Real_name'];
-            $msg_data['username'] = $user->getUsername();
-            $msg_data['password'] = $values['Password_hash'];
-
-            $template = (is_null($this->identifier))
-                ? 'new_user.tpl' : 'edit_user.tpl';
-            \Email::send($values['Email'], $template, $msg_data);
-        }
+        $template = (is_null($this->identifier))
+            ? 'new_user.tpl' : 'edit_user.tpl';
+        \Email::send($values['Email'], $template, $msg_data);
 
         $this->tpl_data['success'] = true;
     }
@@ -286,7 +290,6 @@ class My_Preferences extends \NDB_Form
 
         // email address rules
         $this->addRule('Email', 'Email address is required', 'required');
-        $this->addRule('Email', 'Your email address must be valid', 'email');
         $this->addRule(
             'Email',
             'Your email address must be less than 255 characters long',
@@ -308,7 +311,7 @@ class My_Preferences extends \NDB_Form
         $nGroup[] = $this->createLabel("Operation");
         $nGroup[] = $this->createLabel("Description");
 
-        foreach ($notifier_services as $id=>$serv) {
+        foreach ($notifier_services as $serv) {
             $nGroup[] = $this->createLabel($serv);
         }
         $this->addGroup(
@@ -332,7 +335,7 @@ class My_Preferences extends \NDB_Form
 
                 // Check for permissions
                 $display =true;
-                foreach ($services['perm'] as $k=>$permission) {
+                foreach ($services['perm'] as $permission) {
                     if (!$user->hasPermission($permission)) {
                         $display =false;
                         break;
@@ -386,20 +389,37 @@ class My_Preferences extends \NDB_Form
         $DB     = \Database::singleton();
         $errors = array();
 
+        // NOTE The 'Password_hash' key actually represents a plaintext password
+        $plaintext = $values['Password_hash'];
+
+        if ($values['Email'] === $plaintext) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+        }
+
+        // Ensure that the password and confirm password fields match.
+        // TODO This validation should be done on the front-end instead.
+        if ($values['Password_hash'] !== $values['__Confirm']) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_NO_MATCH;
+            return $errors;
+        }
+
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
             try {
-                $password = new \Password($values['Password_hash']);
+                // The Password class is self-validating and will throw an
+                // InvalidArgumentException if the value passed to it is
+                // bad or the input is too weak to be a good password.
+                $decoded = htmlspecialchars_decode($plaintext);
+                new \Password($decoded);
                 // New password must be different than current one
-                if (! \User::factory($this->identifier)->passwordChanged(
-                    $values['Password_hash']
+                if (! \User::factory($this->identifier)->isPasswordDifferent(
+                    $decoded
                 )
                 ) {
-                    $errors['Password_hash'] = 'New and old passwords '
-                        . 'are identical: please choose another one';
+                    $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
                 }
             } catch (\InvalidArgumentException $e) {
-                $errors['Password_hash'] = $e->getMessage();
+                $errors['Password_Group'] = $e->getMessage();
             }
         }
 

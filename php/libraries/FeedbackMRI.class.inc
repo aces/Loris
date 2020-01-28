@@ -334,10 +334,12 @@ class FeedbackMRI
         // build the output array and keep overall section at the end of the array
         $commentNames = array();
         $overallName  = array();
+        $overallType  = array();
         if (is_array($result)) {
             foreach ($result as $row) {
                 $CommentName = $row['CommentName'];
                 $CTID        = $row['CommentTypeID'];
+                $statusField = array();
                 // deal with CommentStatusField
                 if (!empty($row['CommentStatusField'])) {
                     $statusField = unserialize($row['CommentStatusField']);
@@ -355,9 +357,9 @@ class FeedbackMRI
                 } else {
                     // add a row to the output array
                     $commentNames[$CTID] = array(
-                        'name'   => stripslashes($CommentName),
-                        'field'  => $statusField['field'],
-                        'values' => $statusField['values'],
+                        'name'   => stripslashes($CommentName) ?? '',
+                        'field'  => $statusField['field'] ?? '',
+                        'values' => $statusField['values'] ?? '',
                     );
                 }
 

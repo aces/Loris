@@ -158,7 +158,6 @@ class CpG_Browser extends \NDB_Menu_Filter
             cpg.beta_value IS NOT NULL AND 
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
-        $DB   = \Database::singleton();
         $user = \User::singleton();
 
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
@@ -290,6 +289,7 @@ class CpG_Browser extends \NDB_Menu_Filter
                 ''       => 'All',
                 'Male'   => 'Male',
                 'Female' => 'Female',
+                'Other'  => 'Other'
             )
         );
         $this->addSelect(

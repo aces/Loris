@@ -142,7 +142,6 @@ class SNP_Browser extends \NDB_Menu_Filter
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
-        $DB   = \Database::singleton();
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // restrict data to own site
@@ -268,6 +267,7 @@ class SNP_Browser extends \NDB_Menu_Filter
                 ''       => 'All',
                 'Male'   => 'Male',
                 'Female' => 'Female',
+                'Other'  => 'Other',
             )
         );
         $this->addSelect(
@@ -354,12 +354,12 @@ class SNP_Browser extends \NDB_Menu_Filter
         $DB = \Database::singleton();
         $platform_results
             = $DB->pselect(
-            "SELECT distinct Name FROM genotyping_platform ",
-            array()
-        );
+                "SELECT distinct Name FROM genotyping_platform ",
+                array()
+            );
 
         $platform_options = array('' => 'Any');
-        foreach ($platform_results as $row => $result ) {
+        foreach ($platform_results as $result ) {
             $name = $result['Name'];
             $platform_options[$name] = $name;
         }

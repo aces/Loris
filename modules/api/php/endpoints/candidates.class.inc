@@ -198,7 +198,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $centerid = array_search(
             $data['Candidate']['Site'],
-            \Utility::getAssociativeSiteList()
+            \Utility::getSiteList()
         );
 
         $pscid = $data['Candidate']['PSCID'] ?? null;
@@ -209,16 +209,14 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $data['Candidate']['DoB'],
                 $data['Candidate']['EDC'],
                 $data['Candidate']['Sex'],
-                $pscid
+                $pscid,
+                $project->getId()
             );
         } catch (\LorisException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
         $candidate = \NDB_Factory::singleton()->candidate($candid);
-        $candidate->setData(
-            array('ProjectID' => $project->getId())
-        );
 
         $body = (new \LORIS\api\Views\Candidate($candidate))->toArray()['Meta'];
         $link = '/'. $request->getURI()->getPath() . '/' . $candid;

@@ -103,7 +103,8 @@ class Stats_Behavioural extends \NDB_Form
                     'ID'   => $currentProject,
                     'Name' => $projects[$currentProject],
                 );
-            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $Param_Project       ='AND (s.ProjectID IS NULL 
+                                   OR c.RegistrationProjectID=:pid)';
             $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } else {
             $currentProject = '';
@@ -114,11 +115,8 @@ class Stats_Behavioural extends \NDB_Form
         $suproject_query = '';
         // Only search for subprojects if $currentProject is a positive int.
         if (is_numeric($currentProject) && intval($currentProject) >= 0) {
-            $subprojList ="";
             $subprojects = \Utility::getSubprojectsForProject($currentProject);
-            foreach ($subprojects as $key=>$val) {
-                $subprojList .= $key.",";
-            }
+            $subprojList = implode(',', array_keys($subprojects));
             $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.SubprojectID IN ($subprojList)";

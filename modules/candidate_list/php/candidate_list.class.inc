@@ -77,6 +77,9 @@ class Candidate_List extends \DataFrameworkMenu
         $user   = \User::singleton();
         $config = \NDB_Config::singleton();
 
+        // get the list of visit labels
+        $visit_label_options = \Utility::getVisitList();
+
         // get the list of sites available for the user
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = \Utility::getSiteList();
@@ -111,6 +114,7 @@ class Candidate_List extends \DataFrameworkMenu
         }
 
         return [
+            'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
             'project'           => $project_options,
             'subproject'        => $subproject_options,

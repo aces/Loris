@@ -38,5 +38,5 @@ for access details.
 
 ## Configurations
 
-For Brainbrowser to load the MINC images successfully, the `config.xml` option 
+For Brainbrowser to load the MINC images successfully, the configuration path option 
 `MINCToolsPath` should point to the path where the MINC toolkit is installed.

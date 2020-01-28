@@ -7,8 +7,8 @@ configuration of a LORIS instance that has already been installed.
 
 ## Intended Users
 
-The module is intended to be used by study administrators who need
-a front end interface for configuring LORIS for their study.
+The module is intended to be used by study administrators to configure their
+study.
 
 ## Scope
 
@@ -17,8 +17,8 @@ study configuration, not LORIS installation parameters.
 
 ## Permissions
 
-The permission named "config" is required in order to access this
-module.
+The permission named `config` (Edit configuration settings) is required in order to 
+access this module.
 
 ## Configurations
 

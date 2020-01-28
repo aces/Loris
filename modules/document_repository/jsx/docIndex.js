@@ -18,15 +18,16 @@ class DocIndex extends React.Component {
       tableData: [],
       childrenNode: [],
       parentNode: [],
-      checked: false,
+      global: false,
     };
     // Bind component instance to custom methods
-    this.handleCheck = this.handleCheck.bind(this);
+    this.handleGlobal = this.handleGlobal.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.newCategoryState = this.newCategoryState.bind(this);
+    this.getAllData = this.getAllData.bind(this);
     this.dataByNode = this.dataByNode.bind(this);
-    this.handle = this.handle.bind(this);
+    this.getContent = this.getContent.bind(this);
   }
 
   componentDidMount() {
@@ -34,19 +35,19 @@ class DocIndex extends React.Component {
       .then(() => this.setState({isLoaded: true}));
   }
 
-  handleCheck(formElement, value) {
+  handleGlobal(formElement, value) {
     const parentNode = this.state.parentNode;
     parentNode.shift(['0', 'Root']);
-    this.setState({
-      checked: value,
-      parentNode: parentNode,
-    });
-    this.dataByNode(0);
+    this.setState({parentNode});
+    if (value == true) {
+      this.getAllData();
+    } else {
+      this.dataByNode(0);
+    }
   }
 
-  // function change tableData;
-  dataByNode(id) {
-    return fetch(loris.BaseURL + '/document_repository/docTree/' + id)
+  getAllData() {
+    return fetch(loris.BaseURL + '/document_repository/docTree/0')
       .then((response) => response.json())
       .then((myJson) => {
         let allNodesArray = [];
@@ -59,10 +60,32 @@ class DocIndex extends React.Component {
         let fillData = filterData.filter((data) => {
           return Object.values(nodesArray).includes(data[10]);
         });
-        if (id > 0) {
-          this.setState({checked: false});
-        }
         this.setState({
+          global: true,
+          tableData: fillData,
+          childrenNode: [],
+          parentNode: [],
+        });
+      });
+  }
+
+  // function change tableData;
+  dataByNode(id) {
+    return fetch(loris.BaseURL + '/document_repository/docTree/' + id)
+      .then((response) => response.json())
+      .then((myJson) => {
+        let allNodesArray = [];
+        let nodesArray = [];
+        allNodesArray = myJson['allsubcategories'];
+        allNodesArray.forEach((element) => {
+          nodesArray.push(id);
+        });
+        let filterData = this.state.data.Data;
+        let fillData = filterData.filter((data) => {
+          return Object.values(nodesArray).includes(data[10]);
+        });
+        this.setState({
+          global: false,
           tableData: fillData,
           childrenNode: myJson['subcategories'],
           parentNode: myJson['parentcategory'],
@@ -84,7 +107,7 @@ class DocIndex extends React.Component {
       });
   }
 
-  handle(obj) {
+  getContent(obj) {
     this.dataByNode(obj[0]);
   }
 
@@ -195,17 +218,25 @@ class DocIndex extends React.Component {
       {id: 'upload', label: 'Upload'},
       {id: 'category', label: 'Category'},
     ];
+    const parentTree = this.state.global ? null : (
+      <div>
+        <ParentTree
+          action={this.getContent}
+          parentNode={this.state.parentNode}
+        />
+      </div>
+    );
     const treeTable = (Object.keys(this.state.tableData.length).length === 0
                         && Object.keys(this.state.childrenNode).length === 0) ? (
       <NullFilterableDataTable>
         <div>
           <CheckboxElement
             name="globalSelection"
-            label="Global Selection Filter"
+            label="Filter globally"
             id="globalSelection"
-            value={this.state.checked}
+            value={this.state.global}
             elementClass='checkbox-inline'
-            onUserInput={this.handleCheck}
+            onUserInput={this.handleGlobal}
           />
           <FilterableDataTable
             name = "document"
@@ -214,17 +245,12 @@ class DocIndex extends React.Component {
             getFormattedCell={this.formatColumn}
             folder={
               <ChildTree
-                action={this.handle}
+                action={this.getContent}
                 childrenNode={this.state.childrenNode}
               />
             }
           >
-            <div>
-              <ParentTree
-                action={this.handle}
-                parentNode={this.state.parentNode}
-              />
-            </div>
+          {parentTree}
           </FilterableDataTable>
         </div>
       </NullFilterableDataTable>
@@ -232,11 +258,11 @@ class DocIndex extends React.Component {
       <div>
         <CheckboxElement
           name="globalSelection"
-          label="Global Selection Filter"
+          label="Filter globally"
           id="globalSelection"
-          value={this.state.checked}
+          value={this.state.global}
           elementClass='checkbox-inline'
-          onUserInput={this.handleCheck}
+          onUserInput={this.handleGlobal}
         />
         <FilterableDataTable
           name = "document"
@@ -246,16 +272,11 @@ class DocIndex extends React.Component {
           nullTableShow={true}
           folder={
           <ChildTree
-            action={this.handle}
+            action={this.getContent}
             childrenNode={this.state.childrenNode}
           />}
         >
-        <div>
-          <ParentTree
-            action={this.handle}
-            parentNode={this.state.parentNode}
-          />
-        </div>
+        {parentTree}
         </FilterableDataTable>
       </div>
     );

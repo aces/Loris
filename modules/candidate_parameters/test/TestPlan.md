@@ -9,6 +9,7 @@
 3. Click on the *Return to Timepoint List* button and ensure it goes to the correct timepoint list page.
 4. Make sure all tabs render.
 5. Ensure you stay on the same tab when you refresh.
+6. Ensure that you stay on the same page when clicking on the `Candidate Parameters` breadcrumb.
 
 ### Candidate Information Tab
 5. Confirm that all the fields in this panel correspond to what's stored in the candidate table and the corresponding parameter_candidate.

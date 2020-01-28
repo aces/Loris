@@ -199,6 +199,7 @@ class Instrument_List extends \NDB_Menu_Filter
             $x            = -1;
             $prevSubgroup = null;
 
+            $i = 0;
             foreach ($listOfInstruments as $instrument) {
                 // print the sub group header row
                 if ($instrument['Sub_group'] != $prevSubgroup) {

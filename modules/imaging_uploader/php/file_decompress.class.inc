@@ -91,7 +91,7 @@ class File_Decompress
         $decompressed_folder = null;
         $p = new PharData($this->file_name);
         $decompressed_folder = $p->decompress(); // creates /path/to/my.tar
-        $is_extracted        = $p->extractTo(
+        $p->extractTo(
             $this->dest_path,
             null,
             true

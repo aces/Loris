@@ -81,6 +81,34 @@ class UploadForm extends Component {
     }
 
     const fileName = data.mriFile.name;
+    // Make sure file is of type .zip|.tgz|.tar.gz format
+    const properExt = new RegExp('\.(zip|tgz|tar\.gz)$');
+    if (!fileName.match(properExt)) {
+      swal({
+        title: 'Invalid extension for the uploaded file!',
+        text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
+        type: 'error',
+        confirmButtonText: 'OK',
+      });
+
+      let errorMessage = {
+        mriFile: 'The file ' + fileName + ' must be of type .tgz, .tar.gz or .zip.',
+        candID: undefined,
+        pSCID: undefined,
+        visitLabel: undefined,
+      };
+
+      let hasError = {
+        mriFile: true,
+        candID: false,
+        pSCID: false,
+        visitLabel: false,
+      };
+
+      this.setState({errorMessage, hasError});
+      return;
+    }
+
     if (data.IsPhantom === 'N') {
       if (!data.candID || !data.pSCID || !data.visitLabel) {
         swal({
@@ -89,33 +117,6 @@ class UploadForm extends Component {
           type: 'error',
           confirmButtonText: 'OK',
         });
-        return;
-      }
-      // Make sure file is of type .zip|.tgz|.tar.gz format
-      const properExt = new RegExp('.(zip|tgz|tar.gz)$');
-      if (!fileName.match(properExt)) {
-        swal({
-          title: 'Invalid extension for the uploaded file!',
-          text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
-          type: 'error',
-          confirmButtonText: 'OK',
-        });
-
-        let errorMessage = {
-          mriFile: 'The file ' + fileName + ' is not of type .tgz, .tar.gz or .zip.',
-          candID: undefined,
-          pSCID: undefined,
-          visitLabel: undefined,
-        };
-
-        let hasError = {
-          mriFile: true,
-          candID: false,
-          pSCID: false,
-          visitLabel: false,
-        };
-
-        this.setState({errorMessage, hasError});
         return;
       }
     }

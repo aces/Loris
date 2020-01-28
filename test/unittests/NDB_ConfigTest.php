@@ -246,11 +246,13 @@ class NDB_ConfigTest extends TestCase
         $info   = array(
                    'ProjectID'         => '999',
                    'Name'              => 'test',
+                   'Alias'             => 'TST',
                    'recruitmentTarget' => '100',
                   );
         $result =  array(
                     'id'                => '999',
                     'Name'              => 'test',
+                    'Alias'             => 'TST',
                     'recruitmentTarget' => '100',
                    );
         $this->_dbMock->expects($this->once())
@@ -329,58 +331,4 @@ class NDB_ConfigTest extends TestCase
         );
     }
 
-    /**
-     * Test checkMenuPermission() method. Given an empty array from the
-     * database query, it should return true.
-     *
-     * @covers NDB_Config::checkMenuPermission
-     * @return void
-     */
-    public function testCheckMenuPermissionsWhenEmpty()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn(array());
-        $this->assertTrue($this->_config->checkMenuPermission(1));
-    }
-
-    /**
-     * Test checkMenuPermission() method. Given an array of permission codes 
-     * from the database query, it should return true if User::hasPermission
-     * returns true for the permission codes.
-     *
-     * @covers NDB_Config::checkMenuPermission
-     * @return void
-     */
-    public function testCheckMenuPermissionsWhenHasPerms()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn(array(0 => array('code' => 'aaa')));
-        $this->_user->expects($this->any())
-            ->method('hasPermission')
-            ->with($this->stringContains('aaa'))
-            ->willReturn(true);
-        $this->assertTrue($this->_config->checkMenuPermission(1));
-    }
-
-    /**
-     * Test checkMenuPermission() method. Given an array of permission codes
-     * from the database query, it should return false if User::hasPermission
-     * returns false for the permission codes.
-     *
-     * @covers NDB_Config::checkMenuPermission
-     * @return void
-     */
-    public function testCheckMenuPermissionsWhenHasNoPerms()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn(array(0 => array('code' => 'aaa')));
-        $this->_user->expects($this->any())
-            ->method('hasPermission')
-            ->with($this->stringContains('aaa'))
-            ->willReturn(false);
-        $this->assertFalse($this->_config->checkMenuPermission(1));
-    }
 }

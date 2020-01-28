@@ -6,7 +6,7 @@
  * all the header information that was used for that purpose as well as
  * a table on top which shows what the valid protocols for this study are
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main
@@ -39,7 +39,12 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     {
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
-        return ($user->hasPermission('violated_scans_view_allsites'));
+        return $user->hasAnyPermission(
+            array(
+                'violated_scans_view_allsites',
+                'violated_scans_edit'
+            )
+        );
     }
 
     /**
@@ -50,9 +55,7 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        // create user object
-        $user          =& \User::singleton();
-        $this->columns = array(
+        $this->columns      = array(
             'mpv.CandID',
             'mpv.PSCID',
             'mpv.time_run',
@@ -73,7 +76,6 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'mpv.SeriesUID',
             'tarchive.TarchiveID',
         );
-        $config        =&\NDB_Config::singleton();
         $this->validFilters = array(
             'mpv.CandID',
             'mpv.PSCID',

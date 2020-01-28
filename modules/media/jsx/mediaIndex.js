@@ -22,6 +22,7 @@ class MediaIndex extends Component {
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.mapColumn = this.mapColumn.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +48,23 @@ class MediaIndex extends Component {
   }
 
   /**
+   * Modify value of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} value - cell value
+   *
+   * @return {string} a mapped value for the table cell at a given column
+   */
+  mapColumn(column, value) {
+    switch (column) {
+      case 'Site':
+        return this.state.fieldOptions.sites[value];
+      default:
+        return value;
+    }
+  }
+
+  /**
    * Modify behaviour of specified column cells in the Data Table component
    *
    * @param {string} column - column name
@@ -56,6 +74,7 @@ class MediaIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    cell = this.mapColumn(column, cell);
     // Set class to 'bg-danger' if file is hidden.
     const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
     let result = <td className={style}>{cell}</td>;
@@ -81,7 +100,10 @@ class MediaIndex extends Component {
       }
       break;
     case 'Site':
-      result = <td className={style}>{this.state.fieldOptions.sites[cell]}</td>;
+      result = <td className={style}>{cell}</td>;
+      break;
+    case 'Project':
+      result = <td className={style}>{this.state.fieldOptions.projects[cell]}</td>;
       break;
     case 'Edit Metadata':
       if (!this.props.hasPermission('media_write')) {
@@ -151,6 +173,11 @@ class MediaIndex extends Component {
         type: 'select',
         options: options.sites,
       }},
+      {label: 'Project', show: true, filter: {
+        name: 'project',
+        type: 'select',
+        options: options.projects,
+      }},
       {label: 'Uploaded By', show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
@@ -199,6 +226,7 @@ class MediaIndex extends Component {
             data={this.state.data}
             fields={fields}
             getFormattedCell={this.formatColumn}
+            getMappedCell={this.mapColumn}
           />
         </TabPane>
         {uploadTab()}

@@ -30,6 +30,14 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Short name of the project (4 characters or less)'}">
+                            <label class="col-sm-12 control-label">Alias</label>
+                        </div>
+                        <div class="col-sm-12 col-md-9">
+                            <input class="form-control projectAlias" name="Alias" value="{$project.Alias}">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
                             <label class="col-sm-12 control-label">Recruitment Target</label>
                         </div>
@@ -77,6 +85,14 @@
                     </div>
                     <div class="col-sm-12 col-md-9">
                         <input class="form-control projectName" name="Name" placeholder="Please add a project title here" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Short name of the project (4 characters or less)'}">
+                        <label class="col-sm-12 control-label">Alias</label>
+                    </div>
+                    <div class="col-sm-12 col-md-9">
+                        <input class="form-control projectAlias" name="Alias" placeholder="Please add an alias here" value="">
                     </div>
                 </div>
                 <div class="form-group">

@@ -888,17 +888,19 @@ class NDB_Page implements RequestHandlerInterface
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label    = ucwords(str_replace('_', ' ', $this->name));
+        // If the page name is the same as the module directory name,
+        // there should only be 1 level of breadcrumb.
+        $pagename = ucwords(str_replace('_', ' ', $this->name));
         $sublabel = ucwords(str_replace('_', ' ', $this->page));
 
-        if ($label == $sublabel) {
+        if ($pagename == $sublabel) {
             return new \LORIS\BreadcrumbTrail(
-                new \LORIS\Breadcrumb($label, "/$this->name")
+                new \LORIS\Breadcrumb($this->Module->getLongName(), "/$this->name")
             );
         }
 
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb($this->Module->getLongName(), "/$this->name"),
             new \LORIS\Breadcrumb($sublabel, "/$this->name/$this->page")
         );
     }

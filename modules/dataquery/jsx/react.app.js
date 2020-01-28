@@ -77,7 +77,7 @@ class SavedQueriesList extends Component {
             {globalSaved}
           </ul>
         </li>
-        <li role='presentation'><a href='#SavedQueriesTab' data-toggle='tab'>Manage Saved Queries</a></li>
+        <li role='presentation' id='presentationMSQ'><a href='#SavedQueriesTab' data-toggle='tab'>Manage Saved Queries</a></li>
       </ul>
     );
   }
@@ -148,6 +148,14 @@ class DataQueryApp extends Component {
     this.updateFilter = this.updateFilter.bind(this);
   }
 
+  onTabChangeHandler(e) {
+    if (e.target.innerHTML !== 'Manage Saved Queries') {
+      document.getElementById(
+        'presentationMSQ'
+      ).classList.remove('active');
+    }
+  }
+
   componentDidMount() {
     // Before the dataquery is loaded into the window, this function is called to gather
     // any data that was not passed in the initial load.
@@ -173,7 +181,7 @@ class DataQueryApp extends Component {
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
         curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + this.state.queryIDs[key][i]), {
+          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
             data: {
               DocID: this.state.queryIDs[key][i]
             },
@@ -472,7 +480,7 @@ class DataQueryApp extends Component {
     } else {
       // Query was saved in the new format
       filterState = criteria;
-      selectedFields = fields;
+      selectedFields = fields ? fields : {};
       for (let instrument in fields) {
         for (let field in fields[instrument]) {
           if (field !== 'allVisits') {
@@ -1033,11 +1041,11 @@ class DataQueryApp extends Component {
       <div className={widthClass}>
         <nav className='nav nav-tabs'>
           <ul className='nav nav-tabs navbar-left' data-tabs='tabs'>
-            <li role='presentation' className='active'><a href='#Info' data-toggle='tab'>Info</a></li>
-            <li role='presentation'><a href='#DefineFields' data-toggle='tab'>Define Fields</a></li>
-            <li role='presentation'><a href='#DefineFilters' data-toggle='tab'>Define Filters</a></li>
-            <li role='presentation'><a href='#ViewData' data-toggle='tab'>View Data</a></li>
-            <li role='presentation'><a href='#Statistics' data-toggle='tab'>Statistical Analysis</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler} className='active'><a href='#Info' data-toggle='tab'>Info</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#DefineFields' data-toggle='tab'>Define Fields</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#DefineFilters' data-toggle='tab'>Define Filters</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#ViewData' data-toggle='tab'>View Data</a></li>
+            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#Statistics' data-toggle='tab'>Statistical Analysis</a></li>
           </ul>
           <SavedQueriesList
             userQueries={this.state.queryIDs.User}

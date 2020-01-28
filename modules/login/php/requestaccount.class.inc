@@ -2,7 +2,7 @@
 /**
  * Implements the LORIS request account page.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category   Behavioural
  * @package    Main
@@ -32,8 +32,6 @@ class RequestAccount extends \NDB_Form
      */
     function setup()
     {
-        $config   = \NDB_Config::singleton();
-        $tpl_data = array();
         $this->tpl_data['page_title'] = 'Request Account';
 
         $this->addBasicText(
@@ -71,14 +69,6 @@ class RequestAccount extends \NDB_Form
         );
         $this->addCheckbox("examiner", "Examiner role", array());
         $this->addCheckbox("radiologist", "Radiologist", array());
-
-        // Get reCATPCHA keys
-        $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
-        $reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
-        // Display reCAPTCHA if both private and public keys are set
-        if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
-            $tpl_data['captcha_key'] = $reCAPTCHAPublic;
-        }
 
         $this->form->addFormRule(array(&$this, '_validate'));
     }
@@ -144,9 +134,9 @@ class RequestAccount extends \NDB_Form
     function _process($values)
     {
         $DB       = \Database::singleton();
-        $name     = htmlspecialchars($_REQUEST["firstname"], ENT_QUOTES);
-        $lastname = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
-        $from     = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
+        $name     = trim(htmlspecialchars($_REQUEST["firstname"], ENT_QUOTES));
+        $lastname = trim(htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES));
+        $from     = trim(htmlspecialchars($_REQUEST["from"], ENT_QUOTES));
         $site     = $_REQUEST["site"];
         $fullname = $name." ".$lastname;
 
@@ -230,7 +220,6 @@ class RequestAccount extends \NDB_Form
                 $_SERVER['REMOTE_ADDR']
             );
             if (!$resp->isSuccess()) {
-                $errors         = $resp->getErrorCodes();
                 $err['captcha'] = 'Please complete the reCaptcha!';
             }
         }

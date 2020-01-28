@@ -27,9 +27,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * UI elements and locations
-     * breadcrumb - 'Mri Violations'
+     * breadcrumb - 'MRI Violated Scans'
      */
-    private $_loadingUI = array('Mri Violations' => '#bc2 > a:nth-child(2) > div');
+    private $_loadingUI = array(
+        'MRI Violated Scans' => '#bc2 > a:nth-child(2) > div'
+    );
     /**
      * Insert testing data
      *
@@ -323,15 +325,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests landing the mri violation whit the permission
+     * Tests loading the module with the permission
      * 'violated_scans_view_allsites'
      *
      * @return void
      */
-    function testLoginWithPermission()
+    function testModuleLoadsWithAllSitesPermission()
     {
-         $this->setupPermissions(array("violated_scans_view_allsites"));
-         $this->safeGet($this->url . "/mri_violations/");
+        $this->setupPermissions(array("violated_scans_view_allsites"));
+        $this->safeGet($this->url . "/mri_violations/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -339,14 +341,35 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "You do not have access to this page.",
             $bodyText
         );
-          $this->resetPermissions();
+        $this->resetPermissions();
     }
+
     /**
-     * Tests anding the mri violation whitout the permission
+     * Tests loading the module with the permission
+     * 'violated_scans_edit'
      *
      * @return void
      */
-    function testLoginWithoutPermission()
+    function testModuleLoadsWithEditPermission()
+    {
+        $this->setupPermissions(array("violated_scans_edit"));
+        $this->safeGet($this->url . "/mri_violations/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
+    }
+
+    /**
+     * Ensure that the module does not load when the user lacks MRI_Violations
+     * permissions.
+     *
+     * @return void
+     */
+    function testModuleDoesNotLoadWithoutPermission()
     {
          $this->setupPermissions(array(""));
          $this->safeGet($this->url . "/mri_violations/");

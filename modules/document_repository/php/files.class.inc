@@ -67,6 +67,10 @@ class Files extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $config = \NDB_Factory::singleton()->config();
+        $path   = \Utility::appendForwardSlash(
+            $config->getSetting("documentRepositoryPath")
+        );
         switch ($request->getMethod()) {
         case "POST":
             if ($this->uploadDocFile($request)) {
@@ -79,7 +83,7 @@ class Files extends \NDB_Page
                         )
                     );
             }
-            return new \LORIS\Http\Response\Conflict("duplicate file name");
+            return new \LORIS\Http\Response\JSON\Conflict("duplicate file name");
         case "PUT":
             $tmp = $request->getBody();
             $arr = (array)json_decode($tmp);
@@ -107,7 +111,7 @@ class Files extends \NDB_Page
             $name   = \User::singleton()->getUsername();
             $record = urldecode(basename($request->getUri()->getPath()));
             if (!is_numeric($record)) {
-                $file = __DIR__ . "/../user_uploads/$name/$record";
+                $file = $path. "$name/$record";
                 return (new \LORIS\Http\Response())
                     ->withHeader('Content-Type', 'application/octet-stream')
                     ->withHeader(
@@ -141,8 +145,7 @@ class Files extends \NDB_Page
      */
     function editDocFile(array $req): void
     {
-        $db           = \Database::singleton();
-        $user         = \User::singleton();
+        $db           = \NDB_Factory::singleton()->database();
         $updateValues = [
             'instrument' => $req['instrument'] ?? null,
             'comments'   => $req['comments'] ?? null,
@@ -171,22 +174,21 @@ class Files extends \NDB_Page
      */
     function deleteFile($rid): void
     {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
+        $config  = $factory->config();
+        $path    = \Utility::appendForwardSlash(
+            $config->getSetting("documentRepositoryPath")
+        );
         // create Database object
-        $DB       = \Database::singleton();
-        $user     = \User::singleton();
         $Notifier = new \NDB_Notifier(
             "document_repository",
             "delete"
         );
-        $factory  = \NDB_Factory::singleton();
         $baseURL  = $factory->settings()->getBaseURL();
         $fileName = $DB->pselectOne(
             "SELECT File_name FROM document_repository
-             WHERE record_id =:identifier",
-            array(':identifier' => $rid)
-        );
-        $userName = $DB->pselectOne(
-            "SELECT uploaded_by FROM document_repository
              WHERE record_id =:identifier",
             array(':identifier' => $rid)
         );
@@ -205,7 +207,7 @@ class Files extends \NDB_Page
             $Notifier->notify($msg_data);
         }
 
-        $path = __DIR__ . "/../user_uploads/$dataDir";
+        $path = $path.$dataDir;
 
         if (file_exists($path)) {
             unlink($path);
@@ -234,11 +236,11 @@ class Files extends \NDB_Page
         //site
         $siteList = \Utility::getSiteList(false);
         //instrument
-        $instruments     = $db->pselect(
+        $instruments     = $db->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Test_name",
             array()
         );
-        $instrumentsList = $this->toDocSelect($instruments, "Test_name", null);
+        $instrumentsList = array_combine($instruments, $instruments);
         //docFile
         $query   ="SELECT " .
                 "record_id as id, " .
@@ -300,31 +302,7 @@ class Files extends \NDB_Page
             "id"   => $id,
         );
     }
-    /**
-     * Utility function to convert data from database to a
-     * (select) dropdown friendly format
-     *
-     * @param array  $options array of options
-     * @param string $item    key
-     * @param string $item2   value
-     *
-     * @return array
-     */
-    function toDocSelect($options, $item, $item2): array
-    {
-        $selectOptions = array();
 
-        $optionsValue = $item;
-        if (isset($item2)) {
-            $optionsValue = $item2;
-        }
-
-        foreach ($options as $key => $value) {
-            $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
-        }
-
-        return $selectOptions;
-    }
     /**
      * Handles the document upload process
      *
@@ -337,10 +315,6 @@ class Files extends \NDB_Page
         $req            = $request->getParsedBody();
         $uploadedFiles  = $request->getUploadedFiles();
         $uploadOK       = false;
-        $editNotifier   = new \NDB_Notifier(
-            "document_repository",
-            "edit"
-        );
         $uploadNotifier = new \NDB_Notifier(
             "document_repository",
             "upload"
@@ -348,7 +322,9 @@ class Files extends \NDB_Page
         $factory        = \NDB_Factory::singleton();
         $baseURL        = $factory->settings()->getBaseURL();
         $config         = $factory->config();
-        $base           = $config->getSetting('base');
+        $path           = \Utility::appendForwardSlash(
+            $config->getSetting("documentRepositoryPath")
+        );
         $name           = \User::singleton()->getUsername();
         $DB       = \Database::singleton();
         $category = $req['category']; // required
@@ -368,7 +344,7 @@ class Files extends \NDB_Page
         $fileSize     = $uploadedFile->getSize();
         $fileName     = $uploadedFile->getClientFileName();
         $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
-        $uploadPath   = "$base/modules/document_repository/user_uploads/$name/";
+        $uploadPath   = $path.$name."/";
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
         if (intval($category) < 0) {

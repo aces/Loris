@@ -15,7 +15,13 @@
 use \LORIS\StudyEntities\Candidate\CandID;
 
 $user = \NDB_Factory::singleton()->user();
-if (!$user->hasPermission('candidate_parameter_edit')) {
+if (!$user->hasAnyPermission(
+    array(
+        'candidate_parameter_edit',
+        'candidate_parameter_view'
+    )
+)
+) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
@@ -115,7 +121,7 @@ function getCandInfoFields()
 
     $result = [
         'pscid'                => $pscid,
-        'candID'               => $candID,
+        'candID'               => $candID->__toString(),
         'caveatReasonOptions'  => $caveat_options,
         'flagged_caveatemptor' => $flag,
         'flagged_reason'       => $reason,
@@ -196,7 +202,7 @@ function getProbandInfoFields()
 
     $result = [
         'pscid'            => $pscid,
-        'candID'           => $candID,
+        'candID'           => $candID->__toString(),
         'ProbandSex'       => $sex,
         'ProbandDoB'       => $dob,
         'ageDifference'    => $ageDifference,
@@ -270,7 +276,7 @@ function getFamilyInfoFields()
 
     $result = [
         'pscid'                 => $pscid,
-        'candID'                => $candID,
+        'candID'                => $candID->__toString(),
         'candidates'            => $candidates,
         'existingFamilyMembers' => $familyMembers,
     ];
@@ -346,7 +352,7 @@ function getParticipantStatusFields()
 
     $result = [
         'pscid'                 => $pscid,
-        'candID'                => $candID,
+        'candID'                => $candID->__toString(),
         'statusOptions'         => $statusOptions,
         'required'              => $required,
         'reasonOptions'         => $reasonOptions,
@@ -398,7 +404,6 @@ function getConsentStatusFields()
 {
     $candID = new CandID($_GET['candID']);
 
-    $db        = \Database::singleton();
     $candidate = \Candidate::singleton($candID);
 
     // get pscid
@@ -433,7 +438,7 @@ function getConsentStatusFields()
 
     $result = [
         'pscid'           => $pscid,
-        'candID'          => $candID,
+        'candID'          => $candID->__toString(),
         'consentStatuses' => $status,
         'consentDates'    => $date,
         'withdrawals'     => $withdrawalDate,

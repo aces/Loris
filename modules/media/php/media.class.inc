@@ -129,6 +129,7 @@ class Media extends \DataFrameworkMenu
             'fileTypes'     => $fileTypeList,
             'visits'        => $visitList,
             'sites'         => $siteList,
+            'projects'      => \Utility::getProjectList(),
             'instruments'   => $instrumentList,
             'languages'     => $languageList,
             'hidden'        => $hiddenOptions,

@@ -113,7 +113,7 @@ class Database
     public static function canLogIn($host, $database, $username, $password)
     {
         try {
-            $test = new \PDO(
+            new \PDO(
                 "mysql:host={$host};dbname={$database};charset=UTF8",
                 $username,
                 $password

@@ -37,7 +37,7 @@ following permissions:
 * `instrument_manager_read`
 * `instrument_manager_write`
 
-The write permission allows a user to upload new LORIS instrument. 
+Currently, only users with the `superuser` permission can install instruments.
 
 ## Configurations
 
@@ -49,8 +49,6 @@ directories (to write the instrument itself, and instrument table
 patch respectively.)
 
 In order to automatically source the SQL patch and fully configure
-LINST instruments, the LORIS `quatUser` and `quatPassword` configuration
+LINST instruments, the LORIS `adminUser` and `adminPassword` configuration
 must be set to a user which has the MySQL `CREATE TABLE` permission.
-(The name `quatUser` and `quatPassword` is an anachronism and should
-be renamed.)
 

@@ -54,14 +54,14 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("New Profile", $bodyText);
         // check EDC shows on the page
-        $value = "#default-panel > div > form > div > div:nth-child(3) >".
+        $value = "#lorisworkspace > fieldset > div > form > div > div:nth-child(3)>".
                  " div > div:nth-child(1) > label";
         $EDC   = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
         $this->assertContains("Expected Date of Confinement", $EDC);
         // check Project shows on the page
-        $value   = "#default-panel > div > form > div > div:nth-child(7) >".
+        $value   = "#lorisworkspace > fieldset > div > form>div>div:nth-child(7)>".
                    " div > label";
         $project = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
@@ -127,10 +127,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$this->dtc').value='2015-01-01'"
         );
 
-        $startVisit =  $this->webDriver->executescript(
+        $this->webDriver->executescript(
             "document.querySelector('$this->btn').click()"
         );
-        $bodyText   = $this->webDriver->executescript(
+        $bodyText = $this->webDriver->executescript(
             "return document.querySelector('#default-panel').textContent"
         );
 

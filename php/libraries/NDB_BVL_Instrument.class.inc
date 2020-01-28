@@ -27,6 +27,9 @@ use \Loris\StudyEntities\Candidate\CandID;
  */
 abstract class NDB_BVL_Instrument extends NDB_Page
 {
+    protected const ERROR_CERTIFICATION_BAD_FORMATTING
+        = 'Certification settings are not formatted correctly in the '
+        . 'configuration file. Cannot continue.';
     /**
      * Determines whether this instrument should load data in
      * JSON format from the "Data" column of the flag table, or
@@ -104,7 +107,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * class, add only the dates from the current page to the array using the
      * instruments switch($page) otherwise you'll end up overwriting (NULLing)
      * all other dates in the table that appear on other pages (if they are
-     * listed in the array of date fields) - note by Dario
+     * listed in the array of date fields) - note by @dariovins
      */
     var $dateTimeFields = array();
 
@@ -177,6 +180,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return object|null the new object of $instrument type
      * @access public
+     * @throws NotFound
+     * @throws Exception
      */
     static function factory(
         string $instrument,
@@ -208,7 +213,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 // The module directory we use for instruments is arbitrary,
                 // since it isn't a real module, but it's required for the page
                 // constructor.
-                new Module($instrument, $base ."project/"),
+                Module::factory("instruments"),
                 $page,
                 $commentID,
                 $commentID,
@@ -219,7 +224,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 && ($guarantee_exists === true
                 && !file_exists($base."project/instruments/$class.class.inc"))
             ) {
-                throw new Exception("Instrument does not exist");
+                throw new NotFound("Instrument does not exist");
             }
             if (!class_exists($class)) {
                 include_once $base."project/instruments/$class.class.inc";
@@ -227,7 +232,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             // Now go ahead and instantiate it
             $obj = new $class(
-                new Module($instrument, $base ."project/"),
+                Module::factory("instruments"),
                 $page,
                 $commentID,
                 $commentID,
@@ -394,7 +399,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (file_exists($scorer)) {
             $output = array();
             exec(
-                $scorer . " " . escapeshellarg($this->getCommentID()),
+                escapeshellarg($scorer) . " " . escapeshellarg(
+                    $this->getCommentID()
+                ),
                 $output,
                 $retVal
             );
@@ -883,6 +890,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * settings and don't need to parse the config file themselves.
      *
      * @return array
+     * @throws \ConfigurationException
      */
     function _getCertificationConfig(): array
     {
@@ -894,6 +902,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $CertificationInstruments = array();
 
         if ($CertificationEnabled) {
+            // Throw exception if config file is formatted incorrectly.
+            if (!is_array(
+                $CertificationConfig['CertificationProjects']
+            )
+                || !is_array(
+                    $CertificationConfig['CertificationInstruments']
+                )
+            ) {
+                throw new \ConfigurationException(
+                    self::ERROR_CERTIFICATION_BAD_FORMATTING
+                );
+            }
             foreach (
                 Utility::associativeToNumericArray(
                     $CertificationConfig['CertificationProjects']
@@ -1102,10 +1122,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getDatabaseDate(array $formDateValue): string
     {
+        $databaseValue = "";
         if (!empty($formDateValue)) {
-
-            $databaseValue = "";
-
             if (array_key_exists("Y", $formDateValue)
                 || array_key_exists("M", $formDateValue)
                 || array_key_exists("d", $formDateValue)
@@ -1304,7 +1322,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             //Loop through the rules (will only be one rule if this is not an OR)
             $or_conditions = false;
-            for ($i = 0; $i < count($rules_array); $i++) {
+            $numRules      = count($rules_array);
+            for ($i = 0; $i < $numRules; $i++) {
                 $rule = explode("{@}", $rules_array[$i]);
                 //Some rules compare against multiple values, handle this here.
                 if (stristr($rule[2], "|")) {  //ex: q_1{@}=={@}yes|no
@@ -2707,11 +2726,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($request->getMethod() === "POST") {
+        $req = $request->getParsedBody();
+        if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
             $this->save();
         }
-
-        return (new \Zend\Diactoros\Response())
+        return (new \Laminas\Diactoros\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 

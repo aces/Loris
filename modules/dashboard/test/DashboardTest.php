@@ -420,8 +420,8 @@ class DashboardTest extends LorisIntegrationTest
         $views = $this->webDriver
             ->findElement(
                 WebDriverBy::Xpath(
-                    "//*[@id='lorisworkspace']/div/di".
-                    "v[1]/div[2]/div[1]/div/div/button"
+                    "//*[@id='lorisworkspace']/div[1]".
+                    "/div[2]/div[1]/div/div/button"
                 )
             );
         $views->click();
@@ -429,14 +429,14 @@ class DashboardTest extends LorisIntegrationTest
         $assertText1 = $this->webDriver
             ->findElement(
                 WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div/div[1]".
+                    "//*[@id='lorisworkspace']/div[1]".
                     "/div[2]/div[1]/div/div/ul/li[1]/a"
                 )
             )->getText();
         $assertText2 = $this->webDriver
             ->findElement(
                 WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div/div[1]".
+                    "//*[@id='lorisworkspace']/div[1]".
                     "/div[2]/div[1]/div/div/ul/li[2]/a"
                 )
             )->getText();
@@ -599,7 +599,6 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("test.jpg", $bodyText);
-        $this->assertContains("NEW", $bodyText);
         $this->resetPermissions();
     }
     /**

@@ -384,7 +384,12 @@ class AcknowledgementsIndex extends Component {
       }},
     ];
     const actions = [
-      {name: 'addAcknowledgement', label: 'Add Acknowledgement', action: this.openModalForm},
+      {
+        name: 'addAcknowledgement',
+        label: 'Add Acknowledgement',
+        action: this.openModalForm,
+        show: this.props.hasPermission('acknowledgements_edit'),
+      },
     ];
 
     return (

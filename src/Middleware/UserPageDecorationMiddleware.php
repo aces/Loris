@@ -22,7 +22,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         string $pagename,
         \NDB_Config $config,
         array $JS,
-        array $CSS
+        array $CSS,
+        \Database $DB
     ) {
 
         $this->JSFiles  = $JS;
@@ -31,6 +32,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $this->BaseURL  = $baseurl;
         $this->PageName = $pagename;
         $this->user     = $user;
+        $this->DB       = $DB;
     }
 
     /**
@@ -52,11 +54,54 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                      'test_name' => $this->PageName,
                     );
 
+        $menu    = [];
+        $modules = \Module::getActiveModules($this->DB);
+        foreach ($modules as $module) {
+            if (!$module->hasAccess($user)) {
+                continue;
+            }
+
+            $items = $module->getMenuItems();
+
+            if (!empty($items)) {
+                foreach ($items as $menuitem) {
+                    $menu[$menuitem->getCategory() ?? 'Other'][] = $menuitem;
+                }
+            }
+        }
+
+        // The order of the menu categories is currently unsorted. We sort them
+        // alphabetically by key to impose an order. As a hack to avoid reordering
+        // menu for users of existing LORIS instances, we move the 'Admin' category
+        // to the end even though it's alphabetically first (we do this by removing
+        // the key before sorting and then adding it back afterwards.)
+        //
+        // Coincidentally, this almost-alphabetic sorting results in the exact same
+        // order that LORIS previously had.
+        $adminmenu = $menu['Admin'] ?? [];
+        unset($menu['Admin']);
+        ksort($menu);
+        if (!empty($adminmenu)) {
+            $menu['Admin'] = $adminmenu;
+        }
+
+        // We unconditionally sort within each section because the within-menu
+        // order has never been stable in LORIS, and sorting adds some consistency.
+        foreach ($menu as $cat => $val) {
+            $val = $val ?? [];
+            usort(
+                $val,
+                function ($a, $b) {
+                    return strcmp($a->getLabel(), $b->getLabel());
+                }
+            );
+            $menu[$cat] = $val;
+        }
         // Basic page outline variables
         $tpl_data += array(
                       'study_title' => $this->Config->getSetting('title'),
                       'baseurl'     => $this->BaseURL,
-                      'tabs'        => \NDB_Config::getMenuTabs(),
+                      'menus'       => $menu,
                       'currentyear' => date('Y'),
                       'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                      );
@@ -88,6 +133,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
+
+        $tpl_data['subtest'] = $request->getAttribute("pageclass")->page;
 
         $page = $request->getAttribute("pageclass");
         if (method_exists($page, 'getFeedbackPanel')

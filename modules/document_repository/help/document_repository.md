@@ -1,12 +1,9 @@
 # Document Repository
 
-The Document Repository is a useful tool that provides studies with a centralized location for important documents. Files may be uploaded and organized under any user-defined category. Subcategories can also be defined by the user to be nested under parent categories.
-To view previously uploaded files, click on a given category title to reveal a complete list of subcategories, and then files organized within. Clicking on a filename in blue text will download the file. Users with appropriate permissions can click “Edit” to modify information associated with the file such as Category, Site, Instrument, PSCID, Visit Label, Comments, Version), or click "Delete" to remove the file.
+This module provides studies with a centralized location for important documents. You can organize files by categories and subcategories designed by you or other members of your team.
 
-## Viewing Documents
+In the **Browse** tab, you can search for specific files using the **Selection Filter** section. Click on any file name in the data table to download. Click on any of the folders to reveal subfolders and files organized within. You can click on **Edit** or **Delete** in any cell, in those respective columns, to modify a file. Click on certain column headers to sort the list of documents.
 
-Similar to other LORIS modules, use the Selection Filters to search for specific documents and click  "Show Data" to apply filters and retrieve results. Clicking on any column header will sort the data table in ascending/descending order based on that column. Click the filename to download the file.
+Navigate to the **Upload** tab to upload a file. Populate the fields and upload your file. Your newly uploaded file should now appear in the list within the Browse tab.
 
-## Uploading a File
-
-Users may upload new documents to the Document Repository by clicking "Upload File" in the Selection Filter panel. A new panel will prompt for information about the file; required fields are denoted by red asterisk. Click “Browse” to select the local file to upload.  Click “Upload” to launch the upload to the Document Repository.  The new document, if uploaded successfully, will appear in the document repository list.Click "Add Category" to create a new category or subcategory for an existing parent category.
+If you need to add a new category or subcategory, you can do so in the **Category** tab. Populate the fields and click **Add Category**.

@@ -91,8 +91,11 @@ class ViewDetails extends \NDB_Form
     {
         switch ($table) {
         case "tarchive":
-            $query = "SELECT * FROM $table WHERE TarchiveID =:ID";
-            $array = $this->DB->pselectRow($query, array('ID' => $tarchiveID));
+            $query        = "SELECT * FROM $table WHERE TarchiveID =:ID";
+            $tarchiveData = $this->DB->pselectRow(
+                $query,
+                array('ID' => $tarchiveID)
+            );
             break;
         case "tarchive_series":
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
@@ -219,7 +222,9 @@ class ViewDetails extends \NDB_Form
             $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
         }
 
-        if (!is_null($this->tpl_data['archive']['PatientID'])) {
+        if (isset($this->tpl_data['archive']['PatientID'])
+            && $this->tpl_data['archive']['PatientID'] !== null
+        ) {
             if (preg_match(
                 "/$pIDRegex/",
                 $this->tpl_data['archive']['PatientID']

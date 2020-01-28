@@ -33,7 +33,7 @@ abstract class IdentifierGenerator
     protected $length;
     protected $minValue;
     protected $maxValue;
-    protected $prefix = '';
+    protected $siteAlias = '';
 
     /**
      * Generates a new unused identifier to represent a Candidate in LORIS.

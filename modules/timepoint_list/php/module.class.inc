@@ -40,6 +40,7 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        // FIXME This should be reworked to not silently handle the try-catch
         try {
             $resp = parent::handle($request);
             if ($resp->getStatusCode() != 404) {
@@ -49,5 +50,15 @@ class Module extends \Module
         }
         $page = $this->loadPage("timepoint_list");
         return $page->process($request, $page);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "Timepoint List";
     }
 }

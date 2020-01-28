@@ -2,7 +2,7 @@
 /**
  * This file contains the entry point for a LORIS PSR15-based router.
  * The entrypoint constructs a ServerRequestInterface PSR7 object
- * (currently by using Zend Diactoros), adds generic LORIS middleware,
+ * (currently by using Laminas Diactoros), adds generic LORIS middleware,
  * and then delegates to a LORIS BaseRouter.
  *
  * The this entry point then prints the resulting value to the user.
@@ -32,7 +32,7 @@ $client->initialize();
 $middlewarechain = (new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
-$serverrequest = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
+$serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
 
 // Now that we've created the ServerRequest, handle it.
 $user = \User::singleton();

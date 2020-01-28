@@ -7,6 +7,6 @@
 
 1.
 
-#### Links to related tickets:
+#### Link(s) to related issue(s)
 
-*
+* Resolves #  (Reference the issue this fixes, if any.)

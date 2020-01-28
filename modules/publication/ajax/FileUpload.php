@@ -189,7 +189,7 @@ function processFiles($pubID) : void
  */
 function insertCollaborators(int $pubID) : void
 {
-    if (!$_POST['collaborators']) {
+    if (!isset($_POST['collaborators'])) {
         return;
     }
     $db = Database::singleton();
@@ -447,11 +447,11 @@ function notify($pubID, $type) : void
     $emailData['URL']         = $url . '/publication/view_project/?id='.$pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
 
-    $sendTo = $_POST['notifyLead'] === 'true'
+    $sendTo = isset($_POST['notifyLead']) && $_POST['notifyLead'] === 'true'
         ? array($data['LeadInvestigatorEmail']) : [];
     // get collaborators to notify
     $collaborators = isset($_POST['collaborators'])
-        ? json_decode($_POST['collaborators'], true) : null;
+        ? json_decode($_POST['collaborators'], true) : [];
 
     foreach ($collaborators as $c) {
         if ($c['notify']) {

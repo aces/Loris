@@ -13,5 +13,7 @@ INSERT INTO `mri_scanner` (`ID`, `Manufacturer`, `Model`, `Serial_number`, `Soft
 INSERT INTO `mri_scanner` (`ID`, `Manufacturer`, `Model`, `Serial_number`, `Software`, `CandID`) VALUES (10,'SIEMENS','TrioTim','35056','syngo MR B15',428192);
 INSERT INTO `mri_scanner` (`ID`, `Manufacturer`, `Model`, `Serial_number`, `Software`, `CandID`) VALUES (11,'SIEMENS','TrioTim','35248','syngo MR B17',749066);
 INSERT INTO `mri_scanner` (`ID`, `Manufacturer`, `Model`, `Serial_number`, `Software`, `CandID`) VALUES (12,'SIEMENS','TrioTim','35412','syngo MR B17',965878);
+INSERT INTO `mri_scanner` (`ID`, `Manufacturer`, `Model`, `Serial_number`, `Software`, `CandID`) VALUES (13,'SIEMENS','TrioTim','35045','syngo MR B17',674923);
+INSERT INTO `mri_scanner` (`ID`, `Manufacturer`, `Model`, `Serial_number`, `Software`, `CandID`) VALUES (14,'SIEMENS','TrioTim','35056','syngo MR B17',428192);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

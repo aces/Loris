@@ -267,7 +267,7 @@ function validateInput($values)
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             $params['CenterID'] = implode(',', $user->getCenterIDs());
-            $query .= " AND FIND_IN_SET(CenterID,:CenterID)";
+            $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
         }
 
         $candidate = $db->pSelectOne($query, $params);
@@ -564,7 +564,7 @@ function getIssueFields()
     //get field options
     if ($user->hasPermission('access_all_profiles')) {
         // get the list of study sites - to be replaced by the Site object
-        $sites = Utility::getAssociativeSiteList();
+        $sites = Utility::getSiteList();
     } else {
         // allow only to view own site data
         $sites = $user->getStudySites();
@@ -688,7 +688,7 @@ ORDER BY dateAdded LIMIT 1",
         }
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['othersWatching'] = getWatching($issueID);
-        $issueData['desc']           = $desc[0]['issueComment'];
+        $issueData['desc']           = $desc[0]['issueComment'] ?? '';
     }
     $issueData['comment'] = null;
 

@@ -379,12 +379,6 @@ class Instrument_List_ControlPanel extends \TimePoint
             return false;
         }
 
-        // new DB Object
-        $db =& \Database::singleton();
-
-        // create user object
-        $user =& \User::singleton();
-
         $hasAccess = $this->_hasAccessStatus();
 
         // check that all the instruments' Data Entry is market Complete
@@ -665,7 +659,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                          " as the candidate to submit to DCC.";
             return $returnStr;
         }
-        if ($this->getData('Submitted')!='N') {
+        if ($this->isSubmitted()) {
             $returnStr = "This timepoint has already been sent to DCC.".
                          "  Try refreshing your page.";
             return $returnStr;
@@ -764,24 +758,24 @@ class Instrument_List_ControlPanel extends \TimePoint
             return true;
         } elseif ($user->hasPermission('send_to_dcc')
             && in_array(
-            $this->getData('CenterID'),
-            $user->getData('CenterIDs')
-        )
+                $this->getData('CenterID'),
+                $user->getData('CenterIDs')
+            )
             && $this->getData('Submitted')=='N'
             && in_array(
-            $this->getData('Current_stage'),
-            array(
-                'Screening',
-                'Visit',
+                $this->getData('Current_stage'),
+                array(
+                    'Screening',
+                    'Visit',
+                )
             )
-        )
             && !in_array(
-            $this->getData($this->getData('Current_stage')),
-            array(
-                null,
-                'In Progress',
+                $this->getData($this->getData('Current_stage')),
+                array(
+                    null,
+                    'In Progress',
+                )
             )
-        )
             && ($config->getSetting("useScanDone")==="false"
             || ($this->getData('Current_stage') == 'Screening'
             || !empty($scanDone)            )            )
