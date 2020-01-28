@@ -86,7 +86,7 @@ foreach ($result as $setting) {
     if (!is_dir($path)) {
         $helper->printWarning(
             "Setting `$name` has the value `$path` which is not a directory "
-            . " on the filesystem."
+            . "on the filesystem."
         );
         continue;
     }
