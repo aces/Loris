@@ -90,14 +90,6 @@ class MediaTest extends LorisIntegrationTest
         $this->_filterTest(self::$Language,self::$display,self::$clearFilter,"English","0 row");
         $this->_filterTest(self::$Instrument,self::$display,self::$clearFilter,"BMI Calculator","4 rows");
         $this->_filterTest(self::$Site,self::$display,self::$clearFilter,"Montreal","12 rows");
-
-
-      //  $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
-      //  $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
-      //  $this->_testFilter(self::$Language, self::$table, "26", "2");
-      //  $this->_testFilter(self::$Instrument, self::$table, "4 rows", "2");
-      //  $this->_testFilter(self::$Site, self::$table, "12 rows", "2");
-
     }
     /**
      * Testing the link React filter in this page.

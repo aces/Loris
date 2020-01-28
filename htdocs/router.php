@@ -14,11 +14,11 @@ $url     = ltrim($_SERVER['REQUEST_URI'], "/");
 $urlpath = ltrim($_SERVER['PHP_SELF'], "/");
 
 $request = $_SERVER['REQUEST_URI'];
-
 if ($request != '/'
     && (    file_exists(__DIR__ . $request)
-    || file_exists(__DIR__ . "/" . $urlpath))
-    && $request != "/acknowledgements/"
+    || (file_exists(__DIR__ . "/" . $urlpath)  &&  strpos($urlpath, "acknowledgements") === false )
+       )
+&& $request != "/acknowledgements/" 
     && strpos($request, "/api/") === false
 ) {
     // FIXME: Should this be in the main index.php to prevent the need

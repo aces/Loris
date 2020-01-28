@@ -2,7 +2,7 @@
 /**
  * AcknowledgementsIntegrationTest automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -23,6 +23,13 @@
  */
 class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 {
+    static $FileName    = ".col-xs-12:nth-child(2) > .row .form-control";
+    static $CitationName = ".col-xs-12:nth-child(3) > .row .form-control";
+    static $StartDate= ".col-xs-12:nth-child(4) .form-control";
+    static $EndDate = ".col-xs-12:nth-child(5) .form-control";
+    static $Present = ".col-xs-12:nth-child(6) .form-control, select";
+    static $clearFilter = ".col-sm-9 > .btn";
+    static $display = ".table-header > .row > div > div:nth-child(1)";
 
     // Initial array data
 
@@ -107,55 +114,17 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     * Tests that, after clicking the "filter" button, all of the
-     * advanced filters appear on the page.
+     * Testing React filter in this page.
      *
      * @return void
      */
-    function testFilterWithData()
-    {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better.'
-        );
-
-        $this->_testFilter("fullName", self::$testData['full_name']);
-        $this->_testFilter("citatioName", self::$testData['citation_name']);
-        $this->_testFilter("startDate", self::$testData['start_date']);
-        $this->_testFilter("endDate", self::$testData['end_date']);
-        $this->_testFilter("present", self::$testData['present']);
-
-    }
-    /**
-     * Test filter function
-     *
-     * @param string $element the test element
-     * @param string $value   the value
-     *
-     * @return void
-     */
-    private function _testFilter($element,$value)
+    function testBrowseFilter()
     {
         $this->safeGet($this->url . "/acknowledgements/");
-        if ($element == "startDate" || $element == "endDate") {
-            $this->webDriver->executescript(
-                "document.getElementsByName('$element')[0].value='$value'"
-            );
-        } elseif ($element == "present") {
-            $select  = $this->safeFindElement(WebDriverBy::Name($element));
-            $element = new WebDriverSelect($select);
-            $element->selectByVisibleText($value);
-        } else {
-            $this->webDriver->findElement(
-                WebDriverBy::Name($element)
-            )->sendKeys($value);
-        }
-        $this->webDriver->findElement(
-            WebDriverBy::ID("showdata_advanced_options")
-        )->click();
-        $this->safeGet($this->url . "/acknowledgements/?format=json");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains($value, $bodyText);
+        $this->_filterTest(self::$FileName,self::$display,self::$clearFilter,"Happy","1 rows");
+        $this->_filterTest(self::$CitationName,self::$display,self::$clearFilter,"Travis","1 row");
+        $this->_filterTest(self::$StartDate,self::$display,self::$clearFilter,"2016-12-31","2 rows");
+        $this->_filterTest(self::$Present,self::$display,self::$clearFilter,"Yes","31");
     }
     /**
      * Tests that, adding a new record, then this record appears on the page.
