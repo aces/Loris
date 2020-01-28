@@ -26,8 +26,8 @@ Site access and Project access privileges are not currently enforced in the disp
 Many aspects of the Dashboard are configured in the Configuration module, under the Admin menu. 
 
 Under the _Dashboard_ section of the Configuration module, you can edit 2 settings: 
-* _Project Description_ : the blurb that appears at the top of the Dashboard. 
-* _Target number of Participants_ : this value is used in the _Recruitment_ panel of the Dashboard. 
+* `projectDescription` Project Description: the blurb that appears at the top of the Dashboard. 
+* `recruitmentTarget` Target number of Participants: this value is used in the _Recruitment_ panel of the Dashboard. 
 
 In both the _Projects_ and _Subprojects_ pages of the Configuration module, you can modify (sub)project-specific recruitment targets - these are used in the Project breakdown View in the Dashboard's _Recruitment_ charts panel.   
 
