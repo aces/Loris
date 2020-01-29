@@ -35,6 +35,7 @@ declare -a tools_list=(
     'single_use/Cleanup_multiple_firstVisits.php'
     'single_use/Convert_LorisMenuID_to_ModuleID.php'
     'generate_tables_sql.php'
+    'lorisform_parser.php'
 )
 
 # And on all PHP files in this array
