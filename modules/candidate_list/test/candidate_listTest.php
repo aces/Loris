@@ -34,24 +34,24 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $advancedFilter = ".table-header > div > div > div:nth-child(2) >".
                              " button:nth-child(1)";
     // advanced filter
-    static $scanDone       = 'select[name="scanDone"]';
-    static $Participant    = 'select[name="participantStatus"]';
-    static $dob            = 'input[name="DoB"]';
-    static $visitCount     = 'input[name="visitCount"]';
-    static $feedback       = 'select[name="feedback"]';
-    static $lastVisit      = 'select[name="latestVisitStatus"]';
-    static $edc            = 'input[name="edc"]';
+    static $scanDone    = 'select[name="scanDone"]';
+    static $Participant = 'select[name="participantStatus"]';
+    static $dob         = 'input[name="DoB"]';
+    static $visitCount  = 'input[name="visitCount"]';
+    static $feedback    = 'select[name="feedback"]';
+    static $lastVisit   = 'select[name="latestVisitStatus"]';
+    static $edc         = 'input[name="edc"]';
 
 
 
 
 
 
-    static $openProfile    = ".table-header > div > div > div:nth-child(2) >".
+    static $openProfile = ".table-header > div > div > div:nth-child(2) >".
                              " button:nth-child(2)";
-    static $clearFilter    = ".col-sm-9 > .btn";
-    static $display        = ".table-header > div > div > div:nth-child(1)";
-    static $pscidLink      = "tr:nth-child(1) a";
+    static $clearFilter = ".col-sm-9 > .btn";
+    static $display     = ".table-header > div > div > div:nth-child(1)";
+    static $pscidLink   = "tr:nth-child(1) a";
 
     /**
      * Backs up the useEDC config value and sets the value to a known
@@ -172,40 +172,122 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testFilters()
     {
         $this->safeGet($this->url . "/candidate_list/");
-        $this->_filterTest(self::$PSCID, self::$display,self::$clearFilter,
-                      'test',"0 rows",);
-        $this->_filterTest(self::$PSCID, self::$display,self::$clearFilter,
-                      'MTL001',"1 rows");
-        $this->_filterTest(self::$DCCID, self::$display,self::$clearFilter,
-                      '300001',"1 rows");
-        $this->_filterTest(self::$DCCID, self::$display,self::$clearFilter,
-                      'test','0 row');
-        $this->_filterTest(self::$visitLabel, self::$display,self::$clearFilter,
-                      'V1',"362");
-        $this->_filterTest(self::$visitLabel, self::$display,self::$clearFilter,
-                      'V2',"223");
-        $this->_filterTest(self::$site, self::$display,self::$clearFilter,
-                      'Data Coordinating Center', '7 rows');
-        $this->_filterTest(self::$site, self::$display,self::$clearFilter,
-                      "Montreal", '165');
-        $this->_filterTest(self::$entityType, self::$display,self::$clearFilter,
-                      "Human", '436');
-        $this->safeFindElement(WebDriverBy::cssSelector(self::$advancedFilter))->click();
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clearFilter,
+            'test',
+            "0 rows",
+        );
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clearFilter,
+            'MTL001',
+            "1 rows"
+        );
+        $this->_filterTest(
+            self::$DCCID,
+            self::$display,
+            self::$clearFilter,
+            '300001',
+            "1 rows"
+        );
+        $this->_filterTest(
+            self::$DCCID,
+            self::$display,
+            self::$clearFilter,
+            'test',
+            '0 row'
+        );
+        $this->_filterTest(
+            self::$visitLabel,
+            self::$display,
+            self::$clearFilter,
+            'V1',
+            "362"
+        );
+        $this->_filterTest(
+            self::$visitLabel,
+            self::$display,
+            self::$clearFilter,
+            'V2',
+            "223"
+        );
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clearFilter,
+            'Data Coordinating Center',
+            '7 rows'
+        );
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clearFilter,
+            "Montreal",
+            '165'
+        );
+        $this->_filterTest(
+            self::$entityType,
+            self::$display,
+            self::$clearFilter,
+            "Human",
+            '436'
+        );
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$advancedFilter)
+        )->click();
 
-        $this->_filterTest(self::$scanDone, self::$display,self::$clearFilter,
-                      "Yes", '17 rows');  
-        $this->_filterTest(self::$Participant, self::$display,self::$clearFilter,
-                      "Active", '436');
-        $this->_filterTest(self::$dob, self::$display,self::$clearFilter,
-                      "2003-06-30", '1 row');
-        $this->_filterTest(self::$visitCount, self::$display,self::$clearFilter,
-                      "3", '79');
-        $this->_filterTest(self::$feedback, self::$display,self::$clearFilter,
-                      "closed", '11 rows');
-        $this->_filterTest(self::$lastVisit, self::$display,self::$clearFilter,
-                      "Visit", '413');
-        $this->_filterTest(self::$edc, self::$display,self::$clearFilter,
-                      "2003-07-30", '1 row');
+        $this->_filterTest(
+            self::$scanDone,
+            self::$display,
+            self::$clearFilter,
+            "Yes",
+            '17 rows'
+        );
+        $this->_filterTest(
+            self::$Participant,
+            self::$display,
+            self::$clearFilter,
+            "Active",
+            '436'
+        );
+        $this->_filterTest(
+            self::$dob,
+            self::$display,
+            self::$clearFilter,
+            "2003-06-30",
+            '1 row'
+        );
+        $this->_filterTest(
+            self::$visitCount,
+            self::$display,
+            self::$clearFilter,
+            "3",
+            '79'
+        );
+        $this->_filterTest(
+            self::$feedback,
+            self::$display,
+            self::$clearFilter,
+            "closed",
+            '11 rows'
+        );
+        $this->_filterTest(
+            self::$lastVisit,
+            self::$display,
+            self::$clearFilter,
+            "Visit",
+            '413'
+        );
+        $this->_filterTest(
+            self::$edc,
+            self::$display,
+            self::$clearFilter,
+            "2003-07-30",
+            '1 row'
+        );
     }
     /**
      * Tests that, when user only has data_entry permisson, user

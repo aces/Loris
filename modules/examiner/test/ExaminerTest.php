@@ -49,7 +49,7 @@ class ExaminerTest extends LorisIntegrationTest
     static $Site        = 'select[name="site"]';
     static $Radiologist = 'select[name="radiologist"]';
     static $clearFilter = ".col-sm-9 > .btn";
-    static $display = ".table-header > .row > div > div:nth-child(1)";
+    static $display     = ".table-header > .row > div > div:nth-child(1)";
 
     /**
      * Insert testing data
@@ -135,12 +135,27 @@ class ExaminerTest extends LorisIntegrationTest
     function testFilters()
     {
         $this->safeGet($this->url . "/examiner/");
-        $this->_filterTest(self::$Examiner, self::$display,self::$clearFilter,
-                      'Ray',"4 row",);
-        $this->_filterTest(self::$Site, self::$display,self::$clearFilter,
-                      'Montreal',"21",);
-        $this->_filterTest(self::$Radiologist, self::$display,self::$clearFilter,
-                      'Yes',"16",);
+        $this->_filterTest(
+            self::$Examiner,
+            self::$display,
+            self::$clearFilter,
+            'Ray',
+            "4 row",
+        );
+        $this->_filterTest(
+            self::$Site,
+            self::$display,
+            self::$clearFilter,
+            'Montreal',
+            "21",
+        );
+        $this->_filterTest(
+            self::$Radiologist,
+            self::$display,
+            self::$clearFilter,
+            'Yes',
+            "16",
+        );
     }
     /**
      * Tests that Add examiner section, insert an Examiner and find it.

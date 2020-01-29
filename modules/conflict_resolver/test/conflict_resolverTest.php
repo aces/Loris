@@ -170,18 +170,48 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/conflict_resolver/");
         //testing data
-        $this->_filterTest(self::$ForSite, self::$display,self::$clearFilter,
-                  'Montreal',"20 rows displayed of 311");
-        $this->_filterTest(self::$VisitLabel,self::$display,self::$clearFilter,
-                   'V1',"displayed of 576");
-        $this->_filterTest(self::$CandID,self::$display,self::$clearFilter,
-                   '300004',"2 rows displayed of 2");
-        $this->_filterTest(self::$PSCID,self::$display,self::$clearFilter,
-                   'MTL004',"2 rows displayed of 2");
-        $this->_filterTest(self::$Question,self::$display,self::$clearFilter,
-                   'height_inches',"displayed of 181");
-        $this->_filterTest(self::$Project, self::$display,self::$clearFilter,
-                   'Pumpernickel',"573");
+        $this->_filterTest(
+            self::$ForSite,
+            self::$display,
+            self::$clearFilter,
+            'Montreal',
+            "20 rows displayed of 311"
+        );
+        $this->_filterTest(
+            self::$VisitLabel,
+            self::$display,
+            self::$clearFilter,
+            'V1',
+            "displayed of 576"
+        );
+        $this->_filterTest(
+            self::$CandID,
+            self::$display,
+            self::$clearFilter,
+            '300004',
+            "2 rows displayed of 2"
+        );
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clearFilter,
+            'MTL004',
+            "2 rows displayed of 2"
+        );
+        $this->_filterTest(
+            self::$Question,
+            self::$display,
+            self::$clearFilter,
+            'height_inches',
+            "displayed of 181"
+        );
+        $this->_filterTest(
+            self::$Project,
+            self::$display,
+            self::$clearFilter,
+            'Pumpernickel',
+            "573"
+        );
     }
      /**
       * Tests filter in resolved conflicts
@@ -192,18 +222,48 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testFiltersForResolvedConflicts()
     {
         $this->safeGet($this->url."/conflict_resolver/resolved_conflicts/");
-        $this->_filterTest(self::$ForSite,self::$display,self::$clearFilter,
-                     "Montreal","displayed of 14");
-        $this->_filterTest(self::$VisitLabel,self::$display,self::$clearFilter,
-                     "V1", "displayed of 33");
-        $this->_filterTest(self::$CandID,self::$display,self::$clearFilter,
-                     '400167',"1 row");
-        $this->_filterTest(self::$PSCID,self::$display,self::$clearFilter,
-                     'ROM167',"1 row");
-        $this->_filterTest(self::$Question,self::$display,self::$clearFilter,
-                     'date_taken',"9 rows");
-        $this->_filterTest(self::$Timestamp,self::$display,self::$clearFilter,
-                      '2016-08-16 18:35:51' , "1 row");
+        $this->_filterTest(
+            self::$ForSite,
+            self::$display,
+            self::$clearFilter,
+            "Montreal",
+            "displayed of 14"
+        );
+        $this->_filterTest(
+            self::$VisitLabel,
+            self::$display,
+            self::$clearFilter,
+            "V1",
+            "displayed of 33"
+        );
+        $this->_filterTest(
+            self::$CandID,
+            self::$display,
+            self::$clearFilter,
+            '400167',
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clearFilter,
+            'ROM167',
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$Question,
+            self::$display,
+            self::$clearFilter,
+            'date_taken',
+            "9 rows"
+        );
+        $this->_filterTest(
+            self::$Timestamp,
+            self::$display,
+            self::$clearFilter,
+            '2016-08-16 18:35:51',
+            "1 row"
+        );
 
     }
      /**

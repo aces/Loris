@@ -84,12 +84,48 @@ class MediaTest extends LorisIntegrationTest
     function testBrowseFilter()
     {
         $this->safeGet($this->url . "/media/");
-        $this->_filterTest(self::$PSCID,self::$display,self::$clearFilter,"MTL002","2 rows");
-        $this->_filterTest(self::$FileName,self::$display,self::$clearFilter,"MTL002_V1.txt","1 row");
-        $this->_filterTest(self::$VisitLabel,self::$display,self::$clearFilter,"V2","3 rows");
-        $this->_filterTest(self::$Language,self::$display,self::$clearFilter,"English","0 row");
-        $this->_filterTest(self::$Instrument,self::$display,self::$clearFilter,"BMI Calculator","4 rows");
-        $this->_filterTest(self::$Site,self::$display,self::$clearFilter,"Montreal","12 rows");
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clearFilter,
+            "MTL002",
+            "2 rows"
+        );
+        $this->_filterTest(
+            self::$FileName,
+            self::$display,
+            self::$clearFilter,
+            "MTL002_V1.txt",
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$VisitLabel,
+            self::$display,
+            self::$clearFilter,
+            "V2",
+            "3 rows"
+        );
+        $this->_filterTest(
+            self::$Language,
+            self::$display,
+            self::$clearFilter,
+            "English",
+            "0 row"
+        );
+        $this->_filterTest(
+            self::$Instrument,
+            self::$display,
+            self::$clearFilter,
+            "BMI Calculator",
+            "4 rows"
+        );
+        $this->_filterTest(
+            self::$Site,
+            self::$display,
+            self::$clearFilter,
+            "Montreal",
+            "12 rows"
+        );
     }
     /**
      * Testing the link React filter in this page.

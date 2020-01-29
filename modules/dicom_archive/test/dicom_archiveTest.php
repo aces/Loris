@@ -32,10 +32,10 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     static $dateOfBirth = 'input[name="dateOfBirth"]';
     static $acquisition = 'input[name="acquisitionDate"]';
     static $archiveLocation = 'input[name="archiveLocation"]';
-    static $seriesUID = 'input[name="seriesUID"]';
-    static $site = 'select[name="site"]';
-    static $clearFilter = ".col-sm-9 > .btn";
-    static $display = ".table-header > .row > div > div:nth-child(1)";
+    static $seriesUID       = 'input[name="seriesUID"]';
+    static $site            = 'select[name="site"]';
+    static $clearFilter     = ".col-sm-9 > .btn";
+    static $display         = ".table-header > .row > div > div:nth-child(1)";
     /**
      * Insert testing data into the database
      *
@@ -100,23 +100,62 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
 
-        $this->_filterTest(self::$patientID, self::$display,self::$clearFilter,
-                      "INVALID - HIDDEN", '47');
-        $this->_filterTest(self::$patientName, self::$display,self::$clearFilter,
-                      "MTL022_300022_V1", '1 row');
-        $this->_filterTest(self::$sex, self::$display,self::$clearFilter,
-                      "M", '1 rows');       
-        $this->_filterTest(self::$dateOfBirth, self::$display,self::$clearFilter,
-                      "1972-10-10", '1 row');
-        $this->_filterTest(self::$acquisition, self::$display,self::$clearFilter,
-                      "2018-04-20", '4 rows');
-        $this->_filterTest(self::$archiveLocation, self::$display,self::$clearFilter,
-                      "2018", '14 rows');
-        $this->_filterTest(self::$seriesUID, self::$display,self::$clearFilter,
-                      "1.3.12.2.1107.5.2.32.35008.2009052710345172468142734.0.0.0",
-                      '1 rows');
-        $this->_filterTest(self::$site, self::$display,self::$clearFilter,
-                      "Montreal", '5 rows');
+        $this->_filterTest(
+            self::$patientID,
+            self::$display,
+            self::$clearFilter,
+            "INVALID - HIDDEN",
+            '47'
+        );
+        $this->_filterTest(
+            self::$patientName,
+            self::$display,
+            self::$clearFilter,
+            "MTL022_300022_V1",
+            '1 row'
+        );
+        $this->_filterTest(
+            self::$sex,
+            self::$display,
+            self::$clearFilter,
+            "M",
+            '1 rows'
+        );
+        $this->_filterTest(
+            self::$dateOfBirth,
+            self::$display,
+            self::$clearFilter,
+            "1972-10-10",
+            '1 row'
+        );
+        $this->_filterTest(
+            self::$acquisition,
+            self::$display,
+            self::$clearFilter,
+            "2018-04-20",
+            '4 rows'
+        );
+        $this->_filterTest(
+            self::$archiveLocation,
+            self::$display,
+            self::$clearFilter,
+            "2018",
+            '14 rows'
+        );
+        $this->_filterTest(
+            self::$seriesUID,
+            self::$display,
+            self::$clearFilter,
+            "1.3.12.2.1107.5.2.32.35008.2009052710345172468142734.0.0.0",
+            '1 rows'
+        );
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clearFilter,
+            "Montreal",
+            '5 rows'
+        );
 
     }
     /**
