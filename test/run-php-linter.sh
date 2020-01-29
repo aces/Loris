@@ -19,6 +19,7 @@ declare -a tools_list=(
     'assign_missing_instruments.php'
     'delete_candidate.php'
     'delete_ignored_conflicts.php'
+    'delete_timepoint.php'
     'detect_duplicated_commentids.php'
     'generic_includes.php'
     'populate_examiners_psc_rel.php'
