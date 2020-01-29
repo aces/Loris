@@ -45,6 +45,11 @@ class ExaminerTest extends LorisIntegrationTest
                                   'div > div:nth-child(1)',
             'Add'              => '#examiner > div:nth-child(3) > div > button',
         );
+    static $Examiner    = 'input[name="examiner"]';
+    static $Site        = 'select[name="site"]';
+    static $Radiologist = 'select[name="radiologist"]';
+    static $clearFilter = ".col-sm-9 > .btn";
+    static $display = ".table-header > .row > div > div:nth-child(1)";
 
     /**
      * Insert testing data
@@ -65,11 +70,6 @@ class ExaminerTest extends LorisIntegrationTest
         $this->DB->delete(
             "examiners",
             array('full_name' => 'Test_Examiner')
-        );
-
-        $this->DB->delete(
-            "psc",
-            array('Name' => 'TEST_Site')
         );
          parent::tearDown();
     }
@@ -127,27 +127,20 @@ class ExaminerTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     * Tests that examiner selection filter, search a Examiner name
-     * and click clear form, the input data should disappear.
+     * Tests clear button in the form
+     * The form should refreash and the data should be gone.
      *
      * @return void
      */
-    function testExaminerFilterClearForm()
+    function testFilters()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         $this->safeGet($this->url . "/examiner/");
-        $this->webDriver->findElement(
-            WebDriverBy::Name("examiner")
-        )->sendKeys("XXXX");
-        $this->webDriver->findElement(
-            WebDriverBy::Name("reset")
-        )->click();
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::Name("examiner")
-        )->getText();
-        $this->assertEquals("", $bodyText);
+        $this->_filterTest(self::$Examiner, self::$display,self::$clearFilter,
+                      'Ray',"4 row",);
+        $this->_filterTest(self::$Site, self::$display,self::$clearFilter,
+                      'Montreal',"21",);
+        $this->_filterTest(self::$Radiologist, self::$display,self::$clearFilter,
+                      'Yes',"16",);
     }
     /**
      * Tests that Add examiner section, insert an Examiner and find it.
