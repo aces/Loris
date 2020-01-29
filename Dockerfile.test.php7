@@ -5,3 +5,6 @@ RUN apt-get update && \
 
 RUN docker-php-ext-install pdo_mysql && \
     docker-php-ext-install zip
+
+RUN echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini
+
