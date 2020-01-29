@@ -78,6 +78,7 @@ fi
 declare -a strict_libraries=(
     'Database.class.inc'
     'OutputWrapper.class.inc'
+    'fix_timepoint_date_problems.php'
 )
 
 declare -a params=(
