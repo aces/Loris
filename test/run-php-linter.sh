@@ -14,7 +14,6 @@ find docs modules htdocs php src -name '*.class.inc' -print0 -o -name '*.php' -p
 declare -a tools_list=(
     'assign_missing_instruments.php'
 )
-vendor/bin/phpcs --standard=test/LorisCS.xml 
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ "${tools_list[@]/#/tools/}" || exit $?;
 
 # Run PHPCS on src/ directory using a different ruleset conforming to PSR2.
