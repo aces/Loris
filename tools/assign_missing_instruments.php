@@ -140,7 +140,7 @@ if (isset($visit_label)) {
     foreach ($results as $result) {
         populateVisitLabel($result, $visit_label);
     }
-} elseif (isset($visit_labels)) {
+} else if (isset($visit_labels)) {
     $query   ="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s 
             LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' 
             AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
@@ -154,4 +154,3 @@ if ($confirm === false) {
     echo "\n\nRun this tool again with the argument 'confirm' to ".
     "perform the changes\n\n";
 }
-?>
