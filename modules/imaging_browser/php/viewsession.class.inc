@@ -102,6 +102,8 @@ class ViewSession extends \NDB_Form
             }
             $this->_setFilesData();
 
+            $this->tpl_data['sessionID'] = $this->sessionID;
+
             $this->tpl_data['headerTable'] = $this->getHeaderTable();
 
             $this->tpl_data['showFloatJIV'] = true;

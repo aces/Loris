@@ -510,7 +510,7 @@ class ImageQCCommentsButton extends Component {
     e.preventDefault();
     window.open(
       this.props.BaseURL + '/feedback_mri_popup.php?fileID=' +
-      this.props.FileID,
+      this.props.FileID + '&sessionID=' + this.props.sessionID,
       'feedback_mri',
       'width=500,height=800,toolbar=no,location=no,' +
       'status=yes,scrollbars=yes,resizable=yes'
@@ -588,6 +588,7 @@ class ImageDownloadButtons extends Component {
       <div className="row mri-second-row-panel col-xs-12">
         <ImageQCCommentsButton FileID={this.props.FileID}
                                BaseURL={this.props.BaseURL}
+                               sessionID={this.props.sessionID}
         />
         <DownloadButton FileName={this.props.Fullname}
                         Label="Download Minc"
@@ -663,6 +664,7 @@ class ImagePanelBody extends Component {
         <ImageDownloadButtons
           BaseURL={this.props.BaseURL}
           FileID={this.props.FileID}
+          sessionID={this.props.sessionID}
           Fullname={this.props.Fullname}
           XMLProtocol={this.props.XMLProtocol}
           XMLReport={this.props.XMLReport}
@@ -733,7 +735,7 @@ class ImagePanel extends Component {
           {this.state.BodyCollapsed ? '' :
             <ImagePanelBody
               BaseURL={this.props.BaseURL}
-
+              sessionID={this.props.sessionID}
               FileID={this.props.FileID}
               Filename={this.props.Filename}
               Checkpic={this.props.Checkpic}
