@@ -13,6 +13,7 @@ find docs modules htdocs php src -name '*.class.inc' -print0 -o -name '*.php' -p
 # Also run PHPCS on all tools/ scripts in this array
 declare -a tools_list=(
     'assign_missing_instruments.php'
+    'DB_date_zeros_removal.php'
 )
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ "${tools_list[@]/#/tools/}" || exit $?;
 
