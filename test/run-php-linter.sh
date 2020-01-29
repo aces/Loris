@@ -27,6 +27,7 @@ declare -a tools_list=(
     'importers/VisitImporter.php'
     'importers/openScienceDataImporter.php'
     'exporters/dataExtractor.php'
+    'mri_violations_resolver.php'
     'populate_examiners_psc_rel.php'
     'raisinbread_refresh.php'
     'resetpassword.php'
