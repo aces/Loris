@@ -1,6 +1,6 @@
 # Handling Large File Uploads
 
-In order to upload larger files (> 2 MB) for LORUS users, you'll need to configure
+In order to upload larger files (> 2 MB) for LORIS users, you'll need to configure
 Apache's `php.ini` configuration file. 
 
 Recommended sample values appropriate for compressed scans not exceeding 500M in size are: 
