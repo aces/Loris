@@ -8,7 +8,7 @@ find docs modules htdocs php src tools \
     -name '*.class.inc' \
     -print0 -o -name '*.php' -print0 \
     |xargs -0 -n1 php -l \
-    >/dev/null  
+    >/dev/null
 
 # Run PHPCS on all .php and .inc files in folders:
 # php/
@@ -59,6 +59,7 @@ vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
 declare -a strict_libraries=(
     'Database.class.inc'
     'OutputWrapper.class.inc'
+    'fix_timepoint_date_problems.php'
 )
 
 vendor/bin/phpcs --standard=test/StrictTypesCS.xml --extensions=php,inc "${strict_libraries[@]/#/php/libraries/}" || exit $?;
