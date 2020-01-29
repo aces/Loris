@@ -151,7 +151,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         $this->safeGet($this->url . "/conflict_resolver/");
 
         // This page has React component renders after window.onload trigger
-        $wait = new \WebDriverWait($this->web_driver, 5);
+        $wait = new \WebDriverWait($this->webDriver, 5);
         $wait->until(
             \WebDriverExpectedCondition::presenceOfElementLocated(
                 \WebDriverBy::id('tab-unresolved')
@@ -229,7 +229,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         $this->safeGet($this->url . "/conflict_resolver");
 
         // This page has React component renders after window.onload trigger
-        $wait = new \WebDriverWait($this->web_driver, 5);
+        $wait = new \WebDriverWait($this->webDriver, 5);
 
         $wait->until(
             \WebDriverExpectedCondition::presenceOfElementLocated(

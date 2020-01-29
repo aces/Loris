@@ -58,7 +58,7 @@ class Module extends \Module
 
         $user = $request->getAttribute('user');
         if (!$handler->hasAccess($user)) {
-            return new \LORIS\Http\Response\Forbidden();
+            return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
         return $handler->process($request, $handler);

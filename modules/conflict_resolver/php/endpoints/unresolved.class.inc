@@ -122,7 +122,7 @@ class Unresolved extends Endpoint implements ETagCalculator
                 ->withHeader('Allow', $this->allowedMethods());
 
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
         }
@@ -181,7 +181,7 @@ class Unresolved extends Endpoint implements ETagCalculator
         $correctanswer = $data['correctanswer'] ?? null;
 
         if ($conflictid === null || $correctanswer === null) {
-            return new \LORIS\Http\Response\BadRequest('Missing field(s)');
+            return new \LORIS\Http\Response\JSON\BadRequest('Missing field(s)');
         }
 
         $db = \NDB_Factory::singleton()->database();
@@ -224,7 +224,7 @@ class Unresolved extends Endpoint implements ETagCalculator
         );
 
         if (empty($conflict)) {
-            return new \LORIS\Http\Response\NotFound(
+            return new \LORIS\Http\Response\JSON\NotFound(
                 'ConflictID not found.'
             );
         }
@@ -246,7 +246,7 @@ class Unresolved extends Endpoint implements ETagCalculator
         ob_end_clean();
 
         if (!empty($error)) {
-            return new \LORIS\Http\Response\InternalServerError($error);
+            return new \LORIS\Http\Response\JSON\InternalServerError($error);
         }
 
         // Insert in conflict_resolved
@@ -319,7 +319,7 @@ class Unresolved extends Endpoint implements ETagCalculator
         );
 
         if (!$success) {
-            return new \LORIS\Http\Response\InternalServerError();
+            return new \LORIS\Http\Response\JSON\InternalServerError();
         }
 
         // Delete from conflicts_unresolved
