@@ -25,3 +25,6 @@ e.g. For a user named `lorisDBadmin` with password `newpassword`:
 ```SQL
 GRANT ALTER, DROP, CREATE, UPDATE, INSERT, SELECT, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES  on $dbname.* to 'lorisDBadmin'@'$dbhost' IDENTIFIED BY 'newpassword' WITH GRANT OPTION;
 ```
+
+This user's credentials should now be entered into your project's configuration file, `config.xml`
+within the `adminUser` and `adminPassword` tags.
