@@ -120,14 +120,13 @@ function populateVisitLabel($result, $visit_label)
         print_r($diff);
     }
     if ($confirm === true) {
-        foreach ($diff AS $test_name) {
+        foreach ($diff as $test_name) {
             $battery->addInstrument($test_name);
         }
     }
 
     unset($battery);
     unset($timePoint);
-
 }
 
 if (isset($visit_label)) {
@@ -138,7 +137,7 @@ if (isset($visit_label)) {
     $where = array('vl' => $argv[1]);
 
     $results = $DB->pselect($query, $where);
-    foreach ($results AS $result) {
+    foreach ($results as $result) {
         populateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
@@ -146,7 +145,7 @@ if (isset($visit_label)) {
             LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' 
             AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
     $results = $DB->pselect($query, array());
-    foreach ($results AS $result) {
+    foreach ($results as $result) {
         populateVisitLabel($result, $result['Visit_label']);
     }
 }
@@ -155,4 +154,3 @@ if ($confirm === false) {
     echo "\n\nRun this tool again with the argument 'confirm' to ".
     "perform the changes\n\n";
 }
-?>
