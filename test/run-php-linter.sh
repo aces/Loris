@@ -35,6 +35,7 @@ declare -a tools_list=(
     'raisinbread_refresh.php'
     'recreate_conflicts.php'
     'resetpassword.php'
+    'detect_conflicts.php'
     'setconfig.php'
     'single_use/Cleanup_multiple_firstVisits.php'
     'single_use/Convert_LorisMenuID_to_ModuleID.php'
