@@ -33,7 +33,7 @@ class BVL_Feedback_Panel
     /**
      * The feedback thread that this panel is for
      *
-     * @private NDB_BVL_Feedback
+     * @protected NDB_BVL_Feedback
      */
     protected $feedbackThread;
 
