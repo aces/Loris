@@ -26,20 +26,16 @@ require_once __DIR__
 class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
-    static $patientID   = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(2)>div>div>input";
-    static $patientName = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(3)>div>div>input";
-    static $site        = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(9)>div>div>select";
-    static $sex         = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(4)>div>div>input";
-    static $dateOfBirth = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(5)>div>div>input";
+    static $patientID   = 'input[name="patientID"]';
+    static $patientName = 'input[name="patientName"]';
+    static $sex         = 'input[name="sex"]';
+    static $dateOfBirth = 'input[name="dateOfBirth"]';
+    static $acquisition = 'input[name="acquisitionDate"]';
+    static $archiveLocation = 'input[name="archiveLocation"]';
+    static $seriesUID = 'input[name="seriesUID"]';
+    static $site = 'select[name="site"]';
     static $clearFilter = ".col-sm-9 > .btn";
-    // first row of react table
-    static $table   = "#dynamictable > tbody > tr:nth-child(1)";
-    static $display = ".table-header > div > div > div:nth-child(1)";
+    static $display = ".table-header > .row > div > div:nth-child(1)";
     /**
      * Insert testing data into the database
      *
@@ -99,77 +95,29 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testdicomArchiveFilterClearBtn()
+    function testdicomArchiveFilter()
     {
-        $this->markTestSkipped(
-            'This test is currently unstables and causing transitory build '
-            . 'failures.'
-        );
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
-        //$this-> _testFilter(self::$patientID, self::$table, null, "ibis");
-        $this-> _testFilter(
-            self::$patientName,
-            self::$table,
-            null,
-            "MTL022_300022_V1"
-        );
-        $this-> _testFilter(self::$sex, self::$table, "1", "M");
-        $this-> _testFilter(self::$dateOfBirth, self::$table, null, "1972-10-10");
-        $this-> _testFilter(self::$site, self::$table, "8", "4");
-    }
-    /**
-     * Testing filter funtion and clear button
-     *
-     * @param string $element The input element loaction
-     * @param string $table   The first row location in the table
-     * @param string $records The records number in the table
-     * @param string $value   The test value
-     *
-     * @return void
-     */
-    function _testFilter($element,$table,$records,$value)
-    {
-        // get element from the page
-        if (strpos($element, "select") == false) {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
-            );
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$table').textContent"
-            );
-            $this->assertContains($value, $bodyText);
-        } else {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                 event = new Event('change', { bubbles: true });
-                 input.dispatchEvent(event);
-                "
-            );
-            $row      = self::$display;
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$row').textContent"
-            );
-            // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
-        }
-        //test clear filter
-        $btn = self::$clearFilter;
 
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
-        $inputText = $this->webDriver->executescript(
-            "return document.querySelector('$element').value"
-        );
-        $this->assertEquals("", $inputText);
+        $this->_filterTest(self::$patientID, self::$display,self::$clearFilter,
+                      "INVALID - HIDDEN", '47');
+        $this->_filterTest(self::$patientName, self::$display,self::$clearFilter,
+                      "MTL022_300022_V1", '1 row');
+        $this->_filterTest(self::$sex, self::$display,self::$clearFilter,
+                      "M", '1 rows');       
+        $this->_filterTest(self::$dateOfBirth, self::$display,self::$clearFilter,
+                      "1972-10-10", '1 row');
+        $this->_filterTest(self::$acquisition, self::$display,self::$clearFilter,
+                      "2018-04-20", '4 rows');
+        $this->_filterTest(self::$archiveLocation, self::$display,self::$clearFilter,
+                      "2018", '14 rows');
+        $this->_filterTest(self::$seriesUID, self::$display,self::$clearFilter,
+                      "1.3.12.2.1107.5.2.32.35008.2009052710345172468142734.0.0.0",
+                      '1 rows');
+        $this->_filterTest(self::$site, self::$display,self::$clearFilter,
+                      "Montreal", '5 rows');
+
     }
     /**
      * Tests that the (view-details) link works
