@@ -23,6 +23,7 @@ declare -a tools_list=(
     'delete_candidate.php'
     'delete_ignored_conflicts.php'
     'delete_timepoint.php'
+    'CouchDB_Confirm_Integrity.php'
     'detect_duplicated_commentids.php'
     'generic_includes.php'
     'importers/CandidateImporter.php'
