@@ -33,12 +33,12 @@ $flags = getopt("nh", ['add', 'remove', 'dry-run', 'help']);
 $dryrun = isset($flags['n']) || isset($flags['dry-run']);
 $help   = isset($flags['h']) || isset($flags['help']);
 
-if($help) {
+if ($help) {
     usage();
     exit(0);
 }
 
-if(!isset($flags['add']) && !isset($flags['remove'])) {
+if (!isset($flags['add']) && !isset($flags['remove'])) {
     usage();
     fwrite(STDERR, "\nMust specify --add or --remove flag\n");
     exit(1);
@@ -49,13 +49,13 @@ $currentModules = $DB->pselectCol(
     "SELECT Name FROM modules",
     []
 );
-if(isset($flags['remove'])) {
-    foreach($currentModules as $module) {
+if (isset($flags['remove'])) {
+    foreach ($currentModules as $module) {
         try {
             Module::factory($module);
         } catch(\LorisNoSuchModuleException | \LorisModuleMissingException $e) {
             print "Removing $module\n";
-            if($dryrun) {
+            if ($dryrun) {
                 continue;
             }
             $DB->delete("modules", [ 'Name' => $module]);
@@ -63,38 +63,50 @@ if(isset($flags['remove'])) {
     }
 }
 
-if(isset($flags['add'])) {
+if (isset($flags['add'])) {
     addDir(__DIR__ . "/../modules");
     addDir(__DIR__ . "/../project/modules");
 }
 
-function addDir(string $moduledir) {
+/**
+ * Adds a new entry to the `modules` table based on a path supplied in the
+ * $moduledir parameter.
+ *
+ * @param string $moduledir The path to a directory containing code for a
+ *                          LORIS module.
+ *
+ * @return void
+ */
+function addDir(string $moduledir): void
+{
     global $DB;
     global $dryrun;
     global $currentModules;
 
     $modules = scandir($moduledir);
     foreach ($modules as $module) {
-        if(in_array($module, [".", ".."], true)) {
+        if (in_array($module, [".", ".."], true)) {
             continue;
         }
-        if(!in_array($module, $currentModules, true)) {
-            if(is_dir("$moduledir/$module")) {
+        if (!in_array($module, $currentModules, true)) {
+            if (is_dir("$moduledir/$module")) {
                 try {
                     Module::factory($module);
-                } catch(\LorisNoSuchModuleException | \LorisModuleMissingException $e) {
+                } catch(\LorisNoSuchModuleException
+                    | \LorisModuleMissingException $e
+                ) {
                     // Wasn't a valid module, so don't add it.
                     continue;
                 }
 
                 print "Adding $module\n";
-                if($dryrun) {
+                if ($dryrun) {
                     continue;
                 }
                 $DB->insert(
                     "modules",
                     [
-                        'Name' => $module,
+                        'Name'   => $module,
                         'Active' => 'Y'
                     ]
                 );
@@ -103,7 +115,13 @@ function addDir(string $moduledir) {
     }
 }
 
-function usage() {
+/**
+ * Prints help text for this tool.
+ *
+ * @return void
+ */
+function usage(): void
+{
     global $argv;
     print <<<ENDHELP
 usage: $argv[0] [-n] [--add] [--remove]

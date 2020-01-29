@@ -42,6 +42,7 @@ declare -a tools_list=(
     'generate_tables_sql.php'
     'lorisform_parser.php'
     'populate_visit_windows.php'
+    'manage_modules.php'
 )
 
 # And on all PHP files in this array
