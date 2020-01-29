@@ -54,7 +54,7 @@ try {
     // Require generic libraries. In some cases, this can fail if this script
     // has already dropped tables as the generic_includes.php requires a
     // database connection.
-    require_once 'generic_includes.php';
+    include_once 'generic_includes.php';
 
     $urlConfigSetting  = $config->getSetting('url');
     $baseConfigSetting = $config->getSetting('base');
@@ -73,10 +73,10 @@ try {
 }
 
 // Get database information from project's configuration file.
-$config = $config ?? \NDB_Factory::singleton()->config();
-$dbInfo = $config->getSettingFromXML('database');
-$dbname = $dbInfo['database'];
-$host   = $dbInfo['host'];
+$config   = $config ?? \NDB_Factory::singleton()->config();
+$dbInfo   = $config->getSettingFromXML('database');
+$dbname   = $dbInfo['database'];
+$host     = $dbInfo['host'];
 $username = $dbInfo['adminUser'];
 $password = $dbInfo['adminPassword'];
 
