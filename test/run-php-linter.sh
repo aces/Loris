@@ -23,6 +23,7 @@ declare -a tools_list=(
     'generic_includes.php'
     'populate_examiners_psc_rel.php'
     'raisinbread_refresh.php'
+    'recreate_conflicts.php'
     'resetpassword.php'
     'setconfig.php'
     'single_use/Cleanup_multiple_firstVisits.php'
