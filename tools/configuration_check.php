@@ -11,10 +11,13 @@
  */
 require_once __DIR__ . '/cli_helper.class.inc';
 
-define('MINIMUM_PHP_VERSION', 7.3);
-define('MINIMUM_APACHE_VERSION', 2.4);
-define('MINIMUM_MYSQL_VERSION', 5.7);
-define('MINIMUM_MARIADB_VERSION', 10.3);
+// XXX These must be updated manually in future releases.
+define('MINIMUM_PHP_VERSION', '7.3');
+define('MINIMUM_APACHE_VERSION', '2.4');
+define('MINIMUM_MYSQL_VERSION', '5.7');
+define('MINIMUM_MARIADB_VERSION', '10.3');
+define('MINIMUM_NODE_VERSION', '8.0');
+define('MINIMUM_COMPOSER_VERSION', '1.4');
 
 $helper = new CLI_Helper();
 $helper->enableLogging(basename($argv[0]));
@@ -52,6 +55,24 @@ if (strpos(strtolower($architecture), 'mysql') !== false) {
 } else {
     $helper->printError('Neither MariaDB nor MySQL installation detected');
 }
+
+$helper->printLine('Checking NodeJS version');
+$versionString = trim(shell_exec('nodejs -v'));
+// The output for `nodejs -v` has the format `v8.10.0`. We need to remove the
+// first character.
+$versionString = ltrim($versionString, $versionString[0]);
+evaluateVersionRequirement('NodeJS', $versionString, MINIMUM_NODE_VERSION);
+
+$helper->printLine('Checking composer version');
+// The output for `composer --version` has the format:
+// `Composer version 1.7.2 2018-08-16 16:57:12`.
+// Use bash to extract the version number.
+$versionString = trim(
+    shell_exec(
+        "composer --version | cut -d ' ' -f 3"
+    )
+);
+evaluateVersionRequirement('Composer', $versionString, MINIMUM_COMPOSER_VERSION);
 
 // Check "web paths". This is a data type found in the ConfigSettings table.
 // Settings with this Data Type are expected to exist on the file system and
@@ -105,23 +126,22 @@ foreach ($result as $setting) {
  * Evaluate version requirement. Print result.
  */
 function evaluateVersionRequirement(
-    string $software, 
-    $versionInstalled, 
+    string $software,
+    $versionInstalled,
     $versionRequired
 ) {
     global $helper;
-    // Make sure the right Apache version is used.
-    $versionRequired >= $versionInstalled ?
+    $versionInstalled >= $versionRequired ?
         $helper->printSuccess(
             sprintf(
-                "$software version requirment met (found: %s. required: %s)",
+                "$software version requirment met (found: '%s'. required: '%s')",
                 $versionInstalled,
                 $versionRequired
             )
         )
         : $helper->printError(
             sprintf(
-                "$software minimum version not met (found: %s. required: %s)",
+                "$software minimum version not met (found: '%s'. required: '%s')",
                 $versionInstalled,
                 $versionRequired
             )
