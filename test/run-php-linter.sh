@@ -13,6 +13,7 @@ find docs modules htdocs php src tools -name '*.class.inc' -print0 -o -name '*.p
 # Also run PHPCS on all tools/ scripts in this array
 declare -a tools_list=(
     'assign_missing_instruments.php'
+    'delete_candidate.php'
     'delete_ignored_conflicts.php'
     'detect_duplicated_commentids.php'
     'generic_includes.php'
