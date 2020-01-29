@@ -1504,7 +1504,7 @@ class Database
      *   | version_compile_os      | Linux                        |
      *   +-------------------------+------------------------------+
      *
-     * @return string[] An associative array representing the results of the
+     * @return array<int,array> An associative array representing the results of the
      *                  query.
      */
     private function _getServerVariables(): array
@@ -1515,7 +1515,19 @@ class Database
             ->fetchAll();
     }
 
-    private function _getServerVariable(string $variable) {
+    /**
+     * Get a specific server variable from the database specified by
+     * $variable parameter.
+     *
+     * @param string $variable The name of a version variable. See function
+     *                         comment for _getServerVariables().
+     *
+     * @return string The value of the variable.
+     *
+     * @throws InvalidArgumentException
+     */
+    private function _getServerVariable(string $variable): string
+    {
         foreach ($this->_getServerVariables() as $row) {
             if (strtolower($variable) === $row['Variable_name']) {
                 return $row['Value'];
