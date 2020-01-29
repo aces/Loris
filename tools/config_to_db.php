@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 /**
- * script to move config.xml data to the database
+ * Script to move config.xml data to the database
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Main
  * @package  Loris
@@ -22,7 +22,7 @@ $iterator = new SimpleXmlIterator($xml_file, null, true);
 iterate($iterator, null);
 
 /**
- * iterate over the config xml
+ * Iterate over the config xml
  *
  * @param SimpleXmlIterator $iterator  xml iterator
  * @param string            $parentKey parent of the current value of the iterator
@@ -34,17 +34,16 @@ function iterate($iterator, $parentKey)
     $db = Database::singleton();
     for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
         $current = $iterator->current();
-        $name  = $iterator->key();
+        $name    = $iterator->key();
         if ($iterator->hasChildren()) {
             iterate($current, $name);
         } else { // Else it is a leaf
-
             // If a key by that name exists, get its ID
             $configID = $db->pselectone(
                 "SELECT ID 
                  FROM ConfigSettings 
-                 WHERE Name=:name", 
-                array('name' => $name)
+                 WHERE Name=:name",
+                ['name' => $name]
             );
 
             // If the key already exists
@@ -52,11 +51,10 @@ function iterate($iterator, $parentKey)
                 $dbParentKey = $db->pselectone(
                     "SELECT Name 
                      FROM ConfigSettings 
-                     WHERE ID=(SELECT Parent FROM ConfigSettings WHERE Name=:name)", 
-                    array('name' => $name)
+                     WHERE ID=(SELECT Parent FROM ConfigSettings WHERE Name=:name)",
+                    ['name' => $name]
                 );
                 if ($parentKey==$dbParentKey) {
-
                     // Insert into the DB
                     processLeaf($name, $current, $configID);
                 }
@@ -66,7 +64,7 @@ function iterate($iterator, $parentKey)
 }
 
 /**
- * insert a value into the Config table
+ * Insert a value into the Config table
  *
  * @param string $name     name of the config field
  * @param string $value    value of the config field
@@ -76,48 +74,53 @@ function iterate($iterator, $parentKey)
  */
 function processLeaf($name, $value, $configID)
 {
-    $db = Database::singleton();
+    $db            = Database::singleton();
     $allowMultiple = $db->pselectone(
         "SELECT AllowMultiple 
          FROM ConfigSettings 
-         WHERE ID=:configID", 
-        array('configID' => $configID)
+         WHERE ID=:configID",
+        ['configID' => $configID]
     );
     $currentValue  = $db->pselect(
         "SELECT Value 
          FROM Config 
-         WHERE ConfigID=:configID", 
-        array('configID' => $configID)
+         WHERE ConfigID=:configID",
+        ['configID' => $configID]
     );
 
     // if the configID is not already in the config table
     if (empty($currentValue)) {
-
         $db->insert(
-            'Config', array('ConfigID' => $configID, 'Value' => $value)
+            'Config',
+            [
+                'ConfigID' => $configID,
+                'Value'    => $value,
+            ]
         );
-
-    } else if (!empty($currentValue) && $allowMultiple==0) { 
+    } elseif (!empty($currentValue) && $allowMultiple==0) {
         // if the configID exists and the field does not allow multiples
 
         $db->update(
-            'Config', array('Value' => $value), array('ConfigID' => $configID)
+            'Config',
+            ['Value' => $value],
+            ['ConfigID' => $configID]
         );
-
     } else { // if the configID exists and the field does allow multiples
-        
         // if it is not a copy of an already existing value
         if (!Recursive_In_array($value, $currentValue)) {
             $db->insert(
-                'Config', array('ConfigID' => $configID, 'Value' => $value)
+                'Config',
+                [
+                    'ConfigID' => $configID,
+                    'Value'    => $value,
+                ]
             );
         }
-
     }
 }
 
 /**
- * recursive in_array function
+ * Recursive in_array function
  *
  * @param string $value the value being searched for
  * @param array  $array the array being searched through
@@ -127,7 +130,7 @@ function processLeaf($name, $value, $configID)
 function Recursive_In_array($value, $array)
 {
     foreach ($array as $sub_array) {
-        if ($sub_array == $value 
+        if ($sub_array == $value
             || (is_array($sub_array) && Recursive_In_array($value, $sub_array))
         ) {
             return true;
