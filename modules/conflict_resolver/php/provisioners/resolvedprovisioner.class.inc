@@ -61,21 +61,4 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             '\LORIS\conflict_resolver\Models\ResolvedDTO'
         );
     }
-    /**
-     * Creates a new provisioner with user-specific filter.
-     *
-     * @param \User $user The requesting user
-     *
-     * @return ResolvedProvisioner
-     */
-    public function forUser(\User $user): ResolvedProvisioner
-    {
-        $new = clone($this);
-        if (!$user->hasPermission('access_all_profiles')) {
-            $new = $new->filter(
-                new \LORIS\Data\Filters\UserSiteMatch()
-            );
-        }
-        return $new;
-    }
 }

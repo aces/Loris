@@ -56,21 +56,4 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             '\LORIS\conflict_resolver\Models\UnresolvedDTO'
         );
     }
-    /**
-     * Creates a new providionner with user specific filter.
-     *
-     * @param \User $user The requesting user
-     *
-     * @return UnresolvedProvisioner
-     */
-    public function forUser(\User $user): UnresolvedProvisioner
-    {
-        $new = clone($this);
-        if (!$user->hasPermission('access_all_profiles')) {
-            $new = $new->filter(
-                new \LORIS\Data\Filters\UserSiteMatch()
-            );
-        }
-        return $new;
-    }
 }
