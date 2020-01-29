@@ -79,7 +79,7 @@ evaluateVersionRequirement('Composer', $versionString, MINIMUM_COMPOSER_VERSION)
 // should be writable by the current user.
 $username = $helper->getUsername();
 $helper->printLine("Checking web path settings...");
-$query = <<<QUERY
+$query  = <<<QUERY
 SELECT 
 cs.Name, c.Value as Path
 FROM Config c 
@@ -124,12 +124,18 @@ foreach ($result as $setting) {
 
 /**
  * Evaluate version requirement. Print result.
+ *
+ * @param string $software         The software or package we are checking.
+ * @param string $versionInstalled The numeric version of the installed tool.
+ * @param string $versionRequired  The minimum version of $software required by
+ *
+ * @return void
  */
 function evaluateVersionRequirement(
     string $software,
-    $versionInstalled,
-    $versionRequired
-) {
+    string $versionInstalled,
+    string $versionRequired
+): void: {
     global $helper;
     $versionInstalled >= $versionRequired ?
         $helper->printSuccess(
