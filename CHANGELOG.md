@@ -13,6 +13,7 @@ changes in the following format: PR #1234***
 
 #### Core
 - Menus are now maintained by modules and no longer in the SQL database (PR #5839)
+- Very old instrument relying on QuickForm may have issues due to code changes (PR #4928)
 
 #### Modules 
 ##### module1
