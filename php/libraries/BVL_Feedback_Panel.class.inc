@@ -35,7 +35,7 @@ class BVL_Feedback_Panel
      *
      * @private NDB_BVL_Feedback
      */
-    protected $_feedbackThread;
+    protected $feedbackThread;
 
     /**
      * An array containing data that will be passed to the Smarty template.
@@ -58,7 +58,7 @@ class BVL_Feedback_Panel
         ?string $commentID=null
     ) {
 
-        $this->_feedbackThread
+        $this->feedbackThread
             = \NDB_BVL_Feedback::singleton(
                 \User::singleton()->getUsername(),
                 $candID,
@@ -77,7 +77,7 @@ class BVL_Feedback_Panel
      */
     function display(): string
     {
-        $feedbackProfile = $this->_feedbackThread->_feedbackCandidateProfileInfo;
+        $feedbackProfile = $this->feedbackThread->_feedbackCandidateProfileInfo;
         $candidateID     = new CandID($feedbackProfile["CandID"]);
 
         $this->tpl_data['candID'] = (string) $candidateID;
@@ -87,16 +87,16 @@ class BVL_Feedback_Panel
 
         $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;
 
-        $feedbackObject = $this->_feedbackThread->_feedbackObjectInfo;
+        $feedbackObject = $this->feedbackThread->_feedbackObjectInfo;
         $this->tpl_data['commentID'] = $feedbackObject["CommentID"] ?? null;
 
-        $this->tpl_data['thread_list']    = $this->_feedbackThread->getThreadList();
-        $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
+        $this->tpl_data['thread_list']    = $this->feedbackThread->getThreadList();
+        $this->tpl_data['feedback_level'] = $this->feedbackThread->_feedbackLevel;
         $this->tpl_data['feedback_types']
             = NDB_BVL_Feedback::getFeedbackTypes();
         $this->tpl_data['feedbacktypes']  = NDB_BVL_Feedback::getFeedbackTypes();
 
-        $summary = $this->_feedbackThread->getSummaryOfThreads();
+        $summary = $this->feedbackThread->getSummaryOfThreads();
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
 
         $field_names = Utility::getSourcefields($_REQUEST['test_name'] ?? '');

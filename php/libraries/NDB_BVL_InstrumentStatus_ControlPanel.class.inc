@@ -29,7 +29,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     public $tpl_data;
     public $validityEnabled;
     public $validityRequired;
-    protected $_instrument;
+    protected $instrument;
     /**
      * Construct a controller for the instrument status control panel
      *
@@ -96,7 +96,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $this->subtest ?? ''
             );
 
-            $this->_instrument = $instrument;
+            $this->instrument = $instrument;
 
             $this->validityEnabled  = $instrument->validityEnabled;
             $this->validityRequired = $instrument->validityRequired;
@@ -224,7 +224,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $showLink = true;
                 $Validity = $this->getValidityStatus();
                 if ($Validity == null
-                    && $this->_instrument->validityRequired == true
+                    && $this->instrument->validityRequired == true
                     && $this->getAdministrationStatus() != 'None'
                 ) {
                     $showLink = false;
@@ -236,10 +236,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     && $this->getAdministrationStatus() == 'All'
                 ) {
                     // run the data entry logic test
-                    if (isset($this->_instrument)) {
+                    if (isset($this->instrument)) {
                         if ($showLink == true) {
                             $CompStatus
-                                = $this->_instrument->getDataEntryCompletionStatus();
+                                = $this->instrument->getDataEntryCompletionStatus();
 
                             $showLink = $CompStatus == 'Complete';
                         }
