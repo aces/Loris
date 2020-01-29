@@ -43,6 +43,7 @@ declare -a tools_list=(
     'lorisform_parser.php'
     'populate_visit_windows.php'
     'manage_modules.php'
+    'DB_date_zeros_removal.php'
 )
 
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
