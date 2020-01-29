@@ -99,9 +99,7 @@ if ($input !== $dbname) {
     die(printWarning('Input did not match database name. Exiting.'));
 }
 
-$mysqlCommand = <<<CMD
-mysql -A $dbname
-CMD;
+$mysqlCommand = sprintf("mysql -A %s", escapeshellarg($dbname));
 
 echo 'Checking connection via MySQL configuration file...' . PHP_EOL;
 // Test whether a connection to MySQL is possible via a MySQL config file.
@@ -129,9 +127,13 @@ if ($status != 0) {
     }
 
     // Try connecting by supplying parameters on command line.
-    $mysqlCommand = <<<CMD
-mysql -A "$dbname" -u "$username" -h "$host" -p$password
-CMD;
+    $mysqlCommand = sprintf(
+        "mysql -A %s -u %s -h %s -p%s",
+        escapeshellarg($dbname),
+        escapeshellarg($username),
+        escapeshellarg($host),
+        escapeshellarg($password)
+    );
     exec($mysqlCommand . ' -e "show tables;" 2>&1 1>/dev/null', $output, $status);
     print_r($output);
     if ($status != 0) {
