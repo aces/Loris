@@ -15,4 +15,9 @@ changes in the following format: PR #1234***
 - Menus are now maintained by modules and no longer in the SQL database (PR #5839)
 
 #### Modules 
-##### module1
+
+##### Configuration
+
+- Make sure to update your SQL database with the release patch and to select whether you want the 
+imaging pipeline to create a new scanner when an uploaded DICOM dataset was acquired on a new scanner.
+Note: 'Yes' was the default behaviour of the imaging pipeline, which is the default set in the release patch.
