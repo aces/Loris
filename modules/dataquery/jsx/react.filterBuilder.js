@@ -608,6 +608,10 @@ class FilterBuilder extends Component {
           defineCSVCandidates={this.defineCSVCandidates}
         />
         <h1 className='col-xs-12'>Filter</h1>
+        <ButtonElement label='Import Population from CSV'
+                       columnSize=''
+                       onUserInput={this.openModalCSV}
+        />
         <div className='col-xs-12'>
           <div className='well well-primary'>
             <FilterGroup group={this.props.filter}
@@ -617,10 +621,6 @@ class FilterBuilder extends Component {
             />
           </div>
         </div>
-        <ButtonElement label='All Candidates'
-                       columnSize=''
-                       onUserInput={this.openModalCSV}
-        />
       </div>
     );
   }
