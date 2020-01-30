@@ -31,7 +31,7 @@
   - Select the right Site
     - Select the right Project
   - Select the right Visit-label
-  - Check that buttons work: 'Show Data', 'Clear Form'
+  - Check that 'Clear Form' removes values from the filters and resets the table
   - Verify that filters work as expected - inspect the results table
 6. Operation of resolving conflict and saving data should work as follows:[Automation Testing]
  - On Unresolved conflicts tab, set value of dropdown lists to accepted value
@@ -41,7 +41,6 @@
  - Press 'Save' button to save. Page will reload
  Ensure the changes take effect:
  - Check database to verify that submitted values have been properly saved
- - Click on 'Show Data' And the conflict should not longer appear
  - Also check and make sure that the instrument and its corresponding DDE are updated accordingly
  - Ensure if Date_taken is changed, the candidate age in the instrument is updated accordingly
  - Make sure the scoring_fields are re-calculated in the given instrument once the conflict is resolved

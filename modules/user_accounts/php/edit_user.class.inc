@@ -1085,7 +1085,14 @@ class Edit_User extends \NDB_Form
         //==================================
         //        Password validation
         //==================================
-        if ($values['Email'] === $values['Password_hash']) {
+
+        // Make sure the user is not using their email address as their password.
+        // Do not show this error if the password is an empty string: in this
+        // case, that means the email is empty also. It's more appropriate to
+        // display only the error 'You must enter an email'.
+        if ($values['Email'] === $values['Password_hash']
+            && $values['Password_hash'] !== ''
+        ) {
             $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
         }
         if (!is_null($this->identifier)) {
