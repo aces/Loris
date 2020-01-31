@@ -184,7 +184,7 @@ class NewProfileIndex extends React.Component {
           required = {true}
         />;
     }
-    if (this.state.configData['site'] !== null) {
+    if (this.state.configData.site && this.state.configData.site.length !== 0) {
       site =
         <SelectElement
           name = "site"
