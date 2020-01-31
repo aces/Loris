@@ -140,3 +140,24 @@ h4 {
 .loading-header {
     color: #064785;
 }
+
+.import-csv {
+  border: 0;
+  right: 20px;
+  color: #fff;
+  width: 250px;
+  height: 45px;
+  display: flex;
+  cursor: pointer;
+  font-size: 12pt;
+  user-select: none;
+  position: absolute;
+  margin: 20px auto 0;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+  background-color: #9e0e4b;
+}
+.import-csv:focus {
+  outline: 0;
+}

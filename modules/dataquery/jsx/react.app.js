@@ -996,10 +996,8 @@ class DataQueryApp extends Component {
   }
 
   uploadCSV(data) {
-    console.log('yay data is:');
-    console.log(data);
     data = {
-      activeOperator: '1',
+      activeOperator: '0',
       children: data.children,
       session: data.session,
       repeating: true,

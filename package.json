@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
+    "papaparse": "^5.1.1",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
     "react-addons-create-fragment": "^15.6.2",

@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import ModalUploadCSV from './modalUploadCSV';
+import ModalUploadCSV from './react.uploadCSV';
 
 /*
  *  The following component is used for displaying operator for the group component
@@ -586,16 +586,30 @@ class FilterBuilder extends Component {
     this.setState({showModalCSV: false});
   }
 
-  defineCSVCandidates(data) {
-    console.log(data);
-    document.getElementById('filter_or_btn').click();
-    $.get(loris.BaseURL + '/dataquery/ajax/getAllCandidates.php', {
-      type: data
-    }, (data) => {
-      console.log('ajax data:');
-      console.log(data);
-      this.props.uploadCSV(data);
-    }, 'json');
+  defineCSVCandidates(type, data) {
+    let session = [];
+    let children = [];
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const value = data[key][0];
+        children.push({
+          field: type,
+          fieldType: 'varchar(255)',
+          instrument: 'demographics',
+          operator: 'equal',
+          session: [value],
+          type: 'rule',
+          value: value,
+          visit: 'All'
+        });
+        session.push(value);
+      }
+    }
+    const results = {
+      session: session,
+      children: children,
+    };
+    this.props.uploadCSV(results);
     this.closeModalCSV();
   }
 
@@ -607,11 +621,13 @@ class FilterBuilder extends Component {
           closeModalCSV={this.closeModalCSV}
           defineCSVCandidates={this.defineCSVCandidates}
         />
-        <h1 className='col-xs-12'>Filter</h1>
-        <ButtonElement label='Import Population from CSV'
-                       columnSize=''
-                       onUserInput={this.openModalCSV}
-        />
+        <div className={'row'}>
+          <h1 className='col-xs-6'>Filter</h1>
+          <button className={'import-csv'}
+                  onClick={this.openModalCSV}>
+            Import Population from CSV&nbsp;&nbsp;<span className='glyphicon glyphicon-file'/>
+          </button>
+        </div>
         <div className='col-xs-12'>
           <div className='well well-primary'>
             <FilterGroup group={this.props.filter}
