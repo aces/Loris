@@ -2136,7 +2136,7 @@ CREATE TABLE `appointment` (
   KEY `AppointmentTypeID` (`AppointmentTypeID`),
   KEY `SessionID` (`SessionID`),
   CONSTRAINT `appointment_belongsToSession` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
-  CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`),
+  CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
