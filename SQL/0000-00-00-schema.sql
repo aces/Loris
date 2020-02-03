@@ -2128,7 +2128,7 @@ INSERT INTO `appointment_type` (`AppointmentTypeID`, `Name`) VALUES
 (1, 'MRI');
 
 CREATE TABLE `appointment` (
-  `AppointmentID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT=1,
+  `AppointmentID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `SessionID` int(10) UNSIGNED NOT NULL,
   `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
   `StartsAt` datetime NOT NULL,
