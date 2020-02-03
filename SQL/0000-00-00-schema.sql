@@ -2116,7 +2116,7 @@ CREATE TABLE `publication_users_edit_perm_rel` (
 
 CREATE TABLE `appointment_type` (
   `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
-  `Name` varchar(32) NOT NULLi,
+  `Name` varchar(32) NOT NULL,
   PRIMARY KEY (`AppointmentTypeID`),
   UNIQUE KEY (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
