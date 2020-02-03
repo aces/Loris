@@ -34,6 +34,7 @@
             <directory>../modules/instrument_builder/test/</directory>
             <directory>../modules/instrument_list/test/</directory>
             <directory>../modules/instrument_manager/test/</directory>
+            <directory>../modules/module_manager/test/</directory>
             <directory>../modules/mri_upload/test/</directory>
             <directory>../modules/mri_violations/test/</directory>
             <directory>../modules/new_profile/test/</directory>
