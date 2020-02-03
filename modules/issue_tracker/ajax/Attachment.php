@@ -53,7 +53,7 @@ function newAttachment() : array
 {
     $user       =& User::singleton();
     $attachment = new \LORIS\issue_tracker\UploadHelper();
-    $response   = $attachment->setupUploading(
+    $attachment->setupUploading(
         $user,
         $_FILES,
         $_POST
@@ -72,7 +72,7 @@ function deleteAttachment() : array
     $DB      = \Database::singleton();
     $query   = 'UPDATE issues_attachments SET deleted=1 WHERE file_uuid=:uuid;';
     $stmt    = $DB->prepare($query);
-    $results = $stmt->execute(array('uuid' => $uuid));
+    $stmt->execute(array('uuid' => $uuid));
 
     return ['success' => true];
 }
