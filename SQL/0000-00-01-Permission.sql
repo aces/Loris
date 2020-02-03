@@ -102,7 +102,8 @@ INSERT INTO `permissions` VALUES
     (53,'instrument_manager_write', 'Instrument Manager: Install new instruments via file upload', 2),
     (54,'publication_view', 'Publication - Access to module', 2),
     (55,'publication_propose', 'Publication - Propose a project', 2),
-    (56,'publication_approve', 'Publication - Approve or reject proposed publication projects', 2);
+    (56,'publication_approve', 'Publication - Approve or reject proposed publication projects', 2),
+    (57,'schedule_module', 'Schedule Module', 2);
 
 
 INSERT INTO `user_perm_rel` (userID, permID)
