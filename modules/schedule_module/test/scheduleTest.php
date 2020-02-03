@@ -56,7 +56,7 @@ class ScheduleTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector(".btn > div")
         )->getText();
-        $this->assertContains("schedule_module", $bodyText);
+        $this->assertContains("Schedule Module", $bodyText);
         $this->assertNotContains("An error occurred", $bodyText);
         
     }
