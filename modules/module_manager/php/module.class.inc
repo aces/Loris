@@ -1,6 +1,29 @@
 <?php
+/**
+ * File contains the LORIS\module_manager\Module class.
+ *
+ * PHP Version 7
+ *
+ * @category   Core
+ * @package    Main
+ * @subpackage Core
+ * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
+ */
 namespace LORIS\module_manager;
 
+/**
+ * The module class serves as a hint that this directory contains
+ * a valid LORIS module.
+ *
+ * @category   Core
+ * @package    Main
+ * @subpackage Core
+ * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
+ */
 class Module extends \Module
 {
     /**

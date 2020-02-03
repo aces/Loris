@@ -1,14 +1,14 @@
 <?php
 /**
  * This class implements a data Instance which represents a single
- * file in the media menu table.
+ * file in the module_manager menu table.
  *
  * PHP Version 7
  *
- * @category   Behavioural
+ * @category   Core
  * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
+ * @subpackage Core
+ * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -16,12 +16,12 @@
 namespace LORIS\module_manager;
 
 /**
- * A Meida File represents a row in the Media menu table.
+ * A ModuleRow represents a row in the module_manager menu table.
  *
- * @category   Behavioural
+ * @category   Core
  * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
+ * @subpackage Core
+ * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -49,11 +49,13 @@ class ModuleRow implements \LORIS\Data\DataInstance
      */
     public function toJSON(): string
     {
-        return json_encode([
-            'Name' => $this->Module->getName(),
-            'LongName' => $this->Module->getLongName(),
-            'Active' => $this->Active,
-        ]);
+        return json_encode(
+            [
+                'Name'     => $this->Module->getName(),
+                'LongName' => $this->Module->getLongName(),
+                'Active'   => $this->Active,
+            ]
+        );
     }
 
 }
