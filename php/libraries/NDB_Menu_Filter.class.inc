@@ -695,7 +695,7 @@ class NDB_Menu_Filter extends NDB_Menu
          */
 
         // dump the html for the menu
-        $smarty = new Smarty_neurodb($this->Module->getName());
+        $smarty = new Smarty_NeuroDB($this->Module->getName());
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->getTemplateData());
@@ -804,7 +804,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         return json_encode($this->toArray());
     }
