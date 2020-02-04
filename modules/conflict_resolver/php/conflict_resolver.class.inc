@@ -411,7 +411,6 @@ class Conflict_Resolver extends \NDB_Page
             'Headers' => $unanonymized['Headers'],
             'Data'    => $data,
         );
->>>>>>> aces/master
     }
 
     /**

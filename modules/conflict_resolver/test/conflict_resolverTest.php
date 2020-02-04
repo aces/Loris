@@ -116,11 +116,12 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         $this->setupPermissions(array("conflict_resolver"));
 
         $this->safeGet($this->url . "/conflict_resolver");
-
-        $filters = $this->webDriver->findElement(
-            \WebDriverBy::id('tab-unresolved')
+        $wait->until(
+            \WebDriverExpectedCondition::presenceOfElementLocated(
+                \WebDriverBy::id('tab-unresolved')
+            )
         );
-        $this->assertTrue(!empty($filters));
+
         $this->resetPermissions();
     }
 
@@ -228,7 +229,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
 
         $wait->until(
             \WebDriverExpectedCondition::presenceOfElementLocated(
-                \WebDriverBy::id('resolved')
+                \WebDriverBy::id('tab-resolved')
             )
         );
 
