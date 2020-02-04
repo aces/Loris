@@ -89,13 +89,17 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         ) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
-            $module = \Module::factory($modulename);
 
             // Calculate the base path by stripping off the module from the original.
             $path    = $uri->getPath();
             $baseurl = substr($path, 0, strpos($path, $modulename));
             $baseurl = $uri->withPath($baseurl)->withQuery("");
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
+
+            $factory = \NDB_Factory::singleton();
+            $factory->setBaseURL($baseurl);
+
+            $module = \Module::factory($modulename);
             $mr      = new ModuleRouter($module, $this->moduledir);
             $request = $request->withURI($suburi);
             return $mr->handle($request);
@@ -107,6 +111,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             // FIXME: This assumes the baseURL is under /
             $path    = $uri->getPath();
             $baseurl = $uri->withPath("/")->withQuery("");
+
+            $factory = \NDB_Factory::singleton();
+            $factory->setBaseURL($baseurl);
             switch (count($components)) {
                 case 1:
                     $request = $request

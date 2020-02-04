@@ -37,6 +37,7 @@ class NDB_Factory
     private static $_candidates = array();
     private static $_timepoints = array();
 
+    private $baseURL = "";
     var $Testing; // Whether or not Mock objects should be returned instead of
                   // real ones
     //
@@ -97,6 +98,8 @@ class NDB_Factory
 
         self::$_candidates = array();
         self::$_timepoints = array();
+
+        $this->baseURL = "";
     }
 
     /**
@@ -370,6 +373,9 @@ class NDB_Factory
         return $couchDB;
     }
 
+    public function setBaseURL(string $baseURL) {
+        $this->baseURL = $baseURL;
+    }
     /**
      * Returns a singleton settings object
      *
@@ -382,7 +388,7 @@ class NDB_Factory
         if (self::$_settings !== null) {
             return self::$_settings;
         }
-        self::$_settings = new Settings($this->config($configfile));
+        self::$_settings = new Settings($this->config($configfile), $this->baseURL);
         return self::$_settings;
     }
 
