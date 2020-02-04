@@ -71,20 +71,36 @@ interface DataEntryExpression
  */
 class DataEntrySelectClause
 {
-    private $expressions = [];
+    private $_expressions = [];
+    /**
+     * Register function
+     *
+     * @param string              $type type
+     * @param DataEntryExpression $expr Data Entry Expression
+     *
+     * @return self
+     */
     public function register(string $type, DataEntryExpression $expr) : self
     {
-        $this->expressions[$type] = $expr;
+        $this->_expressions[$type] = $expr;
         return $this;
     }
-    private function getColumn(string $columnName, callable $getExpression) : string
+    /**
+     * This is a _getColumn function
+     *
+     * @param string   $columnName    column name
+     * @param callable $getExpression get expression
+     *
+     * @return string
+     */
+    private function _getColumn(string $columnName, callable $getExpression) : string
     {
         $columnName = Database::singleton()->escape($columnName);
 
         $parts = [];
 
         $parts[] = "(CASE appointment_type.Name";
-        foreach ($this->expressions as $type=>$expr) {
+        foreach ($this->_expressions as $type=>$expr) {
             $quotedType = Database::singleton()->quote($type);
             $expression = $getExpression($expr);
             $parts[]    = "WHEN {$quotedType} THEN ({$expression})";
@@ -93,33 +109,53 @@ class DataEntrySelectClause
         $parts[] = "END) AS {$columnName}";
         return implode("\n", $parts);
     }
+    /**
+     * This is a getCompleteColumn function
+     *
+     * @return string
+     */
     public function getCompleteColumn()
     {
-        return $this->getColumn(
+        return $this->_getColumn(
             "hasDataEntryComplete",
             function (DataEntryExpression $expr) : string {
                     return $expr->getCompleteExpression();
             }
         );
     }
+    /**
+     * This is a getInProgressColumn function
+     *
+     * @return string
+     */
     public function getInProgressColumn()
     {
-        return $this->getColumn(
+        return $this->_getColumn(
             "hasDataEntryInProgress",
             function (DataEntryExpression $expr) : string {
                     return $expr->getInProgressExpression();
             }
         );
     }
+    /**
+     * This is a getNotStartedColumn function
+     *
+     * @return string
+     */
     public function getNotStartedColumn()
     {
-        return $this->getColumn(
+        return $this->_getColumn(
             "hasDataEntryNotStarted",
             function (DataEntryExpression $expr) : string {
                     return $expr->getNotStartedExpression();
             }
         );
     }
+    /**
+     * This is a getColumns function
+     *
+     * @return string
+     */
     public function getColumns() : string
     {
         return implode(
@@ -132,11 +168,22 @@ class DataEntrySelectClause
         );
     }
 }
-    /*
-        For Behavioral, all instruments except MRI are checked.
-    */
+/**
+ *  For Behavioral, all instruments except MRI are checked.
+ *
+ * @category Schedule
+ * @package  Loris
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris
+ */
 class BehavioralDataEntryExpression implements DataEntryExpression
 {
+    /**
+     * This is a getCompleteExpression function
+     *
+     * @return string
+     */
     public function getCompleteExpression() : string
     {
         return "
@@ -163,6 +210,11 @@ class BehavioralDataEntryExpression implements DataEntryExpression
                 )
             ";
     }
+    /**
+     * This is a getInProgressExpression function
+     *
+     * @return string
+     */
     public function getInProgressExpression() : string
     {
         return "
@@ -189,6 +241,11 @@ class BehavioralDataEntryExpression implements DataEntryExpression
                 )
             ";
     }
+    /**
+     * This is a getNotStartedExpression function
+     *
+     * @return string
+     */
     public function getNotStartedExpression() : string
     {
         return "
@@ -226,8 +283,22 @@ class BehavioralDataEntryExpression implements DataEntryExpression
         For now, requires at least one imaging browser upload.
         We don't know the exact requirement for now.
     */
+/**
+ * MriDataEntryExpression
+ *
+ * @category Schedule
+ * @package  Loris
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris
+ */
 class MriDataEntryExpression implements DataEntryExpression
 {
+    /**
+     * This is a getCompleteExpression function
+     *
+     * @return string
+     */
     public function getCompleteExpression() : string
     {
         return "
@@ -258,6 +329,11 @@ class MriDataEntryExpression implements DataEntryExpression
                 )
             ";
     }
+    /**
+     * This is a getInProgressExpression function
+     *
+     * @return string
+     */
     public function getInProgressExpression() : string
     {
         return "
@@ -279,6 +355,11 @@ class MriDataEntryExpression implements DataEntryExpression
                 )
             ";
     }
+    /**
+     * This is a getNotStartedExpression function
+     *
+     * @return string
+     */
     public function getNotStartedExpression() : string
     {
         return "
@@ -308,16 +389,27 @@ class MriDataEntryExpression implements DataEntryExpression
     }
 }
 
-    /*
-        //TODO Figure out what the appointment type is really called
-        //DNA? Blood Collection?
-        For Blood Collection,
-
-        Only the DNA Paramter Form (Test_name : DNA_parameter_form)
-        must be complete.
-    */
+/**
+ * TODO Figure out what the appointment type is really called
+ * DNA? Blood Collection?
+ * For Blood Collection,
+ * Only the DNA Paramter Form (Test_name : DNA_parameter_form)
+ * must be complete.
+ * Implement this interface for each Appointment Type
+ *
+ * @category Schedule
+ * @package  Loris
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris
+ */
 class BloodCollectionDataEntryExpression implements DataEntryExpression
 {
+    /**
+     * This is a getCompleteExpression function
+     *
+     * @return string
+     */
     public function getCompleteExpression() : string
     {
         return "
@@ -336,6 +428,11 @@ class BloodCollectionDataEntryExpression implements DataEntryExpression
                 )
             ";
     }
+    /**
+     * This is a getInProgressExpression function
+     *
+     * @return string
+     */
     public function getInProgressExpression() : string
     {
         return "
@@ -354,6 +451,11 @@ class BloodCollectionDataEntryExpression implements DataEntryExpression
                 )
             ";
     }
+    /**
+     * This is a getNotStartedExpression function
+     *
+     * @return string
+     */
     public function getNotStartedExpression() : string
     {
         return "
