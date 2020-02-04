@@ -61,6 +61,23 @@ class ScheduleTest extends LorisIntegrationTest
         
     }
     /**
+     * Tests that, the homepage should have "Schedule Module"
+     * on the page with permission.
+     *
+     * @return void
+     */
+    function testPageLoadsWithPermissions()
+    {
+        $this->setupPermissions(array("schedule_module"));
+        $this->safeGet($this->url . "/schedule_module/");
+        $bodyText = $this->safeFindElement(
+             WebDriverBy::cssSelector(".btn > div")
+        )->getText();
+        $this->assertContains("Schedule Module", $bodyText);
+        $this->assertNotContains("An error occurred", $bodyText);
+        $this->resetPermissions();
+    }
+    /**
      * Tests that, the homepage should have "You do not have access to this page."
      * on the page without permission.
      *
@@ -68,14 +85,12 @@ class ScheduleTest extends LorisIntegrationTest
      */
     function testPageLoadsWithoutPermissions()
     {
-        $this->setupPermissions(array("schedule_module"));
+        $this->setupPermissions(array());
         $this->safeGet($this->url . "/schedule_module/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
-            "You do not have access to this page.",
-            $bodyText
-        );
+        $bodyText = $this->safeFindElement(
+             WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
 }
