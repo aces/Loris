@@ -174,7 +174,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // *************************
         $user = $request->getAttribute('user');
         if (!$user->hasPermission('imaging_uploader')) {
-            return new \LORIS\Http\Response\Forbidden();
+            return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
         // *************************
@@ -182,7 +182,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // *************************
         $files = $request->getUploadedFiles();
         if (count($files) !== 1) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'There should be 1 and only 1 file uploaded per POST request.'
             );
         }
@@ -192,28 +192,28 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $candid = $data['CandID'] ?? null;
         if (intval($candid) !== $this->_visit->getCandID()) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'CandID in POST data do not match URL.'
             );
         }
 
         $pscid = $data['PSCID'] ?? null;
         if (!\Candidate::candidateExists(intval($candid), $pscid)) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'PSCID and CandID in POST data do not refer to the same candidate.'
             );
         }
 
         $visitlabel = $data['Visit'] ?? null;
         if ($visitlabel !== $this->_visit->getVisitLabel()) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'Visit label in URL and POST data do not match.'
             );
         }
 
         $isphantom = $data['IsPhantom'] ?? null;
         if (!in_array($isphantom, ['true', 'false'])) {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 'IsPhantom must be a the string "true" or "false".'
             );
         }
@@ -221,7 +221,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $filename    = $uploadedfile->getClientFilename();
         $patientname = $pscid. "_" . $candid . "_" . $visitlabel;
         if (!preg_match("/^${patientname}/", $filename) && $isphantom !== 'true') {
-            return new \LORIS\Http\Response\BadRequest(
+            return new \LORIS\Http\Response\JSON\BadRequest(
                 "Filename must start with $patientname."
             );
         }
@@ -258,7 +258,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $filepath = $incomingdir->getPathname() . '/' . $filename;
         $fileinfo = new \SplFileInfo($filepath);
         if (!$fileinfo->isFile()) {
-            return new \LORIS\Http\Response\InternalServerError(
+            return new \LORIS\Http\Response\JSON\InternalServerError(
                 'Upload failed (see error_log.)'
             );
         }
@@ -272,7 +272,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         } catch (\Throwable $e) {
             error_log($e->getMessage());
-            return new \LORIS\Http\Response\InternalServerError(
+            return new \LORIS\Http\Response\JSON\InternalServerError(
                 'Database insertion failed (see error_log.)'
             );
         }
@@ -284,7 +284,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withPath($newpath)
             ->withQuery('');
 
-        return new \LORIS\Http\Response\SeeOther($processeslocation);
+        return new \LORIS\Http\Response\JSON\SeeOther($processeslocation);
     }
 
     /**

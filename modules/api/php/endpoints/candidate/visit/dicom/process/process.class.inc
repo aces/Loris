@@ -89,7 +89,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) !== 1) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         switch ($request->getMethod()) {
@@ -101,7 +101,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withHeader('Allow', $this->allowedMethods());
 
         default:
-            return new \LORIS\Http\Response\MethodNotAllowed(
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
         }
@@ -125,13 +125,13 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // *************************
         $user = $request->getAttribute('user');
         if (!$user->hasPermission('server_processes_manager')) {
-            return new \LORIS\Http\Response\Forbidden();
+            return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
         $pathparts = $request->getAttribute('pathparts');
         $processid = array_shift($pathparts);
         if (!is_numeric($processid)) {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         // Instantiate the server process module to autoload

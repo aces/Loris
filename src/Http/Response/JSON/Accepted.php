@@ -1,8 +1,5 @@
 <?php declare(strict_types=1);
 /**
- * File contains the PSR15 ResponseInterface implementation for
- * See Other responses.
- *
  * PHP Version 7
  *
  * @category PSR15
@@ -14,14 +11,13 @@
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://www.php-fig.org/psr/psr-15/
  */
-namespace LORIS\Http\Response;
+namespace LORIS\Http\Response\JSON;
 
 use \LORIS\Http\Response\JsonResponse;
-use \Psr\Http\Message\UriInterface;
 
 /**
  * A LORIS Http Response is an implementation of the PSR15 ResponseInterface
- * to use in LORIS specific for 303 See Other.
+ * to use in LORIS specific for 202 Accepted.
  *
  * @category PSR15
  * @package  Http
@@ -29,16 +25,15 @@ use \Psr\Http\Message\UriInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class SeeOther extends JsonResponse
+class Accepted extends JsonResponse
 {
     /**
-     * Create a Json response specific to 303 See Other.
+     * Create a Json response specific to 202 Accepted
      *
-     * @param UriInterface $location The endpoint etag
+     * @param array|null $body The error message
      */
-    public function __construct(UriInterface $location)
+    public function __construct(?array $body)
     {
-        $headers = array('Location' => (string) $location);
-        parent::__construct(null, 303, $headers);
+        parent::__construct($body, 202);
     }
 }
