@@ -99,7 +99,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $factory = \NDB_Factory::singleton();
             $factory->setBaseURL($baseurl);
 
-            $module = \Module::factory($modulename);
+            $module  = \Module::factory($modulename);
             $mr      = new ModuleRouter($module, $this->moduledir);
             $request = $request->withURI($suburi);
             return $mr->handle($request);

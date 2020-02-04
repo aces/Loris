@@ -798,7 +798,7 @@ class NDB_Page implements RequestHandlerInterface
         $baseurl = $factory->settings()->getBaseURL();
         $config  = $factory->config();
 
-        $min     = ($config->getSetting("sandbox") === '1') ? '' : '.min';
+        $min = ($config->getSetting("sandbox") === '1') ? '' : '.min';
 
         // Currently jquery-ui is required for dialogs and datepickers to work.
         // In the future release, dialogs should be replaced with bootstrap dialogs

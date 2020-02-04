@@ -42,7 +42,7 @@ class Settings
      * Settings constructor.
      *
      * @param NDB_Config $_config config object
-     * @param string     $baseurl The base URL of LORIS
+     * @param string     $baseURL The base URL of LORIS
      */
     public function __construct(NDB_Config $_config, string $baseURL='')
     {
