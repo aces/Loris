@@ -25,9 +25,14 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
-$factory   = NDB_Factory::singleton();
-$config    = $factory->config(__DIR__ . "/../../../project/config.xml");
-$subprojs  = $config->getSettingFromXML("subprojects");
+$factory  = NDB_Factory::singleton();
+$config   = $factory->config(__DIR__ . "/../../../project/config.xml");
+$subprojs = $config->getSettingFromXML("subprojects");
+if (!is_array($subprojs)) {
+    throw new \ConfigurationException(
+        'Config setting "Projects" must be an array'
+    );
+}
 $db        = $factory->database();
 $optionpos = 1; //The position of the option in the command line.
 
@@ -69,7 +74,12 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-p")
 ) {
     $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
     $projects = $config->getSettingFromXML("Projects");
-    $db       = $factory->database();
+    if (!is_array($projects)) {
+        throw new \ConfigurationException(
+            'Config setting "Projects" must be an array'
+        );
+    }
+    $db = $factory->database();
     foreach ($projects['project'] as $row) {
         $insert = array(
             'ProjectID'         => $row['id'],

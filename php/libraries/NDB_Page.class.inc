@@ -70,6 +70,9 @@ class NDB_Page implements RequestHandlerInterface
      */
     var $fieldOptions = array();
 
+    public $Module;
+    public $template;
+
     /**
      * The format that the page content should be returned in. This is generally
      * the value of the `?format=` GET parameter from the request, and is usually
@@ -97,14 +100,12 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $page       The subtest being accessed (may be an empty string)
      * @param string $identifier The identifier for the data to load on this page
      * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
      */
     function __construct(
         \Module $module,
         string $page,
         string $identifier,
-        string $commentID,
-        string $formname
+        string $commentID
     ) {
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
@@ -664,7 +665,7 @@ class NDB_Page implements RequestHandlerInterface
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         $user = $request->getAttribute("user");
-        if ($this->_hasAccess($user ?? new AnonymousUser()) !== true) {
+        if ($this->_hasAccess($user ?? new \LORIS\AnonymousUser()) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
@@ -749,7 +750,7 @@ class NDB_Page implements RequestHandlerInterface
         $this->form->applyFilter('__ALL__', 'trim');
 
         // display the HTML_Quickform object
-        $smarty = new Smarty_neurodb($this->name);
+        $smarty = new Smarty_NeuroDB($this->name);
 
         $smarty->ModuleName = $this->name;
 
@@ -904,5 +905,15 @@ class NDB_Page implements RequestHandlerInterface
             new \LORIS\Breadcrumb($sublabel, "/$this->name/$this->page")
         );
     }
-}
 
+    /**
+     * Converts the results of this form to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string a json encoded string of the options to send to the form
+     */
+    function toJSON(): string
+    {
+        return json_encode(array('error' => 'Not implemented'));
+    }
+}

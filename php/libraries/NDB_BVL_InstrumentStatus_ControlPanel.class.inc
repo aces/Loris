@@ -26,7 +26,10 @@ use LORIS\StudyEntities\Candidate\CandID;
  */
 class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 {
-
+    public $tpl_data;
+    public $validityEnabled;
+    public $validityRequired;
+    protected $instrument;
     /**
      * Construct a controller for the instrument status control panel
      *
@@ -93,10 +96,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $this->subtest ?? ''
             );
 
-            $this->_instrument = $instrument;
+            $this->instrument = $instrument;
 
-            $this->ValidityEnabled  = $instrument->ValidityEnabled;
-            $this->ValidityRequired = $instrument->ValidityRequired;
+            $this->validityEnabled  = $instrument->validityEnabled;
+            $this->validityRequired = $instrument->validityRequired;
 
             // generate the subtest list
             $list = $instrument->getSubtestList();
@@ -119,7 +122,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 = $this->_displayDataEntry();
 
             // generate the validity flag buttons
-            if ($this->ValidityEnabled == true) {
+            if ($this->validityEnabled == true) {
                 $this->tpl_data['access']['validity'] = $this->_displayValidity();
             }
 
@@ -133,7 +136,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             }
         }
 
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("instrumentstatus_controlpanel.tpl");
         return $html;
@@ -221,7 +224,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $showLink = true;
                 $Validity = $this->getValidityStatus();
                 if ($Validity == null
-                    && $this->_instrument->ValidityRequired == true
+                    && $this->instrument->validityRequired == true
                     && $this->getAdministrationStatus() != 'None'
                 ) {
                     $showLink = false;
@@ -233,10 +236,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     && $this->getAdministrationStatus() == 'All'
                 ) {
                     // run the data entry logic test
-                    if (isset($this->_instrument)) {
+                    if (isset($this->instrument)) {
                         if ($showLink == true) {
                             $CompStatus
-                                = $this->_instrument->getDataEntryCompletionStatus();
+                                = $this->instrument->getDataEntryCompletionStatus();
 
                             $showLink = $CompStatus == 'Complete';
                         }
@@ -411,4 +414,3 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         return (!$timePoint->isSubmitted() || $maxThreadStatus == 'opened');
     }
 }
-

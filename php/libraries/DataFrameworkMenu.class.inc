@@ -45,16 +45,14 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      * @param string $page       The subtest being accessed (may be an empty string)
      * @param string $identifier The identifier for the data to load on this page
      * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
      */
     public function __construct(
         \Module $module,
         string $page,
         string $identifier,
-        string $commentID,
-        string $formname
+        string $commentID
     ) {
-        parent::__construct($module, $page, $identifier, $commentID, $formname);
+        parent::__construct($module, $page, $identifier, $commentID);
 
         $this->AjaxModule   = true;
         $this->skipTemplate = true;
@@ -130,7 +128,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    public function toJSON()
+    public function toJSON(): string
     {
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisionerWithFilters());

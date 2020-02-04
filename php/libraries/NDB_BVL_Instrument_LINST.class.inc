@@ -30,11 +30,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     use \LegacyInstrumentTrait;
 
-    var $InstrumentType = 'LINST';
+    public $InstrumentType = 'LINST';
 
-    var $LinstQuestions = array();
+    public $LinstQuestions = array();
 
-    var $LinstLines = array();
+    public $LinstLines = array();
+
+    private $_selectMultipleElements;
 
     /**
      * Sets up the variables required for a LINST instrument to load
@@ -386,9 +388,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $db = \Database::singleton();
 
             if (!isset($this->form)) {
-                $this->form = new \HTML_Quickform('test_form');
+                $this->form = new \LorisForm();
             }
-
             $this->dateTimeFields = array("Date_taken");
             $this->formType       = 'XIN';
 

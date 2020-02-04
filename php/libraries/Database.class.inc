@@ -59,6 +59,13 @@ class Database
     var $_preparedStoreHistory;
 
     /**
+     * The name of the database. Used internally for printing log messages.
+     *
+     * @access private
+     */
+    private $_databaseName = '';
+
+    /**
      * Singleton design pattern implementation - creates the object
      * and also connects to the database if necessary.
      * NOTE There is no return type declaration for this function as it returns
@@ -1462,4 +1469,3 @@ class Database
         );
     }
 }
-
