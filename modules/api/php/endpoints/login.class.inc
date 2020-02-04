@@ -160,10 +160,7 @@ class Login extends Endpoint
     function getEncodedToken($user)
     {
         $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $www     = $config->getSetting("www");
-        $baseURL = $www['url'];
+        $config  = $factory->settings()->getBaseURL();
 
         $token = array(
             // JWT related tokens to for the JWT library to validate

@@ -795,10 +795,9 @@ class NDB_Page implements RequestHandlerInterface
     function getJSDependencies()
     {
         $factory = NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
         $config  = $factory->config();
 
-        $www     = $config->getSetting('www');
-        $baseurl = $www['url'];
         $min     = ($config->getSetting("sandbox") === '1') ? '' : '.min';
 
         // Currently jquery-ui is required for dialogs and datepickers to work.
@@ -844,10 +843,7 @@ class NDB_Page implements RequestHandlerInterface
     function getCSSDependencies()
     {
         $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $www     = $config->getSetting('www');
-        $baseurl = $www['url'];
+        $baseurl = $factory->settings()->getBaseURL();
 
         $files = array(
             $baseurl . "/bootstrap/css/bootstrap.min.css",
