@@ -1,6 +1,7 @@
 <?php
 /**
- * This file is used by the Schedule Module to fetch a single appointment, given an AppointmentID
+ * This file is used by the Schedule Module to fetch a single appointment,
+ * given an AppointmentID
  *
  * PHP Version 5
  *
@@ -61,10 +62,14 @@ $appointment = $DB->pselectRow(
 
 if (empty($appointment)) {
     http_response_code(404);
-    die(json_encode([
-        "error" => "The Appointment does not exist."
-    ]));
+    die(
+        json_encode(
+            [
+                "error" => "The Appointment does not exist."
+            ]
+        )
+    );
 } else {
     echo json_encode($appointment);
 }
-?>
+

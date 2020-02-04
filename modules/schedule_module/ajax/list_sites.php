@@ -31,4 +31,4 @@ $sites = $DB->pselect(
 );
 
 echo json_encode($sites);
-?>
+

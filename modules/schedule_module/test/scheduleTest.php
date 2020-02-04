@@ -1,6 +1,6 @@
 <?php
 /**
- * schedule_module automated integration tests
+ * Schedule_module automated integration tests
  *
  * PHP Version 7
  *
@@ -13,7 +13,7 @@
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
- * schedule_module Integration Test
+ * Schedule_module Integration Test
  *
  * @category Test
  * @package  Loris
@@ -54,11 +54,11 @@ class ScheduleTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/schedule_module/");
         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector(".btn > div")
+            WebDriverBy::cssSelector(".btn > div")
         )->getText();
         $this->assertContains("Schedule Module", $bodyText);
         $this->assertNotContains("An error occurred", $bodyText);
-        
+
     }
     /**
      * Tests that, the homepage should have "Schedule Module"
@@ -71,7 +71,7 @@ class ScheduleTest extends LorisIntegrationTest
         $this->setupPermissions(array("schedule_module"));
         $this->safeGet($this->url . "/schedule_module/");
         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector(".btn > div")
+            WebDriverBy::cssSelector(".btn > div")
         )->getText();
         $this->assertContains("Schedule Module", $bodyText);
         $this->assertNotContains("An error occurred", $bodyText);
@@ -88,7 +88,7 @@ class ScheduleTest extends LorisIntegrationTest
         $this->setupPermissions(array());
         $this->safeGet($this->url . "/schedule_module/");
         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();

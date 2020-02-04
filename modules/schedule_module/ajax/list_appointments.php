@@ -1,6 +1,7 @@
 <?php
 /**
- * This file is used by the Schedule Module to list all appointments, and for filtering (selection, tabs)
+ * This file is used by the Schedule Module to list all appointments,
+ * and for filtering (selection, tabs)
  *
  * PHP Version 5
  *
@@ -43,9 +44,13 @@ if (isset($_GET["VisitLabel"])) {
 
     if (empty($visit)) {
         http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Visit label."
-        ]));
+        die(
+            json_encode(
+                [
+                    "error" => "Invalid Visit label."
+                ]
+            )
+        );
     }
 
     // If filtering for visit label, add boolean
@@ -80,9 +85,13 @@ if (isset($_GET["CenterID"])) {
 
     if (empty($site)) {
         http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Site."
-        ]));
+        die(
+            json_encode(
+                [
+                    "error" => "Invalid Site."
+                ]
+            )
+        );
     }
 
     // If filtering for site, add boolean
@@ -109,9 +118,13 @@ if (isset($_GET["AppointmentTypeID"])) {
 
     if (empty($appt_type)) {
         http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Appointment Type."
-        ]));
+        die(
+            json_encode(
+                [
+                    "error" => "Invalid Appointment Type."
+                ]
+            )
+        );
     }
 
     array_push($conditions, "AppointmentTypeID = :appointmentTypeId");
@@ -140,9 +153,13 @@ if (isset($_GET["StartsAt"])) {
 
     if (!isDateValid($_GET["StartsAt"])) {
         http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Appointment Date and/or Time."
-        ]));
+        die(
+            json_encode(
+                [
+                    "error" => "Invalid Appointment Date and/or Time."
+                ]
+            )
+        );
     }
 
     array_push($conditions, "StartsAt = :startsAt");
@@ -155,9 +172,13 @@ if (isset($_GET["StartDate"])) {
 
     if (!isDateValid($_GET["StartDate"], 'Y-m-d')) {
         http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Appointment Date."
-        ]));
+        die(
+            json_encode(
+                [
+                    "error" => "Invalid Appointment Date."
+                ]
+            )
+        );
     }
 
     array_push($conditions, "StartsAt >= :startsAtMin");
@@ -180,16 +201,23 @@ if (isset($_GET["StartTime"])) {
 
     if (!isDateValid($_GET["StartTime"], 'H:i')) {
         http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Appointment Time."
-        ]));
+        die(
+            json_encode(
+                [
+                    "error" => "Invalid Appointment Time."
+                ]
+            )
+        );
     }
 
     array_push($conditions, "TIME(StartsAt) >= :startsAtTimeMin");
-    array_push($conditions, "(
+    array_push(
+        $conditions,
+        "(
         :startsAtTimeMin = '23:59:00' OR
         TIME(StartsAt) < :startsAtTimeMax
-    )");
+    )"
+    );
 
     $startsAtTimeMin = $_GET["StartTime"] . ":00";
     $startsAtTimeMax = date(
@@ -208,9 +236,13 @@ if (isset($_GET["StartDateMin"])) {
 
     if (!isDateValid($_GET["StartDateMin"], 'Y-m-d')) {
         http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Minimum Start Date."
-        ]));
+        die(
+            json_encode(
+                [
+                    "error" => "Invalid Minimum Start Date."
+                ]
+            )
+        );
     }
 
     array_push($conditions, "StartsAt >= :startsAtMin");
@@ -225,9 +257,13 @@ if (isset($_GET["StartDateMax"])) {
 
     if (!isDateValid($_GET["StartDateMax"], 'Y-m-d')) {
         http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Maximum Start Date."
-        ]));
+        die(
+            json_encode(
+                [
+                    "error" => "Invalid Maximum Start Date."
+                ]
+            )
+        );
     }
 
     array_push($conditions, "StartsAt < :startsAtMax");
@@ -356,7 +392,7 @@ JOIN
 ON
     session.CenterID = psc.CenterID
 ";
-$subQuery = "
+$subQuery     = "
 SELECT
     appointment.AppointmentID,
     appointment.SessionID,
@@ -407,17 +443,19 @@ $itemsFound = $DB->pselectOne(
     $queryValues
 );
 
-echo json_encode([
-    "data" => $appointments,
-    "meta" => [
-        "page" => $page,
-        "itemsPerPage" => $itemsPerPage,
-        "itemsFound" => $itemsFound,
-        "pagesFound" => floor($itemsFound / $itemsPerPage) + (
+echo json_encode(
+    [
+        "data" => $appointments,
+        "meta" => [
+            "page"         => $page,
+            "itemsPerPage" => $itemsPerPage,
+            "itemsFound"   => $itemsFound,
+            "pagesFound"   => floor($itemsFound / $itemsPerPage) + (
             ($itemsFound % $itemsPerPage == 0) ?
                 0 :
                 1
         )
+        ]
     ]
-]);
-?>
+);
+

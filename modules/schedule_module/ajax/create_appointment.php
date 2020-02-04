@@ -25,8 +25,8 @@ $DB = Database::singleton();
 $emptyFields = [];
 
 foreach ([
-    "SessionID" => "Session ID",
-    "StartsAt" => "Appointment Date/Time",
+    "SessionID"         => "Session ID",
+    "StartsAt"          => "Appointment Date/Time",
     "AppointmentTypeID" => "Appointment Type",
 
 ] as $key => $humanReadableKey) {
@@ -40,19 +40,27 @@ foreach ([
 
 if (count($emptyFields) == 1) {
     http_response_code(400);
-    die(json_encode([
-        "error" => "The following field is empty: " . $emptyFields[0]
-    ]));
+    die(
+        json_encode(
+            [
+                "error" => "The following field is empty: " . $emptyFields[0]
+            ]
+        )
+    );
 }
 
 if (count($emptyFields) > 0) {
     http_response_code(400);
-    die(json_encode([
-        "error" => "The following fields are empty: " . implode(
-            $emptyFields,
-            ", "
+    die(
+        json_encode(
+            [
+                "error" => "The following fields are empty: " . implode(
+                    $emptyFields,
+                    ", "
+                )
+            ]
         )
-    ]));
+    );
 }
 
 // Check if session exists
@@ -72,9 +80,13 @@ $session = $DB->pselectRow(
 
 if (empty($session)) {
     http_response_code(400);
-    die(json_encode([
-        "error" => "Session does not exist."
-    ]));
+    die(
+        json_encode(
+            [
+                "error" => "Session does not exist."
+            ]
+        )
+    );
 }
 
 // Check if Appointment Type is valid/exists
@@ -92,17 +104,25 @@ $appointment_type = $DB->pselectRow(
 
 if (empty($appointment_type)) {
     http_response_code(400);
-    die(json_encode([
-        "error" => "Appointment Type does not exist."
-    ]));
+    die(
+        json_encode(
+            [
+                "error" => "Appointment Type does not exist."
+            ]
+        )
+    );
 }
 
 // Checks that Date and Time are valid
 if (!isDateValid($_POST["StartsAt"])) {
     http_response_code(400);
-    die(json_encode([
-        "error" => "Appointment Date and/or Time is invalid."
-    ]));
+    die(
+        json_encode(
+            [
+                "error" => "Appointment Date and/or Time is invalid."
+            ]
+        )
+    );
 }
 
 // Check db for exact same appointment
@@ -120,26 +140,30 @@ $duplicate_check = $DB->pselectRow(
             StartsAt = :startsAt
     ",
     array(
-        "sessionId" => $_POST["SessionID"],
+        "sessionId"         => $_POST["SessionID"],
         "appointmentTypeId" => $_POST["AppointmentTypeID"],
-        "startsAt" => $_POST["StartsAt"],
-        )
+        "startsAt"          => $_POST["StartsAt"],
+    )
 );
 
 if (!empty($duplicate_check)) {
     http_response_code(400);
-    die(json_encode([
-        "error" => "This appointment already exists."
-    ]));
+    die(
+        json_encode(
+            [
+                "error" => "This appointment already exists."
+            ]
+        )
+    );
 }
 
 // Insert appointment information
 $DB->insert(
     "appointment",
     array(
-        "SessionId" => $_POST["SessionID"],
+        "SessionId"         => $_POST["SessionID"],
         "AppointmentTypeId" => $_POST["AppointmentTypeID"],
-        "StartsAt" => $_POST["StartsAt"],     
+        "StartsAt"          => $_POST["StartsAt"],
     )
 );
 // Get the most recent appointment
@@ -182,10 +206,14 @@ $newest_appointment = $DB->pselectRow(
 // This should not ever happen
 if (empty($newest_appointment)) {
     http_response_code(500);
-    die(json_encode([
-        "error" => "Appointment was created but could not be fetched."
-    ]));
+    die(
+        json_encode(
+            [
+                "error" => "Appointment was created but could not be fetched."
+            ]
+        )
+    );
 } else {
     echo json_encode($newest_appointment);
 }
-?>
+

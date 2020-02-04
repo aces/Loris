@@ -31,4 +31,4 @@ $projects = $DB->pselect(
 );
 
 echo json_encode($projects);
-?>
+

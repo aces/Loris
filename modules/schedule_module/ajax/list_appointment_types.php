@@ -31,4 +31,4 @@ $appointment_types = $DB->pselect(
 );
 
 echo json_encode($appointment_types);
-?>
+

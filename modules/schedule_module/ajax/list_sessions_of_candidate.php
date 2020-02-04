@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is used by the Schedule Module to fetch sessions, given DCCID and PSCID 
+ * This file is used by the Schedule Module to fetch sessions, given DCCID and PSCID
  * PHP Version 5
  *
  * @category Schedule
@@ -18,7 +18,8 @@ if (!$user->hasPermission('schedule_module')) {
 
 $DB = Database::singleton();
 
-// Check if candidate is valid/exists (CandID/DCCID and PSCID must belong to same candidate)
+// Check if candidate is valid/exists
+// (CandID/DCCID and PSCID must belong to same candidate)
 $candidate = $DB->pselectRow(
     "
     	SELECT 
@@ -38,9 +39,13 @@ $candidate = $DB->pselectRow(
 
 if (empty($candidate)) {
     http_response_code(400);
-    die(json_encode([
-        "error" => "DCCID and PSCID don't belong to a candidate."
-    ]));
+    die(
+        json_encode(
+            [
+                "error" => "DCCID and PSCID don't belong to a candidate."
+            ]
+        )
+    );
 }
 
 // Check if sessions exist
@@ -66,4 +71,4 @@ $sessions = $DB->pselect(
 
 echo json_encode($sessions);
 
-?>
+

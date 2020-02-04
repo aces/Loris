@@ -22,8 +22,8 @@ $DB = Database::singleton();
 // If CandID/DccID is specified, select the visit labels that the candidate has
 // Otherwise, list all visit labels
 if (isset($_GET["CandID"])) {
-	$visits = $DB->pselect(
-	    "
+    $visits = $DB->pselect(
+        "
 	    	SELECT 
 	    		Visit_label 
 	    	FROM 
@@ -31,21 +31,21 @@ if (isset($_GET["CandID"])) {
 	    	WHERE 
 	    		CandID = :candId
 	    ",
-	    array(
-	        "candId" => $_GET["CandID"],
-	        )
-	);
+        array(
+            "candId" => $_GET["CandID"],
+        )
+    );
 } else {
-	$visits = $DB->pselect(
-	    "
+    $visits = $DB->pselect(
+        "
 	        SELECT 
 	        	Visit_label 
 	        FROM 
 	        	Visit_Windows
 	    ",
-	    array()
-	);
+        array()
+    );
 }
 
 echo json_encode($visits);
-?>
+

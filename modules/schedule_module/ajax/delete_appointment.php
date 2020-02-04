@@ -23,9 +23,9 @@ $DB = Database::singleton();
 $DB->delete(
     "appointment",
     array(
-     "AppointmentID" => $_GET["AppointmentID"],
+        "AppointmentID" => $_GET["AppointmentID"],
     )
 );
 
     http_response_code(204);
-?>
+

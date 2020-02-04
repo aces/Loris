@@ -1,12 +1,48 @@
 <?php
-    /*
-        Implement this interface for each Appointment Type
-    */
-    interface DataEntryExpression {
-        public function getCompleteExpression () : string;
-        public function getInProgressExpression () : string;
-        public function getNotStartedExpression () : string;
-    }
+/**
+ * Data_entry.php
+ *
+ * PHP Version 7
+ *
+ * @category Schedule
+ * @package  Loris
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris
+ */
+/**
+ * Implement this interface for each Appointment Type
+ *
+ * @category Schedule
+ * @package  Loris
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris
+ */
+interface DataEntryExpression
+{
+    /**
+     * Determines in a list a process ids those that are ids of processes currently
+     *  running.
+     *
+     * @return array list of process IDs (in $pids) that refer to running processes.
+     */
+    public function getCompleteExpression() : string;
+    /**
+     * Determines in a list a process ids those that are ids of processes currently
+     *  running.
+     *
+     * @return array list of process IDs (in $pids) that refer to running processes.
+     */
+    public function getInProgressExpression() : string;
+    /**
+     * Determines in a list a process ids those that are ids of processes currently
+     *  running.
+     *
+     * @return array list of process IDs (in $pids) that refer to running processes.
+     */
+    public function getNotStartedExpression() : string;
+}
     /*
         Usage:
 
@@ -24,56 +60,86 @@
         (SomeQuery) AS hasDataEntryInProgress,
         (SomeQuery) AS hasDataEntryNotStarted
     */
-    class DataEntrySelectClause {
-        private $expressions = [];
-        public function register (string $type, DataEntryExpression $expr) : self {
-            $this->expressions[$type] = $expr;
-            return $this;
+/**
+ * DataEntrySelectClause
+ *
+ * @category Schedule
+ * @package  Loris
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris
+ */
+class DataEntrySelectClause
+{
+    private $expressions = [];
+    public function register(string $type, DataEntryExpression $expr) : self
+    {
+        $this->expressions[$type] = $expr;
+        return $this;
+    }
+    private function getColumn(string $columnName, callable $getExpression) : string
+    {
+        $columnName = Database::singleton()->escape($columnName);
+
+        $parts = [];
+
+        $parts[] = "(CASE appointment_type.Name";
+        foreach ($this->expressions as $type=>$expr) {
+            $quotedType = Database::singleton()->quote($type);
+            $expression = $getExpression($expr);
+            $parts[]    = "WHEN {$quotedType} THEN ({$expression})";
         }
-        private function getColumn (string $columnName, callable $getExpression) : string {
-            $columnName = Database::singleton()->escape($columnName);
-
-            $parts = [];
-
-            $parts[] = "(CASE appointment_type.Name";
-            foreach ($this->expressions as $type=>$expr) {
-                $quotedType = Database::singleton()->quote($type);
-                $expression = $getExpression($expr);
-                $parts[] = "WHEN {$quotedType} THEN ({$expression})";
+        $parts[] = "ELSE FALSE";
+        $parts[] = "END) AS {$columnName}";
+        return implode("\n", $parts);
+    }
+    public function getCompleteColumn()
+    {
+        return $this->getColumn(
+            "hasDataEntryComplete",
+            function (DataEntryExpression $expr) : string {
+                    return $expr->getCompleteExpression();
             }
-            $parts[] = "ELSE FALSE";
-            $parts[] = "END) AS {$columnName}";
-            return implode("\n", $parts);
-        }
-        public function getCompleteColumn () {
-            return $this->getColumn("hasDataEntryComplete", function (DataEntryExpression $expr) : string {
-                return $expr->getCompleteExpression();
-            });
-        }
-        public function getInProgressColumn () {
-            return $this->getColumn("hasDataEntryInProgress", function (DataEntryExpression $expr) : string {
-                return $expr->getInProgressExpression();
-            });
-        }
-        public function getNotStartedColumn () {
-            return $this->getColumn("hasDataEntryNotStarted", function (DataEntryExpression $expr) : string {
-                return $expr->getNotStartedExpression();
-            });
-        }
-        public function getColumns () : string {
-            return implode(",\n", [
+        );
+    }
+    public function getInProgressColumn()
+    {
+        return $this->getColumn(
+            "hasDataEntryInProgress",
+            function (DataEntryExpression $expr) : string {
+                    return $expr->getInProgressExpression();
+            }
+        );
+    }
+    public function getNotStartedColumn()
+    {
+        return $this->getColumn(
+            "hasDataEntryNotStarted",
+            function (DataEntryExpression $expr) : string {
+                    return $expr->getNotStartedExpression();
+            }
+        );
+    }
+    public function getColumns() : string
+    {
+        return implode(
+            ",\n",
+            [
                 $this->getCompleteColumn(),
                 $this->getInProgressColumn(),
                 $this->getNotStartedColumn()
-            ]);
-        }
+            ]
+        );
     }
+}
     /*
         For Behavioral, all instruments except MRI are checked.
     */
-    class BehavioralDataEntryExpression implements DataEntryExpression {
-        public function getCompleteExpression () : string {
-            return "
+class BehavioralDataEntryExpression implements DataEntryExpression
+{
+    public function getCompleteExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -96,9 +162,10 @@
                         )
                 )
             ";
-        }
-        public function getInProgressExpression () : string {
-            return "
+    }
+    public function getInProgressExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -121,9 +188,10 @@
                         )
                 )
             ";
-        }
-        public function getNotStartedExpression () : string {
-            return "
+    }
+    public function getNotStartedExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -143,8 +211,8 @@
                         flag.Data_entry IS NULL
                 )
             ";
-        }
     }
+}
     /*
         For MRI,
 
@@ -158,9 +226,11 @@
         For now, requires at least one imaging browser upload.
         We don't know the exact requirement for now.
     */
-    class MriDataEntryExpression implements DataEntryExpression {
-        public function getCompleteExpression () : string {
-            return "
+class MriDataEntryExpression implements DataEntryExpression
+{
+    public function getCompleteExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -187,9 +257,10 @@
             			files.FileType = 'mnc'
                 )
             ";
-        }
-        public function getInProgressExpression () : string {
-            return "
+    }
+    public function getInProgressExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -207,9 +278,10 @@
                         )
                 )
             ";
-        }
-        public function getNotStartedExpression () : string {
-            return "
+    }
+    public function getNotStartedExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -233,8 +305,8 @@
                         files.FileType = 'mnc'
                 )
             ";
-        }
     }
+}
 
     /*
         //TODO Figure out what the appointment type is really called
@@ -244,9 +316,11 @@
         Only the DNA Paramter Form (Test_name : DNA_parameter_form)
         must be complete.
     */
-    class BloodCollectionDataEntryExpression implements DataEntryExpression {
-        public function getCompleteExpression () : string {
-            return "
+class BloodCollectionDataEntryExpression implements DataEntryExpression
+{
+    public function getCompleteExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -261,9 +335,10 @@
                         )
                 )
             ";
-        }
-        public function getInProgressExpression () : string {
-            return "
+    }
+    public function getInProgressExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -278,9 +353,10 @@
                         )
                 )
             ";
-        }
-        public function getNotStartedExpression () : string {
-            return "
+    }
+    public function getNotStartedExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -292,8 +368,8 @@
                         flag.Data_entry IS NULL
                 )
             ";
-        }
     }
+}
 
     $dataEntryColumns = (new DataEntrySelectClause())
         ->register("Behavioral", new BehavioralDataEntryExpression())
@@ -321,4 +397,4 @@
         END
     )
     ";
-?>
+
