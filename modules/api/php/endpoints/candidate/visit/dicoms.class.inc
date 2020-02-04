@@ -186,19 +186,25 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 'There should be 1 and only 1 file uploaded per POST request.'
             );
         }
+        if (!isset($files['mriFile'])){
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'The input key for the uploaded file should be mriFile.'
+            );
+        }
         $uploadedfile = $files['mriFile'];
 
         $data = $request->getParsedBody();
 
-        $candid = $data['CandID'] ?? null;
-        if (intval($candid) !== $this->_visit->getCandID()) {
+        $inputcandid = $data['CandID'] ?? '';
+        $visitcandid = $this->_visit->getCandID();
+        if ($inputcandid != (string) $visitcandid) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'CandID in POST data do not match URL.'
             );
         }
 
-        $pscid = $data['PSCID'] ?? null;
-        if (!\Candidate::candidateExists(intval($candid), $pscid)) {
+        $pscid = $data['PSCID'] ?? '';
+        if (!\Candidate::candidateExists($visitcandid, $pscid)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'PSCID and CandID in POST data do not refer to the same candidate.'
             );
