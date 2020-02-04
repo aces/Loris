@@ -44,7 +44,7 @@ class Settings
      * @param NDB_Config $_config config object
      * @param string     $baseurl The base URL of LORIS
      */
-    public function __construct(NDB_Config $_config, string $baseURL)
+    public function __construct(NDB_Config $_config, string $baseURL='')
     {
         $this->_config = $_config;
         $this->baseURL = $baseURL;
