@@ -33,7 +33,9 @@ abstract class IdentifierGenerator
     protected $length;
     protected $minValue;
     protected $maxValue;
-    protected $siteAlias = '';
+    protected $prefix;
+    protected $siteAlias    = '';
+    protected $projectAlias = '';
 
     /**
      * Generates a new unused identifier to represent a Candidate in LORIS.
@@ -65,7 +67,21 @@ abstract class IdentifierGenerator
             break;
         }
 
-        // Return padded value with appropriate prefix
+        if (!empty($this->siteAlias) && !empty($this->projectAlias)) {
+            throw new \InvalidArgumentException(
+                'Only one of siteAlias or projectAlias should have a value'
+            );
+        }
+        if (empty($this->siteAlias) && empty($this->projectAlias)) {
+            throw new \InvalidArgumentException(
+                'Either siteAlias or projectAlias must not be empty'
+            );
+        }
+        // Assign class property 'prefix' to whichever alias is not empty.
+        !empty($this->siteAlias) ?
+            $this->prefix   = $this->siteAlias
+            : $this->prefix = $this->projectAlias;
+
         return $this->prefix . $id;
     }
 

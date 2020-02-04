@@ -33,9 +33,16 @@ class BVL_Feedback_Panel
     /**
      * The feedback thread that this panel is for
      *
-     * @var NDB_BVL_Feedback
+     * @protected NDB_BVL_Feedback
      */
-    var $_feedbackThread;
+    protected $feedbackThread;
+
+    /**
+     * An array containing data that will be passed to the Smarty template.
+     *
+     * @public array
+     */
+    public $tpl_data;
 
     /**
      * Creates the feedback thread for the given combination of candID,
@@ -51,7 +58,7 @@ class BVL_Feedback_Panel
         ?string $commentID=null
     ) {
 
-        $this->_feedbackThread
+        $this->feedbackThread
             = \NDB_BVL_Feedback::singleton(
                 \User::singleton()->getUsername(),
                 $candID,
@@ -70,7 +77,7 @@ class BVL_Feedback_Panel
      */
     function display(): string
     {
-        $feedbackProfile = $this->_feedbackThread->_feedbackCandidateProfileInfo;
+        $feedbackProfile = $this->feedbackThread->_feedbackCandidateProfileInfo;
         $candidateID     = new CandID($feedbackProfile["CandID"]);
 
         $this->tpl_data['candID'] = (string) $candidateID;
@@ -80,16 +87,16 @@ class BVL_Feedback_Panel
 
         $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;
 
-        $feedbackObject = $this->_feedbackThread->_feedbackObjectInfo;
+        $feedbackObject = $this->feedbackThread->_feedbackObjectInfo;
         $this->tpl_data['commentID'] = $feedbackObject["CommentID"] ?? null;
 
-        $this->tpl_data['thread_list']    = $this->_feedbackThread->getThreadList();
-        $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
+        $this->tpl_data['thread_list']    = $this->feedbackThread->getThreadList();
+        $this->tpl_data['feedback_level'] = $this->feedbackThread->_feedbackLevel;
         $this->tpl_data['feedback_types']
             = NDB_BVL_Feedback::getFeedbackTypes();
         $this->tpl_data['feedbacktypes']  = NDB_BVL_Feedback::getFeedbackTypes();
 
-        $summary = $this->_feedbackThread->getSummaryOfThreads();
+        $summary = $this->feedbackThread->getSummaryOfThreads();
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
 
         $field_names = Utility::getSourcefields($_REQUEST['test_name'] ?? '');
@@ -101,7 +108,7 @@ class BVL_Feedback_Panel
 
         $this->tpl_data['FieldNames'] = json_encode($fields);
 
-        $smarty = new Smarty_neurodb("bvl_feedback_panel");
+        $smarty = new Smarty_NeuroDB("bvl_feedback_panel");
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("bvl_feedback_panel.tpl");
         return $html;

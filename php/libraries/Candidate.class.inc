@@ -157,7 +157,7 @@ class Candidate
                 trim($_REQUEST['PSCID'])
             ) != strtolower($this->getPSCID())
             ) {
-                throw new LorisException("IDs do not match");
+                throw new \LorisException("IDs do not match");
             }
         }
 

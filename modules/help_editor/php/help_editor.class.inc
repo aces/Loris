@@ -56,7 +56,7 @@ class Help_Editor extends \NDB_Menu_Filter
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisioner());

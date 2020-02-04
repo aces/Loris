@@ -76,7 +76,6 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
         '',
         '',
         '',
-        ''
     );
     $vFiles         = $data_release->getVersionedFiles($DB);
     $prePermissions = $data_release->getUserVersionPermissions($vFiles, $DB);
