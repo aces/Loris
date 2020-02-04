@@ -94,7 +94,7 @@ class Email
         }
 
         // populate the template
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         $smarty->assign($tpl_data);
         $message = $smarty->fetch('email/' . $template);
 

@@ -192,7 +192,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      *
      * @return string JSON
      */
-    function toJSON()
+    function toJSON(): string
     {
         $config = \NDB_Config::singleton();
 

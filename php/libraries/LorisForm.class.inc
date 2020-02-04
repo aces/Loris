@@ -49,6 +49,8 @@ class LorisForm
         'email',
         'maxlength',
     );
+    public $validOperators;
+    public $encrypt;
 
     /**
      * Creates and returns an element that can be added
@@ -1033,7 +1035,7 @@ class LorisForm
     function timeHTML($el, $type='time')
     {
         $timeStamp = $this->getValue($el['name']);
-        $smarty    = new Smarty_neurodb;
+        $smarty    = new Smarty_NeuroDB;
         $value     = array(
             'H' => null,
             'i' => null,
@@ -1077,7 +1079,7 @@ class LorisForm
     function yearHTML($el)
     {
         $year   = $this->getValue($el['name']);
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         $value  = explode('-', $year)[0];
 
         $smarty->assign('name', $el['name']);
@@ -1729,7 +1731,7 @@ class LorisForm
     function toHTML()
     {
 
-        $smarty    = new Smarty_neurodb;
+        $smarty    = new Smarty_NeuroDB;
         $formArray = $this->toElementArray();
 
         $smarty->assign('form', $formArray);
