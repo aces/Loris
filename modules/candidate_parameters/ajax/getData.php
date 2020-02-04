@@ -48,6 +48,9 @@ case 'participantStatus':
 case 'consentStatus':
     echo json_encode(getConsentStatusFields());
     exit;
+case 'candidateDOB':
+    echo json_encode(getDOBFields());
+    exit;
 default:
     header("HTTP/1.1 404 Not Found");
     exit;
@@ -491,4 +494,28 @@ function getConsentStatusHistory($pscid)
           $formattedHistory[$key] = $consentHistory;
     }
     return $formattedHistory;
+}
+
+/**
+ * Handles the fetching of candidate's date of birth.
+ *
+ * @return array
+ */
+function getDOBFields(): array
+{
+    $candID = new CandID($_GET['candID']);
+    $db     = \Database::singleton();
+    // Get PSCID
+    $candidateData = $db->pselectRow(
+        'SELECT PSCID,DoB FROM candidate where CandID =:candid',
+        array('candid' => $candID->__toString())
+    );
+    $pscid         = $candidateData['PSCID'] ?? null;
+    $dob           = $candidateData['DoB'] ?? null;
+    $result        = [
+        'pscid'  => $pscid,
+        'candID' => $candID->__toString(),
+        'dob'    => $dob,
+    ];
+    return $result;
 }
