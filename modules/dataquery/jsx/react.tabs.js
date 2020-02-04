@@ -550,7 +550,6 @@ class ScatterplotGraph extends Component {
 
   render() {
     let options = this.props.Fields.map((element, key) => {
-        console.log(element);
         return (
           <option value={key}>
             {element}
@@ -727,7 +726,6 @@ class SaveQueryDialog extends Component {
   }
 
   editName(e) {
-    console.log('queryName: ' + e.target.value);
     this.setState({queryName: e.target.value});
   }
 
@@ -739,7 +737,6 @@ class SaveQueryDialog extends Component {
     // Should do validation before doing anything here.. ie query name is entered, doesn't already
     // exist, there are fields selected..
     if (this.props.onSaveClicked) {
-      console.log('1');
       this.props.onSaveClicked(this.state.queryName, this.state.shared);
     }
   }
@@ -977,9 +974,7 @@ class ManageSavedQueriesTabPane extends Component {
   }
 
   savedQuery(name, shared) {
-    console.log('3223');
     if (this.props.onSaveQuery) {
-      console.log('woah');
       this.props.onSaveQuery(name, shared, 'false');
     }
     this.setState({savePrompt: false});
