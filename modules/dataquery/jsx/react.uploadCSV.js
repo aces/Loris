@@ -32,24 +32,19 @@ class ModalUploadCSV extends Component {
   }
 
   updateData(result) {
-    const data = result.data;
-    console.log(data);
-    this.setState({csvData: data});
+    this.setState({csvData: result.data});
   }
 
   handleCandidateType(formElement, value) {
     const state = Object.assign({}, this.state);
     state.csvType = value;
-    console.log(value);
     this.setState(state);
   }
 
   submitCandidateData() {
-    console.log('submitCandidateData called');
     const type = this.state.csvType;
     const data = this.state.csvData;
     if (this.state.csvData.length > 0) {
-      console.log('yay');
       this.props.defineCSVCandidates(type, data);
     }
   }
