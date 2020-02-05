@@ -50,6 +50,7 @@ case 'consentStatus':
     exit;
 case 'candidateDOB':
     echo json_encode(getDOBFields());
+    exit;
 case 'candidateDOD':
     echo json_encode(getDODFields());
     exit;
