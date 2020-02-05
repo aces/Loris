@@ -51,7 +51,7 @@ if (count($emptyFields) == 1) {
 
 if (count($emptyFields) > 0) {
     http_response_code(400);
-    $fields = implode($emptyFields, ",");
+    $fields = implode(",", $emptyFields);
     die(
         json_encode(
             [
