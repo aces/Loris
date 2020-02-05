@@ -397,7 +397,7 @@ class NDB_Factory
         if (self::$_settings !== null) {
             return self::$_settings;
         }
-        self::$_settings = new Settings($this->config($configfile), $this->baseURL);
+        self::$_settings = new Settings($this->config($configfile), $this->_baseURL);
         return self::$_settings;
     }
 
