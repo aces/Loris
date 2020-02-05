@@ -98,7 +98,7 @@ class Create_Timepoint extends \NDB_Form
             $values['visitLabel'] ?? null,
             $site,
             $project,
-            $values['languageID']
+            $values['languageID'] ?? null
         );
 
         $this->tpl_data['success'] = true;
@@ -204,17 +204,19 @@ class Create_Timepoint extends \NDB_Form
                 $this->addRule('visitLabel', 'Visit label is required', 'required');
 
                 $languages = \Utility::getLanguageList();
-                array_unshift($languages, null);
-                $this->addSelect(
-                    'languageID',
-                    'Language',
-                    $languages
-                );
-                $this->addRule(
-                    'languageID',
-                    'Language is required',
-                    'required'
-                );
+                if (count($languages) > 1) {
+                    array_unshift($languages, null);
+                    $this->addSelect(
+                        'languageID',
+                        'Language',
+                        $languages
+                    );
+                    $this->addRule(
+                        'languageID',
+                        'Language is required',
+                        'required'
+                    );
+                }
 
                 // List of sites for the user
                 $user_list_of_sites = $user->getCenterIDs();
@@ -317,7 +319,8 @@ class Create_Timepoint extends \NDB_Form
         }
 
         // validate language
-        if (empty($val['languageID'])) {
+        $languages = \Utility::getLanguageList();
+        if (count($languages) > 1 && empty($val['languageID'])) {
             $errors['languageID'] = "A language must be selected.";
         }
 
