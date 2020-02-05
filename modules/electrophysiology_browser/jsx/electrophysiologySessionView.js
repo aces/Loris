@@ -190,7 +190,12 @@ class ElectrophysiologySessionView extends Component {
     const sessionID = this.props.sessionid;
     const outputTypeArg = '?outputType=' + this.state.url.params['outputType'];
     return fetch(dataURL + sessionID + outputTypeArg, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
+      .then((resp) => {
+        if (!resp.ok) {
+          throw Error(resp.statusText);
+        }
+        return resp.json();
+      })
       .then((data) => this.getState((appState) => {
         appState.setup = {data};
         appState.isLoaded = true;
