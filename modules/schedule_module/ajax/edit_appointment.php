@@ -2,7 +2,7 @@
 /**
  * This file is used by the Schedule Module to edit an already existing appointment
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Schedule
  * @package  Loris
@@ -21,7 +21,7 @@ if (!$user->hasPermission('schedule_module')) {
 }
 
 $_PUT = [];
-parse_str(file_get_contents('php://input', 'r'), $_PUT);
+parse_str(file_get_contents('php://input', true), $_PUT);
 
 $DB = Database::singleton();
 

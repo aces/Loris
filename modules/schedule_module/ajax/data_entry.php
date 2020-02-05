@@ -22,24 +22,21 @@
 interface DataEntryExpression
 {
     /**
-     * Determines in a list a process ids those that are ids of processes currently
-     *  running.
+     * Function getCompleteExpression
      *
-     * @return array list of process IDs (in $pids) that refer to running processes.
+     * @return string Complete Expression 
      */
     public function getCompleteExpression() : string;
     /**
-     * Determines in a list a process ids those that are ids of processes currently
-     *  running.
+     * Function getInProgressExpression
      *
-     * @return array list of process IDs (in $pids) that refer to running processes.
+     * @return string In Progress Expression
      */
     public function getInProgressExpression() : string;
     /**
-     * Determines in a list a process ids those that are ids of processes currently
-     *  running.
+     *Function getNotStartedExpression
      *
-     * @return array list of process IDs (in $pids) that refer to running processes.
+     * @return string Not Started Expression
      */
     public function getNotStartedExpression() : string;
 }

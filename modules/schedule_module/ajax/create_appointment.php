@@ -51,13 +51,11 @@ if (count($emptyFields) == 1) {
 
 if (count($emptyFields) > 0) {
     http_response_code(400);
+    $fields = implode($emptyFields,",");
     die(
         json_encode(
             [
-                "error" => "The following fields are empty: " . implode(
-                    $emptyFields,
-                    ", "
-                )
+                "error" => "The following fields are empty: " . $fields
             ]
         )
     );
