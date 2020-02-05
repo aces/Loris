@@ -571,7 +571,7 @@ class Edit_User extends \NDB_Form
         $baseURL = $factory->settings()->getBaseURL();
         // send the user an email
         if (!empty($send)) {
-            $config = $factory->singleton();
+            $config = $factory->config();
 
             // send the user an email
             $msg_data          = array();
