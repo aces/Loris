@@ -24,7 +24,7 @@ interface DataEntryExpression
     /**
      * Function getCompleteExpression
      *
-     * @return string Complete Expression 
+     * @return string Complete Expression
      */
     public function getCompleteExpression() : string;
     /**
@@ -34,7 +34,7 @@ interface DataEntryExpression
      */
     public function getInProgressExpression() : string;
     /**
-     *Function getNotStartedExpression
+     * Function getNotStartedExpression
      *
      * @return string Not Started Expression
      */
