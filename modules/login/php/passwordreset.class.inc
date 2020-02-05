@@ -75,14 +75,15 @@ class PasswordReset extends \NDB_Form
                     new \Password($password),
                     new \DateTime('1999-01-01')
                 );
-                  // send the user an email
-                  $msg_data          = array();
-                  $msg_data['study'] = $config->getSetting('title');
-                  $msg_data['url']   = $config->getSetting('url');
-                  $msg_data['realname'] = $user->getData('Real_name');
-                  $msg_data['password'] = $password;
-                  \Email::send($email, 'lost_password.tpl', $msg_data);
 
+                // send the user an email
+                $factory = \NDB_Factory::singleton();
+                $msg_data          = array();
+                $msg_data['study'] = $config->getSetting('title');
+                $msg_data['url']   = $factory->settings()->getBaseURL();
+                $msg_data['realname'] = $user->getData('Real_name');
+                $msg_data['password'] = $password;
+                \Email::send($email, 'lost_password.tpl', $msg_data);
             } else {
                 error_log(
                     $_SERVER['REMOTE_ADDR']
