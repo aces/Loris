@@ -55,6 +55,10 @@ case 'consentStatus':
     editConsentStatusFields($db, $user);
     break;
 
+case 'candidateDOB':
+    editCandidateDOB($db, $user);
+    break;
+
 default:
     header("HTTP/1.1 404 Not Found");
     exit;
@@ -523,5 +527,34 @@ function editConsentStatusFields($db, $user)
             }
             $db->insert('candidate_consent_history', $updateHistory);
         }
+    }
+}
+
+/**
+ * Handles the updating of candidate's date of birth.
+ *
+ * @param Database $db   database object
+ * @param User     $user user object
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function editCandidateDOB(\Database $db, \User $user): void
+{
+    $candID       = new CandID($_POST['candID']);
+    $dob          = $_POST['dob'];
+    $strippedDate = null;
+    if (!empty($dob)) {
+        $config    = \NDB_Config::singleton();
+        $dobFormat = $config->getSetting('dobFormat');
+        if ($dobFormat === 'YM') {
+            $strippedDate = date("Y-m", strtotime($dob))."-01";
+        }
+        $db->update(
+            'candidate',
+            array('DoB' => $strippedDate ?? $dob),
+            array('CandID' => $candID->__toString())
+        );
     }
 }

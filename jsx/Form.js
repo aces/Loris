@@ -1424,7 +1424,7 @@ class StaticElement extends Component {
           {this.props.label}
         </label>
         <div className="col-sm-9">
-          <p className="form-control-static">{this.props.text}</p>
+          <p className={this.props.class}>{this.props.text}</p>
         </div>
       </div>
     );
@@ -1442,6 +1442,7 @@ StaticElement.propTypes = {
 StaticElement.defaultProps = {
   label: '',
   text: null,
+  class: 'form-control-static',
 };
 
 /**
