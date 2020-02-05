@@ -517,8 +517,10 @@ function getDOBFields(): array
         'candID' => $candID->__toString(),
         'dob'    => $dob,
     ];
+    return $result;
+}
 
- /**
+/**
  * Handles the fetching of candidate's date of death.
  *
  * @return array
@@ -540,3 +542,4 @@ function getDODFields(): array
     ];
     return $result;
 }
+

@@ -116,7 +116,7 @@ class CandidateDOD extends Component {
         title: 'Invalid date',
         text: 'Date of death cannot be later than today!',
         type: 'error',
-        confrimButtonText: 'OK',
+        confirmButtonText: 'OK',
       });
       return;
     }
@@ -126,7 +126,7 @@ class CandidateDOD extends Component {
         title: 'Invalid date',
         text: 'Date of death must be after date of birth!',
         type: 'error',
-        confrimButtonText: 'OK',
+        confirmButtonText: 'OK',
       });
       return;
     }
@@ -149,29 +149,26 @@ class CandidateDOD extends Component {
       cache: 'no-cache',
       credentials: 'same-origin',
       body: formObject,
-    })
-      .then((resp) => {
-        if (resp.ok && resp.status === 200) {
-            swal({
-              title: 'Success!',
-              text: 'Date of death updated!',
-              type: 'success',
-              confrimButtonText: 'OK',
-            });
-            if (result.value) {
-              this.fetchData();
-            }
-        } else {
-            swal({
-              title: 'Error!',
-              text: 'Something went wrong.',
-              type: 'error',
-              confrimButtonText: 'OK',
-            });
-        }
-      })
-      .catch((error) => {
+    }
+    ).then((resp) => resp.text()
+    ).then((result) => {
+      swal({
+            title: 'Success!',
+            text: 'Date of death updated!',
+            type: 'success',
+            confirmButtonText: 'OK',
+      });
+      if (result.value) {
+        this.fetchData();
+      }
+    }).catch((error) => {
         console.error(error);
+        swal({
+          title: 'Error!',
+          text: 'Something went wrong.',
+          type: 'error',
+          confirmButtonText: 'OK',
+        });
       });
   }
 }
