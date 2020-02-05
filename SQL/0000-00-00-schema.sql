@@ -68,8 +68,7 @@ CREATE TABLE `language` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO language (language_code, language_label) VALUES
-    ('en-CA', 'English'),
-    ('fr-CA', 'French');
+    ('en-CA', 'English');
 
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
