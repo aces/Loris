@@ -78,6 +78,7 @@ class PasswordReset extends \NDB_Form
 
                 // send the user an email
                 $factory = \NDB_Factory::singleton();
+
                 $msg_data          = array();
                 $msg_data['study'] = $config->getSetting('title');
                 $msg_data['url']   = $factory->settings()->getBaseURL();
