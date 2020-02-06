@@ -117,9 +117,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             && in_array($currentStage, array('Visit', 'Screening'))
             && $currentStatus != 'In Progress'
         ) {
-            $config    = \NDB_Config::singleton();
-            $study     = $config->getSetting('study');
-            $sessionID = $this->getData('SessionID');
+            $config = \NDB_Config::singleton();
 
             // Send to DCC - set Submitted to Y
             $this->setData(
