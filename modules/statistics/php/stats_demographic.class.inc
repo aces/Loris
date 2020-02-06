@@ -254,9 +254,9 @@ class Stats_Demographic extends \NDB_Form
             }
         }
 
-        $this->tpl_data['Sites']       = $sites;
-        $this->tpl_data['Projects']    = $projects;
-        $this->tpl_data['Visits']      = $visits;
+        $this->tpl_data['Sites']    = $sites;
+        $this->tpl_data['Projects'] = $projects;
+        $this->tpl_data['Visits']   = $visits;
 
         /**
          * REGISTERED CANDIDATES ROW
