@@ -35,7 +35,6 @@ return [
     "suppress_issue_types" => [
         "PhanTypePossiblyInvalidDimOffset",
         "PhanUndeclaredMethod",
-        "PhanUndeclaredClassMethod",
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",

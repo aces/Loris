@@ -37,7 +37,7 @@ class EditExaminer extends \NDB_Form
     function _hasAccess(\User $user) : bool
     {
         if (empty($_REQUEST['identifier'])) {
-            throw new LorisException(
+            throw new \LorisException(
                 "Incorrect URL: No examiner ID provided."
             );
         }
