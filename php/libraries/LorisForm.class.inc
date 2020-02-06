@@ -59,7 +59,7 @@ class LorisForm
      *
      * @param string $name    The form name of the element being added
      * @param string $label   The label to attach to the GUI in the form
-     * @param array  $attribs An array of extra HTML attributes to be
+     * @param ?array $attribs An array of extra HTML attributes to be
      *                        added to this element.
      *
      * @return array describing the form element

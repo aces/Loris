@@ -479,7 +479,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The field name for this select
      * @param string $label   The label to attach to the element
-     * @param array  $options Extra options to pass to QuickForm
+     * @param ?array $options Extra options to pass to QuickForm
      * @param array  $attr    Extra HTML attributes to add to the element
      *
      * @return array representing select element
@@ -487,7 +487,7 @@ class NDB_Page implements RequestHandlerInterface
     function createSelect(
         $field,
         $label,
-        $options=null,
+        ?array $options=null,
         $attr=array('class' => 'form-control input-sm')
     ) {
         return $this->form->createElement("select", $field, $label, $options, $attr);
