@@ -49,7 +49,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
 # Sudo privileges can be revoked once the install is completed.
 sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
 # Add apache to the lorisadmin group
-sudo groupadd -a -G lorisadmin www-data
+sudo usermod -a -G lorisadmin www-data
 # Set the password for the lorisadmin account
 sudo passwd lorisadmin
 sudo mkdir -m 755 -p /var/www/$projectname
