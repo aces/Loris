@@ -232,6 +232,8 @@ function getUploadFields()
     $languageList    = Utility::getLanguageList();
     $startYear       = $config->getSetting('startYear');
     $endYear         = $config->getSetting('endYear');
+    $visit = '';
+    $pscid = '';
 
     // Build array of session data to be used in upload media dropdowns
     $sessionData = array();
@@ -252,7 +254,7 @@ function getUploadFields()
 
         // Populate instruments
         $visit = $record["Visit_label"];
-        $pscid =$record["PSCID"];
+        $pscid = $record["PSCID"];
 
         if (!isset($sessionData[$pscid]['instruments'][$visit])) {
             $sessionData[$pscid]['instruments'][$visit] = [];

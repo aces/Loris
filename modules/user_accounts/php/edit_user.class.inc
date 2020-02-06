@@ -52,10 +52,6 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if (!$this->isCreatingNewUser()) {
-            $user = \User::factory($this->identifier);
-        }
-
         if ($editor->hasPermission('user_accounts')) {
             if ($editor->hasPermission('user_accounts_multisite')) {
                 return true;
@@ -64,6 +60,7 @@ class Edit_User extends \NDB_Form
             if ($this->isCreatingNewUser()) {
                 return true;
             }
+            $user = \User::factory($this->identifier);
             return array_intersect(
                 $user->getData('CenterIDs'),
                 $editor->getData('CenterIDs')

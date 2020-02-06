@@ -492,6 +492,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         ////////////////////Insert values into mri_upload//////////////////////
         ///////////////////////////////////////////////////////////////////////
         $date = date('Y-m-d H:i:s');
+
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -534,13 +535,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if ($this->uploaded_file_path) {
             $this->removeTempDir();
         } else {
-                $this->uploaded_file_path = $this->getTempPath();
+            $this->uploaded_file_path = $this->getTempPath();
         }
         $values = array(
             'UploadedBy'               => $user_name,
             'UploadDate'               => $date,
             'UploadLocation'           => $this->uploaded_file_path,
-            'SessionID'                => $sessionid,
+            'SessionID'                => $sessionid ?? '',
             'PatientName'              => $pname,
             'IsPhantom'                => $IsPhantom,
             'TarchiveID'               => null,

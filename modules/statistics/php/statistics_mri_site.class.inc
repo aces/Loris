@@ -107,6 +107,7 @@ class Statistics_Mri_Site extends Statistics_Site
                 $counter++;
             }
         }
+        $query = '';
         switch ($issue) {
         case 'Tarchive_Missing':
             $query = "SELECT DISTINCT f.CommentID as CommentID, 
@@ -178,7 +179,7 @@ class Statistics_Mri_Site extends Statistics_Site
 
         }
         if ($query) {
-                      $result = $DB->pselect($query, $this->query_vars);
+            $result = $DB->pselect($query, $this->query_vars);
         }
         return $result ?? [];
     }
