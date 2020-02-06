@@ -68,13 +68,12 @@ default:
  * Handles the updating of Candidate Info
  *
  * @param Database $db   database object
- * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editCandInfoFields($db, $user)
+function editCandInfoFields($db)
 {
 
     $candID = $_POST['candID'];
@@ -152,7 +151,7 @@ function editCandInfoFields($db, $user)
  *
  * @return void
  */
-function editProbandInfoFields($db, $user)
+function editProbandInfoFields($db)
 {
     //Sanitizing the post data
     $sanitize = array_map('htmlentities', $_POST);
@@ -218,7 +217,7 @@ function editProbandInfoFields($db, $user)
  *
  * @return void
  */
-function editFamilyInfoFields($db, $user)
+function editFamilyInfoFields($db)
 {
     $candID = $_POST['candID'];
 
@@ -313,7 +312,7 @@ function editFamilyInfoFields($db, $user)
  *
  * @return void
  */
-function deleteFamilyMember($db, $user)
+function deleteFamilyMember($db)
 {
     $candID         = $_POST['candID'];
     $familyMemberID = $_POST['familyDCCID'];
@@ -338,13 +337,12 @@ function deleteFamilyMember($db, $user)
  * Handles the updating of Participant Status
  *
  * @param Database $db   database object
- * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editParticipantStatusFields($db, $user)
+function editParticipantStatusFields($db)
 {
     $candID = $_POST['candID'];
 
@@ -392,13 +390,12 @@ function editParticipantStatusFields($db, $user)
  * Handles the updating of Consent Status
  *
  * @param Database $db   database object
- * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editConsentStatusFields($db, $user)
+function editConsentStatusFields($db)
 {
     // Get CandID
     $candIDParam = $_POST['candID'];
@@ -534,13 +531,12 @@ function editConsentStatusFields($db, $user)
  * Handles the updating of candidate's date of birth.
  *
  * @param Database $db   database object
- * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editCandidateDOB(\Database $db, \User $user): void
+function editCandidateDOB(\Database $db): void
 {
     $candID       = new CandID($_POST['candID']);
     $dob          = $_POST['dob'];
