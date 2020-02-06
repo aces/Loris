@@ -14,7 +14,7 @@ LORIS.
 ## Scope
 
 The module only displays and configures modules that are already
-installed (populated in the module table.)
+installed (populated in the module table).
 
 NOT in scope:
 
@@ -30,7 +30,7 @@ allows the user to modify the state of installed modules.
 
 The module manager gets a list of modules from the `modules`
 database table. This table must first be populated (usually by
-using the `tools/manage_modules.php` script)
+using the `tools/manage_modules.php` script).
 
 ## Interactions with LORIS
 
