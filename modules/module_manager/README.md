@@ -18,7 +18,7 @@ installed (populated in the module table.)
 
 NOT in scope:
 
-The module manager does not install new modules
+The module manager does not install new modules.
 
 ## Permissions
 
