@@ -172,6 +172,7 @@ class TestEndpoint implements RequestHandlerInterface
             );
         }
 
+        $test->row['id']     = null;
         $test->row['active'] = 'Y';
         $testArray           = $test->toSQL();
 
@@ -197,20 +198,29 @@ class TestEndpoint implements RequestHandlerInterface
     private function _isDuplicate(Test $test) : bool
     {
         // Build SQL query based on values entered by user
-        $query = "SELECT Test_name as testName,
-                         AgeMinDays as ageMinDays,
-                         AgeMaxDays as ageMaxDays,
-                         Stage as stage,
-                         SubprojectID as subproject,
-                         Visit_label as visitLabel,
-                         CenterID as centerId,
+        $query = "SELECT Test_name,
+                         AgeMinDays,
+                         AgeMaxDays,
+                         Stage,
+                         SubprojectID,
+                         Visit_label,
+                         CenterID,
                          firstVisit
                   FROM test_battery";
         // Select duplicate entry from Test Battery
         $entries = $this->db->pselect($query, array());
 
+        $testArray = $test->toSQL();
         foreach ($entries as $entry) {
-            if ($test->row === $entry) {
+            if ($testArray['Test_name'] == $entry['Test_name'] &&
+                $testArray['AgeMinDays'] == $entry['AgeMinDays'] &&
+                $testArray['AgeMaxDays'] == $entry['AgeMaxDays'] &&
+                $testArray['Stage'] == $entry['Stage'] &&
+                $testArray['SubprojectID'] == $entry['SubprojectID'] &&
+                $testArray['Visit_label'] == $entry['Visit_label'] &&
+                $testArray['CenterID'] == $entry['CenterID'] &&
+                $testArray['firstVisit'] == $entry['firstVisit']
+               ) {
                 return true;
             }
         }

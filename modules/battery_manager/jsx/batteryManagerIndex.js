@@ -101,10 +101,12 @@ class BatteryManagerIndex extends Component {
       .then((response) => response.text()
       .then((body) => {
         body = JSON.parse(body);
-        const status = response.ok ? 'success' : 'error';
-        const message = response.ok ? body.message : body.error;
-        swal.fire(message, '', status);
-        response.ok ? resolve() : reject();
+        if (response.ok) {
+          resolve(body.message);
+        } else {
+          swal.fire(body.error, '', 'error');
+          reject(body.error);
+        }
       })
       .catch(() => reject()));
     });
@@ -155,12 +157,14 @@ class BatteryManagerIndex extends Component {
         if (row.Active === 'Y') {
           // Pass ID of row to deactivate function
           result = <td><CTA label='Deactivate' onUserInput={() => {
-            this.deactivateTest(testId);
+            this.deactivateTest(testId)
+            .then((message) => swal.fire(message, '', 'success'));
           }}/></td>;
         } else if (row.Active === 'N') {
           // Pass ID of row to activate function
           result = <td><CTA label='Activate' onUserInput={() => {
-            this.activateTest(testId);
+            this.activateTest(testId)
+            .then((message) => swal.fire(message, '', 'success'));
           }}/></td>;
         }
         break;
@@ -251,7 +255,7 @@ class BatteryManagerIndex extends Component {
       const test = this.state.tests.find((test) => test.id === testId);
       test.active = 'Y';
       this.updateTest(test)
-      .then(() => resolve())
+      .then((message) => resolve(message))
       .then(() => reject());
     });
   }
@@ -269,7 +273,7 @@ class BatteryManagerIndex extends Component {
       const test = this.state.tests.find((test) => test.id === testId);
       test.active = 'N';
       this.updateTest(test)
-      .then(() => resolve())
+      .then((message) => resolve(message))
       .catch(() => reject());
     });
   }
@@ -284,12 +288,12 @@ class BatteryManagerIndex extends Component {
   updateTest(test) {
     return new Promise((resolve, reject) => {
       this.postData(this.props.testEndpoint+test.id, test, 'PATCH')
-      .then(() => {
+      .then((message) => {
         const index = this.state.tests
           .findIndex((element) => element.id === test.id);
         const tests = this.state.tests;
         tests[index] = test;
-        this.setState({tests}, resolve());
+        this.setState({tests}, resolve(message));
       })
       .catch(() => reject());
     });
@@ -304,8 +308,9 @@ class BatteryManagerIndex extends Component {
     return new Promise((resolve, reject) => {
       const test = this.state.test;
       this.checkDuplicate(test)
-      .then(() => this.validateTest(test))
-      .then(() => this.postData(this.props.testEndpoint, test, 'POST'))
+      .then((test) => this.validateTest(test))
+      .then((test) => this.postData(this.props.testEndpoint, test, 'POST'))
+      .then((message) => swal.fire(message, '', 'success'))
       .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
       .then(() => test.id && this.deactivateTest(test.id))
       .then(() => this.closeForm())
@@ -324,16 +329,22 @@ class BatteryManagerIndex extends Component {
   checkDuplicate(test) {
     return new Promise((resolve, reject) => {
       let duplicate;
+      console.log(test);
+      Object.keys(test).forEach((key) => {
+        if (test[key] == '') {
+          test[key] = null;
+        }
+      });
       this.state.tests.forEach((testCheck) => {
         if (
-          test.testName === testCheck.testName &&
-          test.ageMinDays === testCheck.ageMinDays &&
-          test.ageMaxDays === testCheck.ageMaxDays &&
-          test.stage === testCheck.stage &&
-          test.subproject === testCheck.subproject &&
-          test.visitLabel === testCheck.visitLabel &&
-          test.centerId === testCheck.centerId &&
-          test.firstVisit === testCheck.firstVisit
+          test.testName == testCheck.testName &&
+          test.ageMinDays == testCheck.ageMinDays &&
+          test.ageMaxDays == testCheck.ageMaxDays &&
+          test.stage == testCheck.stage &&
+          test.subproject == testCheck.subproject &&
+          test.visitLabel == testCheck.visitLabel &&
+          test.centerId == testCheck.centerId &&
+          test.firstVisit == testCheck.firstVisit
         ) {
           duplicate = testCheck;
         }
@@ -349,9 +360,11 @@ class BatteryManagerIndex extends Component {
             showCancelButton: true,
           }).then((result) => {
             if (result.value) {
-              this.activateTest(duplicate.id);
+              this.activateTest(duplicate.id)
+              .then((message) => swal.fire(message, '', 'success'));
               if (test.id && (test.id !== duplicate.id)) {
-                this.deactivateTest(test.id);
+                this.deactivateTest(test.id)
+                .then((message) => swal.fire(message, '', 'success'));
               }
               this.closeForm();
             }
@@ -363,14 +376,13 @@ class BatteryManagerIndex extends Component {
         }
         reject();
       } else {
-        resolve();
+        resolve(test);
       }
     });
   }
 
   validateTest(test) {
     return new Promise((resolve, reject) => {
-      console.log('validate');
       const errors = {};
       if (test.testName == null) {
         errors.testName = 'This field is required';
@@ -385,12 +397,9 @@ class BatteryManagerIndex extends Component {
         errors.stage = 'This field is required';
       }
 
-      console.log(errors);
       if (Object.entries(errors).length === 0) {
-        console.log('resolve');
-        resolve();
+        this.setState({errors}, resolve(test));
       } else {
-        console.log('reject');
         this.setState({errors}, reject());
       }
     });
@@ -428,11 +437,11 @@ class BatteryManagerIndex extends Component {
         }},
       {label: 'Minimum Age', show: true, filter: {
           name: 'minimumAge',
-          type: 'text',
+          type: 'numeric',
         }},
       {label: 'Maximum Age', show: true, filter: {
           name: 'maximumAge',
-          type: 'text',
+          type: 'numeric',
         }},
       {label: 'Stage', show: true, filter: {
           name: 'stage',
