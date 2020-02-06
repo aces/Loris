@@ -3,7 +3,7 @@
 In order for users to upload large files (> 2 MB), you'll need to configure
 Apache's `php.ini` configuration file. 
 
-Recommended sample values appropriate for compressed scans not exceeding 500M in size are: 
+Recommended sample values appropriate for compressed scans not exceeding 500MB in size are: 
 
 ```
 session.gc_maxlifetime = 10800  // After this number of seconds, stored data will be seen as 'garbage' and cleaned up by the garbage collection process.
