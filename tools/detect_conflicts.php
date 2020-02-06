@@ -111,7 +111,7 @@ print_r($opts);
 if (($change && $change_all)
     || ($delete_ignored_conflicts && ($change || $change_all))
 ) {
-    $die(
+    die(
         "Choose either Change (-c) or remove and re-insert all conflicts " .
         "(-m) or remove ignored conflicts (-r)"
     );
@@ -125,10 +125,10 @@ $db_config      = $config->getSetting('database');
 $paths          = $config->getSetting('paths');
 $dataDir        = $paths['base'] . $config->getSetting('log');
 $diff           = null;
-$new_conflicts  = array();
-$detected_conflicts       = array();
-$current_conflicts        = array();
-$conflicts_to_be_excluded = array();
+$new_conflicts  = [];
+$detected_conflicts       = [];
+$current_conflicts        = [];
+$conflicts_to_be_excluded = [];
 
 if ($delete_ignored_conflicts) {
     if ($instrument_ignored[0] == "all") {
@@ -157,10 +157,10 @@ if ($delete_ignored_conflicts) {
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name FROM test_names",
-            array()
+            []
         );
 
-        $instruments = array();
+        $instruments = [];
 
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name'])) {
@@ -168,7 +168,7 @@ if ($delete_ignored_conflicts) {
             }
         }
     } else {
-        $instruments = array($instrument => $instrument);
+        $instruments = [$instrument => $instrument];
     }
 
     foreach ($instruments as $instrument) {
@@ -299,7 +299,7 @@ if ($delete_ignored_conflicts) {
 function getCommentIDs($test_name, $visit_label = null, $candid = null)
 {
     $db     =& Database::singleton();
-    $params = array();
+    $params = [];
     $query  = "SELECT CommentID, s.visit_label,Test_name,
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
         JOIN session s ON (s.ID=f.SessionID)
@@ -333,7 +333,7 @@ function getCommentIDs($test_name, $visit_label = null, $candid = null)
 function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
 {
     $db     =& Database::singleton();
-    $params = array();
+    $params = [];
     $query  = "SELECT cu.* FROM conflicts_unresolved cu
         JOIN flag f on (f.commentid = cu.commentid1)
         JOIN session s on (s.id = f.sessionid)
@@ -368,7 +368,7 @@ function getCurrentUnresolvedConflicts($test_name, $visit_label = null): array
  */
 function detectConflicts($test_name, $commentids, $current_conflicts)
 {
-    $detected_conflicts = array();
+    $detected_conflicts = [];
     /**
      * Go through each commentid
      */
@@ -464,7 +464,7 @@ function getInfoUsingCommentID($commentid)
         JOIN session s on (f.sessionid=s.ID)
         JOIN candidate c on (c.CandID=s.CandID)
         WHERE f.CommentID = :cid",
-        array('cid' => $commentid)
+        ['cid' => $commentid]
     );
     return $data;
 }
@@ -483,7 +483,7 @@ function getInfoUsingCommentID($commentid)
  */
 function detectConflictsTobeExcluded($instrument, $commentids, $current_conflicts)
 {
-    $conflicts_to_excluded = array();
+    $conflicts_to_excluded = [];
     $instance1      =& NDB_BVL_Instrument::factory(
         $instrument,
         $commentids[0]['CommentID'],
@@ -511,7 +511,7 @@ function detectConflictsTobeExcluded($instrument, $commentids, $current_conflict
  */
 function getNewConflicts($current_conflicts, $detected_conflicts)
 {
-    $new_conflicts = array();
+    $new_conflicts = [];
 
     /**
      * 1) Make sure that the $detected_conflicts is not empty
@@ -580,7 +580,7 @@ function findConflict($conflict, $conflicts)
  */
 function detectIgnoreColumns($instruments, $confirm)
 {
-    $instrumentFields = array();
+    $instrumentFields = [];
 
     foreach ($instruments as $instrument) {
         $file = "../project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
@@ -598,7 +598,7 @@ function detectIgnoreColumns($instruments, $confirm)
                 foreach ($DDEIgnoreFields as $key => $DDEField) {
                     $instrumentFields = array_merge(
                         $instrumentFields,
-                        array($DDEField => $instrument)
+                        [$DDEField => $instrument]
                     );
                 }
             } else {
@@ -630,14 +630,14 @@ function ignoreColumn($instrument, $instrumentFields, $confirm)
         $query        = "SELECT TableName, FieldName, Value1, Value2 
             FROM conflicts_unresolved 
             WHERE TableName = '$instrument' AND FieldName = '$field'";
-        $ignoreColumn = $db->pselectOne($query, array());
+        $ignoreColumn = $db->pselectOne($query, []);
 
         if (!empty($ignoreColumn)) {
             $query = "SELECT 
                 TableName, FieldName, CommentId1, Value1, CommentId2, Value2 
                 FROM conflicts_unresolved 
                 WHERE TableName = '$instrument' AND FieldName = '$field'";
-            $conflictsToRemove = $db->pselect($query, array());
+            $conflictsToRemove = $db->pselect($query, []);
             print_r($conflictsToRemove);
 
             if ($confirm) {
