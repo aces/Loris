@@ -46,7 +46,6 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
 
 ```bash
 # Create lorisadmin user and group
-sudo groupadd lorisadmin
 # Give lorisadmin `sudo` permission. This is required for the install process
 # in order to automatically generate Apache configuration files.
 # Sudo privileges can be revoked once the install is completed.
