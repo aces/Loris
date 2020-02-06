@@ -43,22 +43,10 @@ The following Ubuntu packages are required and should be installed using
 * php7.3-xml
 * php7.3-mbstring
 * php7.3-gd
+* php7.3-zip
 * libapache2-mod-php7.3
 
 ## Getting the source code
-
-### LORIS for Development
-If installing LORIS for development purposes, clone the source code from our
-GitHub repository to the web root. Then change to this directory.
-
-Example command assuming LORIS will be served from `/var/www/`:
-
-```bash
-git clone git@github.com:aces/Loris.git /var/www/loris
-cd /var/www/loris/
-```
-
-### LORIS for Production
 
 Visit the [releases](github.com/aces/loris/releases) page and download the zipped file of the latest LORIS
 release. The below command will download the latest LORIS release and save 
@@ -100,17 +88,6 @@ mv ./loris /var/www/; cd /var/www/loris
 ```bash
 cd `/var/www/loris/`; make
 ```
-
-### If installing LORIS for development
-
-```bash
-# This is necessary for 'phan', a static analysis tool
-sudo pecl install ast-1.0.3
-cd `/var/www/loris/`; make dev
-```
-
-The `dev` target for `make` will install additional libraries that are needed 
-for development process but not for production installs.
 
 ## Running the install script
 
@@ -155,11 +132,3 @@ Your LORIS instance should now be accessible by pointing your browser URL to `ht
 
 
 Now that the installation is complete, follow the [Setup process](https://github.com/aces/Loris/wiki/Setup) to customize your project.
-
-### Development
-
-We provide test data that can be used by developers to populate LORIS with useable data for testing
-purposes.
-
-Instructions on installing this test data can be found in the LORIS root folder 
-at `raisinbread/README.md`
