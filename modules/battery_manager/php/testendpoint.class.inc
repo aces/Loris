@@ -132,7 +132,7 @@ class TestEndpoint implements RequestHandlerInterface
                 array('ID' => $testArray['ID'])
             );
             return new \LORIS\Http\Response\JSON\OK(
-                ['message'=>'Availability Updated Successfully']
+                ['message'=>'Status Updated Successfully']
             );
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
@@ -204,8 +204,7 @@ class TestEndpoint implements RequestHandlerInterface
                          SubprojectID as subproject,
                          Visit_label as visitLabel,
                          CenterID as centerId,
-                         firstVisit,
-                         instr_order as instrumentOrder
+                         firstVisit
                   FROM test_battery";
         // Select duplicate entry from Test Battery
         $entries = $this->db->pselect($query, array());

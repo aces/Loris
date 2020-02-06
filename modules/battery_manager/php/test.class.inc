@@ -69,6 +69,7 @@ class Test implements \LORIS\Data\DataInstance
     public function toSQL() : array
     {
         return array(
+            'ID'           => $this->row['id']              ?? null,
             'Test_name'    => $this->row['testName']        ?? null,
             'AgeMinDays'   => $this->row['ageMinDays']      ?? null,
             'AgeMaxDays'   => $this->row['ageMaxDays']      ?? null,

@@ -16,7 +16,7 @@ class BatteryManagerForm extends Component {
    * @return {*}
    */
   render() {
-    const {test, options, setTest, add} = this.props;
+    const {test, options, setTest, add, errors} = this.props;
 
     // Inform users about duplicate entries
     const renderHelpText = () => {
@@ -59,6 +59,8 @@ class BatteryManagerForm extends Component {
           onUserInput={setTest}
           required={true}
           value={test.testName}
+          errorMessage={errors.testName}
+          hasError={errors.testName}
         />
         <NumericElement
           name="ageMinDays"
@@ -68,6 +70,8 @@ class BatteryManagerForm extends Component {
           max="99999"
           required={true}
           value={test.ageMinDays}
+          errorMessage={errors.ageMinDays}
+          hasError={errors.ageMinDays}
         />
         <NumericElement
           name="ageMaxDays"
@@ -77,6 +81,8 @@ class BatteryManagerForm extends Component {
           max="99999"
           required={true}
           value={test.ageMaxDays}
+          errorMessage={errors.ageMaxDays}
+          hasError={errors.ageMaxDays}
         />
         <SelectElement
           name="stage"
@@ -85,6 +91,8 @@ class BatteryManagerForm extends Component {
           onUserInput={setTest}
           required={true}
           value={test.stage}
+          errorMessage={errors.stage}
+          hasError={errors.stage}
         />
         <SelectElement
           name="subproject"

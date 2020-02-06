@@ -30,6 +30,7 @@ class BatteryManagerIndex extends Component {
       test: {},
       show: {testForm: false, editForm: false},
       error: false,
+      errors: {},
       isLoaded: false,
     };
 
@@ -43,6 +44,7 @@ class BatteryManagerIndex extends Component {
     this.activateTest = this.activateTest.bind(this);
     this.deactivateTest = this.deactivateTest.bind(this);
     this.updateTest = this.updateTest.bind(this);
+    this.validateTest = this.validateTest.bind(this);
   }
 
   /**
@@ -106,6 +108,25 @@ class BatteryManagerIndex extends Component {
       })
       .catch(() => reject()));
     });
+  }
+
+  /**
+   * Modify value of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} value - cell value
+   *
+   * @return {string} a mapped value for the table cell at a given column
+   */
+  mapColumn(column, value) {
+    switch (column) {
+      case 'Change Status':
+        return '';
+      case 'Edit Metadata':
+        return '';
+      default:
+        return value;
+    }
   }
 
   /**
@@ -283,6 +304,7 @@ class BatteryManagerIndex extends Component {
     return new Promise((resolve, reject) => {
       const test = this.state.test;
       this.checkDuplicate(test)
+      .then(() => this.validateTest(test))
       .then(() => this.postData(this.props.testEndpoint, test, 'POST'))
       .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
       .then(() => test.id && this.deactivateTest(test.id))
@@ -311,8 +333,7 @@ class BatteryManagerIndex extends Component {
           test.subproject === testCheck.subproject &&
           test.visitLabel === testCheck.visitLabel &&
           test.centerId === testCheck.centerId &&
-          test.firstVisit === testCheck.firstVisit &&
-          test.instrumentOrder === testCheck.instrumentOrder
+          test.firstVisit === testCheck.firstVisit
         ) {
           duplicate = testCheck;
         }
@@ -347,6 +368,34 @@ class BatteryManagerIndex extends Component {
     });
   }
 
+  validateTest(test) {
+    return new Promise((resolve, reject) => {
+      console.log('validate');
+      const errors = {};
+      if (test.testName == null) {
+        errors.testName = 'This field is required';
+      }
+      if (test.ageMinDays == null) {
+        errors.ageMinDays = 'This field is required';
+      }
+      if (test.ageMaxDays == null) {
+        errors.ageMaxDays = 'This field is required';
+      }
+      if (test.stage == null) {
+        errors.stage = 'This field is required';
+      }
+
+      console.log(errors);
+      if (Object.entries(errors).length === 0) {
+        console.log('resolve');
+        resolve();
+      } else {
+        console.log('reject');
+        this.setState({errors}, reject());
+      }
+    });
+  }
+
   /**
    * Render Method
    *
@@ -368,7 +417,7 @@ class BatteryManagerIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in batter_manager.class.inc
      */
-    const {options, test, tests, show} = this.state;
+    const {options, test, tests, show, errors} = this.state;
     const {hasPermission} = this.props;
     const fields = [
       {label: 'ID', show: false},
@@ -436,6 +485,7 @@ class BatteryManagerIndex extends Component {
           setTest={this.setTest}
           options={options}
           add={show.testForm}
+          errors={errors}
         />
       </Modal>
     );
@@ -473,6 +523,7 @@ class BatteryManagerIndex extends Component {
           fields={fields}
           actions={actions}
           getFormattedCell={this.formatColumn}
+          getMappedCell={this.mapColumn}
         />
       </div>
     );
