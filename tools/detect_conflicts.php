@@ -111,7 +111,7 @@ print_r($opts);
 if (($change && $change_all)
     || ($delete_ignored_conflicts && ($change || $change_all))
 ) {
-    $die(
+    die(
         "Choose either Change (-c) or remove and re-insert all conflicts " .
         "(-m) or remove ignored conflicts (-r)"
     );
