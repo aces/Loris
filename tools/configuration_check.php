@@ -96,7 +96,7 @@ foreach ($result as $setting) {
     // If the path is an empty string, print a warning.
     if ($path === "") {
         $helper->printWarning(
-            "Setting `$name` is has no value associated with it. This may "
+            "Setting `$name` has no value associated with it. This may "
             . " affect the functionality of LORIS."
         );
         continue;
