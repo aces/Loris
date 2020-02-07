@@ -10,6 +10,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once __DIR__ . '/cli_helper.class.inc';
+use \LORIS\Http\Client;
+use \LORIS\Http\Request;
 
 // XXX These must be updated manually in future releases.
 define('MINIMUM_PHP_VERSION', '7.3');
@@ -122,6 +124,45 @@ foreach ($result as $setting) {
     }
 }
 
+if (! $config->settingEnabled('usePwnedPasswordsAPI')) {
+    printWarning(
+        "Configuration setting `usePwnedPasswordsAPI` is disabled. Connection "
+        . "test skipped."
+    );
+} else {
+    $helper->printLine('Checking connection to HaveIBeenPwned server....');
+    $client   = new Client('https://api.pwnedpasswords.com');
+    $response = $client->sendRequest(
+        new Request('GET', "/range/21BD1")
+    );
+    switch ($response->getStatusCode()){
+    case 200:
+        $helper->printSuccess('Connection successful.');
+        break;
+    default:
+        $helper->printError(
+            'Could not obtain a 200 OK response from the HaveIBeenPwned server'
+        );
+        print_r($response->getStatusCode());
+        print_r($response->getBody()->getContents());
+        break;
+    }
+}
+
+$helper->printLine('Testing outgoing email...');
+$emailAddress = $config->getSetting('mail')['From'];
+
+$helper->printLine('Sending an email to: ' . $emailAddress);
+$success = \Email::send(
+    $emailAddress,
+    'email_test.tpl'
+);
+$success ?
+    $helper->printSuccess('Email sent successfully.')
+    : $helper->printError('Sending email failed.');
+
+
+
 /**
  * Evaluate version requirement. Print result.
  *
@@ -135,7 +176,7 @@ function evaluateVersionRequirement(
     string $software,
     string $versionInstalled,
     string $versionRequired
-): void: {
+): void {
     global $helper;
     $versionInstalled >= $versionRequired ?
         $helper->printSuccess(
