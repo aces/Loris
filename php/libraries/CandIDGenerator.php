@@ -26,11 +26,11 @@ use \LORIS\StudyEntities\Candidate\CandID;
 class CandIDGenerator extends IdentifierGenerator
 {
     /**
-     * CandIDs should always be exactly 6 digits.
+     * CandIDs should always be exactly 6 integers.
      */
     private const LENGTH     = 6;
-    private const MIN_CANDID = 100000;
-    private const MAX_CANDID = 999999;
+    private const MIN_CANDID = '100000';
+    private const MAX_CANDID = '999999';
 
     /**
      * Creates a new CandIDGenerator by initializing properties based on class
@@ -42,7 +42,7 @@ class CandIDGenerator extends IdentifierGenerator
         $this->length           = self::LENGTH;
         $this->minValue         = self::MIN_CANDID;
         $this->maxValue         = self::MAX_CANDID;
-        $this->alphabet         = range(0, 9);
+        $this->alphabet         = range('0', '9');
     }
 
     /**
@@ -58,7 +58,7 @@ class CandIDGenerator extends IdentifierGenerator
             $this->checkIDRangeFull();
             $id = new CandID(
                 strval(
-                    random_int($this->minValue, $this->maxValue)
+                    random_int(intval($this->minValue), intval($this->maxValue))
                 )
             );
             // Check if the ID is in use. If so, the loop will continue and a new
