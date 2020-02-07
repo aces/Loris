@@ -136,7 +136,7 @@ class AttachmentsList extends Component {
                      '?action=download' +
                      '&uuid=' + item.file_uuid +
                      '&issue=' + this.props.issue +
-                     '&filename=' + item.filename +
+                     '&filename=' + item.file_name +
                      '&mime_type=' + item.mime_type
                      }
                      download={true}

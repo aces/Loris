@@ -98,7 +98,7 @@ function downloadAttachment() : void
         '/'
     );
 
-    $fileToDownload = $attachment_data_dir .
+    $fileToDownload = trim($attachment_data_dir) .
         '/attachments/' .
         strval($issue) . '/' .
         $uuid;
