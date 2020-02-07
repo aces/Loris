@@ -11,7 +11,7 @@
  * After dropping the tables, the script will source the Raisinbread test data
  * using the commands found in raisinbread/README.md.
  *
- * The script also restores the url, base, and host config settings to their
+ * The script also restores the base and host config settings to their
  * pre-drop values. This prevents an issue where a developer will need to
  * manually change these values in a MySQL shell when they are not hosting a
  * LORIS on localhost.
@@ -56,7 +56,6 @@ try {
     // database connection.
     include_once 'generic_includes.php';
 
-    $urlConfigSetting  = $config->getSetting('url');
     $baseConfigSetting = $config->getSetting('base');
     $hostConfigSetting = $config->getSetting('host');
 } catch (\DatabaseException $e) {
@@ -193,7 +192,6 @@ array_walk($rbData, 'runPatch');
 
 // Restore config settings if they were successfully found before.
 $configSettings = [
-    'url'  => $urlConfigSetting ?? null,
     'base' => $baseConfigSetting ?? null,
     'host' => $hostConfigSetting ?? null,
 ];
