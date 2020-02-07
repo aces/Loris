@@ -64,7 +64,7 @@ class TestOptionsEndpoint extends \NDB_Page
             'subprojects' => \Utility::getSubprojectList(null),
             'visits'      => \Utility::getVisitList(),
             'sites'       => \Utility::getSiteList(false),
-            'firstVisits' => $this->_getYesNoList(),
+            'firstVisit'  => $this->_getYesNoList(),
             'active'      => $this->_getYesNoList(),
         );
     }
@@ -95,7 +95,7 @@ class TestOptionsEndpoint extends \NDB_Page
     {
         return array(
             'Y' => 'Yes',
-            'N' => 'No',
+            'N'  => 'No',
         );
     }
 }

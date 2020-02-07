@@ -122,6 +122,18 @@ class BatteryManagerIndex extends Component {
    */
   mapColumn(column, value) {
     switch (column) {
+      case 'First Visit':
+        if (value == 'Y') {
+          return 'Yes';
+        } else {
+          return 'No';
+        }
+      case 'Active':
+        if (value == 'Y') {
+          return 'Yes';
+        } else {
+          return 'No';
+        }
       case 'Change Status':
         return '';
       case 'Edit Metadata':
@@ -141,6 +153,7 @@ class BatteryManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
     const testId = row['ID'];
     switch (column) {
@@ -354,7 +367,9 @@ class BatteryManagerIndex extends Component {
         if (duplicate.active === 'N') {
           swal.fire({
             title: 'Test Duplicate',
-            text: 'Would you to like activate this test?',
+            text: 'The information provided corresponds with a deactivated '+
+            'test that already exists in the system. Would you to like '+
+            'activate that test?',
             type: 'warning',
             confirmButtonText: 'Activate',
             showCancelButton: true,

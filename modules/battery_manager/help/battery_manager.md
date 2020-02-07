@@ -29,12 +29,13 @@ You cannot add an entry if it has a duplicate entry in the Test Battery.
 
 *For more information on the behaviour of each parameter refer to the [Behaviour of Parameters](#behaviour-of-parameters) section of this document*
 
-## Editing an entry to the Test Battery
+## Editing an entry in the Test Battery
 Under the `Browse` tab, you can edit an entry by clicking on the `Edit` link in the `Edit Metadata` column of the Menu Table.
 The link will display a form that is populated with the values of the entry.
 You can update information in the form by selecting from the dropdown menus and filling in the numeric text fields.
 You will have to fill out the required fields `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`, and `Active`.
-Finally, press the **Edit entry** button to edit the entry in the Test Battery.
+Finally, press the **Submit** button to edit the entry in the Test Battery.
+This will create a new Test with the information supplied, and deactivate the Test that was edited.
 You cannot edit an entry if you make no changes in the form.
 You cannot edit an entry if it becomes the same as another active entry in the Test Battery.
 
