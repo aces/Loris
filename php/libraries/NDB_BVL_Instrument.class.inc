@@ -660,7 +660,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     );
                     foreach ($Windows as $window) {
                         if ($agedays < $window['AgeMinDays']) {
-                            $delta = $window['AgeMinDays'] - $agedays;
+                            $delta = intval($window['AgeMinDays']) - $agedays;
                             if (abs($delta) < abs($values['Window_Difference'])
                                 || $values['Window_Difference'] == 0
                             ) {
@@ -668,7 +668,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                             }
                         }
                         if ($agedays > $window['AgeMaxDays']) {
-                            $delta = $agedays - $window['AgeMaxDays'];
+                            $delta = $agedays - intval($window['AgeMaxDays']);
                             if (abs($delta) < abs($values['Window_Difference'])
                                 || $values['Window_Difference'] == 0
                             ) {

@@ -433,7 +433,11 @@ class Stats_Demographic extends \NDB_Form
         );
 
         foreach ($result as $row) {
-            $this->tpl_data['age_avg'][$row['rowid']] = round($row['age']*12/365, 2);
+            $this->tpl_data['age_avg'][$row['rowid']]
+                = round(
+                    intval($row['age']) * 12/365,
+                    2
+                );
         }
 
         //START BIG TABLE

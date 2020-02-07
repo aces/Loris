@@ -83,25 +83,31 @@ class Module extends \Module
                 } else {
                     $row['new'] = false;
                 }
-                if ($row['Feedback_level'] === 'profile') {
-                    $row['URL'] = '/' . $row['CandID'];
-                } else if ($row['Feedback_level'] === 'visit') {
-                    $row['URL'] = '/instrument_list/?candID='
-                        . $row['CandID'] . '&sessionID='
-                        . $row['SessionID'];
-                } else if ($row['Feedback_level'] === 'instrument') {
+                $url = '';
+                switch ($row['Feedback_level']) {
+                case 'profile':
+                    $url = '/' . $row['CandID'];
+                    break;
+                case 'visit':
+                    $url = '/instrument_list/'
+                        . '?candID=' . $row['CandID']
+                        . '&sessionID='. $row['SessionID'];
+                    break;
+
+                case 'instrument':
                     $instrument = $DB->pselectOne(
                         "SELECT Test_name from flag WHERE CommentID=:cid",
                         array('cid' => $row['CommentID'])
                     );
                     if (!empty($instrument)) {
-                        $row['URL'] = '/instruments/'
-                            . $instrument . '/?candID='
-                            . $row['CandID'] . '&sessionID='
-                            . $row['SessionID'] . '&commentID='
-                            . $row['CommentID'];
+                        $url = '/instruments/'. $instrument
+                            . '/?candID=' . $row['CandID']
+                            . '&sessionID=' . $row['SessionID']
+                            . '&commentID=' . $row['CommentID'];
                     }
+                    break;
                 }
+                $row['URL']          = $url;
                 $frontend_feedback[] = $row;
             }
             return [
