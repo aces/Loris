@@ -16,6 +16,7 @@ declare -a tools_list=(
     'detect_duplicated_commentids.php'
     'generic_includes.php'
     'raisinbread_refresh.php'
+    'resetpassword.php'
     'setconfig.php'
 )
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ "${tools_list[@]/#/tools/}" || exit $?;
