@@ -23,7 +23,7 @@ class AttachmentsList extends Component {
   }
 
   deleteAttachment() {
-    const state = Object.assign({}, this.state);
+    const state = Object.assign({}, file_namethis.state);
     const url = window.location.origin +
       '/issue_tracker/ajax/Attachment.php' +
       '?action=delete' +
@@ -136,7 +136,8 @@ class AttachmentsList extends Component {
                      '?action=download' +
                      '&uuid=' + item.file_uuid +
                      '&issue=' + this.props.issue +
-                     '&filename=' + item.file_name
+                     '&filename=' + item.filename +
+                     '&mime_type=' + item.mime_type
                      }
                      download={true}
                      style={{cursor: 'pointer'}}>

@@ -7,6 +7,7 @@ CREATE TABLE `issues_attachments` (
     `user` varchar(255) NOT NULL DEFAULT '',
     `description` text DEFAULT NULL,
     `file_size` int(20) DEFAULT NULL,
+    `mime_type` varchar(255) NOT NULL DEFAULT '',
     PRIMARY KEY (`issueID`,`file_uuid`)
 ) DEFAULT CHARSET=utf8mb4;
 

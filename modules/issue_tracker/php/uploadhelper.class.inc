@@ -72,6 +72,7 @@ class UploadHelper
             = (object) array(
                 'file'        => $files['file']['name'],
                 'uuid'        => $this->uuid4(),
+                'mime_type'   => $this->getFileMimeType($files['file']['name']),
                 'tmp_name'    => $files['file']['tmp_name'],
                 'size'        => $this->_bytes,
                 'inserted_by' => $this->_user->getData('UserID'),
@@ -138,6 +139,7 @@ class UploadHelper
             'user'        => $fileToUpload->inserted_by,
             'description' => $fileToUpload->description,
             'file_size'   => $fileToUpload->size,
+            'mime_type'   => $fileToUpload->content_type
         );
         try {
             $DB->insert('issues_attachments', $values);
@@ -155,6 +157,41 @@ class UploadHelper
                 )
             );
         }
+    }
+
+    /**
+     * Get mime_type from file.
+     *
+     * @param string  $file
+     * @return string $version
+     */
+    function getFileMimeType(string $file) : string
+    {
+        $known_mime_types = array(
+            'htm'  => 'text/html',
+            'csv'  => 'text/csv',
+            'exe'  => 'application/octet-stream',
+            'zip'  => 'application/zip',
+            'doc'  => 'application/msword',
+            'jpg'  => 'image/jpg',
+            'php'  => 'text/plain',
+            'xls'  => 'application/vnd.ms-excel',
+            'ppt'  => 'application/vnd.ms-powerpoint',
+            'gif'  => 'image/gif',
+            'pdf'  => 'application/pdf',
+            'txt'  => 'text/plain',
+            'html' => 'text/html',
+            'png'  => 'image/png',
+            'jpeg' => 'image/jpg',
+        );
+
+        $file_extension = strtolower(substr(strrchr($file, '.'), 1));
+        if (array_key_exists($file_extension, $known_mime_types)) {
+            $mime_type = $known_mime_types[$file_extension];
+        } else {
+            $mime_type = 'application/force-download';
+        }
+        return $mime_type;
     }
 
     /**

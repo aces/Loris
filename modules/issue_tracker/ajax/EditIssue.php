@@ -691,7 +691,8 @@ ORDER BY dateAdded LIMIT 1",
                         deleted,
                         USER,
                         description,
-                        file_size
+                        file_size,
+                        mime_type
                     FROM
                         issues_attachments
                     WHERE
