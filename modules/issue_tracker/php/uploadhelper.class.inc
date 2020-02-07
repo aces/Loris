@@ -99,10 +99,12 @@ class UploadHelper
     function setFullPath(Object &$fileToUpload) : void
     {
         $config = \NDB_Config::singleton();
-        $attachment_data_dir = trim(rtrim(
-            $config->getSetting('IssueTrackerDataPath'),
-            '/'
-        ));
+        $attachment_data_dir = trim(
+            rtrim(
+                $config->getSetting('IssueTrackerDataPath'),
+                '/'
+            )
+        );
 
         if (is_writable($attachment_data_dir)) {
             $fileToUpload->full_path = $attachment_data_dir .
@@ -162,8 +164,9 @@ class UploadHelper
     /**
      * Get mime_type from file.
      *
-     * @param string  $file
-     * @return string $version
+     * @param string $file the file name with extension.
+     *
+     * @return string $mime_type
      */
     function getFileMimeType(string $file) : string
     {
