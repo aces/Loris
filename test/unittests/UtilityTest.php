@@ -835,4 +835,37 @@ class UtilityTest extends TestCase
     {
         $this->assertTrue(\Utility::valueIsPositiveInteger($int));
     }
+
+    /**
+     * Tests the pathJoin function. Test cases adapted from blog post on
+     * Python's os.path.join as this function is meant to give the same
+     * beahviour.
+     *
+     * @see https://www.geeksforgeeks.org/python-os-path-join-method/
+     *
+     * @covers Utility::pathJoin
+     * @return void
+     */
+    public function testPathJoin(): void
+    {
+        $path = '/home';
+
+        $this->assertEquals(
+            \Utility::pathJoin($path, "User/Desktop", "file.txt"),
+            "/home/User/Desktop/file.txt"
+        );
+        $this->assertEquals(
+            \Utility::pathJoin($path, "/home", "file.txt"),
+            "/home/file.txt"
+        );
+        $this->assertEquals(
+            \Utility::pathJoin($path, "Downloads", "file.txt", "/home"),
+            "/home"
+        );
+        $this->assertEquals(
+            \Utility::pathJoin($path, "User/Public/", "Documents", ""),
+            "/home/User/Public/Documents/"
+        );
+
+    }
 }
