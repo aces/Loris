@@ -59,15 +59,21 @@ class Module extends \Module
         $params    = $request->getQueryParams();
         $commentID = $params['commentID'] ?? null;
         if (empty($commentID)) {
-            return (new \Laminas\Diactoros\Response())
-                ->withBody(new \LORIS\Http\StringStream("Missing CommentID"))
-                ->withStatus(400);
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Missing CommentID"
+            );
         }
-        $instrument = \NDB_BVL_Instrument::factory(
-            $instrumentName,
-            $commentID,
-            $page
-        );
+        try {
+            $instrument = \NDB_BVL_Instrument::factory(
+                $instrumentName,
+                $commentID,
+                $page
+            );
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\JSON\NotFound(
+                $e->getMessage()
+            );
+        }
 
         $request = $request->withAttribute('pageclass', $instrument);
 
