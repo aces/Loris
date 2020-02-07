@@ -67,7 +67,7 @@ default:
 /**
  * Handles the updating of Candidate Info
  *
- * @param Database $db   database object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
@@ -144,8 +144,7 @@ function editCandInfoFields($db)
 /**
  * Handles the updating of Proband Info
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
@@ -210,8 +209,7 @@ function editProbandInfoFields($db)
 /**
  * Handles the updating of Family Info
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
@@ -305,8 +303,7 @@ function editFamilyInfoFields($db)
 /**
  * Handles the deletion of a family member
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
@@ -336,7 +333,7 @@ function deleteFamilyMember($db)
 /**
  * Handles the updating of Participant Status
  *
- * @param Database $db   database object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
@@ -389,7 +386,7 @@ function editParticipantStatusFields($db)
 /**
  * Handles the updating of Consent Status
  *
- * @param Database $db   database object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
@@ -530,7 +527,7 @@ function editConsentStatusFields($db)
 /**
  * Handles the updating of candidate's date of birth.
  *
- * @param Database $db   database object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
