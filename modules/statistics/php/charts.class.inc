@@ -182,8 +182,8 @@ class Charts extends \NDB_Page
             LEFT JOIN session s ON (s.ID=f.SessionID)
             JOIN parameter_type pt USING (ParameterTypeID)
             WHERE pt.Name='acquisition_date'
-            GROUP BY MONTH(pf.Value), YEAR(pf.Value), s.CenterID
-            ORDER BY YEAR(pf.Value), MONTH(pf.Value), s.CenterID",
+            GROUP BY datelabel, s.CenterID
+            ORDER BY datelabel, s.CenterID",
             array()
         );
 
