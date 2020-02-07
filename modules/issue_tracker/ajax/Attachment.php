@@ -30,10 +30,12 @@
  */
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if ($_REQUEST['action'] === 'download') {
+        downloadAttachment();
+    }
+} else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     if ($_REQUEST['action'] === 'delete') {
         echo json_encode(deleteAttachment());
-    } else if ($_REQUEST['action'] === 'download') {
-        downloadAttachment();
     }
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_REQUEST['action'] === 'new') {

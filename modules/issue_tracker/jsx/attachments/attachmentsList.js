@@ -31,7 +31,7 @@ class AttachmentsList extends Component {
     fetch(url,
       {
         credentials: 'same-origin',
-        method: 'GET',
+        method: 'DELETE',
       }).then((resp) => resp.json())
       .then((data) => {
         window.location.href = window.location.origin
