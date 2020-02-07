@@ -566,14 +566,17 @@ class Edit_User extends \NDB_Form
                 $user->addPermissions($permIDs);
             }
         }
+
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
         // send the user an email
         if (!empty($send)) {
-            // create an instance of the config object
-            $config = \NDB_Config::singleton();
+            $config = $factory->config();
+
             // send the user an email
             $msg_data          = array();
             $msg_data['study'] = $config->getSetting('title');
-            $msg_data['url']   = $config->getSetting('url');
+            $msg_data['url']   = $baseURL;
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_hash'];
@@ -584,7 +587,6 @@ class Edit_User extends \NDB_Form
         }
         $this->tpl_data['success'] = true;
         if ($this->isCreatingNewUser()) {
-            $baseURL        = $config->getSetting('url');
             $this->redirect = $baseURL
                 . "/user_accounts/edit_user/"
                 . $values['UserID'];

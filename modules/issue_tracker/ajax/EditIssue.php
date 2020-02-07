@@ -435,13 +435,11 @@ function getComments($issueID)
     );
 
     //looping by reference so can edit in place
+    $modules = \Module::getActiveModulesIndexed($db);
     foreach ($unformattedComments as &$comment) {
         if ($comment['fieldChanged'] === 'module') {
-            $module = $db->pselectOne(
-                "SELECT Label FROM LorisMenu WHERE ID=:module",
-                array('module' => $comment['newValue'])
-            );
-            $comment['newValue'] = $module;
+            $mid = $comment['newValue'];
+            $comment['newValue'] = $modules[$mid]->getLongName();
             continue;
         } else if ($comment['fieldChanged'] === 'centerID') {
             $site = $db->pselectOne(
@@ -649,14 +647,11 @@ WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
         }
     }
 
-    $modules          = array();
-    $modules_expanded = $db->pselect(
-        "SELECT DISTINCT Label, ID FROM LorisMenu
-WHERE Parent IS NOT NULL ORDER BY Label ",
-        []
-    );
-    foreach ($modules_expanded as $m_row) {
-        $modules[$m_row['ID']] = $m_row['Label'];
+    $allmodules = \Module::getActiveModulesIndexed($db);
+
+    $modules = [];
+    foreach ($allmodules as $key => $m) {
+        $modules[$key] = $m->getLongName();
     }
 
     //Now get issue values

@@ -7,8 +7,8 @@
       <p><b>Password Strength Rules</b></p>
       <ul>
         <li>The password must be at least 8 characters long.</li>
-        <li>The password and the user name must not be the same.</li>
         <li>The password and the email address must not be the same.</li>
+        <li>No special characters are required but your password must be sufficiently complex to be accepted.</li>
       </ul>
         <p><b>Please choose a unique password.</b></p>
         <p>We suggest using a password manager to generate one for you.</p>

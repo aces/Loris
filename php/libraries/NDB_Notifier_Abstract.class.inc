@@ -124,7 +124,8 @@ abstract class NDB_Notifier_Abstract
         array $extra_tpl_data,
         bool $asAdmin
     ) {
-        $config = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
 
         $this->module         = $module_name;
         $this->operation      = $operation_type;
@@ -132,7 +133,7 @@ abstract class NDB_Notifier_Abstract
         $this->notifier       = \User::singleton();
         $this->_adminNotifier = $this->_getAdminUser();
         $this->tpl_data['study_logo'] = $config->getSetting('studylogo');
-        $this->tpl_data['baseurl']    = $config->getSetting('url');
+        $this->tpl_data['baseurl']    = $factory->settings()->getBaseURL();
         $this->tpl_data['study_name'] = $config->getSetting('title');
 
         if (!is_null($extra_tpl_data)) {
