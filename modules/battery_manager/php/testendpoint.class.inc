@@ -81,8 +81,8 @@ class TestEndpoint implements RequestHandlerInterface
             return $this->_getInstances();
         case 'POST':
             return $this->_postInstance($request);
-        case 'PATCH':
-            return $this->_patchInstance($request);
+        case 'PUT':
+            return $this->_putInstance($request);
         }
     }
 
@@ -111,7 +111,7 @@ class TestEndpoint implements RequestHandlerInterface
      *
      * @return ResponseInterface response
      */
-    private function _patchInstance(ServerRequestInterface $request)
+    private function _putInstance(ServerRequestInterface $request)
     {
         $testArray = json_decode($request->getBody()->getContents(), true);
         $test      = new Test($testArray);

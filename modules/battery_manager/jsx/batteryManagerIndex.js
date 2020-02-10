@@ -170,14 +170,12 @@ class BatteryManagerIndex extends Component {
         if (row.Active === 'Y') {
           // Pass ID of row to deactivate function
           result = <td><CTA label='Deactivate' onUserInput={() => {
-            this.deactivateTest(testId)
-            .then((message) => swal.fire(message, '', 'success'));
+            this.deactivateTest(testId);
           }}/></td>;
         } else if (row.Active === 'N') {
           // Pass ID of row to activate function
           result = <td><CTA label='Activate' onUserInput={() => {
-            this.activateTest(testId)
-            .then((message) => swal.fire(message, '', 'success'));
+            this.activateTest(testId);
           }}/></td>;
         }
         break;
@@ -300,14 +298,16 @@ class BatteryManagerIndex extends Component {
    */
   updateTest(test) {
     return new Promise((resolve, reject) => {
-      this.postData(this.props.testEndpoint+test.id, test, 'PATCH')
-      .then((message) => {
-        const index = this.state.tests
-          .findIndex((element) => element.id === test.id);
-        const tests = this.state.tests;
-        tests[index] = test;
-        this.setState({tests}, resolve(message));
-      })
+      Object.keys(test).forEach((key) => {
+        if (test[key] == '') {
+          test[key] = null;
+        }
+      });
+      this.checkDuplicate(test)
+      .then((test) => this.validateTest(test))
+      .then((test) => this.postData(this.props.testEndpoint+test.id, test, 'PUT'))
+      .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
+      .then(() => resolve())
       .catch(() => reject());
     });
   }
@@ -315,18 +315,22 @@ class BatteryManagerIndex extends Component {
   /**
    * save test to database
    *
+   * @param {object} test
+   *
    * @return {object} promise
    */
-  addTest() {
+  addTest(test) {
     return new Promise((resolve, reject) => {
-      const test = this.state.test;
+      Object.keys(test).forEach((key) => {
+        if (test[key] == '') {
+          test[key] = null;
+        }
+      });
       this.checkDuplicate(test)
       .then((test) => this.validateTest(test))
       .then((test) => this.postData(this.props.testEndpoint, test, 'POST'))
       .then((message) => swal.fire(message, '', 'success'))
       .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
-      .then(() => test.id && this.deactivateTest(test.id))
-      .then(() => this.closeForm())
       .then(() => resolve())
       .catch(() => reject());
     });
@@ -342,12 +346,6 @@ class BatteryManagerIndex extends Component {
   checkDuplicate(test) {
     return new Promise((resolve, reject) => {
       let duplicate;
-      console.log(test);
-      Object.keys(test).forEach((key) => {
-        if (test[key] == '') {
-          test[key] = null;
-        }
-      });
       this.state.tests.forEach((testCheck) => {
         if (
           test.testName == testCheck.testName &&
@@ -363,23 +361,22 @@ class BatteryManagerIndex extends Component {
         }
       });
 
-      if (duplicate) {
+      if (duplicate && duplicate.id !== test.id) {
         if (duplicate.active === 'N') {
+          const edit = test.id ? 'This will deactivate the current test.' : '';
           swal.fire({
             title: 'Test Duplicate',
             text: 'The information provided corresponds with a deactivated '+
             'test that already exists in the system. Would you to like '+
-            'activate that test?',
+            'activate that test? '+edit,
             type: 'warning',
             confirmButtonText: 'Activate',
             showCancelButton: true,
           }).then((result) => {
             if (result.value) {
-              this.activateTest(duplicate.id)
-              .then((message) => swal.fire(message, '', 'success'));
+              this.activateTest(duplicate.id);
               if (test.id && (test.id !== duplicate.id)) {
-                this.deactivateTest(test.id)
-                .then((message) => swal.fire(message, '', 'success'));
+                this.deactivateTest(test.id);
               }
               this.closeForm();
             }
@@ -501,7 +498,7 @@ class BatteryManagerIndex extends Component {
         title="Add New Test"
         show={show.testForm || show.editForm}
         onClose={this.closeForm}
-        onSubmit={this.addTest}
+        onSubmit={show.testForm ? () => this.addTest(test) : () => this.updateTest(test)}
         throwWarning={Object.keys(test).length !== 0}
       >
         <BatteryManagerForm

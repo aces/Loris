@@ -123,7 +123,7 @@ class BatteryManagerForm extends Component {
         <SelectElement
           name="firstVisit"
           label="First Visit"
-          options={options.firstVisits}
+          options={options.firstVisit}
           onUserInput={setTest}
           required={false}
           value={test.firstVisit}
