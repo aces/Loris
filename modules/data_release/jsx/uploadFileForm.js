@@ -151,6 +151,7 @@ class UploadFileForm extends Component {
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
         cancelButtonText: 'No, cancel it!',
+        closeOnConfirm: false,
       }, function(isConfirm) {
         if (isConfirm) {
           this.uploadFile();
