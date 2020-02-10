@@ -9,7 +9,8 @@ nav:
         - Installation:
             - 'Ubuntu Install': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/01 - LORIS Install/Ubuntu/README.md'
             - 'CentOS Install': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/01 - LORIS Install/CentOS/README.md'
-        - Website Configuration: 'wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/README.md'
+        - Website Configuration: 
+            - 'Website Configuration': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/README.md'
             - 'Handling Large File Uploads': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/Handling Large File Uploads.md'
     - Study Parameters Setup:
         - Study Variables: 
