@@ -22,8 +22,6 @@ class FilePanel extends Component {
    * Component did mount.
    */
   componentDidMount() {
-    console.log('componentDidUpdate check:');
-    console.log(JSON.stringify(this.state.data.downloads));
     let downloads = [
       'download_eeg_file',
       'download_electrode_info',
@@ -33,7 +31,6 @@ class FilePanel extends Component {
       'download_fdt_file',
     ];
     for (let i=0; i<this.state.data.downloads.length; i++) {
-      console.log(this.state.data.downloads[i]);
       if (this.state.data.downloads[i].file === '') {
         document.getElementById(downloads[i]).removeAttribute('href');
         let downloadButton = document.getElementById('btn_' + downloads[i]);
@@ -49,16 +46,6 @@ class FilePanel extends Component {
         }
       }
     }
-  }
-
-  /**
-   * Post-Render when we can access the DOM.
-   *
-   * @param {object} prevProps
-   * @param {object} prevState
-   *
-   */
-  componentDidUpdate(prevProps, prevState) {
   }
 
   render() {
@@ -173,9 +160,6 @@ class FilePanel extends Component {
       <Panel id={this.props.id} title={this.props.title}>
         <div className={'container-fluid'}>
           <div className={'row'}>
-            {/* <div className={'col-sm-4'} style={stylesFile.div.container.details}> */}
-              {/* ..insert head image here.. */}
-            {/* </div> */}
             <div className={'col-sm-6'} style={stylesFile.div.container.table}>
               <table style={stylesFile.table.style}>
                 <caption style={stylesFile.table.caption}>Acquisition Summary</caption>

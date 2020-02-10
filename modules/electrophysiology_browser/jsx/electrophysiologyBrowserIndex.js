@@ -20,8 +20,6 @@ class ElectrophysiologyBrowserIndex extends Component {
   constructor(props) {
     super(props);
 
-    // loris.hiddenHeaders = ['Session ID'];
-
     this.state = {
       data: {},
       error: false,
@@ -30,8 +28,6 @@ class ElectrophysiologyBrowserIndex extends Component {
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
-    // this.updateFilter = this.updateFilter.bind(this);
-    // this.resetFilters = this.resetFilters.bind(this);
   }
 
   componentDidMount() {

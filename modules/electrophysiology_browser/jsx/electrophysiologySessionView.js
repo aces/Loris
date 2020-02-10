@@ -160,16 +160,6 @@ class ElectrophysiologySessionView extends Component {
   }
 
   /**
-   * Post-Render when we can access the DOM.
-   *
-   * @param {object} prevProps
-   * @param {object} prevState
-   */
-  componentDidUpdate(prevProps, prevState) {
-    console.log('componentDidUpdate');
-  }
-
-  /**
    * Retrieve params from the browser URL and save it in state.
    */
   collectParams() {

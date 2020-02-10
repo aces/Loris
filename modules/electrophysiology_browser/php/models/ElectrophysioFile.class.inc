@@ -37,7 +37,16 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
 
         $db = \NDB_Factory::singleton()->database();
 
-        $query    = "SELECT * 
+        $query    = "SELECT 
+                       PhysiologicalFileID,
+                       PhysiologicalModalityID,
+                       PhysiologicalOutputTypeID,
+                       SessionID,
+                       InsertTime,
+                       FileType,
+                       AcquisitionTime,
+                       InsertedByUser,
+                       FilePath  
                      FROM physiological_file 
                      WHERE PhysiologicalFileID=:PFID";
         $params   = array('PFID' => $physiologicalFileID);
