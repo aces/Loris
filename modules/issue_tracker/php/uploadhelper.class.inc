@@ -141,7 +141,7 @@ class UploadHelper
             'user'        => $fileToUpload->inserted_by,
             'description' => $fileToUpload->description,
             'file_size'   => $fileToUpload->size,
-            'mime_type'   => $fileToUpload->content_type
+            'mime_type'   => $fileToUpload->mime_type
         );
         try {
             $DB->insert('issues_attachments', $values);
