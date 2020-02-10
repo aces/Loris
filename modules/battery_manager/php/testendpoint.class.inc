@@ -104,8 +104,7 @@ class TestEndpoint implements RequestHandlerInterface
     }
 
     /**
-     * Updates the status of the given test from Active to Deactive or
-     * viceversa.
+     * Puts a test to the test_battery in the database.
      *
      * @param ServerRequestInterface $request Test to be saved
      *
@@ -113,36 +112,17 @@ class TestEndpoint implements RequestHandlerInterface
      */
     private function _putInstance(ServerRequestInterface $request)
     {
+        if (!$this->user->hasPermission('battery_manager_edit')) {
+            return new \LORIS\Http\Response\JSON\Forbidden('Edit Permission Denied');
+        }
+
         $testArray = json_decode($request->getBody()->getContents(), true);
         $test      = new Test($testArray);
-
-        // validate instance;
-        $errors = $this->_validateInstance($test);
-        if (!empty($errors)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                implode(' ', $errors)
-            );
-        }
-
-        $testArray = $test->toSQL();
-        try {
-            $this->db->update(
-                'test_battery',
-                $testArray,
-                array('ID' => $testArray['ID'])
-            );
-            return new \LORIS\Http\Response\JSON\OK(
-                ['message'=>'Status Updated Successfully']
-            );
-        } catch (\DatabaseException $e) {
-            return new \LORIS\Http\Response\JSON\InternalServerError(
-                'Could not update entry in the Test Battery'
-            );
-        }
+        return $this->_saveInstance($test);
     }
 
     /**
-     * Adds a new test to the test_battery in the database.
+     * Posts a test to the test_battery in the database.
      *
      * @param ServerRequestInterface $request Test to be posted
      *
@@ -150,20 +130,13 @@ class TestEndpoint implements RequestHandlerInterface
      */
     private function _postInstance(ServerRequestInterface $request)
     {
-        $testArray = json_decode($request->getBody()->getContents(), true);
-        $test      = new Test($testArray);
-
         if (!$this->user->hasPermission('battery_manager_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden('Edit Permission Denied');
         }
 
-        // validate instance
-        $errors = $this->_validateInstance($test);
-        if (!empty($errors)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                implode(' ', $errors)
-            );
-        }
+        $testArray = json_decode($request->getBody()->getContents(), true);
+        $test      = new Test($testArray);
+        $test->row['active'] = 'Y';
 
         // check if instance is duplicate
         if ($this->_isDuplicate($test)) {
@@ -172,14 +145,29 @@ class TestEndpoint implements RequestHandlerInterface
             );
         }
 
-        $test->row['active'] = 'Y';
-        $testArray           = $test->toSQL();
+        return $this->_saveInstance($test);
+    }
+
+    /**
+     * Generic save function for Test Instances.
+     *
+     * @param Test $test The Test Instance to be saved.
+     *
+     * @return ResponseInterface response
+     */
+    private function _saveInstance(Test $test)
+    {
+        // validate instance
+        $errors = $this->_validateInstance($test);
+        if (!empty($errors)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                implode(' ', $errors)
+            );
+        }
 
         try {
-            $this->db->insert('test_battery', $testArray);
-            return new \LORIS\Http\Response\JSON\OK(
-                ['message'=>'Test Submission Successful']
-            );
+            $this->db->insertOnDuplicateUpdate('test_battery', $test->toSQL());
+            return new \LORIS\Http\Response\JSON\OK();
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
                 'Could not add entry to the Test Battery'
