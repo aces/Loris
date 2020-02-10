@@ -75,8 +75,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->_createTimepoint(
             '900000',
             'Stale',
-            'Montreal',
-            'Rye',
             'V1',
             'English'
         );
@@ -92,8 +90,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      *
      * @param string $canID      ID of candidate
      * @param string $subproject text of subproject
-     * @param string $psc        text of site
-     * @param string $project    text of project
      * @param string $visitlabel text of visit label
      * @param string $lang       text of language
      *
@@ -102,8 +98,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     private function _createTimepoint(
         $canID,
         $subproject,
-        $psc,
-        $project,
         $visitlabel,
         $lang
     ) {
