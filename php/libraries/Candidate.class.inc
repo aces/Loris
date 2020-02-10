@@ -605,8 +605,8 @@ class Candidate
         $subprojList = array();
 
         $projID  = $this->getProjectID();
-        $query   = "SELECT SubprojectID
-                    FROM project_subproject_rel
+        $query   = "SELECT SubprojectID 
+                    FROM project_subproject_rel 
                     WHERE ProjectID = :prj";
         $params  = array('prj' => $projID);
         $subproj = \NDB_Factory::singleton()
@@ -634,7 +634,7 @@ class Candidate
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        $query  = "SELECT Visit_label FROM session
+        $query  = "SELECT Visit_label FROM session 
           LEFT JOIN candidate USING (CandID)
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
