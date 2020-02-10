@@ -23,7 +23,7 @@ class AttachmentsList extends Component {
   }
 
   deleteAttachment() {
-    const state = Object.assign({}, file_namethis.state);
+    const state = Object.assign({}, this.state);
     const url = window.location.origin +
       '/issue_tracker/ajax/Attachment.php' +
       '?action=delete' +
