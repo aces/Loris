@@ -95,7 +95,7 @@ class AttachmentsList extends Component {
         if (parseInt(item.deleted) === 1) {
           continue;
         }
-        attachmentsRows.push(
+        attachmentsRows.unshift(
           <>
             <div key={key + '_first'} className='row'>
               <hr/>
