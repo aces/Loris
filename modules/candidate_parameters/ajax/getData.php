@@ -423,6 +423,9 @@ function getConsentStatusFields()
     $date           = [];
     $withdrawalDate = [];
 
+    // Get consent groups
+    $consentGroups = \Utility::getConsentGroups();
+
     // Get list of all consent types
     $consentDetails = \Utility::getConsentList();
     // Get list of consents for candidate
@@ -431,6 +434,10 @@ function getConsentStatusFields()
     foreach ($consentDetails as $consentID=>$consent) {
         $consentName = $consent['Name'];
         $consentList[$consentName] = $consent['Label'];
+        $groupID = $consent['ConsentGroupID'];
+
+        // Append consent as a child to its group
+        $consentGroups[$groupID]['Children'][] = $consentName;
 
         if (isset($candidateConsent[$consentID])) {
             $candidateConsentID           = $candidateConsent[$consentID];
@@ -453,6 +460,7 @@ function getConsentStatusFields()
         'withdrawals'     => $withdrawalDate,
         'consents'        => $consentList,
         'history'         => $history,
+        'consentGroups'   => $consentGroups,
     ];
 
     return $result;
@@ -469,7 +477,7 @@ function getConsentStatusFields()
  */
 function getConsentStatusHistory($pscid)
 {
-    $db = \Database::singleton();
+    $db = (\NDB_Factory::singleton())->database();
 
     $historyData = $db->pselect(
         "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
@@ -481,23 +489,16 @@ function getConsentStatusHistory($pscid)
     );
 
     $formattedHistory = [];
-    foreach ($historyData as $key => $entry) {
-          $consentName  = $entry['ConsentName'];
-          $consentLabel = $entry['ConsentLabel'];
-
-          $history        = [
-              'data_entry_date'            => $entry['EntryDate'],
-              'entry_staff'                => $entry['EntryStaff'],
-              $consentName                 => $entry['Status'],
-              $consentName . '_date'       => $entry['DateGiven'],
-              $consentName . '_withdrawal' => $entry['DateWithdrawn'],
+    foreach ($historyData as $entry) {
+          $formattedHistory[] = [
+              'data_entry_date' => $entry['EntryDate'],
+              'entry_staff'     => $entry['EntryStaff'],
+              'consentStatus'   => $entry['Status'],
+              'date'            => $entry['DateGiven'],
+              'withdrawal'      => $entry['DateWithdrawn'],
+              'label'           => $entry['ConsentLabel'],
+              'consentType'     => $entry['ConsentName'],
           ];
-          $consentHistory = [
-              $key          => $history,
-              'label'       => $consentLabel,
-              'consentType' => $consentName,
-          ];
-          $formattedHistory[$key] = $consentHistory;
     }
     return $formattedHistory;
 }

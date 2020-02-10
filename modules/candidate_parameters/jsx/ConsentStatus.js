@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+
+import {VerticalTabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 
 /**
@@ -20,7 +22,8 @@ class ConsentStatus extends Component {
             formData: {},
             error: false,
             isLoaded: false,
-            loadedData: 0,
+            submitDisabled: false,
+            showHistory: false,
         };
 
         /**
@@ -29,6 +32,9 @@ class ConsentStatus extends Component {
         this.fetchData = this.fetchData.bind(this);
         this.setFormData = this.setFormData.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.showHistory = this.showHistory.bind(this);
+        this.renderFormattedHistory = this.renderFormattedHistory.bind(this);
+        this.renderConsent = this.renderConsent.bind(this);
     }
 
     componentDidMount() {
@@ -173,6 +179,10 @@ class ConsentStatus extends Component {
         }
         formData.append('tab', this.props.tabName);
         formData.append('candID', this.state.Data.candID);
+
+        // Disable submit button to prevent form resubmission
+        this.setState({submitDisabled: true});
+
         $.ajax({
             type: 'POST',
             url: this.props.action,
@@ -181,221 +191,250 @@ class ConsentStatus extends Component {
             contentType: false,
             processData: false,
             success: (data) => {
-                swal.fire('Success!', 'Update successful.', 'success');
+                swal.fire('Success!', 'Update successful.', 'success')
+                  .then((result) => {
+                    if (result.value) {
+                        this.setState({submitDisabled: false});
+                        this.fetchData();
+                    }
+                  }
+                );
                 this.fetchData();
             },
             error: (error) => {
                 console.error(error);
+                // Enable submit button for form resubmission
+                this.setState({submitDisabled: false});
                 let errorMessage = error.responseText || 'Update failed.';
                 swal.fire('Error!', errorMessage, 'error');
             },
         });
     }
 
+    showHistory() {
+        this.setState({showHistory: !this.state.showHistory});
+    }
+
+    renderFormattedHistory() {
+        const historyBtnLabel = this.state.showHistory ?
+            'Hide Consent History' : 'Show Consent History';
+
+        const formattedHistory = this.state.Data.history.map((info, key) => {
+            const label = info.label;
+            const dataEntry = info.data_entry_date;
+            const user = info.entry_staff;
+            const consentStatus = info.consentStatus;
+            const consentDate = info.date;
+            const withdrawal = info.withdrawal;
+            const dateHistory = consentDate ? (
+                <span>
+                   , <b>Date of Consent</b> to {consentDate}
+                </span>
+            ) : null;
+            const withdrawalHistory = withdrawal ? (
+                <span>
+                    , <b>Date of Consent Withdrawal</b> to {withdrawal}
+                </span>
+            ) : null;
+
+            return (
+                <div key={key}>
+                    <hr/>
+                    <p>
+                      <b>
+                        {dataEntry} - {user}
+                      </b> updated for <i>{label}</i>:
+                      <b> Status</b> to {' '}
+                      {this.state.consentOptions[consentStatus]}
+                      {dateHistory}
+                      {withdrawalHistory}
+                    </p>
+                </div>
+            );
+        });
+
+        return (
+            <div style={{margin: '20px'}}>
+                <button
+                    className='btn btn-primary'
+                    onClick={this.showHistory}
+                    data-toggle='collapse'
+                    data-target='#consent-history'
+                    style={{margin: '10px 0'}}
+                >
+                    {historyBtnLabel}
+                </button>
+                <div id='consent-history' className='collapse'>
+                    {formattedHistory}
+                </div>
+            </div>
+        );
+    }
+
+    renderConsent(consentName) {
+        // Allow editing if user has permission
+        let disabled = loris.userHasPermission('candidate_parameter_edit')
+          ? false : true;
+
+        // Set up props for front-end validation
+        const oldConsent = this.state.Data.consentStatuses[consentName];
+        const newConsent = this.state.formData[consentName];
+        const withdrawalDate = this.state.Data.withdrawals[consentName];
+        // Define defaults
+        let emptyOption = true;
+        let dateRequired = false;
+        let withdrawalRequired = false;
+        // Let date of withdrawal field be disabled until it is needed
+        let withdrawalDisabled = true;
+
+        // If answer to consent is 'yes', require date of consent
+        if (newConsent === 'yes') {
+            dateRequired = true;
+        }
+        // If answer to consent is 'no', require date of consent
+        if (newConsent === 'no') {
+            dateRequired = true;
+            // If answer was previously 'yes' and consent is now being withdrawn, enable and require withdrawal date
+            // If consent was previously withdrawn and stays withdrawn, enable and require withdrawal date
+            if (oldConsent === 'yes' ||
+                (oldConsent === 'no' && withdrawalDate)
+            ) {
+                withdrawalDisabled = false;
+                withdrawalRequired = true;
+            }
+        }
+        // Disallow clearing a valid consent status by removing empty option
+        if (oldConsent === 'no' || oldConsent === 'yes') {
+            emptyOption = false;
+        }
+
+        // Set up elements
+        const label = this.state.Data.consents[consentName];
+        const statusLabel = 'Response';
+        const consentDate = consentName + '_date';
+        const consentDate2 = consentName + '_date2';
+        const consentDateLabel = 'Date of Response';
+        const consentDateConfirmationLabel = 'Confirmation Date of Response';
+        const consentWithdrawal = consentName + '_withdrawal';
+        const consentWithdrawal2 = consentName + '_withdrawal2';
+        const consentWithdrawalLabel = 'Date of Withdrawal of Consent';
+        const consentWithdrawalConfirmationLabel =
+            'Confirmation Date of Withdrawal of Consent';
+
+        return (
+            <div key={consentName}>
+                <HeaderElement
+                    text={label}
+                />
+                <SelectElement
+                    label={statusLabel}
+                    name={consentName}
+                    options={this.state.consentOptions}
+                    value={this.state.formData[consentName]}
+                    onUserInput={this.setFormData}
+                    disabled={disabled}
+                    required={false}
+                    emptyOption={emptyOption}
+                />
+                <DateElement
+                    label={consentDateLabel}
+                    name={consentDate}
+                    value={this.state.formData[consentDate]}
+                    onUserInput={this.setFormData}
+                    disabled={disabled}
+                    required={dateRequired}
+                />
+                <DateElement
+                    label={consentDateConfirmationLabel}
+                    name={consentDate2}
+                    value={this.state.formData[consentDate2]}
+                    onUserInput={this.setFormData}
+                    disabled={disabled}
+                    required={dateRequired}
+                />
+                <DateElement
+                    label={consentWithdrawalLabel}
+                    name={consentWithdrawal}
+                    value={this.state.formData[consentWithdrawal]}
+                    onUserInput={this.setFormData}
+                    disabled={disabled || withdrawalDisabled}
+                    required={withdrawalRequired}
+                />
+                <DateElement
+                    label={consentWithdrawalConfirmationLabel}
+                    name={consentWithdrawal2}
+                    value={this.state.formData[consentWithdrawal2]}
+                    onUserInput={this.setFormData}
+                    disabled={disabled || withdrawalDisabled}
+                    required={withdrawalRequired}
+                />
+                <hr/>
+            </div>
+        );
+    }
+
     render() {
         // If error occurs, return a message.
         // XXX: Replace this with a UI component for 500 errors.
         if (this.state.error) {
-            return <h3>An error occured while loading the page.</h3>;
+            return <h3>An error occurred while loading the page.</h3>;
         }
 
         if (!this.state.isLoaded) {
             return <Loader />;
         }
 
-        let disabled = true;
-        let updateButton = null;
-        if (loris.userHasPermission('candidate_parameter_edit')) {
-            disabled = false;
-            updateButton = <ButtonElement label ='Update' />;
-        }
-        const emptyOption = [];
-        const dateRequired = [];
-        const withdrawalRequired = [];
-        const withdrawalDisabled = [];
-        let i = 0;
-        for (let consent in this.state.Data.consents) {
-            if (this.state.Data.consents.hasOwnProperty(consent)) {
-                const oldConsent = this.state.Data.consentStatuses[consent];
-                const newConsent = this.state.formData[consent];
-                const withdrawalDate = this.state.Data.withdrawals[consent];
-                // Set defaults
-                emptyOption[i] = true;
-                dateRequired[i] = false;
-                withdrawalRequired[i] = false;
-                // Let date of withdrawal field be disabled until it is needed
-                withdrawalDisabled[i] = true;
-                // If answer to consent is 'yes', require date of consent
-                if (newConsent === 'yes') {
-                    dateRequired[i] = true;
-                }
-                // If answer to consent is 'no', require date of consent
-                if (newConsent === 'no') {
-                    dateRequired[i] = true;
-                    // If answer was previously 'yes' and consent is now being withdrawn, enable and require withdrawal date
-                    // If consent was previously withdrawn and stays withdrawn, enable and require withdrawal date
-                    if (oldConsent === 'yes'
-                       || (oldConsent === 'no' && withdrawalDate)) {
-                        withdrawalDisabled[i] = false;
-                        withdrawalRequired[i] = true;
-                    }
-                }
-                // Disallow clearing a valid consent status by removing empty option
-                if (oldConsent === 'no' || oldConsent === 'yes') {
-                    emptyOption[i] = false;
-                }
-                i++;
-            }
-        }
+        // Allow editing if user has permission
+        let updateButton = loris.userHasPermission('candidate_parameter_edit') ?
+            (<ButtonElement
+              label='Update'
+              disabled={this.state.submitDisabled}
+            />) : null;
 
-        let consents = [];
-        i = 0;
-        for (let consentStatus in this.state.Data.consents) {
-            if (this.state.Data.consents.hasOwnProperty(consentStatus)) {
-                let consentLabel = this.state.Data.consents[consentStatus];
-                let statusLabel = 'Response';
-                let consentDate = consentStatus + '_date';
-                let consentDate2 = consentStatus + '_date2';
-                let consentDateLabel = 'Date of ' + statusLabel;
-                let consentDateConfirmationLabel = 'Confirmation Date of '
-                                                   + statusLabel;
-                let consentWithdrawal = consentStatus + '_withdrawal';
-                let consentWithdrawal2 = consentStatus + '_withdrawal2';
-                let consentWithdrawalLabel = 'Date of Withdrawal of Consent';
-                let consentWithdrawalConfirmationLabel =
-                    'Confirmation Date of Withdrawal of Consent';
-
-                const consent = (
-                    <div key={i}>
-                        <HeaderElement
-                          text={consentLabel}
+        // Set up vertical tabs to group consent by consent groups
+        const tabList = [];
+        const tabPanes = Object.keys(this.state.Data.consentGroups).map(
+          (consentID) => {
+            tabList.push({
+                id: consentID,
+                label: this.state.Data.consentGroups[consentID].Label,
+            });
+            return (
+                <TabPane key={consentID} TabId={consentID}>
+                    <FormElement
+                        name="consentStatus"
+                        onSubmit={this.handleSubmit}
+                        class="col-md-9"
+                    >
+                        <StaticElement
+                          label="PSCID"
+                          text={this.state.Data.pscid}
                         />
-                        <SelectElement
-                            label={statusLabel}
-                            name={consentStatus}
-                            options={this.state.consentOptions}
-                            value={this.state.formData[consentStatus]}
-                            onUserInput={this.setFormData}
-                            ref={consentStatus}
-                            disabled={disabled}
-                            required={false}
-                            emptyOption={emptyOption[i]}
+                        <StaticElement
+                          label="DCCID"
+                          text={this.state.Data.candID}
                         />
-                        <DateElement
-                            label={consentDateLabel}
-                            name={consentDate}
-                            value={this.state.formData[consentDate]}
-                            onUserInput={this.setFormData}
-                            ref={consentDate}
-                            disabled={disabled}
-                            required={dateRequired[i]}
-                        />
-                        <DateElement
-                            label={consentDateConfirmationLabel}
-                            name={consentDate2}
-                            value={this.state.formData[consentDate2]}
-                            onUserInput={this.setFormData}
-                            ref={consentDate2}
-                            disabled={disabled}
-                            required={dateRequired[i]}
-                        />
-                        <DateElement
-                            label={consentWithdrawalLabel}
-                            name={consentWithdrawal}
-                            value={this.state.formData[consentWithdrawal]}
-                            onUserInput={this.setFormData}
-                            ref={consentWithdrawal}
-                            disabled={disabled || withdrawalDisabled[i]}
-                            required={withdrawalRequired[i]}
-                        />
-                        <DateElement
-                            label={consentWithdrawalConfirmationLabel}
-                            name={consentWithdrawal2}
-                            value={this.state.formData[consentWithdrawal2]}
-                            onUserInput={this.setFormData}
-                            ref={consentWithdrawal2}
-                            disabled={disabled || withdrawalDisabled[i]}
-                            required={withdrawalRequired[i]}
-                        />
-                        <hr/>
-                    </div>
-                );
-                consents.push(consent);
-                i++;
-            }
-        }
-
-        let formattedHistory = [];
-        const history = this.state.Data.history;
-        for (let consentKey in history) {
-            if (history.hasOwnProperty(consentKey)) {
-                let consentLabel = history[consentKey].label;
-                let consentType = history[consentKey].consentType;
-                for (let field in history[consentKey]) {
-                    if (history[consentKey].hasOwnProperty(field)) {
-                        let line = '';
-                        let historyConsent = history[consentKey][field];
-                        for (let field2 in historyConsent) {
-                            if (historyConsent.hasOwnProperty(field2)) {
-                                let current = historyConsent[field2];
-                                if (current !== null) {
-                                    switch (field2) {
-                                        case 'data_entry_date':
-                                            line += '[';
-                                            line += current;
-                                            line += '] ';
-                                            break;
-                                        case 'entry_staff':
-                                            line += current;
-                                            line += ' ';
-                                            break;
-                                        case consentType:
-                                            line += consentLabel + ' Status: ';
-                                            line += current;
-                                            line += ' ';
-                                            break;
-                                        case consentType + '_date':
-                                            line += 'Date of Consent: ';
-                                            line += current;
-                                            line += ' ';
-                                            break;
-                                        case consentType + '_withdrawal':
-                                            line += 'Date of '
-                                                    + 'Consent Withdrawal: ';
-                                            line += current;
-                                            line += ' ';
-                                            break;
-                                        default:
-                                    }
-                                }
-                            }
-                        }
-                        formattedHistory.push(<p key={field}>{line}</p>);
-                    }
-                }
-            }
-        }
-
+                        {this.state.Data.consentGroups[consentID].Children.map(
+                          (consentName) => {
+                            return this.renderConsent(consentName);
+                          }
+                        )}
+                        {updateButton}
+                    </FormElement>
+                </TabPane>
+            );
+          }
+        );
         return (
             <div className="row">
-                <FormElement
-                    name="consentStatus"
-                    onSubmit={this.handleSubmit}
-                    ref="form"
-                    class="col-md-6"
+                <VerticalTabs
+                    tabs={tabList}
+                    defaultTab={tabList[0].id}
+                    updateURL={false}
                 >
-                    <StaticElement
-                      label="PSCID"
-                      text={this.state.Data.pscid}
-                    />
-                    <StaticElement
-                      label="DCCID"
-                      text={this.state.Data.candID}
-                    />
-                    {consents}
-                    {updateButton}
-                    {formattedHistory}
-                </FormElement>
+                    {tabPanes}
+                </VerticalTabs>
+                {this.renderFormattedHistory()}
             </div>
         );
     }
