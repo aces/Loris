@@ -154,9 +154,9 @@ class Stats_Behavioural extends \NDB_Form
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
             if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += $row['val'];
+                $c[$vl]['total'] += intval($row['val']);
             } else {
-                $c[$vl]['total'] = $row['val'];
+                $c[$vl]['total'] = intval($row['val']);
             }
             if (isset($c['all']['total'])) {
                 $c['all']['total'] += $row['val'];
@@ -187,7 +187,10 @@ class Stats_Behavioural extends \NDB_Form
                 if ($c['all']['total'] != 0) {
                     if (isset($c['all']['complete'])) {
                         $c['all']['percent']
-                            = floor($c['all']['complete'] / $c['all']['total']*100);
+                            = floor(
+                                intval($c['all']['complete'])
+                                / $c['all']['total']*100
+                            );
                     } else {
                         $c['all']['percent'] = 0;
                     }
@@ -216,7 +219,7 @@ class Stats_Behavioural extends \NDB_Form
 
         foreach ($result as $row) {
             $center = $row['CenterID'];
-            $vl     = $row['VLabel'];
+            $vl     = intval($row['VLabel']);
             $c      =& $this->tpl_data['dde']['C' . $center];
 
             if (isset($c[$vl]['total'])) {
@@ -253,7 +256,10 @@ class Stats_Behavioural extends \NDB_Form
                 if ($c['all']['total'] != 0) {
                     if (isset($c['all']['complete'])) {
                         $c['all']['percent']
-                            = floor($c['all']['complete'] / $c['all']['total']*100);
+                            = floor(
+                                intval($c['all']['complete'])
+                                / $c['all']['total'] * 100
+                            );
                     } else {
                         $c['all']['percent'] = 0;
                     }
