@@ -172,7 +172,6 @@ class TestEndpoint implements RequestHandlerInterface
             );
         }
 
-        $test->row['id']     = null;
         $test->row['active'] = 'Y';
         $testArray           = $test->toSQL();
 

@@ -28,7 +28,8 @@ class BatteryManagerIndex extends Component {
     this.state = {
       tests: {},
       test: {},
-      show: {testForm: false, editForm: false},
+      add: false,
+      edit: false,
       error: false,
       errors: {},
       isLoaded: false,
@@ -37,13 +38,9 @@ class BatteryManagerIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.postData = this.postData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
-    this.addTest = this.addTest.bind(this);
+    this.saveTest = this.saveTest.bind(this);
     this.setTest = this.setTest.bind(this);
-    this.clearTest = this.clearTest.bind(this);
     this.closeForm = this.closeForm.bind(this);
-    this.activateTest = this.activateTest.bind(this);
-    this.deactivateTest = this.deactivateTest.bind(this);
-    this.updateTest = this.updateTest.bind(this);
     this.validateTest = this.validateTest.bind(this);
   }
 
@@ -64,8 +61,6 @@ class BatteryManagerIndex extends Component {
    * @param {string} state
    *
    * @return {object} promise
-   *
-   * XXX: This should eventually be moved to a library function
    */
   fetchData(url, method, state) {
     return new Promise((resolve, reject) => {
@@ -87,8 +82,6 @@ class BatteryManagerIndex extends Component {
    * @param {string} method
    *
    * @return {object} promise
-   *
-   * XXX: This should eventually be moved to a library function
    */
   postData(url, data, method) {
     return new Promise((resolve, reject) => {
@@ -108,7 +101,7 @@ class BatteryManagerIndex extends Component {
           reject(body.error);
         }
       })
-      .catch(() => reject()));
+      .catch((e) => reject(e)));
     });
   }
 
@@ -123,16 +116,18 @@ class BatteryManagerIndex extends Component {
   mapColumn(column, value) {
     switch (column) {
       case 'First Visit':
-        if (value == 'Y') {
-          return 'Yes';
-        } else {
-          return 'No';
+        switch (value) {
+          case 'Y':
+            return 'Yes';
+          case 'N':
+            return 'No';
         }
       case 'Active':
-        if (value == 'Y') {
-          return 'Yes';
-        } else {
-          return 'No';
+        switch (value) {
+          case 'Y':
+            return 'Yes';
+          case 'N':
+            return 'No';
         }
       case 'Change Status':
         return '';
@@ -156,6 +151,7 @@ class BatteryManagerIndex extends Component {
     cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
     const testId = row['ID'];
+    const test = this.state.tests.find((test) => test.id === testId);
     switch (column) {
       case 'Instrument':
         result = <td>{this.state.options.instruments[cell]}</td>;
@@ -168,49 +164,25 @@ class BatteryManagerIndex extends Component {
         break;
       case 'Change Status':
         if (row.Active === 'Y') {
-          // Pass ID of row to deactivate function
           result = <td><CTA label='Deactivate' onUserInput={() => {
-            this.deactivateTest(testId);
+            this.deactivateTest(test);
           }}/></td>;
         } else if (row.Active === 'N') {
-          // Pass ID of row to activate function
           result = <td><CTA label='Activate' onUserInput={() => {
-            this.activateTest(testId);
+            this.activateTest(test);
           }}/></td>;
         }
         break;
       case 'Edit Metadata':
         const editButton = <CTA label='Edit' onUserInput={() => {
           this.loadTest(testId);
-          this.show('editForm');
+          this.setState({edit: true});
         }}/>;
         result = <td>{editButton}</td>;
         break;
     }
 
     return result;
-  }
-
-  /**
-   * Show a given form based on the passed 'state'
-   *
-   * @param {string} item - the item to be shown
-   */
-  show(item) {
-    let show = this.state.show;
-    show[item] = true;
-    this.setState({show});
-  }
-
-  /**
-   * Hige a given form based on the passed 'state'
-   *
-   * @param {string} item - the item to be hidden
-   */
-  hide(item) {
-    let show = this.state.show;
-    show[item] = false;
-    this.setState({show});
   }
 
   /**
@@ -237,66 +209,41 @@ class BatteryManagerIndex extends Component {
   }
 
   /**
-   * Clear the state of the current test
-   */
-  clearTest() {
-    const test = {};
-    this.setState({test});
-  }
-
-  /**
    * Close the Form
    */
   closeForm() {
-    this.hide('testForm');
-    this.hide('editForm');
-    this.clearTest();
+    this.setState({add: false, edit: false, test: {}});
   }
 
   /**
-   * Display popup so user can confirm activation of row
-   * Refresh page if entry in Test Battery is successfully activated
+   * Activate Test
    *
-   * @param {int} testId
-   *
-   * @return {object}
+   * @param {object} test
    */
-  activateTest(testId) {
-    return new Promise((resolve, reject) => {
-      const test = this.state.tests.find((test) => test.id === testId);
-      test.active = 'Y';
-      this.updateTest(test)
-      .then((message) => resolve(message))
-      .then(() => reject());
-    });
+  activateTest(test) {
+    test.active = 'Y';
+    this.saveTest(test, 'PUT');
   }
 
   /**
-   * Display popup so user can confirm deactivation of row
-   * Refresh page if entry in Test Battery is successfully deactivated
+   * Deactivate Test
    *
-   * @param {int} testId
-   *
-   * @return {object}
+   * @param {int} test
    */
-  deactivateTest(testId) {
-    return new Promise((resolve, reject) => {
-      const test = this.state.tests.find((test) => test.id === testId);
-      test.active = 'N';
-      this.updateTest(test)
-      .then((message) => resolve(message))
-      .catch(() => reject());
-    });
+  deactivateTest(test) {
+    test.active = 'N';
+    this.saveTest(test, 'PUT');
   }
 
   /**
    * Updates a previously existing Test with an updated Test.
    *
    * @param {object} test
+   * @param {string} request
    *
    * @return {object} promise
    */
-  updateTest(test) {
+  saveTest(test, request) {
     return new Promise((resolve, reject) => {
       Object.keys(test).forEach((key) => {
         if (test[key] == '') {
@@ -305,115 +252,10 @@ class BatteryManagerIndex extends Component {
       });
       this.checkDuplicate(test)
       .then((test) => this.validateTest(test))
-      .then((test) => this.postData(this.props.testEndpoint+test.id, test, 'PUT'))
+      .then((test) => this.postData(this.props.testEndpoint+test.id, test, request))
       .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
       .then(() => resolve())
-      .catch(() => reject());
-    });
-  }
-
-  /**
-   * save test to database
-   *
-   * @param {object} test
-   *
-   * @return {object} promise
-   */
-  addTest(test) {
-    return new Promise((resolve, reject) => {
-      Object.keys(test).forEach((key) => {
-        if (test[key] == '') {
-          test[key] = null;
-        }
-      });
-      this.checkDuplicate(test)
-      .then((test) => this.validateTest(test))
-      .then((test) => this.postData(this.props.testEndpoint, test, 'POST'))
-      .then((message) => swal.fire(message, '', 'success'))
-      .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
-      .then(() => resolve())
-      .catch(() => reject());
-    });
-  }
-
-  /**
-   * Checks whether the Test is a duplicate of an existing Test.
-   *
-   * @param {object} test
-   *
-   * @return {object} promise
-   */
-  checkDuplicate(test) {
-    return new Promise((resolve, reject) => {
-      let duplicate;
-      this.state.tests.forEach((testCheck) => {
-        if (
-          test.testName == testCheck.testName &&
-          test.ageMinDays == testCheck.ageMinDays &&
-          test.ageMaxDays == testCheck.ageMaxDays &&
-          test.stage == testCheck.stage &&
-          test.subproject == testCheck.subproject &&
-          test.visitLabel == testCheck.visitLabel &&
-          test.centerId == testCheck.centerId &&
-          test.firstVisit == testCheck.firstVisit
-        ) {
-          duplicate = testCheck;
-        }
-      });
-
-      if (duplicate && duplicate.id !== test.id) {
-        if (duplicate.active === 'N') {
-          const edit = test.id ? 'This will deactivate the current test.' : '';
-          swal.fire({
-            title: 'Test Duplicate',
-            text: 'The information provided corresponds with a deactivated '+
-            'test that already exists in the system. Would you to like '+
-            'activate that test? '+edit,
-            type: 'warning',
-            confirmButtonText: 'Activate',
-            showCancelButton: true,
-          }).then((result) => {
-            if (result.value) {
-              this.activateTest(duplicate.id);
-              if (test.id && (test.id !== duplicate.id)) {
-                this.deactivateTest(test.id);
-              }
-              this.closeForm();
-            }
-          });
-        } else if (duplicate.active === 'Y') {
-          swal.fire(
-            'Test Duplicate', 'You cannot duplicate an active test', 'error'
-          );
-        }
-        reject();
-      } else {
-        resolve(test);
-      }
-    });
-  }
-
-  validateTest(test) {
-    return new Promise((resolve, reject) => {
-      const errors = {};
-      if (test.testName == null) {
-        errors.testName = 'This field is required';
-      }
-      if (test.ageMinDays == null) {
-        errors.ageMinDays = 'This field is required';
-      }
-      if (test.ageMaxDays == null) {
-        errors.ageMaxDays = 'This field is required';
-      }
-      if (test.stage == null) {
-        errors.stage = 'This field is required';
-      }
-
-      if (Object.entries(errors).length === 0) {
-        this.setState({errors}, resolve(test));
-      } else {
-        this.setState({errors}, reject());
-      }
+      .catch((e) => reject(e));
     });
   }
 
@@ -438,7 +280,7 @@ class BatteryManagerIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in batter_manager.class.inc
      */
-    const {options, test, tests, show, errors} = this.state;
+    const {options, test, tests, errors, add, edit} = this.state;
     const {hasPermission} = this.props;
     const fields = [
       {label: 'ID', show: false},
@@ -493,28 +335,10 @@ class BatteryManagerIndex extends Component {
       {label: 'Edit Metadata', show: hasPermission('batter_manager_edit')},
     ];
 
-    const testForm = (
-      <Modal
-        title="Add New Test"
-        show={show.testForm || show.editForm}
-        onClose={this.closeForm}
-        onSubmit={show.testForm ? () => this.addTest(test) : () => this.updateTest(test)}
-        throwWarning={Object.keys(test).length !== 0}
-      >
-        <BatteryManagerForm
-          test={test}
-          setTest={this.setTest}
-          options={options}
-          add={show.testForm}
-          errors={errors}
-        />
-      </Modal>
-    );
-
     const actions = [
       {
         label: 'New Test',
-        action: () => this.show('testForm'),
+        action: () => this.setState({add: true}),
         show: hasPermission('battery_manager_edit'),
       },
     ];
@@ -535,9 +359,12 @@ class BatteryManagerIndex extends Component {
       ];
     });
 
+    const modalTitle = edit ? 'Edit Test' : 'Add New Test';
+    const request = edit ? 'PUT' : 'POST';
+    const handleSubmit = () => this.saveTest(test, request);
+
     return (
       <div>
-        {testForm}
         <FilterableDataTable
           name="battery_manager"
           data={testsArray}
@@ -546,13 +373,116 @@ class BatteryManagerIndex extends Component {
           getFormattedCell={this.formatColumn}
           getMappedCell={this.mapColumn}
         />
+        <Modal
+          title={modalTitle}
+          show={add || edit}
+          onClose={this.closeForm}
+          onSubmit={handleSubmit}
+          throwWarning={Object.keys(test).length !== 0}
+        >
+          <BatteryManagerForm
+            test={test}
+            setTest={this.setTest}
+            options={options}
+            add={add}
+            errors={errors}
+          />
+        </Modal>
       </div>
     );
+  }
+
+  /**
+   * Checks whether the Test is a duplicate of an existing Test.
+   *
+   * @param {object} test
+   *
+   * @return {object} promise
+   */
+  checkDuplicate(test) {
+    return new Promise((resolve, reject) => {
+      let duplicate;
+      this.state.tests.forEach((testCheck) => {
+        if (
+          test.testName == testCheck.testName &&
+          test.ageMinDays == testCheck.ageMinDays &&
+          test.ageMaxDays == testCheck.ageMaxDays &&
+          test.stage == testCheck.stage &&
+          test.subproject == testCheck.subproject &&
+          test.visitLabel == testCheck.visitLabel &&
+          test.centerId == testCheck.centerId &&
+          test.firstVisit == testCheck.firstVisit
+        ) {
+          duplicate = testCheck;
+        }
+      });
+
+      if (duplicate && duplicate.id !== test.id) {
+        if (duplicate.active === 'N') {
+          const edit = test.id ? 'This will deactivate the current test.' : '';
+          swal.fire({
+            title: 'Test Duplicate',
+            text: 'The information provided corresponds with a deactivated '+
+            'test that already exists in the system. Would you to like '+
+            'activate that test? '+edit,
+            type: 'warning',
+            confirmButtonText: 'Activate',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.value) {
+              this.activateTest(duplicate);
+              if (test.id && (test.id !== duplicate.id)) {
+                this.deactivateTest(test);
+              }
+              this.closeForm();
+            }
+          });
+        } else if (duplicate.active === 'Y') {
+          swal.fire(
+            'Test Duplicate', 'You cannot duplicate an active test', 'error'
+          );
+        }
+        reject();
+      } else {
+        resolve(test);
+      }
+    });
+  }
+
+
+  /**
+   * Checks that test fields are valide
+   *
+   * @return {object} promise
+   */
+  validateTest(test) {
+    return new Promise((resolve, reject) => {
+      const errors = {};
+      if (test.testName == null) {
+        errors.testName = 'This field is required';
+      }
+      if (test.ageMinDays == null) {
+        errors.ageMinDays = 'This field is required';
+      }
+      if (test.ageMaxDays == null) {
+        errors.ageMaxDays = 'This field is required';
+      }
+      if (test.stage == null) {
+        errors.stage = 'This field is required';
+      }
+
+      if (Object.entries(errors).length === 0) {
+        this.setState({errors}, resolve(test));
+      } else {
+        this.setState({errors}, reject());
+      }
+    });
   }
 }
 
 BatteryManagerIndex.propTypes = {
-  dataURL: PropTypes.string.isRequired,
+  testEndpoint: PropTypes.string.isRequired,
+  optionEndpoint: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
 };
 
