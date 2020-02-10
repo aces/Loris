@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) 
 [![Minimum PHP Version](https://img.shields.io/travis/php-v/aces/loris/master?color=787CB5)](https://php.net/)
+[![Documentation Status](https://readthedocs.org/projects/acesloris/badge/?version=latest)](https://acesloris.readthedocs.io/en/latest/?badge=latest)
 
 # LORIS Neuroimaging Platform
 
