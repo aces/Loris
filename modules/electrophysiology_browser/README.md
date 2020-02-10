@@ -18,9 +18,6 @@ The Electrophysiology Browser displays electrophysiology datasets that have been
 inserted into LORIS from a BIDS-format collection. Derived or processed electrophysiology
 datasets can also be accessed via this module.
 
-Visualization of channel signal data and electrode positions for each electrophysiology dataset. 
-(These are in development and will be added in future.)
-
 ## Permissions
 
 The Electrophysiology Browser uses the following permissions. Any of them is 
