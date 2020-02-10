@@ -41,6 +41,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 #### Updates and Improvements
 - PHP minimum requirements raised to PHP 7.3 (PR #5723)
 - Menus are now maintained by modules and no longer in the SQL database (PR #5839)
+<<<<<<< 328b9ca23131d285662d8720f5a00d4e83e3354c
 - New script created for streamlining instantiation of the Raisinbread demonstration 
 database (PR #5260)
 - New documentation for file permissions has been added to the README.md file. (PR #5323)
@@ -50,6 +51,12 @@ database (PR #5260)
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)
 - Fix bug where examiner form field was incorrectly hidden (PR #6085)
 - Fix special character double escaping in instruments (PR #6223)
+=======
+- Very old instrument relying on QuickForm may have issues due to code changes (PR #4928)
+- Module-specific permissions added for Survey Accounts, Imaging Behavioural
+Quality Control, and Behavioural Quality Control. This may impact access to these
+modules for existing users. (PR #6041)
+>>>>>>> Update CHANGELOG.md
 
 ### Modules 
 #### Candidate Profile
