@@ -758,8 +758,8 @@ class Candidate
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
-            "SELECT ID,Description
-            FROM participant_status_options
+            "SELECT ID,Description 
+            FROM participant_status_options 
             WHERE parentID=:pid",
             array('pid' => $parentID)
         );
