@@ -36,6 +36,6 @@ using the `tools/manage_modules.php` script).
 
 Deactivating a module may have effects throughout LORIS
 such as being removed from the LORIS menu, or removing
-widgets other modules. The exact interactions between
+widgets from other modules. The exact interactions between
 modules caused by activating/deactivating a module are
 module specific.
