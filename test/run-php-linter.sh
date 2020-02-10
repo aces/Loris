@@ -14,6 +14,9 @@ find docs modules htdocs php src tools -name '*.class.inc' -print0 -o -name '*.p
 declare -a tools_list=(
     'assign_missing_instruments.php'
     'detect_duplicated_commentids.php'
+    'generic_includes.php'
+    'raisinbread_refresh.php'
+    'resetpassword.php'
     'setconfig.php'
 )
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ "${tools_list[@]/#/tools/}" || exit $?;
