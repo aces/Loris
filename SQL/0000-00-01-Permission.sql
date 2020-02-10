@@ -112,7 +112,7 @@ INSERT INTO `permissions` VALUES
     (65,'violated_scans_view_ownsite','Violated Scans: View Violated Scans from own site','2'),
     (66,'document_repository_edit','Document Repository: Edit and Upload','2'),
     (67,'candidate_dod_edit', 'Edit dates of death', 2),
-    (68, 'surveys_view', 'View the Survey module', 2),
+    (68, 'survey_accounts_view', 'View the Survey module', 2),
     (69, 'imaging_quality_control_view','View Imaging Quality Control module','2'),
     (70, 'behavioural_quality_control_view','View Behavioural Quality Control module','2');
 

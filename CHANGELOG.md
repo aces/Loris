@@ -13,7 +13,9 @@ changes in the following format: PR #1234***
 #### Features
 - *Add item here*
 #### Updates and Improvements
-- *Add item here*
+- Module-specific permissions added for Survey Accounts, Imaging Behavioural
+Quality Control, and Behavioural Quality Control. This may impact access to these
+modules for existing users.
 #### Bug Fixes
 - *Add item here*
 ### Modules

@@ -33,7 +33,7 @@ class Survey_Accounts extends \DataFrameworkMenu
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('user_accounts');
+        return $user->hasPermission('survey_accounts_view');
     }
 
     /**
