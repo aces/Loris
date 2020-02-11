@@ -80,7 +80,7 @@ class Schedule_Module extends \DataFrameworkMenu
         return array_merge(
             $deps,
             array(
-                $baseURL . "/schedule_module/js/schedulemodule.js",
+                $baseURL . "/schedule_module/js/scheduleIndex.js",
             )
         );
     }

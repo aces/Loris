@@ -321,6 +321,7 @@ const lorisModules = {
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
+  schedule_module: ['scheduleIndex'],	
 };
 for (const [key] of Object.entries(lorisModules)) {
   const target = process.env.target;
