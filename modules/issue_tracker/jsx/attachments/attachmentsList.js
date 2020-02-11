@@ -2,7 +2,7 @@
  * React component used to display
  * issue_tracker attachments list.
  */
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 
@@ -95,8 +95,8 @@ class AttachmentsList extends Component {
           continue;
         }
         attachmentsRows.unshift(
-          <>
-            <div key={key + '_first'} className='row'>
+          <Fragment key={key}>
+            <div className='row'>
               <hr/>
               <div className='col-md-3'>
                 <div className='col-md-5'><b>Date of attachment: </b></div>
@@ -107,7 +107,7 @@ class AttachmentsList extends Component {
                 <div className='col-md-11'><i>{item.file_name}</i></div>
               </div>
             </div>
-            <div key={key + '_second'} className='row'>
+            <div className='row'>
               <div className='col-md-3'>
                 <div className='col-md-5'><b>User: </b></div>
                 <div className='col-md-7'>{item.user}</div>
@@ -121,7 +121,7 @@ class AttachmentsList extends Component {
                 ) : null}
               </div>
             </div>
-            <div key={key + '_third'} className='row'>
+            <div className='row'>
               <div className='col-md-12'>
                 <div className='col-md-2'><b>Attachment options: </b></div>
                 <div className='col-md-10'>
@@ -144,7 +144,7 @@ class AttachmentsList extends Component {
                 </div>
               </div>
             </div>
-          </>
+          </Fragment>
         );
       }
     }
