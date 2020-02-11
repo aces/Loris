@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * File contains the LORIS\module_manager\Module class.
  *

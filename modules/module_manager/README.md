@@ -14,11 +14,11 @@ LORIS.
 ## Scope
 
 The module only displays and configures modules that are already
-installed (populated in the module table.)
+installed (populated in the module table).
 
 NOT in scope:
 
-The module manager does not install new modules
+The module manager does not install new modules.
 
 ## Permissions
 
@@ -30,12 +30,12 @@ allows the user to modify the state of installed modules.
 
 The module manager gets a list of modules from the `modules`
 database table. This table must first be populated (usually by
-using the `tools/manage_modules.php` script)
+using the `tools/manage_modules.php` script).
 
 ## Interactions with LORIS
 
 Deactivating a module may have effects throughout LORIS
 such as being removed from the LORIS menu, or removing
-widgets other modules. The exact interactions between
+widgets from other modules. The exact interactions between
 modules caused by activating/deactivating a module are
 module specific.
