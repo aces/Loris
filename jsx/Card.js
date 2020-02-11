@@ -31,7 +31,7 @@ class Card extends Component {
     const divStyling = {
       marginLeft: '5px',
       marginRight: '5px',
-    }
+    };
     return (
       <div style={divStyling}>
         <Panel
