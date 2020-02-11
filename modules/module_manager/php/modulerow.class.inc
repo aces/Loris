@@ -1,7 +1,7 @@
 <?php
 /**
  * This class implements a data Instance which represents a single
- * file in the module_manager menu table.
+ * module in the module_manager menu table.
  *
  * PHP Version 7
  *
@@ -18,6 +18,11 @@ namespace LORIS\module_manager;
 /**
  * A ModuleRow represents a row in the module_manager menu table.
  *
+ * The module_manager requires a specific "row" concept because
+ * the \Module class does not have any concept of the Active flag
+ * for the module in order to serialize it as JSON for the data
+ * table.
+ *
  * @category   Core
  * @package    Main
  * @subpackage Core
@@ -32,9 +37,9 @@ class ModuleRow implements \LORIS\Data\DataInstance
     protected $Active;
 
     /**
-     * Create a new Media File Instance.
+     * Create a new ModuleRow Instance.
      *
-     * @param array $row The Media File Instance
+     * @param array $row The ModuleRow Instance
      */
     public function __construct(array $row)
     {
