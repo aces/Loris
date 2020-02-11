@@ -566,14 +566,17 @@ class Edit_User extends \NDB_Form
                 $user->addPermissions($permIDs);
             }
         }
+
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
         // send the user an email
         if (!empty($send)) {
-            // create an instance of the config object
-            $config = \NDB_Config::singleton();
+            $config = $factory->config();
+
             // send the user an email
             $msg_data          = array();
             $msg_data['study'] = $config->getSetting('title');
-            $msg_data['url']   = $config->getSetting('url');
+            $msg_data['url']   = $baseURL;
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_hash'];
@@ -584,7 +587,6 @@ class Edit_User extends \NDB_Form
         }
         $this->tpl_data['success'] = true;
         if ($this->isCreatingNewUser()) {
-            $baseURL        = $config->getSetting('url');
             $this->redirect = $baseURL
                 . "/user_accounts/edit_user/"
                 . $values['UserID'];
@@ -1085,7 +1087,14 @@ class Edit_User extends \NDB_Form
         //==================================
         //        Password validation
         //==================================
-        if ($values['Email'] === $values['Password_hash']) {
+
+        // Make sure the user is not using their email address as their password.
+        // Do not show this error if the password is an empty string: in this
+        // case, that means the email is empty also. It's more appropriate to
+        // display only the error 'You must enter an email'.
+        if ($values['Email'] === $values['Password_hash']
+            && $values['Password_hash'] !== ''
+        ) {
             $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
         }
         if (!is_null($this->identifier)) {

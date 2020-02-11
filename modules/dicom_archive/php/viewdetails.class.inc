@@ -323,7 +323,7 @@ class ViewDetails extends \NDB_Form
      * @return string name of the protocol, "Unknown" if
      *         protocol with the given id doesn't exist.
      */
-    function _getProtocolNameFromID($id)
+    function _getProtocolNameFromID($id): string
     {
         try {
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";

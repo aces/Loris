@@ -339,7 +339,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      *
      * @return string JSON
      */
-    function toJSON()
+    function toJSON(): string
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;

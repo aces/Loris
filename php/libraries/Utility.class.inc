@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
 /**
  * A class for holding a set of (static) utility/helper functions in a
  * single namespace.
@@ -55,7 +54,7 @@ class Utility
             $matches
         )
         ) {
-            throw new \LorisException(
+            throw new LorisException(
                 "Argument 1 does not match expected date format (YYYY-MM-DD)"
             );
         }

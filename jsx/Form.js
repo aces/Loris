@@ -478,7 +478,7 @@ class SelectElement extends Component {
     // element will take up the whole row.
     let label = null;
     let inputClass = 'col-sm-12';
-    if (this.props.label || this.props.label == '') {
+    if (this.props.label && this.props.label != '') {
       label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
@@ -1424,7 +1424,7 @@ class StaticElement extends Component {
           {this.props.label}
         </label>
         <div className="col-sm-9">
-          <p className="form-control-static">{this.props.text}</p>
+          <p className={this.props.class}>{this.props.text}</p>
         </div>
       </div>
     );
@@ -1442,6 +1442,7 @@ StaticElement.propTypes = {
 StaticElement.defaultProps = {
   label: '',
   text: null,
+  class: 'form-control-static',
 };
 
 /**

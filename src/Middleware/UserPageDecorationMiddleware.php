@@ -78,10 +78,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         //
         // Coincidentally, this almost-alphabetic sorting results in the exact same
         // order that LORIS previously had.
-        $adminmenu = $menu['Admin'];
+        $adminmenu = $menu['Admin'] ?? [];
         unset($menu['Admin']);
         ksort($menu);
-        $menu['Admin'] = $adminmenu;
+        if (!empty($adminmenu)) {
+            $menu['Admin'] = $adminmenu;
+        }
 
         // We unconditionally sort within each section because the within-menu
         // order has never been stable in LORIS, and sorting adds some consistency.
@@ -132,7 +134,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
 
-        $tpl_data['subtest'] = $request->getAttribute("pageclass")->page;
+        $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
         $page = $request->getAttribute("pageclass");
         if (method_exists($page, 'getFeedbackPanel')

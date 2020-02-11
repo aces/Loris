@@ -24,9 +24,9 @@
  */
 class SiteIDGenerator extends IdentifierGenerator
 {
-    /* Either 'PSCID' or 'ExternalID' */
     private const LENGTH = 4;
 
+    /* Either 'PSCID' or 'ExternalID' */
     protected $kind;
     protected $siteAlias;
     protected $projectAlias;
@@ -53,17 +53,24 @@ class SiteIDGenerator extends IdentifierGenerator
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
         // if the min or max is not configured in project/config.xml
-        $this->minValue = $this->_getIDSetting('min') ??
-            str_repeat(strval($this->alphabet[0]), $this->length);
+        $this->maxValue = $this->_getIDSetting('max') ??
+            str_repeat(strval($this->alphabet[0]), intval($this->length));
+        if (!is_array($this->alphabet)) {
+            throw new \ConfigurationException(
+                'Expecting variable $alphabet to be an array but got '
+                . gettype($this->alphabet)
+            );
+        }
         $this->maxValue = $this->_getIDSetting('max') ??
             str_repeat(
                 strval($this->alphabet[count($this->alphabet) - 1]),
-                $this->length
+                intval($this->length)
             );
 
         $this->siteAlias    = $siteAlias;
         $this->projectAlias = $projectAlias;
-        $this->prefix       = $this->_getIDSetting('prefix');
+
+        $this->prefix = $this->_getIDSetting('prefix');
         $this->validate();
     }
 
