@@ -88,7 +88,7 @@ depending on what functionality you want to provide. The best way to learn about
 for a new module is by studying the code of an existing module that is similar to what you are
 trying to design.
 
-Be sure to familiarize yourself with our [ReactJS style guide]().
+Be sure to familiarize yourself with our [ReactJS guidelines](./ReactJS Guidelines.md).
 
 ### SQL Files
 
