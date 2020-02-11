@@ -42,10 +42,12 @@ class Settings
      * Settings constructor.
      *
      * @param NDB_Config $_config config object
+     * @param string     $baseURL The base URL of LORIS
      */
-    public function __construct(NDB_Config $_config)
+    public function __construct(NDB_Config $_config, string $baseURL='')
     {
         $this->_config = $_config;
+        $this->baseURL = $baseURL;
     }
 
     /**
@@ -56,12 +58,7 @@ class Settings
      */
     public function getBaseURL(): string
     {
-        $url = getenv("LORIS_BASEURL");
-        if (!empty($url)) {
-            return $url;
-        }
-        $www = $this->_config->getSetting('www');
-        return $www['url'];
+        return $this->baseURL;
     }
 
     /**

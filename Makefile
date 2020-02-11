@@ -1,4 +1,4 @@
-.PHONY: clean dev all check checkstatic unittests test phpdev javascript
+.PHONY: clean dev all check checkstatic unittests test phpdev javascript testdata
 
 all: VERSION javascript
 	composer install --no-dev
@@ -32,3 +32,6 @@ unittests: phpdev
 
 # Perform all tests that don't require an install.
 check: checkstatic unittests
+
+testdata:
+	php tools/raisinbread_refresh.php
