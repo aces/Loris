@@ -9,7 +9,6 @@ define("DEBUG", false);
  * Throughout the class, all input arrays follow the same structure:
  * $array['column_name'] = 'value'.
  *
- * @author  Alex Zijdenbos <zijdenbos@example.com>
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Database

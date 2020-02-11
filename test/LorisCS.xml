@@ -9,6 +9,7 @@
         <exclude name="PEAR.Commenting.ClassComment.MissingPackageTag"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingLinkTag"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingVersion"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag"/>
     </rule>
 
     <!-- Pieces of other standards to include... -->
