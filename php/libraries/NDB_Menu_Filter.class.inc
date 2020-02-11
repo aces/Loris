@@ -595,9 +595,10 @@ class NDB_Menu_Filter extends NDB_Menu
         $this->setTemplateVar('rowsPerPage', $rowsPerPage);
         $this->setTemplateVar('pageID', $pageID);
 
-        if (isset($_GET['filter']) &&
-            is_array($_GET['filter']) &&
-            is_array($_GET['filter']['order'])) {
+        if (isset($_GET['filter'])
+            && is_array($_GET['filter'])
+            && is_array($_GET['filter']['order'])
+        ) {
             $this->setTemplateVar(
                 'filterfield',
                 $_GET['filter']['order']['field'] ?? ''
