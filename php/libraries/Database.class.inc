@@ -1,4 +1,6 @@
 <?php declare(strict_types=1);
+define("DEBUG", false);
+
 /**
  * Database abstraction layer presents a unified interface to database
  * connectivity.  Instantiate one object instance per database
@@ -10,8 +12,6 @@
  * @author  Alex Zijdenbos <zijdenbos@example.com>
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-define("DEBUG", false);
-
 class Database
 {
     /**
