@@ -16,8 +16,8 @@
 namespace LORIS\electrophysiology_browser;
 
 /**
- * A DICOMArchiveRow represents a row in the electrophysiology browser
- * menu table.
+ * An ElectrophysiologyBrowserRow represents a row in the
+ * electrophysiology browser menu table.
  *
  * @category   Behavioural
  * @package    Main
