@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * This class implements a data Instance which represents a single
- * row in the dicom archive menu table.
+ * row in the electrophysiology browser menu table.
  *
  * PHP Version 7
  *
@@ -16,7 +16,8 @@
 namespace LORIS\electrophysiology_browser;
 
 /**
- * A DICOMArchiveRow represents a row in the DICOM Archive menu table.
+ * A DICOMArchiveRow represents a row in the electrophysiology browser
+ * menu table.
  *
  * @category   Behavioural
  * @package    Main
