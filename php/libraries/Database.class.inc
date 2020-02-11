@@ -1,15 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * This file represents an SQL database abstraction layer for use in Loris
- *
- * PHP Version 5
- *
- * @category Main
- * @package  Loris
- * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
 define("DEBUG", false);
 
 /**
@@ -20,11 +9,7 @@ define("DEBUG", false);
  * Throughout the class, all input arrays follow the same structure:
  * $array['column_name'] = 'value'.
  *
- * @category Main
- * @package  Loris
- * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Database
 {
