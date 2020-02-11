@@ -200,15 +200,15 @@ class TestEndpoint implements RequestHandlerInterface
 
         $testArray = $test->toSQL();
         foreach ($entries as $entry) {
-            if ($testArray['Test_name'] == $entry['Test_name'] &&
-                $testArray['AgeMinDays'] == $entry['AgeMinDays'] &&
-                $testArray['AgeMaxDays'] == $entry['AgeMaxDays'] &&
-                $testArray['Stage'] == $entry['Stage'] &&
-                $testArray['SubprojectID'] == $entry['SubprojectID'] &&
-                $testArray['Visit_label'] == $entry['Visit_label'] &&
-                $testArray['CenterID'] == $entry['CenterID'] &&
-                $testArray['firstVisit'] == $entry['firstVisit']
-               ) {
+            if ($testArray['Test_name'] == $entry['Test_name']
+                && $testArray['AgeMinDays'] == $entry['AgeMinDays']
+                && $testArray['AgeMaxDays'] == $entry['AgeMaxDays']
+                && $testArray['Stage'] == $entry['Stage']
+                && $testArray['SubprojectID'] == $entry['SubprojectID']
+                && $testArray['Visit_label'] == $entry['Visit_label']
+                && $testArray['CenterID'] == $entry['CenterID']
+                && $testArray['firstVisit'] == $entry['firstVisit']
+            ) {
                 return true;
             }
         }

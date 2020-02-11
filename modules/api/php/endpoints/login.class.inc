@@ -161,9 +161,7 @@ class Login extends Endpoint
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
-
-        $www     = $config->getSetting("www");
-        $baseURL = $www['url'];
+        $baseURL = $factory->settings()->getBaseURL();
 
         $token = array(
             // JWT related tokens to for the JWT library to validate

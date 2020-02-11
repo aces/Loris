@@ -16,4 +16,10 @@ changes in the following format: PR #1234***
 - Very old instrument relying on QuickForm may have issues due to code changes (PR #4928)
 
 #### Modules 
+
+##### Battery Manager
+ - New module created to manage the entries in the test_battery table of the database.
+ This allows projects to modify their instrument battery without requiring backend access.
+ (https://github.com/aces/Loris/pull/4221)
+ 
 ##### module1

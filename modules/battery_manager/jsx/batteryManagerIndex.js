@@ -252,7 +252,11 @@ class BatteryManagerIndex extends Component {
       });
       this.checkDuplicate(test)
       .then((test) => this.validateTest(test))
-      .then((test) => this.postData(this.props.testEndpoint+test.id, test, request))
+      .then((test) => this.postData(
+          this.props.testEndpoint+test.id,
+          test,
+          request)
+      )
       .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
       .then(() => resolve())
       .catch((e) => reject(e));
@@ -452,6 +456,8 @@ class BatteryManagerIndex extends Component {
 
   /**
    * Checks that test fields are valide
+   *
+   * @param {object} test
    *
    * @return {object} promise
    */

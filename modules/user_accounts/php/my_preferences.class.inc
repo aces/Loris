@@ -204,12 +204,13 @@ class My_Preferences extends \NDB_Form
         }
 
         // create an instance of the config object
-        $config = \NDB_Factory::singleton()->config();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
 
         // send the user an email
         $msg_data          = array();
         $msg_data['study'] = $config->getSetting('title');
-        $msg_data['url']   = $config->getSetting('url');
+        $msg_data['url']   = $factory->settings()->getBaseURL();
         $msg_data['realname'] = $values['Real_name'];
         $msg_data['username'] = $user->getUsername();
         $msg_data['password'] = $values['Password_hash'];

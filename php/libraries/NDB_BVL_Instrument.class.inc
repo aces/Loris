@@ -1187,7 +1187,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _getQuickformDate(string $databaseValue)
     {
         throw new Exception(
-            "The function _getQuickformDate has been deprecated. 
+            "The function _getQuickformDate has been deprecated.
             Please contact LORIS developer mail list for support."
         );
     }
@@ -2697,7 +2697,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ),
             new \LORIS\Breadcrumb(
                 $this->getFullName(),
-                "/instruments/$instrument/?commentID=$this->commentID"
+                "/instruments/$instrument/".
+                "?commentID=$this->commentID&sessionID=$sessionid&candID=$candid"
             )
         );
     }

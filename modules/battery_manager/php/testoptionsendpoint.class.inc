@@ -95,7 +95,7 @@ class TestOptionsEndpoint extends \NDB_Page
     {
         return array(
             'Y' => 'Yes',
-            'N'  => 'No',
+            'N' => 'No',
         );
     }
 }
