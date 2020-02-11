@@ -20,11 +20,11 @@ For the remainder of this document we will assume your new module is named `my_f
 │
 ├── help/       // Help text that is displayed to users
 │
-├── js/         // Compiled React files (vanilla javascript) that are served to the browser
+├── js/         // Compiled React files that are served to the browser
 │
-├── jsx/        // Original React files (JSX) - must be compiled
+├── jsx/        // Original React files (JSX)
 │
-├── php/        // PHP classes used to retrieve data from database and display forms
+├── php/        // PHP classes
 │
 ├── test/       // Test Plan and Integration Tests for the current module
 │
@@ -46,8 +46,51 @@ The following files are required for the module to load in LORIS:
 * A PHP file called "module": `php/module.class.inc`.
 * A PHP file with the same name as the module: `php/my_new_module.class.inc`.
 
+The remaining PHP files will depend heavily on the kind of module you are creating. The most basic types
+of LORIS modules are "Menu Filters" and "Forms".
 
-### SQL
+#### Menu Filters
+
+This is a type of module that displays a table of data with options to filter the values of this table.
+
+The correct way to create a menu filter is to include additional classes that represent the idea of a
+row in the tabel displayed to a user. This differs from a row in the database itself; for example, a row in the 
+menu filter module may represent a joining of columns across many database tables.
+
+If you are creating a Menu Filter module, your class `php/my_new_module.class.inc` should extend
+the class `\DataFrameworkMenu`.
+
+[See this file for an example](../../../modules/dicom_archive/php/dicom_archive.class.inc).
+
+##### Data Instance
+You should create a class `php/mynewmodulerow.class.inc` to represent a Menu Filter row. This will
+provide basic structure for the row and include permission flags that can restrict data to users
+affiliated with a given Site or Project.
+
+
+[See this file for an example](../../../modules/dicom_archive/php/dicomarchiverow.class.inc).
+
+##### Row Provisioner.
+This file should be accompanied by a class `php/mynewmodulerowprovisioner.class.inc`. This file should
+conntain the SQL statement used to query the database for data that will be consolidated into a
+Menu Filter row.
+
+[See this file for an example](../../../modules/dicom_archive/php/dicomarchiverowprovisioner.class.inc).
+
+#### Forms
+
+This type of module represents an HTML form and is used to submit data to the back-end.
+
+### JavaScript files
+
+Modern LORIS modules use ReactJS to present data. The content of these files will vary significantly
+depending on what functionality you want to provide. The best way to learn about creating JavaScript
+for a new module is by studying the code of an existing module that is similar to what you are
+trying to design.
+
+Be sure to familiarize yourself with our [ReactJS style guide]().
+
+### SQL Files
 
 New modules must be inserted into the database. You must create new permissions for the module and insert
 an entry for your new module within the `modules` table in LORIS.
