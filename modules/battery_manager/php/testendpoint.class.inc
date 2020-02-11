@@ -100,6 +100,7 @@ class TestEndpoint implements RequestHandlerInterface
                 new \LORIS\Data\Filters\UserSiteMatch()
             );
         }
+
         return $provisioner;
     }
 
