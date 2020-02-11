@@ -3,4 +3,8 @@ set -euo pipefail
 shopt -s globstar nullglob
 GLOBIGNORE="vendor*:node_modules*"
 
-shellcheck **/*.{sh,ksh,bash}
+declare -a script_list=(
+    'tools/install.sh'
+)
+
+shellcheck "${script_list[@]/}" || exit $?;
