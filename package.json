@@ -41,6 +41,7 @@
     "lintfix:javascript": "eslint --fix --ext .js, jsx modules",
     "lint:php": "./test/run-php-linter.sh",
     "tests:static": "make checkstatic",
+    "lint:shell": "./test/run-shell-linter.sh",
     "tests:unit": "./test/dockerized-unit-tests.sh",
     "tests:unit:debug": "DEBUG=true ./test/dockerized-unit-tests.sh",
     "tests:integration": "./test/dockerized-integration-tests.sh",
