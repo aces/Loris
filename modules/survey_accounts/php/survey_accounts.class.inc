@@ -41,7 +41,8 @@ class Survey_Accounts extends \DataFrameworkMenu
      *
      * @return bool
      */
-    public function useSiteFilter() : bool {
+    public function useSiteFilter() : bool
+    {
         return true;
     }
 
@@ -50,7 +51,8 @@ class Survey_Accounts extends \DataFrameworkMenu
      *
      * @return bool
      */
-    public function useProjectFilter() : bool {
+    public function useProjectFilter() : bool
+    {
         return true;
     }
 
@@ -59,7 +61,8 @@ class Survey_Accounts extends \DataFrameworkMenu
      *
      * @return array
      */
-    public function getFieldOptions() : array {
+    public function getFieldOptions() : array
+    {
         return [
             'visits'      => \Utility::getVisitList(),
             'instruments' => \Utility::getDirectInstruments(),
@@ -71,7 +74,8 @@ class Survey_Accounts extends \DataFrameworkMenu
      *
      * @return \LORIS\Data\Provisioner
      */
-    public function getBaseDataProvisioner() : \LORIS\Data\Provisioner {
+    public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
+    {
         return new SurveyAccountsProvisioner();
     }
 
