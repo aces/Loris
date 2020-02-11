@@ -1,7 +1,3 @@
-**[[HOME|Home]]** > **[[TECHNICAL|Technical]]** > **[[How to make a LORIS module]]**
-
----
-
 1. [Overview](#1-overview)
 2. [Create directory structure](#2-create-directory-structure)
 3. [Add required files](#3-add-required-files)
