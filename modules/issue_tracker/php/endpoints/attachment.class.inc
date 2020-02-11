@@ -1,0 +1,204 @@
+<?php declare(strict_types=1);
+/**
+ * POST request methods.
+ *
+ * Used to handle issue_tracker attachment requests.
+ *
+ * PHP Version 7
+ *
+ * @category LORIS_Module
+ * @package  Login
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
+namespace LORIS\issue_tracker\endpoints;
+
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \LORIS\Middleware\ETagCalculator;
+use \LORIS\api\Endpoint;
+
+/**
+ * The NDB_Page for the POST requests.
+ *
+ * @category Loris
+ * @package  Issue Tracker
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class Attachment extends Endpoint implements ETagCalculator
+{
+    public $skipTemplate = true;
+
+    /**
+     * This function will return a json object for attachment request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Ensure GET or POST request.
+        switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGET($request);
+            case 'POST':
+                return $this->_handlePOST($request);
+            case 'DELETE':
+                return $this->_handleDELETE($request);
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    $this->allowedMethods()
+                );
+        }
+    }
+
+    /**
+     * Handle GET requests for attachment
+     * and used for downloading attachment.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Parse GET query params.
+        $values   = $request->getQueryParams();
+
+        $uuid      = $values['uuid'];
+        $issue     = $values['issue'];
+        $filename  = $values['filename'];
+
+        $config = \NDB_Config::singleton();
+        $attachment_data_dir = rtrim(
+            $config->getSetting('IssueTrackerDataPath'),
+            '/'
+        );
+
+        $fileToDownload = trim($attachment_data_dir) .
+            '/attachments/' .
+            strval($issue) . '/' .
+            $uuid;
+
+        if (!is_readable($fileToDownload)) {
+            throw new \LorisException('Attachment NOT FOUND');
+        }
+
+        $name = rawurldecode($filename);
+
+        return (new \LORIS\Http\Response())
+            ->withHeader('Content-Type', 'application/octet-stream')
+            ->withHeader(
+                'Content-Disposition',
+                'attachment; filename=' . basename($name)
+            )
+            ->withStatus(200)
+            ->withBody(new \LORIS\Http\FileStream($fileToDownload));
+    }
+
+    /**
+     * Handle POST requests for attachment
+     * and used for uploading attachment file.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Parse POST request body.
+        $values   = $request->getQueryParams();
+        $user       =& \User::singleton();
+        $attachment = new \LORIS\issue_tracker\UploadHelper();
+        $attachment->setupUploading(
+            $user,
+            $_FILES,
+            $values
+        );
+        return new \LORIS\Http\Response\JsonResponse(
+            array('success' => true)
+        );
+    }
+
+    /**
+     * Handle DELETE requests for attachment
+     * and marks attachment as deleted from issue_tracker.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handleDELETE(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Parse DELETE request body.
+        $values   = $request->getQueryParams();
+        $uuid  = $values['uuid'];
+        $DB    = \Database::singleton();
+        $query = 'UPDATE issues_attachments SET deleted=1 WHERE file_uuid=:uuid;';
+        $stmt  = $DB->prepare($query);
+        $stmt->execute(array('uuid' => $uuid));
+
+        return new \LORIS\Http\Response\JsonResponse(
+            array('success' => true)
+        );
+    }
+
+    /**
+     * An ETagCalculator provides the ability to calculate an ETag for
+     * an incoming HTTP request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return string The value to use for the ETag header.
+     */
+    public function ETag(ServerRequestInterface $request): string
+    {
+        if ($request->getMethod() === 'POST' || $request->getMethod() === 'DELETE') {
+            return 'Etag not calculated on POST request';
+        }
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
+    }
+
+    /**
+     * Return an array of valid HTTP methods for this endpoint
+     *
+     * @return string[] Valid versions
+     */
+    protected function allowedMethods(): array
+    {
+        return array(
+            'GET',
+            'POST',
+            'DELETE'
+        );
+    }
+
+    /**
+     * Returns true if the user has permission to access
+     * the issue_tracker module.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has permission
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        return true;
+    }
+
+    /**
+     * Return a list of LORIS API versions which this endpoint
+     * supports.
+     *
+     * @return string[] LORIS API Versions
+     */
+    protected function supportedVersions(): array
+    {
+        return array('unknown');
+    }
+}

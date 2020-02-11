@@ -187,10 +187,13 @@ class UploadHelper
             'png'  => 'image/png',
             'jpeg' => 'image/jpg',
         );
-
-        $file_extension = strtolower(substr(strrchr($file, '.'), 1));
-        if (array_key_exists($file_extension, $known_mime_types)) {
-            $mime_type = $known_mime_types[$file_extension];
+        if (strpos($file, '.') !== false) {
+            $file_extension = strtolower(substr(strrchr($file, '.'), 1));
+            if (array_key_exists($file_extension, $known_mime_types)) {
+                $mime_type = $known_mime_types[$file_extension];
+            } else {
+                $mime_type = 'application/force-download';
+            }
         } else {
             $mime_type = 'application/force-download';
         }

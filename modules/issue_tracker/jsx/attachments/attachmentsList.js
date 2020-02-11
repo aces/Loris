@@ -25,9 +25,8 @@ class AttachmentsList extends Component {
   deleteAttachment() {
     const state = Object.assign({}, this.state);
     const url = window.location.origin +
-      '/issue_tracker/ajax/Attachment.php' +
-      '?action=delete' +
-      '&uuid=' + state.deleteItem.file_uuid;
+      '/issue_tracker/Attachment' +
+      '?uuid=' + state.deleteItem.file_uuid;
     fetch(url,
       {
         credentials: 'same-origin',
@@ -132,9 +131,8 @@ class AttachmentsList extends Component {
                     Delete
                   </a>&nbsp;&nbsp;|&nbsp;&nbsp;
                   <a href={window.location.origin +
-                     '/issue_tracker/ajax/Attachment.php' +
-                     '?action=download' +
-                     '&uuid=' + item.file_uuid +
+                     '/issue_tracker/Attachment' +
+                     '?uuid=' + item.file_uuid +
                      '&issue=' + this.props.issue +
                      '&filename=' + item.file_name +
                      '&mime_type=' + item.mime_type
