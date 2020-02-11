@@ -32,8 +32,7 @@ class BatteryManagerForm extends Component {
       } else {
         return (
           <span>
-             Editing an entry will deactivate the current entry and create a
-             new entry.<br/>
+             Editing an entry will alter the current entry.<br/>
              You cannot edit an entry to have the same values as another active
              entry.<br/>
              If the duplicate entry is inactive, you will be given the option
