@@ -160,10 +160,9 @@ class Attachment extends Endpoint implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request): string
     {
-        if ($request->getMethod() === 'POST' || $request->getMethod() === 'DELETE') {
+        if ($request->getMethod() === 'POST' || $request->getMethod() === 'DELETE' || $request->getMethod() === 'GET') {
             return 'Etag not calculated on POST request';
         }
-        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
 
     /**
