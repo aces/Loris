@@ -25,10 +25,10 @@ clean:
 
 # Perform static analysis checks
 checkstatic: phpdev
+	npm run lint:shell
 	npm run lint:php
-	npm run lint:javascript
 	vendor/bin/phan
-	bash -c 'shopt -s globstar nullglob; GLOBIGNORE="vendor*:node_modules*"; shellcheck **/*.{sh,ksh,bash}'
+	npm run lint:javascript
 
 # The 'alex' tool scans documentation for condescending language.
 # Arguments:
