@@ -67,7 +67,7 @@ class ModuleManagerTest extends LorisIntegrationTest
         $this->resetPermissions();
 
         // Edit permission
-        $this->setupPermissions(array("module_manager_view"));
+        $this->setupPermissions(array("module_manager_edit"));
         $this->safeGet($this->url . "/module_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
