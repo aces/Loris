@@ -16,13 +16,13 @@ $urlpath = ltrim($_SERVER['PHP_SELF'], "/");
 $request = $_SERVER['REQUEST_URI'];
 if ($request != '/'
     && (    file_exists(__DIR__ . $request)
-    || (file_exists(__DIR__ . "/" . $urlpath)
-    &&  strpos($urlpath, "acknowledgements") === false ))
-    && $request != "/acknowledgements/"
+    || file_exists(__DIR__ . "/" . $urlpath))
+    && strpos($request, "/acknowledgements/") === false
     && strpos($request, "/api/") === false
 ) {
     // FIXME: Should this be in the main index.php to prevent the need
     // for 2 router files? (The AjaxHelper needs to be handled separatedly)
+
     return false;
 }
 if (preg_match(
