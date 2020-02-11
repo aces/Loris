@@ -147,11 +147,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Generates a response fitting the API specification for this endpoint.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if ($this->_visit === null) {
             return new \LORIS\Http\Response\JSON\NotFound('Visit not found');

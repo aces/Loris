@@ -96,11 +96,9 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Creates a response with the thumbnail as body
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         $info = $this->_image->getThumbnailFileInfo();
 

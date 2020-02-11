@@ -125,12 +125,14 @@ class Issue_TrackerTest extends LorisIntegrationTest
     /**
      * Tests that Issue Tracker filter
      *
-     * @param string $name  input the element name which we need test
+     * FIXME This test seems to just check the page source for a string and not
+     * actually use the menu filters.
+     *
      * @param string $value input the value that we expect
      *
      * @return void
      */
-    private function _testFilter($name,$value)
+    private function _testFilter(string $value)
     {
         $this->webDriver->get($this->url . "/issue_tracker/?format=json");
         $bodyText = $this->webDriver->getPageSource();

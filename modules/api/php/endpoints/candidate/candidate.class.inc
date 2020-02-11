@@ -125,11 +125,9 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Returns an array representation of the requested candiate following
      * the API specifications.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         // TODO :: User permission to acces this and subendpoints
         $array = (new \LORIS\api\Views\Candidate($this->_candidate))

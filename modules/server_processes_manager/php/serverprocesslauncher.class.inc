@@ -111,18 +111,6 @@ class ServerProcessLauncher
     }
 
     /**
-     * Determines if a process should be allowed to be run or not.
-     *
-     * @param AbstractServerProcess $process process to consider.
-     *
-     * @return boolean true if the process is allowed to run, false otherwise.
-     */
-    private function _okToExecute(AbstractServerProcess $process)
-    {
-        return true;
-    }
-
-    /**
      * Launches the process passes as argument and records its information
      * in the database.
      *
@@ -134,10 +122,6 @@ class ServerProcessLauncher
      */
     private function _launch(AbstractServerProcess $process)
     {
-        if (!$this->_okToExecute($process)) {
-            return null;
-        }
-
         $process->execute();
 
         // Wait one second before checking the exit code: if the command is invalid
