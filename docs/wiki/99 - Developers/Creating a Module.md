@@ -1,15 +1,11 @@
 # Creating a Module
 
-**Note:** If you are looking for information about how to **adapt** or **override a module**, please see [[Code Customization]]❗
-
----
-
-## Overview 📝
+## Overview
 
 A Loris module consists of a group of pages that perform a specific function or assist with a specific task. In Loris, all active modules are shown as submenu items in the main menu on top of the page. Examples of modules include `Document Repository`, `Candidate List (Access Profiles)`, `Imaging Browser` ...
 
 
-### 2) Create directory structure
+## Directory structure
 
 1. Create a new folder corresponding to your module name under `modules/`. 
 This name should be short and descriptive. 
@@ -43,20 +39,20 @@ The filepaths below will reference these directories.
 _Older modules may contain other folders such as `templates/` and `ajax/`. These folders are deprecated and should
 not be used for new modules._
 
-### 3) Add required files
+### PHP Files
 
 The following files are required for the module to load in LORIS:
 
 * A PHP file called "module": `php/module.class.inc`.
 * A PHP file with the same name as the module: `php/my_new_module.class.inc`.
 
-### Accessing the module
 
-Once you created the modules as described above, go to `$LORIS$/$ModuleName$` to see your newly created page
+### SQL
 
->*For more information, see* [[How Loris URLs work]]
+New modules must be inserted into the database. You must create new permissions for the module and insert
+an entry for your new module within the `modules` table in LORIS.
 
-### 5) Add module Permissions
+#### Module permissions
 
 You must define new permissions for the module. These are used to limit users to specific actions with the module.
 
@@ -65,6 +61,26 @@ Permissions are defined in the `permissions` table in LORIS and should be separa
 In our example, you would create two new permissions: `my_new_module_view` and `my_new_module_edit`. Your PHP code within
 `php/my_new_module.class.inc` will define what these permissions allow a user to do.
 
+To add new permissions, append them to the list of existing permissions found in `SQL/0000-00-01-Permission.sql`. (This file is found in your LORIS root directory, not within the module subdirectory.)
+
+#### Modules table
+
+All modules must be listed in the file `SQL/0000-00-02-Modules.sql`. 
+
+Include a new entry in this file by adding to the list of existing modules.
+
+#### Creating a patch
+
+The files referenced above will be run automatically for new LORIS installations. In addition to these files,
+you msut create a "patch" file that existing LORIS instances can run in order to use your new module.
+
+Create a file `SQL/New_patches/$date_AddMyNewModule.sql`. This file should contain the same commands you added
+to `SQL/0000-00-01-Permission.sql` and `SQL/0000-00-02-Modules.sql`.
+
+### Accessing the module
+
+The new module must be included in the modules table 
+Once you created the modules as described above, go to `$LORIS$/$ModuleName$` to see your newly created page
 
 ### Testing
 
@@ -76,9 +92,6 @@ follow to test all functionality of your module.
 We strongly encourage that new modules include integration tests. These must be written in the file
 `test/my_new_moduleTest.php`.
 
-Unit tests should also be provided for the new module. These are stored outside of the modules directory at
-`$loris/test/unittests/`. For more information, read the [Unit Testing Guide](../../../test/UnitTestingGuide.md).
-
 ### Documentation
 
 A new module must contain a `README.md` file that briefly describes the functionality of the module.
@@ -86,4 +99,29 @@ Examples can be found in any existing module.
 
 It must also contain help text that will be displayed to users. In contrast to the README, this should
 be written in a friendly and non-technical tone. Please see the [Help Text Style Guide](./Help Style Guide.md).
+
+### Issuing a pull request
+
+A pull request containing a new module `my_new_module` will lmust contain the following 
+
+#### Required new files:
+
+* `modules/my_new_module/help/my_new_module.md` -- Front-end help text for users
+* `modules/my_new_module/jsx/...` -- File(s) containing ReactJS code
+* `modules/my_new_module/js/` -- Empty, will contain compiled JS locally
+* `modules/my_new_module/php/module.class.inc` -- Defining module metadata, widgets, and basic permissions
+* `modules/my_new_module/php/my_new_module.class.inc` -- Containing core back-end functionality
+* `modules/my_new_module/php/...` -- Additional PHP files as needed
+* `modules/my_new_module/test/TestPlan.md` -- An exhaustive list of steps to test functionality
+* `modules/my_new_module/README.md` -- Technical summary of module
+* `modules/my_new_module/.gitignore` -- Defines local files to be ignored by git; usually contains `js/*`
+* e.g. `SQL/New_patches/$date_Add-New-Module.sql` -- SQL statements to modify an existing LORIS to be compatible with the new module.
+
+## Required modifications to existing files
+* `SQL/0000-00-02-Permission.sql` -- Adding new permissions for your module
+* `SQL/0000-00-02-Modules.sql` -- Containing an entry for the new module
+
+## Optional new files
+* `modules/my_new_module/css/...` -- Custom CSS file(s)
+* `modules/my_new_module/test/my_new_moduleTest.php` -- Integration tests
 
