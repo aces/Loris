@@ -24,7 +24,7 @@ use \LORIS\api\Endpoint;
  * The NDB_Page for the POST requests.
  *
  * @category Loris
- * @package  Issue Tracker
+ * @package  IssueTracker
  * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -44,16 +44,16 @@ class Attachment extends Endpoint implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            case 'DELETE':
-                return $this->_handleDELETE($request);
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        case 'POST':
+            return $this->_handlePOST($request);
+        case 'DELETE':
+            return $this->_handleDELETE($request);
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
 
@@ -68,11 +68,11 @@ class Attachment extends Endpoint implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse GET query params.
-        $values   = $request->getQueryParams();
+        $values = $request->getQueryParams();
 
-        $uuid      = $values['uuid'];
-        $issue     = $values['issue'];
-        $filename  = $values['filename'];
+        $uuid     = $values['uuid'];
+        $issue    = $values['issue'];
+        $filename = $values['filename'];
 
         $config = \NDB_Config::singleton();
         $attachment_data_dir = rtrim(
@@ -112,7 +112,7 @@ class Attachment extends Endpoint implements ETagCalculator
     private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse POST request body.
-        $values   = $request->getQueryParams();
+        $values     = $request->getQueryParams();
         $user       =& \User::singleton();
         $attachment = new \LORIS\issue_tracker\UploadHelper();
         $attachment->setupUploading(
@@ -133,14 +133,15 @@ class Attachment extends Endpoint implements ETagCalculator
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleDELETE(ServerRequestInterface $request) : ResponseInterface
+    private function _handleDELETE(ServerRequestInterface $request)
+    : ResponseInterface
     {
         // Parse DELETE request body.
-        $values   = $request->getQueryParams();
-        $uuid  = $values['uuid'];
-        $DB    = \Database::singleton();
-        $query = 'UPDATE issues_attachments SET deleted=1 WHERE file_uuid=:uuid;';
-        $stmt  = $DB->prepare($query);
+        $values = $request->getQueryParams();
+        $uuid   = $values['uuid'];
+        $DB     = \Database::singleton();
+        $query  = 'UPDATE issues_attachments SET deleted=1 WHERE file_uuid=:uuid;';
+        $stmt   = $DB->prepare($query);
         $stmt->execute(array('uuid' => $uuid));
 
         return new \LORIS\Http\Response\JsonResponse(
