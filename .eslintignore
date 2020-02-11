@@ -1,5 +1,8 @@
 node_modules/*
-modules/*/js/*.js
+
+# compiled js ignored since it is run on the jsx directory
+modules/*/js/*
+modules/*/js/*/*
 htdocs/js/components/*
 
 # Ignore until ESLint is run

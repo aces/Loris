@@ -123,6 +123,26 @@ case 'xml':
     $MimeType         = 'application/xml';
     $DownloadFilename = basename($File);
     break;
+case 'edf':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/octet-stream';
+    $DownloadFilename = basename($File);
+    break;
+case 'set':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/octet-stream';
+    $DownloadFilename = basename($File);
+    break;
+case 'tgz':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/x-gzip';
+    $DownloadFilename = basename($File);
+    break;
+case 'tsv':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'text/tab-separated-values';
+    $DownloadFilename = basename($File);
+    break;
 case 'nrrd':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'image/vnd.nrrd';
