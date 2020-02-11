@@ -73,7 +73,7 @@ class Attachment extends Endpoint implements ETagCalculator
         $uuid     = $values['uuid'];
         $issue    = $values['issue'];
         $filename = $values['filename'];
-        $mime_type = $values['$mime_type'];
+        $mime_type = $values['mime_type'];
 
         $config = \NDB_Config::singleton();
         $attachment_data_dir = rtrim(
