@@ -113,10 +113,6 @@ class TestEndpoint implements RequestHandlerInterface
      */
     private function _putInstance(ServerRequestInterface $request)
     {
-        if (!$this->user->hasPermission('battery_manager_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden('Edit Permission Denied');
-        }
-
         $testArray = json_decode($request->getBody()->getContents(), true);
         $test      = new Test($testArray);
         return $this->_saveInstance($test);
@@ -131,21 +127,9 @@ class TestEndpoint implements RequestHandlerInterface
      */
     private function _postInstance(ServerRequestInterface $request)
     {
-        if (!$this->user->hasPermission('battery_manager_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden('Edit Permission Denied');
-        }
-
         $testArray = json_decode($request->getBody()->getContents(), true);
         $test      = new Test($testArray);
         $test->row['active'] = 'Y';
-
-        // check if instance is duplicate
-        if ($this->_isDuplicate($test)) {
-            return new \LORIS\Http\Response\JSON\Conflict(
-                'This Test already exists in the database'
-            );
-        }
-
         return $this->_saveInstance($test);
     }
 
@@ -158,11 +142,22 @@ class TestEndpoint implements RequestHandlerInterface
      */
     private function _saveInstance(Test $test)
     {
+        if (!$this->user->hasPermission('battery_manager_edit')) {
+            return new \LORIS\Http\Response\JSON\Forbidden('Edit Permission Denied');
+        }
+
         // validate instance
         $errors = $this->_validateInstance($test);
         if (!empty($errors)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 implode(' ', $errors)
+            );
+        }
+
+        // check if instance is duplicate
+        if ($this->_isDuplicate($test)) {
+            return new \LORIS\Http\Response\JSON\Conflict(
+                'This Test already exists in the database'
             );
         }
 
@@ -186,7 +181,8 @@ class TestEndpoint implements RequestHandlerInterface
     private function _isDuplicate(Test $test) : bool
     {
         // Build SQL query based on values entered by user
-        $query = "SELECT Test_name,
+        $query = "SELECT ID,
+                         Test_name,
                          AgeMinDays,
                          AgeMaxDays,
                          Stage,
@@ -200,7 +196,8 @@ class TestEndpoint implements RequestHandlerInterface
 
         $testArray = $test->toSQL();
         foreach ($entries as $entry) {
-            if ($testArray['Test_name'] == $entry['Test_name']
+            if ($testArray['ID'] !== $entry['ID']
+                && $testArray['Test_name'] == $entry['Test_name']
                 && $testArray['AgeMinDays'] == $entry['AgeMinDays']
                 && $testArray['AgeMaxDays'] == $entry['AgeMaxDays']
                 && $testArray['Stage'] == $entry['Stage']

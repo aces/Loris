@@ -151,7 +151,6 @@ class BatteryManagerIndex extends Component {
     cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
     const testId = row['ID'];
-    const test = this.state.tests.find((test) => test.id === testId);
     switch (column) {
       case 'Instrument':
         result = <td>{this.state.options.instruments[cell]}</td>;
@@ -165,11 +164,11 @@ class BatteryManagerIndex extends Component {
       case 'Change Status':
         if (row.Active === 'Y') {
           result = <td><CTA label='Deactivate' onUserInput={() => {
-            this.deactivateTest(test);
+            this.deactivateTest(testId);
           }}/></td>;
         } else if (row.Active === 'N') {
           result = <td><CTA label='Activate' onUserInput={() => {
-            this.activateTest(test);
+            this.activateTest(testId);
           }}/></td>;
         }
         break;
@@ -218,9 +217,10 @@ class BatteryManagerIndex extends Component {
   /**
    * Activate Test
    *
-   * @param {object} test
+   * @param {int} id
    */
-  activateTest(test) {
+  activateTest(id) {
+    const test = this.state.tests.find((test) => test.id === id);
     test.active = 'Y';
     this.saveTest(test, 'PUT');
   }
@@ -228,9 +228,10 @@ class BatteryManagerIndex extends Component {
   /**
    * Deactivate Test
    *
-   * @param {int} test
+   * @param {int} id
    */
-  deactivateTest(test) {
+  deactivateTest(id) {
+    const test = this.state.tests.find((test) => test.id === id);
     test.active = 'N';
     this.saveTest(test, 'PUT');
   }
@@ -423,6 +424,7 @@ class BatteryManagerIndex extends Component {
 
       if (duplicate && duplicate.id !== test.id) {
         if (duplicate.active === 'N') {
+          console.log('Duplicate Not Active');
           const edit = test.id ? 'This will deactivate the current test.' : '';
           swal.fire({
             title: 'Test Duplicate',
@@ -434,14 +436,15 @@ class BatteryManagerIndex extends Component {
             showCancelButton: true,
           }).then((result) => {
             if (result.value) {
-              this.activateTest(duplicate);
+              this.activateTest(duplicate.id);
               if (test.id && (test.id !== duplicate.id)) {
-                this.deactivateTest(test);
+                this.deactivateTest(test.id);
               }
               this.closeForm();
             }
           });
         } else if (duplicate.active === 'Y') {
+          console.log('Duplicate Active');
           swal.fire(
             'Test Duplicate', 'You cannot duplicate an active test', 'error'
           );
