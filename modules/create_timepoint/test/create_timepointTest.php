@@ -72,12 +72,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint(
-            '900000',
-            'Stale',
-            'V1',
-            'English'
-        );
+        $this->_createTimepoint('900000', 'Stale', 'V1');
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -91,16 +86,11 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * @param string $canID      ID of candidate
      * @param string $subproject text of subproject
      * @param string $visitlabel text of visit label
-     * @param string $lang       text of language
      *
      * @return void
      */
-    private function _createTimepoint(
-        $canID,
-        $subproject,
-        $visitlabel,
-        $lang
-    ) {
+    private function _createTimepoint($canID, $subproject, $visitlabel)
+    {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
@@ -111,9 +101,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->webDriver->findElement(
             WebDriverBy::Name("visitLabel")
         )->sendKeys($visitlabel);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("languageID")
-        )->sendKeys($lang);
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
