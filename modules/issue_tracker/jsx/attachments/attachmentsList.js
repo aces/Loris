@@ -21,6 +21,7 @@ class AttachmentsList extends Component {
     this.deleteAttachment = this.deleteAttachment.bind(this);
     this.openModalAttachmentDelete = this.openModalAttachmentDelete.bind(this);
     this.closeModalAttachmentDelete = this.closeModalAttachmentDelete.bind(this);
+    this.displayAttachmentOptions = this.displayAttachmentOptions.bind(this);
   }
 
   deleteAttachment() {
@@ -65,6 +66,39 @@ class AttachmentsList extends Component {
     this.setState({
       showModalAttachmentDelete: false,
     });
+  }
+
+  displayAttachmentOptions(deleteData, item) {
+    if (loris.userHasPermission('issue_tracker_developer')
+    || this.state.attachments.whoami === item.user) {
+      return (
+        <div className='row'>
+          <div className='col-md-12'>
+            <div className='col-md-2'><b>Attachment options: </b></div>
+            <div className='col-md-10'>
+              <a onClick={this.openModalAttachmentDelete}
+                 value={deleteData}
+                 style={{cursor: 'pointer'}}>
+                Delete
+              </a>&nbsp;&nbsp;|&nbsp;&nbsp;
+              <a href={window.location.origin +
+              '/issue_tracker/Attachment' +
+              '?ID=' + item.ID +
+              '&uuid=' + item.file_uuid +
+              '&issue=' + this.props.issue +
+              '&filename=' + item.file_name +
+              '&mime_type=' + item.mime_type
+              }
+                 download={true}
+                 style={{cursor: 'pointer'}}>
+                Download
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
   }
 
   render() {
@@ -127,30 +161,7 @@ class AttachmentsList extends Component {
                 ) : null}
               </div>
             </div>
-            <div className='row'>
-              <div className='col-md-12'>
-                <div className='col-md-2'><b>Attachment options: </b></div>
-                <div className='col-md-10'>
-                  <a onClick={this.openModalAttachmentDelete}
-                     value={deleteData}
-                     style={{cursor: 'pointer'}}>
-                    Delete
-                  </a>&nbsp;&nbsp;|&nbsp;&nbsp;
-                  <a href={window.location.origin +
-                     '/issue_tracker/Attachment' +
-                     '?ID=' + item.ID +
-                     '&uuid=' + item.file_uuid +
-                     '&issue=' + this.props.issue +
-                     '&filename=' + item.file_name +
-                     '&mime_type=' + item.mime_type
-                     }
-                     download={true}
-                     style={{cursor: 'pointer'}}>
-                    Download
-                  </a>
-                </div>
-              </div>
-            </div>
+            {this.displayAttachmentOptions(deleteData, item)}
           </Fragment>
         );
       }

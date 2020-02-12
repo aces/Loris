@@ -690,7 +690,7 @@ ORDER BY dateAdded LIMIT 1",
                         date_added,
                         file_name,
                         deleted,
-                        USER,
+                        user,
                         description,
                         file_size,
                         mime_type
@@ -716,8 +716,10 @@ ORDER BY dateAdded LIMIT 1",
         } else {
             $issueData['watching'] = "Yes";
         }
+        $username = $user->getUsername();
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['attachments']    = $attachments;
+        $issueData['whoami']         = $username;
         $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $desc[0]['issueComment'] ?? '';
     }
