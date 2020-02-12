@@ -34,11 +34,11 @@ if ($_GET['action'] == 'upload') {
     if (!file_exists($path)) {
         $msg = "File upload failed. Upload directory not found.";
         error_log('ERROR: ' . $msg);
-        header("HTTP/1.1 404 $msg");
+        header("HTTP/1.1 404 Not Found");
     } elseif (!is_writable($path)) {
         $msg = "File upload failed. Upload directory is not writeable.";
         error_log('ERROR: ' . $msg);
-        header("HTTP/1.1 404 $msg");
+        header("HTTP/1.1 500 Internal Server Error");
     } else {
         $target_path = $path . $fileName;
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {

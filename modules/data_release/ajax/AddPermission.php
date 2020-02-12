@@ -35,7 +35,7 @@ if (!$user->hasPermission('data_release_edit_file_access')) {
 if ($_GET['action'] == 'addpermission') {
 
     if (!isset($_POST) || empty($_POST)) {
-        $message = "No data were sent in the POST request";
+        $message = "No data was sent in the POST request";
         http_response_code(400);
         header('Content-Type: application/json; charset=UTF-8');
         die(json_encode(['message' => $message]));
@@ -87,7 +87,7 @@ if ($_GET['action'] == 'addpermission') {
     // on update the user will loose access to ALL files for that release.
 
     if (!isset($_POST) || empty($_POST)) {
-        $message = "No data were sent in the POST request";
+        $message = "No data was sent in the POST request";
         http_response_code(400);
         header('Content-Type: application/json; charset=UTF-8');
         die(json_encode(['message' => $message]));
