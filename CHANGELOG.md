@@ -17,3 +17,8 @@ changes in the following format: PR #1234***
 
 #### Modules 
 ##### module1
+
+
+#### Clean Up
+- New tool for detection of multiple first visits for a candidate (prevents a database
+ exception). It is recommended to run this tool for existing projects (PR #5270)

@@ -14,6 +14,11 @@
  */
 require_once __DIR__ . '/../generic_includes.php';
 
+$confirm = false;
+if (isset($argv[1]) && $argv[1] === "confirm") {
+    $confirm = true;
+}
+
 $db = \Database::singleton();
 
 // Find CandIDs where there are multiple first visits
@@ -45,9 +50,16 @@ if (empty($candIDs)) {
             $sessionID = $result['ID'];
             $set       = array('VisitNo' => $visitNo);
             $where_sessionID = array('ID' => $sessionID);
-            $db->update('session', $set, $where_sessionID);
+            if ($confirm) {
+                $db->update('session', $set, $where_sessionID);
+            }
             $visitNo++;
         }
     }
 }
-echo "Done.\n";
+if ($confirm) {
+    echo "Done.\n";
+} else {
+    echo "\n\nRun this tool again with the argument 'confirm' to ".
+        "perform the changes\n\n";
+}
