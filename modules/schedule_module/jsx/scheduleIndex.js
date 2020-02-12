@@ -34,7 +34,6 @@ class ScheduleIndex extends Component {
    * @return {object}
    */
   fetchData() {
-alert('fdsa');
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => this.setState({data}))
@@ -128,7 +127,7 @@ alert('fdsa');
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
-
+    const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'AppointmentID', show: true, filter: {
         name: 'AppointmentID',
@@ -142,9 +141,14 @@ alert('fdsa');
         name: 'AppointmentTypeID',
         type: 'text',
       }},
-      {label: 'AppointmentTypeID', show: true, filter: {
-        name: 'AppointmentTypeID',
+      {label: 'StartsAt', show: true, filter: {
+        name: 'StartsAt',
         type: 'text',
+      }},
+      {label: 'Site', show: true, filter: {
+        name: 'Site',
+        type: 'select',
+        options: options.site,
       }},
     ];
     return (

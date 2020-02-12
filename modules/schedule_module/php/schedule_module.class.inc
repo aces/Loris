@@ -54,8 +54,17 @@ class Schedule_Module extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        return [];
+        $sites       = array_values(\Utility::getSiteList(false));
+        $visitlabels = array_values(\Utility::getVisitList());
+        $projects    = array_values(\Utility::getProjectList());
+        $subprojects = array_values(\Utility::getSubProjectList());
 
+        return array(
+            'site'       => array_combine($sites, $sites),
+            'visitLabel' => array_combine($visitlabels, $visitlabels),
+            'project'    => array_combine($projects, $projects),
+            'subproject' => array_combine($subprojects, $subprojects),
+        );
     }
     /**
      * {@inheritDoc}

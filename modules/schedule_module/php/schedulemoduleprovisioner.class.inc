@@ -71,7 +71,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     session.Visit_label,
     session.CenterID,
     session.SubprojectID,
-    candidate.RegistrationProjectID,
+    Project.Name AS Project,
     subproject.title,
     appointment.StartsAt AS started,
     appointment_type.Name AS AppointmentTypeName,
@@ -90,6 +90,10 @@ JOIN
 ON
     session.CandID = candidate.CandID
 JOIN
+    Project
+ON
+    candidate.RegistrationProjectID = Project.ProjectID
+JOIN
     subproject
 ON
     session.SubprojectID = subproject.SubprojectID
@@ -101,7 +105,6 @@ ON
   $subquery=str_replace("\n"," ",$subquery);
   $query =  "select *, {$dataEntryStatusExpression} AS dataEntryStatus  FROM
             ({$subquery}) AS subQuery";
-print_r($query);
         parent::__construct(
             $query,
             array()
