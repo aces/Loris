@@ -34,7 +34,7 @@ if (empty($candIDs)) {
 } else {
     foreach ($candIDs as $entry) {
         // Order session IDs by date of visit
-        echo "Multiple first visits detected for $entry[CandID]\n";
+        echo "Multiple first visits detected for CandID $entry[CandID]\n";
         $candID          = $entry['CandID'];
         $query_sessionID = "SELECT ID, VisitNo 
                             FROM `session` 
