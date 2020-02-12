@@ -684,6 +684,7 @@ ORDER BY dateAdded LIMIT 1",
 
         $attachments = $db->pselect(
             "SELECT
+                        ID,
                         issueID,
                         file_uuid,
                         date_added,

@@ -13,6 +13,7 @@ class AttachmentsList extends Component {
       attachments: this.props.attachments,
       showModalAttachmentDelete: false,
       deleteItem: {
+        ID: '',
         file_name: '',
         file_uuid: '',
       },
@@ -26,16 +27,21 @@ class AttachmentsList extends Component {
     const state = Object.assign({}, this.state);
     const url = window.location.origin +
       '/issue_tracker/Attachment' +
-      '?uuid=' + state.deleteItem.file_uuid;
+      '?ID=' + state.deleteItem.ID +
+      '&uuid=' + state.deleteItem.file_uuid;
     fetch(url,
       {
         credentials: 'same-origin',
         method: 'DELETE',
       }).then((resp) => resp.json())
       .then((data) => {
-        window.location.href = window.location.origin
-          + '/issue_tracker/issue/'
-          + this.props.issue;
+        if (data.success) {
+          window.location.href = window.location.origin
+            + '/issue_tracker/issue/'
+            + this.props.issue;
+        } else {
+          swal('Permission denied', '', 'error');
+        }
       }).catch((error) => {
         console.error(error);
         this.setState({
@@ -132,7 +138,8 @@ class AttachmentsList extends Component {
                   </a>&nbsp;&nbsp;|&nbsp;&nbsp;
                   <a href={window.location.origin +
                      '/issue_tracker/Attachment' +
-                     '?uuid=' + item.file_uuid +
+                     '?ID=' + item.ID +
+                     '&uuid=' + item.file_uuid +
                      '&issue=' + this.props.issue +
                      '&filename=' + item.file_name +
                      '&mime_type=' + item.mime_type

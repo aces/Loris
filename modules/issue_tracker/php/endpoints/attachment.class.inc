@@ -137,17 +137,56 @@ class Attachment extends Endpoint implements ETagCalculator
     private function _handleDELETE(ServerRequestInterface $request)
     : ResponseInterface
     {
-        // Parse DELETE request body.
-        $values = $request->getQueryParams();
-        $uuid   = $values['uuid'];
-        $DB     = \Database::singleton();
-        $query  = 'UPDATE issues_attachments SET deleted=1 WHERE file_uuid=:uuid;';
-        $stmt   = $DB->prepare($query);
-        $stmt->execute(array('uuid' => $uuid));
+        // Verify User can delete file.
+        if ($this->_deletePermission($request)) {
+            // Parse request body.
+            $values = $request->getQueryParams();
+            $uuid   = $values['uuid'];
+            $DB     = \Database::singleton();
+            $query  = 'UPDATE issues_attachments SET deleted=1 WHERE file_uuid=:uuid;';
+            $stmt   = $DB->prepare($query);
+            $stmt->execute(array('uuid' => $uuid));
 
+            return new \LORIS\Http\Response\JsonResponse(
+                array('success' => true)
+            );
+        }
         return new \LORIS\Http\Response\JsonResponse(
-            array('success' => true)
+            array('error' => 'invalid permission')
         );
+    }
+
+    /**
+     * Check if user is able to delete the attachment
+     * from the issue_tracker module.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return bool The permission to delete attachment.
+     */
+    private function _deletePermission(ServerRequestInterface $request)
+    : bool
+    {
+        // Parse request body.
+        $values    = $request->getQueryParams();
+        $user      =& \User::singleton();
+        $username  = $user->getUsername();
+        $ID        = $values['ID'];
+        $DB        = \Database::singleton();
+        $query     = 'SELECT user from issues_attachments WHERE ID=:ID AND user=:user;';
+        $result    = $DB->pselect(
+            $query,
+            array('ID' => $ID, 'user' => $username)
+        );
+        // Check if User shouldn't be able to Delete.
+        if (empty($result)
+            && !$user->hasAnyPermission(array(
+                'issue_tracker_developer',
+                    )
+            )) {
+            return false;
+        }
+        return true;
     }
 
     /**

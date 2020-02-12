@@ -1,4 +1,5 @@
 CREATE TABLE `issues_attachments` (
+    `ID` int NOT NULL AUTO_INCREMENT,
     `issueID` int(11) NOT NULL,
     `file_uuid` varchar(36) NOT NULL,
     `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -8,7 +9,7 @@ CREATE TABLE `issues_attachments` (
     `description` text DEFAULT NULL,
     `file_size` int(20) DEFAULT NULL,
     `mime_type` varchar(255) NOT NULL DEFAULT '',
-    PRIMARY KEY (`issueID`,`file_uuid`)
+    PRIMARY KEY (`ID`)
 ) DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`)
