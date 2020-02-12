@@ -70,9 +70,9 @@ class Attachment extends Endpoint implements ETagCalculator
         // Parse GET query params.
         $values = $request->getQueryParams();
 
-        $uuid     = $values['uuid'];
-        $issue    = $values['issue'];
-        $filename = $values['filename'];
+        $uuid      = $values['uuid'];
+        $issue     = $values['issue'];
+        $filename  = $values['filename'];
         $mime_type = $values['mime_type'];
 
         $config = \NDB_Config::singleton();
@@ -143,7 +143,12 @@ class Attachment extends Endpoint implements ETagCalculator
             $values = $request->getQueryParams();
             $uuid   = $values['uuid'];
             $DB     = \Database::singleton();
-            $query  = 'UPDATE issues_attachments SET deleted=1 WHERE file_uuid=:uuid;';
+            $query  = 'UPDATE
+                          issues_attachments
+                       SET
+                          deleted = 1
+                       WHERE
+                          file_uuid = :uuid;';
             $stmt   = $DB->prepare($query);
             $stmt->execute(array('uuid' => $uuid));
 
@@ -168,22 +173,30 @@ class Attachment extends Endpoint implements ETagCalculator
     : bool
     {
         // Parse request body.
-        $values    = $request->getQueryParams();
-        $user      =& \User::singleton();
-        $username  = $user->getUsername();
-        $ID        = $values['ID'];
-        $DB        = \Database::singleton();
-        $query     = 'SELECT user from issues_attachments WHERE ID=:ID AND user=:user;';
-        $result    = $DB->pselect(
+        $values   = $request->getQueryParams();
+        $user     =& \User::singleton();
+        $username = $user->getUsername();
+        $ID       = $values['ID'];
+        $DB       = \Database::singleton();
+        $query    = 'SELECT
+                        USER
+                    FROM
+                        issues_attachments
+                    WHERE
+                        ID = :ID
+                        AND USER = :user;';
+        $result   = $DB->pselect(
             $query,
             array('ID' => $ID, 'user' => $username)
         );
         // Check if User shouldn't be able to Delete.
         if (empty($result)
-            && !$user->hasAnyPermission(array(
-                'issue_tracker_developer',
-                    )
-            )) {
+            && !$user->hasAnyPermission(
+                array(
+                    'issue_tracker_developer',
+                )
+            )
+        ) {
             return false;
         }
         return true;
@@ -199,7 +212,10 @@ class Attachment extends Endpoint implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request): string
     {
-        if ($request->getMethod() === 'POST' || $request->getMethod() === 'DELETE' || $request->getMethod() === 'GET') {
+        if ($request->getMethod() === 'POST'
+            || $request->getMethod() === 'DELETE'
+            || $request->getMethod() === 'GET'
+        ) {
             return 'Etag not calculated on POST request';
         }
     }
