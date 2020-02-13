@@ -37,7 +37,7 @@ abstract class IdentifierGenerator
     /**
      * An array of all the valid characters that can be used in the ID.
      *
-     * @var array<int,float|int> This is derived from the return type of PHP's
+     * @var array<int,float|int|string> This is derived from the return type of PHP's
      *                              range() which is used to generate the alphabet.
      */
     protected $alphabet = array();

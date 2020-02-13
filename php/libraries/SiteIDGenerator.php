@@ -315,7 +315,7 @@ class SiteIDGenerator extends IdentifierGenerator
     /**
      * Initializes the alphabet property.
      *
-     * @return array<int,int|float>
+     * @return array<int,int|float|string>
      */
     private function _getAlphabet(): array
     {
