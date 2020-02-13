@@ -208,7 +208,7 @@ class UploadHelper
      */
     function generateHash(string $filePath) : string
     {
-        return sha1_file($filePath);
+        return hash_file('md5', $filePath);
     }
 
     /**
