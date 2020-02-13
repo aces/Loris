@@ -116,7 +116,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         $this->setupPermissions(array("conflict_resolver"));
 
         $this->safeGet($this->url . "/conflict_resolver");
-        $wait->until(
+        $this->webDriver->wait->until(
             \WebDriverExpectedCondition::presenceOfElementLocated(
                 \WebDriverBy::id('tab-unresolved')
             )
@@ -151,7 +151,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
     {
         $this->safeGet($this->url . "/conflict_resolver/");
 
-        $wait->until(
+        $this->webDriver->wait->until(
             \WebDriverExpectedCondition::presenceOfElementLocated(
                 \WebDriverBy::id('unresolved')
             )
@@ -227,7 +227,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
     {
         $this->safeGet($this->url . "/conflict_resolver");
 
-        $wait->until(
+        $this->webDriver->wait->until(
             \WebDriverExpectedCondition::presenceOfElementLocated(
                 \WebDriverBy::id('tab-resolved')
             )
@@ -238,7 +238,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         );
 
         // Clicking on the tab renders a new tab content.
-        $wait->until(
+        $this->webDriver->wait->until(
             \WebDriverExpectedCondition::presenceOfElementLocated(
                 \WebDriverBy::id('resolved')
             )
