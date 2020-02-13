@@ -27,6 +27,14 @@ checkstatic: phpdev
 	npm run lint:javascript
 	vendor/bin/phan
 
+# The 'alex' tool scans documentation for condescending language.
+# Arguments:
+#     --quiet Shows only warnings and errors
+#     --why   Explains why something is problematic
+#     --diff  On Travis, only scans files changed
+make checklanguage:
+	npx alex --quiet --why --diff
+
 unittests: phpdev
 	vendor/bin/phpunit --configuration test/phpunit.xml
 
