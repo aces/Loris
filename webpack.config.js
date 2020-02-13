@@ -111,6 +111,7 @@ const config = [{
       StaticDataTable: path.resolve(__dirname, './jsx/StaticDataTable'),
       Tabs: path.resolve(__dirname, './jsx/Tabs'),
       TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
+      Card: path.resolve(__dirname, './jsx/Card'),
     },
     extensions: ['*', '.js', '.jsx', '.json'],
   },
