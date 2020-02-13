@@ -134,7 +134,6 @@ if ($status != 0) {
         escapeshellarg($password)
     );
     exec($mysqlCommand . ' -e "show tables;" 1>/dev/null 2>&1', $output, $status);
-    print_r($output);
     if ($status != 0) {
         die(
             printWarning(
