@@ -110,66 +110,6 @@ class Attachment extends Endpoint implements ETagCalculator
      */
     private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
-
-//        $files = $request->getUploadedFiles();
-//        if (count($files) !== 1) {
-//            return new \LORIS\Http\Response\JSON\BadRequest(
-//                'There should be 1 and only 1 file uploaded per POST request.'
-//            );
-//        }
-//        $uploadedFile = $files['file'];
-//        $filename     = $uploadedFile->getClientFilename();
-//        // Parse POST request body.
-//        $values     = $request->getQueryParams();
-//
-//        $issueTrackerDataPath = trim(\NDB_factory::singleton()
-//            ->config()
-//            ->getSetting('IssueTrackerDataPath'));
-//
-//        $test = sha1_file('/private/var/tmp/phpr6kXTk');
-//        $again = sha1_file('jfwoiowejfiowiejf');
-//        $file_hash = sha1_file($_FILES['file']['tmp_name']);
-//
-//        if (is_writable($issueTrackerDataPath)) {
-//            $file_info = new \SplFileInfo(
-//                $issueTrackerDataPath .
-//                '/attachments'
-//            );
-//            $path_to_store_file = $file_info->getPath();
-//            if (!is_dir($path_to_store_file)) {
-//                mkdir($path_to_store_file, 0770, true);
-//            }
-//        } else {
-//            throw new \LorisException(
-//                'The attachment directory for Issue_Tracker isn\'t writable.'
-//            );
-//        }
-//
-//        $uploader = (new \LORIS\FilesUploadHandler($file_info))
-//            ->withPermittedMIMETypes(
-//                $this->getFileMimeType(
-//                    $uploadedFile->getClientFilename()
-//                )
-//            );
-//
-//        $upload_response = $uploader->handle($request);
-//
-//        if ($upload_response->getStatusCode() !== 201) {
-//            $test = 'hello';
-//        }
-//
-//        // Update Database
-//        $filepath = $path_to_store_file->getPathname() . '/' . $filename;
-//        $fileinfo = new \SplFileInfo($filepath);
-//        if (!$fileinfo->isFile()) {
-//            return new \LORIS\Http\Response\JSON\InternalServerError(
-//                'Upload failed (see error_log.)'
-//            );
-//        }
-
-
-
-
         // Parse POST request body.
         $values     = $request->getQueryParams();
         $user       =& \User::singleton();
@@ -207,7 +147,7 @@ class Attachment extends Endpoint implements ETagCalculator
                              deleted = 1
                           WHERE
                              file_hash = :file_hash;';
-            $stmt   = $DB->prepare($query);
+            $stmt      = $DB->prepare($query);
             $stmt->execute(array('file_hash' => $file_hash));
 
             return new \LORIS\Http\Response\JsonResponse(

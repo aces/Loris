@@ -71,7 +71,7 @@ class UploadHelper
         $this->_fileToUpload
             = (object) array(
                 'file'        => $files['file']['name'],
-                'file_hash'   => $this->generate_hash($files['file']['tmp_name']),
+                'file_hash'   => $this->generateHash($files['file']['tmp_name']),
                 'mime_type'   => $this->getFileMimeType($files['file']['name']),
                 'tmp_name'    => $files['file']['tmp_name'],
                 'size'        => $this->_bytes,
@@ -202,13 +202,13 @@ class UploadHelper
     /**
      * Create a sha1 string from file_content.
      *
-     * @param string $file_path
+     * @param string $filePath the path to the file.
      *
      * @return string
      */
-    function generate_hash(string $file_path) : string
+    function generateHash(string $filePath) : string
     {
-        return sha1_file($file_path);
+        return sha1_file($filePath);
     }
 
     /**
