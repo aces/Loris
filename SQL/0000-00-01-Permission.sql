@@ -104,7 +104,9 @@ INSERT INTO `permissions` VALUES
     (56,'publication_approve', 'Publication - Approve or reject proposed publication projects', 2),
     (57, 'candidate_dob_edit', 'Edit dates of birth', 2),
     (58,'electrophysiology_browser_view_allsites', 'View all-sites Electrophysiology Browser pages', 2),
-    (59,'electrophysiology_browser_view_site', 'View own site Electrophysiology Browser pages', 2);
+    (59,'electrophysiology_browser_view_site', 'View own site Electrophysiology Browser pages', 2),
+    (60,'battery_manager_view','View Battery Manager',2),
+    (61,'battery_manager_edit','Add, activate, and deactivate entries in Test Battery',2);
 
 
 INSERT INTO `user_perm_rel` (userID, permID)
