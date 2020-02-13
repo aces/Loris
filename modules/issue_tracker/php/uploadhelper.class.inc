@@ -64,6 +64,10 @@ class UploadHelper
      */
     function setupUploading(Object $user, array $files, array $values) : array
     {
+        // Check if post.ini max_post configured for the file_size.
+        if (isset($files['file']['tmp_name']) || empty($files['file']['tmp_name'])) {
+            return array('error' => 'The server is not configured to receive a file this large.');
+        }
         $this->_user   = $user;
         $this->_bytes  = $files['file']['size'];
         $this->_values = $values;
@@ -85,7 +89,7 @@ class UploadHelper
         $this->registerFile($this->_fileToUpload);
         $this->endWithSuccess();
 
-        return array('message' => 'success');
+        return array('success' => true);
     }
 
     /**

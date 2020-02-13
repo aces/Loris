@@ -40,6 +40,8 @@ class AttachmentsList extends Component {
           window.location.href = window.location.origin
             + '/issue_tracker/issue/'
             + this.props.issue;
+        } else if (data.error) {
+          swal(data.error, '', 'error');
         } else {
           swal('Permission denied', '', 'error');
         }

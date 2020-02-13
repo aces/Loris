@@ -114,13 +114,13 @@ class Attachment extends Endpoint implements ETagCalculator
         $values     = $request->getQueryParams();
         $user       =& \User::singleton();
         $attachment = new \LORIS\issue_tracker\UploadHelper();
-        $attachment->setupUploading(
+        $response   = $attachment->setupUploading(
             $user,
             $_FILES,
             $values
         );
         return new \LORIS\Http\Response\JsonResponse(
-            array('success' => true)
+            $response
         );
     }
 
