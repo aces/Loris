@@ -26,7 +26,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 class CandIDGenerator extends IdentifierGenerator
 {
     /**
-     * CandIDs should always be exactly 6 integers.
+     * CandIDs should always be exactly 6 digits.
      */
     private const LENGTH     = 6;
     private const MIN_CANDID = '100000';
