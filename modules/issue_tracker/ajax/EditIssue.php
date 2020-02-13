@@ -686,7 +686,7 @@ ORDER BY dateAdded LIMIT 1",
             "SELECT
                         ID,
                         issueID,
-                        file_uuid,
+                        file_hash,
                         date_added,
                         file_name,
                         deleted,

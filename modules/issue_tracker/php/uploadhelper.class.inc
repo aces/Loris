@@ -71,7 +71,7 @@ class UploadHelper
         $this->_fileToUpload
             = (object) array(
                 'file'        => $files['file']['name'],
-                'uuid'        => $this->uuid4(),
+                'uuid'        => $this->generate_hash($files['file']['tmp_name']),
                 'mime_type'   => $this->getFileMimeType($files['file']['name']),
                 'tmp_name'    => $files['file']['tmp_name'],
                 'size'        => $this->_bytes,
@@ -108,8 +108,7 @@ class UploadHelper
 
         if (is_writable($attachment_data_dir)) {
             $fileToUpload->full_path = $attachment_data_dir .
-                                       '/attachments/' .
-                                       strval($this->_values['issueID']);
+                                       '/attachments';
             if (!is_dir($fileToUpload->full_path)) {
                 mkdir($fileToUpload->full_path, 0770, true);
             }
@@ -134,7 +133,7 @@ class UploadHelper
         $DB     =& \Database::singleton();
         $values = array(
             'issueID'     => $this->_values['issueID'],
-            'file_uuid'   => $fileToUpload->uuid,
+            'file_hash'   => $fileToUpload->uuid,
             'date_added'  => date('Y-m-d h:i:s', time()),
             'file_name'   => $fileToUpload->file,
             'deleted'     => 0,
@@ -198,6 +197,18 @@ class UploadHelper
             $mime_type = 'application/force-download';
         }
         return $mime_type;
+    }
+
+    /**
+     * Create a sha1 string from file_content.
+     *
+     * @param string $file_path
+     *
+     * @return string
+     */
+    function generate_hash(string $file_path) : string
+    {
+        return sha1_file($file_path);
     }
 
     /**

@@ -1,7 +1,7 @@
 CREATE TABLE `issues_attachments` (
     `ID` int NOT NULL AUTO_INCREMENT,
     `issueID` int(11) NOT NULL,
-    `file_uuid` varchar(36) NOT NULL,
+    `file_hash` varchar(40) NOT NULL,
     `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
     `file_name` varchar(255) NOT NULL DEFAULT '',
     `deleted` tinyint(1) NOT NULL DEFAULT 0,
