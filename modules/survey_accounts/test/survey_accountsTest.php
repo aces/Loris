@@ -61,7 +61,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "Project",
             array(
-                'ProjectID' => '1',
+                'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
             )
         );
@@ -79,7 +79,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
                 'PSCID'                 => '8888',
-                'RegistrationProjectID' => '1',
+                'RegistrationProjectID' => '7777',
             )
         );
         $this->DB->insert(
@@ -87,8 +87,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             array(
                 'ID'           => '111111',
                 'CandID'       => '999888',
-                'CenterID'     => '1',
-                'ProjectID'    => '1',
+                'CenterID'     => '55',
+                'ProjectID'    => '7777',
                 'UserID'       => '1',
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
@@ -99,10 +99,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "candidate",
             array(
                 'CandID'                => '999999',
-                'RegistrationCenterID'  => '1',
+                'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
                 'PSCID'                 => '8889',
-                'RegistrationProjectID' => '1',
+                'RegistrationProjectID' => '7777',
             )
         );
         $this->DB->insert(
@@ -110,8 +110,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             array(
                 'ID'           => '111112',
                 'CandID'       => '999999',
-                'CenterID'     => '1',
-                'ProjectID'    => '1',
+                'CenterID'     => '55',
+                'ProjectID'    => '7777',
                 'UserID'       => '1',
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
@@ -168,7 +168,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "Project",
             array(
-                'ProjectID' => '1',
+                'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
             )
         );
