@@ -26,6 +26,9 @@ namespace LORIS\data_release;
 
 class Data_Release extends \NDB_Menu_Filter
 {
+    public $AjaxModule   = true;
+    public $skipTemplate = true;
+
     /**
      * Check user permissions
      *
@@ -46,22 +49,20 @@ class Data_Release extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup variables
+     * Setup all the class variables needed for the data release menu page
      *
      * @return void
      */
     function _setupVariables()
     {
         $user =& \User::singleton();
-
-        $Factory = \NDB_Factory::singleton();
-        $DB      = $Factory->Database();
+        $DB   = \Database::singleton();
 
         // set the class variables
         $this->columns = array(
-            'file_name',
+            'file_name AS fileName',
             'version',
-            'upload_date',
+            'upload_date AS uploadDate',
         );
         $this->query   = " FROM data_release dr";
 
@@ -70,57 +71,70 @@ class Data_Release extends \NDB_Menu_Filter
             ON (dr.id=drp.data_release_id) 
             JOIN users u ON (u.ID=drp.userid) 
             WHERE u.UserID="
-            . $DB->quote($user->getUsername());
+                . $DB->quote($user->getUsername());
         }
 
-        $this->group_by     = '';
-        $this->order_by     = 'upload_date';
-        $this->headers      = array(
-            'file_name',
-            'version',
-            'upload_date',
-        );
-        $this->validFilters = array(
-            'file_name',
-            'version',
-            'upload_date',
-        );
-        $this->formToFilter = array(
-            'file_name'   => 'file_name',
-            'version'     => 'version',
-            'upload_date' => 'upload_date',
-        );
+        $this->group_by = '';
+        $this->order_by = 'uploadDate';
+    }
 
-        $userUpload     = $user->hasPermission("data_release_upload");
-        $userEditAccess = $user->hasPermission("data_release_edit_file_access");
+    /**
+     * Create the form for the data release menu page
+     *
+     * @return void
+     **/
+    function setup()
+    {
+        parent::setup();
 
+        $DB = \Database::singleton();
+
+        // Get list of users in the database
+        $list_of_users = $this->getUsersList($DB);
+
+        // Get list of data release versions and filenames
+        $vFiles = $this->getVersionedFiles($DB);
+
+        $filenames_options = array();
+        $versions_options  = array();
+
+        foreach ($vFiles as $versionName => $filesArray) {
+            foreach ($filesArray as $fileID => $fileName) {
+                $filenames_options[$fileID] = "$fileName - $versionName";
+            }
+            $versions_options[$versionName] = $versionName;
+        }
+
+        // Get list of permissions per data release versions
+        $manage_permissions = $this->getUserVersionPermissions($vFiles, $DB);
+
+        $this->fieldOptions = [
+            'users'              => $list_of_users,
+            'versions'           => $versions_options,
+            'filenames'          => $filenames_options,
+            'manage_permissions' => $manage_permissions,
+        ];
+    }
+
+
+    /**
+     * Greps the list of users available in the users database table.
+     *
+     * @param \Database $DB database handle
+     *
+     * @return array Array of user ID and user name
+     */
+    function getUsersList(\Database $DB)
+    {
         $userids = $DB->pselectColWithIndexKey(
             "SELECT ID, UserID FROM users",
             array(),
             "ID"
         );
 
-        $versionedFiles        = $this->getVersionedFiles($DB);
-        $data_release_ids      = array();
-        $data_release_versions = array();
-
-        foreach ($versionedFiles as $versionName=>$versionFiles) {
-            foreach ($versionFiles as $fileID=>$fileName) {
-                $data_release_ids[$fileID] = $fileName . " - " . $versionName;
-            }
-            $data_release_versions[$versionName] = $versionName;
-
-        }
-
-        $manage_permissions = $this->getUserVersionPermissions($versionedFiles, $DB);
-
-        $this->tpl_data['user_upload']      = $userUpload;
-        $this->tpl_data['user_edit_access'] = $userEditAccess;
-        $this->tpl_data['userids']          = $userids;
-        $this->tpl_data['data_release_ids'] = $data_release_ids;
-        $this->tpl_data['data_release_versions'] = $data_release_versions;
-        $this->tpl_data['manage_permissions']    = $manage_permissions;
+        return $userids;
     }
+
 
     /**
      * Gets the array of release versions with their corresponding files.
@@ -128,7 +142,7 @@ class Data_Release extends \NDB_Menu_Filter
      * This function is used for the initial load as well as for comparison upon
      * update to ensure no values are added or deleted unexpectedly.
      *
-     * @param \Database $DB Database to use for querying
+     * @param \Database $DB database handle
      *
      * @return array Associative array of $versions=>(files associate with version)
      */
@@ -160,7 +174,7 @@ class Data_Release extends \NDB_Menu_Filter
      * update to ensure no values are added or deleted unexpectedly.
      *
      * @param array     $vFiles Array of $version=>(files associated with $version)
-     * @param \Database $DB     Database to use for querying
+     * @param \Database $DB     database handle
      *
      * @return array Associative array of users with all release version they have
      *               access to. See "has access to" definition in this function's
@@ -206,18 +220,37 @@ class Data_Release extends \NDB_Menu_Filter
 
         //now we can compare the $uFAFormatted to $vFiles (versioned files array)
         //to identify which checkboxes should be checked
-        $manage_permissions = array();
+        $version_permissions = array();
         foreach ($uFAFormatted as $userID=>$userVersions) {
             if (empty($userVersions)) {
-                $manage_permissions[$userID] = array();
+                $version_permissions[$userID] = array();
             }
             foreach ($userVersions as $versionName=>$versionFiles) {
                 if (empty(array_diff($vFiles[$versionName], $versionFiles))) {
-                    $manage_permissions[$userID][] =$versionName;
+                    $version_permissions[$userID][] = $versionName;
+                } else {
+                    $version_permissions[$userID] = array();
                 }
             }
         }
-        return $manage_permissions;
+
+        return $version_permissions;
     }
 
+    /**
+     * Include the column formatter
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        return array_merge(
+            parent::getJSDependencies(),
+            array(
+                $baseurl . "/data_release/js/dataReleaseIndex.js",
+            )
+        );
+    }
 }

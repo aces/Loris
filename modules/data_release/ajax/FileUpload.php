@@ -17,33 +17,32 @@ $DB      = $factory->database();
 $user    = $factory->user();
 $config  = $factory->config();
 
-if ($_POST['action'] == 'upload'
-    && $user->hasPermission("data_release_upload")
-) {
+if (!$user->hasPermission('data_release_upload')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
+if ($_GET['action'] == 'upload') {
     $fileName    = $_FILES["file"]["name"];
-    $version     = $_POST['version'];
+    $version     = !empty($_POST['version']) ? $_POST['version'] : null;
     $upload_date = date('Y-m-d');
 
     $settings = $factory->settings();
 
     $baseURL = $settings->getBaseURL();
     $path    = \Utility::appendForwardSlash($config->getSetting('dataReleasePath'));
-
     if (!file_exists($path)) {
-        error_log(
-            "ERROR: File upload failed. Upload"
-            . " directory not found."
-        );
-        header("HTTP/1.1 500 Internal Server Error");
+        $msg = "File upload failed. Upload directory not found.";
+        error_log('ERROR: ' . $msg);
+        header("HTTP/1.1 404 Not Found");
     } elseif (!is_writable($path)) {
-        error_log(
-            "File upload failed. Upload directory"
-            . " does not appear to be writeable."
-        );
+        $msg = "File upload failed. Upload directory is not writeable.";
+        error_log('ERROR: ' . $msg);
         header("HTTP/1.1 500 Internal Server Error");
     } else {
         $target_path = $path . $fileName;
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
+            // insert the file into the data_release table
             $DB->insert(
                 'data_release',
                 array(
@@ -52,23 +51,29 @@ if ($_POST['action'] == 'upload'
                     'upload_date' => $upload_date,
                 )
             );
-
+            // get the ID of the user who uploaded the file
             $user_ID = $DB->pselectOne(
                 "SELECT ID FROM users WHERE userid=:UserID",
                 array('UserID' => $user->getUsername())
             );
-            $ID      = $DB->pselectOne(
-                "SELECT id 
-                        FROM data_release 
-                        WHERE file_name=:file_name 
-                            AND version=:version 
-                            AND upload_date=:upload_date",
+            // get the ID of the file inserted in the data_release table
+            $version_where = $version ? "version=:version" : "version IS :version";
+            $ID            = $DB->pselectOne(
+                "SELECT 
+               id 
+             FROM 
+               data_release 
+             WHERE 
+               file_name=:file_name 
+               AND $version_where
+               AND upload_date=:upload_date",
                 array(
                     'file_name'   => $fileName,
                     'version'     => $version,
                     'upload_date' => $upload_date,
                 )
             );
+            // add permission to the user for the uploaded data_release file
             $DB->insert(
                 'data_release_permissions',
                 array(
@@ -78,8 +83,28 @@ if ($_POST['action'] == 'upload'
             );
         }
         header("Location: {$baseURL}/data_release/?uploadSuccess=true");
+        header("HTTP/1.1 201 Created");
     }
+
+} elseif ($_GET['action'] == 'getData') {
+    $filesList = $DB->pselect(
+        "SELECT id, file_name FROM data_release",
+        array()
+    );
+
+    $dataReleaseFiles = array();
+    foreach ($filesList as $row) {
+        $dataReleaseFiles[$row['id']] = $row['file_name'];
+    }
+
+    $results = [
+        'files'         => array_values($dataReleaseFiles),
+        'maxUploadSize' => \Utility::getMaxUploadSize(),
+    ];
+    echo json_encode($results);
+
 } else {
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error uploading the file";
 }
+

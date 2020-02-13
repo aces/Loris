@@ -1,4 +1,4 @@
-.PHONY: clean dev all check checkstatic unittests test phpdev javascript
+.PHONY: clean dev all check checkstatic unittests test phpdev javascript testdata
 
 all: VERSION javascript
 	composer install --no-dev
@@ -27,8 +27,19 @@ checkstatic: phpdev
 	npm run lint:javascript
 	vendor/bin/phan
 
+# The 'alex' tool scans documentation for condescending language.
+# Arguments:
+#     --quiet Shows only warnings and errors
+#     --why   Explains why something is problematic
+#     --diff  On Travis, only scans files changed
+make checklanguage:
+	npx alex --quiet --why --diff
+
 unittests: phpdev
 	vendor/bin/phpunit --configuration test/phpunit.xml
 
 # Perform all tests that don't require an install.
 check: checkstatic unittests
+
+testdata:
+	php tools/raisinbread_refresh.php
