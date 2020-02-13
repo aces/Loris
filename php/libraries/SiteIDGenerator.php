@@ -221,7 +221,7 @@ class SiteIDGenerator extends IdentifierGenerator
                 );
             }
         }
-        // The remaining valeues - min, max, and length - should be returned as
+        // The remaining values - min, max, and length - should be returned as
         // null if they are not set.
         return is_null($seqValue) ? $seqValue: $seqValue;
     }
