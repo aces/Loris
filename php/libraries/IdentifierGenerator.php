@@ -113,21 +113,6 @@ abstract class IdentifierGenerator
             break;
         }
 
-        if (!empty($this->siteAlias) && !empty($this->projectAlias)) {
-            throw new \InvalidArgumentException(
-                'Only one of siteAlias or projectAlias should have a value'
-            );
-        }
-        if (empty($this->siteAlias) && empty($this->projectAlias)) {
-            throw new \InvalidArgumentException(
-                'Either siteAlias or projectAlias must not be empty'
-            );
-        }
-        // Assign class property 'prefix' to whichever alias is not empty.
-        !empty($this->siteAlias) ?
-            $this->prefix   = $this->siteAlias
-            : $this->prefix = $this->projectAlias;
-
         return $this->prefix . $id;
     }
 
