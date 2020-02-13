@@ -18,6 +18,7 @@ declare -a tools_list=(
     'raisinbread_refresh.php'
     'resetpassword.php'
     'setconfig.php'
+    'single_use/Cleanup_multiple_firstVisits.php'
 )
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ "${tools_list[@]/#/tools/}" || exit $?;
 
