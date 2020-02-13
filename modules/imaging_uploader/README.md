@@ -69,17 +69,8 @@ The imaging uploader has the following configurations that affect its usage:
 
 #### Install Configurations
 
-To enable the Imaging Uploader to handle large files, please update the 
-`php.ini` apache configuration file. Recommended sample values appropriate for 
-compressed scans not exceeding 500M in size are: 
-
-```
-session.gc_maxlifetime = 10800  // After this number of seconds, stored data will be seen as 'garbage' and cleaned up by the garbage collection process.
-max_input_time = 10800          // Maximum amount of time each script may spend parsing request data (in seconds)
-max_execution_time = 10800      // Maximum execution time of each script (in seconds)
-upload_max_filesize = 1024M     // Maximum allowed size for uploaded files.
-post_max_size = 1024M           // Maximum size of POST data that PHP will accept.
-```
+To enable the Imaging Uploader to handle large files, please follow the
+instructons for [Handling Large File Uploads](../../docs/wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/Handling Large File Uploads.md).
 
 #### <a name="database_config_link"></a> Database Configurations
 

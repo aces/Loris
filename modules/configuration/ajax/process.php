@@ -192,6 +192,7 @@ function getPathIDs(string $table): array
     if (! in_array($table, array('Config', 'ConfigSettings', true))) {
         throw new \LorisException('Table must be "Config" or "ConfigSettings"');
     }
+    $query = '';
     switch ($table) {
     case 'Config':
         /* Query adapated from:

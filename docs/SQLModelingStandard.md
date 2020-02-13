@@ -26,7 +26,7 @@ infrastructure will be re-designed to follow this guideline.*
   of the words in the name should reveal the concern of the table in a 
   broad-to-specific manner. 
   - *i.e. A table containing the consent information of a candidate would be 
-    named `candidate_consent`, candidate being the broader concern and just 
+    named `candidate_consent`, candidate being the broader concern and 
     `consent` is not sufficiently  informative to rule out user consents and 
     examiner consents. A table containing the consent types would be called 
     as such `consent_type`.*
@@ -76,7 +76,7 @@ infrastructure will be re-designed to follow this guideline.*
   be named like in `OriginCountryID` and `DestinationCountryID`.*
 - Both **primary key and foreign key** fields should end with **`ID`**
   in upper case.  
-- **Date** fields should not just be named “Date”. A
+- **Date** fields should not be named “Date”. A
   **qualifier** like “BoughtDate” or “DateAccepted” should be added as
   required.  
 - **No ENUM attributes** should be used in the default LORIS schema

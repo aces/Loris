@@ -33,8 +33,8 @@ DELETE is not supported on any resource defined in this API.
 # 1.1 Authentication
 
 If a user is logged in to Loris and can be authenticated using the standard session mechanism,
-no further authentication is required. Requests will be evaluated as requests from that user,
-so that standard Loris modules can simply use the API.
+no further authentication is required. Requests will be evaluated as requests from that user
+so that standard Loris modules are able to use the API.
 
 If a user is not logged in to Loris (for instance, in a third party app or a CORS application),
 they can be authenticated using [JSON Web Tokens](https://jwt.io).

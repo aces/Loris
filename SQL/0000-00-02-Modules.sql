@@ -8,6 +8,7 @@ CREATE TABLE `modules` (
 
 INSERT INTO modules (Name, Active) VALUES ('acknowledgements', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('api', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('battery_manager', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('behavioural_qc', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('brainbrowser', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('bvl_feedback', 'Y');
@@ -45,3 +46,4 @@ INSERT INTO modules (Name, Active) VALUES ('statistics', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('survey_accounts', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('timepoint_list', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('user_accounts', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('electrophysiology_browser', 'Y');
