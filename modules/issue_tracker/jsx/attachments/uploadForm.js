@@ -72,7 +72,8 @@ class IssueUploadAttachmentForm extends Component {
     formObj.append('issueID', this.props.issue);
     const url = window.location.origin +
       '/issue_tracker/Attachment' +
-      '?issueID=' + this.props.issue;
+      '?issueID=' + this.props.issue +
+      '&fileDescription=' + state.formData.fileDescription;
     fetch(url,
       {
         credentials: 'same-origin',

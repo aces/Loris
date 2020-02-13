@@ -29,7 +29,7 @@ class AttachmentsList extends Component {
     const url = window.location.origin +
       '/issue_tracker/Attachment' +
       '?ID=' + state.deleteItem.ID +
-      '&uuid=' + state.deleteItem.file_hash;
+      '&file_hash=' + state.deleteItem.file_hash;
     fetch(url,
       {
         credentials: 'same-origin',
@@ -84,7 +84,7 @@ class AttachmentsList extends Component {
               <a href={window.location.origin +
               '/issue_tracker/Attachment' +
               '?ID=' + item.ID +
-              '&uuid=' + item.file_hash +
+              '&file_hash=' + item.file_hash +
               '&issue=' + this.props.issue +
               '&filename=' + item.file_name +
               '&mime_type=' + item.mime_type

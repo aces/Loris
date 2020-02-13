@@ -70,7 +70,7 @@ class Attachment extends Endpoint implements ETagCalculator
         // Parse GET query params.
         $values = $request->getQueryParams();
 
-        $uuid      = $values['uuid'];
+        $file_hash = $values['file_hash'];
         $filename  = $values['filename'];
         $mime_type = $values['mime_type'];
 
@@ -82,7 +82,7 @@ class Attachment extends Endpoint implements ETagCalculator
 
         $fileToDownload = trim($attachment_data_dir) .
             '/attachments/' .
-            $uuid;
+            $file_hash;
 
         if (!is_readable($fileToDownload)) {
             throw new \LorisException('Attachment NOT FOUND');
@@ -198,17 +198,17 @@ class Attachment extends Endpoint implements ETagCalculator
         // Verify User can delete file.
         if ($this->_deletePermission($request)) {
             // Parse request body.
-            $values = $request->getQueryParams();
-            $uuid   = $values['uuid'];
-            $DB     = \Database::singleton();
-            $query  = 'UPDATE
-                          issues_attachments
-                       SET
-                          deleted = 1
-                       WHERE
-                          file_hash = :uuid;';
+            $values    = $request->getQueryParams();
+            $file_hash = $values['file_hash'];
+            $DB        = \Database::singleton();
+            $query     = 'UPDATE
+                             issues_attachments
+                          SET
+                             deleted = 1
+                          WHERE
+                             file_hash = :file_hash;';
             $stmt   = $DB->prepare($query);
-            $stmt->execute(array('uuid' => $uuid));
+            $stmt->execute(array('file_hash' => $file_hash));
 
             return new \LORIS\Http\Response\JsonResponse(
                 array('success' => true)

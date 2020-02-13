@@ -71,7 +71,7 @@ class UploadHelper
         $this->_fileToUpload
             = (object) array(
                 'file'        => $files['file']['name'],
-                'uuid'        => $this->generate_hash($files['file']['tmp_name']),
+                'file_hash'   => $this->generate_hash($files['file']['tmp_name']),
                 'mime_type'   => $this->getFileMimeType($files['file']['name']),
                 'tmp_name'    => $files['file']['tmp_name'],
                 'size'        => $this->_bytes,
@@ -133,7 +133,7 @@ class UploadHelper
         $DB     =& \Database::singleton();
         $values = array(
             'issueID'     => $this->_values['issueID'],
-            'file_hash'   => $fileToUpload->uuid,
+            'file_hash'   => $fileToUpload->file_hash,
             'date_added'  => date('Y-m-d h:i:s', time()),
             'file_name'   => $fileToUpload->file,
             'deleted'     => 0,
@@ -145,7 +145,7 @@ class UploadHelper
         try {
             $DB->insert('issues_attachments', $values);
             // Move file from tmp to issue_tracker attachment directory.
-            $path = $fileToUpload->full_path . '/' . $fileToUpload->uuid;
+            $path = $fileToUpload->full_path . '/' . $fileToUpload->file_hash;
             move_uploaded_file($_FILES['file']['tmp_name'], $path);
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
@@ -209,23 +209,6 @@ class UploadHelper
     function generate_hash(string $file_path) : string
     {
         return sha1_file($file_path);
-    }
-
-    /**
-     * Create a UUID v4 string.
-     *
-     * Source from comments:
-     * http://php.net/manual/en/function.com-create-guid.php
-     * Maybe move to Utilities class.
-     *
-     * @return string $version
-     */
-    function uuid4() : string
-    {
-        $data    = openssl_random_pseudo_bytes(16);
-        $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
-        $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
-        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
     /**
