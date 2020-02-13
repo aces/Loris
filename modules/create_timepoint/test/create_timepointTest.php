@@ -41,7 +41,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
     }

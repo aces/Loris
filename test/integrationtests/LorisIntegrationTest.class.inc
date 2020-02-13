@@ -110,11 +110,14 @@ abstract class LorisIntegrationTest extends TestCase
         $user->updatePassword($password);
 
         $dev          = $this->config->getSettingFromXML('dev');
-        $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
+        $selenium_url = $dev['selenium_url'] ?? 'http://localhost:4444/wd/hub';
         $profile      = new FirefoxProfile();
         $profile->setPreference("setAcceptUntrustedCertificates", true);
         $profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
-        $profile->setPreference("security.insecure_field_warning.contextual.enabled", false);
+        $profile->setPreference(
+            "security.insecure_field_warning.contextual.enabled",
+            false
+        );
         $desired_capabilities = DesiredCapabilities::firefox();
         // running headless model in Travis
         if (getenv('HEADLESS')) {
@@ -132,7 +135,9 @@ abstract class LorisIntegrationTest extends TestCase
 
         $this->login("UnitTester", $this->validPassword);
 
-        if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
+        if (extension_loaded('xdebug')
+            && function_exists("xdebug_start_code_coverage")
+        ) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
 
@@ -215,12 +220,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function setupConfigSetting($configName, $value)
     {
-        /*  if (isset($this->_oldConfig[$configName])) {
-            throw new LorisException(
-                "Attempted to change already changed config setting"
-            );
-        }*/
-
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
             array("configName" => $configName)
@@ -260,11 +259,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function restoreConfigSetting($configName)
     {
-        /*
-        if(!isset($this->_oldConfig[$configName])) {
-            throw new LorisException("Attempted to restore unsaved config setting");
-        }
-         */
         if (isset($this->_oldConfig[$configName])) {
             $this->DB->update(
                 "Config",
@@ -322,7 +316,11 @@ abstract class LorisIntegrationTest extends TestCase
     function changeStudySite()
     {
         $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
-        $this->DB->update("user_psc_rel", array("CenterID" => 99), array("UserID" => 999990));
+        $this->DB->update(
+            "user_psc_rel",
+            array("CenterID" => 99),
+            array("UserID" => 999990)
+        );
     }
 
     /**
@@ -333,7 +331,11 @@ abstract class LorisIntegrationTest extends TestCase
     function resetStudySite()
     {
         $this->DB->run('SET foreign_key_checks =0');
-        $this->DB->update("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
+        $this->DB->update(
+            "user_psc_rel",
+            array("CenterID" => 1),
+            array("UserID" => 999990)
+        );
         $this->DB->delete("psc", array("CenterID" => 99));
         $this->DB->run('SET foreign_key_checks =1');
     }
@@ -341,7 +343,8 @@ abstract class LorisIntegrationTest extends TestCase
     /**
      * Helper function to create a subproject
      *
-     * @param string $title Name of the subproject
+     * @param string $SubprojectID Name of the subproject
+     * @param string $title        Name of the subproject
      *
      * @return void
      */
