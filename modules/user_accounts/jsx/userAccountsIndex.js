@@ -4,9 +4,14 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+/**
+ * User Accounts Class.
+ */
 class UserAccountsIndex extends Component {
   /**
    * Constructor
+   *
+   * @param {object} props
    */
   constructor(props) {
     super(props);
@@ -100,6 +105,8 @@ class UserAccountsIndex extends Component {
 
   /**
    * Render
+   *
+   * @return {object} 
    */
   render() {
     // If error occurs, return a message.
