@@ -56,6 +56,7 @@ case 'candidateDOD':
     exit;
 default:
     header("HTTP/1.1 404 Not Found");
+    exit;
 }
 /**
  * Handles the fetching of Candidate Info fields
