@@ -200,7 +200,7 @@ class UploadHelper
     }
 
     /**
-     * Create a sha1 string from file_content.
+     * Create a md5 string from file_content.
      *
      * @param string $filePath the path to the file.
      *
