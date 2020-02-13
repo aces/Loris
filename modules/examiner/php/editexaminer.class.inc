@@ -112,18 +112,12 @@ class EditExaminer extends \NDB_Form
     {
         $DB = \Database::singleton();
 
+        // get the examinerID
+        $examinerID = $this->identifier;
         foreach ($values['certStatus'] as $testID => $certStatus) {
 
             $date_cert = $values['date_cert'][$testID];
             $comment   = trim($values['comment'][$testID]);
-
-            // get the examinerID - edit_examiner passes the ID through
-            // the identifier, training passes it as a value
-            if (!empty($values['examiner'])) {
-                $examinerID = $values['examiner'];
-            } else {
-                $examinerID = $this->identifier;
-            }
 
             // Get the certificationID if it exists
             $certID = $DB->pselectOne(
@@ -198,12 +192,15 @@ class EditExaminer extends \NDB_Form
                         'TID' => $testID,
                     )
                 );
-                if (!empty($oldVals)) {
-                    // since there is an ORDER BY in pselect
-                    // $oldVals[0] corresponds to the latest date
-                    $oldVal  = $oldVals[0]['new'] ?? null;
-                    $oldDate = $oldVals[0]['new_date'] ?? null;
+                if (empty($oldVals)) {
+                    throw new \LorisException(
+                        'Certification data could not be found'
+                    );
                 }
+                // since there is an ORDER BY in pselect
+                // $oldVals[0] corresponds to the latest date
+                $oldVal  = $oldVals[0]['new'] ?? null;
+                $oldDate = $oldVals[0]['new_date'] ?? null;
 
                 $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment

@@ -39,7 +39,6 @@ return [
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
-        "PhanPossiblyUndeclaredVariable",
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
