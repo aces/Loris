@@ -98,7 +98,27 @@ class AttachmentsList extends Component {
         </div>
       );
     }
-    return null;
+    return (
+      <div className='row'>
+        <div className='col-md-12'>
+          <div className='col-md-2'><b>Attachment options: </b></div>
+          <div className='col-md-10'>
+            <a href={window.location.origin +
+            '/issue_tracker/Attachment' +
+            '?ID=' + item.ID +
+            '&file_hash=' + item.file_hash +
+            '&issue=' + this.props.issue +
+            '&filename=' + item.file_name +
+            '&mime_type=' + item.mime_type
+            }
+               download={true}
+               style={{cursor: 'pointer'}}>
+              Download
+            </a>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   render() {
