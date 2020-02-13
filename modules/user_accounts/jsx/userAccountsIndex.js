@@ -5,6 +5,9 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
 class UserAccountsIndex extends Component {
+  /**
+   * Constructor
+   */
   constructor(props) {
     super(props);
 
@@ -19,6 +22,9 @@ class UserAccountsIndex extends Component {
     this.addUser = this.addUser.bind(this);
   }
 
+  /**
+   * Lifecycle method
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -34,14 +40,7 @@ class UserAccountsIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => {
-        // Convert concatenated string of sites to array
-        data.Data = data.Data.map((row) => {
-          row[0] = row[0].split('; ');
-          return row;
-        });
-        this.setState({data});
-      })
+      .then((data) => this.setState({data}))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -63,7 +62,12 @@ class UserAccountsIndex extends Component {
     switch (column) {
       case 'Site':
         // If user has multiple sites, join array of sites into string
-        result = <td>{cell.join('; ')}</td>;
+        result = (
+          <td>{cell
+            .map((centerId) => this.state.data.fieldOptions.sites[centerId])
+            .join(', ')}
+          </td>
+        );
         break;
       case 'Username':
         url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
@@ -87,10 +91,16 @@ class UserAccountsIndex extends Component {
     return result;
   }
 
+  /**
+   * Changes url to add User.
+   */
   addUser() {
     location.href='/user_accounts/edit_user/';
   }
 
+  /**
+   * Render
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.

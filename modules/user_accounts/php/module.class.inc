@@ -35,24 +35,8 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasPermission('user_accounts');
-    }
-
-    /**
-     * The edit_user page overrides the default handler in order to delegate
-     * edit_user/$identifeir to the edit_user page.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
-     * @return ResponseInterface The outgoing PSR15 response
-     */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
-    {
-        if (strpos($request->getUri()->getPath(), "/edit_user/") === 0) {
-            $page = $this->loadPage("edit_user");
-            return $page->process($request, $page);
-        }
-        return parent::handle($request);
+        return parent::hasAccess($user) &&
+            $user->hasPermission('user_accounts');
     }
 
     /**
