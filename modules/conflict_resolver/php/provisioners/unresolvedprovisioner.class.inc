@@ -48,7 +48,7 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
              LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
              LEFT JOIN session ON (flag.SessionID=session.ID)
              LEFT JOIN candidate ON (candidate.CandID=session.CandID)
-             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID)
+             LEFT JOIN Project ON (session.ProjectID=Project.ProjectID)
              LEFT JOIN psc ON (session.CenterID = psc.CenterID)
              WHERE session.Active="Y" AND candidate.Active ="Y"
             ',
