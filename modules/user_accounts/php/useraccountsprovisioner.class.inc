@@ -45,7 +45,6 @@ class UserAccountsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     u.Pending_approval as pending
              FROM users u
              LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-             LEFT JOIN psc ON (upr.CenterID=psc.CenterID)
              GROUP BY u.ID
              ORDER BY u.UserID",
             array()
