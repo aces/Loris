@@ -28,11 +28,17 @@ import swal from 'sweetalert2';
  *
  */
 class Modal extends Component {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.handleClose = this.handleClose.bind(this);
   }
 
+  /**
+   * Handles action which causes the Modal to close.
+   */
   handleClose() {
     if (this.props.throwWarning) {
       swal.fire({
@@ -49,6 +55,9 @@ class Modal extends Component {
     }
   }
 
+  /**
+   * Render
+   */
   render() {
     const {show, children, onSubmit, title} = this.props;
 

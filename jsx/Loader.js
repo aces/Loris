@@ -13,15 +13,25 @@ import PropTypes from 'prop-types';
  * Loader component
  */
 class Loader extends Component {
+  /**
+   * Constructor
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Render
+   */
   render() {
+    const style = {
+      width: parseInt(this.props.size),
+      height: parseInt(this.props.size),
+    };
     return (
       <div
         className='loader'
-        style={{width: parseInt(this.props.size), height: parseInt(this.props.size)}}
+        style={style}
       />
     );
   }

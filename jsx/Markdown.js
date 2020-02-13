@@ -23,7 +23,13 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 const ReactMarkdown = require('react-markdown');
 
+/**
+ * Markdown
+ */
 class Markdown extends Component {
+  /**
+   * Render
+   */
   render() {
     return <ReactMarkdown source={this.props.content} />;
   }
