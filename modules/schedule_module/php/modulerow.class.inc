@@ -81,20 +81,20 @@ protected $dataEntryStatus;
     {
         return json_encode(
             [
+                'CandID'  => $this->CandID,
+                'PSCID' => $this->PSCID,
+                'site'  => $this->site,
+                'Visit_label'  => $this->Visit_label,
+                'Project'  => $this->Project,
+                'Subproject'  => $this->Subproject,
+                'AppointmentTypeName'  => $this->AppointmentTypeName,
 	        'AppointmentID'=>$this->AppointmentID,
         	'SessionID'=>$this->SessionID,
 	        'AppointmentTypeID'=>$this->AppointmentTypeID,
 	        'StartsAt'=>$this->StartsAt,
-                'site'  => $this->site,
-                'PSCID' => $this->PSCID,
-                'CandID'  => $this->CandID,
-                'Visit_label'  => $this->Visit_label,
                 'CenterID'  => $this->CenterID,
                 'SubprojectID'  => $this->SubprojectID,
-                'Project'  => $this->Project,
-                'Subproject'  => $this->Subproject,
                 'started'  => $this->started,
-                'AppointmentTypeName'  => $this->AppointmentTypeName,
                 'dataEntryStatus'  => $this->dataEntryStatus,
             ]
         );

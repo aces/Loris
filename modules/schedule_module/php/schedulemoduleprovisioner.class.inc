@@ -36,6 +36,31 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
      */
     function __construct()
     {
+        parent::__construct(
+            $this->getQuery(),
+            array()
+        );
+
+    }
+
+    /**
+     * Returns an instance of a ModuleRow object.
+     *
+     * @param array $row The database row from the LORIS Database class.
+     *
+     * @return \LORIS\Data\DataInstance An instance representing this row.
+     */
+    public function getInstance($row) : \LORIS\Data\DataInstance
+    {
+            return new ModuleRow($row);
+    }
+    /**
+     * Returns a SQL query string.
+     *
+     * @return string A SQL query string.
+     */
+    public function getQuery() : string
+    {
   $dataEntryColumns = (new DataEntrySelectClause())
         ->register("Behavioral", new BehavioralDataEntryExpression())
         ->register("MRI", new MriDataEntryExpression())
@@ -101,26 +126,10 @@ JOIN
     psc
 ON
     session.CenterID = psc.CenterID";
-  
+
   $subquery=str_replace("\n"," ",$subquery);
   $query =  "select *, {$dataEntryStatusExpression} AS dataEntryStatus  FROM
-            ({$subquery}) AS subQuery";
-        parent::__construct(
-            $query,
-            array()
-        );
-
-    }
-
-    /**
-     * Returns an instance of a ModuleRow object.
-     *
-     * @param array $row The database row from the LORIS Database class.
-     *
-     * @return \LORIS\Data\DataInstance An instance representing this row.
-     */
-    public function getInstance($row) : \LORIS\Data\DataInstance
-    {
-            return new ModuleRow($row);
+            ({$subquery}) AS subQuery";          
+            return $query;
     }
 }

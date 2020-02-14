@@ -7,6 +7,7 @@ import {
     FormElement,
     FieldsetElement,
     CheckboxElement,
+    TimeElement,	
 } from 'jsx/Form';
 
 /**
@@ -97,6 +98,9 @@ function Filter(props) {
           case 'date':
             element = <DateElement/>;
             break;
+          case 'time':
+            element = <TimeElement/>;
+            break;			
           case 'checkbox':
             element = <CheckboxElement/>;
             break;

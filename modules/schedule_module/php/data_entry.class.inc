@@ -3,7 +3,6 @@ namespace LORIS\schedule_module;
     /*
         Implement this interface for each Appointment Type
     */
-$a = "fdaa";
     interface DataEntryExpression {
         public function getCompleteExpression () : string;
         public function getInProgressExpression () : string;
@@ -297,30 +296,4 @@ $a = "fdaa";
         }
     }
 
-  $dataEntryColumns = (new DataEntrySelectClause())
-        ->register("Behavioral", new BehavioralDataEntryExpression())
-        ->register("MRI", new MriDataEntryExpression())
-        ->register("Blood Collection", new BloodCollectionDataEntryExpression())
-        ->getColumns();
-
-  $dataEntryStatusExpression = "
-    (
-        CASE
-            WHEN NOT (NOW() > StartsAt) THEN
-                'Upcoming'
-            WHEN hasDataEntryComplete THEN
-                IF(
-                    (hasDataEntryInProgress OR hasDataEntryNotStarted),
-                    'In Progress',
-                    'Complete'
-                )
-            WHEN hasDataEntryInProgress THEN
-                'In Progress'
-            WHEN hasDataEntryNotStarted THEN
-                'Not Started'
-            ELSE
-                'No Data Found'
-        END
-    )
-    ";
 ?>
