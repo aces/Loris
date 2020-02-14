@@ -204,7 +204,7 @@ class UploadHelper
     }
 
     /**
-     * Create a md5 string from file_content.
+     * Create a sha256 string from file_content.
      *
      * @param string $filePath the path to the file.
      *
@@ -212,7 +212,7 @@ class UploadHelper
      */
     function generateHash(string $filePath) : string
     {
-        return hash_file('md5', $filePath);
+        return hash_file('sha256', $filePath);
     }
 
     /**
