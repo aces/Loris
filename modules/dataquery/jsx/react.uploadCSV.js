@@ -65,7 +65,9 @@ class ModalUploadCSV extends Component {
             required={true}
             value={this.state.csv}
           />
-          <div><b>Note:</b> The CSV format should be one column of either PSCID or CandID identifiers.</div>
+          <div style={{paddingBottom: '10px'}}>
+            <b>Note:</b> The CSV format should be one column of either PSCID or CandID identifiers.
+          </div>
           <RadioElement
             name={'csvTypeRadio'}
             label={'Candidate Type (PSCID or DCCID)'}
