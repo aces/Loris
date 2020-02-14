@@ -20,9 +20,10 @@ changes in the following format: PR #1234***
 ##### Battery Manager
  - New module created to manage the entries in the test_battery table of the database.
  This allows projects to modify their instrument battery without requiring backend access.
- (https://github.com/aces/Loris/pull/4221)
- 
-##### module1
+ (PR #4221)
+
+##### Module Manager
+ - New module created to manage the status of installed modules (PR #6015)
 
 
 #### Clean Up

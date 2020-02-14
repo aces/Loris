@@ -40,5 +40,6 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (36,'survey_accounts','Y')
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (37,'timepoint_list','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (38,'user_accounts','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (39,'battery_manager','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (40,'module_manager','Y');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
