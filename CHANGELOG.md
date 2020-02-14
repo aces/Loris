@@ -22,7 +22,8 @@ changes in the following format: PR #1234***
  This allows projects to modify their instrument battery without requiring backend access.
  (https://github.com/aces/Loris/pull/4221)
  
-##### module1
+##### Electrophysiology Browser
+ - New module created to manage electrophysiology data within LORIS. (PR #5230)
 
 
 #### Clean Up
