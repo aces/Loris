@@ -1,18 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * This file implements a data provisioner to get all modules
- * for the User Accounts menu page.
- *
- * PHP Version 7
- *
- * @category   Core
- * @package    Main
- * @subpackage Core
- * @author     Dave MacFarlane <dave.macfarlane@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
  namespace LORIS\user_accounts;
 
  /**
@@ -21,14 +7,9 @@
   *
   * PHP Version 7
   *
-  * @category   Core
-  * @package    Main
-  * @subpackage Core
-  * @author     Dave MacFarlane <dave.macfarlane@mcin.ca>
-  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-  * @link       https://www.github.com/aces/Loris/
+  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   */
-class UserAccountsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
+class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
      * Create a UserAccountsProvisioner, which gets modules for the

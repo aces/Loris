@@ -97,7 +97,7 @@ class UserAccountsIndex extends Component {
   }
 
   /**
-   * Changes url to add User.
+   * Changes url to be able to add or edit a User.
    */
   addUser() {
     location.href='/user_accounts/edit_user/';

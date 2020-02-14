@@ -1,31 +1,13 @@
 <?php declare(strict_types=1);
-/**
- * This class implements a data Instance which represents a single
- * user in the user_accounts menu table.
- *
- * PHP Version 7
- *
- * @category   Core
- * @package    Main
- * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\user_accounts;
 
 /**
- * A User represents a row in the user_accounts menu table.
+ * This class implements a data Instance which represents a single
+ * user account in the user_accounts menu table.
  *
- * @category   Core
- * @package    Main
- * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class UserAccount implements \LORIS\Data\DataInstance
+class UserAccountRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
 
