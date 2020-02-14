@@ -181,6 +181,7 @@ class DataQueryApp extends Component {
     for (let key in this.state.queryIDs) {
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
+        console.log('CHECK 2');
         curRequest = Promise.resolve(
           $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
             data: {
@@ -258,6 +259,7 @@ class DataQueryApp extends Component {
       }
     }
 
+    console.log('CHECK 3');
     fetch(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php',
       {
         credentials: 'same-origin',
@@ -275,6 +277,7 @@ class DataQueryApp extends Component {
             queryIDs.User.push(id);
           }
         }
+        console.log('CHECK 4');
         $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
           (value) => {
             let queries = this.state.savedQueries;
@@ -364,11 +367,13 @@ class DataQueryApp extends Component {
 
     let script;
     if (!rule.type) {
+      console.log('WHOHAAA');
       rule.type = 'rule'
     }
 
     // Get given fields of the instrument for the rule.
     // This call is made synchronously
+    console.log('CHECK 5');
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
       success: (data) => {
@@ -413,6 +418,7 @@ class DataQueryApp extends Component {
       default:
         break;
     }
+    console.log('CHECK 6');
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
       success: (data) => {
@@ -468,8 +474,11 @@ class DataQueryApp extends Component {
         }
         group.children[i] = this.loadFilterGroup(group.children[i]);
       } else {
+        console.log('group.children[i] BEFORE:');
+        console.log(group.children[i]);
         group.children[i] = this.loadFilterRule(group.children[i]);
-      //   console.log(group.children[i]);
+        console.log('group.children[i] AFTER:');
+        console.log(group.children[i]);
       // }
       // if (group.repeating) {
       //   const filterRule = group.children[i];
@@ -584,6 +593,7 @@ class DataQueryApp extends Component {
       loading: false,
     });
     for (let i = 0; i < fieldsList.length; i++) {
+      console.log('CHECK 7');
       $.ajax({
         url: loris.BaseURL + '/dataquery/ajax/datadictionary.php',
         success: (data) => {
@@ -775,6 +785,7 @@ class DataQueryApp extends Component {
         // keep track of the number of requests waiting for a response
         semaphore++;
         sectionedSessions = JSON.stringify(sessionInfo);
+        console.log('CHECK 1');
         $.ajax({
           type: 'POST',
           url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php',
