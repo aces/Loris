@@ -106,7 +106,7 @@ class UserAccountsIndex extends Component {
   /**
    * Render
    *
-   * @return {object} 
+   * @return {object}
    */
   render() {
     // If error occurs, return a message.
