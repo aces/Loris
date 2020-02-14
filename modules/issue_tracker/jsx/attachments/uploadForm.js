@@ -82,17 +82,23 @@ class IssueUploadAttachmentForm extends Component {
       }).then((resp) => resp.json())
       .then((data) => {
         // reset form data after successful file upload
-        this.setState({
-          formData: {
-            file: '',
-            fileDescription: '',
-          },
-          uploadProgress: -1,
-        });
-        swal('Upload Successful!', '', 'success');
-        window.location.href = window.location.origin
-          + '/issue_tracker/issue/'
-          + this.props.issue;
+        if (data.success) {
+          this.setState({
+            formData: {
+              file: '',
+              fileDescription: '',
+            },
+            uploadProgress: -1,
+          });
+          swal('Upload Successful!', '', 'success');
+          window.location.href = window.location.origin
+            + '/issue_tracker/issue/'
+            + this.props.issue;
+        } else if (data.error) {
+          swal(data.error, '', 'error');
+        } else {
+          swal('Permission denied', '', 'error');
+        }
       }).catch((error) => {
         console.error(error);
         const msg = error.responseJSON ?
