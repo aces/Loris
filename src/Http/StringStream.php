@@ -71,7 +71,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
     public function close()
     {
         if (fclose($this->stream) === false) {
-            throw new LorisException(
+            throw new \LorisException(
                 'Could not close stream!'
             );
         }

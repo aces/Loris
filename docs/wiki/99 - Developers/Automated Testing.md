@@ -32,6 +32,19 @@ The configuration file for phan, which includes a list of all excluded rules, ca
 
 For information about a specific phan rule, read their [breakdown of all issues types caught by phan](https://github.com/phan/phan/wiki/Issue-Types-Caught-by-Phan).
 
+#### PHPStan
+
+> PHPStan focuses on finding errors in your code without actually running it. It catches whole classes of bugs even before you write tests for the code. It moves PHP closer to compiled languages in the sense that the correctness of each line of the code can be checked before you run the actual line.
+
+PHPStan is similar to Phan although it executes much faster and discovers different
+errors.
+
+The configuration file for phpstan is `test/phpstan-loris.neon`.
+
+Currently, the `ajax` and `test` subdirectories within each `modules/` directory
+are not examined by this tool.
+
+
 #### PHP Code Sniffer (PHPCS)
 
 > PHP_CodeSniffer is a set of two PHP scripts; the main phpcs script that tokenizes PHP, JavaScript and CSS files to detect violations of a defined coding standard, and a second phpcbf script to automatically correct coding standard violations. PHP_CodeSniffer is an essential development tool that ensures your code remains clean and consistent.
@@ -52,6 +65,7 @@ Currently PHPMD is used by LORIS to check for unused code, e.g. variables that a
 The configuration file for PHPMD can be found at `test/LorisPHPMD.xml`.
 
 More information about this tool can be found at [the PHP Mess Detector website](http://phpmd.org/documentation/index.html).
+
 
 ### JavaScript
 

@@ -15,9 +15,11 @@ declare -a tools_list=(
     'assign_missing_instruments.php'
     'detect_duplicated_commentids.php'
     'generic_includes.php'
+    'populate_examiners_psc_rel.php'
     'raisinbread_refresh.php'
     'resetpassword.php'
     'setconfig.php'
+    'single_use/Cleanup_multiple_firstVisits.php'
 )
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ "${tools_list[@]/#/tools/}" || exit $?;
 

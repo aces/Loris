@@ -60,10 +60,12 @@ class Edit_User extends \NDB_Form
             return true;
         }
 
+
         if ($editor->hasPermission('user_accounts')) {
             if ($this->isCreatingNewUser()) {
                 return true;
             }
+            $user = \User::factory($this->identifier);
             return array_intersect(
                 $user->getData('CenterIDs'),
                 $editor->getData('CenterIDs')
