@@ -57,7 +57,8 @@ protected $dataEntryStatus;
         $this->AppointmentID = $row['AppointmentID'];
         $this->SessionID = $row['SessionID'];
         $this->AppointmentTypeID = $row['AppointmentTypeID'];
-        $this->StartsAt = $row['StartsAt'];
+        $this->Day  = $row['day'];
+        $this->Time = substr($row['time'], 0, -3);
         $this->PSCID    = $row["PSCID"];
         $this->CandID = $row['CandID'];
         $this->Visit_label = $row['Visit_label'];
@@ -65,7 +66,7 @@ protected $dataEntryStatus;
         $this->SubprojectID = $row['SubprojectID'];
         $this->Project = $row['Project'];
         $this->Subproject = $row['title'];
-        $this->started = $row['started'];
+        $this->StartsAt = $row['StartsAt'];
         $this->AppointmentTypeName = $row['AppointmentTypeName'];
         $this->site = $row['Name'];
         $this->dataEntryStatus = $row['dataEntryStatus'];
@@ -88,6 +89,9 @@ protected $dataEntryStatus;
                 'Project'  => $this->Project,
                 'Subproject'  => $this->Subproject,
                 'AppointmentTypeName'  => $this->AppointmentTypeName,
+                'Day'  => $this->Day,
+                'Time'  => $this->Time,
+                'earlyDate'  => $this->Day,
 	        'AppointmentID'=>$this->AppointmentID,
         	'SessionID'=>$this->SessionID,
 	        'AppointmentTypeID'=>$this->AppointmentTypeID,

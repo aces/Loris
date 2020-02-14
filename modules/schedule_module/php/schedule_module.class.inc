@@ -58,12 +58,14 @@ class Schedule_Module extends \DataFrameworkMenu
         $visitlabels = array_values(\Utility::getVisitList());
         $projects    = array_values(\Utility::getProjectList());
         $subprojects = array_values(\Utility::getSubProjectList());
+        $TypeName = array_values(\Utility::getAppointmentTypeList());
 
         return array(
             'site'       => array_combine($sites, $sites),
             'visitLabel' => array_combine($visitlabels, $visitlabels),
             'project'    => array_combine($projects, $projects),
             'subproject' => array_combine($subprojects, $subprojects),
+            'AppointmentTypeName' => array_combine($TypeName, $TypeName),
         );
     }
     /**

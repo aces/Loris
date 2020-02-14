@@ -129,26 +129,51 @@ class ScheduleIndex extends Component {
     }
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'AppointmentID', show: true, filter: {
-        name: 'AppointmentID',
+      {label: 'CandID', show: true, filter: {
+        name: 'CandID',
         type: 'text',
       }},
-      {label: 'SessionID', show: true, filter: {
-        name: 'Full Name',
-        type: 'text',
-      }},
-      {label: 'AppointmentTypeID', show: true, filter: {
-        name: 'AppointmentTypeID',
-        type: 'text',
-      }},
-      {label: 'StartsAt', show: true, filter: {
-        name: 'StartsAt',
+      {label: 'PSCID', show: true, filter: {
+        name: 'PSCID',
         type: 'text',
       }},
       {label: 'Site', show: true, filter: {
         name: 'Site',
         type: 'select',
         options: options.site,
+      }},
+      {label: 'Visit Label', show: true, filter: {
+        name: 'Visit_label',
+        type: 'select',
+        options: options.visitLabel,
+      }},
+      {label: 'Project', show: true, filter: {
+        name: 'Project',
+        type: 'multiselect',
+        options: options.project,
+      }},
+      {label: 'Subproject', show: true, filter: {
+        name: 'Subproject',
+        type: 'multiselect',
+        options: options.subproject,
+      }},
+      {label: 'Appointment Type', show: true, filter: {
+        name: 'Appointment Type',
+        type: 'select',
+        options: options.AppointmentTypeName,
+      }},
+      {label: 'Date', show: true, filter: {
+        name: 'Date',
+        type: 'date',
+      }},
+      {label: 'Time', show: true, filter: {
+        name: 'Time',
+        type: 'time',
+      }},
+      {label: 'Earliset Date', show: false, filter: {
+        name: 'earlyDate',
+        type: 'date',
+        comparison: 'greaterthan',
       }},
     ];
     return (

@@ -90,7 +90,8 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     appointment.AppointmentID, 
     appointment.SessionID,
     appointment.AppointmentTypeID, 
-    appointment.StartsAt,
+    date(appointment.StartsAt) as day,
+    time(appointment.StartsAt) as time,
     candidate.PSCID, 
     session.CandID,
     session.Visit_label,
@@ -98,7 +99,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     session.SubprojectID,
     Project.Name AS Project,
     subproject.title,
-    appointment.StartsAt AS started,
+    appointment.StartsAt AS StartsAt,
     appointment_type.Name AS AppointmentTypeName,
     psc.Name,".$dataEntryColumns." FROM
     appointment
