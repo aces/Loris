@@ -7,18 +7,14 @@
  * It is intended to work with the dataImporter.php tool to selectively push
  * data from one LORIS instance to another by joining on PSCIDs.
  *
- * NOTE This script is currenly a prototype and so its functionalit is limited
- * to grabbing columns from the `candidate` table in LORIS.
- *
  * @category Tools
  * @package  Open Science
  * @author   John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
- *
  */
 
-require_once "generic_includes.php";
+require_once __DIR__ . "/../generic_includes.php";
 
 const NUM_ARGS_REQUIRED = 3;
 
@@ -34,13 +30,12 @@ const VISIT_EXPORT = 'visits';
  *
  * @var string
  */
-const OUTPUT_FOLDER = 'project/data_export/';
+const OUTPUT_FOLDER = __DIR__ . '/../../project/data_export/';
 
 
-// TODO Make Usage message more informative.
 $usage = <<<USAGE
 Usage: 
-To export a columns from a specified table:
+To export columns from a specified table:
 php {$argv[0]} %s <table> <column[,column2,...]> <date> [outfile]\n
        <table>      The name of a table in the database from which to extract
                     data.
@@ -79,7 +74,7 @@ USAGE;
 
 $usageError = sprintf($usage, COLUMN_EXPORT, INSTRUMENT_EXPORT, VISIT_EXPORT);
 
-// Ensure minimum number of arguments are present
+// Ensure minimum number of arguments are present.
 if (count($argv) < NUM_ARGS_REQUIRED) {
     die ($usageError);
 }
@@ -302,10 +297,17 @@ function writeToCsv(SplFileInfo $file, array $headers, array $data): void {
 }
 
 /**
+ * Helper function to help dynamically build SQL queries. Prepends a short
+ * alias for a table in front of a column name.
+ * e.g. if getting data from a `session` table for column `ID`, this helps to
+ * generate the output "s.ID" where s is short for `session`.
  *
- * @return array
+ * @param string[] $columnNames A list of columns
+ * @param string $prefix A short alias for the table containing the columns.
+ *
+ * @return string[]
  */
-function prependTableAbbreviation(array $columnNames, string $prefix) {
+function prependTableAbbreviation(array $columnNames, string $prefix): array {
     $result = array();
     foreach ($columnNames as $column) {
         $result[] = "$prefix.$column";
