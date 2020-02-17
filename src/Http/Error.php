@@ -50,23 +50,26 @@ class Error extends HtmlResponse
         $uri     = $request->getURI();
         $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
         // Admistrator email.
-        $contact = $factory->config()->getSetting('mail')['From'];
-        // Issue tracker data.
-        $issueURL  = $factory->config()->getSetting('issue_tracker_url');
-        $canReport = $factory->user()->hasAnyPermission(
-            [
-             'issue_tracker_reporter',
-             'issue_tracker_developer',
-            ]
-        );
-
+        $contact  = $factory->config()->getSetting('mail')['From'];
         $tpl_data = array(
-                     'message'         => $message,
-                     'baseurl'         => $baseurl,
-                     'contact'         => $contact,
-                     'issueTrackerURL' => $issueURL . '/issue/new',
-                     'canReport'       => $canReport,
+                     'message' => $message,
+                     'baseurl' => $baseurl,
+                     'contact' => $contact,
                     );
+        // Add issue tracker data if the error is encountered by an authenticated
+        // user with the correct permissions.
+        $user = $factory->user();
+        if (! $user instanceof \LORIS\AnonymousUser) {
+            $issueURL  = $factory->config()->getSetting('issue_tracker_url');
+            $canReport = $factory->user()->hasAnyPermission(
+                [
+                 'issue_tracker_reporter',
+                 'issue_tracker_developer',
+                ]
+            );
+            $tpl_data['issueTrackerURL'] = $issueURL . '/issue/new';
+            $tpl_data['canReport']       = $canReport;
+        }
 
         $template_file = (string) $status . '.tpl';
 
