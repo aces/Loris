@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 use \LORIS\StudyEntities\Candidate\CandID;
+use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 
 /**
  * The Loris TimePoint class
@@ -1019,8 +1020,11 @@ class TimePoint
             $this
         );
 
-        $provisioner = $provisioner
-            ->filter(new \LORIS\Data\Filters\RecordingsFilter());
+        $filter = new HasAnyPermissionOrUserSiteMatch(
+            array('electrophysiology_browser_view_allsites')
+        );
+
+        $provisioner = $provisioner->filter($filter);
 
         $traversable = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)

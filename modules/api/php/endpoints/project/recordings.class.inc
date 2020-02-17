@@ -16,6 +16,7 @@ namespace LORIS\api\Endpoints\Project;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
+use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 
 /**
  * A class for handling the /projects/$projectname/electrophysiology endpoint.
@@ -38,6 +39,24 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * The requested project
      */
     private $_project;
+
+    /**
+     * Permission checks
+     *
+     * @param \User $user The requesting user
+     *
+     * @return boolean true if access is permitted
+     */
+    private function _hasAccess(\User $user)
+    {
+        return (
+            $user->hasPermission('electrophysiology_browser_view_allsites') ||
+            (
+                $user->hasStudySite()
+                && $user->hasPermission('electrophysiology_browser_view_site')
+            )
+        );
+    }
 
     /**
      * Contructor
@@ -79,22 +98,30 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $user = $request->getAttribute('user');
+        if ($user instanceof \LORIS\AnonymousUser) {
+            return new \LORIS\Http\Response\JSON\Unauthorized();
+        }
+
+        if (!$this->_hasAccess($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
+        }
+
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) !== 0) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-
-            case 'OPTIONS':
-                return (new \LORIS\Http\Response())
-                    ->withHeader('Allow', $this->allowedMethods());
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
 
@@ -120,13 +147,16 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
+        $filter = new HasAnyPermissionOrUserSiteMatch(
+            array('electrophysiology_browser_view_allsites')
+        );
+
         $provisioner = new \LORIS\api\Provisioners\ProjectRecordingsRowProvisioner(
             $this->_project,
             $since
         );
 
-        $provisioner = $provisioner
-            ->filter(new \LORIS\Data\Filters\RecordingsFilter());
+        $provisioner = $provisioner->filter($filter);
 
         $recordings = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
