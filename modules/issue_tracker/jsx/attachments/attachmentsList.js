@@ -45,10 +45,6 @@ class AttachmentsList extends Component {
         }
       }).catch((error) => {
         console.error(error);
-        this.setState({
-          error: 'An error occurred when deleting attachment!\n Error: ' +
-            error.status + ' (' + error.statusText + ')',
-        });
       }
     );
   }
