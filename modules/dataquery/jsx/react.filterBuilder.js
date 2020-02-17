@@ -40,7 +40,7 @@ class LogicOperator extends Component {
     return (
       <div className='btn-group' role='group'>
         <button type='button' className={andClass} onClick={this.changeOperator.bind(this, 0)}>And</button>
-        <button type='button' className={orClass} onClick={this.changeOperator.bind(this, 1)} id='filter_or_btn'>Or</button>
+        <button type='button' className={orClass} onClick={this.changeOperator.bind(this, 1)}>Or</button>
       </div>
     );
   }
