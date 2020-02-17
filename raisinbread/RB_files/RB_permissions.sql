@@ -69,5 +69,8 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (67,'survey_accounts_view','Survey Accounts: view module',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (68,'imaging_quality_control_view','Imaging Quality Control: view module',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (69,'behavioural_quality_control_view','Behavioural Quality Control: view module',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (64,'survey_accounts_view','Survey Accounts: view module',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (65,'imaging_quality_control_view','Imaging Quality Control: view module',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (66,'behavioural_quality_control_view','Behavioural Quality Control: view module',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
