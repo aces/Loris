@@ -92,6 +92,7 @@ protected $dataEntryStatus;
                 'Day'  => $this->Day,
                 'Time'  => $this->Time,
                 'earlyDate'  => $this->Day,
+                'lateDate'  => $this->Day,
 	        'AppointmentID'=>$this->AppointmentID,
         	'SessionID'=>$this->SessionID,
 	        'AppointmentTypeID'=>$this->AppointmentTypeID,

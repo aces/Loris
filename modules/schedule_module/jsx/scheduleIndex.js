@@ -170,10 +170,15 @@ class ScheduleIndex extends Component {
         name: 'Time',
         type: 'time',
       }},
-      {label: 'Earliset Date', show: false, filter: {
+      {label: 'Earliset Date >=', show: false, filter: {
         name: 'earlyDate',
         type: 'date',
-        comparison: 'greaterthan',
+        comparison: 'greaterthanorequal',
+      }},
+      {label: 'Latest Date <=', show: false, filter: {
+        name: 'lateDate',
+        type: 'date',
+        comparison: 'smallerthanorequal',
       }},
     ];
     return (

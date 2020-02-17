@@ -378,12 +378,21 @@ class DataTable extends Component {
         }
       }
     }
-    if (comparison === 'greaterthan') {
-// todo : output to try
-      console.log(comparison);
-      result = (searchKey >= searchString);
+    switch (comparison) {
+      case 'greaterthan':
+        result = (searchString > searchKey);
+        break;
+      case 'smallerthan':
+        result = (searchString < searchKey);
+        break;
+      case 'greaterthanorequal':
+        result = (searchString >= searchKey);
+        break;
+      case 'smallerthanorequal':
+        result = (searchString <= searchKey);
+        break;
+      default:
     }
-console.log(this.props.filter[name]);
     return result;
   }
 
