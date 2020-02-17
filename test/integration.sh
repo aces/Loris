@@ -20,7 +20,6 @@ host="127.0.0.1"
 database="LorisTest"
 username="SQLTestUser"
 password="TestPassword"
-url="http://localhost:8000"
 
 # Custom DB variables specified by optional commandline arguments
 while getopts ":m:h:D:u:p:l:" opt; do
@@ -35,8 +34,6 @@ while getopts ":m:h:D:u:p:l:" opt; do
     ;;
     p) password="$OPTARG"
     ;;
-    l) url="$OPTARG"
-    ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
@@ -49,7 +46,8 @@ sed -i \
     -e "s/%PASSWORD%/$password/g" \
     -e "s/%DATABASE%/$database/g" \
     config.xml
-export LORIS_DB_CONFIG=$(pwd)/config.xml
+LORIS_DB_CONFIG=$(pwd)/config.xml
+export $LORIS_DB_CONFIG
 
 #start PHP's built in webserver
 php -S localhost:8000 -t ../htdocs ../htdocs/router.php > /dev/null 2>&1 &
@@ -64,15 +62,15 @@ echo "******************************************************************
 ******************************************************************";
 
 # Set config values in the test DB
-mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
+mysql -h "$host" -D "$database" -u "$username" -p"$password" -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 
-mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='$(pwd | sed "s#test##")' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
+mysql -h "$host" -D "$database" -u "$username" -p"$password" -e "UPDATE Config SET Value='$(pwd | sed "s#test##")' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
 
 
 if [ ! -z "$module" ]; then
   # Run integration tests for a sepecific module
-  echo Running integration test for module: $module;
-  ../vendor/bin/phpunit --configuration phpunit.xml ../modules/$module/test
+  echo Running integration test for module: "$module";
+  ../vendor/bin/phpunit --configuration phpunit.xml ../modules/"$module"/test
 else
  # Run all integration tests
  ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisCoreIntegrationTests'
