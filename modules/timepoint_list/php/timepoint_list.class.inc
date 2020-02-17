@@ -75,7 +75,6 @@ class Timepoint_List extends \NDB_Menu
     {
         // create candidate object
         $candidate = \Candidate::singleton($this->candID);
-        $DB        = \Database::singleton();
 
         $numberOfVisits           = 0;
         $this->tpl_data['candID'] = $this->candID;

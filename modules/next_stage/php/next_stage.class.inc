@@ -220,10 +220,9 @@ class Next_Stage extends \NDB_Form
      */
     function _validate($values)
     {
-        $config    = \NDB_Factory::singleton()->config();
+        $config = \NDB_Factory::singleton()->config();
 
         $timePoint = \TimePoint::singleton(new \SessionID($this->identifier));
-        $candID    = $timePoint->getCandID();
 
         $errors = [];
         /* Check that dates are present. Return early as there is no point

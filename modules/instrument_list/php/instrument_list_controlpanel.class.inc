@@ -604,7 +604,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 . " as the candidate to submit to DCC.";
         }
         if ($this->isSubmitted()) {
-            $returnStr = "This timepoint has already been sent to DCC.".
+            return "This timepoint has already been sent to DCC.".
                          "  Try refreshing your page.";
         }
         if (!in_array(
