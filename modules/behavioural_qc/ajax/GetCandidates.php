@@ -13,7 +13,7 @@ require_once "Database.class.inc";
 require_once "NDB_Client.class.inc";
 
 $user = \User::singleton();
-if (!$user->hasPermission('behavioural_quality_control')) {
+if (!$user->hasPermission('behavioural_quality_control_view')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
@@ -56,6 +56,5 @@ if ($result == null) {
 $response = [];
 $response["suggestions"] = $flattened_result;
 print json_encode($response);
-
 
 
