@@ -34,7 +34,8 @@ class Attachment extends Endpoint implements ETagCalculator
     public $skipTemplate = true;
 
     /**
-     * This function will return a json object for attachment request.
+     * This function will return a json object
+     * for the specific attachment request.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -219,7 +220,7 @@ class Attachment extends Endpoint implements ETagCalculator
     }
 
     /**
-     * Return an array of valid HTTP methods for this endpoint
+     * Return an array of valid HTTP methods for this endpoint.
      *
      * @return string[] Valid versions
      */
@@ -246,8 +247,8 @@ class Attachment extends Endpoint implements ETagCalculator
     }
 
     /**
-     * Return a list of LORIS API versions which this endpoint
-     * supports.
+     * Return a list of LORIS API versions
+     * which this endpoint supports.
      *
      * @return string[] LORIS API Versions
      */

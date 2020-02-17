@@ -2,7 +2,7 @@
 /**
  * POST request method.
  *
- * Used for uploading file with Issue Tracker.
+ * Used for uploading attachment file for Issue Tracker.
  *
  * PHP Version 7
  *
@@ -17,8 +17,8 @@ namespace LORIS\issue_tracker;
 /**
  * The UploadHelper Class.
  *
- * This class provides the php code to process uploading
- * a user file from the issue_tracker for attachments.
+ * This class provides the code to process uploading
+ * a user file from the issue_tracker for saving attachments.
  *
  * @category Loris
  * @package  Issue_Tracker
@@ -47,11 +47,6 @@ class UploadHelper
      * The 'post message' array content.
      */
     private $_values;
-
-    /**
-     * The response of file uploading (success|error).
-     */
-    private $_response;
 
     /**
      * Setup uploading configurations.
@@ -98,7 +93,8 @@ class UploadHelper
     }
 
     /**
-     * Sets $fileToUpload->full_path
+     * Sets $fileToUpload->full_path to be the full path
+     * of where the attachment file will be stored.
      *
      * @param object $fileToUpload The file to upload
      *
@@ -130,10 +126,11 @@ class UploadHelper
     }
 
     /**
-     * This insert a record in the issues_file_collection table
+     * This insert a record in the mysql
+     * 'issues_attachments' table.
      *
-     * @param object $fileToUpload The object containing the $_FILES
-     *                             and the $_POST values.
+     * @param object $fileToUpload The object containing
+     *                             the $_FILES and the $_POST values.
      *
      * @return void
      */
@@ -170,7 +167,7 @@ class UploadHelper
     }
 
     /**
-     * Get mime_type from file.
+     * Get mime_type details for the attachment file.
      *
      * @param string $file the file name with extension.
      *
@@ -221,7 +218,7 @@ class UploadHelper
     }
 
     /**
-     * Begins the transaction for the file upload
+     * Begins the transaction for the file attachment upload.
      *
      * @return void
      */
@@ -232,7 +229,8 @@ class UploadHelper
     }
 
     /**
-     * Ends the transaction for the file upload with failure
+     * Ends the transaction for the file attachment
+     * upload with failure.
      *
      * @return void
      */
@@ -243,7 +241,8 @@ class UploadHelper
     }
 
     /**
-     * Ends the transaction for the file upload with success
+     * Ends the transaction for the file attachment
+     * upload with success.
      *
      * @return void
      */
