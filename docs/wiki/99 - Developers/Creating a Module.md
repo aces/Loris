@@ -102,7 +102,7 @@ You must define new permissions for the module. These are used to limit users to
 Permissions are defined in the `permissions` table in LORIS and should be separated into view and edit permissions in most cases.
 
 In our example, you would create two new permissions: `my_new_module_view` and `my_new_module_edit`. Your PHP code within
-`php/my_new_module.class.inc` will define what these permissions allow a user to do.
+`php/my_new_module.class.inc` will define what these permissions allow a user to do using the `hasAccess()` function. 
 
 To add new permissions, append them to the list of existing permissions found in `SQL/0000-00-01-Permission.sql`. (This file is found in your LORIS root directory, not within the module subdirectory.)
 
