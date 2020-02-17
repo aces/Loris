@@ -17,7 +17,7 @@ declare -a tools_list=(
     'detect_duplicated_commentids.php'
     'generic_includes.php'
     'importers/CandidateImporter.php'
-    'importers/DataImporter.php'
+    'importers/DataImporter.class.inc'
     'importers/InstrumentImporter.php'
     'importers/VisitImporter.php'
     'importers/openScienceDataImporter.php'

@@ -2,14 +2,27 @@
 
 require_once 'DataImporter.class.inc';
 
-class VisitImporter extends DataImporter {
-
+/**
+ * {@inheritDoc}
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class VisitImporter extends DataImporter
+{
     public $excludedVisitLabels = array();
-    public $excludedCount = 0;
-    public $existingSessions = array();
+    public $excludedCount       = 0;
+    public $existingSessions    = array();
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param ?SplFileInfo $excludedFile a file containing candidates to be
+     *                                   excluded from import.
+     *
+     * @return void
+     */
     public function __construct(
-        SplFileInfo $mappingFile, 
+        SplFileInfo $mappingFile,
         SplFileInfo $dataFile,
         ?SplFileInfo $excludedFile = null
     ) {
@@ -28,7 +41,7 @@ class VisitImporter extends DataImporter {
         // Read list of excluded visit labels into an array.
         if (!is_null($excludedFile)) {
             $this->excludedVisitLabels = explode(
-                "\n", 
+                "\n",
                 file_get_contents($excludedFile->getRealPath())
             );
         }
@@ -39,8 +52,11 @@ class VisitImporter extends DataImporter {
 
     /**
      * {@inheritDoc}
+     *
+     * @return void
      */
-    function calculateSharedCandidates() {
+    function calculateSharedCandidates()
+    {
         // Filter out candidates present in data export but not included in the
         // mapping file. If the candidates are not present in the mapping file
         // that means that they are being deliberately excluded from import.
@@ -54,8 +70,11 @@ class VisitImporter extends DataImporter {
 
     /**
      * {@inheritDoc}
+     *
+     * @return void
      */
-    function buildSQLQuery(array $row) {
+    function buildSQLQuery(array $row)
+    {
         // Skip this visit label if it is in the list of excluded labels.
         if (count($this->excludedVisitLabels) > 0) {
             if (in_array($row['Visit_label'], $this->excludedVisitLabels, true)) {
@@ -65,8 +84,7 @@ class VisitImporter extends DataImporter {
         }
 
         $data = $row;
-        
-        
+
         // Prepare command information.
         //
         $newCandID = $this->newCandID($this->newPSCID($data['PSCID']));
@@ -74,9 +92,9 @@ class VisitImporter extends DataImporter {
         // We don't want PSCID information from the CSV file included in the
         // SET statement. It's only used for linking.
         unset($data['PSCID']);
-        $where = array('CandID' => $newCandID);
+        $where   = array('CandID' => $newCandID);
         $command = array(
-            'data' => $data,
+            'data'  => $data,
             'where' => $where
         );
 
@@ -90,7 +108,7 @@ class VisitImporter extends DataImporter {
             // INSERT if the candidate doesn't have any visit labels or if the
             // current visit label is not present in their list of visit labels.
             $command['data']['CandID'] = $newCandID;
-            $this->INSERTQueue[] = $command;
+            $this->INSERTQueue[]       = $command;
         } else {
             // UPDATE if Visit label already present for this candidate
             $command['where']['Visit_label'] = $row['Visit_label'];

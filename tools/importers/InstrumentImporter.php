@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
-class InstrumentImporter extends DataImporter {
+class InstrumentImporter extends DataImporter
+{
 
     /**
      * This value should be updated if the CandID class in LORIS is updated.
@@ -16,15 +17,16 @@ class InstrumentImporter extends DataImporter {
     /* An array of CommentIDs that exist in the database. */
     private $existingCommentIDs = array();
 
-    public function __construct(SplFileInfo $mappingFile, SplFileInfo $dataFile) {
+    public function __construct(SplFileInfo $mappingFile, SplFileInfo $dataFile)
+    {
         // The name of the table must be the first value in the filename preceding
         // an underscore. e.g, "$instrumentName_dataExtract_output.csv".
         $this->table = substr(
-            $dataFile->getFilename(), 
-            0, 
+            $dataFile->getFilename(),
+            0,
             strpos($dataFile->getFilename(), '_')
         );
-        
+
         // Access list of existing CommentIDs
         $this->existingCommentIDs = \Database::singleton()->pselectCol(
             'SELECT CommentID from flag',
@@ -35,7 +37,8 @@ class InstrumentImporter extends DataImporter {
         parent::__construct($mappingFile, $dataFile);
     }
 
-    function buildSQLQuery(array $row) {
+    function buildSQLQuery(array $row)
+    {
         $data = $row;
 
         // Use the old PSCID to get the new CandID.
@@ -53,11 +56,11 @@ class InstrumentImporter extends DataImporter {
             AND f.CommentID NOT LIKE "DDE%"';
 
         $newCommentID = \Database::singleton()->pselectOne(
-            $query, 
+            $query,
             array(
-                'newCandID' => $newCandID,
+                'newCandID'  => $newCandID,
                 'visitLabel' => $data['Visit_label'],
-                'table' => $this->table
+                'table'      => $this->table
             )
         );
 
@@ -71,12 +74,12 @@ class InstrumentImporter extends DataImporter {
         }
 
         // Update the flag table
-        $command['table'] = 'flag';
-        $command['data'] = array(
-            'Data_entry' => $data['Data_entry'],
+        $command['table']    = 'flag';
+        $command['data']     = array(
+            'Data_entry'     => $data['Data_entry'],
             'Administration' => $data['Administration']
         );
-        $command['where'] = array(
+        $command['where']    = array(
             'CommentID' => $newCommentID,
         );
         $this->UPDATEQueue[] = $command;
@@ -85,9 +88,9 @@ class InstrumentImporter extends DataImporter {
         unset($data['PSCID'], $data['Visit_label'], $data['Data_entry'], $data['Administration']);
 
         // Update the instrument table
-        $command['table'] = $this->table;
-        $command['data'] = $data;
-        $command['where'] = array(
+        $command['table']    = $this->table;
+        $command['data']     = $data;
+        $command['where']    = array(
             'CommentID' => $newCommentID,
         );
         $this->UPDATEQueue[] = $command;

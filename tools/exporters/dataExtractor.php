@@ -21,9 +21,9 @@ const NUM_ARGS_REQUIRED = 3;
 /**
  * Command line argument for the mode of data importation.
  */
-const COLUMN_EXPORT = 'column';
+const COLUMN_EXPORT     = 'column';
 const INSTRUMENT_EXPORT = 'instrument';
-const VISIT_EXPORT = 'visits';
+const VISIT_EXPORT      = 'visits';
 
 /**
  * The LORIS subfolder where output file will be written.
@@ -76,16 +76,16 @@ $usageError = sprintf($usage, COLUMN_EXPORT, INSTRUMENT_EXPORT, VISIT_EXPORT);
 
 // Ensure minimum number of arguments are present.
 if (count($argv) < NUM_ARGS_REQUIRED) {
-    die ($usageError);
+    die($usageError);
 }
 
 // Ensure that the execution mode passed to the script is supported.
 $mode = $argv[1];
-if ($mode !== COLUMN_EXPORT 
-    && $mode !== VISIT_EXPORT 
+if ($mode !== COLUMN_EXPORT
+    && $mode !== VISIT_EXPORT
     && $mode !== INSTRUMENT_EXPORT
 ) {
-    die ($usageError);
+    die($usageError);
 }
 
 // Create default output path. This value will be overwritten below if a user
@@ -93,19 +93,18 @@ if ($mode !== COLUMN_EXPORT
 // e.g. /var/www/loris/project/data_export/
 $filepath = $config->getSetting('base') . OUTPUT_FOLDER;
 
-$query = '';
+$query  = '';
 $params = array();
 
-if ($mode === VISIT_EXPORT)
-{
+if ($mode === VISIT_EXPORT) {
     $cutoffDate = $argv[2];
     // Overwrite default path if a custom path was specified by user.
     $filepath = $argv[3] ?? $filepath;
 
     $filename = 'visits_dataExtract_output.csv';
     // Get visit label information from the `session` table.
-    // All date/dateime fields are excluded from the query as they are potentially 
-    // identifying. Visit statuses reflecting a Failure, Withdrawal, or 
+    // All date/dateime fields are excluded from the query as they are potentially
+    // identifying. Visit statuses reflecting a Failure, Withdrawal, or
     // Recycling Bin are also excluded.
     $sessionColumns = array(
         'CenterID',
@@ -130,11 +129,11 @@ if ($mode === VISIT_EXPORT)
     );
 
     // Build query information
-    
-    // Add abbreviations to columns. 
+
+    // Add abbreviations to columns.
     // E.g. QCd --> s.QCd (for `session s` in SQL statement).
     $columnQuery = implode(
-        ',', 
+        ',',
         prependTableAbbreviation($sessionColumns, 's')
     );
 
@@ -158,17 +157,17 @@ if ($mode === VISIT_EXPORT)
     // preprocessing below.
     if (!isset($argv[4])) {
         // Ensure minimum number of arguments are present.
-        // Done separately here since COLUMN_EXPORT and INSTRUMENT_EXPORT 
+        // Done separately here since COLUMN_EXPORT and INSTRUMENT_EXPORT
         // require more args than
-        // VISIT_EXPORT. 
+        // VISIT_EXPORT.
         // TODO This should likely be refactored at some point.
-        die ($usageError);
+        die($usageError);
     }
 
     // The Database table from which to extract data.
     $table = $argv[2];
     if ($table === 'session') {
-        die (
+        die(
             'Please use the `visits` extraction mode to retrive information ' .
             'from the session table.' . PHP_EOL
         );
@@ -184,8 +183,8 @@ if ($mode === VISIT_EXPORT)
 
     // Format of output filename: <table_column_dataExtract_output.csv>
     $filename = sprintf(
-        "%s_dataExtract_output.csv", 
-        $table, 
+        "%s_dataExtract_output.csv",
+        $table,
     );
 
     if ($mode === COLUMN_EXPORT) {
@@ -195,10 +194,10 @@ if ($mode === VISIT_EXPORT)
         $headers = array_merge(array('PSCID'), explode(',', $column));
 
         // Build basic SQL query info.
-        $query = "SELECT PSCID,$column from $table";
+        $query  = "SELECT PSCID,$column from $table";
         $params = array();
     } else if ($mode === INSTRUMENT_EXPORT) {
-        // Query whether a tabel has the `Date taken` column. 
+        // Query whether a tabel has the `Date taken` column.
         // If so we
         // will add $cutoffDate to the WHERE clause of the query that will grab
         // the data from $table.
@@ -208,28 +207,30 @@ if ($mode === VISIT_EXPORT)
             array()
         );
         if (empty($result)) {
-            die ("Table $table is does not contain instrument information.\n");
+            die("Table $table is does not contain instrument information.\n");
         }
         unset($result);
 
         $headers = explode(',', $column);
 
 
-        
-        // Add abbreviations to columns. 
+
+        // Add abbreviations to columns.
         // E.g. QCd --> s.QCd (for `session s` in SQL statement).
         $columnQuery = implode(',', prependTableAbbreviation($headers, 't'));
 
-        $query = "SELECT c.PSCID, s.Visit_label, f.Data_entry, f.Administration, $columnQuery
-            from candidate c
-            INNER JOIN session s ON c.CandID = s.CandID
-            INNER JOIN flag f ON f.SessionID = s.ID
-            INNER JOIN $table t ON t.CommentID = f.CommentID
-            WHERE DATE(t.Date_taken) < :cutoffDate " .
-            'AND f.CommentID NOT LIKE "DDE%"';
+        $query = <<<QUERY
+SELECT c.PSCID, s.Visit_label, f.Data_entry, f.Administration, $columnQuery
+FROM candidate c
+INNER JOIN session s ON c.CandID = s.CandID
+INNER JOIN flag f ON f.SessionID = s.ID
+INNER JOIN $table t ON t.CommentID = f.CommentID
+WHERE DATE(t.Date_taken) < :cutoffDate " .
+'AND f.CommentID NOT LIKE "DDE%"';
+QUERY;
 
         $params['cutoffDate'] = $cutoffDate;
-        
+
         // Prepend PSCID and Visit_label to the CSV headers so that they will
         // be recorded properly in the output
         $headers = array_merge(
@@ -246,12 +247,12 @@ $result = $DB->pselect(
 );
 
 if (count($result) < 1) {
-    die ('No results found for the given criteria.' . PHP_EOL);
+    die('No results found for the given criteria.' . PHP_EOL);
 }
 
 // Write data to CSV.
 writeToCsv(
-    new SplFileInfo($filepath . $filename), 
+    new SplFileInfo($filepath . $filename),
     $headers,
     $result
 );
@@ -259,13 +260,14 @@ writeToCsv(
 /**
  * Write array to CSV file.
  *
- * @param SplFileInfo $filename The absolute path to the output file.
- * @param array $headers The headers/column names of the CSV output file
- * @param array $data The rows to write to the CSV file.
+ * @param SplFileInfo $file    The absolute path to the output file.
+ * @param array       $headers The headers/column names of the CSV output file
+ * @param array       $data    The rows to write to the CSV file.
  *
  * @return void
  */
-function writeToCsv(SplFileInfo $file, array $headers, array $data): void {
+function writeToCsv(SplFileInfo $file, array $headers, array $data): void
+{
     // Create $filepath if it doesn't exist.
     if (!is_dir($file->getPath())) {
         mkdir($file->getPath());
@@ -285,7 +287,7 @@ function writeToCsv(SplFileInfo $file, array $headers, array $data): void {
         $output = $row;
         // Make sure that we write null values as NULL to the CSV file. The
         // default behaviour is writing an empty string.
-        foreach($row as $key => $value) {
+        foreach ($row as $key => $value) {
             if (is_null($value)) {
                 $output[$key] = 'NULL';
             }
@@ -303,11 +305,12 @@ function writeToCsv(SplFileInfo $file, array $headers, array $data): void {
  * generate the output "s.ID" where s is short for `session`.
  *
  * @param string[] $columnNames A list of columns
- * @param string $prefix A short alias for the table containing the columns.
+ * @param string   $prefix      A short alias for the table containing the columns.
  *
  * @return string[]
  */
-function prependTableAbbreviation(array $columnNames, string $prefix): array {
+function prependTableAbbreviation(array $columnNames, string $prefix): array
+{
     $result = array();
     foreach ($columnNames as $column) {
         $result[] = "$prefix.$column";
