@@ -12,5 +12,3 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
     SELECT 'dodFormat', 'Format of the Date of Death', 1, 0, 'text', ID, 'DOD Format', 10 FROM ConfigSettings WHERE Name="study";
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'YMd'  FROM ConfigSettings WHERE Name="dodFormat";
-
-UPDATE ConfigSettings SET OrderNumber=11 WHERE Name IN ('useFamilyID', 'useProband');

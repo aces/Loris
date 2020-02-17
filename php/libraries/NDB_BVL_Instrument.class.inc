@@ -174,7 +174,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @var    bool
      * @access private
      */
-    var $postMortem = false;
+    protected $postMortem = false;
 
     /**
      * True if the page is being previewed from the instrument builder,

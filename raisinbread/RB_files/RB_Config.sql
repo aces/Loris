@@ -33,8 +33,8 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (33,37,'/PATH/TO/Genomic
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (34,38,'/data/uploads/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (35,40,'main.css');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (36,41,'25');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (37,44,'localhost');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (38,45,'http://localhost');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (37,44,'jcallegaro-dev.loris.ca');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (38,45,'http://jcallegaro-dev.loris.ca');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (39,48,'This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (40,51,'[a-zA-Z]{3}[0-9]{4}_[0-9]{6}_[vV][0-9]+');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (41,52,'(?i).');
@@ -54,7 +54,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (54,72,'yourname@example
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (55,73,'/data/demo/bin/mri/dicom-archive/get_dicom_info.pl');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (56,74,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (57,75,'1');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (58,76,'dcm2mnc');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (58,76,'dcm2mnc-centos-6p9-T2star');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (59,77,'/data-raisinbread/tarchive/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (60,78,'PatientName');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (61,79,'1');
