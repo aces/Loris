@@ -36,6 +36,13 @@ Click **Add Rule** to define your next rule, and then define how your filters wi
 
 The "Import Population from CSV" button may be used to import multiple PSCID or DCCID from a CSV file. The format of the CSV file is one column of either PSCID or DCCID identifiers but not both.
 
+Example `candidates.csv` with contents:
+```
+PSCID
+MONT123
+MONT456
+```
+
 ## View Data
 
 This tab executes your query, displays the query results, and allows you to download data. 
