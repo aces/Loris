@@ -34,7 +34,7 @@ To add a filter, select an instrument or category using the dropdown. A secondar
 
 Click **Add Rule** to define your next rule, and then define how your filters will work together using "And" and "Or" conditional logic. Select "And" if both filters must be true, "Or" if only one must be true for a data record to be selected. (The default is "And".)  Click **Add Group** to add filters in layers with different And/Or conditions. 
 
-The "Import Population from CSV" button may be used to import multiple PSCID or DCCID from a CSV file. 
+The "Import Population from CSV" button may be used to import multiple PSCID or DCCID from a CSV file. The format of the CSV file is one column of either PSCID or DCCID identifiers but not both.
 
 ## View Data
 
