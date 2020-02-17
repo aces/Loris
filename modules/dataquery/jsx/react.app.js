@@ -319,7 +319,6 @@ class DataQueryApp extends Component {
 
     let script;
     if (!rule.type) {
-      console.log('WHOHAAA');
       rule.type = 'rule'
     }
 

@@ -609,8 +609,23 @@ class FilterBuilder extends Component {
       session: session,
       children: children,
     };
-    this.props.importCSV(results);
-    this.closeModalCSV();
+    fetch(
+      window.location.origin
+      + '/dataquery/View/csv',
+      {
+        credentials: 'same-origin',
+        method: 'PUT',
+        body: JSON.stringify(results)
+      }
+    ).then((resp) => resp.json()
+    ).then((data) => {
+      console.log('success data:');
+      console.log(data);
+      this.props.importCSV(results);
+      this.closeModalCSV();
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   render() {
