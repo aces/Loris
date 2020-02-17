@@ -12,6 +12,8 @@
  * The code has not been written in the context of receiving untrusted input
  * from a web-interface and as such MUST NOT be used by core LORIS code which
  * interfaces with user input.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 abstract class DataImporter
 {
@@ -124,7 +126,7 @@ abstract class DataImporter
      *
      * @return void Modifies the property `sharedCandidates`.
      */
-    function calculateSharedCandidates()
+    function calculateSharedCandidates(): void
     {
         foreach ($this->dataRows as $row) {
             $oldPSCID = $row[$this->dataHeaders[self::OLD_PSCID]];
@@ -203,9 +205,11 @@ abstract class DataImporter
     abstract function buildSQLQuery(array $row): void;
 
     /**
+     * Returns the length of the sharedCandidates property.
+     *
      * @return int
      */
-    function hasSharedCandidates()
+    function countSharedCandidates()
     {
         return count($this->sharedCandidates);
     }
@@ -284,18 +288,27 @@ abstract class DataImporter
         }
     }
 
+    /**
+     * Populate class properties mappingRows, dataRows, mappingHeaders, and
+     * dataHeaders to facilitate processing CSV data.
+     *
+     * @param SplFileInfo $mappingFile Path to the mappingFile.
+     * @param SplFileInfo $dataFile    Path to the dataFile.
+     *
+     * @return void
+     */
     protected function populateDataFromCSVs(
         SplFileInfo $mappingFile,
         SplFileInfo $dataFile
-    ) {
+    ): void {
         // Basic validation -- readable
         // Get data from CSV files.
         $this->mappingRows = self::populateArrayFromCSV($mappingFile);
         $this->dataRows    = self::populateArrayFromCSV($dataFile);
 
-        // Creating these arrays allows referencing the columns by index. This allows the
-        // use of name constants to access the data from within the CSV files instead
-        // of hard-coding column names into this script.
+        // Creating these arrays allows referencing the columns by index. This
+        // allows the use of name constants to access the data from within the
+        // CSV files instead of hard-coding column names into this script.
         $this->mappingHeaders = array_keys($this->mappingRows[0]);
         $this->dataHeaders    = array_keys($this->dataRows[0]);
     }
@@ -322,8 +335,9 @@ SQL;
         foreach ($commandQueue as $command) {
             $setString   = array();
             $whereString = array();
-            // Iterate over all columns and create a formatted string. Will only be one
-            // column for COLUMN_IMPORT mode but several for VISIT_IMPORT.
+            // Iterate over all columns and create a formatted string.
+            // There will only be one column for COLUMN_IMPORT mode but several
+            // for VISIT_IMPORT.
             foreach ($command['data'] as $column => $value) {
                 $value       = $this->quoteWrapUnlessNULL($value);
                 $setString[] = "$column = $value";
@@ -370,7 +384,10 @@ SQL;
                 implode(
                     ',',
                     array_map(
-                        array($this, 'quoteWrapUnlessNULL'),
+                        array(
+                            $this,
+                            'quoteWrapUnlessNULL',
+                        ),
                         array_values($command['data'])
                     )
                 )
@@ -383,9 +400,9 @@ SQL;
     /**
      * Converts a csv file into a two-dimensional PHP array where each element
      * contains an associative array of the column names and the values.
-     * e.g. file.csv:
+     * Example file.csv:
      *
-     *      oldPSCID,newPSCID,newCandID
+     *      OldPSCID,newPSCID,newCandID
      *      MON001,MON999,123456
      *      ...
      *
@@ -396,6 +413,8 @@ SQL;
      *     [newCandID] => 123456
      * ),
      * ...
+     *
+     * @param SplFileInfo $filename The name of the CSV file containing data.
      *
      * @throws InvalidArgumentException If no data in files or if they're
      *                                      inaccessible
@@ -428,7 +447,7 @@ SQL;
      * @copyright Copyright (c) 2010, Jay Williams
      * @license   http://www.opensource.org/licenses/mit-license.php MIT License
      */
-    static function csvToArray(string $filename='', string $delimiter=','): array
+    static function csvToArray(string $filename = '', string $delimiter = ','): array
     {
         if (!file_exists($filename) || !is_readable($filename)) {
             return array();
@@ -468,5 +487,3 @@ SQL;
         return sprintf("'%s'", $value);
     }
 }
-
-

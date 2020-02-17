@@ -5,6 +5,14 @@ require_once 'DataImporter.class.inc';
 class CandidateImporter extends DataImporter
 {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param SplFileInfo $mappingFile A path to the CSV mapping file.
+     * @param SplFileInfo $dataFile    A path to the CSV data file.
+     *
+     * @return void
+     */
     public function __construct(SplFileInfo $mappingFile, SplFileInfo $dataFile)
     {
         $this->table = 'candidate';
@@ -14,8 +22,10 @@ class CandidateImporter extends DataImporter
 
     /**
      * {@inheritDoc}
+     *
+     * @return void
      */
-    function calculateSharedCandidates()
+    function calculateSharedCandidates(): void
     {
         // Filter out candidates present in data export but not included in the
         // mapping file. If the candidates are not present in the mapping file
@@ -30,8 +40,10 @@ class CandidateImporter extends DataImporter
 
     /**
      * {@inheritDoc}
+     *
+     * @return void
      */
-    function buildSQLQuery(array $row)
+    function buildSQLQuery(array $row): void
     {
         $data = $row;
         // Discard the PSCID value in this CSV row. It is equal to the old

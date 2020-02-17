@@ -16,6 +16,8 @@ class VisitImporter extends DataImporter
     /**
      * {@inheritDoc}
      *
+     * @param SplFileInfo  $mappingFile  A path to the CSV mapping file.
+     * @param SplFileInfo  $dataFile     A path to the CSV data file.
      * @param ?SplFileInfo $excludedFile a file containing candidates to be
      *                                   excluded from import.
      *
@@ -55,7 +57,7 @@ class VisitImporter extends DataImporter
      *
      * @return void
      */
-    function calculateSharedCandidates()
+    function calculateSharedCandidates(): void
     {
         // Filter out candidates present in data export but not included in the
         // mapping file. If the candidates are not present in the mapping file
@@ -73,7 +75,7 @@ class VisitImporter extends DataImporter
      *
      * @return void
      */
-    function buildSQLQuery(array $row)
+    function buildSQLQuery(array $row): void
     {
         // Skip this visit label if it is in the list of excluded labels.
         if (count($this->excludedVisitLabels) > 0) {
@@ -95,7 +97,7 @@ class VisitImporter extends DataImporter
         $where   = array('CandID' => $newCandID);
         $command = array(
             'data'  => $data,
-            'where' => $where
+            'where' => $where,
         );
 
         if (!empty($this->existingSessions[$newCandID])

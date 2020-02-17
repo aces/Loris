@@ -1,5 +1,10 @@
 <?php declare(strict_types=1);
 
+/**
+ * {@inheritDoc}
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
 class InstrumentImporter extends DataImporter
 {
 
@@ -15,8 +20,16 @@ class InstrumentImporter extends DataImporter
     const PSCID_LENGTH = 6;
 
     /* An array of CommentIDs that exist in the database. */
-    private $existingCommentIDs = array();
+    protected $existingCommentIDs = array();
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param SplFileInfo $mappingFile A path to the CSV mapping file.
+     * @param SplFileInfo $dataFile    A path to the CSV data file.
+     *
+     * @return void
+     */
     public function __construct(SplFileInfo $mappingFile, SplFileInfo $dataFile)
     {
         // The name of the table must be the first value in the filename preceding
@@ -37,7 +50,12 @@ class InstrumentImporter extends DataImporter
         parent::__construct($mappingFile, $dataFile);
     }
 
-    function buildSQLQuery(array $row)
+    /**
+     * {@inheritDoc}
+     *
+     * @return void
+     */
+    function buildSQLQuery(array $row): void
     {
         $data = $row;
 
@@ -60,7 +78,7 @@ class InstrumentImporter extends DataImporter
             array(
                 'newCandID'  => $newCandID,
                 'visitLabel' => $data['Visit_label'],
-                'table'      => $this->table
+                'table'      => $this->table,
             )
         );
 
@@ -77,24 +95,23 @@ class InstrumentImporter extends DataImporter
         $command['table']    = 'flag';
         $command['data']     = array(
             'Data_entry'     => $data['Data_entry'],
-            'Administration' => $data['Administration']
+            'Administration' => $data['Administration'],
         );
-        $command['where']    = array(
-            'CommentID' => $newCommentID,
-        );
+        $command['where']    = array('CommentID' => $newCommentID);
         $this->UPDATEQueue[] = $command;
         unset($command);
         // Unset all values that don't belong in the instrument table
-        unset($data['PSCID'], $data['Visit_label'], $data['Data_entry'], $data['Administration']);
+        unset(
+            $data['PSCID'],
+            $data['Visit_label'],
+            $data['Data_entry'],
+            $data['Administration']
+        );
 
         // Update the instrument table
         $command['table']    = $this->table;
         $command['data']     = $data;
-        $command['where']    = array(
-            'CommentID' => $newCommentID,
-        );
+        $command['where']    = array('CommentID' => $newCommentID);
         $this->UPDATEQueue[] = $command;
-
     }
 }
-
