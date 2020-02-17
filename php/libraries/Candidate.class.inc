@@ -629,7 +629,14 @@ class Candidate
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
         $where  = array('cid' => $candID);
-        $result = $db->pselectOne($query, $where);
+        try {
+            $result = $db->pselectOne($query, $where);
+        } catch (DomainException $ex) {
+            throw new LorisException(
+                "CandID: $candID has multiple first visits ".
+                "recorded whereas only 1 is expected."
+            );
+        }
         return $result ?? '';
     }
 

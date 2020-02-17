@@ -35,11 +35,9 @@ return [
     "suppress_issue_types" => [
         "PhanTypePossiblyInvalidDimOffset",
         "PhanUndeclaredMethod",
-        "PhanUndeclaredClassMethod",
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
-        "PhanPossiblyUndeclaredVariable",
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [

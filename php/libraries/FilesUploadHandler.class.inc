@@ -149,7 +149,7 @@ class FilesUploadHandler implements RequestHandlerInterface
 
         foreach ($files as $file) {
             if ($file->getError() !== \UPLOAD_ERR_OK) {
-                $message = (new \LORIS\UploadException($file->getError()))
+                $message = (new \UploadException($file->getError()))
                     ->getMessage();
 
                 return (new \LORIS\Http\Response())

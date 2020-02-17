@@ -50,12 +50,16 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             "SELECT Name FROM modules WHERE Active='Y'",
             []
         );
-        return array_map(
-            function ($name) {
-                return self::factory($name);
-            },
-            $mnames
-        );
+
+        $modules = [];
+        foreach ($mnames as $name) {
+            try {
+                $modules[] = self::factory($name);
+            } catch(\LorisModuleMissingException $e) {
+                error_log($e->getMessage() . " " . $e->getTraceAsString());
+            }
+        }
+        return $modules;
     }
 
     /**
