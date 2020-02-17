@@ -38,7 +38,6 @@ The "Import Population from CSV" button may be used to import multiple PSCID or 
 
 Example `candidates.csv` with contents:
 ```
-PSCID
 MONT123
 MONT456
 ```
