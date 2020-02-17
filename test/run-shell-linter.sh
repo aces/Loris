@@ -7,7 +7,6 @@ declare -a excluded=(
     'test/dockerized-integration-tests.sh'
     'test/run-php-linter.sh'
     'test/unittests.sh'
-    'test/run-shell-linter.sh'
     'test/dockerized-unit-tests.sh'
     'test/integration.sh'
     'test/run-js-linter.sh'
