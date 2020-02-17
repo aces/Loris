@@ -26,7 +26,7 @@ changes in the following format: PR #1234***
  - New module created to manage the status of installed modules (PR #6015)
 
 ##### Electrophysiology Browser
- - New module created to manage electrophysiology data within LORIS. (PR #5230)
+ - New module created to view electrophysiology data within LORIS. (PR #5230)
 
 
 #### Clean Up
