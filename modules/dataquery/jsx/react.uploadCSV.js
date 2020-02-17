@@ -2,8 +2,7 @@
  *  The following file handles uploading CSV file of either PSCID or DCCID identifiers.
  *  Used for populating the filter of the DQT and to filter out the demographic from the identifiers.
  *
- *  @author   Jordan Stirling <jstirling91@gmail.com>
- *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://github.com/mohadesz/Loris-Trunk
  */
