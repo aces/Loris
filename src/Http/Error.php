@@ -45,12 +45,27 @@ class Error extends HtmlResponse
         string $message = ''
     ) {
 
+        $factory = \NDB_Factory::singleton();
+
         $uri     = $request->getURI();
         $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
+        // Admistrator email.
+        $contact = $factory->config()->getSetting('mail')['From'];
+        // Issue tracker data.
+        $issueURL  = $factory->config()->getSetting('issue_tracker_url');
+        $canReport = $factory->user()->hasAnyPermission(
+            [
+             'issue_tracker_reporter',
+             'issue_tracker_developer',
+            ]
+        );
 
         $tpl_data = array(
-                     'message' => $message,
-                     'baseurl' => $baseurl,
+                     'message'         => $message,
+                     'baseurl'         => $baseurl,
+                     'contact'         => $contact,
+                     'issueTrackerURL' => $issueURL . '/issue/new',
+                     'canReport'       => $canReport,
                     );
 
         $template_file = (string) $status . '.tpl';

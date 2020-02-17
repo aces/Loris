@@ -47,7 +47,23 @@ class ResponseGenerator implements MiddlewareInterface, MiddlewareChainer
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $response = $handler->handle($request);
+        try {
+            $response = $handler->handle($request);
+        } catch (\Exception $e) {
+            // Handle uncaught errors.
+            switch (get_class($e)) {
+                case 'NotFound':
+                    $status = 404;
+                    break;
+                default:
+                    $status = 500;
+            }
+            return $this->decoratedError(
+                $request,
+                $status,
+                $e->getMessage()
+            );
+        }
 
         if ($response->getBody() == null) {
             // If there was no body attached from the handler, attach an empty
@@ -67,5 +83,24 @@ class ResponseGenerator implements MiddlewareInterface, MiddlewareChainer
     public function withMiddleware(MiddlewareChainer $next)
     {
         return $this;
+    }
+
+    private function decoratedError(
+        ServerRequestInterface $request,
+        int $status,
+        string $msg
+    ): ResponseInterface {
+        return (new \LORIS\Middleware\PageDecorationMiddleware(
+            \NDB_Factory::singleton()->user()
+        ))->process(
+            $request,
+            new \LORIS\Router\NoopResponder(
+                new \LORIS\Http\Error(
+                    $request,
+                    $status,
+                    $msg
+                )
+            )
+        );
     }
 }
