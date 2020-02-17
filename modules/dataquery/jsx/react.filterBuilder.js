@@ -609,7 +609,7 @@ class FilterBuilder extends Component {
       session: session,
       children: children,
     };
-    this.props.uploadCSV(results);
+    this.props.importCSV(results);
     this.closeModalCSV();
   }
 

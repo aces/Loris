@@ -146,7 +146,7 @@ class DataQueryApp extends Component {
     this.resetQuery = this.resetQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
-    this.uploadCSV = this.uploadCSV.bind(this);
+    this.importCSV = this.importCSV.bind(this);
   }
 
   onTabChangeHandler(e) {
@@ -933,7 +933,7 @@ class DataQueryApp extends Component {
     this.setState({filter});
   }
 
-  uploadCSV(data) {
+  importCSV(data) {
     data = {
       activeOperator: '0',
       children: data.children,
@@ -982,7 +982,7 @@ class DataQueryApp extends Component {
         Visits={this.props.Visits}
         Loading={this.state.loading}
         Active={this.state.ActiveTab == 'DefineFilters'}
-        uploadCSV={this.uploadCSV}
+        importCSV={this.importCSV}
       />
     );
 

@@ -1,5 +1,5 @@
 /**
- *  The following file handles uploading CSV file of either PSCID or DCCID identifiers.
+ *  The following file handles importing CSV file of either PSCID or DCCID identifiers.
  *  Used for populating the filter of the DQT and to filter out the demographic from the identifiers.
  *
  *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
@@ -59,7 +59,7 @@ class ModalImportCSV extends Component {
 
   /**
    * Store the value of the element in this.state.csvType
-   * the csvType tracks whether the user is uploading
+   * the csvType tracks whether the user is importing
    * PSCID or DCCID identifiers from a CSV file.
    *
    * @param {string} formElement - name of the form element
@@ -73,7 +73,7 @@ class ModalImportCSV extends Component {
 
   /**
    * The submitCandidateData function is called
-   * after the user completes the uploading of the
+   * after the user completes the importing of the
    * CSV file and toggling whether PSCID or DCCID
    * and clicking the submit button.
    *
@@ -95,7 +95,7 @@ class ModalImportCSV extends Component {
         <div className='row' style={{padding: '0 20px 0 20px'}}>
           <FileElement
             name='file'
-            id='uploadCSV'
+            id='importCSV'
             onUserInput={this.getFileCSV}
             ref='file'
             label='CSV file'
