@@ -27,16 +27,17 @@ sed -i \
     -e "s/%PASSWORD%/$password/g" \
     -e "s/%DATABASE%/$database/g" \
     config.xml
-export LORIS_DB_CONFIG=$(pwd)/config.xml
+LORIS_DB_CONFIG=$(pwd)/config.xml
+export $LORIS_DB_CONFIG
 
 if [ $# -eq 2 ]; then
   # Run specific unit test by specifying test name and file path
-  echo Running Unit test: $1 in file $2;
-  ../vendor/bin/phpunit --configuration phpunit.xml $1 $2
+  echo Running Unit test: "$1" in file "$2";
+  ../vendor/bin/phpunit --configuration phpunit.xml "$1" "$2"
 elif [ $# -eq 1 ]; then
   # Run specific unit test by specifying only the test name
-  echo Running Unit test: $1;
-  ../vendor/bin/phpunit --configuration phpunit.xml   $1 ./unittests/$1.php
+  echo Running Unit test: "$1";
+  ../vendor/bin/phpunit --configuration phpunit.xml   "$1" ./unittests/"$1".php
 else
  # Run all unittest
 ../vendor/bin/phpunit --debug --configuration phpunit.xml --testsuite 'LorisUnitTests'
