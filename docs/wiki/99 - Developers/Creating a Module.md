@@ -10,7 +10,7 @@ A Loris module consists of a group of pages that perform a specific function or 
 1. Create a new folder corresponding to your module name under `modules/`. 
 This name should be short and descriptive. 
 The name must use only lowercase alphanumeric characters and underscores, e.g. `document_repository`.
-For the remainder of this document we will assume your new module is named `my_first_module`.
+For the remainder of this document we will assume your new module is named `my_new_module`.
 
 2. Create remaining folders inside the module according to the following tree structure:
 
@@ -54,7 +54,7 @@ of LORIS modules are "Menu Filters" and "Forms".
 This is a type of module that displays a table of data with options to filter the values of this table.
 
 The correct way to create a menu filter is to include additional classes that represent the idea of a
-row in the tabel displayed to a user. This differs from a row in the database itself; for example, a row in the 
+row in the table displayed to a user. This differs from a row in the database itself; for example, a row in the 
 menu filter module may represent a joining of columns across many database tables.
 
 If you are creating a Menu Filter module, your class `php/my_new_module.class.inc` should extend
@@ -72,7 +72,7 @@ affiliated with a given Site or Project.
 
 ##### Row Provisioner.
 This file should be accompanied by a class `php/mynewmodulerowprovisioner.class.inc`. This file should
-conntain the SQL statement used to query the database for data that will be consolidated into a
+contain the SQL statement used to query the database for data that will be consolidated into a
 Menu Filter row.
 
 [See this file for an example](../../../modules/dicom_archive/php/dicomarchiverowprovisioner.class.inc).
@@ -99,7 +99,7 @@ an entry for your new module within the `modules` table in LORIS.
 
 You must define new permissions for the module. These are used to limit users to specific actions with the module.
 
-Permissions are defined in the `permissions` table in LORIS and should be separateed into view and edit permissions in most cases.
+Permissions are defined in the `permissions` table in LORIS and should be separated into view and edit permissions in most cases.
 
 In our example, you would create two new permissions: `my_new_module_view` and `my_new_module_edit`. Your PHP code within
 `php/my_new_module.class.inc` will define what these permissions allow a user to do.
@@ -167,4 +167,3 @@ A pull request containing a new module `my_new_module` will lmust contain the fo
 ## Optional new files
 * `modules/my_new_module/css/...` -- Custom CSS file(s)
 * `modules/my_new_module/test/my_new_moduleTest.php` -- Integration tests
-
