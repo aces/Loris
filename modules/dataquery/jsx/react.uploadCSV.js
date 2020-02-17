@@ -1,8 +1,22 @@
+/**
+ *  The following file handles uploading CSV file of either PSCID or DCCID identifiers.
+ *  Used for populating the filter of the DQT and to filter out the demographic from the identifiers.
+ *
+ *  @author   Jordan Stirling <jstirling91@gmail.com>
+ *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @link     https://github.com/mohadesz/Loris-Trunk
+ */
+
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 import Papa from 'papaparse';
 
+/*
+ *  The following component displays a modal
+ *  for extracting PSCID or DCCID identifiers from a CSV file.
+ */
 class ModalUploadCSV extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +32,9 @@ class ModalUploadCSV extends Component {
   }
 
   /**
-   * Store the value of the element in this.state.upload.formData
+   * Store the value of the element in this.state.file
+   * Uses papaparse to extract CSV file and data is stored
+   * in this.state.csvData of the state.
    *
    * @param {string} formElement - name of the form element
    * @param {string} value - value of the form element
@@ -31,16 +47,38 @@ class ModalUploadCSV extends Component {
     });
   }
 
+  /**
+   * The getFileCSV function calls this function when
+   * parsing of the CSV file is complete and we store
+   * the results in this.state.csvData of the state.
+   *
+   * @param {object} result - the CSV file data.
+   */
   updateData(result) {
     this.setState({csvData: result.data});
   }
 
+  /**
+   * Store the value of the element in this.state.csvType
+   * the csvType tracks whether the user is uploading
+   * PSCID or DCCID identifiers from a CSV file.
+   *
+   * @param {string} formElement - name of the form element
+   * @param {string} value - value of the form element
+   */
   handleCandidateType(formElement, value) {
     const state = Object.assign({}, this.state);
     state.csvType = value;
     this.setState(state);
   }
 
+  /**
+   * The submitCandidateData function is called
+   * after the user completes the uploading of the
+   * CSV file and toggling whether PSCID or DCCID
+   * and clicking the submit button.
+   *
+   */
   submitCandidateData() {
     const type = this.state.csvType;
     const data = this.state.csvData;
