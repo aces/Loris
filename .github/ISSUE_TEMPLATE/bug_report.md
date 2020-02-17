@@ -26,6 +26,7 @@ A clear and concise description of what you expected to happen.
 - Version [e.g. 22]
 
 **Server Environment (if known):**
+_Note: We only support the two most recent releases of LORIS._
 - LORIS Version: [e.g. 21.0.0]
 - Linux distribution and Version: [e.g. Ubuntu 16.04, CentOS 7]
 - MySQL/MariaDB Version: [e.g. MySQL 5.7, MariaDB 10.3]
