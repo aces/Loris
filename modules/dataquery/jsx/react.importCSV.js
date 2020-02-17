@@ -16,7 +16,7 @@ import Papa from 'papaparse';
  *  The following component displays a modal
  *  for extracting PSCID or DCCID identifiers from a CSV file.
  */
-class ModalUploadCSV extends Component {
+class ModalImportCSV extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -127,10 +127,10 @@ class ModalUploadCSV extends Component {
   }
 }
 
-ModalUploadCSV.propTypes = {
+ModalImportCSV.propTypes = {
   showModalCSV: PropTypes.bool,
   closeModalCSV: PropTypes.func,
   defineCSVCandidates: PropTypes.func,
 };
 
-export default ModalUploadCSV;
+export default ModalImportCSV;

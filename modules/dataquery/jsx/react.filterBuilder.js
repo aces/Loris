@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import ModalUploadCSV from './react.uploadCSV';
+import ModalImportCSV from './react.importCSV';
 
 /*
  *  The following component is used for displaying operator for the group component
@@ -616,7 +616,7 @@ class FilterBuilder extends Component {
   render() {
     return (
       <div>
-        <ModalUploadCSV
+        <ModalImportCSV
           showModalCSV={this.state.showModalCSV}
           closeModalCSV={this.closeModalCSV}
           defineCSVCandidates={this.defineCSVCandidates}
