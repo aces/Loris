@@ -4,7 +4,7 @@ require_once __DIR__
 /**
  * My Preferences integration tests.
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class MyPreferencesIntegrationTest extends LorisIntegrationTest
 {
@@ -24,17 +24,6 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
     private const ADMIN_REALNAME  = 'Admin account';
     private const ADMIN_EMAIL     = 'admin@example.com';
     private const ADMIN_EMAIL_NEW = 'tester@example.com';
-
-    private $_name        = "#userAccounts_filter".
-                                " > div > div > fieldset > div:nth-child(3)".
-                                " > div > div > input";
-    private $_site        = "#userAccounts_filter".
-                                " > div > div > fieldset > div:nth-child(2)".
-                                " > div > div > select";
-    private $_clearFilter = ".col-sm-9 > .btn";
-    private $_table       = "#dynamictable > tbody > tr:nth-child(1)";
-    private $_addUserBtn  = "#default-panel > div > div > div.table-header >".
-                            " div > div > div:nth-child(2) > button:nth-child(1)";
 
     /**
      * Does basic setting up of Loris variables for this test, such as

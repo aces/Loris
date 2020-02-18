@@ -320,14 +320,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function _verifyUserModification($userId, $fieldName, $newValue)
     {
         // Load the page
-        $this->_accessUser($page, $userId);
+        $this->_accessUser($userId);
 
         // Set the value and submit the changes
         $this->setValue($fieldName, $newValue);
-        $this->submit($page, $userId);
+        $this->submit($userId);
 
         // Reload
-        $this->_accessUser($page, $userId);
+        $this->_accessUser($userId);
 
         // Verify changes appear on the page
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
@@ -345,12 +345,11 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     /**
      * Submit user data to the form specified by $page.
      *
-     * @param string $page   The page to submit to.
      * @param string $userId ID of the user to modify.
      *
      * @return void
      */
-    function submit($page, $userId): void
+    function submit($userId): void
     {
         $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
         $sitesOption  = new WebDriverSelect($sitesElement);

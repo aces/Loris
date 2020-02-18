@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 namespace LORIS\my_preferences;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
 /**
  * Class module implements the basic LORIS module functionality
  *
