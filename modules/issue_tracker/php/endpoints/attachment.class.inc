@@ -161,10 +161,10 @@ class Attachment extends Endpoint implements ETagCalculator
     {
         // Parse request body.
         $values   = $request->getQueryParams();
-        $user     =& \User::singleton();
+        $user     = \NDB_Factory::singleton()->user();
         $username = $user->getUsername();
         $ID       = $values['ID'];
-        $DB       = \Database::singleton();
+        $DB       = \NDB_Factory::singleton()->database();
         $query    = 'SELECT
                         USER
                     FROM
@@ -204,7 +204,7 @@ class Attachment extends Endpoint implements ETagCalculator
             || $request->getMethod() === 'DELETE'
             || $request->getMethod() === 'GET'
         ) {
-            return 'Etag not calculated on POST request';
+            return 'Etag not calculated for POST, Delete, and Get request';
         }
     }
 
