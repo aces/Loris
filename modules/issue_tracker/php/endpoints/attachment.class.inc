@@ -8,7 +8,7 @@ use \LORIS\Middleware\ETagCalculator;
 use \LORIS\api\Endpoint;
 
 /**
- * The NDB_Page for the POST requests.
+ * The Attachment class for the POST requests.
  *
  * @category Loris
  * @package  IssueTracker
