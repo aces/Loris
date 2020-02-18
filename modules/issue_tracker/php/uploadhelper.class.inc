@@ -143,7 +143,7 @@ class UploadHelper
             move_uploaded_file($_FILES['file']['tmp_name'], $path);
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
-            error_log("DatabaseException: $e");
+            error_log($e->getMessage());
         }
     }
 
