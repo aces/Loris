@@ -283,7 +283,7 @@ class RequestAccount extends \NDB_Form
         }
         // Send an email to the administrator informing them that a user has
         // requested an account.
-        if (empty($err) && empty($errors)) {
+        if (empty($err)) {
             $config    = \NDB_Factory::singleton()->config();
             $studyName = $config->getSetting('title');
 
