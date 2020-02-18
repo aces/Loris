@@ -73,7 +73,7 @@ class Attachment extends Endpoint implements ETagCalculator
             $file_hash;
 
         if (!is_readable($fileToDownload)) {
-            throw new \LorisException('Attachment NOT FOUND');
+            throw new \LorisException('Forbidden Access');
         }
 
         $name = rawurldecode($filename);
