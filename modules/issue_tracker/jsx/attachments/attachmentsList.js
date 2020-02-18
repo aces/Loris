@@ -1,11 +1,20 @@
 /**
- * React component used to display
- * issue_tracker attachments list.
+ *  The following file handles displaying attachments
+ *  for the issue being viewed in issue_tracker.
+ *
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @link     https://github.com/mohadesz/Loris-Trunk
  */
+
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 
+/**
+ * React component used to display
+ * issue_tracker attachments list.
+ */
 class AttachmentsList extends Component {
   constructor(props) {
     super(props);
@@ -24,6 +33,10 @@ class AttachmentsList extends Component {
     this.displayAttachmentOptions = this.displayAttachmentOptions.bind(this);
   }
 
+  /**
+   * Sends DELETE request to "soft" delete
+   * the attachment selected from the user.
+   */
   deleteAttachment() {
     const state = Object.assign({}, this.state);
     const url = window.location.origin +
@@ -49,6 +62,10 @@ class AttachmentsList extends Component {
     );
   }
 
+  /**
+   * Confirm with the user about deleting the file.
+   * @param {object} event - name of the form element
+   */
   openModalAttachmentDelete(event) {
     event.preventDefault();
     const json = JSON.parse(event.target.getAttribute('value'));
@@ -58,12 +75,22 @@ class AttachmentsList extends Component {
     });
   }
 
+  /**
+   * Used to signal closing the attachment
+   * delete confirmation Modal.
+   */
   closeModalAttachmentDelete() {
     this.setState({
       showModalAttachmentDelete: false,
     });
   }
 
+  /**
+   * Populates the attachment options.
+   * @param {string} deleteData - name of the element if deleted.
+   * @param {object} item - info of attachment.
+   * @return {DOMRect} row - to display.
+   */
   displayAttachmentOptions(deleteData, item) {
     if (loris.userHasPermission('issue_tracker_developer')
     || this.state.attachments.whoami === item.user) {
