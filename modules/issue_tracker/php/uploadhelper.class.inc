@@ -85,7 +85,8 @@ class UploadHelper
 
         $this->setFullPath($this->_fileToUpload);
 
-        $this->begin();
+        $DB = \NDB_Factory::singleton()->database();
+        $DB->beginTransaction();
         $this->registerFile($this->_fileToUpload);
         $this->endWithSuccess();
 
@@ -208,17 +209,6 @@ class UploadHelper
     function generateHash(string $filePath) : string
     {
         return hash_file('sha256', $filePath);
-    }
-
-    /**
-     * Begins the transaction for the file attachment upload.
-     *
-     * @return void
-     */
-    function begin() : void
-    {
-        $DB = \Database::singleton();
-        $DB->beginTransaction();
     }
 
     /**
