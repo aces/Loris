@@ -156,13 +156,6 @@ class UploadHelper
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
             error_log("DatabaseException: $e");
-            $this->_response = json_encode(
-                array(
-                    'message' => 'File registration failed.
-                    Is the description empty?',
-                    'error'   => true,
-                )
-            );
         }
     }
 
