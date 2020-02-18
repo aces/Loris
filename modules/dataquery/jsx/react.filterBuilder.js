@@ -621,8 +621,8 @@ class FilterBuilder extends Component {
     ).then((data) => {
       console.log('success data:');
       console.log(data);
-      this.props.importCSV(results);
-      this.closeModalCSV();
+      // this.props.importCSV(results);
+      // this.closeModalCSV();
     }).catch((error) => {
       console.error(error);
     });
