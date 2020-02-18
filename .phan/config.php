@@ -12,7 +12,7 @@ return [
     // The default severity level for phan is 5. After removing all the
     // suppressed rules, we should consider reducing this value to detect more
     // suspicious code.
-    "minimum_severity" => 5,
+    "minimum_severity" => 1,
     // FIXME: allow_missing_properties should be false, but there's
     // too many other things to fix first.
     "allow_missing_properties" => true,
