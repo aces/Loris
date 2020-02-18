@@ -1,17 +1,5 @@
 <?php declare(strict_types=1);
-/**
- * POST request method.
- *
- * Used for uploading attachment file for Issue Tracker.
- *
- * PHP Version 7
- *
- * @category Loris
- * @package  Issue_Tracker
- * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
+
 namespace LORIS\issue_tracker;
 
 /**
