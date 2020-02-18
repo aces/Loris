@@ -181,8 +181,11 @@ class Attachment extends Endpoint implements ETagCalculator
             return true;
         }
         else if (empty($result)
-            && !$user->hasPermission(
-                'issue_tracker_developer'
+            && !$user->hasAnyPermission(
+                array(
+                    'issue_tracker_developer',
+                    'view_all_sites'
+                )
             )
         ) {
             return false;
