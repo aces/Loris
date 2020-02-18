@@ -1,28 +1,11 @@
-<?php
-/**
- * This serves as a hint to LORIS that this module is a real module.
- * It does nothing but implement the module class in the module's namespace.
- *
- * PHP Version 5
- *
- * @category Behavioural
- * @package  Main
- * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
-
-namespace LORIS\user_accounts;
+<?php declare(strict_types=1);
+namespace LORIS\my_preferences;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 /**
  * Class module implements the basic LORIS module functionality
  *
- * @category Behavioural
- * @package  Main
- * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Module extends \Module
 {
@@ -35,34 +18,7 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasPermission('user_accounts');
-    }
-
-    /**
-     * The edit_user page overrides the default handler in order to delegate
-     * edit_user/$identifeir to the edit_user page.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
-     * @return ResponseInterface The outgoing PSR15 response
-     */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
-    {
-        if (strpos($request->getUri()->getPath(), "/edit_user/") === 0) {
-            $page = $this->loadPage("edit_user");
-            return $page->process($request, $page);
-        }
-        return parent::handle($request);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string The menu category for this module
-     */
-    public function getMenuCategory() : string
-    {
-        return "Admin";
+        return parent::hasAccess($user);
     }
 
     /**
@@ -72,40 +28,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "User Accounts";
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $type The type of widgets to get
-     * @param \User  $user The user widgets are being retrieved for.
-     *
-     * @return \LORIS\GUI\Widget[]
-     */
-    public function getWidgets(string $type, \User $user) : array
-    {
-        switch($type) {
-        case "usertasks":
-            $factory = \NDB_Factory::singleton();
-            $DB      = $factory->database();
-            $baseURL = $factory->settings()->getBaseURL();
-            return [
-                new \LORIS\dashboard\TaskQueryWidget(
-                    $user,
-                    "Pending account approval",
-                    $DB,
-                    "SELECT COUNT(DISTINCT users.UserID) FROM users
-                        LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
-                    WHERE users.Pending_approval='Y'
-                        AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
-                    'user_accounts_multisite',
-                    'upr.CenterID',
-                    $baseURL . "/user_accounts/?pendingApproval=Y",
-                    "pending-accounts"
-                )
-            ];
-        }
-        return [];
+        return "My Preferences";
     }
 }

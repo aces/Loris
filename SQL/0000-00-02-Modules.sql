@@ -38,6 +38,7 @@ INSERT INTO modules (Name, Active) VALUES ('login', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('media', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('module_manager', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('mri_violations', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('my_preferences', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('new_profile', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('next_stage', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('publication', 'Y');
