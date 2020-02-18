@@ -177,15 +177,9 @@ class Attachment extends Endpoint implements ETagCalculator
             array('ID' => $ID, 'user' => $username)
         );
         // Check if User shouldn't be able to Delete.
-        if ($user->hasPermission('superuser')) {
-            return true;
-        }
-        else if (empty($result)
-            && !$user->hasAnyPermission(
-                array(
-                    'issue_tracker_developer',
-                    'view_all_sites'
-                )
+        if (empty($result)
+            && !$user->hasPermission(
+                'issue_tracker_developer'
             )
         ) {
             return false;
