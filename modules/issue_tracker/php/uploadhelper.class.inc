@@ -43,7 +43,7 @@ class UploadHelper
      * @param array  $files  The $_FILES array content.
      * @param array  $values The post message array content.
      *
-     * @return array
+     * @return array (success|error) with a message for the frontend.
      */
     function setupUploading(Object $user, array $files, array $values) : array
     {
