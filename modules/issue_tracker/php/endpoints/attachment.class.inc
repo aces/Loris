@@ -47,7 +47,6 @@ class Attachment extends Endpoint implements ETagCalculator
 
     /**
      * Handle GET requests for attachment
-     * and used for downloading attachment.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
