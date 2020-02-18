@@ -232,7 +232,7 @@ class Attachment extends Endpoint implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        return true;
+        return $user->hasPermission('issue_tracker');
     }
 
     /**
