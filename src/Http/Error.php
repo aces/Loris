@@ -60,14 +60,13 @@ class Error extends HtmlResponse
         // user with the correct permissions.
         $user = $factory->user();
         if (! $user instanceof \LORIS\AnonymousUser) {
-            $issueURL  = $factory->config()->getSetting('issue_tracker_url');
             $canReport = $factory->user()->hasAnyPermission(
                 [
                  'issue_tracker_reporter',
                  'issue_tracker_developer',
                 ]
             );
-            $tpl_data['issueTrackerURL'] = $issueURL . '/issue/new';
+            $tpl_data['issueTrackerURL'] = '/issue_tracker/issue/new';
             $tpl_data['canReport']       = $canReport;
         }
 
