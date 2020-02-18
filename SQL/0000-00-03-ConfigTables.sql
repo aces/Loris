@@ -25,8 +25,8 @@ CREATE TABLE `Config` (
   KEY `fk_Config_1_idx` (`ConfigID`),
   CONSTRAINT `fk_Config_1`
   FOREIGN KEY (`ConfigID`)
-    REFERENCES `ConfigSettings` (`ID`) 
-    ON DELETE CASCADE 
+    REFERENCES `ConfigSettings` (`ID`)
+    ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -123,6 +123,9 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, Or
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'JWTKey', 'Secret key for signing JWT tokens on this server. This should be unique and never shared with anyone. ', 1, 0, 'text', ID, 'JWT Secret Key', 1 FROM ConfigSettings WHERE Name="APIKeys";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'reCAPTCHAPrivate', 'Private Key for Google reCAPTCHA', 1, 0, 'text', ID, 'reCAPTCHA Private Key', 2 FROM ConfigSettings WHERE Name="APIKeys";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'reCAPTCHAPublic', 'Public Key for Google reCaptcha', 1, 0, 'text', ID, 'reCAPTCHA Public Key', 3 FROM ConfigSettings WHERE Name="APIKeys";
+
+-- Issue_Tracker attachments for issues.
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (106, 'IssueTrackerDataPath', 'Path to Issue Tracker data files', 1, 0, 'web_path', 26, 'Issue Tracker Data Path', 8);
 
 -- Loris-MRI/Imaging Pipeline options from the $profile (commonly "prod") file
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('imaging_pipeline', 'Imaging Pipeline settings', 1, 0, 'Imaging Pipeline', 12);
@@ -254,3 +257,5 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 't1'    FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, 't2'    FROM ConfigSettings WHERE Name="modalities_to_deface";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'pd'    FROM ConfigSettings WHERE Name="modalities_to_deface";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false'  FROM ConfigSettings WHERE Name="usePwnedPasswordsAPI";
+
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (106, 106, '/data/issue_tracker/');
