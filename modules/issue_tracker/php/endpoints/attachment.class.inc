@@ -228,7 +228,12 @@ class Attachment extends Endpoint implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('issue_tracker');
+        return $user->hasAnyPermission(
+            array(
+                'issue_tracker_reporter',
+                'issue_tracker_developer'
+            )
+        );
     }
 
     /**
