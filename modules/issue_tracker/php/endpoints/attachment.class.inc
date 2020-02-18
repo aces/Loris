@@ -128,7 +128,8 @@ class Attachment extends Endpoint implements ETagCalculator
             // Parse request body.
             $values    = $request->getQueryParams();
             $file_hash = $values['file_hash'];
-            $DB        = \Database::singleton();
+            $factory   = \NDB_Factory::singleton();
+            $DB        = $factory->database();
             $query     = 'UPDATE
                              issues_attachments
                           SET
