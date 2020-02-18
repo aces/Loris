@@ -297,7 +297,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $projectsOption  = new WebDriverSelect($projectsElement);
         $projectsOption->selectByValue("1");
         $this->safeClick(WebDriverBy::Name('fire_away'));
-        $this->_accessUser('user_accounts', 'userid');
+        $this->_accessUser('userid');
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $this->assertEquals($field->getAttribute('value'), 'first');
         $field = $this->safeFindElement(WebDriverBy::Name('Last_name'));
@@ -500,7 +500,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         string $confirmPassword = ''
     ): void {
         // Go to page
-        $this->_accessUser($page, $userId);
+        $this->_accessUser($userId);
         $this->setValue(
             self::FORM_FIELD_PASSWORD,
             $password
@@ -537,8 +537,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function _accessUser($userId)
     {
         $this->safeGet(
-            $this->url . "/user_accounts/edit_user/?identifier="
-            ."$userId"
+            $this->url . "/user_accounts/edit_user/?identifier=$userId"
         );
     }
     /**
