@@ -204,55 +204,36 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         // Test changing first name
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTester',
             'First_name',
             'NewFirst'
         );
         // Test changing last name
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTester',
             'Last_name',
             'NewLast'
         );
         // Test changing 'Active' status
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTesterTwo',
             'Active',
             'No'
         );
         // Test changing Email
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTester',
             'Email',
             'newemail@example.com'
         );
         // Test changing Approval status
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTesterTwo',
             'Pending_approval',
             'No'
         );
         //TODO:add test case to ensure pending_approval
         //DOES NOT show up on UnitTester since logged in user is UnitTester
-    }
-
-    /**
-     * Ensure that password errors are successfully triggered on the Edit User
-     * page.
-     *
-     * @return void
-     */
-    function testEditUserPasswordErrors()
-    {
-        $this->_verifyPasswordErrors(
-            self::FILEPATH_EDITUSER,
-            self::UNITTESTER_USERNAME
-        );
     }
 
     /**
@@ -324,7 +305,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
 
         // Set the value and submit the changes
         $this->setValue($fieldName, $newValue);
-        $this->submit($userId);
+        $this->submit();
 
         // Reload
         $this->_accessUser($userId);
@@ -345,11 +326,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     /**
      * Submit user data to the form specified by $page.
      *
-     * @param string $userId ID of the user to modify.
-     *
      * @return void
      */
-    function submit($userId): void
+    function submit(): void
     {
         $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
         $sitesOption  = new WebDriverSelect($sitesElement);
@@ -386,42 +365,26 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Runs all of the password tests for a page.
-     *
-     * @param string $page   The page to submit to.
-     * @param string $userId The user to edit
-     *
-     * @return void
-     */
-    function _verifyPasswordErrors($page, $userId): void
-    {
-        $this->_verifyPasswordMustNotEqualEmail($page, $userId);
-        $this->_verifyPasswordAndConfirmPasswordMustMatch($page, $userId);
-        $this->_verifyNewPasswordMustBeDifferent($page, $userId);
-    }
-
-    /**
      * Ensures that the user cannot set their password to be the same value
      * as their email address.
      *
-     * @param string $page   The page to submit to.
-     * @param string $userId The user to edit
-     *
      * @return void
      */
-    function _verifyPasswordMustNotEqualEmail($page, $userId): void
+    function testPasswordMustNotEqualEmail(): void
     {
         // Make sure the user's email is set to a known value. This will also
         // load the page.
         $this->_verifyUserModification(
-            $page,
-            'UnitTester',
+            self::UNITTESTER_USERNAME,
             'Email',
             self::UNITTESTER_EMAIL_NEW
         );
 
         // Try changing the password to the same value.
-        $this->_sendPasswordValues($page, $userId, self::UNITTESTER_EMAIL_NEW);
+        $this->_sendPasswordValues(
+            self::UNITTESTER_USERNAME,
+            self::UNITTESTER_EMAIL_NEW
+        );
         // This text comes from the class constants in Edit User
         $this->assertContains('cannot be your email', $this->getBody());
     }
@@ -430,18 +393,16 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * Ensures that the module checks that the password and confirm password
      * field match.
      *
-     * @param string $page   The page to submit to.
      * @param string $userId The user to edit
      *
      * @return void
      */
-    function _verifyPasswordAndConfirmPasswordMustMatch($page, $userId): void
+    function testPasswordAndConfirmPasswordMustMatch($userId): void
     {
         // Send two different random strings to the password and confirm
         // password values.
         $this->_sendPasswordValues(
-            $page,
-            $userId,
+            self::UNITTESTER_USERNAME,
             \Utility::randomString(),
             \Utility::randomString()
         );
@@ -453,25 +414,20 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * Ensures that the module checks that the password and confirm password
      * field match.
      *
-     * @param string $page   The page to submit to.
-     * @param string $userId The user to edit
-     *
      * @return void
      */
-    function _verifyNewPasswordMustBeDifferent($page, $userId): void
+    function testNewPasswordMustBeDifferent(): void
     {
         $newPassword = \Utility::randomString();
         // Change the user's password to $newPassword
         $this->_sendPasswordValues(
-            $page,
-            $userId,
+            self::UNITTESTER_USERNAME,
             $newPassword
         );
         // Change the password again using the same value. This should cause
         // and error.
         $this->_sendPasswordValues(
-            $page,
-            $userId,
+            self::UNITTESTER_USERNAME,
             $newPassword
         );
         // This text comes from the class constants in Edit User
@@ -485,7 +441,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * Loads a module, sets the password and confirm password value, submits
      * the form, and reloads the page.
      *
-     * @param string $page            The module to load
      * @param string $userId          The user to edit.
      * @param string $password        The plaintext password to use
      * @param string $confirmPassword The plaintext password to use. Will be
@@ -494,7 +449,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function _sendPasswordValues(
-        string $page,
         string $userId,
         string $password,
         string $confirmPassword = ''
@@ -509,10 +463,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             self::FORM_FIELD_CONFIRMPASSWORD,
             ($confirmPassword === '') ? $password : $confirmPassword
         );
-        $this->submit(
-            $page,
-            $userId
-        );
+        $this->submit();
     }
 
     /**
