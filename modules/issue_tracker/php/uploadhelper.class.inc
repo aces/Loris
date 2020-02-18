@@ -45,7 +45,7 @@ class UploadHelper
      *
      * @return array (success|error) with a message for the frontend.
      */
-    function setupUploading(Object $user, array $files, array $values) : array
+    function setupUploading(\User $user, array $files, array $values) : array
     {
         // Check if post.ini max_post configured for the file_size.
         if (!isset($files['file']['tmp_name'])
