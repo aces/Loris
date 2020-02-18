@@ -100,7 +100,7 @@ class Attachment extends Endpoint implements ETagCalculator
     {
         // Parse POST request body.
         $values     = $request->getQueryParams();
-        $user       =& \User::singleton();
+        $user       = \NDB_Factory::singleton()->user();
         $attachment = new \LORIS\issue_tracker\UploadHelper();
         $response   = $attachment->setupUploading(
             $user,
