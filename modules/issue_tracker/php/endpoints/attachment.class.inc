@@ -129,15 +129,11 @@ class Attachment extends Endpoint implements ETagCalculator
             $file_hash = $values['file_hash'];
             $factory   = \NDB_Factory::singleton();
             $DB        = $factory->database();
-            $query     = 'UPDATE
-                             issues_attachments
-                          SET
-                             deleted = 1
-                          WHERE
-                             file_hash = :file_hash;';
-            $stmt      = $DB->prepare($query);
-            $stmt->execute(array('file_hash' => $file_hash));
-
+            $DB->update(
+                'issues_attachments',
+                array('deleted' => 1),
+                array('file_hash' => $file_hash)
+            );
             return new \LORIS\Http\Response\JsonResponse(
                 array('success' => true)
             );
