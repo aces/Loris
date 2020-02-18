@@ -183,7 +183,6 @@ class Attachment extends Endpoint implements ETagCalculator
             && !$user->hasAnyPermission(
                 array(
                     'issue_tracker_developer',
-                    'view_all_sites'
                 )
             )
         ) {
