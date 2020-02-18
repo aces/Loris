@@ -30,7 +30,7 @@ class Attachment extends Endpoint implements ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // Ensure GET or POST request.
+        // Ensure GET, POST, or DELETE request.
         switch ($request->getMethod()) {
         case 'GET':
             return $this->_handleGET($request);
