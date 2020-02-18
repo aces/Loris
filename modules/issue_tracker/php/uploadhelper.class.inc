@@ -124,7 +124,7 @@ class UploadHelper
      */
     function registerFile(Object &$fileToUpload) : void
     {
-        $DB     =& \Database::singleton();
+        $DB     = \NDB_Factory::singleton()->database();
         $values = array(
             'issueID'     => $this->_values['issueID'],
             'file_hash'   => $fileToUpload->file_hash,
