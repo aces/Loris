@@ -47,7 +47,6 @@ class Attachment extends Endpoint implements ETagCalculator
 
     /**
      * Handle GET requests for attachment
-     * and used for downloading attachment.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
@@ -201,7 +200,7 @@ class Attachment extends Endpoint implements ETagCalculator
             || $request->getMethod() === 'DELETE'
             || $request->getMethod() === 'GET'
         ) {
-            return 'Etag not calculated for POST, Delete, and Get request';
+            return 'Etag not calculated for POST, DELETE, and GET request';
         }
     }
 
