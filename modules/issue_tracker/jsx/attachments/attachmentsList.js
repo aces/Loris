@@ -4,7 +4,7 @@
  *
  *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @link     https://github.com/aces/Loris
  */
 
 import React, {Component, Fragment} from 'react';
