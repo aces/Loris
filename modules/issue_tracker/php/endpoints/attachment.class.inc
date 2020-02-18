@@ -142,8 +142,8 @@ class Attachment extends Endpoint implements ETagCalculator
                 array('success' => true)
             );
         }
-        return new \LORIS\Http\Response\JsonResponse(
-            array('error' => 'invalid permission')
+        return new \LORIS\Http\Response\JSON\Forbidden(
+            'Invalid Permissions'
         );
     }
 
