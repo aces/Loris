@@ -269,6 +269,35 @@ class RequestAccount extends \NDB_Form
             }
         }
 
+        // Verify reCAPTCHA
+        $err = array();
+        if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
+            $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
+            $resp      = $recaptcha->verify(
+                $values['g-recaptcha-response'],
+                $_SERVER['REMOTE_ADDR']
+            );
+            if (!$resp->isSuccess()) {
+                $err['captcha'] = 'Please complete the reCaptcha!';
+            }
+        }
+        // Send an email to the administrator informing them that a user has
+        // requested an account.
+        if (empty($err) && empty($errors)) {
+            $config    = \NDB_Factory::singleton()->config();
+            $studyName = $config->getSetting('title');
+
+            \Email::send(
+                $config->getSetting('mail')['From'],
+                'request_account.tpl',
+                array(
+                    'Study'     => $studyName,
+                    'UserID'    => $from,
+                    'Real_name' => $fullname,
+                    'Email'     => $from,
+                ),
+            );
+        }
         // Show success message even if email already exists for security reasons
         $this->tpl_data['success'] = true;
     }
