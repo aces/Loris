@@ -172,7 +172,7 @@ class Attachment extends Endpoint implements ETagCalculator
                     WHERE
                         ID = :ID
                         AND USER = :user;';
-        $result   = $DB->pselect(
+        $result   = $DB->pselectOne(
             $query,
             array('ID' => $ID, 'user' => $username)
         );
