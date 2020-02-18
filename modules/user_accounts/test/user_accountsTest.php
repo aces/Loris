@@ -24,8 +24,7 @@ require_once __DIR__
 class UserAccountsIntegrationTest extends LorisIntegrationTest
 {
     // The paths to the pages to which the form must submit.
-    private const FILEPATH_EDITUSER      = 'user_accounts';
-    private const FILEPATH_MYPREFERENCES = 'user_accounts/my_preferences';
+    private const FILEPATH_EDITUSER = 'user_accounts';
     // The names of the form elements for the Password and Confirm Password
     // fields.
     private const FORM_FIELD_PASSWORD        = 'Password_hash';
@@ -129,17 +128,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 WebDriverBy::Name("__Confirm")
             )->getAttribute("type")
         );
-    }
-    /**
-     * Tests that, when loading the User accounts module > my_preference submodule
-     * some text appears in the body.
-     *
-     * @return void
-     */
-    function testUserAccountsMyPreferencesDoespageLoad()
-    {
-        $this->safeGet($this->url . "/user_accounts/my_preferences/");
-        $this->assertContains("My Preferences", $this->getBody());
     }
     /**
      * Tests that searching for users using thei user IDs works
@@ -252,46 +240,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         //TODO:add test case to ensure pending_approval
         //DOES NOT show up on UnitTester since logged in user is UnitTester
     }
-    /**
-     * Tests various My Preference page edit operations.
-     *
-     * @return void
-     */
-    function testMyPreferencesEdits()
-    {
-        $this->_verifyUserModification(
-            'user_accounts/my_preferences',
-            'UnitTester',
-            'First_name',
-            'NewFirst'
-        );
-        $this->_verifyUserModification(
-            'user_accounts/my_preferences',
-            'UnitTester',
-            'Last_name',
-            'NewFirst'
-        );
-        $this->_verifyUserModification(
-            'user_accounts/my_preferences',
-            'UnitTester',
-            'Email',
-            'newemail@example.com'
-        );
-    }
-
-    /**
-     * Ensure that password errors are successfully triggered on the
-     * My Preferences page.
-     *
-     * @return void
-     */
-    function testMyPreferencesPasswordErrors()
-    {
-        $this->_verifyPasswordErrors(
-            self::FILEPATH_MYPREFERENCES,
-            self::UNITTESTER_USERNAME
-        );
-    }
 
     /**
      * Ensure that password errors are successfully triggered on the Edit User
@@ -359,11 +307,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Modifies a field on either the user account or my preferences page
+     * Modifies a field on either the user account
      * and checks that the modification was updated on the front-end.
      *
-     * @param string $page      either 'user_accounts' or
-     *                          'user_accounts/my_preferences'.
      * @param string $userId    ID of the user to modify.
      * @param string $fieldName name of the field (on the HTML page) that should
      *                          be modified.
@@ -371,7 +317,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _verifyUserModification($page, $userId, $fieldName, $newValue)
+    function _verifyUserModification($userId, $fieldName, $newValue)
     {
         // Load the page
         $this->_accessUser($page, $userId);
@@ -406,19 +352,15 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function submit($page, $userId): void
     {
-        // if working on edit_user, select at least one site
-        if (strpos($page, 'my_preferences') === false) {
-            $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
-            $sitesOption  = new WebDriverSelect($sitesElement);
-            $sitesOption->selectByValue("1");
+        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+        $sitesOption  = new WebDriverSelect($sitesElement);
+        $sitesOption->selectByValue("1");
 
-            $projectsElement = $this->safeFindElement(
-                WebDriverBy::Name('ProjectIDs[]')
-            );
-            $projectsOption  = new WebDriverSelect($projectsElement);
-            $projectsOption->selectByValue("1");
-        }
-        // 'fire_away' is the name of the Submit button on the form.
+        $projectsElement = $this->safeFindElement(
+            WebDriverBy::Name('ProjectIDs[]')
+        );
+        $projectsOption  = new WebDriverSelect($projectsElement);
+        $projectsOption->selectByValue("1");
         $this->safeClick(WebDriverBy::Name('fire_away'));
     }
 
@@ -481,7 +423,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
 
         // Try changing the password to the same value.
         $this->_sendPasswordValues($page, $userId, self::UNITTESTER_EMAIL_NEW);
-        // This text comes from the class constants in Edit User/My Preferences
+        // This text comes from the class constants in Edit User
         $this->assertContains('cannot be your email', $this->getBody());
     }
 
@@ -504,7 +446,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             \Utility::randomString(),
             \Utility::randomString()
         );
-        // This text comes from the class constants in Edit User/My Preferences
+        // This text comes from the class constants in Edit User
         $this->assertContains('do not match', $this->getBody());
     }
 
@@ -533,7 +475,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $userId,
             $newPassword
         );
-        // This text comes from the class constants in Edit User/My Preferences
+        // This text comes from the class constants in Edit User
         $this->assertContains(
             'New and old passwords are identical',
             $this->getBody()
@@ -587,26 +529,18 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Does one of two things: either accesses the My Preferences page of the
-     * current user of the user account page for the user whose ID is passed
-     * as argument.
+     * Accesses the current user.
      *
-     * @param string $page   either 'user_accounts' or
-                             'user_accounts/my_preferences'
      * @param string $userId ID of the user whose page should be accessed.
      *
      * @return void
      */
-    function _accessUser($page, $userId)
+    function _accessUser($userId)
     {
-        $this->safeGet($this->url . "/$page/");
-        if ($page == 'user_accounts') {
-            //     $this->safeClick(WebDriverBy::LinkText($userId));
-            $this->safeGet(
-                $this->url . "/user_accounts/edit_user/?identifier="
-                ."$userId"
-            );
-        }
+        $this->safeGet(
+            $this->url . "/user_accounts/edit_user/?identifier="
+            ."$userId"
+        );
     }
     /**
      * Performed after every test.
