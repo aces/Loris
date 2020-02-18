@@ -1207,12 +1207,19 @@ class NumericElement extends Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let required = this.props.required ? 'required' : null;
-    let requiredHTML = null;
+    const {disabled, required} = this.props;
+    let requiredHTML = required ? <span className="text-danger">*</span> : null;
+    let errorMessage = null;
+    let elementClass = 'row form-group';
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
 
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
@@ -1225,11 +1232,12 @@ class NumericElement extends Component {
             id={this.props.id}
             min={this.props.min}
             max={this.props.max}
-            value={this.props.value}
+            value={this.props.value || ''}
             disabled={disabled}
             required={required}
             onChange={this.handleChange}
           />
+          {errorMessage}
         </div>
       </div>
     );

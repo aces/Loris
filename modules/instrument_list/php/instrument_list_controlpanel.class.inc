@@ -117,57 +117,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             && in_array($currentStage, array('Visit', 'Screening'))
             && $currentStatus != 'In Progress'
         ) {
-
-            // trigger timepoint flags
-            $config    =& \NDB_Config::singleton();
-            $study     = $config->getSetting('study');
-            $sessionID = $this->getData('SessionID');
-            $condition = $study['timepointFlagCheck_send2dcc'];
-            if ($condition && $this->getVisitStatus() == 'Pass') {
-                include_once __DIR__ .
-                    "../../modules/timepoint_flag/php/TimePoint_Flag.class.inc";
-                // object instance
-                $timepointFlagObject =& \TimePoint_Flag::singleton($sessionID);
-                // flag types
-                $flagTypeIDs = $timepointFlagObject->getFlagTypeIDs();
-                // evaluate the flags for the timepoint
-                $flagList = $timepointFlagObject->evaluateTimepointFlags();
-                // loop the list and trigger all flags expect
-                // the data entry errors
-                foreach ($flagList as $flagName=>$flagStatus) {
-                    // check if the flag exists, i.e. previously triggered
-                    if ($timepointFlagObject->timepointFlagExists(
-                        $this->getData('SessionID'),
-                        $flagName
-                    )
-                    ) {
-                        continue;
-                    }
-                    // raise flags - except missing data flags - INSERT into DB
-                    if ($flagStatus != $timepointFlagObject->showConstant(
-                        'TIMEPOINT_FLAG_MISSING_DATA'
-                    )
-                    ) {
-                        // get type
-                        $flagType = $timepointFlagObject->getFlagType($flagName);
-                        // assign status according to type
-                        $condition = $timepointFlagObject->showConstant(
-                            'TIMEPOINT_FLAG_NA_INSTRUMENT'
-                        );
-                        if ($flagStatus == $condition) {
-                            $newFlagTypeID = $flagTypeIDs[$flagStatus];
-                        } else {
-                            $newFlagTypeID = $flagTypeIDs[$flagType];
-                        }
-                        $timepointFlagObject->insertFlag($flagName, $newFlagTypeID);
-                    }
-                }
-                unset($flagList);
-                unset($flagTypeIDs);
-                unset($flagName);
-                unset($flagStatus);
-                unset($timepointFlagObject);
-            }
+            $config = \NDB_Config::singleton();
 
             // Send to DCC - set Submitted to Y
             $this->setData(

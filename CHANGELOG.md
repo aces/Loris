@@ -16,4 +16,16 @@ changes in the following format: PR #1234***
 - Very old instrument relying on QuickForm may have issues due to code changes (PR #4928)
 
 #### Modules 
-##### module1
+
+##### Battery Manager
+ - New module created to manage the entries in the test_battery table of the database.
+ This allows projects to modify their instrument battery without requiring backend access.
+ (PR #4221)
+
+##### Module Manager
+ - New module created to manage the status of installed modules (PR #6015)
+
+
+#### Clean Up
+- New tool for detection of multiple first visits for a candidate (prevents a database
+ exception). It is recommended to run this tool for existing projects (PR #5270)

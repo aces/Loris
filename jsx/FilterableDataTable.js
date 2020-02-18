@@ -111,6 +111,7 @@ FilterableDataTable.propTypes = {
   name: PropTypes.string.isRequired,
   title: PropTypes.string,
   data: PropTypes.object.isRequired,
+  filterPresets: PropTypes.object,
   fields: PropTypes.object.isRequired,
   columns: PropTypes.number,
   getFormattedCell: PropTypes.func,

@@ -60,8 +60,9 @@ class File_Decompress
      *  This function will automatically detect the file-type
      * and will decompress the file by calling the appropriate function
      *
-     * @return boolean|string returns false if the decompressiong fails
-     *  and true otherwise. Returns the file name when unzipping.
+     * @return \PharData|string|bool returns PharData on decompression.
+     *                          Returns the file name when unzipping.
+     *                          Returns bool when untarring.
      */
     function decompressFile()
     {
@@ -84,12 +85,12 @@ class File_Decompress
      *
      * Decompress and untars .tgz and tar.gz files
      *
-     * @return String Returns the name of the decompressed folder
+     * @return \PharData
      */
     function tgzDecompres()
     {
         $decompressed_folder = null;
-        $p = new PharData($this->file_name);
+        $p = new \PharData($this->file_name);
         $decompressed_folder = $p->decompress(); // creates /path/to/my.tar
         $p->extractTo(
             $this->dest_path,
@@ -102,13 +103,12 @@ class File_Decompress
     /**
      * Decompress a gzipped file
      *
-     * @return Boolean returns false if the decompression fails
-     *  And true otherwise
+     * @return \PharData
      */
     function gzipDecompress()
     {
         $return_value = false;
-        $decomp_file  = new PharData($this->file_name);
+        $decomp_file  = new \PharData($this->file_name);
         // creates /path/to/my.tar
         $return_value = $decomp_file->decompress();
         return $return_value;
@@ -123,7 +123,7 @@ class File_Decompress
     function untar()
     {
         $return_value = false;
-        $p            = new PharData($this->file_name);
+        $p            = new \PharData($this->file_name);
         $return_value = $p->extractTo($this->dest_path);
            //could remove the folder later once completed...
         return $return_value;
@@ -141,7 +141,7 @@ class File_Decompress
     function unzip()
     {
         $result = false;
-        $zip    = new ZipArchive;
+        $zip    = new \ZipArchive();
         $result = $zip->open($this->file_name);
         if ($result === true) {
             $zip->extractTo($this->dest_path);
