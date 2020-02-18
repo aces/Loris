@@ -1,17 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * POST request methods.
- *
- * Used to handle issue_tracker attachment requests.
- *
- * PHP Version 7
- *
- * @category LORIS_Module
- * @package  Login
- * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
 
 namespace LORIS\issue_tracker\endpoints;
 
