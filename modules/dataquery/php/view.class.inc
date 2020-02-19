@@ -134,7 +134,11 @@ class View extends \NDB_Page
         }
 
         // We now have allCandidates and allSessions populated per child.
-        $values['children'] = $children;
+        $values['children']       = $children;
+        $values['activeOperator'] = '1';
+
+        // Need all Visit_Windows
+
 
         // Return Query results to the user.
         return new \LORIS\Http\Response\JsonResponse(

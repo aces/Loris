@@ -30,6 +30,9 @@ class SavedQueriesList extends Component {
   loadQuery(queryName) {
     // Loads in the selected query
 
+    console.log('this.props.queryDetails[queryName].Fields:');
+    console.log(this.props.queryDetails[queryName].Fields);
+
     this.props.onSelectQuery(
       this.props.queryDetails[queryName].Fields,
       this.props.queryDetails[queryName].Conditions
@@ -417,6 +420,10 @@ class DataQueryApp extends Component {
   loadFilterGroup(group) {
     // Used to load in a filter group
 
+    if (group.importCSV) {
+      return group;
+    }
+
     // Recursively load the children on the group
     for (let i = 0; i < group.children.length; i++) {
       if (group.children[i].activeOperator) {
@@ -444,11 +451,36 @@ class DataQueryApp extends Component {
       }
     }
     group.session = getSessions(group);
+    console.log('group is:');
+    console.log(group);
     return group;
   }
 
   loadSavedQuery(fields, criteria) {
     // Used to load a saved query
+
+    console.log('LOOK fields:');
+    console.log(fields);
+
+    if (criteria.importCSV) {
+      this.setState({loading: true});
+
+      filterState = this.loadFilterGroup(criteria);
+
+      console.log('CHECK:');
+      console.log(filterState);
+
+      this.setState({
+        fields: ['demographics,PSCID'],
+        selectedFields: [],
+        filter: filterState,
+        alertLoaded: true,
+        alertSaved: false,
+        loading: false,
+      });
+
+      return;
+    }
 
     let filterState = {},
       selectedFields = {},
@@ -466,6 +498,10 @@ class DataQueryApp extends Component {
       };
       filterState.children = criteria.map((item) => {
         let fieldInfo = item.Field.split(',');
+        console.log('field is:');
+        console.log(fieldInfo[1]);
+        console.log('instrument:');
+        console.log(fieldInfo[0]);
         let rule = {
           instrument: fieldInfo[0],
           field: fieldInfo[1],
@@ -535,6 +571,11 @@ class DataQueryApp extends Component {
       ];
       filterState.session = this.props.AllSessions;
     }
+    console.log('CHECK THIS B E L O W');
+    console.log('fields:');
+    console.log(fieldsList);
+    console.log('selectedFields:');
+    console.log(selectedFields);
     this.setState({
       fields: fieldsList,
       selectedFields: selectedFields,
@@ -933,12 +974,18 @@ class DataQueryApp extends Component {
   }
 
   importCSV(data) {
-    data = {
-      activeOperator: '0',
-      children: data.children,
-      session: data.session,
-      repeating: true,
-    };
+    console.log('inside importCSV');
+    console.log('data is:');
+    console.log(data);
+
+    data.importCSV = true;
+
+    // data = {
+    //   activeOperator: '0',
+    //   children: data.children,
+    //   session: data.session,
+    //   repeating: true,
+    // };
     this.loadSavedQuery(null, data);
   }
 
