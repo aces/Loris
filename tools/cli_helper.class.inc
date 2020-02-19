@@ -6,22 +6,38 @@ require_once 'generic_includes.php';
  *
  * It contains helper functions to format output, etc.
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class CLI_Helper
 {
     // Colours associated with the bash shell.
     // @see https://misc.flogisoft.com/bash/tip_colors_and_formatting
     const COLOURS = [
-        'red' => '31',
+        'red'    => '31',
         'yellow' => '33',
-        'green' => '32',
+        'green'  => '32',
     ];
-    private $_loggingEnablded = false;
+    /**
+     * Whether this script should log its output to a file or just print to
+     * STDOUT.
+     *
+     * @var bool
+     */
+    private $_loggingEnabled = false;
+    /**
+     * The directory that will contain log files written by this script.
+     *
+     * @var SPLFileInfo
+     */
     private $_logDirectory;
 
     /**
+     * Create a new command line helper.
      *
+     * @param ?SPLFileInfo $logDirectory The directory that will contain log
+     *                                   files written by this script.
+     *
+     * @return void
      */
     public function __construct(SPLFileInfo $logDirectory = null)
     {
@@ -51,8 +67,8 @@ class CLI_Helper
      * If logging is enabled, the line will also be written to a log file. Log
      * files will not contain coloured text.
      *
-     * @param string $line To be written.
-     * @param string $colour A valid colour, given by COLOURS, for the output.
+     * @param string   $line   To be written.
+     * @param string   $colour A valid colour, given by COLOURS, for the output.
      * @param resource $handle A file resource where text should be written.
      *
      * @return void
