@@ -113,7 +113,7 @@ foreach ($correctMapping as $issueID => $modulesTableID) {
 }
 
 $patch[] = "ALTER TABLE `issues` "
-    . "ADD FOREIGN KEY (moduleID) REFERENCES (modules(ID));";
+    . "ADD FOREIGN KEY (module) REFERENCES modules(ID);";
 
 echo join("\n", $patch);
 
