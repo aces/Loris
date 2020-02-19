@@ -86,15 +86,13 @@ class View extends \NDB_Page
             $child           = $children[$i];
             $child['fields'] = $results;
 
-            // new
+            // query for equal.
             $category    = $child['instrument'];
             $fieldName   = $child['field'];
             $value       = $child['value'];
-
             if (!is_numeric($value) && $value !== "null") {
                 $value = "\"$value\"";
             }
-
             $results = $cdb->queryView(
                 "DQG-2.0",
                 "search",
@@ -103,31 +101,34 @@ class View extends \NDB_Page
                     "key"    => "[\"$category\", \"$fieldName\", $value]",
                 )
             );
-
             $sessionResults = array_map(
                 function ($element) {
                     return $element['value'];
                 },
                 $results
             );
-            // old.
 
-            // todo populate rule.candidates = {allCandiates: allCandiates, allSessions: allSessions}
-            // todo rule.session as well.
+            // Populates rule.candidates and rule.session
+            $visits     = array();
+            $sessions   = array();
             for ($k=0; $k<count($sessionResults); $k++) {
                 $session = $sessionResults[$k];
-
+                array_push($visits, $session[1]);
+                array_push($visits, $session[1]);
+                $session_keys = array($session[0], $session[0]);
+                $sessions[$session[1]] = $session_keys;
             }
+            $candidates = array($sessionResults[0][0] => $visits);
 
-            $child['allSessions'] = $sessionResults;
+            $candidatesResult['allCandidates'] = $candidates;
+            $candidatesResult['allSessions']   = $sessions;
 
-            $children[$i]    = $child;
+            $child['candidates'] = $candidatesResult;
+            $children[$i]        = $child;
         }
 
-        // todo we may return this with other stuff
+        // We now have allCandidates and allSessions populated per child.
         $values['children'] = $children;
-
-        // todo require allSessions: {V1: ['ROM489'], V3: ['ROM489']}
 
         // Return Query results to the user.
         return new \LORIS\Http\Response\JsonResponse(
