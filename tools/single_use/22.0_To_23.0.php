@@ -117,9 +117,6 @@ $patch[] = "ALTER TABLE `issues` "
 
 echo join("\n", $patch);
 
-// Tell user to run cleanup script
-
-
 /**
  * Removes non-alphabetical characters from a string.
  *
