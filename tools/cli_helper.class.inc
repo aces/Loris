@@ -1,18 +1,4 @@
 <?php declare(strict_types=1);
-/**
- *
- * This class is designed to assist in writing command-line interface tools
- * for LORIS.
- *
- * It contains helper functions to format output, etc.
- * PHP Version 7
- *
- * @category Tools
- * @package  Loris
- * @author   John Saigle <john.saigle@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
 require_once 'generic_includes.php';
 /**
  * This class is designed to assist in writing command-line interface tools
@@ -20,11 +6,7 @@ require_once 'generic_includes.php';
  *
  * It contains helper functions to format output, etc.
  *
- * @category Tools
- * @package  Loris
- * @author   John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class CLI_Helper
 {
@@ -63,11 +45,15 @@ class CLI_Helper
     }
 
     /**
-     * Prints a line of text with a newline before and after. Can also be
-     * printed in a colour.
+     * Prints a line of text with a newline before. Can optionally be printed
+     * to the command-line in coloured text. Valid options for colours are given
+     * in the COLOURS class constant.
+     * If logging is enabled, the line will also be written to a log file. Log
+     * files will not contain coloured text.
      *
-     * @param string $line
-     * @param string $colour
+     * @param string $line To be written.
+     * @param string $colour A valid colour, given by COLOURS, for the output.
+     * @param resource $handle A file resource where text should be written.
      *
      * @return void
      */
@@ -86,7 +72,7 @@ class CLI_Helper
             }
 
             // Format the output to colour the whole line.
-            $output = sprintf("\e[%sm$line\e[0m", self::COLOURS[$colour]);
+            $output = sprintf("\n\e[%sm$line\e[0m", self::COLOURS[$colour]);
         }
 
         fwrite($handle, $output . PHP_EOL);
@@ -102,7 +88,7 @@ class CLI_Helper
     }
 
     /**
-     * Print the input formatted as a header for output.
+     * Prints argument in green text, prefixed with '[*]', to STDOUT.
      *
      * @param string $line The output.
      *
@@ -115,7 +101,7 @@ class CLI_Helper
     }
 
     /**
-     * Print the input formatted in yellow text.
+     * Print the argument in yellow text, prefixed with '[-]', to STDOUT.
      *
      * @param string $line The output.
      *
@@ -123,11 +109,11 @@ class CLI_Helper
      */
     function printWarning(string $line): void
     {
-        // Takes 'input', prints '[-] input' in yellow text.
         $this->printLine("[-] $line", 'yellow', STDOUT);
     }
+
     /**
-     * Print the input formatted in red text.
+     * Print the argument in red text, prefixed with '[!]', to STDERR.
      *
      * @param string $line The output.
      *
@@ -142,8 +128,10 @@ class CLI_Helper
     /**
      * Returns the POSIX username for the user on the server that is
      * executing this script.
+     *
+     * @return string
      */
-    public function getUsername(): string
+    public function getPOSIXUsername(): string
     {
         return posix_getpwuid(posix_geteuid())['name'];
     }
@@ -162,7 +150,7 @@ class CLI_Helper
         $this->_loggingFileName = sprintf(
             "%s-%s.log",
             // Remove extension information
-            explode('.', $scriptName)[0],
+            pathinfo($scriptName)['basename'],
             date('Y-m-d_H:i:s')
         );
 
@@ -170,7 +158,9 @@ class CLI_Helper
     }
 
     /**
-     * Log script output to a file.
+     * Disable logging functions of the class.
+     *
+     * @return void
      */
     function disableLogging(): void
     {
