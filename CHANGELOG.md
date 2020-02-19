@@ -25,6 +25,9 @@ changes in the following format: PR #1234***
 ##### Module Manager
  - New module created to manage the status of installed modules (PR #6015)
 
+##### Electrophysiology Browser
+ - New module created to view electrophysiology data within LORIS. (PR #5230)
+
 
 #### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database
