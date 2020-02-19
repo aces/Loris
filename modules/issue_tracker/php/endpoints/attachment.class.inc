@@ -18,8 +18,6 @@ use \LORIS\api\Endpoint;
  */
 class Attachment extends Endpoint implements ETagCalculator
 {
-    public $skipTemplate = true;
-
     /**
      * This function will return a json object
      * for the specific attachment request.
