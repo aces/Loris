@@ -14,7 +14,7 @@ const optimization = {
         },
         sourceMap: true,
       }),
-    ],
+   ],
   };
 const resolve = {
     alias: {
@@ -57,23 +57,33 @@ const mod = {
               cache: true,
             },
           },
-        ],
+       ],
         enforce: 'pre',
       },
-    ],
+   ],
   };
 
+/**
+ * Creates a webpack config entry for a LORIS module named
+ * mname.
+ *
+ * @param {string} mname - The LORIS module name
+ * @param {array} entries - The webpack entry points for the module
+ *
+ * @return {object} - The webpack configuration
+ */
 function lorisModule(mname, entries) {
     let entObj = {};
-    for(let i = 0;i < entries.length; i++) {
-        entObj[entries[i]] = './modules/' + mname + '/jsx/' + entries[i] + '.js';
+    for (let i = 0; i < entries.length; i++) {
+        entObj[entries[i]] =
+            './modules/' + mname + '/jsx/' + entries[i] + '.js';
     }
     return {
         entry: entObj,
         output: {
             path: path.resolve(__dirname, 'modules') + '/' + mname + '/js/',
             filename: '[name].js',
-            library: [ 'lorisjs', mname ],
+            library: ['lorisjs', mname],
             libraryTarget: 'window',
         },
         externals: {
@@ -86,7 +96,7 @@ function lorisModule(mname, entries) {
         plugins: [],
         optimization: optimization,
         resolve: resolve,
-        module: mod
+        module: mod,
     };
 }
 
@@ -94,10 +104,14 @@ const config = [
     // Core components
     {
         entry: {
-            './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
-            './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
-            './htdocs/js/components/StaticDataTable.js': './jsx/StaticDataTable.js',
-            './htdocs/js/components/MultiSelectDropdown.js': './jsx/MultiSelectDropdown.js',
+            './htdocs/js/components/DynamicDataTable.js':
+                './jsx/DynamicDataTable.js',
+            './htdocs/js/components/PaginationLinks.js':
+                './jsx/PaginationLinks.js',
+            './htdocs/js/components/StaticDataTable.js':
+                './jsx/StaticDataTable.js',
+            './htdocs/js/components/MultiSelectDropdown.js':
+                './jsx/MultiSelectDropdown.js',
             './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
             './htdocs/js/components/Form.js': './jsx/Form.js',
             './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
@@ -116,42 +130,74 @@ const config = [
         plugins: [],
         optimization: optimization,
         resolve: resolve,
-        module: mod
+        module: mod,
     },
-    // Modules 
+    // Modules
     lorisModule('media', ['mediaIndex']),
     lorisModule('issue_tracker', ['issueTrackerIndex', 'index']),
     lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
     lorisModule('document_repository', ['docIndex', 'editFormIndex']),
-    lorisModule('candidate_parameters', [ 'CandidateParameters']),
-    lorisModule('configuration', [ 'SubprojectRelations']),
-    lorisModule('conflict_resolver', [ 'conflictResolverIndex', 'resolvedConflictsIndex' ]),
+    lorisModule('candidate_parameters', ['CandidateParameters']),
+    lorisModule('configuration', ['SubprojectRelations']),
+    lorisModule('conflict_resolver', [
+        'conflictResolverIndex',
+        'resolvedConflictsIndex',
+    ]),
     lorisModule('battery_manager', ['batteryManagerIndex']),
     lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
-    lorisModule('behavioural_qc', [ 'behavioural_qc_module']),
-    lorisModule('candidate_list', ['openProfileForm', 'onLoad', 'candidateListIndex']),
+    lorisModule('behavioural_qc', ['behavioural_qc_module']),
+    lorisModule('candidate_list', [
+        'openProfileForm',
+        'onLoad',
+        'candidateListIndex',
+    ]),
     lorisModule('datadict', ['dataDictIndex']),
-    lorisModule('data_release', ['dataReleaseIndex', 'uploadFileForm', 'addPermissionForm']),
-    lorisModule('dataquery', [ 'react.app', 'react.fieldselector', 'react.filterBuilder', 'react.paginator', 'react.sidebar', 'react.tabs']),
-    lorisModule('dicom_archive', [ 'dicom_archive']),
-    lorisModule('genomic_browser', [ 'FileUploadModal' ]),
-    lorisModule('electrophysiology_browser', [ 'electrophysiologyBrowserIndex', 'electrophysiologySessionView', 'components/electrophysiology_session_panels', 'components/Sidebar', 'components/SidebarContent', ]),
+    lorisModule('data_release', [
+        'dataReleaseIndex',
+        'uploadFileForm',
+        'addPermissionForm',
+    ]),
+    lorisModule('dataquery', [
+        'react.app',
+        'react.fieldselector',
+        'react.filterBuilder',
+        'react.paginator',
+        'react.sidebar',
+        'react.tabs',
+    ]),
+    lorisModule('dicom_archive', ['dicom_archive']),
+    lorisModule('genomic_browser', ['FileUploadModal']),
+    lorisModule('electrophysiology_browser', [
+        'electrophysiologyBrowserIndex',
+        'electrophysiologySessionView',
+        'components/electrophysiology_session_panels',
+        'components/Sidebar',
+        'components/SidebarContent',
+    ]),
     lorisModule('genomic_browser', ['profileColumnFormatter']),
-    lorisModule('imaging_browser', [ 'ImagePanel', 'imagingBrowserIndex']),
-    lorisModule('instrument_builder', [ 'react.instrument_builder', 'react.questions' ]),
-    lorisModule('instrument_manager', [ 'instrumentManagerIndex' ]),
-    lorisModule('survey_accounts', [ 'surveyAccountsIndex' ]),
-    lorisModule('mri_violations', [ 'mri_protocol_check_violations_columnFormatter', 'columnFormatter', 'columnFormatterUnresolved', 'mri_protocol_violations_columnFormatter' ]),
-    lorisModule('user_accounts', [ 'userAccountsIndex' ]),
-    lorisModule('examiner', [ 'examinerIndex' ]),
-    lorisModule('help_editor', [ 'help_editor' ]),
-    lorisModule('brainbrowser', [ 'Brainbrowser' ]),
-    lorisModule('imaging_uploader', [ 'index' ]),
-    lorisModule('acknowledgements', [ 'acknowledgementsIndex' ]),
-    lorisModule('new_profile', [ 'NewProfileIndex' ]),
-    lorisModule('module_manager', [ 'modulemanager' ]),
-    lorisModule('imaging_qc', [ 'imagingQCIndex' ]),
-    lorisModule('server_processes_manager', [ 'server_processes_managerIndex' ]),
+    lorisModule('imaging_browser', ['ImagePanel', 'imagingBrowserIndex']),
+    lorisModule('instrument_builder', [
+        'react.instrument_builder',
+        'react.questions',
+    ]),
+    lorisModule('instrument_manager', ['instrumentManagerIndex']),
+    lorisModule('survey_accounts', ['surveyAccountsIndex']),
+    lorisModule('mri_violations', [
+        'mri_protocol_check_violations_columnFormatter',
+        'columnFormatter',
+        'columnFormatterUnresolved',
+        'mri_protocol_violations_columnFormatter',
+    ]),
+    lorisModule('user_accounts', ['userAccountsIndex']),
+    lorisModule('examiner', ['examinerIndex']),
+    lorisModule('help_editor', ['help_editor']),
+    lorisModule('brainbrowser', ['Brainbrowser']),
+    lorisModule('imaging_uploader', ['index']),
+    lorisModule('acknowledgements', ['acknowledgementsIndex']),
+    lorisModule('new_profile', ['NewProfileIndex']),
+    lorisModule('module_manager', ['modulemanager']),
+    lorisModule('imaging_qc', ['imagingQCIndex']),
+    lorisModule('server_processes_manager', ['server_processes_managerIndex']),
 ];
 
 // Support project overrides
