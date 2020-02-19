@@ -33,7 +33,7 @@ class ScheduleIndex extends Component {
     this.renderAddScheduleForm = this.renderAddScheduleForm.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
-    this.fetchDataForDccid = this.fetchDataForDccid.bind(this);
+    this.fetchDataForm = this.fetchDataForm.bind(this);
   }
 
   componentDidMount() {
@@ -56,12 +56,18 @@ class ScheduleIndex extends Component {
       });
   }
 
-  fetchDataForDccid(value) {
-    return fetch(this.props.dccidCheck+'/'+value, {credentials: 'same-origin'})
+  fetchDataForm(type, value) {
+    return fetch(this.props.formCheck+'/'+type+'/'+value, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-       console.log(data['pscid']);
-      this.setState({formData: {...this.state.formData, PSCID: data['pscid']}});
+       if (type === 'DCCID' ) {
+      this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
+// this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
+} else {
+      this.setState({formData: {...this.state.formData, DCCID: data['DCCID']}});
+// this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
+}
+      this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
       })
       .catch((error) => {
         this.setState({error: true});
@@ -77,18 +83,22 @@ class ScheduleIndex extends Component {
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
-    console.log(formData['DCCID']);
-     this.fetchDataForDccid();
-// {this.state.formData.PSCID} set pscid baseon dccid
-// {this.state.formData.DcCID} set pscid baseon DCCid
-// {{this.state.formData.type} set session baseon DCCid and pscid}
-
+    console.log(formElement);
+//    if (formData['DCCID'] !== null) {
+      if (formElement === 'DCCID') {
+    formData['PSCID'] = null;
+    this.fetchDataForm('DCCID', formData['DCCID']);
+    }
+    if (formElement === 'PSCID') {
+    formData['DCCID'] = null;
+    this.fetchDataForm('PSCID', formData['PSCID']);
+    }
     this.setState({
       formData: formData,
     });
   }
   /**
-   * Handles the submission of the Add Examiner form
+   * Handles the submission of the Add Schedule form
    *
    * @param {event} e - event of the form
    */
@@ -110,7 +120,7 @@ class ScheduleIndex extends Component {
     })
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
-        swal.fire('Success!', 'Examiner added.', 'success').then((result) => {
+        swal.fire('Success!', 'Schedule added.', 'success').then((result) => {
           if (result.value) {
             this.closeModal();
             this.fetchData();
@@ -171,9 +181,9 @@ class ScheduleIndex extends Component {
         show={this.state.showModal}
       >
         <FormElement
-          Module="examiner"
-          name="addExaminer"
-          id="addExaminerForm"
+          Module="schedule"
+          name="addSchedule"
+          id="addScheduleForm"
           onSubmit={this.handleSubmit}
           method="POST"
         >
@@ -193,9 +203,31 @@ class ScheduleIndex extends Component {
           />
           <SelectElement
             name="Session"
-            options={this.state.data.fieldOptions.session}
+            options={this.state.formData.SessionFieldOptions}
             label="Session"
             value={this.state.formData.Session}
+            required={true}
+            onUserInput={this.setFormData}
+          />
+          <DateElement
+            name = "AppointmentDate"
+            label = "Appointment Date"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.AppointmentDate}
+            required = {true}
+          />
+          <TimeElement
+            name = "AppointmentTime"
+            label = "Appointment Time"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.AppointmentTime}
+            required = {true}
+          />
+          <SelectElement
+            name="AppointmentType"
+            label = "Appointment Type"
+            options={this.state.data.fieldOptions.AppointmentTypeName}
+            value={this.state.formData.AppointmentType}
             required={true}
             onUserInput={this.setFormData}
           />
@@ -279,7 +311,7 @@ class ScheduleIndex extends Component {
       }},
     ];
     const actions = [
-      {name: 'addExaminer', label: 'Add Examiner', action: this.openModal},
+      {name: 'addSchedule', label: 'Add Schedule', action: this.openModal},
     ];
     return (
     <div>
@@ -304,9 +336,9 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <ScheduleIndex
       dataURL={`${loris.BaseURL}/schedule_module/?format=json`}
-      dccidCheck={`${loris.BaseURL}/schedule_module/appointment`}
+      formCheck={`${loris.BaseURL}/schedule_module/appointment`}
       BaseURL={loris.BaseURL}
-      submitURL={`${loris.BaseURL}/examiner/`}
+      submitURL={`${loris.BaseURL}/schedule_module/appointment`}
       hasEditPermission={loris.userHasPermission('schedule_module')}
     />,
     document.getElementById('lorisworkspace')

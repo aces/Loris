@@ -53,7 +53,15 @@ class Appointment extends \NDB_Page
     {
         switch ($request->getMethod()) {
         case "POST":
-            return new \LORIS\Http\Response\JSON\Conflict("duplicate file name");
+            $data = json_decode((string) $request->getBody(), true);
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($data)
+                    )
+                );
         case "PUT":
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
@@ -74,16 +82,19 @@ class Appointment extends \NDB_Page
                 );
         case "GET":
             // todo get session or pscid or dcciid
+            $url = $request->getUri()->getPath();
+            $type = "DCCID";
             $id = basename($request->getUri()->getPath());
-            $res = [ 
-                     'pscid'=>'MTL001',
-            ];
+            if (strpos($url, 'PSCID') !== false) {
+               $type = "PSCID";
+            }
+            $res = $this->getMetaForm($type,$id); 
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode($id)
+                        json_encode($res)
                     )
                 );
         default:
@@ -93,4 +104,64 @@ class Appointment extends \NDB_Page
                 ->withHeader("Allow", "GET,POST,PUT,DELETE");
         }
     }
-}
+    public function getMetaForm(string $type,string $id) {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+// Check if candidate is valid (CandID/DCCID and PSCID must belong to same candidate)
+    if ($type == "DCCID" ) { 
+        $candidate = $DB->pselectRow(
+        "
+    	SELECT 
+    	 	* 
+        FROM 
+    	  	candidate 
+    	WHERE 
+    		CandID = :candId
+       ",
+           array(
+              "candId" => $id,
+           )
+         );
+     $res = ['PSCID'=>$candidate['PSCID']];
+     } else {
+           $candidate = $DB->pselectRow(
+           "
+            SELECT 
+                    * 
+            FROM 
+                    candidate 
+            WHERE 
+                    PSCID = :pscid
+            ",
+              array(
+                 "pscid" => $id,
+             )
+         );
+      $res = ['DCCID'=>$candidate['CandID']];
+      }
+          
+    $sessionlist = $DB->pselect(
+    "
+        SELECT
+            ID,
+            Visit_label
+        FROM
+            session
+        WHERE 
+    		CandID =:Id
+    ",
+       array(
+        'Id' => $candidate['CandID']
+       )
+    ); 
+     $sessions = [];
+     foreach($sessionlist as $session) {
+         $k = $session['ID'];
+         $v = $session['Visit_label'];
+         $sessions[$v] = $v; 
+     }
+     $res['Session'] = $sessions;
+     return $res;
+    } // class 
+    
+}// end
