@@ -393,11 +393,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * Ensures that the module checks that the password and confirm password
      * field match.
      *
-     * @param string $userId The user to edit
-     *
      * @return void
      */
-    function testPasswordAndConfirmPasswordMustMatch($userId): void
+    function testPasswordAndConfirmPasswordMustMatch(): void
     {
         // Send two different random strings to the password and confirm
         // password values.
