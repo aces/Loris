@@ -113,8 +113,7 @@ class View extends \NDB_Page
             // old.
 
 
-
-
+            $child['allSessions'] = $sessionResults;
 
             $children[$i]    = $child;
         }
