@@ -28,10 +28,13 @@ class Card extends Component {
     const cursorStyle = this.props.onClick ? {
       cursor: 'pointer',
     } : null;
-    const divStyling = {
+    let divStyling = {
       marginLeft: '5px',
       marginRight: '5px',
     };
+    if (this.props.style) {
+        divStyling = {...divStyling, ...this.props.style};
+    }
     return (
       <div style={divStyling}>
         <Panel
