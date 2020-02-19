@@ -112,6 +112,12 @@ class View extends \NDB_Page
             );
             // old.
 
+            // todo populate rule.candidates = {allCandiates: allCandiates, allSessions: allSessions}
+            // todo rule.session as well.
+            for ($k=0; $k<count($sessionResults); $k++) {
+                $session = $sessionResults[$k];
+
+            }
 
             $child['allSessions'] = $sessionResults;
 
