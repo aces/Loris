@@ -114,7 +114,7 @@ class View extends \NDB_Page
             for ($k=0; $k<count($sessionResults); $k++) {
                 $session = $sessionResults[$k];
                 array_push($visits, $session[1]);
-                array_push($visits, $session[1]);
+                // array_push($visits, $session[1]);
                 $session_keys = array($session[0], $session[0]);
                 $sessions[$session[1]] = $session_keys;
             }
@@ -124,6 +124,12 @@ class View extends \NDB_Page
             $candidatesResult['allSessions']   = $sessions;
 
             $child['candidates'] = $candidatesResult;
+
+            // Collect all sessions.
+            if ($child['visit'] === 'All') {
+                $child['session'] = array_keys($candidates);
+            }
+
             $children[$i]        = $child;
         }
 
