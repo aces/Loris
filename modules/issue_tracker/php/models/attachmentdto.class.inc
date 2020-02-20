@@ -49,13 +49,4 @@ class AttachmentDTO implements \LORIS\Data\DataInstance
             )
         );
     }
-    /**
-     * Returns the ID for this row
-     *
-     * @return string
-     */
-    public function getID(): string
-    {
-        return (string) $this->ID;
-    }
 }
