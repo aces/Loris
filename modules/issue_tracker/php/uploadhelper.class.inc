@@ -157,6 +157,9 @@ class UploadHelper
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
             error_log($e->getMessage());
+            throw new \LorisException(
+                'Could not write to the Database'
+            );
         }
     }
 
