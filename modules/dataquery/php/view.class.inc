@@ -39,12 +39,12 @@ class View extends \NDB_Page
     {
         // Ensure allowed request.
         switch ($request->getMethod()) {
-            case 'PUT':
-                return $this->_handlePUT($request);
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    array('PUT')
-                );
+        case 'PUT':
+            return $this->_handlePUT($request);
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                array('PUT')
+            );
         }
     }
 
@@ -87,13 +87,13 @@ class View extends \NDB_Page
             $child['fields'] = $results;
 
             // query for equal.
-            $category    = $child['instrument'];
-            $fieldName   = $child['field'];
-            $value       = $child['value'];
+            $category  = $child['instrument'];
+            $fieldName = $child['field'];
+            $value     = $child['value'];
             if (!is_numeric($value) && $value !== "null") {
                 $value = "\"$value\"";
             }
-            $results = $cdb->queryView(
+            $results        = $cdb->queryView(
                 "DQG-2.0",
                 "search",
                 array(
@@ -109,13 +109,13 @@ class View extends \NDB_Page
             );
 
             // Populates rule.candidates and rule.session
-            $visits     = array();
-            $sessions   = array();
+            $visits   = array();
+            $sessions = array();
             for ($k=0; $k<count($sessionResults); $k++) {
                 $session = $sessionResults[$k];
                 array_push($visits, $session[1]);
                 // array_push($visits, $session[1]);
-                $session_keys = array($session[0], $session[0]);
+                $session_keys          = array($session[0], $session[0]);
                 $sessions[$session[1]] = $session_keys;
             }
             $candidates = array($sessionResults[0][0] => $visits);
@@ -130,7 +130,7 @@ class View extends \NDB_Page
                 $child['session'] = array_keys($candidates);
             }
 
-            $children[$i]        = $child;
+            $children[$i] = $child;
         }
 
         // We now have allCandidates and allSessions populated per child.
@@ -138,7 +138,6 @@ class View extends \NDB_Page
         $values['activeOperator'] = '1';
 
         // Need all Visit_Windows
-
 
         // Return Query results to the user.
         return new \LORIS\Http\Response\JsonResponse(
