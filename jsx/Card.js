@@ -21,7 +21,9 @@ class Card extends Component {
   }
 
   handleClick(e) {
-    this.props.onClick(e);
+    if (this.props.onClick) {
+      this.props.onClick(e);
+    }
   }
 
   render() {
