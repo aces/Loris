@@ -123,10 +123,10 @@ class Attachment extends Endpoint implements ETagCalculator
         // Verify User can delete file.
         if ($this->_deletePermission($request)) {
             // Parse request body.
-            $values    = $request->getQueryParams();
-            $ID        = $values['ID'];
-            $factory   = \NDB_Factory::singleton();
-            $DB        = $factory->database();
+            $values  = $request->getQueryParams();
+            $ID      = $values['ID'];
+            $factory = \NDB_Factory::singleton();
+            $DB      = $factory->database();
             $DB->update(
                 'issues_attachments',
                 array('deleted' => 1),
@@ -195,7 +195,7 @@ class Attachment extends Endpoint implements ETagCalculator
             || $request->getMethod() === 'GET'
         ) {
             return 'Etag not calculated for POST, DELETE, and GET request';
-//        return md5(json_encode($_POST);
+            //        return md5(json_encode($_POST);
         }
     }
 
