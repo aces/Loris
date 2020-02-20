@@ -32,6 +32,7 @@ class IssueUploadAttachmentForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFileUploadFormData = this.setFileUploadFormData.bind(this);
   }
+
   componentDidMount() {
     this.setState({isLoaded: true});
   }
@@ -79,7 +80,12 @@ class IssueUploadAttachmentForm extends Component {
         credentials: 'same-origin',
         method: 'POST',
         body: formObj,
-      }).then((resp) => resp.json())
+      }).then((resp) => {
+      if (r.headers.get('Content-Type').match(/application\/json/) == null) {
+        throw r.statusText;
+      }
+      return resp.json();
+    })
       .then((data) => {
         // reset form data after successful file upload
         if (data.success) {
@@ -100,16 +106,16 @@ class IssueUploadAttachmentForm extends Component {
           swal('Permission denied', '', 'error');
         }
       }).catch((error) => {
-        console.error(error);
-        const msg = error.responseJSON ?
-          error.responseJSON.message
-          : 'Upload error!';
-        this.setState({
-          errorMessage: msg,
-          uploadProgress: -1,
-        });
-        swal(msg, '', 'error');
+      console.error(error);
+      const msg = error.responseJSON ?
+        error.responseJSON.message
+        : 'Upload error!';
+      this.setState({
+        errorMessage: msg,
+        uploadProgress: -1,
       });
+      swal(msg, '', 'error');
+    });
   }
 
   render() {
@@ -151,6 +157,7 @@ class IssueUploadAttachmentForm extends Component {
     );
   }
 }
+
 IssueUploadAttachmentForm.propTypes = {
   issue: PropTypes.string.isRequired,
 };

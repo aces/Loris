@@ -47,7 +47,12 @@ class AttachmentsList extends Component {
       {
         credentials: 'same-origin',
         method: 'DELETE',
-      }).then((resp) => resp.json())
+      }).then((resp) => {
+      if (r.headers.get('Content-Type').match(/application\/json/) == null) {
+        throw r.statusText;
+      }
+      return resp.json();
+    })
       .then((data) => {
         if (data.success) {
           window.location.href = window.location.origin
@@ -93,7 +98,7 @@ class AttachmentsList extends Component {
    */
   displayAttachmentOptions(deleteData, item) {
     if (loris.userHasPermission('issue_tracker_developer')
-    || this.state.attachments.whoami === item.user) {
+      || this.state.attachments.whoami === item.user) {
       return (
         <div className='row'>
           <div className='col-md-12'>
@@ -212,7 +217,7 @@ class AttachmentsList extends Component {
     const issueAttachments = attachmentsRows.length > 0 ? (
       <>
         <h3>Attachment History</h3>
-          {attachmentsRows}
+        {attachmentsRows}
       </>
     ) : null;
     return (
@@ -223,6 +228,7 @@ class AttachmentsList extends Component {
     );
   }
 }
+
 AttachmentsList.propTypes = {
   issue: PropTypes.string.isRequired,
   attachments: PropTypes.array,
