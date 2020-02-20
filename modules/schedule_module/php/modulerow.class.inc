@@ -93,14 +93,14 @@ protected $dataEntryStatus;
                 'Time'  => $this->Time,
                 'earlyDate'  => $this->Day,
                 'lateDate'  => $this->Day,
-	        'AppointmentID'=>$this->AppointmentID,
-        	'SessionID'=>$this->SessionID,
+                'StartsAt'=>$this->StartsAt,
+                'dataEntryStatus'  => $this->dataEntryStatus,
+                'AppointmentID'=>$this->AppointmentID,
+                'SessionID'=>$this->SessionID,
 	        'AppointmentTypeID'=>$this->AppointmentTypeID,
 	        'StartsAt'=>$this->StartsAt,
                 'CenterID'  => $this->CenterID,
                 'SubprojectID'  => $this->SubprojectID,
-                'started'  => $this->started,
-                'dataEntryStatus'  => $this->dataEntryStatus,
             ]
         );
     }

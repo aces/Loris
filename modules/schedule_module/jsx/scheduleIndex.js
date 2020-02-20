@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
-import FilterableDataTable from 'FilterableDataTable';
 import Modal from 'Modal';
+import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
 
 class ScheduleIndex extends Component {
@@ -23,6 +23,7 @@ class ScheduleIndex extends Component {
         SessionFieldOptions: null,
       },
       showModal: false,
+      editModal: false,
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -30,10 +31,11 @@ class ScheduleIndex extends Component {
     this.setFormData = this.setFormData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.mapColumn = this.mapColumn.bind(this);
-    this.renderAddScheduleForm = this.renderAddScheduleForm.bind(this);
+    this.renderScheduleForm = this.renderScheduleForm.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.fetchDataForm = this.fetchDataForm.bind(this);
+    this.edit = this.edit.bind(this);
   }
 
   componentDidMount() {
@@ -57,16 +59,14 @@ class ScheduleIndex extends Component {
   }
 
   fetchDataForm(type, value) {
-    return fetch(this.props.formCheck+'/'+type+'/'+value, {credentials: 'same-origin'})
+    return fetch(this.props.formURL+'/'+type+'/'+value, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
        if (type === 'DCCID' ) {
       this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
-// this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
-} else {
+      } else {
       this.setState({formData: {...this.state.formData, DCCID: data['DCCID']}});
-// this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
-}
+      }
       this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
       })
       .catch((error) => {
@@ -74,6 +74,21 @@ class ScheduleIndex extends Component {
         console.error(error);
       });
   }
+// todo get edit form data from php
+  fetchDataEditForm(value) {
+    return fetch(this.props.formURL+'/'+value, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => {
+      this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
+      this.setState({formData: {...this.state.formData, DCCID: data['DCCID']}});
+      this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
+      })
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
+  }
+
   /**
    * Store the value of the element in this.state.formData
    *
@@ -84,8 +99,7 @@ class ScheduleIndex extends Component {
     let formData = this.state.formData;
     formData[formElement] = value;
     console.log(formElement);
-//    if (formData['DCCID'] !== null) {
-      if (formElement === 'DCCID') {
+    if (formElement === 'DCCID') {
     formData['PSCID'] = null;
     this.fetchDataForm('DCCID', formData['DCCID']);
     }
@@ -137,27 +151,21 @@ class ScheduleIndex extends Component {
     });
   }
     mapColumn(column, cell) {
-      switch (column) {
-      case 'Active':
-              if (cell === 'Y') {
-                  return 'Yes';
-              } else if (cell === 'N') {
-                  return 'No';
-              }
-              // This shouldn't happen, it's a non-nullable
-              // enum in the backend.
-              return '?';
-          default: return cell;
-      }
+          return cell;
   }
+ edit(cell) {
+ this.openModal();
+ this.setState({editModal: true});
+ // ready setup edit form
+}
   openModal() {
     this.setState({showModal: true});
   }
-
   closeModal() {
     this.setState({
       formData: {},
       showModal: false,
+      editModal: false,
     });
   }
   /**
@@ -170,13 +178,16 @@ class ScheduleIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    cell = this.mapColumn(column, cell);
+//    cell = this.mapColumn(column, cell);
+    if (column === 'Edit') {
+       return <td><button onClick={() => this.edit(cell)}>Edit</button></td>;
+    }
     return <td>{cell}</td>;
   }
-  renderAddScheduleForm() {
+  renderScheduleForm() {
     return (
       <Modal
-        title='Add Appointment'
+        title='Add/Edit Appointment'
         onClose={this.closeModal}
         show={this.state.showModal}
       >
@@ -193,6 +204,7 @@ class ScheduleIndex extends Component {
             value={this.state.formData.DCCID}
             required={true}
             onUserInput={this.setFormData}
+            disabled={this.state.editModal}
           />
           <TextboxElement
             name="PSCID"
@@ -200,6 +212,7 @@ class ScheduleIndex extends Component {
             value={this.state.formData.PSCID}
             required={true}
             onUserInput={this.setFormData}
+            disabled={this.state.editModal}
           />
           <SelectElement
             name="Session"
@@ -208,6 +221,7 @@ class ScheduleIndex extends Component {
             value={this.state.formData.Session}
             required={true}
             onUserInput={this.setFormData}
+            disabled={this.state.editModal}
           />
           <DateElement
             name = "AppointmentDate"
@@ -231,11 +245,11 @@ class ScheduleIndex extends Component {
             required={true}
             onUserInput={this.setFormData}
           />
-          <ButtonElement
+         <ButtonElement
             name="fire_away"
             label={
               <div>
-                <span className="glyphicon glyphicon-plus"/> Create An Appointment
+                <span className="glyphicon glyphicon-plus"/>Add Appointment
               </div>
             }
             type="submit"
@@ -276,7 +290,7 @@ class ScheduleIndex extends Component {
         type: 'select',
         options: options.visitLabel,
       }},
-      {label: 'Project', show: true, filter: {
+      {label: 'Project', show: false, filter: {
         name: 'Project',
         type: 'multiselect',
         options: options.project,
@@ -291,11 +305,11 @@ class ScheduleIndex extends Component {
         type: 'select',
         options: options.AppointmentTypeName,
       }},
-      {label: 'Date', show: true, filter: {
+      {label: 'Date', show: false, filter: {
         name: 'Date',
         type: 'date',
       }},
-      {label: 'Time', show: true, filter: {
+      {label: 'Time', show: false, filter: {
         name: 'Time',
         type: 'time',
       }},
@@ -309,13 +323,16 @@ class ScheduleIndex extends Component {
         type: 'date',
         comparison: 'smallerthanorequal',
       }},
+      {label: 'Starts At', show: true},
+      {label: 'Data Entry Status', show: true},
+      {label: 'Edit', show: true},
     ];
     const actions = [
       {name: 'addSchedule', label: 'Add Schedule', action: this.openModal},
     ];
     return (
     <div>
-      {this.renderAddScheduleForm()}
+      {this.renderScheduleForm()}
       <FilterableDataTable
         name="schedule_module"
         data={this.state.data.Data}
@@ -336,7 +353,7 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <ScheduleIndex
       dataURL={`${loris.BaseURL}/schedule_module/?format=json`}
-      formCheck={`${loris.BaseURL}/schedule_module/appointment`}
+      formURL={`${loris.BaseURL}/schedule_module/appointment`}
       BaseURL={loris.BaseURL}
       submitURL={`${loris.BaseURL}/schedule_module/appointment`}
       hasEditPermission={loris.userHasPermission('schedule_module')}

@@ -53,13 +53,14 @@ class Appointment extends \NDB_Page
     {
         switch ($request->getMethod()) {
         case "POST":
-            $data = json_decode((string) $request->getBody(), true);
+            $data = $request->getParsedBody();
+            $this->addAppointment($data);
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode($data)
+                        json_encode("appointment added")
                     )
                 );
         case "PUT":
@@ -104,7 +105,8 @@ class Appointment extends \NDB_Page
                 ->withHeader("Allow", "GET,POST,PUT,DELETE");
         }
     }
-    public function getMetaForm(string $type,string $id) {
+    public function getMetaForm(string $type,string $id)
+    {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
 // Check if candidate is valid (CandID/DCCID and PSCID must belong to same candidate)
@@ -158,10 +160,66 @@ class Appointment extends \NDB_Page
      foreach($sessionlist as $session) {
          $k = $session['ID'];
          $v = $session['Visit_label'];
-         $sessions[$v] = $v; 
+         $sessions[$k] = $v; 
      }
      $res['Session'] = $sessions;
      return $res;
     } // class 
-    
+
+    public function addAppointment(array $data)
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+       $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
+
+      // Check if Appointment Type is valid/exists
+       $AppointmentTypeID = $DB->pselectOne(
+       "
+        SELECT 
+            AppointmentTypeID 
+        FROM 
+            appointment_type 
+        WHERE 
+            Name = :name
+       ",
+        array("name" => $data['AppointmentType'])
+       );
+
+       
+       $duplicate_check = $DB->pselectRow(
+        "
+           SELECT 
+                * 
+            FROM 
+                appointment 
+            WHERE 
+                SessionID = :sessionId
+            AND 
+                AppointmentTypeID = :appointmentTypeId
+            AND 
+                StartsAt = :startsAt
+        ",
+        array(
+            "sessionId" => $data["Session"],
+            "appointmentTypeId" => $AppointmentTypeID,
+            "startsAt" => $startAt,
+        )
+       ); // end of $duplicate_check
+    if (!empty($duplicate_check)) {
+    http_response_code(400);
+    die(json_encode([
+        "error" => "This appointment already exists."
+    ]));
+    }
+// Insert appointment information
+     $DB->insert(
+        "appointment",
+        array(
+             "SessionId" => $data["Session"],
+             "AppointmentTypeId" => $AppointmentTypeID,
+             "StartsAt" => $startAt,     
+         )
+    );
+      
+  } // end add appointment   
 }// end
