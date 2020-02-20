@@ -82,19 +82,13 @@ class IssueUploadAttachmentForm extends Component {
         body: formObj,
       }).then((resp) => {
       if (resp.headers.get('Content-Type').match(/application\/json/) == null) {
-        console.log('statustext ');
-        console.log(r.statusText);
         throw r.statusText;
       }
-      console.log('wtf');
-      console.log(resp.headers.get('Content-Type'));
-      console.log(resp.headers.get('Content-Type').match(/application\/json/));
       return resp.json();
     })
       .then((data) => {
         // reset form data after successful file upload
         if (data.success) {
-          console.log('success');
           this.setState({
             formData: {
               file: '',
@@ -107,7 +101,6 @@ class IssueUploadAttachmentForm extends Component {
             + '/issue_tracker/issue/'
             + this.props.issue;
         } else if (data.error) {
-          console.log('error');
           swal(data.error, '', 'error');
         } else {
           swal('Permission denied', '', 'error');
