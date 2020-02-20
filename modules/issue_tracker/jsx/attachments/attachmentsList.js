@@ -41,15 +41,14 @@ class AttachmentsList extends Component {
     const state = Object.assign({}, this.state);
     const url = window.location.origin +
       '/issue_tracker/Attachment' +
-      '?ID=' + state.deleteItem.ID +
-      '&file_hash=' + state.deleteItem.file_hash;
+      '?ID=' + state.deleteItem.ID;
     fetch(url,
       {
         credentials: 'same-origin',
         method: 'DELETE',
       }).then((resp) => {
-      if (r.headers.get('Content-Type').match(/application\/json/) == null) {
-        throw r.statusText;
+      if (resp.headers.get('Content-Type').match(/application\/json/) == null) {
+        throw resp.statusText;
       }
       return resp.json();
     })
@@ -154,13 +153,19 @@ class AttachmentsList extends Component {
       float: 'right',
       paddingRight: '100px',
     };
+    const overflowCSS = {
+      fontSize: '15pt',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    };
     const modalConfirmationDeleteAttachment = (
       <Modal
         title='Confirmation'
         onClose={this.closeModalAttachmentDelete}
         show={this.state.showModalAttachmentDelete}
       >
-        <p style={{fontSize: '15pt'}}>
+        <p style={overflowCSS}>
           Please confirm the request to delete the
           "{this.state.deleteItem.file_name}" attachment.
         </p>

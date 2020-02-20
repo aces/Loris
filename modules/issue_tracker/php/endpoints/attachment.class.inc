@@ -124,13 +124,13 @@ class Attachment extends Endpoint implements ETagCalculator
         if ($this->_deletePermission($request)) {
             // Parse request body.
             $values    = $request->getQueryParams();
-            $file_hash = $values['file_hash'];
+            $ID        = $values['ID'];
             $factory   = \NDB_Factory::singleton();
             $DB        = $factory->database();
             $DB->update(
                 'issues_attachments',
                 array('deleted' => 1),
-                array('file_hash' => $file_hash)
+                array('ID' => $ID)
             );
             return new \LORIS\Http\Response\JsonResponse(
                 array('success' => true)
@@ -195,6 +195,7 @@ class Attachment extends Endpoint implements ETagCalculator
             || $request->getMethod() === 'GET'
         ) {
             return 'Etag not calculated for POST, DELETE, and GET request';
+//        return md5(json_encode($_POST);
         }
     }
 
