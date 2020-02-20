@@ -2,7 +2,7 @@
 
 namespace LORIS\issue_tracker\endpoints;
 
-use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
+// use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
