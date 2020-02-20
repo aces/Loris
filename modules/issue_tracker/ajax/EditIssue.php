@@ -28,6 +28,9 @@
  */
 require_once "Email.class.inc";
 
+use LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
+
 //TODO: or split it into two files... :P
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
     echo json_encode(getIssueFields());
@@ -682,26 +685,16 @@ ORDER BY dateAdded LIMIT 1",
             array('i' => $issueID)
         );
 
-        $attachments = $db->pselect(
-            "SELECT
-                        ID,
-                        issueID,
-                        file_hash,
-                        date_added,
-                        file_name,
-                        deleted,
-                        user,
-                        description,
-                        file_size,
-                        mime_type
-                    FROM
-                        issues_attachments
-                    WHERE
-                        issueID = :i
-                    ORDER BY
-                        date_added",
-            array('i' => $issueID)
+        $filter      = new HasAnyPermissionOrUserSiteMatch(
+            array(
+                'issue_tracker_reporter',
+                'issue_tracker_developer'
+            )
         );
+        $provisioner = (new AttachmentProvisioner($issueID))->filter($filter);
+        $attachments = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
 
         $isWatching = $db->pselectOne(
             "SELECT userID, issueID FROM issues_watching

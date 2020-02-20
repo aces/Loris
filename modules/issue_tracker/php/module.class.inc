@@ -65,7 +65,7 @@ class Module extends \Module
      *
      * @return bool whether access is granted
      */
-    public function _hasAccess(\User $user) : bool
+    private function _hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
