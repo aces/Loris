@@ -140,6 +140,7 @@ class DataQueryApp extends Component {
     this.loadFilterRule = this.loadFilterRule.bind(this);
     this.loadFilterGroup = this.loadFilterGroup.bind(this);
     this.loadSavedQuery = this.loadSavedQuery.bind(this);
+    this.loadImportedCSV = this.loadImportedCSV.bind(this);
     this.fieldVisitSelect = this.fieldVisitSelect.bind(this);
     this.fieldChange = this.fieldChange.bind(this);
     this.getSessions = this.getSessions.bind(this);
@@ -456,31 +457,49 @@ class DataQueryApp extends Component {
     return group;
   }
 
+  loadImportedCSV(fields, criteria) {
+    this.setState({loading: true});
+
+    let filterState = this.loadFilterGroup(criteria);
+
+    console.log('CHECK:');
+    console.log(filterState);
+
+    this.setState({
+      fields: ['demographics,PSCID'],
+      selectedFields: [],
+      filter: filterState,
+      alertLoaded: true,
+      alertSaved: false,
+      loading: false,
+    });
+  }
+
   loadSavedQuery(fields, criteria) {
     // Used to load a saved query
 
     console.log('LOOK fields:');
     console.log(fields);
 
-    if (criteria.importCSV) {
-      this.setState({loading: true});
-
-      filterState = this.loadFilterGroup(criteria);
-
-      console.log('CHECK:');
-      console.log(filterState);
-
-      this.setState({
-        fields: ['demographics,PSCID'],
-        selectedFields: [],
-        filter: filterState,
-        alertLoaded: true,
-        alertSaved: false,
-        loading: false,
-      });
-
-      return;
-    }
+    // if (criteria.importCSV) {
+    //   this.setState({loading: true});
+    //
+    //   filterState = this.loadFilterGroup(criteria);
+    //
+    //   console.log('CHECK:');
+    //   console.log(filterState);
+    //
+    //   this.setState({
+    //     fields: ['demographics,PSCID'],
+    //     selectedFields: [],
+    //     filter: filterState,
+    //     alertLoaded: true,
+    //     alertSaved: false,
+    //     loading: false,
+    //   });
+    //
+    //   return;
+    // }
 
     let filterState = {},
       selectedFields = {},
@@ -986,7 +1005,7 @@ class DataQueryApp extends Component {
     //   session: data.session,
     //   repeating: true,
     // };
-    this.loadSavedQuery(null, data);
+    this.loadImportedCSV(null, data);
   }
 
   render() {

@@ -16,6 +16,7 @@ changes in the following format: PR #1234***
 - Very old instrument relying on QuickForm may have issues due to code changes (PR #4928)
 
 #### Modules 
+- The dataquery module has a new feature of importing a CSV file (containing either PSCID or DCCID) and for filtering the population by the demographic field.
 
 ##### Battery Manager
  - New module created to manage the entries in the test_battery table of the database.
