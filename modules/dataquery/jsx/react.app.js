@@ -263,7 +263,7 @@ class DataQueryApp extends Component {
       .then((response) => response.json())
       .then((data) => {
         // Once saved, add the query to the list of saved queries
-        let id = JSON.parse(data).id,
+        let id = data.id,
           queryIDs = this.state.queryIDs;
         if (!override) {
           if (shared === true) {
