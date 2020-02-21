@@ -17,22 +17,16 @@ gg=G
 ```
 
 # PHP
-Ensure formatting meets Loris style guidelines by running phpcs with the LorisCS.xml
-  configuration file which accompanies these guidelines. You can run the tool
-  with the command 
-  ```bash
-  vendor/bin/phpcs --standard=docs/LorisCS.xml <file> [file2, file3, ...]
-  ```
-  for any files you've modified or added. For new modules, ensure that PHPCS has been
-  run on the module directory and add the module to `travis.yml`
+PHP code must pass our static analysis test suite. For details on the process,
+    please the [Automated Testing Guide](./wiki/99 - Developers/Automated Testing.md)
 
-  All new functions should use type hinting and return type declarations.
+All new functions should use type hinting and return type declarations.
 
-  All new classes should declare strict types by including the following line at
-  the top of the file:
-  ```php
-  <?php declare(strict_types=1);
-  ```
+All new classes should declare strict types by including the following line at
+the top of the file:
+```php
+<?php declare(strict_types=1);
+```
 
 # HTML
 - HTML should never be mixed with code. 
