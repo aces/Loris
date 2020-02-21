@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 namespace LORIS\StudyEntities;
-
 /**
  * The Accessible interface is used to determine whether
  * a LORIS user should be allowed access to a resource.
