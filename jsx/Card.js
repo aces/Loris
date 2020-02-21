@@ -16,7 +16,7 @@ import Panel from 'jsx/Panel';
  */
 class Card extends Component {
   /**
-   * Construct the React components
+   * Construct the React component
    *
    * @param {array} props - The React props
    */
