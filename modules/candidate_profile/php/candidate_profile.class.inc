@@ -2,6 +2,8 @@
 namespace LORIS\candidate_profile;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
+
 
 /**
  * The candidate_profile page provides a dashboard which is an overview
@@ -29,8 +31,22 @@ class Candidate_Profile extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return true;
+        return $this->candidate->isAccessibleBy($user);
     }
+
+    /**
+     * Ensure $this->candidate is set so that _hasAccess is valid
+     * before calling the parent middleware.
+     *
+     * @return ResponseInterface
+     */
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        $this->candidate = $request->getAttribute('candidate');
+        return parent::process($request, $handler);
+      }
 
     /**
      * {@inheritDoc}
