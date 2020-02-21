@@ -1016,8 +1016,8 @@ class TimePoint
     {
         $provisioner
             = new \LORIS\Data\Provisioners\TimepointRecordingsRowProvisioner(
-            $this
-        );
+                $this
+            );
 
         $provisioner = $provisioner
             ->filter(new \LORIS\Data\Filters\RecordingsFilter());
