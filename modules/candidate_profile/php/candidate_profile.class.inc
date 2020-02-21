@@ -13,7 +13,6 @@
 namespace LORIS\candidate_profile;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
 use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
