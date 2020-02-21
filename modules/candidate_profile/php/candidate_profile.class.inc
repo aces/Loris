@@ -1,37 +1,27 @@
 <?php
-/**
- * The candidate_profile menu
- *
- * PHP Version 5
- *
- * @category Main
- * @package  Candidate_Profile
- * @author   Zaliqa Rosli <zaliqa.rosli@mcin.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris/
- */
 namespace LORIS\candidate_profile;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
- * The candidate_profile menu
+ * The candidate_profile page provides a dashboard which is an overview
+ * of a specific candidate. The dashboard summarizes information about
+ * the candidate across all LORIS modules and modalities.
  *
- * PHP Version 5
+ * Modules provide widgets which get registered into the page. The
+ * only widget provided by the module itself is a card summarizing
+ * the data returned from the LORIS API for that candidate.
  *
- * @category Main
- * @package  Candidate_Profile
- * @author   Zaliqa Rosli <zaliqa.rosli@mcin.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Candidate_Profile extends \NDB_Page
 {
     protected $candidate;
 
     /**
-     * Overloading this method to allow access to candidate_profile
+     * All users can access the page, the modules which register widgets
+     * onto the candidate dashboard validate the permissions for that
+     * widget.
      *
      * @param \User $user The user whose access is being checked
      *
@@ -39,23 +29,24 @@ class Candidate_Profile extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        // FIXME: This should be based on whether the user has access
-        // to the candidate (site, project, etc).
         return true;
     }
 
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
-        //$candID = $request->getAttribute('CandID') ?? new CandID("965327");
-        $candIDStr = ltrim($request->getURI()->getPath(), '/');
-        try {
-            $candID = new CandID($candIDStr);
-            $this->candidate = \Candidate::singleton($candID);
-       } catch (\DomainException | \LORISException $e) {
-           // A LORISException means the \Candidate::singleton couldn't load the candidate (ie
-           // because the CandID doesn't exist in the database.) A \DomainException means the
-           // CandID format was invalid. Either one means the URL was not valid.
-           return (new \LORIS\Http\Response())->withBody(new \LORIS\Http\StringStream("Candidate not found"))->withStatus(404);
-       }
+    /**
+     * {@inheritDoc}
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return ResponseInterface
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $this->candidate = $request->getAttribute('candidate');
+        if ($this->candidate === null) {
+            // This should be impossible, because the Module router added the attribute
+            // before loading this page.
+            throw new \LorisException("No candidate provided");
+        }
 
         $DB   = \NDB_Factory::singleton()->database();
         $user = \User::singleton();
@@ -86,9 +77,9 @@ class Candidate_Profile extends \NDB_Page
     }
 
     /**
-     * Get dependencies to candidate_profile for image browsing link
+     * Add CSSGrid dependency for the module.
      *
-     * @return array of javascript to be inserted
+     * @return array
      */
     function getJSDependencies()
     {

@@ -2,14 +2,14 @@
 namespace LORIS\candidate_profile;
 
 /**
- * A \LORIS\dashboard\Widget is a type of \LORIS\GUI\Widget which has some additional
- * properties to make it more consistent across widgets that appear on the dashboard.
+ * A \LORIS\candidate_profile\CandidateWidget is a type of \LORIS\GUI\Widget
+ * used by the candidate dashboard.
  *
- * Dashboard Widgets have a size ("small" things going on the right column, and
- * "normal" on the main dashboard area.), a relative ordering (ordering is
- * unspecified within widgets that have the same order), a title, footer, and may
- * optionally register extra CSS or JS to be loaded for the widget to function
- * correctly.
+ * All CandidateWidgets consist of React components which are loaded on the fly.
+ * The React component can have arbitrary props sent to it from LORIS.
+ *
+ * CandidateWidgets also have an optional width/height/order which position
+ * it in the CSSGrid.
  *
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */

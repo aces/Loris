@@ -1,38 +1,20 @@
 <?php
-/**
- * This serves as a hint to LORIS that this module is a real module.
- * It does nothing but implement the module class in the module's namespace.
- *
- * PHP Version 5
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Behavioural
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
- */
 namespace LORIS\candidate_profile;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * Class module implements the basic LORIS module functionality
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Behavioural
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
  */
 class Module extends \Module
 {
     /**
      * The candidate_profile module overrides the default routing to ensure that
-     * the "candidate_profile" subpage is loaded when called with an unknown
-     * page. This makes it possible to provide routes which fallback on loading
-     * the candidate_profile in the module.
+     * /candidate_profile/123456 goes to the candidate_profile page for candidate
+     * 123456.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -40,20 +22,23 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $candIDStr = ltrim($request->getURI()->getPath(), '/');
         try {
-            $resp = parent::handle($request);
-            if ($resp->getStatusCode() != 404) {
-                  return $resp;
-            }
-        } catch (\NotFound $e) {
-        }
-        $candID = new \LORIS\StudyEntities\Candidate\CandID("965327");
-        $request = $request->withAttribute(
-            "CandID", $candID
-        );
+            $candID    = new CandID($candIDStr);
+            $candidate = \Candidate::singleton($candID);
 
-        $page = $this->loadPage("candidate_profile");
-        return $page->process($request, $page);
+            $request = $request->withAttribute('candidate', $candidate);
+            $page = $this->loadPage("candidate_profile");
+            return $page->process($request, $page);
+        } catch (\DomainException | \LORISException $e) {
+            // A LORISException means the \Candidate::singleton couldn't
+            // load the candidate (ie because the CandID doesn't exist
+            // in the database.) A \DomainException means the CandID format
+            // was invalid. In either case, let the parent handle the request
+            // and return a 404 if appropriate. (or it could be a js or css
+            // or other type of URL for the module..)
+           return parent::handle($request);
+        }
     }
 
 
