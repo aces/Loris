@@ -271,8 +271,10 @@ class DataQueryApp extends Component {
         body: formObj
     }).then((resp) => resp.json())
       .then((data) => {
+        console.log('save data is');
+        console.log(data);
         // Once saved, add the query to the list of saved queries
-        let id = JSON.parse(data).id,
+        let id = data.id,
           queryIDs = this.state.queryIDs;
         if (!override) {
           if (shared === true) {
@@ -298,6 +300,7 @@ class DataQueryApp extends Component {
             });
           });
       }).catch((error) => {
+        console.error(error);
         if (data.status === 409) {
           this.setState({
             alertConflict: {
@@ -466,7 +469,7 @@ class DataQueryApp extends Component {
     console.log(filterState);
 
     this.setState({
-      fields: ['demographics,PSCID'],
+      fields: [], //['demographics,PSCID'],
       selectedFields: [],
       filter: filterState,
       alertLoaded: true,
