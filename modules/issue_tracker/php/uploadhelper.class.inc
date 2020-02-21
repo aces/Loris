@@ -127,8 +127,7 @@ class UploadHelper
     }
 
     /**
-     * This insert a record in the
-     * 'issues_attachments' table.
+     * This insert a record in the issues_attachments table.
      *
      * @param object $fileToUpload The object containing
      *                             the $_FILES and the $_POST values.

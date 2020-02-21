@@ -16,8 +16,8 @@ namespace LORIS\issue_tracker\Models;
  * It is doing the mapping between the issues_attachments table columns
  * and the JSON object properties returned to the frontend.
  *
- * Additionally, it implements the DataInstance interface so it can be used by
- * a Database Provisioner.
+ * Additionally, it implements the DataInstance interface
+ * so it can be used by a Database Provisioner.
  *
  * @category Issue_Tracker
  * @package  Loris

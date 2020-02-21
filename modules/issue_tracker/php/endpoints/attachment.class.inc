@@ -2,7 +2,6 @@
 
 namespace LORIS\issue_tracker\endpoints;
 
-// use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
@@ -20,8 +19,8 @@ use \LORIS\api\Endpoint;
 class Attachment extends Endpoint implements ETagCalculator
 {
     /**
-     * This function will return a json object
-     * for the specific attachment request.
+     * Return a json response for the specific attachment request
+     * or thrown an error.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -45,7 +44,7 @@ class Attachment extends Endpoint implements ETagCalculator
     }
 
     /**
-     * Handle GET requests for attachment
+     * Handle GET requests for attachment.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
