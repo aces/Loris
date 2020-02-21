@@ -199,7 +199,7 @@ const config = [
     lorisModule('imaging_qc', ['imagingQCIndex']),
     lorisModule('server_processes_manager', ['server_processes_managerIndex']),
     // lorisModule('instruments', ['instrumentlistwidget']),
-    lorisModule('candidate_profile', [ 'CandidateInfo' ]),
+    lorisModule('candidate_profile', ['CandidateInfo']),
 ];
 
 // Support project overrides

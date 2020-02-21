@@ -38,6 +38,10 @@ class Candidate_Profile extends \NDB_Page
      * Ensure $this->candidate is set so that _hasAccess is valid
      * before calling the parent middleware.
      *
+     * @param ServerRequestInterface  $request The PSR7 request being processed.
+     * @param RequestHandlerInterface $handler The handler to handle the request
+     *                                         after processing the middleware.
+     *
      * @return ResponseInterface
      */
     public function process(
@@ -46,7 +50,7 @@ class Candidate_Profile extends \NDB_Page
     ) : ResponseInterface {
         $this->candidate = $request->getAttribute('candidate');
         return parent::process($request, $handler);
-      }
+    }
 
     /**
      * {@inheritDoc}
@@ -59,8 +63,8 @@ class Candidate_Profile extends \NDB_Page
     {
         $this->candidate = $request->getAttribute('candidate');
         if ($this->candidate === null) {
-            // This should be impossible, because the Module router added the attribute
-            // before loading this page.
+            // This should be impossible, because the Module router added the
+            // attribute before loading this page.
             throw new \LorisException("No candidate provided");
         }
 

@@ -7,7 +7,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * Class module implements the basic LORIS module functionality
  *
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Module extends \Module
 {
@@ -28,7 +28,7 @@ class Module extends \Module
             $candidate = \Candidate::singleton($candID);
 
             $request = $request->withAttribute('candidate', $candidate);
-            $page = $this->loadPage("candidate_profile");
+            $page    = $this->loadPage("candidate_profile");
             return $page->process($request, $page);
         } catch (\DomainException | \LORISException $e) {
             // A LORISException means the \Candidate::singleton couldn't
@@ -37,7 +37,7 @@ class Module extends \Module
             // was invalid. In either case, let the parent handle the request
             // and return a 404 if appropriate. (or it could be a js or css
             // or other type of URL for the module..)
-           return parent::handle($request);
+            return parent::handle($request);
         }
     }
 
