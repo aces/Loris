@@ -82,7 +82,7 @@ class Module extends \Module
                 new CandidateWidget(
                     "Candidate Info",
                     $baseurl . "/candidate_profile/js/CandidateInfo.js",
-                    "lorisjs.candidate_profile.CandidateInfo",
+                    "lorisjs.candidate_profile.candidateInfo.CandidateInfo",
                     [],
                     1,
                     1,

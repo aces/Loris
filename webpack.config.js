@@ -83,7 +83,7 @@ function lorisModule(mname, entries) {
         output: {
             path: path.resolve(__dirname, 'modules') + '/' + mname + '/js/',
             filename: '[name].js',
-            library: ['lorisjs', mname],
+            library: ['lorisjs', mname, '[name]'],
             libraryTarget: 'window',
         },
         externals: {
@@ -198,6 +198,8 @@ const config = [
     lorisModule('module_manager', ['modulemanager']),
     lorisModule('imaging_qc', ['imagingQCIndex']),
     lorisModule('server_processes_manager', ['server_processes_managerIndex']),
+    // lorisModule('instruments', ['instrumentlistwidget']),
+    lorisModule('candidate_profile', [ 'candidateProfileIndex', 'candidateInfo' ]),
 ];
 
 // Support project overrides

@@ -11,7 +11,7 @@ import Card from 'Card';
  * @author  Shen Wang
  * @version 1.0.0
  * */
-class CandidateProfileIndex extends Component {
+export class CandidateProfileIndex extends Component {
    /**
     * Construct the React component
     *
@@ -20,41 +20,8 @@ class CandidateProfileIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        isLoaded: false,
         cards: [],
     };
-  }
-
-  /**
-   * React lifecycle method. After the component is mounted,
-   * it will listen to 'registercard' events to add cards to
-   * the grid.
-   */
-  componentDidMount() {
-      window.addEventListener('registercard', (e) => {
-          const title = e.detail.title;
-          let style= {};
-          if (e.detail.width) {
-              style.gridColumnEnd = 'span ' + e.detail.width;
-          }
-          if (e.detail.height) {
-              style.gridRowEnd = 'span ' + e.detail.height;
-          }
-          if (e.detail.order) {
-              style.order = e.detail.order;
-          }
-          style.alignSelf = 'stretch';
-
-          let cardID = 'card' + this.state.cards.length;
-          this.state.cards.push(<Card
-              title={title}
-              style={style}
-              id={cardID}
-              key={cardID}>
-                  {e.detail.content}
-              </Card>);
-          this.setState({cards: this.state.cards, isLoaded: true});
-      });
   }
 
   /**
@@ -64,7 +31,7 @@ class CandidateProfileIndex extends Component {
    */
   render() {
     // Show a loading spin wheel until at least 1 card is loaded.
-    if (!this.state.isLoaded) {
+    if (this.props.Cards.length < 1) {
       return <Loader/>;
     }
 
@@ -75,17 +42,15 @@ class CandidateProfileIndex extends Component {
         gridRowGap: '1em',
         rowGap: '1em',
     };
+
+     let cards = this.props.Cards.map((value, idx) => {
+         let cardID = 'card' + idx;
+         return (<Card title={value.Title} id={cardID} key={cardID}>
+                 {value.Content}
+             </Card>);
+     });
     return (
-      <div style={grid}>
-        {this.state.cards}
-      </div>
+      <div style={grid}>{cards}</div>
     );
   }
 }
-
-window.addEventListener('load', () => {
-  ReactDOM.render(
-    <CandidateProfileIndex />,
-    document.getElementById('candidatedashboard')
-  );
-});
