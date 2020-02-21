@@ -14,6 +14,9 @@ class ScheduleIndex extends Component {
       error: false,
       isLoaded: false,
       formData: {
+        AppointmentID: null,
+        AppointmentTypeID: null,
+        StartsAt: null,
         DCCID: null,
         PSCID: null,
         Session: null,
@@ -36,6 +39,7 @@ class ScheduleIndex extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.fetchDataForm = this.fetchDataForm.bind(this);
     this.edit = this.edit.bind(this);
+    this.renderScheduleFormButton = this.renderScheduleFormButton.bind(this);
   }
 
   componentDidMount() {
@@ -74,21 +78,6 @@ class ScheduleIndex extends Component {
         console.error(error);
       });
   }
-// todo get edit form data from php
-  fetchDataEditForm(value) {
-    return fetch(this.props.formURL+'/'+value, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => {
-      this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
-      this.setState({formData: {...this.state.formData, DCCID: data['DCCID']}});
-      this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
-      })
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
-  }
-
   /**
    * Store the value of the element in this.state.formData
    *
@@ -98,7 +87,6 @@ class ScheduleIndex extends Component {
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
-    console.log(formElement);
     if (formElement === 'DCCID') {
     formData['PSCID'] = null;
     this.fetchDataForm('DCCID', formData['DCCID']);
@@ -124,7 +112,7 @@ class ScheduleIndex extends Component {
         formObject.append(key, formData[key]);
       }
     }
-    formObject.append('fire_away', 'Add');
+    formObject.append('edit', this.state.editModal);
 
     fetch(this.props.submitURL, {
       method: 'POST',
@@ -153,9 +141,27 @@ class ScheduleIndex extends Component {
     mapColumn(column, cell) {
           return cell;
   }
- edit(cell) {
+ edit(row) {
+console.log(row);
  this.openModal();
  this.setState({editModal: true});
+const sessionID = row['Edit'];
+const visit = row['Visit Label'];
+const sessionObj = {[sessionID]: visit};
+const rowObj = {
+        AppointmentID: row.AppointmentID,
+        AppointmentTypeID: row.AppointmentTypeID,
+        StartsAt: row['Starts At'],
+        DCCID: row.CandID,
+        PSCID: row.PSCID,
+        Session: sessionID,
+        AppointmentDate: row.Date,
+        AppointmentTime: row.Time,
+        AppointmentType: row['Appointment Type'],
+        SessionFieldOptions: sessionObj,
+  };
+ this.setState({formData: rowObj});
+
  // ready setup edit form
 }
   openModal() {
@@ -178,16 +184,45 @@ class ScheduleIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-//    cell = this.mapColumn(column, cell);
     if (column === 'Edit') {
-       return <td><button onClick={() => this.edit(cell)}>Edit</button></td>;
+       // row.dccid row.pscid row.session
+       return <td><button onClick={() => this.edit(row)}>Edit</button></td>;
     }
     return <td>{cell}</td>;
   }
+  renderScheduleFormButton() {
+   if (this.state.editModal) {
+     return (<ButtonElement
+            name="edit"
+            label={
+              <div>
+                <span className="glyphicon glyphicon-plus"/>Edit Appointment
+              </div>
+            }
+            type="submit"
+            buttonClass="btn btn-sm btn-success"
+           />
+     );
+    } else {
+        return (<ButtonElement
+            name="create"
+            label={
+              <div>
+                <span className="glyphicon glyphicon-plus"/>Create Appointment
+              </div>
+            }
+            type="submit"
+            buttonClass="btn btn-sm btn-success"
+           />
+         );
+    }
+  }
   renderScheduleForm() {
+    console.log(this.state.editModal);
+    const title = this.state.editModal ? 'Edit Appointment' : 'Add Appointment';
     return (
       <Modal
-        title='Add/Edit Appointment'
+        title= {title}
         onClose={this.closeModal}
         show={this.state.showModal}
       >
@@ -245,16 +280,7 @@ class ScheduleIndex extends Component {
             required={true}
             onUserInput={this.setFormData}
           />
-         <ButtonElement
-            name="fire_away"
-            label={
-              <div>
-                <span className="glyphicon glyphicon-plus"/>Add Appointment
-              </div>
-            }
-            type="submit"
-            buttonClass="btn btn-sm btn-success"
-          />
+        {this.renderScheduleFormButton()}
         </FormElement>
       </Modal>
     );
@@ -286,7 +312,7 @@ class ScheduleIndex extends Component {
         options: options.site,
       }},
       {label: 'Visit Label', show: true, filter: {
-        name: 'Visit_label',
+        name: 'VisitLabel',
         type: 'select',
         options: options.visitLabel,
       }},
@@ -326,6 +352,8 @@ class ScheduleIndex extends Component {
       {label: 'Starts At', show: true},
       {label: 'Data Entry Status', show: true},
       {label: 'Edit', show: true},
+      {label: 'AppointmentID', show: false},
+      {label: 'AppointmentTypeID', show: false},
     ];
     const actions = [
       {name: 'addSchedule', label: 'Add Schedule', action: this.openModal},

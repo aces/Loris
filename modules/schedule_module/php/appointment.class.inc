@@ -54,7 +54,13 @@ class Appointment extends \NDB_Page
         switch ($request->getMethod()) {
         case "POST":
             $data = $request->getParsedBody();
+            if ($data["edit"] == "true")
+            {
+            $this->editAppointment($data);
+            } else {
             $this->addAppointment($data);
+            }
+            
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
@@ -63,33 +69,22 @@ class Appointment extends \NDB_Page
                         json_encode("appointment added")
                     )
                 );
-        case "PUT":
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("put")
-                    )
-                );
-        case "DELETE":
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("file deleted")
-                    )
-                );
         case "GET":
             // todo get session or pscid or dcciid
             $url = $request->getUri()->getPath();
-            $type = "DCCID";
+            $type = "Edit";
             $id = basename($request->getUri()->getPath());
             if (strpos($url, 'PSCID') !== false) {
                $type = "PSCID";
             }
-            $res = $this->getMetaForm($type,$id); 
+            if (strpos($url, 'DCCID') !== false) {
+               $type = "DCCID";
+            }
+            if ($type == "Edit") {
+           	 $res = $this->getEditForm($id);
+            } else {
+           	 $res = $this->getMetaForm($type,$id);
+            }
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
@@ -102,7 +97,7 @@ class Appointment extends \NDB_Page
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
-                ->withHeader("Allow", "GET,POST,PUT,DELETE");
+                ->withHeader("Allow", "GET,POST");
         }
     }
     public function getMetaForm(string $type,string $id)
@@ -168,6 +163,7 @@ class Appointment extends \NDB_Page
 
     public function addAppointment(array $data)
     {
+print_r("add");
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
        $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
@@ -221,5 +217,51 @@ class Appointment extends \NDB_Page
          )
     );
       
-  } // end add appointment   
+  } // end class of add appointment   
+  public function editAppointment(array $data)
+  {
+print_r("edit");
+print_r($data);
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database(); 
+       $duplicate_check = $DB->pselectRow(
+        "
+           SELECT 
+                * 
+            FROM 
+                appointment 
+            WHERE 
+            SessionID = :sessionId
+            And
+            AppointmentTypeID = :typeId 
+            And
+            StartsAt = :startsAt
+        ",
+        array(
+            "sessionId" => $data["Session"],
+            "typeId" => $data["AppointmentTypeID"],
+            "startsAt" => $data["StartsAt"],
+        )
+       ); // end of $duplicate_check
+    if (!empty($duplicate_check)) {
+    http_response_code(400);
+    die(json_encode([
+        "error" => "This appointment already exists."
+    ]));
+    } 
+//  update appointment information
+// todo get AppointmentTypeID form dropdown . then upate 
+	$DB->update(
+	    "appointment",
+	    array(
+	     "StartsAt"    => $startAt,
+	     "AppointmentTypeID" => $appointment["AppointmentTypeID"],
+	    ),
+	    array(
+	     "AppointmentId" => $_GET["AppointmentID"],
+	    )
+);
+ 
+   
+  } // end class of get edit form data
 }// end
