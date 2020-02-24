@@ -51,7 +51,9 @@ this module and its features.
 #### Interactions With LORIS
 
 * Imaging Browser: presents info about and links to QC and scans, for
-the scan types specified in the Configuration module (as noted above) *
-Imaging Uploader : the name of the user who uploaded the scan is displayed
-in this module * Dicom Archive: Tarchive detected * MRI parameter form:
+the scan types specified in the Configuration module (as noted above) 
+* Imaging Uploader : the name of the user who uploaded the scan is displayed
+in this module 
+* Dicom Archive: Tarchive detected 
+* MRI parameter form:
 Completeness of form and Scan Done are displayed, for this instrument
