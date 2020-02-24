@@ -5,7 +5,13 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
 /**
- * User Accounts Class.
+ * User Accounts Index Component.
+ *
+ * This Component fetches the user account data from the server and feeds it to
+ * the Filterable Datatable component to be formated, filtered and sorted.
+ *
+ * When clicking on the Add User button or a Username, this component redirects
+ * the user to a form that allows them to add or edit a user.
  */
 class UserAccountsIndex extends Component {
   /**
