@@ -115,7 +115,7 @@ Include a new entry in this file by adding to the list of existing modules.
 #### Creating a patch
 
 The files referenced above will be run automatically for new LORIS installations. In addition to these files,
-you msut create a "patch" file that existing LORIS instances can run in order to use your new module.
+you must create a "patch" file that existing LORIS instances can run in order to use your new module.
 
 Create a file `SQL/New_patches/$date_AddMyNewModule.sql`. This file should contain the same commands you added
 to `SQL/0000-00-01-Permission.sql` and `SQL/0000-00-02-Modules.sql`.
@@ -127,8 +127,8 @@ Once you created the modules as described above, go to `$LORIS$/$ModuleName$` to
 
 ### Testing
 
-Your module must contain a file `test/TestPlan.md` that enumerates a sequence of action that a developer can
-follow to test all functionality of your module.
+Your module must contain a file `test/TestPlan.md` that enumerates a sequence of actions that a developer can
+follow to test all functionalities of your module.
 
 #### Automated Testing
 
@@ -145,7 +145,7 @@ be written in a friendly and non-technical tone. Please see the [Help Text Style
 
 ### Issuing a pull request
 
-A pull request containing a new module `my_new_module` will lmust contain the following 
+A pull request containing a new module `my_new_module` must contain the following 
 
 #### Required new files:
 
@@ -158,7 +158,7 @@ A pull request containing a new module `my_new_module` will lmust contain the fo
 * `modules/my_new_module/test/TestPlan.md` -- An exhaustive list of steps to test functionality
 * `modules/my_new_module/README.md` -- Technical summary of module
 * `modules/my_new_module/.gitignore` -- Defines local files to be ignored by git; usually contains `js/*`
-* e.g. `SQL/New_patches/$date_Add-New-Module.sql` -- SQL statements to modify an existing LORIS to be compatible with the new module.
+* e.g. `SQL/New_patches/$date_Add-New-Module.sql` -- SQL statements to modify an existing LORIS instance to be compatible with the new module.
 
 ## Required modifications to existing files
 * `SQL/0000-00-02-Permission.sql` -- Adding new permissions for your module
