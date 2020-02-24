@@ -31,7 +31,9 @@ class Card extends Component {
    * @param {Event} e - The event triggering the click
    */
   handleClick(e) {
-    this.props.onClick(e);
+    if (this.props.onClick) {
+      this.props.onClick(e);
+    }
   }
 
   /**
