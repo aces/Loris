@@ -257,8 +257,8 @@ class Edit_User extends \NDB_Form
         unset($values['NA_UserID']);
         // generate new password
         if (!empty($values['NA_Password'])) {
-            $values['Password_hash']    = \Utility::randomString();
-            $passwordExpired = true;
+            $values['Password_hash'] = \Utility::randomString();
+            $passwordExpired         = true;
         }
         unset($values['NA_Password']);
         // If editing a user and nothing was specified in the password text field
