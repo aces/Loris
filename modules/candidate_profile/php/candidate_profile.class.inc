@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace LORIS\candidate_profile;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -142,4 +142,3 @@ class Candidate_Profile extends \NDB_Page
         );
     }
 }
-
