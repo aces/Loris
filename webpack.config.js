@@ -206,7 +206,7 @@ const config = [
     lorisModule('module_manager', ['modulemanager']),
     lorisModule('imaging_qc', ['imagingQCIndex']),
     lorisModule('server_processes_manager', ['server_processes_managerIndex']),
-    // lorisModule('instruments', ['instrumentlistwidget']),
+    lorisModule('instruments', ['CandidateInstrumentList']),
     lorisModule('candidate_profile', ['CandidateInfo']),
 ];
 
