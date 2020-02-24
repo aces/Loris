@@ -68,8 +68,9 @@ class Candidate_Profile extends \NDB_Page
             throw new \LorisException("No candidate provided");
         }
 
-        $DB   = \NDB_Factory::singleton()->database();
-        $user = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
 
         $modules = \Module::getActiveModules($DB);
 
