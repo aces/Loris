@@ -68,31 +68,31 @@ abstract class LorisIntegrationTest extends TestCase
             1
         );
         $this->url = $this->config->getSetting("url");
-        $password = new \Password($this->validPassword);
+        $password  = new \Password($this->validPassword);
 
         $this->DB->insert(
             "users",
             array(
-             'ID'               => 999990,
-             'UserID'           => 'UnitTester',
-             'Real_name'        => 'Unit Tester',
-             'First_name'       => 'Unit',
-             'Last_name'        => 'Tester',
-             'Email'            => 'tester@example.com',
-             'Privilege'        => 0,
-             'PSCPI'            => 'N',
-             'Active'           => 'Y',
-             'Password_hash'    => $password,
-             'Password_expiry'  => '2099-12-31',
-             'Pending_approval' => 'N',
+                'ID'               => 999990,
+                'UserID'           => 'UnitTester',
+                'Real_name'        => 'Unit Tester',
+                'First_name'       => 'Unit',
+                'Last_name'        => 'Tester',
+                'Email'            => 'tester@example.com',
+                'Privilege'        => 0,
+                'PSCPI'            => 'N',
+                'Active'           => 'Y',
+                'Password_hash'    => $password,
+                'Password_expiry'  => '2099-12-31',
+                'Pending_approval' => 'N',
             )
         );
 
         $this->DB->insert(
             "user_psc_rel",
             array(
-                'UserID'    => 999990,
-                'CenterID'  => 1,
+                'UserID'   => 999990,
+                'CenterID' => 1,
             )
         );
 
@@ -100,7 +100,7 @@ abstract class LorisIntegrationTest extends TestCase
             "user_project_rel",
             array(
                 'UserID'    => 999990,
-                'ProjectID'  => 1,
+                'ProjectID' => 1,
             )
         );
 
@@ -109,21 +109,24 @@ abstract class LorisIntegrationTest extends TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword($password);
 
-        $dev = $this->config->getSettingFromXML('dev');
-        $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
-        $profile = new FirefoxProfile();
+        $dev          = $this->config->getSettingFromXML('dev');
+        $selenium_url = $dev['selenium_url'] ?? 'http://localhost:4444/wd/hub';
+        $profile      = new FirefoxProfile();
         $profile->setPreference("setAcceptUntrustedCertificates", true);
         $profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
-        $profile->setPreference("security.insecure_field_warning.contextual.enabled", false);
+        $profile->setPreference(
+            "security.insecure_field_warning.contextual.enabled",
+            false
+        );
         $desired_capabilities = DesiredCapabilities::firefox();
-        // running headless model in Travis 
-        if (getenv('HEADLESS')){
+        // running headless model in Travis
+        if (getenv('HEADLESS')) {
             $desired_capabilities->setCapability(
-              'moz:firefoxOptions',
-              ['args' => ['-headless']]
-           );
+                'moz:firefoxOptions',
+                ['args' => ['-headless']]
+            );
         }
-        $desired_capabilities->setCapability(FirefoxDriver::PROFILE,$profile);
+        $desired_capabilities->setCapability(FirefoxDriver::PROFILE, $profile);
 
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
@@ -132,7 +135,9 @@ abstract class LorisIntegrationTest extends TestCase
 
         $this->login("UnitTester", $this->validPassword);
 
-        if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
+        if (extension_loaded('xdebug')
+            && function_exists("xdebug_start_code_coverage")
+        ) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
 
@@ -215,12 +220,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function setupConfigSetting($configName, $value)
     {
-      /*  if (isset($this->_oldConfig[$configName])) {
-            throw new LorisException(
-                "Attempted to change already changed config setting"
-            );
-        }*/
-
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
             array("configName" => $configName)
@@ -237,9 +236,9 @@ abstract class LorisIntegrationTest extends TestCase
         );
 
         $this->_oldConfig[$configName] = array(
-                                          'ConfigID' => $configID,
-                                          'OldValue' => $oldVal,
-                                         );
+            'ConfigID' => $configID,
+            'OldValue' => $oldVal,
+        );
 
         $this->DB->update(
             "Config",
@@ -260,11 +259,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function restoreConfigSetting($configName)
     {
-        /*
-        if(!isset($this->_oldConfig[$configName])) {
-            throw new LorisException("Attempted to restore unsaved config setting");
-        }
-         */
         if (isset($this->_oldConfig[$configName])) {
             $this->DB->update(
                 "Config",
@@ -322,7 +316,11 @@ abstract class LorisIntegrationTest extends TestCase
     function changeStudySite()
     {
         $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
-        $this->DB->update("user_psc_rel", array("CenterID" => 99), array("UserID" => 999990));
+        $this->DB->update(
+            "user_psc_rel",
+            array("CenterID" => 99),
+            array("UserID" => 999990)
+        );
     }
 
     /**
@@ -333,7 +331,11 @@ abstract class LorisIntegrationTest extends TestCase
     function resetStudySite()
     {
         $this->DB->run('SET foreign_key_checks =0');
-        $this->DB->update("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
+        $this->DB->update(
+            "user_psc_rel",
+            array("CenterID" => 1),
+            array("UserID" => 999990)
+        );
         $this->DB->delete("psc", array("CenterID" => 99));
         $this->DB->run('SET foreign_key_checks =1');
     }
@@ -341,7 +343,8 @@ abstract class LorisIntegrationTest extends TestCase
     /**
      * Helper function to create a subproject
      *
-     * @param string $title Name of the subproject
+     * @param string $SubprojectID Name of the subproject
+     * @param string $title        Name of the subproject
      *
      * @return void
      */
@@ -350,10 +353,10 @@ abstract class LorisIntegrationTest extends TestCase
         $this->DB->insert(
             "subproject",
             array(
-             "SubprojectID"      => $SubprojectID,
-             "title"             => $title,
-             "WindowDifference"  => "optimal",
-             "RecruitmentTarget" => "100",
+                "SubprojectID"      => $SubprojectID,
+                "title"             => $title,
+                "WindowDifference"  => "optimal",
+                "RecruitmentTarget" => "100",
             )
         );
     }
@@ -370,9 +373,9 @@ abstract class LorisIntegrationTest extends TestCase
         $this->DB->delete(
             "subproject",
             array(
-             "title"             => $title,
-             "WindowDifference"  => "optimal",
-             "RecruitmentTarget" => "100",
+                "title"             => $title,
+                "WindowDifference"  => "optimal",
+                "RecruitmentTarget" => "100",
             )
         );
     }
@@ -557,4 +560,4 @@ abstract class LorisIntegrationTest extends TestCase
         }
     }
 }
-?>
+
