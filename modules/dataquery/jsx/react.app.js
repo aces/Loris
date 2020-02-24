@@ -29,10 +29,6 @@ class SavedQueriesList extends Component {
 
   loadQuery(queryName) {
     // Loads in the selected query
-
-    console.log('this.props.queryDetails[queryName].Fields:');
-    console.log(this.props.queryDetails[queryName].Fields);
-
     this.props.onSelectQuery(
       this.props.queryDetails[queryName].Fields,
       this.props.queryDetails[queryName].Conditions
@@ -185,7 +181,6 @@ class DataQueryApp extends Component {
     for (let key in this.state.queryIDs) {
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
-        console.log('CHECK 2');
         curRequest = Promise.resolve(
           $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
             data: {
@@ -263,7 +258,6 @@ class DataQueryApp extends Component {
       }
     }
 
-    console.log('CHECK 3');
     fetch(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php',
       {
         credentials: 'same-origin',
@@ -271,8 +265,6 @@ class DataQueryApp extends Component {
         body: formObj
     }).then((resp) => resp.json())
       .then((data) => {
-        console.log('save data is');
-        console.log(data);
         // Once saved, add the query to the list of saved queries
         let id = data.id,
           queryIDs = this.state.queryIDs;
@@ -283,7 +275,6 @@ class DataQueryApp extends Component {
             queryIDs.User.push(id);
           }
         }
-        console.log('CHECK 4');
         $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
           (value) => {
             let queries = this.state.savedQueries;
@@ -331,7 +322,6 @@ class DataQueryApp extends Component {
 
     // Get given fields of the instrument for the rule.
     // This call is made synchronously
-    console.log('CHECK 5');
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
       success: (data) => {
@@ -376,7 +366,6 @@ class DataQueryApp extends Component {
       default:
         break;
     }
-    console.log('CHECK 6');
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
       success: (data) => {
@@ -424,10 +413,6 @@ class DataQueryApp extends Component {
   loadFilterGroup(group) {
     // Used to load in a filter group
 
-    if (group.importCSV) {
-      return group;
-    }
-
     // Recursively load the children on the group
     for (let i = 0; i < group.children.length; i++) {
       if (group.children[i].activeOperator) {
@@ -436,42 +421,19 @@ class DataQueryApp extends Component {
         }
         group.children[i] = this.loadFilterGroup(group.children[i]);
       } else {
-        console.log('group.children[i] BEFORE:');
-        console.log(group.children[i]);
         group.children[i] = this.loadFilterRule(group.children[i]);
-        console.log('group.children[i] AFTER:');
-        console.log(group.children[i]);
-      // }
-      // if (group.repeating) {
-      //   const filterRule = group.children[i];
-      //   for (let j=0; j< group.children.length; j++) {
-      //     const session = group.children[j].session;
-      //     const value = group.children[j].value;
-      //     group.children[j] = Object.assign({}, filterRule);
-      //     group.children[j].session = session;
-      //     group.children[j].value = value;
-      //   }
-      //   break;
       }
     }
     group.session = getSessions(group);
-    console.log('group is:');
-    console.log(group);
     return group;
   }
 
-  loadImportedCSV(fields, criteria) {
-    this.setState({loading: true});
-
-    let filterState = this.loadFilterGroup(criteria);
-
-    console.log('CHECK:');
-    console.log(filterState);
-
+  loadImportedCSV(fields, filter) {
+    // this.setState({loading: true});
     this.setState({
       fields: [], //['demographics,PSCID'],
       selectedFields: [],
-      filter: filterState,
+      filter: filter,
       alertLoaded: true,
       alertSaved: false,
       loading: false,
@@ -480,29 +442,6 @@ class DataQueryApp extends Component {
 
   loadSavedQuery(fields, criteria) {
     // Used to load a saved query
-
-    console.log('LOOK fields:');
-    console.log(fields);
-
-    // if (criteria.importCSV) {
-    //   this.setState({loading: true});
-    //
-    //   filterState = this.loadFilterGroup(criteria);
-    //
-    //   console.log('CHECK:');
-    //   console.log(filterState);
-    //
-    //   this.setState({
-    //     fields: ['demographics,PSCID'],
-    //     selectedFields: [],
-    //     filter: filterState,
-    //     alertLoaded: true,
-    //     alertSaved: false,
-    //     loading: false,
-    //   });
-    //
-    //   return;
-    // }
 
     let filterState = {},
       selectedFields = {},
@@ -520,10 +459,6 @@ class DataQueryApp extends Component {
       };
       filterState.children = criteria.map((item) => {
         let fieldInfo = item.Field.split(',');
-        console.log('field is:');
-        console.log(fieldInfo[1]);
-        console.log('instrument:');
-        console.log(fieldInfo[0]);
         let rule = {
           instrument: fieldInfo[0],
           field: fieldInfo[1],
@@ -593,11 +528,6 @@ class DataQueryApp extends Component {
       ];
       filterState.session = this.props.AllSessions;
     }
-    console.log('CHECK THIS B E L O W');
-    console.log('fields:');
-    console.log(fieldsList);
-    console.log('selectedFields:');
-    console.log(selectedFields);
     this.setState({
       fields: fieldsList,
       selectedFields: selectedFields,
@@ -607,7 +537,6 @@ class DataQueryApp extends Component {
       loading: false,
     });
     for (let i = 0; i < fieldsList.length; i++) {
-      console.log('CHECK 7');
       $.ajax({
         url: loris.BaseURL + '/dataquery/ajax/datadictionary.php',
         success: (data) => {
@@ -799,7 +728,6 @@ class DataQueryApp extends Component {
         // keep track of the number of requests waiting for a response
         semaphore++;
         sectionedSessions = JSON.stringify(sessionInfo);
-        console.log('CHECK 1');
         $.ajax({
           type: 'POST',
           url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php',
@@ -996,18 +924,7 @@ class DataQueryApp extends Component {
   }
 
   importCSV(data) {
-    console.log('inside importCSV');
-    console.log('data is:');
-    console.log(data);
-
     data.importCSV = true;
-
-    // data = {
-    //   activeOperator: '0',
-    //   children: data.children,
-    //   session: data.session,
-    //   repeating: true,
-    // };
     this.loadImportedCSV(null, data);
   }
 

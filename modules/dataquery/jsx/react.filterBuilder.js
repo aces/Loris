@@ -619,8 +619,6 @@ class FilterBuilder extends Component {
       }
     ).then((resp) => resp.json()
     ).then((data) => {
-      console.log('success data:');
-      console.log(data);
       this.props.importCSV(data);
       this.closeModalCSV();
     }).catch((error) => {
