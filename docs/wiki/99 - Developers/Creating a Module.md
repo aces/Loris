@@ -95,6 +95,8 @@ Be sure to familiarize yourself with our [ReactJS guidelines](./ReactJS Guidelin
 New modules must be inserted into the database. You must create new permissions for the module and insert
 an entry for your new module within the `modules` table in LORIS.
 
+Please make sure that all SQL changes follow our [SQL code standards](https://github.com/aces/Loris/blob/master/docs/SQLModelingStandard.md).
+
 #### Module permissions
 
 You must define new permissions for the module. These are used to limit users to specific actions with the module.
