@@ -1,25 +1,10 @@
 <?php
-/**
- * Data Release automated integration tests
- *
- * PHP Version 7
- *
- * @category Test
- * @package  Loris
- * @author   John Saigle <john.saigle@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
- */
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * DataReleaseIntegrationTest
  *
- * @category Test
- * @package  Loris
- * @author   John Saigle <john.saigle@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class DataReleaseIntegrationTest extends LorisIntegrationTest
 {
