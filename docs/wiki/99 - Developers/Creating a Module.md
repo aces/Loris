@@ -92,8 +92,8 @@ Be sure to familiarize yourself with our [ReactJS guidelines](./ReactJS Guidelin
 
 ### SQL Files
 
-New modules must be inserted into the database. You must create new permissions for the module and insert
-an entry for your new module within the `modules` table in LORIS.
+A pull request to create a new module must contain SQL modifications in order for LORIS to detect the module
+and serve it with appropriate access control.
 
 Please make sure that all SQL changes follow our [SQL code standards](https://github.com/aces/Loris/blob/master/docs/SQLModelingStandard.md).
 
