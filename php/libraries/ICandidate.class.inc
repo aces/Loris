@@ -1,17 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * This file contains an interface to describe a Candidate
- * in LORIS.
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Main
- * @author   John Saigle <john.saigle@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-
 use LORIS\StudyEntities\Candidate\CandID;
 /**
  * Interface for Candidate objects.
@@ -19,29 +6,27 @@ use LORIS\StudyEntities\Candidate\CandID;
  * This deals with properties that may be accessed regarding
  * a candidate.
  *
- * @category Main
- * @package  Main
- * @author   John Saigle <john.saigle@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 interface ICandidate
 {
     /**
-     * Get this candidate TimePoints.```
+     * Get this candidate TimePoints.
      *
      * @return \TimePoint[]
      */
     public function getTimepoints(): array;
 
     /**
-     * Gets the parameter_candidate table so that projects have a way to add
-     * whatever data they want which is outside the scope of LORIS to their
-     * candidates.
+     * Gets a list of candidate parameters (extra properties) relevant to this
+     * candidate across all of its timepoints, such as race/ethnicity,
+     * comorbidities, blood type, and IDs from other studies.
      *
-     * @param ?array $parameterTypes Subset of data from the
+     * @param ?array $parameterTypes Subset of data.
      *
      * @return array
+     *
+     * @see https://github.com/aces/Loris/wiki/Candidate-Parameters
      */
     public function getParameters(?array $parameterTypes = null): array;
 
