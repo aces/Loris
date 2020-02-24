@@ -429,9 +429,8 @@ class DataQueryApp extends Component {
   }
 
   loadImportedCSV(fields, filter) {
-    // this.setState({loading: true});
     this.setState({
-      fields: [], //['demographics,PSCID'],
+      fields: [],
       selectedFields: [],
       filter: filter,
       alertLoaded: true,
