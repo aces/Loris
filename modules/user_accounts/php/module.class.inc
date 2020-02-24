@@ -36,7 +36,7 @@ class Module extends \Module
     {
         if (strpos($request->getUri()->getPath(), "/edit_user/") === 0) {
             $page = $this->loadPage("edit_user");
-                return $page->process($request, $page);
+            return $page->process($request, $page);
         }
         return parent::handle($request);
     }
