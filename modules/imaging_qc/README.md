@@ -34,10 +34,10 @@ Browser, and enter the QC details in that module.
 * This module will not load without the `mri_parameter_form` instrument
 installed and properly configured.  Each scan type (identified below
 via the Configuration module) should have an equivalent _scan_done_
-column in the database table for this instrument.  >  A sample MRI
+column in the database table for this instrument.  A sample MRI
 Parameter Form is available with our sample dataset in this repo:
 `raisinbread/instruments/NDB_BVL_Instrument_mri_parameter_form.class.inc`,
-and should be customized and installed for your project.  (Please consult
+and should be customized and installed for your project. (Please consult
 our online Setup Guide for more information.)
 
 * The `tblScanTypes` Configuration setting allows customization of which
