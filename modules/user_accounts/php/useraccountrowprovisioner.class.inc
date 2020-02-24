@@ -41,6 +41,6 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
       */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        return new UserAccount($row);
+        return new UserAccountRow($row);
     }
 }
