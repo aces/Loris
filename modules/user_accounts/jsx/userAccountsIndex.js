@@ -9,12 +9,10 @@ import FilterableDataTable from 'FilterableDataTable';
  */
 class UserAccountsIndex extends Component {
   /**
-   * Constructor
-   *
-   * @param {object} props
+   * {@inheritdoc}
    */
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       data: {},
@@ -28,7 +26,7 @@ class UserAccountsIndex extends Component {
   }
 
   /**
-   * Lifecycle method
+   * {@inheritdoc}
    */
   componentDidMount() {
     this.fetchData()
@@ -104,7 +102,7 @@ class UserAccountsIndex extends Component {
   }
 
   /**
-   * Render
+   * {@inheritdoc}
    *
    * @return {object}
    */
