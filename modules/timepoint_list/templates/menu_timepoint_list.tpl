@@ -6,9 +6,6 @@
     <th>
       DOB
     </th>
-    <th>
-      Age
-    </th>
     {if $candidate.EDC!=""}
       <th>
         EDC
@@ -32,9 +29,6 @@
   <tr>
     <td>
       {$candidate.DoB}
-    </td>
-    <td>
-      {$candidate.Age}
     </td>
     {if $candidate.EDC!=""}
       <td>
