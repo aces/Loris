@@ -92,7 +92,7 @@ cd `/var/www/loris/`; make
 ## Running the install script
 
 The next step in setting up LORIS is running the script `install.sh` in the 
-`tools/` directory. The script must be run from this directory.
+`tools/` directory. The script must be run from that directory.
 
 This will begin an interactive setup process that will configure files and
 permissions required to get LORIS up and running.
@@ -116,7 +116,7 @@ be created before continuing. (This is not the same as a unix root credential.)
 
 This web page will prompt you for the following information:
 
- * `Server Hostname`. Use `localhost` if your database is hosted on your locally. Use the IP address of your database server otherwise.
+ * `Server Hostname`. Use `localhost` if your database is hosted on the same machine as your web server. Use the IP address of your database server otherwise.
 
  * `Admin Username` A database user with permission to create databases and tables.
 
