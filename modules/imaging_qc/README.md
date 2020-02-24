@@ -34,17 +34,10 @@ Browser, and enter the QC details in that module.
 * This module will not load without the `mri_parameter_form` instrument
 installed and properly configured.  Each scan type (identified below
 via the Configuration module) should have an equivalent _scan_done_
-<<<<<<< 7a1e16d597e1b6dfa93af6848d086ec26777c00a
 column in the database table for this instrument.  A sample MRI
 Parameter Form is available with our sample dataset in this repo:
 `raisinbread/instruments/NDB_BVL_Instrument_mri_parameter_form.class.inc`,
 and should be customized and installed for your project. (Please consult
-=======
-column in the database table for this instrument.  >  A sample MRI
-Parameter Form is available with our sample dataset in this repo:
-`raisinbread/instruments/NDB_BVL_Instrument_mri_parameter_form.class.inc`,
-and should be customized and installed for your project.  (Please consult
->>>>>>> modify all occurrences
 our online Setup Guide for more information.)
 
 * The `tblScanTypes` Configuration setting allows customization of which
@@ -58,16 +51,9 @@ this module and its features.
 #### Interactions With LORIS
 
 * Imaging Browser: presents info about and links to QC and scans, for
-<<<<<<< 7a1e16d597e1b6dfa93af6848d086ec26777c00a
 the scan types specified in the Configuration module (as noted above) 
 * Imaging Uploader : the name of the user who uploaded the scan is displayed
 in this module 
 * Dicom Archive: Tarchive detected 
 * MRI parameter form:
 Completeness of form and Scan Done are displayed, for this instrument
-=======
-the scan types specified in the Configuration module (as noted above) *
-Imaging Uploader : the name of the user who uploaded the scan is displayed
-in this module * Dicom Archive: Tarchive detected * MRI parameter form:
-Completeness of form and Scan Done are displayed, for this instrument
->>>>>>> modify all occurrences
