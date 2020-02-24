@@ -60,7 +60,6 @@ class Edit_User extends \NDB_Form
             return true;
         }
 
-
         if ($editor->hasPermission('user_accounts')) {
             if ($this->isCreatingNewUser()) {
                 return true;
