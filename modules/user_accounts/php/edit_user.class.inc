@@ -217,6 +217,7 @@ class Edit_User extends \NDB_Form
             ? array_keys($values['permID']) : [];
         $editorPermissions = $editor->getPermissionIDs() ?? [];
         $permIDs           = [];
+        $passwordExpired = false;
         // store the permission IDs
         if (!empty($values['permID'])) {
             // An editor can only grant permissions that they have already been
@@ -257,7 +258,7 @@ class Edit_User extends \NDB_Form
         // generate new password
         if (!empty($values['NA_Password'])) {
             $values['Password_hash']    = \Utility::randomString();
-            $values['Password_expired'] = true;
+            $passwordExpired = true;
         }
         unset($values['NA_Password']);
         // If editing a user and nothing was specified in the password text field
@@ -497,7 +498,7 @@ class Edit_User extends \NDB_Form
                 new \Password(
                     htmlspecialchars_decode($values['Password_hash'])
                 ),
-                $values['Password_expired'] ?? false
+                $passwordExpired
             );
         }
 
