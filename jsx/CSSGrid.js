@@ -44,8 +44,6 @@ function CSSGrid(props) {
         {value.Content}
       </Card>
     );
-      {value.Content}
-      </Card>);
   });
   return (
     <div style={grid}>{cards}</div>
