@@ -15,15 +15,30 @@ import Panel from 'jsx/Panel';
  *
  */
 class Card extends Component {
+  /**
+   * Construct the React component
+   *
+   * @param {array} props - The React props
+   */
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
   }
 
+  /**
+   * Delegate clicks on the card to the onClick handler
+   *
+   * @param {Event} e - The event triggering the click
+   */
   handleClick(e) {
     this.props.onClick(e);
   }
 
+  /**
+   * Render the React component
+   *
+   * @return {object}
+   */
   render() {
     const cursorStyle = this.props.onClick ? {
       cursor: 'pointer',
