@@ -27,7 +27,7 @@ function CSSGrid(props) {
   let cards = props.Cards.map((value, idx) => {
     let cardID = 'card' + idx;
 
-    let style= {};
+    let style = {};
     if (value.Width) {
       style.gridColumnEnd = 'span ' + value.Width;
     }
@@ -39,7 +39,11 @@ function CSSGrid(props) {
     }
 
     style.alignSelf = 'stretch';
-    return (<Card title={value.Title} id={cardID} key={cardID} style={style}>
+    return (
+      <Card title={value.Title} id={cardID} key={cardID} style={style}>
+        {value.Content}
+      </Card>
+    );
       {value.Content}
       </Card>);
   });
