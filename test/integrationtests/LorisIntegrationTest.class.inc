@@ -430,7 +430,7 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
-     * Helper function to click on a element and wait for the new page to be 
+     * Helper function to click on a element and wait for the new page to be
      * loaded.
      * When the DOM is reloaded, the elements of the previous page become stale.
      * Selenium will raise an exception when a function (like getText) are
@@ -571,8 +571,8 @@ abstract class LorisIntegrationTest extends TestCase
      * Ensures that the module loads if and only if the user has the correct
      * permissions.
      *
-     * @param string   $path            The path to the module. Usually the same name as
-     *                                  the folder containing the module.
+     * @param string   $path            The path to the module. Usually the same
+     *                                  name as the folder containing the module.
      * @param string[] $permissionCodes An array of permission codes
      *                                  corresponding to the module. Should
      *                                  match the permission codes used in the
@@ -640,8 +640,10 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return string The body text of the page loaded.
      */
-    private function _loadWithPermission(string $path, string $permission = ''): string
-    {
+    private function _loadWithPermission(
+        string $path,
+        string $permission = ''
+    ): string {
         $this->setupPermissions(array($permission));
         $this->safeGet($this->url . $path);
         return $this->safeFindElement(
