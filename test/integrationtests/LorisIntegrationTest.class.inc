@@ -617,7 +617,7 @@ abstract class LorisIntegrationTest extends TestCase
 
     /**
      * Asserts that a message appears in the HTML body of the page.
-     * Rests the permissions checked to cleanup before further tests.
+     * Resets the permissions checked to cleanup before further tests.
      *
      * @param string $needle   This string should be in $haystack.
      * @param string $haystack The HTML body of the page.
@@ -631,7 +631,7 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
-     * Helper function to set up and load a page with a given permisison code.
+     * Helper function to set up and load a page with a given permission code.
      *
      * @param string $path       The path to the module. Usually the same name as
      *                           the folder containing the module.
@@ -649,4 +649,3 @@ abstract class LorisIntegrationTest extends TestCase
         )->getText();
     }
 }
-
