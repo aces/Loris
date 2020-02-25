@@ -16,6 +16,8 @@ database. Where possible, this should be limited to specific classes that
 handle these transactions rather than mixed in with more general code.
 
 ## PHP
+PHP code should be compliant with PHP Standards Recommendations](https://www.php-fig.org/psr/) PSR-7 and PSR-15.
+
 All new functions should use type hinting and return type declarations.
 
 All new classes should declare strict types by including the following line at
