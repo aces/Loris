@@ -77,9 +77,11 @@ class Candidate_Profile extends \NDB_Page
         $widgets = [];
         foreach ($modules as $module) {
             if ($module->hasAccess($user)) {
-                $mwidgets = $module->getWidgets('candidate', $user, [
-                    'candidate' => $this->candidate,
-                ]);
+                $mwidgets = $module->getWidgets(
+                    'candidate',
+                    $user,
+                    [ 'candidate' => $this->candidate ],
+                );
                 foreach ($mwidgets as $widget) {
                     if (!($widget instanceof CandidateWidget)) {
                         continue;
@@ -89,10 +91,11 @@ class Candidate_Profile extends \NDB_Page
             }
         }
 
-        $this->tpl_data['widgets'] = $widgets;
+        $this->tpl_data['widgets']   = $widgets;
         $this->tpl_data['candidate'] = $this->candidate;
 
-        $this->tpl_data['visitmap'] = array_flip($this->candidate->getListOfVisitLabels());
+        $this->tpl_data['visitmap']
+            = array_flip($this->candidate->getListOfVisitLabels());
 
         return parent::handle($request);
     }
@@ -120,7 +123,7 @@ class Candidate_Profile extends \NDB_Page
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        if($this->candidate === null) {
+        if ($this->candidate === null) {
             return new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb(
                     'Access Profile',

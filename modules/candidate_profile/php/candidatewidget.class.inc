@@ -11,19 +11,21 @@ namespace LORIS\candidate_profile;
  * CandidateWidgets also have an optional width/height/order which position
  * it in the CSSGrid.
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class CandidateWidget implements \LORIS\GUI\Widget
 {
     /**
      * Construct a dashboard widget with the specified properties.
      *
-     * @param WidgetContent       $content The content to display in a dashboard
-     *                                     panel.
-     * @param WidgetDisplayProps  $props   Display related properties such as size
-     *                                     and order.
-     * @param ?WidgetDependencies $deps    Optional dependencies such as CSS or JS
-     *                                     for this widget.
+     * @param string $title         The title of the card to display.
+     * @param string $jsurl         The URL containing the React component.
+     * @param string $componentname The React component name for this widget.
+     * @param array  $props         Additional React props to pass to the React
+     *                              component.
+     * @param ?int   $width         The width in the CSS grid.
+     * @param ?int   $height        The height in the CSS grid.
+     * @param ?int   $order         The order in the CSS grid.
      */
     public function __construct(
         string $title,
@@ -34,15 +36,14 @@ class CandidateWidget implements \LORIS\GUI\Widget
         ?int $height = null,
         ?int $order = null
     ) {
-        $this->title = $title;
-        $this->url = $jsurl;
-        $this->width = $width;
-        $this->height = $height;
+        $this->title         = $title;
+        $this->url           = $jsurl;
+        $this->width         = $width;
+        $this->height        = $height;
         $this->componentname = $componentname;
-        $this->props = $props;
-        $this->order = $order;
+        $this->props         = $props;
+        $this->order         = $order;
     }
-
 
     /**
      * Renders the widget within a dashboard panel and implements
@@ -55,30 +56,76 @@ class CandidateWidget implements \LORIS\GUI\Widget
         return $this->url;
     }
 
-    public function getTitle() : string {
+    /**
+     * Return the Card title
+     *
+     * @return string
+     */
+    public function getTitle() : string
+    {
         return $this->title;
     }
 
-    public function getWidth() : ?int {
+    /**
+     * Return the Card width.
+     *
+     * @return ?int
+     */
+    public function getWidth() : ?int
+    {
         return $this->width;
     }
 
-    public function getHeight() : ?int {
+    /**
+     * Return the Card height.
+     *
+     * @return ?int
+     */
+    public function getHeight() : ?int
+    {
         return $this->height;
     }
 
-    public function getOrder() : ?int {
+    /**
+     * Return the Card order.
+     *
+     * @return ?int
+     */
+    public function getOrder() : ?int
+    {
         return $this->order;
     }
-    public function getJSURL() : string {
+
+    /**
+     * Return the URL which contains the React
+     * component for the Card's body.
+     *
+     * @return string
+     */
+    public function getJSURL() : string
+    {
         return $this->url;
     }
 
-    public function getComponentName() : string {
+    /**
+     * Return the name of the React component to
+     * render.
+     *
+     * @return string
+     */
+    public function getComponentName() : string
+    {
         return $this->componentname;
     }
 
-    public function getComponentProps() : array {
+    /**
+     * Return additional React props to pass to the
+     * React component
+     *
+     * @return array
+     */
+    public function getComponentProps() : array
+    {
         return $this->props;
     }
 }

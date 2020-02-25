@@ -42,6 +42,11 @@ class Module extends \Module
     }
 
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
     public function getLongName() : string
     {
         return "Candidate Profile";
@@ -50,8 +55,10 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @param string $type The type of widgets to get
-     * @param \User  $user The user widgets are being retrieved for.
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
      *
      * @return \LORIS\GUI\Widget[]
      */
@@ -62,7 +69,6 @@ class Module extends \Module
             $factory = \NDB_Factory::singleton();
             $baseurl = $factory->settings()->getBaseURL();
 
-            $candidate = $options['candidate'];
             return [
                 new CandidateWidget(
                     "Candidate Info",
