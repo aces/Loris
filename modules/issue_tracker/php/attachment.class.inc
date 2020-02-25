@@ -52,7 +52,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse GET query params.
-        $values  = $request->getQueryParams();
+        $values = $request->getQueryParams();
         // DB Query begins.
         $ID      = intval($values['ID']);
         $factory = \NDB_Factory::singleton();
