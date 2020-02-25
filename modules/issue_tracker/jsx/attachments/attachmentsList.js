@@ -96,7 +96,7 @@ class AttachmentsList extends Component {
    * @return {DOMRect} row - to display.
    */
   displayAttachmentOptions(deleteData, item) {
-    if (loris.userHasPermission('issue_tracker_developer')
+    if (this.props.userHasPermission
       || this.state.attachments.whoami === item.user) {
       return (
         <div className='row'>
