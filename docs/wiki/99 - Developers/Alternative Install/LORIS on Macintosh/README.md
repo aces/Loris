@@ -177,9 +177,10 @@ You will need to install autoconf:
 brew install autoconf
 ```
 
-Download the latest Xdebug source from https://xdebug.org
+Obtain the Xdebug source code:
+`git clone https://github.com/xdebug/xdebug.git`
 
-After run the commands as follow in the folder of the source code:
+Then run the commands as follow in the folder of the source code:
 
 1) `phpize`
 
