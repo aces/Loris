@@ -73,6 +73,8 @@ class VisitImporter extends DataImporter
     /**
      * {@inheritDoc}
      *
+     * @param string[] $row CSV data to be converted to an SQL statement.
+     *
      * @return void
      */
     function buildSQLQuery(array $row): void

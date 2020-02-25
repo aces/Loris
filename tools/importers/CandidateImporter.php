@@ -2,6 +2,11 @@
 
 require_once 'DataImporter.class.inc';
 
+/**
+ * {@inheritDoc}
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
 class CandidateImporter extends DataImporter
 {
 
@@ -40,6 +45,8 @@ class CandidateImporter extends DataImporter
 
     /**
      * {@inheritDoc}
+     *
+     * @param string[] $row CSV data to be converted to an SQL statement.
      *
      * @return void
      */
