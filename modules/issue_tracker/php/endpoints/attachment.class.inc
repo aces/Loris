@@ -193,7 +193,7 @@ class Attachment extends Endpoint implements ETagCalculator
         if ($request->getMethod() === 'GET') {
             return $_GET['file_hash'];
         }
-        return 'Etag not calculated for POST and DELETE request';
+        return '';
     }
 
     /**
