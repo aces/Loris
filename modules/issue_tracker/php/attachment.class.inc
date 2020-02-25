@@ -1,11 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace LORIS\issue_tracker\endpoints;
+namespace LORIS\issue_tracker;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
-use \LORIS\api\Endpoint;
 
 /**
  * The Attachment class for requests from issue_trackers.
@@ -16,7 +15,7 @@ use \LORIS\api\Endpoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Attachment extends Endpoint implements ETagCalculator
+class Attachment extends \NDB_Page implements ETagCalculator
 {
     /**
      * Return a json response for the specific attachment request

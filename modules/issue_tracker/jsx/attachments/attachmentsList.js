@@ -47,9 +47,6 @@ class AttachmentsList extends Component {
         credentials: 'same-origin',
         method: 'DELETE',
       }).then((resp) => {
-      if (resp.headers.get('Content-Type').match(/application\/json/) == null) {
-        throw resp.statusText;
-      }
       return resp.json();
     })
       .then((data) => {

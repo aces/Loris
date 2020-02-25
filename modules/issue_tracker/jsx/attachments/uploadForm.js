@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import ProgressBar from 'ProgressBar';
-import Loader from 'jsx/Loader';
 
 /**
  * Issue Upload Attachment Form
@@ -77,9 +76,6 @@ class IssueUploadAttachmentForm extends Component {
         method: 'POST',
         body: formObj,
       }).then((resp) => {
-      if (resp.headers.get('Content-Type').match(/application\/json/) == null) {
-        throw r.statusText;
-      }
       return resp.json();
     })
       .then((data) => {
@@ -115,10 +111,6 @@ class IssueUploadAttachmentForm extends Component {
   }
 
   render() {
-    // Waiting for data to load
-    if (!this.state.isLoaded) {
-      return <Loader/>;
-    }
     return (
       <div className='row'>
         <div className='col-md-8 col-lg-7'>
