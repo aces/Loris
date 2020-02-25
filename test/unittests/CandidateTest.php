@@ -681,7 +681,6 @@ class CandidateTest extends TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $referenceDate = new DateTime('2020-02-25');
-           'DoB'          => '2007-03-02',
         $this->assertEquals(12, $this->_candidate->getAge($referenceDate)->y);
         $this->assertEquals(11, $this->_candidate->getAge($referenceDate)->m);
         $this->assertEquals(23, $this->_candidate->getAge($referenceDate)->d);
