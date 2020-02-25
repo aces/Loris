@@ -52,11 +52,20 @@ class Attachment extends \NDB_Page implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse GET query params.
-        $values = $request->getQueryParams();
-
-        $file_hash = $values['file_hash'];
-        $filename  = $values['filename'];
-        $mime_type = $values['mime_type'];
+        $values  = $request->getQueryParams();
+        // DB Query begins.
+        $ID      = intval($values['ID']);
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $query   = 'SELECT
+                        file_hash,
+                        file_name,
+                        mime_type
+                    FROM
+                        issues_attachments
+                    WHERE
+                        ID = :ID';
+        $result  = $DB->pselectRow($query, array('ID' => $ID));
 
         $config = \NDB_Config::singleton();
         $attachment_data_dir = rtrim(
@@ -66,16 +75,16 @@ class Attachment extends \NDB_Page implements ETagCalculator
 
         $fileToDownload = trim($attachment_data_dir) .
             '/attachments/' .
-            $file_hash;
+            $result['file_hash'];
 
         if (!is_readable($fileToDownload)) {
             throw new \LorisException('Forbidden Access');
         }
 
-        $name = rawurldecode($filename);
+        $name = rawurldecode($result['file_name']);
 
         return (new \LORIS\Http\Response())
-            ->withHeader('Content-Type', $mime_type)
+            ->withHeader('Content-Type', $result['mime_type'])
             ->withHeader(
                 'Content-Disposition',
                 'attachment; filename=' . basename($name)

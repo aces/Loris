@@ -108,11 +108,7 @@ class AttachmentsList extends Component {
               </a>&nbsp;&nbsp;|&nbsp;&nbsp;
               <a href={loris.BaseURL +
               '/issue_tracker/Attachment' +
-              '?ID=' + item.ID +
-              '&file_hash=' + item.file_hash +
-              '&issue=' + this.props.issue +
-              '&filename=' + item.file_name +
-              '&mime_type=' + item.mime_type
+              '?ID=' + item.ID
               }
                  download={true}
               >
