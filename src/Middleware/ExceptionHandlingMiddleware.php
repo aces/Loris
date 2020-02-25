@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace LORIS\Middleware;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -33,7 +33,11 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface, MiddlewareChai
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         try {
-            //TODO figure out what goes here. 
+            return (new \LORIS\Middleware\ResponseGenerator())
+                ->process(
+                    $request,
+                    $handler
+                );
         } catch (\Exception $e) {
             // Handle uncaught errors.
             switch (get_class($e)) {

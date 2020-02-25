@@ -30,7 +30,7 @@ $client->initialize();
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.
 $middlewarechain = (new \LORIS\Middleware\ContentLength())
-    ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
+    ->withMiddleware(new \LORIS\Middleware\ExceptionHandlingMiddleware());
 
 $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
 
