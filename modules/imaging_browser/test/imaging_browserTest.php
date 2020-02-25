@@ -545,7 +545,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-                $bodyText = $this->webDriver->findElement(
+        $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $SiteFilterText = $this->webDriver->findElement(
@@ -910,7 +910,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // Change visit QC status from Blank to Pass
         // Simultaneously also testing that the Save button shows and works
 
-        $QCStatusVisitSetFail = $this->webDriver->findElement(
+        $this->webDriver->findElement(
             WebDriverBy::Name("visit_status")
         )->sendKeys("Fail");
 

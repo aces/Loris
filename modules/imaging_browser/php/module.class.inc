@@ -65,4 +65,42 @@ class Module extends \Module
     {
         return "Imaging Browser";
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user) : array
+    {
+        switch($type) {
+        case 'usertasks':
+            $factory = \NDB_Factory::singleton();
+            $DB      = $factory->database();
+            $baseURL = $factory->settings()->getBaseURL();
+
+            return [
+                new \LORIS\dashboard\TaskQueryWidget(
+                    $user,
+                    "New and pending imaging session",
+                    $DB,
+                    "SELECT COUNT(DISTINCT s.ID)
+                     FROM files f
+                         LEFT JOIN session s ON (s.ID=f.SessionID)
+                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                     WHERE (MRIQCStatus='' OR MRIQCPending='Y')
+                         AND s.Active='Y' AND c.Active='Y'
+                         AND s.CenterID <> 1",
+                    'imaging_browser_view_allsites',
+                    's.CenterID',
+                    $baseURL . "/imaging_browser/?pendingNew=N&pendingNew=P",
+                    "new-scans"
+                )
+            ];
+        }
+        return [];
+    }
 }

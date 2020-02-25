@@ -56,7 +56,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->restoreConfigSetting("useEDC");
@@ -132,9 +132,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
            //$this->assertEquals("date",$dobOptions->getAttribute("type"));
            $sexOptions = $this->webDriver->findElement(WebDriverBy::Name("sex"));
            $this->assertEquals("select", $sexOptions->getTagName());
-        $numVisits = $this->webDriver->findElement(
-            WebDriverBy::Name("visitCount")
-        );
            $this->assertEquals("input", $dobOptions->getTagName());
            // Not currently done in Loris.
            //$this->assertEquals("number",$dobOptions->getAttribute("type"));

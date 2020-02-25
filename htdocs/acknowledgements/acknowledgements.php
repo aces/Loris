@@ -26,7 +26,6 @@ $publication_date = $_GET["date"];
 $columns = array(
     'full_name'     => 'Full Name',
     'citation_name' => 'Citation Name',
-    'title'         => 'Title',
     'affiliations'  => 'Affiliations',
     'degrees'       => 'Degrees',
     'roles'         => 'Roles',

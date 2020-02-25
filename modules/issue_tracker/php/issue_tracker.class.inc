@@ -73,7 +73,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         $user = \User::singleton();
         $db   = \Database::singleton();
@@ -145,12 +145,6 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
                 $categories[$categoryName] = $categoryName;
             }
         }
-
-        $dateOptions = array(
-            'language'       => 'en',
-            'format'         => 'YMdHis',
-            'addEmptyOption' => true,
-        );
 
         $fieldOptions = [
             'modules'    => $modules,

@@ -1,5 +1,7 @@
-import FilterForm from 'FilterForm';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Loader from 'Loader';
+import FilterableDataTable from 'FilterableDataTable';
 
 /**
  * Data Dictionary Page.
@@ -14,71 +16,38 @@ import Loader from 'Loader';
  * @version 1.0.0
  *
  * */
-class DataDictIndex extends React.Component {
+class DataDictIndex extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      data: {},
+      error: false,
       isLoaded: false,
-      filter: {},
-      hiddenHeaders: [],
     };
 
-    /**
-     * Set filter to the element's ref for filtering
-     */
-    this.filter = null;
-    this.setFilterRef = (element) => {
-      this.filter = element;
-    };
-
-    /**
-     * Bind component instance to custom methods
-     */
     this.fetchData = this.fetchData.bind(this);
-    this.updateFilter = this.updateFilter.bind(this);
-    this.resetFilters = this.resetFilters.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData()
+      .then( () => this.setState({isLoaded: true}));
   }
 
   /**
    * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris variable
-   * for easy access by columnFormatter.
+   *
+   * @return {object}
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
-      method: 'GET',
-      dataType: 'json',
-      success: (data) => {
-        this.setState({
-          data: data,
-          isLoaded: true,
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+        .then((resp) => resp.json())
+        .then((data) => this.setState({data}))
+        .catch((error) => {
+            this.setState({error: true});
+            console.error(error);
         });
-      },
-      error: (error) => console.error(error),
-    });
-  }
-
-  /**
-   * Set this.state.filter to the input filter object
-   *
-   * @param {object} filter - the filter object
-   */
-  updateFilter(filter) {
-    this.setState({filter});
-  }
-
-  // TODO: deprecate clearing filters via refs in future refactoring.
-  /**
-   * Reset the filter elements with textInput refs to empty values
-   */
-  resetFilters() {
-    this.filter.clearFilter();
   }
 
   /**
@@ -92,9 +61,6 @@ class DataDictIndex extends React.Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    if (this.state.hiddenHeaders.indexOf(column) > -1) {
-      return null;
-    }
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
     if (column === 'Description' && hasEditPermission) {
       let updateDict = (name) => {
@@ -111,7 +77,7 @@ class DataDictIndex extends React.Component {
         <td
           contentEditable="true"
           className="description"
-          onBlur={updateDict(rowData[1])}>
+          onBlur={updateDict(rowData.Name)}>
             {cell}
         </td>
       );
@@ -120,45 +86,84 @@ class DataDictIndex extends React.Component {
   }
 
   render() {
+    if (this.state.error) {
+        return <h3>An error occured while loading the page.</h3>;
+    }
+
     // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
 
+    let options = this.state.data.fieldOptions;
+    let fields = [
+        {
+            label: 'Source From',
+            show: true,
+            filter: {
+                name: 'Source From',
+                type: 'select',
+                options: options.sourceFrom,
+            },
+        },
+        {
+            label: 'Name',
+            show: true,
+            filter: {
+                name: 'Name',
+                type: 'text',
+            },
+        },
+        {
+            label: 'Source Field',
+            show: true,
+            filter: {
+                name: 'Source Field',
+                type: 'text',
+            },
+        },
+        {
+            label: 'Description',
+            show: true,
+            filter: {
+                name: 'Description',
+                type: 'text',
+            },
+        },
+        {
+            label: 'Description Status',
+            show: true,
+            filter: {
+                name: 'DescriptionStatus',
+                type: 'select',
+                options: {
+                    'empty': 'Empty',
+                    'modified': 'Modified',
+                    'unchanged': 'Unchanged',
+                },
+            },
+        },
+    ];
     return (
-      <div>
-        <FilterForm
-          Module="datadict"
-          name="data_dict_filter"
-          id="data_dict_filter"
-          ref={this.setFilterRef}
-          columns={2}
-          formElements={this.state.data.form}
-          onUpdate={this.updateFilter}
-          filter={this.state.filter}>
-          <ButtonElement
-            label="Clear Filters"
-            type="reset"
-            onUserInput={this.resetFilters}
-          />
-        </FilterForm>
-        <StaticDataTable
-          Data={this.state.data.Data}
-          Headers={this.state.data.Headers}
-          Filter={this.state.filter}
-          getFormattedCell={this.formatColumn}
+        <FilterableDataTable
+           name="datadict"
+           data={this.state.data.Data}
+           fields={fields}
+           getFormattedCell={this.formatColumn}
         />
-      </div>
     );
   }
 }
 
-$(function() {
-  const dataDictIndex = (
-    <div className="page-datadict">
-        <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
-    </div>
-  );
-  ReactDOM.render(dataDictIndex, document.getElementById('lorisworkspace'));
-});
+DataDictIndex.propTypes = {
+    dataURL: PropTypes.string.isRequired,
+};
 
+window.addEventListener('load', () => {
+  ReactDOM.render(
+      <DataDictIndex
+        dataURL={`${loris.BaseURL}/datadict/?format=json`}
+      />,
+      document.getElementById('lorisworkspace')
+  );
+});

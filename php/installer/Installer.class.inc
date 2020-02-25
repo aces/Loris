@@ -449,8 +449,7 @@ class Installer
                 'q_host' => $connectHost,
             ]
         );
-        $results    = $userExistsQ->fetchAll(\PDO::FETCH_ASSOC);
-        $userExists = false;
+        $results = $userExistsQ->fetchAll(\PDO::FETCH_ASSOC);
 
         $quotedUser = $DB->PDO->quote($values['lorismysqluser']) .
         '@' . $DB->PDO->quote($connectHost);

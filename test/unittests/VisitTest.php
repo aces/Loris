@@ -30,6 +30,9 @@ use \PHPUnit\Framework\TestCase;
  */
 class VisitTest extends TestCase
 {
+    protected $factory;
+    protected $DB;
+
     /**
      * Visit object use in tests
      *
@@ -187,5 +190,4 @@ class VisitTest extends TestCase
         parent::tearDown();
         $this->factory->reset();
     }
-
 }

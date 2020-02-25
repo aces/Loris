@@ -87,11 +87,10 @@ class PasswordExpiry extends \NDB_Form
     function _validate($values)
     {
         $this->_user = \User::factory($this->_username);
-        $data        = $this->_user->getData();
         $plaintext   = htmlspecialchars_decode($values['password']);
 
         try {
-            $password = new \Password($plaintext);
+            new \Password($plaintext);
         } catch (\InvalidArgumentException $e) {
             $this->tpl_data['error_message'] = $e->getMessage();
             return array('password' => $e->getMessage());

@@ -54,7 +54,7 @@ class CandIDGenerator extends IdentifierGenerator
     public function generate(): CandID
     {
         $validID = false;
-        while (! $validID) {
+        do {
             $this->checkIDRangeFull();
             $id = new CandID(
                 strval(
@@ -68,7 +68,8 @@ class CandIDGenerator extends IdentifierGenerator
                     "SELECT count(CandID) FROM candidate WHERE CandID=:id",
                     array('id' => (string) $id)
                 ) == 0;
-        }
+        } while (! $validID);
+
         return $id;
     }
 

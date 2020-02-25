@@ -195,7 +195,7 @@ class UtilityTest extends TestCase
     /**
      * Data provider for testCalculateAgeFormat
      * 
-     * @return void
+     * @return array
      */
     public function ageIncorrectFormatProvider()
     {

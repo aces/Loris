@@ -1,15 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * This file represents an SQL database abstraction layer for use in Loris
- *
- * PHP Version 5
- *
- * @category Main
- * @package  Loris
- * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
 define("DEBUG", false);
 
 /**
@@ -20,11 +9,7 @@ define("DEBUG", false);
  * Throughout the class, all input arrays follow the same structure:
  * $array['column_name'] = 'value'.
  *
- * @category Main
- * @package  Loris
- * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Database
 {
@@ -57,6 +42,13 @@ class Database
     var $_trackChanges = true;
 
     var $_preparedStoreHistory;
+
+    /**
+     * The name of the database. Used internally for printing log messages.
+     *
+     * @access private
+     */
+    private $_databaseName = '';
 
     /**
      * Singleton design pattern implementation - creates the object
@@ -425,7 +417,7 @@ class Database
         if ($result === false) {
             throw new DatabaseException(
                 "Insert statement did not execute successfully: "
-                . print_r($prep->errorInfo(), true),
+                . $this->_createPDOErrorString(),
                 $prepQ,
                 $exec_params
             );
@@ -631,7 +623,7 @@ class Database
         if ($result === false) {
             throw new DatabaseException(
                 "Database DELETE did not execute successfully."
-                . print_r($this->_PDO->errorInfo(), true),
+                . $this->_createPDOErrorString(),
                 $query,
                 $where
             );
@@ -653,7 +645,7 @@ class Database
         if ($result === false) {
             throw new DatabaseException(
                 "Could not run query $query"
-                . print_r($this->_PDO->errorInfo(), true)
+                . $this->_createPDOErrorString()
             );
         }
 
@@ -1446,5 +1438,19 @@ class Database
             );
         }
     }
-}
 
+    /**
+     * Converts the output of a PDO array of errors into a printable string.
+     *
+     * @return string Printable representation of the error message.
+     */
+    private function _createPDOErrorString(): string
+    {
+        return sprintf(
+            "SQLSTATE: %s. ERROR CODE: %s. ERROR MESSAGE: %s",
+            $this->_PDO->errorInfo[0],
+            $this->_PDO->errorInfo[1],
+            $this->_PDO->errorInfo[2]
+        );
+    }
+}

@@ -1,6 +1,8 @@
 <img src="./htdocs/images/LORIS_logo.svg" width="35%">
 
-[![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) [![Documentation Status](https://readthedocs.org/projects/acesloris/badge/?version=latest)](https://acesloris.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) 
+[![Minimum PHP Version](https://img.shields.io/travis/php-v/aces/loris/master?color=787CB5)](https://php.net/)
+[![Documentation Status](https://readthedocs.org/projects/acesloris/badge/?version=latest)](https://acesloris.readthedocs.io/en/latest/?badge=latest)
 
 # LORIS Neuroimaging Platform
 
@@ -9,7 +11,7 @@ LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web app
 * Try the LORIS demo instance at https://demo.loris.ca.
 
 This Readme covers installation of the LORIS <b>v22.*</b> release on <b>Ubuntu</b>.
-([CentOS Readme also available](./README.CentOS7.md)).
+([CentOS Readme also available](./docs/wiki/00%20-%20SERVER%20INSTALL%20AND%20CONFIGURATION/01%20-%20LORIS%20Install/CentOS/README.CentOS7.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 

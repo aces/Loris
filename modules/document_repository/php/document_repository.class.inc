@@ -64,8 +64,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                $categoriesList[$arr['id']] =$arr['name'];
         }
         //site
-        $siteList  = array();
-        $visitList = \Utility::getVisitList();
+        $siteList = array();
+
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
@@ -85,11 +85,11 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             }
         }
         //instrument
-        $instruments     = $db->pselect(
+        $instruments     = $db->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Test_name",
             array()
         );
-        $instrumentsList = $this->toDocSelect($instruments, "Test_name", null);
+        $instrumentsList = array_combine($instruments, $instruments);
 
         //file types
         $fileTypeList  = [];
@@ -142,28 +142,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
              "id"   => $id,
          );
     }
-    /**
-     * Utility function to convert data from database to a
-     * (select) dropdown friendly format
-     *
-     * @param array  $options array of options
-     * @param string $item    key
-     * @param string $item2   value
-     *
-     * @return array
-     */
-    function toDocSelect($options, $item, $item2): array
-    {
-        $selectOptions = array();
-        $optionsValue  = $item;
-        if (isset($item2)) {
-            $optionsValue = $item2;
-        }
-        foreach ($options as $key => $value) {
-            $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
-        }
-        return $selectOptions;
-    }
 
     /**
      * Build a list of media to display in Data Table
@@ -207,7 +185,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         $result = $this->toArray();
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();

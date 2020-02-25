@@ -198,7 +198,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             // allow only to view own site data
             $siteIDs = $user->getData('CenterIDs');
             foreach ($siteIDs as $val) {
-                $site = &Site::singleton($val);
+                $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
                     $siteList[$site->getCenterName()] = $site->getCenterName();
                 }

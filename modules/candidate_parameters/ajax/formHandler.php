@@ -12,9 +12,7 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-
 use \LORIS\StudyEntities\Candidate\CandID;
-
 
 $user = \User::singleton();
 if (!$user->hasPermission('candidate_parameter_edit')) {
@@ -53,6 +51,15 @@ case 'participantStatus':
 
 case 'consentStatus':
     editConsentStatusFields($db, $user);
+    break;
+
+
+case 'candidateDOB':
+    editCandidateDOB($db, $user);
+    break;
+
+case 'candidateDOD':
+    editCandidateDOD($db, $user);
     break;
 
 default:
@@ -523,5 +530,71 @@ function editConsentStatusFields($db, $user)
             }
             $db->insert('candidate_consent_history', $updateHistory);
         }
+    }
+}
+
+/**
+ * Handles the updating of candidate's date of birth.
+ *
+ * @param Database $db   database object
+ * @param User     $user user object
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function editCandidateDOB(\Database $db, \User $user): void
+{
+    $candID       = new CandID($_POST['candID']);
+    $dob          = $_POST['dob'];
+    $strippedDate = null;
+    if (!empty($dob)) {
+        $config    = \NDB_Config::singleton();
+        $dobFormat = $config->getSetting('dobFormat');
+        if ($dobFormat === 'YM') {
+            $strippedDate = date("Y-m", strtotime($dob))."-01";
+        }
+        $db->update(
+            'candidate',
+            array('DoB' => $strippedDate ?? $dob),
+            array('CandID' => $candID->__toString())
+        );
+    }
+}
+
+/**
+ * Handles the updating of candidate's date of death.
+ *
+ * @param Database $db   database object
+ * @param User     $user user object
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function editCandidateDOD(\Database $db, \User $user): void
+{
+    $candID       = new CandID($_POST['candID']);
+    $dod          = new DateTime($_POST['dod']);
+    $strippedDate = null;
+    $dodString    = null;
+
+    if (!$dod) {
+        throw new \LorisException('Date not valid.');
+    }
+
+    if (!empty($dod)) {
+        $config    = \NDB_Config::singleton();
+        $dodFormat = $config->getSetting('dodFormat');
+        if ($dodFormat === 'YM') {
+            $strippedDate = $dod->format('Y-m-01');
+        } else {
+            $dodString = $dod->format('Y-m-d');
+        }
+        $db->update(
+            'candidate',
+            array('DoD' => $strippedDate ?? $dodString),
+            array('CandID' => $candID->__toString())
+        );
     }
 }

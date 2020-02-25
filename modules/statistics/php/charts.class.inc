@@ -182,7 +182,7 @@ class Charts extends \NDB_Page
             LEFT JOIN session s ON (s.ID=f.SessionID)
             JOIN parameter_type pt USING (ParameterTypeID)
             WHERE pt.Name='acquisition_date'
-            GROUP BY MONTH(pf.Value), YEAR(pf.Value), s.CenterID
+            GROUP BY MONTH(pf.Value), YEAR(pf.Value), s.CenterID, datelabel
             ORDER BY YEAR(pf.Value), MONTH(pf.Value), s.CenterID",
             array()
         );
@@ -228,10 +228,13 @@ class Charts extends \NDB_Page
      *                      case this function must include a "0" to maintain
      *                      order.)
      *
-     * @return int An indexed array of data for site in the order of $labels
+     * @return array An indexed array of data for site in the order of $labels
      */
-    private function _getScansPerMonthData(array $data, int $siteID, array $labels)
-    {
+    private function _getScansPerMonthData(
+        array $data,
+        int $siteID,
+        array $labels
+    ) : array {
         $sitedata   = array_filter(
             $data,
             function ($row) use ($siteID) {

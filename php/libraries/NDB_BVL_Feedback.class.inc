@@ -340,7 +340,7 @@ class NDB_BVL_Feedback
             return '';
         }
 
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         // What does this do?
         $smarty->ConfigLoad('default.conf', 'bvlqc');
         return $smarty->getConfigVars($status);

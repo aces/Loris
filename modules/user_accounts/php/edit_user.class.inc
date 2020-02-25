@@ -52,10 +52,6 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if (!$this->isCreatingNewUser()) {
-            $user = \User::factory($this->identifier);
-        }
-
         if ($editor->hasPermission('user_accounts')) {
             if ($editor->hasPermission('user_accounts_multisite')) {
                 return true;
@@ -64,6 +60,7 @@ class Edit_User extends \NDB_Form
             if ($this->isCreatingNewUser()) {
                 return true;
             }
+            $user = \User::factory($this->identifier);
             return array_intersect(
                 $user->getData('CenterIDs'),
                 $editor->getData('CenterIDs')
@@ -386,7 +383,7 @@ class Edit_User extends \NDB_Form
                 );
 
                 //get sites where user is already an examiner at for compare
-                foreach ($prev_sites as $row => $center) {
+                foreach ($prev_sites as $center) {
                     array_push($ex_prev_sites, $center['centerID']);
                 }
             }
@@ -566,14 +563,17 @@ class Edit_User extends \NDB_Form
                 $user->addPermissions($permIDs);
             }
         }
+
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
         // send the user an email
         if (!empty($send)) {
-            // create an instance of the config object
-            $config = \NDB_Config::singleton();
+            $config = $factory->config();
+
             // send the user an email
             $msg_data          = array();
             $msg_data['study'] = $config->getSetting('title');
-            $msg_data['url']   = $config->getSetting('url');
+            $msg_data['url']   = $baseURL;
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_hash'];
@@ -584,7 +584,6 @@ class Edit_User extends \NDB_Form
         }
         $this->tpl_data['success'] = true;
         if ($this->isCreatingNewUser()) {
-            $baseURL        = $config->getSetting('url');
             $this->redirect = $baseURL
                 . "/user_accounts/edit_user/"
                 . $values['UserID'];
@@ -813,22 +812,18 @@ class Edit_User extends \NDB_Form
                 )
             );
 
-            // A user should not be able to edit their own examiner approval
-            // status.
-            if (!$this->_isEditingOwnAccount()) {
-                $groupB[] = $this->createLabel(
-                    "Pending Approval:"
-                );
-                $groupB[] = $this->createSelect(
-                    "examiner_pending",
-                    "Pending Approval: ",
-                    array(
-                        null => "",
-                        'Y'  => 'Yes',
-                        'N'  => 'No',
-                    )
-                );
-            }
+            $groupB[] = $this->createLabel(
+                "Pending Approval:"
+            );
+            $groupB[] = $this->createSelect(
+                "examiner_pending",
+                "Pending Approval: ",
+                array(
+                    null => "",
+                    'Y'  => 'Yes',
+                    'N'  => 'No',
+                )
+            );
             $this->addGroup(
                 $groupA,
                 'examiner_sites',
@@ -1085,7 +1080,14 @@ class Edit_User extends \NDB_Form
         //==================================
         //        Password validation
         //==================================
-        if ($values['Email'] === $values['Password_hash']) {
+
+        // Make sure the user is not using their email address as their password.
+        // Do not show this error if the password is an empty string: in this
+        // case, that means the email is empty also. It's more appropriate to
+        // display only the error 'You must enter an email'.
+        if ($values['Email'] === $values['Password_hash']
+            && $values['Password_hash'] !== ''
+        ) {
             $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
         }
         if (!is_null($this->identifier)) {
@@ -1120,8 +1122,8 @@ class Edit_User extends \NDB_Form
                 // The Password class is self-validating and will throw an
                 // InvalidArgumentException if the value passed to it is
                 // bad or the input is too weak to be a good password.
-                $decoded  = htmlspecialchars_decode($plaintext);
-                $password = new \Password($decoded);
+                $decoded = htmlspecialchars_decode($plaintext);
+                new \Password($decoded);
                 $isPasswordDifferent = \User::factory($this->identifier)
                     ->isPasswordDifferent($decoded);
                 if (! $isPasswordDifferent) {
@@ -1200,7 +1202,7 @@ class Edit_User extends \NDB_Form
         //======================================
         if ($editor->hasPermission('examiner_multisite')) {
             $matched = false;
-            foreach ($values as $k => $v) {
+            foreach (array_keys($values) as $k) {
                 if (preg_match("/^ex_[0-9]+$/", $k)) {
                     $matched = true;
                     if ($values['examiner_radiologist'] == '') {
@@ -1286,19 +1288,17 @@ class Edit_User extends \NDB_Form
      *
      * @return string the description.
      */
-    function getDescriptionUsingPermID($permID)
+    function getDescriptionUsingPermID($permID): string
     {
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        $permission = $db->pselectOne(
+        $description = $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             array('pID' => $permID)
         );
-        if (is_array($permission) && count($permission)) {
-            list(,$description) = each($permission[0]);
-        }
-        return $permission;
+
+        return $description;
     }
 
     /**
@@ -1317,4 +1317,3 @@ class Edit_User extends \NDB_Form
         );
     }
 }
-

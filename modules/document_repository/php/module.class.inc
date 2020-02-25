@@ -58,4 +58,57 @@ class Module extends \Module
     {
         return "Document Repository";
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type The type of widgets to get
+     * @param \User  $user The user widgets are being retrieved for.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user)
+    {
+        switch($type) {
+        case 'dashboard':
+            $factory = \NDB_Factory::singleton();
+            $baseURL = $factory->settings()->getBaseURL();
+            $DB      = $factory->database();
+
+            $last_login = $user->getLastLogin($DB);
+
+            $docs         = $DB->pselect(
+                "SELECT File_name, Date_uploaded, Data_dir FROM document_repository
+                 ORDER BY Date_uploaded DESC LIMIT 4",
+                array()
+            );
+            $numberOfDocs = sizeof($docs);
+            for ($i=0; $i < $numberOfDocs; $i++) {
+                if (new \DateTime($docs[$i]['Date_uploaded']) > $last_login) {
+                    $docs[$i]['new'] = true;
+                } else {
+                    $docs[$i]['new'] = false;
+                }
+            }
+
+            return [
+                new \LORIS\dashboard\Widget(
+                    new \LORIS\dashboard\WidgetContent(
+                        "Document Repository Notifications",
+                        $this->renderTemplate(
+                            "docnotifications.tpl",
+                            [
+                                'baseURL'       => $baseURL,
+                                'notifications' => $docs
+                            ],
+                        ),
+                        ""
+                    ),
+                    new \LORIS\dashboard\WidgetDisplayProps("small", 3)
+                ),
+            ];
+        }
+        return [];
+    }
+
 }

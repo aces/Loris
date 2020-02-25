@@ -167,9 +167,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 || $ImagingUploaderAutoLaunch == 'true'
             ) {
                 try {
-                    // Instantiate the server process module to autoload
-                    // its namespace classes
-                    $spm_module = \Module::factory('server_processes_manager');
                     // Perform the real upload on the server
                     $serverProcessLauncher = new SP\ServerProcessLauncher();
                     $serverProcessLauncher->mriUpload(
@@ -223,7 +220,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *
      * @param array $values the array of values from the form
      *
-     * @return true on success, false otherwise
+     * @return true
      */
     function _saveFile($values)
     {
@@ -495,6 +492,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         ////////////////////Insert values into mri_upload//////////////////////
         ///////////////////////////////////////////////////////////////////////
         $date = date('Y-m-d H:i:s');
+
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -537,13 +535,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if ($this->uploaded_file_path) {
             $this->removeTempDir();
         } else {
-                $this->uploaded_file_path = $this->getTempPath();
+            $this->uploaded_file_path = $this->getTempPath();
         }
         $values = array(
             'UploadedBy'               => $user_name,
             'UploadDate'               => $date,
             'UploadLocation'           => $this->uploaded_file_path,
-            'SessionID'                => $sessionid,
+            'SessionID'                => $sessionid ?? '',
             'PatientName'              => $pname,
             'IsPhantom'                => $IsPhantom,
             'TarchiveID'               => null,
@@ -758,7 +756,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *
      * @return string json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         $result            = $this->toArray();
         $result['form']    = $this->form->form;

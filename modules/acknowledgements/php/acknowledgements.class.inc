@@ -39,8 +39,12 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('acknowledgements_view')
-                ||$user->hasPermission('acknowledgements_edit'));
+        return $user->hasAnyPermission(
+            [
+                'acknowledgements_view',
+                'acknowledgements_edit',
+            ]
+        );
     }
 
     /**
@@ -192,7 +196,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      *
      * @return string JSON
      */
-    function toJSON()
+    function toJSON(): string
     {
         $config = \NDB_Config::singleton();
 

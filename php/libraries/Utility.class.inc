@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
 /**
  * A class for holding a set of (static) utility/helper functions in a
  * single namespace.
@@ -55,7 +54,7 @@ class Utility
             $matches
         )
         ) {
-            throw new \LorisException(
+            throw new LorisException(
                 "Argument 1 does not match expected date format (YYYY-MM-DD)"
             );
         }
@@ -763,7 +762,7 @@ class Utility
         } else {
             $ExtraProject_Criteria ='';
         }
-        $query       = "SELECT DISTINCT Visit_label FROM session s
+        $query          = "SELECT DISTINCT Visit_label FROM session s
             JOIN candidate c ON (s.CandID = c.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y'
@@ -771,9 +770,10 @@ class Utility
             AND c.Entity_type != 'Scanner'
             AND psc.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels = $db->pselect($query, $qparams);
-        $visits      = array();
-        for ($i = 0; $i < count($visitlabels); $i++) {
+        $visitlabels    = $db->pselect($query, $qparams);
+        $visits         = array();
+        $numVisitLabels = count($visitlabels);
+        for ($i = 0; $i < $numVisitLabels; $i++) {
             $visits[$visitlabels[$i]['Visit_label']]
                 = ($visitlabels[$i]['Visit_label']);
         }

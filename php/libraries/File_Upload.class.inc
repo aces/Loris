@@ -26,25 +26,35 @@
  */
 class File_Upload
 {
+    public $renameMode        = "incremental";
+    public $overwriteMode     = "rename";
+    public $fileMove          = true;
+    public $fileVerify        = true;
+    public $fileImport        = true;
+    public $filenamePrefix    = "";
+    public $createDirectories = true;
+    public $errorLog          = array();
+    public $moveOrCopy        = "move";
+    public $isCLImport        = false;
+    public $handlerArgs;
+    public $file;
+    public $fileInfo;
+    public $fileHandlers;
+    public $destinationDirectory;
+    public $destinationFilename;
+    public $fieldName;
+    public $fieldNames;
+    public $CLFiles;
+    public $form;
+    public $baseUploadDirectory;
+    private $_seeded;
     /**
      * Construct the File_Upload class. This sets the default parameters
      * for a file which can be overwritten by calling the set* methods
      */
     function __construct()
     {
-        //Set Defaults
-        $this->renameMode        = "incremental";
-        $this->overwriteMode     = "rename";
-        $this->fileMove          = true;
-        $this->fileVerify        = true;
-        $this->fileImport        = true;
-        $this->filenamePrefix    = "";
-        $this->createDirectories = true;
-        $this->errorLog          = array();
-        $this->moveOrCopy        = "move";
-        $this->isCLImport        = false;
     }
-
 
     /**
      * Loops through the uploaded files running the full suit of functions against
@@ -512,7 +522,7 @@ class File_Upload
     {
         $done = false;
         $i    = 0;
-        while ($done==false) {
+        do {
             $ext      =str_pad((string) $i, 3, "0", STR_PAD_LEFT);
             $filename =$this->getSplitFilename($name);
             $new_name =$filename['name']."-".$ext.$filename['ext'];
@@ -520,7 +530,7 @@ class File_Upload
                 $done =true;
             }
             $i++;
-        }
+        } while ($done==false);
         return $new_name;
     }
 

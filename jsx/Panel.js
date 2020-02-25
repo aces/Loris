@@ -14,6 +14,11 @@ import PropTypes from 'prop-types';
  * Wraps children in a collapsible bootstrap panel
  */
 class Panel extends Component {
+  /**
+   * Construct the React component
+   *
+   * @param {array} props - The React props
+   */
   constructor(props) {
     super(props);
 
@@ -31,10 +36,18 @@ class Panel extends Component {
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
   }
 
+  /**
+   * Toggle whether this Panel is displayed as collapsed
+   */
   toggleCollapsed() {
     this.setState({collapsed: !this.state.collapsed});
   }
 
+  /**
+   * Render the React component
+   *
+   * @return {object}
+   */
   render() {
     // Change arrow direction based on collapse status
     let glyphClass = (
@@ -61,7 +74,8 @@ class Panel extends Component {
       <div className="panel panel-primary">
         {panelHeading}
         <div id={this.props.id} className={this.panelClass} role="tabpanel">
-          <div className="panel-body" style={{height: this.props.height}}>
+          <div className="panel-body"
+               style={{...this.props.style, height: this.props.height}}>
             {this.props.children}
           </div>
         </div>

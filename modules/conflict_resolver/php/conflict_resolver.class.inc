@@ -255,8 +255,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
     {
         parent::setup();
         // Create user object
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
+        $user = \NDB_Factory::singleton()->user();
 
         // Get instruments
         $instruments = \Utility::getAllInstruments();
@@ -385,7 +384,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;

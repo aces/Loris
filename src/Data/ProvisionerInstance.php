@@ -97,6 +97,12 @@ abstract class ProvisionerInstance implements Provisioner
     /**
      * Implements the execute function for the Provisioner interface.
      *
+     * This will suppress UnusedLocalVariable
+     * warnings in this method. PHPMD has some issues with anonymous
+     * functions, apparently.
+     *
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     *
      * @param \User $user The user who data is being provisioned on behalf of.
      *
      * @return \Traversable of DataInstance objects

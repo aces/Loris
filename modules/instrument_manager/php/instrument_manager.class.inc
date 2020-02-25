@@ -70,7 +70,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $this->factory      = \NDB_Factory::singleton();
         $this->path         = $this->factory->config()->getSetting("base");
 
-        parent::__construct($module, $page, $id, $commentID, $formname);
+        parent::__construct($module, $page, $id, $commentID);
     }
 
     /**
@@ -239,7 +239,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 . "Either: the instrument table exists (but is not in the "
                 . "test_names table), or "
                 . "LORIS could not connect to the database using the "
-                . "credentials supplied in the config file."
+                . "credentials supplied in the config file. "
+                . "Exec output: `" . implode("\n", $output) . "`"
             );
             return (new \LORIS\Http\Response())
                 ->withStatus(500, 'Internal Server Error')
@@ -532,7 +533,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 foreach ($enums as $enum) {
                     $enum_split = explode("=>", $enum);
                     $key        = $enum_split[0];
-                    $val        = $enum_split[1];
                     if ($key == 'NULL') {
                         continue;
                     } else {
@@ -566,7 +566,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces       = explode("{@}", $line);
             $type         = $pieces[0];
-            $name         = $pieces[1];
             $sqlSelectOne = "SELECT count(*)".
                             " FROM instrument_subtests".
                             " WHERE Test_name=:testname".

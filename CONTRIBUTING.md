@@ -69,13 +69,16 @@ issues and/or Redmine tickets (if applicable).
 * Add your new automated tests to TravisCI in the `.travis.yml`.
 * Before sending any pull request, make sure you run our static analysis tools 
 using the command `make checkstatic` and fix any resulting errors. Otherwise,
-      your pull request will fail our automatic testing and we will not be able
-      to merge it.
+  your pull request will fail our automatic testing and we will not be able
+  to merge it. If you run the command `git config core.hooksPath .githooks`, git will automatically
+  run `make checkstatic` when you do a git push.
 * Try and make all changes backwards-compatible with existing installations.  
 * If you must change something in a non-backwards-compatible way - or if it 
 would affect the data or custom code of a study - document this in your pull 
 request description and tag it with **Caveat for Existing Projects**. 
 This helps us to document our release notes.
+* You can run the command `make checklanguage` to ensure that documentation
+you've contributed contains language that is friendly and accessible.
 
 If you're unsure about any of the above, feel free to ask us for
 clarification via the mailing list.
