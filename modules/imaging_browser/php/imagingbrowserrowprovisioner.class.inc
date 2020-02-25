@@ -72,14 +72,14 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
                     $acqpif       = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))>0 ";
+DISTINCT AcquisitionProtocolID))>0 ";
                     $newQueryCase = "AND(FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))";
+DISTINCT AcquisitionProtocolID))";
                 } else {
                     $acqpif       .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))>0 ";
+DISTINCT AcquisitionProtocolID))>0 ";
                     $newQueryCase .= " OR FIND_IN_SET({$key},GROUP_CONCAT(
-                        DISTINCT AcquisitionProtocolID))";
+DISTINCT AcquisitionProtocolID))";
                 }
                 $isFirst = false;
             }
@@ -91,14 +91,11 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             $newQueryCase ='';
         }
 
-        $NewDataSubquery = "
-            CASE 
-                COALESCE(Max(fqc.QCLastChangeTime), 'new')
-                WHEN 'new' THEN {$acqpif}
-                WHEN ''    THEN {$acqpif}
-                WHEN NULL  THEN {$acqpif}
-                ELSE ''
-            END";
+        $NewDataSubquery = "CASE COALESCE(Max(fqc.QCLastChangeTime), 'new')
+WHEN 'new' THEN {$acqpif}
+WHEN '' THEN {$acqpif}
+WHEN NULL THEN {$acqpif}
+ELSE '' END";
 
         // =====================================================
         // Create Pending Fail and Pending New subquery
@@ -112,30 +109,22 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             $pass[$id]          = $type . 'pass';
             $qc[$id]            = $type . 'QC';
             $coalesce_desc[$id] = $pass[$id] . '.' . $qc[$id];
-            $case_desc[$id]     = "
-                CASE
-                    COALESCE($coalesce_desc[$id], '')
-                    WHEN '' THEN ''
-                    WHEN 1 THEN 'Passed'
-                    WHEN 2 THEN 'Failed'
-                END";
+            $case_desc[$id]     = "CASE
+COALESCE($coalesce_desc[$id], '')
+WHEN '' THEN ''
+WHEN 1 THEN 'Passed'
+WHEN 2 THEN 'Failed' END";
         }
 
-        $PendingFailSubquery = "
-            CASE s.MRIQCStatus
-                WHEN 'Fail' THEN
-                    IF(s.MRIQCPending='Y', 'Pending Fail', 'Fail')
-                WHEN 'Pass' THEN
-                    IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass') 
-                ELSE s.MRIQCStatus
-            END 
-            ";
+        $PendingFailSubquery = "CASE s.MRIQCStatus
+WHEN 'Fail' THEN IF(s.MRIQCPending='Y', 'Pending Fail', 'Fail')
+WHEN 'Pass' THEN IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass')
+ELSE s.MRIQCStatus END";
 
-        $PendingNewquery = "
-            CASE 
-                WHEN s.MRIQCPending='Y' THEN 'P'
-                WHEN MAX(fqc.QCFirstChangeTime) IS NULL $newQueryCase THEN  'N'      
-            END";
+        $PendingNewquery = "CASE
+WHEN s.MRIQCPending='Y' THEN 'P'
+WHEN MAX(fqc.QCFirstChangeTime) IS NULL $newQueryCase THEN 'N'
+END";
 
         // ====================================================
         // Create left join to include QC status for specific
@@ -144,17 +133,13 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
 
         $left_joins = "";
         foreach ($case_desc as $key => $value) {
-            $left_joins .= "
-            LEFT JOIN (
-              SELECT files.SessionID, 
-                MIN(files_qcstatus.QCStatus+0) as $qc[$key] 
-              FROM files 
-              JOIN files_qcstatus USING (FileID) 
-              WHERE files.AcquisitionProtocolID= $key 
-                AND files_qcstatus.QCStatus IN (1, 2) 
-              GROUP BY files.SessionID) $pass[$key] 
-                ON ($pass[$key].SessionID=f.SessionID
-            ) ";
+            $left_joins .= "LEFT JOIN (SELECT files.SessionID,
+MIN(files_qcstatus.QCStatus+0) as $qc[$key] 
+FROM files JOIN files_qcstatus USING (FileID)
+WHERE files.AcquisitionProtocolID= $key
+  AND files_qcstatus.QCStatus IN (1, 2)
+GROUP BY files.SessionID) $pass[$key] 
+  ON ($pass[$key].SessionID=f.SessionID)";
         }
 
         // ===============================================
@@ -174,42 +159,29 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // =================================================
 
         parent::__construct(
-            "SELECT 
-              p.Name as Site,
-              c.PSCID as PSCID,
-              c.CandID as DCCID,
-              Project.Name as project,
-              s.Visit_label as visitLabel,
-              $PendingFailSubquery as Visit_QC_Status,
-              DATE_FORMAT(MIN(pf.Value), \"%Y-%m-%d\") as First_Acquisition,
-              FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion,
-              FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC,
-              $NewDataSubquery as New_Data,
-              GROUP_CONCAT(DISTINCT OutputType) as Links,
-              s.ID as sessionID,
-              GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType,
-              $PendingNewquery as pending," .
-              ($modalities_subquery==''?'':"$modalities_subquery,") .
-              "s.CenterID as CenterID,
-              c.Entity_type as entityType,
-              s.ProjectID
-            FROM psc AS p 
-              JOIN session s ON (s.CenterID=p.CenterID) 
-              JOIN candidate c ON (c.CandID=s.CandID) 
-              LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
-              JOIN files f ON (f.SessionID=s.ID) 
-              LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-              JOIN parameter_file pf ON (f.FileID=pf.FileID)
-              JOIN parameter_type pt USING (ParameterTypeID)
-              LEFT JOIN mri_scan_type modality ON 
-                (f.AcquisitionProtocolID=modality.ID)
-              $left_joins 
-            WHERE 
-              s.Active = 'Y' AND
-              f.FileType='mnc'
-            GROUP BY s.ID
-            ORDER BY c.PSCID, s.Visit_label
-            ",
+            "SELECT p.Name as Site, c.PSCID as PSCID, c.CandID as DCCID,
+Project.Name as project, s.Visit_label as visitLabel,
+$PendingFailSubquery as Visit_QC_Status,
+DATE_FORMAT(MIN(pf.Value), \"%Y-%m-%d\") as First_Acquisition,
+FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion,
+FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC,
+$NewDataSubquery as New_Data,
+GROUP_CONCAT(DISTINCT OutputType) as Links, s.ID as sessionID,
+GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType,
+$PendingNewquery as pending," .
+            ($modalities_subquery==''?'':"$modalities_subquery,") .
+            "s.CenterID as CenterID, c.Entity_type as entityType, s.ProjectID
+FROM psc AS p JOIN session s ON (s.CenterID=p.CenterID)
+JOIN candidate c ON (c.CandID=s.CandID)
+LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
+JOIN files f ON (f.SessionID=s.ID)
+LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
+JOIN parameter_file pf ON (f.FileID=pf.FileID)
+JOIN parameter_type pt USING (ParameterTypeID)
+LEFT JOIN mri_scan_type modality ON
+ (f.AcquisitionProtocolID=modality.ID) $left_joins
+WHERE s.Active = 'Y' AND f.FileType='mnc' GROUP BY s.ID
+ORDER BY c.PSCID, s.Visit_label",
             array()
         );
     }
