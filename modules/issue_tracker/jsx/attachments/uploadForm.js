@@ -33,10 +33,6 @@ class IssueUploadAttachmentForm extends Component {
     this.setFileUploadFormData = this.setFileUploadFormData.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({isLoaded: true});
-  }
-
   /**
    * Store the value of the element in this.state.upload.formData
    *

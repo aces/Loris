@@ -39,7 +39,7 @@ class AttachmentsList extends Component {
    */
   deleteAttachment() {
     const state = Object.assign({}, this.state);
-    const url = window.location.origin +
+    const url = loris.BaseURL +
       '/issue_tracker/Attachment' +
       '?ID=' + state.deleteItem.ID;
     fetch(url,
@@ -54,7 +54,7 @@ class AttachmentsList extends Component {
     })
       .then((data) => {
         if (data.success) {
-          window.location.href = window.location.origin
+          window.location.href = loris.BaseURL
             + '/issue_tracker/issue/'
             + this.props.issue;
         } else {
@@ -105,10 +105,11 @@ class AttachmentsList extends Component {
             <div className='col-md-10'>
               <a onClick={this.openModalAttachmentDelete}
                  value={deleteData}
-                 style={{cursor: 'pointer'}}>
+                 style={{cursor: 'pointer'}}
+              >
                 Delete
               </a>&nbsp;&nbsp;|&nbsp;&nbsp;
-              <a href={window.location.origin +
+              <a href={loris.BaseURL +
               '/issue_tracker/Attachment' +
               '?ID=' + item.ID +
               '&file_hash=' + item.file_hash +
@@ -130,7 +131,7 @@ class AttachmentsList extends Component {
         <div className='col-md-12'>
           <div className='col-md-2'><b>Attachment options: </b></div>
           <div className='col-md-10'>
-            <a href={window.location.origin +
+            <a href={loris.BaseURL +
             '/issue_tracker/Attachment' +
             '?ID=' + item.ID +
             '&file_hash=' + item.file_hash +
@@ -139,7 +140,8 @@ class AttachmentsList extends Component {
             '&mime_type=' + item.mime_type
             }
                download={true}
-               style={{cursor: 'pointer'}}>
+               // style={{cursor: 'pointer'}}
+            >
               Download
             </a>
           </div>
