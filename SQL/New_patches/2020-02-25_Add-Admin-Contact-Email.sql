@@ -1,0 +1,2 @@
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'adminContactEmail', 'An email address that users can write to in order to report issues or ask question', 1, 0, 'text', ID, 'Administrator Email', 27 FROM ConfigSettings WHERE Name="study";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'loris-dev@bic.mni.mcgill.ca'  FROM ConfigSettings WHERE Name="adminContactEmail";
