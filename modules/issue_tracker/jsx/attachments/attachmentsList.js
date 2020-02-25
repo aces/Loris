@@ -104,8 +104,8 @@ class AttachmentsList extends Component {
             <div className='col-md-2'><b>Attachment options: </b></div>
             <div className='col-md-10'>
               <a onClick={this.openModalAttachmentDelete}
+                 href={'#'}
                  value={deleteData}
-                 style={{cursor: 'pointer'}}
               >
                 Delete
               </a>&nbsp;&nbsp;|&nbsp;&nbsp;
@@ -118,7 +118,7 @@ class AttachmentsList extends Component {
               '&mime_type=' + item.mime_type
               }
                  download={true}
-                 style={{cursor: 'pointer'}}>
+              >
                 Download
               </a>
             </div>
