@@ -147,13 +147,13 @@ export class CandidateInfo extends Component {
             {
                 label: 'Visits',
                 value: this.getVisitList(this.props.Visits),
-                flexBasis: '40%',
+                width: '12em',
             },
         ];
 
         const cardInfo = data.map((info, index) => {
             const cardStyle = {
-                flexBasis: info.flexBasis || '20%',
+                width: info.width || '6em',
                 padding: '1em',
                 margin: 0,
             };
