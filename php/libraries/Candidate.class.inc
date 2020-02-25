@@ -689,15 +689,19 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     }
 
     /**
-     * Returns DateInterval between candidate's date of birth and now
+     * Returns DateInterval between candidate's date of birth and a given date, or today
+     * if date not given.
      *
-     * @return DateInterval Between DoB and now
+     * @param  DateTime $refDate The reference date from which to calculate the age.
+                                 If not given, today's date by default.
+     *
+     * @return DateInterval Between DoB and $refDate
      */
-    public function getAge(): DateInterval
+    public function getAge(DateTime $refDate = new DateTime('now')): DateInterval
     {
         $dob = new DateTime($this->candidateInfo["DoB"]);
 
-        return $dob->diff(new DateTime('now'));
+        return $dob->diff($refDate);
     }
 
     /**
