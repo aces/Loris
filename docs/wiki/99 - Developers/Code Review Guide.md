@@ -2,7 +2,7 @@
 
 ## Creating a good pull request
 
-The CONTRIBUTING document on GitHub explains how to author a good pull requests.
+The [CONTRIBUTING](../../../CONTRIBUTING.md) document on GitHub explains how to author a good pull requests.
 If you follow these guidelines, we'll be better able to review and merge your code.
 
 ## The Code Review Process
