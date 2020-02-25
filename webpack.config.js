@@ -1,4 +1,5 @@
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
 
@@ -144,7 +145,17 @@ const config = [
             fs: 'empty',
         },
         devtool: 'source-map',
-        plugins: [],
+        plugins: [
+          new CopyPlugin([
+            {
+              from: 'node_modules/react/umd/*',
+              to: 'htdocs/vendor/js/react/',
+              force: true,
+              flatten: true,
+              ignore: ['react.profiling.min.js'],
+            },
+          ]),
+        ],
         optimization: optimization,
         resolve: resolve,
         module: mod,
