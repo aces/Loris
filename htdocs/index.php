@@ -29,8 +29,9 @@ $client->initialize();
 // Middleware that happens on every request. This doesn't include
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.
-$middlewarechain = (new \LORIS\Middleware\ContentLength())
-    ->withMiddleware(new \LORIS\Middleware\ExceptionHandlingMiddleware());
+$middlewarechain = (new \LORIS\Middleware\ExceptionHandlingMiddleware())
+    ->withMiddleware(new \LORIS\Middleware\ContentLength())
+    ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
 $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
 

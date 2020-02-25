@@ -33,25 +33,13 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface, MiddlewareChai
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         try {
-            return (new \LORIS\Middleware\ResponseGenerator())
-                ->process(
-                    $request,
-                    $handler
-                );
+            return $this->next->process($request, $handler);
+        } catch (\NotFound $e) {
+            error_log($e->getMessage() . $e->getTraceAsString());
+            $status = 404;
         } catch (\Exception $e) {
-            // Handle uncaught errors.
-            switch (get_class($e)) {
-                case 'NotFound':
-                    $status = 404;
-                    break;
-                default:
-                    $status = 500;
-            }
-            return $this->decoratedError(
-                $request,
-                $status,
-                $e->getMessage()
-            );
+            error_log($e->getMessage() . $e->getTraceAsString());
+            $status = 500;
         }
 
         // Decorate the request.
@@ -67,17 +55,5 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface, MiddlewareChai
                 )
             )
         );
-    }
-
-    /**
-     * Implements the MiddlewareChainer interface
-     *
-     * @param MiddlewareChainer $next The next middleware to chain. (Discarded)
-     *
-     * @return MiddlewareChainer The same MiddlewareChainer, unmodified.
-     */
-    public function withMiddleware(MiddlewareChainer $next)
-    {
-        return $this;
     }
 }
