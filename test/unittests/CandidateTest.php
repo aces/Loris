@@ -707,7 +707,7 @@ class CandidateTest extends TestCase
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
-        $this->assertEquals($this->_candidate->getAge()->days, $this->_candidate->getAgeInDays));
+        $this->assertEquals($this->_candidate->getAge()->days, $this->_candidate->getAgeInDays());
     }
     /**
      * Test getSessionID returns session ID for a given existing visit
