@@ -187,7 +187,7 @@ After run the commands as follow in the folder of the source code:
 
 3) `make`
 
-4) `sudo cp modules/xdebug.so /usr/local/php/extensions` (create the the directory if it doesn't exit).
+4) `sudo cp modules/xdebug.so /usr/local/php/extensions` (create the directory if it doesn't exit).
 
 Finally inside `php.ini` add:
 
