@@ -52,7 +52,7 @@ class Module extends \Module
             return parent::handle($request);
         }
         $user = $request->getAttribute('user');
-        if (!($this->_hasAccess($user))) {
+        if (!($this->hasAccess($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
         return $handler->process($request, $handler);
@@ -65,7 +65,7 @@ class Module extends \Module
      *
      * @return bool whether access is granted
      */
-    private function _hasAccess(\User $user) : bool
+    public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(
