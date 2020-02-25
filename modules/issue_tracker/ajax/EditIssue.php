@@ -685,7 +685,7 @@ ORDER BY dateAdded LIMIT 1",
             array('i' => $issueID)
         );
 
-        $filter      = new HasAnyPermissionOrUserSiteMatch(
+        $filter      = $user->hasAnyPermission(
             array(
                 'issue_tracker_reporter',
                 'issue_tracker_developer'
