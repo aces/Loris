@@ -50,8 +50,7 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface, MiddlewareChai
             new \LORIS\Router\NoopResponder(
                 new \LORIS\Http\Error(
                     $request,
-                    $status,
-                    $msg
+                    $status
                 )
             )
         );
