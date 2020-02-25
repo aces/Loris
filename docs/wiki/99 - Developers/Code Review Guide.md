@@ -37,7 +37,6 @@ in Raisinbread?
 - [ ] Are inheritance/classes/etc used appropriately?
 - [ ] Is there an effort to limit code duplication?
 - [ ] Are functions concise and clear?
-- [ ] Are the commit messages meaningful, atomic, and rebased/squashed into a clean tree?
 - [ ] Is the pull request appropriately named (starting with Module name or Core) and appropriately labelled?
 - [ ] Is the comment on the pull request meaningful and informative, even to someone with limited knowledge of the code?
 - [ ] Are there any other implications for existing projects that need to be documented or addressed? 
