@@ -88,10 +88,8 @@ var Instrument = {
                 content += "page{@}{@}" + elements[i].Description + "\n";
             }
             for (element of elements[i].Elements) {
-              console.log(element.Type);
                 switch (element.Type) {
                     case "line":
-                      console.log('test');
                       content += 'line{@}{@}' + element.Description + "\n";
                       break;
                     case "select":
