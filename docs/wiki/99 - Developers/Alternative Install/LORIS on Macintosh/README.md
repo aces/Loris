@@ -10,17 +10,17 @@ For production servers, we recommend installing LORIS on Ubuntu or CentOS.
 
 The following list provides foresight into the proceeding sections and versions to install:
 
- * macOS (tested on Mojave 10.14.3)
+ * macOS (tested on Catalina 10.15.4)
  * XCode Command Line Tools
  * Homebrew
  * Apache (a.k.a httpd)
- * PHP (tested on v7.2.14)
- * PHP extension: ast-0.1.5
+ * PHP (tested on v7.3.15)
+ * PHP extension: ast-1.0.5
  * pkg-config
  * Composer
  * Node.js (npm)
- * MySQL (tested with 10.3.12-MariaDB)
- * Xdebug (tested on v2.6.1)
+ * MySQL (tested with 10.4.11-MariaDB)
+ * Xdebug (tested on v2.9.2)
  
 # 1.1 Pre-Requirements
 
@@ -131,9 +131,9 @@ sudo apachectl -k restart
 
 Type these commands into your terminal and hit enter:
 ```
-brew install php72
-brew link php72
-brew services start php72
+brew install php@7.3
+brew link php@7.3
+brew services start php@7.3
 brew install pkg-config
 ```
 
@@ -172,9 +172,27 @@ sudo apachectl -k restart
 
 Xdebug allows debugging with breakpoints (such as when using an IDE ex. Intellij).
 
-Type into your terminal and hit enter:
+You will need to install autoconf:
 ```
-pecl install xdebug
+brew install autoconf
+```
+
+Download the latest Xdebug source from https://xdebug.org
+
+After run the commands as follow in the folder of the source code:
+
+1) `phpize`
+
+2) `./configure`
+
+3) `make`
+
+4) `sudo cp modules/xdebug.so /usr/local/php/extensions` (create the the directory if it doesn't exit).
+
+Finally inside `php.ini` add:
+
+```
+zend_extension=/usr/local/php/extensions/xdebug.so
 ```
 
 ### 1.7.1 Configure Xdebug for local development
@@ -207,7 +225,7 @@ xdebug.idekey=phpstorm
 sudo apachectl -k restart
 ```
 
-### 1.7.2 Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx) (recommended)
+### 1.7.2 Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx) (suggested)
 
 **a.** Install from the GitHub repository.
 
@@ -249,10 +267,10 @@ Type into your terminal and hit enter:
 brew install composer
 ```
 
-## 2.0 Install PHP extension: ext-ast ^0.1.5 for phan/phan
+## 2.0 Install PHP extension: ext-ast ^1.0.5 for phan/phan
 Type into your terminal and hit enter:
 ```
-pecl install ast-0.1.5;
+pecl install ast-1.0.5;
 ```
 
 ## 2.1 Install Node.js
