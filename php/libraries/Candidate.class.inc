@@ -3,17 +3,10 @@
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.
  *
- * PHP Version 7
- *
- * @category Main
- * @package  Loris
- * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>
  */
 
 use LORIS\StudyEntities\Candidate\CandID;
-/* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
 define('PSCID_NOT_SPECIFIED', 2);
@@ -33,7 +26,7 @@ define('EDC_NOT_SPECIFIED', 5);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Candidate
+class Candidate implements \LORIS\StudyEntities\AccessibleResource
 {
     var $candidateInfo;
     var $listOfTimePoints;
@@ -765,6 +758,37 @@ class Candidate
             $option_array[$option['ID']] = $option['Description'];
         }
         return $option_array;
+    }
+
+    /**
+     * Implements the AccessibleResource interface. A candidate can
+     * be accessed by a user if it has a project and a site in common.
+     *
+     * @param \User $user The user whose access should be validated.
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+        $centers = $user->getCenterIDs();
+
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
+        $centerMatch = in_array($this->getCenterID(), $centers, true);
+
+        if ($centerMatch === false) {
+            // getCenterID is just the RegistrationCenterID, if a visit
+            // has a center in common, we should still allow access to
+            // the candidate.
+            $timepoints = $this->getListOfTimePoints();
+            foreach ($timepoints as $sessionID) {
+                $timepoint = \TimePoint::singleton($sessionID);
+                if (in_array($timepoint->getCenterID(), $centers, true)) {
+                    $centerMatch = true;
+                    break;
+                }
+            }
+        }
+        return $projMatch && $centerMatch;
     }
 
 }

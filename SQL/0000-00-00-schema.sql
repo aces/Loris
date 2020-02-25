@@ -145,6 +145,7 @@ CREATE TABLE `candidate` (
   `PSCID` varchar(255) NOT NULL DEFAULT '',
   `ExternalID` varchar(255) DEFAULT NULL,
   `DoB` date DEFAULT NULL,
+  `DoD` date DEFAULT NULL,
   `EDC` date DEFAULT NULL,
   `Sex` enum('Male','Female','Other') DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
