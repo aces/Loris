@@ -26,24 +26,24 @@ This document will help you to understand how to get your code to be Approved.
 In addition to what's listed in the CONTRIBUTING document, here are some things we are
 looking for when deciding whether to Approve your pull request.
 
-- [ ] 1.  Do database calls use prepared statements?
-- [ ] 2.  Have new tests been added?
-- [ ] 3.  Is CSS/Javascript/PHP/HTML code separated into their own files?
-- [ ] 4.  Have database changes been reflected in the schema, a new patch, and
+- [ ] Do database calls use prepared statements?
+- [ ] Have new tests been added?
+- [ ] Is CSS/Javascript/PHP/HTML code separated into their own files?
+- [ ] Have database changes been reflected in the schema, a new patch, and
 in Raisinbread?
-- [ ] 5.  Are the comments reasonable/understandable?
-- [ ] 6.  Are the variable names meaningful? In the proper scope?
-- [ ] 7.  Does the logic/structure make sense? Is it as efficient as possible?
-- [ ] 8.  Are inheritance/classes/etc used appropriately?
-- [ ] 9.  Is there an effort to limit code duplication?
-- [ ] 10. Are functions concise and clear?
-- [ ] 11. Are the commit messages meaningful, atomic, and rebased/squashed into a clean tree?
-- [ ] 12. Is the pull request appropriately named (starting with Module name or Core) and appropriately labelled?
-- [ ] 13. Is the comment on the pull request meaningful and informative, even to someone with limited knowledge of the code?
-- [ ] 14. Are there any other implications for existing projects that need to be documented or addressed? 
-- [ ] 15. Are changes made in a backward compatible manner (where possible)?
-- [ ] 16. Has relevant documentation been updated?
-- [ ] 17. Is the code written with thought given to how it can be maintained and extended? Is it written elegantly, without "hacks"?
+- [ ] Are the comments reasonable/understandable?
+- [ ] Are the variable names meaningful? In the proper scope?
+- [ ] Does the logic/structure make sense? Is it as efficient as possible?
+- [ ] Are inheritance/classes/etc used appropriately?
+- [ ] Is there an effort to limit code duplication?
+- [ ] Are functions concise and clear?
+- [ ] Are the commit messages meaningful, atomic, and rebased/squashed into a clean tree?
+- [ ] Is the pull request appropriately named (starting with Module name or Core) and appropriately labelled?
+- [ ] Is the comment on the pull request meaningful and informative, even to someone with limited knowledge of the code?
+- [ ] Are there any other implications for existing projects that need to be documented or addressed? 
+- [ ] Are changes made in a backward compatible manner (where possible)?
+- [ ] Has relevant documentation been updated?
+- [ ] Is the code written with thought given to how it can be maintained and extended? Is it written elegantly, without "hacks"?
 
 If you are unsure on any of these points, we encourage you to ask questions and
 do your best. We'll help to clarify any issues as they arise.
