@@ -1066,7 +1066,7 @@ GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/channels
 ```
 
 Returns raw file with the appropriate MimeType headers for the channels file 
-retrieved from `/candidates/$CandID/$Visit/recordings/bidsfiles/channels`. 
+retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.  
 
@@ -1077,7 +1077,7 @@ GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/electrodes
 ```
 
 Returns raw file with the appropriate MimeType headers for the electrodes file 
-retrieved from `/candidates/$CandID/$Visit/recordings/bidsfiles/electrodes`. 
+retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.  
 
@@ -1088,7 +1088,7 @@ GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/events
 ```
 
 Returns raw file with the appropriate MimeType headers for the task events file 
-retrieved from `/candidates/$CandID/$Visit/recordings/bidsfiles/events`. 
+retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.
 
@@ -1098,7 +1098,7 @@ Only `GET` is currently supported.
 GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/archive
 ```
 
-Returns raw file with the appropriate MimeType headers for the channels file 
-retrieved from `/candidates/$CandID/$Visit/recordings/bidsfiles/archive`. 
+Returns raw file with the appropriate MimeType headers for the archival file
+with all BIDS files retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.    
