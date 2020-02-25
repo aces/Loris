@@ -67,7 +67,7 @@ issues and/or Redmine tickets (if applicable).
   directory. You can look at other modules for examples of how to
   write tests.
 * Before sending any pull request, make sure you run our static analysis tools 
-locally. More information can be found in the automated testing guide. 
+locally. More information can be found in the [automated testing guide](./wiki/99 - Developers/Automated Testing.md). 
 * Try and make all changes backwards-compatible with existing installations.  
 * If you must change something in a non-backwards-compatible way - or if it 
 would affect the data or custom code of a study - document this in your pull 
