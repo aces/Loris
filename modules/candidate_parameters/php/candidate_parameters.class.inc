@@ -41,10 +41,10 @@ class Candidate_Parameters extends \NDB_Form
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'candidate_parameter_view',
                 'candidate_parameter_edit',
-            )
+            ]
         );
     }
 
@@ -70,9 +70,9 @@ class Candidate_Parameters extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/candidate_parameters/js/CandidateParameters.js",
-            )
+            ]
         );
     }
 

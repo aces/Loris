@@ -46,10 +46,10 @@ if ($_GET['action'] == 'addpermission') {
         $data_release_id = $_POST['data_release_id'];
         $DB->insertIgnore(
             'data_release_permissions',
-            array(
+            [
                 'userid'          => $userid,
                 'data_release_id' => $data_release_id,
-            )
+            ]
         );
 
     } elseif (empty($_POST['data_release_id'])
@@ -63,15 +63,15 @@ if ($_GET['action'] == 'addpermission') {
                   ? "version IS NULL OR version=:drv" : "version=:drv";
         $IDs    = $DB->pselectCol(
             $query,
-            array(':drv' => $data_release_version)
+            [':drv' => $data_release_version]
         );
         foreach ($IDs as $ID) {
             $DB->insertIgnore(
                 'data_release_permissions',
-                array(
+                [
                     'userid'          => $userid,
                     'data_release_id' => $ID,
-                )
+                ]
             );
         }
     }
@@ -103,7 +103,7 @@ if ($_GET['action'] == 'addpermission') {
     $vFiles         = $data_release->getVersionedFiles($DB);
     $prePermissions = $data_release->getUserVersionPermissions($vFiles, $DB);
 
-    $postPermissions = array();
+    $postPermissions = [];
     foreach ($_POST as $key => $value) {
         $new_value = json_decode($value, true);
         if ($new_value['permission']) {
@@ -120,7 +120,7 @@ if ($_GET['action'] == 'addpermission') {
     foreach ($prePermissions as $user => $oldVersions) {
         // query to get user ID
         $query  = "SELECT ID FROM users WHERE UserID LIKE :userid";
-        $params = array('userid' => $user);
+        $params = ['userid' => $user];
         // PHP replaces dots "." characters by underscores "_" in variables.
         // to be able to compare below, do the same thing
         $userNoDot = str_replace(".", "_", $user);
@@ -135,10 +135,10 @@ if ($_GET['action'] == 'addpermission') {
                     foreach ($vFiles[$version] as $fileID => $fileName) {
                         $DB->replace(
                             'data_release_permissions',
-                            array(
+                            [
                                 'userid'          => $userid,
                                 'data_release_id' => $fileID,
-                            )
+                            ]
                         );
                     }
                 }
@@ -160,10 +160,10 @@ if ($_GET['action'] == 'addpermission') {
                     foreach ($vFiles[$version] as $fileID => $fileName) {
                         $DB->replace(
                             'data_release_permissions',
-                            array(
+                            [
                                 'userid'          => $userid,
                                 'data_release_id' => $fileID,
-                            )
+                            ]
                         );
                     }
                 }
@@ -172,10 +172,10 @@ if ($_GET['action'] == 'addpermission') {
                     foreach ($vFiles[$version] as $fileID => $fileName) {
                         $DB->delete(
                             'data_release_permissions',
-                            array(
+                            [
                                 'userid'          => $userid,
                                 'data_release_id' => $fileID,
-                            )
+                            ]
                         );
                     }
                 }
@@ -188,10 +188,10 @@ if ($_GET['action'] == 'addpermission') {
                     foreach ($vFiles[$version] as $fileID => $fileName) {
                         $DB->delete(
                             'data_release_permissions',
-                            array(
+                            [
                                 'userid'          => $userid,
                                 'data_release_id' => $fileID,
-                            )
+                            ]
                         );
                     }
                 }

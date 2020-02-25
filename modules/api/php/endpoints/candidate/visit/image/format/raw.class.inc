@@ -50,7 +50,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -61,10 +61,10 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.2',
             'v0.0.3-dev',
-        );
+        ];
     }
 
     /**
@@ -158,11 +158,11 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         exec("minctoraw -v 2>&1", $output);
 
-        $signature = array(
+        $signature = [
             'minctoraw' => $output,
             'mtime'     => $info->getMTime(),
             'fullpath'  => $info->getPathname(),
-        );
+        ];
 
         return md5(json_encode($signature));
     }

@@ -71,7 +71,7 @@ class PasswordExpiry extends \NDB_Form
         // be named "password" and why there's a hidden element named "login"
         // in the smarty template.)
         $this->tpl_data['username'] = $this->_username;
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule([&$this, '_validate']);
     }
 
 
@@ -93,15 +93,15 @@ class PasswordExpiry extends \NDB_Form
             new \Password($plaintext);
         } catch (\InvalidArgumentException $e) {
             $this->tpl_data['error_message'] = $e->getMessage();
-            return array('password' => $e->getMessage());
+            return ['password' => $e->getMessage()];
         }
 
         if (!$this->_user->isPasswordDifferent($plaintext)) {
             $this->tpl_data['error_message'] = 'You cannot keep the same password';
-            return array('password' => 'You cannot keep the same password');
+            return ['password' => 'You cannot keep the same password'];
         }
 
-        return array();
+        return [];
     }
 
     /**

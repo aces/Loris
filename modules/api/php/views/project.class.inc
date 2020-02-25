@@ -49,14 +49,14 @@ class Project
      */
     public function toArray(): array
     {
-        $meta = array('Project' => $this->_project->getName());
+        $meta = ['Project' => $this->_project->getName()];
 
-        return array(
+        return [
             'Meta'        => $meta,
             'Candidates'  => $this->_project->getCandidateIds(),
             'Instruments' => array_keys(\Utility::getAllInstruments()),
             'Visits'      => $this->_getVisits(),
-        );
+        ];
     }
 
     /**
@@ -67,12 +67,12 @@ class Project
      */
     public function toCandidateArray(): array
     {
-        $meta = array('Project' => $this->_project->getName());
+        $meta = ['Project' => $this->_project->getName()];
 
-        return array(
+        return [
             'Meta'       => $meta,
             'Candidates' => $this->_project->getCandidateIds(),
-        );
+        ];
     }
 
     /**
@@ -83,12 +83,12 @@ class Project
      */
     public function toVisitArray(): array
     {
-        $meta = array('Project' => $this->_project->getName());
+        $meta = ['Project' => $this->_project->getName()];
 
-        return array(
+        return [
             'Meta'   => $meta,
             'Visits' => $this->_getVisits(),
-        );
+        ];
     }
 
     /**

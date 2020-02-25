@@ -55,7 +55,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
       */
     public function testSuperUserPermission()
     {
-         $this->setupPermissions(array("superuser"));
+         $this->setupPermissions(["superuser"]);
          $this->safeGet($this->url . "/document_repository/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

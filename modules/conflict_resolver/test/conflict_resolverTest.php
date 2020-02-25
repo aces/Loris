@@ -54,7 +54,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->setUpConfigSetting("useProjects", "true");
         $this->DB->insert(
             "conflicts_resolved",
-            array(
+            [
                 'ResolvedID'          => '999999',
                 'UserID'              => 'demo',
                 'ResolutionTimestamp' => '2015-11-03 16:21:49',
@@ -69,11 +69,11 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
                 'OldValue1'           => 'Mother',
                 'OldValue2'           => 'Father',
                 'NewValue'            => 'NULL',
-            )
+            ]
         );
         $this->DB->insert(
             "conflicts_unresolved",
-            array(
+            [
                 'TableName'      => 'TestTestTest',
                 'ExtraKeyColumn' => 'Test',
                 'ExtraKey1'      => 'Null',
@@ -83,7 +83,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
                 'Value1'         => 'no',
                 'CommentId2'     => 'DDE_963443000111271151398976899',
                 'Value2'         => 'no',
-            )
+            ]
         );
     }
      /**
@@ -96,10 +96,10 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
         parent::tearDown();
         $this->restoreConfigSetting("useProjects");
-        $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
+        $this->DB->delete("conflicts_resolved", ['ResolvedID' => '999999']);
         $this->DB->delete(
             "conflicts_unresolved",
-            array('TableName' => 'TestTestTest')
+            ['TableName' => 'TestTestTest']
         );
     }
 
@@ -110,7 +110,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
       */
     function testConflictResolverPermission()
     {
-         $this->setupPermissions(array("conflict_resolver"));
+         $this->setupPermissions(["conflict_resolver"]);
          $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
@@ -133,7 +133,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
       */
     function testConflictResolverResolvedConflictsPermission()
     {
-         $this->setupPermissions(array("conflict_resolver"));
+         $this->setupPermissions(["conflict_resolver"]);
         $this->safeGet(
             $this->url
              . "/conflict_resolver/resolved_conflicts/"
@@ -152,7 +152,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
       */
     function testConflictResolverWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

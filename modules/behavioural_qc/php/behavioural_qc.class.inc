@@ -78,7 +78,7 @@ class Behavioural_QC extends \NDB_Form
             $candID = $sanitize['candidate'];
         } elseif (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
             $query   = "SELECT CandID FROM candidate WHERE PSCID = :PID";
-            $qparams = (array('PID' => $sanitize['PSCID']));
+            $qparams = (['PID' => $sanitize['PSCID']]);
             $candID  = $DB->pselectOne($query, $qparams);
         }
 
@@ -96,19 +96,19 @@ class Behavioural_QC extends \NDB_Form
          */
         $visit_array   =\Utility::getExistingVisitLabels();
         $visit_array   = array_combine($visit_array, $visit_array);
-        $list_of_sites = array();
+        $list_of_sites = [];
         $this->tpl_data['visitLabels'] = $visit_array;
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites      = \Utility::getSiteList();
-            $default_site_array =array('All Sites' => 'All Sites');
+            $default_site_array =['All Sites' => 'All Sites'];
             if (is_array($list_of_sites)) {
                 $list_of_sites = $default_site_array + $list_of_sites;
             }
         } else {
             // allow only to view own study site data
             $list_of_sites      = $user->getStudySites();
-            $default_site_array =array('All User Sites' => 'All User Sites');
+            $default_site_array =['All User Sites' => 'All User Sites'];
             $list_of_sites      = $default_site_array + $list_of_sites;
         }
         $this->tpl_data['siteList'] = $list_of_sites;
@@ -209,7 +209,7 @@ class Behavioural_QC extends \NDB_Form
     ) {
 
         $DB      =& \Database::singleton();
-        $qparams = array();
+        $qparams = [];
 
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
                       fb.CommentID, fb.Feedback_level, f.Test_name, fb.FieldName,
@@ -262,7 +262,7 @@ class Behavioural_QC extends \NDB_Form
 
             $query = $select . $where;
 
-            $results = array();
+            $results = [];
             foreach ($field_names as $field) {
                 $qparams['FN'] = $field["SourceField"];
                 $result        = $DB->pselect($query, $qparams);
@@ -342,10 +342,10 @@ class Behavioural_QC extends \NDB_Form
     ) {
 
         global $DB;
-        $conflicts = array();
+        $conflicts = [];
         //if test_name exists and candidate is not set
 
-        $qparams = array();
+        $qparams = [];
 
         if ($DB->ColumnExists($test_name, 'Test_name_display')) {
             $query = "SELECT DISTINCT s.CandID,ca.PSCID, c.FieldName,
@@ -427,7 +427,7 @@ class Behavioural_QC extends \NDB_Form
         //Do for each instrument....one shot....
         //And then extract the specific info through template..
         global $DB;
-        $conflicts = array();
+        $conflicts = [];
         if ($DB->ColumnExists($test_name, 'Test_name_display')) {
 
             $query = "SELECT DISTINCT s.CandID, ca.PSCID, c.FieldName,
@@ -463,10 +463,10 @@ class Behavioural_QC extends \NDB_Form
         }
         $conflicts = $DB->pselect(
             $query,
-            array(
+            [
                 'TN' => $test_name,
                 'FN' => $field_name,
-            )
+            ]
         );
         return $conflicts;
     }
@@ -519,7 +519,7 @@ class Behavioural_QC extends \NDB_Form
                 AND (f.commentid NOT LIKE 'DDE_%')
             ";
         }
-        $qparams = array();
+        $qparams = [];
 
         //filter for testname
         if (($test_name !=null)&&($test_name!='All Instruments')) {
@@ -594,7 +594,7 @@ class Behavioural_QC extends \NDB_Form
             JOIN psc ON (s.CenterID = psc.CenterID)	";
         }
 
-        $qparams = array();
+        $qparams = [];
 
         $where =" WHERE s.Active='Y'
             AND c.Active='Y'
@@ -674,7 +674,7 @@ class Behavioural_QC extends \NDB_Form
             AND f.Data_entry = 'Complete'
             AND psc.Centerid!= '1'
             AND c.Entity_type != 'Scanner'";
-        $qparams = array();
+        $qparams = [];
 
         if (($visit_label !=null)&&($visit_label!='All Visits')) {
             $where        .= " AND s.Visit_label = :VL";
@@ -772,7 +772,7 @@ class Behavioural_QC extends \NDB_Form
                     " WHERE Test_name_display=:display";
                 $test_name    = $DB->pselectOne(
                     $sqlSelectOne,
-                    array('display' => $full_name)
+                    ['display' => $full_name]
                 );
             } else {
                 $test_name = \Utility::getTestNameUsingFullName($full_name);
@@ -797,7 +797,7 @@ class Behavioural_QC extends \NDB_Form
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $sqlSelect  = "SELECT distinct Test_name_display".
                 " from test_battery where Visit_label =:vl";
-            $test_names = $DB->pselect($sqlSelect, array('vl' => $visit_label));
+            $test_names = $DB->pselect($sqlSelect, ['vl' => $visit_label]);
         } else {
             $test_names = $DB->pselect(
                 "SELECT DISTINCT t.Full_name as Test_name_display 
@@ -811,7 +811,7 @@ class Behavioural_QC extends \NDB_Form
                         AND psc.CenterID != '1'
                         AND c.Entity_type != 'Scanner'
                         ORDER BY t.Full_name ",
-                array('vl' => $visit_label)
+                ['vl' => $visit_label]
             );
         }
 
@@ -831,9 +831,9 @@ class Behavioural_QC extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/behavioural_qc/js/behavioural_qc.js",
-            )
+            ]
         );
     }
 

@@ -76,7 +76,7 @@ class Database
         bool   $trackChanges = true
     ): \Database {
 
-        static $connections = array();
+        static $connections = [];
 
         // if no arguments, try to get the first connection or choke
         if (empty($database)
@@ -338,7 +338,7 @@ class Database
      */
     private function _HTMLEscapeArray(array $set): array
     {
-        $retVal = array();
+        $retVal = [];
         foreach ($set as $key => $val) {
             /* FIXME this check is only here because of a quirk of the
              * imaging browser. The module should be refactored and this check
@@ -394,7 +394,7 @@ class Database
         $prepQ  = $query;
         $query .= $this->_implodeWithKeys(', ', $set, 'set_');
 
-        $exec_params = array();
+        $exec_params = [];
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
 
         if ($onDuplicateUpdate) {
@@ -547,7 +547,7 @@ class Database
 
         /* This generates the version of the update statement which is
          * executed. */
-        $exec_params = array();
+        $exec_params = [];
         $prepQ       = "UPDATE $table SET ";
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params, 'set_');
         $prepQ      .= " WHERE ";
@@ -616,7 +616,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $this->trackChanges($table, array(), $where, 'D');
+        $this->trackChanges($table, [], $where, 'D');
 
         $this->_printQuery($query);
         $result = $this->_PDO->exec($query);
@@ -685,7 +685,7 @@ class Database
     function execute(
         $prepared,
         array $params,
-        array $options = array()
+        array $options = []
     ): array {
 
         $execRun = $prepared->execute($params);
@@ -695,7 +695,7 @@ class Database
         }
 
         if (!empty($options['nofetch']) && $options['nofetch'] == true) {
-            return array();
+            return [];
         }
 
         $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
@@ -768,7 +768,7 @@ class Database
             return $result;
         }
 
-        $filteredResult = array();
+        $filteredResult = [];
         // re-order the return array
         foreach ($result as $row) {
             // Check first that the row contains the primary key supplied
@@ -839,7 +839,7 @@ class Database
     {
         $unprocessed = $this->pselect($query, $params);
 
-        $result = array();
+        $result = [];
         foreach ($unprocessed as $k=>$row) {
             $colNumber = count($row);
             if ($colNumber !== 1) {
@@ -895,7 +895,7 @@ class Database
             return $result;
         }
 
-        $filteredResult = array();
+        $filteredResult = [];
         // re-order the return array
         foreach ($result as $row) {
             $colNumber = count($row);
@@ -977,7 +977,7 @@ class Database
         array $dataArray,
         string $clause = 'set_'
     ): string {
-        $output = array();
+        $output = [];
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
         }
@@ -1023,7 +1023,7 @@ class Database
             return '';
         }
 
-        $output = array();
+        $output = [];
         foreach ($dataArray as $key => $item ) {
             $varname = str_replace("%", "_percent_", $key);
             if (is_null($item)) {
@@ -1079,10 +1079,10 @@ class Database
         }
 
         // get the table description
-        $description = $this->pselect("SHOW INDEX FROM $table", array());
+        $description = $this->pselect("SHOW INDEX FROM $table", []);
 
         // find the primary key columns
-        $primaryKeys = array();
+        $primaryKeys = [];
         if (is_array($description)) {
             foreach ($description AS $column) {
                 if ($column['Key_name']=='PRIMARY') {
@@ -1115,7 +1115,7 @@ class Database
             foreach (array_keys($set) AS $column) {
                 $this->_preparedStoreHistory->bindParam(":histcolumn", $column);
                 // find the primary key values
-                $primaryValues = array();
+                $primaryValues = [];
 
                 $usePDOID = false;
                 foreach ($primaryKeys AS $key) {
@@ -1130,7 +1130,7 @@ class Database
                     if (is_array($this->lastInsertID)) {
                         $primaryValues = $this->lastInsertID;
                     } else {
-                        $primaryValues = array($this->lastInsertID);
+                        $primaryValues = [$this->lastInsertID];
                     }
                 }
 
@@ -1144,20 +1144,20 @@ class Database
             $query = "SELECT * FROM $table WHERE $where";
 
             // select the database data
-            $oldRows = $this->pselect($query, array());
+            $oldRows = $this->pselect($query, []);
 
             // track history for all affected rows
             foreach ($oldRows AS $oldRow) {
                 // compute the difference between the two arrays
                 if ($type == 'D') {
                     $delta = $oldRow;
-                    $set   = array();
+                    $set   = [];
                 } else {
                     $delta = array_diff_assoc($set, $oldRow);
                 }
 
                 // find the primary key values
-                $primaryValues = array();
+                $primaryValues = [];
                 foreach ($primaryKeys AS $key) {
                     $primaryValues[] = $oldRow[$key];
                 }
@@ -1192,7 +1192,7 @@ class Database
      * @return void As a side-effect, prints to the screen if config option is
      *              enabled
      */
-    function _printQuery(string $query, array $params = array()): void
+    function _printQuery(string $query, array $params = []): void
     {
         if (!$this->_showQueries) {
             return;
@@ -1274,10 +1274,10 @@ class Database
 
         $result = $this->pselectOne(
             $query,
-            array(
+            [
                 'tn' => $test_name,
                 'db' => $database['database'],
-            )
+            ]
         );
 
         if (!empty($result)) {
@@ -1305,11 +1305,11 @@ class Database
             AND TABLE_SCHEMA = :db";
         $effected = $this->pselectOne(
             $query,
-            array(
+            [
                 'tn' => $test_name,
                 'cn' => $column,
                 'db' => $database['database'],
-            )
+            ]
         );
         if ($effected) {
             return true;
@@ -1331,7 +1331,7 @@ class Database
         // http://php.net/manual/en/function.mysql-real-escape-string.php
         if (!empty($tableName) && is_string($tableName)) {
             $stringWithEscapedChars = str_replace(
-                array(
+                [
                     '\\',
                     "\0",
                     "\n",
@@ -1340,8 +1340,8 @@ class Database
                     '"',
                     "\x1a",
                     "`",
-                ),
-                array(
+                ],
+                [
                     '\\\\',
                     '\\0',
                     '\\n',
@@ -1350,7 +1350,7 @@ class Database
                     '\\"',
                     '\\Z',
                     "\\`",
-                ),
+                ],
                 $tableName
             );
             $fullyEscapedString     = "`".$stringWithEscapedChars."`";

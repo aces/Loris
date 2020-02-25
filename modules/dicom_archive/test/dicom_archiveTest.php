@@ -78,7 +78,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testDicomArchivePermission()
     {
-        $this->setupPermissions(array("dicom_archive_view_allsites"));
+        $this->setupPermissions(["dicom_archive_view_allsites"]);
         $this->safeGet($this->url . "/dicom_archive/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

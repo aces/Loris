@@ -42,7 +42,7 @@ class Publication extends \NDB_Menu_Filter_Form
         $nProjects = $db->pselectOne(
             'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
             'WHERE UserID=:uid',
-            array('uid' => $user->getId())
+            ['uid' => $user->getId()]
         );
         return ($user->hasPermission('publication_view')
             || $user->hasPermission('publication_propose')
@@ -97,7 +97,7 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $query .= " GROUP BY p.PublicationID ";
 
-        $this->columns = array(
+        $this->columns = [
             'p.Title',
             'pcli.Name as LeadInvestigator',
             'p.DateProposed',
@@ -112,10 +112,10 @@ class Publication extends \NDB_Menu_Filter_Form
                           )',
             'GROUP_CONCAT(DISTINCT pk.Label)', // Keywords
             'p.PublicationID',
-        );
+        ];
 
         $this->query   = $query;
-        $this->headers = array(
+        $this->headers = [
             'Title',
             'Lead Investigator',
             'Date Proposed',
@@ -125,25 +125,25 @@ class Publication extends \NDB_Menu_Filter_Form
             'Variables Of Interest',
             'Keywords',
             'Publication ID',
-        );
+        ];
 
-        $this->validFilters = array(
+        $this->validFilters = [
             'p.Title',
             'p.ApprovalStatus',
             'pc.Name',
             'pk.Label',
             'pcli.Name', // Lead Investigator's name
             'pt.Name',
-        );
+        ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'titleOrDescription'  => 'p.Title',
             'approvalStatus'      => 'ps.Label',
             'collaborators'       => 'pc.Name',
             'keywords'            => 'pk.Label',
             'variablesOfInterest' => 'pt.Name',
             'leadInvestigator'    => 'pcli.Name',
-        );
+        ];
     }
 
     /**
@@ -158,10 +158,10 @@ class Publication extends \NDB_Menu_Filter_Form
         $db        = \Database::singleton();
         $rawStatus = $db->pselectCol(
             'SELECT Label FROM publication_status',
-            array()
+            []
         );
 
-        $statusOptions = array();
+        $statusOptions = [];
         foreach ($rawStatus as $rs) {
             $statusOptions[$rs] = $rs;
         }
@@ -212,7 +212,7 @@ class Publication extends \NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . '/publication/js/publicationIndex.js')
+            [$baseURL . '/publication/js/publicationIndex.js']
         );
     }
 
@@ -229,7 +229,7 @@ class Publication extends \NDB_Menu_Filter_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . '/publication/css/publication.css')
+            [$baseURL . '/publication/css/publication.css']
         );
     }
 

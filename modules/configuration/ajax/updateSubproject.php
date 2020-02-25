@@ -33,12 +33,12 @@ if ($_POST['subprojectID'] === 'new') {
     if (!in_array($_POST['title'], $SubprojectList) && !empty($_POST['title'])) {
         $db->insert(
             "subproject",
-            array(
+            [
                 "title"             => $_POST['title'],
                 "useEDC"            => $_POST['useEDC'],
                 "WindowDifference"  => $_POST['WindowDifference'],
                 "RecruitmentTarget" => $recTarget,
-            )
+            ]
         );
     } else {
         header("HTTP/1.1 409 Conflict");
@@ -48,13 +48,13 @@ if ($_POST['subprojectID'] === 'new') {
 } else {
     $db->update(
         "subproject",
-        array(
+        [
             "title"             => $_POST['title'],
             "useEDC"            => $_POST['useEDC'],
             "WindowDifference"  => $_POST['WindowDifference'],
             "RecruitmentTarget" => $recTarget,
-        ),
-        array("SubprojectID" => $_POST['subprojectID'])
+        ],
+        ["SubprojectID" => $_POST['subprojectID']]
     );
 }
 header("HTTP/1.1 200 OK");

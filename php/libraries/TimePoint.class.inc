@@ -29,7 +29,7 @@ class TimePoint
      */
     var $_timePointInfo;
 
-    var $_stageOptions = array(
+    var $_stageOptions = [
         null,
         'Not Started',
         'Screening',
@@ -37,38 +37,38 @@ class TimePoint
         'Approval',
         'Subject',
         'Recycling Bin',
-    );
+    ];
 
-    var $_dynamicStageOptions = array(
+    var $_dynamicStageOptions = [
         'Screening',
         'Visit',
         'Approval',
-    );
+    ];
 
-    var $_statusOptions = array(
+    var $_statusOptions = [
         null,
         'Pass',
         'Failure',
         'Withdrawal',
         'In Progress',
-    );
+    ];
 
-    var $bvlQcTypes = array(
+    var $bvlQcTypes = [
         null,
         'Visual',
         'Hardcopy',
-    );
+    ];
 
-    var $bvlQcStatuses = array(
+    var $bvlQcStatuses = [
         null,
         'Complete',
-    );
+    ];
 
-    var $bvlQcExclusionStatuses = array(
+    var $bvlQcExclusionStatuses = [
         null,
         'Excluded',
         'Not Excluded',
-    );
+    ];
 
 
     /**
@@ -83,7 +83,7 @@ class TimePoint
     static function &singleton(int $sessionID)
     {
         // instantiate new TimePoint object
-        static $timePointList = array();
+        static $timePointList = [];
         if (!isset($timePointList[$sessionID])) {
             try {
                 $timePointList[$sessionID] = new TimePoint();
@@ -134,7 +134,7 @@ class TimePoint
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                         LEFT JOIN Project AS pr USING(ProjectID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
-        $row   = $db->pselectRow($query, array('SID' => $sessionID));
+        $row   = $db->pselectRow($query, ['SID' => $sessionID]);
 
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
@@ -159,10 +159,10 @@ class TimePoint
                             JOIN session s ON (s.ID=ss.SessionID)
                         WHERE s.ID=:sessionID AND s.Active='Y'";
 
-            $statuses = $db->pselect($query, array(":sessionID" => $sessionID));
+            $statuses = $db->pselect($query, [":sessionID" => $sessionID]);
             foreach ($statuses as $row) {
                 if (!isset($this->_timePointInfo['status'])) {
-                    $this->_timePointInfo['status'] = array();
+                    $this->_timePointInfo['status'] = [];
                 }
                 $this->_timePointInfo['status'][$row['Name']] = $row['Value'];
             }
@@ -180,7 +180,7 @@ class TimePoint
                             LOWER(w.Visit_label)=LOWER(s.Visit_label)
                         )
                     WHERE s.ID=:sessionID",
-                array(":sessionID" => $sessionID)
+                [":sessionID" => $sessionID]
             );
 
         }
@@ -246,7 +246,7 @@ class TimePoint
             $language = array_key_first($langList);
         }
 
-        $insertData = array(
+        $insertData = [
             'CandID'          => $candidate->getCandID(),
             'SubprojectID'    => $SubprojectID,
             'VisitNo'         => $visitNo,
@@ -260,7 +260,7 @@ class TimePoint
             'Date_registered' => $today,
             'Date_active'     => $today,
             'languageID'      => $language,
-        );
+        ];
 
         // insert the data
         $db->insert('session', $insertData);
@@ -380,9 +380,9 @@ class TimePoint
         \Database::singleton()->update(
             'session',
             $newData,
-            array(
+            [
                 'ID' => $this->getData('SessionID'),
-            )
+            ]
         );
         // this select updates the timepoint object
         $this->select(intval($this->getData('SessionID')));
@@ -729,7 +729,7 @@ class TimePoint
         $db =& Database::singleton();
 
         // this class does not handle Subject & Recycling Bin stage at the moment
-        if (in_array($this->getCurrentStage(), array('Subject', 'Recycling Bin'))) {
+        if (in_array($this->getCurrentStage(), ['Subject', 'Recycling Bin'])) {
             return;
         }
 
@@ -740,11 +740,11 @@ class TimePoint
                 // delete from conflicts_unresolved if marked Recycling Bin
                 $commentIDs = $db->pselect(
                     "SELECT CommentID FROM flag WHERE SessionID=:SID",
-                    array('SID' => $this->getSessionID())
+                    ['SID' => $this->getSessionID()]
                 );
                 foreach ($commentIDs as $commentID) {
-                    $deleteWhere1 = array('CommentId1' => $commentID);
-                    $deleteWhere2 = array('CommentId2' => $commentID);
+                    $deleteWhere1 = ['CommentId1' => $commentID];
+                    $deleteWhere2 = ['CommentId2' => $commentID];
                     $db->delete('conflicts_unresolved', $deleteWhere1);
                     $db->delete('conflicts_unresolved', $deleteWhere2);
                 }
@@ -767,15 +767,15 @@ class TimePoint
         $today = date("Y-m-d");
 
         // update session table
-        $update_columns = array(
+        $update_columns = [
             "Date_stage_change" => $today,
             'Current_stage'     => $newCurrentStage,
-        );
+        ];
 
         $db->update(
             'session',
             $update_columns,
-            array('ID' => $this->getSessionID())
+            ['ID' => $this->getSessionID()]
         );
 
         // reload TimePoint object
@@ -793,10 +793,10 @@ class TimePoint
      */
     function startStage(string $stage): void
     {
-        $setArray = array(
+        $setArray = [
             'Current_stage'     => $stage,
             'Date_stage_change' => date('Y-m-d'),
-        );
+        ];
 
         if (in_array($stage, $this->_dynamicStageOptions)
             && $this->getData($stage) == null
@@ -829,13 +829,13 @@ class TimePoint
             throw new Exception("You need to specify a valid BVL QC Type");
         }
 
-        $setArray = array('BVLQCType' => $type);
+        $setArray = ['BVLQCType' => $type];
 
         // update session table
         $db->update(
             'session',
             $setArray,
-            array('ID' => $this->getSessionID())
+            ['ID' => $this->getSessionID()]
         );
 
         // reload TimePoint object
@@ -866,13 +866,13 @@ class TimePoint
             throw new Exception("Cannot complete QC until the type is defined");
         }
 
-        $setArray = array('BVLQCStatus' => $status);
+        $setArray = ['BVLQCStatus' => $status];
 
         // update session table
         $db->update(
             'session',
             $setArray,
-            array('ID' => $this->getSessionID())
+            ['ID' => $this->getSessionID()]
         );
 
         // reload TimePoint object
@@ -900,13 +900,13 @@ class TimePoint
         }
 
         // fields to update
-        $setArray = array('BVLQCExclusion' => $status);
+        $setArray = ['BVLQCExclusion' => $status];
 
         // update session table
         $db->update(
             'session',
             $setArray,
-            array('ID' => $this->getSessionID())
+            ['ID' => $this->getSessionID()]
         );
 
         // reload TimePoint object
@@ -936,7 +936,7 @@ class TimePoint
         if ($currentStage == 'Not Started') {
             return true;
         } elseif ($currentStage == 'Screening'
-            && in_array($this->getData('Screening'), array('Pass', 'Failure'))
+            && in_array($this->getData('Screening'), ['Pass', 'Failure'])
         ) {
             return true;
         }
@@ -1052,10 +1052,10 @@ class TimePoint
              WHERE
                tarchive.SessionID = :v_sessionid AND
                tarchive.ArchiveLocation LIKE :v_basename',
-            array(
+            [
                 'v_sessionid' => $this->getSessionID(),
                 'v_basename'  => '%' . $tarname,
-            )
+            ]
         );
 
         if (empty($row)) {
@@ -1084,7 +1084,7 @@ class TimePoint
              WHERE
                ID = :v_sessionid
             ',
-            array('v_sessionid' => $this->getSessionID())
+            ['v_sessionid' => $this->getSessionID()]
         );
 
         return new \LORIS\TimePointImagingQC(
@@ -1114,7 +1114,7 @@ class TimePoint
              WHERE
                SessionID = :v_sessionid
             ',
-            array('v_sessionid' => $this->getSessionID())
+            ['v_sessionid' => $this->getSessionID()]
         );
         return $result;
     }

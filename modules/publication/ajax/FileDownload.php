@@ -12,7 +12,7 @@
  */
 
 $user    = \User::singleton();
-$message = array('message' => null);
+$message = ['message' => null];
 
 if (userCanDownload($user)) {
     // Make sure that the user isn't trying to break out of the $path

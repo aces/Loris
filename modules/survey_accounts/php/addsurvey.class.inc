@@ -45,7 +45,7 @@ class AddSurvey extends \NDB_Form
      */
     function _getDefaults()
     {
-        $defaults = array();
+        $defaults = [];
         return $defaults;
     }
 
@@ -65,16 +65,16 @@ class AddSurvey extends \NDB_Form
             "SELECT COUNT(*) FROM candidate 
             WHERE PSCID=:v_PSCID 
             AND CandID=:v_CandID AND Active='Y'",
-            array(
+            [
                 'v_PSCID'  => $values['PSCID'],
                 'v_CandID' => $values['CandID'],
-            )
+            ]
         );
         $error         = "PSCID and DCC ID do not match "
                 ."or candidate does not exist.";
         if ($numCandidates != 1) {
             return
-              array('CandID' => $error);
+              ['CandID' => $error];
         }
 
         $numSessions = $db->pselectOne(
@@ -82,18 +82,18 @@ class AddSurvey extends \NDB_Form
             WHERE CandID=:v_CandID 
             AND UPPER(Visit_label)=UPPER(:v_VL) 
             AND Active='Y'",
-            array(
+            [
                 'v_CandID' => $values['CandID'],
                 'v_VL'     => $values['VL'],
-            )
+            ]
         );
 
         if ($numSessions != 1) {
-            return array(
+            return [
                 'VL' => "Visit ".
                             $values['VL'].
                             " does not exist for given candidate",
-            );
+            ];
         }
 
         $instrument_list = $db->pselect(
@@ -102,10 +102,10 @@ class AddSurvey extends \NDB_Form
              WHERE s.CandID=:v_CandID  
              AND UPPER(s.Visit_label)=UPPER(:v_VL) 
              AND s.Active='Y'",
-            array(
+            [
                 'v_CandID' => $values['CandID'],
                 'v_VL'     => $values['VL'],
-            )
+            ]
         );
         $reminder        = " already exists for given candidate for visit ";
         foreach ($instrument_list as $instrument) {
@@ -113,31 +113,31 @@ class AddSurvey extends \NDB_Form
                 $instrument_instance = \NDB_BVL_Instrument::factory(
                     $instrument['Test_name']
                 );
-                return array(
+                return [
                     'Test_name' => "Instrument ".
                         $instrument_instance->getFullName().
                         $reminder. $values['VL'],
-                );
+                ];
             }
         }
 
         if (!empty($values['Email']) ) {
             if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
-                return array('Email' => 'The email address is not valid.');
+                return ['Email' => 'The email address is not valid.'];
             }
         }
         if (!empty($values['Email']) && !empty($values['Email2'])) {
             if ($values['Email'] != $values['Email2']) {
-                return array('Email2' => 'The email addresses do not match.');
+                return ['Email2' => 'The email addresses do not match.'];
             }
         }
 
         if (!empty($values['Email']) && empty($values['Email2'])) {
-            return array('Email2' => 'Please confirm the email address.');
+            return ['Email2' => 'Please confirm the email address.'];
         }
 
         if (empty($values['Test_name'])) {
-            return array('Test_name' => 'Please choose an instrument.');
+            return ['Test_name' => 'Please choose an instrument.'];
         }
         if ($_REQUEST['fire_away'] !== 'Create survey') {
             if (!filter_var(
@@ -145,12 +145,12 @@ class AddSurvey extends \NDB_Form
                 FILTER_VALIDATE_EMAIL
             )
             ) {
-                return array('Email' => 'Email is not valid.');
+                return ['Email' => 'Email is not valid.'];
 
             }
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -168,19 +168,19 @@ class AddSurvey extends \NDB_Form
         $SessionID = $db->pselectOne(
             "SELECT ID FROM session".
             " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
-            array(
+            [
                 'v_CandID' => $values['CandID'],
                 'v_VL'     => $values['VL'],
-            )
+            ]
         );
 
         $InstrumentExists = $db->pselectOne(
             "SELECT 'x' FROM participant_accounts
             WHERE Test_name=:TN AND SessionID=:SID",
-            array(
+            [
                 'TN'  => $values['Test_name'],
                 'SID' => $SessionID,
-            )
+            ]
         );
         if ($InstrumentExists == 'x') {
             return;
@@ -205,14 +205,14 @@ class AddSurvey extends \NDB_Form
         try {
             $db->insert(
                 "participant_accounts",
-                array(
+                [
                     'SessionID'       => $SessionID,
                     'Test_name'       => $values['Test_name'],
                     'Email'           => $values['Email'],
                     'Status'          => $status,
                     'OneTimePassword' => $key,
                     'CommentID'       => $commentID,
-                )
+                ]
             );
         } catch(\DatabaseException $e) {
             error_log($e->getMessage());
@@ -224,12 +224,12 @@ class AddSurvey extends \NDB_Form
             $config  = \NDB_Config::singleton();
             $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
 
-            $msg_data = array(
+            $msg_data = [
                 'study'     => $config->getSetting("title"),
                 'url'       => $baseURL . '/survey.php?key=' .
                                          urlencode($key),
                 'EmailForm' => $values['email_dialog'],
-            );
+            ];
             \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
         }
     }
@@ -264,14 +264,14 @@ class AddSurvey extends \NDB_Form
             "Test_name",
             "Instrument",
             array_merge(
-                array('' => ''),
+                ['' => ''],
                 \Utility::getDirectInstruments()
             )
         );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText("Email2", "Confirm Email address");
 
-        $this->form->addFormRule(array(&$this, '_validateAddSurvey'));
+        $this->form->addFormRule([&$this, '_validateAddSurvey']);
     }
 
     /**
@@ -286,9 +286,9 @@ class AddSurvey extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
-            )
+            ]
         );
     }
 }

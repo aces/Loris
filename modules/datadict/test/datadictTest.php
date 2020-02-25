@@ -32,14 +32,14 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      * Table headers
      */
     private $_loadingUI
-        =  array(
+        =  [
             'Data Dictionary'    => '#bc2 > a:nth-child(2) > div',
             'Source From'        => '#dynamictable > thead > tr > th:nth-child(2)',
             'Name'               => '#dynamictable > thead > tr > th:nth-child(3)',
             'Source Field'       => '#dynamictable > thead > tr > th:nth-child(4)',
             'Description'        => '#dynamictable > thead > tr > th:nth-child(5)',
             'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)',
-        );
+        ];
 
     /**
      * Inserting testing data
@@ -51,7 +51,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         parent::setUp();
         $this->DB->insert(
             "parameter_type",
-            array(
+            [
                 'Name'        => 'TestParameterNotRealMAGICNUMBER335',
                 'Type'        => 'varchar(255)',
                 'Description' => 'I am a fake description used only for testing'.
@@ -60,7 +60,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                 'SourceField' => 'imaginary',
                 'Queryable'   => true,
                 'IsFile'      => 0,
-            )
+            ]
         );
     }
     /**
@@ -73,7 +73,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
         $this->DB->delete(
             'parameter_type',
-            array('Name' => 'TestParameterNotRealMAGICNUMBER335')
+            ['Name' => 'TestParameterNotRealMAGICNUMBER335']
         );
     }
     /**

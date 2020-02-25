@@ -54,14 +54,14 @@ class Survey_Accounts extends \NDB_Menu_Filter
             AND   s.Active = 'Y'";
 
         // set the class variables
-        $this->columns      = array(
+        $this->columns      = [
             'c.PSCID AS PSCID',
             's.Visit_label AS Visit',
             'p.Email as Email',
             'p.Test_name as SurveyName',
             'p.OneTimePassword as URL',
             'p.Status',
-        );
+        ];
         $this->query        = $query;
         $this->order_by     = 'PSCID';
         $this->fieldOptions = [
@@ -82,9 +82,9 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/survey_accounts/js/surveyAccountsIndex.js",
-            )
+            ]
         );
     }
 }

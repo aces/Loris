@@ -82,7 +82,7 @@ class Module extends \Module
             $docs         = $DB->pselect(
                 "SELECT File_name, Date_uploaded, Data_dir FROM document_repository
                  ORDER BY Date_uploaded DESC LIMIT 4",
-                array()
+                []
             );
             $numberOfDocs = sizeof($docs);
             for ($i=0; $i < $numberOfDocs; $i++) {

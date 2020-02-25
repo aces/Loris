@@ -30,18 +30,18 @@ $cdb         = \NDB_Factory::singleton()->couchDB(
     $couchConfig['adminpass']
 );
 
-$results = array();
+$results = [];
 if (isset($_REQUEST['category']) && $_REQUEST['category']) {
     $category = urlencode($_REQUEST['category']);
 
     $results = $cdb->queryView(
         "DQG-2.0",
         "datadictionary",
-        array(
+        [
             "reduce"   => "false",
             "startkey" => "[\"$category\"]",
             "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
-        )
+        ]
     );
 } else if (isset($_REQUEST['key']) && $_REQUEST['key']) {
     $key = explode('%2C', urlencode($_REQUEST['key']));
@@ -49,10 +49,10 @@ if (isset($_REQUEST['category']) && $_REQUEST['category']) {
     $results = $cdb->queryView(
         "DQG-2.0",
         "datadictionary",
-        array(
+        [
             "reduce" => "false",
             "key"    => "[\"$key[0]\",\"$key[1]\"]",
-        )
+        ]
     );
 }
 

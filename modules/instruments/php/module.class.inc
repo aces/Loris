@@ -42,7 +42,7 @@ class Module extends \Module
             return $resp;
         }
 
-        $pathComponents = array();
+        $pathComponents = [];
 
         // Breakdown path information from the request.
         preg_match(

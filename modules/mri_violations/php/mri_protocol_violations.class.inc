@@ -40,10 +40,10 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return $user->hasAnyPermission(
-            array(
+            [
                 'violated_scans_view_allsites',
                 'violated_scans_edit'
-            )
+            ]
         );
     }
 
@@ -55,7 +55,7 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns      = array(
+        $this->columns      = [
             'mpv.CandID',
             'mpv.PSCID',
             'mpv.time_run',
@@ -75,16 +75,16 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'mpv.time_range',
             'mpv.SeriesUID',
             'tarchive.TarchiveID',
-        );
-        $this->validFilters = array(
+        ];
+        $this->validFilters = [
             'mpv.CandID',
             'mpv.PSCID',
             'mpv.PatientName',
             'mpv.SeriesUID',
             'mpv.series_description',
             'mpv.time_run',
-        );
-        $this->headers      = array(
+        ];
+        $this->headers      = [
             'CandID',
             'PSCID',
             'Time_Run',
@@ -104,19 +104,19 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'Time',
             'SeriesUID',
             'TarchiveID',
-        );
+        ];
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->query        = " FROM mri_protocol_violated_scans mpv
                  LEFT JOIN tarchive ON
                 (mpv.PatientName = tarchive.PatientName) WHERE 1=1";
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'CandID'            => 'mpv.CandID',
             'PSCID'             => 'mpv.PSCID',
             'PatientName'       => 'mpv.PatientName',
             'SeriesUID'         => 'mpv.SeriesUID',
             'SeriesDescription' => 'mpv.series_description',
             'TimeRun'           => 'mpv.time_run',
-        );
+        ];
         $this->tpl_data['mri_protocol_data']   = $this->getMRIProtocolData();
         $this->tpl_data['mri_protocol_header']
             = array_keys($this->tpl_data['mri_protocol_data'][0]);
@@ -136,13 +136,13 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         $minYear     = $config->getSetting('startYear')
             - $config->getSetting('ageMax');
         $maxYear     = $config->getSetting('endYear');
-        $dateOptions = array(
+        $dateOptions = [
             'language'       => 'en',
             'format'         => 'YMd',
             'addEmptyOption' => true,
             'minYear'        => $minYear,
             'maxYear'        => $maxYear,
-        );
+        ];
 
         $this->addBasicText('CandID', 'DCC-ID:');
         $this->addBasicText('PSCID', 'PSC-ID:');
@@ -175,7 +175,7 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             FROM mri_protocol as p
             LEFT JOIN mri_scan_type as s
             ON p.Scan_type=s.ID",
-            array()
+            []
         );
         return $mri_protocols;
     }
@@ -191,10 +191,10 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL .
                "/mri_violations/js/mri_protocol_violations_columnFormatter.js",
-            )
+            ]
         );
     }
 }

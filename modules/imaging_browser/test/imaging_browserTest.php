@@ -43,64 +43,64 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // Create tests-specific data
         $this->DB->insert(
             "psc",
-            array(
+            [
                 'CenterID'  => '253',
                 'Name'      => 'Test Site AOL',
                 'Alias'     => 'AOL',
                 'MRI_alias' => 'Y',
-            )
+            ]
         );
 
         $this->DB->insert(
             "psc",
-            array(
+            [
                 'CenterID'  => '254',
                 'Name'      => 'Test Site BOL',
                 'Alias'     => 'BOL',
                 'MRI_alias' => 'Y',
-            )
+            ]
         );
 
         // Create test-specific data
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => '000001',
                 'PSCID'                 => 'DCC0001',
                 'RegistrationCenterID'  => 1,
                 'RegistrationProjectID' => 1,
                 'Active'                => 'Y',
                 'Entity_type'           => 'Human',
-            )
+            ]
         );
 
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => '000002',
                 'PSCID'                 => 'AOL0002',
                 'RegistrationCenterID'  => 253,
                 'RegistrationProjectID' => 1,
                 'Active'                => 'Y',
                 'Entity_type'           => 'Human',
-            )
+            ]
         );
 
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => 000003,
                 'PSCID'                 => 'BOL0003',
                 'RegistrationCenterID'  => 254,
                 'RegistrationProjectID' => 1,
                 'Active'                => 'Y',
                 'Entity_type'           => 'Human',
-            )
+            ]
         );
 
         $this->DB->insert(
             'session',
-            array(
+            [
                 'ID'            => 999997,
                 'CandID'        => 000001,
                 'Visit_label'   => 'Test0',
@@ -109,12 +109,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
-            )
+            ]
         );
 
         $this->DB->insert(
             'session',
-            array(
+            [
                 'ID'            => 999998,
                 'CandID'        => 000002,
                 'Visit_label'   => 'Test1',
@@ -123,12 +123,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
-            )
+            ]
         );
 
         $this->DB->insert(
             'session',
-            array(
+            [
                 'ID'            => 999999,
                 'CandID'        => 000003,
                 'Visit_label'   => 'Test2',
@@ -137,39 +137,39 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
-            )
+            ]
         );
 
         // Add imaging data
 
         $this->DB->insert(
             'mri_processing_protocol',
-            array(
+            [
                 'ProcessProtocolID' => 1111,
                 'ProtocolFile'      => 'None1',
                 'FileType'          => null,
                 'Tool'              => 'None1',
                 'InsertTime'        => 0,
                 'md5sum'            => null,
-            )
+            ]
         );
 
         $this->DB->insert(
             'mri_processing_protocol',
-            array(
+            [
                 'ProcessProtocolID' => 2222,
                 'ProtocolFile'      => 'None2',
                 'FileType'          => null,
                 'Tool'              => 'None2',
                 'InsertTime'        => 0,
                 'md5sum'            => null,
-            )
+            ]
         );
 
         // create the tarchive entries
         $this->DB->insert(
             'tarchive',
-            array(
+            [
                 'TarchiveID'             => 263,
                 'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
                '100912542610900000004',
@@ -190,12 +190,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'AcquisitionMetadata'    => 'metadata',
                 'SessionID'              => 999998,
                 'PendingTransfer'        => 1,
-            )
+            ]
         );
 
         $this->DB->insert(
             'tarchive',
-            array(
+            [
                 'TarchiveID'             => 264,
                 'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
                '100912542610900000001',
@@ -216,7 +216,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'AcquisitionMetadata'    => 'metadata',
                 'SessionID'              => 999999,
                 'PendingTransfer'        => 1,
-            )
+            ]
         );
 
         // @codingStandardsIgnoreStart

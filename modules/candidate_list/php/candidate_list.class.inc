@@ -86,21 +86,21 @@ class Candidate_List extends \DataFrameworkMenu
         } else {
             $list_of_sites = $user->getStudySites();
         }
-        $site_options = array();
+        $site_options = [];
         foreach ($list_of_sites as $id => $name) {
             $site_options[$name] = $name;
         }
 
         // get the list of projects
         $list_of_projects = \Utility::getProjectList();
-        $project_options  = array();
+        $project_options  = [];
         foreach ($list_of_projects as $id => $name) {
             $project_options[$name] = $name;
         }
 
         // get the list of subprojects
         $list_of_subprojects = \Utility::getSubprojectList();
-        $subproject_options  = array();
+        $subproject_options  = [];
         foreach ($list_of_subprojects as $id => $name) {
             $subproject_options[$name] = $name;
         }
@@ -108,7 +108,7 @@ class Candidate_List extends \DataFrameworkMenu
         // get the list participant status options
         $list_of_participant_status
             = \Candidate::getParticipantStatusOptions();
-        $participant_status_options = array();
+        $participant_status_options = [];
         foreach ($list_of_participant_status as $id => $name) {
             $participant_status_options[$name] = $name;
         }
@@ -136,9 +136,9 @@ class Candidate_List extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/candidate_list/js/candidateListIndex.js",
-            )
+            ]
         );
     }
 

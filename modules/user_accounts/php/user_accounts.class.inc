@@ -59,7 +59,7 @@ class User_Accounts extends \NDB_Menu_Filter
         }
 
         // set the class variables
-        $this->columns      = array(
+        $this->columns      = [
             "COALESCE(GROUP_CONCAT(
                                 psc.Name SEPARATOR '; '),'Not Assigned'
                                 ) AS Sites",
@@ -68,11 +68,11 @@ class User_Accounts extends \NDB_Menu_Filter
             'Email',
             'Active',
             'Pending_approval',
-        );
+        ];
         $this->query        = $query;
         $this->order_by     = 'Username';
         $this->group_by     = 'users.ID';
-        $this->validFilters = array(
+        $this->validFilters = [
             'user_psc_rel.CenterID',
             'users.UserID',
             'users.Real_name',
@@ -80,16 +80,16 @@ class User_Accounts extends \NDB_Menu_Filter
             'users.Active',
             'users.Examiner',
             'users.Pending_approval',
-        );
+        ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'centerID'  => 'user_psc_rel.CenterID',
             'active'    => 'users.Active',
             'userID'    => 'users.UserID',
             'real_name' => 'users.Real_name',
             'email'     => 'users.Email',
             'pending'   => 'users.Pending_approval',
-        );
+        ];
     }
 
     /**
@@ -109,15 +109,15 @@ class User_Accounts extends \NDB_Menu_Filter
         // PSC
         if ($user->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = array();
+            $list_of_sites = [];
             $site_arr      = \Utility::getSiteList(false);
             foreach ($site_arr as $key=>$val) {
                 $list_of_sites[$val] = $val;
             }
         } else {
             // allow only to view own site data
-            $list_of_sites = array();
-            $site          = array();
+            $list_of_sites = [];
+            $site          = [];
             $site_arr      = $user->getData('CenterIDs');
             foreach ($site_arr as $key=>$val) {
                 $site[$key] = \Site::singleton($val);
@@ -125,16 +125,16 @@ class User_Accounts extends \NDB_Menu_Filter
                     = $site[$key]->getCenterName();
             }
         }
-        $yesNoOptions = array(
+        $yesNoOptions = [
             'Y' => 'Yes',
             'N' => 'No',
-        );
+        ];
 
-        $this->fieldOptions = array(
+        $this->fieldOptions = [
             'sites'            => $list_of_sites,
             'actives'          => $yesNoOptions,
             'pendingApprovals' => $yesNoOptions,
-        );
+        ];
     }
     /**
      * Gathers JS dependecies and merge them with the parent
@@ -148,7 +148,7 @@ class User_Accounts extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/user_accounts/js/userAccountsIndex.js")
+            [$baseURL . "/user_accounts/js/userAccountsIndex.js"]
         );
     }
 }

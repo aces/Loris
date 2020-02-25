@@ -51,7 +51,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDoesPageLoadWithPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -70,7 +70,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDoesNotPageLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->webDriver->get(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -98,7 +98,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->changeStudySite();
 
         // Check to make sure page doesn't load without permission
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->webDriver->get(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -113,7 +113,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->resetPermissions();
 
         // Check to make sure page doesn't load with permission
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->webDriver->get(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"

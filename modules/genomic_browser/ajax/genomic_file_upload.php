@@ -40,7 +40,7 @@ header('Content-Type: application/json; charset=UTF-8');
 $bytes = $_FILES["fileData"]['size'];
 
 $fileToUpload
-    = (object) array(
+    = (object) [
         'file_type'         => $_FILES["fileData"]["type"],
         'file_name'         => $_FILES["fileData"]["name"],
         'tmp_name'          => $_FILES["fileData"]["tmp_name"],
@@ -49,7 +49,7 @@ $fileToUpload
         'genomic_file_type' => empty($_POST['fileType']) ?
                     null : str_replace('_', ' ', $_POST['fileType']),
         'description'       => $_POST['description'],
-    );
+    ];
 
 setFullPath($fileToUpload);
 
@@ -71,12 +71,12 @@ case 'Other':
 default:
     die(
         json_encode(
-            array(
+            [
                 'message'  => "Unsupported filetype: " .
                                $fileToUpload->genomic_file_type,
                 'progress' => 100,
                 'error'    => true,
-            )
+            ]
         )
     );
 }
@@ -99,11 +99,11 @@ function validateRequest()
     ) {
         die(
             json_encode(
-                array(
+                [
                     'message'  => 'Validation failed : Missing inputs',
                     'progress' => 100,
                     'error'    => true,
-                )
+                ]
             )
         );
         // This require some more work
@@ -137,12 +137,12 @@ function setFullPath(&$fileToUpload)
         if ($collision_count > $collision_max) {
             die(
                 json_encode(
-                    array(
+                    [
                         'message'  => 'That file already exists, '
                         . 'could not generate a non-colliding name',
                         'progress' => 100,
                         'error'    => true,
-                    )
+                    ]
                 )
             );
         }
@@ -196,11 +196,11 @@ function moveFileToFS(&$fileToUpload)
         //       Further debugging needed
         die(
             json_encode(
-                array(
+                [
                     'message'  => "File copy failed",
                     'progress' => 100,
                     'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -217,7 +217,7 @@ function moveFileToFS(&$fileToUpload)
 function registerFile(&$fileToUpload)
 {
     $DB     = \Database::singleton();
-    $values = array(
+    $values = [
         'FileName'         => $fileToUpload->full_path,
         'Description'      => $fileToUpload->description,
         'FileType'         => $fileToUpload->file_type,
@@ -225,7 +225,7 @@ function registerFile(&$fileToUpload)
         'FileSize'         => $fileToUpload->size,
         'Date_inserted'    => date("Y-m-d h:i:s", time()),
         'InsertedByUserID' => $fileToUpload->inserted_by,
-    );
+    ];
     try {
         $DB->replace('genomic_files', $values);
         //TODO :: This should select using date_insert and
@@ -233,7 +233,7 @@ function registerFile(&$fileToUpload)
         $last_id = $DB->pselectOne(
             'SELECT MAX(GenomicFileID) AS last_id
            FROM genomic_files',
-            array()
+            []
         );
         $fileToUpload->GenomicFileID = $last_id;
 
@@ -245,12 +245,12 @@ function registerFile(&$fileToUpload)
         //      Currently, it generates unnecessary PHP warnings
         die(
             json_encode(
-                array(
+                [
                     'message'  => 'File registration failed. Is the '
                                     .' description empty?',
                     'progress' => 100,
                     'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -316,13 +316,13 @@ function createSampleCandidateRelations(&$fileToUpload)
     try {
         foreach ($headers as $pscid) {
             $stmt->execute(
-                array(
+                [
                     "sample_label" => $pscid,
                     "pscid"        => explode(
                         '_',
                         $pscid
                     )[1],
-                )
+                ]
             );
         }
         // Report number on relation created (candidate founded)
@@ -331,11 +331,11 @@ function createSampleCandidateRelations(&$fileToUpload)
         endWithFailure();
         die(
             json_encode(
-                array(
+                [
                     'message'  => "Can't insert into the database.",
                     'progress' => 100,
                     'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -409,11 +409,11 @@ function insertBetaValues(&$fileToUpload)
                 array_shift($values);
                 foreach ($values as $key => $value) {
                     $success = $stmt->execute(
-                        array(
+                        [
                             "sample_label" => $headers[$key],
                             "cpg_name"     => $probe_id,
                             "beta_value"   => $value,
-                        )
+                        ]
                     );
                     if (!$success) {
                         throw new DatabaseException("Failed to insert row");
@@ -423,11 +423,11 @@ function insertBetaValues(&$fileToUpload)
                 endWithFailure();
                 die(
                     json_encode(
-                        array(
+                        [
                             'message'  => 'Insertion failed',
                             'progress' => 100,
                             'error'    => true,
-                        )
+                        ]
                     )
                 );
             }
@@ -437,11 +437,11 @@ function insertBetaValues(&$fileToUpload)
         endWithFailure();
         die(
             json_encode(
-                array(
+                [
                     'message'  => 'Beta value file can`t be opened',
                     'progress' => 100,
                     'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -487,10 +487,10 @@ function createCandidateFileRelations(&$fileToUpload)
             foreach ($headers as $pscid) {
                 $pscid   = trim($pscid);
                 $success = $stmt->execute(
-                    array(
+                    [
                         "pscid"           => $pscid,
                         "genomic_file_id" => $fileToUpload->GenomicFileID,
-                    )
+                    ]
                 );
                 if (!$success) {
                     throw new DatabaseException("Failed to insert row");
@@ -500,11 +500,11 @@ function createCandidateFileRelations(&$fileToUpload)
             endWithFailure();
             die(
                 json_encode(
-                    array(
+                    [
                         'message'  => 'File registration failed',
                         'progress' => 100,
                         'error'    => true,
-                    )
+                    ]
                 )
             );
         }
@@ -512,11 +512,11 @@ function createCandidateFileRelations(&$fileToUpload)
         endWithFailure();
         die(
             json_encode(
-                array(
+                [
                     'message'  => 'Beta value file can`t be opened',
                     'progress' => 100,
                     'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -551,10 +551,10 @@ function insertMethylationData(&$fileToUpload)
  */
 function reportProgress($progress, $message)
 {
-    $response = array(
+    $response = [
         'message'  => $message,
         'progress' => $progress,
-    );
+    ];
     echo json_encode($response);
     sleep(1);
 }
@@ -574,7 +574,7 @@ function candidateExists($pscid)
 
     $CandID = $DB->pselectOne(
         "SELECT CandID from candidate WHERE PSCID = :pscid",
-        array("pscid" => $pscid)
+        ["pscid" => $pscid]
     );
 
     return !empty($CandID);

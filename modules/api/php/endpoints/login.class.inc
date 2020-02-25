@@ -65,7 +65,7 @@ class Login extends Endpoint
      */
     protected function allowedMethods() : array
     {
-        return array('POST');
+        return ['POST'];
     }
 
     /**
@@ -79,10 +79,10 @@ class Login extends Endpoint
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.2',
             'v0.0.3-dev',
-        );
+        ];
     }
 
     /**
@@ -117,7 +117,7 @@ class Login extends Endpoint
                 $token = $this->getEncodedToken($user);
                 if (!empty($token)) {
                     return new \LORIS\Http\Response\JsonResponse(
-                        array('token' => $token)
+                        ['token' => $token]
                     );
                 } else {
                     return new \LORIS\Http\Response\JSON\InternalServerError(
@@ -163,7 +163,7 @@ class Login extends Endpoint
         $config  = $factory->config();
         $baseURL = $factory->settings()->getBaseURL();
 
-        $token = array(
+        $token = [
             // JWT related tokens to for the JWT library to validate
             "iss"  => $baseURL,
             "aud"  => $baseURL,
@@ -174,7 +174,7 @@ class Login extends Endpoint
             "exp"  => time() + 86400,
             // Additional payload data
             "user" => $user,
-        );
+        ];
 
         $key = $config->getSetting("JWTKey");
         if (!self::isKeyStrong($key)) {

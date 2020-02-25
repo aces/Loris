@@ -31,16 +31,16 @@
 class LorisForm
 {
 
-    var $form          = array();
-    var $defaultValues = array();
-    var $formRules     = array();
-    var $errors        = array();
-    var $filters       = array();
+    var $form          = [];
+    var $defaultValues = [];
+    var $formRules     = [];
+    var $errors        = [];
+    var $filters       = [];
     var $frozen        = false;
     var $enctype       = '';
-    var $groupMapping  = array();
+    var $groupMapping  = [];
     var $action        = '';
-    var $allowedRules  = array(
+    var $allowedRules  = [
         'compare',
         'requiredIf',
         'required',
@@ -48,7 +48,7 @@ class LorisForm
         'regex',
         'email',
         'maxlength',
-    );
+    ];
     public $validOperators;
     public $encrypt;
 
@@ -66,9 +66,9 @@ class LorisForm
      *
      * @return array describing the form element
      */
-    protected function &createBase($name, $label, $attribs=array())
+    protected function &createBase($name, $label, $attribs=[])
     {
-        $el = array('label' => $label);
+        $el = ['label' => $label];
 
         if (!empty($name)) {
             $el['name'] = $name;
@@ -123,7 +123,7 @@ class LorisForm
      *
      * @return &array A reference to the array that was added to $this->form
      */
-    protected function &addBase($name, $label, $attribs = array())
+    protected function &addBase($name, $label, $attribs = [])
     {
         $el   = $this->createBase($name, $label, $attribs);
         $name = $this->_generateName($name);
@@ -144,7 +144,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addSelect($name, $label, $options, $attribs = array())
+    public function addSelect($name, $label, $options, $attribs = [])
     {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
@@ -168,7 +168,7 @@ class LorisForm
      */
     public function addStatic($name, $label)
     {
-        $el         =& $this->addBase($name, $label, array());
+        $el         =& $this->addBase($name, $label, []);
         $el['type'] = 'static';
         return $el;
     }
@@ -184,7 +184,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addPassword($name, $label, $options=array())
+    public function addPassword($name, $label, $options=[])
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'password';
@@ -200,12 +200,12 @@ class LorisForm
      *
      * @return &array
      */
-    public function addHidden($name, $value, $attributes=array())
+    public function addHidden($name, $value, $attributes=[])
     {
         $el         =& $this->addBase(
             $name,
             null,
-            array_merge(array('value' => $value), $attributes)
+            array_merge(['value' => $value], $attributes)
         );
         $el['type'] = 'hidden';
         return $el;
@@ -222,7 +222,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addText($name, $label, $options=array())
+    public function addText($name, $label, $options=[])
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'text';
@@ -241,7 +241,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addTextArea($elname, $label, $options=array())
+    public function addTextArea($elname, $label, $options=[])
     {
         $el         =& $this->addBase($elname, $label, $options);
         $el['type'] = 'textarea';
@@ -269,7 +269,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addDate($name, $label, $options, $attribs = array())
+    public function addDate($name, $label, $options, $attribs = [])
     {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
@@ -347,7 +347,7 @@ class LorisForm
      *
      * @return &array
      */
-    function addHeader($name, $label, $options = array())
+    function addHeader($name, $label, $options = [])
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'header';
@@ -413,8 +413,8 @@ class LorisForm
         $type,
         $name,
         $label='',
-        $options=array(),
-        $attribs=array()
+        $options=[],
+        $attribs=[]
     ) {
         $el = null;
         switch($type)  {
@@ -496,7 +496,7 @@ class LorisForm
      *
      * @return array of the form that can be added to $this->form
      */
-    function createText($elname, $label, $attribs = array())
+    function createText($elname, $label, $attribs = [])
     {
         $el         =& $this->createBase($elname, $label, $attribs);
         $el['type'] = 'text';
@@ -518,7 +518,7 @@ class LorisForm
      *
      * @return array of the form that can be added to $this->form
      */
-    function createSubmit($elname, $value, $attribs = array())
+    function createSubmit($elname, $value, $attribs = [])
     {
         $attribs['value'] = $value;
         $el         =& $this->createBase($elname, null, $attribs);
@@ -564,7 +564,7 @@ class LorisForm
             // If submitted value in $_REQUEST is an array return the array
             // of filtered values
             if (is_array($_REQUEST[$name])) {
-                $filteredValues = array();
+                $filteredValues = [];
                 foreach (array_keys($_REQUEST[$name]) as $k) {
                     // Checkbox values get converted from (on,off) to (1,0)
                     if ($this->_isAdvCheckbox("{$name}[$k]")) {
@@ -676,14 +676,14 @@ class LorisForm
         }
 
         // Apply filters that should be applied on all fields
-        $count = count($this->filters['__ALL__'] ?? array());
+        $count = count($this->filters['__ALL__'] ?? []);
         if (isset($this->filters['__ALL__'])) {
             for ($i = 0; $i < $count; $i++) {
-                if (in_array('trim', $this->filters['__ALL__'] ?? array())) {
+                if (in_array('trim', $this->filters['__ALL__'] ?? [])) {
                     // Value for the element is in array so filter all
                     // elements in the array of values
                     if (is_array($value)) {
-                        $newValue = array();
+                        $newValue = [];
                         foreach ($value as $k => $v) {
                             $newValue[$k]
                                 = $this->_getFilteredValue("{$name}[$k]", $v);
@@ -714,7 +714,7 @@ class LorisForm
     protected function selectHTML($el)
     {
         $strOptions    = '';
-        $options       = $el['options'] ?? array();
+        $options       = $el['options'] ?? [];
         $cls           = '';
         $changehandler = '';
         $multiple      = '';
@@ -1036,11 +1036,11 @@ class LorisForm
     {
         $timeStamp = $this->getValue($el['name']);
         $smarty    = new Smarty_NeuroDB;
-        $value     = array(
+        $value     = [
             'H' => null,
             'i' => null,
-        );
-        $bits      = array();
+        ];
+        $bits      = [];
 
         if (is_array($timeStamp)) {
             $value = $timeStamp;
@@ -1206,7 +1206,7 @@ class LorisForm
             return false;
         }
         $values = $this->getSubmitValues();
-        $errors = array();
+        $errors = [];
         foreach ($this->form as $elName => $el) {
             if ($el['type'] === 'group') {
                 if (isset($el['required'])) {
@@ -1457,7 +1457,7 @@ class LorisForm
     {
         if ($filterType == 'trim') {
             if (!isset($this->filters[$elementName])) {
-                $this->filters[$elementName] = array();
+                $this->filters[$elementName] = [];
             }
 
             $this->filters[$elementName][] = 'trim';
@@ -1686,11 +1686,11 @@ class LorisForm
     function toElementArray()
     {
 
-        $curPage = array(
-            'elements' => array(),
+        $curPage = [
+            'elements' => [],
             'type'     => 'page',
             'errors'   => $this->errors,
-        );
+        ];
         $retVal  = $curPage;
 
         // Hack to populate the HTML elements
@@ -1702,11 +1702,11 @@ class LorisForm
                     $retVal['elements'][] = $curPage;
                 }
 
-                $curPage = array(
-                    'elements'    => array(),
+                $curPage = [
+                    'elements'    => [],
                     'Description' => $el['label'],
                     'type'        => 'page',
-                );
+                ];
             } else {
                 $curPage['elements'][] = $el;
             }
@@ -1766,11 +1766,11 @@ class LorisForm
                 $this->form[$element[0]]['compare'] = $element[1];
                 $this->form[$element[1]]['compare'] = $element[0];
             } else if ($type === 'requiredIf') {
-                $this->formRules[]['requiredIf'] = array(
+                $this->formRules[]['requiredIf'] = [
                     "elements" => $element,
                     "format"   => func_get_arg(3),
                     "message"  => $message,
-                );
+                ];
             }
             return;
         }
@@ -1792,10 +1792,10 @@ class LorisForm
         }
 
         if ($type === 'regex') {
-            $this->form[$element]['regex'][] = array(
+            $this->form[$element]['regex'][] = [
                 'regexMsg' => $message,
                 'match'    => func_get_arg(3),
-            );
+            ];
         }
 
         if ($type === 'email') {
@@ -1804,10 +1804,10 @@ class LorisForm
         }
 
         if ($type === 'maxlength') {
-            $this->form[$element]['maxlength'] = array(
+            $this->form[$element]['maxlength'] = [
                 'message'   => $message,
                 'maxlength' => func_get_arg(3),
-            );
+            ];
         }
     }
 
@@ -1901,24 +1901,24 @@ class LorisForm
      *
      * @return void
      */
-    function addGroup($array, $name, $label, $delimiter, $options = array())
+    function addGroup($array, $name, $label, $delimiter, $options = [])
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
              $group_key = $value['name'] ?? $this->_generateName('');
-             $this->groupMapping[$group_key] = array(
+             $this->groupMapping[$group_key] = [
                  'groupName' => $name,
                  'index'     => $key,
-             );
+             ];
         }
-        $this->form[$name] = array(
+        $this->form[$name] = [
             'type'      => 'group',
             'name'      => $name,
             'elements'  => $array,
             'label'     => $label,
             'delimiter' => empty($delimiter) ? ' ' : $delimiter,
             'options'   => $options,
-        );
+        ];
 
     }
 
@@ -1956,8 +1956,8 @@ class LorisForm
         $type,
         $elname,
         $label='',
-        $options=array(),
-        $attribs=array()
+        $options=[],
+        $attribs=[]
     ) {
         switch($type) {
         case 'text':
@@ -2035,7 +2035,7 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    public function createSelect($name, $label, $options, $attribs = array())
+    public function createSelect($name, $label, $options, $attribs = [])
     {
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
@@ -2170,7 +2170,7 @@ class LorisForm
      */
     function getSubmitValues()
     {
-        $retVal     = array();
+        $retVal     = [];
         $submitKeys = $_POST + $_FILES;
 
         $this->getGroupValues(array_keys($submitKeys), $retVal);

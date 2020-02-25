@@ -81,24 +81,24 @@ class Dataquery extends \NDB_Form
         $update = $couch->queryView(
             "DQG-2.0",
             "runlog",
-            array(
+            [
                 "reduce"     => "false",
                 "limit"      => "1",
                 "descending" => "true",
-            )
+            ]
         );
         $this->tpl_data['updatetime'] = $update[0]['key'];
 
         $categories = $couch->queryView(
             "DQG-2.0",
             "datadictionary",
-            array(
+            [
                 "reduce"      => "true",
                 "group_level" => "1",
-            )
+            ]
         );
 
-        $cat_tpl = array();
+        $cat_tpl = [];
         foreach ($categories as $row) {
             if ($row['value']) {
                 $cat_tpl[$row['key'][0]] = $row['value'];
@@ -111,19 +111,19 @@ class Dataquery extends \NDB_Form
         $usersaved = $couch->queryView(
             "DQG-2.0",
             "savedqueries",
-            array(
+            [
                 "key"    => "\"$username\"",
                 "reduce" => "false",
-            )
+            ]
         );
 
         $globalsaved = $couch->queryView(
             "DQG-2.0",
             "savedqueries",
-            array(
+            [
                 "key"    => "\"global\"",
                 "reduce" => "false",
-            )
+            ]
         );
 
         $IDMapCallback = function ($row) {
@@ -133,17 +133,17 @@ class Dataquery extends \NDB_Form
         $usersavedNames   = array_map($IDMapCallback, $usersaved);
         $globalsavedNames = array_map($IDMapCallback, $globalsaved);
 
-        $this->tpl_data['savedqueries'] = array(
+        $this->tpl_data['savedqueries'] = [
             'user'   => $usersavedNames,
             'shared' => $globalsavedNames,
-        );
+        ];
         $sessionResults           = $couch->queryView(
             "DQG-2.0",
             "sessions",
-            array(
+            [
                 "reduce" => "true",
                 "group"  => "true",
-            )
+            ]
         );
         $this->tpl_data['visits'] = \Utility::getExistingVisitLabels();
 
@@ -170,7 +170,7 @@ class Dataquery extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/dataquery/js/arrayintersect.js",
                 $baseURL . "/dataquery/js/react.fieldselector.js",
                 $baseURL . "/dataquery/js/react.filterBuilder.js",
@@ -183,7 +183,7 @@ class Dataquery extends \NDB_Form
                 $baseURL . '/js/components/PaginationLinks.js',
                 $baseURL . "/js/jszip/jszip.min.js",
                 $baseURL . "/js/components/MultiSelectDropdown.js",
-            )
+            ]
         );
     }
 
@@ -200,9 +200,9 @@ class Dataquery extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/dataquery/css/dataquery.css",
-            )
+            ]
         );
     }
 }

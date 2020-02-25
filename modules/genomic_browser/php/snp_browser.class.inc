@@ -63,7 +63,7 @@ class SNP_Browser extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
             'psc.Name AS PSC',
             'LPAD(candidate.CandID, 6, "0") AS DCCID',
             'candidate.PSCID',
@@ -94,7 +94,7 @@ class SNP_Browser extends \NDB_Menu_Filter
             'SNP.Damaging as Damaging',
             'SNP_candidate_rel.GenotypeQuality as Genotype_Quality',
             'SNP.ExonicFunction as Exonic_Function',
-        );
+        ];
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -103,7 +103,7 @@ class SNP_Browser extends \NDB_Menu_Filter
                 function ($header) {
                         return ucwords(str_replace('_', ' ', $header));
                 },
-                array(
+                [
                     'PSC',
                     'DCCID',
                     'Subproject',
@@ -124,7 +124,7 @@ class SNP_Browser extends \NDB_Menu_Filter
                     'Validation_Method',
                     'Validated',
                     'Genotype_Quality',
-                )
+                ]
             )
         );
 
@@ -154,7 +154,7 @@ class SNP_Browser extends \NDB_Menu_Filter
 
         $this->limit = 10000;
 
-        $this->validFilters = array(
+        $this->validFilters = [
             'candidate.RegistrationCenterID',
             'candidate.CandID',
             'candidate.PSCID',
@@ -188,9 +188,9 @@ class SNP_Browser extends \NDB_Menu_Filter
             'SNP.OfficialName',
             'genotyping_platform.Name',
             'genomic_range',
-        );
+        ];
 
-        $ftf = array(
+        $ftf = [
             'centerID'            => 'candidate.RegistrationCenterID',
             'DCCID'               => 'candidate.CandID',
             'PSCID'               => 'candidate.PSCID',
@@ -219,7 +219,7 @@ class SNP_Browser extends \NDB_Menu_Filter
             'Gene_Symbol'         => 'SNP.OfficalSymbol',
             'genomic_range'       => 'genomic_range',
             'Platform'            => 'genotyping_platform.Name',
-        );
+        ];
 
         $this->formToFilter = $ftf;
     }
@@ -244,12 +244,12 @@ class SNP_Browser extends \NDB_Menu_Filter
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
             if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'Any') + $list_of_sites;
+                $list_of_sites = ['' => 'Any'] + $list_of_sites;
             }
         } else {
             // allow only to view own site data
             $list_of_sites = $user->getStudySites();
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+            $list_of_sites = ['' => 'All User Sites'] + $list_of_sites;
         }
 
         // SubprojectID
@@ -263,45 +263,45 @@ class SNP_Browser extends \NDB_Menu_Filter
         $this->addSelect(
             'sex',
             'Sex:',
-            array(
+            [
                 ''       => 'All',
                 'Male'   => 'Male',
                 'Female' => 'Female',
                 'Other'  => 'Other',
-            )
+            ]
         );
         $this->addSelect(
             'SubprojectID',
             'Subproject:',
-            array('' => 'Any') + $list_of_subprojects
+            ['' => 'Any'] + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
+        $this->addBasicText('dob', 'Date of Birth:', ['maxlength' => 10]);
 
-        $show_results_options = array(
+        $show_results_options = [
             'brief' => 'Summary fields',
             'full'  => 'All fields',
-        );
+        ];
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // SNP
 
-        $Base_options = array(
+        $Base_options = [
             null => 'Any',
             '37' => 'GRCh37',
-        );
+        ];
         $this->addSelect('Assembly', 'Build:', $Base_options);
 
         $this->addBasicText('rsID', 'rsID:');
         $this->addBasicText('SNP_Name', 'Name:');
         $this->addBasicText('SNP_Description', 'Description:');
         $this->addBasicText('SNP_External_Source', 'External Source:');
-        $Base_options = array(
+        $Base_options = [
             null => 'Any',
             'A'  => 'A',
             'C'  => 'C',
             'T'  => 'T',
             'G'  => 'G',
-        );
+        ];
         $this->addSelect('Allele_A', 'Allele A:', $Base_options);
         $this->addSelect('Allele_B', 'Allele B:', $Base_options);
         $this->addSelect('Reference_Base', 'Reference Base:', $Base_options);
@@ -310,41 +310,41 @@ class SNP_Browser extends \NDB_Menu_Filter
         $this->addSelect(
             'Validated',
             'Validated:',
-            array(
+            [
                 null => 'Any',
                 '0'  => '0',
                 '1'  => '1',
-            )
+            ]
         );
         $this->addSelect(
             'Function_Prediction',
             'Function Prediction:',
-            array(
+            [
                 null          => 'Any',
                 'exonic'      => 'exonic',
                 'ncRNAexonic' => 'ncRNAexonic',
                 'splicing'    => 'splicing',
                 'UTR3'        => 'UTR3',
                 'UTR5'        => 'UTR5',
-            )
+            ]
         );
         $this->addSelect(
             'Damaging',
             'Damaging:',
-            array(
+            [
                 null => 'Any',
                 'D'  => 'D',
                 'NA' => 'NA',
-            )
+            ]
         );
         $this->addBasicText('Genotype_Quality', 'Genotype Quality:');
         $this->addBasicText('Exonic_Function', 'Exonic Function:');
 
-        $Base_options = array(
+        $Base_options = [
             null => 'Any',
             'F'  => 'Forward',
             'R'  => 'Reverse',
-        );
+        ];
         $this->addSelect('Strand', 'Strand:', $Base_options);
 
         $this->addBasicText('genomic_range', 'Genomic Range:');
@@ -355,22 +355,22 @@ class SNP_Browser extends \NDB_Menu_Filter
         $platform_results
             = $DB->pselect(
                 "SELECT distinct Name FROM genotyping_platform ",
-                array()
+                []
             );
 
-        $platform_options = array('' => 'Any');
+        $platform_options = ['' => 'Any'];
         foreach ($platform_results as $result ) {
             $name = $result['Name'];
             $platform_options[$name] = $name;
         }
         $this->addSelect('Platform', 'Platform:', $platform_options);
-        $Array_Report_options = array(
+        $Array_Report_options = [
             null        => 'Any',
             'Abnormal'  => 'Abnormal',
             'Normal'    => 'Normal',
             'Pending'   => 'Pending',
             'Uncertain' => 'Uncertain',
-        );
+        ];
         $this->addSelect('Array_Report', 'Array Report:', $Array_Report_options);
         $this->addBasicText('Markers', 'Markers:');
         $this->addBasicText('Validation_Method', 'Validation Method:');
@@ -449,10 +449,10 @@ class SNP_Browser extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/genomic_browser/js/genomic_browser.js",
                 $baseURL . "/genomic_browser/js/snpColumnFormatter.js",
-            )
+            ]
         );
     }
 

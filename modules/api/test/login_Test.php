@@ -91,7 +91,7 @@ class LoginTest extends TestCase
             ->willReturn('jwt_token');
 
         $request = $this->_request
-            ->withAttribute('pathparts', array('login'))
+            ->withAttribute('pathparts', ['login'])
             ->withAttribute('LORIS-API-Version', 'v0.0.3-dev')
             ->withAttribute('user', new \LORIS\AnonymousUser())
             ->withMethod('POST')
@@ -109,7 +109,7 @@ class LoginTest extends TestCase
         );
 
         $this->assertEquals(
-            array('token' => 'jwt_token'),
+            ['token' => 'jwt_token'],
             json_decode((string) $response->getBody(), true)
         );
     }

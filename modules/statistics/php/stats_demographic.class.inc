@@ -98,7 +98,7 @@ class Stats_Demographic extends \NDB_Form
         // This line replaces the empty $projectID string with null
         // `$projectID ?? null` would retain empty strings.
         $projectID = empty($projectID) ? null : $projectID;
-        $tpl_data  = array();
+        $tpl_data  = [];
         $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
             htmlspecialchars($_REQUEST['test_name']) : '';
         $tpl_data['Subsection'] = $subsection;
@@ -113,20 +113,20 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data['DropdownName']     = $dropdownName;
         $tpl_data['DropdownOptions']  = $dropdownOpt;
         $tpl_data['DropdownSelected'] = $dropdownSelected;
-        $tpl_data['Centers']          = $centers ?? array();
+        $tpl_data['Centers']          = $centers ?? [];
         foreach ($data as $row) {
             $subproj = $row['SubprojectID'];
             $vl      = $row['VLabel'];
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
-            if (in_array($vl, $visits ?? array())
+            if (in_array($vl, $visits ?? [])
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centers)
             ) {
                 $C = 'C' . $center;
                 // Ensure $tpl_data['data'] is not null before continuing
-                $tpl_data['data'] = $tpl_data['data'] ?? array();
+                $tpl_data['data'] = $tpl_data['data'] ?? [];
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$subcat]      += $row['val'];
@@ -174,7 +174,7 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
-        $projects     = array();
+        $projects     = [];
         $projects[''] = 'All Projects';
         foreach (\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
@@ -186,10 +186,10 @@ class Stats_Demographic extends \NDB_Form
         if (!empty($demographicProject)) {
             $demographicProject = htmlspecialchars($demographicProject);
             $this->tpl_data['CurrentProject']
-                = array(
+                = [
                     'ID'   => $demographicProject,
                     'Name' => $projects[$demographicProject] ?? '',
-                );
+                ];
             $paramProject        ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
         }
@@ -236,20 +236,20 @@ class Stats_Demographic extends \NDB_Form
             WHERE CenterID <> '1'
 		    AND Study_site = 'Y'
 	            AND CenterID IN (" . $sitesString . ")",
-            array()
+            []
         );
 
-        $sites     = array();
+        $sites     = [];
         $sites[''] ='All sites';
 
         if (!empty($centers)) {
             foreach ($centers as $row) {
                 $sites[$row['NumericID']] = $row['ShortName'];
                 if ($demographicSite == $row['NumericID']) {
-                    $this->tpl_data['CurrentSite'] = array(
+                    $this->tpl_data['CurrentSite'] = [
                         'ID'   => $row['NumericID'],
                         'Name' => $row['LongName'],
-                    );
+                    ];
                 }
             }
         }
@@ -276,7 +276,7 @@ class Stats_Demographic extends \NDB_Form
                           $paramProject
                           $paramSite
                       GROUP BY s.subprojectid",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         $this->tpl_data['registered']['total'] = 0;
@@ -306,7 +306,7 @@ class Stats_Demographic extends \NDB_Form
                           $paramProject
                           $paramSite
                       GROUP BY s.subprojectid",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         $this->tpl_data['ps_active']['total'] = 0;
@@ -335,7 +335,7 @@ class Stats_Demographic extends \NDB_Form
                           $paramProject
                           $paramSite
                       GROUP BY s.subprojectid",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         $this->tpl_data['ps_inactive']['total'] = 0;
@@ -363,7 +363,7 @@ class Stats_Demographic extends \NDB_Form
                           $paramProject
                           $paramSite
                       GROUP BY s.subprojectid",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         $this->tpl_data['sex_male']['total'] = 0;
@@ -395,7 +395,7 @@ class Stats_Demographic extends \NDB_Form
                           $paramProject
                           $paramSite
                       GROUP BY s.subprojectid",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         $this->tpl_data['sex_female']['total'] = 0;
@@ -429,7 +429,7 @@ class Stats_Demographic extends \NDB_Form
                           $paramSite) 
                                 as res
               GROUP BY rowid",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         foreach ($result as $row) {
@@ -443,17 +443,17 @@ class Stats_Demographic extends \NDB_Form
         //START BIG TABLE
         $instrumentList = \Utility::getAllInstruments();
         $instDropdown   = array_merge(
-            array( '' => 'Recruit Breakdown by Sex'),
+            [ '' => 'Recruit Breakdown by Sex'],
             $instrumentList
         );
         $this->tpl_data['all_instruments'] = $instrumentList;
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
         if (!empty($demographicInstrument)) {
             $demographicInstrument = htmlspecialchars($demographicInstrument);
-            $subcategories         = array(
+            $subcategories         = [
                 'Complete',
                 'Incomplete',
-            );
+            ];
             $result = $db->pselect(
                 "SELECT count(*) as val,
                         f.Data_entry as Subcat,
@@ -494,7 +494,7 @@ class Stats_Demographic extends \NDB_Form
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.RegistrationCenterID, SubprojectID, VLabel, Subcat
                 ",
-                $this->params ?? array()
+                $this->params ?? []
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 'Breakdown of Registered Candidates',
@@ -512,10 +512,10 @@ class Stats_Demographic extends \NDB_Form
                 $demographicProject
             );
         } else {
-            $subcategories = array(
+            $subcategories = [
                 'Male',
                 'Female',
-            );
+            ];
             $result        = $db->pselect(
                 "SELECT s.CenterID as CenterID,
                         s.SubprojectID as SubprojectID,
@@ -532,7 +532,7 @@ class Stats_Demographic extends \NDB_Form
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 GROUP BY s.CenterID, SubprojectID, VLabel, Subcat",
-                array()
+                []
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 'Breakdown of Registered Candidates',
@@ -564,10 +564,10 @@ class Stats_Demographic extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . '/statistics/js/table_statistics.js',
                 $baseURL . '/statistics/js/form_stats_demographic.js',
-            )
+            ]
         );
     }
     /**
@@ -582,7 +582,7 @@ class Stats_Demographic extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . '/statistics/css/statistics.css')
+            [$baseURL . '/statistics/css/statistics.css']
         );
     }
 

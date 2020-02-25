@@ -40,11 +40,11 @@ class Data_Release extends \NDB_Menu_Filter
     {
         // check user permissions
         return $user->hasAnyPermission(
-            array(
+            [
                 'data_release_view',
                 'data_release_upload',
                 'data_release_edit_file_access'
-            )
+            ]
         );
     }
 
@@ -59,11 +59,11 @@ class Data_Release extends \NDB_Menu_Filter
         $DB   = \Database::singleton();
 
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
             'file_name AS fileName',
             'version',
             'upload_date AS uploadDate',
-        );
+        ];
         $this->query   = " FROM data_release dr";
 
         if (!$user->hasPermission("superuser")) {
@@ -95,8 +95,8 @@ class Data_Release extends \NDB_Menu_Filter
         // Get list of data release versions and filenames
         $vFiles = $this->getVersionedFiles($DB);
 
-        $filenames_options = array();
-        $versions_options  = array();
+        $filenames_options = [];
+        $versions_options  = [];
 
         foreach ($vFiles as $versionName => $filesArray) {
             foreach ($filesArray as $fileID => $fileName) {
@@ -128,7 +128,7 @@ class Data_Release extends \NDB_Menu_Filter
     {
         $userids = $DB->pselectColWithIndexKey(
             "SELECT ID, UserID FROM users",
-            array(),
+            [],
             "ID"
         );
 
@@ -151,10 +151,10 @@ class Data_Release extends \NDB_Menu_Filter
         $versionedFiles = $DB->pselect(
             "SELECT id, file_name, version 
                   FROM data_release",
-            array()
+            []
         );
 
-        $vFFormatted = array();
+        $vFFormatted = [];
         foreach ($versionedFiles as $row) {
             $version = $row['version'] === null || $row['version'] === ''
                 ? 'Unversioned': $row['version'];
@@ -187,13 +187,13 @@ class Data_Release extends \NDB_Menu_Filter
              FROM users u
                 LEFT JOIN data_release_permissions drp ON (u.ID=drp.userid) 
                 LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)",
-            array()
+            []
         );
 
         //in order to have a checked box a user must have permission to see all
         //files belonging to a release version
         //array to hold checked checkboxes in the manage permissions menu
-        $uFAFormatted = array();
+        $uFAFormatted = [];
         foreach ($userFileAccess as $row) {
             $userID          = $row['UserID'];
             $version         = $row['version'] ?? null;
@@ -214,22 +214,22 @@ class Data_Release extends \NDB_Menu_Filter
                         = $releaseFileName;
                 }
             } else {
-                $uFAFormatted[$userID] = array();
+                $uFAFormatted[$userID] = [];
             }
         }
 
         //now we can compare the $uFAFormatted to $vFiles (versioned files array)
         //to identify which checkboxes should be checked
-        $version_permissions = array();
+        $version_permissions = [];
         foreach ($uFAFormatted as $userID=>$userVersions) {
             if (empty($userVersions)) {
-                $version_permissions[$userID] = array();
+                $version_permissions[$userID] = [];
             }
             foreach ($userVersions as $versionName=>$versionFiles) {
                 if (empty(array_diff($vFiles[$versionName], $versionFiles))) {
                     $version_permissions[$userID][] = $versionName;
                 } else {
-                    $version_permissions[$userID] = array();
+                    $version_permissions[$userID] = [];
                 }
             }
         }
@@ -248,9 +248,9 @@ class Data_Release extends \NDB_Menu_Filter
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array(
+            [
                 $baseurl . "/data_release/js/dataReleaseIndex.js",
-            )
+            ]
         );
     }
 }

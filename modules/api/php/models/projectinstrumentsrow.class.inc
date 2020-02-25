@@ -104,11 +104,11 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
      */
     private function _toArray() : array
     {
-        return array(
+        return [
             'shortname' => $this->_shortname,
             'fullname'  => $this->_fullname,
             'subgroup'  => $this->_subgroupname,
             'ddeenable' => $this->_isDDE,
-        );
+        ];
     }
 }

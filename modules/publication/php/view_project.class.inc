@@ -43,10 +43,10 @@ class View_Project extends \NDB_Form
         $nProjects = $db->pselectOne(
             'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
             'WHERE UserID=:uid AND PublicationID=:pid',
-            array(
+            [
                 'uid' => $user->getId(),
                 'pid' => $pubID,
-            )
+            ]
         );
         return ($user->hasPermission('publication_view')
             || $user->hasPermission('publication_propose')
@@ -73,9 +73,9 @@ class View_Project extends \NDB_Form
         if (isset($pubID)) {
             $result = $db->pselectRow(
                 "SELECT PublicationID FROM publication WHERE PublicationID = :pid",
-                array('pid' => $pubID)
+                ['pid' => $pubID]
             );
-            if (count($result ?? array()) < 1) {
+            if (count($result ?? []) < 1) {
                 header('Location: ' . $baseURL . '/publication/');
             }
         } else {
@@ -94,7 +94,7 @@ class View_Project extends \NDB_Form
         $deps = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array()
+            []
         );
     }
 
@@ -128,7 +128,7 @@ class View_Project extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/publication/js/viewProjectIndex.js")
+            [$baseURL . "/publication/js/viewProjectIndex.js"]
         );
     }
 

@@ -29,7 +29,7 @@ class User extends UserPermissions
      * @var    array
      * @access private
      */
-    protected $userInfo = array();
+    protected $userInfo = [];
     /**
      * The date format used by MySQL.
      *
@@ -73,7 +73,7 @@ class User extends UserPermissions
             WHERE users.UserID = :UID
             GROUP BY users.ID";
 
-        $row = $DB->pselectRow($query, array('UID' => $username));
+        $row = $DB->pselectRow($query, ['UID' => $username]);
 
         if (is_null($row)) {
             $obj = new \LORIS\AnonymousUser();
@@ -87,9 +87,9 @@ class User extends UserPermissions
         $user_centerID_query =  $DB->pselect(
             "SELECT CenterID FROM user_psc_rel upr
                         WHERE upr.UserID= :UID",
-            array('UID' => $row['ID'])
+            ['UID' => $row['ID']]
         );
-        $user_cid            = array();
+        $user_cid            = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
             $user_cid[$key] = intval($val['CenterID']);
@@ -97,7 +97,7 @@ class User extends UserPermissions
 
         $user_pid = $DB->pselectCol(
             "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
-            array('uid' => $row['ID'])
+            ['uid' => $row['ID']]
         );
         foreach ($user_pid as $k=>$pid) {
             $user_pid[$k] = intval($pid);
@@ -116,21 +116,21 @@ class User extends UserPermissions
                     AND (epr.active='Y'
                           OR (epr.active='N' AND epr.pending_approval='Y')
                         )",
-            array(
+            [
                 "fn" => $row['Real_name'],
-            )
+            ]
         );
 
-        $examiner_info =array();
+        $examiner_info =[];
         if (!empty($examiner_check) && !is_null($examiner_check)) {
             foreach ($examiner_check as $val) {
                 if ($val['active'] == 'Y') {
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
-                $examiner_info[$val['centerID']] =array(
+                $examiner_info[$val['centerID']] =[
                     $val['active'],
                     $val['radiologist'],
-                );
+                ];
             }
         }
         // store user data in object property
@@ -190,7 +190,7 @@ class User extends UserPermissions
         \Database::singleton()->update(
             'users',
             $set,
-            array('UserID' => $this->userInfo['UserID'])
+            ['UserID' => $this->userInfo['UserID']]
         );
     }
 
@@ -350,8 +350,8 @@ class User extends UserPermissions
     function getStudySites(): array
     {
         $site_arr         = $this->getCenterIDs();
-        $user_study_sites = array();
-        $site = array();
+        $user_study_sites = [];
+        $site = [];
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
@@ -472,7 +472,7 @@ class User extends UserPermissions
                userID = :v_userid AND
                Success = 'Y'
             ",
-            array('v_userid' => $this->userInfo['UserID'])
+            ['v_userid' => $this->userInfo['UserID']]
         );
         return $count > 0;
     }
@@ -503,10 +503,10 @@ class User extends UserPermissions
         );
 
         $this->update(
-            array(
+            [
                 'Password_hash'   => $password,
                 'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
-            )
+            ]
         );
         // XXX This class should use DateTime objects instead of strings so
         // that formatting doens't need to be specified and so that Date math
@@ -550,7 +550,7 @@ class User extends UserPermissions
                     FROM user_login_history
                     WHERE userID=:UserID AND Success='Y')
                 AND userID=:UserID AND Success='Y'",
-            array('UserID' => $this->getUsername())
+            ['UserID' => $this->getUsername()]
         );
         if (empty($time)) {
             return null;

@@ -159,9 +159,9 @@ class Dashboard extends \NDB_Form
 
         return array_merge(
             $baseDeps,
-            array(
+            [
                 $baseurl . '/dashboard/js/dashboard-helper.js',
-            ),
+            ],
             $this->widgetjs,
         );
     }

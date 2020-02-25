@@ -48,18 +48,23 @@ class Qc
      */
     public function toArray(): array
     {
+<<<<<<< HEAD
         $meta = array(
             'CandID' => $this->_timepoint->getCandID(),
+=======
+        $meta = [
+            'CandID' => (string) $this->_timepoint->getCandID(),
+>>>>>>> e60320c89... Remove all long arrays
             'Visit'  => $this->_timepoint->getVisitLabel(),
-        );
+        ];
 
         $sessionqc = $this->_qc->getQC();
         $ispending = $this->_qc->getQCPending();
 
-        return array(
+        return [
             'Meta'      => $meta,
             'SessionQC' => $sessionqc,
             'Pending'   => $ispending === 'N' ? false : true,
-        );
+        ];
     }
 }

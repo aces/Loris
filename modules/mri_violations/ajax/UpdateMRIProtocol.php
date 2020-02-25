@@ -27,7 +27,7 @@ $client = new \NDB_Client();
 $client->initialize();
 list($row,$row_id,$column,$column_id) = explode("_", $_REQUEST['field_id']);
 $value       = $_REQUEST['field_value'];
-$table_desc  = $DB->pselect("DESC mri_protocol", array());
+$table_desc  = $DB->pselect("DESC mri_protocol", []);
 $column_name = $table_desc[$column_id]['Field'];
 
 // create user object
@@ -36,8 +36,8 @@ $user =& \User::singleton();
 if ($user->hasPermission('violated_scans_edit')) {
     $DB->update(
         'mri_protocol',
-        array($column_name => $value),
-        array('ID' => $row_id)
+        [$column_name => $value],
+        ['ID' => $row_id]
     );
 }
 

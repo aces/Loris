@@ -39,10 +39,10 @@ class Media extends \DataFrameworkMenu
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'media_read',
                 'media_write',
-            )
+            ]
         );
     }
 
@@ -78,7 +78,7 @@ class Media extends \DataFrameworkMenu
         $user = \User::singleton();
         $db   = \Database::singleton();
 
-        $siteList  = array();
+        $siteList  = [];
         $visitList = \Utility::getVisitList();
 
         // allow to view all sites data through filter
@@ -95,7 +95,7 @@ class Media extends \DataFrameworkMenu
             }
         }
 
-        $instrumentList   = array();
+        $instrumentList   = [];
         $instrumentsQuery = $db->pselect(
             "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
             []
@@ -104,7 +104,7 @@ class Media extends \DataFrameworkMenu
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
 
-        $fileTypeList  = array();
+        $fileTypeList  = [];
         $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
@@ -112,20 +112,20 @@ class Media extends \DataFrameworkMenu
 
         //Language selector
         $languages    = \Utility::getLanguageList();
-        $languageList = array();
+        $languageList = [];
         foreach ($languages as $language) {
             $languageList[$language] = $language;
         }
 
-        $hiddenOptions = array();
+        $hiddenOptions = [];
         if (\User::singleton()->hasPermission('superuser')) {
-            $hiddenOptions = array(
+            $hiddenOptions = [
                 0 => 'Visible only',
                 1 => 'Hidden only',
-            );
+            ];
         }
 
-        return array(
+        return [
             'fileTypes'     => $fileTypeList,
             'visits'        => $visitList,
             'sites'         => $siteList,
@@ -134,7 +134,7 @@ class Media extends \DataFrameworkMenu
             'languages'     => $languageList,
             'hidden'        => $hiddenOptions,
             'maxUploadSize' => \Utility::getMaxUploadSize(),
-        );
+        ];
     }
 
     /**
@@ -188,9 +188,9 @@ class Media extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/media/js/mediaIndex.js",
-            )
+            ]
         );
     }
 }
