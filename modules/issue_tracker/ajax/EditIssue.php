@@ -28,7 +28,6 @@
  */
 require_once "Email.class.inc";
 
-use LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
 
 //TODO: or split it into two files... :P
