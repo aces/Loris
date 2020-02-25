@@ -10,6 +10,7 @@ project-*
 tools/*.txt
 htdocs/phpunit_codecoverage/
 htdocs/my_tests/
+htdocs/vendor/js/react/*
 docs/css/
 docs/dashboard.html
 docs/fonts/
