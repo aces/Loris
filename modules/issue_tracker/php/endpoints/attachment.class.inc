@@ -228,14 +228,4 @@ class Attachment extends Endpoint implements ETagCalculator
         );
     }
 
-    /**
-     * Return a list of LORIS API versions
-     * which this endpoint supports.
-     *
-     * @return string[] LORIS API Versions
-     */
-    protected function supportedVersions(): array
-    {
-        return array('unknown');
-    }
 }
