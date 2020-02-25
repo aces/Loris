@@ -11,5 +11,5 @@ max_input_time = 10800          // Maximum amount of time each script may spend 
 max_execution_time = 10800      // Maximum execution time of each script (in seconds).
 upload_max_filesize = 1024M     // Maximum allowed size for uploaded files.
 post_max_size = 1024M           // Maximum size of POST data that PHP will accept.
-memory_limit = 128M             // Maximum amount of memory a script can use.
+memory_limit = 256M             // Maximum amount of memory a script can use.
 ```
