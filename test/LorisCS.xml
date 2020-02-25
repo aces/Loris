@@ -70,4 +70,8 @@
      </rule>
      <!-- Do not allow PHP closing tags because they can cause problems -->
      <rule ref="PSR2.Files.ClosingTag"/>
+
+     <!-- Force short array syntax -->
+     <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found"/>
+
 </ruleset>
