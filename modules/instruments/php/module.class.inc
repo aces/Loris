@@ -69,15 +69,14 @@ class Module extends \Module
                 $commentID,
                 $page
             );
+            $request    = $request->withAttribute('pageclass', $instrument);
+
+            return $instrument->process($request, $instrument);
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\NotFound(
                 $e->getMessage()
             );
         }
-
-        $request = $request->withAttribute('pageclass', $instrument);
-
-        return $instrument->process($request, $instrument);
     }
 
     /**
