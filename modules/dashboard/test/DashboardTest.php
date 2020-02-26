@@ -44,7 +44,7 @@ class DashboardTest extends LorisIntegrationTest
                 'UserID'           => 'testUser1',
                 'Email'            => 'test@test.com',
                 'Password'         => 'AA1234567!',
-                'Password_expired' => false
+                'PasswordChangeRequired' => false
             )
         );
         $user_id = $this->DB->pselectOne(

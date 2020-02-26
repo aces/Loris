@@ -500,11 +500,11 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         $this->update(
             array(
                 'Password_hash'    => $password,
-                'Password_expired' => $expired ? 1 : 0
+                'PasswordChangeRequired' => $expired ? 1 : 0
             )
         );
         $this->userInfo['Password_hash']    = (string) $password;
-        $this->userInfo['Password_expired'] = $expired;
+        $this->userInfo['PasswordChangeRequired'] = $expired;
     }
 
     /**
