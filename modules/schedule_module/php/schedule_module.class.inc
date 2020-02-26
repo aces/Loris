@@ -59,6 +59,16 @@ class Schedule_Module extends \DataFrameworkMenu
         $projects    = array_values(\Utility::getProjectList());
         $subprojects = array_values(\Utility::getSubProjectList());
         $TypeName = array_values(\Utility::getAppointmentTypeList());
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $appointment_types = $DB->pselect(
+                "SELECT * FROM appointment_type",
+                array()
+            );
+        $appointmentTpyes = array();
+        foreach ($appointment_types as $type) {
+            $appointmentTpyes[$type['AppointmentTypeID']] = $type['Name'];
+        }
 
         return array(
             'site'       => array_combine($sites, $sites),
@@ -66,6 +76,7 @@ class Schedule_Module extends \DataFrameworkMenu
             'project'    => array_combine($projects, $projects),
             'subproject' => array_combine($subprojects, $subprojects),
             'AppointmentTypeName' => array_combine($TypeName, $TypeName),
+            'AppointmentType' =>  $appointmentTpyes,
         );
     }
     /**

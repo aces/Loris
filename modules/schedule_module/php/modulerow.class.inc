@@ -36,16 +36,16 @@ class ModuleRow implements \LORIS\Data\DataInstance
     protected $SessionID;
     protected $AppointmentTypeID;
     protected $StartsAt;
-protected $CandID;
-protected $Visit_label;
-protected $CenterID;
-protected $SubprojectID;
-protected $Project;
-protected $Subproject;
-protected $started;
-protected $AppointmentTypeName;
-protected $site;
-protected $dataEntryStatus;
+    protected $CandID;
+    protected $Visit_label;
+    protected $CenterID;
+    protected $SubprojectID;
+    protected $Project;
+    protected $Subproject;
+    protected $started;
+    protected $AppointmentTypeName;
+    protected $site;
+    protected $dataEntryStatus;
 
     /**
      * Create a new ModuleRow Instance.
@@ -70,6 +70,7 @@ protected $dataEntryStatus;
         $this->AppointmentTypeName = $row['AppointmentTypeName'];
         $this->site = $row['Name'];
         $this->dataEntryStatus = $row['dataEntryStatus'];
+        
 
     }
 
@@ -88,7 +89,7 @@ protected $dataEntryStatus;
                 'VisitLabel'  => $this->Visit_label,
                 'Project'  => $this->Project,
                 'Subproject'  => $this->Subproject,
-                'AppointmentTypeName'  => $this->AppointmentTypeName,
+                'AppointmentTypeID'=>$this->AppointmentTypeID,
                 'Day'  => $this->Day,
                 'Time'  => $this->Time,
                 'earlyDate'  => $this->Day,
@@ -97,8 +98,7 @@ protected $dataEntryStatus;
                 'dataEntryStatus'  => $this->dataEntryStatus,
                 'SessionID'=>$this->SessionID,
                 'AppointmentID'=>$this->AppointmentID,
-                'AppointmentTypeID'=>$this->AppointmentTypeID,
-	        'StartsAt'=>$this->StartsAt,
+                'AppointmentTypeName'  => $this->AppointmentTypeName,
                 'CenterID'  => $this->CenterID,
                 'SubprojectID'  => $this->SubprojectID,
             ]

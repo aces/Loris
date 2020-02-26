@@ -163,68 +163,49 @@ class Appointment extends \NDB_Page
 
     public function addAppointment(array $data)
     {
-print_r("add");
-        $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
-       $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
+     $this->duplicate_check($data);
+     $factory = \NDB_Factory::singleton();
+     $DB      = $factory->database();
 
-      // Check if Appointment Type is valid/exists
-       $AppointmentTypeID = $DB->pselectOne(
-       "
-        SELECT 
-            AppointmentTypeID 
-        FROM 
-            appointment_type 
-        WHERE 
-            Name = :name
-       ",
-        array("name" => $data['AppointmentType'])
-       );
-
-       
-       $duplicate_check = $DB->pselectRow(
-        "
-           SELECT 
-                * 
-            FROM 
-                appointment 
-            WHERE 
-                SessionID = :sessionId
-            AND 
-                AppointmentTypeID = :appointmentTypeId
-            AND 
-                StartsAt = :startsAt
-        ",
-        array(
-            "sessionId" => $data["Session"],
-            "appointmentTypeId" => $AppointmentTypeID,
-            "startsAt" => $startAt,
-        )
-       ); // end of $duplicate_check
-    if (!empty($duplicate_check)) {
-    http_response_code(400);
-    die(json_encode([
-        "error" => "This appointment already exists."
-    ]));
-    }
-// Insert appointment information
+     $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
+     // Insert appointment information
      $DB->insert(
         "appointment",
         array(
              "SessionId" => $data["Session"],
-             "AppointmentTypeId" => $AppointmentTypeID,
+             "AppointmentTypeId" => $data["AppointmentType"],
              "StartsAt" => $startAt,     
          )
-    );
+      );
       
   } // end class of add appointment   
   public function editAppointment(array $data)
   {
-print_r("edit");
-print_r($data);
+        $this->duplicate_check($data);
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database(); 
-       $duplicate_check = $DB->pselectRow(
+        $DB      = $factory->database();
+        $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
+
+	$DB->update(
+	    "appointment",
+	    array(
+	     "StartsAt"    => $startAt,
+	     "AppointmentTypeID" => $data["AppointmentType"],
+	    ),
+	    array(
+	     "AppointmentId" => $data["AppointmentID"],
+	    )
+        );
+ 
+   
+  } // end class of get edit form data
+  public function duplicate_check(array $data)
+  {
+
+        $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $duplicate_check = $DB->pselectRow(
         "
            SELECT 
                 * 
@@ -239,8 +220,8 @@ print_r($data);
         ",
         array(
             "sessionId" => $data["Session"],
-            "typeId" => $data["AppointmentTypeID"],
-            "startsAt" => $data["StartsAt"],
+            "typeId" => $data["AppointmentType"],
+            "startsAt" => $startAt,
         )
        ); // end of $duplicate_check
     if (!empty($duplicate_check)) {
@@ -248,20 +229,6 @@ print_r($data);
     die(json_encode([
         "error" => "This appointment already exists."
     ]));
-    } 
-//  update appointment information
-// todo get AppointmentTypeID form dropdown . then upate 
-	$DB->update(
-	    "appointment",
-	    array(
-	     "StartsAt"    => $startAt,
-	     "AppointmentTypeID" => $appointment["AppointmentTypeID"],
-	    ),
-	    array(
-	     "AppointmentId" => $_GET["AppointmentID"],
-	    )
-);
- 
-   
-  } // end class of get edit form data
+    }
+  }
 }// end

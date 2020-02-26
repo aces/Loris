@@ -15,7 +15,6 @@ class ScheduleIndex extends Component {
       isLoaded: false,
       formData: {
         AppointmentID: null,
-        AppointmentTypeID: null,
         StartsAt: null,
         DCCID: null,
         PSCID: null,
@@ -40,6 +39,7 @@ class ScheduleIndex extends Component {
     this.fetchDataForm = this.fetchDataForm.bind(this);
     this.edit = this.edit.bind(this);
     this.renderScheduleFormButton = this.renderScheduleFormButton.bind(this);
+    this.deleteid = this.deleteid.bind(this);
   }
 
   componentDidMount() {
@@ -85,6 +85,7 @@ class ScheduleIndex extends Component {
    * @param {string} value - value of the form element
    */
   setFormData(formElement, value) {
+     console.log(formElement, value);
     let formData = this.state.formData;
     formData[formElement] = value;
     if (formElement === 'DCCID') {
@@ -141,6 +142,12 @@ class ScheduleIndex extends Component {
     mapColumn(column, cell) {
           return cell;
   }
+
+ deleteid(row) {
+   console.log(row);
+ }
+
+
  edit(row) {
 console.log(row);
  this.openModal();
@@ -150,7 +157,6 @@ const visit = row['Visit Label'];
 const sessionObj = {[sessionID]: visit};
 const rowObj = {
         AppointmentID: row.AppointmentID,
-        AppointmentTypeID: row.AppointmentTypeID,
         StartsAt: row['Starts At'],
         DCCID: row.CandID,
         PSCID: row.PSCID,
@@ -184,12 +190,34 @@ const rowObj = {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column === 'Edit') {
-       // row.dccid row.pscid row.session
-       return <td><button onClick={() => this.edit(row)}>Edit</button></td>;
+    let result = <td>{cell}</td>;
+    switch (column) {
+    case 'Edit':
+      result = <td><button className="btn btn-default" onClick={() => this.edit(row)}><span className="glyphicon glyphicon-edit"></span> Edit</button></td>;
+      break;
+    case 'Delete':
+      result = <td><button className="btn btn-default" onClick={() => this.deleteid(row['Delete'])}><span className="glyphicon glyphicon-trash"></span> Delete</button></td>;
+      break;
+    case 'Data Entry Status':
+      let css='label label-default';
+      if (cell==='Complete' ) {
+        css='label label-success';
+       }
+      if (cell==='No Data Found' ) {
+        css='label label-danger';
+       }
+      if (cell==='In Progress' || cell==='Not Started') {
+        css='label label-warning';
+       }
+      result = <td><span className={css}>{cell}</span></td>;
+      break;
+    case 'Appointment Type':
+      result = <td>{row['AppointmentTypeName']}</td>;
+      break;
     }
-    return <td>{cell}</td>;
-  }
+
+    return result;
+}
   renderScheduleFormButton() {
    if (this.state.editModal) {
      return (<ButtonElement
@@ -275,7 +303,7 @@ const rowObj = {
           <SelectElement
             name="AppointmentType"
             label = "Appointment Type"
-            options={this.state.data.fieldOptions.AppointmentTypeName}
+            options={this.state.data.fieldOptions.AppointmentType}
             value={this.state.formData.AppointmentType}
             required={true}
             onUserInput={this.setFormData}
@@ -329,7 +357,7 @@ const rowObj = {
       {label: 'Appointment Type', show: true, filter: {
         name: 'Appointment Type',
         type: 'select',
-        options: options.AppointmentTypeName,
+        options: options.AppointmentType,
       }},
       {label: 'Date', show: false, filter: {
         name: 'Date',
@@ -351,9 +379,14 @@ const rowObj = {
       }},
       {label: 'Starts At', show: true},
       {label: 'Data Entry Status', show: true},
-      {label: 'Edit', show: true},
-      {label: 'AppointmentID', show: false},
-      {label: 'AppointmentTypeID', show: false},
+      {label: 'Edit', show: true,
+       name: 'edit',
+      },
+      {label: 'Delete', show: true, name: 'delete',
+      },
+      {label: 'AppointmentTypeName', show: false,
+        name: 'AppointmentTypeName',
+      },
     ];
     const actions = [
       {name: 'addSchedule', label: 'Add Schedule', action: this.openModal},
