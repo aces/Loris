@@ -112,7 +112,7 @@ class Candidate_Profile extends \NDB_Page
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . '/candidate_profile/js/candidateProfileIndex.js')
+            array($baseURL . '/js/components/CSSGrid.js')
         );
     }
 

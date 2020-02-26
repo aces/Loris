@@ -65,7 +65,7 @@ window.addEventListener('load', () => {
     function displayCards(cards) {
         ReactDOM.render(
             React.createElement(
-                lorisjs.candidate_profile.candidateProfileIndex.default,
+                lorisjs.CSSGrid.default,
                 { Cards: cards }
             ),
             document.getElementById('candidatedashboard')
