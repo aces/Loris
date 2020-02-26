@@ -1,6 +1,4 @@
 <?php declare(strict_types=1);
-
-require_once 'generic_includes.php';
 /**
  * This class is designed to assist in writing command-line interface tools
  * for LORIS.
