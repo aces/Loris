@@ -947,6 +947,8 @@ class TextboxElement extends Component {
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
+            autoFocus={this.props.autoFocus}
+            placeHolder={this.props.placeHolder}
           />
           {errorMessage}
         </div>
