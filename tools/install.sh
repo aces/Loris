@@ -138,7 +138,6 @@ elif [[ " ${redhat[*]} " == *" $os_distro "* ]]; then
     sudo chown apache.apache ../smarty/templates_c
     # Make Apache the group for project directory, so that the web based install
     # can write the config.xml file.
-    sudo chgrp apache ../project
     sudo chmod 770 ../project
 else
     echo "$os_distro Linux distribution detected. We currently do not support this. "
