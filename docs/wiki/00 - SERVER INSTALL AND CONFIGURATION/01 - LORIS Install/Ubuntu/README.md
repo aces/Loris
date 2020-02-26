@@ -27,9 +27,7 @@ This guide does not cover installation of these requirements.
 The following Ubuntu packages are required and should be installed using 
 `sudo apt install ...`.
 
-* git
 * curl
-* wget
 * zip
 * unzip
 * php-json
@@ -53,8 +51,8 @@ curl -s https://api.github.com/repos/aces/loris/releases/latest \
 | grep 'tarball' \
 | cut -d : -f2,3 \
 | tr -d \" \
-| tr -d , \
-| wget -i - -O loris-src.tar.gz
+| tr -d ,\
+| xargs -n 1 curl -s -o loris-src.tar.gz
 ```
 
 When this is complete, expand the compressed file and move its contents to the
