@@ -19,6 +19,7 @@ find docs modules htdocs php src tools \
 declare -a tools_list=(
     'assign_missing_instruments.php'
     'cli_helper.class.inc'
+    'data_integrity_check.php'
     'delete_candidate.php'
     'delete_ignored_conflicts.php'
     'delete_timepoint.php'
