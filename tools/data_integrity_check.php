@@ -4,31 +4,35 @@
  * and contains no major issues. For example, it checks that tables referenced
  * in one part of the database exist elsewhere.
  */
-require_once __DIR__ . "/generic_includes.php";
+require_once __DIR__ . '/generic_includes.php';
+require_once __DIR__ . '/cli_helper.class.inc';
 
-$instrument_arr = $DB->pselectCol("SELECT Test_name FROM test_names", []);
-$check_arr      = [];
+
+$helper = new CLI_Helper();
 
 // Verifies that instruments registered in the test_names table have
 // corresponding per-instrument tables containing the data.
-echo "\n== Checking if instrument tables exist ==\n";
-foreach ($instrument_arr as $instrument) {
-    $name   = $instrument["Test_name"];
-    $exists = $DB->tableExists($name);
-    echo ($exists ?
-        "(true)  - " :
-        "(false) - "
-    );
-    echo "{$name}\n";
+$instrument_arr = $DB->pselectCol("SELECT Test_name FROM test_names", []);
+$check_arr      = [];
 
-    if ($exists) {
-        $check_arr[] = $name;
-    }
+$helper->printSuccess('Getting data from `test_names` table...');
+$instruments       = array_filter(
+    $instrument_arr,
+    [$DB, 'tableExists']
+);
+$numberOfTestNames = count($instrument_arr);
+$numberOfTestNamesWithTables = count($instruments);
+if ($numberOfTestNames !== $numberOfTestNamesWithTables) {
+    $helper->printError(
+        'Found entries in the `test_names` table that do not have appear to '
+        . 'be installed: ' . join(', ', array_diff($instrument_arr, $instruments))
+    );
 }
 
-echo "\n== Checking for orphaned instrument/flag ==\n";
-foreach ($check_arr as $check) {
-    echo "Checking {$check}...\n";
+
+$helper->printSuccess("Looking for orphaned instrument/flag");
+foreach ($instruments as $instrument) {
+    $helper->printLine("Checking instrument `$instrument`...");
 
     $orphan_flag_arr = $DB->pselect(
         "
@@ -37,53 +41,50 @@ foreach ($check_arr as $check) {
         FROM
             flag
         LEFT JOIN
-            {$check}
+            {$instrument}
         ON
-            {$check}.CommentID = flag.CommentID
+            {$instrument}.CommentID = flag.CommentID
         WHERE
-            Test_name = :check AND
-            {$check}.CommentID IS NULL
+            Test_name = :instrument AND
+            {$instrument}.CommentID IS NULL
     ",
         array(
-            "check" => $check
+            "instrument" => $instrument
         )
     );
 
-    $flag_str = pad_or_trunc($check, 5) . " flag";
+    $flag_str = $instrument . " flag";
     foreach ($orphan_flag_arr as $orphan_flag) {
         $comment_id = $orphan_flag["CommentID"];
-        echo "Warning, orphan {$flag_str}:{$comment_id}\n";
+        $helper->printWarning("orphan flag {$flag_str}:{$comment_id}");
     }
     $orphan_instrument_arr = $DB->pselect(
         "
         SELECT
-            {$check}.*
+            {$instrument}.*
         FROM
-            {$check}
+            {$instrument}
         LEFT JOIN
             flag
         ON
-            {$check}.CommentID = flag.CommentID
+            {$instrument}.CommentID = flag.CommentID
         WHERE
             flag.CommentID IS NULL
     ",
         array()
     );
 
-    $check_str = pad_or_trunc($check, 10);
     foreach ($orphan_instrument_arr as $orphan_instrument) {
         $comment_id = $orphan_instrument["CommentID"];
-        echo "Warning, orphan {$check_str}:{$comment_id}\n";
+        $helper->printWarning("orphan instrument {$instrument}:{$comment_id}");
     }
-
-    echo "Finished checking {$check}...\n\n";
 }
 
-echo "\n== Checking for duplicate flags in a session ==\n";
+$helper->printSuccess("Checking for duplicate flags in a session");
 $duplicate_flag_arr = $DB->pselect(
     "
     SELECT
-        *
+        SessionID,Test_name,CommentID
     FROM
         flag
     WHERE
@@ -117,10 +118,12 @@ $duplicate_flag_arr = $DB->pselect(
     array()
 );
 foreach ($duplicate_flag_arr as $duplicate_flag) {
-    $session_id = $duplicate_flag["SessionID"];
-    $test_name  = $duplicate_flag["Test_name"];
-    $comment_id = $duplicate_flag["CommentID"];
-    echo "Warning:{$session_id} {$test_name} {$comment_id}\n";
+    $helper->printError(
+        sprintf(
+            "Duplicate flag. SessionID: `%s`. Test Name: `%s`. CommentID: `%s`",
+            $duplicate_flag["SessionID"],
+            $duplicate_flag["Test_name"],
+            $duplicate_flag["CommentID"],
+        )
+    );
 }
-
-echo "\n== Finished checks ==\n";
