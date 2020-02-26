@@ -187,7 +187,10 @@ class Stats_Behavioural extends \NDB_Form
                 if ($c['all']['total'] != 0) {
                     if (isset($c['all']['complete'])) {
                         $c['all']['percent']
-                            = floor($c['all']['complete'] / $c['all']['total']*100);
+                            = floor(
+                                intval($c['all']['complete'])
+                                / $c['all']['total']*100
+                            );
                     } else {
                         $c['all']['percent'] = 0;
                     }
@@ -253,7 +256,10 @@ class Stats_Behavioural extends \NDB_Form
                 if ($c['all']['total'] != 0) {
                     if (isset($c['all']['complete'])) {
                         $c['all']['percent']
-                            = floor($c['all']['complete'] / $c['all']['total']*100);
+                            = floor(
+                                intval($c['all']['complete'])
+                                / $c['all']['total'] * 100
+                            );
                     } else {
                         $c['all']['percent'] = 0;
                     }

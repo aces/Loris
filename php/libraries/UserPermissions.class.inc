@@ -33,7 +33,7 @@ class UserPermissions
     /**
      * Stores the permissions
      *
-     * @var    array
+     * @var    array<string,bool>
      * @access private
      */
     var $permissions = array();
@@ -90,11 +90,7 @@ class UserPermissions
         // Fill the permissions array of this UserPermissions object with the
         // values extracted for this user from the database.
         if (is_array($results) and !empty($results)) {
-            foreach ($results AS $row) {
-                if (empty($row['userID'])) {
-                    $this->permissions[$row['code']] = false;
-                    continue;
-                }
+            foreach ($results as $row) {
                 $userMatch = $row['userID'] === $this->userID;
                 $this->permissions[$row['code']] = $userMatch;
             }
