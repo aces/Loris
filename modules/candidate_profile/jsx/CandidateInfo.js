@@ -155,7 +155,8 @@ export class CandidateInfo extends Component {
             const cardStyle = {
                 width: info.width || '6em',
                 padding: '1em',
-                margin: 0,
+                marginLeft: '1ex',
+                marginRight: '1ex',
             };
             return (
                 <div style={cardStyle} key={info.label}>
