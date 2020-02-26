@@ -31,6 +31,10 @@ class Candidate_Profile extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
+        if ($this->candidate === null) {
+            // If we don't know what to do, assume no permissions.
+            return false;
+        }
         return $this->candidate->isAccessibleBy($user);
     }
 
