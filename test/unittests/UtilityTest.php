@@ -848,23 +848,23 @@ class UtilityTest extends TestCase
      */
     public function testPathJoin(): void
     {
-        $path = '/home';
+        $expected = 'a/b/c';
 
         $this->assertEquals(
-            \Utility::pathJoin($path, "User/Desktop", "file.txt"),
-            "/home/User/Desktop/file.txt"
+            \Utility::pathJoin('a', 'b', 'c'),
+            $expected
         );
         $this->assertEquals(
-            \Utility::pathJoin($path, "/home", "file.txt"),
-            "/home/file.txt"
+            \Utility::pathJoin('a', 'b/c'),
+            $expected
         );
         $this->assertEquals(
-            \Utility::pathJoin($path, "Downloads", "file.txt", "/home"),
-            "/home"
+            \Utility::pathJoin('a/b', 'c'),
+            $expected
         );
         $this->assertEquals(
-            \Utility::pathJoin($path, "User/Public/", "Documents", ""),
-            "/home/User/Public/Documents/"
+            \Utility::pathJoin('a/b', '/c'),
+            $expected
         );
 
     }

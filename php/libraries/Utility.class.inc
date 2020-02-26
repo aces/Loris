@@ -1027,28 +1027,17 @@ class Utility
     /**
      * A PHP implementation of python's os.path.join.
      *
-     * "Join one or more path components intelligently. The return value is
-     * the concatenation of path and any members of *paths with exactly one
-     * directory separator (os.sep) following each non-empty part except the
-     * last, meaning that the result will only end in a separator if the last
-     * part is empty. If a component is an absolute path, all previous
-     * components are thrown away and joining continues from the absolute
-     * path component."
+     * @param string ...$paths The path components to be joined.
      *
-     * @param string $path     The primary apth to which $parts will be joined.
-     * @param string ...$paths The path components to be joined to $path.
-     *
-     * @return string $path joined intelligently to $paths.
+     * @return string Path components joined without any doubled forward-slashes.
      */
-    public static function pathJoin(string $path, string ...$paths)
+    public static function pathJoin(string ...$paths)
     {
         // This array stores the components of the final path.
-        $result = [$path];
+        $result = [];
         foreach ($paths as $part) {
-            // If this part is an absolute path, discard $result.
-            if (mb_strpos($part, '/') === 0) {
-                $result = [];
-            }
+            // Remove all leading forward-slashes from $part.
+            $part = ltrim($part, '/');
             // Remove trailing forward-slashes from $part.
             while (mb_substr($part, -1) === '/') {
                 $part = chop($part, '/');
