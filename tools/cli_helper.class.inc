@@ -41,10 +41,8 @@ class CLI_Helper
      */
     public function __construct(SPLFileInfo $logDirectory = null)
     {
-        $_logDirectory = new SPLFileInfo(
-            \NDB_Factory::singleton()
-                ->config()
-                ->getSetting('log')
+        $this->_logDirectory = new SPLFileInfo(
+            $logDirectory ?? __DIR__ . '/tools/'
         );
     }
 
@@ -55,7 +53,7 @@ class CLI_Helper
      *
      * @return void
      */
-    function printBulletPoint(string $line): void
+    public function printBulletPoint(string $line): void
     {
         echo "\t* $line\n";
     }
@@ -73,13 +71,15 @@ class CLI_Helper
      *
      * @return void
      */
-    function printLine(
+    public function printLine(
         string $line,
         string $colour = '',
         $handle = STDOUT
     ) {
         $output = $line;
-        if (!empty($colour)) {
+        // If a valid colour is supplied and the output is going to a TTY,
+        // colourize the output.
+        if (!empty($colour) && stream_isatty($handle)) {
             // Verify a valid colour is supplied
             if (!array_key_exists(strtolower($colour), self::COLOURS)) {
                 throw InvalidArgumentException(
@@ -93,10 +93,10 @@ class CLI_Helper
 
         fwrite($handle, $output . PHP_EOL);
 
-        // Don't include colours in log files
+        // Use non-colourized output for file logging.
         if ($this->_loggingEnabled) {
             file_put_contents(
-                __DIR__ . '/logs/'  . $this->_loggingFileName,
+                $this->_logDirectory->getPath() . $this->_loggingFileName,
                 $line . PHP_EOL,
                 FILE_APPEND
             );
@@ -110,7 +110,7 @@ class CLI_Helper
      *
      * @return void
      */
-    function printSuccess(string $line): void
+    public function printSuccess(string $line): void
     {
         // Takes 'input', prints '[*] input' in green text.
         $this->printLine("[*] $line", 'green', STDOUT);
@@ -123,7 +123,7 @@ class CLI_Helper
      *
      * @return void
      */
-    function printWarning(string $line): void
+    public function printWarning(string $line): void
     {
         $this->printLine("[-] $line", 'yellow', STDOUT);
     }
@@ -178,10 +178,9 @@ class CLI_Helper
      *
      * @return void
      */
-    function disableLogging(): void
+    public function disableLogging(): void
     {
         unset($this->_loggingFileName);
         $this->_loggingEnabled = false;
     }
-
 }
