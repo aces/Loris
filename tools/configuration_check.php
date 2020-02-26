@@ -24,6 +24,23 @@ define('MINIMUM_COMPOSER_VERSION', '1.4');
 $helper = new CLI_Helper();
 $helper->enableLogging(basename($argv[0]));
 
+$versionFilepath = __DIR__ . '/../VERSION';
+if (!is_readable($versionFilepath)) {
+    $helper->printWarning('Could not detect version from VERSION file.');
+} else {
+    $helper->printSuccess(
+        sprintf(
+            "Evaluating configuration for LORIS version %s",
+            trim(file_get_contents($versionFilepath))
+        )
+    );
+}
+$helper->printSuccess(
+    sprintf(
+        "%s environment detected.",
+        $config->getSetting('dev')['sandbox'] ? 'Development' : 'Production'
+    )
+);
 $helper->printLine('Checking PHP version....');
 // Make sure the right PHP version is used.
 evaluateVersionRequirement('PHP', PHP_VERSION, MINIMUM_PHP_VERSION);
@@ -181,7 +198,7 @@ function evaluateVersionRequirement(
     $versionInstalled >= $versionRequired ?
         $helper->printSuccess(
             sprintf(
-                "$software version requirment met (found: '%s'. required: '%s')",
+                "$software version requirement met (found: '%s'. required: '%s')",
                 $versionInstalled,
                 $versionRequired
             )
