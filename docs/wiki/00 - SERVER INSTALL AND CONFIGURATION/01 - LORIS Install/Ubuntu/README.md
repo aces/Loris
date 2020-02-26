@@ -17,7 +17,7 @@ LORIS requires a LAMP stack in order to run, specifically:
 * MySQL 5.7 (or MariaDB 10.3) (or higher)
 * PHP 7.3 (or higher)
 
-Additionally, LORIS requires the following package managers:
+Additionally, the following package manager are required to build LORIS:
 * NodeJS 8.0 (or higher)
 * composer
 
