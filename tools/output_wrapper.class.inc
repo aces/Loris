@@ -8,7 +8,7 @@ require_once 'generic_includes.php';
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class CLI_Helper
+class OutputWrapper
 {
     // Colours associated with the bash shell.
     // @see https://misc.flogisoft.com/bash/tip_colors_and_formatting
