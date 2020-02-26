@@ -123,9 +123,7 @@ class IssueForm extends Component {
     const fileCollection = this.state.isNewIssue || (
       <AttachmentsList issue={this.props.issue}
                        attachments={this.state.issueData['attachments']}
-                       userHasPermission={
-                         loris.userHasPermission('issue_tracker_developer')
-                       }
+                       userHasPermission={this.props.userHasPermission}
       />
     );
 
