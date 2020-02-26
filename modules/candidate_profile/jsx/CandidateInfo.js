@@ -160,7 +160,7 @@ export class CandidateInfo extends Component {
             };
             return (
                 <div style={cardStyle} key={info.label}>
-                    <dt>{info.label}</dt>
+                    <dt style={{whiteSpace: 'nowrap'}}>{info.label}</dt>
                     <dd>{info.value}</dd>
                 </div>
             );
