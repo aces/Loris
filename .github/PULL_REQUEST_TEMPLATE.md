@@ -1,5 +1,6 @@
 ## Brief summary of changes
 
+- [ ] Have you updated related documentation?
 
 #### Testing instructions (if applicable)
 
