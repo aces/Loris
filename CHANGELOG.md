@@ -18,6 +18,8 @@ changes in the following format: PR #1234***
 documentation for file permissions has been added to the README.md file (PR #5323)
 
 #### Modules 
+
+##### Issue Tracker
 - The issue_tracker module now has the feature of uploading attachments to new or existing issues.
 
 ##### Battery Manager
