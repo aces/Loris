@@ -12,10 +12,14 @@ CREATE TABLE `issues_attachments` (
     PRIMARY KEY (`ID`)
 ) DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`)
-VALUES
-(106, 'IssueTrackerDataPath', 'Path to Issue Tracker data files', 1, 0, 'web_path', 26, 'Issue Tracker Data Path', 8);
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
+VALUES('IssueTrackerDataPath', 'Path to Issue Tracker data files', 1, 0, 'web_path', 26, 'Issue Tracker Data Path', 8);
 
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`)
-VALUES
-(106, 106, '/data/issue_tracker/');
+INSERT INTO Config (ConfigID, Value)
+SELECT
+    ID,
+    '/data/issue_tracker/'
+FROM
+    ConfigSettings
+WHERE
+        Name = "IssueTrackerDataPath";
