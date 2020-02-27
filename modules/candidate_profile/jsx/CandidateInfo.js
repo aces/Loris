@@ -123,6 +123,7 @@ export class CandidateInfo extends Component {
             {
                 label: 'Date of Birth',
                 value: this.props.Candidate.Meta.DoB,
+                valueWhitespace: 'nowrap',
             },
             {
                 label: 'Age',
@@ -158,10 +159,15 @@ export class CandidateInfo extends Component {
                 marginLeft: '1ex',
                 marginRight: '1ex',
             };
+            let valueStyle = {};
+            if (info.valueWhitespace) {
+                valueStyle.whiteSpace = info.valueWhitespace;
+            }
+
             return (
                 <div style={cardStyle} key={info.label}>
                     <dt style={{whiteSpace: 'nowrap'}}>{info.label}</dt>
-                    <dd>{info.value}</dd>
+                    <dd style={valueStyle}>{info.value}</dd>
                 </div>
             );
         });
