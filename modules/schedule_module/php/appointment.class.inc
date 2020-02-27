@@ -93,6 +93,17 @@ class Appointment extends \NDB_Page
                         json_encode($res)
                     )
                 );
+        case "DELETE":
+            $id = basename($request->getUri()->getPath());
+            $this->deleteAppointment($id);
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode("appointment deleted")
+                    )
+                );
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
@@ -230,5 +241,12 @@ class Appointment extends \NDB_Page
         "error" => "This appointment already exists."
     ]));
     }
+  }
+  public function deleteAppointment(string $id)
+  {
+
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $DB->delete("appointment", array("AppointmentID" => $id));
   }
 }// end

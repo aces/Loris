@@ -143,8 +143,31 @@ class ScheduleIndex extends Component {
           return cell;
   }
 
- deleteid(row) {
-   console.log(row);
+ deleteid(id) {
+   console.log(id);
+    let deleteurl = loris.BaseURL + '/schedule_module/appointment/' + id;
+    fetch(deleteurl, {
+      method: 'DELETE',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+    })
+    .then((resp) => {
+      if (resp.ok && resp.status === 200) {
+        swal.fire('Success!', 'Schedule deleted.', 'success').then((result) => {
+          if (result.value) {
+            this.closeModal();
+            this.fetchData();
+          }
+        });
+      } else {
+        resp.text().then((message) => {
+          swal.fire('Error!', message, 'error');
+        });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
  }
 
 
