@@ -100,7 +100,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $factory->setBaseURL($baseurl);
 
             $module  = \Module::factory($modulename);
-            $mr      = new ModuleRouter($module, $this->moduledir);
+            $mr      = new ModuleRouter($module);
             $request = $request->withURI($suburi);
             return $mr->handle($request);
         }
@@ -120,7 +120,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                     ->withAttribute("baseurl", rtrim($baseurl->__toString(), '/'))
                     ->withAttribute("CandID", $components[0]);
                     $module  = \Module::factory("timepoint_list");
-                    $mr      = new ModuleRouter($module, $this->moduledir);
+                    $mr      = new ModuleRouter($module);
                     return $mr->handle($request);
                 case 2:
                     // CandID/SessionID, inherited from htaccess
@@ -134,7 +134,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                         \TimePoint::singleton($components[1])
                     );
                         $module = \Module::factory("instrument_list");
-                        $mr     = new ModuleRouter($module, $this->moduledir);
+                        $mr     = new ModuleRouter($module);
                     return $mr->handle($request);
                 default:
                     // Fall through to 404. We don't have any routes that go farther

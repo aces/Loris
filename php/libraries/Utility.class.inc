@@ -948,6 +948,29 @@ class Utility
         return implode('', $pieces);
     }
 
+    /**
+     * Convert a DateTime or string to the date format specified in the
+     * dateDisplayFormat config setting.
+     *
+     * @param string $date The date to be formatted.
+     *
+     * @return string $date formatted according to the dateDisplayFormat setting.
+     */
+    static function toDateDisplayFormat(string $date): string
+    {
+        try {
+            $dt = new DateTime($date);
+        } catch (Exception $e) {
+            throw new \LorisException(
+                "Input must be a valid date/time string: $e"
+            );
+        }
+        return $dt->format(
+            \NDB_Config::singleton()->getSetting('dateDisplayFormat')
+            ?? DateTime::ATOM
+        );
+    }
+
      /**
       * Takes an argument and determine whether it is a positive integer
       * i.e. > 0.

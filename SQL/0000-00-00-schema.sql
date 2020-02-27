@@ -67,7 +67,8 @@ CREATE TABLE `language` (
   UNIQUE KEY (`language_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO language (language_code, language_label) VALUES ('en-CA', 'English');
+INSERT INTO language (language_code, language_label) VALUES
+    ('en-CA', 'English');
 
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
@@ -210,6 +211,7 @@ CREATE TABLE `session` (
   `MRIQCFirstChangeTime` datetime DEFAULT NULL,
   `MRIQCLastChangeTime` datetime DEFAULT NULL,
   `MRICaveat` enum('true','false') NOT NULL DEFAULT 'false',
+  `languageID` integer unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `session_candVisit` (`CandID`,`VisitNo`),
   KEY `FK_session_2` (`CenterID`),
@@ -218,6 +220,7 @@ CREATE TABLE `session` (
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`),
+  CONSTRAINT `FK_session_4` FOREIGN KEY (`languageID`) REFERENCES `language` (`language_id`),
   CONSTRAINT `FK_session_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
