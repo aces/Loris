@@ -188,9 +188,9 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               GROUP_CONCAT(DISTINCT OutputType) as Links,
               s.ID as sessionID,
               GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType,
-              $PendingNewquery as pending,
-              $modalities_subquery,
-              s.CenterID as CenterID,
+              $PendingNewquery as pending," .
+              ($modalities_subquery==''?'':"$modalities_subquery,") .
+              "s.CenterID as CenterID,
               c.Entity_type as entityType,
               s.ProjectID
             FROM psc AS p 

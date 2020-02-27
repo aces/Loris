@@ -48,6 +48,19 @@ npm run lint:javascript
   
 ## Advanced Workflow
 
+#### View tests in realtime
+You can view the testing process as it happens with [Selenium Server](https://selenium.dev/downloads/) and using [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/).
+
+
+1) Start the tests with npm:
+    ```
+    npm run tests:integration
+    ```
+
+2) View the tests as they perform with VNC Viewer at `127.0.0.1` with password `secret`.
+
+3) You should now be able to view the browser performing all the tests (one by one) in realtime.
+
 #### Command-Line Options
 You can pass any [PHPUnit command-line options](https://phpunit.de/manual/current/en/textui.html) by appending `--` followed by the options. For example, say you only wanted to run the unit tests contained in the `CandidateTest` class. To achieve this you could run the following command:
 

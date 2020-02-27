@@ -60,7 +60,7 @@ if (!file_exists($full_path) || !is_readable($full_path)) {
 
 
 $fp   = fopen($full_path, 'r');
-$size = filesize($file);
+$size = filesize($full_path);
 
 header("Content-Disposition: attachment; filename=$file_name");
 header("Content-length: $size");

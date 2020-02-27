@@ -97,6 +97,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         }
 
         $cid = $row['centerId'];
+        $row['lastUpdate'] = \Utility::toDateDisplayFormat($row['lastUpdate']);
         return new IssueRow($row, $cid, $module);
     }
 }

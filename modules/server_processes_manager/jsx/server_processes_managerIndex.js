@@ -4,7 +4,17 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+/**
+ * ServerProcessesManagerIndex is the main entry point of the
+ * server_processes_manager module. It contains a filterable
+ * menu table of the existing processes.
+ */
 class ServerProcessesManagerIndex extends Component {
+  /**
+   * Construct the React component
+   *
+   * @param {array} props - The React props
+   */
   constructor(props) {
     super(props);
 
@@ -18,6 +28,9 @@ class ServerProcessesManagerIndex extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * React lifecycle method. Loads the data for the module.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -51,6 +64,11 @@ class ServerProcessesManagerIndex extends Component {
     return (<td>{cell}</td>);
   }
 
+  /**
+   * React lifecycle method
+   *
+   * @return {object} - Rendered React component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.

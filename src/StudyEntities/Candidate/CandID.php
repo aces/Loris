@@ -64,7 +64,7 @@ class CandID extends ValidatableIdentifier
      */
     protected function validate(string $value): bool
     {
-        $pattern = sprintf("/[0-9]{%s}/", self::LENGTH);
+        $pattern = sprintf("/^[0-9]{%s}$/", self::LENGTH);
 
         return preg_match($pattern, $value) === 1 &&
             intval($value) >= self::MIN_VALUE;

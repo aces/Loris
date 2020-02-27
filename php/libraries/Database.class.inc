@@ -714,7 +714,7 @@ class Database
      * @param string $query  The SQL SELECT query to be run
      * @param array  $params Values to use for binding to the prepared statement
      *
-     * @return array An array of arrays containing the data.
+     * @return array<string[]> An array of arrays containing the data.
      *               The outside (non-associative array contains 1 element per
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
