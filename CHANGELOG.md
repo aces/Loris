@@ -57,6 +57,9 @@ death for candidates. (PR #4929)
 - UI improvements, bugfixes and addition of a filter for searching across release 
 files. (PR #5224)
 
+#### Candidate Profile
+- Add new candidate dashboard module to provide overview of candidates (PR #6092)
+
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database
 exception). It is recommended to run this tool for existing projects (PR #5270)
