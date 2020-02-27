@@ -58,7 +58,6 @@ class Schedule_Module extends \DataFrameworkMenu
         $visitlabels = array_values(\Utility::getVisitList());
         $projects    = array_values(\Utility::getProjectList());
         $subprojects = array_values(\Utility::getSubProjectList());
-        $TypeName = array_values(\Utility::getAppointmentTypeList());
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $appointment_types = $DB->pselect(
@@ -75,7 +74,6 @@ class Schedule_Module extends \DataFrameworkMenu
             'visitLabel' => array_combine($visitlabels, $visitlabels),
             'project'    => array_combine($projects, $projects),
             'subproject' => array_combine($subprojects, $subprojects),
-            'AppointmentTypeName' => array_combine($TypeName, $TypeName),
             'AppointmentType' =>  $appointmentTpyes,
         );
     }

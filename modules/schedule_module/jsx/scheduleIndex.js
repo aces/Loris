@@ -179,7 +179,7 @@ const sessionID = row['Edit'];
 const visit = row['Visit Label'];
 const sessionObj = {[sessionID]: visit};
 const rowObj = {
-        AppointmentID: row.AppointmentID,
+        AppointmentID: row.Delete,
         StartsAt: row['Starts At'],
         DCCID: row.CandID,
         PSCID: row.PSCID,
