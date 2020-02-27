@@ -498,6 +498,7 @@ class IssueForm extends Component {
 
 IssueForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
+  baseURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
   whoami: PropTypes.string.isRequired,
