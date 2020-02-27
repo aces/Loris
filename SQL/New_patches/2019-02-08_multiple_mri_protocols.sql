@@ -107,9 +107,11 @@ ALTER TABLE `mri_protocol_checks` ADD CONSTRAINT `FK_mri_protocol_checks_group_I
 
 -- ----------------------------------------------------------------------------------
 -- Addition of a new column in table mri_protocol_violated_scans to identify the
--- MRI protocol group that was used when trying to identify the scan type
+-- MRI protocol group that was used when trying to identify the scan type (will be NULL
+-- unless exactly 1 group was used to identify the scan, according to the contents
+-- of table mri_protocol_group_target)
 -- ----------------------------------------------------------------------------------
-ALTER TABLE `mri_protocol_violated_scans` ADD COLUMN `MriProtocolGroupID` INT(4) UNSIGNED NOT NULL;
+ALTER TABLE `mri_protocol_violated_scans` ADD COLUMN `MriProtocolGroupID` INT(4) UNSIGNED DEFAULT NULL;
 UPDATE mri_protocol_violated_scans SET MriProtocolGroupID=(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group');
 ALTER TABLE `mri_protocol_violated_scans` ADD CONSTRAINT `FK_mri_violated_2` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`);
 
