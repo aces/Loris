@@ -83,7 +83,7 @@ function lorisModule(mname, entries) {
         output: {
             path: path.resolve(__dirname, 'modules') + '/' + mname + '/js/',
             filename: '[name].js',
-            library: ['lorisjs', mname],
+            library: ['lorisjs', mname, '[name]'],
             libraryTarget: 'window',
         },
         externals: {
@@ -104,21 +104,20 @@ const config = [
     // Core components
     {
         entry: {
-            './htdocs/js/components/DynamicDataTable.js':
-                './jsx/DynamicDataTable.js',
-            './htdocs/js/components/PaginationLinks.js':
-                './jsx/PaginationLinks.js',
-            './htdocs/js/components/StaticDataTable.js':
-                './jsx/StaticDataTable.js',
-            './htdocs/js/components/MultiSelectDropdown.js':
-                './jsx/MultiSelectDropdown.js',
-            './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
-            './htdocs/js/components/Form.js': './jsx/Form.js',
-            './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
+            DynamicDataTable: './jsx/DynamicDataTable.js',
+            PaginationLinks: './jsx/PaginationLinks.js',
+            StaticDataTable: './jsx/StaticDataTable.js',
+            MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
+            Breadcrumbs: './jsx/Breadcrumbs.js',
+            Form: './jsx/Form.js',
+            Markdown: './jsx/Markdown.js',
+            CSSGrid: './jsx/CSSGrid.js',
         },
         output: {
-            path: __dirname + '/',
-            filename: '[name]',
+            path: __dirname + '/htdocs/js/components/',
+            filename: '[name].js',
+            library: ['lorisjs', '[name]'],
+            libraryTarget: 'window',
         },
         externals: {
             react: 'React',
@@ -198,6 +197,8 @@ const config = [
     lorisModule('module_manager', ['modulemanager']),
     lorisModule('imaging_qc', ['imagingQCIndex']),
     lorisModule('server_processes_manager', ['server_processes_managerIndex']),
+    // lorisModule('instruments', ['instrumentlistwidget']),
+    lorisModule('candidate_profile', ['CandidateInfo']),
 ];
 
 // Support project overrides

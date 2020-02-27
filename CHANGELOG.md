@@ -24,7 +24,6 @@ database (PR #5260)
 - New documentation for file permissions has been added to the README.md file. (PR #5323)
 - Study progression performance improvement (PR #5887)
 
-
 #### Bug Fixes
 - Fix width of select elements that have no label (PR #5932)
 - Fix edge-case that gave a confusing error message (PR #5956)
@@ -34,9 +33,12 @@ database (PR #5260)
 
 #### Battery Manager
 - New module created to manage the entries in the test_battery table of the database.
- This allows projects to modify their instrument battery without requiring backend access.
+This allows projects to modify their instrument battery without requiring backend access.
  (PR #4221)
-
+ 
+#### Issue Tracker
+- The issue_tracker module now has the feature of uploading attachments to new or existing issues.
+ 
 #### Module Manager
 - New module created to manage the status of installed modules (PR #6015)
 
