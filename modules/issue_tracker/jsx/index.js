@@ -11,6 +11,7 @@ window.addEventListener('load', () => {
       DataURL={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=getData&issueID=${id}`}
       action={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=edit`}
       issue={id}
+      baseURL={loris.BaseURL}
       userHasPermission={loris.userHasPermission('issue_tracker_developer')}
     />,
     document.getElementById('lorisworkspace')

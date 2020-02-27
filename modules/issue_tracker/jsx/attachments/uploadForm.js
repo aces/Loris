@@ -66,7 +66,7 @@ class IssueUploadAttachmentForm extends Component {
       }
     }
     formObj.append('issueID', this.props.issue);
-    const url = loris.BaseURL +
+    const url = this.props.baseURL +
       '/issue_tracker/Attachment' +
       '?issueID=' + this.props.issue +
       '&fileDescription=' + state.formData.fileDescription;
@@ -89,7 +89,7 @@ class IssueUploadAttachmentForm extends Component {
             uploadProgress: -1,
           });
           swal('Upload Successful!', '', 'success');
-          window.location.href = loris.BaseURL
+          window.location.href = this.props.baseURL
             + '/issue_tracker/issue/'
             + this.props.issue;
         } else if (data.error) {
@@ -148,6 +148,7 @@ class IssueUploadAttachmentForm extends Component {
 
 IssueUploadAttachmentForm.propTypes = {
   issue: PropTypes.string.isRequired,
+  baseURL: PropTypes.string.isRequired,
 };
 
 export default IssueUploadAttachmentForm;

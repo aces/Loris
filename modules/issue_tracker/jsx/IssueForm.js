@@ -122,6 +122,7 @@ class IssueForm extends Component {
 
     const fileCollection = this.state.isNewIssue || (
       <AttachmentsList issue={this.props.issue}
+                       baseURL={this.props.baseURL}
                        attachments={this.state.issueData['attachments']}
                        userHasPermission={this.props.userHasPermission}
       />
@@ -190,6 +191,7 @@ class IssueForm extends Component {
         >
           <IssueUploadAttachmentForm
             issue={this.props.issue}
+            baseURL={this.props.baseURL}
           />
         </Modal>
         <FormElement

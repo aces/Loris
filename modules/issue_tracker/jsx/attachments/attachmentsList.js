@@ -39,7 +39,7 @@ class AttachmentsList extends Component {
    */
   deleteAttachment() {
     const state = Object.assign({}, this.state);
-    const url = loris.BaseURL +
+    const url = this.props.baseURL +
       '/issue_tracker/Attachment' +
       '?ID=' + state.deleteItem.ID;
     fetch(url,
@@ -51,7 +51,7 @@ class AttachmentsList extends Component {
     })
       .then((data) => {
         if (data.success) {
-          window.location.href = loris.BaseURL
+          window.location.href = this.props.baseURL
             + '/issue_tracker/issue/'
             + this.props.issue;
         } else {
@@ -106,7 +106,7 @@ class AttachmentsList extends Component {
               >
                 Delete
               </a>&nbsp;&nbsp;|&nbsp;&nbsp;
-              <a href={loris.BaseURL +
+              <a href={this.props.baseURL +
               '/issue_tracker/Attachment' +
               '?ID=' + item.ID
               }
@@ -124,7 +124,7 @@ class AttachmentsList extends Component {
         <div className='col-md-12'>
           <div className='col-md-2'><b>Attachment options: </b></div>
           <div className='col-md-10'>
-            <a href={loris.BaseURL +
+            <a href={this.props.baseURL +
             '/issue_tracker/Attachment' +
             '?ID=' + item.ID +
             '&file_hash=' + item.file_hash +
@@ -231,6 +231,7 @@ class AttachmentsList extends Component {
 
 AttachmentsList.propTypes = {
   issue: PropTypes.string.isRequired,
+  baseURL: PropTypes.string.isRequired,
   attachments: PropTypes.array,
 };
 AttachmentsList.defaultProps = {
