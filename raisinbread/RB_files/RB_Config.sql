@@ -97,5 +97,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (102,19,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (103,102,'/data/document_repository_uploads/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (104,103,'/data/data_release_uploads/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (105,104,'YMd');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (106,105,'Y-m-d H:i:s');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
