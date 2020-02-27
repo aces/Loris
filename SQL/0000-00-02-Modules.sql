@@ -14,6 +14,7 @@ INSERT INTO modules (Name, Active) VALUES ('brainbrowser', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('bvl_feedback', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('candidate_list', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('candidate_parameters', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('candidate_profile', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('configuration', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('conflict_resolver', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('create_timepoint', 'Y');
