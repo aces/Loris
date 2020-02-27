@@ -709,7 +709,7 @@ class CandidateTest extends TestCase
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
-        $expectedAge = $this->_candidate->getAge()->format('%m') + 12 * $this->_candidate->getAge()->format('%y');
+        $expectedAge = intval($this->_candidate->getAge()->format('%m')) + 12 * intval($this->_candidate->getAge()->format('%y'));
         $this->assertEquals($expectedAge, $this->_candidate->getAgeInMonths());
     }
     /**
