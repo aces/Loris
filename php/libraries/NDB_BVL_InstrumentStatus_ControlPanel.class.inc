@@ -27,8 +27,8 @@ use LORIS\StudyEntities\Candidate\CandID;
 class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 {
     public $tpl_data;
-    public $validityEnabled;
-    public $validityRequired;
+    public $ValidityEnabled;
+    public $ValidityRequired;
     protected $instrument;
     /**
      * Construct a controller for the instrument status control panel
@@ -98,8 +98,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             $this->instrument = $instrument;
 
-            $this->validityEnabled  = $instrument->validityEnabled;
-            $this->validityRequired = $instrument->validityRequired;
+            $this->ValidityEnabled  = $instrument->ValidityEnabled;
+            $this->ValidityRequired = $instrument->ValidityRequired;
 
             // generate the subtest list
             $list = $instrument->getSubtestList();
@@ -122,7 +122,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 = $this->_displayDataEntry();
 
             // generate the validity flag buttons
-            if ($this->validityEnabled == true) {
+            if ($this->ValidityEnabled == true) {
                 $this->tpl_data['access']['validity'] = $this->_displayValidity();
             }
 
@@ -224,7 +224,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $showLink = true;
                 $Validity = $this->getValidityStatus();
                 if ($Validity == null
-                    && $this->instrument->validityRequired == true
+                    && $this->instrument->ValidityRequired == true
                     && $this->getAdministrationStatus() != 'None'
                 ) {
                     $showLink = false;
