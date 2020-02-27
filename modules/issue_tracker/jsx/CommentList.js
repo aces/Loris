@@ -19,10 +19,6 @@ class CommentList extends Component {
   }
 
   render() {
-    const btnCommentsLabel = (this.state.collapsed ?
-      'Show Comment History' :
-      'Hide Comment History');
-
     const changes = this.props.commentHistory.reduce(function(carry, item) {
       let label = item.dateAdded.concat(' - ', item.addedBy);
       if (!carry[label]) {
@@ -59,18 +55,9 @@ class CommentList extends Component {
     }, this);
 
     return (
-      <div>
-        <div className='btn btn-primary'
-             onClick={this.toggleCollapsed}
-             data-toggle='collapse'
-             data-target='#comment-history'
-             style={{margin: '10px 0'}}
-        >
-          {btnCommentsLabel}
-        </div>
-        <div id='comment-history' className='collapse'>
-          {history}
-        </div>
+      <div id='comment-history'>
+        <h3>Comment History</h3>
+        {history}
       </div>
     );
   }
