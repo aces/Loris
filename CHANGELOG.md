@@ -8,7 +8,7 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 23.0
+## LORIS 23.0 (Release Date: ??)
 
 ### Core
 #### Features
@@ -36,7 +36,8 @@ This allows projects to modify their instrument battery without requiring backen
  (PR #4221)
  
 #### Issue Tracker
-- The issue_tracker module now has the feature of uploading attachments to new or existing issues.
+- The issue_tracker module now has the feature of uploading attachments to new or existing
+issues. (PR #5394)
  
 #### Module Manager
 - New module created to manage the status of installed modules. (PR #6015)
