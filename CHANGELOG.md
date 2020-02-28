@@ -25,7 +25,6 @@ database (PR #5260)
 - Study progression performance improvement (PR #5887)
 
 #### Bug Fixes
-- Fix width of select elements that have no label (PR #5932)
 - Fix edge-case that gave a confusing error message (PR #5956)
 - Fix hidden examiner form field bug (PR #6085)
 
@@ -85,7 +84,6 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
-
 
 
 
