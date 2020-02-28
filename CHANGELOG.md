@@ -19,6 +19,9 @@ documentation for file permissions has been added to the README.md file (PR #532
 
 #### Modules 
 
+##### Issue Tracker
+- The issue_tracker module now has the feature of uploading attachments to new or existing issues.
+
 ##### Battery Manager
  - New module created to manage the entries in the test_battery table of the database.
  This allows projects to modify their instrument battery without requiring backend access.
