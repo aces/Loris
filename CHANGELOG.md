@@ -39,7 +39,7 @@ This allows projects to modify their instrument battery without requiring backen
 - The issue_tracker module now has the feature of uploading attachments to new or existing issues.
  
 #### Module Manager
-- New module created to manage the status of installed modules (PR #6015)
+- New module created to manage the status of installed modules. (PR #6015)
 
 #### Electrophysiology Browser
 - New module created to view electrophysiology data within LORIS. (PR #5230)
@@ -84,6 +84,5 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
-
 
 
