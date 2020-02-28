@@ -62,7 +62,7 @@ files. (PR #5224)
 exception). It is recommended to run this tool for existing projects (PR #5270)
 - Heroku postdeploy script cleanup (PR #5275)
 - Vagrantfile Deprecation (PR #5319)
-- The `data_integrity_flag module was removed. (PR #5824)
+- The `data_integrity_flag` module was removed. (PR #5824)
 
 ### Notes For Existing Projects
 - PHP should be upgraded to 7.3 to before upgrading LORIS. (PR #5723)
@@ -82,4 +82,3 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
-
