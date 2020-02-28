@@ -83,6 +83,7 @@ class VisitInstrumentList extends Component {
             boxSizing: 'border-box',
             transition: 'flex 0.3s, width 0.3s ease-out, height 0.3s ease-out',
             width: '98%',
+            marginBottom: '1ex',
         };
 
         let vstatus = 'Not Started';
@@ -105,7 +106,10 @@ class VisitInstrumentList extends Component {
             width: '100%',
             height: '100%',
             alignItems: 'flex-start',
-            paddingBottom: '1em',
+            border: '1px solid #E4EBF2',
+            borderTopRightRadius: '10px',
+            borderBottomRightRadius: '10px',
+            alignItems: 'center',
         };
         flexcontainer.justifyContent = 'flex-start';
 
@@ -196,6 +200,7 @@ class VisitInstrumentList extends Component {
             width: '100%',
             justifyContent: 'space-between',
             margin: 0,
+            padding: '1ex',
         };
 
         return (<div style={style} onClick={this.toggleExpanded}>
