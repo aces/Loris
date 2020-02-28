@@ -70,7 +70,7 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 - Customized entries in the `LorisMenu` and `LorisMenuPermissions` tables need to be 
 transferred to the new module table and handled accordingly. (PR #5839)
 - Change of name from `quatUser` and `quatPassword` to `adminUser` and `adminPassword` (PR #5785)
-- The `data_integrity_flag module was removed. Projects still using the module should
+- The `data_integrity_flag` module was removed. Projects still using the module should
 copy the code into the override directory and re-add the necessary SQL to add it to 
 the list of modules.(PR #5824)
 - New tool for detection of multiple first visits for a candidate (prevents a database
