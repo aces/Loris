@@ -112,7 +112,6 @@ class VisitSummary extends \NDB_Page
             array('candid' => $candid, 'vl' => $visitLabel)
         );
 
-        $instrumentList = \Utility::getAllInstruments();
         foreach ($bvl_result as $key => $row) {
             $testName  = $row['Test_name'];
             $commentID = $row['CommentID'];

@@ -121,7 +121,6 @@ class Module extends \Module
             $factory = \NDB_Factory::singleton();
             $baseurl = $factory->settings()->getBaseURL();
 
-            $candidate = $options['candidate'];
             return [
                 new \LORIS\candidate_profile\CandidateWidget(
                     "Behavioural Data",
