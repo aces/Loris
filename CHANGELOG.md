@@ -26,7 +26,7 @@ database (PR #5260)
 
 #### Bug Fixes
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)
-- Fix hidden examiner form field bug (PR #6085)
+- Fix bug where examiner form field was incorrectly hidden (PR #6085)
 
 ### Modules 
 
@@ -84,7 +84,6 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
-
 
 
 
