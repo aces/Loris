@@ -69,6 +69,7 @@ const mod = {
  *
  * @param {string} mname - The LORIS module name
  * @param {array} entries - The webpack entry points for the module
+ * @param {boolean} override - Is the module an override or a native LORIS module.
  *
  * @return {object} - The webpack configuration
  */
