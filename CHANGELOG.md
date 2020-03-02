@@ -54,8 +54,7 @@ death for candidates. (PR #4929)
 - Add language parameter when creating a new timepoint for multilingual studies. (PR #4976)
  
 #### Data Release
-- UI improvements, bugfixes and addition of a filter for searching across release 
-files. (PR #5224)
+- Added filters to data release module. (PR #5224)
 
 
 ### Clean Up
