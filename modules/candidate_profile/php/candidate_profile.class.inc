@@ -79,7 +79,6 @@ class Candidate_Profile extends \NDB_Page
         $modules = \Module::getActiveModules($DB);
 
         $widgets = [];
-        $params  = [];
         foreach ($modules as $module) {
             if ($module->hasAccess($user)) {
                 $mwidgets = $module->getWidgets(
