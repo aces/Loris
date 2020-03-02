@@ -87,6 +87,16 @@ class OutputWrapper
         $handle = STDOUT
     ): void {
         $output = $line;
+
+        // Verify that if a colour is supplied, it is valid
+        if (!empty($colour)
+            && !array_key_exists(strtolower($colour), self::COLOURS)
+        ) {
+            throw new \InvalidArgumentException(
+                "Invalid argument for colour (`$colour`)"
+            );
+        }
+
         // If a valid colour is supplied and the output is going to a TTY,
         // colourize the output.
         if (!empty($colour) && stream_isatty($handle)) {
