@@ -65,7 +65,7 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 - The `data_integrity_flag` module was removed. (PR #5824)
 
 ### Notes For Existing Projects
-- PHP should be upgraded to 7.3 to before upgrading LORIS. (PR #5723)
+- PHP should be upgraded to 7.3 to before upgrading LORIS.
 - Legacy Quickform instruments may have issues due to code changes (PR #4928)
 - Customized entries in the `LorisMenu` and `LorisMenuPermissions` tables need to be 
 transferred to the new module table and handled accordingly. (PR #5839)
