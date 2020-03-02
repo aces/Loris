@@ -172,7 +172,7 @@ export class CandidateInfo extends Component {
             );
         };
         const cardInfo = data.map(
-            (info) => renderTerm(info.label, info.Value, info)
+            (info) => renderTerm(info.label, info.value, info)
         );
 
         let extrainfo;
