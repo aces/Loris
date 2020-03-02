@@ -55,7 +55,6 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $user          =& \User::singleton();
         $this->columns = array(
             'mpv.CandID',
             'mpv.PSCID',
