@@ -83,7 +83,7 @@ class Module extends \Module
                     $user,
                     $options,
                 );
-                foreach($candidateinfo as $widget) {
+                foreach ($candidateinfo as $widget) {
                     $params[] = $widget;
                 }
             }
