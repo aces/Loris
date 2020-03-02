@@ -72,7 +72,7 @@ class Dashboard extends \NDB_Form
         $this->mainwidgets  = [];
         foreach ($this->modules as $module) {
             if ($module->hasAccess($user)) {
-                $widgets = $module->getWidgets('dashboard', $user);
+                $widgets = $module->getWidgets('dashboard', $user, []);
                 foreach ($widgets as $widget) {
                     if (!($widget instanceof Widget)) {
                         continue;
