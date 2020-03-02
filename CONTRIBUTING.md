@@ -85,7 +85,7 @@ clarification via the mailing list.
 - Avoid changing unrelated code in the same commit, even if it is an improvement.
 We prefer that you create two separate pull requests A and B rather than add a
 'quick bonus fix' to pull request A.
-- ALWAYS do a diff before committing (after doing "git add file1 file2" when you're planning on doing git commit, you can use git diff --staged to see a diff of what will be committed). Ensure that nothing unexpected is included.
+- ALWAYS do a diff before committing (after doing "git add file1 file2" when you're planning on doing `git commit`, you can use `git diff --staged` to see a diff of what will be committed). Ensure that nothing unexpected is included.
 
 ## Getting Started
 
