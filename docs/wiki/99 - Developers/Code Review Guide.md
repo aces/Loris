@@ -45,6 +45,7 @@ in Raisinbread?
 - [ ] Is the code written with thought given to how it can be maintained and extended? Is it written elegantly, without "hacks"?
 - [ ] Is it [PSR7](https://www.php-fig.org/psr/psr-7/) compliant?
 - [ ] Where possible, is new frontend code written using ReactJS rather than Smarty templates?
+- [ ] Does new code follow the HTTP specification? Is it separated into specific endpoints?
 
 If you are unsure on any of these points, we encourage you to ask questions and
 do your best. We'll help to clarify any issues as they arise.
