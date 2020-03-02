@@ -791,5 +791,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         return $projMatch && $centerMatch;
     }
 
+    public function getParticipantStatusDescription(\Database $db) : ?string {
+        $res = $db->pselectRow(
+            "SELECT pso.Description FROM participant_status ps JOIN participant_status_options pso
+ON (ps.participant_status=pso.ID) WHERE CandID=:candid",
+            ['candid' => $this->getCandID()],
+        );
+        return $res['Description'];
+    }
+
 }
 

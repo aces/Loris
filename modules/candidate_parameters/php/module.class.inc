@@ -1,6 +1,7 @@
 <?php
 namespace LORIS\candidate_parameters;
 use LORIS\candidate_profile\CandidateWidget;
+use LORIS\candidate_profile\CandidateInfo;
 
 /**
  * {@inheritDoc}
@@ -68,6 +69,63 @@ class Module extends \Module
                     1,
                 )
             ];
+        case 'candidateinfo':
+            // We add 3 extra types of cards to the candidate info card on the candidate
+            // dashboard based on the default LORIS candidate_parameter module:
+            // 1. The Participant Status
+            // 2. The "Candidate Parameters" category variables which are displayed in the
+            //     Candidate Information tab of the Candidate Parameters
+            // 3. The Caveat flag description/reason for the candidate. (Only if there is
+            //    a caveat.)
+            // Most other tabs in the candidate_profile page are either duplicates of the
+            // information already present (ie. DoB) or complicated enough to merit their
+            // own card on the dashboard.
+            $factory = \NDB_Factory::singleton();
+            $db = $factory->database();
+            $candidate = $options['candidate'];
+            if($candidate === null) {
+                return [];
+            }
+
+            // Participant Status
+            $entries = [
+                new CandidateInfo("Participant Status", $candidate->getParticipantStatusDescription($db)),
+            ];
+
+            // Only display the caveat status if there is a caveat.
+            $caveat = $db->pselectRow(
+                "SELECT flagged_caveatemptor, flagged_reason, flagged_other, co.Description
+                 FROM candidate c
+                    JOIN caveat_options co ON (co.ID=c.flagged_reason)
+                 WHERE CandID=:cid",
+                ['cid' => $candidate->getCandID()],
+            );
+
+            if($caveat !== null && $caveat['flagged_caveatemptor'] === 'true') {
+                if ($caveat['Description'] == 'Other') {
+                    $entries[] = new CandidateInfo("Caveat", $caveat['flagged_other']);
+                } else {
+                    $entries[] = new CandidateInfo("Caveat", $caveat['Description']);
+                }
+            }
+
+            // Display the same Candidate Parameters as the "Candidate Info"
+            // page of the Candidate Parameters page in the candidate info
+            // summary. (We may need to further limit these in the future if
+            // they're overused and make the card too big.)
+            $candidateparams = $db->pselect(
+                "SELECT pt.Description, pc.Value
+                 FROM parameter_type pt
+                    JOIN parameter_candidate pc USING (ParameterTypeID)
+                    JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
+                    JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+                WHERE ptc.Name='Candidate Parameters' AND pc.CandID=:cid",
+                ['cid' => $candidate->getCandID()]
+            );
+            foreach($candidateparams as $param) {
+                $entries[] = new CandidateInfo($param['Description'], $param['Value']);
+            }
+            return $entries;
         }
         return [];
     }
