@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8147508c377231abeb4742a2d8dd36fe",
+    "content-hash": "f4fefa124e32b906f0a73a3670106d3b",
     "packages": [
         {
             "name": "bjeavons/zxcvbn-php",
@@ -1994,16 +1994,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "2.4.6",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "85f142379813cf0a24a19237e9fbe6f77f0251db"
+                "reference": "d458d8197b5b25bdca4c442be9a50321f0f8a15b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/85f142379813cf0a24a19237e9fbe6f77f0251db",
-                "reference": "85f142379813cf0a24a19237e9fbe6f77f0251db",
+                "url": "https://api.github.com/repos/phan/phan/zipball/d458d8197b5b25bdca4c442be9a50321f0f8a15b",
+                "reference": "d458d8197b5b25bdca4c442be9a50321f0f8a15b",
                 "shasum": ""
             },
             "require": {
@@ -2021,7 +2021,7 @@
                 "symfony/polyfill-mbstring": "^1.11.0"
             },
             "require-dev": {
-                "brianium/paratest": "^2.2.0",
+                "brianium/paratest": "^4.0.0",
                 "phpunit/phpunit": "^7.5.0"
             },
             "suggest": {
@@ -2063,7 +2063,7 @@
                 "php",
                 "static"
             ],
-            "time": "2019-12-29T17:44:25+00:00"
+            "time": "2020-02-20T14:53:46+00:00"
         },
         {
             "name": "phar-io/manifest",
