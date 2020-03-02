@@ -69,19 +69,26 @@ const mod = {
  *
  * @param {string} mname - The LORIS module name
  * @param {array} entries - The webpack entry points for the module
+ * @param {boolean} override - Is the module an override or a native LORIS module.
  *
  * @return {object} - The webpack configuration
  */
-function lorisModule(mname, entries) {
+function lorisModule(mname, entries, override=false) {
     let entObj = {};
+    let base = './modules';
+
+    if (override) {
+        base = './project/modules';
+    }
+
     for (let i = 0; i < entries.length; i++) {
         entObj[entries[i]] =
-            './modules/' + mname + '/jsx/' + entries[i] + '.js';
+            base + '/' + mname + '/jsx/' + entries[i] + '.js';
     }
     return {
         entry: entObj,
         output: {
-            path: path.resolve(__dirname, 'modules') + '/' + mname + '/js/',
+            path: path.resolve(__dirname, base) + '/' + mname + '/js/',
             filename: '[name].js',
             library: ['lorisjs', mname, '[name]'],
             libraryTarget: 'window',
@@ -203,8 +210,11 @@ const config = [
 
 // Support project overrides
 if (fs.existsSync('./project/webpack-project.config.js')) {
-  const projConfig = require('./project/webpack-project.config.js');
-  config[0].entry = Object.assign(config[0].entry, projConfig);
+    const projConfig = require('./project/webpack-project.config.js');
+
+    for (const [module, files] of Object.entries(projConfig)) {
+        config.push(lorisModule(module, files, true));
+    }
 }
 
 module.exports = config;
