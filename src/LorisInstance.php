@@ -78,7 +78,7 @@ class LorisInstance
     /**
      * Return true if the LORISInstance has a module named
      * $name. To be installed it must be both available on
-     * the filesystem, and active in the modules table.
+     * the filesystem and active in the modules table.
      *
      * @return bool
      */
