@@ -15,9 +15,17 @@
  */
 require_once __DIR__ . '/../generic_includes.php';
 
-$sqlPatch = realpath(
+$sqlPatch     = realpath(
     __DIR__ . '/../../SQL/New_patches/2019-12-05-AddModuleTable.sql'
 );
+$cleanupPatch = realpath(
+    __DIR__ . '/../../SQL/New_patches/2020-02-28-foreign_key_issues_modules.sql'
+);
+
+$confirm = false;
+if (isset($argv[1]) && $argv[1] === "confirm") {
+    $confirm = true;
+}
 
 // Create a mapping of IDs and Names from the LorisMenu table.
 // This array is indexed by the NAME.
@@ -66,18 +74,22 @@ foreach ($result as $row) {
 }
 unset($result);
 
-$correctMapping = [];
+$correctMapping   = [];
+$incorrectMapping = [];
 foreach ($issueTrackerMapping as $issueID => $menuTableID) {
     // Using the menuTableID, look up the corresponding module name from the
     // `LorisMenu` table.
     // Using the module name, look up the new ID in the `modules` table.
     if (!array_key_exists($menuTableID, $menuTableMapping)) {
-        echo "[!] Could not find key `$menuTableID` in LorisMenu mapping array\n";
+        echo "[!] Issue ID: $issueID. Could not find key `$menuTableID` in ".
+            "LorisMenu mapping array\n";
+        $incorrectMapping[] =$issueID;
         continue;
     }
     if (!array_key_exists($menuTableMapping[$menuTableID], $modulesTableMapping)) {
-        echo "[!] Could not find key `{$menuTablesMapping[$menuTableID]}` in " .
-            " modules mapping array\n";
+        echo "[!] Issue ID: $issueID. Could not find key ".
+            "`$menuTableMapping[$menuTableID]` in modules mapping array\n";
+        $incorrectMapping[] =$issueID;
         continue;
     }
     $correctMapping[$issueID]
@@ -109,13 +121,34 @@ foreach ($correctMapping as $issueID => $modulesTableID) {
         $moduleAfter
     );
 
-    $patch[] = "UPDATE `issues` SET module=$modulesTableID WHERE issueID=$issueID;";
+    $patch[$issueID] = $modulesTableID;
 }
 
-$patch[] = "ALTER TABLE `issues` "
-    . "ADD FOREIGN KEY (module) REFERENCES modules(ID);";
+if ($confirm) {
+    foreach ($patch as $issueID=>$modulesTableID) {
+        $DB->update('issues', ['module'=>$modulesTableID], ['issueID'=>$issueID]);
+    }
+    foreach ($incorrectMapping as $issueID) {
+        $DB->update('issues', ['module'=>null], ['issueID'=>$issueID]);
+    }
+    echo "Done. Make sure to run the clean-up patch $cleanupPatch to complete ".
+        "the process\n";
+} else {
 
-echo join("\n", $patch);
+    foreach ($patch as $issueID=>$modulesTableID) {
+        echo "UPDATE `issues` SET module=$modulesTableID WHERE issueID=$issueID;\n";
+    }
+    foreach ($incorrectMapping as $issueID) {
+        echo "UPDATE `issues` SET module=NULL WHERE issueID=$issueID;\n";
+    }
+
+    echo "ALTER TABLE `issues` ADD FOREIGN KEY (module) REFERENCES modules(ID);\n\n";
+
+    echo "Run this tool again with the argument 'confirm' to ".
+        "perform the changes.\n".
+        "Note: The module field for issues for which a mapping between LorisMenu and 
+        modules can not be found will be nullified.\n\n";
+}
 
 /**
  * Removes non-alphabetical characters from a string.

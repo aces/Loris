@@ -21,7 +21,7 @@ declare -a tools_list=(
     'resetpassword.php'
     'setconfig.php'
     'single_use/Cleanup_multiple_firstVisits.php'
-    'single_use/22.0_To_23.0.php'
+    'single_use/Convert_LorisMenuID_to_ModuleID.php'
 )
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc php/ htdocs/ modules/ "${tools_list[@]/#/tools/}" || exit $?;
 
