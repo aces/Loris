@@ -126,8 +126,6 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         $this->tpl_data['mri_protocol_header'] = array_keys(
             $this->tpl_data['mri_protocol_data'][$protocolGroupIDs[0]][0]
         );
-
-        return true;
     }
 
     /**
