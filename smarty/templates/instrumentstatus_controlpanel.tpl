@@ -49,7 +49,7 @@
         <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setDataEntry={$data_entry[item].label}&test_name={$test_name}">{$data_entry[item].label}</a>
     {else}
         {if $data_entry[item].tooltip}
-        <span data-toggle="tooltip" data-placement="bottom" title="{$data_entry[item].tooltip}">
+        <span data-toggle="tooltip" data-placement="right" title="{$data_entry[item].tooltip}">
             {$data_entry[item].label}
         </span>
         {else}
