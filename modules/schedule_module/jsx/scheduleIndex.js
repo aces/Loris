@@ -116,7 +116,7 @@ class ScheduleIndex extends Component {
     this.setState({tabledatanext: list.filter((e)=>{
     return e[7]>today && e[7]<=next;
     })});
-    this.setState({tabledatapast: list.filter((e)=>e[7]=today)});
+    this.setState({tabledatatoday: list.filter((e)=>e[7]==today)});
   }
   /**
    * Store the value of the element in this.state.formData
