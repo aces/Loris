@@ -8,6 +8,8 @@ use \Psr\Http\Message\ResponseInterface;
  * Delete method handles deleting a file.
  * Get method handles getting a file.
  * Put method handles editing a file.
+ * This class contains functions providing upload and edit functionality for
+ * files in the document_repository.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
@@ -17,7 +19,8 @@ class Files extends \NDB_Page
         'database. If the file does not appear in the document repository, ' .
         'please contact you administrator.';
     const BAD_CATEGORY      = "'Category' parameter must not be negative.";
-    const FORBIDDEN = 'User does not have permission to edit document repository files.';
+    const FORBIDDEN         = 'User does not have permission to edit document '
+        . 'repository files.';
 
     public $skipTemplate = true;
 
