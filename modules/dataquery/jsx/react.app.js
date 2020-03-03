@@ -183,7 +183,7 @@ class DataQueryApp extends Component {
         const document = encodeURIComponent(this.state.queryIDs[key][i]);
         curRequest = Promise.resolve(
           fetch(
-            `${window.location.origin}/dataquery/documents/${document}`,
+            `${loris.BaseURL}/dataquery/documents/${document}`,
             {credentials: 'same-origin'}
           ).then((resp) => resp.json()
           ).then((json) => {
@@ -264,9 +264,7 @@ class DataQueryApp extends Component {
         }
       }
       fetch(
-        window.location.origin
-        + '/dataquery/Document?DocID='
-        + id,
+        `${loris.BaseURL}/dataquery/Document?DocID=${id}`,
         {credentials: 'same-origin'}
         ).then((resp) => resp.json()
       ).then((json) => {
