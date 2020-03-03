@@ -101,7 +101,8 @@ function lorisModule(mname, entries, override=false) {
             libraryTarget: 'window',
         },
         externals: {
-            react: 'React',
+            "react": 'React',
+            "react-dom": 'ReactDOM',
         },
         node: {
             fs: 'empty',
@@ -111,6 +112,7 @@ function lorisModule(mname, entries, override=false) {
         optimization: optimization,
         resolve: resolve,
         module: mod,
+        mode: 'none',
     };
 }
 
@@ -134,7 +136,8 @@ const config = [
             libraryTarget: 'window',
         },
         externals: {
-            react: 'React',
+            "react": 'React',
+            "react-dom": 'ReactDOM',
         },
         node: {
             fs: 'empty',
