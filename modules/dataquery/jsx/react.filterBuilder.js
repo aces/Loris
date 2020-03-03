@@ -142,7 +142,7 @@ class FilterRule extends Component {
     let rule = JSON.parse(JSON.stringify(this.props.rule));
     if (this.state.value) {
       fetch(
-        window.location.origin
+        loris.BaseURL
         + '/dataquery/View/search?category=' + rule.instrument
         + '&field=' + rule.field
         + '&value=' + this.state.value

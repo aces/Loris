@@ -325,7 +325,7 @@ class DataQueryApp extends Component {
 
     // Get the sessions which meet the rules criteria.
     fetch(
-      window.location.origin
+      loris.BaseURL
       + '/dataquery/View/search?category=' + rule.instrument
       + '&field=' + rule.field
       + '&value=' + rule.value
