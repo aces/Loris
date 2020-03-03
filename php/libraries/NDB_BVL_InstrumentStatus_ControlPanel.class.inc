@@ -249,7 +249,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
                             if (!$showLink) {
                                 $this->tpl_data['data_entry'][$i]['tooltip']
-                                    = "To enable link, required fields must be filled in";
+                                    = "To enable link, required fields must be
+                                      filled in";
                             }
                         }
                     }
@@ -260,7 +261,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     $this->tpl_data['data_entry'][$i]['showlink'] = true;
                 }
             } else {
-                $this->tpl_data['data_entry'][$i]['icon'] = 'fas fa-times';
+                $this->tpl_data['data_entry'][$i]['icon']    = 'fas fa-times';
                 $this->tpl_data['data_entry'][$i]['tooltip']
                     = "To enable link, Administration option must be selected";
             }
@@ -342,11 +343,11 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             if ($validityStatus == $option) {
                 $this->tpl_data['validity'][$i]['icon'] = 'far fa-check-square';
             } else {
-              if ($data_entry_status == 'Complete') {
-                  $this->tpl_data['validity'][$i]['showLink'] = false;
-              } else {
-                  $this->tpl_data['validity'][$i]['showLink'] = true;
-              }
+                if ($data_entry_status == 'Complete') {
+                    $this->tpl_data['validity'][$i]['showLink'] = false;
+                } else {
+                    $this->tpl_data['validity'][$i]['showLink'] = true;
+                }
             }
             $i++;
         }
