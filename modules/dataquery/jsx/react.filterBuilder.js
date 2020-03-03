@@ -82,7 +82,7 @@ class FilterRule extends Component {
     if (event.target.value) {
       rule.instrument = event.target.value;
       fetch(
-        window.location.origin
+        loris.BaseURL
         + '/dataquery/View/datadictionary?category=' + rule.instrument,
         {credentials: 'same-origin'}
       ).then((resp) => resp.json()

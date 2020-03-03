@@ -306,7 +306,7 @@ class DataQueryApp extends Component {
     // Get given fields of the instrument for the rule.
     // This call is made synchronously
     await fetch(
-      window.location.origin
+      loris.BaseURL
       + '/dataquery/View/datadictionary?category=' + rule.instrument,
       {credentials: 'same-origin'}
     ).then((resp) => resp.json()
@@ -329,7 +329,7 @@ class DataQueryApp extends Component {
 
     // Get the sessions which meet the rules criteria.
     fetch(
-      window.location.origin
+      loris.BaseURL
       + '/dataquery/View/search?category=' + rule.instrument
       + '&field=' + rule.field
       + '&value=' + rule.value
@@ -489,7 +489,7 @@ class DataQueryApp extends Component {
     });
     for (let i = 0; i < fieldsList.length; i++) {
       await fetch(
-        window.location.origin
+        loris.BaseURL
         + '/dataquery/View/datadictionary?key=' + fieldsList[i],
         {credentials: 'same-origin'}
       ).then((resp) => resp.json()

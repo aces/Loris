@@ -281,7 +281,7 @@ class FieldSelector extends Component {
     } else {
       // Retrieve the data dictionary
       fetch(
-        window.location.origin
+        loris.BaseURL
         + '/dataquery/View/datadictionary?category=' + category,
         {credentials: 'same-origin'}
       ).then((resp) => resp.json()
