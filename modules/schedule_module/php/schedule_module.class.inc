@@ -75,6 +75,8 @@ class Schedule_Module extends \DataFrameworkMenu
             'project'    => array_combine($projects, $projects),
             'subproject' => array_combine($subprojects, $subprojects),
             'AppointmentType' =>  $appointmentTpyes,
+            'today'      => date("Y-m-d"),
+            'next30days' => date("Y-m-d",strtotime("+30 days")),
         );
     }
     /**

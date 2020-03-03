@@ -2,8 +2,10 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Modal from 'Modal';
-import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
+import {Tabs, TabPane} from 'Tabs';
+import DataTable from 'jsx/DataTable';
+import Filter from 'jsx/Filter';
 
 class ScheduleIndex extends Component {
   constructor(props) {
@@ -24,10 +26,15 @@ class ScheduleIndex extends Component {
         AppointmentType: null,
         SessionFieldOptions: null,
       },
+      filter: {},
+      tabledatapast: {},
+      tabledatanext: {},
+      tabledatatoday: {},
       showModal: false,
       editModal: false,
     };
-
+    this.updateFilter = this.updateFilter.bind(this);
+    this.clearFilter = this.clearFilter.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
@@ -40,6 +47,7 @@ class ScheduleIndex extends Component {
     this.edit = this.edit.bind(this);
     this.renderScheduleFormButton = this.renderScheduleFormButton.bind(this);
     this.deleteid = this.deleteid.bind(this);
+    this.tabByid = this.tabByid.bind(this);
   }
 
   componentDidMount() {
@@ -55,7 +63,9 @@ class ScheduleIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
+      .then((data) => {
+        this.setState({data}); this.tabByid();
+      })
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -79,13 +89,42 @@ class ScheduleIndex extends Component {
       });
   }
   /**
+   * Updates filter state
+   *
+   * @param {object} filter passed from FilterForm
+   */
+  updateFilter(filter) {
+    this.setState({filter});
+  }
+
+  /**
+   * Sets Filter to empty object
+   */
+  clearFilter() {
+    this.updateFilter({});
+    history.replaceState({}, '', '?');
+  }
+  /**
+   * Sets table data of tab by id
+   *
+   */
+  tabByid() {
+    const today = this.state.data.fieldOptions.today;
+    const next = this.state.data.fieldOptions.next30days;
+    const list = this.state.data.Data;
+    this.setState({tabledatapast: list.filter((e)=>e[7]<today)});
+    this.setState({tabledatanext: list.filter((e)=>{
+    return e[7]>today && e[7]<=next;
+    })});
+    this.setState({tabledatapast: list.filter((e)=>e[7]=today)});
+  }
+  /**
    * Store the value of the element in this.state.formData
    *
    * @param {string} formElement - name of the form element
    * @param {string} value - value of the form element
    */
   setFormData(formElement, value) {
-     console.log(formElement, value);
     let formData = this.state.formData;
     formData[formElement] = value;
     if (formElement === 'DCCID') {
@@ -144,7 +183,6 @@ class ScheduleIndex extends Component {
   }
 
  deleteid(id) {
-   console.log(id);
     let deleteurl = loris.BaseURL + '/schedule_module/appointment/' + id;
     fetch(deleteurl, {
       method: 'DELETE',
@@ -172,13 +210,12 @@ class ScheduleIndex extends Component {
 
 
  edit(row) {
-console.log(row);
- this.openModal();
- this.setState({editModal: true});
-const sessionID = row['Edit'];
-const visit = row['Visit Label'];
-const sessionObj = {[sessionID]: visit};
-const rowObj = {
+   this.openModal();
+   this.setState({editModal: true});
+   const sessionID = row['Edit'];
+   const visit = row['Visit Label'];
+   const sessionObj = {[sessionID]: visit};
+   const rowObj = {
         AppointmentID: row.Delete,
         StartsAt: row['Starts At'],
         DCCID: row.CandID,
@@ -188,9 +225,8 @@ const rowObj = {
         AppointmentTime: row.Time,
         AppointmentType: row['Appointment Type'],
         SessionFieldOptions: sessionObj,
-  };
- this.setState({formData: rowObj});
-
+   };
+   this.setState({formData: rowObj});
  // ready setup edit form
 }
   openModal() {
@@ -269,7 +305,6 @@ const rowObj = {
     }
   }
   renderScheduleForm() {
-    console.log(this.state.editModal);
     const title = this.state.editModal ? 'Edit Appointment' : 'Add Appointment';
     return (
       <Modal
@@ -414,16 +449,81 @@ const rowObj = {
     const actions = [
       {name: 'addSchedule', label: 'Add Schedule', action: this.openModal},
     ];
+    let tabList = [
+      {
+        id: 'all',
+        label: 'All',
+      },
+      {
+        id: 'past',
+        label: 'Past',
+      },
+      {
+        id: 'next',
+        label: 'Next 30 Days',
+      },
+      {
+        id: 'today',
+        label: 'Today',
+      },
+    ];
+
     return (
     <div>
       {this.renderScheduleForm()}
-      <FilterableDataTable
+      <Filter
         name="schedule_module"
-        data={this.state.data.Data}
+        id="schedule_module"
+        filter={this.state.filter}
         fields={fields}
-        getFormattedCell={this.formatColumn}
-        actions={actions}
+        updateFilter={this.updateFilter}
+        clearFilter={this.clearFilter}
+        columns="2"
       />
+      <div className="panel-body">
+      <Tabs tabs={tabList} defaultTab="all">
+         <TabPane TabId={tabList[0].id}>
+             <DataTable
+               name="schedule_module"
+               data={this.state.data.Data}
+               fields={fields}
+               getFormattedCell={this.formatColumn}
+               actions={actions}
+               filter={this.state.filter}
+              />
+         </TabPane>
+         <TabPane TabId={tabList[1].id}>
+             <DataTable
+                name="schedule_module"
+                data={this.state.tabledatapast}
+                fields={fields}
+                getFormattedCell={this.formatColumn}
+                actions={actions}
+                filter={this.state.filter}
+              />
+          </TabPane>
+         <TabPane TabId={tabList[2].id}>
+             <DataTable
+                name="schedule_module"
+                data={this.state.tabledatanext}
+                fields={fields}
+                getFormattedCell={this.formatColumn}
+                actions={actions}
+                filter={this.state.filter}
+              />
+          </TabPane>
+          <TabPane TabId={tabList[3].id}>
+             <DataTable
+                name="schedule_module"
+                data={this.state.tabledatatoday}
+                fields={fields}
+                getFormattedCell={this.formatColumn}
+                actions={actions}
+                filter={this.state.filter}
+              />
+          </TabPane>
+       </Tabs>
+       </div>
     </div>
     );
   }
