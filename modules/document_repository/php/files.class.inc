@@ -288,7 +288,7 @@ class Files extends \NDB_Page
         $filename = $uploadedFile->getClientFilename();
 
         $category = $body['category']; // required
-        if (intval($category) < 0) {
+        if (!\Utility::valueIsPositiveInteger($category)) {
             // $category is a string representation of an ID, and so should be
             // at least equal to zero.
             return new \LORIS\Http\Response\JSON\BadRequest(self::BAD_CATEGORY);
@@ -307,7 +307,7 @@ class Files extends \NDB_Page
             $config->getSetting("documentRepositoryPath")
         );
 
-        $targetdir = new \SplFileInfo($path . $name . "/");
+        $targetdir = new \SplFileInfo($path);
 
         $fileSize = $uploadedFile->getSize();
         $fileName = $uploadedFile->getClientFileName();
