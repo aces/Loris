@@ -265,7 +265,8 @@ class View extends \NDB_Page
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _datadictionary(ServerRequestInterface $request) : ResponseInterface
+    private function _datadictionary(ServerRequestInterface $request)
+    : ResponseInterface
     {
         // Parse GET query params.
         $values = $request->getQueryParams();
