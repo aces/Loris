@@ -26,10 +26,16 @@ function ConsentWidget(props) {
     </table>);
 }
 
+/**
+ * Returns a rendered JSX component for a single consent type
+ *
+ * @param {array} consent - The type of consent
+ *
+ * @return {object}
+ */
 function consentTerm(consent) {
     let value;
     let date;
-    console.log(consent);
     switch (consent.Status) {
         case 'yes':
             value = 'Yes';
