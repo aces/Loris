@@ -182,7 +182,7 @@ class DataQueryApp extends Component {
         let curRequest;
         curRequest = Promise.resolve(
           fetch(
-            `${window.location.origin}/dataquery/documents/${document}`,
+            `${loris.BaseURL}/dataquery/documents/${document}`,
             {credentials: 'same-origin'}
           ).then((resp) => resp.json()
           ).then((json) => {
@@ -246,7 +246,7 @@ class DataQueryApp extends Component {
     let filter = this.saveFilterGroup(this.state.filter);
 
     fetch(
-      window.location.origin + '/dataquery/documents', {
+      `${loris.BaseURL}/dataquery/documents`, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -273,9 +273,7 @@ class DataQueryApp extends Component {
           }
         }
         fetch(
-          window.location.origin
-          + '/dataquery/documents/?DocID='
-          + id,
+          `${loris.BaseURL}/dataquery/documents/?DocID=${id}`,
           {credentials: 'same-origin'}
         ).then((resp) => resp.json()
         ).then((json) => {
