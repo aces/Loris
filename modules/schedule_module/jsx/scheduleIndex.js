@@ -63,9 +63,11 @@ class ScheduleIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => {
-        this.setState({data}); this.tabByid();
-      })
+      .then((data) =>
+        this.setState({data}))
+      .then(()=>{
+         this.tabByid();
+       })
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
