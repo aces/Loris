@@ -135,8 +135,8 @@ class Statistics_Site extends \NDB_Menu
                 }
             }
 
-            $params    = array();
-            $centerIDs = array();
+            $params    = [];
+            $centerIDs = [];
             foreach ($list_of_permitted_sites as $key => $siteID) {
                 $params[]            = ":id$key";
                 $centerIDs["id$key"] = $siteID;

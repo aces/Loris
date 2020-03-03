@@ -120,10 +120,10 @@ function editIssue()
         $attachment->setupUploading(
             $user,
             $_FILES,
-            array(
+            [
                 'fileDescription' => '',
                 'issueID'         => $issueID,
-            )
+            ]
         );
     }
 
