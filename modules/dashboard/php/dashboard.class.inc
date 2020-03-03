@@ -66,6 +66,8 @@ class Dashboard extends \NDB_Form
         $DB   = \NDB_Factory::singleton()->database();
         $user = \User::singleton();
 
+        // FIXME: This should use \LORIS\LorisInstance->getActiveModules(), but there
+        // is no access to a LORISInstance object at this point in the code.
         $this->modules = \Module::getActiveModules($DB);
 
         $this->smallwidgets = [];
