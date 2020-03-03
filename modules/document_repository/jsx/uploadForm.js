@@ -142,8 +142,10 @@ class DocUploadForm extends Component {
  *                      ******     Helper methods     *******
  *********************************************************************************/
 
+/**
+ * Sets form data and handles POSTing files to the document repository.
+ */
   uploadFile() {
-    // Set form data and upload the media file
     let formData = this.state.formData;
     let formObject = new FormData();
     for (let key in formData) {
@@ -165,32 +167,21 @@ class DocUploadForm extends Component {
         }, function() {
           window.location.assign(loris.BaseURL + '/document_repository/');
         });
+        return resp.json();
       }
-      return resp.json();
     })
     .then((data) => {
-      if (data.message) {
-         swal({
-          title: 'Upload Successful!',
-          type: 'success',
-          text: data.message,
-        }, function() {
-          window.location.assign(loris.BaseURL + '/document_repository/');
-        });
-      }
-      if (data.error) {
-         swal({
-          title: 'An error occurred',
-          type: 'error',
-          text: data.error,
-        });
-        this.setState({
-          formData: formData,
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
+        if (data.error) {
+            swal({
+                title: 'An error occurred',
+                type: 'error',
+                text: data.error,
+            });
+            this.setState({
+                formData: formData,
+            });
+            return resp.json();
+        }
     });
   }
 

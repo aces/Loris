@@ -17,6 +17,7 @@ class Files extends \NDB_Page
         'database. If the file does not appear in the document repository, ' .
         'please contact you administrator.';
     const BAD_CATEGORY      = "'Category' parameter must not be negative.";
+    const FORBIDDEN = 'User does not have permission to edit document repository files.';
 
     public $skipTemplate = true;
 
@@ -96,7 +97,9 @@ class Files extends \NDB_Page
         $user    = $factory->user();
         $db      = $factory->database();
         if (! $user->hasPermission('document_repository_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden();
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                self::FORBIDDEN
+            );
         }
         $updateValues = [
             'instrument' => $req['instrument'] ?? null,
@@ -276,14 +279,18 @@ class Files extends \NDB_Page
         $name    = $user->getUsername();
 
         if (! $user->hasPermission('document_repository_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden();
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                self::FORBIDDEN
+            );
         }
 
         // Do some validation and fail early on bad inputs.
         $body         = $request->getParsedBody();
         $uploadedFile = $request->getUploadedFiles()['file'] ?? null;
         if (is_null($uploadedFile)) {
-            return new \LORIS\Http\Response\JSON\BadRequest();
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'No file uploaded'
+            );
         }
         $filename = $uploadedFile->getClientFilename();
 
