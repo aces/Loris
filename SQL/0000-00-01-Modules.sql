@@ -45,6 +45,7 @@ INSERT INTO modules (Name, Active) VALUES ('new_profile', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('next_stage', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('publication', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('server_processes_manager', 'Y');
+INSERT INTO modules (Name, Active) VALUES ('schedule_module', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('statistics', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('survey_accounts', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('timepoint_list', 'Y');
