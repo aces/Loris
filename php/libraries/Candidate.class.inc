@@ -799,7 +799,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *
      * @return string
      */
-    public function getParticipantStatusDescription(\Database $db) : ?string
+    public function getParticipantStatusDescription(\Database $db) : string
     {
         $res = $db->pselectRow(
             "SELECT pso.Description
@@ -808,7 +808,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
              WHERE CandID=:candid",
             ['candid' => $this->getCandID()],
         );
-        return $res['Description'];
+        return $res['Description'] ?? '';
     }
 
 }

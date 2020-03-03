@@ -1,6 +1,5 @@
 <?php
 namespace LORIS\candidate_parameters;
-use LORIS\candidate_profile\CandidateWidget;
 use LORIS\candidate_profile\CandidateInfo;
 
 /**
@@ -155,7 +154,7 @@ class Module extends \Module
      * @param \Database  $db        A LORIS database connection
      * @param \Candidate $candidate The candidate being accessed
      *
-     * @return ?CandidateInfo
+     * @return CandidateInfo[]
      */
     private function _getCandidateParamTerms(
         \Database $db,
