@@ -5,7 +5,7 @@ use LORIS\candidate_profile\CandidateWidget;
 /**
  * {@inheritDoc}
  *
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Module extends \Module
 {
@@ -56,8 +56,8 @@ class Module extends \Module
     {
         switch($type) {
         case 'candidate':
-            $factory = \NDB_Factory::singleton();
-            $baseurl = $factory->settings()->getBaseURL();
+            $factory   = \NDB_Factory::singleton();
+            $baseurl   = $factory->settings()->getBaseURL();
             $candidate = $options['candidate'];
             if ($candidate === null) {
                 return [];
