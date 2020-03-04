@@ -110,8 +110,8 @@ class Module extends \Module
                     LEFT JOIN issues_comments ic ON (i.issueID=ic.issueID)
                  WHERE status != 'closed' AND CandID=:cid
                  GROUP BY i.issueID, i.Title",
-                     [ 'cid' => $candidate->getCandID() ],
-                 );
+                [ 'cid' => $candidate->getCandID() ],
+            );
             if (empty($issues)) {
                 return [];
             }
