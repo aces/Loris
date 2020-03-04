@@ -93,6 +93,26 @@ class Module extends \Module
                     "issue_tracker"
                 )
             ];
+        case 'candidate':
+            $factory = \NDB_Factory::singleton();
+            $DB      = $factory->database();
+            $baseURL = $factory->settings()->getBaseURL();
+
+            $candidate = $options['candidate'];
+            if ($candidate === null) {
+                return [];
+            }
+            $issues = $DB->pselect(
+                "SELECT i.issueID as ID,
+                        i.title as Title,
+                        COUNT(DISTINCT ic.issueCommentID) as comments
+                 FROM issues i
+                    LEFT JOIN issues_comments ic ON (i.issueID=ic.issueID)
+                 WHERE status != 'closed' AND CandID=:cid
+                 GROUP BY i.issueID, i.Title",
+                     [ 'cid' => $candidate->getCandID() ],
+                 );
+
         }
         return [];
 
