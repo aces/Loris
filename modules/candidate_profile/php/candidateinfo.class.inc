@@ -12,6 +12,9 @@ namespace LORIS\candidate_profile;
  */
 class CandidateInfo implements \LORIS\GUI\Widget
 {
+    public $term;
+    public $value;
+
     /**
      * Construct a CandidateInfo object
      *

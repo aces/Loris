@@ -94,7 +94,7 @@ class Module extends \Module
             $entries = [
                 new CandidateInfo(
                     "Participant Status",
-                    $candidate->getParticipantStatusDescription($db)
+                    $candidate->getParticipantStatusDescription($db) ?: 'N/A',
                 ),
             ];
 
