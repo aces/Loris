@@ -11,8 +11,11 @@ function CandidateConflictsWidget(props) {
                 columns: getDataBreakdown(props.Conflicts),
                 type: 'pie',
                 onclick: function(d, el) {
-                    // http://localhost:8000/conflict_resolver/?visitLabel=V03&instrument=adi_r_proband
-                    console.log(d, el);
+                    let [testname, visit] = d.name.split(' - ');
+                    window.location = props.BaseURL + '/conflict_resolver/'
+                        + '?visitLabel=' + visit
+                        + '&instrument=' + testname
+                        + '&candidateID=' + props.Candidate.Meta.CandID;
                 },
             },
             pie: {

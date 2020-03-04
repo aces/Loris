@@ -122,7 +122,7 @@ class Module extends \Module
             return [
                 new \LORIS\candidate_profile\CandidateWidget(
                     "Unresolved Conflicts",
-                    $baseurl . "/conflict_resolver/js/CandidateConflictsWidget.js",
+                    $baseURL . "/conflict_resolver/js/CandidateConflictsWidget.js",
                     "lorisjs.conflict_resolver.CandidateConflictsWidget.default",
                     [
                         'Conflicts' => $results,
