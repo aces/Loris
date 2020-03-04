@@ -1372,6 +1372,21 @@ CREATE TABLE `issues_watching` (
   CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `issues_attachments` (
+    `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `issueID` int(11) unsigned NOT NULL,
+    `file_hash` varchar(64) NOT NULL,
+    `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
+    `file_name` varchar(255) NOT NULL DEFAULT '',
+    `deleted` tinyint(1) NOT NULL DEFAULT 0,
+    `user` varchar(255) NOT NULL DEFAULT '',
+    `description` text DEFAULT NULL,
+    `file_size` int(20) DEFAULT NULL,
+    `mime_type` varchar(255) NOT NULL DEFAULT '',
+    CONSTRAINT `fk_issues_attachments_issue` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`),
+    PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- ********************************
 -- parameter tables
 -- ********************************
@@ -2096,16 +2111,3 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-CREATE TABLE `issues_attachments` (
-    `ID` int NOT NULL AUTO_INCREMENT,
-    `issueID` int(11) NOT NULL,
-    `file_hash` varchar(64) NOT NULL,
-    `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
-    `file_name` varchar(255) NOT NULL DEFAULT '',
-    `deleted` tinyint(1) NOT NULL DEFAULT 0,
-    `user` varchar(255) NOT NULL DEFAULT '',
-    `description` text DEFAULT NULL,
-    `file_size` int(20) DEFAULT NULL,
-    `mime_type` varchar(255) NOT NULL DEFAULT '',
-    PRIMARY KEY (`ID`)
-) DEFAULT CHARSET=utf8mb4;
