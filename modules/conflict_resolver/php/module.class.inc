@@ -103,7 +103,7 @@ class Module extends \Module
                 return [];
             }
 
-            $candID = $candidate->getCandID();
+            $candID  = $candidate->getCandID();
             $results = $DB->pselect(
                 "SELECT f1.Test_name, s1.Visit_label, COUNT(*) as Conflicts
                  FROM conflicts_unresolved cu
@@ -113,7 +113,7 @@ class Module extends \Module
                      LEFT JOIN session s2 ON (f2.SessionID=s2.ID)
                  WHERE (s1.CandID=:cand1 OR s2.CandID=:cand2)
                  GROUP BY f1.Test_name, s1.Visit_label",
-                 ['cand1' => $candID, 'cand2' => $candID],
+                ['cand1' => $candID, 'cand2' => $candID],
             );
             // Do not show the conflicts card if there are no conflicts
             if (empty($results)) {
