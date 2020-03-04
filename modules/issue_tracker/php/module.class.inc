@@ -112,6 +112,21 @@ class Module extends \Module
                  GROUP BY i.issueID, i.Title",
                      [ 'cid' => $candidate->getCandID() ],
                  );
+            if (empty($issues)) {
+                return [];
+            }
+            return [
+                new \LORIS\candidate_profile\CandidateWidget(
+                    "Open Issues",
+                    $baseURL . "/issue_tracker/js/CandidateIssuesWidget.js",
+                    "lorisjs.issue_tracker.CandidateIssuesWidget.default",
+                    [
+                        'Issues' => $issues,
+                    ],
+                    1,
+                    1,
+                )
+            ];
 
         }
         return [];
