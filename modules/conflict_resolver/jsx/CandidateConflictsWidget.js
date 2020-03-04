@@ -11,17 +11,20 @@ function CandidateConflictsWidget(props) {
                 columns: getDataBreakdown(props.Conflicts),
                 type: 'pie',
                 onclick: function(d, el) {
-                    let [testname, visit] = d.name.split(' - ');
-                    window.location = props.BaseURL + '/conflict_resolver/'
-                        + '?visitLabel=' + visit
-                        + '&instrument=' + testname
-                        + '&candidateID=' + props.Candidate.Meta.CandID;
+                    redirectFromLabel(props, d.name);
                 },
             },
             pie: {
                 label: {
                     format: function(value, ratio, id) {
                         return [id, value].join(',');
+                    },
+                },
+            },
+            legend: {
+                item: {
+                    onclick: function(id) {
+                        redirectFromLabel(props, id);
                     },
                 },
             },
@@ -60,5 +63,13 @@ function getDataBreakdown(conflicts) {
         data.push([conflict.Test_name + ' - ' + conflict.Visit_label, conflict.Conflicts, {'abc': 'def'}]);
     }
     return data;
+}
+
+function redirectFromLabel(props, label) {
+    let [testname, visit] = label.split(' - ');
+    window.location = props.BaseURL + '/conflict_resolver/'
+        + '?visitLabel=' + visit
+        + '&instrument=' + testname
+        + '&candidateID=' + props.Candidate.Meta.CandID;
 }
 export default CandidateConflictsWidget;
