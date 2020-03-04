@@ -156,6 +156,7 @@ const config = [
     lorisModule('candidate_parameters', ['CandidateParameters', 'ConsentWidget']),
     lorisModule('configuration', ['SubprojectRelations']),
     lorisModule('conflict_resolver', [
+        'CandidateConflictsWidget',
         'conflictResolverIndex',
         'resolvedConflictsIndex',
     ]),
