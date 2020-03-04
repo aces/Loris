@@ -9,7 +9,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
     "prop-types": "^15.7.2",
-    "react": "^16.11.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-addons-create-fragment": "^15.6.2",
     "react-markdown": "^4.2.2",
     "sweetalert2": "^8.18.6"
