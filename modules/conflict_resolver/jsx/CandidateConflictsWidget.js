@@ -3,6 +3,14 @@ import * as d3 from 'd3';
 import c3 from 'c3';
 import React, {useEffect} from 'react';
 
+/**
+ * Renders a representation of the candidate conflicts as a React
+ * component
+ *
+ * @param {array} props - The React props
+ *
+ * @return {object}
+ */
 function CandidateConflictsWidget(props) {
     useEffect(() => {
         c3.generate({
@@ -31,7 +39,6 @@ function CandidateConflictsWidget(props) {
             onrendered: function() {
                 d3.selectAll('.c3-chart-arc text').each(function(v) {
                     let label = d3.select(this);
-                    console.log(label);
                     let data = label._groups[0][0].innerHTML.split(',');
 
                     let id = data[0];
@@ -56,15 +63,35 @@ function CandidateConflictsWidget(props) {
     return <div id='conflictschart' />;
 }
 
+/**
+ * Converts the conflict data to the representation
+ * required by the C3 library.
+ *
+ * @param {array} conflicts - The data from the database
+ *
+ * @return {array} - an array suitable for an C3 data key
+ */
 function getDataBreakdown(conflicts) {
     let data = [];
     for (let i = 0; i < conflicts.length; i++) {
         const conflict = conflicts[i];
-        data.push([conflict.Test_name + ' - ' + conflict.Visit_label, conflict.Conflicts, {'abc': 'def'}]);
+        data.push([
+            conflict.Test_name + ' - ' + conflict.Visit_label,
+            conflict.Conflicts,
+        ]);
     }
     return data;
 }
 
+/**
+ * Redirects to the conflict resolver based on the label displayed
+ * in the C3 chart
+ *
+ * @param {array} props - The React props
+ * @param {string} label - The label in the chart
+ *
+ * @return {void}
+ */
 function redirectFromLabel(props, label) {
     let [testname, visit] = label.split(' - ');
     window.location = props.BaseURL + '/conflict_resolver/'
