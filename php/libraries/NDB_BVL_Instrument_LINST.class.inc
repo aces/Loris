@@ -36,8 +36,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
     public $LinstLines = array();
 
-    private $_selectMultipleElements;
-
     /**
      * Sets up the variables required for a LINST instrument to load
      *
@@ -614,7 +612,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                 case 'selectmultiple':
                     $type = 'multiple';
-                    $this->_selectMultipleElements[] = $pieces[1];
+                    $this->selectMultipleElements[] = $pieces[1];
                     // fall through and also execute select code below
                 case 'select':
                     $options = preg_split("/{-}/", trim($pieces[3]));
