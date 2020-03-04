@@ -1,6 +1,7 @@
 <?php
 namespace LORIS\candidate_parameters;
 use LORIS\candidate_profile\CandidateInfo;
+use LORIS\candidate_profile\CandidateWidget;
 
 /**
  * {@inheritDoc}
