@@ -1,5 +1,5 @@
 /* exported FormElement, FieldsetElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
-TextboxElement, DateElement, NumericElement, FileElement, StaticElement, LinkElement,
+TextboxElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
 CheckboxElement, ButtonElement, LorisElement
 */
 
@@ -327,11 +327,11 @@ class SearchableDropdown extends Component {
 
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+        <label className="col-sm-5 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           <input
             type="text"
             name={this.props.name + '_input'}
@@ -474,11 +474,11 @@ class SelectElement extends Component {
 
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+        <label className="col-sm-5 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           <select
             name={this.props.name}
             multiple={multiple}
@@ -727,11 +727,11 @@ class TagsElement extends Component {
     }, this);
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+        <label className="col-sm-5 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           {items}
           {input}
           {errorMessage}
@@ -828,11 +828,11 @@ class TextareaElement extends Component {
 
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+        <label className="col-sm-5 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           <textarea
             cols={this.props.cols}
             rows={this.props.rows}
@@ -916,11 +916,11 @@ class TextboxElement extends Component {
 
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+        <label className="col-sm-5 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           <input
             type="text"
             className="form-control"
@@ -974,6 +974,7 @@ class DateElement extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    this.handleButton = this.handleButton.bind(this);
   }
 
   componentDidMount() {
@@ -1013,6 +1014,14 @@ class DateElement extends Component {
     this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
   }
 
+  handleButton(e) {
+    let date = new Date();
+    let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
+                        .toISOString()
+                        .split('T')[0];
+    this.props.onUserInput(this.props.name, dateString);
+  }
+
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
@@ -1044,25 +1053,44 @@ class DateElement extends Component {
       maxFullDate = maxYear + '-12';
     }
 
+    // Add 'Today' button
+    const todayButton = this.props.todayBtn ? (
+      <div style={{flexGrow: 1, flexBasis: '0%'}}>
+        <button
+          type="button"
+          onClick={this.handleButton}
+          className= "btn btn-primary"
+          disabled={disabled}
+        >
+          Today
+        </button>
+      </div>
+    ) : null;
+
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+        <label className="col-sm-5 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
-          <input
-            type={inputType}
-            className="form-control"
-            name={this.props.name}
-            id={this.props.id}
-            min={minFullDate}
-            max={maxFullDate}
-            onChange={this.handleChange}
-            value={this.props.value || ''}
-            required={required}
-            disabled={disabled}
-          />
+        <div className="col-sm-7">
+          <div style={{display: 'flex'}}>
+            <div style={{flexGrow: 3, flexBasis: '60%'}}>
+              <input
+                type={inputType}
+                className="form-control"
+                name={this.props.name}
+                id={this.props.id}
+                min={minFullDate}
+                max={maxFullDate}
+                onChange={this.handleChange}
+                value={this.props.value || ''}
+                required={required}
+                disabled={disabled}
+              />
+            </div>
+            {todayButton}
+          </div>
         </div>
       </div>
     );
@@ -1079,6 +1107,7 @@ DateElement.propTypes = {
   dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  todayBtn: PropTypes.bool,
   onUserInput: PropTypes.func,
 };
 
@@ -1092,6 +1121,7 @@ DateElement.defaultProps = {
   dateFormat: 'YMd',
   disabled: false,
   required: false,
+  todayBtn: true,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1124,11 +1154,11 @@ class TimeElement extends Component {
 
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+        <label className="col-sm-5 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           <input
             type="time"
             className="form-control"
@@ -1190,11 +1220,11 @@ class NumericElement extends Component {
 
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+        <label className="col-sm-5 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           <input
             type="number"
             className="form-control"
@@ -1299,10 +1329,10 @@ class FileElement extends Component {
       truncateEllipsis.paddingTop = '7px';
       return (
         <div className={elementClass}>
-          <label className="col-sm-3 control-label">
+          <label className="col-sm-5 control-label">
             {this.props.label}
           </label>
-          <div className="col-sm-9">
+          <div className="col-sm-7">
             <div style={truncateEllipsis}>
               <span style={truncateEllipsisChild}>{fileName}</span>
             </div>
@@ -1313,11 +1343,11 @@ class FileElement extends Component {
 
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label">
+        <label className="col-sm-5 control-label">
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           <div className="input-group">
             <div tabIndex="-1"
                  className="form-control file-caption kv-fileinput-caption">
@@ -1397,10 +1427,10 @@ class StaticElement extends Component {
   render() {
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label">
+        <label className="col-sm-5 control-label">
           {this.props.label}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           <p className="form-control-static">{this.props.text}</p>
         </div>
       </div>
@@ -1422,6 +1452,38 @@ StaticElement.defaultProps = {
 };
 
 /**
+ * Header element component.
+ * Used to display a header element with specific level (1-6) as part of a form
+ *
+ */
+class HeaderElement extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    const Tag = 'h' + this.props.headerLevel;
+    return (
+      <div className="row form-group">
+        <Tag className='col-xs-12'>
+          {this.props.text}
+        </Tag>
+      </div>
+    );
+  }
+}
+
+HeaderElement.propTypes = {
+  text: PropTypes.string.isRequired,
+  headerLevel: PropTypes.oneOf([
+    1, 2, 3, 4, 5, 6,
+  ]),
+};
+
+HeaderElement.defaultProps = {
+  headerLevel: 3,
+};
+
+/**
  * Link element component.
  * Used to link plain/formated text to an href destination as part of a form
  */
@@ -1433,10 +1495,10 @@ class LinkElement extends Component {
   render() {
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label">
+        <label className="col-sm-5 control-label">
           {this.props.label}
         </label>
-        <div className="col-sm-9">
+        <div className="col-sm-7">
           <p className="form-control-static"><a href={this.props.href}>{this.props.text}</a></p>
         </div>
       </div>
@@ -1559,6 +1621,7 @@ class ButtonElement extends Component {
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
+            disabled={this.props.disabled}
           >
             {this.props.label}
           </button>
@@ -1572,14 +1635,16 @@ ButtonElement.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
+  disabled: PropTypes.bool,
   onUserInput: PropTypes.func,
 };
 
 ButtonElement.defaultProps = {
   label: 'Submit',
   type: 'submit',
+  disabled: null,
   buttonClass: 'btn btn-primary',
-  columnSize: 'col-sm-9 col-sm-offset-3',
+  columnSize: 'col-sm-5 col-sm-offset-7',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1661,6 +1726,9 @@ class LorisElement extends Component {
       case 'static':
         elementHtml = (<StaticElement {...elementProps} />);
         break;
+      case 'header':
+        elementHtml = (<HeaderElement {...elementProps} />);
+        break;
       case 'link':
         elementHtml = (<LinkElement {...elementProps} />);
         break;
@@ -1690,6 +1758,7 @@ window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
+window.HeaderElement = HeaderElement;
 window.LinkElement = LinkElement;
 window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
@@ -1709,6 +1778,7 @@ export default {
   NumericElement,
   FileElement,
   StaticElement,
+  HeaderElement,
   LinkElement,
   CheckboxElement,
   ButtonElement,

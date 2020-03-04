@@ -13,9 +13,6 @@
   <!-- column headings -->
   <thead>
   <tr class="info">
-    <th>
-      DOB
-    </th>
     {if $candidate.EDC!=""}
       <th>
         EDC
@@ -64,9 +61,6 @@
   <!-- candidate data -->
   <tbody>
   <tr>
-    <td>
-      {$candidate.DoB}
-    </td>
     {if $candidate.EDC!=""}
       <td>
         {$candidate.EDC}

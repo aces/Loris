@@ -52,7 +52,7 @@ class Panel extends Component {
         data-target={'#' + this.props.id}
         style={{cursor: 'pointer'}}
       >
-        {this.props.title}
+        <b>{this.props.title}</b>
         <span className={glyphClass}></span>
       </div>
     ) : '';
@@ -60,7 +60,12 @@ class Panel extends Component {
     return (
       <div className="panel panel-primary">
         {panelHeading}
-        <div id={this.props.id} className={this.panelClass} role="tabpanel">
+        <div
+          id={this.props.id}
+          className={this.panelClass}
+          role="tabpanel"
+          style={{overflowX: 'auto'}}
+        >
           <div className="panel-body" style={{height: this.props.height}}>
             {this.props.children}
           </div>
@@ -71,6 +76,7 @@ class Panel extends Component {
 }
 
 Panel.propTypes = {
+  initCollapsed: PropTypes.bool,
   id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
@@ -79,6 +85,7 @@ Panel.defaultProps = {
   initCollapsed: false,
   id: 'default-panel',
   height: '100%',
+  title: '',
 };
 
 export default Panel;

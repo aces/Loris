@@ -4,6 +4,7 @@ htdocs/js/components/*
 
 # Ignore until ESLint is run
 modules/dataquery/
+/project/modules/dataquery/
 
 # Ignore external libs
 htdocs/js/flot/*
