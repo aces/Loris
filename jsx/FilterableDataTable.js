@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 
 import Panel from 'jsx/Panel';
@@ -17,7 +17,7 @@ import Filter from 'jsx/Filter';
  *
  * Deprecates Filter Form.
  */
-class FilterableDataTable extends Component {
+class FilterableDataTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,6 +64,7 @@ class FilterableDataTable extends Component {
         filter={this.state.filter}
         actions={this.props.actions}
         getFormattedCell={this.props.getFormattedCell}
+        getMappedCell={this.props.getMappedCell}
         folder={this.props.folder}
         nullTableShow={this.props.nullTableShow}
       />

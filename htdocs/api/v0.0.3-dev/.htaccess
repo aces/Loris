@@ -16,6 +16,7 @@ RewriteRule ^projects/? /index.php [QSA,END]
 # Candidates API rewrite rules
 
 RewriteRule ^candidates(/*)$ Candidates.php?PrintCandidates=true [L]
+RewriteRule ^candidates/ext(/*)$ CandidatesExtID.php?PrintCandidates=true [L]
 RewriteRule ^candidates/([0-9]+)(/*)$ candidates/Candidate.php?CandID=$1&PrintCandidate=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)(/*)$ candidates/Visit.php?CandID=$1&VisitLabel=$2&PrintVisit=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/instruments$ candidates/Instruments.php?CandID=$1&VisitLabel=$2&NoCandidate=true&PrintInstruments=true [L]

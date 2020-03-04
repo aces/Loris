@@ -72,7 +72,7 @@ class Filter extends Component {
           element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
           break;
         case 'date':
-          element = <DateElement key={filter.name}/>;
+          element = <DateElement key={filter.name} todayBtn={false}/>;
           break;
         case 'checkbox':
           element = <CheckboxElement key={filter.name}/>;
