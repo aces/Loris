@@ -83,36 +83,25 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("acknowledgements", array('full_name' => 'Test Test'));
         parent::tearDown();
     }
+
     /**
-     * Tests that, the homepage should have "Acknowledgements" on the page.
+     * Ensures that the module loads if and only if the user has one of the
+     * module permissions codes.
      *
      * @return void
      */
-    function testPageLoads()
+    public function testPermissions(): void
     {
-        $this->safeGet($this->url . "/acknowledgements/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Acknowledgements", $bodyText);
-    }
-    /**
-     * Tests that, the homepage should have "You do not have access to this page."
-     * on the page without permission.
-     *
-     * @return void
-     */
-    function testPageLoadsWithoutPermissions()
-    {
-        $this->setupPermissions(array("violated_scans_view_allsites"));
-        $this->safeGet($this->url . "/acknowledgements/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
-            "You do not have access to this page.",
-            $bodyText
+        $this->checkPagePermissions(
+            '/acknowledgements/',
+            array(
+                'acknowledgements_view',
+                'acknowledgements_edit'
+            ),
+            "Acknowledgements"
         );
-        $this->resetPermissions();
     }
+
     /**
      * Testing React filter in this page.
      *

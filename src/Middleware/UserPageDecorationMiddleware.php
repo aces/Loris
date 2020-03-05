@@ -22,8 +22,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         string $pagename,
         \NDB_Config $config,
         array $JS,
-        array $CSS,
-        \Database $DB
+        array $CSS
     ) {
 
         $this->JSFiles  = $JS;
@@ -32,7 +31,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $this->BaseURL  = $baseurl;
         $this->PageName = $pagename;
         $this->user     = $user;
-        $this->DB       = $DB;
     }
 
     /**
@@ -48,14 +46,15 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     {
         ob_start();
         // Set the page template variables
-        // $user is set by the page base router
+        // $user and $loris is set by the page base router
         $user     = $request->getAttribute("user");
+        $loris    = $request->getAttribute("loris");
         $tpl_data = array(
                      'test_name' => $this->PageName,
                     );
+        $menu     = [];
 
-        $menu    = [];
-        $modules = \Module::getActiveModules($this->DB);
+        $modules = $loris->getActiveModules();
         foreach ($modules as $module) {
             if (!$module->hasAccess($user)) {
                 continue;
@@ -134,7 +133,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
 
-        $tpl_data['subtest'] = $request->getAttribute("pageclass")->page;
+        $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
         $page = $request->getAttribute("pageclass");
         if (method_exists($page, 'getFeedbackPanel')

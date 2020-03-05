@@ -23,6 +23,9 @@
  */
 class SocketWrapper
 {
+    public $host;
+    public $port;
+    public $socket;
     /**
      * Constructor for SocketWrapper
      */
@@ -186,13 +189,19 @@ class CouchDB
     /**
      * Boolean true if we are currently doing a bulk transaction.
      */
-    var $bulk = false;
+    public $bulk = false;
 
     /**
      * Array of documents to be commited when the current bulk transaction
      * ends.
      */
-    var $bulkDocuments = array();
+    public $bulkDocuments = array();
+
+    /**
+     * An instance of SocketWrapper used in network interaction with a CouchDB
+     * database.
+     */
+    public $SocketHandler;
 
     /**
      * Private Constructor for CouchDB

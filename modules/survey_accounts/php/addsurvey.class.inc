@@ -221,12 +221,12 @@ class AddSurvey extends \NDB_Form
         $this->tpl_data['success'] = true;
 
         if ($email) {
-            $config = \NDB_Config::singleton();
-            $www    = $config->getSetting("www");
+            $config  = \NDB_Config::singleton();
+            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
 
             $msg_data = array(
                 'study'     => $config->getSetting("title"),
-                'url'       => $www['url'] . '/survey.php?key=' .
+                'url'       => $baseURL . '/survey.php?key=' .
                                          urlencode($key),
                 'EmailForm' => $values['email_dialog'],
             );

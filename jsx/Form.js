@@ -478,7 +478,7 @@ class SelectElement extends Component {
     // element will take up the whole row.
     let label = null;
     let inputClass = 'col-sm-12';
-    if (this.props.label || this.props.label == '') {
+    if (this.props.label && this.props.label != '') {
       label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
@@ -1207,12 +1207,19 @@ class NumericElement extends Component {
   }
 
   render() {
-    let disabled = this.props.disabled ? 'disabled' : null;
-    let required = this.props.required ? 'required' : null;
-    let requiredHTML = null;
+    const {disabled, required} = this.props;
+    let requiredHTML = required ? <span className="text-danger">*</span> : null;
+    let errorMessage = null;
+    let elementClass = 'row form-group';
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
 
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
@@ -1225,11 +1232,12 @@ class NumericElement extends Component {
             id={this.props.id}
             min={this.props.min}
             max={this.props.max}
-            value={this.props.value}
+            value={this.props.value || ''}
             disabled={disabled}
             required={required}
             onChange={this.handleChange}
           />
+          {errorMessage}
         </div>
       </div>
     );
@@ -1424,7 +1432,7 @@ class StaticElement extends Component {
           {this.props.label}
         </label>
         <div className="col-sm-9">
-          <p className="form-control-static">{this.props.text}</p>
+          <p className={this.props.class}>{this.props.text}</p>
         </div>
       </div>
     );
@@ -1442,6 +1450,7 @@ StaticElement.propTypes = {
 StaticElement.defaultProps = {
   label: '',
   text: null,
+  class: 'form-control-static',
 };
 
 /**

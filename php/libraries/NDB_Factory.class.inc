@@ -25,6 +25,11 @@ use \LORIS\StudyEntities\Candidate\CandID;
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
+ *
+ * Phan currently has bad support for PHPUnit's Mock objects which is
+ * creating false positive with the below rule.
+ *
+ * @phan-file-suppress PhanUndeclaredClassMethod
  */
 class NDB_Factory
 {
@@ -37,6 +42,7 @@ class NDB_Factory
     private static $_candidates = array();
     private static $_timepoints = array();
 
+    private $_baseURL = "";
     var $Testing; // Whether or not Mock objects should be returned instead of
                   // real ones
     //
@@ -97,6 +103,8 @@ class NDB_Factory
 
         self::$_candidates = array();
         self::$_timepoints = array();
+
+        $this->_baseURL = "";
     }
 
     /**
@@ -371,6 +379,18 @@ class NDB_Factory
     }
 
     /**
+     * Sets the baseURL that the settings object return by settings()
+     * should return when calling getBaseURL().
+     *
+     * @param string $baseURL The URL to be returned by the Settings object.
+     *
+     * @return void
+     */
+    public function setBaseURL(string $baseURL)
+    {
+        $this->_baseURL = $baseURL;
+    }
+    /**
      * Returns a singleton settings object
      *
      * @param string $configfile Location of XML file to parse config from
@@ -382,7 +402,7 @@ class NDB_Factory
         if (self::$_settings !== null) {
             return self::$_settings;
         }
-        self::$_settings = new Settings($this->config($configfile));
+        self::$_settings = new Settings($this->config($configfile), $this->_baseURL);
         return self::$_settings;
     }
 

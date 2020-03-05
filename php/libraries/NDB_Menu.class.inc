@@ -46,16 +46,14 @@ class NDB_Menu extends NDB_Page
      * @param string $page       The subtest being accessed (may be null)
      * @param string $identifier The identifier for the data to load on this page
      * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
      */
     public function __construct(
         \Module $module,
         string $page,
         string $identifier,
-        string $commentID,
-        string $formname
+        string $commentID
     ) {
-        parent::__construct($module, $page, $identifier, $commentID, $formname);
+        parent::__construct($module, $page, $identifier, $commentID);
         $this->menu = $module->getName();
     }
     /**
@@ -115,11 +113,20 @@ class NDB_Menu extends NDB_Page
             return "";
         }
         // dump the html for the menu
-        $smarty = new Smarty_neurodb($this->Module->getName());
+        $smarty = new Smarty_NeuroDB($this->Module->getName());
         $smarty->assign('mode', $this->mode);
         $smarty->assign($this->getTemplateData());
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
     }
-}
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    function toJSON(): string
+    {
+        return json_encode(array('error' => 'Not implemented'));
+    }
+}

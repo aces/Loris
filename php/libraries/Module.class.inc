@@ -50,13 +50,41 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             "SELECT Name FROM modules WHERE Active='Y'",
             []
         );
-        return array_map(
-            function ($name) {
-                return self::factory($name);
-            },
-            $mnames
-        );
+
+        $modules = [];
+        foreach ($mnames as $name) {
+            try {
+                $modules[] = self::factory($name);
+            } catch(\LorisModuleMissingException $e) {
+                error_log($e->getMessage() . " " . $e->getTraceAsString());
+            }
+        }
+        return $modules;
     }
+
+    /**
+     * Retrieve all active module descriptors from the given database, indexed
+     * by their primary key in the database.
+     *
+     * @param \Database $db an open connection to a database containing a 'modules'
+     *                      table
+     *
+     * @return \Module[]
+     */
+    static public function getActiveModulesIndexed(\Database $db): array
+    {
+        $mnames = $db->pselect(
+            "SELECT ID, Name FROM modules WHERE Active='Y'",
+            []
+        );
+
+        $rv = [];
+        foreach ($mnames as $row) {
+            $rv[$row['ID']] = self::factory($row['Name']);
+        }
+        return $rv;
+    }
+
 
     /**
      * Returns a Module instance for the module named $name. The returned
@@ -228,7 +256,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      *
      * @param string $page The name of the page within the module to load.
      *
-     * @return a NDB_Page subclass representing this page.
+     * @return NDB_Page
+     *         Returns NDB_Page (or subclass) representing this page.
      */
     public function loadPage(string $page)
     {
@@ -472,12 +501,14 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * on $type, and the contract between the caller and callee is
      * implicit.
      *
-     * @param string $type The type of widgets to get
-     * @param \User  $user The user widgets are being retrieved for.
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
      *
      * @return \LORIS\GUI\Widget[]
      */
-    public function getWidgets(string $type, \User $user)
+    public function getWidgets(string $type, \User $user, array $options)
     {
         return [];
     }

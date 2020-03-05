@@ -34,7 +34,9 @@ class NDB_BVL_Battery
      *
      * @access private
      */
-    var $sessionID = null;
+    public $sessionID = null;
+
+    public $age;
 
     /**
      * Constructor - merely asserts that the environment is suitable
@@ -381,10 +383,11 @@ class NDB_BVL_Battery
      */
     public static function getInstrumentNameForCommentId($commentId)
     {
-        return \Database::singleton()->pselectOne(
-            "SELECT Test_name FROM flag WHERE CommentID=:CID",
-            array('CID' => $commentId)
-        );
+        return \NDB_Factory::singleton()->database()
+            ->pselectOne(
+                "SELECT Test_name FROM flag WHERE CommentID=:CID",
+                array('CID' => $commentId)
+            );
     }
 
     /**

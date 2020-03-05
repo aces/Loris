@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
 /**
  * A class for holding a set of (static) utility/helper functions in a
  * single namespace.
@@ -55,7 +54,7 @@ class Utility
             $matches
         )
         ) {
-            throw new \LorisException(
+            throw new LorisException(
                 "Argument 1 does not match expected date format (YYYY-MM-DD)"
             );
         }
@@ -947,6 +946,29 @@ class Utility
             $pieces[] = $keyspace[random_int(0, $max)];
         }
         return implode('', $pieces);
+    }
+
+    /**
+     * Convert a DateTime or string to the date format specified in the
+     * dateDisplayFormat config setting.
+     *
+     * @param string $date The date to be formatted.
+     *
+     * @return string $date formatted according to the dateDisplayFormat setting.
+     */
+    static function toDateDisplayFormat(string $date): string
+    {
+        try {
+            $dt = new DateTime($date);
+        } catch (Exception $e) {
+            throw new \LorisException(
+                "Input must be a valid date/time string: $e"
+            );
+        }
+        return $dt->format(
+            \NDB_Config::singleton()->getSetting('dateDisplayFormat')
+            ?? DateTime::ATOM
+        );
     }
 
      /**

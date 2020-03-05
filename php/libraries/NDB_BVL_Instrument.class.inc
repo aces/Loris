@@ -42,7 +42,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @access private
      */
-    var $form;
+    public $form;
+
+    public $formType;
+
+    public $dateOptions;
+    public $DataEntryType;
+    public $XINRules;
+    public $XINDebug;
 
     /**
      * Test name (short name), equivalent to test_names.Test_name
@@ -159,6 +166,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     var $WrapperDateWithStatusElements = array();
 
     /**
+     * True if the instrument is administered after the candidate's death.
+     * This is used to determine which candidate age should be displayed as
+     * part of metadata fields. (Either Candidate Age or Candidate Age at Death).
+     * To be called from within individual instrument forms.
+     *
+     * @var    bool
+     * @access private
+     */
+    protected $postMortem = false;
+
+    /**
      * True if the page is being previewed from the instrument builder,
      * and not really loaded. only applies to LINST instrument.
      */
@@ -216,8 +234,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 Module::factory("instruments"),
                 $page,
                 $commentID,
-                $commentID,
-                'test_form'
+                $commentID
             );
         } else {
             if (!class_exists($class)
@@ -472,7 +489,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->form->setDefaults($defaults);
 
         if ($this->DataEntryType == 'DirectEntry') {
-            $smarty = new Smarty_neurodb;
+            $smarty = new Smarty_NeuroDB;
 
             $formArray = $this->form->toElementArray();
             if (isset($this->testName)) {
@@ -489,7 +506,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             // not the display function.
             return $this->toJSON();
         } else {
-            $smarty    = new Smarty_neurodb;
+            $smarty    = new Smarty_NeuroDB;
             $formArray = $this->form->toElementArray();
 
             $smarty->assign('form', $formArray);
@@ -654,7 +671,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     );
                     foreach ($Windows as $window) {
                         if ($agedays < $window['AgeMinDays']) {
-                            $delta = $window['AgeMinDays'] - $agedays;
+                            $delta = intval($window['AgeMinDays']) - $agedays;
                             if (abs($delta) < abs($values['Window_Difference'])
                                 || $values['Window_Difference'] == 0
                             ) {
@@ -662,7 +679,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                             }
                         }
                         if ($agedays > $window['AgeMaxDays']) {
-                            $delta = $agedays - $window['AgeMaxDays'];
+                            $delta = $agedays - intval($window['AgeMaxDays']);
                             if (abs($delta) < abs($values['Window_Difference'])
                                 || $values['Window_Difference'] == 0
                             ) {
@@ -857,10 +874,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
         if (strrpos($this->testName, '_proband') === false) {
-            $this->addScoreColumn(
-                'Candidate_Age',
-                'Candidate Age (Months)'
-            );
+            if (!$this->postMortem) {
+                $this->addScoreColumn(
+                    'Candidate_Age',
+                    'Candidate Age (Months)'
+                );
+            } else {
+                $this->addScoreColumn(
+                    'Candidate_Age',
+                    'Candidate Age at Death (Months)'
+                );
+            }
             $this->addScoreColumn(
                 'Window_Difference',
                 'Window Difference (+/- Days)'
@@ -1181,7 +1205,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _getQuickformDate(string $databaseValue)
     {
         throw new Exception(
-            "The function _getQuickformDate has been deprecated. 
+            "The function _getQuickformDate has been deprecated.
             Please contact LORIS developer mail list for support."
         );
     }
@@ -1492,7 +1516,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $sessionID = $this->getSessionID();
         if ($sessionID !== -1) {
-            $timepoint    = \Timepoint::singleton($sessionID);
+            $timepoint    = \TimePoint::singleton($sessionID);
             $subprojectID = $timepoint->getSubprojectID();
             return $subprojectID;
         }
@@ -2125,16 +2149,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getCandidateAge(?string $date = null): array
     {
-        $dates = array(
+        $dates     = array(
             'Date_taken' => $this->getFieldValue('Date_taken'),
             'DoB'        => $this->getDoB(),
+            'DoD'        => $this->getDoD(),
         );
+        $dateTaken = empty($date) ? $dates['Date_taken'] : $date;
 
         $age = array();
-        if (empty($date)) {
-            $age = Utility::calculateAge($dates['DoB'], $dates['Date_taken']);
+        if (empty($dates['DoD']) || $dates['DoD'] > $dateTaken) {
+            $age = Utility::calculateAge($dates['DoB'], $dateTaken);
         } else {
-            $age = Utility::calculateAge($dates['DoB'], $date);
+            $age = Utility::calculateAge($dates['DoB'], $dates['DoD']);
         }
         //Format: array with keys 'year', 'mon', 'day'
         return $age;
@@ -2158,6 +2184,25 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             array('CID' => $CommentID)
         );
         return $dob;
+    }
+
+    /**
+     * Get the candidates DOD.
+     *
+     * @return ?string The candidate's DOD.
+     */
+    function getDoD(): ?string
+    {
+        $db        = \Database::singleton();
+        $CommentID = $this->getCommentID();
+        $dod       = $db->pselectOne(
+            "SELECT c.DoD FROM flag f
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c USING (CandID)
+            WHERE f.CommentID=:CID",
+            array('CID' => $CommentID)
+        );
+        return $dod ?? null;
     }
 
     /**
@@ -2343,7 +2388,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $DB = Database::singleton();
 
-        $smarty   = new Smarty_neurodb();
+        $smarty   = new Smarty_NeuroDB();
         $tpl_data = array();
 
         $tpl_data['questions'] = $DB->pselect(
@@ -2544,17 +2589,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _toJSONParsePage(): array
     {
-
-        if (get_class($this->form) === 'LorisForm') {
-            $formArray = $this->form->toElementArray();
-        } else {
-            $smarty   = new Smarty_neurodb;
-            $renderer = new HTML_QuickForm_Renderer_Array($smarty);
-
-            $this->form->accept($renderer);
-
-            $formArray = $renderer->toArray();
-        }
+        $formArray = $this->form->toElementArray();
 
         if (isset($formArray['elements'])) {
             foreach ($formArray['elements'] as &$element) {
@@ -2587,7 +2622,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function toJSON(): string
     {
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
         $subtests = $this->getSubtestList();
@@ -2600,7 +2635,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 );
             }
             $this->page = $subtest['Name'];
-            $this->_setupForm();
         }
         $formArray = $this->_toJSONParsePage();
 
@@ -2702,7 +2736,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ),
             new \LORIS\Breadcrumb(
                 $this->getFullName(),
-                "/instruments/$instrument/?commentID=$this->commentID"
+                "/instruments/$instrument/".
+                "?commentID=$this->commentID&sessionID=$sessionid&candID=$candid"
             )
         );
     }

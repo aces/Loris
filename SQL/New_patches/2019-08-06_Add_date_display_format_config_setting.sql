@@ -1,0 +1,2 @@
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dateDisplayFormat', 'The date format to use throughout LORIS for displaying date information - formats for date inputs are browser- and locale-dependent.', 1, 0, 'text', ID, 'Date display format', 27 FROM ConfigSettings WHERE Name="study";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 'Y-m-d H:i:s'  FROM ConfigSettings WHERE Name="dateDisplayFormat";
