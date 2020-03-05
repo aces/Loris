@@ -594,7 +594,7 @@ abstract class LorisIntegrationTest extends TestCase
             $this->assertContains($expect_records, $bodyText);
             //test clear filter
             $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
-
+    }
     /**
      * Ensures that the module loads if and only if the user has the correct
      * permissions.
