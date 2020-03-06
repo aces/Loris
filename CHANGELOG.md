@@ -79,6 +79,7 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 be used by projects having custom modules not in LORIS. (PR #5913)
 
 ### Notes For Developers
+- The tool `phpstan` has been added to our automated test suite. (PR #4928)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
