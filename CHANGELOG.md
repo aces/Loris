@@ -22,7 +22,7 @@ changes in the following format: PR #1234***
 - New script created for streamlining instantiation of the Raisinbread demonstration 
 database (PR #5260)
 - New documentation for file permissions has been added to the README.md file. (PR #5323)
-- Study progression performance improvement (PR #5887)
+- Dashboard study progression section performance improvement (PR #5887)
 
 #### Bug Fixes
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)
