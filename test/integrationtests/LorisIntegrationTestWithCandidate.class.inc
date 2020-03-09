@@ -38,7 +38,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
                 'Active'                => 'Y',
                 'UserID'                => 1,
                 'Entity_type'           => 'Human',
-                'Sex' => 'Female'
+                'Sex'                   => 'Female'
             ]
         );
 

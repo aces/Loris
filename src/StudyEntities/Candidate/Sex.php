@@ -41,9 +41,9 @@ class Sex
      *
      * @throws \DomainException When the value is not valid
      */
-    final public function __construct(string $value)
+    public function __construct(string $value)
     {
-        if (!$this->validate($value)) {
+        if (!self::validate($value)) {
             throw new \DomainException(
                 'The value is not valid. Must be one of: '
                 . implode(', ', self::VALID_VALUES)
@@ -59,7 +59,7 @@ class Sex
      *
      * @return bool True if the value format is valid
      */
-    private function validate(string $value): bool
+    public static function validate(string $value): bool
     {
         return in_array(strtolower($value), self::VALID_VALUES, true);
     }
