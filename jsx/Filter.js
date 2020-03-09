@@ -11,12 +11,14 @@ import PropTypes from 'prop-types';
  *
  */
 class Filter extends Component {
-  constructor(props) {
-    super(props);
+  /** {@inheritdoc} */
+  constructor() {
+    super();
     this.onFieldUpdate = this.onFieldUpdate.bind(this);
     this.renderFilterFields = this.renderFilterFields.bind(this);
   }
 
+  /** {@inheritdoc} */
   componentDidMount() {
      const searchParams = new URLSearchParams(location.search);
      const filter = JSON.parse(JSON.stringify(this.props.filter));
@@ -40,7 +42,8 @@ class Filter extends Component {
     const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = (!(type === 'textbox' || type === 'date'));
-    if (value === null || value === '' || (value.constructor === Array && value.length === 0)) {
+    if (value === null || value === '' ||
+        (value.constructor === Array && value.length === 0)) {
       delete filter[name];
       searchParams.delete(name);
     } else {
@@ -56,6 +59,10 @@ class Filter extends Component {
     history.replaceState(filter, '', `?${searchParams.toString()}`);
   }
 
+  /**
+   * Renders the appropriate filter fields for the given field props
+   * @return {*}
+   */
   renderFilterFields() {
     return this.props.fields.reduce((result, field) => {
       const filter = field.filter;
@@ -69,10 +76,22 @@ class Filter extends Component {
           element = <SelectElement key={filter.name} options={filter.options}/>;
           break;
         case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
+          element = (
+            <SelectElement
+              key={filter.name}
+              options={filter.options}
+              multiple={true}
+              emptyOption={false}
+            />
+          );
           break;
         case 'numeric':
-          element = <NumericElement key={filter.name} options={filter.options}/>;
+          element = (
+            <NumericElement
+              key={filter.name}
+              options={filter.options}
+            />
+          );
           break;
         case 'date':
           element = <DateElement key={filter.name}/>;
@@ -102,6 +121,10 @@ class Filter extends Component {
     }, []);
   }
 
+  /**
+   * {@inheritdocs}
+   * @return {*}
+   */
   render() {
     return (
       <FormElement

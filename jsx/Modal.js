@@ -1,10 +1,3 @@
-/**
- * This file contains the React Component for a Modal Window.
- *
- * @author Henri Rabalais
- * @version 1.1.0
- *
- */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
@@ -28,9 +21,7 @@ import swal from 'sweetalert2';
  *
  */
 class Modal extends Component {
-  /**
-   * Constructor
-   */
+  /** {@inheritdoc} */
   constructor() {
     super();
     this.handleClose = this.handleClose.bind(this);
@@ -56,7 +47,8 @@ class Modal extends Component {
   }
 
   /**
-   * Render
+   * {@inheritdoc}
+   * @return {*} Modal Window wrapping the child components
    */
   render() {
     const {show, children, onSubmit, title} = this.props;

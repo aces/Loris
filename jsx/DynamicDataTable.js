@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import StaticDataTable from 'StaticDataTable';
 
 class DynamicDataTable extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       Headers: [],

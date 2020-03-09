@@ -8,8 +8,9 @@ import createFragment from 'react-addons-create-fragment';
  * Displays a set of data that is receives via props.
  */
 class DataTable extends Component {
-  constructor(props) {
-    super(props);
+  /** {@inheritdoc}*/
+  constructor() {
+    super();
     this.state = {
       page: {
         number: 1,
@@ -34,12 +35,21 @@ class DataTable extends Component {
     this.renderActions = this.renderActions.bind(this);
   }
 
+  /**
+   * Change the page to provided number.
+   * @param {int} i the page number to be changed to.
+   */
   changePage(i) {
     const page = this.state.page;
     page.number = i;
     this.setState({page});
   }
 
+  /**
+   * Change the column to be sorted. If the column is already select, change
+   * the sort order.
+   * @param {string} column to be sorted or toggled.
+   */
   setSortColumn(column) {
     if (this.state.sort.column === column) {
       this.toggleSortOrder();
@@ -48,12 +58,19 @@ class DataTable extends Component {
     }
   }
 
+  /**
+   * Change the column to be sorted.
+   * @param {string} column to be sorted.
+   */
   updateSortColumn(column) {
     const sort = this.state.sort;
     sort.column = column;
     this.setState({sort});
   }
 
+  /**
+   * Toggle the sort order for columns.
+   */
   toggleSortOrder() {
     const sort = this.state.sort;
     sort.ascending = !sort.ascending;
@@ -61,7 +78,7 @@ class DataTable extends Component {
   }
 
   /**
-   * Updates page state
+   * Updates page number.
    *
    * @param {int} number of page
    */
@@ -72,7 +89,7 @@ class DataTable extends Component {
   }
 
   /**
-   * Update number of rows per page
+   * Update number of rows per page.
    *
    * @param {object} e event from which to abstract value
    */
@@ -83,6 +100,10 @@ class DataTable extends Component {
     this.setState({page});
   }
 
+  /**
+   * Download the data in a CSV format
+   * @param {array} filteredRowIndexes - data rows to be downloaded.
+   */
   downloadCSV(filteredRowIndexes) {
     let csvData = filteredRowIndexes.map((id) => this.props.data[id]);
     // Map cell data to proper values if applicable.
@@ -120,6 +141,10 @@ class DataTable extends Component {
     });
   }
 
+  /**
+   * Get the Indexes for the filtered rows.
+   * @return {array} indexes of the filter rows.
+   */
   getFilteredRowIndexes() {
     let useKeyword = false;
     let filterValuesCount = Object.keys(this.props.filter).length;
@@ -170,6 +195,12 @@ class DataTable extends Component {
     return filteredIndexes;
   }
 
+  /**
+   * Sort of the row indexes.
+   *
+   * @param {array} rowIndexes
+   * @return {array} index
+   */
   sortRows(rowIndexes) {
     const index = [];
 
@@ -200,7 +231,11 @@ class DataTable extends Component {
       }
 
       if (this.props.RowNameMap) {
-        index.push({RowIdx: idx, Value: val, Content: this.props.RowNameMap[idx]});
+        index.push({
+          RowIdx: idx,
+          Value: val,
+          Content: this.props.RowNameMap[idx],
+        });
       } else {
         index.push({RowIdx: idx, Value: val, Content: idx + 1});
       }
@@ -287,7 +322,8 @@ class DataTable extends Component {
           if (exactMatch) {
             result = searchArray.includes(searchKey);
           } else {
-            result = (searchArray.find((e) => (e.indexOf(searchKey) > -1))) !== undefined;
+            result = (searchArray.find((e) => (e.indexOf(searchKey) > -1)))
+              !== undefined;
           }
           break;
         default:
@@ -325,34 +361,40 @@ class DataTable extends Component {
     return result;
   }
 
+  /** {@inheritdoc} */
   componentDidMount() {
     $('.dynamictable').DynamicTable();
   }
 
-  renderActions() {
-    if (this.props.actions) {
-      return this.props.actions.map((action, key) => {
-        if (action.show !== false) {
-          return (
-            <CTA
-              key = {key}
-              label = {action.label}
-              onUserInput = {action.action}
-            />
-          );
-        }
-      });
-    }
-  }
-
+  /**
+   * {@inheritdoc}
+   * @return {*} Datatable
+   */
   render() {
-    if ((this.props.data === null || this.props.data.length === 0) && !this.props.nullTableShow) {
+    renderActions = () => {
+      if (this.props.actions) {
+        return this.props.actions.map((action, key) => {
+          if (action.show !== false) {
+            return (
+              <CTA
+                key = {key}
+                label = {action.label}
+                onUserInput = {action.action}
+              />
+            );
+          }
+        });
+      }
+    };
+
+    if ((this.props.data === null || this.props.data.length === 0) &&
+         !this.props.nullTableShow) {
       return (
         <div>
           <div className="row">
             <div className="col-xs-12">
               <div className="pull-right" style={{marginRight: '10px'}}>
-                {this.renderActions()}
+                {renderActions()}
               </div>
             </div>
           </div>
@@ -496,7 +538,7 @@ class DataTable extends Component {
               padding: '5px 0',
               marginLeft: 'auto',
             }}>
-              {this.renderActions()}
+              {renderActions()}
               <button
                 className="btn btn-primary"
                 onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
@@ -552,7 +594,11 @@ class DataTable extends Component {
     return (
       <div style={{margin: '14px'}}>
         {header}
-        <table className="table table-hover table-primary table-bordered dynamictable" id="dynamictable">
+        <table
+          className="table table-hover table-primary table-bordered
+          dynamictable"
+          id="dynamictable"
+        >
           <thead>
             <tr className="info">{headers}</tr>
           </thead>

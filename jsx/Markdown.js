@@ -1,8 +1,9 @@
-/* exported RMarkdown */
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+const ReactMarkdown = require('react-markdown');
 
 /**
- * This file contains a React component which renders markdown text into HTML.
- * by way of JSX.
+ * The Markdown Component renders markdown text into HTML by way of JSX.
  *
  * Only very basic markdown is supported. In particular:
  * 1. Paragraphs can be delineated with an empty line.
@@ -18,17 +19,10 @@
  * @version 0.0.1
  *
  */
-
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-const ReactMarkdown = require('react-markdown');
-
-/**
- * Markdown
- */
 class Markdown extends Component {
   /**
-   * Render
+   * {@inheritdoc}
+   * @return {*} React Markdown
    */
   render() {
     return <ReactMarkdown source={this.props.content} />;

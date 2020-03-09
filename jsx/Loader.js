@@ -1,27 +1,15 @@
-/**
- * This file contains the React component for Loader
- *
- * @author Henri Rabalais
- * @version 1.0.0
- *
- */
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Loader component
+ * The Loader component displays a spinning blue circle. It is intended to be
+ * displayed during communication with the server to indicate to the user that
+ * an operation is taking place.
  */
 class Loader extends Component {
   /**
-   * Constructor
-   */
-  constructor(props) {
-    super(props);
-  }
-
-  /**
-   * Render
+   * {@inheritdoc}
+   * @return {*} Loader Component
    */
   render() {
     const style = {

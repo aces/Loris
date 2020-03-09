@@ -1,15 +1,3 @@
-/* exported RBreadcrumbs */
-
-/**
- * This file contains React component for Breadcrumbs.
- *
- * @author Jordan Stirling
- * @author Alex Ilea
- * @author Jake Penny
- * @version 2.0.0
- *
- */
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -18,9 +6,9 @@ import PropTypes from 'prop-types';
  * Used for navigation on all Loris pages.
  */
 class Breadcrumbs extends Component {
-  constructor(props) {
-    super(props);
-
+  /** {@inheritdoc} */
+  constructor() {
+    super();
     this.state = {
       displayCount: 0,
     };
@@ -28,6 +16,7 @@ class Breadcrumbs extends Component {
     this.checkScreenSize = this.checkScreenSize.bind(this);
   }
 
+  /** {@inheritdoc} */
   componentWillMount() {
     this.checkScreenSize();
     if (typeof window !== 'undefined') {
@@ -35,15 +24,18 @@ class Breadcrumbs extends Component {
     }
   }
 
+  /** {@inheritdoc} */
   componentWillUnmount() {
     if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.checkScreenSize);
     }
   }
 
+  /**
+   * User to check the current window size and sets the number of breadcrumbs
+   * to show.
+   */
   checkScreenSize() {
-    // Used to check to current window size and
-    // sets the number of breadcrumbs to show
     const windowWidth = window.innerWidth;
     let displayCount = 4;
 
@@ -59,11 +51,13 @@ class Breadcrumbs extends Component {
       displayCount = 5;
     }
 
-    this.setState({
-      displayCount: displayCount,
-    });
+    this.setState({displayCount});
   }
 
+  /**
+   * {@inheritdoc}
+   * @return {*} Breadcrumbs}
+   */
   render() {
     const baseURL = this.props.baseURL;
     const breadcrumbs = [];
