@@ -6,49 +6,47 @@ class LorisLoginTest extends LorisIntegrationTest
 {
     function testLoginFailure()
     {
-       $this->webDriver->get($this->url . '/?logout=true');
+        $this->webDriver->get($this->url . '/?logout=true');
 
-       $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
-       $this->assertEquals('', $username->getAttribute("value"));
+        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
+        $this->assertEquals('', $username->getAttribute("value"));
 
-       $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
-       $this->assertEquals('', $password->getAttribute("value"));
+        $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
+        $this->assertEquals('', $password->getAttribute("value"));
 
+        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $this->assertEquals('submit', $login->getAttribute("type"));
+        $this->assertEquals('Login', $login->getAttribute("value"));
 
-       $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
-       $this->assertEquals('submit', $login->getAttribute("type"));
-       $this->assertEquals('Login', $login->getAttribute("value"));
+        $username->sendKeys("UnitTester");
+        $password->sendKeys("IJUSTMADETHISUP");
 
-       $username->sendKeys("UnitTester");
-       $password->sendKeys("IJUSTMADETHISUP");
+        $login->click();
 
-       $login->click();
-
-       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-       $this->assertContains("Incorrect username or password", $bodyText);
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Incorrect username or password", $bodyText);
     }
 
     function testLoginSuccess()
     {
-       $this->webDriver->get($this->url . '/?logout=true');
-       $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
-       $this->assertEquals('', $username->getAttribute("value"));
+        $this->webDriver->get($this->url . '/?logout=true');
+        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
+        $this->assertEquals('', $username->getAttribute("value"));
 
-       $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
-       $this->assertEquals('', $password->getAttribute("value"));
+        $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
+        $this->assertEquals('', $password->getAttribute("value"));
 
+        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $this->assertEquals('submit', $login->getAttribute("type"));
+        $this->assertEquals('Login', $login->getAttribute("value"));
 
-       $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
-       $this->assertEquals('submit', $login->getAttribute("type"));
-       $this->assertEquals('Login', $login->getAttribute("value"));
+        $username->sendKeys("UnitTester");
+        $password->sendKeys($this->validPassword);
 
-       $username->sendKeys("UnitTester");
-       $password->sendKeys($this->validPassword);
+        $login->click();
 
-       $login->click();
-
-       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-       $this->assertContains("Welcome", $bodyText);
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Welcome", $bodyText);
     }
 }
-?>
+

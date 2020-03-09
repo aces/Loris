@@ -52,8 +52,8 @@ vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
     php/ \
     htdocs/ \
     modules/ \
+    "test/integrationtests/" \
     "${tools_list[@]/#/tools/}" \
-    "${test_list[@]/#/test/}" \
     || exit $?;
 
 # Ensure strict typing is used in these files
