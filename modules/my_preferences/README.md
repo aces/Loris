@@ -20,9 +20,5 @@ A user is always able to access the My Preferences page.
 
 ## Configurations
 
-Some settings related to email notifications affect this module.
-
-## Interactions with LORIS
-
-- Modifications performed on the My Preferences page will be reflected on 
-the user account page when viewing the edited account.
+This module allows a user to modify whether or not they are notified by events in other modules,
+for example when files are added to the document repository.
