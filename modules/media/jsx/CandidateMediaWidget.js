@@ -16,7 +16,7 @@ function CandidateMediaWidget(props) {
                     + '/media/ajax/FileDownload.php?File='
                     + encodeURIComponent(file.Filename)}>
                 <span className="pull-right text-muted small">
-                    Uploaded: {file.UploadDate}
+                    Last modified : {file.LastModified}
                 </span>
                 <br />
                 {file.Filename}

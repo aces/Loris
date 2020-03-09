@@ -65,10 +65,11 @@ class Module extends \Module
             $db = $factory->database();
 
             $media = $db->pselect(
-                "SELECT file_name as Filename, date_uploaded as UploadDate
+                "SELECT file_name as Filename, last_modified as LastModified
                  FROM media m
                     JOIN session s ON (m.session_id=s.ID)
-                 WHERE s.CandID=:cid",
+                 WHERE s.CandID=:cid
+                    AND hide_file=false",
                 ['cid' => $candidate->getCandID()],
             );
             return [
