@@ -55,7 +55,7 @@ if (!in_array($v,$versionList))
    exit;
  }
 
-// read sql line by line from sql files.  
+// read sql file needed for update.  
 $sql = null;
 $query = null;
 foreach($files as $file){
