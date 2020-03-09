@@ -72,6 +72,9 @@ class Module extends \Module
                     AND hide_file=false",
                 ['cid' => $candidate->getCandID()],
             );
+            if (empty($media)) {
+                return [];
+            }
             return [
                 new CandidateWidget(
                     "Candidate Media",
