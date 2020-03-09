@@ -57,7 +57,7 @@ class User_Accounts extends \DataFrameworkMenu
      */
     public function useProjectFilter() : bool
     {
-        return false;
+        return true;
     }
 
     /**

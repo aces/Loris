@@ -16,21 +16,31 @@ class UserAccountRow implements \LORIS\Data\DataInstance
       *
       * @param array $row The ModuleRow Instance
       */
-    public function __construct(array $row)
+    public function __construct(array $row, array $cids, array $pids)
     {
-        $row['centerIds'] = explode(',', $row['centerIds']);
+        $this->CenterIDs  = $cids;
+        $this->ProjectIDs = $pids;
         $this->DBRow      = $row;
     }
 
     /**
-     * Returns the CenterIDs for this instance, for
-     * \LORIS\Data\Filters\UserSiteMatch to match against.
+     * Returns the CenterIDs for this row.
      *
      * @return array The CenterIDs
      */
-    public function getCenterIds() : array
+    public function getCenterIDs() : array
     {
-            return $this->DBRow['centerIds'];
+        return $this->CenterIDs;
+    }
+
+    /**
+     * Returns the ProjectID for this row.
+     *
+     * @return array The ProjectIds
+     */
+    public function getProjectIDs() : array
+    {
+        return $this->ProjectIDs;
     }
 
      /**

@@ -18,14 +18,16 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     function __construct()
     {
         parent::__construct(
-            "SELECT GROUP_CONCAT(upr.CenterID) as centerIds,
+            "SELECT GROUP_CONCAT(upsr.CenterID) as centerIds,
+                    GROUP_CONCAT(uprr.ProjectID) as projectIds,
                     u.UserID as username,
                     u.Real_name as real_name,
                     u.Email as email,
                     u.Active as active,
                     u.Pending_approval as pending
              FROM users u
-             LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
+             LEFT JOIN user_psc_rel upsr ON (upsr.UserID=u.ID)
+             LEFT JOIN user_project_rel uprr ON (uprr.UserID=u.ID)
              GROUP BY u.ID
              ORDER BY u.UserID",
             array()
@@ -41,6 +43,10 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        return new UserAccountRow($row);
+        $cids = explode(',', $row['centerIds']);
+        $row['centerIds'] = $cids;
+        $pids = explode(',', $row['projectIds']);
+        $row['projectIds'] = $pids;
+        return new UserAccountRow($row, $cids, $pids);
     }
 }
