@@ -74,9 +74,9 @@ class Module extends \Module
             // the candidate dashboard based on the default LORIS candidate_parameter
             // module:
             //
-            // 1. The Participant Status
+            // 1. The Participant Status.
             // 2. The "Candidate Parameters" category variables which are displayed
-            //    in the Candidate Information tab of the Candidate Parameters page
+            //    in the Candidate Information tab of the Candidate Parameters page.
             // 3. The Caveat flag description/reason for the candidate. (Only if
             //    there is a caveat.)
             //
