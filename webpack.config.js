@@ -319,9 +319,9 @@ const lorisModules = {
   statistics: ['WidgetIndex'],
   instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
+  schedule_module: ['scheduleIndex'],	
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
-  schedule_module: ['scheduleIndex'],	
 };
 for (const [key] of Object.entries(lorisModules)) {
   const target = process.env.target;
