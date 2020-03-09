@@ -78,6 +78,15 @@ class UserAccountsIndex extends Component {
           </td>
         );
         break;
+      case 'Project':
+        // If user has multiple projectss, join array of sites into string
+        result = (
+          <td>{cell
+            .map((projectId) => this.state.data.fieldOptions.projects[projectId])
+            .join(', ')}
+          </td>
+        );
+        break;
       case 'Username':
         url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
         result = <td><a href ={url}>{cell}</a></td>;
@@ -134,6 +143,11 @@ class UserAccountsIndex extends Component {
         name: 'site',
         type: 'select',
         options: options.sites,
+      }},
+      {label: 'Project', show: true, filter: {
+        name: 'project',
+        type: 'select',
+        options: options.projects,
       }},
       {label: 'Username', show: true, filter: {
         name: 'username',

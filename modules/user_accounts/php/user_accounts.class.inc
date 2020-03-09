@@ -74,6 +74,7 @@ class User_Accounts extends \DataFrameworkMenu
 
         return array(
             'sites'            => \Utility::getSiteList(false),
+            'projects'         => \Utility::getProjectList(),
             'actives'          => $yesNoOptions,
             'pendingApprovals' => $yesNoOptions,
         );

@@ -18,8 +18,8 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     function __construct()
     {
         parent::__construct(
-            "SELECT GROUP_CONCAT(upsr.CenterID) as centerIds,
-                    GROUP_CONCAT(uprr.ProjectID) as projectIds,
+            "SELECT GROUP_CONCAT(DISTINCT upsr.CenterID) as centerIds,
+                    GROUP_CONCAT(DISTINCT uprr.ProjectID) as projectIds,
                     u.UserID as username,
                     u.Real_name as real_name,
                     u.Email as email,
