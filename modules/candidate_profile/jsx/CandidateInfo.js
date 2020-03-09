@@ -183,22 +183,15 @@ export class CandidateInfo extends Component {
             extrainfo = (
                 <div>
                     <hr />
-                    <div style={
-                        {
-                            width: '100%',
-                            display: 'flex',
-                            flexFlow: 'row wrap',
-                            margin: 0,
-                        }
-                    }>
-                        {this.props.ExtraCandidateInfo.map(
-                            (obj) => renderTerm(
-                                obj.term,
-                                obj.value,
-                                {width: '12em'}
-                            )
-                        )}
-                    </div>
+                    <dl style={{display: 'flex', flexFlow: 'wrap', margin: 0}}>
+                            {this.props.ExtraCandidateInfo.map(
+                                (obj) => renderTerm(
+                                    obj.term,
+                                    obj.value,
+                                    {width: '12em'}
+                                )
+                            )}
+                    </dl>
                 </div>
             );
         }
@@ -206,8 +199,8 @@ export class CandidateInfo extends Component {
             <div style={{width: '100%'}}>
                 <dl style={{display: 'flex', flexFlow: 'wrap', margin: 0}}>
                     {cardInfo}
-                    {extrainfo}
                 </dl>
+                {extrainfo}
             </div>
         );
     }
