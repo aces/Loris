@@ -2,7 +2,7 @@
 
 ## Overview
 
-A Loris module consists of a group of pages that perform a specific function or assist with a specific task. In Loris, all active modules are shown as submenu items in the main menu on top of the page. Examples of modules include `Document Repository`, `Candidate List (Access Profiles)`, `Imaging Browser` ...
+A Loris module consists of a group of pages that perform a specific function or assist with a specific task. Examples of modules include `Document Repository`, `Candidate List (Access Profiles)`, `Imaging Browser` ...
 
 
 ## Directory structure
