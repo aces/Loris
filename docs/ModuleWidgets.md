@@ -13,7 +13,7 @@ interface is abstract enough to be flexible there must be an implied
 contract between what options and their returned values that are not
 enforced by PHP's typing system.
 
-Widget types currently implemented by LORIS and its default modules are
+Widget types currently implemented by LORIS and its default modules are:
 
 # Dashboard
 
