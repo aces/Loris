@@ -102,7 +102,7 @@ If you have installed a previous version of LORIS, you can upgrade LORIS to the 
  git checkout <loris-repo>/<loris-branch>
  ```
 2.-- Manual upgrade(optional): Run upgrade.sql files in `/var/www/$projectname/SQL/Release_patches/` directory in your database.
-  -- Automatic upgrade(optional): Run Ex.(php loris_db_upgrade.php 21.0) in /var/www/$projectname/tools/ directory.
+  -- Automatic upgrade(optional): Run the upgrade script in `/var/www/$projectname/tools/` directory. Ex. `php loris_db_upgrade.php 21.0`
  ```bash
  cd /var/www/$projectname/tools/
  php loris_db_upgrade.php $release_version
