@@ -7,7 +7,7 @@ extend the capabilities of other modules within a new module.
 
 Widgets are can be used by implementing the `getWidgets` method
 on a `Module` module descriptor class. The first parameter of
-`getWidgets` is a type string, allowing modules to define their
+`getWidgets` is a string representing the widget type, allowing modules to define their
 own widget types in a loosely coupled manner. However since the
 interface is abstract enough to be flexible there must be an implied
 contract between what options and their returned values that are not
