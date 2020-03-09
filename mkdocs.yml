@@ -25,11 +25,14 @@ nav:
             
     - Getting Started: 'wiki/02 - GETTING STARTED/README.md'
     - Help and Troubleshooting: 'wiki/03 - HELP AND TROUBLESHOOTING/README.md'
-    - API: 'API/LorisRESTAPI.md'
+    - REST API:
+        - 'Stable' : 'wiki/99 - Developers/LORIS-REST-API-0.0.2.md'
+        - 'Dev' : 'wiki/99 - Developers/LORIS-REST-API-0.0.3-dev.md'
     - Developers: 
         - 'Overview': 'wiki/99 - Developers/README.md'
         - 'Coding Standards': 'CodingStandards.md'
         - 'SQL Dictionary': 'wiki/99 - Developers/SQL Dictionary.md'
         - 'Automated Testing': 'wiki/99 - Developers/Automated Testing.md'
         - 'Style Guide (for help text)': 'HelpStyleGuide.md'
+
 theme: readthedocs
