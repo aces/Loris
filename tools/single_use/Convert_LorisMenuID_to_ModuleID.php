@@ -47,29 +47,24 @@ unset($result);
 
 // Create a mapping of IDs and Links from the LorisMenu table.
 // This array is indexed by the ID.
-$result           = $DB->pselect('SELECT ID,Link,Parent FROM LorisMenu', array());
+$result           = $DB->pselect(
+    'SELECT ID,Link,Parent FROM LorisMenu WHERE Parent IS NOT NULL',
+    []
+);
 $menuTableMapping = [];
 foreach ($result as $row) {
-
-    // Rows without entries for Parent represent menu categories, not actual
-    // modules. We don't need these.
-    if (is_null($row['Parent'])) {
-        continue;
-    }
     $menuTableMapping[$row['ID']] = filterNonAlpha($row['Link']);
 }
 unset($result);
 
-
 // Use mapping arrays to replace old `LorisMenu` ID values in issue_tracker
 // `module` column with new `modules` table ID values.
-$result = $DB->pselect('SELECT issueID,module FROM issues', array());
+$result = $DB->pselect(
+    'SELECT issueID,module FROM issues WHERE module IS NOT NULL',
+    []
+);
 $issueTrackerMapping = [];
 foreach ($result as $row) {
-    // Skip rows in this table that do not have a module associated with them.
-    if (is_null($row['module'])) {
-        continue;
-    }
     $issueTrackerMapping[$row['issueID']] = $row['module'];
 }
 unset($result);
