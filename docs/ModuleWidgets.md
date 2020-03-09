@@ -24,7 +24,7 @@ Widget types currently implemented by LORIS and its default modules are:
   'My Tasks' panel to display outstanding user tasks. No options are passed
   and the return value is expected to be an array of `\LORIS\dashboard\TaskWidget`
   elements (usually created by `\LORIS\dashboard\TaskQueryWidget` which generates
-  the widget from an SQL query.
+  the widget from an SQL query).
 
 # Candidate Profile
 
