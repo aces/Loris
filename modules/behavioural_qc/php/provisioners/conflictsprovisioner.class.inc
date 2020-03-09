@@ -1,4 +1,14 @@
 <?php declare(strict_types=1);
+/**
+ * PHP version 7
+ *
+ * @category Behavioural
+ * @package  Loris
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris-Trunk
+ */
 
 namespace LORIS\behavioural_qc\Provisioners;
 
