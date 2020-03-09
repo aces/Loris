@@ -1,38 +1,37 @@
 <?php declare(strict_types=1);
 /**
- * This file implements a data provisioner to get all modules
- * for the Module Manager menu page.
+ * This file implements a data provisioner to the schedule_module menu page.
  *
  * PHP Version 7
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author     Shen Wang <wangshen.mcin@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
 
 namespace LORIS\schedule_module;
-include 'data_entry.class.inc';
+require 'data_entry.class.inc';
 /**
  * This class implements a data provisioner to get all modules
- * for the module manager menu page.
+ * for the schedule_module menu page.
  *
  * PHP Version 7
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author     Shen Wang <wangshen.mcin@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
 class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create a ModuleManagerProvisioner, which gets modules for the
-     * module manager menu table.
+     * Create a ScheduleModuleProvisioner, which gets modules for the
+     * Schedule Module menu table.
      */
     function __construct()
     {
@@ -61,12 +60,12 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
      */
     public function getQuery() : string
     {
-  $dataEntryColumns = (new DataEntrySelectClause())
-        ->register("Behavioral", new BehavioralDataEntryExpression())
-        ->register("MRI", new MriDataEntryExpression())
-        ->register("Blood Collection", new BloodCollectionDataEntryExpression())
-        ->getColumns();
-  $dataEntryStatusExpression = "
+        $dataEntryColumns          = (new DataEntrySelectClause())
+            ->register("Behavioral", new BehavioralDataEntryExpression())
+            ->register("MRI", new MriDataEntryExpression())
+            ->register("Blood Collection", new BloodCollectionDataEntryExpression())
+            ->getColumns();
+        $dataEntryStatusExpression = "
     (
         CASE
             WHEN NOT (NOW() > StartsAt) THEN
@@ -86,7 +85,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
         END
     )
     ";
-  $subquery = "SELECT
+        $subquery = "SELECT
     appointment.AppointmentID, 
     appointment.SessionID,
     appointment.AppointmentTypeID, 
@@ -128,9 +127,9 @@ JOIN
 ON
     session.CenterID = psc.CenterID";
 
-  $subquery=str_replace("\n"," ",$subquery);
-  $query =  "select *, {$dataEntryStatusExpression} AS dataEntryStatus  FROM
-            ({$subquery}) AS subQuery";          
+        $subquery =str_replace("\n", " ", $subquery);
+        $query    =  "select *, {$dataEntryStatusExpression} AS dataEntryStatus  FROM
+            ({$subquery}) AS subQuery";
             return $query;
     }
 }

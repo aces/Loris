@@ -1,14 +1,12 @@
 <?php declare(strict_types=1);
 /**
- * This class implements a data Instance which represents a single
- * module in the module_manager menu table.
- *
+ * Schedule Module
  * PHP Version 7
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author     Shen Wang <wangshen.mcin@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -16,17 +14,12 @@
 namespace LORIS\schedule_module;
 
 /**
- * A ModuleRow represents a row in the module_manager menu table.
- *
- * The module_manager requires a specific "row" concept because
- * the \Module class does not have any concept of the Active flag
- * for the module in order to serialize it as JSON for the data
- * table.
+ * A ModuleRow represents a row in the schedule_module menu table.
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author     Shen Wang <wangshen.mcin@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -54,23 +47,22 @@ class ModuleRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->AppointmentID = $row['AppointmentID'];
-        $this->SessionID = $row['SessionID'];
+        $this->AppointmentID     = $row['AppointmentID'];
+        $this->SessionID         = $row['SessionID'];
         $this->AppointmentTypeID = $row['AppointmentTypeID'];
-        $this->Day  = $row['day'];
-        $this->Time = substr($row['time'], 0, -3);
-        $this->PSCID    = $row["PSCID"];
-        $this->CandID = $row['CandID'];
-        $this->Visit_label = $row['Visit_label'];
-        $this->CenterID = $row['CenterID'];
+        $this->Day          = $row['day'];
+        $this->Time         = substr($row['time'], 0, -3);
+        $this->PSCID        = $row["PSCID"];
+        $this->CandID       = $row['CandID'];
+        $this->Visit_label  = $row['Visit_label'];
+        $this->CenterID     = $row['CenterID'];
         $this->SubprojectID = $row['SubprojectID'];
-        $this->Project = $row['Project'];
-        $this->Subproject = $row['title'];
-        $this->StartsAt = $row['StartsAt'];
+        $this->Project      = $row['Project'];
+        $this->Subproject   = $row['title'];
+        $this->StartsAt     = $row['StartsAt'];
         $this->AppointmentTypeName = $row['AppointmentTypeName'];
-        $this->site = $row['Name'];
+        $this->site            = $row['Name'];
         $this->dataEntryStatus = $row['dataEntryStatus'];
-        
 
     }
 
@@ -83,24 +75,24 @@ class ModuleRow implements \LORIS\Data\DataInstance
     {
         return json_encode(
             [
-                'CandID'  => $this->CandID,
-                'PSCID' => $this->PSCID,
-                'site'  => $this->site,
-                'VisitLabel'  => $this->Visit_label,
-                'Project'  => $this->Project,
-                'Subproject'  => $this->Subproject,
-                'AppointmentTypeID'=>$this->AppointmentTypeID,
-                'Day'  => $this->Day,
-                'Time'  => $this->Time,
-                'earlyDate'  => $this->Day,
-                'lateDate'  => $this->Day,
-                'StartsAt'=>$this->StartsAt,
-                'dataEntryStatus'  => $this->dataEntryStatus,
-                'SessionID'=>$this->SessionID,
-                'AppointmentID'=>$this->AppointmentID,
-                'AppointmentTypeName'  => $this->AppointmentTypeName,
-                'CenterID'  => $this->CenterID,
-                'SubprojectID'  => $this->SubprojectID,
+                'CandID'              => $this->CandID,
+                'PSCID'               => $this->PSCID,
+                'site'                => $this->site,
+                'VisitLabel'          => $this->Visit_label,
+                'Project'             => $this->Project,
+                'Subproject'          => $this->Subproject,
+                'AppointmentTypeID'   =>$this->AppointmentTypeID,
+                'Day'                 => $this->Day,
+                'Time'                => $this->Time,
+                'earlyDate'           => $this->Day,
+                'lateDate'            => $this->Day,
+                'StartsAt'            =>$this->StartsAt,
+                'dataEntryStatus'     => $this->dataEntryStatus,
+                'SessionID'           =>$this->SessionID,
+                'AppointmentID'       =>$this->AppointmentID,
+                'AppointmentTypeName' => $this->AppointmentTypeName,
+                'CenterID'            => $this->CenterID,
+                'SubprojectID'        => $this->SubprojectID,
             ]
         );
     }

@@ -1,25 +1,25 @@
 <?php declare(strict_types=1);
 /**
- * File contains the Module_Manager class.
+ * File contains the Schedule Module class.
  *
  * PHP Version 7
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author     Shen Wang <wangshen.mcin@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\schedule_module;
 
 /**
- * The Module_Manager provides the menu filter for the module manager module.
+ * The Schedule Module provides the menu filter for the module manager module.
  *
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author     Shen Wang <wangshen.mcin@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -58,25 +58,25 @@ class Schedule_Module extends \DataFrameworkMenu
         $visitlabels = array_values(\Utility::getVisitList());
         $projects    = array_values(\Utility::getProjectList());
         $subprojects = array_values(\Utility::getSubProjectList());
-        $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
+        $factory     = \NDB_Factory::singleton();
+        $DB          = $factory->database();
         $appointment_types = $DB->pselect(
-                "SELECT * FROM appointment_type",
-                array()
-            );
-        $appointmentTpyes = array();
+            "SELECT * FROM appointment_type",
+            array()
+        );
+        $appointmentTpyes  = array();
         foreach ($appointment_types as $type) {
             $appointmentTpyes[$type['AppointmentTypeID']] = $type['Name'];
         }
 
         return array(
-            'site'       => array_combine($sites, $sites),
-            'visitLabel' => array_combine($visitlabels, $visitlabels),
-            'project'    => array_combine($projects, $projects),
-            'subproject' => array_combine($subprojects, $subprojects),
+            'site'            => array_combine($sites, $sites),
+            'visitLabel'      => array_combine($visitlabels, $visitlabels),
+            'project'         => array_combine($projects, $projects),
+            'subproject'      => array_combine($subprojects, $subprojects),
             'AppointmentType' =>  $appointmentTpyes,
-            'today'      => date("Y-m-d"),
-            'next30days' => date("Y-m-d",strtotime("+30 days")),
+            'today'           => date("Y-m-d"),
+            'next30days'      => date("Y-m-d", strtotime("+30 days")),
         );
     }
     /**

@@ -6,7 +6,13 @@ import swal from 'sweetalert2';
 import {Tabs, TabPane} from 'Tabs';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
-
+/**
+ * Schedule Module
+ *
+ * Main module component rendering the data release module
+ *
+ * @author Shen Wang
+ */
 class ScheduleIndex extends Component {
   constructor(props) {
     super(props);
@@ -183,7 +189,11 @@ class ScheduleIndex extends Component {
     mapColumn(column, cell) {
           return cell;
   }
-
+  /**
+   * Handles the delete a Schedule
+   *
+   * @param {string} id - appointment id
+   */
  deleteid(id) {
     let deleteurl = loris.BaseURL + '/schedule_module/appointment/' + id;
     fetch(deleteurl, {
@@ -209,8 +219,11 @@ class ScheduleIndex extends Component {
       console.error(error);
     });
  }
-
-
+  /**
+   * Handles the edit a Schedule
+   *
+   * @param {string} id - appointment id
+   */
  edit(row) {
    this.openModal();
    this.setState({editModal: true});

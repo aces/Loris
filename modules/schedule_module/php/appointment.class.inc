@@ -1,11 +1,13 @@
 <?php
 /**
- * This file loads the Edit file page
- *
+ * It includes three functions.
+ * Post method handles updating and add an appointment.
+ * Delete method handles deleting an appointment.
+ * get method handles get an appointments.*
  * PHP Version 7
  *
  * @category Loris
- * @package  Document_Repository
+ * @package  Schedule Module
  * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -17,7 +19,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Create the form for schedule_module/add page
  *
  * @category Loris
- * @package  Document_Repository
+ * @package  Schedule Module
  * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -39,11 +41,10 @@ class Appointment extends \NDB_Page
     }
 
     /**
-     * Handle how to operate all the files.
-     * PUT method updates a file's info.
-     * DELETE method deletes a file.
-     * POST method uploads a file.
-     * GET method gets a file.
+     * Handle how to operate all the appointments.
+     * DELETE method deletes an appointment.
+     * POST method uploads an appointment.
+     * GET method gets an appointment.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -54,13 +55,12 @@ class Appointment extends \NDB_Page
         switch ($request->getMethod()) {
         case "POST":
             $data = $request->getParsedBody();
-            if ($data["edit"] == "true")
-            {
-            $this->editAppointment($data);
+            if ($data["edit"] == "true") {
+                $this->editAppointment($data);
             } else {
-            $this->addAppointment($data);
+                $this->addAppointment($data);
             }
-            
+
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
@@ -71,19 +71,19 @@ class Appointment extends \NDB_Page
                 );
         case "GET":
             // todo get session or pscid or dcciid
-            $url = $request->getUri()->getPath();
+            $url  = $request->getUri()->getPath();
             $type = "Edit";
-            $id = basename($request->getUri()->getPath());
+            $id   = basename($request->getUri()->getPath());
             if (strpos($url, 'PSCID') !== false) {
-               $type = "PSCID";
+                $type = "PSCID";
             }
             if (strpos($url, 'DCCID') !== false) {
-               $type = "DCCID";
+                $type = "DCCID";
             }
             if ($type == "Edit") {
-           	 $res = $this->getEditForm($id);
+                $res = $this->getEditForm($id);
             } else {
-           	 $res = $this->getMetaForm($type,$id);
+                $res = $this->getMetaForm($type, $id);
             }
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
@@ -111,14 +111,22 @@ class Appointment extends \NDB_Page
                 ->withHeader("Allow", "GET,POST");
         }
     }
-    public function getMetaForm(string $type,string $id)
+    /**
+     * Handles the get all form meta data process
+     *
+     * @param string $type the tpye
+     * @param string $id   the id
+     *
+     * @return string
+     */
+    public function getMetaForm(string $type,string $id): string
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-// Check if candidate is valid (CandID/DCCID and PSCID must belong to same candidate)
-    if ($type == "DCCID" ) { 
-        $candidate = $DB->pselectRow(
-        "
+        // Check if candidate is valid (CandID/DCCID and PSCID must belong to same candidate)
+        if ($type == "DCCID" ) {
+            $candidate = $DB->pselectRow(
+                "
     	SELECT 
     	 	* 
         FROM 
@@ -126,14 +134,14 @@ class Appointment extends \NDB_Page
     	WHERE 
     		CandID = :candId
        ",
-           array(
-              "candId" => $id,
-           )
-         );
-     $res = ['PSCID'=>$candidate['PSCID']];
-     } else {
-           $candidate = $DB->pselectRow(
-           "
+                array(
+                    "candId" => $id,
+                )
+            );
+            $res       = ['PSCID'=>$candidate['PSCID']];
+        } else {
+            $candidate = $DB->pselectRow(
+                "
             SELECT 
                     * 
             FROM 
@@ -141,15 +149,15 @@ class Appointment extends \NDB_Page
             WHERE 
                     PSCID = :pscid
             ",
-              array(
-                 "pscid" => $id,
-             )
-         );
-      $res = ['DCCID'=>$candidate['CandID']];
-      }
-          
-    $sessionlist = $DB->pselect(
-    "
+                array(
+                    "pscid" => $id,
+                )
+            );
+            $res       = ['DCCID'=>$candidate['CandID']];
+        }
+
+        $sessionlist = $DB->pselect(
+            "
         SELECT
             ID,
             Visit_label
@@ -158,66 +166,85 @@ class Appointment extends \NDB_Page
         WHERE 
     		CandID =:Id
     ",
-       array(
-        'Id' => $candidate['CandID']
-       )
-    ); 
-     $sessions = [];
-     foreach($sessionlist as $session) {
-         $k = $session['ID'];
-         $v = $session['Visit_label'];
-         $sessions[$k] = $v; 
-     }
-     $res['Session'] = $sessions;
-     return $res;
-    } // class 
-
-    public function addAppointment(array $data)
+            array(
+                'Id' => $candidate['CandID']
+            )
+        );
+        $sessions    = [];
+        foreach($sessionlist as $session) {
+            $k            = $session['ID'];
+            $v            = $session['Visit_label'];
+            $sessions[$k] = $v;
+        }
+        $res['Session'] = $sessions;
+        return $res;
+    } // class
+    /**
+     * Handles the appointment adding process
+     *
+     * @param array $data the request data
+     *
+     * @return void
+     */
+    public function addAppointment(array $data): void
     {
-     $this->duplicate_check($data);
-     $factory = \NDB_Factory::singleton();
-     $DB      = $factory->database();
+        $this->duplicate_check($data);
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
 
-     $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
-     // Insert appointment information
-     $DB->insert(
-        "appointment",
-        array(
-             "SessionId" => $data["Session"],
-             "AppointmentTypeId" => $data["AppointmentType"],
-             "StartsAt" => $startAt,     
-         )
-      );
-      
-  } // end class of add appointment   
-  public function editAppointment(array $data)
-  {
+        $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
+        // Insert appointment information
+        $DB->insert(
+            "appointment",
+            array(
+                "SessionId"         => $data["Session"],
+                "AppointmentTypeId" => $data["AppointmentType"],
+                "StartsAt"          => $startAt,
+            )
+        );
+
+    } // end class of add appointment
+    /**
+     * Handles the appointment editing process
+     *
+     * @param array $data the request data
+     *
+     * @return void
+     */
+    public function editAppointment(array $data): void
+    {
         $this->duplicate_check($data);
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
 
-	$DB->update(
-	    "appointment",
-	    array(
-	     "StartsAt"    => $startAt,
-	     "AppointmentTypeID" => $data["AppointmentType"],
-	    ),
-	    array(
-	     "AppointmentId" => $data["AppointmentID"],
-	    )
+        $DB->update(
+            "appointment",
+            array(
+                "StartsAt"          => $startAt,
+                "AppointmentTypeID" => $data["AppointmentType"],
+            ),
+            array(
+                "AppointmentId" => $data["AppointmentID"],
+            )
         );
- 
-   
-  } // end class of get edit form data
-  public function duplicate_check(array $data)
-  {
+
+    } // end class of get edit form data
+    /**
+     * Handles the duplicate_check
+     *
+     * @param array $data the request data
+     *
+     * @return void
+     */
+    public function duplicate_check(array $data)
+    {
 
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $duplicate_check = $DB->pselectRow(
-        "
+            "
            SELECT 
                 * 
             FROM 
@@ -229,24 +256,35 @@ class Appointment extends \NDB_Page
             And
             StartsAt = :startsAt
         ",
-        array(
-            "sessionId" => $data["Session"],
-            "typeId" => $data["AppointmentType"],
-            "startsAt" => $startAt,
-        )
-       ); // end of $duplicate_check
-    if (!empty($duplicate_check)) {
-    http_response_code(400);
-    die(json_encode([
-        "error" => "This appointment already exists."
-    ]));
+            array(
+                "sessionId" => $data["Session"],
+                "typeId"    => $data["AppointmentType"],
+                "startsAt"  => $startAt,
+            )
+        ); // end of $duplicate_check
+        if (!empty($duplicate_check)) {
+            http_response_code(400);
+            die(
+                json_encode(
+                    [
+                        "error" => "This appointment already exists."
+                    ]
+                )
+            );
+        }
     }
-  }
-  public function deleteAppointment(string $id)
-  {
+    /**
+     * Handles the appointment deleting process
+     *
+     * @param string $id the request id
+     *
+     * @return void
+     */
+    public function deleteAppointment(string $id): void
+    {
 
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $DB->delete("appointment", array("AppointmentID" => $id));
-  }
+    }
 }// end
