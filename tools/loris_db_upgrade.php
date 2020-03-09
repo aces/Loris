@@ -125,6 +125,6 @@ function write_log(string $log_msg): void
         mkdir($log_dir, 0640, true);
     }
     $log_file_data = $log_dir.'/log_' . date('d-M-Y') . '.log';
-        // if you don't add `FILE_APPEND`, the file will be erased each time you add a log
+        // append the message at the end of the log file.
     file_put_contents($log_file_data, $log_msg . "\n", FILE_APPEND);
 }
