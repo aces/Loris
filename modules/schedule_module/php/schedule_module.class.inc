@@ -14,7 +14,7 @@
 namespace LORIS\schedule_module;
 
 /**
- * The Schedule Module provides the menu filter for the module manager module.
+ * The Schedule Module provides the menu filter for this module.
  *
  * @category   Core
  * @package    Main
