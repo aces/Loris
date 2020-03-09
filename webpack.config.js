@@ -160,8 +160,6 @@ const config = [
     lorisModule('datadict', ['dataDictIndex']),
     lorisModule('data_release', [
         'dataReleaseIndex',
-        'uploadFileForm',
-        'addPermissionForm',
     ]),
     lorisModule('dataquery', [
         'react.app',
@@ -176,9 +174,6 @@ const config = [
     lorisModule('electrophysiology_browser', [
         'electrophysiologyBrowserIndex',
         'electrophysiologySessionView',
-        'components/electrophysiology_session_panels',
-        'components/Sidebar',
-        'components/SidebarContent',
     ]),
     lorisModule('genomic_browser', ['profileColumnFormatter']),
     lorisModule('imaging_browser', ['ImagePanel', 'imagingBrowserIndex']),
