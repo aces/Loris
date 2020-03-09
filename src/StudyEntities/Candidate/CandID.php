@@ -88,8 +88,8 @@ class CandID extends ValidatableIdentifier implements \JsonSerializable
      * @see https://www.php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed
      */
-     public function jsonSerialize()
-     {
-         return $this->value;
-     }
+    public function jsonSerialize()
+    {
+        return $this->value;
+    }
 }
