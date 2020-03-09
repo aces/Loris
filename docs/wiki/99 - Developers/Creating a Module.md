@@ -9,7 +9,7 @@ A Loris module consists of a group of pages that perform a specific function or 
 
 Create a new folder corresponding to your module name under `modules/`. 
 This name should be short and descriptive. 
-The name must should use only lowercase alphanumeric characters and underscores, e.g. `document_repository`.
+The name should use only lowercase alphanumeric characters and underscores, e.g. `document_repository`.
 The directory name correponds to the URL that LORIS will use to load your module.
 For the remainder of this document we will assume your new module is named `my_new_module`.
 
