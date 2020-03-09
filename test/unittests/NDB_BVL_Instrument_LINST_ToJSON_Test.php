@@ -35,6 +35,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $factory->setDatabase($mockdb);
         $factory->setConfig($mockconfig);
+        $mockdb->expects($this->any())
+               ->method('pselectOne')
+               ->willReturn('999');
 
         $this->QuickForm = new \LorisForm(); //$this->getMock("HTML_Quickform");
         $this->Client = new \NDB_Client;
