@@ -2,9 +2,19 @@
 use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ . '/LorisIntegrationTest.class.inc';
 
+/**
+ * {{@inheritDoc}}
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
 class LorisLoginTest extends LorisIntegrationTest
 {
-    function testLoginFailure()
+    /**
+     * Ensures that login fails with invalid credentials.
+     *
+     * @return void
+     */
+    function testLoginFailure(): void
     {
         $this->webDriver->get($this->url . '/?logout=true');
 
@@ -23,10 +33,17 @@ class LorisLoginTest extends LorisIntegrationTest
 
         $login->click();
 
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Incorrect username or password", $bodyText);
     }
 
+    /**
+     * Ensures that login succeeds with valid credentials.
+     *
+     * @return void
+     */
     function testLoginSuccess()
     {
         $this->webDriver->get($this->url . '/?logout=true');
@@ -45,7 +62,9 @@ class LorisLoginTest extends LorisIntegrationTest
 
         $login->click();
 
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Welcome", $bodyText);
     }
 }

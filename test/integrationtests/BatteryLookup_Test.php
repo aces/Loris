@@ -25,7 +25,12 @@ use PHPUnit\Framework\TestCase;
  */
 class NDB_BVL_Battery_Test extends TestCase
 {
-    function setUp()
+    /**
+     * Set up the data needed for the integration tests.
+     *
+     * @return void
+     */
+    function setUp(): void
     {
         $client = new NDB_Client();
         $client->makeCommandLine();
@@ -179,18 +184,35 @@ class NDB_BVL_Battery_Test extends TestCase
 
     }
 
-    function tearDown()
+    /**
+     * Remove test data from mock database.
+     *
+     * @return void
+     */
+    function tearDown(): void
     {
         $this->DB->run("DROP TEMPORARY TABLE test_names");
         $this->DB->run("DROP TEMPORARY TABLE test_battery");
 
     }
 
-    function testLookupBatteryByAge()
+    /**
+     * Test lookupBattery function by age.
+     *
+     * @return void
+     */
+    function testLookupBatteryByAge(): void
     {
         $battery = new NDB_BVL_Battery();
 
-        $instruments = $battery->lookupBattery(50, 1, 'Visit', 'V01', '1', null);
+        $instruments = $battery->lookupBattery(
+            50,
+            1,
+            'Visit',
+            'V01',
+            '1',
+            null
+        );
 
         $this->assertEquals(
             $instruments,
@@ -203,7 +225,12 @@ class NDB_BVL_Battery_Test extends TestCase
         );
     }
 
-    function testLookupBatteryByVisit()
+    /**
+     * Test lookupBattery function.
+     *
+     * @return void
+     */
+    function testLookupBatteryByVisit(): void
     {
         $battery = new NDB_BVL_Battery();
 
@@ -218,12 +245,32 @@ class NDB_BVL_Battery_Test extends TestCase
         );
     }
 
-    function testLookupBatteryWithoutCenterID()
+    /**
+     * Test that the lookupBattery function returns the correct results when
+     * queried without using CenterID.
+     *
+     * @return void
+     */
+    function testLookupBatteryWithoutCenterID(): void
     {
         $battery = new NDB_BVL_Battery();
 
-        $instrumentsByAge   = $battery->lookupBattery(50, 1, 'Visit', 'V01', '2', true);
-        $instrumentsByVisit = $battery->lookupBattery(50, 2, 'Visit', 'V01', '2', true);
+        $instrumentsByAge   = $battery->lookupBattery(
+            50,
+            1,
+            'Visit',
+            'V01',
+            '2',
+            true
+        );
+        $instrumentsByVisit = $battery->lookupBattery(
+            50,
+            2,
+            'Visit',
+            'V01',
+            '2',
+            true
+        );
 
         $this->assertEquals(
             $instrumentsByAge,
@@ -241,11 +288,24 @@ class NDB_BVL_Battery_Test extends TestCase
         );
     }
 
-    function testLookupBatteryByFirstVisit()
+    /**
+     * Test that the lookupBattery() function's "first visit" flag returns the
+     * first visit information when passed.
+     *
+     * @return void
+     */
+    function testLookupBatteryByFirstVisit(): void
     {
         $battery = new NDB_BVL_Battery();
 
-        $firstVisitInstruments = $battery->lookupBattery(50, 1, 'Visit', 'V01', '1', true);
+        $firstVisitInstruments = $battery->lookupBattery(
+            50,
+            1,
+            'Visit',
+            'V01',
+            '1',
+            true
+        );
 
         $this->assertEquals(
             $firstVisitInstruments,
@@ -256,7 +316,14 @@ class NDB_BVL_Battery_Test extends TestCase
             )
         );
 
-        $notFirstVisitInstruments = $battery->lookupBattery(50, 1, 'Visit', 'V01', '1', false);
+        $notFirstVisitInstruments = $battery->lookupBattery(
+            50,
+            1,
+            'Visit',
+            'V01',
+            '1',
+            false
+        );
 
         $this->assertEquals(
             $notFirstVisitInstruments,
