@@ -7,7 +7,7 @@ customize their notification settings.
 
 ## Intended Users
 
-Every user is able to modify their profile information.
+Every authenticated user is able to modify their profile information.
 
 ## Scope
 
@@ -26,4 +26,3 @@ Some settings related to email notifications affect this module.
 
 - Modifications performed on the My Preferences page will be reflected on 
 the user account page when viewing the edited account.
-
