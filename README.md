@@ -95,7 +95,7 @@ If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli
 ### Upgrade Step
 
 It is recommended to do a backup of the Database before upgrading the database schemas.
-If you have installed a previous version Loris, you can upgrade Loris to the latest in the following ways:
+If you have installed a previous version of LORIS, you can upgrade LORIS to the latest in the following ways:
 
 1. Using Git command checkout to the latest version of Loris.
  ```bash
