@@ -222,7 +222,7 @@ class ScheduleIndex extends Component {
   /**
    * Handles the edit a Schedule
    *
-   * @param {string} id - appointment id
+   * @param {string} row - appointment row
    */
  edit(row) {
    this.openModal();
