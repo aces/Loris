@@ -74,11 +74,16 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
+        if (!in_array($type, ['usertasks', 'candidate'], true)) {
+            return [];
+        }
+
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $baseURL = $factory->settings()->getBaseURL();
+
         switch($type) {
         case 'usertasks':
-            $factory = \NDB_Factory::singleton();
-            $DB      = $factory->database();
-            $baseURL = $factory->settings()->getBaseURL();
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
@@ -94,10 +99,6 @@ class Module extends \Module
                 )
             ];
         case 'candidate':
-            $factory = \NDB_Factory::singleton();
-            $DB      = $factory->database();
-            $baseURL = $factory->settings()->getBaseURL();
-
             $candidate = $options['candidate'];
             if ($candidate === null) {
                 return [];
@@ -130,6 +131,5 @@ class Module extends \Module
 
         }
         return [];
-
     }
 }
