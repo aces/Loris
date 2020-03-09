@@ -307,6 +307,8 @@ class ScheduleIndex extends Component {
     }
   }
   renderScheduleForm() {
+  let year = new Date();
+  let minYear = year.getFullYear();
     const title = this.state.editModal ? 'Edit Appointment' : 'Add Appointment';
     return (
       <Modal
@@ -351,6 +353,7 @@ class ScheduleIndex extends Component {
             label = "Appointment Date"
             onUserInput = {this.setFormData}
             value = {this.state.formData.AppointmentDate}
+            minYear = {minYear}
             required = {true}
           />
           <TimeElement
