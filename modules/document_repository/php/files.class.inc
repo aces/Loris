@@ -17,7 +17,7 @@ class Files extends \NDB_Page
 {
     const FILE_EXISTS_IN_DB = 'A file with this name already exists in the ' .
         'database. If the file does not appear in the document repository, ' .
-        'please contact you administrator.';
+        'please contact your administrator.';
     const BAD_CATEGORY      = "'Category' parameter must not be negative.";
     const FORBIDDEN         = 'User does not have permission to edit document '
         . 'repository files.';

@@ -142,10 +142,8 @@ class DocUploadForm extends Component {
  *                      ******     Helper methods     *******
  *********************************************************************************/
 
-/**
- * Sets form data and handles POSTing files to the document repository.
- */
   uploadFile() {
+    // Set form data and upload the media file
     let formData = this.state.formData;
     let formObject = new FormData();
     for (let key in formData) {
@@ -156,32 +154,25 @@ class DocUploadForm extends Component {
 
     fetch(this.props.action, {
       method: 'POST',
+      cache: 'no-cache',
       credentials: 'same-origin',
       body: formObject,
     })
-    .then((resp) => {
-      if (resp.status == 201) {
-        swal({
-          title: 'Upload Successful!',
-          type: 'success',
-        }, function() {
-          window.location.assign(loris.BaseURL + '/document_repository/');
+    .then((resp) => resp.json())
+    .then((data) => {
+      if (data == 'uploaded successfully') {
+        swal.fire('Upload Successful!', '', 'success').then((result) => {
+          if (result.value) {
+            this.setState({formData: {}});
+            this.props.refreshPage();
+          }
         });
-        return resp.json();
+      } else {
+        swal.fire('Could not upload file', data.error, 'error');
       }
     })
-    .then((data) => {
-        if (data.error) {
-            swal({
-                title: 'An error occurred',
-                type: 'error',
-                text: data.error,
-            });
-            this.setState({
-                formData: formData,
-            });
-            return resp.json();
-        }
+    .catch((error) => {
+      console.error(error);
     });
   }
 
