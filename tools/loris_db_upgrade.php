@@ -2,7 +2,7 @@
 <?php declare(strict_types=1);
 
 /**
- * This script will upgrade the loris database to a specified release version.
+ * This script will upgrade the LORIS database to a specified release version.
  * Usage: php loris_db_upgrade.php -D 
  * Errorlog: log/*.log
  * PHP Version 7
