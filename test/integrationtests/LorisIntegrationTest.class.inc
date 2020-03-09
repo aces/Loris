@@ -570,26 +570,30 @@ abstract class LorisIntegrationTest extends TestCase
     /**
      * Testing filter funtion and clear button
      *
-     * @param string $element The input element loaction (css selector)
-     * @param string $row     React Table row number 
-     * @param string $btn     clear filter button
-     * @param string $test_value   The test value
+     * @param string $element        The input element loaction (css selector)
+     * @param string $row            React Table row number
+     * @param string $btn            clear filter button
+     * @param string $test_value     The test value
      * @param string $expect_records The records number in the table
      *
      * @return void
      */
     function _filterTest($element,$row,$btn,$test_value, $expect_records): void
-    { 
+    {
         // get element from the page
 
-            if (strpos($element, "select") === false) {
-                $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
-                $el->sendKeys($test_value);
-            } else {
-                $el_dropdown = new WebDriverSelect($this->safeFindElement(WebDriverBy::cssSelector("$element")));
-                $el_dropdown->selectByVisibleText($test_value);
-            }
-            $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("$row"))->getText();
+        if (strpos($element, "select") === false) {
+            $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
+            $el->sendKeys($test_value);
+        } else {
+            $el_dropdown = new WebDriverSelect(
+                $this->safeFindElement(WebDriverBy::cssSelector("$element"))
+            );
+            $el_dropdown->selectByVisibleText($test_value);
+        }
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("$row")
+            )->getText();
             // 4 means there are 4 records under this site.
             $this->assertContains($expect_records, $bodyText);
             //test clear filter
