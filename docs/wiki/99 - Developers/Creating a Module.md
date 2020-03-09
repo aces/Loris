@@ -7,37 +7,11 @@ A Loris module consists of a group of pages that perform a specific function or 
 
 ## Directory structure
 
-1. Create a new folder corresponding to your module name under `modules/`. 
+Create a new folder corresponding to your module name under `modules/`. 
 This name should be short and descriptive. 
-The name must use only lowercase alphanumeric characters and underscores, e.g. `document_repository`.
+The name must should use only lowercase alphanumeric characters and underscores, e.g. `document_repository`.
+The directory name correponds to the URL that LORIS will use to load your module.
 For the remainder of this document we will assume your new module is named `my_new_module`.
-
-2. Create remaining folders inside the module according to the following tree structure:
-
-```
-│
-├── css/        // CSS files used by the module
-│
-├── help/       // Help text that is displayed to users
-│
-├── js/         // Compiled React files that are served to the browser
-│
-├── jsx/        // Original React files (JSX)
-│
-├── php/        // PHP classes
-│
-├── test/       // Test Plan and Integration Tests for the current module
-│
-├── README.md   // Brief description of what the module is and what it does
-| 
-├── .gitignore  // Local files to exclude from git. Should contain compiled JS files: `js/*`
-│
-```
-
-The filepaths below will reference these directories.
-
-_Older modules may contain other folders such as `templates/` and `ajax/`. These folders are deprecated and should
-not be used for new modules._
 
 ### PHP Files
 
@@ -46,18 +20,22 @@ The following files are required for the module to load in LORIS:
 * A PHP file called "module": `php/module.class.inc`.
 * A PHP file with the same name as the module: `php/my_new_module.class.inc`.
 
-The remaining PHP files will depend heavily on the kind of module you are creating. The most basic types
-of LORIS modules are "Menu Filters" and "Forms".
+The namespace must be set to `LORIS\$modulename` for anything defined in the PHP directory. Filenames need to be lowercase in order to be autoloaded. Class names can be any case.
+
+The remaining PHP files will depend heavily on the kind of module you are creating. 
+
+The most common type of LORIS module will extend the class `NDB_Page` and belong to one of two types:
+"Menu Filters" and "Forms".
 
 #### Menu Filters
 
-This is a type of module that displays a table of data with options to filter the values of this table.
+This is a type of page that displays a table of data with options to filter the values of this table.
 
 The correct way to create a menu filter is to include additional classes that represent the idea of a
 row in the table displayed to a user. This differs from a row in the database itself; for example, a row in the 
 menu filter module may represent a joining of columns across many database tables.
 
-If you are creating a Menu Filter module, your class `php/my_new_module.class.inc` should extend
+If you are creating a Menu Filter page, your class `php/my_new_module.class.inc` should extend
 the class `\DataFrameworkMenu`.
 
 [See this file for an example](../../../modules/dicom_archive/php/dicom_archive.class.inc).
@@ -71,15 +49,15 @@ affiliated with a given Site or Project.
 [See this file for an example](../../../modules/dicom_archive/php/dicomarchiverow.class.inc).
 
 ##### Row Provisioner.
-This file should be accompanied by a class `php/mynewmodulerowprovisioner.class.inc`. This file should
-contain the SQL statement used to query the database for data that will be consolidated into a
+This file should be accompanied by a class `php/mynewmodulerowprovisioner.class.inc`. Provisioners usually
+contain the SQL statement(s) used to query the database for data that will be consolidated into a
 Menu Filter row.
 
 [See this file for an example](../../../modules/dicom_archive/php/dicomarchiverowprovisioner.class.inc).
 
 #### Forms
 
-This type of module represents an HTML form and is used to submit data to the back-end.
+This type of page represents an HTML form and is used to submit data to the back-end.
 
 ### JavaScript files
 
@@ -108,11 +86,10 @@ In our example, you would create two new permissions: `my_new_module_view` and `
 
 To add new permissions, append them to the list of existing permissions found in `SQL/0000-00-01-Permission.sql`. (This file is found in your LORIS root directory, not within the module subdirectory.)
 
-#### Modules table
+#### Adding/Removing Modules
 
-All modules must be listed in the file `SQL/0000-00-02-Modules.sql`. 
-
-Include a new entry in this file by adding to the list of existing modules.
+The script `tools/manage_modules.php` should be run to manage modules. This will take care
+of updating the relevant tables in LORIS.
 
 #### Creating a patch
 
@@ -153,7 +130,6 @@ A pull request containing a new module `my_new_module` must contain the followin
 
 * `modules/my_new_module/help/my_new_module.md` -- Front-end help text for users
 * `modules/my_new_module/jsx/...` -- File(s) containing ReactJS code
-* `modules/my_new_module/js/` -- Empty, will contain compiled JS locally
 * `modules/my_new_module/php/module.class.inc` -- Defining module metadata, widgets, and basic permissions
 * `modules/my_new_module/php/my_new_module.class.inc` -- Containing core back-end functionality
 * `modules/my_new_module/php/...` -- Additional PHP files as needed
