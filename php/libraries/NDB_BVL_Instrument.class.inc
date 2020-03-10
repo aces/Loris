@@ -183,7 +183,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $preview = false;
 
     /**
-     * Array containing all multiselct elements in an instrument.
+     * Array containing all multiselect elements in an instrument.
      */
     protected $selectMultipleElements;
 
