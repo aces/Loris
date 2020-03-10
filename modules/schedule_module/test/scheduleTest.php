@@ -28,6 +28,7 @@ class ScheduleTest extends LorisIntegrationTest
     static $edit       = "#all tr:nth-child(1) > td:nth-child(10) > .btn";
     static $delete     = "#all tr:nth-child(1) > td:nth-child(11) > .btn";
     static $msg        = "#swal2-content";
+    static $create     = ".btn-sm > div";
 
     function setUp()
     {
@@ -129,12 +130,19 @@ class ScheduleTest extends LorisIntegrationTest
         $ok = self::$alertOk;
         $editButton = self::$edit;
         $ms = self::$msg;
+        $btn = self::$create;
         // click edit button with same info, it will show a error msg
         $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "$editButton"
             )
         )->click();
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "$btn"
+            )
+        )->click(); 
+
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
             "$ms"
@@ -152,6 +160,11 @@ class ScheduleTest extends LorisIntegrationTest
                 .col-sm-12:nth-child(6) .form-control"))
             );
         $el_dropdown->selectByVisibleText("MRI");
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "$btn"
+            )
+        )->click();
         $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "$ok"
