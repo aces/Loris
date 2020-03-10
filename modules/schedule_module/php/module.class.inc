@@ -55,6 +55,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Schedule Module";
+        return "Schedule Appointment";
     }
 }

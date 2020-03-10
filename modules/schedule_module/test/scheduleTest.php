@@ -23,28 +23,33 @@
  */
 class ScheduleTest extends LorisIntegrationTest
 {
+    static $alertOk    = "button[class='swal2-confirm']";
+    static $addBtn     = "#all .table-header .btn:nth-child(1)";
+    static $edit       = "#all tr:nth-child(1) > td:nth-child(10) > .btn";
+    static $delete     = "#all tr:nth-child(1) > td:nth-child(11) > .btn";
+    static $msg        = "#swal2-content";
 
-    /**
-     * Insert testing data into the database
-     * author: Wang Shen
-     *
-     * @return void
-     */
     function setUp()
     {
         parent::setUp();
+          $this->DB->insert(
+            "appointment",
+            array(
+                'AppointmentID'  => '999',
+                'SessionID'    => '1',
+                'AppointmentTypeID'   => '2',
+                'StartsAt' => '2020-02-02 02:02:02',
+            )
+        );
 
     }
-    /**
-     * Delete testing data from database
-     * author: Wang Shen
-     *
-     * @return void
-     */
     function tearDown()
     {
         parent::tearDown();
+        $this->DB->delete("appointment", array('AppointmentID' => '999'));
+
     }
+
     /**
      * Tests that, the homepage should have "Schedule Module" on the page.
      *
@@ -56,7 +61,7 @@ class ScheduleTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".btn > div")
         )->getText();
-        $this->assertContains("Schedule Module", $bodyText);
+        $this->assertContains("Schedule", $bodyText);
         $this->assertNotContains("An error occurred", $bodyText);
 
     }
@@ -73,7 +78,7 @@ class ScheduleTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".btn > div")
         )->getText();
-        $this->assertContains("Schedule Module", $bodyText);
+        $this->assertContains("Schedule", $bodyText);
         $this->assertNotContains("An error occurred", $bodyText);
         $this->resetPermissions();
     }
@@ -120,21 +125,44 @@ class ScheduleTest extends LorisIntegrationTest
      */
     function testEditappointment()
     {
-        $this->safeGet($this->url . "/schedule_module/");
-        // click add schedule button
+        $ok = self::$alertOk;
+        $editButton = self::$edit;
+        $ms = self::$msg;
+        // click edit button with same info, it will show a error msg
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "
-              #all tr:nth-child(1) > td:nth-child(10) > .btn"
+                "$editButton"
             )
         )->click();
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div >".
-                " div > div:nth-child(1)"
+            "$ms"
             )
         )->getText();
-        $this->assertContains("Edit Appointment", $bodyText);
+        $this->assertContains("This appointment already exists", $bodyText);
+        // change time and save it again
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "$ok"
+            )
+        )->click();
+        $el_dropdown = new WebDriverSelect(
+                $this->safeFindElement(WebDriverBy::cssSelector("
+                .col-sm-12:nth-child(6) .form-control"))
+            );
+        $el_dropdown->selectByVisibleText("MRI");
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "$ok"
+            )
+        )->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$ms")
+        )->getText();
+        $this->assertContains("Schedule added", $bodyText);
+       
+
+
     }
     /**
      * Tests that, delete an appointment
@@ -145,14 +173,15 @@ class ScheduleTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/schedule_module/");
         // click delete schedule button
+        $btn = self::$delete;
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "
-              #all tr:nth-child(1) > td:nth-child(11) > .btn"
+              "$btn"
             )
         )->click();
+        $ms = self::$msg;
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-content")
+            WebDriverBy::cssSelector("$ms")
         )->getText();
         $this->assertContains("Schedule deleted.", $bodyText);
     }

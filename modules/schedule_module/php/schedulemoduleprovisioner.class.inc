@@ -14,6 +14,11 @@
 
 namespace LORIS\schedule_module;
 require 'data_entry.class.inc';
+require 'DataEntrySelectClause.class.inc';
+require 'MriDataEntryExpression.class.inc';
+require 'BloodCollectionDataEntryExpression.class.inc';
+require 'BehavioralDataEntryExpression.class.inc';
+// require 'MriDataEntryExpression.class.inc';
 /**
  * This class implements a data provisioner to get all modules
  * for the schedule_module menu page.
