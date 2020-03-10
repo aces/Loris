@@ -14,7 +14,7 @@ class UserAccountRow implements \LORIS\Data\DataInstance
      /**
       * Create a new ModuleRow Instance.
       *
-      * @param array $row The ModuleRow Instance
+      * @param array $row  The ModuleRow Instance
       * @param array $cids The CenterIDs
       * @param array $pids The ProjectIDs
       */
