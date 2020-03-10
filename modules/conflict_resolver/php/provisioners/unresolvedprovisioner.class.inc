@@ -42,7 +42,8 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               conflicts_unresolved.Value1 as value1,
               conflicts_unresolved.Value2 as value2,
               psc.name as site,
-              session.CenterID as centerid
+              session.CenterID as centerid,
+              Project.ProjectID as projectid
              FROM
               conflicts_unresolved 
              LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)

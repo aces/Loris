@@ -47,7 +47,8 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               conflicts_resolved.User2 as user2,
               conflicts_resolved.UserID as resolver,
               psc.name as site,
-              session.CenterID as centerid
+              session.CenterID as centerid,
+              Project.ProjectID as projectid
              FROM
               conflicts_resolved
              LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)

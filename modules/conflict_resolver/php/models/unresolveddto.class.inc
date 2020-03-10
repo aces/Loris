@@ -27,6 +27,7 @@ namespace LORIS\conflict_resolver\Models;
  */
 class UnresolvedDTO implements \LORIS\Data\DataInstance
 {
+
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
@@ -49,6 +50,7 @@ class UnresolvedDTO implements \LORIS\Data\DataInstance
             )
         );
     }
+
     /**
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
@@ -58,5 +60,16 @@ class UnresolvedDTO implements \LORIS\Data\DataInstance
     public function getCenterID(): int
     {
         return (int) $this->centerid;
+    }
+
+    /**
+     * Returns the ProjectID for this row, for filters such as
+     * \LORIS\Data\Filters\UserProjectMatch to match again.
+     *
+     * @return integer
+     */   
+    public function getProjectID(): int
+    {
+        return (int) $this->projectid;
     }
 }

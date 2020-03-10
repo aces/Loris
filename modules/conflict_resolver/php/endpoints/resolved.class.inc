@@ -16,6 +16,7 @@ use \LORIS\Router\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
 use \LORIS\conflict_resolver\Provisioners\ResolvedProvisioner;
 use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+use \LORIS\Data\Filters\UserProjectMatch;
 
 /**
  * Request handler to provide resolved conflicts for the conflict resolver
@@ -134,7 +135,12 @@ class Resolved extends Endpoint implements ETagCalculator
         );
 
         $provisioner = (new ResolvedProvisioner())
-            ->filter($filter);
+            ->filter(
+                new HasAnyPermissionOrUserSiteMatch(
+                    array('access_all_profiles')
+                )
+            )
+            ->filter(new UserProjectMatch());
 
         $user      = $request->getAttribute('user');
         $conflicts = (new \LORIS\Data\Table())
