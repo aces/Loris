@@ -117,9 +117,9 @@ class Appointment extends \NDB_Page
      * @param string $type the tpye
      * @param string $id   the id
      *
-     * @return string
+     * @return array all the meta form
      */
-    public function getMetaForm(string $type,string $id): string
+    public function getMetaForm(string $type,string $id): array
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
