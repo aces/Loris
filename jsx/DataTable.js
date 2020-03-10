@@ -196,7 +196,7 @@ class DataTable extends Component {
   }
 
   /**
-   * Sort of the row indexes.
+   * Returns the supplied array sorted by indexes.
    *
    * @param {array} rowIndexes
    * @return {array} index
