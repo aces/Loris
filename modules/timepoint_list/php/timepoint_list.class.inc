@@ -43,33 +43,8 @@ class Timepoint_List extends \NDB_Menu
         $candidate = \Candidate::singleton($this->candID);
 
         // check user permissions
-        if ($user->hasPermission('access_all_profiles')
-            || (in_array(
-                $candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
-            ))
-        ) {
-            return true;
-        }
-
-        // if the candidate.RegistrationCenterID does not match the users.CenterID
-        // then check if any of the timepoints belong to the user's site
-        $listOfTimePoints = $candidate->getListOfTimePoints();
-
-        foreach ($listOfTimePoints as $sessionID) {
-            // create timepoint object
-            $timePoint =& \TimePoint::singleton($sessionID);
-            // check if at least one timepoint belongs to the user's site
-            if (in_array(
-                $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        return $user->hasPermission('access_all_profiles')
+            || $candidate->isAccessibleBy($user);
     }
 
     /**

@@ -53,6 +53,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Survey Module";
+        return "Survey Accounts";
     }
 }

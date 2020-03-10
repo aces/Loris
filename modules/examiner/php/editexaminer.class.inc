@@ -264,11 +264,7 @@ class EditExaminer extends \NDB_Form
                 }
             }
         }
-
-        $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
-        $url     = "{$baseurl}/examiner/editExaminer/?identifier="
-               . $examinerID;
-        header("Location: " . $url, true, 303);
+        header("Refresh:0");
     }
 
     /**

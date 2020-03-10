@@ -1,28 +1,21 @@
-import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * The Loader component displays a spinning blue circle. It is intended to be
- * displayed during communication with the server to indicate to the user that
- * an operation is taking place.
+ * Loader is a React component which shows a spinner wheel while
+ * something is loading.
+ *
+ * @param {array} props - The React props
+ *
+ * @return {DOMObject} - Loader React component
  */
-class Loader extends Component {
-  /**
-   * {@inheritdoc}
-   * @return {*} Loader Component
-   */
-  render() {
-    const style = {
-      width: parseInt(this.props.size),
-      height: parseInt(this.props.size),
-    };
+function Loader(props) {
     return (
       <div
         className='loader'
-        style={style}
+        style={{width: parseInt(props.size), height: parseInt(props.size)}}
+\
       />
     );
-  }
 }
 
 Loader.propTypes = {size: PropTypes.string};
