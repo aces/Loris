@@ -17,8 +17,3 @@ customize their notification settings.
 ## Permissions
 
 A user is always able to access the My Preferences page.
-
-## Configurations
-
-This module allows a user to modify whether or not they are notified by events in other modules,
-for example when files are added to the document repository.
