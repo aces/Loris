@@ -32,7 +32,7 @@ class Breadcrumbs extends Component {
   }
 
   /**
-   * User to check the current window size and sets the number of breadcrumbs
+   * Checks the current window size and sets the number of breadcrumbs
    * to show.
    */
   checkScreenSize() {
