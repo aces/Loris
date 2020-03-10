@@ -23,7 +23,7 @@ This module is used primarily by study coordinators/administrators who share stu
 
 - The Document Repository enables users to upload and organize project files of any type (PDF,Photo,Txt...) that can easily be viewable for users with appropriate permissions ("document_repository_view").
 
-The `docRepoPath` configuration setting is the path to the folder on the
+The `documentRepositoryPath` configuration setting is the path to the folder on the
 uploaded file system where new files will be written.
 
 - A mail server is required to send out email notification regarding the Document Repository updates.
