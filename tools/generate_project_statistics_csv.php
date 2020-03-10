@@ -67,17 +67,26 @@ $project_statistics['number of candidates'] = $DB->pselectOne(
     array()
 );
 
-// GB of imaging data (raw and processed)
-$project_statistics['size of imaging data (GB)'] = 'Unknown';
+// GB of imaging data (raw and processed).
+$project_statistics['GB of imaging data (raw and processed)'] = 'Unknown';
 $dir_path = $config->getSetting('imagePath');
 if (is_dir($dir_path)) {
     $result = shell_exec(
         sprintf(
-            "du --human-readable --total %s | tail -n 1 | cut -f 1",
+            "du --total %s | tail -n 1 | cut -f 1",
             escapeshellarg($dir_path)
         )
     );
-    $project_statistics['GB of imaging data (raw and processed)'] = $result;
+    // Convert bytes to GB and format to nine decimal places. This is done
+    // because the desired unit is GB but it's hard to distinguish a small
+    // folder from a rounding error without this level of precision.
+    $project_statistics['GB of imaging data (raw and processed)']
+        = number_format(
+            floatval(trim($result) / 1000000000),
+            9,
+            '.',
+            ''
+        );
 } else {
     $helper->printError(
         'Image path setting is invalid. Cannot calculate size of imaging data'
