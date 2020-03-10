@@ -183,6 +183,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $preview = false;
 
     /**
+     * Array containing all multiselect elements in an instrument.
+     */
+    protected $selectMultipleElements;
+
+    /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
      * instrument.
@@ -541,8 +546,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 = $defaults['Candidate_Age'] . " (Age out of range)";
         }
         //Convert select multiple elements into a lorisform array
-        if (!empty($this->_selectMultipleElements)) {
-            foreach ($this->_selectMultipleElements AS $elname) {
+        if (!empty($this->selectMultipleElements)) {
+            foreach ($this->selectMultipleElements AS $elname) {
                 if (isset($defaults[$elname])
                     && stristr($defaults[$elname], "{@}")
                 ) {
@@ -763,8 +768,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         //Convert select multiple elements into database storable values
-        if (!empty($this->_selectMultipleElements)) {
-            foreach ($this->_selectMultipleElements AS $elname) {
+        if (!empty($this->selectMultipleElements)) {
+            foreach ($this->selectMultipleElements AS $elname) {
                 if (isset($values[$elname]) && is_array($values[$elname])) {
                     $values[$elname] = implode("{@}", $values[$elname]);
                 }
