@@ -139,7 +139,6 @@ const config = [
         module: mod,
     },
     // Modules
-    lorisModule('issue_tracker', ['issueTrackerIndex', 'index']),
     lorisModule('media', ['CandidateMediaWidget', 'mediaIndex']),
     lorisModule('issue_tracker', ['issueTrackerIndex', 'index', 'CandidateIssuesWidget']),
     lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
