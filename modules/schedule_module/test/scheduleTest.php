@@ -125,6 +125,7 @@ class ScheduleTest extends LorisIntegrationTest
      */
     function testEditappointment()
     {
+        $this->safeGet($this->url . "/schedule_module/");
         $ok = self::$alertOk;
         $editButton = self::$edit;
         $ms = self::$msg;
