@@ -28,6 +28,8 @@
  */
 require_once "Email.class.inc";
 
+use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
+
 //TODO: or split it into two files... :P
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
     echo json_encode(getIssueFields());
@@ -111,6 +113,19 @@ function editIssue()
 
     updateHistory($historyValues, $issueID);
     updateComments($_POST['comment'], $issueID);
+
+    // Attachment for new issue.
+    if (isset($_FILES['file'])) {
+        $attachment = new \LORIS\issue_tracker\UploadHelper();
+        $attachment->setupUploading(
+            $user,
+            $_FILES,
+            array(
+                'fileDescription' => '',
+                'issueID'         => $issueID,
+            )
+        );
+    }
 
     // Adding new assignee to watching
     if (isset($issueValues['assignee'])) {
@@ -662,12 +677,18 @@ WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
         $issueID   = $_GET['issueID'];
         $issueData = getIssueData($issueID);
 
-        $desc       = $db->pselect(
+        $desc = $db->pselect(
             "SELECT issueComment
 FROM issues_comments WHERE issueID=:i
 ORDER BY dateAdded LIMIT 1",
             array('i' => $issueID)
         );
+
+        $provisioner = (new AttachmentProvisioner($issueID));
+        $attachments = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
+
         $isWatching = $db->pselectOne(
             "SELECT userID, issueID FROM issues_watching
             WHERE issueID=:issueID AND userID=:userID",
@@ -681,7 +702,10 @@ ORDER BY dateAdded LIMIT 1",
         } else {
             $issueData['watching'] = "Yes";
         }
+        $username = $user->getUsername();
         $issueData['commentHistory'] = getComments($issueID);
+        $issueData['attachments']    = $attachments;
+        $issueData['whoami']         = $username;
         $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $desc[0]['issueComment'] ?? '';
     }

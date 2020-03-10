@@ -153,19 +153,15 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
 
         $this->webDriver->wait()->until(
             \WebDriverExpectedCondition::presenceOfElementLocated(
-                \WebDriverBy::id('unresolved')
+                \WebDriverBy::id('unresolved_filter')
             )
         );
 
-        //testing data
-        // site = montreal
         $this->_testFilter(self::$ForSite, "20 rows displayed of 311", '2');
-        // Visit label = V1
         $this->_testFilter(self::$VisitLabel, "displayed of 576", '1');
         $this->_testFilter(self::$CandID, "2 rows displayed of 2", '300004');
         $this->_testFilter(self::$PSCID, "2 rows displayed of 2", 'MTL004');
         $this->_testFilter(self::$Question, "displayed of 181", 'height_inches');
-        // project = Pumpernickel
         $this->_testFilter(self::$Project, "3 rows displayed of 3", '1');
     }
 
@@ -240,7 +236,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         // Clicking on the tab renders a new tab content.
         $this->webDriver->wait()->until(
             \WebDriverExpectedCondition::presenceOfElementLocated(
-                \WebDriverBy::id('resolved')
+                \WebDriverBy::id('resolved_filter')
             )
         );
 

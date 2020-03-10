@@ -18,6 +18,7 @@
             <directory>../modules/api/test/</directory>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
+            <directory>../modules/bvl_feedback/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
             <directory>../modules/configuration/test/</directory>
@@ -32,26 +33,26 @@
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
             <directory>../modules/imaging_browser/test/</directory>
+            <directory>../modules/imaging_qc/test/</directory>
             <directory>../modules/imaging_uploader/test/</directory>
             <directory>../modules/instrument_builder/test/</directory>
             <directory>../modules/instrument_list/test/</directory>
             <directory>../modules/instrument_manager/test/</directory>
+            <directory>../modules/issue_tracker/test/</directory>
+            <directory>../modules/media/test/</directory>
+            <directory>../modules/module_manager/test/</directory>
             <directory>../modules/mri_upload/test/</directory>
             <directory>../modules/mri_violations/test/</directory>
             <directory>../modules/new_profile/test/</directory>
             <directory>../modules/next_stage/test/</directory>
+            <directory>../modules/server_processes_manager/test/</directory>
             <directory>../modules/statistics/test/</directory>
             <directory>../modules/survey_accounts/test/</directory>
             <directory>../modules/timepoint_flag/test/</directory>
             <directory>../modules/timepoint_list/test/</directory>
             <directory>../modules/training/test/</directory>
             <directory>../modules/user_accounts/test/</directory>
-            <directory>../modules/media/test/</directory>
-            <directory>../modules/issue_tracker/test/</directory>
-            <directory>../modules/server_processes_manager/test/</directory>
             <directory>../test/test_instrument/</directory>
-            <directory>../modules/bvl_feedback/test/</directory>
-            <directory>../modules/quality_control/test/</directory>
         </testsuite>
 
     </testsuites>

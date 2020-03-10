@@ -33,6 +33,11 @@ import PropTypes from 'prop-types';
  *
  */
 class Tabs extends Component {
+  /**
+   * Construct a Tabs react component
+   *
+   * @param {array} props - The React props
+   */
   constructor(props) {
     super(props);
 
@@ -62,6 +67,14 @@ class Tabs extends Component {
     this.getTabPanes = this.getTabPanes.bind(this);
   }
 
+  /**
+   * Handle clicks on a tab header to change the active
+   * tab. If this.props.updateURL is set, update the window
+   * URL and scroll to the top of the page.
+   *
+   * @param {int} tabId -- The tab clicked on
+   * @param {Event} e -- The click event
+   */
   handleClick(tabId, e) {
     this.setState({activeTab: tabId});
     this.props.onTabChange(tabId);
@@ -74,6 +87,12 @@ class Tabs extends Component {
     }
   }
 
+  /**
+   * Return a list of components for the tab links.
+   *
+   * @return {array} -- An array of JSX components to represent
+   *                    the tab's title
+   */
   getTabs() {
     let tabs = (this.props.tabs).map(function(tab) {
       let tabClass = this.state.activeTab === tab.id ? 'active' : null;
@@ -100,19 +119,31 @@ class Tabs extends Component {
     return tabs;
   }
 
+  /**
+   * Return the body of the active tab.
+   *
+   * @return {object} -- A JSX component of the active tab panel.
+   */
   getTabPanes() {
-    let tabPanes = React.Children.map(this.props.children, function(child, key) {
-      if (child) {
-        return React.cloneElement(child, {
-          activeTab: this.state.activeTab,
-          key: key,
-        });
-      }
-    }.bind(this));
+    let tabPanes = React.Children.map(
+      this.props.children,
+      function(child, key) {
+        if (child) {
+          return React.cloneElement(child, {
+            activeTab: this.state.activeTab,
+            key: key,
+          });
+        }
+      }.bind(this));
 
     return tabPanes;
   }
 
+  /**
+   * React lifecycle method
+   *
+   * @return {object} -- The rendered JSX component
+   */
   render() {
     let tabs = this.getTabs();
     let tabPanes = this.getTabPanes();
@@ -146,10 +177,15 @@ Tabs.defaultProps = {
 };
 
 /**
- * Allows to dynamically render vertical tabs corresponding to tab panes.
+ * VerticalTabs is a React component which dynamically renders
+ * a set of vertical tabs corresponding to tab panes.
  */
-
 class VerticalTabs extends Component {
+  /**
+   * Construct the Component
+   *
+   * @param {array} props - array of React props
+   */
   constructor(props) {
     super(props);
 
@@ -179,6 +215,14 @@ class VerticalTabs extends Component {
     this.getTabPanes = this.getTabPanes.bind(this);
   }
 
+  /**
+   * Handle clicks on a tab header to change the active
+   * tab. If this.props.updateURL is set, update the window
+   * URL and scroll to the top of the page.
+   *
+   * @param {int} tabId -- The tab clicked on
+   * @param {Event} e -- The click event
+   */
   handleClick(tabId, e) {
     this.setState({activeTab: tabId});
     this.props.onTabChange(tabId);
@@ -191,6 +235,12 @@ class VerticalTabs extends Component {
     }
   }
 
+  /**
+   * Return a list of components for the tab links.
+   *
+   * @return {array} -- An array of JSX components to represent
+   *                    the tab's title
+   */
   getTabs() {
     let tabs = (this.props.tabs).map(function(tab) {
       let tabClass = this.state.activeTab === tab.id ? 'active' : null;
@@ -217,19 +267,31 @@ class VerticalTabs extends Component {
     return tabs;
   }
 
+  /**
+   * Return the body of the active tab.
+   *
+   * @return {object} -- A JSX component of the active tab panel.
+   */
   getTabPanes() {
-    let tabPanes = React.Children.map(this.props.children, function(child, key) {
-      if (child) {
-        return React.cloneElement(child, {
-          activeTab: this.state.activeTab,
-          key: key,
-        });
-      }
+    let tabPanes = React.Children.map(
+      this.props.children,
+      function(child, key) {
+        if (child) {
+          return React.cloneElement(child, {
+            activeTab: this.state.activeTab,
+            key: key,
+          });
+        }
     }.bind(this));
 
     return tabPanes;
   }
 
+  /**
+   * React lifecycle method
+   *
+   * @return {object}
+   */
   render() {
     let tabs = this.getTabs();
     let tabPanes = this.getTabPanes();
@@ -241,7 +303,10 @@ class VerticalTabs extends Component {
     return (
       <div>
         <div className="tabbable col-md-3 col-sm-3">
-          <ul className="nav nav-pills nav-stacked" role="tablist" style={tabStyle}>
+          <ul
+              className="nav nav-pills nav-stacked"
+              role="tablist"
+              style={tabStyle}>
             {tabs}
           </ul>
         </div>
@@ -264,11 +329,16 @@ VerticalTabs.defaultProps = {
   updateURL: true,
 };
 
-/*
+/**
  * TabPane component.
  * Used to wrap content for every tab.
  */
 class TabPane extends Component {
+    /**
+     * React lifecycle method
+     *
+     * @return {object}
+     */
   render() {
     let classList = 'tab-pane';
     let title;

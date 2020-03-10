@@ -86,6 +86,8 @@ class NDB_Page implements RequestHandlerInterface
      * FIXME: This should be private to ensure users go through the getter and setter
      * methods to safely update the template data, but all references that directly
      * use tpl_data must be updated first.
+     *
+     * @var array<mixed>
      */
     protected $tpl_data = array();
 
@@ -93,8 +95,6 @@ class NDB_Page implements RequestHandlerInterface
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
-     *
-     * FIXME: $formname is never used. - Alexandra Livadas
      *
      * @param Module $module     The test name being accessed
      * @param string $page       The subtest being accessed (may be an empty string)

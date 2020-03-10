@@ -50,12 +50,16 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             "SELECT Name FROM modules WHERE Active='Y'",
             []
         );
-        return array_map(
-            function ($name) {
-                return self::factory($name);
-            },
-            $mnames
-        );
+
+        $modules = [];
+        foreach ($mnames as $name) {
+            try {
+                $modules[] = self::factory($name);
+            } catch(\LorisModuleMissingException $e) {
+                error_log($e->getMessage() . " " . $e->getTraceAsString());
+            }
+        }
+        return $modules;
     }
 
     /**
@@ -497,12 +501,14 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * on $type, and the contract between the caller and callee is
      * implicit.
      *
-     * @param string $type The type of widgets to get
-     * @param \User  $user The user widgets are being retrieved for.
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
      *
      * @return \LORIS\GUI\Widget[]
      */
-    public function getWidgets(string $type, \User $user)
+    public function getWidgets(string $type, \User $user, array $options)
     {
         return [];
     }

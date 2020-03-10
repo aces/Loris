@@ -67,7 +67,8 @@ CREATE TABLE `language` (
   UNIQUE KEY (`language_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO language (language_code, language_label) VALUES ('en-CA', 'English');
+INSERT INTO language (language_code, language_label) VALUES
+    ('en-CA', 'English');
 
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
@@ -145,6 +146,7 @@ CREATE TABLE `candidate` (
   `PSCID` varchar(255) NOT NULL DEFAULT '',
   `ExternalID` varchar(255) DEFAULT NULL,
   `DoB` date DEFAULT NULL,
+  `DoD` date DEFAULT NULL,
   `EDC` date DEFAULT NULL,
   `Sex` enum('Male','Female','Other') DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
@@ -209,6 +211,7 @@ CREATE TABLE `session` (
   `MRIQCFirstChangeTime` datetime DEFAULT NULL,
   `MRIQCLastChangeTime` datetime DEFAULT NULL,
   `MRICaveat` enum('true','false') NOT NULL DEFAULT 'false',
+  `languageID` integer unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `session_candVisit` (`CandID`,`VisitNo`),
   KEY `FK_session_2` (`CenterID`),
@@ -217,6 +220,7 @@ CREATE TABLE `session` (
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`),
+  CONSTRAINT `FK_session_4` FOREIGN KEY (`languageID`) REFERENCES `language` (`language_id`),
   CONSTRAINT `FK_session_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
@@ -2092,3 +2096,17 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+CREATE TABLE `issues_attachments` (
+    `ID` int NOT NULL AUTO_INCREMENT,
+    `issueID` int(11) NOT NULL,
+    `file_hash` varchar(64) NOT NULL,
+    `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
+    `file_name` varchar(255) NOT NULL DEFAULT '',
+    `deleted` tinyint(1) NOT NULL DEFAULT 0,
+    `user` varchar(255) NOT NULL DEFAULT '',
+    `description` text DEFAULT NULL,
+    `file_size` int(20) DEFAULT NULL,
+    `mime_type` varchar(255) NOT NULL DEFAULT '',
+    PRIMARY KEY (`ID`)
+) DEFAULT CHARSET=utf8mb4;
