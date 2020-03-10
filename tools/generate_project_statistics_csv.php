@@ -8,9 +8,8 @@
 require_once 'generic_includes.php';
 require_once __DIR__ . '/../php/libraries/OutputWrapper.class.inc';
 
-$helper = new OutputWrapper();
+$helper      = new OutputWrapper();
 $output_file = sprintf("project_statistics_%s.csv", date('Y-m-d'));
-$fp          = fopen($output_file, 'w');
 $projectname = $config->getSetting('title');
 $helper->printSuccess("Generating project statistics for $projectname");
 
@@ -27,7 +26,7 @@ $headers = array(
 );
 
 // initialize array that will contain the CSV data.
-$project_statistics = []; 
+$project_statistics            = [];
 $project_statistics['Project'] = $projectname;
 // Number of Scanning - Visits
 $project_statistics['Number of Scanning - Visits'] = $DB->pselectOne(
@@ -48,7 +47,7 @@ $project_statistics['Variable Count'] = $DB->pselectOne(
 
 // Number of instruments
 $project_statistics['Number of instruments'] = $DB->pselectOne(
-    "select count(*) from test_names", 
+    "select count(*) from test_names",
     array()
 );
 // Total number of visits (for all candidates)
@@ -102,6 +101,7 @@ $project_statistics['number of scans'] = $DB->pselectOne(
 $project_statistics['Project'] = $projectname;
 
 // Adds headers and project statistics into csv file
+$fp = fopen($output_file, 'w');
 fputcsv($fp, $headers);
 fputcsv($fp, $project_statistics);
 fclose($fp);
