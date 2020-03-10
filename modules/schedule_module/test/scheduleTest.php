@@ -106,8 +106,10 @@ class ScheduleTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("#all .table-header .btn:nth-child(1)")
         )->click();
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#lorisworkspace > div > div >".
-                    " div > div:nth-child(1)")
+            WebDriverBy::cssSelector(
+                "#lorisworkspace > div > div >".
+                " div > div:nth-child(1)"
+            )
         )->getText();
         $this->assertContains("Add Appointment", $bodyText);
     }
@@ -117,15 +119,20 @@ class ScheduleTest extends LorisIntegrationTest
      * @return void
      */
     function testEditappointment()
-    {   
+    {
         $this->safeGet($this->url . "/schedule_module/");
         // click add schedule button
         $this->safeFindElement(
-            WebDriverBy::cssSelector("#all tr:nth-child(1) > td:nth-child(10) > .btn")
-        )->click(); 
+            WebDriverBy::cssSelector(
+                "
+              #all tr:nth-child(1) > td:nth-child(10) > .btn"
+            )
+        )->click();
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#lorisworkspace > div > div >".
-                    " div > div:nth-child(1)")
+            WebDriverBy::cssSelector(
+                "#lorisworkspace > div > div >".
+                " div > div:nth-child(1)"
+            )
         )->getText();
         $this->assertContains("Edit Appointment", $bodyText);
     }
@@ -135,12 +142,15 @@ class ScheduleTest extends LorisIntegrationTest
      * @return void
      */
     function testDeleteappointment()
-    {   
+    {
         $this->safeGet($this->url . "/schedule_module/");
         // click delete schedule button
         $this->safeFindElement(
-            WebDriverBy::cssSelector("#all tr:nth-child(1) > td:nth-child(11) > .btn")
-        )->click(); 
+            WebDriverBy::cssSelector(
+                "
+              #all tr:nth-child(1) > td:nth-child(11) > .btn"
+            )
+        )->click();
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#swal2-content")
         )->getText();

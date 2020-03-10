@@ -1,80 +1,160 @@
 <?php
 namespace LORIS\schedule_module;
-    /*
-        Implement this interface for each Appointment Type
-    */
-    interface DataEntryExpression {
-        public function getCompleteExpression () : string;
-        public function getInProgressExpression () : string;
-        public function getNotStartedExpression () : string;
-    }
-    /*
+/**
+ * Implement this interface for each Appointment Type
+ *
+ * @license Loris license
+ */
+interface DataEntryExpression
+{
+    /**
+     * This function will return complete expression
+     *
+     * @return string get the complete expression
+     */
+    public function getCompleteExpression() : string;
+    /**
+     * This function will return inprogress expression
+     *
+     * @return string get the inprogress expression
+     */
+    public function getInProgressExpression() : string;
+    /**
+     * This function will return Not Started expression
+     *
+     * @return string get the NotStarted expression
+     */
+    public function getNotStartedExpression() : string;
+}
+    /**
+     *  This class will create a data entry select clause
+     *
+     * @license Loris license
         Usage:
-
         $selectClause = new DataEntrySelectClause();
         $selectClause->register("Xxx", new XxxDataEntryExpression());
         $selectClause->register("Yyy", new YyyDataEntryExpression());
         $selectClause->register("Zzz", new ZzzDataEntryExpression());
         $columns = $selectClause->getColumns();
-
-        -----
-
         $columns should be something like,
-
         (SomeQuery) AS hasDataEntryComplete,
         (SomeQuery) AS hasDataEntryInProgress,
         (SomeQuery) AS hasDataEntryNotStarted
-    */
-    class DataEntrySelectClause {
-        private $expressions = [];
-        public function register (string $type, DataEntryExpression $expr) : self {
-            $this->expressions[$type] = $expr;
-            return $this;
-        }
-        private function getColumn (string $columnName, callable $getExpression) : string {
-            $columnName = \Database::singleton()->escape($columnName);
+     */
+class DataEntrySelectClause
+{
+    private $_expressions = [];
+    /**
+     * This function will the boolean value whether is valid date or not
+     *
+     * @param string              $type The expression tpye
+     * @param DataEntryExpression $expr The data entry expression
+     *
+     * @return self return this function
+     */
+    public function register(string $type, DataEntryExpression $expr) : self
+    {
+        $this->_expressions[$type] = $expr;
+        return $this;
+    }
+    /**
+     * This function will the boolean value whether is valid date or not
+     *
+     * @param string   $columnName    The column name
+     * @param callable $getExpression callable entry expression
+     *
+     * @return string  return column query string
+     */
+    private function _getColumn(string $columnName, callable $getExpression) : string
+    {
+        $columnName = \Database::singleton()->escape($columnName);
 
-            $parts = [];
+        $parts = [];
 
-            $parts[] = "(CASE appointment_type.Name";
-            foreach ($this->expressions as $type=>$expr) {
-                $quotedType = \Database::singleton()->quote($type);
-                $expression = $getExpression($expr);
-                $parts[] = "WHEN {$quotedType} THEN ({$expression})";
-            }
-            $parts[] = "ELSE FALSE";
-            $parts[] = "END) AS {$columnName}";
-            return implode("\n", $parts);
+        $parts[] = "(CASE appointment_type.Name";
+        foreach ($this->_expressions as $type=>$expr) {
+            $quotedType = \Database::singleton()->quote($type);
+            $expression = $getExpression($expr);
+            $parts[]    = "WHEN {$quotedType} THEN ({$expression})";
         }
-        public function getCompleteColumn () {
-            return $this->getColumn("hasDataEntryComplete", function (DataEntryExpression $expr) : string {
+        $parts[] = "ELSE FALSE";
+        $parts[] = "END) AS {$columnName}";
+        return implode("\n", $parts);
+    }
+    /**
+     * This function will get complete column
+     *
+     * @return string the complete column
+     */
+    public function getCompleteColumn(): string
+    {
+        return $this->_getColumn(
+            "hasDataEntryComplete",
+            function (DataEntryExpression $expr) : string {
                 return $expr->getCompleteExpression();
-            });
-        }
-        public function getInProgressColumn () {
-            return $this->getColumn("hasDataEntryInProgress", function (DataEntryExpression $expr) : string {
+            }
+        );
+    }
+    /**
+     * This function will get in progress column
+     *
+     * @return string InProgress Column
+     */
+    public function getInProgressColumn(): string
+    {
+        return $this->_getColumn(
+            "hasDataEntryInProgress",
+            function (DataEntryExpression $expr) : string {
                 return $expr->getInProgressExpression();
-            });
-        }
-        public function getNotStartedColumn () {
-            return $this->getColumn("hasDataEntryNotStarted", function (DataEntryExpression $expr) : string {
+            }
+        );
+    }
+    /**
+     * This function will get not started column
+     *
+     * @return string NotStartedColumn
+     */
+    public function getNotStartedColumn(): string
+    {
+        return $this->_getColumn(
+            "hasDataEntryNotStarted",
+            function (DataEntryExpression $expr) : string {
                 return $expr->getNotStartedExpression();
-            });
-        }
-        public function getColumns () : string {
-            return implode(",\n", [
+            }
+        );
+    }
+    /**
+     * This function will get all columns
+     *
+     * @return string all the columns
+     */
+    public function getColumns() : string
+    {
+        return implode(
+            ",\n",
+            [
                 $this->getCompleteColumn(),
                 $this->getInProgressColumn(),
                 $this->getNotStartedColumn()
-            ]);
-        }
+            ]
+        );
     }
-    /*
-        For Behavioral, all instruments except MRI are checked.
-    */
-    class BehavioralDataEntryExpression implements DataEntryExpression {
-        public function getCompleteExpression () : string {
-            return "
+}
+    /**
+     * For Behavioral, all instruments except MRI are checked.
+     *
+     * @license Loris license
+     */
+class BehavioralDataEntryExpression implements DataEntryExpression
+{
+    /**
+     * This function will return complete expression
+     *
+     * @return string get the complete expression
+     */
+    public function getCompleteExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -97,9 +177,15 @@ namespace LORIS\schedule_module;
                         )
                 )
             ";
-        }
-        public function getInProgressExpression () : string {
-            return "
+    }
+    /**
+     * This function will return inprogress expression
+     *
+     * @return string get the inprogress expression
+     */
+    public function getInProgressExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -122,9 +208,15 @@ namespace LORIS\schedule_module;
                         )
                 )
             ";
-        }
-        public function getNotStartedExpression () : string {
-            return "
+    }
+    /**
+     * This function will return not started expression
+     *
+     * @return string get the not started expression
+     */
+    public function getNotStartedExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -144,24 +236,33 @@ namespace LORIS\schedule_module;
                         flag.Data_entry IS NULL
                 )
             ";
-        }
     }
-    /*
-        For MRI,
-
-        At least one of the two instruments must be complete,
-
-        + MRI Parameter Form
-            + Test_name : mri_parameter_form
-        + MRI Parameter Form (School Age)
-            + Test_name : mri_parameter_form_sa
-
-        For now, requires at least one imaging browser upload.
-        We don't know the exact requirement for now.
-    */
-    class MriDataEntryExpression implements DataEntryExpression {
-        public function getCompleteExpression () : string {
-            return "
+}
+ /**
+  *      For MRI,
+  *
+  *      At least one of the two instruments must be complete,
+  *
+  *      + MRI Parameter Form
+  *          + Test_name : mri_parameter_form
+  *      + MRI Parameter Form (School Age)
+  *          + Test_name : mri_parameter_form_sa
+  *
+  *      For now, requires at least one imaging browser upload.
+  *      We don't know the exact requirement for now.
+  *
+  * @license Loris license
+  */
+class MriDataEntryExpression implements DataEntryExpression
+{
+    /**
+     * This function will return complete expression
+     *
+     * @return string get the complete expression
+     */
+    public function getCompleteExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -188,9 +289,15 @@ namespace LORIS\schedule_module;
             			files.FileType = 'mnc'
                 )
             ";
-        }
-        public function getInProgressExpression () : string {
-            return "
+    }
+    /**
+     * This function will return inprogress expression
+     *
+     * @return string get the inprogress expression
+     */
+    public function getInProgressExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -208,9 +315,15 @@ namespace LORIS\schedule_module;
                         )
                 )
             ";
-        }
-        public function getNotStartedExpression () : string {
-            return "
+    }
+    /**
+     * This function will return not started expression
+     *
+     * @return string get the not started expression
+     */
+    public function getNotStartedExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -234,20 +347,28 @@ namespace LORIS\schedule_module;
                         files.FileType = 'mnc'
                 )
             ";
-        }
     }
-
-    /*
-        //TODO Figure out what the appointment type is really called
-        //DNA? Blood Collection?
-        For Blood Collection,
-
-        Only the DNA Paramter Form (Test_name : DNA_parameter_form)
-        must be complete.
-    */
-    class BloodCollectionDataEntryExpression implements DataEntryExpression {
-        public function getCompleteExpression () : string {
-            return "
+}
+  /**
+   *     //TODO Figure out what the appointment type is really called
+   *     //DNA? Blood Collection?
+   *     For Blood Collection,
+   *
+   *     Only the DNA Paramter Form (Test_name : DNA_parameter_form)
+   *     must be complete.
+   *
+   * @license Loris license
+   */
+class BloodCollectionDataEntryExpression implements DataEntryExpression
+{
+    /**
+     * This function will return complete expression
+     *
+     * @return string get the complete expression
+     */
+    public function getCompleteExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -262,9 +383,15 @@ namespace LORIS\schedule_module;
                         )
                 )
             ";
-        }
-        public function getInProgressExpression () : string {
-            return "
+    }
+    /**
+     * This function will return inprogress expression
+     *
+     * @return string get the inprogress expression
+     */
+    public function getInProgressExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -279,9 +406,15 @@ namespace LORIS\schedule_module;
                         )
                 )
             ";
-        }
-        public function getNotStartedExpression () : string {
-            return "
+    }
+    /**
+     * This function will return not started expression
+     *
+     * @return string get the not started expression
+     */
+    public function getNotStartedExpression() : string
+    {
+        return "
                 EXISTS (
                     SELECT
                         *
@@ -293,7 +426,7 @@ namespace LORIS\schedule_module;
                         flag.Data_entry IS NULL
                 )
             ";
-        }
     }
+}
 
-?>
+

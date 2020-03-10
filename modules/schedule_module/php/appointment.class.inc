@@ -7,7 +7,7 @@
  * PHP Version 7
  *
  * @category Loris
- * @package  Schedule Module
+ * @package  Schedule_Module
  * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -19,7 +19,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Create the form for schedule_module/add page
  *
  * @category Loris
- * @package  Schedule Module
+ * @package  Schedule_Module
  * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -123,7 +123,8 @@ class Appointment extends \NDB_Page
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-        // Check if candidate is valid (CandID/DCCID and PSCID must belong to same candidate)
+        // Check if candidate is valid
+        // (CandID/DCCID and PSCID must belong to same candidate)
         if ($type == "DCCID" ) {
             $candidate = $DB->pselectRow(
                 "
@@ -171,7 +172,7 @@ class Appointment extends \NDB_Page
             )
         );
         $sessions    = [];
-        foreach($sessionlist as $session) {
+        foreach ($sessionlist as $session) {
             $k            = $session['ID'];
             $v            = $session['Visit_label'];
             $sessions[$k] = $v;
@@ -188,7 +189,7 @@ class Appointment extends \NDB_Page
      */
     public function addAppointment(array $data): void
     {
-        $this->duplicate_check($data);
+        $this->duplicateCheck($data);
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
 
@@ -213,7 +214,7 @@ class Appointment extends \NDB_Page
      */
     public function editAppointment(array $data): void
     {
-        $this->duplicate_check($data);
+        $this->duplicateCheck($data);
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
@@ -231,13 +232,13 @@ class Appointment extends \NDB_Page
 
     } // end class of get edit form data
     /**
-     * Handles the duplicate_check
+     * Handles the duplicateCheck
      *
      * @param array $data the request data
      *
      * @return void
      */
-    public function duplicate_check(array $data)
+    public function duplicateCheck(array $data)
     {
 
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
