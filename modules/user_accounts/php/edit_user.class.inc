@@ -52,11 +52,15 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if ($editor->hasPermission('user_accounts')) {
-            if ($editor->hasPermission('user_accounts_multisite')) {
-                return true;
-            }
+        if (!$this->isCreatingNewUser()) {
+            $user = \User::factory($this->identifier);
+        }
 
+        if ($editor->hasPermission('user_accounts_multisite')) {
+            return true;
+        }
+
+        if ($editor->hasPermission('user_accounts')) {
             if ($this->isCreatingNewUser()) {
                 return true;
             }
