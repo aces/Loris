@@ -28,13 +28,7 @@
  * import Raisinbread data if the user has properly set up a MySQL configuration
  * file and provides the name of their LORIS database.
  *
- * PHP Version 7
- *
- * @category Main
- * @package  Loris
- * @author   John Saigle <john.saigle@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 
 $info = <<<INFO
@@ -165,6 +159,7 @@ if (count($tables) > 0) {
     echo "Do you want to delete them now? (y/N)" . PHP_EOL;
     $input = trim(fgets(STDIN));
     if (mb_strtolower($input) === 'y') {
+        echo 'drop';
         dropRemainingTables($tables);
     }
 }
@@ -188,6 +183,21 @@ printHeader('Importing Raisinbread data...');
 $rbData = glob(__DIR__ . "/../raisinbread/RB_files/*.sql");
 
 array_walk($rbData, 'runPatch');
+
+// Copy Raisinbread instrument files to project/instruments/. This is done using
+// a closure to apply PHP's copy() function to all files in raisinbread/instruemnts/
+// that end with the LINST or .class.inc file extension.
+printHeader('Copying Rasinbread instrument files to project/instruments/...');
+array_map(
+    function ($file) {
+        copy($file, __DIR__ . '/../project/instruments/' . basename($file));
+    },
+    array_merge(
+        glob(__DIR__ . "/../raisinbread/instruments/*.class.inc"),
+        glob(__DIR__ . "/../raisinbread/instruments/*.linst")
+    ),
+);
+
 
 // Restore config settings if they were successfully found before.
 $configSettings = [
