@@ -18,10 +18,20 @@ class VisitInstrumentList extends Component {
          super(props);
          this.state = {
              expanded: false,
+             hover: false,
          };
          this.toggleExpanded = this.toggleExpanded.bind(this);
+         this.toggleHover = this.toggleHover.bind(this);
          this.getInstruments = this.getInstruments.bind(this);
-         this.calcAge= this.calcAge.bind(this);
+         this.calcAge = this.calcAge.bind(this);
+     }
+
+    /**
+     * Toggle determine whether this item is being hovered over.
+     * This is used for styling the background.
+     */
+     toggleHover() {
+         this.setState({hover: !this.state.hover});
      }
 
     /**
@@ -84,7 +94,15 @@ class VisitInstrumentList extends Component {
             transition: 'flex 0.3s, width 0.3s ease-out, height 0.3s ease-out',
             width: '98%',
             marginBottom: '1ex',
+            backgroundColor: 'transparent',
         };
+
+        if (!this.state.expanded) {
+            style.cursor = 'pointer';
+            if (this.state.hover) {
+                style.backgroundColor = 'rgb(235, 235, 235)';
+            }
+        }
 
         let vstatus = 'Not Started';
         let bg = '#ea9999';
@@ -203,7 +221,10 @@ class VisitInstrumentList extends Component {
             padding: '1ex',
         };
 
-        return (<div style={style} onClick={this.toggleExpanded}>
+        return (<div style={style} onClick={this.toggleExpanded}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+            >
             <div style={flexcontainer}>
                 <div style={{background: bg, width: '1%', height: '100%'}}>
                 </div>
