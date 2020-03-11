@@ -61,7 +61,7 @@ class VisitSummary extends \NDB_Page
 
         switch ($request->getMethod()) {
         case 'GET':
-            return $this->_handleGet(
+            return $this->_handleGET(
                 new CandID($params['CandID']),
                 $params['VisitLabel'],
             );
