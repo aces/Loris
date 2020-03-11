@@ -1,8 +1,5 @@
-*This directory contains all the files necessary to spawn an instance of the Raisin 
-Bread demonstration dataset.*
-
 ### Overview
-The Raisin Bread (RB) database is an example dataset built for demonstration and 
+The RaisinBread (RB) database is an example dataset built for demonstration and 
 testing purposes. This dataset should be expanded when new features are added and 
 adjusted when existing features are changed or removed. 
 
@@ -22,11 +19,18 @@ If RaisinBread is being installed for the first time, the steps outlined below i
 [Configuring](#Configuring) section must be completed. 
 
 ### Manual RB Installation
+You can install test data by running `php tools/raisinbread_refresh.php` or 
+`make testdata`.
+
+If any errors are encountered during the execution of that script, this document
+should assist you in troubleshooting.
+
+### Installing RB
 The RaisinBread data is stored in the form of SQL INSERT statements located in the 
 `/raisinbread/RB_files/` directory and grouped by the database table they belong to. 
 These statements rely on the pre-existence of the SQL tables and thus the data is 
 heavily coupled with the default LORIS schema files located in the `/SQL/` directory.
-The RaisinBread dataset also include a few example instruments, these can be found in
+The RaisinBread dataset also includes a few example instruments, these can be found in
 the `raisinbread/instruments/` directory along with their respective SQL schemas in 
 `raisinbread/instruments/instrument_sql/` and their respective Meta SQL commands in 
 `raisinbread/instruments/instrument_sql/Meta/`. 
@@ -81,7 +85,7 @@ some configurations are necessary.
 1. Copy the `raisinbread/config/config.xml` file into `project/config.xml`
 2. Input the correct `<database>` information in the `project/config.xml` file 
 3. Change the values of the `Config` table of the SQL database to reflect the 
-correct `host`, `url` and `base` values
+correct `host` and `base` values
 4. copy the `raisinbread/instruments/` instrument PHP and LINST files to the 
 `projects/instruments/` directory
 
