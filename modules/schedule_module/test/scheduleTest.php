@@ -36,7 +36,7 @@ class ScheduleTest extends LorisIntegrationTest
           $this->DB->insert(
             "appointment",
             array(
-                'AppointmentID'  => '0',
+                'AppointmentID'  => '1',
                 'SessionID'    => '1',
                 'AppointmentTypeID'   => '2',
                 'StartsAt' => '2020-02-02 02:02:02',
@@ -47,7 +47,7 @@ class ScheduleTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        $this->DB->delete("appointment", array('AppointmentID' => '0'));
+        $this->DB->delete("appointment", array('AppointmentID' => '1'));
 
     }
 
