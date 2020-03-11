@@ -41,14 +41,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private const ADMIN_EMAIL     = 'admin@example.com';
     private const ADMIN_EMAIL_NEW = 'tester@example.com';
 
-    private $_name        = "#userAccounts_filter".
-                                " > div > div > fieldset > div:nth-child(3)".
-                                " > div > div > input";
-    private $_site        = "#userAccounts_filter".
-                                " > div > div > fieldset > div:nth-child(2)".
-                                " > div > div > select";
-    private $_clearFilter = ".col-sm-9 > .btn";
-    private $_table       = "#dynamictable > tbody > tr:nth-child(1)";
+    private $_name        = '.col-xs-12:nth-child(4) .form-control';
+    private $_site        = '.col-xs-12:nth-child(2) >.row.form-control, select';
+    private $_clearFilter = 'button[type="reset"]';
+    private $_table       = '#dynamictable > tbody > tr:nth-child(1)';
     private $_addUserBtn  = "#default-panel > div > div > div.table-header >".
                             " div > div > div:nth-child(2) > button:nth-child(1)";
 
