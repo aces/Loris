@@ -25,7 +25,7 @@ class ScheduleTest extends LorisIntegrationTest
 {
     static $alertOk    = "button[class='swal2-confirm swal2-styled']";
     static $addBtn     = "#all .table-header .btn:nth-child(1)";
-    static $edit       = "##all tr:nth-child(2) > td:nth-child(10) > .btn";
+    static $edit       = "#all tr:nth-child(2) > td:nth-child(10) > .btn";
     static $delete     = "#all tr:nth-child(1) > td:nth-child(11) > .btn";
     static $msg        = "#swal2-content";
     static $create     = ".btn-sm > div";
@@ -163,11 +163,6 @@ class ScheduleTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "$btn"
-            )
-        )->click();
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "$ok"
             )
         )->click();
         $bodyText = $this->safeFindElement(
