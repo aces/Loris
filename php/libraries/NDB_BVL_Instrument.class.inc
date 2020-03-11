@@ -1543,7 +1543,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $statusField = $field . '_status';
             // field shouldn't be just empty() b/c 0 is a valid
             // value for some required fields
-            if ((is_null($allData[$field]) || $allData[$field] === "")
+            if ((($allData[$field] ?? null) === null) || (($allData[$field] ?? "") === "")
                 && empty($allData[$statusField])
             ) {
                 $unanswered++;
