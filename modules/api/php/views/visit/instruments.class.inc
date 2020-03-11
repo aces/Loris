@@ -43,13 +43,8 @@ class Instruments
      */
     public function toArray(): array
     {
-<<<<<<< HEAD
-        $meta = array(
-            'CandID' => $this->_timepoint->getCandID(),
-=======
         $meta = [
-            'CandID' => (string) $this->_timepoint->getCandID(),
->>>>>>> e60320c89... Remove all long arrays
+            'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
         ];
 
