@@ -23,7 +23,7 @@
  */
 class ScheduleTest extends LorisIntegrationTest
 {
-    static $alertOk    = "button[class='swal2-confirm']";
+    static $alertOk    = "button[class='swal2-confirm swal2-styled']";
     static $addBtn     = "#all .table-header .btn:nth-child(1)";
     static $edit       = "#all tr:nth-child(1) > td:nth-child(10) > .btn";
     static $delete     = "#all tr:nth-child(1) > td:nth-child(11) > .btn";
@@ -36,7 +36,7 @@ class ScheduleTest extends LorisIntegrationTest
           $this->DB->insert(
             "appointment",
             array(
-                'AppointmentID'  => '999',
+                'AppointmentID'  => '0',
                 'SessionID'    => '1',
                 'AppointmentTypeID'   => '2',
                 'StartsAt' => '2020-02-02 02:02:02',
@@ -47,7 +47,7 @@ class ScheduleTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        $this->DB->delete("appointment", array('AppointmentID' => '999'));
+        $this->DB->delete("appointment", array('AppointmentID' => '0'));
 
     }
 
@@ -141,7 +141,7 @@ class ScheduleTest extends LorisIntegrationTest
             WebDriverBy::cssSelector(
                 "$btn"
             )
-        )->click(); 
+        )->click(); sleep(150);
 
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
@@ -159,7 +159,7 @@ class ScheduleTest extends LorisIntegrationTest
                 $this->safeFindElement(WebDriverBy::cssSelector("
                 .col-sm-12:nth-child(6) .form-control"))
             );
-        $el_dropdown->selectByVisibleText("MRI");
+        $el_dropdown->selectByVisibleText("Behavioral");
         $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "$btn"
