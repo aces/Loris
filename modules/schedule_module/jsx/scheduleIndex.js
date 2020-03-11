@@ -28,7 +28,7 @@ class ScheduleIndex extends Component {
         PSCID: null,
         Session: null,
         AppointmentDate: null,
-        AppointmentTime: null,
+        AppointmentTime: '00:00',
         AppointmentType: null,
         SessionFieldOptions: null,
       },
@@ -374,7 +374,7 @@ class ScheduleIndex extends Component {
             label = "Appointment Time"
             onUserInput = {this.setFormData}
             value = {this.state.formData.AppointmentTime}
-            required = {true}
+            required = {false}
           />
           <SelectElement
             name="AppointmentType"

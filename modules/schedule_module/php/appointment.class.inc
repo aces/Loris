@@ -112,10 +112,12 @@ class Appointment extends \NDB_Page
         }
     }
     /**
-     * Handles the get all form meta data process
+     * Handles the get all pscid, dccid relative data and session
+     * ex. .../dccid/300001 will return pscid mtl001 and session id
+     * ex. .../pscid/mtl001 will return dccid 300001 and session id
      *
-     * @param string $type the tpye
-     * @param string $id   the id
+     * @param string $type the tpye  (dccid or pscid)
+     * @param string $id   the id   id of dccid or pscid
      *
      * @return array all the meta form
      */
@@ -192,7 +194,6 @@ class Appointment extends \NDB_Page
         $this->duplicateCheck($data);
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
         // Insert appointment information
         $DB->insert(
