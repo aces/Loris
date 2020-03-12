@@ -173,7 +173,7 @@ class ScheduleTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDeleteappointment()
+    function testDeleteAppointment()
     {
         $this->safeGet($this->url . "/schedule_module/");
         // click delete schedule button
