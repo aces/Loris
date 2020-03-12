@@ -35,7 +35,7 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
-            $user->hasAnyPermission(['schedule_module']);
+            $user->hasPermission('schedule_module');
     }
 
     /**

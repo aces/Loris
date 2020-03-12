@@ -74,13 +74,10 @@ class ScheduleTest extends LorisIntegrationTest
      */
     function testPageLoadsWithPermissions()
     {
-        $this->setupPermissions(array("schedule_module"));
-        $this->safeGet($this->url . "/schedule_module/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(".btn > div")
-        )->getText();
-        $this->assertContains("Schedule", $bodyText);
-        $this->assertNotContains("An error occurred", $bodyText);
+        $this->assertContains(
+            "Schedule Module",
+            $this->_loadWithPermission('schedule_module')
+        );
         $this->resetPermissions();
     }
     /**
@@ -91,16 +88,14 @@ class ScheduleTest extends LorisIntegrationTest
      */
     function testPageLoadsWithoutPermissions()
     {
-        $this->setupPermissions(array());
-        $this->safeGet($this->url . "/schedule_module/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertContains(
+            "Schedule Module",
+            $this->_loadWithPermission('schedule_module')
+        );
         $this->resetPermissions();
     }
     /**
-     * Tests that, add an appointment
+     * Tests add an appointment
      *
      * @return void
      */
@@ -120,7 +115,7 @@ class ScheduleTest extends LorisIntegrationTest
         $this->assertContains("Add Appointment", $bodyText);
     }
     /**
-     * Tests that, edit an appointment
+     * Tests edit an appointment
      *
      * @return void
      */
@@ -174,7 +169,7 @@ class ScheduleTest extends LorisIntegrationTest
 
     }
     /**
-     * Tests that, delete an appointment
+     * Tests delete an appointment
      *
      * @return void
      */

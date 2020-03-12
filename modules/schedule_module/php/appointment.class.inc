@@ -1,22 +1,14 @@
-<?php
-/**
- * It includes three functions.
- * Post method handles updating and add an appointment.
- * Delete method handles deleting an appointment.
- * get method handles get an appointments.*
- * PHP Version 7
- *
- * @category Loris
- * @package  Schedule_Module
- * @author   Shen Wang <wangshen.mcin@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
+<?php declare(strict_types=1);
 namespace LORIS\schedule_module;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 /**
  * Create the form for schedule_module/add page
+ * It includes three functions.
+ * Post method handles updating and add an appointment.
+ * Delete method handles deleting an appointment.
+ * get method handles get an appointments.*
+ * PHP Version 7
  *
  * @category Loris
  * @package  Schedule_Module
@@ -60,15 +52,7 @@ class Appointment extends \NDB_Page
             } else {
                 $this->addAppointment($data);
             }
-
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("appointment added")
-                    )
-                );
+         return new \LORIS\Http\Response\JSON\OK(['appointment added']);
         case "GET":
             // todo get session or pscid or dcciid
             $url  = $request->getUri()->getPath();
@@ -96,14 +80,7 @@ class Appointment extends \NDB_Page
         case "DELETE":
             $id = basename($request->getUri()->getPath());
             $this->deleteAppointment($id);
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("appointment deleted")
-                    )
-                );
+         return new \LORIS\Http\Response\JSON\OK(['appointment deleted']);
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
@@ -181,7 +158,7 @@ class Appointment extends \NDB_Page
         }
         $res['Session'] = $sessions;
         return $res;
-    } // class
+    }
     /**
      * Handles the appointment adding process
      *
@@ -205,7 +182,7 @@ class Appointment extends \NDB_Page
             )
         );
 
-    } // end class of add appointment
+    }
     /**
      * Handles the appointment editing process
      *
@@ -231,7 +208,7 @@ class Appointment extends \NDB_Page
             )
         );
 
-    } // end class of get edit form data
+    }
     /**
      * Handles the duplicateCheck
      *
@@ -263,7 +240,7 @@ class Appointment extends \NDB_Page
                 "typeId"    => $data["AppointmentType"],
                 "startsAt"  => $startAt,
             )
-        ); // end of $duplicate_check
+        );
         if (!empty($duplicate_check)) {
             http_response_code(400);
             die(
@@ -289,4 +266,4 @@ class Appointment extends \NDB_Page
         $DB      = $factory->database();
         $DB->delete("appointment", array("AppointmentID" => $id));
     }
-}// end
+}
