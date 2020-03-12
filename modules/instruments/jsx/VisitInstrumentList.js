@@ -190,12 +190,16 @@ class VisitInstrumentList extends Component {
                 instruments = (<div>
                     <h5>Instruments</h5>
                         <table style={{width: '95%'}}>
-                            <tr>
-                                <th>Instrument</th>
-                                <th style={{textAlign: 'center'}}>Completion</th>
-                                <th>Conflicts?</th>
-                            </tr>
-                        {instruments}
+                            <thead>
+                                <tr>
+                                    <th>Instrument</th>
+                                    <th style={{textAlign: 'center'}}>Completion</th>
+                                    <th>Conflicts?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {instruments}
+                            </tbody>
                         </table>
                     </div>);
             }
