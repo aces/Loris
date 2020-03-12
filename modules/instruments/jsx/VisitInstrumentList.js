@@ -97,13 +97,6 @@ class VisitInstrumentList extends Component {
             backgroundColor: 'transparent',
         };
 
-        if (!this.state.expanded) {
-            style.cursor = 'pointer';
-            if (this.state.hover) {
-                style.backgroundColor = 'rgb(235, 235, 235)';
-            }
-        }
-
         let vstatus = 'Not Started';
         let bg = '#ea9999';
         if (this.props.Visit.Stages.Approval) {
@@ -115,6 +108,19 @@ class VisitInstrumentList extends Component {
         } else if (this.props.Visit.Stages.Screening) {
             vstatus = 'Screening - ' + this.props.Visit.Stages.Screening.Status;
             bg = '#f9cb9c';
+        }
+
+        let clickEnabled = true;
+        if (!this.state.expanded) {
+            if (vstatus === 'Not Started') {
+                style.cursor = 'not-allowed';
+                clickEnabled = false;
+            } else {
+                style.cursor = 'pointer';
+            }
+            if (this.state.hover) {
+                style.backgroundColor = 'rgb(235, 235, 235)';
+            }
         }
 
         let flexcontainer = {
@@ -178,17 +184,21 @@ class VisitInstrumentList extends Component {
                     </tr>);
             });
 
-            instruments = <div>
-                <h5>Instruments</h5>
-                <table style={{width: '95%'}}>
-                    <tr>
-                        <th>Instrument</th>
-                        <th>Completion</th>
-                        <th>Conflicts?</th>
-                    </tr>
-                    {instruments}
-                </table>
-                </div>;
+            if (this.state.instruments.length === 0) {
+                instruments = <div>Visit has no registered instruments in test battery.</div>;
+            } else {
+                instruments = (<div>
+                    <h5>Instruments</h5>
+                        <table style={{width: '95%'}}>
+                            <tr>
+                                <th>Instrument</th>
+                                <th>Completion</th>
+                                <th>Conflicts?</th>
+                            </tr>
+                        {instruments}
+                        </table>
+                    </div>);
+            }
         }
         if (!this.state.expanded || vstatus === 'Not Started') {
             instruments = null;
@@ -221,7 +231,7 @@ class VisitInstrumentList extends Component {
             padding: '1ex',
         };
 
-        return (<div style={style} onClick={this.toggleExpanded}
+        return (<div style={style} onClick={clickEnabled ? this.toggleExpanded : null}
                 onMouseEnter={this.toggleHover}
                 onMouseLeave={this.toggleHover}
             >
