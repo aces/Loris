@@ -192,7 +192,7 @@ class VisitInstrumentList extends Component {
                         <table style={{width: '95%'}}>
                             <tr>
                                 <th>Instrument</th>
-                                <th>Completion</th>
+                                <th style={{textAlign: 'center'}}>Completion</th>
                                 <th>Conflicts?</th>
                             </tr>
                         {instruments}
