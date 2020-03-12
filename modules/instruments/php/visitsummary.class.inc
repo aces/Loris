@@ -16,18 +16,6 @@ use \LORIS\StudyEntities\Candidate\CandID;
 class VisitSummary extends \NDB_Page
 {
     /**
-     * Temp for testing.
-     *
-     * @param \User $user The user whose access is to be verified
-     *
-     * @return bool
-     */
-    function _hasAccess(\User $user) : bool
-    {
-        return true;
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
