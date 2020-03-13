@@ -40,6 +40,28 @@ class Module extends \Module
     }
 
     /**
+     * The candidate_list temporarily overrides the getMenuItems link to
+     * provide 2 menu items, one which links to the old timepoint_list
+     * and one which links to the new candidate profile.
+     *
+     * @return \LORIS\GUI\MenuItem[]
+     */
+    public function getMenuItems() : array
+    {
+        $category = $this->getMenuCategory();
+        $name     = $this->getLongName();
+
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $url     = $baseURL . '/' . $this->getName() . '/';
+
+        return [
+            new \LORIS\GUI\MenuItem($category, $name, $url),
+            new \LORIS\GUI\MenuItem($category, 'New ' . $name . ' (Beta)', $url . "?betaprofile=1"),
+            ];
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @return string The menu category for this module

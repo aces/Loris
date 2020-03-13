@@ -30,13 +30,17 @@ database (PR #5260)
 
 ### Modules 
 
+#### Candidate Profile
+- New module created to provide dashboard of a single candidate's data across all
+  modules. (Various PRs)
+
 #### Battery Manager
-- New module created to manage the entries in the test_battery table of the database.
+- New module created to manage the entries in the `test_battery` table of the database.
 This allows projects to modify their instrument battery without requiring backend access.
  (PR #4221)
  
 #### Issue Tracker
-- The issue_tracker module now has the feature of uploading attachments to new or existing
+- The `issue_tracker` module now has the feature of uploading attachments to new or existing
 issues. (PR #5394)
  
 #### Module Manager
