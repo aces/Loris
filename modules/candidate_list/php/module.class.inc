@@ -57,8 +57,12 @@ class Module extends \Module
 
         return [
             new \LORIS\GUI\MenuItem($category, $name, $url),
-            new \LORIS\GUI\MenuItem($category, 'New ' . $name . ' (Beta)', $url . "?betaprofile=1"),
-            ];
+            new \LORIS\GUI\MenuItem(
+                $category,
+                'New ' . $name . ' (Beta)',
+                $url . "?betaprofile=1"
+            ),
+        ];
     }
 
     /**
