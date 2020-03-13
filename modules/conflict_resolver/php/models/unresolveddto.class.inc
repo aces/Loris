@@ -67,7 +67,7 @@ class UnresolvedDTO implements \LORIS\Data\DataInstance
      * \LORIS\Data\Filters\UserProjectMatch to match again.
      *
      * @return integer
-     */   
+     */
     public function getProjectID(): int
     {
         return (int) $this->projectid;

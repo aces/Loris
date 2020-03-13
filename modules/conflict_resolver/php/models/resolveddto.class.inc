@@ -70,7 +70,7 @@ class ResolvedDTO implements \LORIS\Data\DataInstance
     /**
      * Returns the ProjectID for this row, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match again.
-     *  
+     *
      * @return integer
      */
     public function getProjectID(): int
