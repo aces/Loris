@@ -158,7 +158,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         );
 
         $this->_testFilter(self::$ForSite, "20 rows displayed of 311", '2');
-        $this->_testFilter(self::$VisitLabel, "displayed of 576", '1');
+        $this->_testFilter(self::$VisitLabel, "displayed of 573", '1');
         $this->_testFilter(self::$CandID, "2 rows displayed of 2", '300004');
         $this->_testFilter(self::$PSCID, "2 rows displayed of 2", 'MTL004');
         $this->_testFilter(self::$Question, "displayed of 181", 'height_inches');
@@ -241,7 +241,7 @@ class ConflictResolverTestIntegrationTest extends \LorisIntegrationTest
         );
 
         $this->_testFilter(self::$ForSite, "displayed of 14", '2');
-        $this->_testFilter(self::$VisitLabel, "displayed of 33", '1');
+        $this->_testFilter(self::$VisitLabel, "displayed of 32", '1');
         $this->_testFilter(self::$CandID, "1 row", '400167');
         $this->_testFilter(self::$PSCID, "1 row", 'ROM167');
         $this->_testFilter(self::$Question, "9 rows", 'date_taken');
