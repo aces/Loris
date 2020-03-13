@@ -54,10 +54,14 @@ function CandidateScanQCSummaryWidget(props) {
 
     return <div>
         <div id='imagebreakdownchart' />
+            <ul>
+              <li>Red bar denotes number of failed QC scans.</li>
+              <li>Green bar denotes number of passed QC scans.</li>
+              <li>Grey bar denotes other QC statuses.</li>
+            </ul>
             <p>
-              Red bar denotes number of failed QC scans,
-              green bar denotes number of passed QC scans.
               Different shades represent different modalities.
+              Only native modalities are displayed in results.
             </p>
             <p>
               Hover over any visit to see detailed modality breakdown for visit,
@@ -119,6 +123,7 @@ function getDataBreakdown(data, modalities, visits) {
     for (const modality of modalities) {
         let pass = [modality + ' - Pass'];
         let fail = [modality + ' - Fail'];
+        let other = [modality + ' - Other'];
         for (const visit of visits) {
             if (data[modality].Pass[visit]) {
                 pass.push(data[modality].Pass[visit]);
@@ -130,9 +135,15 @@ function getDataBreakdown(data, modalities, visits) {
             } else {
                 fail.push(0);
             }
+            if (data[modality].Other[visit]) {
+                other.push(data[modality].Other[visit]);
+            } else {
+                other.push(0);
+            }
         }
         rv.push(pass);
         rv.push(fail);
+        rv.push(other);
     }
     return rv;
 }
@@ -175,11 +186,13 @@ function getDataObject(modalities, files) {
 function getDataGroups(modalities) {
     let pgroup = [];
     let fgroup = [];
+    let ogroup = [];
     for (const modality of modalities) {
         pgroup.push(modality + ' - Pass');
         fgroup.push(modality + ' - Fail');
+        ogroup.push(modality + ' - Other');
     }
-    return [pgroup, fgroup];
+    return [pgroup, fgroup, ogroup];
 }
 
 /**
@@ -206,6 +219,9 @@ function getColorFuncs(modalities) {
 
         mlabel = modalities[i] + ' - Fail';
         obj[mlabel] = 'rgb(' + (200 - (step*i)) + ', 20, 60)';
+
+        mlabel = modalities[i] + ' - Other';
+        obj[mlabel] = 'rgb(' + (200 - (step*i)) + ', ' + (200 - (step*i)) + ', ' + (200 - (step*i)) + ')';
     }
     return obj;
 }

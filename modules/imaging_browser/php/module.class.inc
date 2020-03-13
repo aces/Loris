@@ -98,7 +98,7 @@ class Module extends \Module
                  FROM files f JOIN session s ON (s.ID=f.sessionID)
                     JOIN mri_scan_type mst ON (f.AcquisitionProtocolID=mst.ID)
                     LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
-                WHERE CandID=:cid
+                WHERE CandID=:cid AND f.OutputType='native'
                 GROUP BY s.Visit_label, mst.Scan_type, QC",
                 ['cid' => $candidate->getCandID()],
             );
