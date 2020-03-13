@@ -972,18 +972,18 @@ the recording. It will return an object of the form:
   },
   "Channels":[
     {
-      "ChannelName":"A1",
-      "ChannelDescription":null,
+      "ChannelName":"A3",
+      "ChannelDescription":"free form text description of the channel",
       "ChannelType":"EEG",
       "ChannelTypeDescription":"ElectoEncephaloGram: EEG sensors",
-      "ChannelStatus":"good",
-      "StatusDescription":null,
-      "SamplingFrequency":null,
-      "LowCutoff":null,
-      "HighCutoff":null,
-      "ManualFlag":null,
-      "Notch":null,
-      "Reference":null,
+      "ChannelStatus":"bad",
+      "StatusDescription":"artifact description as a free form text",
+      "SamplingFrequency":2400,
+      "LowCutoff":"n/a",
+      "HighCutoff":"n/a",
+      "ManualFlag":"n/a",
+      "Notch":"n/a",
+      "Reference":"A1",
       "Unit":"microV",
       "ChannelFilePath":"sub-OTT167_ses-V1_task-faceO_channels.tsv"
     },
@@ -1016,7 +1016,7 @@ the recording. It will return an object of the form:
       "X":"-0.005000",
       "Y":"0.001000",
       "Z":"0.120000",
-      "Impedance":null,
+      "Impedance":"n/a",
       "ElectrodeFilePath":"sub-OTT167_ses-V1_task-faceO_electrodes.tsv"
     },
     ...
@@ -1045,11 +1045,11 @@ recording. It will return an object of the form:
     {
       "Onset":"11.734000",
       "Duration":"0.000000",
-      "EventCode":null,
-      "EventSample":null,
-      "EventType":null,
+      "EventCode":"1",
+      "EventSample":"1",
+      "EventType":"face",
       "TrialType":"checker-right",
-      "ResponseTime":null,
+      "ResponseTime":"2000",
       "EventFilePath":"sub-OTT167_ses-V1_task-faceO_events.tsv"
     },
     ...
