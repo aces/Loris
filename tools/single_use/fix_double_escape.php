@@ -46,8 +46,9 @@ if (isset($argv[1]) && $argv[1] === 'confirm') {
     $confirm =true;
 }
 
-$instrumentNames = $DB->pselectCol("SELECT Test_name FROM test_names", array());
-$errorsDetected  = false;
+$instrumentNames      = $DB->pselectCol("SELECT Test_name FROM test_names", array());
+$errorsDetected       = false;
+$potentialTruncations = array();
 
 // get the list of CommentIDs for valid timepoints
 foreach($instrumentNames as $instrumentName) {
@@ -93,7 +94,18 @@ foreach($instrumentNames as $instrumentName) {
             // case above).
             $newValue = preg_replace('/&(amp;){2,}(?!(lt;|gt;|quot;|amp;))/', '&', $newValue);
 
-            if (!empty($value) && !empty($newValue) && $newValue !== $value) {
+
+            if (preg_match('/&(amp;)*[a|g|l|q](m|t|u)?(p|o|;)?(t|;)?(;)?$/', $value)) {
+                // This checks for signs of truncation, it matches any string that
+                // ENDS with either a complete or incomplete escaped expression.
+                // THIS DOES NOT GUARANTEE that other fields are not truncated as
+                // truncation could occur even if field does not end with the escaped
+                // characters.
+                printError("WARNING: CommentID: $cid - Value at $field shows sign of truncation !");
+                $potentialTruncations[$instrumentName][$cid][$field] = $value;
+            }
+
+            if (!empty($value) && !empty($newValue) && $newValue != $value) {
                 printOut(
                     "CommentID: $cid - Value at $field will be modified. ".
                     "\n\tCurrent Value: $value".
@@ -109,7 +121,14 @@ foreach($instrumentNames as $instrumentName) {
         }
     }
 }
-
+if(!empty($potentialTruncations)) {
+    printOut(
+        "This is the list of potential truncations automatically detected. this list
+is not exhaustive, truncation can occur without being automatically detected 
+by this script."
+    );
+    print_r($potentialTruncations);
+}
 if (!$confirm && $errorsDetected) {
     printOut("\nRun tool again with `confirm` argument to apply changes");
 } else {
