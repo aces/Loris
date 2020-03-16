@@ -30,7 +30,8 @@ $files = array_diff(scandir($path), array('.', '..'));
 echo "This script will upgrade the LORIS database to the latest release version.\n";
 
 if (!file_exists('../project/config.xml')) {
-    exit("config.xml file doesn't exist. Aborting update.");
+    print("config.xml file doesn't exist. Aborting update.");
+    exit(1);
 }
 
 $v = $argv[1];
