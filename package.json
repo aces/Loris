@@ -23,12 +23,9 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
-<<<<<<< HEAD
     "c3": "^0.7.15",
     "d3": "^5.15.0",
     "css-loader": "^3.4.2",
-=======
->>>>>>> 4a8770787... automatic update react library
     "alex": ">=8.0.1",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
