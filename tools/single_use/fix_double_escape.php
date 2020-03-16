@@ -96,7 +96,7 @@ foreach($instrumentNames as $instrumentName) {
         // Go through all fields and identify which have any escaped characters
         foreach ($instrumentData as $field => $value) {
             // regex detecting any escaped character in the database
-            if (preg_match('/&(amp;)+(gt;|lt;|quot;)?/', $value)) {
+            if (preg_match('/&(amp;)+(gt;|lt;|quot;|amp;)/', $value)) {
                 $escapedEntries[$instrumentName][$cid][$field] = $value;
                 $errorsDetected = true;
             }
