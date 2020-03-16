@@ -37,23 +37,44 @@ if (!$logfp) {
         "does not exist or can not be written to.\n"
     );
 }
-
-if (isset($argv[1]) && $argv[1] === 'help' || in_array('-h', $argv, true)) {
+//PARSE ARGUMENTS
+$actions = array(
+            'report',
+            'repair',
+           );
+if (!isset($argv[1]) || $argv[1] === 'help' || in_array('-h', $argv, true) || !in_array($argv[1], $actions, true)) {
     showHelp();
 }
-$confirm = false;
-if (isset($argv[1]) && $argv[1] === 'confirm') {
-    $confirm =true;
+$report = false;
+if (isset($argv[1]) && $argv[1] === 'report') {
+    $report =true;
+}
+$repair = false;
+if (isset($argv[1]) && $argv[1] === 'repair') {
+    $repair =true;
+}
+$useHistory =false;
+if (in_array('use-history', $argv, true)) {
+    $useHistory =true;
 }
 
-$instrumentNames      = $DB->pselectCol("SELECT Test_name FROM test_names", array());
-$errorsDetected       = false;
-$potentialTruncations = array();
+// DEFINE VARIABLES
+// All instruments looked at
+$instrumentNames = $DB->pselectCol("SELECT Test_name FROM test_names", array());
+// Array of all fields containing any escaped characters
+$escapedEntries = array();
+// Array of probable truncations based on preg_match ONLY
+$probableTruncations = array();
+// Array of confirmed truncations based on size of fields and content
+$confirmedTruncations = array();
+// Boolean flag for identify non-impacted databases and terminating.
+$errorsDetected = false;
 
-// get the list of CommentIDs for valid timepoints
+
+// FIRST loop just reporting all potential problematic fields
 foreach($instrumentNames as $instrumentName) {
     printOut("Checking $instrumentName");
-    try{
+    try {
         $instrument = \NDB_BVL_Instrument::factory($instrumentName);
     } catch (Exception $e) {
         printError(
@@ -69,72 +90,140 @@ foreach($instrumentNames as $instrumentName) {
     foreach ($instrumentCIDs as $cid) {
         $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
 
-        $instrumentData = \NDB_BVL_Instrument::loadInstanceData(
-            $instrumentInstance
-        );
+        $instrumentData = \NDB_BVL_Instrument::loadInstanceData($instrumentInstance);
         $set            = array();
-        foreach ($instrumentData as $field=>$value){
-            // Each of the expressions below uniquely match each of the targeted
-            // characters indicated in the comment above the function.
 
-            // < : match any substring starting with `&`
-            // followed by 1 or more `amp;` and ending with `lt;`
-            $newValue = preg_replace('/&(amp;)+lt;/', '<', $value);
-            // > : match any substring starting with `&`
-            // followed by 1 or more `amp;` and ending with `gt;`
-            $newValue = preg_replace('/&(amp;)+gt;/', '>', $newValue);
-            // " : match any substring starting with `&`
-            // followed by 1 or more `amp;` and ending with `quot;`
-            $newValue = preg_replace('/&(amp;)+quot;/', '"', $newValue);
-            // & : match any substring starting with `&`
-            // followed by 2 or more `amp;` (because 1 is normal in the database
-            // since it is the escaped form of `&`) and
-            // NOT ending with `lt;` or `gt;` or `quot;` or `amp;`
-            // (the last one is to ensure we don't match subsequences from the
-            // case above).
-            $newValue = preg_replace('/&(amp;){2,}(?!(lt;|gt;|quot;|amp;))/', '&', $newValue);
-
-
+        // Go through all fields and identify which have any escaped characters
+        foreach ($instrumentData as $field => $value) {
+            // regex detecting any escaped character in the database
+            if (preg_match('/&(amp;)+(gt;|lt;|quot;)?/', $value)) {
+                $escapedEntries[$instrumentName][$cid][$field] = $value;
+                $errorsDetected = true;
+            }
             if (preg_match('/&(amp;)*[a|g|l|q](m|t|u)?(p|o|;)?(t|;)?(;)?$/', $value)) {
                 // This checks for signs of truncation, it matches any string that
                 // ENDS with either a complete or incomplete escaped expression.
                 // THIS DOES NOT GUARANTEE that other fields are not truncated as
                 // truncation could occur even if field does not end with the escaped
                 // characters.
-                printError("WARNING: CommentID: $cid - Value at $field shows sign of truncation !");
-                $potentialTruncations[$instrumentName][$cid][$field] = $value;
+                $probableTruncations[$instrumentName][$cid][$field] = $value;
             }
-
-            if (!empty($value) && !empty($newValue) && $newValue != $value) {
-                printOut(
-                    "CommentID: $cid - Value at $field will be modified. ".
-                    "\n\tCurrent Value: $value".
-                    "\n\tWill be replaced by: $newValue\n"
-                );
-
-                $set[$field]    = $newValue;
-                $errorsDetected = true;
-            }
-        }
-        if (!empty($set) && $confirm) {
-            $instrumentInstance->_save($set);
         }
     }
 }
-if(!empty($potentialTruncations)) {
-    printOut(
-        "This is the list of potential truncations automatically detected. this list
-is not exhaustive, truncation can occur without being automatically detected 
-by this script."
-    );
-    print_r($potentialTruncations);
-}
-if (!$confirm && $errorsDetected) {
-    printOut("\nRun tool again with `confirm` argument to apply changes");
+
+// A list of all escaped characters has been built. Forloop through and start fixing.
+
+//SECOND loop, depending on flags, report or fix values.
+if ($errorsDetected) {
+    //TODO CODE FOR CHECKING FIELD MAX LENGTH AND COMPARING TO ACTUAL LENGTH IN ORDER TO BUILD THE CONFIRMEDTRUNCATIONS array defined above
+
+    if ($useHistory) {
+        // TODO CODE FOR CHECKING HISTORY TABLE AND BUILDING BETTER REPAIR SUGGESTIONS
+    }
+
+    if ($report) {
+        printOut(
+            "Below is a list of all entries in the database instruemnts which ".
+            "contain escaped characters"
+        );
+        print_r($escapedEntries);
+        print_r("\n\n");
+        printOut(
+            "Below is the list of truncations automatically detected. This ".
+            "list might not be exhaustive, truncation can occur without being ".
+            "automatically detected by this script."
+        );
+        print_r($confirmedTruncations);
+        printOut(
+            "Below are the suggested repairs automatically generated from ".
+            "latest values in the fields."
+        );
+
+        if ($useHistory) {
+            printOut(
+                "Due to possible truncation of data, some suggestions are ".
+                "derived from the history table of the database."
+            );
+        }
+    } elseif ($repair) {
+        printOut("Attempting repairs");
+    }
+
+
+
+    foreach ($escapedEntries as $instrumentName=>$cids) {
+        printOut("Opening $instrumentName");
+        foreach ($cids as $cid => $fields) {
+            try {
+                $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
+            } catch (Exception $e) {
+                printError(
+                    "There was an error instantiating instrument $instrumentName for " .
+                    "$cid.This instrument will be skipped."
+                );
+                continue;
+            }
+            foreach ($fields as $field => $value) {
+
+                if ($useHistory && array_key_exists($field, $confirmedTruncations[$instrumentName][$cid])) {
+                    //TODO ADD CODE TO REPLACE THE VALUE BY THE DATA FROM THE HISTORY TABLE IF TRUNCATION IS CONFIRMED
+                }
+
+                // Each of the expressions below uniquely match each of the targeted
+                // characters indicated in the comment above the function.
+
+                // < : match any substring starting with `&`
+                // followed by 1 or more `amp;` and ending with `lt;`
+                $newValue = preg_replace('/&(amp;)+lt;/', '<', $value);
+                // > : match any substring starting with `&`
+                // followed by 1 or more `amp;` and ending with `gt;`
+                $newValue = preg_replace('/&(amp;)+gt;/', '>', $newValue);
+                // " : match any substring starting with `&`
+                // followed by 1 or more `amp;` and ending with `quot;`
+                $newValue = preg_replace('/&(amp;)+quot;/', '"', $newValue);
+                // & : match any substring starting with `&`
+                // followed by 2 or more `amp;` (because 1 is normal in the database
+                // since it is the escaped form of `&`) and
+                // NOT ending with `lt;` or `gt;` or `quot;` or `amp;`
+                // (the last one is to ensure we don't match subsequences from the
+                // case above).
+                $newValue = preg_replace('/&(amp;){2,}(?!(lt;|gt;|quot;|amp;))/', '&', $newValue);
+
+
+                if (!empty($value) && !empty($newValue) && $newValue != $value) {
+                    printOut(
+                        "CommentID: $cid - Value at $field will be modified. " .
+                        "\n\tCurrent Value: $value" .
+                        "\n\tWill be replaced by: $newValue\n"
+                    );
+                    $set[$field] = $newValue;
+                }
+            }
+            if (!empty($set) && $repair) {
+                $instrumentInstance->_save($set);
+            }
+        }
+    }
+
+    if (!$repair) {
+        printOut("\nRun tool again with `repair` argument to apply changes");
+    }
 } else {
-    printOut("End");
+    printOut("No errors have been detected. End !");
 }
+
 fclose($logfp);
+
+
+foreach ($probableTruncations as $i=>$cids) {
+    foreach ($cids as $cid=>$fields) {
+        foreach ($fields as $field=>$value) {
+            //check history
+
+        }
+    }
+}
 
 /*
  * Prints to log file
@@ -175,9 +264,16 @@ function showHelp()
     echo "\n\n*** Fix Double Escaped Fields ***\n\n";
 
     echo "Usage:
-    fix_double_escape.php [help | -h]   -> displays this message
-    fix_double_escape.php               -> runs tool without making any changes
-    fix_double_escape.php confirm       -> runs tool and rectifies erroneous data
+    fix_double_escape.php [help | -h]                -> displays this message
+    fix_double_escape.php report [use-history]       -> runs tool and reports erroneous data and potential fixes 
+                                                        without making any changes. (with use-history flag, proposes 
+                                                        data repairs by looking through the instrument's historical 
+                                                        entries in the LORIS history table)
+    fix_double_escape.php repair [use-history]       -> runs tool and rectifies erroneous data when possible (with 
+                                                        use-history flag, repairs data by looking through the 
+                                                        instrument's historical entries in the LORIS history table)
+                                                        
+    Note: Using the `use-history` flag will considerably slow down the script.
     \n\n";
 
     die();
