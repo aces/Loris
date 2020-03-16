@@ -52,10 +52,6 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if (!$this->isCreatingNewUser()) {
-            $user = \User::factory($this->identifier);
-        }
-
         if ($editor->hasPermission('user_accounts')) {
             if ($editor->hasPermission('user_accounts_multisite')) {
                 return true;
@@ -64,6 +60,7 @@ class Edit_User extends \NDB_Form
             if ($this->isCreatingNewUser()) {
                 return true;
             }
+            $user = \User::factory($this->identifier);
             return array_intersect(
                 $user->getData('CenterIDs'),
                 $editor->getData('CenterIDs')
@@ -566,14 +563,17 @@ class Edit_User extends \NDB_Form
                 $user->addPermissions($permIDs);
             }
         }
+
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
         // send the user an email
         if (!empty($send)) {
-            // create an instance of the config object
-            $config = \NDB_Config::singleton();
+            $config = $factory->config();
+
             // send the user an email
             $msg_data          = array();
             $msg_data['study'] = $config->getSetting('title');
-            $msg_data['url']   = $config->getSetting('url');
+            $msg_data['url']   = $baseURL;
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_hash'];
@@ -584,7 +584,6 @@ class Edit_User extends \NDB_Form
         }
         $this->tpl_data['success'] = true;
         if ($this->isCreatingNewUser()) {
-            $baseURL        = $config->getSetting('url');
             $this->redirect = $baseURL
                 . "/user_accounts/edit_user/"
                 . $values['UserID'];
@@ -813,22 +812,18 @@ class Edit_User extends \NDB_Form
                 )
             );
 
-            // A user should not be able to edit their own examiner approval
-            // status.
-            if (!$this->_isEditingOwnAccount()) {
-                $groupB[] = $this->createLabel(
-                    "Pending Approval:"
-                );
-                $groupB[] = $this->createSelect(
-                    "examiner_pending",
-                    "Pending Approval: ",
-                    array(
-                        null => "",
-                        'Y'  => 'Yes',
-                        'N'  => 'No',
-                    )
-                );
-            }
+            $groupB[] = $this->createLabel(
+                "Pending Approval:"
+            );
+            $groupB[] = $this->createSelect(
+                "examiner_pending",
+                "Pending Approval: ",
+                array(
+                    null => "",
+                    'Y'  => 'Yes',
+                    'N'  => 'No',
+                )
+            );
             $this->addGroup(
                 $groupA,
                 'examiner_sites',

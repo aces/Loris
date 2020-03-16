@@ -74,6 +74,24 @@ class MriUploadServerProcess extends AbstractServerProcess
         $exitCodeFile = null, $exitCode = null, $userid = null,
         $startTime = null, $endTime = null, $exitText = null
     ) {
+        $config =& \NDB_Config::singleton();
+        if (is_null($config)) {
+            throw new \RuntimeException(
+                "Cannot construct MriUploadTask: unable to instantiate 
+                 configuration object"
+            );
+        }
+
+        $this->_mriCodePath     = $config->getSetting('MRICodePath');
+        $this->_prodFile        = $config->getSetting('MriConfigFile');
+        $this->_environmentFile = $config->getSetting('EnvironmentFile');
+
+        // Check that paths exist before using.
+        if (!is_dir($this->_mriCodePath)) {
+            throw new \ConfigurationException(
+                "Value for config setting 'MRICodePath' is not an existing directory"
+            );
+        }
 
         $this->_mriUploadId    = $mriUploadId;
         $this->_sourceLocation = $sourceLocation;

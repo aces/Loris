@@ -30,8 +30,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
  */
 class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
-    protected $projectdir;
-    protected $moduledir;
+    protected $lorisinstance;
     protected $user;
 
     /**
@@ -44,9 +43,14 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
      */
     public function __construct(\User $user, string $projectdir, string $moduledir)
     {
-        $this->user       = $user;
-        $this->projectdir = $projectdir;
-        $this->moduledir  = $moduledir;
+        $this->user          = $user;
+        $this->lorisinstance = new \LORIS\LorisInstance(
+            \NDB_Factory::singleton()->database(),
+            [
+             $projectdir . "/modules",
+             $moduledir,
+            ]
+        );
     }
 
     /**
@@ -66,7 +70,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         // Remove any trailing slash remaining, so that foo/ and foo are the same
         // route
         $path    = preg_replace("/\/$/", "", $path);
-        $request = $request->withAttribute("user", $this->user);
+        $request = $request->withAttribute("user", $this->user)
+            ->withAttribute("loris", $this->lorisinstance);
+
         if ($path == "") {
             if ($this->user instanceof \LORIS\AnonymousUser) {
                 $modulename = "login";
@@ -84,19 +90,22 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $components = preg_split("/\/+?/", $path);
             $modulename = $components[0];
         }
-        if (is_dir($this->moduledir . "/" . $modulename)
-            || is_dir($this->projectdir . "/modules/" . $modulename)
-        ) {
+
+        $factory = \NDB_Factory::singleton();
+        if ($this->lorisinstance->hasModule($modulename)) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
-            $module = \Module::factory($modulename);
 
             // Calculate the base path by stripping off the module from the original.
             $path    = $uri->getPath();
             $baseurl = substr($path, 0, strpos($path, $modulename));
             $baseurl = $uri->withPath($baseurl)->withQuery("");
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
-            $mr      = new ModuleRouter($module, $this->moduledir);
+
+            $factory->setBaseURL($baseurl);
+
+            $module  = \Module::factory($modulename);
+            $mr      = new ModuleRouter($module);
             $request = $request->withURI($suburi);
             return $mr->handle($request);
         }
@@ -107,13 +116,16 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             // FIXME: This assumes the baseURL is under /
             $path    = $uri->getPath();
             $baseurl = $uri->withPath("/")->withQuery("");
+
+            $factory->setBaseURL($baseurl);
+
             switch (count($components)) {
                 case 1:
                     $request = $request
                     ->withAttribute("baseurl", rtrim($baseurl->__toString(), '/'))
                     ->withAttribute("CandID", $components[0]);
                     $module  = \Module::factory("timepoint_list");
-                    $mr      = new ModuleRouter($module, $this->moduledir);
+                    $mr      = new ModuleRouter($module);
                     return $mr->handle($request);
                 case 2:
                     // CandID/SessionID, inherited from htaccess
@@ -127,7 +139,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                         \TimePoint::singleton($components[1])
                     );
                         $module = \Module::factory("instrument_list");
-                        $mr     = new ModuleRouter($module, $this->moduledir);
+                        $mr     = new ModuleRouter($module);
                     return $mr->handle($request);
                 default:
                     // Fall through to 404. We don't have any routes that go farther

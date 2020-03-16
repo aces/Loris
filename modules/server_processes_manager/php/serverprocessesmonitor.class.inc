@@ -99,6 +99,7 @@ class ServerProcessesMonitor
                   WHERE 1=1";
 
         // Build ID where clause if needed
+        $idInClause = '';
         if (!is_null($idsToMonitor)) {
             $idInClause = implode(',', $idsToMonitor);
             $query      = "$query AND id IN ($idInClause)";

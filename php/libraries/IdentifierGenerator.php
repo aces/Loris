@@ -28,13 +28,59 @@ abstract class IdentifierGenerator
 {
     private const RANGE_FULL = 'Cannot create new identifier because all ' .
         ' valid identifiers are in use!';
+    /**
+     * How the ID will be generated. 'sequential' or 'random'.
+     *
+     * @var string
+     */
     protected $generationMethod;
+    /**
+     * An array of all the valid characters that can be used in the ID.
+     *
+     * @var array<int,float|int|string> This is derived from the return type of PHP's
+     *                              range() which is used to generate the alphabet.
+     */
     protected $alphabet = array();
+    /**
+     * The length of the "suffix" portion of the ID.
+     * e.g. for an ID `MON1234` with prefix `MON`, the suffix is length 4.
+     *
+     * @var int
+     */
     protected $length;
+    /**
+     * The minimum valid value for the suffix portion of the ID. Must be composed
+     * of characters from $alphabet.
+     *
+     * @var string
+     */
     protected $minValue;
+    /**
+     * The maximum valid value for the suffix portion of the ID. Must be composed
+     * of characters from $alphabet.
+     *
+     * @var string
+     */
     protected $maxValue;
+    /**
+     * The first part of the ID.
+     * e.g. for an ID `MON1234` the prefix is MON (example short name for
+     * 'Montreal').
+     *
+     * @var string
+     */
     protected $prefix;
-    protected $siteAlias    = '';
+    /**
+     * A short name for a Site.
+     *
+     * @var string
+     */
+    protected $siteAlias = '';
+    /**
+     * A short name for a Project.
+     *
+     * @var string
+     */
     protected $projectAlias = '';
 
     /**
@@ -66,21 +112,6 @@ abstract class IdentifierGenerator
             }
             break;
         }
-
-        if (!empty($this->siteAlias) && !empty($this->projectAlias)) {
-            throw new \InvalidArgumentException(
-                'Only one of siteAlias or projectAlias should have a value'
-            );
-        }
-        if (empty($this->siteAlias) && empty($this->projectAlias)) {
-            throw new \InvalidArgumentException(
-                'Either siteAlias or projectAlias must not be empty'
-            );
-        }
-        // Assign class property 'prefix' to whichever alias is not empty.
-        !empty($this->siteAlias) ?
-            $this->prefix   = $this->siteAlias
-            : $this->prefix = $this->projectAlias;
 
         return $this->prefix . $id;
     }
