@@ -130,10 +130,6 @@ class Resolved extends Endpoint implements ETagCalculator
             return $this->_cache;
         }
 
-        $filter = new HasAnyPermissionOrUserSiteMatch(
-            array('access_all_profiles')
-        );
-
         $provisioner = (new ResolvedProvisioner())
             ->filter(
                 new HasAnyPermissionOrUserSiteMatch(
