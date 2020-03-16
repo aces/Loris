@@ -186,7 +186,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 'There should be 1 and only 1 file uploaded per POST request.'
             );
         }
-        if (!isset($files['mriFile'])){
+        if (!isset($files['mriFile'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'The input key for the uploaded file should be mriFile.'
             );
