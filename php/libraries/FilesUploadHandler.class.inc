@@ -163,12 +163,23 @@ class FilesUploadHandler implements RequestHandlerInterface
                     );
             }
 
-            /* basename() is used here to prevent path traversal characters
-             * from being used.
+            /* Create the target path and clean up the filename.
+             * basename() is used to prevent path traversal.
+             * Use a regular expression to ensure that only the following
+             * characters are used in the filename:
+             *     - Alphaetical characters
+             *     - Numbers
+             *     - Dashes
+             *     - Underscores
              */
-            $targetPath = $this->uploadDirectory->getPathname() . '/' . basename(
-                $file->getClientFilename()
-            );
+            $pathinfo   = pathinfo($file->getClientFilename());
+            $targetPath = $this->uploadDirectory->getPathname() . '/'
+                . preg_replace(
+                    "/[^a-z0-9\_\-\.]/i",
+                    '',
+                    $pathinfo[PATHINFO_BASENAME]
+                )
+                . $pathinfo[PATHINFO_EXTENSION];
 
             /* If file exists, set response code to 'Conflict' unless the
              * calling code wants to overwrite the file.
