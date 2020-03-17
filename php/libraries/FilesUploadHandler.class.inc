@@ -177,9 +177,9 @@ class FilesUploadHandler implements RequestHandlerInterface
                 . preg_replace(
                     "/[^a-z0-9\_\-\.]/i",
                     '',
-                    $pathinfo[PATHINFO_BASENAME]
+                    $pathinfo['basename']
                 )
-                . $pathinfo[PATHINFO_EXTENSION];
+                . $pathinfo['extension'];
 
             /* If file exists, set response code to 'Conflict' unless the
              * calling code wants to overwrite the file.
