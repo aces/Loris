@@ -4,7 +4,6 @@
  *
  * @category ApiViews
  * @package  Loris
- * @author   Xavier Lecours Boucher <xavier.lecours@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
@@ -19,7 +18,6 @@ use LORIS\Data\Models\RecordingDTO;
  *
  * @category ApiViews
  * @package  Loris
- * @author   Xavier Lecours Boucher <xavier.lecours@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */

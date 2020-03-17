@@ -4,7 +4,6 @@
  *
  * @category API
  * @package  LORIS
- * @author   Cecile Madjar <cecile.madjar@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -19,7 +18,6 @@ use \LORIS\api\Endpoint;
  *
  * @category API
  * @package  LORIS
- * @author   Cecile Madjar <cecile.madjar@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
