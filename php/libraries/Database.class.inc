@@ -719,7 +719,7 @@ class Database
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
      */
-    function pselect(string $query, array $params): array
+    function pselect(string $query, array $params = array()): array
     {
         $this->_printQuery($query, $params);
         $stmt = $this->prepare($query);
@@ -811,7 +811,7 @@ class Database
      * @return ?array Associative array of form ColumnName => Value for each column
      *                in the first row of the query
      */
-    function pselectRow(string $query, array $params) : ?array
+    function pselectRow(string $query, array $params = array()) : ?array
     {
         $rows = $this->pselect($query . " LIMIT 2", $params);
         if (count($rows) > 1) {
@@ -832,10 +832,11 @@ class Database
      *
      * @throws DatabaseException if the query selected more than one column
      *
-     * @return array Associative array of form rowID=>value containing all values
+     * @return array<string,string> Associative array of form rowID=>value
+     *  containing all values
      *               for the only column of the select statement
      */
-    function pselectCol(string $query, array $params)
+    function pselectCol(string $query, array $params = array())
     {
         $unprocessed = $this->pselect($query, $params);
 
@@ -940,18 +941,12 @@ class Database
      * Runs a query as a prepared statement and returns the value of the first
      * column of the first row.
      *
-     * FIXME This function does not have a return type declaration because
-     * the function pselectRow will sometimes return a string and sometimes
-     * return an array. This behaviour should be made consistent (i.e. perhaps
-     * returning an array of a single element) so that we can properly enforce
-     * types.
-     *
      * @param string $query  The SQL statement to run
      * @param array  $params Values to use for binding in the prepared statement
      *
      * @return mixed The value returned by the query: array, string, or false.
      */
-    function pselectOne(string $query, array $params)
+    function pselectOne(string $query, array $params = array()): ?array
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
