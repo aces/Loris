@@ -228,6 +228,10 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     && $this->getAdministrationStatus() != 'None'
                 ) {
                     $showLink = false;
+                    if ($option == 'Complete') {
+                        $this->tpl_data['data_entry'][$i]['tooltip']
+                            = "To enable link, Validity option must be selected";
+                    }
                 }
 
                 if ($option == 'In Progress') {
@@ -242,6 +246,12 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                                 = $this->instrument->getDataEntryCompletionStatus();
 
                             $showLink = $CompStatus == 'Complete';
+
+                            if (!$showLink) {
+                                $this->tpl_data['data_entry'][$i]['tooltip']
+                                    = "To enable link, required fields must be
+                                      filled in";
+                            }
                         }
                     }
                 }
@@ -251,7 +261,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     $this->tpl_data['data_entry'][$i]['showlink'] = true;
                 }
             } else {
-                $this->tpl_data['data_entry'][$i]['icon'] = 'fas fa-times';
+                $this->tpl_data['data_entry'][$i]['icon']    = 'fas fa-times';
+                $this->tpl_data['data_entry'][$i]['tooltip']
+                    = "To enable link, Administration option must be selected";
             }
             $i++;
         }
@@ -330,11 +342,12 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             // highlight the current option if it's the current status
             if ($validityStatus == $option) {
                 $this->tpl_data['validity'][$i]['icon'] = 'far fa-check-square';
-            }
-            if ($data_entry_status == 'Complete') {
-                $this->tpl_data['validity'][$i]['showLink'] = false;
             } else {
-                $this->tpl_data['validity'][$i]['showLink'] = true;
+                if ($data_entry_status == 'Complete') {
+                    $this->tpl_data['validity'][$i]['showLink'] = false;
+                } else {
+                    $this->tpl_data['validity'][$i]['showLink'] = true;
+                }
             }
             $i++;
         }
