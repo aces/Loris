@@ -195,18 +195,6 @@ class My_Preferences extends \NDB_Form
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
-        // send the user an email
-        $msg_data          = [];
-        $msg_data['study'] = $config->getSetting('title');
-        $msg_data['url']   = $factory->settings()->getBaseURL();
-        $msg_data['realname'] = $values['Real_name'];
-        $msg_data['username'] = $user->getUsername();
-        $msg_data['password'] = $values['Password_hash'];
-
-        $template = (is_null($this->identifier))
-            ? 'new_user.tpl' : 'edit_user.tpl';
-        \Email::send($values['Email'], $template, $msg_data);
-
         $this->tpl_data['success'] = true;
     }
 
