@@ -92,7 +92,7 @@ class BidsFile extends Endpoint
             $handler = new BidsFile\Archive($this->_recording);
             break;
         default:
-            return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $newrequest = $request
