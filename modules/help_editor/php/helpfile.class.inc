@@ -315,16 +315,11 @@ class HelpFile
      *
      * @return integer of HelpID
      */
-    static function hashToID($hash)
+    static function hashToID($hash): int
     {
-        // create DB object
-        $DB =& \Database::singleton();
-
-        $helpID = $DB->pselectOne(
+        return \NDB_Factory::singleton()->database()->pselectOneInt(
             "SELECT helpID FROM help WHERE hash = :HID",
             ['HID' => $hash]
         );
-
-        return $helpID;
     }
 }

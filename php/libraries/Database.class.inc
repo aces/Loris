@@ -997,6 +997,31 @@ class Database
     }
 
     /**
+     * Helper function used to select a single cell from the database and convert
+     * it to an integer.
+     *
+     * @param string $query  The SQL statement to run
+     * @param array  $params Values to use for binding in the prepared statement
+     *
+     * @return int A cell from the database.
+     *
+     * @throws \DomainException When the cell returned by the query cannot be
+     *                          validated as an integer.
+     */
+    function pselectOneInt(string $query, array $params): int
+    {
+        $result = filter_var(
+            $this->pselectOne($query, $params),
+            FILTER_VALIDATE_INT
+        );
+        if ($result === false) {
+            throw new \DomainException('Query result is not an integer');
+        }
+
+        return $result;
+    }
+
+    /**
      * Implodes a hash including the keys (unlike php's implode)
      *
      * Sets each hash element into the format key='value', and then

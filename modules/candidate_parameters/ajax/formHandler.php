@@ -262,7 +262,7 @@ function editFamilyInfoFields(\Database $db)
                 "SELECT max(FamilyID) from family",
                 []
             );
-            $newFamilyID = $familyID + 1;
+            $newFamilyID = intval($familyID) + 1;
 
             $updateValues['FamilyID'] = $newFamilyID;
             $db->insert('family', $updateValues);

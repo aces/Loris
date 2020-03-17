@@ -1476,10 +1476,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        if (!empty($fieldValue)) {
-            return $fieldValue;
-        }
-        return -1;
+        return $fieldValue == 0 ? $fieldValue : -1;
     }
 
     /**
