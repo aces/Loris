@@ -110,13 +110,6 @@ class My_Preferences extends \NDB_Form
 
         $user = \User::factory($this->identifier);
 
-        // If editing a user and nothing was specified in the password text field
-        // remove the key from the value set, otherwise Password_hash
-        // will be set to '' by the system
-        if ($values['Password_hash'] == '') {
-            unset($values['Password_hash']);
-        }
-
         // START NOTIFICATIONS UPDATE
         // get current notifications for user
         $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
@@ -167,6 +160,12 @@ class My_Preferences extends \NDB_Form
         }
         // END NOTIFICATIONS UPDATE
         $set = [];
+        // If editing a user and nothing was specified in the password text field
+        // remove the key from the value set, otherwise Password_hash
+        // will be set to '' by the system
+        if ($values['Password_hash'] == '') {
+            unset($values['Password_hash']);
+        }
         foreach ($values as $key => $value) {
             // Password updates are handled separately. Password_hash is removed
             // from the initial update as otherwise it will be recorded in the
@@ -191,9 +190,12 @@ class My_Preferences extends \NDB_Form
             );
         }
 
-        // create an instance of the config object
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
+        // send the user an email
+        $msg_data          = array();
+        $msg_data['study'] = $config->getSetting('title');
+        $msg_data['realname'] = $values['Real_name'];
+
+        \Email::send($values['Email'], 'account_details_changed.tpl', $msg_data);
 
         $this->tpl_data['success'] = true;
     }
