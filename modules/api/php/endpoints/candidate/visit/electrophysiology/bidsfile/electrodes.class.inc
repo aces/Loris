@@ -109,13 +109,7 @@ class Electrodes extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $info = $this->_recording->getElectrodesFileInfo();
 
-        if (!$info->isFile()) {
-            error_log('file in database but not in file system');
-            return new \LORIS\Http\Response\JSON\NotFound();
-        }
-
-        if (!$info->isReadable()) {
-            error_log('file exist but is not readable by webserver');
+        if (!$info->isFile() or !$info->isReadable()) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
