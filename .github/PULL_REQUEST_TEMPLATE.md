@@ -1,6 +1,7 @@
 ## Brief summary of changes
 
 - [ ] Have you updated related documentation?
+- [ ] Have you included screenshots for UI changes?
 
 #### Testing instructions (if applicable)
 

@@ -51,6 +51,19 @@ template. Please fill out each heading with detailed information on your
 code changes, suggested testing instructions, and links to open GitHub
 issues and/or Redmine tickets (if applicable).
 
+#### Documentation
+
+When changing a feature, please update related documentation.
+
+If a major change has been made, please make a note of it by modifying the
+[change log](./CHANGELOG.md) file.
+
+#### Screenshots
+
+If a visual change to the user interface has been made, include a screenshot
+of what the interface looks like both before and after. This will assist us in
+reviewing your changes.
+
 ## Some Things To Keep In Mind
 
 * If your changes require any table modifications:
