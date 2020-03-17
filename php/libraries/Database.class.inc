@@ -946,7 +946,7 @@ class Database
      *
      * @return mixed The value returned by the query: array, string, or false.
      */
-    function pselectOne(string $query, array $params = array()): ?array
+    function pselectOne(string $query, array $params = array())
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
