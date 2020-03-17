@@ -258,11 +258,11 @@ function editFamilyInfoFields(\Database $db)
                 $db->update('family', $updateValues, ['ID' => $siblingID]);
             }
         } else {
-            $familyID    = $db->pselectOne(
+            $familyID    = $db->pselectOneInt(
                 "SELECT max(FamilyID) from family",
                 []
             );
-            $newFamilyID = intval($familyID) + 1;
+            $newFamilyID = $familyID + 1;
 
             $updateValues['FamilyID'] = $newFamilyID;
             $db->insert('family', $updateValues);

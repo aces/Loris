@@ -576,7 +576,7 @@ class Stats_MRI extends \NDB_Form
             $Scan_data_results[$key]['no_qc_count']['total']
                 = $Scan_data_results[$key]['insert_count']['total'] -
                   $Scan_data_results[$key]['qc_pass_count']['total'] -
-                  intval($Scan_data_results[$key]['qc_fail_count']['total']);
+                  $Scan_data_results[$key]['qc_fail_count']['total'];
         }
         $this->tpl_data['scan_data_results'] = $Scan_data_results;
     }

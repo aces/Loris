@@ -64,7 +64,7 @@ class Notify
      */
     static function getTypeID(string $type): int
     {
-        return \Database::singleton()->pselectOneInt(
+        return \NDB_Factory::singleton()->database()->pselectOneInt(
             "SELECT NotificationTypeID FROM notification_types WHERE Type=:TP",
             ['TP' => $type]
         );

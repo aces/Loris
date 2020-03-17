@@ -1469,7 +1469,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getSessionID(): int
     {
         $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $fieldValue = \Database::singleton()->pselectOne(
+        $fieldValue = \Database::singleton()->pselectOneInt(
             $query,
             [
                 'CID' => $this->getCommentID(),
