@@ -29,6 +29,8 @@ class Edit_User extends \NDB_Form
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
                                         'identical: please choose another one';
+    private const EMAIL_NOT_UNIQUE         = 'This email address is already ' .
+                                                'in use';
 
     /**
      * Determines whether this form is in edit or create mode.
@@ -1275,7 +1277,7 @@ class Edit_User extends \NDB_Form
 
         // Email already exists in database
         if ($result > 0) {
-            return 'The email address already exists';
+            return self::EMAIL_NOT_UNIQUE;
         }
 
         return null;
