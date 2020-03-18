@@ -733,12 +733,8 @@ class Database
      * @param array<string,string> $params Values to use for binding to the
      *                                     prepared statement
      *
-<<<<<<< HEAD
-     * @return array<string[]> An array of arrays containing the data.
-=======
      * @return array<int,array<string,string>> An array of arrays containing
      *                                          the data.
->>>>>>> 116fb4bff... Add strict type coding standard
      *               The outside (non-associative array contains 1 element per
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
