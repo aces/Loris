@@ -977,19 +977,10 @@ class Database
      *                                     prepared statement
      *
      * @return string A single cell from the database.
-     *
-     * @throws \NotFound When pselectRow returns null. This occurs when no
-     * result can be found for the given query. In general, this should be
-     * an exceptional circumstance because we expect data to be there.
      */
-    function pselectOne(string $query, array $params): string
+    function pselectOne(string $query, array $params): ?string
     {
         $result = $this->pselectRow($query, $params);
-        if (is_null($result)) {
-            throw new \NotFound(
-                'No result could be found for query'
-            );
-        }
         if (is_array($result) && count($result)) {
             $result = array_values($result)[0];
         }
