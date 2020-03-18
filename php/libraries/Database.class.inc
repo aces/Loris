@@ -976,7 +976,7 @@ class Database
      * @param array<string,string> $params Values to use for binding in the
      *                                     prepared statement
      *
-     * @return string A single cell from the database.
+     * @return ?string A single cell from the database.
      */
     function pselectOne(string $query, array $params): ?string
     {
