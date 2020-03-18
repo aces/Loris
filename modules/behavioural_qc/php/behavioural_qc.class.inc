@@ -758,7 +758,7 @@ class Behavioural_QC extends \NDB_Form
                     ['display' => $full_name]
                 );
             } else {
-                $test_name = $DB->pselect(
+                $test_name = $DB->pselectOne(
                     "SELECT Test_name FROM test_names WHERE Full_name =:fname",
                     array('fname' => $full_name)
                 );
