@@ -705,7 +705,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = Utility::structureToPCRE(
+        $regex         = self::structureToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev,
             $projectAbbrev
@@ -810,6 +810,94 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         );
         return $res['Description'] ?? '';
     }
+     /*
+     * Transforms a config structure (such as in PSCID) into a
+     * Perl-compatible regex expression for validation
+     *
+     * @param array       $structure     the structure root
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
+     *
+     * @return string the regex pattern
+     *
+     * @note    This should probably be moved to the Candidate class, since it's
+     *       only used there to validate the PSCID
+     * @cleanup
+     */
+    static function structureToPCRE(
+        array $structure,
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
+    ): string {
+        $seqs = $structure['seq'];
+        // handle the situation where there exists only one seq
+        if (isset($seqs['#'])) {
+            $seqs = array($seqs);
+        }
+        $regex = "";
+        foreach ($seqs AS $seq) {
+            $unit = "";
 
+            switch($seq['@']['type']) {
+            case 'alpha':
+                $unit .= '[a-z]';
+                break;
+
+            case 'alphanumeric':
+                $unit .= '[0-9a-z]';
+                break;
+
+            case 'numeric':
+                $unit .= '[0-9]';
+                break;
+
+            case 'static':
+                $unit .= '('.$seq['#'].')';
+                break;
+
+            case 'set':
+                if (strpos($seq['#'], '|') !== false) {
+                    $unit .= '('.$seq['#'].')';
+                } else {
+                    $unit .= '['.$seq['#'].']';
+                }
+                break;
+
+            case 'siteAbbrev':
+                $unit .= $siteAbbrev;
+                break;
+            case 'projectAbbrev':
+                $unit .= $projectAbbrev;
+                break;
+            } // end switch
+
+            $length = "";
+            if (isset($seq['@']['length'])) {
+                $length .= $seq['@']['length'];
+            } elseif (isset($seq['@']['minLength'])) {
+                $length .= $seq['@']['minLength'];
+            } else {
+                $length .= '1';
+            }
+
+            $length .= ',';
+
+            if (isset($seq['@']['length'])) {
+                $length .= $seq['@']['length'];
+            } elseif (isset($seq['@']['maxLength'])) {
+                $length .= $seq['@']['maxLength'];
+            } elseif (!isset($seq['@']['length'])
+                && !isset($seq['@']['minLength'])
+            ) {
+                $length .= '1';
+            }
+
+            $regex .= $unit.'{'.$length.'}';
+
+        } // end foreach seq
+
+        return '/^'.$regex.'$/i';
+    }
 }
 

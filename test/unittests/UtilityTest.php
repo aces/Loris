@@ -1,18 +1,11 @@
 <?php declare(strict_types=1);
+require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
+use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for Utility class.
  *
- * PHP Version 7
- *
- * @category Tests
- * @package  Test
- * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
- *           John Saigle <john.saigle@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
-use PHPUnit\Framework\TestCase;
 class UtilityTest extends TestCase
 {
     /**
