@@ -391,33 +391,6 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getTestNameByCommentID returns 
-     * the correct test name for the given CommentID
-     * 
-     * @note In the Utility class there is a note saying this method 
-     *       should be moved to a different module. 
-     *
-     * @covers Utility::getTestNameByCommentID
-     * @return void 
-     */
-    public function testGetTestNameByCommentID()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselectOne')
-            ->with(
-                $this->stringContains(
-                    "SELECT Test_name FROM flag WHERE CommentID=:CID"
-                )
-            )
-            ->willReturn("test_flag1");
-
-        $this->assertEquals(
-            "test_flag1",
-            Utility::getTestNameByCommentID("ID123")
-        );
-    }
-
-    /**
      * Test that getStageUsingCandID returns the proper 
      * current stage for the given CandID
      * 

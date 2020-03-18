@@ -34,7 +34,7 @@ if (isset($_REQUEST['instrument']) && !empty($_REQUEST['instrument'])
     && $_REQUEST['instrument'] != 'All Instruments'
 ) {
     $query   .= " AND tst.Test_Name = :NAM";
-    $testname = $db->pselect(
+    $testname = $db->pselectOne(
         "SELECT Test_name FROM test_names WHERE Full_name =:fname",
         array('fname' => $_REQUEST['instrument'])
     );
