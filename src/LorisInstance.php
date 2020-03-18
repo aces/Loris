@@ -14,7 +14,7 @@ class LorisInstance
     /**
      * An object representing configuration settings for this LORIS instance.
      *
-     * @var NDB_Config
+     * @var \NDB_Config
      */
     private $configuration;
     private $DB;
@@ -25,6 +25,8 @@ class LorisInstance
      *
      * @param \Database $db         A database connection to this
      *                              instance.
+     * @param \NDB_Config $config   A set of configuration settings used by this
+     *                              instance.
      * @param string[]  $moduleDirs A list of directories that may
      *                              contain modules for this instance.
      */
@@ -33,9 +35,9 @@ class LorisInstance
         \NDB_Config $config,
         array $modulesDirs
     ) {
-        $this->DB          = $db;
-        $this->configuration      = $config;
-        $this->modulesDirs = $modulesDirs;
+        $this->DB            = $db;
+        $this->configuration = $config;
+        $this->modulesDirs   = $modulesDirs;
     }
 
     /**

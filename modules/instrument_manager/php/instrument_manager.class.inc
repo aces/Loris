@@ -1,31 +1,13 @@
 <?php
-/**
- * Instrument_manager
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Instrument_Manager
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
- */
-
 namespace LORIS\instrument_manager;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Http\EmptyStream;
 
 /**
- * Instrument_manager
+ * Contains functions used to view and manage instruments installed in LORIS.
+ * LINST instruments can be uploaded and installed automatically.
  *
- * PHP Version 7
- *
- * @category Main
- * @package  Instrument_Manager
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {

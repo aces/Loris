@@ -46,6 +46,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         $this->user          = $user;
         $this->lorisinstance = new \LORIS\LorisInstance(
             \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
             [
              $projectdir . "/modules",
              $moduledir,
