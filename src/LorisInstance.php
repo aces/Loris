@@ -6,11 +6,17 @@ namespace LORIS;
  * A LorisInstance represents an installed instance of a LORIS
  * project.
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class LorisInstance
 {
     protected $modulesDirs;
+    /**
+     * An object representing configuration settings for this LORIS instance.
+     *
+     * @var NDB_Config
+     */
+    private $configuration;
     private $DB;
 
     /**
@@ -22,9 +28,13 @@ class LorisInstance
      * @param string[]  $moduleDirs A list of directories that may
      *                              contain modules for this instance.
      */
-    public function __construct(\Database $db, array $modulesDirs)
-    {
+    public function __construct(
+        \Database $db,
+        \NDB_Config $config,
+        array $modulesDirs
+    ) {
         $this->DB          = $db;
+        $this->configuration      = $config;
         $this->modulesDirs = $modulesDirs;
     }
 
@@ -103,5 +113,16 @@ class LorisInstance
             }
         }
         return false;
+    }
+
+    /**
+     * Returns an NDB_Config object used for interacting with configuration
+     * settings for this instance.
+     *
+     * @return \NDB_Config
+     */
+    public function getConfiguration(): \NDB_Config
+    {
+        return $this->configuration;
     }
 }

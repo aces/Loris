@@ -115,29 +115,16 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
+        $loris = $request->getAttribute('loris');
         // Ensure the user is allowed to upload.
-        if (! \User::singleton()->hasPermission('superuser')) {
-            return (new \LORIS\Http\Response())
-                ->withStatus(403, 'Forbidden')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => 'Forbidden')
-                        )
-                    )
-                );
+        if (! $request->getAttribute('user')->hasPermission('superuser')) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
         }
         // Ensure the server is properly configured.
         if (!$this->canWriteFiles()) {
-            return (new \LORIS\Http\Response())
-                ->withStatus(500, 'Internal Server Error')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::CANNOT_WRITE_FILES)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                self::CANNOT_WRITE_FILES
+            );
         }
 
         $uploaded_file = $request->getUploadedFiles()['install_file'];
@@ -188,18 +175,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
             . escapeshellarg($fullpath)
         );
 
-        if (!$this->isQuatUserConfigured()) {
+        if (!$this->isAdminUserConfigured()) {
             // If no adminUser is configured, automatic installation is not
             // possible, so this is the last step.
-            return (new \LORIS\Http\Response())
-                ->withStatus(200, 'OK')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('message' => self::UPLOAD_NO_INSTALL)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\OK(
+                self::UPLOAD_NO_INSTALL
+            );
         }
 
         // Install the instrument by directly sourcing the SQL file
@@ -215,12 +196,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $e->getMessage()
             ));
         } catch (\Exception $e) {
-            return (new \LORIS\Http\Response\JSON\InternalServerError(
+            return new \LORIS\Http\Response\JSON\InternalServerError(
                 $e->getMessage()
-            ));
+            );
         }
 
-        $db_config = $this->factory->config()->getSetting('database');
+        $db_config = $loris->getConfiguration()->getSetting('database');
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).
@@ -242,20 +223,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 . "credentials supplied in the config file. "
                 . "Exec output: `" . implode("\n", $output) . "`"
             );
-            return (new \LORIS\Http\Response())
-                ->withStatus(500, 'Internal Server Error')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::UPLOAD_INSTALL_FAILED)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                self::UPLOAD_INSTALL_FAILED
+            );
         }
 
-        return (new \LORIS\Http\Response())
-            ->withStatus(201, 'Created')
-            ->withBody(new EmptyStream());
+        return new \LORIS\Http\Response\JSON\Created();
     }
 
     /**
@@ -319,7 +292,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
             'Data'         => $MappedData,
             'fieldOptions' => $this->fieldOptions,
             'writable'     => $this->canWriteFiles(),
-            'caninstall'   => $this->isQuatUserConfigured(),
+            'caninstall'   => $this->isAdminUserConfigured(),
         );
     }
 
@@ -598,7 +571,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      *
      * @return bool True if a adminUser is configured properly. False if not.
      */
-    protected function isQuatUserConfigured() : bool
+    protected function isAdminUserConfigured() : bool
     {
         $db        = $this->factory->database();
         $db_config = $this->factory->config()->getSetting('database');
