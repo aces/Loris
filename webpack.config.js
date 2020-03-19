@@ -148,15 +148,15 @@ const config = [
         plugins: [
           new CopyPlugin([
             {
-              from: 'node_modules/react/umd/*',
-              to: 'htdocs/vendor/js/react/',
+              from: path.resolve(__dirname, 'node_modules/react/umd/*'),
+              to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
               force: true,
               flatten: true,
               ignore: ['react.profiling.min.js'],
             },
             {
-              from: 'node_modules/react-dom/umd/*',
-              to: 'htdocs/vendor/js/react/',
+              from: path.resolve(__dirname, 'node_modules/react-dom/umd/*'),
+              to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
               force: true,
               flatten: true,
               ignore: [
