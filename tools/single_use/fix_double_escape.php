@@ -63,15 +63,23 @@ if (in_array('use-history', $argv, true)) {
 $instrumentNames = $DB->pselectCol("SELECT Test_name FROM test_names", array());
 // Array of all fields containing any escaped characters
 $escapedEntries = array();
-// Array of probable truncations based on preg_match ONLY
-$probableTruncations = array();
+// Array of database tables and columns containing escaped characters.
+$escapedFields = array();
 // Array of confirmed truncations based on size of fields and content
 $confirmedTruncations = array();
 // Boolean flag for identify non-impacted databases and terminating.
 $errorsDetected = false;
-
+// Array of CHARACTER_MAXIMUM_LENGTH for each affected field.
+$maxFieldLengths = array();
+// Array of non-truncated data
+$untruncatedValues = array();
+// Variables used for history table query
+$CIDs = array();
+$allFields = array();
+$allTables = array();
 
 // FIRST loop just reporting all potential problematic fields
+
 foreach($instrumentNames as $instrumentName) {
     printOut("Checking $instrumentName");
     try {
@@ -89,24 +97,19 @@ foreach($instrumentNames as $instrumentName) {
     );
     foreach ($instrumentCIDs as $cid) {
         $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
-
-        $instrumentData = \NDB_BVL_Instrument::loadInstanceData($instrumentInstance);
+	$instrumentData = \NDB_BVL_Instrument::loadInstanceData($instrumentInstance);
+	
+	// instrument name and table name might differ
+	$tableName = $instrumentInstance->table;
         $set            = array();
 
         // Go through all fields and identify which have any escaped characters
         foreach ($instrumentData as $field => $value) {
             // regex detecting any escaped character in the database
             if (preg_match('/&(amp;)+(gt;|lt;|quot;|amp;)/', $value)) {
-                $escapedEntries[$instrumentName][$cid][$field] = $value;
+                $escapedEntries[$tableName][$cid][$field] = $value;
+		$escapedFields[$tableName][] = $field;
                 $errorsDetected = true;
-            }
-            if (preg_match('/&(amp;)*[a|g|l|q](m|t|u)?(p|o|;)?(t|;)?(;)?$/', $value)) {
-                // This checks for signs of truncation, it matches any string that
-                // ENDS with either a complete or incomplete escaped expression.
-                // THIS DOES NOT GUARANTEE that other fields are not truncated as
-                // truncation could occur even if field does not end with the escaped
-                // characters.
-                $probableTruncations[$instrumentName][$cid][$field] = $value;
             }
         }
     }
@@ -116,10 +119,70 @@ foreach($instrumentNames as $instrumentName) {
 
 //SECOND loop, depending on flags, report or fix values.
 if ($errorsDetected) {
-    //TODO CODE FOR CHECKING FIELD MAX LENGTH AND COMPARING TO ACTUAL LENGTH IN ORDER TO BUILD THE CONFIRMEDTRUNCATIONS array defined above
+	foreach ($escapedFields as $tableName => $fieldsArray) {
+		$fieldsList = "'" . implode($fieldsArray, "','") . "'";
 
-    if ($useHistory) {
-        // TODO CODE FOR CHECKING HISTORY TABLE AND BUILDING BETTER REPAIR SUGGESTIONS
+		$maxFieldLengths[$tableName] = $DB->pselectWithIndexKey(
+			"SELECT COLUMN_NAME, CHARACTER_MAXIMUM_LENGTH
+			FROM INFORMATION_SCHEMA.COLUMNS 
+			WHERE TABLE_NAME=:tbl AND COLUMN_NAME IN ($fieldsList)",
+			array('tbl' => $tableName),
+			'COLUMN_NAME'
+		);
+	}
+
+	// Start comparing the value length of the escaped entry to the character maximum for that field
+	// In order to begin identifying cases of truncation
+	foreach ($escapedEntries as $tableName => $rows) {
+		foreach ($rows as $cid => $entries) {
+			foreach ($entries as $field => $value) {
+				if (strlen($value) == $maxFieldLengths[$tableName][$field]['CHARACTER_MAXIMUM_LENGTH']) {
+					$confirmedTruncations[$tableName][$cid][$field] = $value;
+					$CIDs[] = $cid;
+					$allFields[] = $field;
+					$allTables[] = $tableName;
+				}
+			}
+		}
+	}
+
+if ($useHistory) {
+	// Construct history query
+	$listCIDs = "'" . implode($CIDs, "','") . "'";
+	$listFields = "'" . implode($allFields, "','") . "'";
+	$listTables = "'" . implode($allTables, "','") . "'";
+	$query = "SELECT primaryVals as CommentID, col, tbl, new, changeDate
+		FROM history 
+		WHERE primaryCols='CommentID' AND
+		primaryVals IN ($listCIDs) AND
+		tbl IN ($listTables) AND
+		col IN ($listFields)";	
+	
+	$result = $DB->pselect(
+		$query, 
+		[]
+	);
+
+	// Reverse the array obtained from history data so that it is in anti-chronological order
+	// Does not preserve keys, assuming that the keys are indexes & not relevant info
+	$historyData = array_reverse($result, false);
+	// Go through history data starting with most recent changes
+	foreach($historyData as $key => $data) {
+    		$tbl = $data['tbl'];
+    		$cid = $data['CommentID'];
+    		$field = $data['col'];
+   		$val = $data['new'];
+    		
+		// Check if in confirmed truncations list & length of field is less than max field length
+    		// & no value has been assigned to untruncatedValues yet
+    		// I.E. if this is the most recent value with character length < max
+    		if (array_key_exists($field, $confirmedTruncations[$tbl][$cid]) &&
+        		strlen($val) < $maxFieldLengths[$tbl][$field] &&
+        		!isset($untruncatedValues[$tbl][$cid][$field])
+		) {
+        		$untruncatedValues[$tbl][$cid][$field] = $val;
+    		}
+	}	
     }
 
     if ($report) {
@@ -139,6 +202,7 @@ if ($errorsDetected) {
             "Below are the suggested repairs automatically generated from ".
             "latest values in the fields."
         );
+	print_r($untruncatedValues);
 
         if ($useHistory) {
             printOut(
@@ -152,22 +216,28 @@ if ($errorsDetected) {
 
 
 
-    foreach ($escapedEntries as $instrumentName=>$cids) {
-        printOut("Opening $instrumentName");
+    foreach ($escapedEntries as $tableName=>$cids) {
+        printOut("Opening $tableName");
         foreach ($cids as $cid => $fields) {
             try {
-                $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
+                $instrumentInstance = \NDB_BVL_Instrument::factory($tableName, $cid);
             } catch (Exception $e) {
                 printError(
-                    "There was an error instantiating instrument $instrumentName for " .
+                    "There was an error instantiating instrument $tableName for " .
                     "$cid.This instrument will be skipped."
                 );
                 continue;
             }
             foreach ($fields as $field => $value) {
-
-                if ($useHistory && array_key_exists($field, $confirmedTruncations[$instrumentName][$cid])) {
-                    //TODO ADD CODE TO REPLACE THE VALUE BY THE DATA FROM THE HISTORY TABLE IF TRUNCATION IS CONFIRMED
+		if ($useHistory &&
+        		array_key_exists($field, $confirmedTruncations[$tableName][$cid]) &&
+        		array_key_exists($field, $untruncatedValues[$tableName][$cid])
+		) {
+			printOut("CommentID:$cid - Replacing a truncated value by a non-truncated history entry" .
+			 	"\n\tTruncated Value: $value " .
+				"\n\tWill be replaced by:  {$untruncatedValues[$instrumentName][$cid][$field]} \n"
+			);
+			$value = $untruncatedValues[$instrumentName][$cid][$field];
                 }
 
                 // Each of the expressions below uniquely match each of the targeted
@@ -215,15 +285,6 @@ if ($errorsDetected) {
 
 fclose($logfp);
 
-
-foreach ($probableTruncations as $i=>$cids) {
-    foreach ($cids as $cid=>$fields) {
-        foreach ($fields as $field=>$value) {
-            //check history
-
-        }
-    }
-}
 
 /*
  * Prints to log file
