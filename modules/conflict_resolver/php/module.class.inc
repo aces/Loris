@@ -122,7 +122,7 @@ class Module extends \Module
             }
 
             $width = 1;
-            if(count($results) > 10) {
+            if (count($results) > 10) {
                 $width = 2;
             }
             return [
