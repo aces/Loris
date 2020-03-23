@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace LORIS\instrument_manager;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -612,4 +612,3 @@ class Instrument_Manager extends \NDB_Menu_Filter
         );
     }
 }
-
