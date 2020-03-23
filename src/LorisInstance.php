@@ -35,9 +35,9 @@ class LorisInstance
         \NDB_Config $config,
         array $modulesDirs
     ) {
-        $this->DB            = $db;
-        $this->config = $config;
-        $this->modulesDirs   = $modulesDirs;
+        $this->DB          = $db;
+        $this->config      = $config;
+        $this->modulesDirs = $modulesDirs;
     }
 
     /**
