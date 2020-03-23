@@ -16,7 +16,7 @@ class LorisInstance
      *
      * @var \NDB_Config
      */
-    private $configuration;
+    private $config;
     private $DB;
 
     /**
@@ -36,7 +36,7 @@ class LorisInstance
         array $modulesDirs
     ) {
         $this->DB            = $db;
-        $this->configuration = $config;
+        $this->config = $config;
         $this->modulesDirs   = $modulesDirs;
     }
 
@@ -125,6 +125,6 @@ class LorisInstance
      */
     public function getConfiguration(): \NDB_Config
     {
-        return $this->configuration;
+        return $this->config;
     }
 }
