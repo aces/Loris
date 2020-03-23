@@ -31,7 +31,7 @@ declare -a tools_list=(
 declare -a test_list=(
     'integrationtests/LorisIntegrationTest.class.inc'
     'integrationtests/LorisIntegrationTestWithCandidate.class.inc'
-    'unittests/Database_test.php'
+    'unittests/Database_Test.php'
 )
 
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
