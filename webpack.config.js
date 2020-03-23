@@ -60,6 +60,13 @@ const mod = {
        ],
         enforce: 'pre',
       },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ],
+      },
    ],
   };
 
@@ -176,7 +183,7 @@ const config = [
         'electrophysiologySessionView',
     ]),
     lorisModule('genomic_browser', ['profileColumnFormatter']),
-    lorisModule('imaging_browser', ['ImagePanel', 'imagingBrowserIndex']),
+    lorisModule('imaging_browser', ['ImagePanel', 'imagingBrowserIndex', 'CandidateScanQCSummaryWidget']),
     lorisModule('instrument_builder', [
         'react.instrument_builder',
         'react.questions',
