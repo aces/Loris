@@ -29,10 +29,14 @@ database (PR #5260)
 - Fix bug where examiner form field was incorrectly hidden (PR #6085)
 
 ### Modules 
-
 #### Candidate Profile
 - New module created to provide dashboard of a single candidate's data across all
   modules. (Various PRs)
+
+##### Issue Tracker
+- The issue_tracker module now has the feature of uploading attachments to new or existing issues.
+- All sites now appear in the dropdown for site, not only study sites. (PR #6135)
+
 
 #### Battery Manager
 - New module created to manage the entries in the `test_battery` table of the database.
