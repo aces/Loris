@@ -186,7 +186,7 @@ array_walk($rbData, 'runPatch');
 
 // Copy Raisinbread instrument files to project/instruments/. This is done using
 // a closure to apply PHP's copy() function to all files in raisinbread/instruemnts/
-// that end with the LINST or .class.inc file extension.
+// that are required for scoring instruments
 printHeader('Copying Rasinbread instrument files to project/instruments/...');
 array_map(
     function ($file) {
@@ -194,7 +194,9 @@ array_map(
     },
     array_merge(
         glob(__DIR__ . "/../raisinbread/instruments/*.class.inc"),
-        glob(__DIR__ . "/../raisinbread/instruments/*.linst")
+        glob(__DIR__ . "/../raisinbread/instruments/*.linst"),
+        glob(__DIR__ . "/../raisinbread/instruments/*.score"),
+        glob(__DIR__ . "/../raisinbread/instruments/*.rules")
     ),
 );
 
