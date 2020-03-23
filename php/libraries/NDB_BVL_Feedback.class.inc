@@ -310,21 +310,19 @@ class NDB_BVL_Feedback
      *
      * @param integer $feedbackID ID of the thread whose type we want to get
      *
-     * @return string feedback type of the thread
-     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     * @return ?string feedback type of the thread
      */
-    function getThreadType($feedbackID)
+    function getThreadType($feedbackID): ?string
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $query = "SELECT Name FROM feedback_bvl_thread
                   JOIN feedback_bvl_type ON
                   feedback_bvl_type.Feedback_type = feedback_bvl_thread.Feedback_type
                   WHERE feedback_bvl_thread.FeedbackID = :FID";
 
-        $result = $db->pselectOne($query, ['FID' => $feedbackID]);
-        return $result;
+        return $db->pselectOne($query, array('FID' => $feedbackID));
     }
 
     /**
@@ -351,17 +349,15 @@ class NDB_BVL_Feedback
      *
      * @param integer $feedbackID The feedback thread ID to get the status of
      *
-     * @return string The current status.
+     * @return ?string The current status.
      */
-    function getThreadStatus($feedbackID)
+    function getThreadStatus($feedbackID): ?string
     {
-        // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $query = "SELECT Status FROM feedback_bvl_thread WHERE FeedbackID = :FID";
 
-        $result = $db->pselectOne($query, ['FID' => $feedbackID]);
-        return $result;
+        return $db->pselectOne($query, array('FID' => $feedbackID));
     }
 
     /**
@@ -409,12 +405,12 @@ class NDB_BVL_Feedback
     /**
      * Returns the thread count for candidate/timepoint/instrument
      *
-     * @return string thread count
+     * @return int thread count
      */
-    function getThreadCount()
+    function getThreadCount(): int
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $query   = "SELECT COUNT(*)
             FROM feedback_bvl_thread
@@ -441,8 +437,7 @@ class NDB_BVL_Feedback
         }
         $query .= " GROUP BY $queryBy";
 
-        $success = $db->pselectOne($query, $qparams);
-        return $success;
+        return $db->pselectOneInt($query, $qparams);
     }
 
     /**
@@ -1027,9 +1022,9 @@ class NDB_BVL_Feedback
      * @param integer $statusID a numerical index of the enum elements
      *                          of the feedback_bvl_thread.Status field
      *
-     * @return string name of the status
+     * @return ?string name of the status
      */
-    static function getFeedbackStatusVerbose($statusID)
+    static function getFeedbackStatusVerbose($statusID): ?string
     {
         if (empty($statusID)) {
             throw new Exception(

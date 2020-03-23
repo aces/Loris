@@ -1308,19 +1308,17 @@ class Edit_User extends \NDB_Form
      *
      * @param int $permID permission ID.
      *
-     * @return string the description.
+     * @return ?string the description.
      */
-    function getDescriptionUsingPermID($permID): string
+    function getDescriptionUsingPermID($permID): ?string
     {
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        $description = $db->pselectOne(
+        return $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             ['pID' => $permID]
         );
-
-        return $description;
     }
 
     /**

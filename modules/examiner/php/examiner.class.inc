@@ -297,20 +297,17 @@ class Examiner extends \NDB_Menu_Filter_Form
      *
      * @param string $fullName name associated to examiner in the DB table
      *
-     * @return string   ID of the examiner
+     * @return ?string   ID of the examiner
      */
-    function getExaminerID($fullName)
+    function getExaminerID($fullName): ?string
     {
         $DB         = \NDB_Factory::singleton()->database();
-        $examinerID = $DB->pselectOne(
+        return $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
              WHERE full_name=:fullName",
             ['fullName' => $fullName]
         );
-
-        //returned as a string
-        return $examinerID;
     }
 
     /**
@@ -318,19 +315,17 @@ class Examiner extends \NDB_Menu_Filter_Form
      *
      * @param string $siteName name of the site
      *
-     * @return string ID of the site
+     * @return ?string ID of the site
      */
-    function getCenterID($siteName)
+    function getCenterID($siteName): ?string
     {
         $DB     = \NDB_Factory::singleton()->database();
-        $siteID = $DB->pselectOne(
+        return $DB->pselectOne(
             "SELECT CenterID
              FROM psc
              WHERE Name=:siteName",
             ['siteName' => $siteName]
         );
-        //returned as a string
-        return $siteID;
     }
 
     /**

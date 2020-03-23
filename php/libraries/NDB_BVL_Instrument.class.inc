@@ -1050,9 +1050,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Return the full, human readable name for the
      * current instrument.
      *
-     * @return string the full name of the instrument
+     * @return ?string the full name of the instrument
      */
-    abstract public function getFullName(): string;
+    abstract public function getFullName(): ?string;
 
     /**
      * Gets the current object instance CommentID
@@ -2199,9 +2199,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Get the candidates DOB.
      *
-     * @return string The candidate's DOB.
+     * @return ?string The candidate's DOB.
      */
-    function getDoB()
+    function getDoB(): ?string
     {
         $db        = \Database::singleton();
         $CommentID = $this->getCommentID();
