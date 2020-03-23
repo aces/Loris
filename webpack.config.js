@@ -153,9 +153,7 @@ const config = [
     lorisModule('issue_tracker', ['issueTrackerIndex', 'index', 'CandidateIssuesWidget']),
     lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
     lorisModule('document_repository', ['docIndex', 'editFormIndex']),
-    lorisModule('candidate_parameters',
-        ['CandidateParameters', 'ConsentWidget']
-    ),
+    lorisModule('candidate_parameters', ['CandidateParameters', 'ConsentWidget']),
     lorisModule('configuration', ['SubprojectRelations']),
     lorisModule('conflict_resolver', [
         'CandidateConflictsWidget',
