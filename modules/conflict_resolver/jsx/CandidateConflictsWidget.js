@@ -1,5 +1,4 @@
 import '../../../node_modules/c3/c3.css';
-import * as d3 from 'd3';
 import c3 from 'c3';
 import React, {useEffect} from 'react';
 
@@ -12,91 +11,135 @@ import React, {useEffect} from 'react';
  * @return {object}
  */
 function CandidateConflictsWidget(props) {
+    const visits = getVisits(props.Conflicts);
+    const instruments = getInstruments(props.Conflicts);
+
     useEffect(() => {
         c3.generate({
             bindto: '#conflictschart',
             data: {
-                columns: getDataBreakdown(props.Conflicts),
-                type: 'pie',
+                columns: getDataBreakdown(visits, instruments, props.Conflicts),
+                type: 'bar',
                 onclick: function(d, el) {
-                    redirectFromLabel(props, d.name);
+                    // If the user clicked on a bar in the chart, redirect to
+                    // the specific instrument/visit for this candid.
+                    window.location = props.BaseURL + '/conflict_resolver/'
+                        + '?visitLabel=' + visits[d.index]
+                        + '&instrument=' + d.id
+                        + '&candidateID=' + props.Candidate.Meta.CandID;
                 },
             },
-            pie: {
-                label: {
-                    format: function(value, ratio, id) {
-                        return [id, value].join(',');
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: visits,
+                    label: {
+                        text: 'Visit',
+                        position: 'outer-center',
+                    },
+                },
+                y: {
+                    label: {
+                        position: 'outer-middle',
+                        text: 'Number of Conflicts',
                     },
                 },
             },
             legend: {
                 item: {
                     onclick: function(id) {
-                        redirectFromLabel(props, id);
+                        // If the user clicked on the legend, redirect to the
+                        // conflict resolver for that instrument across all
+                        // visits
+                        window.location = props.BaseURL + '/conflict_resolver/'
+                            + '?instrument=' + id
+                            + '&candidateID=' + props.Candidate.Meta.CandID;
                     },
                 },
-            },
-            onrendered: function() {
-                d3.selectAll('.c3-chart-arc text').each(function(v) {
-                    let label = d3.select(this);
-                    let data = label._groups[0][0].innerHTML.split(',');
-
-                    let id = data[0];
-                    let value = data[1];
-
-                    d3.select(this).text('')
-                        .append('tspan')
-                        .text(id)
-                        .attr('dy', 0)
-                        .attr('x', 0)
-                        .attr('text-anchor', 'middle')
-                        .append('tspan')
-                        .text(value + ' conflicts')
-                        .attr('dy', '1.2em')
-                        .attr('x', 0)
-                        .attr('text-anchor', 'middle');
-                });
             },
         });
     });
 
-    return <div id='conflictschart' />;
+    return <div>
+        <div id='conflictschart' />
+        <ul>
+            <li>Click on instrument in legend to visit conflict resolver for that instrument across all visits.</li>
+            <li>Click on bar in graph to visit conflict resolver for that visit and instrument combination.</li>
+        </ul>
+    </div>;
+}
+
+/**
+ * Get a list of unique visits in the data passed.
+ *
+ * @param {object} data - The summary data
+ *
+ * @return {array}
+ */
+function getVisits(data) {
+    let visits = {};
+    for (const row of Object.values(data)) {
+        visits[row.Visit_label] = true;
+    }
+    return Object.keys(visits);
+}
+
+/**
+ * Get a list of unique instruments in the data passed.
+ *
+ * @param {object} data - The summary data
+ *
+ * @return {array}
+ */
+function getInstruments(data) {
+    let visits = {};
+    for (const row of Object.values(data)) {
+        visits[row.Test_name] = true;
+    }
+    return Object.keys(visits);
 }
 
 /**
  * Converts the conflict data to the representation
  * required by the C3 library.
  *
- * @param {array} conflicts - The data from the database
+ * @param {array} visits      - An array of visit labels
+ * @param {array} instruments - An array of instruments in the data
+ * @param {array} conflicts   - The unprocessed data from the database
  *
  * @return {array} - an array suitable for an C3 data key
  */
-function getDataBreakdown(conflicts) {
-    let data = [];
+function getDataBreakdown(visits, instruments, conflicts) {
+    let odata = {};
+    // The data needs to be in the format:
+    //    ['instrument1', v1val, v2val, v3val],
+    //    ['instrument2', v1val, v2val, v3val]
+    // etc.
+    // First we convert the conflicts from the format returned
+    // from the DB of [VisitLabel, TestName, Count] (sparsely
+    // populated if count is 0) into an object so we can easily
+    // look up the value, then we go through the list of instruments
+    // and populate an array to return to C3.
     for (let i = 0; i < conflicts.length; i++) {
         const conflict = conflicts[i];
-        data.push([
-            conflict.Test_name + ' - ' + conflict.Visit_label,
-            conflict.Conflicts,
-        ]);
+        if (!odata[conflict.Test_name]) {
+            odata[conflict.Test_name] = {};
+        }
+        odata[conflict.Test_name][conflict.Visit_label] = conflict.Conflicts;
+    }
+
+    let data = [];
+
+    for (let i = 0; i < instruments.length; i++) {
+        const tn = instruments[i];
+        let row = [tn];
+        for (let j = 0; j < visits.length; j++) {
+            const visit = visits[j];
+                row.push(Number(odata[tn][visit]));
+        }
+        data.push(row);
     }
     return data;
 }
 
-/**
- * Redirects to the conflict resolver based on the label displayed
- * in the C3 chart
- *
- * @param {array} props - The React props
- * @param {string} label - The label in the chart
- *
- * @return {void}
- */
-function redirectFromLabel(props, label) {
-    let [testname, visit] = label.split(' - ');
-    window.location = props.BaseURL + '/conflict_resolver/'
-        + '?visitLabel=' + visit
-        + '&instrument=' + testname
-        + '&candidateID=' + props.Candidate.Meta.CandID;
-}
 export default CandidateConflictsWidget;

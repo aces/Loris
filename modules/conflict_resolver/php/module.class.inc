@@ -112,12 +112,18 @@ class Module extends \Module
                      LEFT JOIN session s1 ON (f1.SessionID=s1.ID)
                      LEFT JOIN session s2 ON (f2.SessionID=s2.ID)
                  WHERE (s1.CandID=:cand1 OR s2.CandID=:cand2)
-                 GROUP BY f1.Test_name, s1.Visit_label",
+                 GROUP BY f1.Test_name, s1.Visit_label
+                 ORDER BY s1.Visit_label, f1.Test_name",
                 ['cand1' => $candID, 'cand2' => $candID],
             );
             // Do not show the conflicts card if there are no conflicts
             if (empty($results)) {
                 return [];
+            }
+
+            $width = 1;
+            if(count($results) > 10) {
+                $width = 2;
             }
             return [
                 new \LORIS\candidate_profile\CandidateWidget(
@@ -127,7 +133,7 @@ class Module extends \Module
                     [
                         'Conflicts' => $results,
                     ],
-                    1,
+                    $width,
                     1,
                 )
             ];

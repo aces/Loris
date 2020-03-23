@@ -95,7 +95,7 @@ class Module extends \Module
                     "lorisjs.candidate_profile.CandidateInfo.CandidateInfo",
                     ['ExtraCandidateInfo' => $params],
                     1,
-                    1,
+                    2,
                     -100,
                 ),
             ];
