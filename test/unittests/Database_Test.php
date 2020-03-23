@@ -3,7 +3,7 @@
  * This tests the LorisForm replacement for HTML_QuickForm used by
  * Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Tests
  * @package  Main
@@ -14,25 +14,48 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 /**
+ * Contains a Fake PDO class used for setting up unit tests.
+ *
  * Phan has an issue with the FakeDatabase->trackChanges function. It appears
  * that this function exists only to prevent an unnecessary call during unit
  * tests so we don't need phan to bother us.
  *
  * @phan-file-suppress PhanUnusedProtectedMethodParameter
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class FakePDO extends PDO
 {
+    /**
+     * Override default constructor.
+     */
     public function __construct()
     {
     }
 }
 
+/**
+ * Contains a Fake class used for setting up unit tests.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
 class FakeDatabase extends Database
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the new row
+     * @param string $where the selection filter, joined as a boolean and
+     * @param string $type  The type of change being tracked (*I*nsert,
+     *                      *U*pdate or *D*elete)
+     *
+     * @return void
+     */
     protected function trackChanges(
-        string $table, 
-        array $set, 
-        string $where, 
+        string $table,
+        array $set,
+        string $where,
         string $type='U'
     ) : void {
     }
@@ -65,8 +88,8 @@ class Database_Test extends TestCase
         $this->factory->reset();
         $this->factory->setTesting(false);
         $this->config = $this->factory->Config(CONFIG_XML);
-        $database = $this->config->getSetting('database');
-        $this->DB = Database::singleton(
+        $database     = $this->config->getSetting('database');
+        $this->DB     = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -117,28 +140,28 @@ class Database_Test extends TestCase
 
         $this->DB->setFakeTableData(
             "Config",
-            array(
-                0 => array(
-                    'ID' => 99999,
-                'ConfigID' => '123456',
-                'Value'  => 'FKE1234',
-            )
-            )
+            [
+                0 => [
+                    'ID'       => 99999,
+                    'ConfigID' => '123456',
+                    'Value'    => 'FKE1234',
+                ]
+            ]
         );
 
-        $allCandidates = $this->DB->pselect("SELECT * FROM Config", array());
+        $allCandidates = $this->DB->pselect("SELECT * FROM Config", []);
 
         $this->assertEquals(
             $allCandidates,
-            array(
-                0 => array(
-                    'ID' => 99999,
+            [
+                0 => [
+                    'ID'       => 99999,
                     'ConfigID' => 123456,
-                    'Value' => 'FKE1234',
-                )
+                    'Value'    => 'FKE1234',
+                ]
 
-            )
-        ); 
+            ]
+        );
     }
 
     /**
@@ -149,21 +172,20 @@ class Database_Test extends TestCase
      */
     function testUpdateEscapesHTML()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('update')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['update']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
-
+        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            $this->equalTo(array('set_field' => '&lt;b&gt;Hello&lt;/b&gt;'))
+            $this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;'])
         );
 
         $stub->_PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
-        $stub->update("test", array('field' => '<b>Hello</b>'), array());
+        $stub->update("test", ['field' => '<b>Hello</b>'], []);
 
     }
 
@@ -175,22 +197,21 @@ class Database_Test extends TestCase
      */
     function testUnsafeUpdateDoesntEscapeHTML()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('unsafeupdate')))
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['unsafeupdate']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
-
+        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            $this->equalTo(array('set_field' => '<b>Hello</b>'))
+            $this->equalTo(['set_field' => '<b>Hello</b>'])
         );
 
         $stub->_PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
-        $stub->unsafeupdate("test", array('field' => '<b>Hello</b>'), array());
+        $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
 
     }
 
@@ -202,21 +223,20 @@ class Database_Test extends TestCase
      */
     function testInsertEscapesHTML()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('insert')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['insert']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
-
+        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            $this->equalTo(array('field' => '&lt;b&gt;Hello&lt;/b&gt;'))
+            $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
         );
 
         $stub->_PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
-        $stub->insert("test", array('field' => '<b>Hello</b>'), array());
+        $stub->insert("test", ['field' => '<b>Hello</b>'], []);
 
     }
 
@@ -228,22 +248,21 @@ class Database_Test extends TestCase
      */
     function testUnsafeInsertDoesntEscapeHTML()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('unsafeinsert')))
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['unsafeinsert']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
-
+        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            $this->equalTo(array('field' => '<b>Hello</b>'))
+            $this->equalTo(['field' => '<b>Hello</b>'])
         );
 
         $stub->_PDO->expects($this->once())->method("prepare")
             ->will($this->returnValue($stmt));
-        $stub->unsafeinsert("test", array('field' => '<b>Hello</b>'), array());
+        $stub->unsafeinsert("test", ['field' => '<b>Hello</b>'], []);
 
     }
 
@@ -258,43 +277,44 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => null,
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
 
         $this->DB->delete(
             "ConfigSettings",
-            array('Visible' => 1, 'Description' => null)
+            ['Visible' => 1, 'Description' => null]
         );
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => '99991',
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => '99991',
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
 
-    } 
+    }
 
     /**
      * Test that delete deletes a specified row from a specified table
@@ -306,39 +326,41 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => '99991',
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => '99991',
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'deleting',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
 
         $this->DB->delete(
-            "ConfigSettings", array('Visible' => 1, 'Description' => 'deleting')
+            "ConfigSettings",
+            ['Visible' => 1, 'Description' => 'deleting']
         );
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => '99991',
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => '99991',
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
 
     }
@@ -355,46 +377,47 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => null,
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
         $this->DB->update(
-            "ConfigSettings", 
-            array('Visible' => null, 'Description' => 'new description'),
-            array('Description' => null)
+            "ConfigSettings",
+            ['Visible' => null, 'Description' => 'new description'],
+            ['Description' => null]
         );
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'new description',
-                    'Visible' => null
-                )
-            )
+                    'Visible'     => null
+                ]
+            ]
         );
     }
 
@@ -409,46 +432,47 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'first description',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
         $this->DB->update(
-            "ConfigSettings", 
-            array('Visible' => null, 'Description' => 'new description'), 
-            array('Description' => 'first description')
+            "ConfigSettings",
+            ['Visible' => null, 'Description' => 'new description'],
+            ['Description' => 'first description']
         );
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'new description',
-                    'Visible' => null
-                )
-            )
+                    'Visible'     => null
+                ]
+            ]
         );
     }
 
@@ -464,44 +488,45 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
         $this->DB->insert(
             "ConfigSettings",
-            array(
-                'ID' => 99992,
-                'Name' => 'test 2',
-                'Visible' => 1,
+            [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
+                'Visible'     => 1,
                 'Description' => null
-            )
+            ]
         );
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => null,
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
     }
 
@@ -516,44 +541,45 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
         $this->DB->insert(
             "ConfigSettings",
-            array(
-                'ID' => 99992,
-                'Name' => 'test 2',
-                'Visible' => 1,
+            [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
+                'Visible'     => 1,
                 'Description' => 'test description'
-            )
+            ]
         );
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'test description',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
     }
 
@@ -569,53 +595,54 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
         $this->DB->replace(
             "ConfigSettings",
-            array(
-                'ID' => 99991,
-                'Name' => 'test 1',
-                'Visible' => 1,
+            [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
+                'Visible'     => 1,
                 'Description' => null
-            )
+            ]
         );
         $this->DB->replace(
             "ConfigSettings",
-            array(
-                'ID' => 99992,
-                'Name' => 'test 2',
-                'Visible' =>  1,
+            [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
+                'Visible'     =>  1,
                 'Description' => null
-            )
+            ]
         );
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => null,
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => null,
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
     }
 
@@ -630,53 +657,54 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
         $this->DB->replace(
             "ConfigSettings",
-            array(
-                'ID' => 99991,
-                'Name' => 'test 1',
-                'Visible' => 1,
+            [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
+                'Visible'     => 1,
                 'Description' => 'description 1'
-            )
+            ]
         );
         $this->DB->replace(
             "ConfigSettings",
-            array(
-                'ID' => 99992,
-                'Name' => 'test 2',
-                'Visible' => 1,
+            [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
+                'Visible'     => 1,
                 'Description' => 'description 2'
-            )
+            ]
         );
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'description 1',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'description 2',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
     }
 
@@ -691,53 +719,54 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
         $this->DB->insertOnDuplicateUpdate(
             "ConfigSettings",
-            array(
-                'ID' => 99992,
-                'Name' => 'test 2',
-                'Visible' => 1,
+            [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
+                'Visible'     => 1,
                 'Description' => 'description 2'
-            )
+            ]
         );
         $this->DB->insertOnDuplicateUpdate(
             "ConfigSettings",
-            array(
-                'ID' => 99991,
-                'Name' => 'test 1 updated',
-                'Visible' => 1, 
+            [
+                'ID'          => 99991,
+                'Name'        => 'test 1 updated',
+                'Visible'     => 1,
                 'Description' => 'description updated'
-            )
+            ]
         );
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1 updated',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1 updated',
                     'Description' => 'description updated',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'description 2',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
     }
 
@@ -750,25 +779,26 @@ class Database_Test extends TestCase
      */
     function testInsertOnDuplicateUpdateEscapesHTML()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
             ->setMethods(
-                $this->_getAllMethodsExcept(array('insertOnDuplicateUpdate'))
+                $this->_getAllMethodsExcept(['insertOnDuplicateUpdate'])
             )
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
-
+        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            $this->equalTo(array('field' => '&lt;b&gt;Hello&lt;/b&gt;'))
+            $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
         );
 
         $stub->_PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
         $stub->insertOnDuplicateUpdate(
-            "test", array('field' => '<b>Hello</b>'), array()
+            "test",
+            ['field' => '<b>Hello</b>'],
+            []
         );
     }
 
@@ -780,24 +810,26 @@ class Database_Test extends TestCase
      */
     function testUnsafeInsertOnDuplicateUpdateDoesntEscapeHTML()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
             ->setMethods(
-                $this->_getAllMethodsExcept(array('unsafeInsertOnDuplicateUpdate'))
+                $this->_getAllMethodsExcept(['unsafeInsertOnDuplicateUpdate'])
             )
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            $this->equalTo(array('field' => '<b>Hello</b>'))
+            $this->equalTo(['field' => '<b>Hello</b>'])
         );
 
         $stub->_PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
         $stub->unsafeInsertOnDuplicateUpdate(
-            "test", array('field' => '<b>Hello</b>'), array()
+            "test",
+            ['field' => '<b>Hello</b>'],
+            []
         );
     }
 
@@ -811,23 +843,23 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
         $this->DB->insert(
             "ConfigSettings",
-            array(
-                'ID' => 99992,
-                'Name' => 'test 2',
-                'Visible' => 1,
+            [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
+                'Visible'     => 1,
                 'Description' => 'test description'
-            )
+            ]
         );
         $lastInsertId = $this->DB->getLastInsertId();
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
@@ -842,12 +874,12 @@ class Database_Test extends TestCase
      */
     function testRun()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('run')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['run']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stub->_PDO->expects($this->once())
             ->method("exec")->with($this->equalTo("SHOW TABLES"));
@@ -862,12 +894,12 @@ class Database_Test extends TestCase
      */
     function testPrepare()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('prepare')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['prepare']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stub->_PDO->expects($this->once())
             ->method("prepare")
@@ -886,40 +918,40 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                1 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                1 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'permanent 2',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
-        $statement = $this->DB->prepare(
+        $statement  = $this->DB->prepare(
             'SELECT ID, Name, Description, Visible
             FROM ConfigSettings WHERE ID=:id AND Name=:name'
         );
         $allSetting = $this->DB->execute(
             $statement,
-            array(':id' => 99992, 'name' => 'test 2')
+            [':id' => 99992, 'name' => 'test 2']
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                0 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+            [
+                0 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'permanent 2',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
     }
 
@@ -934,39 +966,40 @@ class Database_Test extends TestCase
     {
         $this->DB->setFakeTableData(
             "ConfigSettings",
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
-        $statement = $this->DB->prepare(
+        $statement  = $this->DB->prepare(
             "UPDATE ConfigSettings SET Name=:name WHERE ID=:id"
         );
         $allSetting = $this->DB->execute(
             $statement,
-            array(':id' => 99991, ':name' => 'new name'),
-            array('nofetch' => true)
+            [':id' => 99991, ':name' => 'new name'],
+            ['nofetch' => true]
         );
-        $check = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+        $check      = $this->DB->pselect(
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $check,
-            array(
-                0 => array(
-                    'ID' => 99991,
-                    'Name' => 'new name',
+            [
+                0 => [
+                    'ID'          => 99991,
+                    'Name'        => 'new name',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
-        $this->assertEquals($allSetting, array());
+        $this->assertEquals($allSetting, []);
     }
 
     /**
@@ -978,17 +1011,17 @@ class Database_Test extends TestCase
      */
     function testPselectCallsFunctions()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('pselect')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['pselect']))->getMock();
 
-        $stmt = $stub->prepare("SHOW TABLES");
-        $params = array('test' => 'test');
+        $stmt   = $stub->prepare("SHOW TABLES");
+        $params = ['test' => 'test'];
 
         $stub->expects($this->once())
             ->method("prepare")->with($this->equalTo("SHOW TABLES"));
         $stub->expects($this->once())->method("execute")
-            ->with($this->equalTo($stmt), $this->equalTo($params), array());
+            ->with($this->equalTo($stmt), $this->equalTo($params), []);
         $stub->pselect("SHOW TABLES", $params);
     }
 
@@ -1000,24 +1033,25 @@ class Database_Test extends TestCase
      */
     function testPselectReturnsCorrectArray()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $allSetting = $this->DB->pselect(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals($allSetting, $data);
@@ -1032,13 +1066,13 @@ class Database_Test extends TestCase
      */
     function testPselectRowCallsPrepare()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('pselectRow')))
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['pselectRow']))
             ->getMock();
 
-        $query = "SELECT ID, Name, Description, Visible FROM ConfigSettings";
-        $params = array('test' => 'test');
+        $query  = "SELECT ID, Name, Description, Visible FROM ConfigSettings";
+        $params = ['test' => 'test'];
         $stub->expects($this->once())->method("pselect")
             ->with(
                 $this->equalTo($query . " LIMIT 2"),
@@ -1058,37 +1092,37 @@ class Database_Test extends TestCase
      */
     function testPselectRowReturnsData()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $allSetting = $this->DB->pselectRow(
             "SELECT ID, Name, Description, Visible 
             FROM ConfigSettings WHERE ID=99992",
-            array()
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
 
         $this->assertEquals(
             $allSetting,
-            array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+            [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
+                'Visible'     => '1'
+            ]
         );
     }
 
@@ -1101,25 +1135,26 @@ class Database_Test extends TestCase
      */
     function testPselectRowThrowsException()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $this->expectException("DomainException");
         $allSetting = $this->DB->pselectRow(
-            "SELECT ID, Name, Description, Visible FROM ConfigSettings", array()
+            "SELECT ID, Name, Description, Visible FROM ConfigSettings",
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
     }
@@ -1132,27 +1167,27 @@ class Database_Test extends TestCase
      */
     function testPselectColReturnsData()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $allSetting = $this->DB
-            ->pselectCol("SELECT Name FROM ConfigSettings", array());
+            ->pselectCol("SELECT Name FROM ConfigSettings", []);
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
 
-        $this->assertEquals($allSetting, array(0 => 'test 1', 1 => 'test 2'));
+        $this->assertEquals($allSetting, [0 => 'test 1', 1 => 'test 2']);
     }
 
     /**
@@ -1165,23 +1200,23 @@ class Database_Test extends TestCase
     function testPselectColThrowsException()
     {
         $this->expectException("DatabaseException");
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
-        $this->DB->pselectCol("SELECT ID, Name FROM ConfigSettings", array());
+        $this->DB->pselectCol("SELECT ID, Name FROM ConfigSettings", []);
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
     }
 
@@ -1193,25 +1228,25 @@ class Database_Test extends TestCase
      */
     function testPselectOne()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $allSetting = $this->DB->pselectOne(
             "SELECT ID, Name FROM ConfigSettings WHERE ID=99991",
-            array()
+            []
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
 
@@ -1277,13 +1312,13 @@ class Database_Test extends TestCase
         $this->markTestIncomplete(
             "This test calls a private method, making it fail for now"
         );
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('insertIgnore')))
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['insertIgnore']))
             ->getMock();
 
         $table = "ConfigSettings";
-        $set = array('ID' => 99991);
+        $set   = ['ID' => 99991];
 
         $stub->expects($this->once())
             ->method("_realinsert")->with($this->equalTo($table), $set, true, true);
@@ -1299,44 +1334,44 @@ class Database_Test extends TestCase
      */
     function testPselectWithIndexKey()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $allSetting = $this->DB->pselectWithIndexKey(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
-            array(),
+            [],
             "ID"
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
         $this->assertEquals(
             $allSetting,
-            array(
-                99991 => array(
-                    'ID' => 99991,
-                    'Name' => 'test 1',
+            [
+                99991 => [
+                    'ID'          => 99991,
+                    'Name'        => 'test 1',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                ),
-                99992 => array(
-                    'ID' => 99992,
-                    'Name' => 'test 2',
+                    'Visible'     => '1'
+                ],
+                99992 => [
+                    'ID'          => 99992,
+                    'Name'        => 'test 2',
                     'Description' => 'permanent',
-                    'Visible' => '1'
-                )
-            )
+                    'Visible'     => '1'
+                ]
+            ]
         );
     }
 
@@ -1349,18 +1384,20 @@ class Database_Test extends TestCase
      */
     function testPselectWithIndexKeyThrowsLorisException()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
         $this->expectException("LorisException");
         $this->DB->pselectWithIndexKey(
-            "SELECT ID, Name FROM ConfigSettings", array(), ""
+            "SELECT ID, Name FROM ConfigSettings",
+            [],
+            ""
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
     }
@@ -1374,18 +1411,20 @@ class Database_Test extends TestCase
      */
     function testPselectWithIndexKeyThrowsDbException()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
         $this->expectException("DatabaseException");
         $this->DB->pselectWithIndexKey(
-            "SELECT ID, Name FROM ConfigSettings", array(), "Test"
+            "SELECT ID, Name FROM ConfigSettings",
+            [],
+            "Test"
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
     }
@@ -1399,29 +1438,32 @@ class Database_Test extends TestCase
      */
     function testPselectColWithIndexKey()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $allSetting = $this->DB->pselectColWithIndexKey(
-            "SELECT ID, Name FROM ConfigSettings", array(), "ID"
+            "SELECT ID, Name FROM ConfigSettings",
+            [],
+            "ID"
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
 
         $this->assertEquals(
-            $allSetting, array(99991 => 'test 1', 99992 => 'test 2')
+            $allSetting,
+            [99991 => 'test 1', 99992 => 'test 2']
         );
     }
 
@@ -1434,25 +1476,27 @@ class Database_Test extends TestCase
      */
     function testPselectColWithIndexKeyThrowsLorisException()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $this->expectException("LorisException");
         $this->DB->pselectColWithIndexKey(
-            "SELECT ID, Name FROM ConfigSettings", array(), ""
+            "SELECT ID, Name FROM ConfigSettings",
+            [],
+            ""
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
     }
@@ -1466,25 +1510,27 @@ class Database_Test extends TestCase
      */
     function testPselectColWithIndexKeyThrowsDbExceptionOne()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $this->expectException("DatabaseException");
         $this->DB->pselectColWithIndexKey(
-            "SELECT Name FROM ConfigSettings", array(), "ID"
+            "SELECT Name FROM ConfigSettings",
+            [],
+            "ID"
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
     }
@@ -1498,25 +1544,27 @@ class Database_Test extends TestCase
      */
     function testPselectColWithIndexKeyThrowsDbExceptionTwo()
     {
-        $data = array(
-            0 => array(
-                'ID' => 99991,
-                'Name' => 'test 1',
+        $data = [
+            0 => [
+                'ID'          => 99991,
+                'Name'        => 'test 1',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            ),
-            1 => array(
-                'ID' => 99992,
-                'Name' => 'test 2',
+                'Visible'     => '1'
+            ],
+            1 => [
+                'ID'          => 99992,
+                'Name'        => 'test 2',
                 'Description' => 'permanent',
-                'Visible' => '1'
-            )
-        );
+                'Visible'     => '1'
+            ]
+        ];
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $this->expectException("DatabaseException");
         $this->DB->pselectColWithIndexKey(
-            "SELECT Visible, Name FROM ConfigSettings", array(), "Visible"
+            "SELECT Visible, Name FROM ConfigSettings",
+            [],
+            "Visible"
         );
         $this->DB->run("DROP TEMPORARY TABLE ConfigSettings");
     }
@@ -1530,9 +1578,9 @@ class Database_Test extends TestCase
     function testQuote()
     {
 
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('quote')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['quote']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1562,9 +1610,9 @@ class Database_Test extends TestCase
      */
     function testInTransaction()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('inTransaction')))
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['inTransaction']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -1583,9 +1631,9 @@ class Database_Test extends TestCase
      */
     function testBeginTransaction()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('beginTransaction')))
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['beginTransaction']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -1604,9 +1652,9 @@ class Database_Test extends TestCase
      */
     function testBeginTransactionThrowsException()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('beginTransaction')))
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['beginTransaction']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -1624,9 +1672,9 @@ class Database_Test extends TestCase
      */
     function testRollback()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('rollBack')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1643,9 +1691,9 @@ class Database_Test extends TestCase
      */
     function testRollbackThrowsException()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('rollBack')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1662,9 +1710,9 @@ class Database_Test extends TestCase
      */
     function testCommit()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('commit')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['commit']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1681,9 +1729,9 @@ class Database_Test extends TestCase
      */
     function testCommitThrowsException()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('commit')))->getMock();
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['commit']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1700,9 +1748,9 @@ class Database_Test extends TestCase
      */
     function testIsConnectedNoPDO()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('isConnected')))
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['isConnected']))
             ->getMock();
 
         $val = $stub->isConnected();
@@ -1717,13 +1765,13 @@ class Database_Test extends TestCase
      */
     function testIsConnectedWithPDO()
     {
-        $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(array('isConnected')))
+        $this->_factory = NDB_Factory::singleton();
+        $stub           = $this->getMockBuilder('FakeDatabase')
+            ->setMethods($this->_getAllMethodsExcept(['isConnected']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $val = $stub->isConnected();
+        $val        = $stub->isConnected();
         $this->assertEquals($val, true);
     }
 }
