@@ -59,6 +59,11 @@ class FilesDownloadHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        if ($request->getMethod() != "GET") {
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                ['GET']
+            );
+        }
         $filename = $request->getAttribute('filename');
         if (is_null($filename)) {
             throw new \LorisException(
