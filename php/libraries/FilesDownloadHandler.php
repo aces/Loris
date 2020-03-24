@@ -79,6 +79,12 @@ class FilesDownloadHandler implements RequestHandlerInterface
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
+        if (!is_file($targetPath)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'File requested is not a file.'
+            );
+        }
+
         $mime = mime_content_type($targetPath);
         return (new \LORIS\Http\Response\JSON\OK())
             ->withHeader(
