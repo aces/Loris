@@ -1,29 +1,12 @@
 <?php
-/**
- * This file contains the base class for instruments in Loris
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Behavioural
- * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Loris\StudyEntities\Candidate\CandID;
 
 /**
- * Base class for all NeuroDB behavioural instruments
+ * Base class for all LORIS behavioural instruments.
  *
- * Throws PEAR errors. Also requires PEAR HTML_Quickform.
- *
- * @category Main
- * @package  Behavioural
- * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 abstract class NDB_BVL_Instrument extends NDB_Page
 {
@@ -38,9 +21,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
-     * HTML_Quickform object
+     * The form object for this instrument.
      *
-     * @access private
+     * @var    LorisForm
+     * @access public
      */
     public $form;
 
@@ -54,59 +38,59 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Test name (short name), equivalent to test_names.Test_name
      *
-     * @access private
+     * @access public
      */
-    var $testName;
+    public $testName;
 
     /**
      * Instrument instance CommentID
      *
-     * @access private
+     * @access public
      */
-    var $commentID;
+    public $commentID;
 
     /**
      * Database table containing data referenced by $this->commentID
      *
      * @access private
      */
-    var $table;
+    private $_table;
 
     /**
      * Cache location for the date of administration
      *
-     * @access private
+     * @access public
      */
-    var $dateOfAdministration;
+    public $dateOfAdministration;
 
     /**
      * Additional form defaults - should only be used for lorisform
      * static elements!
      *
-     * @access private
+     * @access public
      */
-    var $localDefaults = ['emptyCell' => '&nbsp;'];
+    public $localDefaults = ['emptyCell' => '&nbsp;'];
 
     /**
      * String to separate the group elements
      *
-     * @access private
+     * @access public
      */
-    var $_GUIDelimiter = "</td>\n<td>";
+    public $GUIDelimiter = "</td>\n<td>";
 
     /**
      * Commonly used level of indentation
      *
-     * @access private
+     * @access public
      */
-    var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
+    public $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
     /**
      * Array of required fields to check
      *
-     * @access private
+     * @access protected
      */
-    var $_requiredElements = [];
+    protected $requiredElements = [];
 
     /**
      * Array of date fields to be processed into QuickForm dates
@@ -116,18 +100,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * all other dates in the table that appear on other pages (if they are
      * listed in the array of date fields) - note by @dariovins
      */
-    var $dateTimeFields = [];
+    public $dateTimeFields = [];
 
     /**
      * Array of date fields that contain only month year fields in frontend with
      * a static value for the date
      */
-    var $monthYearFields = [];
+    public $monthYearFields = [];
     /**
      * Array of column names to be ignored by the double data entry conflict
      * detector.
+     *
+     * @access public
      */
-    var $_doubleDataEntryDiffIgnoreColumns
+    public $doubleDataEntryDiffIgnoreColumns
         = [
             'CommentID',
             'UserID',
@@ -141,17 +127,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Whether the "Validity" field is shown as a flag for an instrument
      * or not.
      *
-     * @access private
+     * @access public
      */
-    var $ValidityEnabled = true;
+    public $ValidityEnabled = true;
 
     /**
      * Whether the "Validity" field is required before flagging an instrument
      * as complete or not.
      *
-     * @access private
+     * @access public
      */
-    var $ValidityRequired = true;
+    public $ValidityRequired = true;
 
     /**
      * True if the instrument page is being loaded by a script
@@ -159,11 +145,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * ignoring age-dependent or other conditional display logic in the form.
      * To be called from within individual instrument forms.
      */
-    var $displayAllFields = false;
+    public $displayAllFields = false;
 
-    var $WrapperTextElements           = [];
-    var $WrapperNumericElements        = [];
-    var $WrapperDateWithStatusElements = [];
+    public $WrapperTextElements           = [];
+    public $WrapperNumericElements        = []:
+    public $WrapperDateWithStatusElements = [];
 
     /**
      * True if the instrument is administered after the candidate's death.
@@ -172,7 +158,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * To be called from within individual instrument forms.
      *
      * @var    bool
-     * @access private
+     * @access protected
      */
     protected $postMortem = false;
 
@@ -206,7 +192,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @throws NotFound
      * @throws Exception
      */
-    static function factory(
+    public static function factory(
         string $instrument,
         string $commentID = '',
         string $page = '',
@@ -1085,7 +1071,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Gets the date of administration of an instrument instance.
      * Caches to reduce DB hits
      *
-     * @return mixed $dateOfAdministration the date of administration from
+     * @return mixed $_dateOfAdministration the date of administration from
      *         the DB, in the format "YYYY-MM-DD"
      */
     function getDateOfAdministration()
@@ -2116,7 +2102,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Loop over this instance data
         foreach ($thisData AS $key=>$value) {
-            if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
+            if (!in_array($key, $this->doubleDataEntryDiffIgnoreColumns)) {
                 if ($otherData[$key] != $value) {
                     $diff[] = [
                         'TableName'      => $this->table,
