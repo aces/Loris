@@ -1071,7 +1071,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Gets the date of administration of an instrument instance.
      * Caches to reduce DB hits
      *
-     * @return mixed $_dateOfAdministration the date of administration from
+     * @return mixed $dateOfAdministration the date of administration from
      *         the DB, in the format "YYYY-MM-DD"
      */
     function getDateOfAdministration()
