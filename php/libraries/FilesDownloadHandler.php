@@ -67,13 +67,10 @@ class FilesDownloadHandler implements RequestHandlerInterface
         }
 
         //Use basename to remove path traversal characters.
-        $targetPath = $this->downloadDirectory->getPathname() . '/' . basename(
-            $filename
-        );
+        $targetPath = \Utility::appendForwardSlash(
+            $this->downloadDirectory->getPathname()
+        ) . basename($filename);
 
-        /* If file exists, set response code to 'Conflict' unless the
-         * calling code wants to overwrite the file.
-         */
         if (!file_exists($targetPath)) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
