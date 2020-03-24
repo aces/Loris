@@ -82,10 +82,6 @@ class FilesDownloadHandler implements RequestHandlerInterface
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
-        // Serve the file. If configured, the X-Sendfile header will serve
-        // the file directly from the filesystem instead of first loading it
-        // into PHP's memory. This allows LORIS to serve very large files more
-        // reliably.
         $mime = mime_content_type($targetPath);
         return (new \LORIS\Http\Response\JSON\OK())
             ->withHeader(
@@ -96,7 +92,6 @@ class FilesDownloadHandler implements RequestHandlerInterface
                 'Content-Type',
                 $mime !== false ? $mime : 'application/octet-stream'
             )
-            ->withHeader('X-Sendfile', $targetPath)
             ->withBody(new \LORIS\Http\FileStream($targetPath));
     }
 }
