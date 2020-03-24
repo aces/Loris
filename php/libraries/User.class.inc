@@ -21,7 +21,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class User extends UserPermissions
+class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleResource
 {
     /**
      * Stores user information
@@ -556,6 +556,29 @@ class User extends UserPermissions
             return null;
         }
         return new \DateTime($time);
+    }
+
+    /**
+     * Implements the AccessibleResource interface. A user can
+     * be accessed by another user if they have a project and a site in common.
+     *
+     * @param \User $user The "editing" user trying to access this user object.
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+        $centers = $user->getCenterIDs();
+
+        $projMatch   = !empty(
+            array_intersect(
+                $this->getProjectID(),
+                $user->getProjectIDs()
+            )
+        );
+        $centerMatch = !empty(array_intersect($this->getCenterIDs(), $centers));
+
+        return $projMatch && $centerMatch;
     }
 }
 
