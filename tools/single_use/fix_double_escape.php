@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This tool scores any registered instrument that was built using the
  * NDB_BVL_Instrument class and that has a working score() method.
@@ -16,7 +16,6 @@
  * which was previously scored but no longer meets the criteria above (i.e. if the
  * administration was changed from `all` to `none`, the score will not be removed).
  *
- * @package behavioural
  */
 
 require_once __DIR__."/../generic_includes.php";
@@ -61,6 +60,7 @@ if (in_array('use-history', $argv, true)) {
 // DEFINE VARIABLES
 // All instruments looked at
 $instrumentNames = $DB->pselectCol("SELECT Test_name FROM test_names", array());
+$tables = array();
 // Array of all fields containing any escaped characters
 $escapedEntries = array();
 // Array of database tables and columns containing escaped characters.
@@ -101,12 +101,13 @@ foreach($instrumentNames as $instrumentName) {
 	
 	// instrument name and table name might differ
 	$tableName = $instrumentInstance->table;
+	$tables[$tableName] = $instrumentName;
         $set            = array();
-
+	print_r($instrumentData);
         // Go through all fields and identify which have any escaped characters
         foreach ($instrumentData as $field => $value) {
             // regex detecting any escaped character in the database
-            if (preg_match('/&(amp;)+(gt;|lt;|quot;|amp;)/', $value)) {
+            if (!is_null($value) && preg_match('/&(amp;)+(gt;|lt;|quot;|amp;)/', $value)) {
                 $escapedEntries[$tableName][$cid][$field] = $value;
 		$escapedFields[$tableName][] = $field;
                 $errorsDetected = true;
@@ -156,16 +157,14 @@ if ($useHistory) {
 		WHERE primaryCols='CommentID' AND
 		primaryVals IN ($listCIDs) AND
 		tbl IN ($listTables) AND
-		col IN ($listFields)";	
+		col IN ($listFields)
+		ORDER BY changeDate DESC";	
 	
-	$result = $DB->pselect(
+	$historyData = $DB->pselect(
 		$query, 
 		[]
 	);
 
-	// Reverse the array obtained from history data so that it is in anti-chronological order
-	// Does not preserve keys, assuming that the keys are indexes & not relevant info
-	$historyData = array_reverse($result, false);
 	// Go through history data starting with most recent changes
 	foreach($historyData as $key => $data) {
     		$tbl = $data['tbl'];
@@ -217,13 +216,14 @@ if ($useHistory) {
 
 
     foreach ($escapedEntries as $tableName=>$cids) {
-        printOut("Opening $tableName");
+	$instrumentName = $tables[$tableName];
+        printOut("Opening $instrumentName");
         foreach ($cids as $cid => $fields) {
             try {
-                $instrumentInstance = \NDB_BVL_Instrument::factory($tableName, $cid);
+                $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
             } catch (Exception $e) {
                 printError(
-                    "There was an error instantiating instrument $tableName for " .
+                    "There was an error instantiating instrument $instrumentName for " .
                     "$cid.This instrument will be skipped."
                 );
                 continue;
@@ -235,9 +235,9 @@ if ($useHistory) {
 		) {
 			printOut("CommentID:$cid - Replacing a truncated value by a non-truncated history entry" .
 			 	"\n\tTruncated Value: $value " .
-				"\n\tWill be replaced by:  {$untruncatedValues[$instrumentName][$cid][$field]} \n"
+				"\n\tWill be replaced by:  {$untruncatedValues[$tableName][$cid][$field]} \n"
 			);
-			$value = $untruncatedValues[$instrumentName][$cid][$field];
+			$value = $untruncatedValues[$tableName][$cid][$field];
                 }
 
                 // Each of the expressions below uniquely match each of the targeted
