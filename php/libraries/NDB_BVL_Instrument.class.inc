@@ -52,9 +52,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Database table containing data referenced by $this->commentID
      *
-     * @access private
+     * @access protected
      */
-    private $_table;
+    protected $table;
 
     /**
      * Cache location for the date of administration
