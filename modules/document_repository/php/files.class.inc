@@ -1,6 +1,9 @@
 <?php
+namespace LORIS\document_repository;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
 /**
- * It includes two functions.
  * Post method handles updating a file.
  * Delete method handles deleting a file.
  * Get method handles getting a file.
@@ -8,30 +11,7 @@
  *            (Files/name) will download this file
  * Put method handles editing a file.
  *
- * PHP Version 7
- *
- * @category Main
- * @package  Document_Repository
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-namespace LORIS\document_repository;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
-
-/**
- * It includes two functions.
- * Post method handles updating a file.
- * Delete method handles deleting a file.
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Document_Repository
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Files extends \NDB_Page
 {
@@ -67,8 +47,8 @@ class Files extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $config = \NDB_Factory::singleton()->config();
-        $path   = \Utility::appendForwardSlash(
+        $config       = \NDB_Factory::singleton()->config();
+        $downloadpath = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
         );
         switch ($request->getMethod()) {
@@ -108,34 +88,15 @@ class Files extends \NDB_Page
                     )
                 );
         case "GET":
-            $record = urldecode(basename($request->getUri()->getPath()));
-
-            if (!is_numeric($record)) {
-                $factory    = \NDB_Factory::singleton();
-                $DB         = $factory->database();
-                $uploadedBy = $DB->pselectOne(
-                    "SELECT uploaded_by FROM document_repository
-                    WHERE File_Name=:name",
-                    ['name' => $record]
-                );
-                $file       = $path. "$uploadedBy/$record";
-                return (new \LORIS\Http\Response())
-                    ->withHeader('Content-Type', 'application/octet-stream')
-                    ->withHeader(
-                        'Content-Disposition',
-                        'attachment; filename=' . basename($file)
-                    )
-                    ->withStatus(200)
-                    ->withBody(new \LORIS\Http\FileStream($file));
-            }
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode($this->getUploadDocFields($record))
-                    )
-                );
+            $filename   = urldecode(basename($request->getUri()->getPath()));
+            $downloader = new \LORIS\FilesDownloadHandler(
+                new \SPLFileInfo(
+                    $downloadpath . $request->getAttribute('user')->getUsername()
+                )
+            );
+            return $downloader->handle(
+                $request->withAttribute('filename', $filename)
+            );
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
