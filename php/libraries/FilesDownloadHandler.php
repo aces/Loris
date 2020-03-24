@@ -64,17 +64,18 @@ class FilesDownloadHandler implements RequestHandlerInterface
                 ['GET']
             );
         }
-        $filename = $request->getAttribute('filename');
+        //Use basename to remove path traversal characters.
+        $filename = basename($request->getAttribute('filename'));
+
         if (is_null($filename)) {
             throw new \LorisException(
                 'Must supply "filename" as a parameter'
             );
         }
 
-        //Use basename to remove path traversal characters.
         $targetPath = \Utility::appendForwardSlash(
             $this->downloadDirectory->getPathname()
-        ) . basename($filename);
+        ) . $filename;
 
         if (!file_exists($targetPath)) {
             return new \LORIS\Http\Response\JSON\NotFound();
