@@ -301,7 +301,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      */
     function getExaminerID($fullName): ?string
     {
-        $DB         = \NDB_Factory::singleton()->database();
+        $DB = \NDB_Factory::singleton()->database();
         return $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
@@ -319,7 +319,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      */
     function getCenterID($siteName): ?string
     {
-        $DB     = \NDB_Factory::singleton()->database();
+        $DB = \NDB_Factory::singleton()->database();
         return $DB->pselectOne(
             "SELECT CenterID
              FROM psc

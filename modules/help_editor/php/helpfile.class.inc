@@ -317,9 +317,13 @@ class HelpFile
      */
     static function hashToID($hash): int
     {
-        return \NDB_Factory::singleton()->database()->pselectOneInt(
+        $id = \NDB_Factory::singleton()->database()->pselectOneInt(
             "SELECT helpID FROM help WHERE hash = :HID",
             ['HID' => $hash]
         );
+        if (is_null($id)) {
+            throw new \NotFound();
+        }
+        return $id;
     }
 }

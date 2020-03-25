@@ -260,9 +260,9 @@ class NDB_BVL_Feedback
      *
      * @param string $name feedback type name
      *
-     * @return int feedback type id, empty array if none found
+     * @return ?int feedback type id
      */
-    public function getFeedbackTypeIdByName($name): int
+    public function getFeedbackTypeIdByName($name): ?int
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -409,9 +409,6 @@ class NDB_BVL_Feedback
      */
     function getThreadCount(): int
     {
-        // new DB Object
-        $db = \NDB_Factory::singleton()->database();
-
         $query   = "SELECT COUNT(*)
             FROM feedback_bvl_thread
             WHERE Active ='Y' AND Public = 'Y' AND Status <> 'closed'";
@@ -437,7 +434,9 @@ class NDB_BVL_Feedback
         }
         $query .= " GROUP BY $queryBy";
 
-        return $db->pselectOneInt($query, $qparams);
+        return \NDB_Factory::singleton()
+            ->database()
+            ->pselectOneInt($query, $qparams) ?? 0;
     }
 
     /**

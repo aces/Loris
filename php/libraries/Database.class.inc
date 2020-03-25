@@ -994,19 +994,22 @@ class Database
      * @param string $query  The SQL statement to run
      * @param array  $params Values to use for binding in the prepared statement
      *
-     * @return int A cell from the database.
+     * @return ?int A cell from the database converted to an integer value. If
+     * the query returns a value that cannot be validated as an integer, the
+     * function returns null. The calling code is responsible for handling the
+     * null case appropriately.
      *
      * @throws \DomainException When the cell returned by the query cannot be
      *                          validated as an integer.
      */
-    function pselectOneInt(string $query, array $params): int
+    function pselectOneInt(string $query, array $params): ?int
     {
         $result = filter_var(
             $this->pselectOne($query, $params),
             FILTER_VALIDATE_INT
         );
         if ($result === false) {
-            throw new \DomainException('Query result is not an integer');
+            return null;
         }
 
         return $result;
