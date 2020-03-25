@@ -216,7 +216,9 @@ class New_Profile extends \NDB_Form
         }
         // Validate DOB fields
         try {
-            new \DateTime($values['dobDate']);
+            if ((new \DateTime($values['dobDate'])) > new \DateTime('now')) {
+                $errors['dobDate'] = 'Date of Birth cannot be set in the future.';
+            }
         } catch (\Exception $e) {
             $errors['dobDate'] = 'Date of Birth is not a valid date.';
         }
