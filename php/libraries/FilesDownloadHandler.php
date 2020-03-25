@@ -67,9 +67,9 @@ class FilesDownloadHandler implements RequestHandlerInterface
         //Use basename to remove path traversal characters.
         $filename = basename($request->getAttribute('filename'));
 
-        if (is_null($filename)) {
-            throw new \LorisException(
-                'Must supply "filename" as a parameter'
+        if (empty($filename)) {
+            throw new \InvalidArgumentException(
+                'Invalid filename: cannot be empty'
             );
         }
 
