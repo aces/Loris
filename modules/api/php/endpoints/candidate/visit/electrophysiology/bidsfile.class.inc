@@ -58,7 +58,7 @@ class BidsFile extends Endpoint
     protected function supportedVersions() : array
     {
         return array(
-            'v0.0.3-dev',
+            'v0.0.3',
         );
     }
 

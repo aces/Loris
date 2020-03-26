@@ -69,7 +69,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return array(
-            'v0.0.3-dev',
+            'v0.0.3',
         );
     }
 
