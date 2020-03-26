@@ -43,6 +43,9 @@ Quality Control, and Behavioural Quality Control. (PR #6041)
 database (PR #5260)
 - New documentation for file permissions has been added to the README.md file. (PR #5323)
 - Dashboard study progression section performance improvement (PR #5887)
+documentation for file permissions has been added to the README.md file (PR #5323)
+- Addition of a new `account_request_date` in `users` table that will be used when
+requesting a new account and will be displayed in the User Accounts module (PR #6191)
 
 #### Bug Fixes
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)

@@ -653,8 +653,9 @@ class Edit_User extends \NDB_Form
 
         } else {
             // It is an existing user:
-            //     display user name
+            //     display user name and account request date
             $this->addScoreColumn('UserID', 'User name');
+            $this->addScoreColumn('account_request_date', 'Account Request Date');
         }
 
         // password
