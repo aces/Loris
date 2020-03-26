@@ -1,13 +1,7 @@
-/**
- * This file contains the React Component for a Modal Window.
- *
- * @author Henri Rabalais
- * @version 1.1.0
- *
- */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import Loader from 'Loader';
 
 /**
  * Modal Component.
@@ -30,6 +24,7 @@ import swal from 'sweetalert2';
 class Modal extends Component {
   constructor() {
     super();
+    this.state = {loading: false};
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -118,11 +113,13 @@ class Modal extends Component {
 
     const submitButton = () => {
       if (onSubmit) {
+        const handleSubmit = () => this.setState({loading: true}, () => onSubmit()
+        .then(() => this.setState({loading: false}, this.props.onClose()), () => {}));
         return (
           <div style={submitStyle}>
             <ButtonElement
               label="Submit"
-              onUserInput={() => onSubmit().then(() => this.props.onClose())}
+              onUserInput={handleSubmit}
             />
           </div>
         );
@@ -145,6 +142,7 @@ class Modal extends Component {
             {renderChildren()}
           </div>
           <div style={footerStyle}>
+            {this.state.loading ? <Loader/> : null}
             {submitButton()}
           </div>
         </div>

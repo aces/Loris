@@ -1218,7 +1218,7 @@ TimeElement.defaultProps = {
   name: '',
   label: '',
   value: '',
-  id: '',
+  id: null,
   disabled: false,
   required: false,
   onUserInput: function() {
