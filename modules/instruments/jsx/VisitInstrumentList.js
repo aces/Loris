@@ -189,7 +189,7 @@ class VisitInstrumentList extends Component {
             } else {
                 instruments = (<div>
                     <h5>Instruments</h5>
-                        <table style={{width: '95%'}}>
+                        <table className="table table-hover table-bordered" style={{width: '95%'}}>
                             <thead>
                                 <tr>
                                     <th>Instrument</th>
