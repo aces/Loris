@@ -1,4 +1,4 @@
-# LORIS API - v0.0.0-dev
+# LORIS API - v0.0.3
 ## 1.0 Overview
 
 This document specifies the Loris REST API.
@@ -8,7 +8,7 @@ or no data. The Loris API uses standard HTTP error codes and the body of any res
 either be empty or contain only a JSON object for any request.
 
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.3-dev and it
+document. This document specifies $APIVERSION v0.0.3 and it
 MUST be included before the request in all requests.
 
 HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
@@ -1079,7 +1079,7 @@ GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/electrodes
 Returns raw file with the appropriate MimeType headers for the electrodes file 
 retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
-Only `GET` is currently supported.  
+Only `GET` is currently supported.
 
 #### 6.7.3 Download The BIDS File With Task Events Information
 
@@ -1101,4 +1101,4 @@ GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/archive
 Returns raw file with the appropriate MimeType headers for the archival file
 with all BIDS files retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
-Only `GET` is currently supported.    
+Only `GET` is currently supported.
