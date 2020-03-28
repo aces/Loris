@@ -84,7 +84,8 @@ class New_Profile extends \NDB_Form
             $values['edcDate'] ?? null,
             $values['sex'],
             $values['pscid'] ?? null,
-            isset($values['project']) ? intval($values['project']) : null
+            isset($values['project']) ? intval($values['project']) : null,
+            isset($values['GUID']) ? $values['GUID'] : null
         );
 
         /* Update front-end data. Use passed PSCID when present, otherwise
@@ -165,6 +166,8 @@ class New_Profile extends \NDB_Form
         $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
         $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
+        $guidProjects = \Project::getGUIDProjects();
+
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
@@ -196,14 +199,15 @@ class New_Profile extends \NDB_Form
         }
 
         $this->fieldOptions = array(
-                               'minYear'   => $minYear,
-                               'maxYear'   => $maxYear,
-                               'dobFormat' => $dobFormat,
-                               'edc'       => $edc,
-                               'sex'       => $sex,
-                               'pscidSet'  => $pscidSet,
-                               'site'      => $site,
-                               'project'   => $project,
+                               'minYear'      => $minYear,
+                               'maxYear'      => $maxYear,
+                               'dobFormat'    => $dobFormat,
+                               'edc'          => $edc,
+                               'sex'          => $sex,
+                               'pscidSet'     => $pscidSet,
+                               'site'         => $site,
+                               'project'      => $project,
+                               'guidProjects' => $guidProjects,
                               );
 
         $this->form->addFormRule(array(&$this, '_validateNewCandidate'));

@@ -1,6 +1,7 @@
 import Panel from 'Panel';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {OpenScienceIdentity} from '../js/open_science_identity.js';
 
 /**
  * New Profile Form
@@ -21,6 +22,7 @@ class NewProfileIndex extends React.Component {
       isCreated: false,
       error: false,
       submitDisabled: false,
+      hashRequired: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
@@ -82,14 +84,52 @@ class NewProfileIndex extends React.Component {
       });
     } else {
       let formData = this.state.formData;
+      let guid = '';
+      // Check if GUID fields submitted and generate hash
+      if (
+        formData.firstName
+        && formData.middleName
+        && formData.lastName
+        && formData.placeOfBirth
+      ) {
+        // let OSI = require('../js/open_science_identity.js').OpenScienceIdentity;
+        // console.log(OSI);
+        let id = new OpenScienceIdentity({
+          first_name: formData.firstName,
+          middle_name: formData.middleName,
+          last_name: formData.lastName,
+          city_of_birth: formData.placeOfBirth,
+          birth_day: formData.dobDate,
+          gender: formData.sex,
+        });
+        try {
+          guid = id.toSignature();
+        } catch (exception) {
+          alert(exception);
+          return;
+        }
+      }
       let formObject = new FormData();
       for (let key in formData) {
-        if (formData[key] !== '') {
+        // unset PII fields from formData
+        if (
+          formData[key] !== ''
+          && key !== 'firstName'
+          && key !== 'middleName'
+          && key !== 'lastName'
+          && key !== 'placeOfBirth'
+        ) {
           formObject.append(key, formData[key]);
         }
       }
+      if (guid !== '') {
+        formObject.append('GUID', guid);
+        console.log(guid);
+      }
       formObject.append('fire_away', 'New Candidate');
-
+      for (let pair of formObject.entries()) {
+        console.log(pair[0]+ ', ' + pair[1]);
+      }
       // disable button to prevent form resubmission.
       this.setState({submitDisabled: true});
 
@@ -104,6 +144,7 @@ class NewProfileIndex extends React.Component {
           resp.json().then((data) => {
             this.setState({newData: data});
             this.setState({isCreated: true});
+            // TODO add code response to send API call to PII
           });
         } else {
           resp.json().then((message) => {
@@ -146,6 +187,7 @@ class NewProfileIndex extends React.Component {
     let edc = null;
     let pscid = null;
     let site = null;
+    let GUIDform = null;
     let minYear = this.state.configData.minYear;
     let maxYear = this.state.configData.maxYear;
     let dateFormat = this.state.configData.dobFormat;
@@ -196,6 +238,41 @@ class NewProfileIndex extends React.Component {
           required = {true}
         />;
     }
+    if (this.state.configData['guidProjects'].includes(
+      this.state.configData.project[this.state.formData.project])
+    ) {
+      GUIDform =
+        <div>
+          <TextboxElement
+            name = "firstName"
+            label = "First Name"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.firstName}
+            required = {true}
+          />
+          <TextboxElement
+            name = "middleName"
+            label = "Middle Name"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.middleName}
+            required = {true}
+          />
+          <TextboxElement
+            name = "lastName"
+            label = "Last Name"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.lastName}
+            required = {true}
+          />
+          <TextboxElement
+            name = "placeOfBirth"
+            label = "Place of Birth (City, Municipality)"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.placeOfBirth}
+            required = {true}
+          />
+        </div>;
+    }
     if (!this.state.isCreated) {
       profile = (
         <FormElement
@@ -241,6 +318,7 @@ class NewProfileIndex extends React.Component {
             value = {this.state.formData.project}
             required = {true}
           />
+          {GUIDform}
           <ButtonElement
             name = "fire_away"
             label = "Create"

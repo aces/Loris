@@ -33,6 +33,7 @@ class Project
     private $_projectId;
     private $_projectName;
     private $_recruitmentTarget;
+    private $_guid;
 
     /**
      * Private constructor to make sure that the singleton function is used
@@ -64,7 +65,8 @@ class Project
                     SELECT
                       projectId,
                       name,
-                      recruitmentTarget as recTarget
+                      recruitmentTarget as recTarget,
+                      GUIDRequired
                     FROM
                       Project
                     WHERE name = :v_project_name
@@ -81,6 +83,7 @@ class Project
             $project->_projectId         = (int) $projectData['projectId'];
             $project->_projectName       = $projectData['name'];
             $project->_recruitmentTarget = (integer) $projectData['recTarget'];
+            $project->_guid = $projectData['GUIDRequired'] === 1 ? true : false;
 
             self::$_instances[$projectName] = $project;
         }
@@ -94,6 +97,7 @@ class Project
      *
      * @param string       $projectName       The project name
      * @param integer|null $recruitmentTarget The number of expected participants
+     * @param bool|null    $guidRequired      Does project require GUIDs
      *
      * @note If the recruitmentTarget is missing or null, this project
      * recruitmentTarget will be the sum of all its subprojects recruitmentTarget
@@ -104,7 +108,8 @@ class Project
      */
     static public function createNew(
         string $projectName,
-        ?int $recruitmentTarget = null
+        ?int $recruitmentTarget = null,
+        ?bool $guidRequired = false
     ): \Project {
 
         // TODO :: Add not null constraint to the name column of the Project table
@@ -116,7 +121,7 @@ class Project
         // TODO :: Add unique constraint to the name column of the Project table
         $projectId = $factory->database()->pselectOne(
             "
-            SELECT 
+            SELECT
               projectId
             FROM
               Project
@@ -134,6 +139,7 @@ class Project
             array(
              'name'              => $projectName,
              'recruitmentTarget' => $recruitmentTarget,
+             'GUIDRequired'      => $guidRequired ? 1 : 0,
             )
         );
 
@@ -187,6 +193,46 @@ class Project
     }
 
     /**
+     * Check if project requires GUID for registered candidates
+     *
+     * @return bool
+     */
+    public function isGUIDProject() : bool
+    {
+        return $this->_guid;
+    }
+
+    /**
+     * Set this project's GUID setting.
+     *
+     * @param bool $guidRequired This project's GUID setting.
+     *
+     * @return void
+     */
+    public function setGUIDRequired(bool $guidRequired): void
+    {
+        $this->_guid = $guidRequired;
+    }
+
+    /**
+     * Get list of projects requiring the GUID for their candidates
+     *
+     * @return array Array of projects using the GUID system
+     *
+     * @throws DatabaseException
+     */
+    public static function getGUIDProjects()
+    {
+        $factory      = \NDB_Factory::singleton();
+        $guidProjects = $factory->database()->pselectCol(
+            "SELECT name FROM Project WHERE GUIDRequired=1",
+            array()
+        );
+
+        return $guidProjects;
+    }
+
+    /**
      * Get the project's recruitment target.
      *
      * @note If the database value is null then the return value will be the sum of
@@ -229,7 +275,7 @@ class Project
               sp.recruitmentTarget
             FROM
               project_rel pr
-            JOIN 
+            JOIN
               subproject sp USING (subprojectId)
             WHERE
               pr.projectId = :v_project_id

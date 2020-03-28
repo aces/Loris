@@ -81,7 +81,7 @@ class Candidate
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
+        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
@@ -192,6 +192,7 @@ class Candidate
      * @param string      $sex         sex, either 'Male' or 'Female'
      * @param string|null $PSCID       PSCID specified by the user, if available
      * @param int|null    $projectID   The project ID, if available
+     * @param string|null $GUID        Global Unique Identifier, if available
      *
      * @return int   $candID      candidate id of the new candidate
      * @throws Exception
@@ -203,7 +204,8 @@ class Candidate
         ?string $edc,
         string $sex,
         ?string $PSCID = null,
-        int $projectID = null
+        int $projectID = null,
+        ?string $GUID = null
     ): int {
         $factory = NDB_Factory::singleton();
 
@@ -257,6 +259,7 @@ class Candidate
                      'Entity_type'          => 'Human',
                      'RegisteredBy'         => $user->getUsername(),
                      'UserID'               => $user->getUsername(),
+                     'GUID'                 => $GUID,
                     );
 
         if ($config->getSetting('useExternalID') === 'true') {
@@ -610,7 +613,7 @@ class Candidate
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        $query  = "SELECT Visit_label FROM session 
+        $query  = "SELECT Visit_label FROM session
           LEFT JOIN candidate USING (CandID)
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
@@ -728,8 +731,8 @@ class Candidate
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
+            "SELECT ID,Description
+            FROM participant_status_options
             WHERE parentID=:pid",
             array('pid' => $parentID)
         );
