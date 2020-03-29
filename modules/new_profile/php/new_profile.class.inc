@@ -34,6 +34,8 @@ class New_Profile extends \NDB_Form
     private $_candID;
     private $_pscid;
     private $_error;
+    private $_piiToken;
+
 
     /**
      * Tie the access to a data_entry permission
@@ -94,6 +96,11 @@ class New_Profile extends \NDB_Form
         $this->_candID = $candID;
         $this->_pscid  = $values['pscid']
             ?? \Candidate::singleton($candID)->getPSCID();
+        // Check for connected PII system only when GUID is generated
+        if (isset($values['GUID'])) {
+            $this->_piiToken       = $this->_getPIIToken();
+            $this->piiCandidateURL = $this->_getPIICandidateURL();
+        }
 
         // freeze it, just in case
         $this->form->freeze();
@@ -122,9 +129,12 @@ class New_Profile extends \NDB_Form
                     );
             }
             $result = array(
-                       'candID' => $this->_candID,
-                       'pscid'  => $this->_pscid,
+                       'candID'          => $this->_candID,
+                       'pscid'           => $this->_pscid,
+                       'piiToken'        => $this->_piiToken,
+                       'piiCandidateURL' => $this->piiCandidateURL,
                       );
+
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(201)
@@ -209,7 +219,7 @@ class New_Profile extends \NDB_Form
                                'project'      => $project,
                                'guidProjects' => $guidProjects,
                               );
-
+        $this->_getPIIToken();
         $this->form->addFormRule(array(&$this, '_validateNewCandidate'));
     }
 
@@ -324,6 +334,74 @@ class New_Profile extends \NDB_Form
         }
 
         return $errors;
+    }
+
+    /**
+     * Get authentication token from PII system using key stored in DB
+     *
+     * @return string The authentication token
+     *
+     * @throws \LorisException
+     */
+    private function _getPIIToken() : string
+    {
+        $config = \NDB_Config::singleton();
+        $url    = $config->getSetting("piiURL");
+        $auth   = $config->getSetting("piiAuthPath");
+        $key    = $config->getSetting("piiKey");
+
+        if (empty($url) || empty($key) || empty($auth)) {
+            throw new \ConfigurationException(
+                "Configuration entries piiURL, piiKey and piiAuthPath are
+                required for authentication with PII system."
+            );
+        }
+
+        $postdata = http_build_query(['api_token' => $key]);
+
+        $opts = array(
+                 'http' => array(
+                            'method'  => 'POST',
+                            'header'  => 'Content-type: '.
+                                'application/x-www-form-urlencoded',
+                            'content' => $postdata,
+                           ),
+                );
+
+        $context = stream_context_create($opts);
+
+        $result = file_get_contents($url.$auth, false, $context);
+
+        if ($result !== false) {
+            return json_decode($result)->token;
+        } else {
+            throw new \LorisException('Error getting PII access token');
+        }
+
+    }
+
+    /**
+     * Get the URL for the PII system to which the candidate data should be
+     * posted
+     *
+     * @return string
+     *
+     * @throws \ConfigurationException
+     */
+    private function _getPIICandidateURL() : string
+    {
+        $config = \NDB_Config::singleton();
+        $url    = $config->getSetting("piiURL");
+        $path   = $config->getSetting("piiCandPath");
+
+        if (empty($url) || empty($path)) {
+            throw new \ConfigurationException(
+                "Configuration entries piiURL and piiCandPath are
+                required for candidate creation on PII system."
+            );
+        }
+
+        return $url.$path;
     }
 
     /**

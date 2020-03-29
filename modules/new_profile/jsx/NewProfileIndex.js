@@ -92,8 +92,6 @@ class NewProfileIndex extends React.Component {
         && formData.lastName
         && formData.placeOfBirth
       ) {
-        // let OSI = require('../js/open_science_identity.js').OpenScienceIdentity;
-        // console.log(OSI);
         let id = new OpenScienceIdentity({
           first_name: formData.firstName,
           middle_name: formData.middleName,
@@ -124,12 +122,8 @@ class NewProfileIndex extends React.Component {
       }
       if (guid !== '') {
         formObject.append('GUID', guid);
-        console.log(guid);
       }
       formObject.append('fire_away', 'New Candidate');
-      for (let pair of formObject.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]);
-      }
       // disable button to prevent form resubmission.
       this.setState({submitDisabled: true});
 
@@ -138,25 +132,58 @@ class NewProfileIndex extends React.Component {
         cache: 'no-cache',
         credentials: 'same-origin',
         body: formObject,
-        })
-      .then((resp) => {
-        if (resp.ok && resp.status === 201) {
-          resp.json().then((data) => {
-            this.setState({newData: data});
-            this.setState({isCreated: true});
-            // TODO add code response to send API call to PII
-          });
-        } else {
-          resp.json().then((message) => {
-            // enable button for form resubmission.
-            this.setState({submitDisabled: false});
-            swal('Error!', message, 'error');
-          });
-        }
       })
-      .catch((error) => {
-        console.error(error);
-      });
+        .then((resp) => {
+          if (resp.ok && resp.status === 201) {
+            resp.json().then((data) => {
+              this.setState({newData: data});
+              if (data.piiToken && data.piiCandidateURL) {
+                fetch(data.piiCandidateURL, {
+                  method: 'POST',
+                  cache: 'no-cache',
+                  body: {
+                    first_name: formData.firstName,
+                    middle_name: formData.middleName,
+                    last_name: formData.lastName,
+                    city_of_birth: formData.placeOfBirth,
+                    birth_day: formData.dobDate,
+                    sex: formData.sex === 'Male' ? 'M' : formData.sex === 'Female' ? 'F' : '',
+                    guid: guid,
+                    one_time_token: data.piiToken,
+                  },
+                }).then((resp) => {
+                  if (resp.condition === 'OK') {
+                    this.setState({isCreated: true});
+                    console.log('CREATED');
+                  } else if (resp.condition === 'duplicate patient') {
+                    this.setState({isCreated: true});
+                    console.log('duplicate patient');
+                  } else {
+                    swal(
+                      'Error!',
+                      'There was an error submitting the data to the PII system. Make sure all necessarily configurations are properly set.',
+                      'error'
+                    );
+                  }
+                })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              } else {
+                this.setState({isCreated: true});
+              }
+            });
+          } else {
+            resp.json().then((message) => {
+              // enable button for form resubmission.
+              this.setState({submitDisabled: false});
+              swal('Error!', message, 'error');
+            });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
   }
 
