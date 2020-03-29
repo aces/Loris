@@ -1,4 +1,5 @@
 import ProjectFormFields from './projectFields';
+import swal from 'sweetalert2';
 
 class ViewProject extends React.Component {
   constructor(props) {
@@ -26,7 +27,7 @@ class ViewProject extends React.Component {
     e.preventDefault();
 
     if (Object.keys(this.state.formErrors).length > 0) {
-      swal(
+      swal.fire(
         'Please fix any remaining form errors before submission',
         '',
         'error'
@@ -55,7 +56,7 @@ class ViewProject extends React.Component {
       contentType: false,
       processData: false,
       success: function() {
-        swal('Edit Successful!', '', 'success');
+        swal.fire('Edit Successful!', '', 'success');
       },
       error: function(jqXHR) {
         console.error(jqXHR);
@@ -65,7 +66,7 @@ class ViewProject extends React.Component {
         } catch (e) {
           console.error(e);
         }
-        swal('Edit failed!', resp, 'error');
+        swal.fire('Edit failed!', resp, 'error');
       },
     });
   }

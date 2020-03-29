@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
+import swal from 'sweetalert2';
 
 
 /**
@@ -128,7 +129,7 @@ class UploadFileForm extends Component {
       let msg = 'File size exceeds the maximum allowed (' + maxSizeAllowed + ')';
       errorMessage['Filesize'] = msg;
       hasError['Filesize'] = true;
-      swal({
+      swal.fire({
         title: 'Error',
         text: msg,
         type: 'error',
@@ -144,7 +145,7 @@ class UploadFileForm extends Component {
     // Check for duplicate file names
     let isDuplicate = files.indexOf(fileName);
     if (isDuplicate >= 0) {
-      swal({
+      swal.fire({
         title: 'Are you sure?',
         text: 'A file with this name already exists!\n Would you like to override existing file?',
         type: 'warning',
@@ -156,7 +157,7 @@ class UploadFileForm extends Component {
         if (isConfirm) {
           this.uploadFile();
         } else {
-          swal('Cancelled', 'Your file is safe :)', 'error');
+          swal.fire('Cancelled', 'Your file is safe :)', 'error');
         }
       }.bind(this));
     } else {
@@ -188,7 +189,7 @@ class UploadFileForm extends Component {
           errorMessage: msg,
           uploadProgress: -1,
         });
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
         console.error(msg);
       } else {
         // Add file to the list of existing files
@@ -202,7 +203,7 @@ class UploadFileForm extends Component {
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal({
+        swal.fire({
           text: 'Upload Successful!',
           title: '',
           type: 'success',
@@ -217,7 +218,7 @@ class UploadFileForm extends Component {
         errorMessage: msg,
         uploadProgress: -1,
       });
-      swal(msg, '', 'error');
+      swal.fire(msg, '', 'error');
       console.error(error);
     });
   }

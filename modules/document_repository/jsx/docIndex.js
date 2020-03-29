@@ -6,6 +6,7 @@ import ChildTree from './childTree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
+import swal from 'sweetalert2';
 
 class DocIndex extends React.Component {
   constructor(props) {
@@ -136,7 +137,7 @@ class DocIndex extends React.Component {
       case 'Delete File':
         let id = row['Edit'];
         function click() {
-          swal({
+          swal.fire({
             title: 'Are you sure?',
             text: 'Your will not be able to recover this file!',
             type: 'warning',
@@ -154,7 +155,7 @@ class DocIndex extends React.Component {
               }).then((resp) => resp.json())
                 .then(()=>{
                   location.reload();
-                  swal('delete Successful!', '', 'success');
+                  swal.fire('delete Successful!', '', 'success');
                 });
           }
           );

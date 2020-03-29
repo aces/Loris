@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import Loader from 'jsx/Loader';
+import swal from 'sweetalert2';
 
 /**
  * Media Upload Form
@@ -223,7 +224,7 @@ class MediaUploadForm extends Component {
       formData.pscid, formData.visitLabel, instrument
     );
     if (!this.isValidFileName(requiredFileName, fileName)) {
-      swal(
+      swal.fire(
         'Invalid file name!',
         'File name should begin with: ' + requiredFileName,
         'error'
@@ -234,7 +235,7 @@ class MediaUploadForm extends Component {
     // Check for duplicate file names
     let isDuplicate = mediaFiles.indexOf(fileName);
     if (isDuplicate >= 0) {
-      swal({
+      swal.fire({
         title: 'Are you sure?',
         text: 'A file with this name already exists!\n Would you like to override existing file?',
         type: 'warning',
@@ -245,7 +246,7 @@ class MediaUploadForm extends Component {
         if (isConfirm) {
           this.uploadFile();
         } else {
-          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
+          swal.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
         }
       }.bind(this));
     } else {
@@ -297,7 +298,7 @@ class MediaUploadForm extends Component {
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal('Upload Successful!', '', 'success');
+        swal.fire('Upload Successful!', '', 'success');
       }.bind(this),
       error: function(err) {
         console.error(err);
@@ -306,7 +307,7 @@ class MediaUploadForm extends Component {
           errorMessage: msg,
           uploadProgress: -1,
         });
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
       }.bind(this),
     });
   }
