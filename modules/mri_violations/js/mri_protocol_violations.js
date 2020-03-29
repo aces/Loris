@@ -1,3 +1,5 @@
+import swal from 'sweetalert2';
+
 /*global document: false, $: false, window: false*/
 function change() {
     "use strict";
@@ -44,7 +46,7 @@ function save() {
           value = $('#'+id).text();
           if (value !== default_value) {
             $('.description').attr('contenteditable', false);
-            swal({
+            swal.fire({
               title: "Are you sure?",
               text: "Are you sure you want to edit this field?",
               type: "warning",
