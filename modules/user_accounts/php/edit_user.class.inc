@@ -172,7 +172,8 @@ class Edit_User extends \NDB_Form
      */
     function _isEditingOwnAccount()
     {
-        $editor = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $editor  = $factory->user();
         return !$this->isCreatingNewUser()
             && ($editor->getUsername() == $this->identifier);
     }
@@ -186,12 +187,14 @@ class Edit_User extends \NDB_Form
      */
     function _process($values)
     {
-        $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $config  = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
         $permissionsAdded   = array();
-        $editor = \User::singleton();
+        $editor = $factory->user();
+
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
         //create the user
@@ -752,7 +755,8 @@ class Edit_User extends \NDB_Form
         //------------------------------------------------------------
 
         // get user permissions
-        $editor      = \User::singleton();
+        $factory     = \NDB_Factory::singleton();
+        $editor      = $factory->user();
         $siteOptions = array();
         $site        = array();
 
@@ -1021,9 +1025,11 @@ class Edit_User extends \NDB_Form
      */
     function _validateEditUser($values)
     {
-        $editor = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $editor  = $factory->user();
         // create DB object
-        $DB     = \Database::singleton();
+        $DB = $factory->database();
+
         $errors = array();
 
         // NOTE The 'Password_hash' key actually represents a plaintext password

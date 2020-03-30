@@ -21,8 +21,11 @@
 
 namespace LORIS\user_accounts;
 
+$factory = \NDB_Factory::singleton();
+$user    = $factory->user();
+
 // Make sure the permission is checked first to avoid malicious userID scans
-if (!(\User::singleton())->hasPermission('user_accounts')) {
+if (!$user->hasPermission('user_accounts')) {
     header("HTTP/1.1 403 Forbidden");
     header("Content-Type: text/plain");
     exit(
