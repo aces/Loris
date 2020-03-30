@@ -695,7 +695,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *       only used there to validate the PSCID
      * @cleanup
      */
-    static function structureToPCRE(
+    static public function structureToPCRE(
         array $structure,
         ?string $siteAbbrev = null,
         ?string $projectAbbrev = null
