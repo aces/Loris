@@ -113,6 +113,25 @@ h1, h2, h3, h4 {
     margin: 0 auto;
 }
 
+.pwd-container {
+    position: relative;
+}
+
+.pwd-container .btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+    color: grey;
+}
+
+.pwd-container .btn:focus, 
+.pwd-container .btn:active:focus,
+.pwd-container .btn:hover {
+    outline: none;
+    color: grey;
+}
+
 .main-content .login-panel .help-links {
     text-align: center;
 }

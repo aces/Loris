@@ -1,3 +1,5 @@
+<script src="{$baseurl}/js/passwordVisibility.js" type="text/javascript"></script>
+
 <div class="container">
   <div class="row">
     <section class="col-md-4 col-md-push-8">
@@ -16,7 +18,12 @@
               <input type="text" name="username" class="form-control" placeholder="Username" value="{$username}"/>
             </div>
             <div class="form-group">
-              <input type="password" name="password" class="form-control" placeholder="Password" aria-describedby="helpBlock" />
+              <div class="pwd-container">
+                <input type="password" name="password" class="form-control" id="pwd-input" placeholder="Password" aria-describedby="helpBlock" />
+                <button class="btn btn-link" type="button" onclick="togglePwd()">
+                  <i id="pwd-icon" class="glyphicon glyphicon-eye-open"></i>
+                </button>
+              </div>
               {if $error_message}
                 <span id="helpBlock" class="help-block">
                     <b class="text-danger">{$error_message}</b>
