@@ -715,7 +715,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         return preg_match($regex, $PSCID) === 1;
     }
 
-	/**
+    /**
   * Transforms a config structure (such as in PSCID) into a
   * Perl-compatible regex expression for validation
   *
@@ -730,7 +730,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
   *       only used there to validate the PSCID
   * @cleanup
   */
-	 
     static public function structureToPCRE(
         array $structure,
         ?string $siteAbbrev = null,
@@ -805,7 +804,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         return '/^'.$regex.'$/i';
     }
-	
     /**
      * Gets the participant_status options from participant_status_options table
      *
