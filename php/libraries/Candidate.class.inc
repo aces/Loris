@@ -796,7 +796,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = Candidate::structureToPCRE(
+        $regex         = Utility::structureToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev,
             $projectAbbrev
