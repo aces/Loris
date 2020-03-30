@@ -506,6 +506,32 @@ class UtilityTest extends TestCase
         );
     }
 
+	/**
+     * Looks up the test_name for the current full name
+     *
+     * @param string $fullname Descriptive name to be looked up
+     *
+     * @return  string (Non-associative array of the form array(Test1, Test2, ..))
+     * @note    This should be moved out of the Utility class into whatever
+     *       module uses it. (Behavioural Quality Control?) Moved to Utility test.
+     * @note    Function comment written by Dave, not the author of this function.
+     * @cleanup
+     */
+    static function getTestNameUsingFullName(string $fullname): string
+    {
+        $test_name  = '';
+        $factory    = NDB_Factory::singleton();
+        $db         = $factory->database();
+        $instrument = $db->pselect(
+            "SELECT Test_name FROM test_names WHERE Full_name =:fname",
+            array('fname' => $fullname)
+        );
+        if (is_array($instrument) && count($instrument)) {
+            list(,$test_name) = each($instrument[0]);
+        }
+        return $test_name;
+    }
+	
     /**
      * Test that getTestNameUsingFullName returns the correct 
      * Test_name for the given Full_name
@@ -527,7 +553,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             'test1', 
-            Utility::getTestNameUsingFullName('description1')
+            self::getTestNameUsingFullName('description1')
         );
     }
 
