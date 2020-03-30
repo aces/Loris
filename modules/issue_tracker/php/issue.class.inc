@@ -37,7 +37,8 @@ class Issue extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $user    =& \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    =& $factory->user();
         $issueID = $this->issueID;
         if ((empty($issueID)
             || !isset($issueID))
