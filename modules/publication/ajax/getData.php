@@ -13,8 +13,9 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 if (isset($_REQUEST['action'])) {
-    $db      = \Database::singleton();
-    $user    = \User::singleton();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
+    $user    = $factory->user();
     $action  = $_REQUEST['action'];
     $message = array('message' => null);
 
