@@ -74,8 +74,9 @@ class Candidate_List extends \DataFrameworkMenu
         \Module::factory('candidate_parameters');
 
         // create user object
-        $user   = \User::singleton();
-        $config = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $config  = \NDB_Config::singleton();
 
         // get the list of visit labels
         $visit_label_options = \Utility::getVisitList();
