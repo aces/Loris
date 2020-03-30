@@ -420,6 +420,27 @@ class UtilityTest extends TestCase
         );
     }
 
+	/**
+     * Returns the test name associated with a given commentID
+     *
+     * @param string $commentID A CommentID for which you would like
+     *                          to know the test_name
+     *
+     * @return  string The test name this commentID is a part of
+     * @note    Moved from Utility class
+     * @cleanup
+     */
+    static function getTestNameByCommentID(string $commentID): string
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
+        $testName = $db->pselectOne($query, array('CID' => $commentID));
+
+        return $testName;
+    }
+	
     /**
      * Test that getTestNameByCommentID returns 
      * the correct test name for the given CommentID
@@ -443,7 +464,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             "test_flag1",
-            Utility::getTestNameByCommentID("ID123")
+            self::getTestNameByCommentID("ID123")
         );
     }
 
