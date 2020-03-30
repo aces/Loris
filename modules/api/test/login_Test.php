@@ -71,8 +71,8 @@ class LoginTest extends TestCase
      *
      * @return void
      */
-    public function testLoginSuccess(): void
-    {
+    public function testLoginSuccess() 
+    { 
         $this->_authenticator->expects($this->once())
             ->method('passwordAuthenticate')
             ->with('test_username', 'test_password')
@@ -114,4 +114,3 @@ class LoginTest extends TestCase
         );
     }
 }
-
