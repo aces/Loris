@@ -679,6 +679,41 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         return $consentList;
     }
+	
+    /**
+     * Validate's that a PSCID matches the format defined by project
+     * config
+     *
+     * @param string $PSCID         The PSCID to validate
+     * @param string $siteAbbrev    The site of the candidate
+     *                              being validated to check
+     *                              against appropriate parts
+     *                              of PSCID definition
+     * @param string $projectAbbrev The project of the candidate
+     *                              being validated to check against appropriate
+     *                              parts of PSCID definition
+     *
+     * @return boolean True if PSCID is valid, false otherwise
+     */
+	 
+    static public function validatePSCID(
+        string $PSCID,
+        string $siteAbbrev,
+        string $projectAbbrev
+    ): bool {
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $PSCIDSettings = $config->getSetting('PSCID');
+        $regex         = Utility::structureToPCRE(
+            $PSCIDSettings['structure'],
+            $siteAbbrev,
+            $projectAbbrev
+        );
+        //preg_match returns 1 on success.
+        return preg_match($regex, $PSCID) === 1;
+    }
 
 	/**
      * Transforms a config structure (such as in PSCID) into a
@@ -695,6 +730,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *       only used there to validate the PSCID
      * @cleanup
      */
+	 
     static public function structureToPCRE(
         array $structure,
         ?string $siteAbbrev = null,
@@ -770,41 +806,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         return '/^'.$regex.'$/i';
     }
 	
-    /**
-     * Validate's that a PSCID matches the format defined by project
-     * config
-     *
-     * @param string $PSCID         The PSCID to validate
-     * @param string $siteAbbrev    The site of the candidate
-     *                              being validated to check
-     *                              against appropriate parts
-     *                              of PSCID definition
-     * @param string $projectAbbrev The project of the candidate
-     *                              being validated to check against appropriate
-     *                              parts of PSCID definition
-     *
-     * @return boolean True if PSCID is valid, false otherwise
-     */
-	 
-    static public function validatePSCID(
-        string $PSCID,
-        string $siteAbbrev,
-        string $projectAbbrev
-    ): bool {
-
-        $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = Utility::structureToPCRE(
-            $PSCIDSettings['structure'],
-            $siteAbbrev,
-            $projectAbbrev
-        );
-        //preg_match returns 1 on success.
-        return preg_match($regex, $PSCID) === 1;
-    }
-
     /**
      * Gets the participant_status options from participant_status_options table
      *
