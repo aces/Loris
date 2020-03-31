@@ -162,6 +162,7 @@ class NewProfileIndex extends React.Component {
                           console.log('DUPLICATE');
                         } else {
                           console.log('NEW');
+                          this.setState({isCreated: true});
                         }
                       });
                   } else {
