@@ -141,7 +141,9 @@ class NewProfileIndex extends React.Component {
                 fetch(data.piiCandidateURL, {
                   method: 'POST',
                   cache: 'no-cache',
-                  body: {
+                  credentials: 'same-origin',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({
                     first_name: formData.firstName,
                     middle_name: formData.middleName,
                     last_name: formData.lastName,
@@ -150,14 +152,18 @@ class NewProfileIndex extends React.Component {
                     sex: formData.sex === 'Male' ? 'M' : formData.sex === 'Female' ? 'F' : '',
                     guid: guid,
                     one_time_token: data.piiToken,
-                  },
+                  }),
                 }).then((resp) => {
-                  if (resp.condition === 'OK') {
-                    this.setState({isCreated: true});
-                    console.log('CREATED');
-                  } else if (resp.condition === 'duplicate patient') {
-                    this.setState({isCreated: true});
-                    console.log('duplicate patient');
+                  console.log(resp);
+                  if (resp.ok && resp.status === 200) {
+                    resp.json().then(
+                      (data) => {
+                        if (data.condition === 'duplicate patient') {
+                          console.log('DUPLICATE');
+                        } else {
+                          console.log('NEW');
+                        }
+                      });
                   } else {
                     swal(
                       'Error!',
