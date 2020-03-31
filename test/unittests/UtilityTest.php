@@ -816,7 +816,7 @@ class UtilityTest extends TestCase
     {
         $this->assertEquals(
             array(), 
-            self::getSourcefields()
+            BVL_Feedback_Panel::getSourcefields()
         );
     }
 
@@ -841,7 +841,7 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array(0 => array('SourceField' => 'instrument_field',
                              'Name' => 'instrument_name')),
-            self::getSourcefields('instrument1', null, null)
+            BVL_Feedback_Panel::getSourcefields('instrument1', null, null)
         );
     }
 
@@ -865,7 +865,7 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array(0 => array('SourceField' => 'commentID_field',
                              'Name' => 'commentID_name')),
-            self::getSourcefields(null, '1', null)
+            BVL_Feedback_Panel::getSourcefields(null, '1', null)
         );
     }
 
@@ -889,7 +889,7 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array(0 => array('SourceField' => 'name_field',
                              'Name' => 'name_name')),
-            self::getSourcefields(null, null, 'name_name')
+            BVL_Feedback_Panel::getSourcefields(null, null, 'name_name')
         );
     }
 
@@ -914,7 +914,7 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array(0 => array('SourceField' => 'instrument_field',
                              'Name' => 'instrument_name')),
-            self::getSourcefields('instrument1', '1', 'name')
+            BVL_Feedback_Panel::getSourcefields('instrument1', '1', 'name')
         );
     }
 
