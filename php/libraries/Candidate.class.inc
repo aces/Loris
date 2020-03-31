@@ -679,7 +679,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         return $consentList;
     }
-	
     /**
      * Validate's that a PSCID matches the format defined by project
      * config
@@ -695,7 +694,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *
      * @return boolean True if PSCID is valid, false otherwise
      */
-	 
     static public function validatePSCID(
         string $PSCID,
         string $siteAbbrev,
@@ -716,20 +714,20 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     }
 
     /**
-  * Transforms a config structure (such as in PSCID) into a
-  * Perl-compatible regex expression for validation
-  *
-  * @param array       $structure     the structure root
-  * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
-  *                                   part of the PSCID
-  * @param string|null $projectAbbrev the project abbreviation
-  *
-  * @return string the regex pattern
-  *
-  * @note    This should probably be moved to the Candidate class, since it's
-  *       only used there to validate the PSCID
-  * @cleanup
-  */
+     * Transforms a config structure (such as in PSCID) into a
+     * Perl-compatible regex expression for validation
+     *
+     * @param array       $structure     the structure root
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
+     *
+     * @return string the regex pattern
+     *
+     * @note    This should probably be moved to the Candidate class, since it's
+     *       only used there to validate the PSCID
+     * @cleanup
+     */
     static public function structureToPCRE(
         array $structure,
         ?string $siteAbbrev = null,
