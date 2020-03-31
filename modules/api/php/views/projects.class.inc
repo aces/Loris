@@ -48,7 +48,7 @@ class Projects
         $useEDC = $config->getSetting("useEDC");
         $PSCID  = $config->getSetting("PSCID");
 
-        $PSCIDFormat = \Candidate::structureToPCRE($PSCID['structure'], "SITE");
+        $PSCIDFormat = \Utility::structureToPCRE($PSCID['structure'], "SITE");
 
         $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 
