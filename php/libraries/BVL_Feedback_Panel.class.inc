@@ -83,8 +83,6 @@ class BVL_Feedback_Panel
      *
      *              )
      *         )
-     * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Behavioural Quality Control, BVL_Feedback_panel)
      * @note    Function comment written by Dave, not the author of this function.
      * @cleanup
      */
