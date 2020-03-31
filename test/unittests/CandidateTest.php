@@ -110,7 +110,7 @@ class CandidateTest extends TestCase
 
     /**
      * Maps config names to values
-     * Used to set behavior of NDB_Config test double
+     * Used to set behaviour of NDB_Config test double
      *
      * @var array config name => value
      */
@@ -932,7 +932,7 @@ class CandidateTest extends TestCase
     }
 
     /** 
-     * Set up test doubles behavior for Candidate::select() method
+     * Set up test doubles behaviour for Candidate::select() method
      *
      * @return void
      */

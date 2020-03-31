@@ -305,7 +305,7 @@ class CouchDB
                 || empty($password)
             ) {
                 // check if only some parameters given but not all AND does not
-                // enter any of the above IF statements. this behavior was never
+                // enter any of the above IF statements. this behaviour was never
                 // supported and should be an error.
                 throw new ConfigurationException(
                     "CouchDB::getInstance() requires all parameters to be supplied."

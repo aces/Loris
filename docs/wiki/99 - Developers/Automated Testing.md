@@ -91,7 +91,7 @@ We use Docker to help us simulate a server running LORIS. The installation and u
 
 LORIS uses the [PHPUnit library](https://phpunit.de/) for unit tests.
 
-Unit testing is covered in depth in our [Unit Test Guide](https://github.com/aces/Loris/blob/master/test/UnitTestGuide.md).
+Unit testing is covered in depth in our [Unit Test Guide](test/UnitTestGuide.md).
 
 Unit test files can be found in the folder `test/unittests/`.
 

@@ -164,7 +164,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * By default, trim all fields on the form before any processing/validation
-     * is done. Derived classes can override this behavior if needed.
+     * is done. Derived classes can override this behaviour if needed.
      *
      * @return void
      * @access public
