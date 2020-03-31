@@ -744,66 +744,6 @@ class UtilityTest extends TestCase
         );
 
     }
-
-	/**
-     * Returns all the sourcefrom instruments from parameter_type
-     *
-     * @param string|null $instrument If specified, return fields from this
-     *                                test_name
-     * @param string|null $commentID  If specified, return fields for this
-     *                                commentid
-     * @param string|null $name       If specified, return fields for this
-     *                                parameter_type name
-     *
-     * @return  ?array Format: array(
-     *              0 => array(
-     *                   'SourceField' => value
-     *                   'Name'        => name
-     *
-     *              )
-     *         )
-     * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Behavioural Quality Control, BVL_Feedback_panel)
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
-     */
-    static function getSourcefields(
-        ?string $instrument = null,
-        ?string $commentID = null,
-        ?string $name = null
-    ): ?array {
-
-        $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
-
-        //get sourcefield using instrument
-        $sourcefields = array();
-        if (!is_null($instrument)) {
-            $sourcefields = $DB->pselect(
-                "SELECT SourceField, Name FROM parameter_type
-                WHERE queryable='1' AND sourcefrom = :sf
-                ORDER BY Name",
-                array('sf' => $instrument)
-            );
-        } elseif (!is_null($commentID)) { //get sourcefield using commentid
-            $instrument   = $DB->pselectOne(
-                "SELECT Test_name FROM flag WHERE CommentID = :cid",
-                array('cid' => $commentID)
-            );
-            $sourcefields = $DB->pselect(
-                "SELECT SourceField, Name FROM parameter_type
-                WHERE queryable = '1' AND sourcefrom = :instrument
-                ORDER BY Name",
-                array('instrument' => $instrument)
-            );
-        } elseif (!is_null($name)) { //get all source fields
-            $sourcefields = $DB->pselectRow(
-                "SELECT * FROM parameter_type WHERE Name = :pn",
-                array('pn' => $name)
-            );
-        }
-        return $sourcefields;
-    }
 	
     /**
      * Tests that getSourcefields will return an empty array 
