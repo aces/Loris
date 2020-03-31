@@ -194,7 +194,7 @@ class VisitInstrumentList extends Component {
                                 <tr>
                                     <th>Instrument</th>
                                     <th style={{textAlign: 'center'}}>Completion</th>
-                                    <th>Conflicts?</th>
+                                    <th style={{textAlign: 'center'}}>Conflicts?</th>
                                 </tr>
                             </thead>
                             <tbody>
