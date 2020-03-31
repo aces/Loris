@@ -51,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
 function editIssue()
 {
     $factory = \NDB_Factory::singleton();
-    $db      =& $factory->database();
-    $user    =& $factory->user();
+    $db      = $factory->database();
+    $user    = $factory->user();
 
     $issueValues    = array();
     $validateValues = array();
@@ -195,7 +195,7 @@ function editIssue()
 function validateInput($values)
 {
     $factory    = \NDB_Factory::singleton();
-    $db         =& $factory->database();
+    $db         = $factory->database();
     $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
     $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
     $centerID   = (isset($values['centerID']) ? $values['centerID'] : null);
@@ -281,7 +281,7 @@ function validateInput($values)
         $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
         $params = ['PSCID' => $result['PSCID']];
 
-        $user =& $factory->user();
+        $user = $factory->user();
         if (!$user->hasPermission('access_all_profiles')) {
             $params['CenterID'] = implode(',', $user->getCenterIDs());
             $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
@@ -340,9 +340,9 @@ function getChangedValues($issueValues, $issueID)
  */
 function updateHistory($values, $issueID)
 {
-    $factory =  \NDB_Factory::singleton();
-    $user    =& $factory->user();
-    $db      =& $factory->database();
+    $factory = \NDB_Factory::singleton();
+    $user    = $factory->user();
+    $db      = $factory->database();
 
     foreach ($values as $key => $value) {
         if (!empty($value)) {
@@ -369,9 +369,9 @@ function updateHistory($values, $issueID)
  */
 function updateComments($comment, $issueID)
 {
-    $factory =  \NDB_Factory::singleton();
-    $user    =& $factory->user();
-    $db      =& $factory->database();
+    $factory = \NDB_Factory::singleton();
+    $user    = $factory->user();
+    $db      = $factory->database();
 
     if (isset($comment) && $comment != "null") {
         $commentValues = array(
@@ -395,9 +395,9 @@ function updateComments($comment, $issueID)
  */
 function updateCommentHistory($issueCommentID, $newCommentValue)
 {
-    $factory =  \NDB_Factory::singleton();
-    $user    =& $factory->user();
-    $db      =& $factory->database();
+    $factory = \NDB_Factory::singleton();
+    $user    = $factory->user();
+    $db      = $factory->database();
 
     $changedValue = array(
         'issueCommentID' => $issueCommentID,
@@ -419,7 +419,8 @@ function updateCommentHistory($issueCommentID, $newCommentValue)
  */
 function getWatching($issueID)
 {
-    $db =& Database::singleton();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
 
     $watching = $db->pselect(
         "SELECT userID from issues_watching WHERE issueID=:issueID",
@@ -444,7 +445,9 @@ function getWatching($issueID)
  */
 function getComments($issueID)
 {
-    $db =& Database::singleton();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
+
     $unformattedComments = $db->pselect(
         "SELECT newValue, fieldChanged, dateAdded, addedBy " .
         "FROM issues_history where issueID=:issueID " .
@@ -501,9 +504,9 @@ function getComments($issueID)
  */
 function emailUser($issueID, $changed_assignee)
 {
-    $factory =  \NDB_Factory::singleton();
-    $user    =& $factory->user();
-    $db      =& $factory->database();
+    $factory = \NDB_Factory::singleton();
+    $user    = $factory->user();
+    $db      = $factory->database();
     //not sure if this is necessary
     $baseurl = $factory->settings()->getBaseURL();
 
@@ -574,9 +577,9 @@ function emailUser($issueID, $changed_assignee)
  */
 function getIssueFields()
 {
-    $factory =  \NDB_Factory::singleton();
-    $db      =& $factory->database();
-    $user    =& $factory->user();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
+    $user    = $factory->user();
     $sites   = array();
 
     //get field options
