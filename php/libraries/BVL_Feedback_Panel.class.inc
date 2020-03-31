@@ -66,55 +66,6 @@ class BVL_Feedback_Panel
                 $commentID
             );
     }
-
-    /**
-     * Function to display the feedback panel at the timepoint list,
-     * instrument list or instrument level.
-     *
-     * @return string The HTML for the appropriate feedback panel.
-     * @throws Exception
-     * @throws SmartyException
-     */
-    function display(): string
-    {
-        $feedbackProfile = $this->feedbackThread->_feedbackCandidateProfileInfo;
-        $candidateID     = new CandID($feedbackProfile["CandID"]);
-
-        $this->tpl_data['candID'] = (string) $candidateID;
-
-        $candidateObject         = Candidate::singleton($candidateID);
-        $this->tpl_data['pscid'] = $candidateObject->getPSCID();
-
-        $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;
-
-        $feedbackObject = $this->feedbackThread->_feedbackObjectInfo;
-        $this->tpl_data['commentID'] = $feedbackObject["CommentID"] ?? null;
-
-        $this->tpl_data['thread_list']    = $this->feedbackThread->getThreadList();
-        $this->tpl_data['feedback_level'] = $this->feedbackThread->_feedbackLevel;
-        $this->tpl_data['feedback_types']
-            = NDB_BVL_Feedback::getFeedbackTypes();
-        $this->tpl_data['feedbacktypes']  = NDB_BVL_Feedback::getFeedbackTypes();
-
-        $summary = $this->feedbackThread->getSummaryOfThreads();
-        $this->tpl_data['thread_summary_headers'] = json_encode($summary);
-
-        $field_names = self::getSourcefields($_REQUEST['test_name'] ?? '');
-        $fields      = array();
-        $fields['Across All Fields'] = 'Across All Fields';
-        foreach ($field_names as $field_name) {
-            $fields[$field_name['SourceField']] = $field_name['SourceField'];
-        }
-
-        $this->tpl_data['FieldNames'] = json_encode($fields);
-
-        $smarty = new Smarty_NeuroDB("bvl_feedback_panel");
-        $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("bvl_feedback_panel.tpl");
-        return $html;
-
-    }
-}
     /**
      * Returns all the sourcefrom instruments from parameter_type
      *
@@ -174,3 +125,51 @@ class BVL_Feedback_Panel
         }
         return $sourcefields;
     }
+    /**
+     * Function to display the feedback panel at the timepoint list,
+     * instrument list or instrument level.
+     *
+     * @return string The HTML for the appropriate feedback panel.
+     * @throws Exception
+     * @throws SmartyException
+     */
+    function display(): string
+    {
+        $feedbackProfile = $this->feedbackThread->_feedbackCandidateProfileInfo;
+        $candidateID     = new CandID($feedbackProfile["CandID"]);
+
+        $this->tpl_data['candID'] = (string) $candidateID;
+
+        $candidateObject         = Candidate::singleton($candidateID);
+        $this->tpl_data['pscid'] = $candidateObject->getPSCID();
+
+        $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;
+
+        $feedbackObject = $this->feedbackThread->_feedbackObjectInfo;
+        $this->tpl_data['commentID'] = $feedbackObject["CommentID"] ?? null;
+
+        $this->tpl_data['thread_list']    = $this->feedbackThread->getThreadList();
+        $this->tpl_data['feedback_level'] = $this->feedbackThread->_feedbackLevel;
+        $this->tpl_data['feedback_types']
+            = NDB_BVL_Feedback::getFeedbackTypes();
+        $this->tpl_data['feedbacktypes']  = NDB_BVL_Feedback::getFeedbackTypes();
+
+        $summary = $this->feedbackThread->getSummaryOfThreads();
+        $this->tpl_data['thread_summary_headers'] = json_encode($summary);
+
+        $field_names = Utility::getSourcefields($_REQUEST['test_name'] ?? '');
+        $fields      = array();
+        $fields['Across All Fields'] = 'Across All Fields';
+        foreach ($field_names as $field_name) {
+            $fields[$field_name['SourceField']] = $field_name['SourceField'];
+        }
+
+        $this->tpl_data['FieldNames'] = json_encode($fields);
+
+        $smarty = new Smarty_NeuroDB("bvl_feedback_panel");
+        $smarty->assign($this->tpl_data);
+        $html = $smarty->fetch("bvl_feedback_panel.tpl");
+        return $html;
+
+    }
+}

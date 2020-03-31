@@ -264,28 +264,6 @@ class Utility
     }
 
     /**
-     * Returns the test name associated with a given commentID
-     *
-     * @param string $commentID A CommentID for which you would like
-     *                          to know the test_name
-     *
-     * @return  string The test name this commentID is a part of
-     * @note    This should be moved to whatever module uses it, or perhaps
-     *       NDB_BVL_Instrument
-     * @cleanup
-     */
-    static function getTestNameByCommentID(string $commentID): string
-    {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $testName = $db->pselectOne($query, array('CID' => $commentID));
-
-        return $testName;
-    }
-
-    /**
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
