@@ -32,4 +32,3 @@ Mac OS X is no longer supported as of LORIS 15.10. You may do the following for 
 
 **[[NEXT: (3) Behavioural Setup|Behavioural-Database]]**
 
-**[[NEXT: (4) Imaging Setup|Imaging-Database]]**
