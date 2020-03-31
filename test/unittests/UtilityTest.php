@@ -699,21 +699,6 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Tests that getSourcefields will return an empty array 
-     * if no parameters are specified
-     *
-     * @covers BVL_Feedback_Panel::getSourcefields()
-     * @return void
-     */
-    public function testGetSourcefieldsReturnsNothingWithNoParameters()
-    {
-        $this->assertEquals(
-            array(), 
-            BVL_Feedback_Panel::getSourcefields()
-        );
-    }
-
-    /**
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the instrument parameter is specified
      *
