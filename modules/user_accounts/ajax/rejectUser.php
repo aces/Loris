@@ -23,6 +23,7 @@ namespace LORIS\user_accounts;
 
 $factory = \NDB_Factory::singleton();
 $user    = $factory->user();
+$db      = $factory->database();
 
 // Make sure the permission is checked first to avoid malicious userID scans
 if (!$user->hasPermission('user_accounts')) {
@@ -61,6 +62,5 @@ if (!Edit_User::canRejectAccount($rejectee)) {
     );
 }
 
-(\Database::singleton())->delete('users', array("UserID" => $username));
+$db->delete('users', array("UserID" => $username));
 header("HTTP/1.1 204 No Content");
-

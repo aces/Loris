@@ -187,9 +187,10 @@ class Edit_User extends \NDB_Form
      */
     function _process($values)
     {
-        $config  = \NDB_Config::singleton();
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
+        $config  = $factory->config();
+
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
         $permissionsAdded   = array();
@@ -636,7 +637,8 @@ class Edit_User extends \NDB_Form
         parent::setup();
 
         ///get the value for additional_user_info flag
-        $config = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
         $additional_user_info = $config->getSetting('additional_user_info');
 
         //------------------------------------------------------------
@@ -801,7 +803,8 @@ class Edit_User extends \NDB_Form
             $groupB = array();
 
             //get site aliases
-            $DB      = \Database::singleton();
+            $factory = \NDB_Factory::singleton();
+            $DB      = $factory->database();
             $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
 
             foreach ($aliases as $row) {
@@ -955,7 +958,7 @@ class Edit_User extends \NDB_Form
                   JOIN users u ON (u.ID = up.userID)
                   WHERE p.code = 'send_to_dcc'";
 
-        $results = \Database::singleton()->pselect($query, array());
+        $results = \NDB_Factory::singleton()->database()->pselect($query, array());
 
         $group   = array();
         $group[] = $this->form->createElement(
