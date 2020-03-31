@@ -420,27 +420,6 @@ class UtilityTest extends TestCase
         );
     }
 
-	/**
-     * Returns the test name associated with a given commentID
-     *
-     * @param string $commentID A CommentID for which you would like
-     *                          to know the test_name
-     *
-     * @return  string The test name this commentID is a part of
-     * @note    Moved from Utility class
-     * @cleanup
-     */
-    static function getTestNameByCommentID(string $commentID): string
-    {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $testName = $db->pselectOne($query, array('CID' => $commentID));
-
-        return $testName;
-    }
-	
     /**
      * Test that getTestNameByCommentID returns 
      * the correct test name for the given CommentID
@@ -464,7 +443,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             "test_flag1",
-            self::getTestNameByCommentID("ID123")
+            Utility::getTestNameByCommentID("ID123")
         );
     }
 
@@ -506,32 +485,6 @@ class UtilityTest extends TestCase
         );
     }
 
-	/**
-     * Looks up the test_name for the current full name
-     *
-     * @param string $fullname Descriptive name to be looked up
-     *
-     * @return  string (Non-associative array of the form array(Test1, Test2, ..))
-     * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Behavioural Quality Control?) Moved to Utility test.
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
-     */
-    static function getTestNameUsingFullName(string $fullname): string
-    {
-        $test_name  = '';
-        $factory    = NDB_Factory::singleton();
-        $db         = $factory->database();
-        $instrument = $db->pselect(
-            "SELECT Test_name FROM test_names WHERE Full_name =:fname",
-            array('fname' => $fullname)
-        );
-        if (is_array($instrument) && count($instrument)) {
-            list(,$test_name) = each($instrument[0]);
-        }
-        return $test_name;
-    }
-	
     /**
      * Test that getTestNameUsingFullName returns the correct 
      * Test_name for the given Full_name
@@ -553,7 +506,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             'test1', 
-            self::getTestNameUsingFullName('description1')
+            Utility::getTestNameUsingFullName('description1')
         );
     }
 
@@ -744,12 +697,12 @@ class UtilityTest extends TestCase
         );
 
     }
-	
+
     /**
      * Tests that getSourcefields will return an empty array 
      * if no parameters are specified
      *
-     * @covers Utility::getSourcefields()
+     * @covers BVL_Feedback_Panel::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsReturnsNothingWithNoParameters()
@@ -764,7 +717,7 @@ class UtilityTest extends TestCase
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the instrument parameter is specified
      *
-     * @covers Utility::getSourcefields()
+     * @covers BVL_Feedback_Panel::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsWithInstrumentSpecified()
@@ -789,7 +742,7 @@ class UtilityTest extends TestCase
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the commentID parameter is specified
      *
-     * @covers Utility::getSourcefields()
+     * @covers BVL_Feedback_Panel::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsWithCommentIDSpecified()
@@ -813,7 +766,7 @@ class UtilityTest extends TestCase
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the name parameter is specified
      *
-     * @covers Utility::getSourcefields()
+     * @covers BVL_Feedback_Panel::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsWithNameSpecified()
@@ -837,7 +790,7 @@ class UtilityTest extends TestCase
      * Test an edge case of getSourcefields where all three parameters are specified
      * In this case, it should only use the instrument parameter
      *
-     * @covers Utility::getSourcefields()
+     * @covers BVL_Feedback_Panel::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsWithAllThreeParameters()
