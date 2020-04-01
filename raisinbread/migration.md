@@ -75,5 +75,4 @@
 # CLEAN-UP
 2019-12-05-RemoveMenus.sql
 2019-12-06-Remove-DataIntegrityFlag.sql
-2020-02-05-NoHostConfig.sql
 2020-02-28-foreign_key_issues_modules.sql
