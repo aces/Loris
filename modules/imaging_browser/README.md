@@ -91,3 +91,5 @@ For downloading large DICOM files, it may be necessary to increase the
   and download capabilities for any DICOM tars associated with the given session.
   Note that DICOM downloads will be prepended with the `PatientName` field 
   though they are not actually stored this way on the filesystem.
+- The `imaging_browser` registers widgets on the candidate profile and dashboard user
+  tasks card.

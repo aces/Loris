@@ -161,6 +161,9 @@ class ConflictResolverApp extends Component {
             Data: data,
             isLoaded: true,
           });
+          if (this.child !== undefined) {
+            this.child.updateFilterState(this.state.filter);
+          }
         }).catch((error) => {
           // console.log('error: ' + error);
     });

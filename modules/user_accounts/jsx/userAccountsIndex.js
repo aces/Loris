@@ -4,9 +4,21 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+/**
+ * User Accounts Index Component.
+ *
+ * This Component fetches the user account data from the server and feeds it to
+ * the Filterable Datatable component to be formated, filtered and sorted.
+ *
+ * When clicking on the Add User button or a Username, this component redirects
+ * the user to a form that allows them to add or edit a user.
+ */
 class UserAccountsIndex extends Component {
-  constructor(props) {
-    super(props);
+  /**
+   * {@inheritdoc}
+   */
+  constructor() {
+    super();
 
     this.state = {
       data: {},
@@ -19,6 +31,9 @@ class UserAccountsIndex extends Component {
     this.addUser = this.addUser.bind(this);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -34,14 +49,7 @@ class UserAccountsIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => {
-        // Convert concatenated string of sites to array
-        data.Data = data.Data.map((row) => {
-          row[0] = row[0].split('; ');
-          return row;
-        });
-        this.setState({data});
-      })
+      .then((data) => this.setState({data}))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -63,7 +71,21 @@ class UserAccountsIndex extends Component {
     switch (column) {
       case 'Site':
         // If user has multiple sites, join array of sites into string
-        result = <td>{cell.join('; ')}</td>;
+        result = (
+          <td>{cell
+            .map((centerId) => this.state.data.fieldOptions.sites[centerId])
+            .join(', ')}
+          </td>
+        );
+        break;
+      case 'Project':
+        // If user has multiple projectss, join array of sites into string
+        result = (
+          <td>{cell
+            .map((projectId) => this.state.data.fieldOptions.projects[projectId])
+            .join(', ')}
+          </td>
+        );
         break;
       case 'Username':
         url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
@@ -87,10 +109,18 @@ class UserAccountsIndex extends Component {
     return result;
   }
 
+  /**
+   * Changes url to be able to add or edit a User.
+   */
   addUser() {
     location.href='/user_accounts/edit_user/';
   }
 
+  /**
+   * {@inheritdoc}
+   *
+   * @return {object}
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -113,6 +143,11 @@ class UserAccountsIndex extends Component {
         name: 'site',
         type: 'select',
         options: options.sites,
+      }},
+      {label: 'Project', show: true, filter: {
+        name: 'project',
+        type: 'select',
+        options: options.projects,
       }},
       {label: 'Username', show: true, filter: {
         name: 'username',

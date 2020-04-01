@@ -414,7 +414,7 @@ table.data {
 .controlPanel li {
     list-style-position:inside;
     list-style-type: none;
-    white-space: nowrap; 
+    white-space: normal;
     margin-top: 4px;
 }
 .controlPanel {
