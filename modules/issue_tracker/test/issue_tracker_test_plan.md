@@ -26,6 +26,8 @@ Issue Tracker Edit Existing Issue [Manual Testing]
 6. Check that all values are propagated and saved correctly.
 7. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
 8. Check that an attachment can be adding to an existing issue.
+9. Test if users assigned to issues can upload attachments.
+10. Test if users can delete their own uploaded attachments.
 
 Permissions [Automation Testing]
 1. Remove access all profile permission.
@@ -33,5 +35,3 @@ Permissions [Automation Testing]
 3. Remove developer permission
 4. Test that the module behaves correctly as described above. 
 5. Test if user assigned to issue cannot delete attachments of issue owner.
-6. Test if users assigned to issues can upload attachments.
-7. Test if users can delete their own uploaded attachments.
