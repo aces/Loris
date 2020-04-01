@@ -28,10 +28,10 @@ Issue Tracker Edit Existing Issue [Manual Testing]
 8. Check that an attachment can be adding to an existing issue.
 9. Test if users assigned to issues can upload attachments.
 10. Test if users can delete their own uploaded attachments.
+11. Test if user assigned to issue cannot delete attachments of issue owner.
 
 Permissions [Automation Testing]
 1. Remove access all profile permission.
 2. Remove reporter permission
 3. Remove developer permission
 4. Test that the module behaves correctly as described above. 
-5. Test if user assigned to issue cannot delete attachments of issue owner.
