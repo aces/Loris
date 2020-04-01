@@ -25,7 +25,7 @@ Issue Tracker Edit Existing Issue [Manual Testing]
 5. Submit just a visit label - this should give an error message.
 6. Check that all values are propagated and saved correctly.
 7. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
-8. Check uploading new attachment to existing issue.
+8. Check that an attachment can be adding to an existing issue.
 
 Permissions [Automation Testing]
 1. Remove access all profile permission.
