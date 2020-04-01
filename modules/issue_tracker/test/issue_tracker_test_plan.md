@@ -14,7 +14,7 @@ Issue Tracker Create New Issue [Manual Testing]
 4. Submit invalid and valid PSCID and visit label pairs. Error messages should respond accordingly. Not that you cannot submit PSCIDs from other sites unless you have access all profiles permission
 5. Submit just a visit label - this should give an error message.
 6. Check that all values are propagated and saved correctly.
-7. Submit with an uploaded attachment should result in success.
+7. Add an attachment to the new issue and make sure that it is successfully uploaded.
 8. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
 
 Issue Tracker Edit Existing Issue [Manual Testing]
