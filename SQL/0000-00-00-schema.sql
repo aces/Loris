@@ -67,7 +67,8 @@ CREATE TABLE `language` (
   UNIQUE KEY (`language_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO language (language_code, language_label) VALUES ('en-CA', 'English');
+INSERT INTO language (language_code, language_label) VALUES
+    ('en-CA', 'English');
 
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
@@ -145,6 +146,7 @@ CREATE TABLE `candidate` (
   `PSCID` varchar(255) NOT NULL DEFAULT '',
   `ExternalID` varchar(255) DEFAULT NULL,
   `DoB` date DEFAULT NULL,
+  `DoD` date DEFAULT NULL,
   `EDC` date DEFAULT NULL,
   `Sex` enum('Male','Female','Other') DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
@@ -209,6 +211,7 @@ CREATE TABLE `session` (
   `MRIQCFirstChangeTime` datetime DEFAULT NULL,
   `MRIQCLastChangeTime` datetime DEFAULT NULL,
   `MRICaveat` enum('true','false') NOT NULL DEFAULT 'false',
+  `languageID` integer unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `session_candVisit` (`CandID`,`VisitNo`),
   KEY `FK_session_2` (`CenterID`),
@@ -217,6 +220,7 @@ CREATE TABLE `session` (
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_session_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`),
+  CONSTRAINT `FK_session_4` FOREIGN KEY (`languageID`) REFERENCES `language` (`language_id`),
   CONSTRAINT `FK_session_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
@@ -564,6 +568,14 @@ CREATE TABLE `files_qcstatus` (
       FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `mri_protocol_group` (
+    `MriProtocolGroupID`   INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name`                 VARCHAR(255)    NOT NULL UNIQUE,
+    PRIMARY KEY (`MriProtocolGroupID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `mri_protocol_group` (`Name`) VALUES('Default MRI protocol group');
+
 CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Center_name` varchar(4) NOT NULL default '',
@@ -593,18 +605,37 @@ CREATE TABLE `mri_protocol` (
   `time_max` int(4) DEFAULT NULL,
   `image_type` varchar(255) default NULL,
   `series_description_regex` varchar(255) default NULL,
+  `MriProtocolGroupID` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
-  CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
+  CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
+  CONSTRAINT `FK_mri_protocol_group_ID_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
 INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
- TE_max,time_min,time_max) VALUES
-   ('ZZZZ',48,8000,14000,80,130,0,200),
-   ('ZZZZ',40,1900,2700,10,30,0,500),
-   ('ZZZZ',44,2000,2500,2,5,NULL,NULL),
-   ('ZZZZ',45,3000,9000,100,550,NULL,NULL);
+ TE_max,time_min,time_max,MriProtocolGroupID) VALUES
+   ('ZZZZ',48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   ('ZZZZ',40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   ('ZZZZ',44,2000,2500,2,5,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   ('ZZZZ',45,3000,9000,100,550,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'));
+
+CREATE TABLE `mri_protocol_group_target` (
+     `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+     `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
+     `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
+     `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
+     `Visit_label`              VARCHAR(255)     DEFAULT NULL,
+     PRIMARY KEY (`MriProtocolGroupTargetID`),
+     CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
+     CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
+     CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`SubprojectID`)       REFERENCES `subproject` (`SubprojectID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
+    VALUES((SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'), NULL, NULL, NULL);
+
+
 
 CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -631,6 +662,14 @@ CREATE TABLE `mri_upload` (
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `mri_protocol_checks_group` (
+    `MriProtocolChecksGroupID`   INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name`                       VARCHAR(255)    NOT NULL UNIQUE,
+    PRIMARY KEY (`MriProtocolChecksGroupID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `mri_protocol_checks_group` (`Name`) VALUES('Default MRI protocol checks group');
+
 CREATE TABLE `mri_protocol_checks` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Scan_type` int(11) unsigned DEFAULT NULL,
@@ -639,11 +678,29 @@ CREATE TABLE `mri_protocol_checks` (
   `ValidMin` decimal(10,4) DEFAULT NULL,
   `ValidMax` decimal(10,4) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
+  `MriProtocolChecksGroupID` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`),
   KEY (`Scan_type`),
   CONSTRAINT `FK_mriProtocolChecks_ScanType`
-    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`)
+    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`),
+  CONSTRAINT `FK_mri_protocol_checks_group_ID_1`
+    FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mri_protocol_checks_group_target` (
+     `MriProtocolChecksGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+     `MriProtocolChecksGroupID`       INT(4) UNSIGNED  NOT NULL,
+     `ProjectID`                      INT(10) UNSIGNED DEFAULT NULL,
+     `SubprojectID`                   INT(10) UNSIGNED DEFAULT NULL,
+     `Visit_label`                    VARCHAR(255)     DEFAULT NULL,
+     PRIMARY KEY(`MriProtocolChecksGroupTargetID`),
+     CONSTRAINT `FK_mri_protocol_checks_group_target_1` FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`),
+     CONSTRAINT `FK_mri_protocol_checks_group_target_2` FOREIGN KEY (`ProjectID`)                REFERENCES `Project` (`ProjectID`),
+     CONSTRAINT `FK_mri_protocol_checks_group_target_3` FOREIGN KEY (`SubprojectID`)             REFERENCES `subproject` (`SubprojectID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `mri_protocol_checks_group_target` (`MriProtocolChecksGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
+    VALUES((SELECT MriProtocolChecksGroupID FROM mri_protocol_checks_group WHERE Name='Default MRI protocol checks group'), NULL, NULL, NULL);
 
 
 -- ********************************
@@ -773,9 +830,12 @@ CREATE TABLE `mri_violations_log` (
   `Value` varchar(255) DEFAULT NULL,
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
+  `MriProtocolChecksGroupID` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
-    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_mri_checks_group_1` 
+    FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `violations_resolved` (
@@ -811,9 +871,11 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
   `image_type` varchar(255) default NULL,
+  `MriProtocolGroupID` INT(4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `TarchiveID` (`TarchiveID`),
-  CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+  CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_mri_violated_2` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1367,6 +1429,21 @@ CREATE TABLE `issues_watching` (
   KEY `fk_issues_watching_2` (`issueID`),
   CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `issues_attachments` (
+    `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `issueID` int(11) unsigned NOT NULL,
+    `file_hash` varchar(64) NOT NULL,
+    `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
+    `file_name` varchar(255) NOT NULL DEFAULT '',
+    `deleted` tinyint(1) NOT NULL DEFAULT 0,
+    `user` varchar(255) NOT NULL DEFAULT '',
+    `description` text DEFAULT NULL,
+    `file_size` int(20) DEFAULT NULL,
+    `mime_type` varchar(255) NOT NULL DEFAULT '',
+    CONSTRAINT `fk_issues_attachments_issue` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`),
+    PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ********************************
 -- parameter tables
@@ -2091,3 +2168,4 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+

@@ -29,7 +29,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array('Examiner', '<FIRST QUESTION OF EACH PAGE>');
@@ -125,7 +125,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 
 
 
-            //If the form is validated, call File_Upload::processFiles() which loops through the files and 
+            //If the form is validated, call File_Upload::processFiles() which loops through the files and
             //proccesses them (including verify, move, and import steps)
             $file->processFiles();
         }
@@ -138,7 +138,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
          }
         }
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'],
-              $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'], 
+              $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'],
               $values['upload_file']);
       $this->_save($values);
 

@@ -102,7 +102,7 @@ $mysqlCommand = sprintf("mysql -A %s", escapeshellarg($dbname));
 
 echo 'Checking connection via MySQL configuration file...' . PHP_EOL;
 // Test whether a connection to MySQL is possible via a MySQL config file.
-exec($mysqlCommand . ' -e "show tables;" 2>&1 1>/dev/null', $output, $status);
+exec($mysqlCommand . ' -e "show tables;" 1>/dev/null 2>&1', $output, $status);
 if ($status != 0) {
     echo 'Checking connection via project configuration file...' . PHP_EOL;
     // If not, read DB information from the project's config file. This method
@@ -133,8 +133,7 @@ if ($status != 0) {
         escapeshellarg($host),
         escapeshellarg($password)
     );
-    exec($mysqlCommand . ' -e "show tables;" 2>&1 1>/dev/null', $output, $status);
-    print_r($output);
+    exec($mysqlCommand . ' -e "show tables;" 1>/dev/null 2>&1', $output, $status);
     if ($status != 0) {
         die(
             printWarning(

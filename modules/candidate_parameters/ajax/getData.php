@@ -51,11 +51,13 @@ case 'consentStatus':
 case 'candidateDOB':
     echo json_encode(getDOBFields());
     exit;
+case 'candidateDOD':
+    echo json_encode(getDODFields());
+    exit;
 default:
     header("HTTP/1.1 404 Not Found");
     exit;
 }
-
 /**
  * Handles the fetching of Candidate Info fields
  *
@@ -519,3 +521,27 @@ function getDOBFields(): array
     ];
     return $result;
 }
+
+/**
+ * Handles the fetching of candidate's date of death.
+ *
+ * @return array
+ */
+function getDODFields(): array
+{
+    $candID = new CandID($_GET['candID']);
+    $db     = \Database::singleton();
+
+    $candidateData = $db->pselectRow(
+        'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',
+        array('candid' => $candID)
+    );
+    $result        = [
+        'pscid'  => $candidateData['PSCID'],
+        'candID' => $candID->__toString(),
+        'dod'    => $candidateData['DoD'],
+        'dob'    => $candidateData['DoB'],
+    ];
+    return $result;
+}
+

@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 use \LORIS\StudyEntities\Candidate\CandID;
+use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 
 /**
  * The Loris TimePoint class
@@ -191,13 +192,15 @@ class TimePoint
     /**
      * Registers a new timepoint into the session table
      *
-     * @param \Candidate  $candidate      The Candidate to create this timepoint for
-     * @param integer     $SubprojectID   The subprojectID of the new timepoint
-     * @param string|null $nextVisitLabel The visit label of the timepoint
-     *                                    being created. If null, consecutive V1, V2,
-     *                                    etc will be created.
-     * @param \Site       $psc            The center of the timepoint
-     * @param \Project    $project        The project of the timepoint
+     * @param \Candidate   $candidate      The Candidate to create this timepoint for
+     * @param integer      $SubprojectID   The subprojectID of the new timepoint
+     * @param string|null  $nextVisitLabel The visit label of the timepoint
+     *                                     being created. If null,
+     *                                     consecutive V1, V2, etc will be
+     *                                     created.
+     * @param \Site        $psc            The center of the timepoint
+     * @param \Project     $project        The project of the timepoint
+     * @param integer|null $lang           The language id
      *
      * @throws DatabaseException
      *
@@ -208,7 +211,8 @@ class TimePoint
         int $SubprojectID,
         ?string $nextVisitLabel,
         \Site $psc,
-        \Project $project
+        \Project $project,
+        ?int $lang = null
     ): void {
 
         // insert into session set CandID=$candID,
@@ -237,6 +241,12 @@ class TimePoint
             $VisitLabel = "V$visitNo";
         }
 
+        $language = $lang;
+        if ($language === null) {
+            $langList = Utility::getLanguageList();
+            $language = array_key_first($langList);
+        }
+
         $insertData = array(
             'CandID'          => $candidate->getCandID(),
             'SubprojectID'    => $SubprojectID,
@@ -250,6 +260,7 @@ class TimePoint
             'UserID'          => $userID,
             'Date_registered' => $today,
             'Date_active'     => $today,
+            'languageID'      => $language,
         );
 
         // insert the data
@@ -1004,6 +1015,63 @@ class TimePoint
 
         return new \LORIS\Image($imagedto->getFileid());
     }
+
+    /**
+     * Gets the Electrophysiology recordings of that session.
+     *
+     * @param \User $user The requesting user
+     *
+     * @return \LORIS\Data\Models\ImageDTO[] A traversable of RecordingDTO.php
+     */
+    public function getRecordings(\User $user): array
+    {
+        $provisioner
+            = new \LORIS\Data\Provisioners\TimepointRecordingsRowProvisioner(
+                $this
+            );
+
+        $filter = new HasAnyPermissionOrUserSiteMatch(
+            array('electrophysiology_browser_view_allsites')
+        );
+
+        $provisioner = $provisioner->filter($filter);
+
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
+    }
+
+    /**
+     * Gets the first Recording of that session matching a given filename.
+     *
+     * @param \User  $user     The requesting user
+     * @param string $filename The requested filename
+     *
+     * @throws \NotFound
+     * @return \LORIS\Recording
+     */
+    public function getRecordingByFilename(\User $user, string $filename):
+    \LORIS\Recording
+    {
+        $filtered = array_filter(
+            $this->getRecordings($user),
+            function ($dto) use ($filename) {
+                return $dto->getFilename() == $filename;
+            }
+        );
+
+        if (empty($filtered)) {
+            throw new \NotFound($filename . ' not found.');
+        }
+
+        // Take the first corresponding file.
+        $recordingdto = array_pop($filtered);
+
+        return new \LORIS\Recording($recordingdto->getFileid());
+    }
+
 
     /**
      * Gets the DicomTars of that session.

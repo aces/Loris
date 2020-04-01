@@ -27,8 +27,8 @@ use LORIS\StudyEntities\Candidate\CandID;
 class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 {
     public $tpl_data;
-    public $validityEnabled;
-    public $validityRequired;
+    public $ValidityEnabled;
+    public $ValidityRequired;
     protected $instrument;
     /**
      * Construct a controller for the instrument status control panel
@@ -98,8 +98,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
             $this->instrument = $instrument;
 
-            $this->validityEnabled  = $instrument->validityEnabled;
-            $this->validityRequired = $instrument->validityRequired;
+            $this->ValidityEnabled  = $instrument->ValidityEnabled;
+            $this->ValidityRequired = $instrument->ValidityRequired;
 
             // generate the subtest list
             $list = $instrument->getSubtestList();
@@ -122,7 +122,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 = $this->_displayDataEntry();
 
             // generate the validity flag buttons
-            if ($this->validityEnabled == true) {
+            if ($this->ValidityEnabled == true) {
                 $this->tpl_data['access']['validity'] = $this->_displayValidity();
             }
 
@@ -224,10 +224,14 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $showLink = true;
                 $Validity = $this->getValidityStatus();
                 if ($Validity == null
-                    && $this->instrument->validityRequired == true
+                    && $this->instrument->ValidityRequired == true
                     && $this->getAdministrationStatus() != 'None'
                 ) {
                     $showLink = false;
+                    if ($option == 'Complete') {
+                        $this->tpl_data['data_entry'][$i]['tooltip']
+                            = "To enable link, Validity option must be selected";
+                    }
                 }
 
                 if ($option == 'In Progress') {
@@ -242,6 +246,12 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                                 = $this->instrument->getDataEntryCompletionStatus();
 
                             $showLink = $CompStatus == 'Complete';
+
+                            if (!$showLink) {
+                                $this->tpl_data['data_entry'][$i]['tooltip']
+                                    = "To enable link, required fields must be
+                                      filled in";
+                            }
                         }
                     }
                 }
@@ -251,7 +261,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     $this->tpl_data['data_entry'][$i]['showlink'] = true;
                 }
             } else {
-                $this->tpl_data['data_entry'][$i]['icon'] = 'fas fa-times';
+                $this->tpl_data['data_entry'][$i]['icon']    = 'fas fa-times';
+                $this->tpl_data['data_entry'][$i]['tooltip']
+                    = "To enable link, Administration option must be selected";
             }
             $i++;
         }
@@ -330,11 +342,12 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             // highlight the current option if it's the current status
             if ($validityStatus == $option) {
                 $this->tpl_data['validity'][$i]['icon'] = 'far fa-check-square';
-            }
-            if ($data_entry_status == 'Complete') {
-                $this->tpl_data['validity'][$i]['showLink'] = false;
             } else {
-                $this->tpl_data['validity'][$i]['showLink'] = true;
+                if ($data_entry_status == 'Complete') {
+                    $this->tpl_data['validity'][$i]['showLink'] = false;
+                } else {
+                    $this->tpl_data['validity'][$i]['showLink'] = true;
+                }
             }
             $i++;
         }

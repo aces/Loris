@@ -39,12 +39,14 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @param string $type The type of widgets to get
-     * @param \User  $user The user widgets are being retrieved for.
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
      *
      * @return \LORIS\GUI\Widget[]
      */
-    public function getWidgets(string $type, \User $user)
+    public function getWidgets(string $type, \User $user, array $options)
     {
         switch($type) {
         case 'dashboard':
@@ -133,16 +135,17 @@ class Module extends \Module
      */
     private function _getTasksWidget()
     {
-        $DB      = \NDB_Factory::singleton()->database();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         $modules = \Module::getActiveModules($DB);
-        $user    = \User::singleton();
+        $user    = $factory->user();
 
         $widgets = [];
         foreach ($modules as $module) {
             if ($module->hasAccess($user)) {
                 $widgets = array_merge(
                     $widgets,
-                    $module->getWidgets('usertasks', $user)
+                    $module->getWidgets('usertasks', $user, [])
                 );
             }
         }

@@ -10,7 +10,7 @@ LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web app
 
 * Try the LORIS demo instance at https://demo.loris.ca.
 
-This Readme covers installation of the LORIS <b>v22.*</b> release on <b>Ubuntu</b>.
+This Readme covers installation of LORIS version <b>23</b> on <b>Ubuntu</b>.
 ([CentOS Readme also available](./docs/wiki/00%20-%20SERVER%20INSTALL%20AND%20CONFIGURATION/01%20-%20LORIS%20Install/CentOS/README.CentOS7.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
@@ -42,20 +42,22 @@ These dependencies are subject to change so be sure to verify your version of My
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
-1. Set up LINUX user lorisadmin, with `sudo` privilege, and create LORIS base directory:
+1. Set up LINUX user and group lorisadmin and create LORIS base directory:
 
 ```bash
+# Create lorisadmin user and group
+# Give lorisadmin `sudo` permission. This is required for the install process
+# in order to automatically generate Apache configuration files.
+# Sudo privileges can be revoked once the install is completed.
 sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
+# Add apache to the lorisadmin group
+sudo usermod -a -G lorisadmin www-data
+# Set the password for the lorisadmin account
 sudo passwd lorisadmin
+sudo mkdir -m 755 -p /var/www/$projectname
+sudo chown lorisadmin.lorisadmin /var/www/$projectname
 su - lorisadmin
 ```
-
- <b>Important: All steps from this point forward must be executed by lorisadmin user</b>
-
- ```bash
- sudo mkdir -m 775 -p /var/www/$projectname
- sudo chown lorisadmin.lorisadmin /var/www/$projectname
- ```
 
  <i>$projectname ⇾ "loris" or one-word project name</i>
 

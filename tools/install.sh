@@ -138,7 +138,6 @@ elif [[ " ${redhat[*]} " == *" $os_distro "* ]]; then
     sudo chown apache.apache ../smarty/templates_c
     # Make Apache the group for project directory, so that the web based install
     # can write the config.xml file.
-    sudo chgrp apache ../project
     sudo chmod 770 ../project
 else
     echo "$os_distro Linux distribution detected. We currently do not support this. "
@@ -161,6 +160,7 @@ if [ -d logs ]; then
 fi
 
 echo ""
+export projectname=""
 
 if [[ " ${debian[*]} " == *" $os_distro "* ]]; then
 echo "Ubuntu distribution detected."
@@ -171,7 +171,6 @@ echo "Ubuntu distribution detected."
         echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )
-                export projectname=""
                 while [ "$projectname" == "" ]; do
                         read -p "Please enter your Project name (if unsure, use LORIS) : " projectname
                         echo $projectname | tee -a $LOGFILE > /dev/null

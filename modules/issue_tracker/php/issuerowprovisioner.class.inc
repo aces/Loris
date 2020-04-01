@@ -35,8 +35,9 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     function __construct()
     {
-        $user   = \User::singleton();
-        $userID = $user->getUsername();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $userID  = $user->getUsername();
         //note that this needs to be in the same order as the headers array
         parent::__construct(
             "SELECT i.issueID,
@@ -97,6 +98,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         }
 
         $cid = $row['centerId'];
+        $row['lastUpdate'] = \Utility::toDateDisplayFormat($row['lastUpdate']);
         return new IssueRow($row, $cid, $module);
     }
 }

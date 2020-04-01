@@ -141,7 +141,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="{$baseurl}/user_accounts/my_preferences/">
+                                    <a href="{$baseurl}/my_preferences/">
                                         My Preferences
                                     </a>
                                 </li>

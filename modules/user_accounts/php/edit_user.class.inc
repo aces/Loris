@@ -52,11 +52,15 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if ($editor->hasPermission('user_accounts')) {
-            if ($editor->hasPermission('user_accounts_multisite')) {
-                return true;
-            }
+        if (!$this->isCreatingNewUser()) {
+            $user = \User::factory($this->identifier);
+        }
 
+        if ($editor->hasPermission('user_accounts_multisite')) {
+            return true;
+        }
+
+        if ($editor->hasPermission('user_accounts')) {
             if ($this->isCreatingNewUser()) {
                 return true;
             }
@@ -812,22 +816,18 @@ class Edit_User extends \NDB_Form
                 )
             );
 
-            // A user should not be able to edit their own examiner approval
-            // status.
-            if (!$this->_isEditingOwnAccount()) {
-                $groupB[] = $this->createLabel(
-                    "Pending Approval:"
-                );
-                $groupB[] = $this->createSelect(
-                    "examiner_pending",
-                    "Pending Approval: ",
-                    array(
-                        null => "",
-                        'Y'  => 'Yes',
-                        'N'  => 'No',
-                    )
-                );
-            }
+            $groupB[] = $this->createLabel(
+                "Pending Approval:"
+            );
+            $groupB[] = $this->createSelect(
+                "examiner_pending",
+                "Pending Approval: ",
+                array(
+                    null => "",
+                    'Y'  => 'Yes',
+                    'N'  => 'No',
+                )
+            );
             $this->addGroup(
                 $groupA,
                 'examiner_sites',

@@ -28,6 +28,8 @@
  */
 require_once "Email.class.inc";
 
+use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
+
 //TODO: or split it into two files... :P
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
     echo json_encode(getIssueFields());
@@ -48,8 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
  */
 function editIssue()
 {
-    $db   =& Database::singleton();
-    $user =& User::singleton();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
+    $user    = $factory->user();
 
     $issueValues    = array();
     $validateValues = array();
@@ -111,6 +114,19 @@ function editIssue()
 
     updateHistory($historyValues, $issueID);
     updateComments($_POST['comment'], $issueID);
+
+    // Attachment for new issue.
+    if (isset($_FILES['file'])) {
+        $attachment = new \LORIS\issue_tracker\UploadHelper();
+        $attachment->setupUploading(
+            $user,
+            $_FILES,
+            array(
+                'fileDescription' => '',
+                'issueID'         => $issueID,
+            )
+        );
+    }
 
     // Adding new assignee to watching
     if (isset($issueValues['assignee'])) {
@@ -178,7 +194,8 @@ function editIssue()
  */
 function validateInput($values)
 {
-    $db         =& Database::singleton();
+    $factory    = \NDB_Factory::singleton();
+    $db         = $factory->database();
     $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
     $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
     $centerID   = (isset($values['centerID']) ? $values['centerID'] : null);
@@ -264,7 +281,7 @@ function validateInput($values)
         $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
         $params = ['PSCID' => $result['PSCID']];
 
-        $user =& User::singleton();
+        $user = $factory->user();
         if (!$user->hasPermission('access_all_profiles')) {
             $params['CenterID'] = implode(',', $user->getCenterIDs());
             $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
@@ -323,8 +340,9 @@ function getChangedValues($issueValues, $issueID)
  */
 function updateHistory($values, $issueID)
 {
-    $user =& User::singleton();
-    $db   =& Database::singleton();
+    $factory = \NDB_Factory::singleton();
+    $user    = $factory->user();
+    $db      = $factory->database();
 
     foreach ($values as $key => $value) {
         if (!empty($value)) {
@@ -351,8 +369,9 @@ function updateHistory($values, $issueID)
  */
 function updateComments($comment, $issueID)
 {
-    $user =& User::singleton();
-    $db   =& Database::singleton();
+    $factory = \NDB_Factory::singleton();
+    $user    = $factory->user();
+    $db      = $factory->database();
 
     if (isset($comment) && $comment != "null") {
         $commentValues = array(
@@ -376,8 +395,9 @@ function updateComments($comment, $issueID)
  */
 function updateCommentHistory($issueCommentID, $newCommentValue)
 {
-    $user =& User::singleton();
-    $db   =& Database::singleton();
+    $factory = \NDB_Factory::singleton();
+    $user    = $factory->user();
+    $db      = $factory->database();
 
     $changedValue = array(
         'issueCommentID' => $issueCommentID,
@@ -399,7 +419,8 @@ function updateCommentHistory($issueCommentID, $newCommentValue)
  */
 function getWatching($issueID)
 {
-    $db =& Database::singleton();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
 
     $watching = $db->pselect(
         "SELECT userID from issues_watching WHERE issueID=:issueID",
@@ -424,7 +445,9 @@ function getWatching($issueID)
  */
 function getComments($issueID)
 {
-    $db =& Database::singleton();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
+
     $unformattedComments = $db->pselect(
         "SELECT newValue, fieldChanged, dateAdded, addedBy " .
         "FROM issues_history where issueID=:issueID " .
@@ -481,10 +504,10 @@ function getComments($issueID)
  */
 function emailUser($issueID, $changed_assignee)
 {
-    $user =& User::singleton();
-    $db   =& Database::singleton();
+    $factory = \NDB_Factory::singleton();
+    $user    = $factory->user();
+    $db      = $factory->database();
     //not sure if this is necessary
-    $factory = NDB_Factory::singleton();
     $baseurl = $factory->settings()->getBaseURL();
 
     $title = $db->pSelectOne(
@@ -554,15 +577,15 @@ function emailUser($issueID, $changed_assignee)
  */
 function getIssueFields()
 {
-
-    $db    =& Database::singleton();
-    $user  =& User::singleton();
-    $sites = array();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
+    $user    = $factory->user();
+    $sites   = array();
 
     //get field options
     if ($user->hasPermission('access_all_profiles')) {
         // get the list of study sites - to be replaced by the Site object
-        $sites = Utility::getSiteList();
+        $sites = Utility::getSiteList(false, true);
     } else {
         // allow only to view own site data
         $sites = $user->getStudySites();
@@ -662,12 +685,18 @@ WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
         $issueID   = $_GET['issueID'];
         $issueData = getIssueData($issueID);
 
-        $desc       = $db->pselect(
+        $desc = $db->pselect(
             "SELECT issueComment
 FROM issues_comments WHERE issueID=:i
 ORDER BY dateAdded LIMIT 1",
             array('i' => $issueID)
         );
+
+        $provisioner = (new AttachmentProvisioner($issueID));
+        $attachments = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->toArray($user);
+
         $isWatching = $db->pselectOne(
             "SELECT userID, issueID FROM issues_watching
             WHERE issueID=:issueID AND userID=:userID",
@@ -681,7 +710,10 @@ ORDER BY dateAdded LIMIT 1",
         } else {
             $issueData['watching'] = "Yes";
         }
+        $username = $user->getUsername();
         $issueData['commentHistory'] = getComments($issueID);
+        $issueData['attachments']    = $attachments;
+        $issueData['whoami']         = $username;
         $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $desc[0]['issueComment'] ?? '';
     }
@@ -721,9 +753,9 @@ ORDER BY dateAdded LIMIT 1",
  */
 function getIssueData($issueID=null)
 {
-
-    $user = \User::singleton();
-    $db   = \Database::singleton();
+    $factory = \NDB_Factory::singleton();
+    $user    = $factory->user();
+    $db      = $factory->database();
 
     if (!empty($issueID)) {
         return $db->pselectRow(

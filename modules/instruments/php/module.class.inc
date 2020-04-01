@@ -42,17 +42,16 @@ class Module extends \Module
             return $resp;
         }
 
+        $path           = $request->getURI()->getPath();
         $pathComponents = array();
 
         // Breakdown path information from the request.
         preg_match(
             "#(/*)([a-zA-Z0-9_-]+)(/*)(.*)#",
-            $request->getURI()->getPath(),
+            $path,
             $pathComponents
         );
 
-        // TODO These magic numbers should be changed to constants so that
-        // it's easier to tell what they're referring to.
         $instrumentName = $pathComponents[2];
         $page           = $pathComponents[4];
 
@@ -87,12 +86,14 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @param string $type The type of widgets to get
-     * @param \User  $user The user widgets are being retrieved for.
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
      *
      * @return \LORIS\GUI\Widget[]
      */
-    public function getWidgets(string $type, \User $user) : array
+    public function getWidgets(string $type, \User $user, array $options) : array
     {
         switch($type) {
         case "usertasks":
@@ -116,7 +117,22 @@ class Module extends \Module
                 ),
 
             ];
+        case 'candidate':
+            $factory = \NDB_Factory::singleton();
+            $baseurl = $factory->settings()->getBaseURL();
+
+            return [
+                new \LORIS\candidate_profile\CandidateWidget(
+                    "Behavioural Data",
+                    $baseurl . "/instruments/js/CandidateInstrumentList.js",
+                    'lorisjs.instruments.CandidateInstrumentList.default',
+                    [],
+                    2,
+                    2,
+                ),
+            ];
         }
         return [];
     }
 }
+

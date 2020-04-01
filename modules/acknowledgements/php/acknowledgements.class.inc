@@ -39,8 +39,12 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('acknowledgements_view')
-                ||$user->hasPermission('acknowledgements_edit'));
+        return $user->hasAnyPermission(
+            [
+                'acknowledgements_view',
+                'acknowledgements_edit',
+            ]
+        );
     }
 
     /**
@@ -75,7 +79,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $baseurl = $factory->settings()->getBaseURL();
 
         // create user object and check appropriate permission
-        $user =& \User::singleton();
+        $user = $factory->user();
         if (!$user->hasPermission('acknowledgements_edit')) {
             return false;
         }

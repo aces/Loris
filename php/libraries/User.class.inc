@@ -201,7 +201,7 @@ class User extends UserPermissions
      * @param string $var Name of variable to get
      *
      * @note   Call without any arguments to get the entire user data array
-     * @return mixed
+     * @return array<array|string>|string
      * @access public
      * @throws LorisException
      */
