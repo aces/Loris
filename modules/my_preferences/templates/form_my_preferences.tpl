@@ -1,3 +1,4 @@
+<script type="text/javascript" src="{$baseurl}/js/components/Password.js"></script>
 <br />
 <form method="post" name="my_preferences" id="my_preferences" autocomplete="off">
     <h3>Password Rules</h3>
@@ -51,16 +52,16 @@
         <label class="col-sm-2">
             {$form.Password_hash.label}
         </label>
-        <div class="col-sm-10">
-            {$form.Password_hash.html}
+        <div class="col-sm-4">
+            <div id="pwd"></div>
         </div>
     </div>
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.__Confirm.label}
         </label>
-        <div class="col-sm-10">
-            {$form.__Confirm.html}
+        <div class="col-sm-4">
+            <div id="pwd-confirm"></div>
         </div>
     </div>
     <div class="row form-group">
@@ -101,3 +102,21 @@
 
 {$form.hidden}
 </form>
+
+<script>
+  let pwd = RPassword({
+    inputName: "{$form.Password_hash.name}",
+  });
+  ReactDOM.render(
+    pwd,
+    document.getElementById('pwd')
+  );
+
+  let pwdConfirm = RPassword({
+    inputName: "{$form.__Confirm.name}",
+  });
+  ReactDOM.render(
+    pwdConfirm,
+    document.getElementById('pwd-confirm')
+  );
+</script>

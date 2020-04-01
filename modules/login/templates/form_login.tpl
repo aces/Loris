@@ -1,4 +1,4 @@
-<script src="{$baseurl}/js/passwordVisibility.js" type="text/javascript"></script>
+<script type="text/javascript" src="{$baseurl}/js/components/Password.js"></script>
 
 <div class="container">
   <div class="row">
@@ -18,12 +18,7 @@
               <input type="text" name="username" class="form-control" placeholder="Username" value="{$username}"/>
             </div>
             <div class="form-group">
-              <div class="pwd-container">
-                <input type="password" name="password" class="form-control" id="pwd-input" placeholder="Password" aria-describedby="helpBlock" />
-                <button class="btn btn-link" type="button" onclick="togglePwd()">
-                  <i id="pwd-icon" class="glyphicon glyphicon-eye-open"></i>
-                </button>
-              </div>
+              <div id="pwd"></div>
               {if $error_message}
                 <span id="helpBlock" class="help-block">
                     <b class="text-danger">{$error_message}</b>
@@ -58,3 +53,13 @@
     </section>
   </div>
 </div>
+<script>
+  let pwd = RPassword({
+    placeholder: "Password",
+  });
+
+  ReactDOM.render(
+    pwd,
+    document.getElementById('pwd')
+  );
+</script>

@@ -661,27 +661,19 @@ class Edit_User extends \NDB_Form
         }
 
         // password
-        $group   = [];
-        $group[] = $this->createPassword('Password_hash');
-        $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
+        $this->addPassword('Password_hash', 'Password');
+        $this->addCheckbox('NA_Password', 'Generate new password', []);
+        
         if ($this->isCreatingNewUser()) {
             $pwd_attribs = ['required' => true];
         } else {
             $pwd_attribs = [];
         }
-        $this->addGroup(
-            $group,
-            'Password_Group',
-            'New Password',
-            $this->_GUIDelimiter,
-            $pwd_attribs
-        );
         $this->addPassword(
             '__Confirm',
             'Confirm Password',
             $pwd_attribs
         );
-        unset($group);
 
         // The supplied pattern is:
         //   - must have at least one non-whitespace characters
@@ -1118,7 +1110,7 @@ class Edit_User extends \NDB_Form
         if ($values['Email'] === $values['Password_hash']
             && $values['Password_hash'] !== ''
         ) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+            $errors['Password'] = self::PASSWORD_ERROR_IS_EMAIL;
         }
 
         // Make sure the user is not using their username as their password.
@@ -1131,7 +1123,7 @@ class Edit_User extends \NDB_Form
             || (!empty($this->identifier)
             && $this->identifier === $values['Password_hash'])
         ) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_USER;
+            $errors['Password'] = self::PASSWORD_ERROR_IS_USER;
         }
 
         if (!is_null($this->identifier)) {
@@ -1148,14 +1140,14 @@ class Edit_User extends \NDB_Form
                 && empty($values['Password_hash'])
                 && $values['NA_Password'] != 'on'
             ) {
-                $errors['Password_Group']
+                $errors['Password']
                     = 'Please specify password or click Generate new password';
             }
         }
         // Ensure that the password and confirm password fields match.
         // TODO This validation should be done on the front-end instead.
         if ($plaintext !== $values['__Confirm']) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_NO_MATCH;
+            $errors['Password'] = self::PASSWORD_ERROR_NO_MATCH;
         }
 
         // if password is user-defined, and user wants to change password
@@ -1171,10 +1163,10 @@ class Edit_User extends \NDB_Form
                 $isPasswordDifferent = \User::factory($this->identifier)
                     ->isPasswordDifferent($decoded);
                 if (! $isPasswordDifferent) {
-                    $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
+                    $errors['Password'] = self::PASSWORD_ERROR_NO_CHANGE;
                 }
             } catch (\InvalidArgumentException $e) {
-                $errors['Password_Group'] = $e->getMessage();
+                $errors['Password'] = $e->getMessage();
             }
         }
 
@@ -1192,7 +1184,7 @@ class Edit_User extends \NDB_Form
             && $values['NA_Password'] == 'on'
             && $plaintext != ''
         ) {
-            $errors['Password_Group'] = 'You must leave the password field empty '
+            $errors['Password'] = 'You must leave the password field empty '
                 . 'if you want the system to generate one for you';
         }
 
@@ -1200,7 +1192,7 @@ class Edit_User extends \NDB_Form
             && ($values['NA_Password'] != 'on')
             && empty($plaintext)
         ) {
-            $errors['Password_Group'] = 'Password is required';
+            $errors['Password'] = 'Password is required';
         }
 
         //======================================

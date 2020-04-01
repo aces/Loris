@@ -1,4 +1,5 @@
 <br />
+<script type="text/javascript" src="{$baseurl}/js/components/Password.js"></script>
 <script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
 {literal}
 <script>
@@ -119,31 +120,32 @@
      </div>
      <!-- </div> -->
      <br>
-     {if $form.errors.Password_Group}
-     <div class="row form-group form-inline form-inline has-error">
-        {else}
-        <div class="row form-group form-inline form-inline">
-            {/if}
-            <label class="col-sm-2">
-                {$form.Password_Group.label}
-                <span class="pwd-star password {if isset($form.Password_Group.options.required)} required{/if}" style="color: red">*</span>
+     {if $form.errors.Password}
+        <div class="row form-group form-inline has-error">
+     {else}
+        <div class="row form-group form-inline">
+     {/if}
+          <label class="col-sm-2">
+            {$form.Password_hash.label}
+            <span class="pwd-star password {if isset($form.Password_hash.required) && $form.Password_hash.required} required{/if}" style="color: red">*</span>
           </label>
-          <div class="col-sm-10">
-              {$form.Password_Group.html}
+          <div class="col-sm-4"> 
+              <div id="pwd"></div>
           </div>
-          {if $form.errors.Password_Group}
+          <div class="col-sm-4">{$form.NA_Password.html}</div>
+          {if $form.errors.Password}
           <div class="col-sm-offset-2 col-xs-12">
-            <font class="form-error">{$form.errors.Password_Group}</font>
+            <font class="form-error">{$form.errors.Password}</font>
         </div>
         {/if}
     </div>
     <div class="row form-group form-inline">
         <label class="col-sm-2">
             {$form.__Confirm.label}
-            <span class="pwd-star confirm-password {if $form.__Confirm.required} required{/if}" style="color: red">*</span>
+            <span class="pwd-star confirm-password {if isset($form.__Confirm.required) && $form.__Confirm.required} required{/if}" style="color: red">*</span>
         </label>
-        <div class="col-sm-10">
-            {$form.__Confirm.html}
+        <div class="col-sm-4">
+            <div id="pwd-confirm"></div>
         </div>
     </div>
     <!-- <div class="row form-group form-inline">
@@ -567,3 +569,21 @@
     {/if}
 </div>
 </form>
+
+<script>
+  let pwd = RPassword({
+    inputName: "{$form.Password_hash.name}",
+  });
+  ReactDOM.render(
+    pwd,
+    document.getElementById('pwd')
+  );
+
+  let pwdConfirm = RPassword({
+    inputName: "{$form.__Confirm.name}",
+  });
+  ReactDOM.render(
+    pwdConfirm,
+    document.getElementById('pwd-confirm')
+  );
+</script>
