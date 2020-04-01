@@ -6,7 +6,7 @@
  * PHP Version 5
  *
  * @category Loris
- * @package  Behavioral
+ * @package  behavioural
  * @author   Justin Kat <justin.kat@mail.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris

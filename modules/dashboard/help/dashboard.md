@@ -28,6 +28,6 @@ User-specific list of outstanding tasks such as data entry conflicts, incomplete
 
 Recently-uploaded documents for your study. Click on a document name to download the file directly from the Dashboard. Click **Document Repository** to view the complete list of available documents.
 
-#### Behavioral Feedback Notifications
+#### behavioural Feedback Notifications
 
 Track issues and corrections to behavioural/clinical data points. Click on a notification to redirect to the instrument with new changes or feedback.
