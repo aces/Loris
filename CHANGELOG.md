@@ -8,6 +8,27 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+##LORIS 24.0 (Release Date: ??)
+### Core
+#### Features
+- *Add item here*
+#### Updates and Improvements
+- *Add item here*
+#### Bug Fixes
+- *Add item here*
+### Modules
+#### *Add module here*
+### Clean Up
+- *Add item here*
+### Notes For Existing Projects
+- *Add item here*
+### Notes For Developers
+- *Add item here*
+
+
+
+
+
 ## LORIS 23.0 (Release Date: ??)
 
 ### Core
