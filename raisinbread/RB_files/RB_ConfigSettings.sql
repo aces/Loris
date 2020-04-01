@@ -102,5 +102,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (103,'dataReleasePath','Path to uploaded data release files',1,0,'text',26,'Data Release Upload Path',14);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (104,'dodFormat','Format of the Date of Death',1,0,'text',1,'DOD Format',10);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (105,'dateDisplayFormat','The date format to use throughout LORIS for displaying date information - formats for date inputs are browser- and locale-dependent.',1,0,'text',1,'Date display format',27);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (106,'IssueTrackerDataPath','Path to Issue Tracker data files',1,0,'web_path',26,'Issue Tracker Data Path',8);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

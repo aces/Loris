@@ -79,7 +79,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $baseurl = $factory->settings()->getBaseURL();
 
         // create user object and check appropriate permission
-        $user =& \User::singleton();
+        $user = $factory->user();
         if (!$user->hasPermission('acknowledgements_edit')) {
             return false;
         }
