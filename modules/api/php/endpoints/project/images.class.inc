@@ -66,7 +66,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array("v0.0.3-dev");
+        return array("v0.0.3");
     }
 
     /**

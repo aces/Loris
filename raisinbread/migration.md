@@ -55,7 +55,24 @@
 2019-11-25-Default_value_for_session_submitted.sql
 
 # NEW
-2019-10-09_move_MINCToolsPath_configuration_to_Config_tables.sql
+2018-05-18-adding_physiological_all_sites_permissions.sql
+2018-07-23-battery_manager_permissions.sql
+2019-02-08-multiple_mri_protocols.sql
+2019-07-02-Add_Edit_DoB_Permissions.sql
+2019-07-04-add_DoD_feature.sql
+2019-07-05-Add_Language_feature.sql
+2019-08-06-Add_date_display_format_config_setting.sql
+2019-10-09-move_MINCToolsPath_configuration_to_Config_tables.sql
+2019-10-29-adding_issues_attachments_table.sql
+2019-11-26-AddOtherSexEnum.sql
 2019-11-29-Add_upload_directory_configuration.sql
+2019-12-05-AddModuleTable.sql
+2020-01-16-ModuleManager.sql
+2020-01-20-adding_electrophysiology_browser_to_modules_table.sql
+2020-02-18-MyPrefModule.sql
+
 
 # CLEAN-UP
+2019-12-05-RemoveMenus.sql
+2019-12-06-Remove-DataIntegrityFlag.sql
+2020-02-28-foreign_key_issues_modules.sql

@@ -585,7 +585,7 @@ function getIssueFields()
     //get field options
     if ($user->hasPermission('access_all_profiles')) {
         // get the list of study sites - to be replaced by the Site object
-        $sites = Utility::getSiteList();
+        $sites = Utility::getSiteList(false, true);
     } else {
         // allow only to view own site data
         $sites = $user->getStudySites();

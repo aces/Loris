@@ -81,18 +81,3 @@ When creating or editing a user: (subtest: edit_user)
 
 ##### Security testing:
  - Try manipulating the POST request from the browser to add a permission to the editee. Make sure that the editee gets the permission if it is within the set of permissions of the editor Make sure the editee does not get the permission if it is not within the set of permissions of the editor. [See this PR](https://github.com/aces/Loris/pull/3818#issuecomment-408882440) for more details.
-
-On the My Preferences page:
-==========================
-
-36. Check that all users (even those with NO permissions) have access to the My Preferences page.
-37. Change the user’s password.  Check that the password rules are enforced. [Automated]
-38. Check that if password and confirmed password do not match you get an error. [Automated]
-39. Check that saving fails if any field is left blank (except password).
-40. Check that if you do not enter an email address that is syntactically valid you get an error.
-41. Modify any field on the page and save, and go to the User Account page. Check that the modifications are
-    displayed when looking at the modified user account.  
-42. Verify that all notification checkboxes match what the project has enabled in the `notification_modules_services_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
-43. Verify that checkboxes available respect the permission restrictions set in the `notification_modules_perm_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
-44. Verify that the notifications are sent when the trigger event occurs. (NB the user triggering the event will not get the email, only other registered users are notified)
-45. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you do not have access to the user account module, the system should tell you so.

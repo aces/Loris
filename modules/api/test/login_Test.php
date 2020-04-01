@@ -92,7 +92,7 @@ class LoginTest extends TestCase
 
         $request = $this->_request
             ->withAttribute('pathparts', array('login'))
-            ->withAttribute('LORIS-API-Version', 'v0.0.3-dev')
+            ->withAttribute('LORIS-API-Version', 'v0.0.3')
             ->withAttribute('user', new \LORIS\AnonymousUser())
             ->withMethod('POST')
             ->withBody(
