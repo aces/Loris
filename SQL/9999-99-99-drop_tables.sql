@@ -19,6 +19,15 @@ DROP TABLE IF EXISTS `help`;
 DROP TABLE IF EXISTS `Config`;
 DROP TABLE IF EXISTS `ConfigSettings`;
 
+-- issues must be deleted before `modules` table
+DROP TABLE IF EXISTS `issues_attachments`;
+DROP TABLE IF EXISTS `issues_watching`;
+DROP TABLE IF EXISTS `issues_comments_history`;
+DROP TABLE IF EXISTS `issues_history`;
+DROP TABLE IF EXISTS `issues_comments`;
+DROP TABLE IF EXISTS `issues`;
+DROP TABLE IF EXISTS `issues_categories`;
+
 -- 0000-00-02-Modules.sql
 DROP TABLE IF EXISTS `modules`;
 
@@ -82,13 +91,6 @@ DROP TABLE IF EXISTS `parameter_type_category_rel`;
 DROP TABLE IF EXISTS `parameter_type_category`;
 DROP TABLE IF EXISTS `parameter_type`;
 
-DROP TABLE IF EXISTS `issues_watching`;
-DROP TABLE IF EXISTS `issues_comments_history`;
-DROP TABLE IF EXISTS `issues_history`;
-DROP TABLE IF EXISTS `issues_comments`;
-DROP TABLE IF EXISTS `issues`;
-DROP TABLE IF EXISTS `issues_categories`;
-
 DROP TABLE IF EXISTS `media`;
 DROP TABLE IF EXISTS `server_processes`;
 DROP TABLE IF EXISTS `StatisticsTabs`;
@@ -131,11 +133,15 @@ DROP TABLE IF EXISTS `bids_scan_type`;
 DROP TABLE IF EXISTS `bids_scan_type_subcategory`;
 DROP TABLE IF EXISTS `violations_resolved`;
 DROP TABLE IF EXISTS `mri_violations_log`;
+DROP TABLE IF EXISTS `mri_protocol_checks_group_target`;
 DROP TABLE IF EXISTS `mri_protocol_checks`;
+DROP TABLE IF EXISTS `mri_protocol_checks_group`;
 DROP TABLE IF EXISTS `mri_upload`;
+DROP TABLE IF EXISTS `mri_protocol_group_target`;
 DROP TABLE IF EXISTS `MRICandidateErrors`;
 DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
 DROP TABLE IF EXISTS `mri_protocol`;
+DROP TABLE IF EXISTS `mri_protocol_group`;
 DROP TABLE IF EXISTS `files_qcstatus`;
 DROP TABLE IF EXISTS `files_intermediary`;
 DROP TABLE IF EXISTS `files`;
@@ -169,5 +175,3 @@ DROP TABLE IF EXISTS `visit`;
 DROP TABLE IF EXISTS `project_subproject_rel`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `subproject`;
-
-
