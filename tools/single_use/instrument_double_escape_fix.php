@@ -1,20 +1,18 @@
 <?php declare(strict_types=1);
 /**
- * This tool scores any registered instrument that was built using the
- * NDB_BVL_Instrument class and that has a working score() method.
- * The command line arguments need to contain a valid test_name, a 'all' or 'one'
- * option, a CandID and a SessionID.
+ * This tool checks instrument data for multi-escaped characters that have
+ * been stored in the database due to a bug present in LORIS since before
+ * version 19.0.
  *
- * The 'all' option scores all existing records of an instrument if and only if
- *  - They belong to an active timepoint
- *  - The data-entry status of the timepoint is set to `complete`
- *  - The administration of the timepoint is NOT `none`
+ * This tool can be used to report cases of multi-escaped character as well
+ * as identify if the escaping might have caused data truncation. It can also
+ * attempt to recover the data by undoing the multi-escaping when necessary.
+ * In case of truncation, the data can be recovered from the history table if
+ * the correct arguments are passed to the script.
  *
- * Note: This tool can also be used to debug the scoring algorithms for development.
+ * Runing this can modify data if the proper arguments are passed to the script.
  *
- * Limitation: This tool does not reset or nullify the score of an instrument
- * which was previously scored but no longer meets the criteria above (i.e. if the
- * administration was changed from `all` to `none`, the score will not be removed).
+ * Make sure to confirm all changes before running it on a production environment.
  *
  */
 
@@ -27,7 +25,7 @@ if (!is_dir($dir)) {
 }
 $today   = getdate();
 $date    = strftime("%Y-%m-%d_%H:%M");
-$logPath = "$dir/fix_double_escaped_fields_$date.log";
+$logPath = "$dir/instrument_double_escape_fix_$date.log";
 $logfp   = fopen($logPath, 'a');
 
 if (!$logfp) {
@@ -38,10 +36,16 @@ if (!$logfp) {
 }
 //PARSE ARGUMENTS
 $actions = array(
-            'report',
-            'repair',
-           );
-if (!isset($argv[1]) || $argv[1] === 'help' || in_array('-h', $argv, true) || !in_array($argv[1], $actions, true)) {
+    'report',
+    'repair',
+);
+if (
+    !isset($argv[1])
+    || $argv[1] === 'help'
+    || in_array('-h', $argv, true)
+    || !in_array($argv[1], $actions, true)
+    || $argc > 3
+) {
     showHelp();
 }
 $report = false;
@@ -60,6 +64,7 @@ if (in_array('use-history', $argv, true)) {
 // DEFINE VARIABLES
 // All instruments looked at
 $instrumentNames = $DB->pselectCol("SELECT Test_name FROM test_names", array());
+// Array mapping SQL table names to instrument names
 $tables = array();
 // Array of all fields containing any escaped characters
 $escapedEntries = array();
@@ -77,6 +82,9 @@ $untruncatedValues = array();
 $CIDs = array();
 $allFields = array();
 $allTables = array();
+
+$databaseName = $config->getSetting('database')['database'];
+
 
 // FIRST loop just reporting all potential problematic fields
 
@@ -97,19 +105,18 @@ foreach($instrumentNames as $instrumentName) {
     );
     foreach ($instrumentCIDs as $cid) {
         $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
-	$instrumentData = \NDB_BVL_Instrument::loadInstanceData($instrumentInstance);
-	
-	// instrument name and table name might differ
-	$tableName = $instrumentInstance->table;
-	$tables[$tableName] = $instrumentName;
+        $instrumentData = \NDB_BVL_Instrument::loadInstanceData($instrumentInstance);
+
+        // instrument name and table name might differ
+        $tableName = $instrumentInstance->table;
+        $tables[$tableName] = $instrumentName;
         $set            = array();
-	print_r($instrumentData);
         // Go through all fields and identify which have any escaped characters
         foreach ($instrumentData as $field => $value) {
             // regex detecting any escaped character in the database
             if (!is_null($value) && preg_match('/&(amp;)+(gt;|lt;|quot;|amp;)/', $value)) {
                 $escapedEntries[$tableName][$cid][$field] = $value;
-		$escapedFields[$tableName][] = $field;
+                $escapedFields[$tableName][] = $field;
                 $errorsDetected = true;
             }
         }
@@ -120,68 +127,68 @@ foreach($instrumentNames as $instrumentName) {
 
 //SECOND loop, depending on flags, report or fix values.
 if ($errorsDetected) {
-	foreach ($escapedFields as $tableName => $fieldsArray) {
-		$fieldsList = "'" . implode($fieldsArray, "','") . "'";
+    foreach ($escapedFields as $tableName => $fieldsArray) {
+        $fieldsList = "'" . implode($fieldsArray, "','") . "'";
 
-		$maxFieldLengths[$tableName] = $DB->pselectWithIndexKey(
-			"SELECT COLUMN_NAME, CHARACTER_MAXIMUM_LENGTH
-			FROM INFORMATION_SCHEMA.COLUMNS 
-			WHERE TABLE_NAME=:tbl AND COLUMN_NAME IN ($fieldsList)",
-			array('tbl' => $tableName),
-			'COLUMN_NAME'
-		);
-	}
+        $maxFieldLengths[$tableName] = $DB->pselectWithIndexKey(
+            "SELECT TABLE_NAME, COLUMN_NAME, CHARACTER_MAXIMUM_LENGTH
+			FROM INFORMATION_SCHEMA.COLUMNS
+			WHERE TABLE_SCHEMA=:dbn AND TABLE_NAME=:tbl AND COLUMN_NAME IN ($fieldsList)",
+            array('dbn'=>$databaseName,'tbl' => $tableName),
+            'COLUMN_NAME'
+        );
+    }
 
-	// Start comparing the value length of the escaped entry to the character maximum for that field
-	// In order to begin identifying cases of truncation
-	foreach ($escapedEntries as $tableName => $rows) {
-		foreach ($rows as $cid => $entries) {
-			foreach ($entries as $field => $value) {
-				if (strlen($value) == $maxFieldLengths[$tableName][$field]['CHARACTER_MAXIMUM_LENGTH']) {
-					$confirmedTruncations[$tableName][$cid][$field] = $value;
-					$CIDs[] = $cid;
-					$allFields[] = $field;
-					$allTables[] = $tableName;
-				}
-			}
-		}
-	}
+    // Start comparing the value length of the escaped entry to the character maximum for that field
+    // In order to begin identifying cases of truncation
+    foreach ($escapedEntries as $tableName => $rows) {
+        foreach ($rows as $cid => $entries) {
+            foreach ($entries as $field => $value) {
+                if (strlen($value) == $maxFieldLengths[$tableName][$field]['CHARACTER_MAXIMUM_LENGTH']) {
+                    $confirmedTruncations[$tableName][$cid][$field] = $value;
+                    $CIDs[] = $cid;
+                    $allFields[] = $field;
+                    $allTables[] = $tableName;
+                }
+            }
+        }
+    }
 
-if ($useHistory) {
-	// Construct history query
-	$listCIDs = "'" . implode($CIDs, "','") . "'";
-	$listFields = "'" . implode($allFields, "','") . "'";
-	$listTables = "'" . implode($allTables, "','") . "'";
-	$query = "SELECT primaryVals as CommentID, col, tbl, new, changeDate
-		FROM history 
+    if ($useHistory) {
+        // Construct history query
+        $listCIDs = "'" . implode($CIDs, "','") . "'";
+        $listFields = "'" . implode($allFields, "','") . "'";
+        $listTables = "'" . implode($allTables, "','") . "'";
+        $query = "SELECT primaryVals as CommentID, col, tbl, new, changeDate
+		FROM history
 		WHERE primaryCols='CommentID' AND
 		primaryVals IN ($listCIDs) AND
 		tbl IN ($listTables) AND
 		col IN ($listFields)
-		ORDER BY changeDate DESC";	
-	
-	$historyData = $DB->pselect(
-		$query, 
-		[]
-	);
+		ORDER BY changeDate DESC";
 
-	// Go through history data starting with most recent changes
-	foreach($historyData as $key => $data) {
-    		$tbl = $data['tbl'];
-    		$cid = $data['CommentID'];
-    		$field = $data['col'];
-   		$val = $data['new'];
-    		
-		// Check if in confirmed truncations list & length of field is less than max field length
-    		// & no value has been assigned to untruncatedValues yet
-    		// I.E. if this is the most recent value with character length < max
-    		if (array_key_exists($field, $confirmedTruncations[$tbl][$cid]) &&
-        		strlen($val) < $maxFieldLengths[$tbl][$field] &&
-        		!isset($untruncatedValues[$tbl][$cid][$field])
-		) {
-        		$untruncatedValues[$tbl][$cid][$field] = $val;
-    		}
-	}	
+        $historyData = $DB->pselect(
+            $query,
+            []
+        );
+
+        // Go through history data starting with most recent changes
+        foreach($historyData as $key => $data) {
+            $tbl = $data['tbl'];
+            $cid = $data['CommentID'];
+            $field = $data['col'];
+            $val = $data['new'];
+
+            // Check if in confirmed truncations list & length of field is less than max field length
+            // & no value has been assigned to untruncatedValues yet
+            // I.E. if this is the most recent value with character length < max
+            if (array_key_exists($field, $confirmedTruncations[$tbl][$cid]) &&
+                strlen($val) < $maxFieldLengths[$tbl][$field] &&
+                !isset($untruncatedValues[$tbl][$cid][$field])
+            ) {
+                $untruncatedValues[$tbl][$cid][$field] = $val;
+            }
+        }
     }
 
     if ($report) {
@@ -201,7 +208,7 @@ if ($useHistory) {
             "Below are the suggested repairs automatically generated from ".
             "latest values in the fields."
         );
-	print_r($untruncatedValues);
+        print_r($untruncatedValues);
 
         if ($useHistory) {
             printOut(
@@ -216,7 +223,7 @@ if ($useHistory) {
 
 
     foreach ($escapedEntries as $tableName=>$cids) {
-	$instrumentName = $tables[$tableName];
+        $instrumentName = $tables[$tableName];
         printOut("Opening $instrumentName");
         foreach ($cids as $cid => $fields) {
             try {
@@ -229,15 +236,15 @@ if ($useHistory) {
                 continue;
             }
             foreach ($fields as $field => $value) {
-		if ($useHistory &&
-        		array_key_exists($field, $confirmedTruncations[$tableName][$cid]) &&
-        		array_key_exists($field, $untruncatedValues[$tableName][$cid])
-		) {
-			printOut("CommentID:$cid - Replacing a truncated value by a non-truncated history entry" .
-			 	"\n\tTruncated Value: $value " .
-				"\n\tWill be replaced by:  {$untruncatedValues[$tableName][$cid][$field]} \n"
-			);
-			$value = $untruncatedValues[$tableName][$cid][$field];
+                if ($useHistory &&
+                    array_key_exists($field, $confirmedTruncations[$tableName][$cid]) &&
+                    array_key_exists($field, $untruncatedValues[$tableName][$cid])
+                ) {
+                    printOut("CommentID:$cid - Replacing a truncated value by a non-truncated history entry" .
+                        "\n\tTruncated Value: $value " .
+                        "\n\tWill be replaced by:  {$untruncatedValues[$tableName][$cid][$field]} \n"
+                    );
+                    $value = $untruncatedValues[$tableName][$cid][$field];
                 }
 
                 // Each of the expressions below uniquely match each of the targeted
@@ -325,15 +332,15 @@ function showHelp()
     echo "\n\n*** Fix Double Escaped Fields ***\n\n";
 
     echo "Usage:
-    fix_double_escape.php [help | -h]                -> displays this message
-    fix_double_escape.php report [use-history]       -> runs tool and reports erroneous data and potential fixes 
-                                                        without making any changes. (with use-history flag, proposes 
-                                                        data repairs by looking through the instrument's historical 
+    instrument_double_escape_fix.php [help | -h]                -> displays this message
+    instrument_double_escape_fix.php report [use-history]       -> runs tool and reports erroneous data and potential fixes
+                                                        without making any changes. (with use-history flag, proposes
+                                                        data repairs by looking through the instrument's historical
                                                         entries in the LORIS history table)
-    fix_double_escape.php repair [use-history]       -> runs tool and rectifies erroneous data when possible (with 
-                                                        use-history flag, repairs data by looking through the 
+    instrument_double_escape_fix.php repair [use-history]       -> runs tool and rectifies erroneous data when possible (with
+                                                        use-history flag, repairs data by looking through the
                                                         instrument's historical entries in the LORIS history table)
-                                                        
+
     Note: Using the `use-history` flag will considerably slow down the script.
     \n\n";
 
