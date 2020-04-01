@@ -4,8 +4,8 @@
 <ul class="controlPanel">
     <li><form method="post"><input class="button" type="submit" value="Delete instrument data" /> 
         <input type="hidden" name="ClearInstrument" value="1">
-		<br/>
-		<label>Check the 2 boxes to complete deletion:<label/>
+        <br/>
+        <label>Check the 2 boxes to confirm deletion:<label/>
         <input type="checkbox" name="deleteconfirm" />
         <input type="checkbox" name="deleteconfirm2" />
         </form>
