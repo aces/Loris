@@ -68,7 +68,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return array(
             'v0.0.2',
-            'v0.0.3-dev',
+            'v0.0.3',
         );
     }
 
@@ -112,6 +112,9 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
             break;
         case 'visits':
             $handler = new Visits($this->_project);
+            break;
+        case 'recordings':
+            $handler = new Recordings($this->_project);
             break;
         default:
             return new \LORIS\Http\Response\JSON\NotFound();

@@ -160,6 +160,7 @@ if [ -d logs ]; then
 fi
 
 echo ""
+export projectname=""
 
 if [[ " ${debian[*]} " == *" $os_distro "* ]]; then
 echo "Ubuntu distribution detected."
@@ -170,7 +171,6 @@ echo "Ubuntu distribution detected."
         echo $yn | tee -a $LOGFILE > /dev/null
         case $yn in
             [Yy]* )
-                export projectname=""
                 while [ "$projectname" == "" ]; do
                         read -p "Please enter your Project name (if unsure, use LORIS) : " projectname
                         echo $projectname | tee -a $LOGFILE > /dev/null

@@ -1,3 +1,4 @@
+<script type="text/javascript" src="{$baseurl}/js/instrument_controlpanel_control.js"></script>
 
 {if $InstrumentResetting }
 <h3 class="controlPanelSection">Clear Instrument</h3>
@@ -47,7 +48,13 @@
     {if $access.data_entry and $data_entry[item].showlink}
         <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setDataEntry={$data_entry[item].label}&test_name={$test_name}">{$data_entry[item].label}</a>
     {else}
+        {if $data_entry[item].tooltip}
+        <span data-toggle="tooltip" data-placement="right" title="{$data_entry[item].tooltip}">
+            {$data_entry[item].label}
+        </span>
+        {else}
         {$data_entry[item].label}
+        {/if}
     {/if}
     </li>
 {/section}
