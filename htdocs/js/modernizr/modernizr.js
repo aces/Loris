@@ -371,7 +371,7 @@
 
         } else if (/^(search|tel)$/.test(inputElemType)) {
           // Spec doesn't define any special parsing or detectable UI
-          //   behaviours so we pass these through as true
+          //   behaviors so we pass these through as true
 
           // Interestingly, opera fails the earlier test, so it doesn't
           //  even make it here.

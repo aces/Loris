@@ -86,7 +86,7 @@ function datepicker_getZindex( elem ) {
 	while ( elem.length && elem[ 0 ] !== document ) {
 
 		// Ignore z-index if position is set to a value where z-index is ignored by the browser
-		// This makes behaviour of this function consistent across browsers
+		// This makes behavior of this function consistent across browsers
 		// WebKit always returns auto if the element is positioned
 		position = elem.css( "position" );
 		if ( position === "absolute" || position === "relative" || position === "fixed" ) {
