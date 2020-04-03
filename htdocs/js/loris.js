@@ -1,4 +1,5 @@
 /* exported LorisHelper */
+/* eslint-disable prefer-rest-params*/
 
 let LorisHelper = function(configParams, userPerms, studyParams) {
   'use strict';

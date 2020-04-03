@@ -7,6 +7,7 @@ import Modal from 'Modal';
 import swal from 'sweetalert2';
 
 import BatteryManagerForm from './batteryManagerForm';
+/* eslint-disable no-console*/
 
 /**
  * Battery Manager
