@@ -76,7 +76,6 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 
 .navbar-default .navbar-nav > li:hover > a,
 .navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > li > a:focus,
 .navbar-default .navbar-nav > li > a:active {
     color: #064785;
     background-color: white;
