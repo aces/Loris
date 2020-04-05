@@ -118,7 +118,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $modules = \Module::getActiveModules($db);
 
         $priorities = array(
-            'low'       => 'Low'
+            'low'       => 'Low',
             'normal'    => 'Normal',
             'high'      => 'High',
             'urgent'    => 'Urgent',
