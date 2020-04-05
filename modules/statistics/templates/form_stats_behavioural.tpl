@@ -107,7 +107,7 @@
         </tbody>
     </table>
     <div>
-        <b><a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Click here for breakdown per participant{if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
+        <b><a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Per Instrument Stats - All Sites{if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
     </div>
 </div>
 
