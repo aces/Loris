@@ -1,1 +1,1 @@
-modules/api/docs/LorisRESTAPI.md
+../../../modules/api/docs/LorisRESTAPI.md
