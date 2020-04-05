@@ -108,6 +108,14 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
         $this->DB->insert(
+            "mri_protocol_group",
+            array(
+                'MriProtocolGroupID' => 11,
+                'Name'               => 'test',
+            )
+        );
+
+        $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
                 'ID'                 => '1001',
@@ -117,6 +125,7 @@ class DashboardTest extends LorisIntegrationTest
                 'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
                 'series_description' => 'Test Series Description',
                 'SeriesUID'          => '5555',
+                'MriProtocolGroupID' => 11,
             )
         );
         $this->DB->insert(
@@ -129,6 +138,7 @@ class DashboardTest extends LorisIntegrationTest
                 'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
                 'series_description' => 'Test Series Description',
                 'SeriesUID'          => '5556',
+                'MriProtocolGroupID' => 11,
             )
         );
         $this->DB->insert(
@@ -350,6 +360,10 @@ class DashboardTest extends LorisIntegrationTest
                 'ExtID'     => '1002',
                 'TypeTable' => 'mri_protocol_violated_scans',
             )
+        );
+        $this->DB->delete(
+            "mri_protocol_group",
+            array('Name' => 'test')
         );
         $this->DB->delete(
             "psc",

@@ -183,6 +183,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $preview = false;
 
     /**
+     * Array containing all multiselect elements in an instrument.
+     */
+    protected $selectMultipleElements;
+
+    /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
      * instrument.
@@ -541,8 +546,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 = $defaults['Candidate_Age'] . " (Age out of range)";
         }
         //Convert select multiple elements into a lorisform array
-        if (!empty($this->_selectMultipleElements)) {
-            foreach ($this->_selectMultipleElements AS $elname) {
+        if (!empty($this->selectMultipleElements)) {
+            foreach ($this->selectMultipleElements AS $elname) {
                 if (isset($defaults[$elname])
                     && stristr($defaults[$elname], "{@}")
                 ) {
@@ -763,8 +768,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         //Convert select multiple elements into database storable values
-        if (!empty($this->_selectMultipleElements)) {
-            foreach ($this->_selectMultipleElements AS $elname) {
+        if (!empty($this->selectMultipleElements)) {
+            foreach ($this->selectMultipleElements AS $elname) {
                 if (isset($values[$elname]) && is_array($values[$elname])) {
                     $values[$elname] = implode("{@}", $values[$elname]);
                 }
@@ -1523,6 +1528,41 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return null;
     }
 
+    /**
+     * Determines what percentage of the data entry has been completed, based on the
+     * number of fields in $_requiredElements having data
+     *
+     * @return int the data entry completion percentage
+     */
+    function determineDataEntryCompletionProgress(): int
+    {
+        // don't bother checking anything if the required elements array is empty
+        if (empty($this->_requiredElements)) {
+            return 100;
+        }
+        $allData       = $this->loadInstanceData($this);
+        $unanswered    = 0;
+        $totalElements = count($this->_requiredElements);
+        foreach ($this->_requiredElements as $field) {
+            // consider status field if not_answered chosen as an answer
+            $statusField = $field . '_status';
+            // field shouldn't be just empty() b/c 0 is a valid
+            // value for some required fields
+            if (((($allData[$field] ?? null) === null)
+                || (($allData[$field] ?? "") === ""))
+                && empty($allData[$statusField])
+            ) {
+                $unanswered++;
+            }
+        }
+        if ($unanswered == 0) {
+            return 100;
+        } else if ($unanswered == $totalElements) {
+            return 0;
+        }
+
+        return (int)round((($totalElements-$unanswered)/$totalElements)*100);
+    }
 
     /**
      * Determines what the data entry status flag should be set to
@@ -1538,9 +1578,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $allData = $this->loadInstanceData($this);
         foreach ($this->_requiredElements as $field) {
-            // this shouldn't be just empty() b/c 0 is a valid
+            // consider status field if not_answered chosen as an answer
+            $statusField = $field . '_status';
+            // field shouldn't be just empty() b/c 0 is a valid
             // value for some required fields
-            if (is_null($allData[$field]) || $allData[$field] === "") {
+            if ((is_null($allData[$field]) || $allData[$field] === "")
+                && empty($allData[$statusField])
+            ) {
                 return 'Incomplete';
             }
         }

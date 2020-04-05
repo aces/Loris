@@ -63,5 +63,6 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (61,'electrophysiology_browser_view_site','View own site Electrophysiology Browser pages',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (62,'module_manager_view','Module Manager: access the module',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (63,'module_manager_edit','Module Manager: edit installed modules',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (64,'candidate_dod_edit','Edit dates of death',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

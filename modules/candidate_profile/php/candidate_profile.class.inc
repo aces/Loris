@@ -65,7 +65,6 @@ class Candidate_Profile extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->candidate = $request->getAttribute('candidate');
         if ($this->candidate === null) {
             // This should be impossible, because the Module router added the
             // attribute before loading this page.
