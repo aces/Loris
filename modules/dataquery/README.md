@@ -70,7 +70,8 @@ curl -H 'Content-Type: application/json' -X POST http://$YOURCOUCHDBADMIN:$YOURC
 
 ###### Import the LORIS instrument data
 
-This step is optional and not required if only the MRI portion of LORIS is used:
+This step is optional and not required if only the MRI portion of LORIS is used: \
+(It is NOT recommended to use HTML in instrument fields)
 
 `php CouchDB_Import_Instruments.php`
 
