@@ -55,7 +55,7 @@
 
 
 
-    <b><a href='{$baseurl}/statistics/statistics_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
+    <b><a href='{$baseurl}/statistics/statistics_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Per Instrument Stats - All Sites</a></b>
     <br><br>
     <h2 class="statsH2">Double Data Entry Statistics:</h2>
 
@@ -107,7 +107,7 @@
         </tbody>
     </table>
     <div>
-        <b><a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Per Instrument Stats - All Sites{if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
+        <b><a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Click here for breakdown per participant{if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
     </div>
 </div>
 
