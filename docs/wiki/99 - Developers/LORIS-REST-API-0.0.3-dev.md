@@ -1,1 +1,0 @@
-The new Loris REST API 0.0.3 dev file shall be found [here](../../../modules/api/docs/LorisRESTAPI_v0.0.3.md).

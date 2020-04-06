@@ -1,1 +1,0 @@
-The new Loris REST API file shall be found [here](../../../modules/api/docs/LorisRESTAPI.md).

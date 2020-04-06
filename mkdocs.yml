@@ -26,8 +26,8 @@ nav:
     - Getting Started: 'wiki/02 - GETTING STARTED/README.md'
     - Help and Troubleshooting: 'wiki/03 - HELP AND TROUBLESHOOTING/README.md'
     - REST API:
-        - 'Stable' : 'wiki/99 - Developers/LORIS-REST-API-0.0.2.md'
-        - 'Dev' : 'wiki/99 - Developers/LORIS-REST-API-0.0.3-dev.md'
+        - 'Stable' : '../../../modules/api/docs/LorisRESTAPI.md'
+        - 'Dev' : '../../../modules/api/docs/LorisRESTAPI_v0.0.3.md'
     - Developers: 
         - 'Overview': 'wiki/99 - Developers/README.md'
         - 'Coding Standards': 'CodingStandards.md'
