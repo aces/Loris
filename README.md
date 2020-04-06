@@ -108,15 +108,14 @@ such as the OS you're using, your PHP and Apache versions, etc.
 
 ## Contributing
 
-The [LORIS team](http://loris.ca) at the Montreal Neurological Institute (MNI) is very happy to get code contributions and features from the global LORIS community. 
+We are very happy to get code contributions and features from the global LORIS community. 
 
-### Contributing Code
 If you would like to contribute to LORIS development, please consult our [Contributing Guide](./CONTRIBUTING.md).
 
 ## Powered by MCIN
 
-LORIS is made by staff developers at the McGill Centre for Integrative Neuroscience ([MCIN.ca](www.mcin.ca)), led by Alan Evans and Samir Das at the Montreal Neurological Institute. 
+LORIS is made by staff developers at the [McGill Centre for Integrative Neuroscience](http://www.mcin.ca), led by Alan Evans and Samir Das at The Neuro (Montreal Neurological Institute-Hospital).
 
-See [LORIS.ca](www.loris.ca) for our current team, the history of LORIS, and our **Technical Papers**.
+Visit [the LORIS website](http://loris.ca) for the history of LORIS and our **Technical Papers**.
 
 The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, and Samir Das.  
