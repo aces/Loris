@@ -62,7 +62,11 @@ issues and/or Redmine tickets (if applicable).
     4. For SQL patches that are _optional_ (e.g. those that perform some 
             cleanup), place them in `SQL/Cleanup_patches/`.
     5. The files for our test database (Raisinbread) must be updated if they were modified.
+<<<<<<< HEAD
         Detailed instructions for this step can be found [here](./raisinbread/README.md).
+=======
+        Detailed instructions for this step can be found [here](https://github.com/aces/Loris/tree/master/raisinbread).
+>>>>>>> 083988d64d04bef122884aba3e011f124e948b81
 * Include a test for any new module in the `modules/MODULENAME/test/`
   directory. You can look at other modules for examples of how to
   write tests.
