@@ -36,8 +36,9 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
-        $db   = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $user    = $factory->user();
 
         $nProjects = $db->pselectOne(
             'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
@@ -58,8 +59,9 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function _setupVariables() : void
     {
-        $user  = \User::singleton();
-        $query = " FROM publication p ".
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $query   = " FROM publication p ".
             "LEFT JOIN publication_status ps ".
             "ON ps.PublicationStatusID=p.PublicationStatusID ".
             "LEFT JOIN publication_parameter_type_rel pptr ".
