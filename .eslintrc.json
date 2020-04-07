@@ -26,7 +26,7 @@
     "no-implicit-globals": 0,
     "no-invalid-this": 0,
     "no-alert": 0,
-    "new-cap": ["error", {
+    "new-cap": ["warn", {
       "capIsNewExceptions": ["DynamicTable"]
     }],
     "no-console": ["warn", {

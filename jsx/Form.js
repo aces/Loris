@@ -382,7 +382,7 @@ SearchableDropdown.defaultProps = {
   options: {},
   strictSearch: true,
   label: '',
-  value: undefined,
+  value: null,
   id: null,
   class: '',
   disabled: false,
@@ -464,7 +464,7 @@ class SelectElement extends Component {
 
     // Add error message
     if (this.props.errorMessage || (this.props.required && this.props.value === '')) {
-      errorMessage = <span>{this.props.errorMessagei || 'The field is required!'}</span>;
+      errorMessage = <span>{this.props.errorMessage || 'The field is required!'}</span>;
       elementClass = 'row form-group has-error';
     }
 
@@ -492,13 +492,19 @@ class SelectElement extends Component {
     // Default to empty string for regular select and to empty array for 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
+    const label = this.props.label && (
+      <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+        {this.props.label}
+        {requiredHTML}
+      </label>
+    );
+
+    const columnSize = this.props.label ? 'col-sm-9' : 'col-sm-12';
+
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        {label}
+        <div className={columnSize}>
           <select
             name={this.props.name}
             multiple={multiple}
@@ -540,8 +546,8 @@ SelectElement.propTypes = {
 SelectElement.defaultProps = {
   name: '',
   options: {},
-  label: '',
-  value: undefined,
+  label: null,
+  value: null,
   id: null,
   class: '',
   multiple: false,
@@ -795,7 +801,7 @@ TagsElement.defaultProps = {
   options: {},
   items: [],
   label: '',
-  value: undefined,
+  value: null,
   id: null,
   class: '',
   required: false,
@@ -882,7 +888,7 @@ TextareaElement.propTypes = {
 TextareaElement.defaultProps = {
   name: '',
   label: '',
-  value: '',
+  value: null,
   id: null,
   disabled: false,
   required: false,
@@ -930,13 +936,19 @@ class TextboxElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
+    const label = this.props.label && (
+      <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+        {this.props.label}
+        {requiredHTML}
+      </label>
+    );
+
+    const columnSize = this.props.label ? 'col-sm-9' : 'col-sm-12';
+
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        {label}
+        <div className={columnSize}>
           <input
             type="text"
             className="form-control"
@@ -969,8 +981,8 @@ TextboxElement.propTypes = {
 
 TextboxElement.defaultProps = {
   name: '',
-  label: '',
-  value: '',
+  label: null,
+  value: null,
   id: null,
   disabled: false,
   required: false,
@@ -1110,7 +1122,7 @@ DateElement.propTypes = {
 DateElement.defaultProps = {
   name: '',
   label: '',
-  value: '',
+  value: null,
   id: null,
   maxYear: '9999-12-31',
   minYear: '1000-01-01',
@@ -1217,7 +1229,7 @@ TimeElement.propTypes = {
 TimeElement.defaultProps = {
   name: '',
   label: '',
-  value: '',
+  value: null,
   id: null,
   disabled: false,
   required: false,
@@ -1257,7 +1269,6 @@ class NumericElement extends Component {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
     }
-
     return (
       <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
@@ -1301,7 +1312,7 @@ NumericElement.defaultProps = {
   min: null,
   max: null,
   label: '',
-  value: '',
+  value: null,
   id: null,
   required: false,
   disabled: false,
@@ -1434,7 +1445,7 @@ FileElement.propTypes = {
 FileElement.defaultProps = {
   name: '',
   label: 'File to Upload',
-  value: '',
+  value: null,
   id: null,
   disabled: false,
   required: false,

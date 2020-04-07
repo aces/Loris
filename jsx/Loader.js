@@ -14,10 +14,15 @@ import PropTypes from 'prop-types';
  */
 class Loader extends Component {
   render() {
+    const loaderStyle = {
+      width: parseInt(this.props.size),
+      height: parseInt(this.props.size),
+      borderWidth: parseInt(this.props.size)/15,
+    };
     return (
       <div
         className='loader'
-        style={{width: parseInt(this.props.size), height: parseInt(this.props.size)}}
+        style={loaderStyle}
       />
     );
   }
