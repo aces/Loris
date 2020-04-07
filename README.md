@@ -96,11 +96,11 @@ If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli
 
 7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
-## Loris API
-Loris API is intended to provide a stable, versioned REST interface for interacting with the core LORIS functionality without requiring backend database access.
+## LORIS API
+LORIS API is intended to provide a stable, versioned REST interface for interacting with the core LORIS functionality without requiring backend database access.
 
 ### Usage
-Follow our Jupyter Notebook guide on [How to use Loris API to download/upload data](https://github.com/xlecours/loris-api-presentation).
+Follow our Jupyter Notebook guide on [How to use LORIS API to download/upload data](https://github.com/xlecours/loris-api-presentation).
 
 
 ## Community
