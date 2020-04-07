@@ -10,22 +10,8 @@ $(document).ready(function() {
         var windowDifference = $(form.find(".subprojectWindowDifference")).val();
         var recruitmentTarget = $(form.find(".subprojectRecruitmentTarget")).val();
         e.preventDefault();
-        var successClosure = function(i, form) {
-            return function() {
-                $(form.find(".saveStatus")).text("Successfully saved").css({ 'color': 'black'}).fadeIn(500).delay(1000).fadeOut(500)
-                setTimeout(function(){ 
-                    location.reload();
-                }, 1000);
-            }
-        }
-        
-        var errorClosure = function(i, form) {
-            return function() {
-                $(form.find(".saveStatus")).text("Failed to save, same title already exist!").css({ 'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
-            }
-        }
 
-        jQuery.ajax(
+        $.ajax(
                 {
                     "type" : "post",
                     "url" : loris.BaseURL + "/configuration/ajax/updateSubproject.php",
@@ -36,8 +22,21 @@ $(document).ready(function() {
                         "WindowDifference" : windowDifference,
                         "RecruitmentTarget" : recruitmentTarget,
                     },
-                    "success" : successClosure(subprojectID, form),
-                    "error" : errorClosure(subprojectID, form)   
+                    "dataType": "json",
+                    "success" : function(data) {
+                        $(form.find(".saveStatus"))
+                        .text(data.ok)
+                        .css({ 'color': 'green'})
+                        .fadeIn(500)
+                        .delay(1000);
+                    },
+                    "error" : function(data) {
+                        $(form.find(".saveStatus"))
+                        .text(data.responseJSON.error)
+                        .css({ 'color': 'red'})
+                        .fadeIn(500)
+                        .delay(1000);
+                    }
                 }
 
           );
