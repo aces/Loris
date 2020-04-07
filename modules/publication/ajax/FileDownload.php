@@ -11,7 +11,8 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-$user    = \User::singleton();
+$factory = \NDB_Factory::singleton();
+$user    = $factory->user();
 $message = array('message' => null);
 
 if (userCanDownload($user)) {

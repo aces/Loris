@@ -36,9 +36,10 @@ class View_Project extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $user  = \User::singleton();
-        $db    = \Database::singleton();
-        $pubID = $_GET['id'];
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
+        $pubID   = $_GET['id'];
 
         $nProjects = $db->pselectOne(
             'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
