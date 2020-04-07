@@ -1,4 +1,4 @@
-maging Quality Control - Test Plan
+Imaging Quality Control - Test Plan
 1. Access Imaging Quality Control page, ensure that it renders.
 2. Make sure this module can be viewed if and only if the user has “Quality Control access” permission.
 3. Make sure this module only loads if mri_parameter_form is installed and properly configured.
