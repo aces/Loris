@@ -273,6 +273,16 @@ ul#navlist {
     border-top-left-radius: 6px;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0.2;
+  }
+}
+
+.animate-flicker {
+  animation: fadeIn 1s infinite alternate;
+}
+
 .close {
     color: white;
     opacity: 1;
@@ -682,9 +692,10 @@ a.btn.btn-primary:hover {
     top: 50%;
     transform: translateY(-50%);
     margin: auto;
-    border: 8px solid #FFFFFF; /* White */
-    border-top: 8px solid #A6D3F5; /* Blue */
-    border-left: 8px solid #A6D3F5; /* Blue */
+    border-style: solid;
+    border-color: #FFFFFF;
+    border-top-color: #A6D3F5; /* Blue */
+    border-left-color: #A6D3F5; /* Blue */
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
