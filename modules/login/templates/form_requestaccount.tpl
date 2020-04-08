@@ -61,15 +61,19 @@
       <div class="form-group">
           {$form.radiologist.html}
       </div>
+      <div class="form-group">
+        <!-- Google reCaptcha. Don't display if a private key has not bee configured -->
         {if $captcha_key}
-            {* Google reCaptcha *}
-          <div class="form-group">
+{$form.captcha.html}
             <div class="g-recaptcha" data-sitekey="{$captcha_key}"></div>
-            <span id="helpBlock" class="help-block">
-              <b class="text-danger">{$error_message['captcha']}</b>
-            </span>
-          </div>
+            <script src="https://www.google.com/recaptcha/api.js?render={$captcha_key}&onload=onloadCallback nonce={$nonce}"></script>
+            {if $form.captcha.error}
+                <span id="helpBlock" class="help-block">
+                  <b class="text-danger">{$form.captcha.error}</b>
+                </span>
+            {/if}
         {/if}
+      </div>
       <div class="form-group">
         <input type="submit" name="Submit" class="btn btn-primary btn-block"
                value="Request Account"/>
