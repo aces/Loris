@@ -14,9 +14,6 @@ $(document).ready(function() {
         var successClosure = function(i, form) {
             return function() {
                 $(form.find(".saveStatus")).text("Successfully saved").css({ 'color': 'black'}).fadeIn(500).delay(1000).fadeOut(500);
-                setTimeout(function(){ 
-                    location.reload();
-                }, 1000);
             }
         }
         
