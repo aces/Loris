@@ -31,20 +31,21 @@ Note: other colors are currenly inherited from Bootstrap default color palette
     color: #064785;
     padding: 3px 19px;
 }
+
+.navbar-nav > li > .dropdown-menu > li > a:hover {
+    color: #E89A0C;
+}
+/* For mobile and tablet, repeat the above styling */
 @media (max-width: 991px) {
   .navbar-default .navbar-nav .open .dropdown-menu >li>a,
   .navbar-default .navbar-nav .open .dropdown-menu >li>a:focus {
-      color: #064785;
-      background-color: white;
+    color: #064785;
+    background-color: white;
   }
   .navbar-default .navbar-nav .open .dropdown-menu>li>a:hover {
     color: #E89A0C;
     background-color: white;
   }
-}
-
-.navbar-nav > li > .dropdown-menu > li > a:hover {
-    color: #E89A0C;
 }
 
 .navbar-brand {
@@ -65,6 +66,7 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 }
 
 /* Show submenu when hovering on menu item */
+/* If hover functionality exists and window size larger than tablet */
 @media (hover: hover) and (min-width: 991px) {
   .dropdown:hover .dropdown-menu {
     display: block;
@@ -116,6 +118,8 @@ Note: other colors are currenly inherited from Bootstrap default color palette
     border-top-color: transparent !important;
     box-shadow: 6px 8px 8px 1px rgba(0,0,0,0.175);
 }
+
+/* For mobile and tablet, submenu items */
 @media (max-width: 991px) {
   .dropdown-menu {
       padding: 0px;
@@ -129,6 +133,7 @@ Note: other colors are currenly inherited from Bootstrap default color palette
     outline: 0;
     background-color: white;
 }
+
 .dropdown-menu > li > a:hover {
     text-decoration: none;
     color: #246EB6;
@@ -142,10 +147,12 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 .nav > li > a > img {
     padding-bottom: 3px;
 }
+
 /* Site Affiliations Tooltip */
 .tooltip-inner {
     padding: 5px 8px;
 }
+
 /* Styling for clicking on menu items */
 .navbar-default .navbar-right > li > a:focus,
 .navbar-default .navbar-right > li > a:active {
