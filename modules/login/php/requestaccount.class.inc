@@ -97,16 +97,14 @@ class RequestAccount extends \NDB_Form
 
         // Only validate reCAPTCHA if a private key exists.
         if (!empty($reCAPTCHAPrivate)) {
-            $success = false;
             $resp    = (new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate))
                 ->verify(
                     $values['g-recaptcha-response'] ?? '',
                     $_SERVER['REMOTE_ADDR']
                 );
-            $success = $resp->isSuccess();
             // FIXME This leverages the error handling for the "site" text field.
             // It should be done using its own error block.
-            if (!$success) {
+            if (!$resp->isSuccess()) {
                 print_r($resp->getErrorCodes());
                 $errors['site'] = "reCAPTCHA failed. Reason: "
                     . implode(', ', $resp->getErrorCodes());
@@ -246,4 +244,3 @@ class RequestAccount extends \NDB_Form
         $this->tpl_data['success'] = true;
     }
 }
-
