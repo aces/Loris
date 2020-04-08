@@ -1,5 +1,5 @@
 Issue Tracker Filter Form [Automation Testing]
-1. A user can access the module as long as they have one of the `issue_tracker_reporter` or `issue_tracker_developer` permissions.
+1. A user can access the module only if they have one or more of the `issue_tracker_reporter` or `issue_tracker_developer` permissions.
 2. User can see data from other sites iff they have access_all_profiles permission
 3. Test that all filters work. Nothing should be filtered at first loading.
 4. Test that all tabs (with filters) work and redirect to the correct table. My issues should be missing assignee filter and closed issues should be missing status filter. 
