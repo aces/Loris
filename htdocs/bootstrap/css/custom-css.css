@@ -23,12 +23,24 @@ Note: other colors are currenly inherited from Bootstrap default color palette
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     background-color: white;
+    border: 1px solid #064785;
 }
 
 .navbar-nav > li > .dropdown-menu > li > a,
 .navbar-nav > li > .dropdown-menu > li > a:focus {
     color: #064785;
     padding: 3px 19px;
+}
+@media (max-width: 991px) {
+  .navbar-default .navbar-nav .open .dropdown-menu >li>a,
+  .navbar-default .navbar-nav .open .dropdown-menu >li>a:focus {
+      color: #064785;
+      background-color: white;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu>li>a:hover {
+    color: #E89A0C;
+    background-color: white;
+  }
 }
 
 .navbar-nav > li > .dropdown-menu > li > a:hover {
@@ -53,9 +65,10 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 }
 
 /* Show submenu when hovering on menu item */
-.dropdown:hover .dropdown-menu {
+@media (hover: hover) and (min-width: 991px) {
+  .dropdown:hover .dropdown-menu {
     display: block;
-    border: 1px solid #064785;
+  }
 }
 
 /* Loris logo */
@@ -73,30 +86,42 @@ Note: other colors are currenly inherited from Bootstrap default color palette
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
-
-.navbar-default .navbar-nav > li:hover > a,
-.navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > li > a:focus,
-.navbar-default .navbar-nav > li > a:active {
+/* Styling for clicking on menu items */
+.navbar-default .navbar-nav > li.dropdown > a:focus,
+.navbar-default .navbar-nav > li.dropdown > a:active {
+    background-color: transparent;
+}
+/* Styling for opened submenu dropdowns - order matters */
+.navbar-default .navbar-nav > li.open > a,
+.navbar-default .navbar-nav > li.open > a:focus,
+.navbar-default .navbar-nav > li.open > a:active {
     color: #064785;
     background-color: white;
 }
-
-.navbar-default .navbar-right > li.dropdown:hover > a,
-.navbar-default .navbar-right > li.dropdown > a:hover,
-.navbar-default .navbar-right > li.dropdown > a:focus,
-.navbar-default .navbar-right > li.dropdown > a:active {
+/* Styling for hovering over menu items - order matters */
+.navbar-default .navbar-nav > li.dropdown:hover > a,
+.navbar-default .navbar-nav > li.dropdown > a:hover {
     color: #064785;
     background-color: white;
 }
+/* Styling for chevron icon to toggle collapsible navigation bar */
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #064785;
+}
 
-/* Submenu items*/
+/* Submenu items */
 .dropdown-menu {
     padding: 5px 1px;
     border-top-color: transparent !important;
     box-shadow: 6px 8px 8px 1px rgba(0,0,0,0.175);
 }
-
+@media (max-width: 991px) {
+  .dropdown-menu {
+      padding: 0px;
+      border-top-color: transparent !important;
+  }
+}
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover {
     color: #246EB6;
@@ -104,7 +129,6 @@ Note: other colors are currenly inherited from Bootstrap default color palette
     outline: 0;
     background-color: white;
 }
-
 .dropdown-menu > li > a:hover {
     text-decoration: none;
     color: #246EB6;
@@ -112,20 +136,31 @@ Note: other colors are currenly inherited from Bootstrap default color palette
     cursor: pointer;
 }
 
+/* Styling for right hand side of nav bar */
+
 /* Question mark */
 .nav > li > a > img {
     padding-bottom: 3px;
 }
-
 /* Site Affiliations Tooltip */
 .tooltip-inner {
     padding: 5px 8px;
 }
-
-.navbar-default .navbar-right > li:hover > a,
-.navbar-default .navbar-right > li > a:hover,
+/* Styling for clicking on menu items */
 .navbar-default .navbar-right > li > a:focus,
-.navbar-default .navbar-right > li > a:active{
+.navbar-default .navbar-right > li > a:active {
+  background-color: transparent;
+}
+/* Styling for clicking on Question mark - order matters */
+.navbar-default .navbar-right > li > a.help-open,
+.navbar-default .navbar-right > li > a.help-open:focus,
+.navbar-default .navbar-right > li > a.help-open:active {
+    color: white;
+    background-color: #246EB6;
+}
+/* Styling for hovering over menu items - order matters */
+.navbar-default .navbar-right > li:hover > a,
+.navbar-default .navbar-right > li > a:hover {
     color: white;
     background-color: #246EB6;
 }
