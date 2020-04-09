@@ -67,7 +67,7 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 
 /* Show submenu when hovering on menu item */
 /* If hover functionality exists and window size larger than tablet */
-@media (hover: hover) and (min-width: 991px) {
+@media (hover: hover) and (min-width: 992px) {
   .dropdown:hover .dropdown-menu {
     display: block;
   }

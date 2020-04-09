@@ -78,7 +78,7 @@
 
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="nav-left">
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" id="nav-left">
                <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed nav-button" data-toggle="collapse"
                         data-target="#example-navbar-collapse">
