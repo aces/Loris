@@ -52,6 +52,17 @@ class Dicom_Archive extends \DataFrameworkMenu
     }
 
     /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function useSitePermissionsFilter() : ?array
+    {
+        return ['dicom_archive_view_allsites'];
+    }
+
+    /**
      * Tells the base class that this page's provisioner can support
      * the UserProjectMatch filter.
      *

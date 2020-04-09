@@ -47,6 +47,17 @@ class Survey_Accounts extends \DataFrameworkMenu
     }
 
     /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function useSitePermissionsFilter() : ?array
+    {
+        return null;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @return bool

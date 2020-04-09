@@ -52,6 +52,17 @@ class Datadict extends \DataFrameworkMenu
     }
 
     /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function useSitePermissionsFilter() : ?array
+    {
+        return null;
+    }
+
+    /**
      * Returns a list of instruments to use as the "Source From"
      * filter options
      *

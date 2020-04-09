@@ -47,7 +47,18 @@ class Candidate_List extends \DataFrameworkMenu
      */
     public function useSiteFilter() : bool
     {
-        return true;
+        return false;
+    }
+
+    /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function useSitePermissionsFilter() : ?array
+    {
+        return ['access_all_profiles'];
     }
 
     /**

@@ -67,6 +67,17 @@ class Imaging_Browser extends \DataFrameworkMenu
     }
 
     /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function useSitePermissionsFilter() : ?array
+    {
+        return null;
+    }
+
+    /**
      * The imaging browser uses the image session's project for filtering projects.
      *
      * @return bool

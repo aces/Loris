@@ -40,13 +40,13 @@ class User_Accounts extends \DataFrameworkMenu
 
     /**
      * Tells the base class that this page's provisioner can support the
-     * UserSiteMatch filter.
+     * HasAnyPermissionOrUserSiteMatch filter.
      *
-     * @return bool true
+     * @return ?array of permissions or null
      */
-    public function useSiteFilter() : bool
+    public function useSitePermissionsFilter() : ?array
     {
-        return true;
+        return ['user_account_multisite'];
     }
 
     /**
