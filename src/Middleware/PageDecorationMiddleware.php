@@ -44,10 +44,16 @@ class PageDecorationMiddleware implements MiddlewareInterface
 
         $DB = \NDB_Factory::singleton()->database();
 
+        // Pass instrument testName instead of "instruments" module
+        $pageName = $page->name ?? "";
+        if ($pageName == 'instruments') {
+          $pageName = $page->testName;
+        }
+
         return (new \LORIS\Middleware\UserPageDecorationMiddleware(
             $this->user,
             $baseURL ?? "",
-            $page->name ?? "",
+            $pageName,
             $config,
             $page->getJSDependencies(),
             $page->getCSSDependencies(),
