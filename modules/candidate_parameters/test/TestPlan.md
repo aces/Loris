@@ -71,14 +71,14 @@
 
 ### Date of Birth Tab
 32. Check that date of birth can only be amended if user has candidate_dob_edit permission.
-33. Change the date of birth and try to save it. Check that it is updated on front-end and back-end.
+33. Change the date of birth and try to save it. Check that it is updated on front-end and database.
 34. Check that entering a date later than today gives a data entry error.
 35. Check that the date stored matches the _DOB Format_ specified in the configuration module. 
 
 ### Date of Death Tab
 36. Check that date of death can only be set if user has candidate_dod_edit permission.
-37. Change the date of death and try to save it. Check that it is updated on front-end and back-end.
+37. Change the date of death and try to save it. Check that it is updated on front-end and database.
 38. Check that entering a date of death before the date of birth gives a data entry error.
-39. Check that entring a date later than today gives a date entry error.
+39. Check that entering a date later than today gives a data entry error.
 40. Check that the date stored matches the _DOD Format_ specified in the configuration module.
 41. Check that filling out any instrument with a _Date of Administration_ later than the DoD changes the age displayed to the candidate's age at death (in months).
