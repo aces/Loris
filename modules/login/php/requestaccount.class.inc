@@ -67,12 +67,12 @@ class RequestAccount extends \NDB_Form
             array("" => "Choose your site:") + \Utility::getSiteList(),
             array("required" => true)
         );
-	$this->addSelect(
-	    "project",
-	    "Project",
-	    array("" => "Choose your project:") + \Utility::getProjectList(),
-	    array("required" => true)
-	);
+        $this->addSelect(
+            "project",
+            "Project",
+            array("" => "Choose your project:") + \Utility::getProjectList(),
+            array("required" => true)
+        );
         $this->addCheckbox("examiner", "Examiner role", array());
         $this->addCheckbox("radiologist", "Radiologist", array());
 
@@ -147,7 +147,7 @@ class RequestAccount extends \NDB_Form
         $lastname = trim(htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES));
         $from     = trim(htmlspecialchars($_REQUEST["from"], ENT_QUOTES));
         $site     = $_REQUEST["site"];
-	$project  = $_REQUEST["project"];
+        $project  = $_REQUEST["project"];
         $fullname = $name." ".$lastname;
 
         $vals = array(
@@ -181,10 +181,10 @@ class RequestAccount extends \NDB_Form
                 )
             );
 
-	    $DB->insert(
+            $DB->insert(
                 'user_project_rel',
                 array(
-                    'UserID'   => $user_id,
+                    'UserID'    => $user_id,
                     'ProjectID' => $site,
                 )
             );
