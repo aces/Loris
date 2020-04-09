@@ -185,7 +185,7 @@ class RequestAccount extends \NDB_Form
                 'user_project_rel',
                 array(
                     'UserID'    => $user_id,
-                    'ProjectID' => $site,
+                    'ProjectID' => $project,
                 )
             );
 
@@ -245,4 +245,3 @@ class RequestAccount extends \NDB_Form
         $this->tpl_data['success'] = true;
     }
 }
-
