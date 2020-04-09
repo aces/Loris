@@ -100,11 +100,13 @@ Note: other colors are currenly inherited from Bootstrap default color palette
     color: #064785;
     background-color: white;
 }
-/* Styling for hovering over menu items - order matters */
-.navbar-default .navbar-nav > li.dropdown:hover > a,
-.navbar-default .navbar-nav > li.dropdown > a:hover {
-    color: #064785;
-    background-color: white;
+@media (hover: hover) {
+  /* Styling for hovering over menu items - order matters */
+  .navbar-default .navbar-nav > li.dropdown:hover > a,
+  .navbar-default .navbar-nav > li.dropdown > a:hover {
+      color: #064785;
+      background-color: white;
+  }
 }
 /* Styling for chevron icon to toggle collapsible navigation bar */
 .navbar-default .navbar-toggle:hover,
