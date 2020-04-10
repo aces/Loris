@@ -541,7 +541,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             'UploadedBy'               => $user_name,
             'UploadDate'               => $date,
             'UploadLocation'           => $this->uploaded_file_path,
-            'SessionID'                => $sessionid ?? '',
+            'SessionID'                => $sessionid,
             'PatientName'              => $pname,
             'IsPhantom'                => $IsPhantom,
             'TarchiveID'               => null,
