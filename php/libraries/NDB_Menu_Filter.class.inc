@@ -499,6 +499,24 @@ class NDB_Menu_Filter extends NDB_Menu
     }
 
     /**
+     * Updates the array of query parameters (if needed) for a given field.
+     *
+     * @param array  $qparams      array of query parameters.
+     * @param string $field        field that appears in the query.
+     * @param string $prepared_key string to use as a placeholder in the query
+     *                             for the field.
+     * @param string $val          field value.
+     *
+     * @return void
+     */
+    function _addQueryParam(&$qparams, $field, $prepared_key, $val)
+    {
+        if ($prepared_key != 'pending') {
+            $qparams["v_$prepared_key"] = $val;
+        }
+    }
+
+    /**
      * Constructs the base filter (WHERE clause) to use for this
      * menu.
      *
@@ -521,9 +539,7 @@ class NDB_Menu_Filter extends NDB_Menu
                     if (in_array($field, $this->CheckboxFilters)) {
                         continue;
                     }
-                    if ($prepared_key != 'pending') {
-                        $qparams["v_$prepared_key"] = $val;
-                    }
+                    $this->_addQueryParam($qparams, $field, $prepared_key, $val);
                 }
             }
         }

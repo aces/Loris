@@ -194,6 +194,21 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             ]
         );
 
+        // Find which sites the user has access to
+        $accessibleSites = \User::singleton()->hasPermission('access_all_profiles')
+            ? \Utility::getSiteList() : \User::singleton()->getStudySites();
+
+        // Build the component of the WHERE clause (for the query below)
+        // that will be used to restrict the search to the data associated
+        // to sites the user has access to
+        foreach ($accessibleSites as $siteID => $siteName) {
+            $siteClauseElements[] = \Database::singleton()->quote($siteID);
+        }
+        $siteClause = sprintf(
+            "(v.Site IS NULL OR v.Site IN (%s))",
+            implode(',', $siteClauseElements)
+        );
+
         $this->query    = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
@@ -276,7 +291,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
             LEFT JOIN subproject as subpjct
                  ON (v.Subproject = subpjct.SubprojectID)
-            WHERE 1=1";
+            WHERE $siteClause";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -378,18 +393,72 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites = \Utility::getSiteList();
-            if (is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
-            }
+            $sites  = array(
+                ''         => 'All (including unknown)',
+                'AllKnown' => 'All (excluding unknown)',
+                'Unknown'  => 'Unknown'
+            );
+            $sites += \Utility::getSiteList();
         } else {
             // allow only to view own site data
-            $sites = $user->getStudySites();
-            $sites = array('' => 'All User Sites') + $sites;
+            $sites  = array(
+                ''         => 'All user sites (including unknown)',
+                'AllKnown' => 'All user sites (excluding unknown)',
+                'Unknown'  => 'Unknown'
+            );
+            $sites +=  $user->getStudySites();
         }
         $this->addSelect('Site', 'Site', $sites);
-
     }
+
+    /**
+     * Updates the array of query parameters (if needed) for a given field.
+     *
+     * @param array  $qparams      array of query parameters.
+     * @param string $field        field that appears in the query.
+     * @param string $prepared_key string to use as a placeholder in the query
+     *                             for the field.
+     * @param string $val          field value.
+     *
+     * @return void
+     *
+     * @override
+     */
+    function _addQueryParam(&$qparams, $field, $prepared_key, $val)
+    {
+        // No parameter should be added for the prepared statement if
+        // 'Unknown' or 'AllKnown' were selected in the site drop-down
+        if ($field != 'v.Site' || ($val != 'Unknown' && $val != 'AllKnown')) {
+            parent::_addQueryParam($qparams, $field, $prepared_key, $val);
+        }
+    }
+
+    /**
+     * Adds filters
+     *
+     * @param string $prepared_key filter key
+     * @param string $field        filter field
+     * @param string $val          filter value
+     *
+     * @return string ($query)
+     *
+     * @override
+     */
+    function _addValidFilters($prepared_key, $field, $val)
+    {
+        // The added AND clause differs from the one returned by
+        // parent::__addValidFilter when 'Unknown' or 'AllKnown' are
+        // selected in the sites drop-down
+        if ($field == 'v.Site' && ($val == 'Unknown' || $val == 'AllKnown')) {
+            return $val == 'Unknown'
+                ? ' AND v.Site IS NULL'
+                : ' AND v.Site IS NOT NULL';
+        }
+
+        // Standard behaviour for cases other than the above
+        return parent::_addValidFilters($prepared_key, $field, $val);
+    }
+
     /**
      * Gathers JS dependecies and merge them with the parent
      *

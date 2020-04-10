@@ -212,7 +212,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             ]
         );
 
-        $this->query = Module::MRI_VIOLATED_SCAN_QUERY_CONST;
+        $this->query = Module::getMriViolatedScanQuery();
 
         $this->order_by = 'v.TimeRun DESC';
 
@@ -241,6 +241,54 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         );
 
         $this->EqualityFilters[] = 'v.Site';
+    }
+
+    /**
+     * Updates the array of query parameters (if needed) for a given field.
+     *
+     * @param array  $qparams      array of query parameters.
+     * @param string $field        field that appears in the query.
+     * @param string $prepared_key string to use as a placeholder in the query
+     *                             for the field.
+     * @param string $val          field value.
+     *
+     * @return void
+     *
+     * @override
+     */
+    function _addQueryParam(&$qparams, $field, $prepared_key, $val)
+    {
+        // No parameter should be added for the prepared statement if
+        // 'Unknown' or 'AllKnown' were selected in the site drop-down
+        if ($field != 'v.Site' || ($val != 'Unknown' && $val != 'AllKnown')) {
+            parent::_addQueryParam($qparams, $field, $prepared_key, $val);
+        }
+    }
+
+    /**
+     * Adds filters
+     *
+     * @param string $prepared_key filter key
+     * @param string $field        filter field
+     * @param string $val          filter value
+     *
+     * @return string ($query)
+     *
+     * @override
+     */
+    function _addValidFilters($prepared_key, $field, $val)
+    {
+        // The added AND clause differs from the one returned by
+        // parent::__addValidFilter when 'Unknown' or 'AllKnown' are
+        // selected in the sites drop-down
+        if ($field == 'v.Site' && ($val == 'Unknown' || $val == 'AllKnown')) {
+            return $val == 'Unknown'
+                ? ' AND v.Site IS NULL'
+                : ' AND v.Site IS NOT NULL';
+        }
+
+        // Standard behaviour for cases other than the above
+        return parent::_addValidFilters($prepared_key, $field, $val);
     }
 
     /**
@@ -314,18 +362,23 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites = \Utility::getSiteList();
-            if (is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
-            }
+            $sites  = array(
+                ''         => 'All (including unknown)',
+                'AllKnown' => 'All (excluding unknown)',
+                'Unknown'  => 'Unknown'
+            );
+            $sites += \Utility::getSiteList();
         } else {
             // allow only to view own site data
-            $sites = $user->getStudySites();
-            $sites = array('' => 'All User Sites') + $sites;
+            $sites  = array(
+                ''         => 'All user sites (including unknown)',
+                'AllKnown' => 'All user sites (excluding unknown)',
+                'Unknown'  => 'Unknown'
+            );
+            $sites +=  $user->getStudySites();
         }
         $this->addSelect('Site', 'Site', $sites);
     }
-
 
     /**
      * Gathers JS dependecies and merge them with the parent
