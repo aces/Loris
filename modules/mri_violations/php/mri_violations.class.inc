@@ -178,6 +178,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'v.hash',
             'v.join_id',
             'v.Resolved',
+            'v.TarchiveID',
+            'v.CandID',
+            'v.PSCID'
         );
 
         $this->headers = array(
@@ -193,6 +196,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'Hash',
             'JoinID',
             'Resolution_status',
+            'TarchiveID',
+            'CandID',
+            'PSCID'
         );
 
         $this->tpl_data['hiddenHeaders'] = json_encode(
@@ -200,6 +206,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 'SeriesUID',
                 'Hash',
                 'JoinID',
+                'TarchiveID',
+                'CandID',
+                'PSCID'
             ]
         );
 
@@ -226,7 +235,10 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                   as hash,
                 mpvs.ID as join_id,
                 p.CenterID as Site,
-                violations_resolved.Resolved as Resolved
+                violations_resolved.Resolved as Resolved,
+                mpvs.TarchiveID as TarchiveID,
+                mpvs.CandID as CandID,
+                c.PSCID as PSCID
             FROM mri_protocol_violated_scans AS mpvs
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mpvs.ID
@@ -258,7 +270,10 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 ) as hash,
                 mrl.LogID as join_id,
                 p.CenterID as Site,
-                violations_resolved.Resolved as Resolved
+                violations_resolved.Resolved as Resolved,
+                mrl.TarchiveID as TarchiveID,
+                mrl.CandID as CandID,
+                c.PSCID as PSCID
             FROM mri_violations_log AS mrl
             LEFT JOIN mri_scan_type
             ON (mri_scan_type.ID=mrl.Scan_type)
@@ -290,7 +305,10 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 ) as hash,
                 MRICandidateErrors.ID as join_id,
                 null,
-                violations_resolved.Resolved as Resolved
+                violations_resolved.Resolved as Resolved,
+                MRICandidateErrors.TarchiveID as TarchiveID,
+                NULL as CandID,
+                NULL as PSCID
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=MRICandidateErrors.ID 
