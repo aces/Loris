@@ -108,10 +108,12 @@ class Files extends \NDB_Page
                     )
                 );
         case "GET":
-            $name   = \User::singleton()->getUsername();
             $record = urldecode(basename($request->getUri()->getPath()));
+            
             if (!is_numeric($record)) {
-                $file = $path. "$name/$record";
+              $file = str_replace("/Files/","",
+                      urldecode($request->getUri()->getPath()));
+              $file = $path.$file;
                 return (new \LORIS\Http\Response())
                     ->withHeader('Content-Type', 'application/octet-stream')
                     ->withHeader(
@@ -381,7 +383,7 @@ class Files extends \NDB_Page
                         'version'       => $version,
                         'File_name'     => $fileName,
                         'File_size'     => $fileSize,
-                        'Data_dir'      => $fileName,
+                        'Data_dir'      => $uploadPath,
                         'uploaded_by'   => $name,
                         'Instrument'    => $instrument,
                         'PSCID'         => $pscid,
