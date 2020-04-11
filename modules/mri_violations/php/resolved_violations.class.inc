@@ -201,6 +201,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         // Build the component of the WHERE clause (for the query below)
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
+        $siteClauseElements = array();
         foreach (array_keys($accessibleSites) as $siteID) {
             $siteClauseElements[] = \Database::singleton()->quote($siteID);
         }
