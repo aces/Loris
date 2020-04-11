@@ -368,8 +368,8 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             array()
         );
 
-        # Searches for reasons containing newlines will fail so we strip
-        # those from the list
+        // Searches for reasons containing newlines will fail so we strip
+        // those characters from all the entries in list
         foreach ($problemTypes as $problem) {
             $problemOptions[trim($problem['Reason'])] = trim($problem['Reason']);
         }
