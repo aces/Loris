@@ -182,7 +182,7 @@ class Stats_Demographic extends \NDB_Form
         $projects[''] = 'All Projects';
 
         $userProjectsIDs = $user->getData('ProjectIDs');
-        foreach ($userProjectsIDs as $key => $ProjectID) {
+        foreach ($userProjectsIDs as $ProjectID) {
             $projects[$ProjectID] = $allProjectList[$ProjectID];
         }
 
