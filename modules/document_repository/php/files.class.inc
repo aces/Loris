@@ -109,11 +109,14 @@ class Files extends \NDB_Page
                 );
         case "GET":
             $record = urldecode(basename($request->getUri()->getPath()));
-            
+
             if (!is_numeric($record)) {
-              $file = str_replace("/Files/","",
-                      urldecode($request->getUri()->getPath()));
-              $file = $path.$file;
+                $file = str_replace(
+                    "/Files/",
+                    "",
+                    urldecode($request->getUri()->getPath())
+                );
+                $file = $path.$file;
                 return (new \LORIS\Http\Response())
                     ->withHeader('Content-Type', 'application/octet-stream')
                     ->withHeader(
