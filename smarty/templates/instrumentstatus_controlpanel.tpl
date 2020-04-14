@@ -1,12 +1,33 @@
 <script type="text/javascript" src="{$baseurl}/js/instrument_controlpanel_control.js"></script>
+<script>
+    function swalFunction() {
+        Swal.fire({
+            title: 'Please confirm deletion',
+            text: 'The instrument data will be deleted',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete the data'
+        }).then((result) => {
+            if (result.value) {
+                document.getElementsByName("ConfirmDataDelete").value="1";
+                Swal.fire(
+                        'Deleted!',
+                        'The instrument data has been deleted.',
+                        'success'
+                );
+            }
+        });
+    }
+</script>
 
 {if $InstrumentResetting }
 <h3 class="controlPanelSection">Clear Instrument</h3>
 <ul class="controlPanel">
-    <li><form method="post"><input class="button" type="submit" value="Delete instrument data" /> 
+    <li><form method="post"><input class="button" type="submit" value="Delete instrument data" onclick="swalFunction();" />
         <input type="hidden" name="ClearInstrument" value="1">
-        <input type="checkbox" name="deleteconfirm" />
-        <input type="checkbox" name="deleteconfirm2" />
+        <input type="hidden" name="ConfirmDataDelete">
         </form>
     </li>
 </ul>

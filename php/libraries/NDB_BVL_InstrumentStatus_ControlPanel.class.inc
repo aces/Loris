@@ -158,7 +158,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         }
 
         if (isset($_POST['ClearInstrument'])) {
-            if (isset($_POST['deleteconfirm']) && isset($_POST['deleteconfirm2']) ) {
+            if ($_POST['ConfirmDataDelete'] === "1") {
                 $user = User::singleton();
                 if ($user->hasPermission('send_to_dcc')) {
                     $instrument = \NDB_BVL_Instrument::factory(
