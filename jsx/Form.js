@@ -538,7 +538,7 @@ SelectElement.defaultProps = {
   multiple: false,
   disabled: false,
   required: false,
-  sortByValue: true,
+  sortByValue: false,
   emptyOption: true,
   hasError: false,
   errorMessage: 'The field is required!',
