@@ -115,7 +115,10 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             $assignees[$a_row['UserID']] = $a_row['Real_name'];
         }
 
-        $modules = \Module::getActiveModules($db);
+        $modules_names  = array_map(function(\Module $m): string {
+            return $m->getLongName();
+        },\Module::getActiveModules($db));
+        $modules = array_combine($modules_names, $modules_names);
 
         $priorities = array(
             'normal'    => 'Normal',
