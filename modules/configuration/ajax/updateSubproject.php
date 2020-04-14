@@ -22,7 +22,6 @@ $db = $factory->database();
 $SubprojectList = Utility::getSubprojectList();
 $recTarget      = $_POST['RecruitmentTarget'];
 
-//error_log(sprintf("Recruitment target: `%s`", $recTarget));
 
 // Basic validation
 if (!Utility::valueIsPositiveInteger($recTarget)) {
@@ -76,5 +75,4 @@ function printAndExit(int $code, array $msg): void
     print json_encode($msg);
     exit;
 }
-
 
