@@ -110,8 +110,6 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
     {
         $provisioner = $this->getBaseDataProvisioner();
 
-        $user = \NDB_Factory::singleton()->user();
-
         // UserSiteMatch throws an exception if used on a model without a getCenterID
         // or getCenterIDs function, so we only apply it on sub-classes that
         // specifically say they support it.
