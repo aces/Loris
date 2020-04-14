@@ -20,7 +20,6 @@ $factory  = \NDB_Factory::singleton();
 $settings = $factory->settings();
 $baseURL  = $settings->getBaseURL();
 
-
 if (!isset($_GET['action'])) {
     http_response_code(400);
     exit;
@@ -86,7 +85,8 @@ if ($_GET['action'] == 'addpermission') {
     // access to SOME files for a version, the checkbox would not be checked and
     // on update the user will loose access to ALL files for that release.
 
-    if (!isset($_POST) || empty($_POST)) {
+    $data = json_decode($_POST['data'], true);
+    if (!isset($data) || empty($data)) {
         $message = "No data was sent in the POST request";
         http_response_code(400);
         header('Content-Type: application/json; charset=UTF-8');
@@ -94,109 +94,50 @@ if ($_GET['action'] == 'addpermission') {
     }
 
     // Get old permission list before any changes from main class
-    $data_release   = new LORIS\data_release\data_release(
+    $dataRelease = new LORIS\data_release\data_release(
         \Module::factory('data_release'),
         '',
         '',
         '',
     );
-    $vFiles         = $data_release->getVersionedFiles($DB);
-    $prePermissions = $data_release->getUserVersionPermissions($vFiles, $DB);
 
-    $postPermissions = array();
-    foreach ($_POST as $key => $value) {
-        $new_value = json_decode($value, true);
-        if ($new_value['permission']) {
-            // at this stage each checked checkbox gets submitted as
-            // key: [USERID] value: array(VERSION_NAME1, VERSION_NAME2)
-            $userid = $new_value['username'];
-            $postPermissions[$userid][] = $new_value['version'];
-        }
-    }
+    $versionFiles = $dataRelease->getVersionFiles($DB);
+    $userVersionFiles = $dataRelease->getUserVersionFiles($DB);
 
-    // Compare pre and post and only update changed values
-    // prePermissions array contains all users in the database
-    // postPermissions contains only users with at least one checked version
-    foreach ($prePermissions as $user => $oldVersions) {
-        // query to get user ID
-        $query  = "SELECT ID FROM users WHERE UserID LIKE :userid";
-        $params = array('userid' => $user);
-        // PHP replaces dots "." characters by underscores "_" in variables.
-        // to be able to compare below, do the same thing
-        $userNoDot = str_replace(".", "_", $user);
-        // if user did not have any associated versions
-        if (empty($oldVersions)) {
-            // check if user now has versions
-            if (isset($postPermissions[$userNoDot])) {
-                // all versions should be added to user
-                $userid = $DB->pselectOne($query, $params);
-                // go through each version and each file associated and insert it
-                foreach ($postPermissions[$userNoDot] as $version) {
-                    foreach ($vFiles[$version] as $fileID => $fileName) {
-                        $DB->replace(
-                            'data_release_permissions',
-                            array(
-                                'userid'          => $userid,
-                                'data_release_id' => $fileID,
-                            )
-                        );
-                    }
-                }
-            } else {
-                // nothing changed
-                continue;
+    foreach($data as $userId => $user) {
+        $added = array_diff(
+            $user['versions'],
+            $userVersionFiles[$userId]['versions']
+        );
+        $removed = array_diff(
+            $userVersionFiles[$userId]['versions'],
+            $user['versions']
+        );
+
+
+        foreach($added as $version) {
+            foreach($versionFiles[$version] as $fileId) {
+                $DB->insertOnDuplicateUpdate(
+                    'data_release_permissions',
+                    array(
+                        'userid' => $userId,
+                        'data_release_id' => $fileId,
+                    )
+                );
             }
-        } else {
-            // if user had associated version versions
-            // check if user still has any associated versions
-            if (isset($postPermissions[$userNoDot])) {
-                $userid = $DB->pselectOne($query, $params);
+        } 
 
-                // versions should be compared individually and added or removed
-                $added   = array_diff($postPermissions[$userNoDot], $oldVersions);
-                $removed = array_diff($oldVersions, $postPermissions[$userNoDot]);
-
-                foreach ($added as $version) {
-                    foreach ($vFiles[$version] as $fileID => $fileName) {
-                        $DB->replace(
-                            'data_release_permissions',
-                            array(
-                                'userid'          => $userid,
-                                'data_release_id' => $fileID,
-                            )
-                        );
-                    }
-                }
-
-                foreach ($removed as $version) {
-                    foreach ($vFiles[$version] as $fileID => $fileName) {
-                        $DB->delete(
-                            'data_release_permissions',
-                            array(
-                                'userid'          => $userid,
-                                'data_release_id' => $fileID,
-                            )
-                        );
-                    }
-                }
-            } else {
-                // all version permissions should be removed
-                $userid = $DB->pselectOne($query, $params);
-
-                // go through each version and each file associated and delete it
-                foreach ($oldVersions as $version) {
-                    foreach ($vFiles[$version] as $fileID => $fileName) {
-                        $DB->delete(
-                            'data_release_permissions',
-                            array(
-                                'userid'          => $userid,
-                                'data_release_id' => $fileID,
-                            )
-                        );
-                    }
-                }
+        foreach($removed as $version) {
+            foreach($versionFiles[$version] as $fileId) {
+                $DB->delete(
+                    'data_release_permissions',
+                    array(
+                        'userid' => $userId,
+                        'data_release_id' => $fileId,
+                    )
+                );
             }
-        }
+        } 
     }
 
     //addpermissionSuccess=true/false
@@ -218,7 +159,7 @@ if ($_GET['action'] == 'addpermission') {
 function getManagePermissionsData(): void
 {
     // Get permission list before any changes from main class
-    $data_release = new LORIS\data_release\data_release(
+    $dataRelease = new LORIS\data_release\data_release(
         \Module::factory('data_release'),
         '',
         '',
@@ -226,28 +167,7 @@ function getManagePermissionsData(): void
         ''
     );
 
-    $DB     = \Database::singleton();
-    $users  = $data_release->getUsersList($DB);
-    $vFiles = $data_release->getVersionedFiles($DB);
-    $prePermissions = $data_release->getUserVersionPermissions($vFiles, $DB);
+    $db = \Database::singleton();
 
-    $data_table_values = [];
-    $index = 0;
-    foreach ($users as $username) {
-        foreach (array_keys($vFiles) as $versionName) {
-            $hasPermission = false;
-            if (in_array($versionName, $prePermissions[$username])) {
-                $hasPermission = true;
-            }
-            $data_table_values[] = [
-                $index,
-                $username,
-                $versionName,
-                $hasPermission,
-            ];
-            $index++;
-        }
-    }
-
-    echo json_encode($data_table_values);
+    echo json_encode($dataRelease->getUserVersionFiles($db));
 }

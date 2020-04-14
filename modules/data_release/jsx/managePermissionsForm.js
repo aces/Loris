@@ -14,18 +14,12 @@ class ManagePermissionsForm extends Component {
 
     this.state = {
       data: {},
-      formData: {},
       hasError: {},
       errorMessage: {},
       isLoaded: false,
-      headers: ['Index', 'User Name', 'Data Release Version', 'Permissions'],
-      hide: {
-        downloadCSV: true,
-        rowsPerPage: true,
-      },
     };
 
-    this.formatColumn = this.formatColumn.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -40,30 +34,15 @@ class ManagePermissionsForm extends Component {
    * @return {boolean}
    */
   fetchData() {
-    let self = this;
-
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
-      .then( (resp) => resp.json())
-      .then( function(data) {
-        const formData = data.reduce((result, row) => {
-          result[row[0]] = {};
-          result[row[0]].index = row[0];
-          result[row[0]].username = row[1];
-          result[row[0]].version = row[2];
-          result[row[0]].permission = row[3];
-          return result;
-        }, {});
-        self.setState({
-          data: data,
-          formData: formData,
-        });
-      })
-      .catch( (error) => {
-        self.setState({
-          error: 'An error occurred when loading the form!',
-        });
-        console.error(error);
+    .then((resp) => resp.json())
+    .then((data) => this.setState({data}))
+    .catch( (error) => {
+      this.setState({
+        error: 'An error occurred when loading the form!',
       });
+      console.error(error);
+    });
   }
 
   render() {
@@ -83,76 +62,53 @@ class ManagePermissionsForm extends Component {
       return (<Loader/>);
     }
 
-    const fields = [
-      {label: 'Index', show: false},
-      {label: 'User Name', show: true},
-      {label: 'Data Release Version', show: true},
-      {label: 'Permissions', show: false},
-    ];
+    const {data} = this.state;
+    const {options} = this.props;
+    console.log(data);
 
     return (
-        <FormElement
-          name='addPermission'
-          onSubmit={this.handleSubmit}
-        >
-          <DataTable
-            headers={this.state.headers}
-            data={this.state.data}
-            fields={fields}
-            getFormattedCell={this.formatColumn}
-            hide={this.state.hide}
+      <FormElement
+        name='addPermission'
+        onSubmit={this.handleSubmit}
+      >
+        {Object.entries(data).map(([userId, user]) => 
+          <StaticElement
+            label={user.name}
+            text={Object.values(options.versions).map((version) => 
+              <div>
+                <CheckboxElement
+                  name={version}
+                  label={version || 'Unversioned'}
+                  value={user.versions.includes(version)}
+                  onUserInput={(version, permission) => this.setFormData(userId, version, permission)}
+                /><br/>
+              </div>
+            )}
           />
-          <ButtonElement
-            label="Submit"
-          />
-        < /FormElement>
+        )}
+        <ButtonElement
+          label="Submit"
+        />
+      </FormElement>
     );
   }
 
   /**
-   * Store the value of the element in this.state.formData
+   * Store the value of the element in this.state.data
    *
    * @param {string} name - name of the form element
    * @param {string} value - value of the form element
    * @param {int} rowID - row number of the form element
    */
-  setFormData(name, value, rowID) {
-    let formData = this.state.formData;
-    formData[rowID][name] = value;
-    this.setState({
-      formData: formData,
-    });
-  }
-
-  /**
-   * Modify behaviour of specified column cells in the Data Table component
-   *
-   * @param {string} column - column name
-   * @param {string} cell - cell content
-   * @param {object} row row content indexed by column
-   *
-   * @return {*} a formated table cell for a given column
-   */
-  formatColumn(column, cell, row) {
-    let rowID = row.Index;
-
-    if (column === 'Data Release Version') {
-      // if admin, checkbox should not be editable
-      const handleClick = (name, value) => this.setFormData(name, value, rowID);
-      return (
-          <td>
-            <CheckboxElement
-              name={'permission'}
-              label={row['Data Release Version']}
-              key={rowID}
-              value={this.state.formData[rowID].permission}
-              onUserInput={handleClick}
-            />
-          </td>
-      );
+  setFormData(userId, version, permission) {
+    let {data} = JSON.parse(JSON.stringify(this.state));
+    if (permission) {
+      data[userId].versions = [...data[userId].versions, version];
+    } else {
+      data[userId].versions = data[userId].versions
+      .filter((e) => e !== version);
     }
-
-    return (<td>{cell}</td>);
+    this.setState({data});
   }
 
   /**
@@ -160,20 +116,18 @@ class ManagePermissionsForm extends Component {
    *
    */
   handleSubmit() {
-    let myFormData = JSON.parse(JSON.stringify(this.state.formData));
+    const {data} = JSON.parse(JSON.stringify(this.state));
+
     let formObj = new FormData();
-    for (let key in myFormData) {
-      if (myFormData[key] !== '') {
-        formObj.append(key, JSON.stringify(myFormData[key]));
-      }
-    }
+    formObj.append('data', JSON.stringify(data));
 
     // fetch API to update the permission
     fetch(this.props.action, {
       method: 'post',
       body: formObj,
       cache: 'no-cache',
-    }).then( (response) => {
+    })
+    .then((response) => {
       if (response.ok) {
         swal({
           text: 'Permission Update Success!',

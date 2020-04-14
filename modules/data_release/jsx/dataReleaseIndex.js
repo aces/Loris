@@ -122,7 +122,6 @@ class DataReleaseIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in media.class.inc
      */
-    // const options = this.state.fieldOptions;
     const fields = [
       {label: 'File Name', show: true, filter: {
         name: 'fileName',
@@ -189,6 +188,7 @@ class DataReleaseIndex extends Component {
         <ManagePermissionsForm
           DataURL={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=getPermissions`}
           action={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=managepermissions`}
+          options={this.state.data.fieldOptions}
           fetchData={this.fetchData}
         />
       </Modal>

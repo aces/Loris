@@ -87,32 +87,12 @@ class Data_Release extends \NDB_Menu_Filter
     {
         parent::setup();
 
-        $DB = \Database::singleton();
-
-        // Get list of users in the database
-        $list_of_users = $this->getUsersList($DB);
-
-        // Get list of data release versions and filenames
-        $vFiles = $this->getVersionedFiles($DB);
-
-        $filenames_options = array();
-        $versions_options  = array();
-
-        foreach ($vFiles as $versionName => $filesArray) {
-            foreach ($filesArray as $fileID => $fileName) {
-                $filenames_options[$fileID] = "$fileName - $versionName";
-            }
-            $versions_options[$versionName] = $versionName;
-        }
-
-        // Get list of permissions per data release versions
-        $manage_permissions = $this->getUserVersionPermissions($vFiles, $DB);
+        $db = \Database::singleton();
 
         $this->fieldOptions = [
-            'users'              => $list_of_users,
-            'versions'           => $versions_options,
-            'filenames'          => $filenames_options,
-            'manage_permissions' => $manage_permissions,
+            'users'     => $this->getUsersList($db),
+            'versions'  => $this->getVersionsList($db),
+            'filenames' => $this->getFilesList($db),
         ];
     }
 
@@ -126,115 +106,109 @@ class Data_Release extends \NDB_Menu_Filter
      */
     function getUsersList(\Database $DB)
     {
-        $userids = $DB->pselectColWithIndexKey(
+        return $DB->pselectColWithIndexKey(
             "SELECT ID, UserID FROM users",
             array(),
             "ID"
         );
-
-        return $userids;
     }
 
-
     /**
-     * Gets the array of release versions with their corresponding files.
-     *
-     * This function is used for the initial load as well as for comparison upon
-     * update to ensure no values are added or deleted unexpectedly.
+     * Greps the list of files available in the data_release database table.
      *
      * @param \Database $DB database handle
      *
-     * @return array Associative array of $versions=>(files associate with version)
+     * @return array Array of file ID and file name
      */
-    function getVersionedFiles(\Database $DB)
+    function getFilesList(\Database $DB)
     {
-        $versionedFiles = $DB->pselect(
-            "SELECT id, file_name, version 
-                  FROM data_release",
-            array()
+        return $DB->pselectColWithIndexKey(
+            "SELECT id, file_name FROM data_release",
+            array(),
+            "id"
         );
-
-        $vFFormatted = array();
-        foreach ($versionedFiles as $row) {
-            $version = $row['version'] === null || $row['version'] === ''
-                ? 'Unversioned': $row['version'];
-            //format array in the form $version=>(all files with that version)
-            $vFFormatted[$version][$row['id']] = $row['file_name'];
-        }
-
-        return $vFFormatted;
     }
 
     /**
-     * Gets the array of users with all versions they currently have access to. For
-     * a user to "have access to a version" means to have viewing permissions on all
-     * files tagged for said release.
+     * Greps the list of versions available in the data_release database table.
      *
-     * This function is used for the initial load as well as for comparison upon
-     * update to ensure no values are added or deleted unexpectedly.
+     * @param \Database $DB database handle
      *
-     * @param array     $vFiles Array of $version=>(files associated with $version)
-     * @param \Database $DB     database handle
-     *
-     * @return array Associative array of users with all release version they have
-     *               access to. See "has access to" definition in this function's
-     *               description.
+     * @return array Array of version names indexed by version name.
      */
-    function getUserVersionPermissions(array $vFiles, \Database $DB) : array
+    function getVersionsList(\Database $DB)
     {
-        $userFileAccess = $DB->pselect(
-            "SELECT u.UserID, drp.data_release_id, version, file_name
+        $versions = $DB->pselectCol(
+            "SELECT DISTINCT version FROM data_release",
+            array(),
+            "version"
+        );
+
+        $versionList = [];
+        foreach($versions as $version) {
+          $versionList[$version] = $version;
+        }
+
+        return $versionList;
+    }
+
+    function getVersionFiles(\Database $db)
+    {
+        $result = $db->pselect(
+          "SELECT version, id FROM data_release",
+           array()
+        );
+
+        $versionFiles = [];
+        foreach($result as $row) {
+            $versionFiles[$row['version']][] = $row['id'];
+        }
+
+        return $versionFiles;
+    }
+
+    function getUserFiles(\Database $db)
+    {
+        $result = $db->pselect(
+            "SELECT u.ID as userId,
+                    u.UserID as userName,
+                    drp.data_release_id fileId
              FROM users u
-                LEFT JOIN data_release_permissions drp ON (u.ID=drp.userid) 
-                LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)",
+             LEFT JOIN data_release_permissions drp ON (u.ID=drp.userid)
+             LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)",
             array()
         );
 
-        //in order to have a checked box a user must have permission to see all
-        //files belonging to a release version
-        //array to hold checked checkboxes in the manage permissions menu
-        $uFAFormatted = array();
-        foreach ($userFileAccess as $row) {
-            $userID          = $row['UserID'];
-            $version         = $row['version'] ?? null;
-            $releaseFileID   = $row['data_release_id'] ?? null;
-            $releaseFileName = $row['file_name'] ?? null;
-
-            // 3 possible cases
-            // 1. user has access to a versioned file
-            // 2. user has access to a file with no associated version
-            // 3. user does not have access to any files
-            if (isset($releaseFileName)) {
-                // check if file is versioned or not
-                if (isset($version) && $version !== '') {
-                    $uFAFormatted[$userID][$version][$releaseFileID]
-                        = $releaseFileName;
-                } else {
-                    $uFAFormatted[$userID]['Unversioned'][$releaseFileID]
-                        = $releaseFileName;
-                }
-            } else {
-                $uFAFormatted[$userID] = array();
+        $userFiles = [];
+        foreach($result as $row) {
+            $userFiles[$row['userId']]['name'] = $row['userName'];
+            if (empty($userFiles[$row['userId']]['files'])) {
+                $userFiles[$row['userId']]['files'] = [];
+            }
+            if (!empty($row['fileId'])) {
+                $userFiles[$row['userId']]['files'][] = $row['fileId'];
             }
         }
 
-        //now we can compare the $uFAFormatted to $vFiles (versioned files array)
-        //to identify which checkboxes should be checked
-        $version_permissions = array();
-        foreach ($uFAFormatted as $userID=>$userVersions) {
-            if (empty($userVersions)) {
-                $version_permissions[$userID] = array();
-            }
-            foreach ($userVersions as $versionName=>$versionFiles) {
-                if (empty(array_diff($vFiles[$versionName], $versionFiles))) {
-                    $version_permissions[$userID][] = $versionName;
-                } else {
-                    $version_permissions[$userID] = array();
+        return $userFiles;
+    }
+
+    function getUserVersionFiles(\Database $db)
+    {
+        $versionFiles = $this->getVersionFiles($db);
+        $userFiles = $this->getUserFiles($db);
+        foreach($userFiles as $userId => $user) {
+            foreach($versionFiles as $version => $files) {
+                if (empty($userFiles[$userId]['versions'])) {
+                    $userFiles[$userId]['versions'] = [];
+                }
+                if (array_intersect($files , $user['files']) == $files) {
+                    $userFiles[$userId]['versions'][] = (string)$version;
                 }
             }
         }
 
-        return $version_permissions;
+        return $userFiles;
     }
 
     /**
