@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
-import DataTable from 'jsx/DataTable.js';
 
 /**
  * Manage Permissions Form
@@ -71,10 +70,10 @@ class ManagePermissionsForm extends Component {
         name='addPermission'
         onSubmit={this.handleSubmit}
       >
-        {Object.entries(data).map(([userId, user]) => 
+        {Object.entries(data).map(([userId, user]) =>
           <StaticElement
             label={user.name}
-            text={Object.values(options.versions).map((version) => 
+            text={Object.values(options.versions).map((version) =>
               <div>
                 <CheckboxElement
                   name={version}
@@ -96,9 +95,9 @@ class ManagePermissionsForm extends Component {
   /**
    * Store the value of the element in this.state.data
    *
-   * @param {string} name - name of the form element
-   * @param {string} value - value of the form element
-   * @param {int} rowID - row number of the form element
+   * @param {string} userId
+   * @param {string} version
+   * @param {boulean} permission
    */
   setFormData(userId, version, permission) {
     let {data} = JSON.parse(JSON.stringify(this.state));
