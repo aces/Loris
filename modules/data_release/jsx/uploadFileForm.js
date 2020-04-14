@@ -54,7 +54,12 @@ class UploadFileForm extends Component {
       <FormElement
         name='uploadfile'
         fileUpload={true}
-        onSubmit={this.validateAndSubmit}>
+        onSubmit={this.validateAndSubmit}
+      >
+        <StaticElement
+          label='Note'
+          text='Version names will be saved as lowercase.'
+        />
         <FileElement
           name='file'
           label='File to upload'

@@ -1,4 +1,4 @@
-# Data Release Module Test Plan 
+ Data Release Module Test Plan 
 
 Ensure that users with `data_release_view` permission only can see the data release 
 module without the 'Upload File', 'Add Permission' and 'Manage Permissions' 
@@ -15,6 +15,9 @@ buttons at the top of the data table.
 
 3. Upload a file with a version name containing `.` and ensure the permissions
  tests done in the next section work on that version.
+
+4. Upload a file with a version that inclueds Uppercase letters. Ensure that the
+version is saved to the database with all values in lowercase.
  
 ## Permissions
 
