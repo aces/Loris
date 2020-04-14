@@ -101,11 +101,11 @@ if ($_GET['action'] == 'addpermission') {
         '',
     );
 
-    $versionFiles = $dataRelease->getVersionFiles($DB);
+    $versionFiles     = $dataRelease->getVersionFiles($DB);
     $userVersionFiles = $dataRelease->getUserVersionFiles($DB);
 
-    foreach($data as $userId => $user) {
-        $added = array_diff(
+    foreach ($data as $userId => $user) {
+        $added   = array_diff(
             $user['versions'],
             $userVersionFiles[$userId]['versions']
         );
@@ -115,29 +115,29 @@ if ($_GET['action'] == 'addpermission') {
         );
 
 
-        foreach($added as $version) {
-            foreach($versionFiles[$version] as $fileId) {
+        foreach ($added as $version) {
+            foreach ($versionFiles[$version] as $fileId) {
                 $DB->insertOnDuplicateUpdate(
                     'data_release_permissions',
                     array(
-                        'userid' => $userId,
+                        'userid'          => $userId,
                         'data_release_id' => $fileId,
                     )
                 );
             }
-        } 
+        }
 
-        foreach($removed as $version) {
-            foreach($versionFiles[$version] as $fileId) {
+        foreach ($removed as $version) {
+            foreach ($versionFiles[$version] as $fileId) {
                 $DB->delete(
                     'data_release_permissions',
                     array(
-                        'userid' => $userId,
+                        'userid'          => $userId,
                         'data_release_id' => $fileId,
                     )
                 );
             }
-        } 
+        }
     }
 
     //addpermissionSuccess=true/false

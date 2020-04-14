@@ -134,7 +134,7 @@ class Data_Release extends \NDB_Menu_Filter
      *
      * @param \Database $DB database handle
      *
-     * @return array Array of version names indexed by version name.
+     * @return array $versionList Array of version names indexed by version name.
      */
     function getVersionsList(\Database $DB)
     {
@@ -144,29 +144,43 @@ class Data_Release extends \NDB_Menu_Filter
             "version"
         );
 
-        $versionList = [];
-        foreach($versions as $version) {
-          $versionList[$version] = $version;
+        $versionsList = [];
+        foreach ($versions as $version) {
+            $versionsList[$version] = $version;
         }
 
-        return $versionList;
+        return $versionsList;
     }
 
+    /**
+     * Queries arrays of file Ids indexed by their versions.
+     *
+     * @param \Database $db database handle
+     *
+     * @return array $versionFiles Array of file IDs indexed by version name.
+     */
     function getVersionFiles(\Database $db)
     {
         $result = $db->pselect(
-          "SELECT version, id FROM data_release",
-           array()
+            "SELECT version, id FROM data_release",
+            array()
         );
 
         $versionFiles = [];
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $versionFiles[$row['version']][] = $row['id'];
         }
 
         return $versionFiles;
     }
 
+    /**
+     * Queries arrays of file IDs indexed by their users.
+     *
+     * @param \Database $db database handle
+     *
+     * @return array $userFiles Array of file IDs indexed by version name.
+     */
     function getUserFiles(\Database $db)
     {
         $result = $db->pselect(
@@ -180,7 +194,7 @@ class Data_Release extends \NDB_Menu_Filter
         );
 
         $userFiles = [];
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $userFiles[$row['userId']]['name'] = $row['userName'];
             if (empty($userFiles[$row['userId']]['files'])) {
                 $userFiles[$row['userId']]['files'] = [];
@@ -193,16 +207,25 @@ class Data_Release extends \NDB_Menu_Filter
         return $userFiles;
     }
 
+    /**
+     * Creates an array of versions for which the user has permission for
+     * all the files of that version.
+     *
+     * @param \Database $db database handle
+     *
+     * @return array $userVersionFiles Array of versions for which a user has
+     *                                 full permission.
+     */
     function getUserVersionFiles(\Database $db)
     {
         $versionFiles = $this->getVersionFiles($db);
-        $userFiles = $this->getUserFiles($db);
-        foreach($userFiles as $userId => $user) {
-            foreach($versionFiles as $version => $files) {
+        $userFiles    = $this->getUserFiles($db);
+        foreach ($userFiles as $userId => $user) {
+            foreach ($versionFiles as $version => $files) {
                 if (empty($userFiles[$userId]['versions'])) {
                     $userFiles[$userId]['versions'] = [];
                 }
-                if (array_intersect($files , $user['files']) == $files) {
+                if (array_intersect($files, $user['files']) == $files) {
                     $userFiles[$userId]['versions'][] = (string)$version;
                 }
             }
