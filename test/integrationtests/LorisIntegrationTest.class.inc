@@ -15,6 +15,11 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -111,14 +116,16 @@ abstract class LorisIntegrationTest extends TestCase
 
         $dev          = $this->config->getSettingFromXML('dev');
         $selenium_url = $dev['selenium_url'] ?? 'http://localhost:4444/wd/hub';
-        $profile      = new FirefoxProfile();
-        $profile->setPreference("setAcceptUntrustedCertificates", true);
-        $profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
-        $profile->setPreference(
-            "security.insecure_field_warning.contextual.enabled",
-            false
-        );
+        //$profile      = new FirefoxProfile();
+        //$profile->setPreference("setAcceptUntrustedCertificates", true);
+        //$profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
+        //$profile->setPreference(
+        //    "security.insecure_field_warning.contextual.enabled",
+        //    false
+       // );
         $desired_capabilities = DesiredCapabilities::firefox();
+        $desired_capabilities->setCapability('acceptSslCerts', false);
+
         // running headless model in Travis
         if (getenv('HEADLESS')) {
             $desired_capabilities->setCapability(
@@ -126,7 +133,7 @@ abstract class LorisIntegrationTest extends TestCase
                 ['args' => ['-headless']]
             );
         }
-        $desired_capabilities->setCapability(FirefoxDriver::PROFILE, $profile);
+      //  $desired_capabilities->setCapability(FirefoxDriver::PROFILE, $profile);
 
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
@@ -178,13 +185,8 @@ abstract class LorisIntegrationTest extends TestCase
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::xpath(
-                    "//div[@id='page'] | //input[@name='username']"
-                )
-            )
-        );
+        $this->webDriver->wait(5)->until(WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")));
+
     }
 
     /**
@@ -482,9 +484,9 @@ abstract class LorisIntegrationTest extends TestCase
             $newWebDriver = $this->webDriver->get($url);
 
             // Use the old page reference until it detaches from the DOM
-            while (true) {
-                $oldBody->isDisplayed();
-            }
+         //   while (true) {
+         //       $oldBody->isDisplayed();
+         //   }
         } catch (StaleElementReferenceException $e) {
             return $newWebDriver;
         }
@@ -510,7 +512,6 @@ abstract class LorisIntegrationTest extends TestCase
         $wait->until(
             WebDriverExpectedCondition::presenceOfElementLocated($by)
         );
-
         return $this->webDriver->findElement($by);
     }
 
