@@ -114,13 +114,14 @@ class New_Profile extends \NDB_Form
         if ($request->getMethod() === "POST") {
             $this->save();
             if (!empty($this->_error)) {
-                return new \LORIS\Http\Response($this->_error);
+                return new \LORIS\Http\Response\JSON\BadRequest($this->_error);
             }
             $result = array(
                 'candID' => $this->_candID,
                 'pscid'  => $this->_pscid,
             );
-            return new \LORIS\Http\Response\JSON\Created($result);
+            return new \LORIS\Http\Response\JSON\Created($result)
+                ->withHeader("Allow", "POST");
         }
 
         return (new \LORIS\Http\Response())
