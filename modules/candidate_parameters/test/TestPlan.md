@@ -81,4 +81,3 @@
 38. Check that entering a date of death before the date of birth gives a data entry error.
 39. Check that entering a date later than today gives a data entry error.
 40. Check that the date stored matches the _DOD Format_ specified in the configuration module.
-41. Check that filling out any instrument with a _Date of Administration_ later than the DoD changes the age displayed to the candidate's age at death (in months).
