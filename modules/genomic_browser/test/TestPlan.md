@@ -138,8 +138,8 @@ No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
 
 |No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Gene Symbol|Gene Name|Platform|RsID|SNP Name|SNP Description|External Source|Allele A|Allele B|Reference Base|Minor Allele|Array Report|Markers|Validation Method|Validated|Function Prediction|Damaging|Genotype Quality|Exonic Function|
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---| --- | --- | --- | --- | --- | --- |
-| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
