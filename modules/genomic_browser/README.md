@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The Genomic Growser module is intended to allow users to visualize the
+The Genomic Browser module is intended to allow users to visualize the
 results of already analyzed genetic tests cross-linked with behavioural
 and imaging candidate data.
 
