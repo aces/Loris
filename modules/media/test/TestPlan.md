@@ -47,13 +47,13 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
 **Testing file upload**
   1. Click on the 👉 **Upload File** button
     - A popup should prompt you to select a **PSCID** as it is a required field ❌
-  2. Select PSCID and click on the 👉  **Upload file** button again
+  2. Select PSCID and click on the 👉  **Upload file** button
     - A popup should prompt you to select a **Visit Label** as it is a required field ❌
-  3. Select Visit Label and click on the 👉  **Upload file** again
+  3. Select Visit Label and click on the 👉  **Upload file**
     - A popup should prompt you to select a **Site** as it is a required field ❌
   4. Click on the 👉 **Browse** button and a select a file from your file system
     - Note: it is suggested to try different file types and sizes (e.g pdf, mp4, mov, jpg, doc, etc)
-  5. After you selected the file click on **Upload File** one more time
+  5. After you selected the file click on **Upload File**
     - A popup should appear prompting to name the file according to the requested format (unless already done so)
     - Once file is named properly clicking on **Upload File** button should trigger file upload and display a progress bar.
   6. Once the file finished uploading a success message should appear on top of the page and fade away in a couple of seconds
