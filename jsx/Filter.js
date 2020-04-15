@@ -136,9 +136,9 @@ Filter.propTypes = {
   clearFilter: PropTypes.func.isRequired,
   id: PropTypes.string,
   name: PropTypes.string,
-  columns: PropTypes.string,
+  columns: PropTypes.number,
   title: PropTypes.string,
-  fields: PropTypes.object.isRequired,
+  fields: PropTypes.array.isRequired,
 };
 
 export default Filter;
