@@ -7,6 +7,11 @@ $(document).ready(function() {
     $('.wrapper').toggleClass('active');
   });
   $('.help-button').click(function(e) {
+    if ($(this).hasClass('help-open')) {
+      $(this).removeClass('help-open');
+    } else {
+      $(this).addClass('help-open');
+    }
     let helpContent = $('div.help-content');
     if (helpContent.length) {
       helpContent.toggle();
@@ -68,6 +73,7 @@ $(document).ready(function() {
       $(div).addClass('visible');
       btn.addEventListener('click', function(e) {
         $(div).hide();
+        $('.help-button').removeClass('help-open');
         e.preventDefault();
       });
       e.preventDefault();

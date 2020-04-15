@@ -47,6 +47,17 @@
               html: true,
               container: 'body'
             });
+
+            // Make Navigation bar toggle change glyphicon up/down
+            $('.nav-button').on("click", function() {
+              if ($(this).hasClass('collapsed')) {
+                // change chevron to up
+                $('.toggle-icon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+              } else {
+                // change chevron to down
+                $('.toggle-icon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+              }
+            });
           });
         </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
@@ -67,12 +78,12 @@
 
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="nav-left">
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" id="nav-left">
                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    <button type="button" class="navbar-toggle collapsed nav-button" data-toggle="collapse"
                         data-target="#example-navbar-collapse">
                         <span class="sr-only">Toggle navigation</span>
-                        <span class="glyphicon glyphicon-chevron-down" style="color:white"></span>
+                        <span class="toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
                     </button>
                     <button type="button" class="navbar-toggle help-button">
                         <span class="sr-only">Toggle navigation</span>
@@ -102,7 +113,7 @@
                     <ul class="nav navbar-nav">
                         {foreach from=$menus item=menuitems key=category}
                              <li class="dropdown">
-                                <a href="#" class="dropdown-toggle">{$category}<b class="caret"></b>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$category}<b class="caret"></b>
                                     <ul class="dropdown-menu">
                                         {section name=itemloop loop=$menuitems}
                                         <li><a href="{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
