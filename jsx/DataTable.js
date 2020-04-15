@@ -440,7 +440,7 @@ class DataTable extends Component {
                 // Note: Can't currently pass a key, need to update columnFormatter
                 // to not return a <td> node. Using createFragment instead.
                 // let key = 'td_col_' + j;
-                curRow.push(React.cloneElement(cell, {key: 'td_col_1' + j}));
+                curRow.push(React.cloneElement(cell, {key: 'td_col_' + j}));
             } else {
                 curRow.push(createFragment({celldata}));
             }
