@@ -115,10 +115,17 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             $assignees[$a_row['UserID']] = $a_row['Real_name'];
         }
 
-        $modules_names  = array_map(function(\Module $m): string {
-            return $m->getLongName();
-        },\Module::getActiveModules($db));
-        $modules = array_combine($modules_names, $modules_names);
+        // Create an array where keys and values are the modules long name to be used
+        // for the module filter dropdown options.
+        $modules = array_reduce(
+            \Module::getActiveModules($db),
+            function ($carry, $module): array {
+                $name         = $module->getLongName();
+                $carry[$name] = $name;
+                return $carry;
+            },
+            []
+        );
 
         $priorities = array(
             'normal'    => 'Normal',
