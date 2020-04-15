@@ -1,4 +1,4 @@
- Data Release Module Test Plan 
+# Data Release Module Test Plan 
 
 Ensure that users with `data_release_view` permission only can see the data release 
 module without the 'Upload File', 'Add Permission' and 'Manage Permissions' 
