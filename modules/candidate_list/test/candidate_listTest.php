@@ -164,7 +164,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this-> _testFilter(self::$DCCID, "0 rows", 'test');
         $this-> _testFilter(self::$visitLabel, "362", '1');
         $this-> _testFilter(self::$visitLabel, "223", '2');
-        $this-> _testFilter(self::$site, "7 rows", '2');
+        $this-> _testFilter(self::$site, "7 rows", '1');
         $this-> _testFilter(self::$site, "165", '2');
         $this-> _testFilter(self::$entityType, "436", '1');
 
