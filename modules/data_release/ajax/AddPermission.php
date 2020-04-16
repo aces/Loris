@@ -79,12 +79,7 @@ if ($_GET['action'] == 'addpermission') {
     //just a placeholder displaying if the operation succeeded or not
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
 } elseif ($_GET['action'] == 'managepermissions') {
-    // It is important here to not truncate all current permissions and rebuild
-    // them but instead to only make modifications to specifically altered
-    // permissions from the front end by the user. Otherwise, if a user has
-    // access to SOME files for a version, the checkbox would not be checked and
-    // on update the user will loose access to ALL files for that release.
-
+    // Ensure that there is data in the request.
     $data = json_decode($_POST['data'], true);
     if (!isset($data) || empty($data)) {
         $message = "No data was sent in the POST request";
@@ -93,29 +88,30 @@ if ($_GET['action'] == 'addpermission') {
         die(json_encode(['message' => $message]));
     }
 
-    // Get old permission list before any changes from main class
+    // Get current user version files.
     $dataRelease = new LORIS\data_release\data_release(
         \Module::factory('data_release'),
         '',
         '',
         '',
     );
-
     $versionFiles     = $dataRelease->getVersionFiles($DB);
     $userVersionFiles = $dataRelease->getUserVersionFiles($DB);
 
+    // NOTE: It is important that only the permissions for versions that have
+    // been altered be saved to the database.
     foreach ($data as $userId => $user) {
-        $added   = array_diff(
+        $addedVersions   = array_diff(
             $user['versions'],
             $userVersionFiles[$userId]['versions']
         );
-        $removed = array_diff(
+        $removedVersions = array_diff(
             $userVersionFiles[$userId]['versions'],
             $user['versions']
         );
 
-
-        foreach ($added as $version) {
+        // Add file permissions for each file of a the added versions.
+        foreach ($addedVersions as $version) {
             foreach ($versionFiles[$version] as $fileId) {
                 $DB->insertOnDuplicateUpdate(
                     'data_release_permissions',
@@ -127,7 +123,8 @@ if ($_GET['action'] == 'addpermission') {
             }
         }
 
-        foreach ($removed as $version) {
+        // Remove file permissions for each file of a the removed versions.
+        foreach ($removedVersions as $version) {
             foreach ($versionFiles[$version] as $fileId) {
                 $DB->delete(
                     'data_release_permissions',
@@ -145,7 +142,7 @@ if ($_GET['action'] == 'addpermission') {
     //just a placeholder displaying if the operation succeeded or not
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
 } elseif ($_GET['action'] == 'getPermissions') {
-    getManagePermissionsData();
+    getManagePermissionsData($DB);
 } else {
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error adding permissions";
@@ -154,9 +151,10 @@ if ($_GET['action'] == 'addpermission') {
 /**
  * Gets the data for the manage permission modal window.
  *
+ * @param \Database $DB Database Object
  * @return void
  */
-function getManagePermissionsData(): void
+function getManagePermissionsData($DB): void
 {
     // Get permission list before any changes from main class
     $dataRelease = new LORIS\data_release\data_release(
@@ -167,7 +165,5 @@ function getManagePermissionsData(): void
         ''
     );
 
-    $db = \Database::singleton();
-
-    echo json_encode($dataRelease->getUserVersionFiles($db));
+    echo json_encode($dataRelease->getUserVersionFiles($DB));
 }

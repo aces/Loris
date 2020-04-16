@@ -24,7 +24,7 @@ class ManagePermissionsForm extends Component {
 
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -37,33 +37,28 @@ class ManagePermissionsForm extends Component {
     .then((resp) => resp.json())
     .then((data) => this.setState({data}))
     .catch( (error) => {
-      this.setState({
-        error: 'An error occurred when loading the form!',
-      });
+      this.setState({error: 'An error occurred when loading the form!'});
       console.error(error);
     });
   }
 
   render() {
+    const {data, error, isLoaded} = this.state;
+    const {options} = this.props;
+
     // Data loading error
-    if (this.state.error !== undefined) {
+    if (error !== undefined) {
       return (
         <div className = 'alert alert-danger text-center'>
-          <strong>
-          {this.state.error}
-          </strong>
+          <strong>{error}</strong>
         </div>
       );
     }
 
     // Waiting for data to load
-    if (!this.state.isLoaded) {
-      return (<Loader/>);
+    if (!isLoaded) {
+      return <Loader/>;
     }
-
-    const {data} = this.state;
-    const {options} = this.props;
-    console.log(data);
 
     return (
       <FormElement
@@ -79,15 +74,15 @@ class ManagePermissionsForm extends Component {
                   name={version}
                   label={version || 'Unversioned'}
                   value={user.versions.includes(version)}
-                  onUserInput={(version, permission) => this.setFormData(userId, version, permission)}
+                  onUserInput={(version, permission) => 
+                    this.setFormData(userId, version, permission)
+                  }
                 /><br/>
               </div>
             )}
           />
         )}
-        <ButtonElement
-          label="Submit"
-        />
+        <ButtonElement label="Submit"/>
       </FormElement>
     );
   }
@@ -137,7 +132,8 @@ class ManagePermissionsForm extends Component {
         });
         this.props.fetchData();
       } else {
-        let msg = response.statusText ? response.statusText : 'Submission Error!';
+        let msg = response.statusText ?
+          response.statusText : 'Submission Error!';
         swal(msg, '', 'error');
         console.error(msg);
       }

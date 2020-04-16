@@ -153,7 +153,7 @@ class Data_Release extends \NDB_Menu_Filter
     }
 
     /**
-     * Queries arrays of file Ids indexed by their versions.
+     * Queries arrays of file IDs indexed by their versions.
      *
      * @param \Database $db database handle
      *
@@ -208,8 +208,8 @@ class Data_Release extends \NDB_Menu_Filter
     }
 
     /**
-     * Creates an array of versions for which the user has permission for
-     * all the files of that version.
+     * Creates a neseted array indexed by userId which holds all the versions
+     * for which the user has permission across all files.
      *
      * @param \Database $db database handle
      *
