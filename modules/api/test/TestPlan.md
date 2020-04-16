@@ -3,7 +3,7 @@
 The API should be tested by following the API specs and making sure every command works.
 This document is a preliminary testplan that should be superseeded by a proper automated testsuite.
 
-##Using curl:
+## Using curl:
 ### Login
 This is done sending a POST request to /login
 ```bash
@@ -19,7 +19,7 @@ Store the token in a variable.
 ~$ token='<a-really-long-string>'
 ```
 
-*Note: If the response is: `{"error":"Unacceptable JWT key"}` then you need to set the JWTKey value in the config module to a "secure" string. Ususally a 40+ character string with symbols, numbers lower and upercase letters.
+**Note:** If the response is: `{"error":"Unacceptable JWT key"}` then you need to set the JWTKey value in the config module to a "secure" string. Ususally a 40+ character string with symbols, numbers lower and upercase letters.
 
 
 ### Examples
