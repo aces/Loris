@@ -74,23 +74,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that with useEDC turned off, edc related fields do not appear
-     * on the page.
-     *
-     * @expectedException Exception
-     * @return            void
-     */
-    function testNewProfileLoadsWithoutEDC()
-    {
-        $this->setUpConfigSetting("useEDC", "false");
-
-        $this->safeGet($this->url . "/new_profile/");
-        $edc1 = $this->webDriver->findElement(WebDriverBy::Name("edc1"));
-        $edc2 = $this->webDriver->findElement(WebDriverBy::Name("edc2"));
-        $this->restoreConfigSetting("useEDC");
-    }
-
-    /**
      * Tests that candidate is created
      *
      * @return void
