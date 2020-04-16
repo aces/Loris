@@ -40,6 +40,7 @@ class MediaEditForm extends Component {
           dateTaken: data.mediaData.dateTaken,
           comments: data.mediaData.comments,
           hideFile: data.mediaData.hideFile,
+          language: data.mediaData.language,
         };
 
         self.setState({
@@ -136,6 +137,7 @@ class MediaEditForm extends Component {
           />
           <SelectElement
             name='language'
+            id='language_id'
             label='Language'
             options={this.state.Data.language}
             onUserInput={this.setFormData}
