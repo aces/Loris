@@ -65,7 +65,6 @@ class Candidate_Profile extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->candidate = $request->getAttribute('candidate');
         if ($this->candidate === null) {
             // This should be impossible, because the Module router added the
             // attribute before loading this page.
@@ -131,7 +130,7 @@ class Candidate_Profile extends \NDB_Page
             return new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb(
                     'Access Profile',
-                    '/candidate_list'
+                    '/candidate_list/?betaprofile=1'
                 ),
             );
         }
@@ -141,11 +140,11 @@ class Candidate_Profile extends \NDB_Page
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
                 'Access Profile',
-                '/candidate_list'
+                '/candidate_list/?betaprofile=1'
             ),
             new \LORIS\Breadcrumb(
                 "Candidate Dashboard $candid / $pscid",
-                "/$candid"
+                "/candidate_profile/$candid"
             )
         );
     }

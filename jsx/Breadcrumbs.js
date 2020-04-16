@@ -28,7 +28,7 @@ class Breadcrumbs extends Component {
     this.checkScreenSize = this.checkScreenSize.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.checkScreenSize();
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', this.checkScreenSize);

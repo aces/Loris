@@ -103,7 +103,13 @@ class CandidateListIndex extends Component {
    */
   formatColumn(column, cell, row) {
     if (column === 'PSCID') {
-      let url = this.props.baseURL + '/' + row['DCCID'] + '/';
+      let url;
+      if (this.props.betaProfileLink) {
+          url = this.props.baseURL + '/candidate_profile/' + row['DCCID'] + '/';
+      } else {
+          url = this.props.baseURL + '/' + row['DCCID'] + '/';
+      }
+
       return <td><a href ={url}>{cell}</a></td>;
     }
     if (column === 'Feedback') {
@@ -330,7 +336,7 @@ class CandidateListIndex extends Component {
         }}
         onClick={this.openProfile}
       >
-        <OpenProfileForm/>
+        <OpenProfileForm betaProfileLink={this.props.betaProfileLink} />
       </Modal>
     );
 
@@ -370,11 +376,13 @@ CandidateListIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  const args = QueryString.get();
   ReactDOM.render(
     <CandidateListIndex
       dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
       hasPermission={loris.userHasPermission}
       baseURL={loris.BaseURL}
+      betaProfileLink={args['betaprofile']}
     />,
     document.getElementById('lorisworkspace')
   );

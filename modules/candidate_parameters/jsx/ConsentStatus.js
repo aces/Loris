@@ -248,21 +248,25 @@ class ConsentStatus extends Component {
         i = 0;
         for (let consentStatus in this.state.Data.consents) {
             if (this.state.Data.consents.hasOwnProperty(consentStatus)) {
-                let label = this.state.Data.consents[consentStatus];
+                let consentLabel = this.state.Data.consents[consentStatus];
+                let statusLabel = 'Response';
                 let consentDate = consentStatus + '_date';
                 let consentDate2 = consentStatus + '_date2';
-                let consentDateLabel = 'Date of ' + label;
-                let consentDateConfirmationLabel = 'Confirmation Date of ' + label;
+                let consentDateLabel = 'Date of ' + statusLabel;
+                let consentDateConfirmationLabel = 'Confirmation Date of ' + statusLabel;
                 let consentWithdrawal = consentStatus + '_withdrawal';
                 let consentWithdrawal2 = consentStatus + '_withdrawal2';
-                let consentWithdrawalLabel = 'Date of Withdrawal of ' + label;
+                let consentWithdrawalLabel = 'Date of Withdrawal of Consent';
                 let consentWithdrawalConfirmationLabel =
-                    'Confirmation Date of Withdrawal of ' + label;
+                    'Confirmation Date of Withdrawal of Consent';
 
                 const consent = (
                     <div key={i}>
+                        <HeaderElement
+                          text={consentLabel}
+                        />
                         <SelectElement
-                            label={label}
+                            label={statusLabel}
                             name={consentStatus}
                             options={this.state.consentOptions}
                             value={this.state.formData[consentStatus]}

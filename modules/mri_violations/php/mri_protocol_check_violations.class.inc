@@ -53,13 +53,18 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->query    = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
-                         ON m.ID=l.Scan_type WHERE 1=1 ";
+        $this->query    = " FROM mri_violations_log l 
+            LEFT JOIN mri_scan_type m
+            ON m.ID=l.Scan_type 
+            LEFT JOIN mri_protocol_checks_group mpcg 
+            ON (mpcg.MriProtocolChecksGroupID = l.MriProtocolChecksGroupID)
+            WHERE 1=1 ";
         $this->columns  = array(
             'l.PatientName',
             'l.CandID',
             'l.Visit_label',
             'm.Scan_type',
+            'mpcg.Name',
             'l.Severity',
             'l.Header',
             'l.Value',
@@ -74,13 +79,14 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
             'CandID',
             'Visit_label',
             'Scan_type',
+            'MRI_Protocol_Checks_Group',
             'Severity',
             'Header',
             'Value',
             'ValidRange',
             'ValidRegex',
             'SeriesUID',
-            'TarchiveID',
+            'TarchiveID'
         );
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->validFilters = array(

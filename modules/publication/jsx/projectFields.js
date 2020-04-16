@@ -129,10 +129,10 @@ class ProjectFormFields extends React.Component {
     // Create download link & edit fields for existing files
     if (this.props.files) {
       this.props.files.forEach(function(f) {
-        let downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + encodeURIComponent(f.URL);
+        let downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + encodeURIComponent(f.Filename);
         let link = (
           <span>
-            <a href={downloadURL}>{f.URL}</a>
+            <a href={downloadURL}>{f.Filename}</a>
             &nbsp;&nbsp;
             <span
               className="glyphicon glyphicon-remove"

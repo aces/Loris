@@ -10,7 +10,7 @@ LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web app
 
 * Try the LORIS demo instance at https://demo.loris.ca.
 
-This Readme covers installation of the LORIS <b>v22.*</b> release on <b>Ubuntu</b>.
+This Readme covers installation of LORIS version <b>23</b> on <b>Ubuntu</b>.
 ([CentOS Readme also available](./docs/wiki/00%20-%20SERVER%20INSTALL%20AND%20CONFIGURATION/01%20-%20LORIS%20Install/CentOS/README.CentOS7.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
@@ -108,15 +108,14 @@ such as the OS you're using, your PHP and Apache versions, etc.
 
 ## Contributing
 
-The [LORIS team](http://loris.ca) at the Montreal Neurological Institute (MNI) is very happy to get code contributions and features from the global LORIS community. 
+We are very happy to get code contributions and features from the global LORIS community. 
 
-### Contributing Code
 If you would like to contribute to LORIS development, please consult our [Contributing Guide](./CONTRIBUTING.md).
 
 ## Powered by MCIN
 
-LORIS is made by staff developers at the McGill Centre for Integrative Neuroscience ([MCIN.ca](www.mcin.ca)), led by Alan Evans and Samir Das at the Montreal Neurological Institute. 
+LORIS is made by staff developers at the [McGill Centre for Integrative Neuroscience](http://www.mcin.ca), led by Alan Evans and Samir Das at The Neuro (Montreal Neurological Institute-Hospital).
 
-See [LORIS.ca](www.loris.ca) for our current team, the history of LORIS, and our **Technical Papers**.
+Visit [the LORIS website](https://loris.ca) for the history of LORIS and our **Technical Papers**.
 
 The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, and Samir Das.  

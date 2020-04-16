@@ -77,7 +77,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return array(
             'v0.0.2',
-            'v0.0.3-dev',
+            'v0.0.3',
         );
     }
 
@@ -96,7 +96,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         case 'PUT':
         case 'PATCH':
-            // TODO :: I don`t think this was working in v0.0.3-dev
+            // TODO :: I don`t think this was working in v0.0.3
             return new \LORIS\Http\Response\JSON\NotImplemented();
 
         case 'OPTIONS':

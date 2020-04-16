@@ -33,7 +33,6 @@ html, body {
 #page {
     min-height: 100vh;
     position: relative;
-    padding-top: 50px;
 }
 
 
@@ -414,7 +413,7 @@ table.data {
 .controlPanel li {
     list-style-position:inside;
     list-style-type: none;
-    white-space: nowrap; 
+    white-space: normal;
     margin-top: 4px;
 }
 .controlPanel {

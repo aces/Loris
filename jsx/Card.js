@@ -58,6 +58,7 @@ class Card extends Component {
           id={this.props.id}
           title={this.props.title}
           initCollapsed={this.props.initCollapsed}
+            style={{overflow: 'auto'}}
         >
           <div
             onClick={this.handleClick}

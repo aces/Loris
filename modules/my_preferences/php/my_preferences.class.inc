@@ -1,25 +1,10 @@
 <?php
-/**
- * The user account page
- *
- * PHP Version 7
- *
- * @category Main
- * @package  User_Account
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-namespace LORIS\user_accounts;
+namespace LORIS\my_preferences;
 
 /**
- * Implements the user account page
+ * Implements the my preferences page.
  *
- * @category Main
- * @package  User_Account
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class My_Preferences extends \NDB_Form
 {
@@ -235,7 +220,7 @@ class My_Preferences extends \NDB_Form
 
         $this->identifier = $_SESSION['State']->getUsername();
 
-        $user =& \User::singleton($this->identifier);
+        $user = \User::singleton($this->identifier);
 
         //get notification details
         $notifier_list     = \NDB_Notifier::getNotificationModuleServices();

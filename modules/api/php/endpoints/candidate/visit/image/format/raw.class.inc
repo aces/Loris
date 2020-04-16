@@ -63,7 +63,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return array(
             'v0.0.2',
-            'v0.0.3-dev',
+            'v0.0.3',
         );
     }
 
