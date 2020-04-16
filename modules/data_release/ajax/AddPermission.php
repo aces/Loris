@@ -88,18 +88,18 @@ if ($_GET['action'] == 'addpermission') {
         die(json_encode(['message' => $message]));
     }
 
-    // Get current user version files.
+    // Get current user version files and list of files for each version.
     $dataRelease = new LORIS\data_release\data_release(
         \Module::factory('data_release'),
         '',
         '',
         '',
     );
-    $versionFiles     = $dataRelease->getVersionFiles($DB);
     $userVersionFiles = $dataRelease->getUserVersionFiles($DB);
+    $versionFiles     = $dataRelease->getVersionFiles($DB);
 
-    // NOTE: It is important that only the permissions for versions that have
-    // been altered be saved to the database.
+    // NOTE: It is important that only the user file permissions for versions
+    // that have been altered be saved to the database.
     foreach ($data as $userId => $user) {
         $addedVersions   = array_diff(
             $user['versions'],
@@ -110,7 +110,7 @@ if ($_GET['action'] == 'addpermission') {
             $user['versions']
         );
 
-        // Add file permissions for each file of a the added versions.
+        // Add file permissions to user for each file of the added versions.
         foreach ($addedVersions as $version) {
             foreach ($versionFiles[$version] as $fileId) {
                 $DB->insertOnDuplicateUpdate(
@@ -123,7 +123,8 @@ if ($_GET['action'] == 'addpermission') {
             }
         }
 
-        // Remove file permissions for each file of a the removed versions.
+        // Remove file permissions from user for each file of the removed
+        // versions.
         foreach ($removedVersions as $version) {
             foreach ($versionFiles[$version] as $fileId) {
                 $DB->delete(
