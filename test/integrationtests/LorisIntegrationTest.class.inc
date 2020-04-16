@@ -22,6 +22,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverWait;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverException;
+use Facebook\WebDriver\WebDriverSelect;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *

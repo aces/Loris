@@ -36,9 +36,6 @@ class ConfigurationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1280, 1024);
-        $window->setSize($size);
     }
 
     /**
