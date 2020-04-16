@@ -155,7 +155,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testFilters()
     {
         $this->safeGet($this->url . "/candidate_list/");
-sleep(40);
         //testing is done with user affiliated to only site=1 and project=1
         //numbers below should reflect these affiliations.
 
@@ -164,7 +163,7 @@ sleep(40);
         $this-> _testFilter(self::$DCCID, "1 rows", '300001');
         $this-> _testFilter(self::$DCCID, "0 rows", 'test');
         $this-> _testFilter(self::$visitLabel, "362", '1');
-        $this-> _testFilter(self::$visitLabel, "223", '2');sleep(30);
+        $this-> _testFilter(self::$visitLabel, "223", '2');
         $this-> _testFilter(self::$site, "7 rows", '2');
         $this-> _testFilter(self::$site, "165", '2');
         $this-> _testFilter(self::$entityType, "436", '1');

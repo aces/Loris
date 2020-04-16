@@ -163,17 +163,17 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         */
-        $usernameEl = $this->webDriver->findElement(
+        $usernameEl = $this->safeFindElement(
             WebDriverBy::Name("username")
         );
-        $passwordEl = $this->webDriver->findElement(
+        $passwordEl = $this->safeFindElement(
             WebDriverBy::Name("password")
         );
 
         $usernameEl->sendKeys($username);
         $passwordEl->sendKeys($password);
 
-        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $login = $this->safeFindElement(WebDriverBy::Name("login"));
         $login->click();
 
         // Explicitly wait until the page is loaded.
@@ -460,19 +460,23 @@ abstract class LorisIntegrationTest extends TestCase
      * ensure that the new page is load before it returns.
      *
      * @param string $url The url to get.
+     * @param int         $waitPeriod After this amount of seconds, the wait period
+     *                                finishes and an exception is thrown.
      *
      * @return ?\RemoteWebDriver
      */
-    function safeGet($url)
+    function safeGet($url,$waitPeriod=15)
     {
         $newWebDriver = null;
 
-        try {
-            $newWebDriver = $this->webDriver->get($url);
-
-        } catch (WebDriverException $e) {
-            return $newWebDriver;
-        }
+        // keep a reference from the actual page
+            // Load the new page
+        $newWebDriver = $this->webDriver->get($url);
+        $wait = new WebDriverWait($newWebDriver, $waitPeriod);
+        $wait->until(
+            WebDriverExpectedCondition::urlContains($url)
+        );
+        return $newWebDriver;
     }
 
     /**
@@ -491,9 +495,9 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
-        $wait = new WebDriverWait($this->webDriver, $waitPeriod);
+        $wait = new WebDriverWait($this->webDriver, $waitPeriod,500);
         $wait->until(
-            WebDriverExpectedCondition::presenceOfElementLocated($by)
+            WebDriverExpectedCondition::visibilityOfElementLocated($by)
         );
         return $this->webDriver->findElement($by);
     }
@@ -576,7 +580,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function checkPagePermissions(
+     public function checkPagePermissions(
         string $path,
         array $permissionCodes,
         string $successMessage,
