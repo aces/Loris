@@ -51,7 +51,7 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      */
     public function useSiteFilter(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -60,7 +60,7 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      *
      * @return ?array of site permissions or null
      */
-    public function useSitePermissionsFilter() : ?array
+    public function allSitePermissionNames() : ?array
     {
         return ['electrophysiology_browser_view_allsites'];
     }

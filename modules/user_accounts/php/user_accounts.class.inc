@@ -46,7 +46,7 @@ class User_Accounts extends \DataFrameworkMenu
      */
     public function useSiteFilter() : bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -55,7 +55,7 @@ class User_Accounts extends \DataFrameworkMenu
      *
      * @return ?array of permissions or null
      */
-    public function useSitePermissionsFilter() : ?array
+    public function allSitePermissionNames() : ?array
     {
         return ['user_account_multisite'];
     }

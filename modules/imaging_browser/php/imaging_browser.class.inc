@@ -72,7 +72,7 @@ class Imaging_Browser extends \DataFrameworkMenu
      *
      * @return ?array of site permissions or null
      */
-    public function useSitePermissionsFilter() : ?array
+    public function allSitePermissionNames() : ?array
     {
         return null;
     }

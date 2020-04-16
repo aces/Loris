@@ -72,7 +72,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      *
      * @return ?array of permissions to check or null
      */
-    abstract public function useSitePermissionsFilter() : ?array;
+    abstract public function allSitePermissionNames() : ?array;
 
 
     /**
@@ -113,16 +113,10 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
         // UserSiteMatch throws an exception if used on a model without a getCenterID
         // or getCenterIDs function, so we only apply it on sub-classes that
         // specifically say they support it.
-        if ($this->useSiteFilter()) {
-            $provisioner = $provisioner->filter(
-                new \LORIS\Data\Filters\UserSiteMatch()
-            );
-        }
-
-        if ($this->useSitePermissionsFilter()) {
+        if ($this->useSiteFilter() || $this->allSitePermissionNames) {
             $provisioner = $provisioner->filter(
                 new \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch(
-                    $this->useSitePermissionsFilter()
+                    $this->allSitePermissionNames()
                 )
             );
         }

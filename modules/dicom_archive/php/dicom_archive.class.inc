@@ -48,7 +48,7 @@ class Dicom_Archive extends \DataFrameworkMenu
      */
     public function useSiteFilter() : bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -57,7 +57,7 @@ class Dicom_Archive extends \DataFrameworkMenu
      *
      * @return ?array of site permissions or null
      */
-    public function useSitePermissionsFilter() : ?array
+    public function allSitePermissionNames() : ?array
     {
         return ['dicom_archive_view_allsites'];
     }

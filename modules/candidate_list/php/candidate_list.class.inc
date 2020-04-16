@@ -47,7 +47,7 @@ class Candidate_List extends \DataFrameworkMenu
      */
     public function useSiteFilter() : bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -56,7 +56,7 @@ class Candidate_List extends \DataFrameworkMenu
      *
      * @return ?array of site permissions or null
      */
-    public function useSitePermissionsFilter() : ?array
+    public function allSitePermissionNames() : ?array
     {
         return ['access_all_profiles'];
     }

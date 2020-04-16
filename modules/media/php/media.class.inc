@@ -54,7 +54,7 @@ class Media extends \DataFrameworkMenu
      */
     public function useSiteFilter(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -63,7 +63,7 @@ class Media extends \DataFrameworkMenu
      *
      * @return ?array of site permissions or null
      */
-    public function useSitePermissionsFilter() : ?array
+    public function allSitePermissionNames() : ?array
     {
         return ['access_all_profiles'];
     }
