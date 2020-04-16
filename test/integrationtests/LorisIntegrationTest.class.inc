@@ -182,7 +182,8 @@ abstract class LorisIntegrationTest extends TestCase
         // are run one will fail due to the login taking too long?
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']"))
+                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
+            )
         );
 
     }
@@ -460,9 +461,9 @@ abstract class LorisIntegrationTest extends TestCase
      * Helper function to decorate the webdriver->get function so it
      * ensure that the new page is load before it returns.
      *
-     * @param string $url The url to get.
-     * @param int         $waitPeriod After this amount of seconds, the wait period
-     *                                finishes and an exception is thrown.
+     * @param string $url        The url to get.
+     * @param int    $waitPeriod After this amount of seconds, the wait period
+     *                           finishes and an exception is thrown.
      *
      * @return ?\RemoteWebDriver
      */
@@ -473,7 +474,7 @@ abstract class LorisIntegrationTest extends TestCase
         // keep a reference from the actual page
             // Load the new page
         $newWebDriver = $this->webDriver->get($url);
-        $wait = new WebDriverWait($newWebDriver, $waitPeriod);
+        $wait         = new WebDriverWait($newWebDriver, $waitPeriod);
         $wait->until(
             WebDriverExpectedCondition::urlContains($url)
         );
@@ -496,7 +497,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
-        $wait = new WebDriverWait($this->webDriver, $waitPeriod,500);
+        $wait = new WebDriverWait($this->webDriver, $waitPeriod, 500);
         $wait->until(
             WebDriverExpectedCondition::visibilityOfElementLocated($by)
         );
@@ -581,7 +582,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-     public function checkPagePermissions(
+    public function checkPagePermissions(
         string $path,
         array $permissionCodes,
         string $successMessage,

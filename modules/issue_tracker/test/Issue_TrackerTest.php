@@ -89,9 +89,9 @@ class Issue_TrackerTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/issue_tracker/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Issues", $bodyText);
+        $this->assertContains("Issue Tracker", $bodyText);
     }
 
     /**

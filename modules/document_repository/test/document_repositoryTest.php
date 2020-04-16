@@ -79,7 +79,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     function testDocumentRepositoryDoespageLoad()
     {
         $this->safeGet($this->url . "/document_repository/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("test", $bodyText);
