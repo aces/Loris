@@ -15,11 +15,13 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
+use Facebook\WebDriver;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverWait;
 use Facebook\WebDriver\WebDriverExpectedCondition;
+use Facebook\WebDriver\WebDriverException;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -116,13 +118,6 @@ abstract class LorisIntegrationTest extends TestCase
 
         $dev          = $this->config->getSettingFromXML('dev');
         $selenium_url = $dev['selenium_url'] ?? 'http://localhost:4444/wd/hub';
-        //$profile      = new FirefoxProfile();
-        //$profile->setPreference("setAcceptUntrustedCertificates", true);
-        //$profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
-        //$profile->setPreference(
-        //    "security.insecure_field_warning.contextual.enabled",
-        //    false
-       // );
         $desired_capabilities = DesiredCapabilities::firefox();
         $desired_capabilities->setCapability('acceptSslCerts', false);
 
@@ -133,7 +128,6 @@ abstract class LorisIntegrationTest extends TestCase
                 ['args' => ['-headless']]
             );
         }
-      //  $desired_capabilities->setCapability(FirefoxDriver::PROFILE, $profile);
 
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
@@ -185,7 +179,10 @@ abstract class LorisIntegrationTest extends TestCase
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(5)->until(WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")));
+        $this->webDriver->wait(120, 1000)->until(
+            WebDriverExpectedCondition::visibilityOfElementLocated(
+                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']"))
+        );
 
     }
 
@@ -470,24 +467,10 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $newWebDriver = null;
 
-        // keep a reference from the actual page
-        $oldBody = $this->safeFindElement(
-            WebDriverBy::xPath(
-                "
-                //body
-                "
-            )
-        );
-
         try {
-            // Load the new page
             $newWebDriver = $this->webDriver->get($url);
 
-            // Use the old page reference until it detaches from the DOM
-         //   while (true) {
-         //       $oldBody->isDisplayed();
-         //   }
-        } catch (StaleElementReferenceException $e) {
+        } catch (WebDriverException $e) {
             return $newWebDriver;
         }
     }
