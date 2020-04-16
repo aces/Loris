@@ -107,11 +107,7 @@
                     {foreach from=$mpgroup item=protocol}
                         <tr>
                         {foreach from=$protocol key=k item=v}   
-                            {if $violated_scans_modifications && $k != 'Protocol Group'}
-                            <td id="row_{$protocol.ID}_td_{$k}" class='description' contenteditable = "true" nowrap {$rowBorder}>
-                            {else}
                             <td id="row_{$protocol.ID}_td_{$k}" class='description' nowrap {$rowBorder}>
-                            {/if}                              
                                 {$v}
                             </td>
                         {/foreach}

@@ -29,10 +29,9 @@
  the MRI protocol (check that correct scan information is set in the 
  filters of that page).  
 1.  Page should display header information of violated scans.
-2.  Table cells should be editiable with the permission
-    `Violated Scans: Edit MRI protocol table`. Ensure that the edited data is
-    saved to the database.
-3.  Ensure first table displays all valid protocols for the study.
+2.  Ensure first table displays all valid protocols for the study.
+3.  The table cells of the MRI protocols table should not be editable under
+    any circumstances.
 4. Click on the question mark on the right upper side of the windows and ensure
    that the help content about MRI Protocol Violation is showing up and is
    up-to-date.
