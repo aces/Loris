@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ . "/../../test/integrationtests/LorisIntegrationTest.class.inc";
 class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 {
