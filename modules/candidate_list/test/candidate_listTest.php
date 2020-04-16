@@ -90,13 +90,17 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testCandidateListPageLoads()
     {
         $this->safeGet($this->url . "/candidate_list/");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Access Profile", $bodyText);
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
-        $btn           = self::$advancedFilter;
-        $buttonText = $this->safeFindElement(WebDriverBy::cssSelector($btn))->getText();
- 
+        $btn        = self::$advancedFilter;
+        $buttonText = $this->safeFindElement(
+            WebDriverBy::cssSelector($btn)
+        )->getText();
+
         $this->assertContains("Advanced", $buttonText);
     }
     /**
@@ -108,7 +112,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testCandidateListAdvancedOptionsAppear()
     {
         $this->safeGet($this->url . "/candidate_list/");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Access Profile", $bodyText);
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
@@ -211,7 +217,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             );
         }
             $row      = self::$display;
-            $bodyText = $this->safeFindElement(WebDriverBy::cssSelector($row))->getText();
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector($row)
+            )->getText();
 
             // 4 means there are 4 records under this site.
             $this->assertContains($records, $bodyText);

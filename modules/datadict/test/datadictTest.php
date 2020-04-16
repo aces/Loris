@@ -107,9 +107,9 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/datadict/");
         foreach ($this->_loadingUI as $key => $value) {
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector($value)
+            )->getText();
             $this->assertContains($key, $text);
         }
     }

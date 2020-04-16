@@ -12,6 +12,7 @@
  */
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
+use Facebook\WebDriver\WebDriverKeys;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -152,6 +153,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         // get element from the page
         if (strpos($element, "select") == false) {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  lastValue = input.value;
@@ -166,6 +168,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             );
             $this->assertContains($value, $bodyText);
         } else {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  input.selectedIndex = '$value';
@@ -173,11 +176,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
-                    $bodyText = $this->webDriver->executescript(
-                        "return document.querySelector('#default-panel".
+            $row      = "#default-panel".
                         " > div > div > div.table-header > div > div >".
-                        " div:nth-child(1)').textContent"
-                    );
+                        " div:nth-child(1)";
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector($row)
+            )->getText();
                     // 4 means there are 4 records under this site.
                     $this->assertContains($records, $bodyText);
         }
@@ -244,9 +248,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // adding a new user for react test
         $this->safeGet($this->url . "/user_accounts/");
         $btn = $this->_addUserBtn;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
+        $this->safeClick(WebDriverBy::cssSelector($btn));
+
         $field = $this->safeFindElement(WebDriverBy::Name('UserID'));
         $field->clear();
         $field->sendKeys('userid');

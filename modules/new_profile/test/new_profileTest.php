@@ -11,6 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\Exception\UnexpectedJavascriptException;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -76,27 +77,16 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      * Tests that with useEDC turned off, edc related fields do not appear
      * on the page.
      *
-     * @return void
+     * @expectedException Exception
+     * @return            void
      */
     function testNewProfileLoadsWithoutEDC()
     {
         $this->setUpConfigSetting("useEDC", "false");
 
         $this->safeGet($this->url . "/new_profile/");
-        try {
-            $edc1 = $this->webDriver->findElement(WebDriverBy::Name("edc1"));
-        } catch(NoSuchElementException $e) {
-            $edc1 = null;
-        }
-        $this->assertNull($edc1);
-
-        try {
-            $edc2 = $this->webDriver->findElement(WebDriverBy::Name("edc2"));
-        } catch(NoSuchElementException $e) {
-            $edc2 = null;
-        }
-
-        $this->assertNull($edc2);
+        $edc1 = $this->webDriver->findElement(WebDriverBy::Name("edc1"));
+        $edc2 = $this->webDriver->findElement(WebDriverBy::Name("edc2"));
         $this->restoreConfigSetting("useEDC");
     }
 

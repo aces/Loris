@@ -218,9 +218,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         //Visit does not exist for given candidate.
         $this->safeGet($this->url . "/survey_accounts/");
         $btn = self::$add;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click()"
-        );
+        $this->safeClick(WebDriverBy::cssSelector($btn));
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
@@ -290,6 +288,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     {
         // get element from the page
         if (strpos($element, "select") == false) {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  lastValue = input.value;
@@ -304,6 +303,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             );
             $this->assertContains($records, $bodyText);
         } else {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  input.selectedIndex = '$value';
