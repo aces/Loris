@@ -195,6 +195,8 @@ class DataTable extends Component {
       } else if (isString) {
         // if string with text convert to lowercase
         val = val.toLowerCase();
+      } else if (Array.isArray(val)) {
+        val = val.join(', ');
       } else {
         val = undefined;
       }
