@@ -16,8 +16,7 @@
    [Manual Testing]
 9. Add files in the repository to test search according to file name, file type, version, site and uploaded by.
    [Manual Testing]
-10. Check that when performing a search without global filtering, the categories
-   containing the resulting files (and only those) are shown in a list format. 
+10. Check that when performing a search without global filtering, the resulting files which under current category are shown in a list format. 
    [Manual Testing]
 11. Check that when performing a search with global filtering, all files matching the filtered case 
    (regardless of category) are shown in a list format. 
