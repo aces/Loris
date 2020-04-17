@@ -84,10 +84,9 @@ class DocIndex extends React.Component {
         let fillData = filterData.filter((data) => {
           return Object.values(nodesArray).includes(data[10]);
         });
-
         this.setState({
           global: false,
-          tableData: id == 0 ? filterData : fillData,
+          tableData: fillData,
           childrenNode: myJson['subcategories'],
           parentNode: myJson['parentcategory'],
         });
