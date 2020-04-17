@@ -38,7 +38,7 @@ class Module extends \Module
             so we fix the path with that in mind.
       */
 
-    const MRI_VIOLATED_SCAN_QUERY_CONST     = " FROM (
+    const MRI_VIOLATED_SCAN_QUERY_CONST = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
                 s.ProjectID as Project,
