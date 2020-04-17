@@ -465,7 +465,7 @@ abstract class LorisIntegrationTest extends TestCase
      * @param int    $waitPeriod After this amount of seconds, the wait period
      *                           finishes and an exception is thrown.
      *
-     * @return ?\RemoteWebDriver
+     * @return \Facebook\WebDriver\Remote\RemoteWebDriver
      */
     function safeGet($url,$waitPeriod=15)
     {
@@ -493,7 +493,7 @@ abstract class LorisIntegrationTest extends TestCase
      * @throws NoSuchElementException if the element cannot be found after the
      *                                wait period.
      *
-     * @return WebDriverElement the element found.
+     * @return \Facebook\WebDriver\Remote\RemoteWebElement the element found.
      */
     function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
