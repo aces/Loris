@@ -120,7 +120,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
         $this->assertContains(
-            "Resolved Conflicts",
+            "Conflict Resolver",
             $bodyText
         );
 
