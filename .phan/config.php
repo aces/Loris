@@ -34,16 +34,10 @@ return [
     "unused_variable_detection" => false,
     "suppress_issue_types" => [
         "PhanTypePossiblyInvalidDimOffset",
+        "PhanUndeclaredMethod",
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
-        "PhanUndeclaredMethod",
-        "PhanUndeclaredClassMethod",
-        "PhanUndeclaredClassCatch",
-        "PhanUnreferencedUseNormal",
-        "PhanUndeclaredTypeParameter",
-        "PhanUndeclaredTypeReturnType",
-        "PhanUndeclaredTypeThrowsType",
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [

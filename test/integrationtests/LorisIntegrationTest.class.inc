@@ -15,14 +15,16 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
-use Facebook\WebDriver;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverElement;
 use Facebook\WebDriver\WebDriverExpectedCondition;
-use Facebook\WebDriver\WebDriverException;
 use Facebook\WebDriver\WebDriverSelect;
+use Facebook\WebDriver\Exception\StaleElementReferenceException;
+use Facebook\WebDriver\Exception\ElementNotVisibleException;
+use Facebook\WebDriver\Exception\NoSuchElementException;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -490,10 +492,11 @@ abstract class LorisIntegrationTest extends TestCase
      * @param int         $waitPeriod After this amount of seconds, the wait period
      *                                finishes and an exception is thrown.
      *
-     * @throws NoSuchElementException if the element cannot be found after the
+     * @throws Facebook\WebDriver\Exception\NoSuchElementException
+     *          if the element cannot be found after the
      *                                wait period.
      *
-     * @return \Facebook\WebDriver\Remote\RemoteWebElement the element found.
+     * @return Facebook\WebDriver\Remote\RemoteWebElement the element found.
      */
     function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
