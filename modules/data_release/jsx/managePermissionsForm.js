@@ -74,7 +74,7 @@ class ManagePermissionsForm extends Component {
                   name={version}
                   label={version || 'Unversioned'}
                   value={user.versions.includes(version)}
-                  onUserInput={(version, permission) => 
+                  onUserInput={(version, permission) =>
                     this.setFormData(userId, version, permission)
                   }
                 /><br/>

@@ -89,7 +89,7 @@ if ($_GET['action'] == 'addpermission') {
     }
 
     // Get current user version files and list of files for each version.
-    $dataRelease = new LORIS\data_release\data_release(
+    $dataRelease      = new LORIS\data_release\data_release(
         \Module::factory('data_release'),
         '',
         '',
@@ -153,6 +153,7 @@ if ($_GET['action'] == 'addpermission') {
  * Gets the data for the manage permission modal window.
  *
  * @param \Database $DB Database Object
+ *
  * @return void
  */
 function getManagePermissionsData($DB): void
