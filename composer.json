@@ -17,7 +17,7 @@
     "require-dev" : {
         "squizlabs/php_codesniffer" : "3.5.3",
         "phpunit/phpunit" : "7.0.0",
-        "php-webdriver/webdriver" : "^1.8.2",
+        "facebook/webdriver" : "dev-master",
         "phan/phan": ">=2.3.0",
         "phpmd/phpmd": "~2.8",
         "phpstan/phpstan": "^0.12"
