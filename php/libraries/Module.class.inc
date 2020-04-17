@@ -63,6 +63,51 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     }
 
     /**
+     * Checks whether one or more modules are active in the given database.
+     *
+     * @param \Database $db      an open connection to a database containing a
+     *                           'modules' table
+     * @param array     $modules the names of the modules to check
+     *
+     * @return array of module name => boolean (active or not)
+     */
+    static public function checkActiveModules(\Database $db, array $modules): array
+    {
+        $params = array();
+        $values = array();
+        foreach ($modules as $key => $name) {
+            $para          = "n$key";
+            $params[]      = ":$para";
+            $values[$para] = $name;
+        }
+        $list = $db->pselect(
+            "SELECT Name, Active FROM modules WHERE Name IN (" .
+            implode(', ', $params) . ")",
+            $values
+        );
+
+        $moduleStatus = [];
+        $moduleCnt    = 0;
+        foreach ($list as $item) {
+            $moduleStatus[$item['Name']] = $item['Active'] == 'Y';
+            $moduleCnt ++;
+        }
+
+        if ($moduleCnt < count($modules)) {
+            // In rare occaision, the $modules might have more but never less.
+            $keys = array_keys($moduleStatus);
+            foreach ($modules as $key => $name) {
+                if (!in_array($name, $keys)) {
+                    $moduleStatus[$name] = false;
+                }
+            }
+            // This process will help return a full length status array.
+        }
+
+        return $moduleStatus;
+    }
+
+    /**
      * Retrieve all active module descriptors from the given database, indexed
      * by their primary key in the database.
      *

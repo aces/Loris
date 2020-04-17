@@ -134,6 +134,31 @@ class Instrument_List extends \NDB_Menu_Filter
             // the candidate exists before getting here.
             throw new \LorisException("Timepoint list requires a timepoint.");
         }
+
+        // Check imaging_browser permission, used to control imaging_browser link
+        // on the instrument_list main page
+        $DB      =& \Database::singleton();
+        $modules = \Module::checkActiveModules($DB, ['imaging_browser']);
+
+        $perm = false;
+        if ($modules['imaging_browser']) {
+            $user = $request->getAttribute("user");
+            if ($this->candidate->getData('Entity_type') == 'Scanner') {
+                $perm = $user->hasPermission('imaging_browser_phantom_allsites')
+                || $user->hasCenterPermission(
+                    'imaging_browser_phantom_ownsite',
+                    $this->timePoint->getCenterID()
+                );
+            } elseif ($this->candidate->getData('Entity_type') == 'Human') {
+                $perm = $user->hasPermission('imaging_browser_view_allsites')
+                || $user->hasCenterPermission(
+                    'imaging_browser_view_site',
+                    $this->timePoint->getCenterID()
+                );
+            }
+        }
+        $this->tpl_data['imaging_browser_permission'] = $perm;
+
         return parent::process($request, $handler);
     }
 
