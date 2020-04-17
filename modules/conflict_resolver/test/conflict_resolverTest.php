@@ -113,7 +113,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->setupPermissions(array("conflict_resolver"));
          $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertNotContains(
             "You do not have access to this page.",
