@@ -37,7 +37,6 @@ return [
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
-        "PhanTypeMismatchReturn",
         "PhanUndeclaredMethod",
         "PhanUndeclaredClassMethod",
         "PhanUndeclaredClassCatch",
