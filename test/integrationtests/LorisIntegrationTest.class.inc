@@ -472,13 +472,19 @@ abstract class LorisIntegrationTest extends TestCase
     function safeGet($url,$waitPeriod=15)
     {
         $newWebDriver = null;
-
         // keep a reference from the actual page
+        $oldBody = $this->safeFindElement(
+            WebDriverBy::xPath(
+                "
+                //body
+                "
+            )
+        );
             // Load the new page
         $newWebDriver = $this->webDriver->get($url);
         $wait         = new WebDriverWait($newWebDriver, $waitPeriod);
         $wait->until(
-            WebDriverExpectedCondition::urlContains($url)
+            WebDriverExpectedCondition::stalenessOf($oldBody)
         );
         return $newWebDriver;
     }
