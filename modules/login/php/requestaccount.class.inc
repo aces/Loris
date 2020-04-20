@@ -173,21 +173,29 @@ class RequestAccount extends \NDB_Form
             // Get the ID of the new user and insert into user_psc_rel
             $user_id = $DB->getLastInsertId();
 
-            $DB->insert(
-                'user_psc_rel',
-                array(
-                    'UserID'   => $user_id,
-                    'CenterID' => $site,
-                )
-            );
+            // verify site exists
+            $siteList = \Utility::getSiteList();
+            if (!is_null($site) && array_key_exists($site, $siteList)) {
+                $DB->insert(
+                    'user_psc_rel',
+                    array(
+                        'UserID'   => $user_id,
+                        'CenterID' => $site,
+                    )
+                );
+            }
 
-            $DB->insert(
-                'user_project_rel',
-                array(
-                    'UserID'    => $user_id,
-                    'ProjectID' => $site,
-                )
-            );
+            // verify project exists
+            $projectList = \Utility::getProjectList();
+            if (!is_null($project) && array_key_exists($project, $projectList)) {
+                $DB->insert(
+                    'user_project_rel',
+                    array(
+                        'UserID'    => $user_id,
+                        'ProjectID' => $site,
+                    )
+                );
+            }
 
             $examinerCheck    = $_REQUEST['examiner'] ?? 'off';
             $radiologistCheck = $_REQUEST['radiologist'] ?? 'off';
