@@ -5,7 +5,7 @@ candidate profiles` permission, or have the 'Edit Candidate Parameters' permissi
 site as the visit, or at the same site as one of the candidate's other visits.
 2. Select and instrument in the list of the session instruments.
 3. Ensure that the candidate info at the top (DoB, EDC, ...) are correct.
-4. In the instrument's medical history section, enter a date and click 'Save Data'. Check if age calculation
+4. Enter a date and click 'Save Data'. Check if age calculation
 is correct.
 5. Try to save the instruments without an examiner. You should have a box specifying that 
 'an examiner is required'.
