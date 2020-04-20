@@ -13,22 +13,33 @@
 ### View Session / Volume List
 
 Sidebar:  all links work, including the Download DICOM option. Ensure that projects can customize (add/remove) their list of instruments that can be linked to from the Configuration/Imaging Modules/Imaging Browser Links to Insruments
+
 Select an image using the checkbox above the volume previews. Click the "3D Only" and "3D + Overlay" buttons. These should load the Brain Browser module.
-Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable IFF permission imaging_browser_qc
-Save button appears IFF permission imaging_browser_qc
+
+Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable IFF permission `imaging_browser_qc`
+
+Save button appears IFF permission `imaging_browser_qc`
+
 Test Save button works 
+
 Verify Visit-level QC controls and comments can be deleted/unchecked/emptied and saved
+
 Test Breadcrumb link back to Imaging Browser
 
 ### Main panel:  per acquisition:
 
 Files can be downloaded (links clickable) only IFF has permission. Ensure that DICOM downloads are
 prepended with the Patient Name.
+
 Scan-level QC flags (Selected, pass/fail, Caveat emptor) viewable to all, modifiable IFF permission `imaging_browser_qc`. 
-Caveat List link is viewable with the Violated Scans: View all-sites Violated Scans permission
+Caveat List link is viewable with the Violated Scans: "View all-sites Violated Scans" permission
+
 Selected:  can be set back to Null (blank)
+
 Clicking on an image should launch BrainBrowser
+
 Clicking on the "QC Comments" button should open the QC comments window
+
 Longitudinal View button launches BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints
 
 ### MRI-QC : Scan-level (QC Comments) dialog window
