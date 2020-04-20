@@ -94,7 +94,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
 
         if ($moduleCnt < count($modules)) {
-            // In rare occaision, the $modules might have more but never less.
+            // In some occasions, the $modules might contain more but never less.
             $keys = array_keys($moduleStatus);
             foreach ($modules as $key => $name) {
                 if (!in_array($name, $keys)) {
