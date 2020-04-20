@@ -1,7 +1,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `permissions`;
 LOCK TABLES `permissions` WRITE;
-INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (1,'superuser','There can be only one Highlander',1);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (1,'superuser','Superuser - supersedes all permissions',1);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (2,'user_accounts','User management',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (3,'user_accounts_multisite','Across all sites create and edit users',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (4,'context_help','Edit help documentation',2);
