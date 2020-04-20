@@ -35,6 +35,6 @@
        - Addition, deletion or modification of a file (by a user other than yourself)
        - Addition of a category (by a user other than yourself)
     [Manual Testing]
-16. Try uploading a large file, e.g. 1 GB. Ensure that an error message occurs
+16. Try uploading a file that exceeds the max upload limit. Ensure that an error message occurs
     when the server has detected that the file is too large.
     [Manual Testing]
