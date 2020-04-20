@@ -10,7 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 require_once __DIR__ .
              "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -106,9 +107,9 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/datadict/");
         foreach ($this->_loadingUI as $key => $value) {
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector($value)
+            )->getText();
             $this->assertContains($key, $text);
         }
     }
