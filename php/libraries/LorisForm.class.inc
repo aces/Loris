@@ -1960,10 +1960,7 @@ class LorisForm
         case 'submit':
             return $this->createSubmit($elname, $label, $attribs);
         case 'static':
-            /* Label seems to usually be the wrong attribute for static
-             * elements?
-             */
-            $el         = $this->createBase($elname, $options, $attribs);
+            $el         = $this->createBase($elname, $label, $attribs);
             $el['type'] = 'static';
             break;
         case 'advcheckbox':
