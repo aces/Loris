@@ -9,7 +9,7 @@ CREATE TABLE `permissions_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `permissions_category` VALUES 
+INSERT INTO `permissions_category` VALUES
   (1,'Roles'),
   (2,'Permission');
 
@@ -49,7 +49,7 @@ CREATE TABLE `user_perm_rel` (
 
 
 INSERT INTO `permissions` VALUES
-    (1,'superuser','There can be only one Highlander','1'),
+    (1,'superuser','Superuser - supersedes all permissions','1'),
     (2,'user_accounts','User management','2'),
     (3,'user_accounts_multisite','Across all sites create and edit users','2'),
     (4,'context_help','Edit help documentation','2'),
@@ -112,9 +112,9 @@ INSERT INTO `permissions` VALUES
     (64,'candidate_dod_edit', 'Edit dates of death', 2);
 
 INSERT INTO `user_perm_rel` (userID, permID)
-  SELECT u.ID, p.permID 
-  FROM users u JOIN permissions p 
-  WHERE u.userid = 'admin' 
+  SELECT u.ID, p.permID
+  FROM users u JOIN permissions p
+  WHERE u.userid = 'admin'
   ORDER BY p.permID;
 
 -- permissions for each notification module
