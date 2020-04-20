@@ -67,6 +67,12 @@ class RequestAccount extends \NDB_Form
             array("" => "Choose your site:") + \Utility::getSiteList(),
             array("required" => true)
         );
+        $this->addSelect(
+            "project",
+            "Project",
+            array("" => "Choose your project:") + \Utility::getProjectList(),
+            array("required" => true)
+        );
         $this->addCheckbox("examiner", "Examiner role", array());
         $this->addCheckbox("radiologist", "Radiologist", array());
 
@@ -103,6 +109,9 @@ class RequestAccount extends \NDB_Form
         if (empty($values['site'])) {
             $errors['site'] = "Please choose a site!";
         }
+        if (empty($values['project'])) {
+            $errors['project'] = "Please choose a project!";
+        }
 
         // I don't think this is required because insert uses prepared statements,
         // but I'm keeping it for now because it doesn't do any harm (unlike the
@@ -138,6 +147,7 @@ class RequestAccount extends \NDB_Form
         $lastname = trim(htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES));
         $from     = trim(htmlspecialchars($_REQUEST["from"], ENT_QUOTES));
         $site     = $_REQUEST["site"];
+        $project  = $_REQUEST["project"];
         $fullname = $name." ".$lastname;
 
         $vals = array(
@@ -163,13 +173,29 @@ class RequestAccount extends \NDB_Form
             // Get the ID of the new user and insert into user_psc_rel
             $user_id = $DB->getLastInsertId();
 
-            $DB->insert(
-                'user_psc_rel',
-                array(
-                    'UserID'   => $user_id,
-                    'CenterID' => $site,
-                )
-            );
+            // verify site exists
+            $siteList = \Utility::getSiteList();
+            if (!is_null($site) && array_key_exists($site, $siteList)) {
+                $DB->insert(
+                    'user_psc_rel',
+                    array(
+                        'UserID'   => $user_id,
+                        'CenterID' => $site,
+                    )
+                );
+            }
+
+            // verify project exists
+            $projectList = \Utility::getProjectList();
+            if (!is_null($project) && array_key_exists($project, $projectList)) {
+                $DB->insert(
+                    'user_project_rel',
+                    array(
+                        'UserID'    => $user_id,
+                        'ProjectID' => $project,
+                    )
+                );
+            }
 
             $examinerCheck    = $_REQUEST['examiner'] ?? 'off';
             $radiologistCheck = $_REQUEST['radiologist'] ?? 'off';
@@ -227,4 +253,3 @@ class RequestAccount extends \NDB_Form
         $this->tpl_data['success'] = true;
     }
 }
-
