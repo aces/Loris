@@ -190,14 +190,15 @@ class FieldList extends Component {
     }
 
     let filteredItems = items.filter((item) => {
-        const name = item.key[1];
-        const desc = item.value.Description;
-        return (name.toLowerCase().indexOf(filter) != -1 ||
+        fieldName = item.key[1];
+        desc = item.value.Description;
+        return (fieldName.toLowerCase().indexOf(filter) != -1 ||
             desc.toLowerCase().indexOf(filter) != -1);
     });
 
     // Display the fields using the FieldItem component
     for (let i = start; i < filteredItems.length; i += 1) {
+      fieldName = filteredItems[i].key[1];
       type = filteredItems[i].value.Type || 'varchar(255)';
 
       // Check if field is a file, if so set flag to true
