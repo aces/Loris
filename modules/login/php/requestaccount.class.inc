@@ -32,11 +32,13 @@ class RequestAccount extends \NDB_Form
      */
     function setup()
     {
-        $this->tpl_data['page_title'] = 'Request Account';
+        $this->tpl_data['page_title']  = 'Request Account';
         $this->tpl_data['captcha_key'] = \NDB_Factory::singleton()
-             ->config()
-             ->getSetting('reCAPTCHAPublic');
-        $this->tpl_data['nonce'] = base64_encode(openssl_random_pseudo_bytes(16));
+            ->config()
+            ->getSetting('reCAPTCHAPublic');
+        $this->tpl_data['nonce']       = base64_encode(
+            openssl_random_pseudo_bytes(16)
+        );
 
         $this->addBasicText(
             "firstname",
@@ -90,14 +92,13 @@ class RequestAccount extends \NDB_Form
     {
         $errors = array();
         // Verify reCAPTCHA
-        $err = array();
         $reCAPTCHAPrivate = \NDB_Factory::singleton()
             ->config()
             ->getSetting('reCAPTCHAPrivate') ?? '';
 
         // Only validate reCAPTCHA if a private key exists.
         if (!empty($reCAPTCHAPrivate)) {
-            $resp    = (new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate))
+            $resp = (new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate))
                 ->verify(
                     $values['g-recaptcha-response'] ?? '',
                     $_SERVER['REMOTE_ADDR']
@@ -161,7 +162,7 @@ class RequestAccount extends \NDB_Form
      */
     function _process($values)
     {
-        $factory = \NDB_Factory::singleton();
+        $factory  = \NDB_Factory::singleton();
         $DB       = $factory->database();
         $name     = trim(htmlspecialchars($_REQUEST["firstname"], ENT_QUOTES));
         $lastname = trim(htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES));
