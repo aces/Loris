@@ -51,13 +51,19 @@ class UploadForm extends Component {
         delete formData.candID;
         delete formData.pSCID;
         delete formData.visitLabel;
+      } else if (typeof formData.mriFile !== 'undefined') {
+        let patientName = formData.mriFile.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
+        let ids = patientName.split('_', 3);
+        formData.candID = ids[1];
+        formData.pSCID = ids[0];
+        formData.visitLabel = ids[2];
       }
     }
 
     formData[field] = value;
 
     if (field === 'mriFile') {
-      if (value.name !== '') {
+      if (value.name !== '' && formData.IsPhantom === 'N') {
         let patientName = value.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
         let ids = patientName.split('_', 3);
         formData.candID = ids[1];

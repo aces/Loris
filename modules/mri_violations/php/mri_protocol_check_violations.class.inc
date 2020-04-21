@@ -86,6 +86,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
             'ValidRange',
             'ValidRegex',
             'SeriesUID',
+            'TarchiveID'
         );
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->validFilters = array(

@@ -55,6 +55,14 @@
           {/if}
       </div>
       <div class="form-group">
+          {$form.project.html}
+          {if $form.project.error}
+            <span id="helpBlock" class="help-block">
+              <b class="text-danger">{$form.project.error}</b>
+            </span>
+          {/if}
+      </div>
+      <div class="form-group">
           {$form.examiner.html}
           {* checkbox's html method in LORISForm seems to automagically add the label *}
       </div>
