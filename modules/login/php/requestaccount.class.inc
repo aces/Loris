@@ -37,7 +37,7 @@ class RequestAccount extends \NDB_Form
             ->config()
             ->getSetting('reCAPTCHAPublic');
         $this->tpl_data['nonce']       = base64_encode(
-            openssl_random_pseudo_bytes(16)
+            random_bytes(16)
         );
 
         $this->addBasicText(
@@ -106,7 +106,6 @@ class RequestAccount extends \NDB_Form
             // FIXME This leverages the error handling for the "site" text field.
             // It should be done using its own error block.
             if (!$resp->isSuccess()) {
-                print_r($resp->getErrorCodes());
                 $errors['site'] = "reCAPTCHA failed. Reason: "
                     . implode(', ', $resp->getErrorCodes());
             }
