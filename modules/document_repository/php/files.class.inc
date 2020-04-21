@@ -111,20 +111,21 @@ class Files extends \NDB_Page
             $record = urldecode(basename($request->getUri()->getPath()));
 
             if (!is_numeric($record)) {
-                $file = str_replace(
-                    "/Files/",
-                    "",
-                    urldecode($request->getUri()->getPath())
-                );
-                $file = $path.$file;
+               $factory = \NDB_Factory::singleton();
+               $DB      = $factory->database();
+               $filePath =  $DB->pselectOne(
+                   "SELECT Data_dir FROM document_repository
+                    WHERE File_Name=:name",
+                array('name' => $record)
+               );
                 return (new \LORIS\Http\Response())
                     ->withHeader('Content-Type', 'application/octet-stream')
                     ->withHeader(
                         'Content-Disposition',
-                        'attachment; filename=' . basename($file)
+                        'attachment; filename=' . basename($record)
                     )
                     ->withStatus(200)
-                    ->withBody(new \LORIS\Http\FileStream($file));
+                    ->withBody(new \LORIS\Http\FileStream($filePath.$record));
             }
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")

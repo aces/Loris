@@ -126,7 +126,7 @@ class DocIndex extends React.Component {
     let result = <td>{cell}</td>;
     switch (column) {
       case 'File Name':
-        let downloadURL = loris.BaseURL + '/document_repository/Files/'+ row['Uploaded By'] +'/' + encodeURIComponent(row['File Name']);
+        let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(row['File Name']);
         result = <td><a href={downloadURL} target="_blank" download={row['File Name']}>{cell}</a></td>;
         break;
       case 'Edit':
