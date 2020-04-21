@@ -32,7 +32,13 @@ class RequestAccount extends \NDB_Form
      */
     function setup()
     {
-        $this->tpl_data['page_title'] = 'Request Account';
+        $this->tpl_data['page_title']  = 'Request Account';
+        $this->tpl_data['captcha_key'] = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('reCAPTCHAPublic');
+        $this->tpl_data['nonce']       = base64_encode(
+            random_bytes(16)
+        );
 
         $this->addBasicText(
             "firstname",
@@ -85,10 +91,32 @@ class RequestAccount extends \NDB_Form
      * @param array $values The values that were submitted to the page.
      *
      * @return array a (possibly empty) array of errors
+     *
+     * @see https://github.com/google/recaptcha
      */
     function _validate($values): array
     {
         $errors = array();
+        // Verify reCAPTCHA
+        $reCAPTCHAPrivate = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('reCAPTCHAPrivate') ?? '';
+
+        // Only validate reCAPTCHA if a private key exists.
+        if (!empty($reCAPTCHAPrivate)) {
+            $resp = (new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate))
+                ->verify(
+                    $values['g-recaptcha-response'] ?? '',
+                    $_SERVER['REMOTE_ADDR']
+                );
+            // FIXME This leverages the error handling for the "site" text field.
+            // It should be done using its own error block.
+            if (!$resp->isSuccess()) {
+                $errors['site'] = "reCAPTCHA failed. Reason: "
+                    . implode(', ', $resp->getErrorCodes());
+            }
+        }
+
         // FIXME: These error checks are direct ports from when the request
         // account page was a standalone php script (with the ridiculous
         // "name must be at least 3 characters" check removed, because some
@@ -142,7 +170,8 @@ class RequestAccount extends \NDB_Form
      */
     function _process($values)
     {
-        $DB       = \Database::singleton();
+        $factory  = \NDB_Factory::singleton();
+        $DB       = $factory->database();
         $name     = trim(htmlspecialchars($_REQUEST["firstname"], ENT_QUOTES));
         $lastname = trim(htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES));
         $from     = trim(htmlspecialchars($_REQUEST["from"], ENT_QUOTES));
@@ -237,18 +266,6 @@ class RequestAccount extends \NDB_Form
             }
         }
 
-        // Verify reCAPTCHA
-        $err = array();
-        if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
-            $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
-            $resp      = $recaptcha->verify(
-                $values['g-recaptcha-response'],
-                $_SERVER['REMOTE_ADDR']
-            );
-            if (!$resp->isSuccess()) {
-                $err['captcha'] = 'Please complete the reCaptcha!';
-            }
-        }
         // Show success message even if email already exists for security reasons
         $this->tpl_data['success'] = true;
     }
