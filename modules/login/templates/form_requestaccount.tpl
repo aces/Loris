@@ -62,7 +62,7 @@
           {$form.radiologist.html}
       </div>
       <div class="form-group">
-        {* Google reCaptcha. Don't display if a private key has not bee configured *}
+        {* Google reCaptcha. Don't display if a private key has not been configured *}
         {if $captcha_key}
 {$form.captcha.html}
             <div class="g-recaptcha" data-sitekey="{$captcha_key}"></div>
