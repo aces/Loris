@@ -1,7 +1,7 @@
 # API module testplan
  
 The API should be tested by following the API specs and making sure every command works.
-This document is a preliminary testplan that should be superseeded by a proper automated testsuite.
+This document is a preliminary test plan that should be superseded by a proper automated test suite.
 
 ## Using curl:
 ### Login
@@ -19,7 +19,7 @@ Store the token in a variable.
 ~$ token='<a-really-long-string>'
 ```
 
-**Note:** If the response is: `{"error":"Unacceptable JWT key"}` then you need to set the JWTKey value in the config module to a "secure" string. Ususally a 40+ character string with symbols, numbers lower and upercase letters.
+**Note:** If the response is: `{"error":"Unacceptable JWT key"}` then you need to set the JWTKey value in the config module to a sufficiently complex value. A value that is at least 20 characters and contains at least one letter, one number, and one special character should work.
 
 
 ### Examples
@@ -38,6 +38,5 @@ This is done by sending a POST request to /candidates with the required data. No
 ```bash
 ~$ curl -H "Authorization: Bearer $token" https://<your-hostname>/api/v0.0.3/candidates -d '{see specs for content}'
 ```
-
 
 
