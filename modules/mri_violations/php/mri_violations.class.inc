@@ -213,7 +213,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         );
 
         $this->query = Module::MRI_VIOLATED_SCAN_QUERY_CONST;
-        
+
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
