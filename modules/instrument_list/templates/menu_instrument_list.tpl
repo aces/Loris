@@ -217,9 +217,11 @@
      <tr><td nowrap="nowrap">The battery has no registered instruments</td></tr>
 {/section}
 </table>
+{if $imaging_browser_permission}
   <div class="col-xs-12 row">
   </div>
   <div class="col-xs-12 row">
     <button class="btn btn-primary" onclick="location.href='{$baseurl}/imaging_browser/viewSession/?sessionID={$sessionID}'">View Imaging data</button>
   </div>
+{/if}
 </div>
