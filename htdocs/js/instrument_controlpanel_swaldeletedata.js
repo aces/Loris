@@ -9,8 +9,6 @@ function swalFunction(event) {
     confirmButtonText: 'Yes, delete the data',
   }, function(result) {
     if (result) {
-      // swal does not work here. The window instantly disappears
-      alert('\t\t\t Deleted! (You will need to reload the page again)');
       document.getElementById('ConfirmDelete').submit();
     }
   });
