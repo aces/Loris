@@ -12,43 +12,43 @@
 
 ### View Session / Volume List
 
-Sidebar:  all links work, including the Download DICOM option. Ensure that projects can customize (add/remove) their list of instruments that can be linked to from the Configuration/Imaging Modules/Imaging Browser Links to Insruments
+8. Sidebar:  all links work, including the Download DICOM option. Ensure that projects can customize (add/remove) their list of instruments that can be linked to from the Configuration/Imaging Modules/Imaging Browser Links to Insruments
 
-Select an image using the checkbox above the volume previews. Click the "3D Only" and "3D + Overlay" buttons. These should load the Brain Browser module.
+9. Select an image using the checkbox above the volume previews. Click the "3D Only" and "3D + Overlay" buttons. These should load the Brain Browser module.
 
-Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable IFF permission `imaging_browser_qc`
+10. Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable IFF permission `imaging_browser_qc`
 
-Save button appears IFF permission `imaging_browser_qc`
+11. Save button appears IFF permission `imaging_browser_qc`
 
-Test Save button works 
+12. Test Save button works 
 
-Verify Visit-level QC controls and comments can be deleted/unchecked/emptied and saved
+13. Verify Visit-level QC controls and comments can be deleted/unchecked/emptied and saved
 
-Test Breadcrumb link back to Imaging Browser
+14. Test Breadcrumb link back to Imaging Browser
 
 ### Main panel:  per acquisition:
 
-Files can be downloaded (links clickable) only IFF has permission. Ensure that DICOM downloads are
+15. Files can be downloaded (links clickable) only IFF has permission. Ensure that DICOM downloads are
 prepended with the Patient Name.
 
-Scan-level QC flags (Selected, pass/fail, Caveat emptor) viewable to all, modifiable IFF permission `imaging_browser_qc`. 
+16. Scan-level QC flags (Selected, pass/fail, Caveat emptor) viewable to all, modifiable IFF permission `imaging_browser_qc`. 
 Caveat List link is viewable with the Violated Scans: "View all-sites Violated Scans" permission
 
-Selected:  can be set back to Null (blank)
+17. Selected:  can be set back to Null (blank)
 
-Clicking on an image should launch BrainBrowser
+18. Clicking on an image should launch BrainBrowser
 
-Clicking on the "QC Comments" button should open the QC comments window
+19. Clicking on the "QC Comments" button should open the QC comments window
 
-Longitudinal View button launches BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints
+20. Longitudinal View button launches BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints
 
 ### MRI-QC : Scan-level (QC Comments) dialog window
 
-With the permission `imaging_browser_qc`, edit comments, checkboxes, and dropdown values. 
-Clicking Save should update the values.
-Data should not be editable without this permission.
+21. With the permission `imaging_browser_qc`, edit comments, checkboxes, and dropdown values. 
+22. Clicking Save should update the values.
+23. Data should not be editable without this permission.
 
 ### Visit-level QC feedback dialog window
-On the view session page, click the button "Visit Level Feedback".
-The entries in this dialog should be editable when a user has the permission `imaging_browser_qc`.
-Try editing comments (adding new ones, deleting old ones). Click Save and ensure the data is saved.
+24. On the view session page, click the button "Visit Level Feedback".
+25. The entries in this dialog should be editable when a user has the permission `imaging_browser_qc`.
+26. Try editing comments (adding new ones, deleting old ones). Click Save and ensure the data is saved.
