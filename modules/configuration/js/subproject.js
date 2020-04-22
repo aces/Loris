@@ -29,6 +29,9 @@ $(document).ready(function() {
                         .css({ 'color': 'green'})
                         .fadeIn(500)
                         .delay(1000);
+                        setTimeout(function(){
+                            location.reload();
+                        }, 1000);
                     },
                     "error" : function(data) {
                         $(form.find(".saveStatus"))
