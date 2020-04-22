@@ -1072,17 +1072,9 @@ class NDB_BVL_Feedback
         if (\User::singleton()->hasPermission('bvl_feedback')) {
             if (($test_name === "timepoint_list")
                 || ($test_name === "instrument_list")
+                || ($test_name === "instruments")
             ) {
                 return true;
-            } else {
-                $instruments_q = \NDB_Factory::singleton()->database()
-                    ->pselectOne(
-                        "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
-                        array('testName' => $test_name)
-                    );
-                if ($instruments_q == 1) {
-                    return true;
-                }
             }
         }
         return false; //returning false when user is not on appropriate study site

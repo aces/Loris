@@ -667,7 +667,7 @@ class Edit_User extends \NDB_Form
         $this->addGroup(
             $group,
             'Password_Group',
-            'Password',
+            'New Password',
             $this->_GUIDelimiter,
             false
         );

@@ -47,19 +47,17 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
 **Testing file upload**
   1. Click on the 👉 **Upload File** button
     - A popup should prompt you to select a **PSCID** as it is a required field ❌
-  2. Select PSCID and click on the 👉  **Upload file** button again
+  2. Select PSCID and click on the 👉  **Upload file** button
     - A popup should prompt you to select a **Visit Label** as it is a required field ❌
-  3. Select Visit Label and click on the 👉  **Upload file** again
+  3. Select Visit Label and click on the 👉  **Upload file**
     - A popup should prompt you to select a **Site** as it is a required field ❌
-  4. Select Site and click on the 👉  **Upload file** again
-    - A popup should prompt you to select a **File to upload** as it is a required field ❌
-  5. Click on the 👉 **Browse** button and a select a file from your file system
+  4. Click on the 👉 **Browse** button and a select a file from your file system
     - Note: it is suggested to try different file types and sizes (e.g pdf, mp4, mov, jpg, doc, etc)
-  6. After you selected the file click on **Upload File** one more time
+  5. After you selected the file click on **Upload File**
     - A popup should appear prompting to name the file according to the requested format (unless already done so)
     - Once file is named properly clicking on **Upload File** button should trigger file upload and display a progress bar.
-  8. Once the file finished uploading a success message should appear on top of the page and fade away in a couple of seconds
-  9. Click on browse tab and make sure the file you just uploaded is shown in data table
+  6. Once the file finished uploading a success message should appear on top of the page and fade away in a couple of seconds
+  7. Click on browse tab and make sure the file you just uploaded is shown in data table
 
 **Test file browsing** 
   1. After a couple of files are uploaded, make sure they are properly displayed in the data table
@@ -73,7 +71,7 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
     - This will open a modal window in which you can edit the file
 
 **Test file edit**
-  1. Make sure that PSCID, Visit Label, Instrument and Site display proper information and are greyed-out (unchangeable by the user)
+  1. Make sure that PSCID, Visit Label and Instrument display proper information and are greyed-out (unchangeable by the user)
   2. Verify that information (if any) is displayed accordingly in _Date of Administration_, _Comments_ and 'Uploaded File'
   3. Change the _Date of Administration_ and click 👉 **Update File**.
     - After the success message is shown, **refresh the page** and make sure the data is still correct.
@@ -84,11 +82,11 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
     - _Note: only a person with direct database access could revert the hide file action._
 
 **Test filters** [Automation Testing]
-  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields: PSCID, Visit Label, Instrument, File name, For Site, File type and Uploaded by.
+  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields: File Name, Language, Project, File Visibility, PSCID, Instrument, Uploaded By, Visit Label, Site and File type.
     - PSCID, File name and Uploaded by are text fields, whereas other fields are dropdowns with options pre-filled based on the current project.
     - Default option of dropdown should be blank.
   2. Type text in the PSCID input and verify that the table gets filtered as you type.
   3. Type text in the File name input and verify that the table gets filtered as you type.
   4. Type text in the Uploaded by input and verify that the table gets filtered as you type.
-  5. Select Instrument, Visit Label and For Site (independently and combined) to filter table further
+  5. Select Language, Project, File Visibility, Instrument, Visit Label, Site and File type (independently and combined) to filter table further
     - The table should update and display filtered records accordingly

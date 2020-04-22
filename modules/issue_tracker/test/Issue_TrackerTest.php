@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
@@ -88,10 +88,10 @@ class Issue_TrackerTest extends LorisIntegrationTest
     function testIssueTrackerDoespageLoad()
     {
         $this->safeGet($this->url . "/issue_tracker/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Issues", $bodyText);
+        $this->assertContains("Issue Tracker", $bodyText);
     }
 
     /**
@@ -103,10 +103,10 @@ class Issue_TrackerTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array("issue_tracker_reporter"));
         $this->safeGet($this->url . "/issue_tracker/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Issues", $bodyText);
+        $this->assertContains("Issue Tracker", $bodyText);
         $this->resetPermissions();
     }
 

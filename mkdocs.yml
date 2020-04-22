@@ -12,6 +12,7 @@ nav:
         - Website Configuration: 
             - 'Website Configuration': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/README.md'
             - 'Handling Large File Uploads': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/Handling Large File Uploads.md'
+            - 'Enabling reCAPTCHA': 'wiki/99\ -\ Developers/reCAPTCHA.md docs/wiki/00\ -\ SERVER\ INSTALL\ AND\ CONFIGURATION/02\ -\ Website\ Configuration/reCAPTCHA.md'
     - Study Parameters Setup:
         - Study Variables: 
             - 'Introduction': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/00 - Introduction to Study Variables.md'

@@ -70,6 +70,7 @@
 2020-01-16-ModuleManager.sql
 2020-01-20-adding_electrophysiology_browser_to_modules_table.sql
 2020-02-18-MyPrefModule.sql
+2020-04-20-Rename_highlander_permission.sql
 
 
 # CLEAN-UP

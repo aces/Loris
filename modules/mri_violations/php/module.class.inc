@@ -51,7 +51,10 @@ class Module extends \Module
                   as hash,
                 mpvs.ID as join_id,
                 p.CenterID as Site,
-                violations_resolved.Resolved as Resolved
+                violations_resolved.Resolved as Resolved,
+                mpvs.TarchiveID as TarchiveID,
+                mpvs.CandID as CandID,
+                c.PSCID as PSCID
             FROM mri_protocol_violated_scans AS mpvs
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=mpvs.ID
@@ -83,7 +86,10 @@ class Module extends \Module
                 ) as hash,
                 mrl.LogID as join_id,
                 p.CenterID as Site,
-                violations_resolved.Resolved as Resolved
+                violations_resolved.Resolved as Resolved,
+                mrl.TarchiveID as TarchiveID,
+                mrl.CandID as CandID,
+                c.PSCID as PSCID
             FROM mri_violations_log AS mrl
             LEFT JOIN mri_scan_type
             ON (mri_scan_type.ID=mrl.Scan_type)
@@ -115,7 +121,10 @@ class Module extends \Module
                 ) as hash,
                 MRICandidateErrors.ID as join_id,
                 null,
-                violations_resolved.Resolved as Resolved
+                violations_resolved.Resolved as Resolved,
+                MRICandidateErrors.TarchiveID as TarchiveID,
+                NULL as CandID,
+                NULL as PSCID
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
             ON (violations_resolved.ExtID=MRICandidateErrors.ID 

@@ -178,6 +178,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'v.hash',
             'v.join_id',
             'v.Resolved',
+            'v.TarchiveID',
+            'v.CandID',
+            'v.PSCID'
         );
 
         $this->headers = array(
@@ -193,6 +196,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'Hash',
             'JoinID',
             'Resolution_status',
+            'TarchiveID',
+            'CandID',
+            'PSCID'
         );
 
         $this->tpl_data['hiddenHeaders'] = json_encode(
@@ -200,11 +206,14 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 'SeriesUID',
                 'Hash',
                 'JoinID',
+                'TarchiveID',
+                'CandID',
+                'PSCID'
             ]
         );
 
         $this->query = Module::MRI_VIOLATED_SCAN_QUERY_CONST;
-
+        
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -271,8 +280,11 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
             array()
         );
+
+        // Searches for reasons containing newlines will fail so we strip
+        // those characters from all the entries in list
         foreach ($problemTypes as $problem) {
-            $problemOptions[$problem['Reason']] = $problem['Reason'];
+            $problemOptions[trim($problem['Reason'])] = trim($problem['Reason']);
         }
 
         $this->addBasicText('PatientName', 'Patient Name');

@@ -18,7 +18,7 @@
     position: fixed;
     height: 100%;
     overflow-y: auto;
-    z-index: 1000;
+    z-index: 999;
     transition: all 0.4s ease 0s;
 }
 
@@ -119,7 +119,7 @@
 
     #sidebar-wrapper {
         left: 0;
-        color: white;
+        color: #064785;
     }
 
     .wrapper.active {
