@@ -111,21 +111,22 @@ class Files extends \NDB_Page
             $record = urldecode(basename($request->getUri()->getPath()));
 
             if (!is_numeric($record)) {
-               $factory = \NDB_Factory::singleton();
-               $DB      = $factory->database();
-               $filePath =  $DB->pselectOne(
-                   "SELECT Data_dir FROM document_repository
+                $factory = \NDB_Factory::singleton();
+                $DB      = $factory->database();
+                $upload  = $DB->pselectOne(
+                    "SELECT uploaded_by FROM document_repository
                     WHERE File_Name=:name",
-                array('name' => $record)
-               );
+                    array('name' => $record)
+                );
+                $file    = $path. "$upload/$record";
                 return (new \LORIS\Http\Response())
                     ->withHeader('Content-Type', 'application/octet-stream')
                     ->withHeader(
                         'Content-Disposition',
-                        'attachment; filename=' . basename($record)
+                        'attachment; filename=' . basename($file)
                     )
                     ->withStatus(200)
-                    ->withBody(new \LORIS\Http\FileStream($filePath.$record));
+                    ->withBody(new \LORIS\Http\FileStream($file));
             }
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
