@@ -541,6 +541,16 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     // the feature is completely deprecated.
                     $this->testName = $this->testName ?? trim($pieces[1]);
                     $this->table    = $this->table ?? trim($pieces[1]);
+                    $dictcat = new \LORIS\Data\Dictionary\Category($this->testName, $this->getFullName());
+                    // Now that we have the category, add things that are added by addMetaDatafields() but
+                    // aren't in the .linst file
+                    $this->dictionary = array_merge($this->dictionary,
+                        [
+                        new DictionaryItem('Date_taken', 'Date of Administration', $dictcat),
+                        new DictionaryItem('Candidate_age', 'Candidate Age (Months)', $dictcat),
+                        new DictionaryItem('Window_Difference', 'Window difference from test battery (days)', $dictcat),
+                        new DictionaryItem('Examiner', 'Examiner', $dictcat),
+                        ]);
                     break;
                 case 'title':
                     $this->fullName = $pieces[1];
