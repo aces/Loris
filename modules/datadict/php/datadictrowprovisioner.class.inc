@@ -28,33 +28,58 @@ namespace LORIS\datadict;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class DataDictRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
+class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
 {
     /**
      * Create a DataDictRowProvisioner, which gets rows for
      * the datadict menu table.
      */
-    function __construct()
+    function __construct(\LORIS\LorisInstance $loris)
     {
-        parent::__construct(
-            "SELECT DISTINCT
-                pt.sourceFrom as source_from,
-                pt.name as name,
-                pt.sourceField as source_field,
-                coalesce(pto.description,pt.description) as description,
-                CASE
-                    WHEN COALESCE(pto.description,pt.description) = '' THEN 'Empty'
-                    WHEN pto.name IS NOT NULL THEN 'Modified'
-                    WHEN pto.name IS NULL THEN 'Unchanged'
-                END as description_status
-            FROM parameter_type pt
-            LEFT JOIN parameter_type_override pto USING (Name)
-            WHERE pt.Queryable=1
-            ",
-            []
-        );
+        $this->loris = $loris;
     }
 
+    public function getAllInstances() : \Traversable {
+        $modules = $this->loris->getActiveModules();
+        $DB = $this->loris->getDatabaseConnection();
+
+        $dict = [];
+
+        $overrides = $DB->pselectWithIndexKey(
+            "SELECT Name, Description FROM parameter_type_override",
+            [],
+            "Name"
+        );
+
+        foreach ($modules as $module) {
+            $mdict = $module->getDataDictionary($this->loris);
+            $dict = array_merge($dict, array_map(function($item) use ($overrides) {
+                $name = $item->getCategory()->getName() . '_' . $item->getName();
+                $desc = '';
+                $status = 'Unchanged';
+                if(isset($overrides[$name])) {
+                    $desc = $overrides[$name]['Description'];
+                    $status = 'Modified';
+                } else {
+                    $desc = $item->getDescription();
+                }
+
+                if ($desc == '') {
+                    $status = 'Empty';
+                }
+                return $this->getInstance(
+                    [
+                        'source_from' => $item->getCategory()->getName(),
+                        'name' => $name,
+                        'source_field' => $item->getName(),
+                        'description' => $desc,
+                        'description_status' => $status,
+                    ]
+                );
+            }, $mdict));
+        }
+        return new \ArrayIterator($dict);
+    }
     /**
      * Returns an instance of a DataDict object for a given
      * table row.

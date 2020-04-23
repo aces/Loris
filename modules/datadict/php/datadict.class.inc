@@ -100,7 +100,7 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new DataDictRowProvisioner();
+        return new DataDictRowProvisioner($this->lorisinstance);
     }
 
     /**

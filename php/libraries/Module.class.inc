@@ -35,6 +35,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         . "your project administrator and/or verify your LORIS configuration.";
     protected $name;
     protected $dir;
+    protected $lorisinstance;
 
     /**
      * Retrieve all active module descriptors from the given database
@@ -329,6 +330,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             return $resp;
         }
 
+        $this->lorisinstance = $request->getAttribute("loris");
         $pagename = $this->getName();
         $path     = trim($request->getURI()->getPath(), "/");
         if (!empty($path)) {
