@@ -5,7 +5,7 @@
    a CandID that the logged in user has access to. The page should load
    with (at a minimum) a "Candidate Info" card. Ensure that the links
    in the "Visits" work.
-2. Access the module the same URL while logged out. Ensure there is a permission
+2. Access the module the using same URL while logged out. Ensure there is a permission
    denied page with an appropriate HTTP response code and no cards are
    displayed.
 3. Log back in, and access a URL for a candidate that the user should
@@ -24,7 +24,7 @@ that widget (ie. the media module for CandID 491446 in Raisinbread):
    the user does not have appropriate permissions to access the
    module.
 3. Disable the module in LORIS, ensure that the card does not appear
-   even if the user has permissions (but other cards still do)
+   even if the user has permissions (but other cards still do).
 
 ## Candidate Info Widget
 
