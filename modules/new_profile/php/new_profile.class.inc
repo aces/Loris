@@ -114,28 +114,14 @@ class New_Profile extends \NDB_Form
         if ($request->getMethod() === "POST") {
             $this->save();
             if (!empty($this->_error)) {
-                return (new \LORIS\Http\Response())
-                    ->withHeader("Content-Type", "application/json")
-                    ->withStatus(400)
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            json_encode($this->_error)
-                        )
-                    );
+                return new \LORIS\Http\Response\JSON\BadRequest($this->_error);
             }
             $result = array(
                 'candID' => $this->_candID,
                 'pscid'  => $this->_pscid,
             );
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "application/json")
-                ->withStatus(201)
-                ->withHeader("Allow", "POST")
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode($result)
-                    )
-                );
+            return (new \LORIS\Http\Response\JSON\Created($result))
+                ->withHeader("Allow", "POST");
         }
 
         return (new \LORIS\Http\Response())
