@@ -150,9 +150,20 @@ class StaticDataTable extends Component {
         document.body.removeChild(link);
       }
     });
+    // Fixes DQT download of React.Element (links)
+    const csvDownload = Object.assign({}, csvData);
+    for (const index in csvDownload) {
+      if (csvDownload.hasOwnProperty(index)) {
+        if (csvDownload[index][0] == null) {
+          csvDownload[index] = [''];
+        } else if (csvDownload[index][0].type === 'a') {
+          csvDownload[index] = [csvDownload[index][0].props['href']];
+        }
+      }
+    }
     csvworker.postMessage({
       cmd: 'SaveFile',
-      data: csvData,
+      data: csvDownload,
       headers: this.props.Headers,
       identifiers: this.props.RowNameMap,
     });
