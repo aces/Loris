@@ -270,9 +270,9 @@
           // near LORIS header
           let top = 0;
           if (eTop < 0) {
-            top = Math.abs(eTop) + 50;
+            top = Math.abs(eTop);
           } else {
-            top = 50 - eTop;
+            top = eTop;
           }
           $(headers).css({top: top});
           $('.headerColm').css({top: top});
