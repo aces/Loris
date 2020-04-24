@@ -39,7 +39,7 @@ class Module extends \Module
         // Build the component of the WHERE clause (for the query below)
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
-        foreach ($accessibleSites as $siteID => $siteName) {
+        foreach (array_keys($accessibleSites) as $siteID) {
             $siteClauseElements[] = \Database::singleton()->quote($siteID);
         }
         $siteClause = sprintf(
