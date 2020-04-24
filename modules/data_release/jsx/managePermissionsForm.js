@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
+import Modal from 'Modal';
 
 /**
  * Manage Permissions Form
@@ -61,29 +62,33 @@ class ManagePermissionsForm extends Component {
     }
 
     return (
-      <FormElement
-        name='addPermission'
+      <Modal
+        title='Manage Permissions'
+        label='Manage Permissions'
+        show={this.props.show}
+        onClose={this.props.onClose}
         onSubmit={this.handleSubmit}
       >
-        {Object.entries(data).map(([userId, user]) =>
-          <StaticElement
-            label={user.name}
-            text={Object.values(options.versions).map((version) =>
-              <div>
-                <CheckboxElement
-                  name={version}
-                  label={version || 'Unversioned'}
-                  value={user.versions.includes(version)}
-                  onUserInput={(version, permission) =>
-                    this.setFormData(userId, version, permission)
-                  }
-                /><br/>
-              </div>
-            )}
-          />
-        )}
-        <ButtonElement label="Submit"/>
-      </FormElement>
+        <FormElement>
+          {Object.entries(data).map(([userId, user]) =>
+            <StaticElement
+              label={user.name}
+              text={Object.values(options.versions).map((version) =>
+                <div>
+                  <CheckboxElement
+                    name={version}
+                    label={version || 'Unversioned'}
+                    value={user.versions.includes(version)}
+                    onUserInput={(version, permission) =>
+                      this.setFormData(userId, version, permission)
+                    }
+                  /><br/>
+                </div>
+              )}
+            />
+          )}
+        </FormElement>
+      </Modal>
     );
   }
 
@@ -108,6 +113,7 @@ class ManagePermissionsForm extends Component {
   /**
    * Handles submission of the form
    *
+   * @return {promise}
    */
   handleSubmit() {
     const {data} = JSON.parse(JSON.stringify(this.state));
@@ -116,7 +122,7 @@ class ManagePermissionsForm extends Component {
     formObj.append('data', JSON.stringify(data));
 
     // fetch API to update the permission
-    fetch(this.props.action, {
+    return fetch(this.props.action, {
       method: 'post',
       body: formObj,
       cache: 'no-cache',
@@ -127,15 +133,15 @@ class ManagePermissionsForm extends Component {
           text: 'Permission Update Success!',
           title: '',
           type: 'success',
-        }, function() {
-          window.location.assign('/data_release');
         });
         this.props.fetchData();
+        return Promise.resolve();
       } else {
         let msg = response.statusText ?
           response.statusText : 'Submission Error!';
         swal(msg, '', 'error');
         console.error(msg);
+        return Promise.reject();
       }
     });
   }

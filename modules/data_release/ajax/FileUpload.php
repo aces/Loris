@@ -43,7 +43,9 @@ if ($_GET['action'] == 'upload') {
         $target_path = $path . $fileName;
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
             // make version lower case.
-            $version = strtolower($version);
+            if (!is_null($version)) {
+                $version = strtolower($version);
+            }
             // insert the file into the data_release table
             $DB->insert(
                 'data_release',

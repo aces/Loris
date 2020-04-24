@@ -70,8 +70,7 @@ class Data_Release extends \NDB_Menu_Filter
             $this->query .= " JOIN data_release_permissions drp 
             ON (dr.id=drp.data_release_id) 
             JOIN users u ON (u.ID=drp.userid) 
-            WHERE u.UserID="
-                . $DB->quote($user->getUsername());
+            WHERE u.UserID=".$DB->quote($user->getUsername());
         }
 
         $this->group_by = '';
@@ -134,7 +133,8 @@ class Data_Release extends \NDB_Menu_Filter
      *
      * @param \Database $DB database handle
      *
-     * @return array $versionList Array of version names indexed by version name.
+     * @return array $versionList Array of version names indexed by version
+     *                            name.
      */
     function getVersionsList(\Database $DB)
     {
@@ -146,6 +146,7 @@ class Data_Release extends \NDB_Menu_Filter
 
         $versionsList = [];
         foreach ($versions as $version) {
+            $version = $version ?? 'Unversioned';
             $versionsList[$version] = $version;
         }
 
@@ -168,7 +169,8 @@ class Data_Release extends \NDB_Menu_Filter
 
         $versionFiles = [];
         foreach ($result as $row) {
-            $versionFiles[$row['version']][] = $row['id'];
+            $version = $row['version'] ?? 'Unversioned';
+            $versionFiles[$version][] = $row['id'];
         }
 
         return $versionFiles;

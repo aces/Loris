@@ -70,6 +70,8 @@ class Modal extends Component {
 
     const bodyStyle = {
       padding: 15,
+      maxHeight: '80vh',
+      overflowY: 'scroll',
     };
 
     const modalContainer = {
