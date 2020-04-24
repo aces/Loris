@@ -2441,6 +2441,7 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
+<<<<<<< HEAD
 CREATE TABLE dataquery_queries (
     QueryID int(10) unsigned NOT NULL AUTO_INCREMENT,
     Query JSON NOT NULL,
