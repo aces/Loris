@@ -17,7 +17,7 @@ is correct.
 6. If the instrument has multiple pages (on the left pane), move from page to page and check that the
 saved data stays the same. The data that wasn't saved should be lost.
 7. Make sure that the 'Delete instrument data' button on the left pane is only visible when the user
-have the 'Send to DCC' permission.
+has the 'Send to DCC' permission.
 8. Click on the 'Delete instrument data' button and check if the instrument's data is cleared.
 9. Select a candidate with a Date Of Date (DoD) or put one in for a candidate as needed, then select an
 instrument for that candidate. Enter a date (same a step 4) posterior to the DoD. Refresh the page and check that the 
