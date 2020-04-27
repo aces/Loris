@@ -146,7 +146,8 @@ class Data_Release extends \NDB_Menu_Filter
 
         $versionsList = [];
         foreach ($versions as $version) {
-            $version = $version ?? 'Unversioned';
+            $version = $version == null || $version == '' ?
+                'Unversioned' : $version;
             $versionsList[$version] = $version;
         }
 
@@ -169,7 +170,8 @@ class Data_Release extends \NDB_Menu_Filter
 
         $versionFiles = [];
         foreach ($result as $row) {
-            $version = $row['version'] ?? 'Unversioned';
+            $version = $row['version'] == null || $row['version'] == '' ?
+                'Unversioned': $row['version'];
             $versionFiles[$version][] = $row['id'];
         }
 

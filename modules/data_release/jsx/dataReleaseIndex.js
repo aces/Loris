@@ -179,15 +179,16 @@ class DataReleaseIndex extends Component {
     );
 
     // Add Manage Permissions modal window
-    const managePermissionsForm = (
-      <ManagePermissionsForm
-        DataURL={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=getPermissions`}
-        action={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=managepermissions`}
-        options={this.state.data.fieldOptions}
-        fetchData={this.fetchData}
-        show={this.state.show.managePermissionsForm}
-        onClose={() => this.hide('managePermissionsForm')}
-      />
+    const managePermissionsForm =
+      this.props.hasPermission('data_release_edit_file_access') && (
+        <ManagePermissionsForm
+          DataURL={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=getPermissions`}
+          action={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=managepermissions`}
+          options={this.state.data.fieldOptions}
+          fetchData={this.fetchData}
+          show={this.state.show.managePermissionsForm}
+          onClose={() => this.hide('managePermissionsForm')}
+        />
     );
 
     const actions = [

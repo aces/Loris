@@ -47,6 +47,7 @@ class ManagePermissionsForm extends Component {
     const {data, error, isLoaded} = this.state;
     const {options} = this.props;
 
+
     // Data loading error
     if (error !== undefined) {
       return (
