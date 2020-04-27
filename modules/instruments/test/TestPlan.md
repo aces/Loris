@@ -22,3 +22,10 @@ has the 'Send to DCC' permission.
 9. Select a candidate with a Date Of Death (DoD) or put one in for a candidate as needed, then select an
 instrument for that candidate. Enter a date (same a step 4) posterior to the DoD. Refresh the page and check that the 
 'Candidate age' label change to 'Candidate Age at Death'.
+10. Check that access restriction in `config.xml` work.
+ - In the `<instrumentPermissions>` section of `config.xml`
+ - set the `<useInstrumentPermissions>` to `true`
+ - add the name of an instrument in the `<Test_name>` tag of the `<instrument>`
+ - add the name of a permission in the `<permission>` tag of the same `<instrument>`
+   - create a new permission if needed (`permissions` table)
+ - check that the user can access that instruments only if they has that permission
