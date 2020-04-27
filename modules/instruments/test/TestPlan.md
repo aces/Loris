@@ -30,4 +30,4 @@ instrument for that candidate. Enter a date (same a step 4) posterior to the DoD
  - add the name of an instrument in the `<Test_name>` tag of the `<instrument>`
  - add the name of a permission in the `<permission>` tag of the same `<instrument>`
    - create a new permission if needed (`permissions` table)
- - check that the user can access that instruments only if they has that permission
+ - check that the user can access that instruments if and only if they has that permission
