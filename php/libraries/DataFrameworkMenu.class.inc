@@ -68,14 +68,6 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      */
     abstract public function allSitePermissionNames() : ?array;
 
-    /**
-     * Determines whether the DataProvisioner should filter out rows based on user's
-     * site viewing permissions.
-     *
-     * @return ?array of permissions to check or null
-     */
-    abstract public function allSitePermissionNames() : ?array;
-
 
     /**
      * Determines whether the DataProvisioner should filter out rows which
