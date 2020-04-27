@@ -37,12 +37,10 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $this->tpl_data['violated_scans_modifications']
-            = $user->hasPermission('violated_scans_edit');
         return $user->hasAnyPermission(
             array(
                 'violated_scans_view_allsites',
-                'violated_scans_edit'
+                'violated_scans_view_ownsite'
             )
         );
     }
@@ -212,7 +210,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             ]
         );
 
-        $this->query = Module::getMriViolatedScanQuery();
+        $this->query = \LORIS\mri_violations\Module::getMriViolatedScanQuery();
 
         $this->order_by = 'v.TimeRun DESC';
 

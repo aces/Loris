@@ -28,17 +28,19 @@ class Module extends \Module
      * Gets the base query (FROM and WHERE clause) used to retrieve
      * all the MRI violations for a given user.
      *
-     * @return void
+     * @return string the computed query.
      */
     public static function getMriViolatedScanQuery()
     {
         // Find which sites the user has access to
-        $accessibleSites = \User::singleton()->hasPermission('access_all_profiles')
+        $user            = \User::singleton();
+        $accessibleSites = $user->hasPermission('violated_scans_view_allsites')
             ? \Utility::getSiteList() : \User::singleton()->getStudySites();
 
         // Build the component of the WHERE clause (for the query below)
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
+        $siteClauseElements = [];
         foreach (array_keys($accessibleSites) as $siteID) {
             $siteClauseElements[] = \Database::singleton()->quote($siteID);
         }
@@ -171,7 +173,7 @@ class Module extends \Module
             $user->hasAnyPermission(
                 [
                     'violated_scans_view_allsites',
-                    'violated_scans_edit'
+                    'violated_scans_view_ownsite'
                 ]
             );
     }
@@ -212,23 +214,18 @@ class Module extends \Module
         case "usertasks":
             $factory = \NDB_Factory::singleton();
             $DB      = $factory->database();
-            $baseURL = $factory->settings()->getBaseURL();
+            $link    = $factory->settings()->getBaseURL() . '/' . $this->getName();
+            $number  = (int) $DB->pselectOne(
+                "SELECT count(*) " . $this->getMriViolatedScanQuery(),
+                []
+            );
+            $label   = $number >  1 ? 'Violated scans' : 'Violated scan';
 
             return [
-                new \LORIS\dashboard\TaskQueryWidget(
-                    $user,
-                    "Violated scan",
-                    $DB,
-                    "SELECT
-               count(*)". $this->getMriViolatedScanQuery(),
-                    "violated_scans_view_allsites",
-                    "c.RegistrationCenterID",
-                    $baseURL . "/" . $this->getName(),
-                    ""
-                )
+                new \LORIS\dashboard\TaskWidget($label, $number, $link, '')
             ];
-
         }
+
         return [];
     }
 }

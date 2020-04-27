@@ -41,7 +41,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         return $user->hasAnyPermission(
             array(
                 'violated_scans_view_allsites',
-                'violated_scans_edit'
+                'violated_scans_view_ownsite'
             )
         );
     }
@@ -195,7 +195,8 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         );
 
         // Find which sites the user has access to
-        $accessibleSites = \User::singleton()->hasPermission('access_all_profiles')
+        $user            = \User::singleton();
+        $accessibleSites = $user->hasPermission('violated_scans_view_allsites')
             ? \Utility::getSiteList() : \User::singleton()->getStudySites();
 
         // Build the component of the WHERE clause (for the query below)
