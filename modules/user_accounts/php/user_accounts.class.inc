@@ -40,17 +40,6 @@ class User_Accounts extends \DataFrameworkMenu
 
     /**
      * Tells the base class that this page's provisioner can support the
-     * UserSiteMatch filter.
-     *
-     * @return bool
-     */
-    public function useSiteFilter() : bool
-    {
-        return true;
-    }
-
-    /**
-     * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
      *
      * @return ?array of permissions or null

@@ -26,17 +26,6 @@ namespace LORIS\module_manager;
 class Module_Manager extends \DataFrameworkMenu
 {
     /**
-     * Tells the base class that this page's provisioner can support
-     * the UserSiteMatch filter.
-     *
-     * @return bool true
-     */
-    public function useSiteFilter(): bool
-    {
-        return false;
-    }
-
-    /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
      *

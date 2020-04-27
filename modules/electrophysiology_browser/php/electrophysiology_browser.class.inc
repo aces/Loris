@@ -44,17 +44,6 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
     }
 
     /**
-     * Tells the base class that this page's provisioner can support
-     * the UserSiteMatch filter.
-     *
-     * @return bool always true
-     */
-    public function useSiteFilter(): bool
-    {
-        return true;
-    }
-
-    /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
      *

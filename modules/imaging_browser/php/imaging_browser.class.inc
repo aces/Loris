@@ -56,17 +56,6 @@ class Imaging_Browser extends \DataFrameworkMenu
     }
 
     /**
-     * Tells the base class that this page's provisioner can support
-     * the UserSiteMatch filter.
-     *
-     * @return bool always false
-     */
-    public function useSiteFilter() : bool
-    {
-        return false;
-    }
-
-    /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
      *
@@ -74,7 +63,10 @@ class Imaging_Browser extends \DataFrameworkMenu
      */
     public function allSitePermissionNames() : ?array
     {
-        return null;
+        return [
+            'imaging_browser_view_allsites',
+            'imaging_browser_phantom_allsites',
+        ];
     }
 
     /**

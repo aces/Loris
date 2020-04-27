@@ -40,18 +40,6 @@ class Datadict extends \DataFrameworkMenu
     }
 
     /**
-     * The data dictionary has no sites affiliated with it and as
-     * such can not add site filters without an exception being
-     * thrown
-     *
-     * @return bool
-     */
-    public function useSiteFilter() : bool
-    {
-        return false;
-    }
-
-    /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
      *
