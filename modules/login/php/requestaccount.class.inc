@@ -43,6 +43,7 @@ class RequestAccount extends \NDB_Form
         $this->addBasicText(
             "firstname",
             "First name",
+            [],
             array(
                 "placeholder" => "First Name",
                 "required"    => true,
@@ -51,6 +52,7 @@ class RequestAccount extends \NDB_Form
         $this->addBasicText(
             "lastname",
             "Last name",
+            [],
             array(
                 "placeholder" => "Last Name",
                 "required"    => true,
@@ -59,6 +61,7 @@ class RequestAccount extends \NDB_Form
         $this->addBasicText(
             "from",
             "Email address",
+            [],
             array(
                 "placeholder" => "Email address",
                 "required"    => true,
