@@ -271,7 +271,6 @@
           let top = 0;
           if (eTop < 0) {
             top = Math.abs(eTop);
-          } else {
           }
           $(headers).css({top: top});
           $('.headerColm').css({top: top});
