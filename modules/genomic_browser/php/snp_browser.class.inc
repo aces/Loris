@@ -275,7 +275,7 @@ class SNP_Browser extends \NDB_Menu_Filter
             'Subproject:',
             array('' => 'Any') + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
+        $this->addBasicText('dob', 'Date of Birth:', [], array('maxlength' => 10));
 
         $show_results_options = array(
             'brief' => 'Summary fields',
