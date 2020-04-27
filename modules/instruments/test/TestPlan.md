@@ -19,6 +19,6 @@ saved data stays the same. The data that wasn't saved should be lost.
 7. Make sure that the 'Delete instrument data' button on the left pane is only visible when the user
 has the 'Send to DCC' permission.
 8. Click on the 'Delete instrument data' button and check if the instrument's data is cleared.
-9. Select a candidate with a Date Of Date (DoD) or put one in for a candidate as needed, then select an
+9. Select a candidate with a Date Of Death (DoD) or put one in for a candidate as needed, then select an
 instrument for that candidate. Enter a date (same a step 4) posterior to the DoD. Refresh the page and check that the 
 'Candidate age' label change to 'Candidate Age at Death'.
