@@ -174,10 +174,22 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
+        $factory        = \NDB_Factory::singleton();
+        $user           = $factory->user();
+        $allProjectList = \Utility::getProjectList();
+
         $projects     = array();
         $projects[''] = 'All Projects';
-        foreach (\Utility::getProjectList() as $key => $value) {
-            $projects[$key] = $value;
+
+        $userProjectsIDs = $user->getData('ProjectIDs');
+        foreach ($userProjectsIDs as $ProjectID) {
+            $projects[$ProjectID] = $allProjectList[$ProjectID];
+        }
+
+        if ($user->hasPermission('access_all_profiles')) {
+            $projectsString = implode(",", array_keys($allProjectList));
+        } else {
+            $projectsString = implode(",", $userProjectsIDs);
         }
 
         $demographicProject = $_REQUEST['DemographicProject'] ?? '';
@@ -271,6 +283,7 @@ class Stats_Demographic extends \NDB_Form
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active = 'Y'
                           $paramProject
@@ -299,6 +312,7 @@ class Stats_Demographic extends \NDB_Form
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1
@@ -329,6 +343,7 @@ class Stats_Demographic extends \NDB_Form
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND ps.participant_status=5
@@ -355,6 +370,7 @@ class Stats_Demographic extends \NDB_Form
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+                          AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1 OR
@@ -387,6 +403,7 @@ class Stats_Demographic extends \NDB_Form
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1
@@ -421,6 +438,7 @@ class Stats_Demographic extends \NDB_Form
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+                          AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND (ps.participant_status=1
                           OR ps.participant_status IS NULL)
@@ -469,6 +487,7 @@ class Stats_Demographic extends \NDB_Form
                 AND c.RegistrationCenterID <> '1'
                 AND s.CenterID <> '1'
 		AND s.CenterID IN (" . $sitesString . ")
+                AND c.RegistrationProjectID IN (" . $projectsString . ")
                 AND f.Data_entry='Complete'
                 AND f.Administration='All'
                 AND f.CommentID NOT LIKE 'DDE%'
@@ -489,6 +508,7 @@ class Stats_Demographic extends \NDB_Form
                     AND c.RegistrationCenterID <> '1'
                     AND s.CenterID <> '1'
 		    AND s.CenterID IN (" . $sitesString . ")
+                    AND c.RegistrationProjectID IN (" . $projectsString . ")
                     $paramProject
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
@@ -526,6 +546,7 @@ class Stats_Demographic extends \NDB_Form
                 JOIN candidate c ON (s.CandID=c.CandID)
                 WHERE s.active='Y' AND s.CenterID <> '1' 
 		AND s.CenterID IN (" . $sitesString . ")
+                AND c.RegistrationProjectID IN (" . $projectsString . ")
                 AND c.RegistrationCenterID <> '1'
                 AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
                 $subprojectQuery)
