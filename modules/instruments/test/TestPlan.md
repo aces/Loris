@@ -1,8 +1,13 @@
 # Instrument Test Plan
 
-1. Verify that in order to access the module, the user must either have the `Across all sites access
-candidate profiles` permission, or have the 'Edit Candidate Parameters' permission and be at the same
-site as the visit, or at the same site as one of the candidate's other visits.
+1. Verify that in order to access the module the user has meets one of the following criteria:
+ - User can access the candidate_list module (Access Profile) then
+   - click on a PSCID to get to the timepoint_list module then
+   - click on a timepoint to get to the instrument_list module and finally
+   - click on an instrument to access the instrument itself.  
+   _**Note:** All steps before clicking on the instrument itself should be handled by their own modules and necessary permissions to access these modules should be part of their respective testplans._
+ - User is provided a direct link to the instrument.
+
 2. Select and instrument in the list of the session instruments.
 3. Ensure that the candidate info at the top (DoB, EDC, ...) are correct.
 4. Enter a date and click 'Save Data'. Check if age calculation
