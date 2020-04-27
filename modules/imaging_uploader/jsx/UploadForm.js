@@ -275,7 +275,7 @@ class UploadForm extends Component {
           errorMessage = error.responseJSON.errors;
         } else if (error.status == '413') {
           errorMessage = {
-            'mriFile': ["Please make sure files are not larger than " + this.props.maxUploadSize]
+            'mriFile': ['Please make sure files are not larger than ' + this.props.maxUploadSize],
           };
         }
         for (let i in errorMessage) {
