@@ -70,7 +70,7 @@ class Modal extends Component {
 
     const bodyStyle = {
       padding: 15,
-      maxHeight: '80vh',
+      maxHeight: '75vh',
       overflowY: 'scroll',
     };
 
@@ -78,7 +78,7 @@ class Modal extends Component {
       display: 'block',
       position: 'fixed',
       zIndex: 9999,
-      paddingTop: '100px',
+      paddingTop: '65px',
       left: 0,
       top: 0,
       width: '100%',
