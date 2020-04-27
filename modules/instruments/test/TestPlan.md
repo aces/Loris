@@ -14,7 +14,7 @@
 is correct.
 5. Try to save the instruments without an examiner. You should have a box specifying that 
 'an examiner is required'.
-6. If the instrument have multiple pages (on the left pane), move from page to page and check that the
+6. If the instrument has multiple pages (on the left pane), move from page to page and check that the
 saved data stay the same. The data that wasn't saved should be lost.
 7. Make sure that the 'Delete instrument data' button on the left pane is only visible when the user
 have the 'Send to DCC' permission.
