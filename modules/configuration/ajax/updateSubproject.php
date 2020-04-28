@@ -75,4 +75,3 @@ function printAndExit(int $code, array $msg): void
     print json_encode($msg);
     exit;
 }
-

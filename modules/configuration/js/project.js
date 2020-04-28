@@ -12,11 +12,24 @@ $(document).ready(function() {
 
         e.preventDefault();
         var successClosure = function(i, form) {
-            return function() {
-                $(form.find(".saveStatus")).text("Successfully saved").css({ 'color': 'black'}).fadeIn(500).delay(1000).fadeOut(500);
+          return function() {
+            $(form.find(".saveStatus")).text("Successfully saved").css({ 'color': 'black'}).fadeIn(500).delay(1000).fadeOut(500);
+            if (ProjectID === 'new') {
+              setTimeout(function(){
+                location.reload();
+              }, 1000);
+            } else {
+              var projectDiv = document.getElementById(`#project${ProjectID}`);
+              var oldName = projectDiv.innerText;
+              projectDiv.innerText = Name;
+              var projectHeader = document.getElementById(`project${ProjectID}`);
+              projectHeader.children[0].innerText = Name + projectHeader.children[0].innerText.substring(
+                oldName.length
+              );
             }
+          }
         }
-        
+
         var errorClosure = function(i, form) {
           if (isNaN(recruitmentTarget)) {
             return function () {
@@ -45,7 +58,7 @@ $(document).ready(function() {
                         "SubprojectIDs" : SubprojectIDs
                     },
                     "success" : successClosure(ProjectID, form),
-                    "error" : errorClosure(ProjectID, form)   
+                    "error" : errorClosure(ProjectID, form)
                 }
 
           );
