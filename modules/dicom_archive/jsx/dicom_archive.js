@@ -129,7 +129,7 @@ class DicomArchive extends Component {
       {label: 'Sex', show: true, filter: {
         name: 'sex',
         type: 'select',
-        options: options.sex.reduce((a, b)=> (a[b]=b, a), {}),
+        options: {M: 'M', F: 'F', O: 'O'},
       }},
       {label: 'Date of Birth', show: true, filter: {
         name: 'dateOfBirth',

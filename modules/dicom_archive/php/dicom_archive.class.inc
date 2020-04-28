@@ -75,14 +75,8 @@ class Dicom_Archive extends \DataFrameworkMenu
         $site_names   = array_values(\Utility::getSiteList());
         $site_options = array_combine($site_names, $site_names);
 
-        // Populate options for Sex in DICOM Archive.
-        // Note that these values differ from the ones used in Candidate
-        // as these values are extracted from imaging headers.
-        $sex_options  = ['F', 'M', 'O'];
-
         return [
             'sites' => $site_options,
-            'sex'   => $sex_options,
         ];
     }
 
