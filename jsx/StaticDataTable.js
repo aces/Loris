@@ -150,17 +150,26 @@ class StaticDataTable extends Component {
         document.body.removeChild(link);
       }
     });
-    // Fixes DQT download of React.Element (links)
-    const csvDownload = [...csvData];
-    for (const index in csvDownload) {
-      if (csvDownload.hasOwnProperty(index)) {
-        if (csvDownload[index][0] == null) {
-          csvDownload[index] = [''];
-        } else if (csvDownload[index][0].type === 'a') {
-          csvDownload[index] = [csvDownload[index][0].props['href']];
+    const correctReactLinks = (csvData) => {
+      for (const index in csvData) {
+        if (csvData.hasOwnProperty(index)) {
+          for (const indexChild in csvData[index]) {
+            if (csvData[index].hasOwnProperty(indexChild)
+              || indexChild == null) {
+              if (csvData[index][indexChild] == null) {
+                csvData[index][indexChild] = [''];
+              } else if (csvData[index][indexChild].type === 'a') {
+                csvData[index][indexChild] = [
+                  csvData[index][indexChild].props['href'],
+                ];
+              }
+            }
+          }
         }
       }
-    }
+      return csvData;
+    };
+    const csvDownload = correctReactLinks([...csvData]);
     csvworker.postMessage({
       cmd: 'SaveFile',
       data: csvDownload,
