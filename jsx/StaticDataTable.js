@@ -154,7 +154,9 @@ class StaticDataTable extends Component {
     const csvDownload = [...csvData];
     for (const index in csvDownload) {
       if (csvDownload.hasOwnProperty(index)) {
-        if (csvDownload[index][0].type === 'a') {
+        if (csvDownload[index][0] == null) {
+          csvDownload[index] = [''];
+        } else if (csvDownload[index][0].type === 'a') {
           csvDownload[index] = [csvDownload[index][0].props['href']];
         }
       }
