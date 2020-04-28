@@ -75,9 +75,7 @@ class Dicom_Archive extends \DataFrameworkMenu
         $site_names   = array_values(\Utility::getSiteList());
         $site_options = array_combine($site_names, $site_names);
 
-        return [
-            'sites' => $site_options,
-        ];
+        return [ 'sites' => $site_options ];
     }
 
     /**
