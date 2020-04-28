@@ -26,6 +26,10 @@
 9. Check that if the user has permission `mri_violations_view_ownsite`, he/she
    is not allowed to see the violations associated to sites other than his/her
    own.
+10. Check that the violations for which the site is unknown can always be seen 
+    no matter what permission the user has (violated_scans_view_allsite or
+    violated_scans_view_ownsite).
+
 
 ### MRI Protocol Violations Page
  This page contains two 
