@@ -44,3 +44,27 @@
  - Also check and make sure that the instrument and its corresponding DDE are updated accordingly
  - Ensure if Date_taken is changed, the candidate age in the instrument is updated accordingly
  - Make sure the scoring_fields are re-calculated in the given instrument once the conflict is resolved
+
+## Dashboard Widget
+
+1. Go to the LORIS dashboard. 
+ - Ensure that the "My Tasks" "My Tasks" on the LORIS dashboard has a "Data entry conflicts"
+   item
+ - Ensure that the `access_all_profiles` permission changes the label from "Sites: All"
+   to "Sites: User sites" and the number associated with the task is updated accordingly.
+2. Clicking on the entry in the task in the dashboard should navigate to the conflict resolver
+   module
+
+## Candidate Profile Widget
+1. Go to the `candidate_profile` module through the "Candidate -> Access Profile (beta)" and
+   access a candidate with at least 1 conflict.
+  - Ensure that there is a "Unresolved Conflicts" card if the user has the `conflict_resolver`
+    permission
+  - Ensure that the card does *not* appear (but no other cards are affected) after removing
+    the `conflict_resolver` permission
+2. With appropriate permission, ensure that there is a bar graph of the number of conflicts per instrument,
+   grouped by visit.
+  - Ensure that clicking a bar in the bar graph brings you to the conflict resolver module
+    with the filters preset to filter for that instrument and visit
+  - Ensure that clicking on an instrument in the legend takes you to the conflict resolver
+    with the menu filter preset for that instrument (but no filter for visit)
