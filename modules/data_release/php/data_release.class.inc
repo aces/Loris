@@ -212,7 +212,7 @@ class Data_Release extends \NDB_Menu_Filter
     }
 
     /**
-     * Creates a neseted array indexed by userId which holds all the versions
+     * Creates a nested array indexed by userId which holds all the versions
      * for which the user has permission across all files.
      *
      * @param \Database $db database handle
