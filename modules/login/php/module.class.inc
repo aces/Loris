@@ -51,7 +51,8 @@ class Module extends \Module
     }
 
     /**
-     * Check whether a user is logined or not, if yes, redirect to the base URL
+     * Check whether a user is currently logged in or not. If logged in, redirect to
+     * the base URL.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -59,7 +60,7 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $user = $request->getAttribute("user");
+        $user = $request->getAttribute('user');
         if (!($user instanceof \LORIS\AnonymousUser)) {
             return (new \LORIS\Http\Response())
                 ->withStatus(307)
