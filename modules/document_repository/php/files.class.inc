@@ -118,7 +118,7 @@ class Files extends \NDB_Page
                     WHERE File_Name=:name",
                     array('name' => $record)
                 );
-                $file    = $path. "$upload/$record";
+                $file    = $path. "$uploadedBy/$record";
                 return (new \LORIS\Http\Response())
                     ->withHeader('Content-Type', 'application/octet-stream')
                     ->withHeader(
