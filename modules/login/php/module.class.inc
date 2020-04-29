@@ -59,11 +59,14 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $user = \User::singleton();
+        $user = $request->getAttribute("user");
         if (!($user instanceof \LORIS\AnonymousUser)) {
             return (new \LORIS\Http\Response())
                 ->withStatus(307)
-                ->withHeader('Location', '/');
+                ->withHeader(
+                    'Location',
+                    \NDB_Factory::singleton()->settings()->getBaseURL()
+                );
         }
         return parent::handle($request);
     }
