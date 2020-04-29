@@ -8,7 +8,7 @@
 3. Test that all Filters work.  
 4. Test Clear Filters button.
 5. Test column table is sortable by headers.
-6. Test that Links work, to correct dataset (raw/all types)
+6. Test that Links work and point to correct dataset (raw/all types).
 
 ### B. subpage: Sessions 
 
