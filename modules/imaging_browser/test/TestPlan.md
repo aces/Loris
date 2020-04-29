@@ -3,7 +3,7 @@
 ### Imaging Browser main page
 1. User can access Imaging Browser module front page if and only if they have permission `imaging_browser_view_site`, `imaging_browser_view_allsites`, `imaging_browser_phantom_allsites` or `imaging_browser_phantom_ownsite`.
  [Partial Automation Testing]
-2. User can see other sites Imaging datasets if and only if has permission imaging_browser_view_allsites. User can see only own site Imaging datasets if and only if has permission imaging_browser_view_site. User can see phantom data only from across all sites with the imaging_browser_phantom_allsites, and from own sites with imaging_browser_phantom_ownsite. 
+2. User can see other sites Imaging datasets if and only if has permission `imaging_browser_view_allsites`. User can see only own site Imaging datasets if and only if has permission `imaging_browser_view_site`. User can see phantom data only from across all sites with the `imaging_browser_phantom_allsites`, and from own sites with `imaging_browser_phantom_ownsite`. 
  [Partial Automation Testing]
 3. Test that all filters work. When the Site filter is empty, all sites with which the user is associated should be displayed. Every site should be displayed if the user has the `imaging_browser_view_allsites` permission.
 4. Test Clear Filters button.
@@ -23,7 +23,7 @@
 14. Test Breadcrumb link back to Imaging Browser.
 
 ### Main panel:  Per Acquisition
-15. Files can be downloaded (links clickable) if and only if user has permission ????. Ensure that DICOM downloads are
+15. Files can be downloaded (links clickable) if and only if user has at least one of the module permissions. Ensure that DICOM downloads are
 prepended with the Patient Name.
 16. Scan-level QC flags (Selected, pass/fail, Caveat emptor) are viewable to all, modifiable if and only if user has permission `imaging_browser_qc`.  
 17. Caveat List link is viewable with the Violated Scans if and only if user has `View all-sites Violated Scans` permission.
