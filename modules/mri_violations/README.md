@@ -85,3 +85,8 @@ the problem "Could not identify scan type"
 "Protocol Violation"
 - `MRICandidateErrors` logs all the scans referring to the problem
 "Candidate Mismatch"
+
+## Dashboard Widget
+
+The total `Violated scans` will be shown inside the Dashboard widget, named "My Tasks"
+and when clicked will link to the mri_violations module.
