@@ -15,7 +15,7 @@
 7. Sidebar: Navigation links work. 
 8. Data table display: information displayed looks decently laid out, not garbled.
 9. Click each "Download" button (there should be 5). Check: Does the download button work? Does the file that is downloaded have greater than 0kb size? Is a different file downloaded by each button? 
-10. Test Breadcrumb link back to Electrophysiology Browser
+10. Test Breadcrumb link back to Electrophysiology Browser.
 
 _For extra credit: Verify LORIS Menu permissions_ 
 User can view the top-level LORIS Menu _Electrophysiology_ and Menu item : _Electrophysiology Browser_ if and only if user has either permission:
