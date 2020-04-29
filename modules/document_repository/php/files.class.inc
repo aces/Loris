@@ -388,7 +388,7 @@ class Files extends \NDB_Page
                         'version'       => $version,
                         'File_name'     => $fileName,
                         'File_size'     => $fileSize,
-                        'Data_dir'      => $uploadPath,
+                        'Data_dir'      => $fileName,
                         'uploaded_by'   => $name,
                         'Instrument'    => $instrument,
                         'PSCID'         => $pscid,
