@@ -4,7 +4,7 @@
 1. User can load Electrophysiology Browser module front page if and only if user has either permission:
    * `electrophysiology_browser_view_site` : _"View all-sites Electrophysiology Browser pages"_
    * `electrophysiology_browser_view_allsites` : _"View own site Electrophysiology Browser pages"_
-2. User can see other sites Electrophysiology datasets IFF has permission `electrophysiology_browser_view_allsites`. User can see only own-site datasets IFF has permission `electrophysiology_browser_view_site`. 
+2. User can see other sites Electrophysiology datasets if and only if user has permission `electrophysiology_browser_view_allsites`. User can see only own-site datasets if and only if user has permission `electrophysiology_browser_view_site`. 
 3. Test that all Filters work.  
 4. Test Clear Filters button
 5. Test column table is sortable by headers
