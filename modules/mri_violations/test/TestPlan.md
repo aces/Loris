@@ -21,9 +21,9 @@
 6. Ensure all filters and sorting work in the `Resolved` tab.
 7. Click on the question mark on the right upper side of the windows and ensure
    that the help content about MRI Violation is showing up and is up-to-date.
-8. Ensure user has access to this page iff he/she has either permission
+8. Ensure user has access to this page if and only if he/she has either permission
    `mri_violations_view_allsite` or `mri_violations_view_ownsite`.
-9. Check that if the user has permission `mri_violations_view_ownsite`, he/she
+9. Check that if the user only has the permission `mri_violations_view_ownsite`, he/she
    is not allowed to see the violations associated to sites other than his/her
    own.
 10. Check that the violations for which the site is unknown can always be seen 
