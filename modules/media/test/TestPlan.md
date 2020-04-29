@@ -96,3 +96,4 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
      - Check if the correct number of files are visible corresponding withe the column **File Name** for the candidate.
      - Check if the Last modified date is correct for the files of the candidate.
      - Check if the file downloads when clicking on the file. 
+     - Check if the widget correctly hides when the candidate has no media files.
