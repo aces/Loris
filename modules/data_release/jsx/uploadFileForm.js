@@ -166,8 +166,10 @@ class UploadFileForm extends Component {
 
   /**
    * Upload the file to the server
+   *
+   * @param {boolean} overwrite
    */
-  uploadFile() {
+  uploadFile(overwrite) {
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
@@ -177,7 +179,9 @@ class UploadFileForm extends Component {
     }
 
     // fetch API to upload the file
-    fetch(this.props.action, {
+    const url = overwrite ? this.props.action + '&overwrite=true'
+      : this.props.action;
+    fetch(url, {
       method: 'post',
       body: formObj,
       cache: 'no-cache',
@@ -191,25 +195,41 @@ class UploadFileForm extends Component {
         swal(msg, '', 'error');
         console.error(msg);
       } else {
-        // Add file to the list of existing files
-        let files = JSON.parse(JSON.stringify(this.state.data.files));
-        files.push(formData.file.name);
-        // Trigger an update event to update all observers (i.e. DataTable)
-        let event = new CustomEvent('update-datatable');
-        window.dispatchEvent(event);
-        this.setState({
-          files: files,
-          formData: {}, // reset form data after successful file upload
-          uploadProgress: -1,
-        });
-        swal({
-          text: 'Upload Successful!',
-          title: '',
-          type: 'success',
-        }, function() {
-          window.location.assign('/data_release');
-        });
-        this.props.fetchData();
+        const responseUrl = new URL(response.url);
+        if (responseUrl.searchParams.has('duplicate')) {
+          swal({
+            title: 'Are you sure?',
+            text: 'A file with this name already exists!\n Would you like to overwrite existing file?\n Note that the version associated with the file will also be overwritten.',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, I am sure!',
+            cancelButtonText: 'No, cancel it!',
+          }, (isConfirm) => {
+            if (isConfirm) {
+              this.uploadFile(true);
+            }
+          });
+        } else {
+          // Add file to the list of existing files
+          let files = JSON.parse(JSON.stringify(this.state.data.files));
+          files.push(formData.file.name);
+          // Trigger an update event to update all observers (i.e. DataTable)
+          let event = new CustomEvent('update-datatable');
+          window.dispatchEvent(event);
+          this.setState({
+            files: files,
+            formData: {}, // reset form data after successful file upload
+            uploadProgress: -1,
+          });
+          swal({
+            text: 'Upload Successful!',
+            title: '',
+            type: 'success',
+          }, function() {
+            window.location.assign('/data_release');
+          });
+          this.props.fetchData();
+        }
       }
     }).catch( (error) => {
       let msg = error.message ? error.message : 'Upload error!';
