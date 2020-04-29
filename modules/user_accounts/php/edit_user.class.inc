@@ -213,7 +213,8 @@ class Edit_User extends \NDB_Form
         // 2) Certain old permissions that the editor is not permitted to alter
         // In addition, old permissions should be removed if the editor has
         // removed them and the editor has permissions to remove them.
-        $newPermissions    = array_keys($values['permID']) ?? array();
+        $newPermissions    = isset($values['permID'])
+            ? array_keys($values['permID']) : array();
         $editorPermissions = $editor->getPermissionIDs() ?? array();
         $permIDs           = array();
         // store the permission IDs
