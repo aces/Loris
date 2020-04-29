@@ -18,6 +18,6 @@
 10. Test Breadcrumb link back to Electrophysiology Browser
 
 _For extra credit: Verify LORIS Menu permissions_ 
-User can view the top-level LORIS Menu _Electrophysiology_ and Menu item : _Electrophysiology Browser_ IFF user has either permission:
+User can view the top-level LORIS Menu _Electrophysiology_ and Menu item : _Electrophysiology Browser_ if and only if user has either permission:
    * `electrophysiology_browser_view_site` : _"View all-sites Electrophysiology Browser pages"_
    * `electrophysiology_browser_view_allsites` : _"View own site Electrophysiology Browser pages"_
