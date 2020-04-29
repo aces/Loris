@@ -113,7 +113,7 @@ class Files extends \NDB_Page
             if (!is_numeric($record)) {
                 $factory = \NDB_Factory::singleton();
                 $DB      = $factory->database();
-                $upload  = $DB->pselectOne(
+                $uploadedBy  = $DB->pselectOne(
                     "SELECT uploaded_by FROM document_repository
                     WHERE File_Name=:name",
                     array('name' => $record)
