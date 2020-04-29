@@ -10,7 +10,7 @@
 5. Test column table is sortable by headers.
 6. Test that Links work and point to correct dataset (raw/all types).
 
-### B. subpage: Sessions 
+### B. Subpage: Sessions 
 
 7. Sidebar: Navigation links work. 
 8. Data table display: information displayed looks decently laid out, not garbled.
