@@ -6,7 +6,7 @@
    * `electrophysiology_browser_view_allsites` : _"View own site Electrophysiology Browser pages"_
 2. User can see other sites Electrophysiology datasets if and only if user has permission `electrophysiology_browser_view_allsites`. User can see only own-site datasets if and only if user has permission `electrophysiology_browser_view_site`. 
 3. Test that all Filters work.  
-4. Test Clear Filters button
+4. Test Clear Filters button.
 5. Test column table is sortable by headers.
 6. Test that Links work, to correct dataset (raw/all types)
 
