@@ -40,17 +40,43 @@ if ($_GET['action'] == 'upload') {
         error_log('ERROR: ' . $msg);
         header("HTTP/1.1 500 Internal Server Error");
     } else {
+        $files = $DB->pselect(
+            "SELECT id, file_name FROM data_release",
+            array()
+        );
+        $duplicates = [];
+        foreach ($files as $file) {
+            if ($fileName == $file['file_name']) {
+                $duplicates[$file['id']] = $file['file_name'];
+            }
+        }
+
         $target_path = $path . $fileName;
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
-            // insert the file into the data_release table
-            $DB->insert(
-                'data_release',
-                array(
-                    'file_name'   => $fileName,
-                    'version'     => $version,
-                    'upload_date' => $upload_date,
-                )
-            );
+            if (!empty($duplicates)) {
+                $DB->delete('data_release', ['file_name' => $fileName]);
+                foreach ($duplicates as $id => $name) {
+                    $DB->update(
+                        'data_release',
+                        [
+                         'file_name'   => $fileName,
+                         'version'     => $version,
+                         'upload_date' => $upload_date,
+                        ],
+                        ['id' => $id] 
+                    );
+                }
+            } else {
+                // insert the file into the data_release table
+                $DB->insert(
+                    'data_release',
+                    array(
+                        'file_name'   => $fileName,
+                        'version'     => $version,
+                        'upload_date' => $upload_date,
+                    )
+                );
+            }
             // get the ID of the user who uploaded the file
             $user_ID = $DB->pselectOne(
                 "SELECT ID FROM users WHERE userid=:UserID",
