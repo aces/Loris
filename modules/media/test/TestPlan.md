@@ -90,3 +90,9 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
   4. Type text in the Uploaded by input and verify that the table gets filtered as you type.
   5. Select Language, Project, File Visibility, Instrument, Visit Label, Site and File type (independently and combined) to filter table further
     - The table should update and display filtered records accordingly
+
+**Test the Candidate Dashboard widget for Candidate Media**
+   1. Visit the Candidate Dashboard for a candidate (found inside the media module) and notice the widget titled Candidate Media.
+     - Check if the correct number of files are visible corresponding withe the column **File Name** for the candidate.
+     - Check if the Last modified date is correct for the files of the candidate.
+     - Check if the file downloads when clicking on the file. 
