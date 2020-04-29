@@ -121,19 +121,19 @@ class Data_Release extends \NDB_Menu_Filter
      */
     function getFilesList(\Database $DB)
     {
-       $result = $DB->pselectWithIndexKey(
+        $result = $DB->pselectWithIndexKey(
             "SELECT id, file_name, version FROM data_release",
             array(),
             "id"
         );
 
-       foreach ($result as $id => $row) {
-           $version = $row['version'] == null || $row['version'] == '' ?
+        foreach ($result as $id => $row) {
+            $version     = $row['version'] == null || $row['version'] == '' ?
                'Unversioned' : $row['version'];
-           $result[$id] = $row['file_name'].' - '.$version;
-       }
+            $result[$id] = $row['file_name'].' - '.$version;
+        }
 
-       return $result;
+        return $result;
     }
 
     /**
