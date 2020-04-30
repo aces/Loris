@@ -92,7 +92,7 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
     - The table should update and display filtered records accordingly
 
 **Test the Candidate Dashboard widget for Candidate Media**
-   1. Visit the Candidate Dashboard for a candidate (found inside the media module) and notice the widget titled Candidate Media.
+   1. Visit the Candidate Dashboard for a candidate found inside the media module and notice the widget titled Candidate Media.
      - Check if the correct number of files are visible corresponding withe the column **File Name** for the candidate.
      - Check if the Last modified date is correct for the files of the candidate.
      - Check if the file downloads when clicking on the file. 
