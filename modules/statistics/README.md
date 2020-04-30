@@ -52,6 +52,8 @@ This tab provides data entry statistics relating to the number of
 candidates who have completed each instrument per site and timepoint.
 Statistics can be broken down by instrument or participant. DDE
 statistics are also provided.
+- The Behavioural Statistics registers widgets in the `dashboard`
+  module
 
 ### MRI Statistics
 
