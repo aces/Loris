@@ -32,7 +32,7 @@
 
 ### Dashboard Widget
 1. Go to the LORIS dashboard. 
-     - Ensure that the "My Tasks" on the LORIS dashboard has a "Incomplete Forms"
+     - Ensure that the "My Tasks" on the LORIS dashboard has an "Incomplete Forms"
        item
      - Ensure that the `access_all_profiles` permission changes the label from "Sites: All"
        to "Sites: User sites" and the number associated with the task is updated accordingly.
