@@ -30,14 +30,6 @@
 13. Returning to the behavioural statistics page, verify that if you do not have the `access_all_profiles` permission you should not be able to click through to forms for candidates from other sites.
 14. Check the breadcrumbs from Completion stats page back to BVL stats tab within Statistics appear and allow you to use the `Back` button to previous pages (future feature).
 
-### Dashboard Widget
-1. Go to the LORIS dashboard. 
-     - Ensure that the "My Tasks" on the LORIS dashboard has an "Incomplete Forms"
-       item
-     - Ensure that the `access_all_profiles` permission changes the label from "Sites: All"
-       to "Sites: User sites" and the number associated with the task is updated accordingly.
-2. Clicking on the entry in the task in the dashboard should navigate to the BVL statistics page, with the stats filtered according to the user's site (or without any filter if the user has `access_all_profiles` permission.
-
 ### Imaging Statistics
 1. Click on the Imaging Statistics tab. Try using the Site and Project filters. Does it change the data? Double check that the data represented is consistent with the data in the database.
 2. For the 1st table, check that the Total column adds up correctly.
@@ -46,3 +38,13 @@
 5. Check that `Show/Hide` visit labels works.
 6. Check that changing the breakdown adjusts the table accurately.
 7. Verify site and grand totals.
+
+### Dashboard Widget
+1. Go to the LORIS dashboard. 
+ - Make sure the recruitment target set in Configuration module is displayed in recruitment panel.
+ - Switch to site breakdown and check that info in recruitment panel is correct.
+ - Create a candidate and assign it to any site. Inactivate it. Make sure it is NOT taken into account in the sex
+    breakdown view (recruitment panel).
+ - Check that site breakdown view (recruitment panel) is correct.
+ - Check that scans per site (study progression panel) view is correct (scan dates and scan numbers).
+ - Check that recruitment per site view is correct (study progression panel).
