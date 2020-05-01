@@ -853,10 +853,10 @@ class LorisForm
                     $value = explode("-", $value);
                     $value = sprintf("%s-%s", $value[0], $value[1]);
                 }
-                if ($elOptions['maxYear']) {
+                if (isset($elOptions['minYear'])) {
                     $minYear = "min=\"" . $elOptions['minYear'] . "-01\"";
                 }
-                if ($elOptions['maxYear']) {
+                if (isset($elOptions['maxYear'])) {
                     $maxYear = "max=\"" . $elOptions['maxYear'] . "-12\"";
                 }
             }
