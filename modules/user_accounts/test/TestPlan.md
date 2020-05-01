@@ -76,4 +76,14 @@ When creating or editing a user: (subtest: edit_user)
 34. See security testing below
 
 ##### Security testing:
- - Try manipulating the POST request from the browser to add a permission to the editee. Make sure that the editee gets the permission if it is within the set of permissions of the editor Make sure the editee does not get the permission if it is not within the set of permissions of the editor. [See this PR](https://github.com/aces/Loris/pull/3818#issuecomment-408882440) for more details.
+
+35. Try manipulating the POST request from the browser to add a permission to the editee. Make sure that the editee gets the permission if it is within the set of permissions of the editor Make sure the editee does not get the permission if it is not within the set of permissions of the editor. [See this PR](https://github.com/aces/Loris/pull/3818#issuecomment-408882440) for more details.
+
+### Widget registration on the dashboard page
+
+36. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
+    account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries
+    in the User Account page with the following Selection Filter: Site set to the user's site and Pending Approval
+    set to 'Yes'. The Site displayed will be 'All user sites'. Check that you are taken to that page (with the
+    Selection Filter correctly set) when you click on the task.
+    [Automate Test on Travis_CI]
