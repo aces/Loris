@@ -271,7 +271,7 @@ class UploadForm extends Component {
         let errorMessage = Object.assign({}, this.state.errorMessage);
         let hasError = Object.assign({}, this.state.hasError);
         let messageToPrint = '';
-        if (error.responseJSON.errors) {
+        if (error.responseJSON && error.responseJSON.errors) {
           errorMessage = error.responseJSON.errors;
         } else if (error.status == 413) {
           errorMessage = {
