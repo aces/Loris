@@ -63,7 +63,7 @@ class UploadForm extends Component {
     formData[field] = value;
 
     if (field === 'mriFile') {
-      if (value.name && value.name !== '' && formData.IsPhantom === 'N') {
+      if (value.name && formData.IsPhantom === 'N') {
         let patientName = value.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
         let ids = patientName.split('_', 3);
         formData.candID = ids[1];
