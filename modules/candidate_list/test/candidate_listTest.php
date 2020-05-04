@@ -321,7 +321,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $pscid = "#lorisworkspace > div > div:nth-child(1) > div >".
                  " div:nth-child(2)>form>div>div:nth-child(2)>div>div>input";
         // to do react input value
-        $this->webDriver->executescript(
+        $this->webDriver->executeScript(
             "input = document.querySelector('$dccid');
                  lastValue = input.value;
                  input.value = '300001';
@@ -329,7 +329,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                  input._valueTracker.setValue(lastValue);
                  input.dispatchEvent(event);"
         );
-        $this->webDriver->executescript(
+        $this->webDriver->executeScript(
             "input = document.querySelector('$pscid');
                  lastValue = input.value;
                  input.value = 'MTL001';
@@ -340,7 +340,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
         $this->safeClick(WebDriverBy::cssSelector($btn));
-        $URL =  $this->webDriver->executescript("return window.location.href;");
+        $URL =  $this->webDriver->executeScript("return window.location.href;");
         $this->assertContains("300001", $URL);
         $this->resetPermissions();
     }
