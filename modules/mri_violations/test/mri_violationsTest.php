@@ -362,13 +362,13 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 
     /**
      * Tests loading the module with the permission
-     * 'violated_scans_edit'
+     * 'violated_scans_view_ownsite'
      *
      * @return void
      */
-    function testModuleLoadsWithEditPermission()
+    function testModuleLoadsWithOwnSitePermission()
     {
-        $this->setupPermissions(array("violated_scans_edit"));
+        $this->setupPermissions(array("violated_scans_view_ownsite"));
         $this->safeGet($this->url . "/mri_violations/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

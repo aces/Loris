@@ -54,16 +54,10 @@ flag should have either a drop down menu or open text for the person
 approving the insertion to indicate what the flag is for
 - **Other**: resolutions that don't fit in any of the above categories 
 
-Finally, the `mri_protocol` table can be updated directly from
-the frontend if the user has the permission for it.
-
 ## Permissions
 
-The permission `violated_scans_view_allsites` is required to access
-the MRI violated module.
-
-In addition, the permission `violated_scans_edit` allows the user to
-edit the `mri_protocol` table directly from the browser.
+To access the MRI violated module, one must have either the `violated_scans_view_allsites`
+or the `violated_scans_view_ownsites` permission.
 
 ## Configurations
 
