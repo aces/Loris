@@ -31,3 +31,15 @@ instrument for that candidate. Enter a date (same a step 4) posterior to the DoD
  - add the name of a permission in the `<permission>` tag of the same `<instrument>`
    - create a new permission if needed (`permissions` table)
  - check that the user can access that instruments if and only if they has that permission
+11. Test both LINST & PHP instruments found in the `project/instruments` directory.
+    - Refer to the following guides for help.
+        1. The [Instrument Insertion](https://github.com/aces/Loris/wiki/Instrument-Insertion) for PHP instruments.
+        2. The [Creating and installing clinical instruments](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links) for LINST instruments.
+    - To test an instrument:
+        1. Register a candidate
+        2. Create a timepoint
+        3. Start its visit stage
+        4. Enter sample data, testing each field's type and logic constraints
+12. Verify Validity flags are functioning for instruments.
+    - **Validity:** can be marked as “Valid”, “Questionable”, or “Invalid”. Whether or not this flag is shown for an instrument is by the boolean $ValidityEnabled. Whether the field is required before flagging an instrument as complete is determined by $ValidityRequired.
+    - You can test the forgoing flags by switching the corresponding boolean of the test instruments to either `true` or `false`.
