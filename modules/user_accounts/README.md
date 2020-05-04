@@ -52,5 +52,5 @@ additional_user_info
 - Modifications performed on the MyPreferences page will be reflected on 
 the user account page when viewing the edited account.
 - The user account module registers a widget on the dashboard module to provide
-  information on the number of accounts that need activation approval.
+  information on the number of accounts that need approval.
 
