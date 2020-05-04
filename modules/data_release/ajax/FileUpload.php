@@ -61,7 +61,7 @@ if ($_GET['action'] == 'upload') {
             if (!isset($userPermission) && !$user->hasPermission('superuser')) {
                 $msg = "File overwrite failed. Current user does not have
                         permission for file.";
-                $error_log('ERROR: ' . $msg);
+                error_log('ERROR: ' . $msg);
                 header("HTTP/1.1 403 Forbidden");
                 exit;
             }
