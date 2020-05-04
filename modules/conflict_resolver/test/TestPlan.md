@@ -50,7 +50,7 @@
 1. Go to the LORIS dashboard. 
  - Ensure that the "My Tasks" "My Tasks" on the LORIS dashboard has a "Data entry conflicts"
    item
- - Ensure that the `access_all_profiles` permission changes the label from "Sites: All"
+ - Toggle `access_all_profiles` user permission and verify the label changes between "Sites: All"
    to "Sites: User sites" and the number associated with the task is updated accordingly.
 2. Clicking on the entry in the task in the dashboard should navigate to the conflict resolver
    module
