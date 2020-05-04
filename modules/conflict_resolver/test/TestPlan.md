@@ -48,7 +48,7 @@
 ## Dashboard Widget
 
 1. Go to the LORIS dashboard. 
- - Ensure that the "My Tasks" "My Tasks" on the LORIS dashboard has a "Data entry conflicts"
+ - Ensure that the "My Tasks" widget on the LORIS dashboard has a "Data entry conflicts"
    item
  - Toggle `access_all_profiles` user permission and verify the label changes between "Sites: All"
    to "Sites: User sites" and the number associated with the task is updated accordingly.
