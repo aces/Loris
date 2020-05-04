@@ -46,32 +46,26 @@
 14. Verify that if a user has 'issue_tracker_reporter / issue_tracker_developer' permission,
     the issue tracker panel should not be found without this permission.
     [Automate Test on Travis_CI]
-15. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
-    account approvals is displayed in the My Task panel. This should be the number of entries in the User Account
-    page with the following Selection Filter: Site set to the user's site and Pending Approval set to 'Yes'. The
-    Site displayed will be 'All user sites'. Check that you are taken to that page (with the Selection Filter
-    correctly set) when you click on the task.
-    [Automate Test on Travis_CI]
-16. Verify that a user with 'Violated Scans: View all-sites Violated Scans' permission has a task with the number
+15. Verify that a user with 'Violated Scans: View all-sites Violated Scans' permission has a task with the number
     of violated scans displayed. This is the number of entries on the MRI Violated Scans page. The Site displayed will
     always be 'All'. Check that clicking on the task takes you to the Violated Scans page.
     [Automate Test on Travis_CI]
-17. Verify that if a user has the 'View and upload files in Document Repository' or 'Delete files in Document Repository'
+16. Verify that if a user has the 'View and upload files in Document Repository' or 'Delete files in Document Repository'
     permission, the latest documents to have been edited or uploaded in the document repository are displayed (4 at most)
     in the Document Repository panel. Clicking on a document will display it in the browser. Clicking on the Document
     Repository button takes you to the Document Repository page.
     [Automate Test]
-18. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document
+17. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document
     Repository panel.
     [Automate Test]
-19. Check that a 'New' notification is not labeled 'New' anymore after login in again.
+18. Check that a 'New' notification is not labeled 'New' anymore after login in again.
     [Manual Test]
-20. Check performance on a large dataset (like IBIS) to make sure the dashboard page displays within a reasonable
+19. Check performance on a large dataset (like IBIS) to make sure the dashboard page displays within a reasonable
     amount of time.
     [Manual Test]
-21. When there are no candidates registered (i.e. first time install), the system should display a message indicating
+20. When there are no candidates registered (i.e. first time install), the system should display a message indicating
     that there are no candidates in the DB yet instead of showing the candidates chart.
     [Manual Test]
-22. When there are no scans done, the system should display a message indicating that no scans were made instead of
+21. When there are no scans done, the system should display a message indicating that no scans were made instead of
     showing the scans chart.     
     [Manual Test]
