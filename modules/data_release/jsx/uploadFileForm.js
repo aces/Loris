@@ -106,7 +106,6 @@ class UploadFileForm extends Component {
    * Validate and submit the upload
    */
   validateAndSubmit() {
-    let files = this.state.data.files ? this.state.data.files : [];
     let formData = this.state.formData;
 
     let errorMessage = {
