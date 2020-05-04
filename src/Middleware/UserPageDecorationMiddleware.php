@@ -151,14 +151,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             );
         }
 
-        // This should be moved out of the middleware and into the modules that need it,
-        // but is currently required for backwards compatibility.
-        // This should also come after the above call to handle() in order for updated data
-        // on the controlPanel to be properly displayed.
-        if (method_exists($page, 'getControlPanel')) {
-            $tpl_data['control_panel'] = $page->getControlPanel();
-        }
-
         // This shouldn't exist. (And if it does, it shouldn't reference
         // mantis..)
         $tpl_data['issue_tracker_url'] = $this->Config->getSetting('issue_tracker_url');
@@ -246,6 +238,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             // no content type as text/html, but most of our code doesn't add an appropriate
             // content type right now, so we default to assuming HTML.
             return $undecorated;
+        }
+
+        // This should be moved out of the middleware and into the modules that need it,
+        // but is currently required for backwards compatibility.
+        // This should also come after the above call to handle() in order for updated data
+        // on the controlPanel to be properly displayed.
+        if (method_exists($page, 'getControlPanel')) {
+            $tpl_data['control_panel'] = $page->getControlPanel();
         }
 
         // This seems to only be used in imaging_browser, it can probably be
