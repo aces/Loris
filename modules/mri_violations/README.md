@@ -89,4 +89,4 @@ the problem "Could not identify scan type"
 ## Dashboard Widget
 
 The total `Violated scans` will be shown inside the Dashboard widget, named "My Tasks"
-and when clicked will link to the mri_violations module.
+with a link pointing to the mri_violations module.
