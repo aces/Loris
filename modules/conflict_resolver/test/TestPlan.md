@@ -58,7 +58,7 @@
 ## Candidate Profile Widget
 1. Go to the `candidate_profile` module through the "Candidate -> Access Profile (beta)" and
    access a candidate with at least 1 conflict.
-  - Ensure that there is a "Unresolved Conflicts" card if the user has the `conflict_resolver`
+  - Ensure that there is an "Unresolved Conflicts" card if the user has the `conflict_resolver`
     permission
   - Ensure that the card does *not* appear (but no other cards are affected) after removing
     the `conflict_resolver` permission
