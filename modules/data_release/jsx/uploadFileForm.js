@@ -143,30 +143,7 @@ class UploadFileForm extends Component {
       return;
     }
 
-    // Grep the uploaded file name
-    let fileName = formData.file ? formData.file.name.replace(/\s+/g, '_') : null;
-
-    // Check for duplicate file names
-    let isDuplicate = files.indexOf(fileName);
-    if (isDuplicate >= 0) {
-      swal({
-        title: 'Are you sure?',
-        text: 'A file with this name already exists!\n Would you like to override existing file?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: 'No, cancel it!',
-        closeOnConfirm: false,
-      }, function(isConfirm) {
-        if (isConfirm) {
-          this.uploadFile();
-        } else {
-          swal('Cancelled', 'Your file is safe :)', 'error');
-        }
-      }.bind(this));
-    } else {
-      this.uploadFile();
-    }
+    this.uploadFile();
   }
 
   /**
