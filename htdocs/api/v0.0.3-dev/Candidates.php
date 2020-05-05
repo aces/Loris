@@ -142,7 +142,9 @@ class Candidates extends APIBase
             // This will check that the SiteName provided is a valid one
             $this->verifyField($data, 'Site', $allSiteNames);
             $this->verifyField($data, 'Sex', ['Male', 'Female']);
-            $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
+            if (isset ($data['Candidate']['EDC'])) {
+                $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
+            }
             $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
             // Get the CenterID from the provided SiteName, and check if the
             // user has permission to create a candidate at this site
@@ -211,7 +213,7 @@ class Candidates extends APIBase
     {
         if (!isset($data['Candidate'][$field])) {
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->error("Candidate's field missing");
+            $this->error("Candidate's $field missing");
             $this->safeExit(0);
         }
         if (is_array($values) && !in_array($data['Candidate'][$field], $values)) {

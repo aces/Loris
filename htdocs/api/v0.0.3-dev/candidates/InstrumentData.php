@@ -174,12 +174,11 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
         }
         fclose($fp);
 
-        $data            = json_decode($data);
+        $data            = json_decode($data,true);
         $instrument_name = $this->Instrument->testName;
-
         if ($this->Instrument->validate($data)) {
             $this->Instrument->clearInstrument();
-            $this->Instrument->_save($data->${instrument_name});
+            $this->Instrument->_save($data[$instrument_name]);
             $this->JSON = array("success" => "Updated");
         } else {
             $this->Header("HTTP/1.1 403 Forbidden");
