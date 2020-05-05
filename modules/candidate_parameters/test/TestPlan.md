@@ -86,32 +86,35 @@
 41. Access a candidate in the `candidate_profile` module
 
 ### Candidate Info Widget terms
-42. Within the "Candidate Info" card, after the information which
-    corresponds to the Candidate info returned by the LORIS API:
-43. Verify that there is a "Participant Status" term with the candidate's
+
+Within the "Candidate Info" card, after the information which
+corresponds to the Candidate info returned by the LORIS API:
+
+42. Verify that there is a "Participant Status" term with the candidate's
     status which matches the Parameter Status tab in the `candidate_parameters`
     module or "N/A" if there is no status for this candidate.
-44. Verify that there is a "Caveat" term on the card with the
+43. Verify that there is a "Caveat" term on the card with the
     description of the reason for a caveat which matches the
     Caveat Emptor flag of the "Candidate Info" tab of the
     `candidate_parameters` module, and that the term does *not*
     appear if the candidate does not have a caveat.
-45. Verify that any terms from the "Candidate Parameters"
+44. Verify that any terms from the "Candidate Parameters"
     `parameter_type_category` in step 5 of the test plan are displayed
     in the "Candidate Info" card.
 
 ### Consent Widget
-46. With Consent configured in LORIS, verify that there is a
+
+45. With Consent configured in LORIS, verify that there is a
    "Consent" card in the Candidate Profile widget.
-47. Verify that the card does *not* appear if Consent is
+46. Verify that the card does *not* appear if Consent is
     not configured in LORIS.
-48. With Consent enabled, ensure that all types of Consent
+47. With Consent enabled, ensure that all types of Consent
     are displayed in a table in the card, regardless of
     whether or not the candidate being viewed has any
     data for that consent type.
-49. Verify that rows for both "Yes" and "No" are displayed
+48. Verify that rows for both "Yes" and "No" are displayed
     properly in the table and match the "Consent" tab of
     the module.
-50. Verify that a consent type which has no data saved
+49. Verify that a consent type which has no data saved
     for the candidate is displayed with an empty row in
     the table; the row should display only a dash.
