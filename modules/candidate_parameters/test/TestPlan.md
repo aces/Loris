@@ -108,9 +108,9 @@ corresponds to the Candidate info returned by the LORIS API:
    "Consent" card in the Candidate Profile widget.
 46. Verify that the card does *not* appear if Consent is
     not configured in LORIS.
-47. With Consent enabled, ensure that all types of Consent
-    are displayed in a table in the card, regardless of
-    whether or not the candidate being viewed has any
+47. With Consent configured in LORIS, ensure that all types
+    of Consent are displayed in a table in the card, regardless
+    of whether or not the candidate being viewed has any
     data for that consent type.
 48. Verify that rows for both "Yes" and "No" are displayed
     properly in the table and match the "Consent" tab of
