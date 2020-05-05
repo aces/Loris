@@ -27,8 +27,8 @@
 6. Verify that if a user has 'Data entry' permission, the reports menu is displayed and the number of incomplete
    forms show in the tasks list.
    [Automate Test]
-7. Verify that if a user has 'issue_tracker_reporter / issue_tracker_developer' permission,
-   the issue tracker panel should not be found without this permission.
+7. Verify that the issue tracker panel is accessible if and only if a user has the 'issue_tracker_reporter'
+   or the 'issue_tracker_developer' permission.
    [Automate Test on Travis_CI]
 8. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
    account approvals is displayed in the My Task panel. This should be the number of entries in the User Account
@@ -46,8 +46,7 @@
     [Automate Test]
 12. Check that a 'New' notification is not labeled 'New' anymore after login in again.
     [Manual Test]
-13. Check performance on a large dataset (like IBIS) to make sure the dashboard page displays within a reasonable
-    amount of time.
+13. Check performance on the raisin bread dataset: make sure the dashboard page displays within, say, 5 seconds.
     [Manual Test]
 14. When there are no candidates registered (i.e. first time install), the system should display a message indicating
     that there are no candidates in the DB yet instead of showing the candidates chart.
