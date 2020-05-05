@@ -103,7 +103,7 @@
 ### Consent Widget
 46. With Consent configured in LORIS, verify that there is a
    "Consent" card in the Candidate Profile widget.
-47. Verify that the card does *not* appear is Consent is
+47. Verify that the card does *not* appear if Consent is
     not configured in LORIS.
 48. With Consent enabled, ensure that all types of Consent
     are displayed in a table in the card, regardless of
