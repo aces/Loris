@@ -46,7 +46,7 @@
     [Automate Test]
 12. Check that a 'New' notification is not labeled 'New' anymore after login in again.
     [Manual Test]
-13. Check performance on the raisin bread dataset: make sure the dashboard page displays within, say, 5 seconds.
+13. Check performance on the raisin bread dataset: make sure the dashboard page displays within 5 seconds or less.
     [Manual Test]
 14. When there are no candidates registered (i.e. first time install), the system should display a message indicating
     that there are no candidates in the DB yet instead of showing the candidates chart.
