@@ -397,7 +397,7 @@ class Edit_User extends \NDB_Form
                 //Check if examiner already in db for site
                 $result = $DB->pselectRow(
                     "SELECT epr.centerID
-                           FROM examiners_psc_rel epr 
+                           FROM examiners_psc_rel epr
                            WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                     array(
                         "eid" => $examinerID,
@@ -685,6 +685,7 @@ class Edit_User extends \NDB_Form
         $this->addBasicText(
             'First_name',
             'First name',
+            [],
             array(
                 'oninvalid' => $onInvalidMsg,
                 'onchange'  => "this.setCustomValidity('')",
@@ -702,6 +703,7 @@ class Edit_User extends \NDB_Form
         $this->addBasicText(
             'Last_name',
             'Last name',
+            [],
             array(
                 'oninvalid' => $onInvalidMsg,
                 'onchange'  => "this.setCustomValidity('')",
@@ -1245,7 +1247,7 @@ class Edit_User extends \NDB_Form
             && ($values['active_from'] > $values['active_to'])
         ) {
             $errors['active_timeWindows']
-                = 'Please notice that the "Active from" 
+                = 'Please notice that the "Active from"
                 date should be lesser or equal to the "Active to" date.';
         }
         return $errors;

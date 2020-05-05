@@ -75,7 +75,7 @@ class CNV_Browser extends \NDB_Menu_Filter
             'CNV.StartLoc as StartLoc',
             'CNV.EndLoc as EndLoc',
             'CONCAT(
-                              CNV.Chromosome, 
+                              CNV.Chromosome,
                               ":",
                               CNV.StartLoc,
                               "-",
@@ -252,7 +252,7 @@ class CNV_Browser extends \NDB_Menu_Filter
             'Subproject:',
             array('' => 'Any') + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
+        $this->addBasicText('dob', 'Date of Birth:', [], array('maxlength' => 10));
 
         $show_results_options = array(
             'brief' => 'Summary fields',

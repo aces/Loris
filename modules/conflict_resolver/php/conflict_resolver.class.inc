@@ -297,6 +297,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $this->addBasicText(
             'candID',
             'CandID:',
+            [],
             array(
                 'size'      => 9,
                 'maxlength' => 6,
@@ -305,6 +306,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $this->addBasicText(
             'pSCID',
             'PSCID:',
+            [],
             array(
                 'size'      => 9,
                 'maxlength' => 7,
@@ -356,16 +358,16 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             if ($r['question'] === 'Examiner') {
                 if (!empty($r['Value1'])) {
                     $r['Value1'] = $DB->pselectOne(
-                        'SELECT full_name 
-                         FROM examiners 
+                        'SELECT full_name
+                         FROM examiners
                          WHERE examinerID=:eid',
                         array('eid' => $r['Value1'])
                     );
                 }
                 if (!empty($r['Value2'])) {
                     $r['Value2'] = $DB->pselectOne(
-                        'SELECT full_name 
-                         FROM examiners 
+                        'SELECT full_name
+                         FROM examiners
                          WHERE examinerID=:eid',
                         array('eid' => $r['Value2'])
                     );

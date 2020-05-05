@@ -232,7 +232,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
             'Subproject:',
             array('' => 'Any') + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
+        $this->addBasicText('dob', 'Date of Birth:', [], array('maxlength' => 10));
 
         $any_options = array(
             ''  => null,
