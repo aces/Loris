@@ -114,4 +114,4 @@
     the module.
 50. Verify that a consent type which has no data saved
     for the candidate is displayed with an empty row in
-    the table containing only a dash.
+    the table; the row should display only a dash.
