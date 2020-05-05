@@ -11,5 +11,5 @@
 10. Select filters in each category, make sure that the results change corresponding to what is selected.
 11. Select combinations of various filters, make sure that the results change corresponding to what is selected.
 12. Select several filters to reduce the size of the imaging data set, and then select clear filters. Make sure that it returns to the full data set and that each filter is cleared.
-13. Click on the column header to make sure that the files re-organize to be ordered by the selected column. Click the same one again to make sure that it now organizes in reverse order. Try this with each of the columns.
+13. Click on the column header to make sure that the rows re-organize to be ordered by the selected column. Click the same one again to make sure that it now organizes in reverse order. Try this with each of the columns.
 14. For one or two candidates, verify that the results are accurate for key columns (`Scan type`, `Scan Done in MRI PF`, `Tarchive`, `Scan Location`, `QC Status`, `Selected`).
