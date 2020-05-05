@@ -63,7 +63,7 @@ class UploadForm extends Component {
     formData[field] = value;
 
     if (field === 'mriFile') {
-      if (value.name !== '' && formData.IsPhantom === 'N') {
+      if (value.name && formData.IsPhantom === 'N') {
         let patientName = value.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
         let ids = patientName.split('_', 3);
         formData.candID = ids[1];
@@ -269,9 +269,15 @@ class UploadForm extends Component {
       // - Returns to Upload tab
       error: (error, textStatus, errorThrown) => {
         let errorMessage = Object.assign({}, this.state.errorMessage);
-        let hasError = this.state.hasError;
+        let hasError = Object.assign({}, this.state.hasError);
         let messageToPrint = '';
-        errorMessage = (error.responseJSON || {}).errors || 'Submission error!';
+        if (error.responseJSON && error.responseJSON.errors) {
+          errorMessage = error.responseJSON.errors;
+        } else if (error.status == 413) {
+          errorMessage = {
+            'mriFile': ['Please make sure files are not larger than ' + this.props.maxUploadSize],
+          };
+        }
         for (let i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
             errorMessage[i] = errorMessage[i].toString();
