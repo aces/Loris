@@ -38,6 +38,7 @@ The following Ubuntu packages are required and should be installed using
 * php7.3-mbstring
 * php7.3-gd
 * php7.3-zip
+* php7.3-curl
 * libapache2-mod-php7.3
 
 ## Getting the source code
