@@ -59,6 +59,14 @@
    that the help content about MRI Protocol Check Violation is showing up
    and is up-to-date.
 
+### Dashboard Widget - "My Tasks" for Violated scans
+1. Ensure the total of Violated scans corresponds with the correct 
+    number of rows inside the MRI Violations module.
+2. Verify that either `violated_scans_view_allsites` or `violated_scans_edit` permissions 
+    are necessary for the user to view the widget.
+3. Click on the total number of Violated Scans and check if redirection
+    to the MRI Violation module succeeds.
+
 ## Functionality tested by automated testing
 1.  Ensure that the module loads only when a user has appropriate permissions.
 2.  MRI Protocol Violations page - check Selection Filter results for each of 
