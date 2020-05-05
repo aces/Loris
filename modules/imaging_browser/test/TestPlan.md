@@ -41,3 +41,6 @@ prepended with the Patient Name.
 25. On the view session page, click the button "Visit Level Feedback".
 26. The entries in this dialog should be editable when a user has the permission `imaging_browser_qc`.
 27. Try editing comments (adding new ones, deleting old ones). Click Save and ensure the data is saved.
+
+### New Access Profile Module
+28. For each visit, check that the files Quality Control in the imaging browser matches the widget 'Imaging QC Summary' in the new access profile module.
