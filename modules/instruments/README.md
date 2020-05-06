@@ -22,7 +22,7 @@ It also does not manage surveys in any way.
 
 ## Permissions
 
-None. Individual instruments may provide their own permissions.
+Accessing instruments requires the `data_entry` permission. Individual instruments may provide their own permissions.
 
 ## Configurations
 
