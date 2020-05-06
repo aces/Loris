@@ -90,7 +90,7 @@ class PasswordExpiry extends \NDB_Form
         $plaintext   = htmlspecialchars_decode($values['password']);
 
         try {
-            new \Password($plaintext);
+            \Password::validate($plaintext);
         } catch (\InvalidArgumentException $e) {
             $this->tpl_data['error_message'] = $e->getMessage();
             return array('password' => $e->getMessage());

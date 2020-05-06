@@ -67,7 +67,7 @@ class Password
      * @return bool Whether the submitted value has length of at least
      *              MIN_PASSWORD_LENGTH;
      */
-    private function _hasSufficientLength(string $value): bool
+    private static function _hasSufficientLength(string $value): bool
     {
         // Check length
         return strlen($value) >= self::MIN_PASSWORD_LENGTH;
@@ -82,7 +82,7 @@ class Password
      * @return bool Whether the submitted value meets the minimum score defined
      *              above and given by Zxcvbn.
      */
-    private function _hasSufficientComplexity(string $value): bool
+    private static function _hasSufficientComplexity(string $value): bool
     {
         // Return true if the password's complexity score exceeds
         // MIN_COMPLEXITY_SCORE and false otherwise.
@@ -99,14 +99,14 @@ class Password
      *
      * @throws \InvalidArgumentException When password is too short or weak.
      */
-    private function _validate($value): void
+    public static function validate($value): void
     {
         // Check length and complexity separately in order to return a precise
         // error message upon failure.
-        if (!$this->_hasSufficientLength($value)) {
+        if (!Password::_hasSufficientLength($value)) {
             throw new \InvalidArgumentException('The password is too short');
         }
-        if (!$this->_hasSufficientComplexity($value)) {
+        if (!Password::_hasSufficientComplexity($value)) {
             throw new \InvalidArgumentException(
                 'The password is not complex enough.'
             );
@@ -115,7 +115,7 @@ class Password
             'usePwnedPasswordsAPI'
         )
         ) {
-            if ($this->_pwned($value)) {
+            if (Password::_pwned($value)) {
                 throw new \InvalidArgumentException(
                     'This password is known to be exposed in online data '
                     . 'breaches.'
@@ -142,7 +142,7 @@ class Password
      *
      * @return bool Whether the password is known to be pwned.
      */
-    private function _pwned(string $password): bool
+    private static function _pwned(string $password): bool
     {
 
         // If the project is configured to disable the Pwned Password check,
@@ -201,7 +201,7 @@ class Password
     public final function __construct(string $value)
     {
         // Ensure proposed value is well-formed.
-        $this->_validate($value);
+        $this->validate($value);
         // Don't store the value in the object; instead use the hashed version
         // This mitigates the risk of accidentally revealing the plaintext.
         $this->_hash = password_hash($value, PASSWORD_DEFAULT);

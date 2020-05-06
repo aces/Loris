@@ -392,11 +392,11 @@ class My_Preferences extends \NDB_Form
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
             try {
-                // The Password class is self-validating and will throw an
+                // Password::validate will throw an
                 // InvalidArgumentException if the value passed to it is
                 // bad or the input is too weak to be a good password.
                 $decoded = htmlspecialchars_decode($plaintext);
-                new \Password($decoded);
+                \Password::validate($decoded);
                 // New password must be different than current one
                 if (! \User::factory($this->identifier)->isPasswordDifferent(
                     $decoded

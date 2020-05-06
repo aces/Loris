@@ -396,7 +396,7 @@ class Edit_User extends \NDB_Form
                 //Check if examiner already in db for site
                 $result = $DB->pselectRow(
                     "SELECT epr.centerID
-                           FROM examiners_psc_rel epr 
+                           FROM examiners_psc_rel epr
                            WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                     array(
                         "eid" => $examinerID,
@@ -1123,11 +1123,11 @@ class Edit_User extends \NDB_Form
             && (!empty($values['Password_hash']) || !empty($values['__Confirm']))
         ) {
             try {
-                // The Password class is self-validating and will throw an
+                // Password::validate will throw an
                 // InvalidArgumentException if the value passed to it is
                 // bad or the input is too weak to be a good password.
                 $decoded = htmlspecialchars_decode($plaintext);
-                new \Password($decoded);
+                \Password::validate($decoded);
                 $isPasswordDifferent = \User::factory($this->identifier)
                     ->isPasswordDifferent($decoded);
                 if (! $isPasswordDifferent) {
@@ -1244,7 +1244,7 @@ class Edit_User extends \NDB_Form
             && ($values['active_from'] > $values['active_to'])
         ) {
             $errors['active_timeWindows']
-                = 'Please notice that the "Active from" 
+                = 'Please notice that the "Active from"
                 date should be lesser or equal to the "Active to" date.';
         }
         return $errors;
