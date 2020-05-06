@@ -67,4 +67,4 @@
   - Ensure that clicking a bar in the bar graph brings you to the conflict resolver module
     with the filters preset to filter for that instrument and visit
   - Ensure that clicking on an instrument in the legend takes you to the conflict resolver
-    with the menu filter preset for that instrument (but no filter for visit)
+    with the filter preset for that instrument (but no filter for visit)
