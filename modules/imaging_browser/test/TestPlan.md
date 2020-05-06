@@ -43,6 +43,6 @@ prepended with the Patient Name.
 27. Try editing comments (adding new ones, deleting old ones). Click Save and ensure the data is saved.
 
 ### Test the Candidate Dashboard widget
-28. Go to the candidate dashboard in the candidate module and check the Imaging QC Summary.
-    - For each visit, check that the QC status corresponds to the one in the Imaging Browser Module.
-    - Check that all the files from the Imaging Browser Module appears in the widget for all the visits.
+28. Go to the candidate dashboard in the candidate module and check the Imaging QC Summary widget.
+    - For each visit, check that the QC status displayed matches the Imaging Browser Module.
+    - For a few candidate/visits, check that all the files from the Imaging Browser Module appear in the widget for all the visits.
