@@ -58,7 +58,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
 
         $user = \User::singleton();
 
-        if ($user->hasPermission('access_all_profiles') === false) {
+        If ($user->hasPermission('access_all_profiles') === false) {
             $provisioner = $provisioner->filter(
                 new \LORIS\Data\Filters\UserSiteMatch()
             );

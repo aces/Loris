@@ -96,8 +96,9 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             $module = &$modules[$mname];
         }
 
-        $cid = $row['centerId'];
+        $cids = isset($row['centerId']) ?
+            [$row['centerId']] : array_keys(\Utility::getSiteList(false));
         $row['lastUpdate'] = \Utility::toDateDisplayFormat($row['lastUpdate']);
-        return new IssueRow($row, $cid, $module);
+        return new IssueRow($row, $cids, $module);
     }
 }
