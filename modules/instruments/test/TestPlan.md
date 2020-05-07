@@ -52,5 +52,5 @@ instrument for that candidate. Enter a date (same a step 4) posterior to the DoD
     - Ensure the appropriate visit labels are visible for the candidate. 
     - The visit status, subproject status, site, date of visit, and age should be shown.
     - Clicking on a visit should redirect to the instrument_list module for the candidate.
-    - Test making a new Time Point for a candidate and assign a Visit label. The Behavioural Data widget should update 
+    - Test making a new Time Point for a candidate and assign an instrument to the time point. The Behavioural Data widget should update accordingly.
         to include the new Time Point by showing the visit label with the subproject, site, and status as not started.
