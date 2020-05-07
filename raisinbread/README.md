@@ -30,13 +30,16 @@ that is not the case, replace all `mysql` commands below by the necessary values
 
 ##### Sourcing SQL
 If the database being used is already populated and contains any tables or data, the following
-command must be used in the main LORIS root directory:
+command must be used in the main LORIS root directory. Note that these commands will erase all the data
+in the database. Ensure that a backup is available if this data is important:
 
 ```bash
 cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
     SQL/9999-99-99-drop_tables.sql | mysql
 ```
 ***Note:** This command can also be used at any step to empty and delete all RaisinBread tables.*
+
+***Important:** Ensure that the above commands were completed properly and that all the tables were dropped before continuing the installation process.*
 
 In order to be able to use the RaisinBread dataset, the LORIS SQL schema needs to be
 sourced, followed by the different instrument schemas and finally the actual RB data.
@@ -56,13 +59,6 @@ cat SQL/0000-00-00-schema.sql \
     raisinbread/instruments/instrument_sql/mri_parameter_form.sql \
     raisinbread/instruments/instrument_sql/radiology_review.sql \
     raisinbread/RB_files/*.sql | mysql
-```
-
-***Important:** Ensure that the above commands (including those to drop tables) were all completed properly.* 
-If there is a foreign key constraint error, run the following command on the mysql command line to mitigate the error:
-
-```bash 
-SET FOREIGN_KEY_CHECKS=0;
 ```
 
 If the tables were not deleted or created properly, the above schemas can be sourced directly on the mysql command line.
