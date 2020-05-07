@@ -152,7 +152,6 @@ Will return a JSON object of the form:
   "Images" : [
     {
       "Candidate": "400168",
-      "File": "assembly/400168/V2/mri/native/demo_400168_V2_t1_001.mnc",
       "InsertTime": "2019-05-23T18:28:55-04:00",
       "Link": "/candidates/400168/V2/images/demo_400168_V2_t1_001.mnc",
       "PSCID": "ROM168",
