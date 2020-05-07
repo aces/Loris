@@ -140,6 +140,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         $this->addBasicText(
             'TarchiveID',
             'Tarchive ID:',
+            [],
             array(
                 "size"      => 9,
                 "maxlength" => 20,
@@ -148,6 +149,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         $this->addBasicText(
             'PatientName',
             'PatientName:',
+            [],
             array(
                 "size"      => 20,
                 "maxlength" => 64,
@@ -156,6 +158,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         $this->addBasicText(
             'CandID',
             'CandID:',
+            [],
             array(
                 "size"      => 20,
                 "maxlength" => 6,
@@ -164,6 +167,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         $this->addBasicText(
             'SeriesUID',
             'DICOM Series UID:',
+            [],
             array(
                 "size"      => 20,
                 "maxlength" => 64,

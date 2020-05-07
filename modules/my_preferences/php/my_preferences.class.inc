@@ -240,6 +240,7 @@ class My_Preferences extends \NDB_Form
         $this->addBasicText(
             'First_name',
             'First name',
+            [],
             array(
                 'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
                 'onchange'  => "this.setCustomValidity('')",
@@ -256,6 +257,7 @@ class My_Preferences extends \NDB_Form
         $this->addBasicText(
             'Last_name',
             'Last name',
+            [],
             array(
                 'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
                 'onchange'  => "this.setCustomValidity('')",
@@ -268,6 +270,7 @@ class My_Preferences extends \NDB_Form
         $this->addBasicText(
             'Email',
             'Email address',
+            [],
             array(
                 'oninvalid' => "this.setCustomValidity('Email address is required')",
                 'onchange'  => "this.setCustomValidity('')",

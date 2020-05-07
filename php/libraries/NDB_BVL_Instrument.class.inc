@@ -1727,6 +1727,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "textarea",
             $field,
             null,
+            [],
             array(
                 'cols' => 25,
                 'rows' => 4,
@@ -1771,6 +1772,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "textarea",
             $field,
             $label,
+            [],
             array(
                 'cols'  => 25,
                 'rows'  => 4,

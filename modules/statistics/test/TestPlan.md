@@ -38,3 +38,28 @@
 5. Check that `Show/Hide` visit labels works.
 6. Check that changing the breakdown adjusts the table accurately.
 7. Verify site and grand totals.
+
+### Registration of widgets on the dashboard page
+1. Make sure there is no recruitment target set in the configuration module. Check that an incentive to define a
+   recruitment target is displayed in the recruitment panel of the dashboard page.
+   [Automate Test on Travis_CI]
+2. Put a target number of participants in the configuration module and check that the info in the recruitment panel
+   of the dashboard page is correct.
+   [Automate Test]
+3. Switch to site breakdown and check that info in recruitment panel of the dashboard page is correct.
+   [Automate Test]
+4. Create a candidate and assign it to any site. Inactivate it. Make sure it is NOT taken into account in the sex
+   breakdown view (recruitment panel/dashboard page).
+   [Automate Test]
+5. Check that site breakdown view (recruitment panel/dashboard page) is correct.
+   [Automate Test]
+6. Check that scans per site (study progression panel/dashboard page) view is correct (scan dates and scan numbers).
+   [Automate Test]
+7. Check that recruitment per site view is correct (study progression panel/dashboard page).
+   [Automate Test]
+8. When there are no candidates registered (i.e. first time install), the system should display a message indicating
+   that there are no candidates in the DB yet instead of showing the candidates chart (recruitment panel/dashboard page).
+   [Manual Test]
+9. When there are no scans done, the system should display a message indicating that no scans were made instead of
+   showing the scans chart (study progression panel/dashboard page).
+   [Manual Test]
