@@ -31,6 +31,14 @@ class TaskWidget implements \LORIS\GUI\Widget
     protected $cssclass;
 
     /**
+     * The site label to display beside the widget for which site
+     * this task is for.
+     *
+     * @var string
+     */
+    protected $sitelabel;
+
+    /**
      * Construct a TaskWidget with the given properties.
      *
      * @param string $label    The label to describe the task.
@@ -82,6 +90,18 @@ class TaskWidget implements \LORIS\GUI\Widget
     }
 
     /**
+     * Mutator method for field $sitelabel.
+     *
+     * @param string $newSiteLabel new value for field $sitelabel.
+     *
+     * @return void
+     */
+    public function setSiteLabel(string $newSiteLabel)
+    {
+        $this->sitelabel = $newSiteLabel;
+    }
+
+    /**
      * If non-empty, return a label to use to describe
      * which sites the number of open task issues is for.
      *
@@ -89,7 +109,7 @@ class TaskWidget implements \LORIS\GUI\Widget
      */
     public function siteLabel() : string
     {
-        return "";
+        return $this->sitelabel;
     }
 
     /**

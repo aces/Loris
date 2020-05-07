@@ -209,7 +209,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'Resolved'  => 'other',
             )
         );
-
+        $this->DB->insert(
+            "MRICandidateErrors",
+            array(
+                'ID'          => '1002',
+                'PatientName' => '[Test]PatientName',
+                'MincFile'    => 'assembly/test2/test2/mri/test2/test3.mnc',
+                'SeriesUID'   => '5558',
+            )
+        );
     }
     /**
      * Delete the test data
@@ -218,7 +226,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     public function tearDown()
     {
-
+        $this->DB->delete(
+            "MRICandidateErrors",
+            array('ID' => '1002')
+        );
         $this->DB->delete(
             "mri_protocol_violated_scans",
             array('ID' => '1001')
@@ -581,7 +592,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "Site",
             "TESTinPSC"
         );
-
     }
 
     /**
@@ -607,7 +617,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                     '#datatable > div > div.table-header.panel-heading > div')
                  .textContent"
         );
-
         $this->assertContains("1 rows displayed of 1", $bodyText);
         $this->webDriver->findElement(
             WebDriverBy::Name("reset")
