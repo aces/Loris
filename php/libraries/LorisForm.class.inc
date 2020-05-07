@@ -1960,7 +1960,13 @@ class LorisForm
         case 'submit':
             return $this->createSubmit($elname, $label, $attribs);
         case 'static':
-            $el         = $this->createBase($elname, $label, $attribs);
+            /* the $options was passed to the 2nd parameter pre-v23.0 for some
+             reason, it is important not to impact the existing instruments. */
+            $el         = $this->createBase(
+                $elname,
+                is_string($options) ? $options : $label,
+                $attribs
+            );
             $el['type'] = 'static';
             break;
         case 'advcheckbox':
