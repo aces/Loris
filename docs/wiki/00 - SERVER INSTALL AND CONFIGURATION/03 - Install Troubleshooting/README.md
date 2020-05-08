@@ -7,12 +7,13 @@ correctly followed and that all required dependencies have been installed.
 
 ## Frontend Not Loading
 This could be because the Config table in the database is not pointing to the correct values. In this case, follow the following steps. 
-1. Check the following values in the Config table via the MySQL backend.
-|ConfigID | Name  | Label | Value                   |
-|:-----------:|:---------:|:--------:|:---------------:|
-| 28  | base     | Base  | /var/www/loris |
-|  44 | host     | Host  | $yourHostName |
-|   45 | url  | Main LORIS URL | $yourURL |
+1. Check the following values in the Config table via the MySQL backend.  
+
+| ConfigID | Name | Label          | Value          |  
+| --- | ---- | ----------- | ---------- |
+| 28       | base | Base           | /var/www/loris |
+| 44       | host | Host           | $yourHostName  | 
+| 45       | url  | Main LORIS URL | $yourURL       | 
 
 These values can be viewed by running the following commands:
 
