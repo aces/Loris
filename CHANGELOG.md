@@ -34,18 +34,13 @@ database (PR #5260)
   modules. (Various PRs)
 
 ##### Issue Tracker
-- The issue_tracker module now has the feature of uploading attachments to new or existing issues.
+- The issue_tracker module now has the feature of uploading attachments to new or existing issues. (PR #5394)
 - All sites now appear in the dropdown for site, not only study sites. (PR #6135)
-
 
 #### Battery Manager
 - New module created to manage the entries in the `test_battery` table of the database.
 This allows projects to modify their instrument battery without requiring backend access.
  (PR #4221)
- 
-#### Issue Tracker
-- The `issue_tracker` module now has the feature of uploading attachments to new or existing
-issues. (PR #5394)
  
 #### Module Manager
 - New module created to manage the status of installed modules. (PR #6015)
@@ -64,7 +59,6 @@ death for candidates. (PR #4929)
 #### Data Release
 - Added filters to data release module. (PR #5224)
 
-
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database
 exception). It is recommended to run this tool for existing projects (PR #5270)
@@ -74,6 +68,7 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 
 ### Notes For Existing Projects
 - PHP should be upgraded to 7.3 to before upgrading LORIS.
+- For dev instances, php7.3-curl is now a required dependency.
 - Legacy Quickform instruments may have issues due to code changes (PR #4928)
 - Customized entries in the `LorisMenu` and `LorisMenuPermissions` tables need to be 
 transferred to the new module table and handled accordingly. (PR #5839)
@@ -92,3 +87,4 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
+
