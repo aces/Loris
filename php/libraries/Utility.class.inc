@@ -136,11 +136,11 @@ class Utility
         $query .= "WHERE "; 
         if ($study_site) {
             $query .= "Study_site='Y' ";
-        }
-        if (!$DCC) {
-            if ($study_site){
-                $query.= " AND" 
+            
+            if (!$DCC) {
+                $query .= " AND CenterID <> 1";
             }
+        }else if (!$DCC){
             $query .= " CenterID <> 1";
         }
 
