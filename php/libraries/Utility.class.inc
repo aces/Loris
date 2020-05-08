@@ -132,15 +132,14 @@ class Utility
         $DB      = $factory->database();
 
         // get the list of study sites - to be replaced by the Site object
-        $query = "SELECT CenterID, Name FROM psc ";
-        $query .= "WHERE "; 
+        $query  = "SELECT CenterID, Name FROM psc ";
+        $query .= "WHERE ";
         if ($study_site) {
             $query .= "Study_site='Y' ";
-            
             if (!$DCC) {
                 $query .= " AND CenterID <> 1";
             }
-        }else if (!$DCC){
+        } else if (!$DCC) {
             $query .= " CenterID <> 1";
         }
 
