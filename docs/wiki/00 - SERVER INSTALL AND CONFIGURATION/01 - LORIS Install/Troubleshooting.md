@@ -7,23 +7,46 @@ correctly followed and that all required dependencies have been installed.
 
 ## Frontend Not Loading
 This could be because the Config table in the database is not pointing to the correct values. In this case, follow the following steps. 
+
 1. Check the following values in the Config table via the MySQL backend.
 
-| Name | Label          | Value          |  
-| ---- | ----------- | ---------- |
-| base | Base           | /var/www/loris |
-| host | Host           | $yourHostName  | 
-
-These values can be viewed by running the following commands:
-
-```sql
-SELECT c.configID, cs.Name, cs.Label, c.value, cs.Description FROM Config c LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');
-SELECT c.configID, cs.Name, cs.Label, c.value, cs.Description FROM Config c LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
+   | Name | Label          | Value          |  
+   | ---- | ----------- | ---------- |
+   | base | Base           | /var/www/loris |
+   | host | Host           | $yourHostName  | 
+    
+   These values can be viewed by running the following commands:
+    
+   ```sql
+    SELECT c.configID, cs.Name, cs.Label, c.value, cs.Description FROM Config c LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');
+    SELECT c.configID, cs.Name, cs.Label, c.value, cs.Description FROM Config c LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
    ```
 
 2. If they do not match the above format, update these values with the following commands on the MySQL command-line.
 
-```sql
-UPDATE Config SET Value='$yourBasePath' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');
-UPDATE Config SET Value='$yourHostName' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
+   ```sql
+   UPDATE Config SET Value='$yourBasePath' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');
+   UPDATE Config SET Value='$yourHostName' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
+   ```
+
+3. Check the base path must not have a trailing slash at the end. If it does, update its value to remove it.
+
+
+## Frontend stylesheets issues
+[work in progress] 
+* Check/fix config paths via the mysql back-end
+
+
+## Admin login issues
+If have troubles to log in to LORIS with your admin user after an installation or upgrade, make sure your admin account record in the users table contains:                                                       
+```  
+Active = 'Y'
+Pending_approval = 'N'
+Password_expiry column value is later than today's date
+```
+
+You can also reset your admin password with the script [tools/resetpassword.php](https://github.com/aces/Loris/blob/master/tools/resetpassword.php).
+
+```bash
+php tools/resetpassword.php admin
 ```
