@@ -1,0 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+
+\. ./9999-99-99-drop_tables.sql
+
+SET FOREIGN_KEY_CHECKS=1;
