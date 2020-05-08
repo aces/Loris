@@ -27,7 +27,7 @@ This guide does not cover installation of these requirements.
 The following Ubuntu packages are required and should be installed using 
 `sudo apt install ...`.
 
-* curl
+* curl (for production instances only)
 * zip
 * unzip
 * php-json
@@ -38,7 +38,7 @@ The following Ubuntu packages are required and should be installed using
 * php7.3-mbstring
 * php7.3-gd
 * php7.3-zip
-* php7.3-curl
+* php7.3-curl (for development instances only)
 * libapache2-mod-php7.3
 
 ## Getting the source code
