@@ -133,8 +133,9 @@ class Utility
 
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
+        $query .= "WHERE "; 
         if ($study_site) {
-            $query .= "WHERE Study_site='Y'";
+            $query .= "Study_site='Y' ";
         }
         if (!$DCC) {
             $query .= " AND CenterID <> 1";
