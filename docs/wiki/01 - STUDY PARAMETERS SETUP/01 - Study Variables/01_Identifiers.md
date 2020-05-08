@@ -83,6 +83,6 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
 
  The **PSCID** and **CandID** are used throughout LORIS including when uploading files and media linked to a candidate. The **CandID** is mainly used internally to link data across the database.
 
- The **PSCID** is dependent on the list of sites in the `psc` table of the database, more specifically the `Alias` column that is used for the `siteAbbrev` type in the generation of the ID. Please refer to the [Sites Parameter Setup](03 - Sites.md) page for more details.
+ The **PSCID** is dependent on the list of sites in the `psc` table of the database, more specifically the `Alias` column that is used for the `siteAbbrev` type in the generation of the ID. Please refer to the [Sites Parameter Setup](04_Sites.md) page for more details.
  
-  The **PSCID** is also dependent on the list of projects in the `Project` table of the database, more specifically the `Alias` column that is used for the `projectAbbrev` type in the generation of the ID. Please refer to the [Projects Parameter Setup](02 - Projects.md) page for more details.
+  The **PSCID** is also dependent on the list of projects in the `Project` table of the database, more specifically the `Alias` column that is used for the `projectAbbrev` type in the generation of the ID. Please refer to the [Projects Parameter Setup](02_Projects.md) page for more details.
