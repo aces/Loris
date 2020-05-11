@@ -141,8 +141,9 @@ class Utility
         if (!$DCC) {
                 $whereElements[] = "CenterID <> 1";
         }
-        $query .= !empty($whereElements) ?
-            "WHERE ".implode(" AND ", $whereElements) : "";
+        if (!empty($whereElements)) {
+            $query .= "WHERE ".implode(" AND ", $whereElements);
+        }
         $result = $DB->pselect($query, array());
 
         // fix the array
