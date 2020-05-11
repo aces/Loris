@@ -152,15 +152,15 @@ Will return a JSON object of the form:
   "Images" : [
     {
       "Candidate": "400168",
-      "InsertTime": "2019-05-23T18:28:55-04:00",
-      "Link": "/candidates/400168/V2/images/demo_400168_V2_t1_001.mnc",
       "PSCID": "ROM168",
-      "QC_status": "Pass",
-      "ScanType": "t1",
-      "Selected": "true",
-      "Site": "Rome",
       "Visit": "V2",
       "Visit_date": "2016-08-19"
+      "Site": "Rome",
+      "ScanType": "t1",
+      "QC_status": "Pass",
+      "Selected": "true",
+      "Link": "/candidates/400168/V2/images/demo_400168_V2_t1_001.mnc",
+      "InsertTime": "2019-05-23T18:28:55-04:00",
     },
     ...
   ]
