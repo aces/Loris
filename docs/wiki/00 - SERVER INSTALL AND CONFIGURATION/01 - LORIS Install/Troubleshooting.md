@@ -6,7 +6,19 @@ This guide offers support for common issues faced when first installing LORIS. I
 correctly followed and that all required dependencies have been installed.
 
 ## Frontend Not Loading
-This could be because the Config table in the database is not pointing to the correct values. In this case, follow the following steps. 
+The first thing to try is to run:
+
+```bash
+make
+```
+
+Alternatively, on development instances:
+
+```bash
+make dev
+```
+
+If that does not solve your issue, this could be because the Config table in the database is not pointing to the correct values. In this case, follow the following steps. 
 
 1. Check the following values in the Config table via the MySQL backend.
 
@@ -29,8 +41,21 @@ This could be because the Config table in the database is not pointing to the co
    UPDATE Config SET Value='$yourHostName' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
    ```
 
-3. Check the base path must not have a trailing slash at the end. If it does, update its value to remove it.
+3. Check the base path does not have a trailing slash at the end. If it does, update its value to remove it.
 
+
+## Javascript changes not visible
+Try is to run:
+
+```bash
+make
+```
+
+Alternatively, on development instances:
+
+```bash
+make dev
+```
 
 ## Frontend stylesheets issues
 [work in progress] 
