@@ -67,5 +67,5 @@ with the data in LORIS, the `tools/recreate_conflicts.php` script
 can be used to re-compare single and double data entry values
 and repopulate the `conflicts_unresolved` table.
 
-The conflict resolver registers modules on the dashboard and the
+The conflict resolver implements widgets for the `dashboard` and the
 `candidate_profile` dashboard.
