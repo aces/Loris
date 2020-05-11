@@ -177,6 +177,7 @@ class IssueTrackerIndex extends Component {
       {label: 'Priority', show: true, filter: {
         name: 'priority',
         type: 'select',
+        sortByValue: false,
         options: options.priorities,
         }},
       {label: 'Site', show: true, filter: {

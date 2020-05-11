@@ -66,7 +66,13 @@ class Filter extends Component {
           element = <TextboxElement key={filter.name}/>;
           break;
         case 'select':
-          element = <SelectElement key={filter.name} options={filter.options}/>;
+          element = (
+            <SelectElement
+              key={filter.name}
+              options={filter.options}
+              sortByValue={filter.sortByValue}
+            />
+          );
           break;
         case 'multiselect':
           element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
