@@ -41,7 +41,7 @@
     </div>
   </header>
 
-  <section class="main-content">
+  <section id="lorisworkspace" class="main-content">
     {$workspace}
   </section>
 
