@@ -27,7 +27,7 @@ This guide does not cover installation of these requirements.
 The following Ubuntu packages are required and should be installed using 
 `sudo apt install ...`.
 
-* curl (for production instances only)
+* curl
 * zip
 * unzip
 * php-json
