@@ -6,8 +6,8 @@
 5. Change maximum rows per page. Ensure that the number of rows displayed changes correspondingly each time.
 6. Navigate through pages by selecting the page numbers at the top right of the result section and the bottom right of the result section.
 7. Navigate from first to last page & vice versa using the double arrows at the top right of the result section and the bottom right of the result section.
-8. Download the table as CSV. Make sure that the file downloads and has the correct contents.
-9. Select some filters to reduce the size of the data set. Click to download the table as CSV. Make sure that the file downloads and has the correct contents.
+8. Download the table as CSV. Make sure that the file downloads and that the contents of the file correspond exactly to the contents of the results table, including column and row order.
+9. Select some filters to reduce the size of the data set. Click to download the table as CSV. Make sure that the file downloads and that the contents of the file correspond exactly to the filtered results displayed in the table, including column and row order.
 10. Select filters in each category, make sure that the results change corresponding to what is selected.
 11. Select combinations of various filters, make sure that the results change corresponding to what is selected.
 12. Select several filters to reduce the size of the imaging data set, and then select clear filters. Make sure that it returns to the full data set and that each filter is cleared.
