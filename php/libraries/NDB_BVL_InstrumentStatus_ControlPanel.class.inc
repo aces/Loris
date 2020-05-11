@@ -157,7 +157,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             return false;
         }
         if (isset($_POST['ClearInstrument'])) {
-            header("Refresh: 0;");
             $user = User::singleton();
             if ($user->hasPermission('send_to_dcc')) {
                 $instrument = \NDB_BVL_Instrument::factory(
