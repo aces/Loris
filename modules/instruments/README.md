@@ -22,7 +22,8 @@ It also does not manage surveys in any way.
 
 ## Permissions
 
-Accessing instruments requires the `data_entry` permission. Individual instruments may provide their own permissions.
+Accessing instruments requires the `data_entry` permission. Individual 
+instruments may require their own additonal access permissions.
 
 ## Configurations
 
