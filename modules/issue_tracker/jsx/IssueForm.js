@@ -227,7 +227,6 @@ class IssueForm extends Component {
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.centerID}
-            required={true}
           />
           <SelectElement
             name='status'
