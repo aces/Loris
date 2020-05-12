@@ -37,6 +37,20 @@ class FilterableDataTable extends Component {
   }
 
   /**
+   * Parse filter to remove filter properties when opposite is set to true
+   *
+   * @param {object} filter passed from FilterForm
+   * @return {object} filter
+   */
+  parseFilter(filter) {
+    const parsedFilter = {};
+    for (const [filterId, filterProps] of Object.entries(filter)) {
+      if (filterProps.opposite === undefined || !filterProps.opposite) parsedFilter[filterId] = filterProps;
+    }
+    return parsedFilter;
+  }
+
+  /**
    * Sets Filter to empty object
    */
   clearFilter() {
@@ -50,7 +64,7 @@ class FilterableDataTable extends Component {
         name={this.props.name + '_filter'}
         id={this.props.name + '_filter'}
         columns={this.props.columns}
-        filter={this.state.filter}
+        filter={this.parseFilter(this.state.filter)}
         fields={this.props.fields}
         updateFilter={this.updateFilter}
         clearFilter={this.clearFilter}
