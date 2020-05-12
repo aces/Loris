@@ -48,7 +48,6 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
                s.Date_visit as Visit_date,
                s.CenterID as CenterID,
                p.Name as Site,
-               f.File as File,
                f.InsertTime as InsertTime,
                mst.Scan_type as ScanType,
                qc.QCStatus as QC_status,
