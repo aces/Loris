@@ -61,33 +61,54 @@ class Filter extends Component {
       const filter = field.filter;
       if (filter && filter.hide !== true) {
         let element;
+        let value = (this.props.filter[filter.name] || {}).value || false;
+
         switch (filter.type) {
-        case 'text':
-          element = <TextboxElement key={filter.name}/>;
-          break;
-        case 'select':
-          element = (
-            <SelectElement
-              key={filter.name}
-              options={filter.options}
-              sortByValue={filter.sortByValue}
-            />
-          );
-          break;
-        case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
-          break;
-        case 'numeric':
-          element = <NumericElement key={filter.name} options={filter.options}/>;
-          break;
-        case 'date':
-          element = <DateElement key={filter.name}/>;
-          break;
-        case 'checkbox':
-          element = <CheckboxElement key={filter.name}/>;
-          break;
-        default:
-          element = <TextboxElement key={filter.name}/>;
+          case 'text':
+            element = <TextboxElement key={filter.name}/>;
+            break;
+          case 'select':
+            element = (
+              <SelectElement
+                key={filter.name}
+                options={filter.options}
+                sortByValue={filter.sortByValue}
+              />
+            );
+            break;
+          case 'multiselect':
+            element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
+
+            value = [];
+            const filterOptions = this.props.filter[filter.name];
+            if (!filterOptions || !filterOptions.value) break;
+
+            let values = [];
+            if (Array.isArray(filterOptions.value)) {
+              values = filterOptions.value;
+            } else if (typeof filterOptions.value === 'string') {
+              values = filterOptions.value.split(',').map((el) => (el.trim())) || [];
+            }
+            value = values;
+
+            // If opposite is true, return the complement filters
+            if (filterOptions.hasOwnProperty('opposite') && filterOptions.opposite === true) {
+              value = Object.keys(filter.options).filter((val) => {
+                return !values.includes(val);
+              });
+            }
+            break;
+          case 'numeric':
+            element = <NumericElement key={filter.name} options={filter.options}/>;
+            break;
+          case 'date':
+            element = <DateElement key={filter.name}/>;
+            break;
+          case 'checkbox':
+            element = <CheckboxElement key={filter.name}/>;
+            break;
+          default:
+            element = <TextboxElement key={filter.name}/>;
         }
 
         // The value prop has to default to false if the first two options
@@ -98,7 +119,7 @@ class Filter extends Component {
           {
             name: filter.name,
             label: field.label,
-            value: (this.props.filter[filter.name] || {}).value || false,
+            value: value,
             onUserInput: this.onFieldUpdate,
           }
         ));

@@ -171,7 +171,7 @@ class IssueTrackerIndex extends Component {
       }},
       {label: 'Status', show: true, filter: {
         name: 'status',
-        type: 'select',
+        type: 'multiselect',
         options: options.statuses,
         }},
       {label: 'Priority', show: true, filter: {
