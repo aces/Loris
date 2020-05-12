@@ -79,16 +79,11 @@ directory.
 mv ./loris /var/www/; cd /var/www/loris
 ```
 
-### If installing LORIS for production
+Once in the correct directory, run the following commands:
 
 ```bash
-cd `/var/www/loris/`; make
-```
-
-### If installing LORIS for development
-
-```bash
-cd `/var/www/loris/`; make
+cd `/var/www/loris/`; make      // For production environments
+cd `/var/www/loris/`; make dev  // For development environments
 ```
 
 ## Running the install script
