@@ -378,7 +378,7 @@ class ImagePanelQCCaveatSelector extends Component {
     if (this.props.SeriesUID && this.props.Caveat === '1') {
         // If there is a manual caveat that was set, the link
         // will take you to it, even though there might also
-        // be a caveat that the set by the MRI piepline (i.e
+        // be a caveat that was set by the MRI piepline (i.e
         // not manual). Note that manual caveat are always
         // resolved
         if (this.props.CaveatViolationsResolvedID) {

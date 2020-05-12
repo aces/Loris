@@ -26,24 +26,36 @@
 15. Files can be downloaded (links clickable) if and only if user has at least one of the module permissions. Ensure that DICOM downloads are
 prepended with the Patient Name.
 16. Scan-level QC flags (Selected, pass/fail, Caveat emptor) are viewable to all, modifiable if and only if user has permission `imaging_browser_qc`.  
-17. Caveat List link is viewable with the Violated Scans if and only if user has `View all-sites Violated Scans` permission.
-18. Selected:  can be set back to Null (blank).
-19. Clicking on an image launches the BrainBrowser.
-20. Clicking on the "QC Comments" button opens the QC comments window.
-21. Longitudinal View button launches BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints.
+17. There will be a Caveat link just above the Caveat drop-down in the image panel of a given scan if and only if there is an MRI violation with:
+       i) the same path as the image file
+       ii) the same SeriesUID as the image's SeriesUID
+       iii) header set to 'Manual Caveat set by <username>'
+       iv) resolution type set to 'Inserted with flag'
+    Search in the MRI violations' Resolved tab using the scan's SeriesUID and image file path to verify this. Note that you can see the header
+    of an MRI violation by clicking on the 'Protocol Violation' link in the 'Problem' column.
+18. In the imaging browser, pick a scan that does not have a Caveat link. Use the drop-down to set the Caveat to true and save your modification.
+    Ensure that there is now a link to your newly created caveat and verify that when you click on it it redirects to the MRI violations' violations
+    resolved submenu with your caveat displayed in the search result table.
+19. In the imaging browser, pick a scan that has a Caveat link. Use the drop-down to set the Caveat to false and save your modification.
+    Ensure that there is no Caveat link for that scan now. Using the MRI violation module and the technique described in 17, validate that there
+    are no MRI violations that would justify the presence of a link for that scan.
+20. Selected:  can be set back to Null (blank).
+21. Clicking on an image launches the BrainBrowser.
+22. Clicking on the "QC Comments" button opens the QC comments window.
+23. Longitudinal View button launches the BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints.
 
 ### MRI-QC : Scan-level (QC Comments) dialog window
-22. With the permission `imaging_browser_qc`, edit comments, checkboxes, and dropdown values. 
-23. Clicking Save should update the values.
-24. Data should not be editable without this permission.
+24. With the permission `imaging_browser_qc`, edit comments, checkboxes, and dropdown values. 
+25. Clicking Save should update the values.
+26. Data should not be editable without this permission.
 
 ### Visit-level QC feedback dialog window
-25. On the view session page, click the button "Visit Level Feedback".
-26. The entries in this dialog should be editable when a user has the permission `imaging_browser_qc`.
-27. Try editing comments (adding new ones, deleting old ones). Click Save and ensure the data is saved.
+27. On the view session page, click the button "Visit Level Feedback".
+28. The entries in this dialog should be editable when a user has the permission `imaging_browser_qc`.
+29. Try editing comments (adding new ones, deleting old ones). Click Save and ensure the data is saved.
 
 ### Test the Candidate Dashboard widget
-28. Go to the candidate dashboard in the candidate module and check the Imaging QC Summary widget.
+30. Go to the candidate dashboard in the candidate module and check the Imaging QC Summary widget.
     - For each visit, check that the QC status displayed matches the Imaging Browser Module by hovering over any visit to see detailed modality breakdown for visit.
     - Click on a visit from the graph to access the imaging browser. Check that the link redirects to the correct scans in the imaging browser.
     - For a few candidate/visits, check that all the files from the Imaging Browser Module appear in the widget for all the visits.
