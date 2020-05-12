@@ -77,8 +77,15 @@ directory.
 
 ```bash
 mv ./loris /var/www/; cd /var/www/loris
+```
 
 ### If installing LORIS for production
+
+```bash
+cd `/var/www/loris/`; make
+```
+
+### If installing LORIS for development
 
 ```bash
 cd `/var/www/loris/`; make
