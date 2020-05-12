@@ -281,7 +281,6 @@ class ViewSession extends \NDB_Form
             );
             $QCStatus    = $FileObj->getParameter('QCStatus');
             $QCDate      = $FileObj->getParameter('QCLastChangeTime');
-            $Caveat      = $FileObj->getParameter('Caveat');
             $SNR         = $FileObj->getParameter('SNR');
             $SeriesUID   = $FileObj->getParameter('SeriesUID');
             $XMLreport   = $FileObj->getParameter('processing:DTIPrepXmlReport');
