@@ -350,8 +350,8 @@ class ViewSession extends \NDB_Form
      *
      * @param $fileID int the ID of the record in table files.
      *
-     * @return int ID of the associated record in table violations_resolved or
-     *             null if there is none.
+     * @return ?int ID of the associated record in table violations_resolved or
+     *              null if there is none.
      */
     function _getCaveatViolationsResolvedID(int $fileID): ?int
     {
