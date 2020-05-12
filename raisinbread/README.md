@@ -44,7 +44,8 @@ cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql
 In order to be able to use the RaisinBread dataset, the LORIS SQL schema needs to be
 sourced, followed by the different instrument schemas and finally the actual RB data.
 The commands below assume that the current working directory is the main LORIS root
-directory.
+directory. If the tables were not deleted or created properly, the schemas can be sourced 
+directly on the mysql command line.
 
 ```bash
 cat SQL/0000-00-00-schema.sql \
@@ -60,8 +61,6 @@ cat SQL/0000-00-00-schema.sql \
     raisinbread/instruments/instrument_sql/radiology_review.sql \
     raisinbread/RB_files/*.sql | mysql
 ```
-
-If the tables were not deleted or created properly, the above schemas can be sourced directly on the mysql command line.
 
 ##### Configuring
 In order to be able to load the LORIS front-end while using the RaisinBread dataset 
