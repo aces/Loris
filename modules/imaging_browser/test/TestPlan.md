@@ -41,3 +41,9 @@ prepended with the Patient Name.
 25. On the view session page, click the button "Visit Level Feedback".
 26. The entries in this dialog should be editable when a user has the permission `imaging_browser_qc`.
 27. Try editing comments (adding new ones, deleting old ones). Click Save and ensure the data is saved.
+
+### Test the Candidate Dashboard widget
+28. Go to the candidate dashboard in the candidate module and check the Imaging QC Summary widget.
+    - For each visit, check that the QC status displayed matches the Imaging Browser Module by hovering over any visit to see detailed modality breakdown for visit.
+    - Click on a visit from the graph to access the imaging browser. Check that the link redirects to the correct scans in the imaging browser.
+    - For a few candidate/visits, check that all the files from the Imaging Browser Module appear in the widget for all the visits.
