@@ -19,11 +19,11 @@
 
 8. Verify that own-site feedback data is Viewable { to everyone - no permission restrictions at present. Try accessing via Stats Bvl/Completion links. These permissions should be fixed.}
  
-9. Verify that own-site feedback data Editable IFF has permission bvl_feedback
+9. Verify that own-site feedback data Editable only if has permission bvl_feedback
 
-10. Verify that Other sites feedback data viewable IFF has permission:access_all_profiles
+10. Verify that Other sites feedback data viewable only if has permission:access_all_profiles
 
-11. Verify that Other sites feedback data editable IFF has permission:access_all_profiles ** should be changed to superuser
+11. Verify that Other sites feedback data editable only if has permission:access_all_profiles ** should be changed to superuser
 
 ## Creating/Editing feedback threads: 
 12. Create new feedback thread.  Does it save? Does it display in table at bottom?

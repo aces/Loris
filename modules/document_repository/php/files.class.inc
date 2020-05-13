@@ -42,7 +42,7 @@ class Files extends \NDB_Page
      *
      * @param \User $user The user whose access is being checked
      *
-     * @return bool true iff the user has access to this page.
+     * @return bool true only if the user has access to this page.
      */
     function _hasAccess(\User $user) : bool
     {
