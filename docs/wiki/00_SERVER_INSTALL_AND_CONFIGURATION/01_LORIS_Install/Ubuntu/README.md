@@ -79,7 +79,7 @@ directory.
 mv ./loris /var/www/; cd /var/www/loris
 ```
 
-Once in the correct directory, run the following commands:
+Once in the correct directory, run one of the following commands given your environment:
 
 ```bash
 cd `/var/www/loris/`; make      // For production environments
@@ -129,4 +129,3 @@ Your LORIS instance should now be accessible by pointing your browser URL to `ht
 
 
 Now that the installation is complete, follow the [Setup process](https://github.com/aces/Loris/wiki/Setup) to customize your project.
-
