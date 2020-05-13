@@ -273,9 +273,17 @@ class UploadForm extends Component {
         let messageToPrint = '';
         if (error.responseJSON && error.responseJSON.errors) {
           errorMessage = error.responseJSON.errors;
+        } else if (error.status == 0) {
+          errorMessage = {
+            'mriFile': ['Upload failed: a network error occured'],
+          };
         } else if (error.status == 413) {
           errorMessage = {
             'mriFile': ['Please make sure files are not larger than ' + this.props.maxUploadSize],
+          };
+        } else {
+          errorMessage = {
+            'mriFile': ['Upload failed: received HTTP response code ' + error.status],
           };
         }
         for (let i in errorMessage) {
