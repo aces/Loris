@@ -33,6 +33,15 @@ class FilterableDataTable extends Component {
    * @param {object} filter passed from FilterForm
    */
   updateFilter(filter) {
+    const searchParams = new URLSearchParams();
+    Object.entries(filter).forEach(([name, field]) => {
+      if (field.value.constructor === Array) {
+        field.value.forEach((v) => searchParams.append(name, v));
+      } else {
+        searchParams.append(name, field.value);
+      }
+    });
+    history.replaceState({}, '', `?${searchParams.toString()}`);
     this.setState({filter});
   }
 

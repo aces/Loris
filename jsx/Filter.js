@@ -37,23 +37,15 @@ class Filter extends Component {
    * @param {string} type - type of the form element
    */
   onFieldUpdate(name, value, id, type) {
-    const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = (!(type === 'textbox' || type === 'date'));
-    if (value === null || value === '' || (value.constructor === Array && value.length === 0)) {
+    if (value === null || value === '' ||
+        (value.constructor === Array && value.length === 0)) {
       delete filter[name];
-      searchParams.delete(name);
     } else {
-      if (value.constructor === Array) {
-        searchParams.delete(name);
-        value.forEach((v) => searchParams.append(name, v));
-      } else {
-        searchParams.set(name, value);
-      }
       filter[name] = {value, exactMatch};
     }
     this.props.updateFilter(filter);
-    history.replaceState(filter, '', `?${searchParams.toString()}`);
   }
 
   renderFilterFields() {
