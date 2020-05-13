@@ -82,8 +82,8 @@ mv ./loris /var/www/; cd /var/www/loris
 Once in the correct directory, run one of the following commands given your environment:
 
 ```bash
-cd `/var/www/loris/`; make      // For production environments
-cd `/var/www/loris/`; make dev  // For development environments
+make      // For production environments
+make dev  // For development environments
 ```
 
 ## Running the install script
