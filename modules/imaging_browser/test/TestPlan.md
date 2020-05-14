@@ -59,3 +59,4 @@ prepended with the Patient Name.
     - For each visit, check that the QC status displayed matches the Imaging Browser Module by hovering over any visit to see detailed modality breakdown for visit.
     - Click on a visit from the graph to access the imaging browser. Check that the link redirects to the correct scans in the imaging browser.
     - For a few candidate/visits, check that all the files from the Imaging Browser Module appear in the widget for all the visits.
+
