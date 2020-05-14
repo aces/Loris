@@ -5,7 +5,7 @@ This guide assumes installation on any supported OS.
 This guide offers support for common issues faced when first installing LORIS. It is assumed that all installation steps provided have been 
 correctly followed and that all required dependencies have been installed.
 
-## Frontend Not Loading
+## Frontend Does Not Load/JavaScript changes not visible
 The first thing to try is to run:
 
 ```bash
@@ -43,19 +43,6 @@ If that does not solve your issue, this could be because the Config table in the
 
 3. Check the base path does not have a trailing slash at the end. If it does, update its value to remove it.
 
-
-## Javascript changes not visible
-Try is to run:
-
-```bash
-make
-```
-
-Alternatively, on development instances:
-
-```bash
-make dev
-```
 
 ## Frontend stylesheets issues
 [work in progress] 
