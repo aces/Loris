@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Panel from 'jsx/Panel';
-import {Tabs, TabPane} from 'jsx/Tabs';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
 
@@ -41,7 +40,7 @@ class FilterableDataTable extends Component {
         searchParams.append(name, field.value);
       }
     });
-    history.replaceState({}, '', `?${searchParams.toString()}`);
+    history.replaceState(filter, '', `?${searchParams.toString()}`);
     this.setState({filter});
   }
 
@@ -63,6 +62,7 @@ class FilterableDataTable extends Component {
         fields={this.props.fields}
         updateFilter={this.updateFilter}
         clearFilter={this.clearFilter}
+        filterPresets={this.props.filterPresets}
       />
     );
 
@@ -79,33 +79,10 @@ class FilterableDataTable extends Component {
       />
     );
 
-    const filterPresets = () => {
-      if (this.props.filterPresets) {
-        const tabPanes = this.props.filterPresets.map((preset) => {
-          return <TabPane TabId={preset.label} key={preset.label}/>;
-        });
-        const tabs = this.props.filterPresets.map((preset) => {
-          return {id: preset.label, label: preset.label};
-        });
-
-        return (
-          <Tabs tabs={tabs} updateURL={true} onTabChange={(tabId) => {
-            const active = this.props.filterPresets.find((preset) => {
-              return preset.label === tabId;
-            });
-            this.updateFilter(active.filter);
-          }}>
-            {tabPanes}
-          </Tabs>
-        );
-      };
-    };
-
     return (
       <Panel title={this.props.title}>
         {filter}
         {this.props.children}
-        {filterPresets()}
         {dataTable}
       </Panel>
     );

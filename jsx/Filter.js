@@ -101,6 +101,28 @@ class Filter extends Component {
   }
 
   render() {
+    const filterPresets = () => {
+      if (this.props.filterPresets) {
+        const presets = this.props.filterPresets.map((preset) => {
+          const handleClick = () => this.props.updateFilter(preset.filter);
+          return <li><a onClick={handleClick}>{preset.label}</a></li>;
+        });
+        return (
+          <ul className='nav nav-tabs navbar-right' style={{borderBottom: 'none'}}>
+            <li className='dropdown'>
+              <a className='dropdown-toggle' data-toggle='dropdown' role='button'>Load Filter <span className='caret'/></a>
+              <ul className='dropdown-menu' role='menu'>
+                {presets}
+              </ul>
+            </li>
+            <li>
+              <a role='button' onClick={this.props.clearFilter}>Clear Filter</a>
+            </li>
+          </ul>
+        );
+      };
+    };
+
     return (
       <FormElement
         id={this.props.id}
@@ -110,12 +132,8 @@ class Filter extends Component {
           columns={this.props.columns}
           legend={this.props.title}
         >
+          {filterPresets()}
           {this.renderFilterFields()}
-          <ButtonElement
-            label="Clear Filters"
-            type="reset"
-            onUserInput={this.props.clearFilter}
-          />
         </FieldsetElement>
       </FormElement>
     );
