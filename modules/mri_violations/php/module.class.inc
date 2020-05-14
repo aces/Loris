@@ -221,16 +221,16 @@ class Module extends \Module
             );
             $label   = $number >  1 ? 'Violated scans' : 'Violated scan';
 
+            $siteLabel = $user->hasPermission('violated_scans_view_allsites')
+                ? 'Site: All' : 'Site: All User Sites';
             $widget    = new \LORIS\dashboard\TaskWidget(
                 $label,
                 $number,
                 $link,
-                'mri_violations'
+                'mri_violations',
+                $siteLabel
             );
-            $siteLabel = $user->hasPermission('violated_scans_view_allsites')
-                ? 'Site: All' : 'Site: All User Sites';
 
-            $widget->setSiteLabel($siteLabel);
             return [ $widget ];
         }
 

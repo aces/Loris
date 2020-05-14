@@ -75,7 +75,6 @@ class TaskQueryWidget extends TaskWidget
             $label .= "s";
         }
 
-        parent::__construct($label, $number, $link, $cssclass);
-        $this->setSiteLabel($siteLabel);
+        parent::__construct($label, $number, $link, $cssclass, $siteLabel);
     }
 }

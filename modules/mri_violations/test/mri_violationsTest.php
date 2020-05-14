@@ -597,7 +597,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     /**
      * Verify that for a user with 'violated_scans_view_allsites' permission the
      * number of MRI violated scans is reported in the My Task panel.
-     * Also ensure that when you click on this tas, the link takes you to the
+     * Also ensure that when you click on this task, the link takes you to the
      * MRI violated scans page.
      *
      * @return void
@@ -624,7 +624,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     /**
      * Verify that for a user with 'violated_scans_view_ownsite' permission the
      * number of MRI violated scans is reported in the My Task panel.
-     * Also ensure that when you click on this tas, the link takes you to the
+     * Also ensure that when you click on this task, the link takes you to the
      * MRI violated scans page.
      *
      * @return void

@@ -41,22 +41,25 @@ class TaskWidget implements \LORIS\GUI\Widget
     /**
      * Construct a TaskWidget with the given properties.
      *
-     * @param string $label    The label to describe the task.
-     * @param int    $number   The number of outstanding items for the task.
-     * @param string $link     A URL to go to when the user clicks on the task.
-     * @param string $cssclass A CSS class to add to the element. This is primarily
-     *                         used for testing.
+     * @param string $label     The label to describe the task.
+     * @param int    $number    The number of outstanding items for the task.
+     * @param string $link      A URL to go to when the user clicks on the task.
+     * @param string $cssclass  A CSS class to add to the element. This is primarily
+     *                          used for testing.
+     * @param string $siteLabel Site label to display besides the widget.
      */
     public function __construct(
         string $label,
         int $number,
         string $link,
-        string $cssclass
+        string $cssclass,
+        string $siteLabel=''
     ) {
-        $this->label    = $label;
-        $this->number   = $number;
-        $this->link     = $link;
-        $this->cssclass = $cssclass;
+        $this->label     = $label;
+        $this->number    = $number;
+        $this->link      = $link;
+        $this->cssclass  = $cssclass;
+        $this->sitelabel = $siteLabel;
     }
 
     /**
@@ -87,18 +90,6 @@ class TaskWidget implements \LORIS\GUI\Widget
     public function link() : string
     {
         return $this->link;
-    }
-
-    /**
-     * Mutator method for field $sitelabel.
-     *
-     * @param string $newSiteLabel new value for field $sitelabel.
-     *
-     * @return void
-     */
-    public function setSiteLabel(string $newSiteLabel)
-    {
-        $this->sitelabel = $newSiteLabel;
     }
 
     /**
