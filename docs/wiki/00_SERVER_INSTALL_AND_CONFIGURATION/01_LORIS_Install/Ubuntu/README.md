@@ -97,8 +97,8 @@ sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
 sudo usermod -a -G lorisadmin www-data
 # Set the password for the lorisadmin account
 sudo passwd lorisadmin
-sudo mkdir -m 755 -p /var/www/$projectname
-sudo chown lorisadmin.lorisadmin /var/www/$projectname
+sudo mkdir -m 755 -p /var/www/loris
+sudo chown lorisadmin.lorisadmin /var/www/loris
 su - lorisadmin
 ```
 
