@@ -29,6 +29,16 @@ that is not the case, replace all `mysql` commands below by the necessary values
 `mysql -u user -p -h host database_name`*
 
 ##### Sourcing SQL
+The script `tools/raisinbread_refresh.php` includes functionality that drops all existing tables in the
+database and sources all of the RaisinBread data automatically. To run this script, navigate to the LORIS
+root directory and run the following command:
+
+```bash
+./tools/raisinbread_refresh.php
+```
+
+Alternatively, a step-by-step guide to sourcing the RaisinBread data is outlined below. 
+
 If the database being used is already populated and contains any tables or data, the following
 command must be used in the main LORIS root directory. Note that these commands will erase all the data
 in the database. Ensure that a backup is available if this data is important:
