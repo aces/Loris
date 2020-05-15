@@ -82,36 +82,50 @@ mv ./loris /var/www/; cd /var/www/loris
 Once in the correct directory, run one of the following commands given your environment:
 
 ```bash
-make      // For production environments
-make dev  // For development environments
+make      # For production environments
+make dev  # For development environments
 ```
 
 ## Creating the lorisadmin user
+Create the _lorisadmin_ user and group and give _lorisadmin_ `sudo` permission. 
+This is required for the install process in order to automatically generate
+Apache configuration files. Sudo priviledges can be revoked once the install
+is completed. 
+
 ```bash
-# Create lorisadmin user and group
-# Give lorisadmin `sudo` permission. This is required for the install process
-# in order to automatically generate Apache configuration files.
-# Sudo privileges can be revoked once the install is completed.
 sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
-# Add apache to the lorisadmin group
+```
+
+Next, add Apache to the _lorisadmin_ group
+
+```bash
 sudo usermod -a -G lorisadmin www-data
-# Set the password for the lorisadmin account
+```
+Then, set the password for the _lorisadmin_ account
+
+```bash
 sudo passwd lorisadmin
+su - lorisadmin
+```
+
+Finally, create the _loris root_ directory
+
+```bash
 sudo mkdir -m 755 -p /var/www/loris
 sudo chown lorisadmin.lorisadmin /var/www/loris
-su - lorisadmin
 ```
 
 ## Running the install script
 
 The next step in setting up LORIS is running the script `install.sh` in the 
-`tools/` directory. The script must be run from that directory.
+`tools/` directory. The script must be run from that directory, and must not be
+run using `sudo`.
 
 This will begin an interactive setup process that will configure files and
 permissions required to get LORIS up and running.
 
 ```bash
-cd tools/
+cd /var/www/loris/tools/
 ./install.sh
 ```
 
