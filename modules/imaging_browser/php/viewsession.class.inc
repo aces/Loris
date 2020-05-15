@@ -292,7 +292,7 @@ class ViewSession extends \NDB_Form
             );
 
             $caveatViolationsResolvedID
-                = $this->_getCaveatViolationsResolvedID($FileID);
+                = $this->_getManualCaveatViolationsResolvedID($FileID);
             $caveat = $caveatViolationsResolvedID ? 1 : 0;
             $file   = array(
                 'FileID'                     => $FileID,
@@ -346,14 +346,14 @@ class ViewSession extends \NDB_Form
 
     /**
      * Gets the ID of the record in table violations_resolved associated
-     * to the record in table files with the ID passed as argument.
+     * to the manual caveat set on a given file.
      *
      * @param $fileID int the ID of the record in table files.
      *
      * @return ?int ID of the associated record in table violations_resolved or
      *              null if there is none.
      */
-    function _getCaveatViolationsResolvedID(int $fileID): ?int
+    function _getManualCaveatViolationsResolvedID(int $fileID): ?int
     {
         $query = "
             SELECT vr.ID 
@@ -502,7 +502,7 @@ class ViewSession extends \NDB_Form
                 );
 
                 $caveatViolationsResolvedID
-                    = $this->_getCaveatViolationsResolvedID($curFileID);
+                    = $this->_getManualCaveatViolationsResolvedID($curFileID);
                 // If Caveat was set to true and there is not already a manual
                 // caveat for that scan, then the user wants to create one
                 if ($curCaveat === '1' && !$caveatViolationsResolvedID) {
