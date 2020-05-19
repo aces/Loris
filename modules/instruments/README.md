@@ -41,7 +41,7 @@ instruments, but does not load through this module.
 `bvl_feedback` threads for an instrument may be created on this
 module.
 
-## Dashboard Widget
+### Dashboard Widget
 
 The total `Incomplete forms` will be shown inside the Dashboard widget, 
 named "My Tasks" and with a link redirecting to statistics/statistics_site.
