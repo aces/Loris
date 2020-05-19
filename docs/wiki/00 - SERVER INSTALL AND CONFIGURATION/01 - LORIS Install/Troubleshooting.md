@@ -42,10 +42,7 @@ If that does not solve your issue, this could be because the Config table in the
    ```
 
 3. Check the base path does not have a trailing slash at the end. If it does, update its value to remove it.
-4. Once the necessary changes have been made to your database, exit the MySQL backend and run the following command before re-loading the frontend:
-```bash
-service apache2 restart
-```
+4. Once the necessary changes have been made to your database, exit the MySQL backend and restart Apache before re-loading the frontend.
 
 
 ## Admin login issues
