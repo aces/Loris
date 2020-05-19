@@ -11,7 +11,7 @@ the dataset.
 
 ### Automated RB Installation
 The script `tools/raisinbread_refresh.php` includes functionality that drops all existing tables in the
-database and sources all of the RaisinBread data automatically. The script will preserve database settings such as API Keys and server configuration settings to simplify the process of switching between development environments. This tool can be run through the provided Makefile. To run this script, navigate to the LORIS
+database and sources all of the RaisinBread data automatically. The script will preserve some server configuration settings in your database to simplify the process of switching between development environments. This tool can be run through the provided Makefile. To run this script, navigate to the LORIS
 root directory and run the following command:
 
 ```bash
