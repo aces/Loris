@@ -24,7 +24,7 @@ If that does not solve your issue, this could be because the Config table in the
 
    | Name | Label          | Value          |  
    | ---- | ----------- | ---------- |
-   | base | Base           | /var/www/loris |
+   | base | Base           | $lorisRootDirectory |
    | host | Host           | $yourHostName  | 
     
    These values can be viewed by running the following commands:
@@ -44,8 +44,7 @@ If that does not solve your issue, this could be because the Config table in the
 3. Check the base path does not have a trailing slash at the end. If it does, update its value to remove it.
 
 
-## Frontend stylesheets issues
-[work in progress] 
+## Frontend Stylesheets Issues
 * Check/fix config paths via the mysql back-end
 
 
