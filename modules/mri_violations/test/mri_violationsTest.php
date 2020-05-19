@@ -108,7 +108,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'UserID'       => '2',
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
-                'Visit_label'  => 'Test1',
+                'Visit_label'  => 'Test2',
             )
         );
 
@@ -144,15 +144,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'TarchiveID'             => '264',
                 'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
                '100912542610900000004',
-                'PatientID'              => '8888_999888_Test1',
-                'PatientName'            => '8888_999888_Test1',
+                'PatientID'              => '8888_999888_Test2',
+                'PatientName'            => '8888_999888_Test2',
                 'CenterName'             => 'Test',
                 'AcquisitionCount'       => '10',
                 'NonDicomFileCount'      => '3',
                 'DicomFileCount'         => '1000',
                 'CreatingUser'           => 'lorisdev',
                 'sumTypeVersion'         => '1',
-                'SourceLocation'         => '/data/incoming/8888_999888_Test1',
+                'SourceLocation'         => '/data/incoming/8888_999888_Test2',
                 'ScannerManufacturer'    => 'Siemens',
                 'ScannerModel'           => 'TrioTim',
                 'ScannerSerialNumber'    => '33333',
@@ -191,7 +191,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             array(
                 'ID'                 => '1002',
                 'CandID'             => '999777',
-                'PatientName'        => '[name]test_Test1',
+                'PatientName'        => '[name]test_Test2',
                 'time_run'           => '2008-06-29 04:00:44',
                 'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
                 'series_description' => 'Test Series Description',
@@ -209,7 +209,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'Resolved'  => 'other',
             )
         );
-
+        $this->DB->insert(
+            "MRICandidateErrors",
+            array(
+                'ID'          => '1002',
+                'PatientName' => '[Test]PatientName',
+                'MincFile'    => 'assembly/test2/test2/mri/test2/test3.mnc',
+                'SeriesUID'   => '5558',
+            )
+        );
     }
     /**
      * Delete the test data
@@ -218,7 +226,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     public function tearDown()
     {
-
+        $this->DB->delete(
+            "MRICandidateErrors",
+            array('ID' => '1002')
+        );
         $this->DB->delete(
             "mri_protocol_violated_scans",
             array('ID' => '1001')
@@ -581,7 +592,65 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "Site",
             "TESTinPSC"
         );
+    }
 
+    /**
+     * Verify that for a user with 'violated_scans_view_allsites' permission the
+     * number of MRI violated scans is reported in the My Task panel.
+     * Also ensure that when you click on this task, the link takes you to the
+     * MRI violated scans page.
+     *
+     * @return void
+     */
+    public function testDashboardWidgetAllSites()
+    {
+        $this->setupPermissions(
+            array(
+                'violated_scans_view_allsites'
+            )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        // Raisin bread has 206 unresolved violated scans. We are adding three
+        // in setup(): one resolved, and two unresolved. The total
+        // number of unresolved violations is thus 208
+        $this->_testMytaskPanelAndLink(
+            ".mri_violations",
+            "208",
+            "- MRI Violated Scans"
+        );
+        $this->resetPermissions();
+    }
+
+    /**
+     * Verify that for a user with 'violated_scans_view_ownsite' permission the
+     * number of MRI violated scans is reported in the My Task panel.
+     * Also ensure that when you click on this task, the link takes you to the
+     * MRI violated scans page.
+     *
+     * @return void
+     */
+    public function testDashboardWidgetOwnSite()
+    {
+
+        $this->setupPermissions(
+            array(
+                'violated_scans_view_ownsite'
+            )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        // Raisin bread has 164 unresolved violated scans that are not assigned
+        // to any site and 18 unresolved violations assigned to DCC. We are
+        // adding three in setup(): one resolved, another unresolved assigned to
+        // center ID 55 and another not assigned to any site. The total number of
+        // unresolved violations that are either assigned to DCC or not assigned to
+        // any site is thus: 164+18+1 = 184.
+        // Note that the test user is only assigned to sites DCC
+        $this->_testMytaskPanelAndLink(
+            ".mri_violations",
+            "183",
+            "- MRI Violated Scans"
+        );
+        $this->resetPermissions();
     }
 
     /**
@@ -607,7 +676,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                     '#datatable > div > div.table-header.panel-heading > div')
                  .textContent"
         );
-
         $this->assertContains("1 rows displayed of 1", $bodyText);
         $this->webDriver->findElement(
             WebDriverBy::Name("reset")

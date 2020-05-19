@@ -681,4 +681,30 @@ abstract class LorisIntegrationTest extends TestCase
             //test clear filter
             $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
     }
+
+    /**
+     * Utility method for classes that register widgets on the dashboard: ensure that
+     * the task panel has the expected content.
+     *
+     * @param string $className class Name of widget in the task panel
+     * @param string $value     the total count displayed for that widget
+     * @param string $label     label for that widget
+     *
+     * @return void
+     */
+    function _testMytaskPanelAndLink($className, $value, $label): void
+    {
+        $this->safeGet($this->url . '/dashboard/');
+        $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
+        $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
+        $this->assertContains($value, $bodyText);
+        $this->safeClick(WebDriverBy::cssSelector($className));
+        $this->webDriver->wait(3, 500)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::Id('lorisworkspace')
+            )
+        );
+        $pageSource = $this->webDriver->getPageSource();
+        $this->assertContains($label, $pageSource);
+    }
 }
