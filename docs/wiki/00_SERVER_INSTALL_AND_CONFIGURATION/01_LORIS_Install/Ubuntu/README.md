@@ -66,7 +66,7 @@ tar -zxf loris-src.tar.gz
 This will create a folder called something like `aces-Loris-9e30cf0`. (The
 part after `aces-Loris` is not important).
 
-Rename this file to `loris`, e.g.
+Rename this folder to `loris`, e.g.
 
 ```bash
 mv aces-Loris-9e30cf0 loris
@@ -118,8 +118,8 @@ sudo chown lorisadmin.lorisadmin /var/www/loris
 ## Running the install script
 
 The next step in setting up LORIS is running the script `install.sh` in the 
-`tools/` directory. The script must be run from that directory, and must not be
-run using `sudo`.
+`tools/` directory. The script must be run from that directory, and must _not_ be
+run using sudo.
 
 This will begin an interactive setup process that will configure files and
 permissions required to get LORIS up and running.
