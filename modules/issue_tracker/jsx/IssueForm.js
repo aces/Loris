@@ -227,6 +227,7 @@ class IssueForm extends Component {
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.centerID}
+            required={true}
           />
           <SelectElement
             name='status'
@@ -372,6 +373,9 @@ class IssueForm extends Component {
 
     for (let key in myFormData) {
       if (myFormData[key] !== '') {
+        // All Sites selected - Ignore value to store NULL in DB
+        if (key == 'centerID' && myFormData[key] == '0') continue;
+
         formData.append(key, myFormData[key]);
       }
     }

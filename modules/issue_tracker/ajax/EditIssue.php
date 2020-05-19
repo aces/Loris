@@ -583,6 +583,8 @@ function getIssueFields()
         $sites = $user->getStudySites();
     }
 
+    $sites[0] = "All Sites";
+
     //not yet ideal permissions
     $assignees = array();
     if ($user->hasPermission('access_all_profiles')) {

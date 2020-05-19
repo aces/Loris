@@ -8,21 +8,22 @@
 5. Test that the watching checkbox works correctly (issues that your userID is watching in issues_watching table)
 6. Check that links to issues in table are correct.
 7. Check that table sorts and displays additional pages correctly 
-8. Check that a user who does not have access_all_profiles permission and limited sites access (see __user_psc_rel__ table for user/CenterID relationships) can see all issues with a site set to NULL.
+8. Check that a user who does not have access_all_profiles permission and belongs to only one site can see all issues with a site set to NULL.
 
 ## Issue Tracker Create New Issue [Manual Testing]
 1. User can access the page if they have `issue_tracker_reporter` or `issue_tracker_developer` permission.
-2. Check that title and assignee are required. 
-3. Do not provide a PSCID value and check that site can be null or populated by one of the dropdown values. 
-4. Submit a PSCID and leave the Site blank. This should work if the PSCID exists in the database.
-5. Submit a PSCID with a Site value. This should not work if the PSCID does not exists or if the PSCID does not match with the site.
-6. Should display message, and redirect after success. 
-7. Submit invalid and valid PSCID and visit label pairs. Error messages should display accordingly. 
-8. A user should be able to submit a PSCID from other sites only if they have `access_all_profiles` permission. 
-9. Submit just a visit label - this should give an error message.
-10. Check that all values are propagated and saved correctly.
-11. Add an attachment to the new issue and make sure that it is successfully uploaded.
-12. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
+2. Check that title, assignee and site are required.
+3. Do not provide a PSCID value and set site to All Sites. This should set Site to NULL after success.
+4. Do not provide a PSCID value and and check that site can be populated by a particular site (except All Sites) in the dropdown values.
+5. Submit a PSCID and set Site to All Sites. This should work if the PSCID exists in the database.
+6. Submit a PSCID with a Site value (except All Sites). This should not work if the PSCID does not exists or if the PSCID does not match with the site.
+7. Should display message, and redirect after success. 
+8. Submit invalid and valid PSCID and visit label pairs. Error messages should display accordingly. 
+9. A user should be able to submit a PSCID from other sites only if they have `access_all_profiles` permission. 
+10. Submit just a visit label - this should give an error message.
+11. Check that all values are propagated and saved correctly.
+12. Add an attachment to the new issue and make sure that it is successfully uploaded.
+13. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
 
 ## Issue Tracker Edit Existing Issue [Manual Testing]
 1. User can access the page if they fulfill all the following conditions:
