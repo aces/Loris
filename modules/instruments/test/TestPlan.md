@@ -44,14 +44,14 @@ instrument for that candidate. Enter a date (same a step 4) posterior to the DoD
     - **Validity:** can be marked as “Valid”, “Questionable”, or “Invalid”. Whether or not this flag is shown for an instrument is by the boolean $ValidityEnabled. Whether the field is required before flagging an instrument as complete is determined by $ValidityRequired.
     - You can test the forgoing flags by switching the corresponding boolean of the test instruments to either `true` or `false`.
 
-### The Dashboard module corresponding to Instruments module.
+### Visit the Dashboard module.
    1. Dashboard Widget - "My Tasks" for Incomplete forms 
       - Ensure the total of Incomplete forms correspond with the correct 
             number of candidates inside the statistics/statistics_site module.
       - Click on the total number of Incomplete forms and check if redirection
             to the statistics/statistics_site module succeeds.
 
-### The Candidate_list module corresponding to Instruments module.
+### Visit the Candidate Dashboard module.
    1. Candidate Widget - "Behavioural Data" for Candidate instruments entry.
       - Ensure the appropriate visit labels are visible for the candidate. 
       - The visit status, subproject status, site, date of visit, and age should be shown.
