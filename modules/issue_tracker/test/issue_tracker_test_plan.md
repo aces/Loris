@@ -8,18 +8,21 @@
 5. Test that the watching checkbox works correctly (issues that your userID is watching in issues_watching table)
 6. Check that links to issues in table are correct.
 7. Check that table sorts and displays additional pages correctly 
-8. Check that a user who does not have access to all centers can see all issues with a site set to NULL.
+8. Check that a user who does not have access_all_profiles permission and limited sites access (see __user_psc_rel__ table for user/CenterID relationships) can see all issues with a site set to NULL.
 
 ## Issue Tracker Create New Issue [Manual Testing]
 1. User can access the page if they have `issue_tracker_reporter` or `issue_tracker_developer` permission.
 2. Check that title and assignee are required. 
-3. Check that site can be null or populated by one of the dropdown values. 
-4. Should display message, and redirect after success. 
-5. Submit invalid and valid PSCID and visit label pairs. Error messages should respond accordingly. Note that you cannot submit PSCIDs from other sites unless you have `access_all_profiles` permission
-6. Submit just a visit label - this should give an error message.
-7. Check that all values are propagated and saved correctly.
-8. Add an attachment to the new issue and make sure that it is successfully uploaded.
-9. Check that watching options are working - turn it off and on for your current user, and for other watchers on the issue, and check that values are saved.
+3. Do not provide a PSCID value and check that site can be null or populated by one of the dropdown values. 
+4. Submit a PSCID and leave the Site blank. This should work if the PSCID exists in the database.
+5. Submit a PSCID with a Site value. This should not work if the PSCID does not exists or if the PSCID does not match with the site.
+6. Should display message, and redirect after success. 
+7. Submit invalid and valid PSCID and visit label pairs. Error messages should display accordingly. 
+8. A user should be able to submit a PSCID from other sites only if they have `access_all_profiles` permission. 
+9. Submit just a visit label - this should give an error message.
+10. Check that all values are propagated and saved correctly.
+11. Add an attachment to the new issue and make sure that it is successfully uploaded.
+12. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
 
 ## Issue Tracker Edit Existing Issue [Manual Testing]
 1. User can access the page if they fulfill all the following conditions:
