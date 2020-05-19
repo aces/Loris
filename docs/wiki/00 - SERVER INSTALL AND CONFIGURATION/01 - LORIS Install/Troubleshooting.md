@@ -25,7 +25,7 @@ If that does not solve your issue, this could be because the Config table in the
    | Name | Label          | Value          |  
    | ---- | ----------- | ---------- |
    | base | Base           | $lorisRootDirectory |
-   | host | Host           | $yourHostName  | 
+   | host | Host           | $hostName  | 
     
    These values can be viewed by running the following commands:
     
@@ -37,19 +37,19 @@ If that does not solve your issue, this could be because the Config table in the
 2. If they do not match the above format, update these values with the following commands on the MySQL command-line.
 
    ```sql
-   UPDATE Config SET Value='$yourBasePath' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');
-   UPDATE Config SET Value='$yourHostName' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
+   UPDATE Config SET Value='$lorisRootDirectory' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');
+   UPDATE Config SET Value='$hostName' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
    ```
 
 3. Check the base path does not have a trailing slash at the end. If it does, update its value to remove it.
-
-
-## Frontend Stylesheets Issues
-* Check/fix config paths via the mysql back-end
+4. Once the necessary changes have been made to your database, exit the MySQL backend and run the following command before re-loading the frontend:
+```bash
+service apache2 restart
+```
 
 
 ## Admin login issues
-If have troubles to log in to LORIS with your admin user after an installation or upgrade, make sure your admin account record in the users table contains:                                                       
+If you are unable to log in to LORIS with your admin user after an installation or upgrade, make sure your admin account record in the users table contains:                                                       
 ```  
 Active = 'Y'
 Pending_approval = 'N'
