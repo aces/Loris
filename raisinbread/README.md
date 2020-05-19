@@ -19,7 +19,7 @@ make testdata
 ```
 
 If RaisinBread is being installed for the first time, the steps outlined below in the 
-[Configuring](https://github.com/aces/Loris/tree/23.0-release/raisinbread#configuring) section must be completed. 
+_Configuring_ section must be completed. 
 
 ### Manual RB Installation
 The RaisinBread data is stored in the form of SQL INSERT statements located in the 
