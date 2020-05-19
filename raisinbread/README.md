@@ -9,7 +9,19 @@ adjusted when existing features are changed or removed.
 The sections below provide some insights into installing, modifying and exporting 
 the dataset.
 
-### Installing RB
+### Automated RB Installation
+The script `tools/raisinbread_refresh.php` includes functionality that drops all existing tables in the
+database and sources all of the RaisinBread data automatically. The script will preserve database settings such as API Keys and server configuration settings to simplify the process of switching between development environments. This tool can be run through the provided Makefile. To run this script, navigate to the LORIS
+root directory and run the following command:
+
+```bash
+make testdata
+```
+
+If RaisinBread is being installed for the first time, the steps outlined below in the 
+[Configuring](https://github.com/aces/Loris/tree/23.0-release/raisinbread#configuring) section must be completed. 
+
+### Manual RB Installation
 The RaisinBread data is stored in the form of SQL INSERT statements located in the 
 `/raisinbread/RB_files/` directory and grouped by the database table they belong to. 
 These statements rely on the pre-existence of the SQL tables and thus the data is 
@@ -29,16 +41,6 @@ that is not the case, replace all `mysql` commands below by the necessary values
 `mysql -u user -p -h host database_name`*
 
 ##### Sourcing SQL
-The script `tools/raisinbread_refresh.php` includes functionality that drops all existing tables in the
-database and sources all of the RaisinBread data automatically. To run this script, navigate to the LORIS
-root directory and run the following command:
-
-```bash
-./tools/raisinbread_refresh.php
-```
-
-Alternatively, a step-by-step guide to sourcing the RaisinBread data is outlined below. 
-
 If the database being used is already populated and contains any tables or data, the following
 command must be used in the main LORIS root directory. Note that these commands will erase all the data
 in the database. Ensure that a backup is available if this data is important:
