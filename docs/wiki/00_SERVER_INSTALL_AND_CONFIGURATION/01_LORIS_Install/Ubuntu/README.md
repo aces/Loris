@@ -43,7 +43,7 @@ The following Ubuntu packages are required and should be installed using
 
 ## Getting the source code
 
-Visit the [releases](github.com/aces/loris/releases) page and download the zipped file of the latest LORIS
+Visit the [releases](https://github.com/aces/loris/releases) page and download the zipped file of the latest LORIS
 release. The below command will download the latest LORIS release and save 
 it to a file named `loris-src.tar.gz`.
 

@@ -1,7 +1,7 @@
 # Routing
 
 Since LORIS 20.0, LORIS has included a router and middleware based
-on (PSR15)[https://www.php-fig.org/psr/psr-15/] This has a number
+on [PSR15](https://www.php-fig.org/psr/psr-15/) This has a number
 of benefits over the custom scripts in the htdocs directory used
 by previous LORIS releases such as reducing the dependency on Apache,
 removing the dependency on mod_rewrite, and making it possible for
