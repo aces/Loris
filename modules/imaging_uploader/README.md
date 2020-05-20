@@ -71,7 +71,7 @@ The imaging uploader has the following configurations that affect its usage:
 
 ### LORIS-MRI
 
-The LORIS instance must be configured to interface with LORIS-MRI. Please visit
+The imaging insertion pipelines and libraries in the Loris-MRI repo must be installed, configured, and tested before imaging data can be loaded into LORIS via this module. Please visit
 [the documentation for LORIS-MRI](https://github.com/aces/Loris-MRI#installation) 
 for more information.
 
@@ -105,4 +105,3 @@ study) are present
 - If `ImagingUploaderAutoLaunch` configuration is enabled, the Server Process
 Manager under the Admin menu can be consulted for scans insertion progress 
 (exit codes, error files, etc...). 
-
