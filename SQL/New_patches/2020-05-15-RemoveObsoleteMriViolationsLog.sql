@@ -2,7 +2,7 @@
 -- When you set the Caveat flag of a scan to true in the imaging browser, a record
 -- is created in table mri_violations_log to indicate that there is a manual caveat 
 -- for that scan. If you subsequently set the Caveat back to false, this record is not
--- delete. This PR deletes those obsolete entries in table mri_violations_log
+-- deleted. This PR deletes those obsolete entries in table mri_violations_log
 -- -----------------------------------------------------------------------------------
 
 DELETE mvl
