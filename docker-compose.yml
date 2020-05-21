@@ -57,6 +57,7 @@ services:
     environment:
       - LORIS_DB_CONFIG=test/config.xml
       - SELENIUM_REQUIRED=true
+      - DOCKER_URL=http://web:8000
     depends_on:
       - db
       - selenium
