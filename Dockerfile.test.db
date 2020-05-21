@@ -33,6 +33,6 @@ RUN echo "Use LorisTest;" | cat - \
 
 RUN echo "Use LorisTest;" >> /docker-entrypoint-initdb.d/0001-paths.sql
 RUN echo "UPDATE Config SET Value='${BASE_DIR}/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');" >> /docker-entrypoint-initdb.d/0001-paths.sql
-RUN echo "UPDATE Config SET Value='http://web:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url');" >> /docker-entrypoint-initdb.d/0001-paths.sql
+RUN echo "UPDATE Config SET Value='web:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');" >> /docker-entrypoint-initdb.d/0001-paths.sql
 
 RUN echo "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'%' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION;" >> /docker-entrypoint-initdb.d/0004-sql-user.sql

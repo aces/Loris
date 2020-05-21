@@ -77,7 +77,8 @@ abstract class LorisIntegrationTest extends TestCase
             $database['host'],
             1
         );
-        $this->url = $this->factory->settings()->getBaseURL();
+        $this->url = $this->config->getSetting("host");
+        $this->url = "https://" . $this->url;
         $password  = new \Password($this->validPassword);
 
         $this->DB->insert(
