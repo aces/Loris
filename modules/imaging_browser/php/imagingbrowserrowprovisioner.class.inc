@@ -206,7 +206,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               $left_joins 
             WHERE 
               s.Active = 'Y' AND
-              f.FileType='mnc'
+              f.FileType IN ('mnc', 'nii')
             GROUP BY s.ID
             ORDER BY c.PSCID, s.Visit_label
             ",
