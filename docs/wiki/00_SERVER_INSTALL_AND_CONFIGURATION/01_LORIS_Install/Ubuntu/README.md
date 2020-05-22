@@ -53,7 +53,7 @@ curl -s https://api.github.com/repos/aces/loris/releases/latest \
 | cut -d : -f2,3 \
 | tr -d \" \
 | tr -d ,\
-| xargs -n 1 curl -s -o loris-src.tar.gz
+| xargs -n 1 curl -L -s -o loris-src.tar.gz
 ```
 
 When this is complete, expand the compressed file and move its contents to the
@@ -107,11 +107,15 @@ Then, set the password for the _lorisadmin_ account
 sudo passwd lorisadmin
 su - lorisadmin
 ```
-
-Finally, create the _loris root_ directory
+If the _loris root_ directory has not already been created, create it here
 
 ```bash
 sudo mkdir -m 755 -p /var/www/loris
+```
+
+Finally, change the _loris root_ directory owner to the _lorisadmin_ account
+
+```bash
 sudo chown lorisadmin.lorisadmin /var/www/loris
 ```
 
