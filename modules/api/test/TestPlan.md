@@ -39,5 +39,4 @@ This is done by sending a POST request to /candidates with the required data. No
 ~$ curl -H "Authorization: Bearer $token" https://<your-hostname>/api/v0.0.3/candidates -d '{"Candidate":{"Project":"Rye","Site":"Montreal","DoB":"2019-01-31", "Sex":"Female"}}' 
 ```
 
-If the candidate is successfully created, the candidate's informations are returned. For example, the previous example returns: `{"CandID":"872451","Project":"Rye","PSCID":"MTL185","Site":"Montreal","EDC":null,"DoB":"2019-01-31","Sex":"Female"}`
-
+If the candidate is successfully created, the candidate's data are returned. For example, the previous example returns: `{"CandID":"872451","Project":"Rye","PSCID":"MTL185","Site":"Montreal","EDC":null,"DoB":"2019-01-31","Sex":"Female"}`
