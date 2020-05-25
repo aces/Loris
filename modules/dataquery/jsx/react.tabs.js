@@ -644,19 +644,18 @@ class StatsVisualizationTabPane extends Component {
         quartiles = stats.quartiles(),
         rows = [];
 
-
       for (let i = 0; i < this.props.Fields.length; i += 1) {
-        rows.push(<tr key={'fields_'.concat(i)}>
+        rows.push(<tr key={'fields_' + i}>
           <td>{this.props.Fields[i]}</td>
-          <td>{min[i]}</td>
-          <td>{max[i]}</td>
-          <td>{stddev[i]}</td>
-          <td>{mean[i]}</td>
-          <td>{meandev[i]}</td>
-          <td>{meansqerr[i]}</td>
-          <td>{quartiles[i][0]}</td>
-          <td>{quartiles[i][1]}</td>
-          <td>{quartiles[i][2]}</td>
+          <td>{min[i] ? min[i].toString() : ''}</td>
+          <td>{max[i] ? max[i].toString() : ''}</td>
+          <td>{stddev[i] ? stddev[i].toString() : ''}</td>
+          <td>{mean[i] ? mean[i].toString() : ''}</td>
+          <td>{meandev[i] ? meandev[i].toString() : ''}</td>
+          <td>{meansqerr[i] ? meansqerr[i].toString() : ''}</td>
+          <td>{quartiles[i] && quartiles[i][0] ? quartiles[i][0].toString() : ''}</td>
+          <td>{quartiles[i] && quartiles[i][1] ? quartiles[i][1].toString() : ''}</td>
+          <td>{quartiles[i] && quartiles[i][2] ? quartiles[i][2].toString() : ''}</td>
         </tr>);
       }
 
