@@ -77,7 +77,7 @@ abstract class LorisIntegrationTest extends TestCase
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url");
+        $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
 
         $this->DB->insert(
