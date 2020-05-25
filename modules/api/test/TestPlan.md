@@ -33,7 +33,6 @@ See specification for the expected response format.
 
 
 #### Candidate creation - POST /candidates
-Candidate creation
 This is done by sending a POST request to /candidates with the required data. Note the usage of the Authorization header. For a candidate to be created, the candidate's informations must also be included. The following command contains the minimal informations necessary the the request to create a new candidate:
 
 ```bash
