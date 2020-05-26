@@ -271,7 +271,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field = $this->safeFindElement(WebDriverBy::Name('__ConfirmEmail'));
         $field->clear();
         $field->sendKeys('email@example.com');
-        $this->safeClick(WebDriverBy::Name('SendEmail'));
         $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
         $sitesOption  = new WebDriverSelect($sitesElement);
         $sitesOption->selectByValue("1");

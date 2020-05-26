@@ -120,6 +120,7 @@ class Edit_User extends \NDB_Form
                 }
             }
 
+            $defaults['examiner'] = $defaults['examiner'] ?? [];
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
                 if ($cid=='pending') {
@@ -141,8 +142,9 @@ class Edit_User extends \NDB_Form
 
             // Notification defaults
             // "notif_".$module."_".$operation."_".$service
+            $user_id  = $user->getData("ID") ?? -1;
             $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-                $user->getData("ID")
+                $user_id
             );
             foreach ($curr_sub as $module=>$operations) {
                 foreach ($operations as $operation => $services) {
@@ -652,7 +654,7 @@ class Edit_User extends \NDB_Form
                 'UserID_Group',
                 'User name',
                 $this->_GUIDelimiter,
-                false
+                ['required' => true]
             );
             unset($group);
 
@@ -666,14 +668,23 @@ class Edit_User extends \NDB_Form
         $group   = [];
         $group[] = $this->createPassword('Password_hash');
         $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
+        if ($this->isCreatingNewUser()) {
+            $pwd_attribs = ['required' => true];
+        } else {
+            $pwd_attribs = [];
+        }
         $this->addGroup(
             $group,
             'Password_Group',
             'New Password',
             $this->_GUIDelimiter,
-            false
+            $pwd_attribs
         );
-        $this->addPassword('__Confirm', 'Confirm Password');
+        $this->addPassword(
+            '__Confirm',
+            'Confirm Password',
+            $pwd_attribs
+        );
         unset($group);
 
         // The supplied pattern is:
@@ -739,14 +750,19 @@ class Edit_User extends \NDB_Form
             'Email_Group',
             'Email address',
             $this->_GUIDelimiter,
-            false
+            ['required' => true]
         );
         unset($group);
 
         // Add a confirm email text field only if creating a new user
         // (to make sure that account creation email goes through)
         if ($this->isCreatingNewUser()) {
-            $this->addBasicText('__ConfirmEmail', 'Confirm Email');
+            $this->addBasicText(
+                '__ConfirmEmail',
+                'Confirm Email',
+                [],
+                ['required' => true]
+            );
         }
 
         //------------------------------------------------------------
@@ -774,7 +790,10 @@ class Edit_User extends \NDB_Form
             'CenterIDs',
             'Sites',
             $siteOptions,
-            ['multiple' => 'multiple']
+            [
+                'multiple' => 'multiple',
+                'required' => true,
+            ]
         );
 
         // START PROJECT SECTION
@@ -789,7 +808,10 @@ class Edit_User extends \NDB_Form
             'ProjectIDs',
             'Projects',
             $projectOptions,
-            ['multiple' => 'multiple']
+            [
+                'multiple' => 'multiple',
+                'required' => true,
+            ]
         );
         // END PROJECT SECTION
 
