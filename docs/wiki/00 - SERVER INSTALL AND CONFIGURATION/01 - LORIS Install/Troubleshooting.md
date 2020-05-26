@@ -6,16 +6,17 @@ This guide offers support for common issues faced when first installing LORIS. I
 correctly followed and that all required dependencies have been installed.
 
 ## Frontend Does Not Load/JavaScript changes not visible
-The first thing to try is to run:
+The first command to try to run (under the _loris root_ directory):
 
 ```bash
-make
+make clean
 ```
 
-Alternatively, on development instances:
+If this does not solve the issue, you can try one of the following commands, depending on your environment:
 
 ```bash
-make dev
+make        # For production environments
+make dev    # For development environments
 ```
 
 If that does not solve your issue, this could be because the Config table in the database is not pointing to the correct values. In this case, follow the following steps. 
