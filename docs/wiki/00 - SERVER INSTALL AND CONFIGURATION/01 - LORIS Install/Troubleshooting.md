@@ -12,7 +12,7 @@ The first command to try to run (under the _loris root_ directory):
 make clean
 ```
 
-If this does not solve the issue, you can try one of the following commands, depending on your environment:
+Next, run one of the following commands depending on your environment:
 
 ```bash
 make        # For production environments
