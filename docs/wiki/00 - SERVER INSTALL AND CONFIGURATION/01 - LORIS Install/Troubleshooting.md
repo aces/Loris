@@ -1,6 +1,6 @@
 # Troubleshooting Common Installation Errors
 
-This guide assumes installation on any supported OS.  
+This guide assumes installation on any supported OS, and was primarily written based on an Ubuntu 18 stack.  
 
 This guide offers support for common issues faced when first installing LORIS. It is assumed that all installation steps provided have been 
 correctly followed and that all required dependencies have been installed.
