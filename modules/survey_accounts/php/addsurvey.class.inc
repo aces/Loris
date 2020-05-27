@@ -77,36 +77,6 @@ class AddSurvey extends \NDB_Form
               array('CandID' => $error);
         }
 
-        $projectID    = $db->pselectOne(
-            "SELECT RegistrationProjectID FROM candidate
-            WHERE PSCID=:v_PSCID
-            AND CandID=:v_CandID",
-            array(
-                'v_PSCID'  => $values['PSCID'],
-                'v_CandID' => $values['CandID'],
-            )
-        );
-        $user         = \User::singleton();
-        $errorProject = "You do not have access to this candidate's project";
-        $user_list_of_projects = $user->getProjectIDs();
-        if (count($user_list_of_projects) == 1) {
-            //if there is only one project, autoselect first project from array of 1
-            $userProjectID = array_pop($user_list_of_projects);
-            if ($projectID != $userProjectID) {
-                return array('Project' => $errorProject);
-            }
-        } else if (count($user_list_of_projects) > 1) {
-            $projectMatch = 0;
-            foreach ($user_list_of_projects as &$userProjectID) {
-                if ($projectID == $userProjectID) {
-                    $projectMatch = 1;
-                }
-            }
-            if ($projectMatch == 0) {
-                return array('Project' => $errorProject);
-            }
-        }
-
         $numSessions = $db->pselectOne(
             "SELECT COUNT(*) FROM session 
             WHERE CandID=:v_CandID 
@@ -177,6 +147,36 @@ class AddSurvey extends \NDB_Form
             ) {
                 return array('Email' => 'Email is not valid.');
 
+            }
+        }
+
+        $projectID    = $db->pselectOne(
+            "SELECT RegistrationProjectID FROM candidate
+            WHERE PSCID=:v_PSCID
+            AND CandID=:v_CandID",
+            array(
+                'v_PSCID'  => $values['PSCID'],
+                'v_CandID' => $values['CandID'],
+            )
+        );
+        $user         = \User::singleton();
+        $errorProject = "You do not have access to this candidate's project";
+        $user_list_of_projects = $user->getProjectIDs();
+        if (count($user_list_of_projects) == 1) {
+            //if there is only one project, autoselect first project from array of 1
+            $userProjectID = array_pop($user_list_of_projects);
+            if ($projectID != $userProjectID) {
+                return array('Project' => $errorProject);
+            }
+        } else if (count($user_list_of_projects) > 1) {
+            $projectMatch = 0;
+            foreach ($user_list_of_projects as &$userProjectID) {
+                if ($projectID == $userProjectID) {
+                    $projectMatch = 1;
+                }
+            }
+            if ($projectMatch == 0) {
+                return array('Project' => $errorProject);
             }
         }
 
