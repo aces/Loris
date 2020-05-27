@@ -236,7 +236,7 @@ class Utility
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
                 "SELECT * FROM subproject
-                JOIN project_subproject_rel USING (SubprojectID) 
+                JOIN project_subproject_rel USING (SubprojectID)
                 WHERE ProjectID=:pID",
                 array('pID' => $projectID)
             );
@@ -575,7 +575,7 @@ class Utility
 
         $instruments   = array();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true
              ORDER BY Full_name",
             array()
         );
@@ -1001,20 +1001,21 @@ class Utility
     /**
      * Get the list of MRI scan type available in the database
      *
+     * @param bool $join_files Whether to perform an inner join on the files table
+     *
      * @return array Array of MRI scan types which exist in the database table
      *               mri_scan_type joined to the files table
      *               array($scan_type_id => $scan_type)
      */
-    static function getScanTypeList(): array
+    static function getScanTypeList($join_files = true): array
     {
         $DB = \Database::singleton();
-
-        $scan_types_DB = $DB->pselect(
-            "SELECT ID, Scan_type 
-             FROM mri_scan_type mri
-                JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-            array()
-        );
+        $query = "SELECT ID, Scan_type
+             FROM mri_scan_type mri\n";
+        if ($join_files) {
+            $query .= "JOIN files f ON (f.AcquisitionProtocolID=mri.ID)";
+        }
+        $scan_types_DB = $DB->pselect($query, array());
 
         $scan_types = array();
         foreach ($scan_types_DB as $scan_type) {
