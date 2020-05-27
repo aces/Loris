@@ -150,7 +150,7 @@ class AddSurvey extends \NDB_Form
             }
         }
 
-        $projectID    = $db->pselectOne(
+        $projectID = $db->pselectOne(
             "SELECT RegistrationProjectID FROM candidate
             WHERE PSCID=:v_PSCID
             AND CandID=:v_CandID",
@@ -159,28 +159,10 @@ class AddSurvey extends \NDB_Form
                 'v_CandID' => $values['CandID'],
             )
         );
-        $user         = \User::singleton();
-        $errorProject = "You do not have access to this candidate's project";
-        $user_list_of_projects = $user->getProjectIDs();
-        if (count($user_list_of_projects) == 1) {
-            //if there is only one project, autoselect first project from array of 1
-            $userProjectID = array_pop($user_list_of_projects);
-            if ($projectID != $userProjectID) {
-                return array('Project' => $errorProject);
-            }
-        } else if (count($user_list_of_projects) > 1) {
-            $projectMatch = 0;
-            foreach ($user_list_of_projects as &$userProjectID) {
-                if ($projectID == $userProjectID) {
-                    $projectMatch = 1;
-                }
-            }
-            if ($projectMatch == 0) {
-                return array('Project' => $errorProject);
-            }
-        }
 
-        return array();
+        return \NDB_Factory::singleton()->user()->hasProject($projectID) ?
+            array() :
+            array('Project' => "You do not have access to this candidate's project");
     }
 
     /**
