@@ -5,7 +5,7 @@ This guide assumes installation on any supported OS, and was primarily written b
 This guide offers support for common issues faced when first installing LORIS. It is assumed that all installation steps provided have been 
 correctly followed and that all required dependencies have been installed.
 
-## Installation Roadblocks
+## MySQL 8 and PHP 7.3
 
 If you are running into issues when setting up your MySQL or MySQL user account and you are using MySQL 8 and PHP 7.3 
 (instead of PHP 7.4), please read [this link](https://www.php.net/manual/en/mysqli.requirements.php) and also [this](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors)
