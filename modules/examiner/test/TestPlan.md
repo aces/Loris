@@ -12,7 +12,8 @@
     a. Check that if you try to add an examiner with no name or no site, a warning message appears.  
     b. A success message should appear when the examiner is created.  
     c. Check that the new examiner appears on the examiner list. 
-6. Test Edit Examiner.  
+6. Test Edit Examiner.
+   [Manual Testing]  
     a. Click on an existing examiner's name and check that it takes you to the "Edit Examiner" page.    
     b. Fill out the BMI and Radiology Review sections, as well as the dates, and press "Save". There
     should be no error.  
