@@ -167,6 +167,8 @@ If you encounter issues creating/generating your config file, you may have to ma
 
 Your LORIS instance should now be accessible by pointing your browser URL to `http://%IPADDRESS%`
 
+If you use MySQL 8 and PHP 7.3 (instead of PHP 7.4), please read [this link](https://www.php.net/manual/en/mysqli.requirements.php) and also [this](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors)
+
 If there are any errors or you get a blank page, troubleshoot the errors in your apache error log - by default 
  `/var/log/httpd/loris-error.log`
 
