@@ -132,7 +132,7 @@ class Imaging_Browser extends \DataFrameworkMenu
         );
 
         // get list of scan types
-        $all_scan_types = \Utility::getScanTypeList();
+        $all_scan_types = \Utility::getScanTypeList(false);
 
         // get list of scan types that should be present in the data table
         // Get the intersection between all the scan types and those
