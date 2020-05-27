@@ -156,6 +156,4 @@ If you encounter issues creating/generating your config file, you may have to ma
 
 Your LORIS instance should now be accessible by pointing your browser URL to `http://%IPADDRESS%`.
 
-If you use MySQL 8 and PHP 7.3 (instead of PHP 7.4), please read [this link](https://www.php.net/manual/en/mysqli.requirements.php) and also [this](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors)
-
 Now that the installation is complete, follow the [Setup process](https://github.com/aces/Loris/wiki/Setup) to customize your project.
