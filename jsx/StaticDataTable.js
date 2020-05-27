@@ -35,7 +35,7 @@ class StaticDataTable extends Component {
     this.downloadCSV = this.downloadCSV.bind(this);
     this.countFilteredRows = this.countFilteredRows.bind(this);
     this.toCamelCase = this.toCamelCase.bind(this);
-    this.getSortedRows = this.getSortedRows.bind(this);//
+    this.getSortedRows = this.getSortedRows.bind(this);
     this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
   }
 
@@ -131,9 +131,14 @@ class StaticDataTable extends Component {
     });
   }
 
-  downloadCSV(csvData) {
-    let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
+  downloadCSV() {
+    // Include only filtered data if filters were applied
+    let csvData = this.props.Data;
+    if (this.props.Filter && this.props.FilteredData.length > 0) {
+      csvData = this.props.FilteredData;
+    }
 
+    let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
     csvworker.addEventListener('message', function(e) {
       let dataURL;
       let dataDate;
@@ -150,14 +155,17 @@ class StaticDataTable extends Component {
         document.body.removeChild(link);
       }
     });
-    const correctReactLinks = (csvData) => {
+
+    const parseCsvData = (csvData) => {
       for (const index in csvData) {
         if (csvData.hasOwnProperty(index)) {
           for (const indexChild in csvData[index]) {
-            if (csvData[index].hasOwnProperty(indexChild)
-              || indexChild == null) {
+            if (csvData[index].hasOwnProperty(indexChild) || indexChild == null) {
+              // if value is null, replace value by an empty string
               if (csvData[index][indexChild] == null) {
                 csvData[index][indexChild] = [''];
+
+              // if value is a link tag (<a href='#'>link</a>), replace value by href content
               } else if (csvData[index][indexChild].type === 'a') {
                 csvData[index][indexChild] = [
                   csvData[index][indexChild].props['href'],
@@ -169,7 +177,8 @@ class StaticDataTable extends Component {
       }
       return csvData;
     };
-    const csvDownload = correctReactLinks([...csvData]);
+
+    const csvDownload = parseCsvData([...csvData]);
     csvworker.postMessage({
       cmd: 'SaveFile',
       data: csvDownload,
@@ -401,7 +410,6 @@ class StaticDataTable extends Component {
     let matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     let filteredRows = this.countFilteredRows();
     let currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
-    let filteredData = [];
     let useKeyword = false;
 
     if (this.props.Filter.keyword) {
@@ -432,7 +440,7 @@ class StaticDataTable extends Component {
 
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
-          filteredData.push(this.props.Data[index[i].RowIdx]);
+          this.props.FilteredData.push(this.props.Data[index[i].RowIdx]);
         }
 
         if (useKeyword === true) {
@@ -496,12 +504,6 @@ class StaticDataTable extends Component {
       </select>
     );
 
-    // Include only filtered data if filters were applied
-    let csvData = this.props.Data;
-    if (this.props.Filter && filteredData.length > 0) {
-      csvData = filteredData;
-    }
-
     let header = this.state.Hide.rowsPerPage === true ? '' : (
       <div className="table-header panel-heading">
         <div className="row">
@@ -532,7 +534,7 @@ class StaticDataTable extends Component {
             <div className="col-xs-6">
               <button
                 className="btn btn-primary downloadCSV"
-                onClick={this.downloadCSV.bind(null, csvData)}
+                onClick={this.downloadCSV}
               >
                 Download Table as CSV
               </button>
@@ -569,6 +571,7 @@ class StaticDataTable extends Component {
 StaticDataTable.propTypes = {
   Headers: PropTypes.array.isRequired,
   Data: PropTypes.array.isRequired,
+  FilteredData: PropTypes.array,
   RowNumLabel: PropTypes.string,
   // Function of which returns a JSX element for a table cell, takes
   // parameters of the form: func(ColumnName, CellData, EntireRowData)
@@ -580,6 +583,7 @@ StaticDataTable.propTypes = {
 StaticDataTable.defaultProps = {
   Headers: [],
   Data: {},
+  FilteredData: [],
   RowNumLabel: 'No.',
   Filter: {},
   Hide: {

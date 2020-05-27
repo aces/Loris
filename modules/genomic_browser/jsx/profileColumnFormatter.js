@@ -27,11 +27,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       );
       break;
     }
-    case 'Subproject':
-      reactElement = (
-        <td>{loris.subprojectList[cell]}</td>
-      );
-      break;
     case 'File':
       if (cell === 'Y') {
         reactElement = (
