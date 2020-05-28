@@ -324,10 +324,10 @@ class DateOptions extends Component {
     // Keep track of the inputed years
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
-    if (e.target.id === 'datemin' && e.target.value.length > 0) {
-      options.MinDate = e.target.value + '-01-01';
-    } else if (e.target.id === 'datemax' && e.target.value.length > 0) {
-      options.MaxDate = e.target.value + '-12-31';
+    if (e.target.id === 'datemin') {
+      options.MinDate = e.target.value;
+    } else if (e.target.id === 'datemax') {
+      options.MaxDate = e.target.value;
     } else if (e.target.id === 'dateFormat') {
       options.dateFormat = e.target.value;
     }
@@ -336,8 +336,8 @@ class DateOptions extends Component {
   // Render the HTML
   render() {
     // Truncate off the month and day from the date to only have the year.
-    let minYear = this.props.element.Options.MinDate.split('-')[0];
-    let maxYear = this.props.element.Options.MaxDate.split('-')[0];
+    let minYear = this.props.element.Options.MinDate;
+    let maxYear = this.props.element.Options.MaxDate;
 
     let dateOptionsClass = 'options form-group';
     let errorMessage = '';
