@@ -160,8 +160,8 @@ class Files extends \NDB_Page
             'visitLabel' => $req['visitLabel'] ?? null,
             'pscid'      => $req['pscid'] ?? null,
         ];
-        $fileName = $req['fileName'];
-        $Notifier = new \NDB_Notifier(
+        $fileName     = $req['fileName'];
+        $Notifier     = new \NDB_Notifier(
             "document_repository",
             "edit"
         );

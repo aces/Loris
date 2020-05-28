@@ -99,8 +99,8 @@ class UploadCategory extends \NDB_Page
             "new_category"
         );
         $msg_data = array(
-                'newCategory' => $baseURL. "/document_repository/",
-                'category'    => $category_name,
+            'newCategory' => $baseURL. "/document_repository/",
+            'category'    => $category_name,
         );
         $Notifier->notify($msg_data);
     }
