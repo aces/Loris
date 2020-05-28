@@ -75,9 +75,11 @@ class Module extends \Module
     {
         switch($type) {
         case "usertasks":
-            $factory = \NDB_Factory::singleton();
-            $DB      = $factory->database();
-            $baseURL = $factory->settings()->getBaseURL();
+            $factory  = \NDB_Factory::singleton();
+            $DB       = $factory->database();
+            $baseURL  = $factory->settings()->getBaseURL();
+            $site_arr = $user->getCenterIDs();
+
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
@@ -85,8 +87,12 @@ class Module extends \Module
                     $DB,
                     "SELECT COUNT(DISTINCT users.UserID) FROM users
                         LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
-                    WHERE users.Pending_approval='Y'
-                        AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
+                    WHERE
+                        users.Pending_approval='Y'
+                        AND (
+                            upr.CenterID IN (". implode(",", $site_arr).")
+                            OR upr.CenterID IS NULL
+                        )",
                     'user_accounts_multisite',
                     'upr.CenterID',
                     $baseURL . "/user_accounts/?pendingApproval=Y",
