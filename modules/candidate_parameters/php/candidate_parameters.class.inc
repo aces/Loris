@@ -11,7 +11,9 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\candidate_parameters;
-use \Loris\StudyEntities\Candidate\CandID;
+use \LORIS\StudyEntities\Candidate\CandID;
+use \LORIS\StudyEntities\Candidate;
+
 
 /**
  * Main class for candidate_parameters module
@@ -31,6 +33,7 @@ use \Loris\StudyEntities\Candidate\CandID;
  */
 class Candidate_Parameters extends \NDB_Form
 {
+
     /**
      * Check user permissions
      *
@@ -40,12 +43,18 @@ class Candidate_Parameters extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            array(
-                'candidate_parameter_view',
-                'candidate_parameter_edit',
-            )
-        );
+        $candidate =& \Candidate::singleton(new CandID($this->identifier));
+
+        // User must either have 'access_all_profiles' permission, or
+        // one of the candidate_parameter permissions AND have the candidate's site.
+        return $user->hasPermission('access_all_profiles') ||
+            ($user->hasAnyPermission(
+                array(
+                    'candidate_parameter_view',
+                    'candidate_parameter_edit',
+                ))
+                && $user->hasCenter($candidate->getCenterID())
+            );
     }
 
     /**
