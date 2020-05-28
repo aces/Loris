@@ -160,7 +160,7 @@ class Files extends \NDB_Page
             'visitLabel' => $req['visitLabel'] ?? null,
             'pscid'      => $req['pscid'] ?? null,
         ];
-        $file = $req['fileName'];
+        $fileName = $req['fileName'];
         $Notifier = new \NDB_Notifier(
             "document_repository",
             "edit"
@@ -172,8 +172,8 @@ class Files extends \NDB_Page
                 ['record_id' => $req['id']]
             );
             $msg_data = array(
-                'editDocument' => $baseURL. "/document_repository/",
-                'document'       => $fileName,
+                'updatedDocument' => $baseURL. "/document_repository/",
+                'document'        => $fileName,
             );
             $Notifier->notify($msg_data);
 
