@@ -1009,7 +1009,7 @@ class Utility
      */
     static function getScanTypeList($join_files = true): array
     {
-        $DB = \Database::singleton();
+        $DB    = \Database::singleton();
         $query = "SELECT ID, Scan_type
              FROM mri_scan_type mri\n";
         if ($join_files) {
