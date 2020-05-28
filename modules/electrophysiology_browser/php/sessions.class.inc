@@ -48,7 +48,7 @@ class Sessions extends \NDB_Page
     function _hasAccess(\User $user) : bool
     {
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
-                || ($user->hasCenter($this->timepoint->getCenterID())
+                || ($user->hasStudySite() || $user->hasCenter($this->timepoint->getCenterID())
                 && $user->hasPermission('electrophysiology_browser_view_site')
             )
         );
