@@ -160,12 +160,23 @@ class Files extends \NDB_Page
             'visitLabel' => $req['visitLabel'] ?? null,
             'pscid'      => $req['pscid'] ?? null,
         ];
+        $file = $req['fileName'];
+        $Notifier = new \NDB_Notifier(
+            "document_repository",
+            "edit"
+        );
         try {
             $db->update(
                 'document_repository',
                 $updateValues,
                 ['record_id' => $req['id']]
             );
+            $msg_data = array(
+                'editDocument' => $baseURL. "/document_repository/",
+                'document'       => $fileName,
+            );
+            $Notifier->notify($msg_data);
+
         } catch (\Exception $e) {
             echo 'Could not update the file.',  $e->getMessage(), "\n";
         }
