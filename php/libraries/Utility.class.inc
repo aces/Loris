@@ -1011,7 +1011,7 @@ class Utility
     {
         $DB    = \Database::singleton();
         $query = "SELECT ID, Scan_type
-             FROM mri_scan_type mri\n";
+             FROM mri_scan_type mri ";
         if ($join_files) {
             $query .= "JOIN files f ON (f.AcquisitionProtocolID=mri.ID)";
         }
