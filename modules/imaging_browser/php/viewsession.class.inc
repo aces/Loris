@@ -55,17 +55,19 @@ class ViewSession extends \NDB_Form
         $candidate = \Candidate::singleton($candid);
 
         if ($candidate->getData('Entity_type') == 'Scanner') {
-            return $user->hasPermission('imaging_browser_phantom_allsites')
+            return ($user->hasPermission('imaging_browser_phantom_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_phantom_ownsite',
                     \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
-                );
+                ))
+                && ($user->hasProject($candidate->getProjectID()));
         } elseif ($candidate->getData('Entity_type') == 'Human') {
-            return $user->hasPermission('imaging_browser_view_allsites')
+            return ($user->hasPermission('imaging_browser_view_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_view_site',
                     \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
-                );
+                ))
+                && $user->hasProject($candidate->getProjectID());
         }
 
         return false;
