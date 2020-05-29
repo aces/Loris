@@ -16,10 +16,6 @@ The Dashboard provides entrypoints to various workflows, but does not provide an
 
 The Study Progression chart views at bottom may or may not count `excluded` candidates, and this should be clearly verified and documented/presented for the use of your LORIS users. 
 
-## Interactions
-
-The dashboard calls upon other modules to supply data to the various "Widget" panels that can be viewed in the dashboard. Without access permission to these modules, a user will not be able to view the respective Widget on the Dashboard. 
-
 ## Permissions
 
 Components of the Dashboard are governed by permissions related to module-specific privileges. For example, the _Document Repository_ notifications panel is displayed if a user has been granted either the `document_repository_view` or `document_repository_delete` permission. 
@@ -36,3 +32,8 @@ Under the _Dashboard_ section of the Configuration module, you can edit 2 settin
 In both the _Projects_ and _Subprojects_ pages of the Configuration module, you can modify (sub)project-specific recruitment targets - these are used in the Project breakdown View in the Dashboard's _Recruitment_ charts panel.   
 
 Note there is currently no relationship enforced between the subproject and parent project recruitment targets -- the former can be larger than the latter. 
+
+## Interactions with LORIS
+
+The dashboard calls upon other modules to supply data to the various "Widget" panels that can be viewed in the dashboard. Without access permission to these modules, a user will not be able to view the respective Widget on the Dashboard. 
+
