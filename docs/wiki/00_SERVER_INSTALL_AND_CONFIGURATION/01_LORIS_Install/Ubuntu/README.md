@@ -13,9 +13,12 @@ When you've completed this guide, you should be able to load and log into LORIS 
 ### Server Stack
 
 LORIS requires a LAMP stack in order to run, specifically:
-* Apache 2.4
-* MySQL 5.7 (or MariaDB 10.3) (or higher)
-* PHP 7.3 (or higher)
+
+* Apache 2.4  
+
+* MySQL 5.7 (or MariaDB 10.3) (or higher)  
+
+* PHP 7.3 (or higher)  
 
 Additionally, the following package manager are required to build LORIS:
 * NodeJS 8.0 (or higher)
@@ -27,19 +30,32 @@ This guide does not cover installation of these requirements.
 The following Ubuntu packages are required and should be installed using 
 `sudo apt install ...`.
 
-* curl
-* zip
-* unzip
-* php-json
-* make
-* software-properties-common
-* php7.3-mysql
-* php7.3-xml
-* php7.3-mbstring
-* php7.3-gd
-* php7.3-zip
-* php7.3-curl (for development instances only)
-* libapache2-mod-php7.3
+* curl  
+
+* zip  
+
+* unzip  
+
+* php-json  
+
+* make  
+
+* software-properties-common  
+
+* php7.3-mysql  
+
+* php7.3-xml  
+
+* php7.3-mbstring  
+
+* php7.3-gd  
+
+* php7.3-zip  
+
+* php7.3-curl (for development instances only)  
+
+* libapache2-mod-php7.3  
+
 
 ## Getting the source code
 
