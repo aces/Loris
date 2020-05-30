@@ -265,10 +265,7 @@ class EditExaminer extends \NDB_Form
             }
         }
 
-        $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
-        $url     = "{$baseurl}/examiner/editExaminer/?identifier="
-               . $examinerID;
-        header("Location: " . $url, true, 303);
+        header("Refresh:0");
     }
 
     /**
@@ -307,7 +304,7 @@ class EditExaminer extends \NDB_Form
             'maxYear'        => $config->getSetting('endYear'),
         );
         $statusOptions = array(
-            null            => 'N/A',
+            null            => '',
             'not_certified' => 'Not Certified',
             'in_training'   => 'In Training',
             'certified'     => 'Certified',
@@ -384,32 +381,24 @@ class EditExaminer extends \NDB_Form
         $DB     = \Database::singleton();
         $errors = array();
 
-        // check that there is both a status and a date (neither can be null)
+        $instruments = $this->getCertificationInstruments();
         foreach ($values['certStatus'] as $instrumentID => $certificationStatus) {
-            if (empty($certificationStatus)
-                || empty($values['date_cert'][$instrumentID])
-            ) {
-                if (($certificationStatus == "certified")
-                    && empty($values['date_cert'][$instrumentID])
-                ) {
-                    $errors['certStatus[' . $instrumentID .']'] = 'Both certification
-                        status and date must be filled out';
-                }
-            }
-        }
 
-        // check if previously recorded certification are all present
-        // (can not delete, only change status)
-        $rows = $DB->pselect(
-            "SELECT c.testID
-              FROM certification c
-              WHERE c.examinerID=:EID",
-            array('EID' => $this->identifier)
-        );
-        foreach ($rows as $row) {
-            if ($values['certStatus'][$row['testID']] == "") {
-                $errors['certStatus['.$row['testID'].']']
-                    = 'You can not delete a status';
+            // mandatory to choose an option for the Certification Status.
+            if (empty($certificationStatus)) {
+                $errors['certStatus[' . $instrumentID .']'] = 'Please choose
+                    a Certification Status for the Instrument: '
+                    . $instruments[$instrumentID];
+            }
+
+            // if the option chosen is "Certified"
+            // the Certification Day must be specified.
+            if (($certificationStatus == "certified")
+                && empty($values['date_cert'][$instrumentID])
+            ) {
+                    $errors['certStatus[' . $instrumentID .']'] = 'Please choose
+                    a Certification Date for the Instrument: '
+                    . $instruments[$instrumentID];
             }
         }
         return $errors;
