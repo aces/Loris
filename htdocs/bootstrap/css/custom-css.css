@@ -808,7 +808,7 @@ a:hover {
 .list-group-item.active,
 .list-group-item.active:hover {
     z-index: 2;
-    color: white;
+    color: black;
     background-color: #E4EBF2;
     border-color: #E4EBF2;
 }
