@@ -12,7 +12,7 @@ nav:
         - Website Configuration: 
             - 'Website Configuration': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/README.md'
             - 'Handling Large File Uploads': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/Handling_Large_File_Uploads.md'
-            - 'Enabling reCAPTCHA': 'wiki/99_Developers/reCAPTCHA.md docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/reCAPTCHA.md'
+            - 'Enabling reCAPTCHA': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/reCAPTCHA.md'
     - Study Parameters Setup:
         - Study Variables: 
             - 'Introduction': 'wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/00_Introduction_to_Study_Variables.md'
@@ -21,7 +21,7 @@ nav:
             - 'Subprojects': 'wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/04_Subprojects.md'
             - 'Timepoints': 'wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/05_Timepoints.md'
         - Clinical Instruments: 'wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/README.md'
-        - Modules: 'wiki/01_STUDY PARAMETERS_SETUP/03_Loris_Modules/README.md'
+        - Modules: 'wiki/01_STUDY_PARAMETERS_SETUP/03_Loris_Modules/README.md'
 
             
     - Getting Started: 'wiki/02_GETTING_STARTED/README.md'
