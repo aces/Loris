@@ -98,6 +98,8 @@ class UploadCategory extends \NDB_Page
             "document_repository",
             "new_category"
         );
+        $factory  = \NDB_Factory::singleton();
+        $baseURL  = $factory->settings()->getBaseURL();
         $msg_data = array(
             'newCategory' => $baseURL. "/document_repository/",
             'category'    => $category_name,
