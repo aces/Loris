@@ -68,12 +68,19 @@ class Stats_Behavioural extends \NDB_Form
         $user    = $factory->user();
 
         //SITES
+
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = \Utility::getSiteList();
         } else {
             $list_of_sites = $user->getStudySites();
         }
-        $sitesString = implode(",", array_keys($list_of_sites));
+
+        $paramCenters      = array();
+        $list_of_sites_ids = array_keys($list_of_sites);
+        foreach ($list_of_sites_ids as $key => $siteID) {
+            $paramCenters[] = ":paramSiteID$key";
+            $this->params["paramSiteID$key"] = $siteID;
+        }
 
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
@@ -83,16 +90,30 @@ class Stats_Behavioural extends \NDB_Form
               FROM psc
               WHERE CenterID <> '1'
                     AND Study_site = 'Y'
-	            AND CenterID IN (" . $sitesString . ")",
-            array()
+	            AND CenterID IN (" . implode(',', $paramCenters) . ")",
+            $this->params
         );
 
         $this->tpl_data['Centers'] = $centers;
 
-        $projects     = \Utility::getProjectList();
-        $projects[''] = 'All Projects';
+        //PROJECTS
+
+        $projects['']   = 'All Projects';
+        $allProjectList = \Utility::getProjectList();
+
+        $userProjectsIDs = $user->getData('ProjectIDs');
+        foreach ($userProjectsIDs as $ProjectID) {
+            $projects[$ProjectID] = $allProjectList[$ProjectID];
+        }
 
         $this->tpl_data['Projects'] = $projects;
+
+        $paramProjects = array();
+        foreach ($userProjectsIDs as $key => $projectID) {
+            $paramProjects[] = ":paramProjectID$key";
+            $this->params["paramProjectID$key"] = $projectID;
+        }
+
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if (isset($_REQUEST['site'])
@@ -108,6 +129,7 @@ class Stats_Behavioural extends \NDB_Form
 
         if ($_REQUEST['BehaviouralProject'] ?? ''
         ) {
+
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = array(
@@ -128,7 +150,6 @@ class Stats_Behavioural extends \NDB_Form
         if (is_numeric($currentProject) && intval($currentProject) >= 0) {
             $subprojects = \Utility::getSubprojectsForProject($currentProject);
             $subprojList = implode(',', array_keys($subprojects));
-            $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
@@ -150,7 +171,8 @@ class Stats_Behavioural extends \NDB_Form
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
-	            AND s.CenterID IN (" . $sitesString . ")
+	            AND s.CenterID IN (" . implode(',', $paramCenters) . ")
+	            AND c.RegistrationProjectID IN (" . implode(',', $paramProjects) . ")
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
@@ -162,7 +184,7 @@ class Stats_Behavioural extends \NDB_Form
             // so that they don't wrap. Note that "c"(enter array) needs to
             // be a reference since we'll be modifying it.
             $center = $row['CenterID'];
-            $vl     = intval($row['VLabel']);
+            $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
             if (isset($c[$vl]['total'])) {
@@ -223,7 +245,8 @@ class Stats_Behavioural extends \NDB_Form
                     AND f.CommentID LIKE 'DDE%'
                     AND c.Active = 'Y'
                     AND s.CenterID <> '1'
-                    AND s.CenterID IN(" . $sitesString . ")
+	            AND s.CenterID IN (" . implode(',', $paramCenters) . ")
+	            AND c.RegistrationProjectID IN (" . implode(',', $paramProjects) . ")
                     $suproject_query
                     $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
@@ -232,13 +255,13 @@ class Stats_Behavioural extends \NDB_Form
 
         foreach ($result as $row) {
             $center = $row['CenterID'];
-            $vl     = intval($row['VLabel']);
+            $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['dde']['C' . $center];
 
             if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += $row['val'];
+                $c[$vl]['total'] += intval($row['val']);
             } else {
-                $c[$vl]['total'] = $row['val'];
+                $c[$vl]['total'] = intval($row['val']);
             }
             if (isset($c['all']['total'])) {
                 $c['all']['total'] += $row['val'];
