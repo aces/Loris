@@ -29,7 +29,11 @@ class ScheduleTest extends LorisIntegrationTest
     static $delete     = "#all tr:nth-child(1) > td:nth-child(11) > .btn";
     static $msg        = "#swal2-content";
     static $create     = ".btn-sm > div";
-
+    /**
+     * Insert an appointment
+     *
+     * @return void
+     */
     function setUp()
     {
         parent::setUp();
@@ -44,6 +48,11 @@ class ScheduleTest extends LorisIntegrationTest
         );
 
     }
+    /**
+     * Delete an appointment
+     *
+     * @return void
+     */
     function tearDown()
     {
         parent::tearDown();
@@ -188,5 +197,21 @@ class ScheduleTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("$ms")
         )->getText();
         $this->assertContains("Schedule deleted.", $bodyText);
+    }
+    /**
+     * Helper function to set up and load a page with a given permisison code.
+     *
+     * @param string $permission A valid permission code for the data_release
+     *                           module.
+     *
+     * @return string The body text of the page loaded.
+     */
+    function _loadWithPermission(string $permission): string
+    {
+        $this->setupPermissions(array($permission));
+        $this->safeGet($this->url . "/schedule_module/");
+        return $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
     }
 }
