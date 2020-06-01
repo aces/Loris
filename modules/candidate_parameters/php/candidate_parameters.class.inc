@@ -12,8 +12,6 @@
  */
 namespace LORIS\candidate_parameters;
 use \LORIS\StudyEntities\Candidate\CandID;
-use \LORIS\StudyEntities\Candidate;
-
 
 /**
  * Main class for candidate_parameters module
@@ -33,7 +31,6 @@ use \LORIS\StudyEntities\Candidate;
  */
 class Candidate_Parameters extends \NDB_Form
 {
-
     /**
      * Check user permissions
      *
