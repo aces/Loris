@@ -77,6 +77,21 @@ class AddSurvey extends \NDB_Form
               array('CandID' => $error);
         }
 
+        $projectID = $db->pselectOne(
+            "SELECT ProjectID FROM session
+            WHERE CandID=:v_CandID
+            AND Visit_Label=:v_VL",
+            array(
+                'v_CandID' => $values['CandID'],
+                'v_VL'     => $values['VL']
+            )
+        );
+        if (!\NDB_Factory::singleton()->user()->hasProject($projectID)) {
+            return array(
+                'Project' => "You do not have access to this candidate's project"
+            );
+        }
+
         $numSessions = $db->pselectOne(
             "SELECT COUNT(*) FROM session 
             WHERE CandID=:v_CandID 
@@ -150,19 +165,7 @@ class AddSurvey extends \NDB_Form
             }
         }
 
-        $projectID = $db->pselectOne(
-            "SELECT ProjectID FROM session
-            WHERE CandID=:v_CandID
-            AND Visit_Label=:v_VL",
-            array(
-                'v_CandID' => $values['CandID'],
-                'v_VL'     => $values['VL']
-            )
-        );
-
-        return \NDB_Factory::singleton()->user()->hasProject($projectID) ?
-            array() :
-            array('Project' => "You do not have access to this candidate's project");
+        return array();
     }
 
     /**
