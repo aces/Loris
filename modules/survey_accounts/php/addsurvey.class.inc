@@ -151,12 +151,12 @@ class AddSurvey extends \NDB_Form
         }
 
         $projectID = $db->pselectOne(
-            "SELECT RegistrationProjectID FROM candidate
-            WHERE PSCID=:v_PSCID
-            AND CandID=:v_CandID",
+            "SELECT ProjectID FROM session
+            WHERE CandID=:v_CandID
+            AND Visit_Label=:v_VL",
             array(
-                'v_PSCID'  => $values['PSCID'],
                 'v_CandID' => $values['CandID'],
+                'v_VL'     => $values['VL']
             )
         );
 
