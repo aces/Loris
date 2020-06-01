@@ -52,7 +52,8 @@ class Candidate_Parameters extends \NDB_Form
                 array(
                     'candidate_parameter_view',
                     'candidate_parameter_edit',
-                ))
+                )
+            )
                 && $user->hasCenter($candidate->getCenterID())
             );
     }
