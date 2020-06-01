@@ -1,6 +1,6 @@
 # **Unit Testing 101: How to Write Tests for LORIS**
 
-This guide is for [LORIS](http://loris.ca/) developers or anyone working with LORIS who wants to contribute unit tests to the [LORIS codebase](https://github.com/aces/Loris) and learn best practices for setting up and writing unit tests. It was originally created as part of [Google Summer of Code 2019 by Alexandra Livadas](https://alexandralivadas.github.io/pages/gsoc-2019.html)) for the LORIS 21 release.  
+This guide is for [LORIS](http://loris.ca/) developers or anyone working with LORIS who wants to contribute unit tests to the [LORIS codebase](https://github.com/aces/Loris) and learn best practices for setting up and writing unit tests. 
 
 This guide references the [PHPUnit Manual (8.3)](https://phpunit.readthedocs.io/en/8.3/)
 
