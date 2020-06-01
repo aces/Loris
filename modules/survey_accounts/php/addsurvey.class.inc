@@ -77,16 +77,14 @@ class AddSurvey extends \NDB_Form
               array('CandID' => $error);
         }
 
-        $projectID = $db->pselectOne(
+        $projectID = $db->pselect(
             "SELECT ProjectID FROM session
-            WHERE CandID=:v_CandID
-            AND Visit_Label=:v_VL",
+            WHERE CandID=:v_CandID",
             array(
-                'v_CandID' => $values['CandID'],
-                'v_VL'     => $values['VL']
+                'v_CandID' => $values['CandID']
             )
         );
-        if (!\NDB_Factory::singleton()->user()->hasProject($projectID)) {
+        if (!\NDB_Factory::singleton()->user()->hasProject(reset($projectID[0]))) {
             return array(
                 'Project' => "You do not have access to this candidate's project"
             );
