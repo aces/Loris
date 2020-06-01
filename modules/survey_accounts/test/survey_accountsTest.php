@@ -232,7 +232,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector(".error")
         )->getText();
         $this->assertContains(
-            "You do not have access to this candidate's project",
+            "Visit V1 does not exist for given candidate",
             $bodyText
         );
 
