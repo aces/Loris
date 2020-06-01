@@ -169,8 +169,8 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // $scan_types are set in the configuration module
         $modalities_subquery = '';
         foreach ($case_desc as $key => $value) {
-            $modalities_subquery = $value." as " .
-                $DB->quote("$scan_id_types[$key]_QC_Status");
+            $modalities_subquery .= $value ." as " .
+                $DB->quote("$scan_id_types[$key]_QC_Status") . ",";
         }
 
         // =================================================
@@ -192,9 +192,9 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               GROUP_CONCAT(DISTINCT OutputType) as Links,
               s.ID as sessionID,
               GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType,
-              $PendingNewquery as pending," .
-            ($modalities_subquery==''?'':"$modalities_subquery,") .
-            "s.CenterID as CenterID,
+              $PendingNewquery as pending,
+              $modalities_subquery
+              s.CenterID as CenterID,
               c.Entity_type as entityType,
               s.ProjectID
             FROM psc AS p
