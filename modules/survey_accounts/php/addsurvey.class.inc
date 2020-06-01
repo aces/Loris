@@ -77,19 +77,6 @@ class AddSurvey extends \NDB_Form
               array('CandID' => $error);
         }
 
-        $projectID = $db->pselect(
-            "SELECT ProjectID FROM session
-            WHERE CandID=:v_CandID",
-            array(
-                'v_CandID' => $values['CandID']
-            )
-        );
-        if (!\NDB_Factory::singleton()->user()->hasProject(reset($projectID[0]))) {
-            return array(
-                'Project' => "You do not have access to this candidate's project"
-            );
-        }
-
         $numSessions = $db->pselectOne(
             "SELECT COUNT(*) FROM session 
             WHERE CandID=:v_CandID 
@@ -106,6 +93,21 @@ class AddSurvey extends \NDB_Form
                 'VL' => "Visit ".
                             $values['VL'].
                             " does not exist for given candidate",
+            );
+        }
+
+        $projectID = $db->pselectOne(
+            "SELECT ProjectID FROM session
+            WHERE CandID=:v_CandID
+            AND Visit_Label=:v_VL",
+            array(
+                'v_CandID' => $values['CandID'],
+                'v_VL'     => $values['VL']
+            )
+        );
+        if (!\NDB_Factory::singleton()->user()->hasProject($projectID)) {
+            return array(
+                'Project' => "You are not affiliated with this session's project"
             );
         }
 
