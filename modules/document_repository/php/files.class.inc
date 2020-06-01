@@ -171,6 +171,8 @@ class Files extends \NDB_Page
                 $updateValues,
                 ['record_id' => $req['id']]
             );
+            $factory  = \NDB_Factory::singleton();
+            $baseURL  = $factory->settings()->getBaseURL();
             $msg_data = array(
                 'updatedDocument' => $baseURL. "/document_repository/",
                 'document'        => $fileName,
