@@ -37,3 +37,14 @@
 16. Try uploading a file that exceeds the max upload limit. Ensure that an error message occurs
     when the server has detected that the file is too large.
     [Manual Testing]
+
+### Widget registration on the dashboard page
+
+17. Verify that if a user has the 'View and upload files in Document Repository' or 'Delete files in Document Repository' 
+    permission, the latest documents to have been edited or uploaded in the document repository are displayed (4 at most) 
+    in the Document Repository panel. Clicking on a document will display it in the browser. Clicking on the Document
+    Repository button takes you to the Document Repository page.
+    [Automate Test]
+18. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document Repository panel. [Automate Test]
+19. Check that a 'New' notification is not labeled 'New' anymore after login in again. [Manual Test]
+
