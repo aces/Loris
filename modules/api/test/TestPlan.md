@@ -33,10 +33,10 @@ See specification for the expected response format.
 
 
 #### Candidate creation - POST /candidates
-This is done by sending a POST request to /candidates with the required data. Note the usage of the Authorization header. For a candidate to be created, the candidate's information must also be included. The following command contains the minimal information necessary for the request to create a new candidate:
+Candidate creation is done by sending a POST request to /candidates with the required data. Note the usage of the Authorization header. For a candidate to be created, the candidate's information must also be included. The following command contains the minimal information necessary for the request to create a new candidate:
 
 ```bash
 ~$ curl -H "Authorization: Bearer $token" https://<your-hostname>/api/v0.0.3/candidates -d '{"Candidate":{"Project":"Rye","Site":"Montreal","DoB":"2019-01-31", "Sex":"Female"}}' 
 ```
 
-If the candidate is successfully created, the candidate's data are returned. For example, the previous example returns: `{"CandID":"872451","Project":"Rye","PSCID":"MTL185","Site":"Montreal","EDC":null,"DoB":"2019-01-31","Sex":"Female"}`
+If the candidate is successfully created, the candidate's data is returned. For example, the previous example returns: `{"CandID":"872451","Project":"Rye","PSCID":"MTL185","Site":"Montreal","EDC":null,"DoB":"2019-01-31","Sex":"Female"}`
