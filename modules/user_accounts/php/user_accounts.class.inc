@@ -46,7 +46,7 @@ class User_Accounts extends \DataFrameworkMenu
      */
     public function allSitePermissionNames() : ?array
     {
-        return ['user_account_multisite'];
+        return ['user_accounts_multisite'];
     }
 
     /**
