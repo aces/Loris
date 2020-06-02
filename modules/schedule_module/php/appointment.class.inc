@@ -52,7 +52,7 @@ class Appointment extends \NDB_Page
             } else {
                 $this->addAppointment($data);
             }
-         return new \LORIS\Http\Response\JSON\OK(['appointment added']);
+            return new \LORIS\Http\Response\JSON\OK(['appointment added']);
         case "GET":
             // todo get session or pscid or dcciid
             $url  = $request->getUri()->getPath();
@@ -80,7 +80,7 @@ class Appointment extends \NDB_Page
         case "DELETE":
             $id = basename($request->getUri()->getPath());
             $this->deleteAppointment($id);
-         return new \LORIS\Http\Response\JSON\OK(['appointment deleted']);
+            return new \LORIS\Http\Response\JSON\OK(['appointment deleted']);
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")

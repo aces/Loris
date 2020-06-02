@@ -23,12 +23,12 @@
  */
 class ScheduleTest extends LorisIntegrationTest
 {
-    static $alertOk    = "button[class='swal2-confirm swal2-styled']";
-    static $addBtn     = "#all .table-header .btn:nth-child(1)";
-    static $edit       = "#all tr:nth-child(2) > td:nth-child(10) > .btn";
-    static $delete     = "#all tr:nth-child(1) > td:nth-child(11) > .btn";
-    static $msg        = "#swal2-content";
-    static $create     = ".btn-sm > div";
+    static $alertOk = "button[class='swal2-confirm swal2-styled']";
+    static $addBtn  = "#all .table-header .btn:nth-child(1)";
+    static $edit    = "#all tr:nth-child(2) > td:nth-child(10) > .btn";
+    static $delete  = "#all tr:nth-child(1) > td:nth-child(11) > .btn";
+    static $msg     = "#swal2-content";
+    static $create  = ".btn-sm > div";
     /**
      * Insert an appointment
      *
@@ -37,13 +37,13 @@ class ScheduleTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-          $this->DB->insert(
+        $this->DB->insert(
             "appointment",
             array(
-                'AppointmentID'  => '1',
-                'SessionID'    => '1',
-                'AppointmentTypeID'   => '2',
-                'StartsAt' => '2020-02-02 02:02:02',
+                'AppointmentID'     => '1',
+                'SessionID'         => '1',
+                'AppointmentTypeID' => '2',
+                'StartsAt'          => '2020-02-02 02:02:02',
             )
         );
 
@@ -84,7 +84,7 @@ class ScheduleTest extends LorisIntegrationTest
     function testPageLoadsWithPermissions()
     {
         $this->assertContains(
-            "Schedule Module",
+            "Schedule Appointment",
             $this->_loadWithPermission('schedule_module')
         );
         $this->resetPermissions();
@@ -97,9 +97,9 @@ class ScheduleTest extends LorisIntegrationTest
      */
     function testPageLoadsWithoutPermissions()
     {
-        $this->assertContains(
-            "Schedule Module",
-            $this->_loadWithPermission('schedule_module')
+        $this->assertNotContains(
+            "Schedule Appointment",
+            $this->_loadWithPermission('')
         );
         $this->resetPermissions();
     }
@@ -131,10 +131,10 @@ class ScheduleTest extends LorisIntegrationTest
     function testEditappointment()
     {
         $this->safeGet($this->url . "/schedule_module/");
-        $ok = self::$alertOk;
+        $ok         = self::$alertOk;
         $editButton = self::$edit;
-        $ms = self::$msg;
-        $btn = self::$create;
+        $ms         = self::$msg;
+        $btn        = self::$create;
         // click edit button with same info, it will show a error msg
         $this->safeFindElement(
             WebDriverBy::cssSelector(
@@ -149,7 +149,7 @@ class ScheduleTest extends LorisIntegrationTest
 
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
-            "$ms"
+                "$ms"
             )
         )->getText();
         $this->assertContains("This appointment already exists", $bodyText);
@@ -160,9 +160,13 @@ class ScheduleTest extends LorisIntegrationTest
             )
         )->click();
         $el_dropdown = new WebDriverSelect(
-                $this->safeFindElement(WebDriverBy::cssSelector("
-                .col-sm-12:nth-child(6) .form-control"))
-            );
+            $this->safeFindElement(
+                WebDriverBy::cssSelector(
+                    "
+                .col-sm-12:nth-child(6) .form-control"
+                )
+            )
+        );
         $el_dropdown->selectByVisibleText("Behavioral");
         $this->safeFindElement(
             WebDriverBy::cssSelector(
@@ -173,8 +177,6 @@ class ScheduleTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("$ms")
         )->getText();
         $this->assertContains("Schedule added", $bodyText);
-       
-
 
     }
     /**
@@ -189,10 +191,10 @@ class ScheduleTest extends LorisIntegrationTest
         $btn = self::$delete;
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-              "$btn"
+                "$btn"
             )
         )->click();
-        $ms = self::$msg;
+        $ms       = self::$msg;
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("$ms")
         )->getText();
