@@ -150,9 +150,50 @@ class StaticDataTable extends Component {
         document.body.removeChild(link);
       }
     });
+    const correctReactLinks = (csvData) => {
+      const newCsvData = csvData.map((data, dataIndex) => {
+        const newData = data.map((value, valueIndex) => {
+          let result = [
+            value,
+          ];
+          if (value == null) {
+            result = [
+              '',
+            ];
+          } else {
+            if (value.type === 'a') {
+              result = [
+                value.props.href,
+              ];
+            } else if (value.type === 'span') {
+              if (Array.isArray(value.props.children)) {
+                const children = value.props.children.map((child, childIndex) => {
+                  let childresult = child;
+                  if (child.props && child.props.href) {
+                    childresult = child.props.href;
+                  }
+                  return childresult;
+                });
+                result = [
+                  children.join(''),
+                ];
+              } else {
+                result = [
+                  value.props.children.props.href,
+                ];
+              }
+            }
+          }
+          return result;
+        });
+        return newData;
+      });
+      return newCsvData;
+    };
+    const csvDownload = correctReactLinks([...csvData]);
     csvworker.postMessage({
       cmd: 'SaveFile',
-      data: csvData,
+      data: csvDownload,
       headers: this.props.Headers,
       identifiers: this.props.RowNameMap,
     });
