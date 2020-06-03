@@ -69,18 +69,16 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
             'Visit'      => $this->_visitlabel,
             'Visit_date' => $this->_visitdate,
             'Site'       => $this->_centername,
-            'File'       => $this->_filename,
             'InsertTime' => $this->_inserttime,
             'ScanType'   => $this->_scantype,
             'QC_status'  => $this->_qcstatus,
             'Selected'   => $this->_selected,
         );
 
-        $filename = basename($obj['File']);
         $candid   = $obj['Candidate'];
         $visit    = $obj['Visit'];
 
-        $obj['Link']       = "/candidates/$candid/$visit/images/$filename";
+        $obj['Link']       = "/candidates/$candid/$visit/images/";
         $obj['InsertTime'] = date('c', (int) $obj['InsertTime']);
 
         return json_encode($obj);
