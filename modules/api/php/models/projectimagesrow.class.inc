@@ -73,8 +73,8 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
             'Selected'   => $this->_selected,
         );
 
-        $candid   = $obj['Candidate'];
-        $visit    = $obj['Visit'];
+        $candid = $obj['Candidate'];
+        $visit  = $obj['Visit'];
 
         $obj['Link']       = "/candidates/$candid/$visit/images/";
         $obj['InsertTime'] = date('c', (int) $obj['InsertTime']);
