@@ -1,0 +1,17 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `participant_status_options`;
+LOCK TABLES `participant_status_options` WRITE;
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (1,'Active',0,NULL);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (2,'Refused/Not Enrolled',0,NULL);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (3,'Ineligible',0,NULL);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (4,'Excluded',0,NULL);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (5,'Inactive',1,NULL);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (6,'Incomplete',1,NULL);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (7,'Complete',0,NULL);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (8,'Unsure',NULL,5);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (9,'Requiring Further Investigation',NULL,5);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (10,'Not Responding',NULL,5);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (11,'Death',NULL,6);
+INSERT INTO `participant_status_options` (`ID`, `Description`, `Required`, `parentID`) VALUES (12,'Lost to Followup',NULL,6);
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

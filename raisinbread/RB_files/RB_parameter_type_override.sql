@@ -1,0 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `parameter_type_override`;
+LOCK TABLES `parameter_type_override` WRITE;
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

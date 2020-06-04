@@ -1,0 +1,13 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `parameter_type_category`;
+LOCK TABLES `parameter_type_category` WRITE;
+INSERT INTO `parameter_type_category` (`ParameterTypeCategoryID`, `Name`, `Type`) VALUES (3,'MRI Variables','Metavars');
+INSERT INTO `parameter_type_category` (`ParameterTypeCategoryID`, `Name`, `Type`) VALUES (4,'Identifiers','Metavars');
+INSERT INTO `parameter_type_category` (`ParameterTypeCategoryID`, `Name`, `Type`) VALUES (5,'Electrophysiology Variables','Metavars');
+INSERT INTO `parameter_type_category` (`ParameterTypeCategoryID`, `Name`, `Type`) VALUES (26,'AOSI','Instrument');
+INSERT INTO `parameter_type_category` (`ParameterTypeCategoryID`, `Name`, `Type`) VALUES (27,'Medical History','Instrument');
+INSERT INTO `parameter_type_category` (`ParameterTypeCategoryID`, `Name`, `Type`) VALUES (28,'MRI Parameter Form','Instrument');
+INSERT INTO `parameter_type_category` (`ParameterTypeCategoryID`, `Name`, `Type`) VALUES (29,'Radiology review','Instrument');
+INSERT INTO `parameter_type_category` (`ParameterTypeCategoryID`, `Name`, `Type`) VALUES (30,'BMI Calculator','Instrument');
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

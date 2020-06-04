@@ -1,0 +1,1 @@
+`deprecated_wiki` pages with no content or duplicated content that should have never existed.

@@ -1,0 +1,60 @@
+/*
+ * Dashboard CSS
+ */
+
+.alert-chevron {
+    margin-top: 15px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.huge {
+    font-size: 30px;
+}
+
+.medium {
+    font-size: 20px;
+}
+
+.new-flag {
+    color: red;
+    font-size: 80%;
+}
+
+.panel-title {
+    display: inline;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit
+}
+
+.project-description {
+    clear: left;
+}
+
+.target {
+    padding-top: 13px;
+    padding-right: 3px;
+}
+
+.tasks {
+    margin-bottom: 0;
+}
+
+.task-site {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.views {
+    margin-right: 10px;
+    margin-top: -10px;
+}
+
+.welcome {
+    margin-top: 10px;
+    float: left;
+}

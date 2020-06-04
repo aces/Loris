@@ -1,0 +1,43 @@
+{
+  "extends": "google",
+  "parser": "babel-eslint",
+  "plugins": [
+    "react"
+  ],
+  "env": {
+    "browser": true,
+    "jquery": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "globalReturn": false
+    }
+  },
+  "rules": {
+    "extends": ["eslint:recommended", "plugin:react/recommended", "google"],
+    "max-len": [1, 80, 2, {"ignoreComments": true}],
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "prefer-rest-params": "warn",
+    "array-callback-return": 0,
+    "require-jsdoc": "warn",
+    "no-implicit-globals": 0,
+    "no-invalid-this": 0,
+    "no-alert": 0,
+    "new-cap": ["error", {
+      "capIsNewExceptions": ["DynamicTable"]
+    }],
+    "no-console": ["warn", {
+      "allow": ["info", "warn", "error"]
+    }]
+  },
+  "globals": {
+    "React": true,
+    "ReactDOM": true,
+    "loris": true,
+    "QueryString": true,
+    "swal": true
+  }
+}

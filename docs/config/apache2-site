@@ -1,0 +1,35 @@
+# NameVirtualHost *
+<VirtualHost *:80>  # change from 80 to 443 if you enable SSL
+	ServerAdmin webmaster@localhost
+	
+	DocumentRoot %LORISROOT%/htdocs/
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride All
+	</Directory>
+	<Directory %LORISROOT%/htdocs/>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Order allow,deny
+		allow from all
+	</Directory>
+
+	php_value include_path .:/usr/share/php:%LORISROOT%/project/libraries:%LORISROOT%/php/libraries
+
+	#DirectoryIndex main.php index.html
+
+	ErrorLog %LOGDIRECTORY%/loris-error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog %LOGDIRECTORY%/loris-access.log combined
+	ServerSignature Off
+
+	#SSLEngine Off  # change to On to enable, after updating cert paths below
+	#SSLCertificateFile /etc/apache2/ssl/%PROJECTNAME%-cert.pem
+	#SSLCertificateKeyFile /etc/apache2/ssl/%PROJECTNAME%-key.pem
+	#SSLCACertificateFile /etc/apache2/ssl/CA-cacert.pem
+
+</VirtualHost>

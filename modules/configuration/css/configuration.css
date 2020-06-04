@@ -1,0 +1,14 @@
+.entry {
+    margin-bottom: 10px;
+}
+
+.config-dev-name {
+    color: grey;
+    font-size: 11px;
+    padding-right: 15px;
+    margin-top: -3px;
+}
+
+.submit-area {
+    margin-top: 30px;
+}

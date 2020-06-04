@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+ RewriteEngine on
+
+# FIXME: The /module/$name/ajax directory needs to be replaced with real NDB_Pages that
+# remove the page decoration middlewares, but for now we need to keep this helper script.
+RewriteRule ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$ AjaxHelper.php?Module=$1&script=$2 [QSA,END]
+
+# Everything else gets rewritten to be handled by index.php, unless it's a file that's served
+# directly from apache
+RewriteCond "%{REQUEST_FILENAME}" "!-f" [OR]
+# Redirect homepage URLs to also use index.php
+RewriteCond "%{REQUEST_FILENAME}" "(\/main\.php)$"
+RewriteRule ^(.*)$ index.php?lorispath=$1 [QSA,L]
+</IfModule>
+

@@ -1,0 +1,1 @@
+ALTER TABLE Config MODIFY COLUMN Value text;

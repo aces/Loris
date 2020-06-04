@@ -1,0 +1,2 @@
+UPDATE Config SET Value = LEFT(Value , LENGTH(Value)-1) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url') AND RIGHT(Value,1) = "/";
+UPDATE LorisMenu SET Link = RIGHT(Link, LENGTH(Link)-1) WHERE LEFT(Link,1) = "/";

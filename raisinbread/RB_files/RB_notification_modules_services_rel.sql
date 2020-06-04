@@ -1,0 +1,12 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `notification_modules_services_rel`;
+LOCK TABLES `notification_modules_services_rel` WRITE;
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (3,2);
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (4,2);
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (5,2);
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (6,2);
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (7,2);
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (8,2);
+INSERT INTO `notification_modules_services_rel` (`module_id`, `service_id`) VALUES (9,2);
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

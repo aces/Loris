@@ -1,0 +1,4 @@
+# This should be *, but there are non-JSX files
+# in this directory which need to be migrated before
+# we can just ignore the whole directory.
+js/SubprojectRelations.js

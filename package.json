@@ -1,0 +1,61 @@
+{
+  "name": "loris",
+  "version": "1.0.0",
+  "description": "Note that the README in LORIS assumes that LORIS is being run on Ubuntu.",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.11.2",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-addons-create-fragment": "^15.6.2",
+    "react-markdown": "^4.2.2",
+    "style-loader": "^1.1.3",
+    "sweetalert2": "^8.18.6"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "c3": "^0.7.15",
+    "d3": "^5.15.0",
+    "css-loader": "^3.4.2",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.5",
+    "eslint": "^5.16.0",
+    "eslint-config-google": "0.9.1",
+    "eslint-loader": "^2.2.1",
+    "eslint-plugin-react": "^7.16.0",
+    "terser-webpack-plugin": "^1.3.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.0",
+    "alex": ">=8.0.1"
+  },
+  "scripts": {
+    "lint:javascript": "./test/run-js-linter.sh",
+    "lintfix:javascript": "eslint --fix --ext .js, jsx modules",
+    "lint:php": "./test/run-php-linter.sh",
+    "tests:unit": "./test/dockerized-unit-tests.sh",
+    "tests:unit:debug": "DEBUG=true ./test/dockerized-unit-tests.sh",
+    "tests:integration": "./test/dockerized-integration-tests.sh",
+    "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
+    "compile": "webpack",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aces/Loris.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aces/Loris/issues"
+  },
+  "homepage": "https://github.com/aces/Loris"
+}

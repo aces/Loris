@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="LorisTest">
+	<table_data name="candidate">
+	<row>
+		<field name="ID">178</field>
+		<field name="CandID">591545</field>
+		<field name="PSCID">AAA18</field>
+		<field name="ExternalID" xsi:nil="true" />
+		<field name="DoB">2008-12-18</field>
+		<field name="EDC" xsi:nil="true" />
+		<field name="Sex">Female</field>
+		<field name="RegistrationCenterID">2</field>
+		<field name="ProjectID">2</field>
+		<field name="Ethnicity" xsi:nil="true" />
+		<field name="Active">Y</field>
+		<field name="Date_active">2015-05-05</field>
+		<field name="RegisteredBy">admin</field>
+		<field name="UserID">admin</field>
+		<field name="Date_registered">2015-05-05</field>
+		<field name="flagged_caveatemptor">false</field>
+		<field name="flagged_reason" xsi:nil="true" />
+		<field name="flagged_other" xsi:nil="true" />
+		<field name="flagged_other_status" xsi:nil="true" />
+		<field name="Testdate">2015-05-05 22:55:34</field>
+		<field name="Entity_type">Human</field>
+		<field name="ProbandSex" xsi:nil="true" />
+		<field name="ProbandDoB" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="ID">13</field>
+		<field name="CandID">595267</field>
+		<field name="PSCID">AAA0002</field>
+		<field name="ExternalID" xsi:nil="true" />
+		<field name="DoB">2009-05-02</field>
+		<field name="EDC" xsi:nil="true" />
+		<field name="Sex">Female</field>
+		<field name="RegistrationCenterID">2</field>
+		<field name="ProjectID">1</field>
+		<field name="Ethnicity" xsi:nil="true" />
+		<field name="Active">Y</field>
+		<field name="Date_active">2013-04-05</field>
+		<field name="RegisteredBy">admin</field>
+		<field name="UserID">admin</field>
+		<field name="Date_registered">2013-04-05</field>
+		<field name="flagged_caveatemptor">false</field>
+		<field name="flagged_reason" xsi:nil="true" />
+		<field name="flagged_other" xsi:nil="true" />
+		<field name="flagged_other_status" xsi:nil="true" />
+		<field name="Testdate">2013-04-05 19:17:26</field>
+		<field name="Entity_type">Human</field>
+		<field name="ProbandSex" xsi:nil="true" />
+		<field name="ProbandDoB" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="ID">179</field>
+		<field name="CandID">615362</field>
+		<field name="PSCID">AAA020</field>
+		<field name="ExternalID" xsi:nil="true" />
+		<field name="DoB">2008-01-20</field>
+		<field name="EDC" xsi:nil="true" />
+		<field name="Sex">Female</field>
+		<field name="RegistrationCenterID">2</field>
+		<field name="ProjectID">1</field>
+		<field name="Ethnicity" xsi:nil="true" />
+		<field name="Active">Y</field>
+		<field name="Date_active">2015-05-06</field>
+		<field name="RegisteredBy">admin</field>
+		<field name="UserID">admin</field>
+		<field name="Date_registered">2015-05-06</field>
+		<field name="flagged_caveatemptor">false</field>
+		<field name="flagged_reason" xsi:nil="true" />
+		<field name="flagged_other" xsi:nil="true" />
+		<field name="flagged_other_status" xsi:nil="true" />
+		<field name="Testdate">2015-05-06 20:01:44</field>
+		<field name="Entity_type">Human</field>
+		<field name="ProbandSex" xsi:nil="true" />
+		<field name="ProbandDoB" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="ID">63</field>
+		<field name="CandID">969664</field>
+		<field name="PSCID">AAA0011</field>
+		<field name="ExternalID" xsi:nil="true" />
+		<field name="DoB">2007-03-02</field>
+		<field name="EDC" xsi:nil="true" />
+		<field name="Sex">Male</field>
+		<field name="RegistrationCenterID">2</field>
+		<field name="ProjectID" xsi:nil="true" />
+		<field name="Ethnicity" xsi:nil="true" />
+		<field name="Active">Y</field>
+		<field name="Date_active">2014-05-02</field>
+		<field name="RegisteredBy">admin</field>
+		<field name="UserID">admin</field>
+		<field name="Date_registered">2014-05-02</field>
+		<field name="flagged_caveatemptor">false</field>
+		<field name="flagged_reason">1</field>
+		<field name="flagged_other">Testing</field>
+		<field name="flagged_other_status" xsi:nil="true" />
+		<field name="Testdate">2015-05-08 18:26:49</field>
+		<field name="Entity_type">Human</field>
+		<field name="ProbandSex">Male</field>
+		<field name="ProbandDoB">2006-03-01</field>
+	</row>
+	</table_data>
+	<table_data name="session">
+	<row>
+		<field name="ID">11</field>
+		<field name="CandID">595267</field>
+		<field name="CenterID">2</field>
+		<field name="VisitNo">1</field>
+		<field name="Visit_label">V01</field>
+		<field name="SubprojectID">2</field>
+		<field name="Submitted">N</field>
+		<field name="Current_stage">Visit</field>
+		<field name="Date_stage_change">2013-04-10</field>
+		<field name="Screening" xsi:nil="true" />
+		<field name="Date_screening" xsi:nil="true" />
+		<field name="Visit">In Progress</field>
+		<field name="Date_visit">2011-02-02</field>
+		<field name="Approval" xsi:nil="true" />
+		<field name="Date_approval" xsi:nil="true" />
+		<field name="Active">Y</field>
+		<field name="Date_active">2013-04-10</field>
+		<field name="RegisteredBy">admin</field>
+		<field name="UserID">admin</field>
+		<field name="Date_registered">2013-04-10</field>
+		<field name="Testdate">2013-04-10 19:22:50</field>
+		<field name="Hardcopy_request">-</field>
+		<field name="BVLQCStatus" xsi:nil="true" />
+		<field name="BVLQCType" xsi:nil="true" />
+		<field name="BVLQCExclusion" xsi:nil="true" />
+		<field name="QCd" xsi:nil="true" />
+		<field name="Scan_done">Y</field>
+		<field name="MRIQCStatus"></field>
+		<field name="MRIQCPending">N</field>
+		<field name="MRIQCFirstChangeTime" xsi:nil="true" />
+		<field name="MRIQCLastChangeTime" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="ID">16</field>
+		<field name="CandID">595267</field>
+		<field name="CenterID">2</field>
+		<field name="VisitNo">2</field>
+		<field name="Visit_label">V02</field>
+		<field name="SubprojectID">2</field>
+		<field name="Submitted">N</field>
+		<field name="Current_stage">Visit</field>
+		<field name="Date_stage_change">2013-04-22</field>
+		<field name="Screening" xsi:nil="true" />
+		<field name="Date_screening" xsi:nil="true" />
+		<field name="Visit">In Progress</field>
+		<field name="Date_visit">2012-08-06</field>
+		<field name="Approval" xsi:nil="true" />
+		<field name="Date_approval" xsi:nil="true" />
+		<field name="Active">Y</field>
+		<field name="Date_active">2013-04-22</field>
+		<field name="RegisteredBy">admin</field>
+		<field name="UserID">admin</field>
+		<field name="Date_registered">2013-04-22</field>
+		<field name="Testdate">2013-04-22 22:23:56</field>
+		<field name="Hardcopy_request">-</field>
+		<field name="BVLQCStatus" xsi:nil="true" />
+		<field name="BVLQCType" xsi:nil="true" />
+		<field name="BVLQCExclusion" xsi:nil="true" />
+		<field name="QCd" xsi:nil="true" />
+		<field name="Scan_done">N</field>
+		<field name="MRIQCStatus"></field>
+		<field name="MRIQCPending">N</field>
+		<field name="MRIQCFirstChangeTime" xsi:nil="true" />
+		<field name="MRIQCLastChangeTime" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="ID">97</field>
+		<field name="CandID">969664</field>
+		<field name="CenterID">2</field>
+		<field name="VisitNo">1</field>
+		<field name="Visit_label">V01</field>
+		<field name="SubprojectID">1</field>
+		<field name="Submitted">N</field>
+		<field name="Current_stage">Visit</field>
+		<field name="Date_stage_change">2015-05-14</field>
+		<field name="Screening" xsi:nil="true" />
+		<field name="Date_screening" xsi:nil="true" />
+		<field name="Visit">Pass</field>
+		<field name="Date_visit">2008-03-03</field>
+		<field name="Approval" xsi:nil="true" />
+		<field name="Date_approval" xsi:nil="true" />
+		<field name="Active">Y</field>
+		<field name="Date_active">2014-05-02</field>
+		<field name="RegisteredBy">admin</field>
+		<field name="UserID">admin</field>
+		<field name="Date_registered">2014-05-02</field>
+		<field name="Testdate">2015-05-14 20:40:46</field>
+		<field name="Hardcopy_request">-</field>
+		<field name="BVLQCStatus" xsi:nil="true" />
+		<field name="BVLQCType" xsi:nil="true"></field>
+		<field name="BVLQCExclusion" xsi:nil="true" />
+		<field name="QCd" xsi:nil="true" />
+		<field name="Scan_done">Y</field>
+		<field name="MRIQCStatus"></field>
+		<field name="MRIQCPending">N</field>
+		<field name="MRIQCFirstChangeTime" xsi:nil="true" />
+		<field name="MRIQCLastChangeTime" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="ID">98</field>
+		<field name="CandID">969664</field>
+		<field name="CenterID">2</field>
+		<field name="VisitNo">2</field>
+		<field name="Visit_label">V02</field>
+		<field name="SubprojectID">1</field>
+		<field name="Submitted">N</field>
+		<field name="Current_stage">Visit</field>
+		<field name="Date_stage_change">2014-05-02</field>
+		<field name="Screening" xsi:nil="true" />
+		<field name="Date_screening" xsi:nil="true" />
+		<field name="Visit">In Progress</field>
+		<field name="Date_visit">2009-03-02</field>
+		<field name="Approval" xsi:nil="true" />
+		<field name="Date_approval" xsi:nil="true" />
+		<field name="Active">Y</field>
+		<field name="Date_active">2014-05-02</field>
+		<field name="RegisteredBy">admin</field>
+		<field name="UserID">admin</field>
+		<field name="Date_registered">2014-05-02</field>
+		<field name="Testdate">2014-05-02 19:06:52</field>
+		<field name="Hardcopy_request">-</field>
+		<field name="BVLQCStatus" xsi:nil="true" />
+		<field name="BVLQCType" xsi:nil="true" />
+		<field name="BVLQCExclusion" xsi:nil="true" />
+		<field name="QCd" xsi:nil="true" />
+		<field name="Scan_done">N</field>
+		<field name="MRIQCStatus"></field>
+		<field name="MRIQCPending">N</field>
+		<field name="MRIQCFirstChangeTime" xsi:nil="true" />
+		<field name="MRIQCLastChangeTime" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="ID">139</field>
+		<field name="CandID">591545</field>
+		<field name="CenterID">2</field>
+		<field name="VisitNo">1</field>
+		<field name="Visit_label">V10</field>
+		<field name="SubprojectID">1</field>
+		<field name="Submitted">N</field>
+		<field name="Current_stage">Visit</field>
+		<field name="Date_stage_change">2015-05-05</field>
+		<field name="Screening" xsi:nil="true" />
+		<field name="Date_screening" xsi:nil="true" />
+		<field name="Visit">In Progress</field>
+		<field name="Date_visit">2010-12-15</field>
+		<field name="Approval" xsi:nil="true" />
+		<field name="Date_approval" xsi:nil="true" />
+		<field name="Active">Y</field>
+		<field name="Date_active">2015-05-05</field>
+		<field name="RegisteredBy">admin</field>
+		<field name="UserID">admin</field>
+		<field name="Date_registered">2015-05-05</field>
+		<field name="Testdate">2015-05-05 23:02:40</field>
+		<field name="Hardcopy_request">-</field>
+		<field name="BVLQCStatus" xsi:nil="true" />
+		<field name="BVLQCType" xsi:nil="true" />
+		<field name="BVLQCExclusion" xsi:nil="true" />
+		<field name="QCd" xsi:nil="true" />
+		<field name="Scan_done">N</field>
+		<field name="MRIQCStatus"></field>
+		<field name="MRIQCPending">N</field>
+		<field name="MRIQCFirstChangeTime" xsi:nil="true" />
+		<field name="MRIQCLastChangeTime" xsi:nil="true" />
+	</row>
+	</table_data>
+</database>
+</mysqldump>

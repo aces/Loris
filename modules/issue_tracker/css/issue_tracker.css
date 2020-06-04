@@ -1,0 +1,87 @@
+/******* Control Panel *******/
+
+.div-cpanel {
+    position: fixed;
+    width: 180px;
+    border: 0;
+}
+
+td.sidenav {
+    border-right: 0;
+}
+
+.td-cpanel-fake {
+    border-right: solid #6183b3 2px;
+}
+
+.table-cpanel-fake {
+    width: 160px;
+}
+
+ul {
+    margin: 0;
+    padding-left: 12px;
+    list-style-type: none;
+}
+
+dl {
+    margin-top: 0;
+    margin-bottom: 8px;
+    padding-top: 5px;
+
+}
+
+.div-controlpanel-bottom {
+    margin-left: 12px;
+}
+
+/***** Header table *******/
+h3 {
+    margin-top: 25px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.panel-title {
+    display: inline;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit
+}
+
+.views {
+    margin-right: 10px;
+    margin-top: -2px;
+}
+
+.btn-volume-viewer {
+    color: #fff;
+    background-color: #778;
+    border-color: #333;
+    margin-bottom: 3px;
+}
+
+.header-info {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+}
+
+.static-info {
+    color: #064785;
+    text-decoration: none;
+}
+
+.page-issue-tracker h3 {
+    margin: 25px 0;
+}
+
+.history-item-label > span {
+  font-weight: bold;
+}
+
+.history-item-changes {
+  margin-left: 2em;
+}
