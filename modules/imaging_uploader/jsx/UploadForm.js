@@ -170,7 +170,7 @@ class UploadForm extends Component {
     if (mriFile.status === 'Failure') {
       swal({
         title: 'Are you sure?',
-        text: 'A file with this name already exists!\n Would you like to override existing file?',
+        text: 'A file with this name already exists!\n Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
@@ -179,7 +179,7 @@ class UploadForm extends Component {
         if (isConfirm) {
           this.uploadFile(true);
         } else {
-          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
+          swal('Cancelled', 'Your upload has been cancelled.', 'error');
         }
       }.bind(this));
     }
@@ -188,8 +188,8 @@ class UploadForm extends Component {
     if (mriFile.status === 'Not Started') {
       swal({
         title: 'Are you sure?',
-        text: 'A file with this name has been uploaded but has not yet started the MRI pipeline.' +
-          '\n Would you like to override the existing file?',
+        text: 'A file with this name has been uploaded but has not yet been processed by the MRI pipeline.' +
+          '\n Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
