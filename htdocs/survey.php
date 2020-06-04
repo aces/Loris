@@ -125,7 +125,9 @@ class DirectDataEntryMainPage
         $this->tpl_data  = array(
             'nextpage'    => $this->NextPageNum,
             'prevpage'    => $this->PrevPageNum,
-            'pageNum'     => $pageNum && is_numeric($pageNum) ? $pageNum + 1 : 1,
+            'pageNum'     =>
+                $pageNum && is_numeric($pageNum) ?
+                    intval($pageNum) + 1 : 1,
             'totalPages'  => $totalPages,
             'key'         => $this->key,
             'study_title' => $config->getSetting('title'),
