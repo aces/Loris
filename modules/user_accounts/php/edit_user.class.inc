@@ -52,10 +52,6 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if (!$this->isCreatingNewUser()) {
-            $user = \User::factory($this->identifier);
-        }
-
         if ($editor->hasPermission('user_accounts_multisite')) {
             return true;
         }
@@ -65,6 +61,7 @@ class Edit_User extends \NDB_Form
                 return true;
             }
             $user = \User::factory($this->identifier);
+            // Make sure that the editor and the user share site associations.
             return array_intersect(
                 $user->getData('CenterIDs'),
                 $editor->getData('CenterIDs')
