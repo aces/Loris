@@ -335,7 +335,6 @@ class DateOptions extends Component {
   }
   // Render the HTML
   render() {
-    // Truncate off the month and day from the date to only have the year.
     let minYear = this.props.element.Options.MinDate;
     let maxYear = this.props.element.Options.MaxDate;
 
