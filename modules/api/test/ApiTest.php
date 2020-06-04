@@ -1,4 +1,6 @@
-s script sends HTTP request to every enpoints of the api module and look at the 
+<?php;
+/**
+ * This script sends HTTP request to every enpoints of the api module and look at the 
  * response content, status code and headers where it applies.
  *
  * PHP Version 7
