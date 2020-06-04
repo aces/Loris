@@ -26,7 +26,7 @@ make dev    # For development environments
 
 If that does not solve your issue, this could be because the Config table in the database is not pointing to the correct values. In this case, follow the following steps. 
 
-1. Check the following values in the Config table via the MySQL backend.
+1. Check that the following values in the Config table are correct via the SQL backend.
 
    | Name | Label          | Value          |  
    | ---- | ----------- | ---------- |
@@ -40,7 +40,7 @@ If that does not solve your issue, this could be because the Config table in the
     SELECT c.configID, cs.Name, cs.Label, c.value, cs.Description FROM Config c LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
    ```
 
-2. If they do not match the above format, update these values with the following commands on the MySQL command-line.
+2. If the values displayed by these 2 commands do not match your _$lorisRootDirectory_ and _$hostName_, update them with the following commands on the SQL command-line.
 
    ```sql
    UPDATE Config SET Value='$lorisRootDirectory' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');
