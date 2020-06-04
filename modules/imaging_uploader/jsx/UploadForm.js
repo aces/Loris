@@ -53,10 +53,13 @@ class UploadForm extends Component {
         delete formData.visitLabel;
       } else if (typeof formData.mriFile !== 'undefined') {
         let patientName = formData.mriFile.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
-        let ids = patientName.split('_', 3);
+        let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        formData.visitLabel = ids[2];
+        // visitLabel can contain underscores
+        // join the remaining elements of patientName and use as visitLabel
+        ids.splice(0, 2);
+        formData.visitLabel = ids.join('_');
       }
     }
 
@@ -65,10 +68,13 @@ class UploadForm extends Component {
     if (field === 'mriFile') {
       if (value.name && formData.IsPhantom === 'N') {
         let patientName = value.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
-        let ids = patientName.split('_', 3);
+        let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        formData.visitLabel = ids[2];
+        // visitLabel can contain underscores
+        // join the remaining elements of patientName and use as visitLabel
+        ids.splice(0, 2);
+        formData.visitLabel = ids.join('_');
       }
     }
 
