@@ -63,7 +63,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
      */
     public function toJSON() : string
     {
-        $obj = array(
+        $obj      = array(
             'Candidate'  => $this->_candid,
             'PSCID'      => $this->_pscid,
             'Visit'      => $this->_visitlabel,
@@ -75,8 +75,8 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
             'Selected'   => $this->_selected,
         );
         $filename = basename($this->_filename);
-        $candid = $obj['Candidate'];
-        $visit  = $obj['Visit'];
+        $candid   = $obj['Candidate'];
+        $visit    = $obj['Visit'];
 
         $obj['Link']       = "/candidates/$candid/$visit/images/$filename";
         $obj['InsertTime'] = date('c', (int) $obj['InsertTime']);
