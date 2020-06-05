@@ -75,7 +75,7 @@ curl -s https://api.github.com/repos/aces/loris/releases/latest \
 ```
 
 When this is complete, expand the compressed file and move its contents to the
-directory from which LORIS will be served. 
+_loris root directory_ from which LORIS will be served: 
 
 ```bash
 tar -zxf loris-src.tar.gz
@@ -94,7 +94,8 @@ Then move this folder to the web root (e.g. `/var/www/`) and go to this
 directory.
 
 ```bash
-mv ./loris /var/www/; cd /var/www/loris
+mv ./loris /var/www/
+cd /var/www/loris
 ```
 
 Once in the correct directory, run one of the following commands given your environment:
