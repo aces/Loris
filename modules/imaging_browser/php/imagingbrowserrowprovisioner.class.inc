@@ -112,7 +112,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         $coalesce_desc = array();
 
         foreach ($scan_id_types as $id => $type) {
-            $pass[$id]          = $DB->quote($type);
+            $pass[$id]          = $DB->escape($type);
             $qc[$id]            = $DB->quote($type);
             $coalesce_desc[$id] = $DB->quote($pass[$id] . '.' . $qc[$id]);
             $case_desc[$id]     = "
@@ -155,8 +155,8 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               JOIN files_qcstatus USING (FileID)
               WHERE files.AcquisitionProtocolID= $key
                 AND files_qcstatus.QCStatus IN (1, 2)
-              GROUP BY files.SessionID) `$pass[$key]`
-                ON (`$pass[$key]`.SessionID=f.SessionID
+              GROUP BY files.SessionID) $pass[$key]
+                ON ($pass[$key].SessionID=f.SessionID
             ) ";
         }
 
@@ -210,7 +210,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               $left_joins
             WHERE
               s.Active = 'Y' AND
-              f.FileType='mnc'
+              f.FileType IN ('mnc', 'nii')
             GROUP BY s.ID
             ORDER BY c.PSCID, s.Visit_label
             ",
