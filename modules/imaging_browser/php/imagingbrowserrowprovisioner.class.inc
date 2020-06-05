@@ -33,10 +33,13 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
     /**
      * Create an ImagingBrowserRowProvisioner, which gets rows for
      * the imaging browser menu table.
+     *
+     * @throws \ConfigurationException
      */
     function __construct()
     {
         $config = \NDB_Config::singleton();
+        $DB     = \NDB_Factory::singleton()->database();
 
         // ===========================================================
         // Get the different scan types to be displayed in data table
@@ -92,7 +95,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         }
 
         $NewDataSubquery = "
-            CASE 
+            CASE
                 COALESCE(Max(fqc.QCLastChangeTime), 'new')
                 WHEN 'new' THEN {$acqpif}
                 WHEN ''    THEN {$acqpif}
@@ -109,9 +112,9 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         $coalesce_desc = array();
 
         foreach ($scan_id_types as $id => $type) {
-            $pass[$id]          = $type . 'pass';
-            $qc[$id]            = $type . 'QC';
-            $coalesce_desc[$id] = $pass[$id] . '.' . $qc[$id];
+            $pass[$id]          = $DB->escape($type);
+            $qc[$id]            = $DB->quote($type);
+            $coalesce_desc[$id] = $DB->quote($pass[$id] . '.' . $qc[$id]);
             $case_desc[$id]     = "
                 CASE
                     COALESCE($coalesce_desc[$id], '')
@@ -126,15 +129,15 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
                 WHEN 'Fail' THEN
                     IF(s.MRIQCPending='Y', 'Pending Fail', 'Fail')
                 WHEN 'Pass' THEN
-                    IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass') 
+                    IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass')
                 ELSE s.MRIQCStatus
-            END 
+            END
             ";
 
         $PendingNewquery = "
-            CASE 
+            CASE
                 WHEN s.MRIQCPending='Y' THEN 'P'
-                WHEN MAX(fqc.QCFirstChangeTime) IS NULL $newQueryCase THEN  'N'      
+                WHEN MAX(fqc.QCFirstChangeTime) IS NULL $newQueryCase THEN  'N'
             END";
 
         // ====================================================
@@ -146,13 +149,13 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         foreach ($case_desc as $key => $value) {
             $left_joins .= "
             LEFT JOIN (
-              SELECT files.SessionID, 
-                MIN(files_qcstatus.QCStatus+0) as $qc[$key] 
-              FROM files 
-              JOIN files_qcstatus USING (FileID) 
-              WHERE files.AcquisitionProtocolID= $key 
-                AND files_qcstatus.QCStatus IN (1, 2) 
-              GROUP BY files.SessionID) $pass[$key] 
+              SELECT files.SessionID,
+                MIN(files_qcstatus.QCStatus+0) as $qc[$key]
+              FROM files
+              JOIN files_qcstatus USING (FileID)
+              WHERE files.AcquisitionProtocolID= $key
+                AND files_qcstatus.QCStatus IN (1, 2)
+              GROUP BY files.SessionID) $pass[$key]
                 ON ($pass[$key].SessionID=f.SessionID
             ) ";
         }
@@ -166,7 +169,8 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // $scan_types are set in the configuration module
         $modalities_subquery = '';
         foreach ($case_desc as $key => $value) {
-            $modalities_subquery = "$value as $scan_id_types[$key]_QC_Status";
+            $modalities_subquery = $value." as " .
+                $DB->quote("$scan_id_types[$key]_QC_Status");
         }
 
         // =================================================
@@ -174,7 +178,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // =================================================
 
         parent::__construct(
-            "SELECT 
+            "SELECT
               p.Name as Site,
               c.PSCID as PSCID,
               c.CandID as DCCID,
@@ -189,22 +193,22 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               s.ID as sessionID,
               GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType,
               $PendingNewquery as pending," .
-              ($modalities_subquery==''?'':"$modalities_subquery,") .
-              "s.CenterID as CenterID,
+            ($modalities_subquery==''?'':"$modalities_subquery,") .
+            "s.CenterID as CenterID,
               c.Entity_type as entityType,
               s.ProjectID
-            FROM psc AS p 
-              JOIN session s ON (s.CenterID=p.CenterID) 
-              JOIN candidate c ON (c.CandID=s.CandID) 
+            FROM psc AS p
+              JOIN session s ON (s.CenterID=p.CenterID)
+              JOIN candidate c ON (c.CandID=s.CandID)
               LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
-              JOIN files f ON (f.SessionID=s.ID) 
-              LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
+              JOIN files f ON (f.SessionID=s.ID)
+              LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
               JOIN parameter_file pf ON (f.FileID=pf.FileID)
               JOIN parameter_type pt USING (ParameterTypeID)
-              LEFT JOIN mri_scan_type modality ON 
+              LEFT JOIN mri_scan_type modality ON
                 (f.AcquisitionProtocolID=modality.ID)
-              $left_joins 
-            WHERE 
+              $left_joins
+            WHERE
               s.Active = 'Y' AND
               f.FileType IN ('mnc', 'nii')
             GROUP BY s.ID
