@@ -1,6 +1,6 @@
-<?php;
+<?php
 /**
- * This script sends HTTP request to every enpoints of the api module and look at the 
+ * This script sends HTTP request to every enpoints of the api module and look at the
  * response content, status code and headers where it applies.
  *
  * PHP Version 7
@@ -15,7 +15,7 @@
 
 
 namespace LORIS\api\Test;
-require_once __DIR__ . 
+require_once __DIR__ .
 "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 require './vendor/autoload.php';
 
