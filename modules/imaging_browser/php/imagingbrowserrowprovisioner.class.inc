@@ -169,8 +169,8 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // $scan_types are set in the configuration module
         $modalities_subquery = '';
         foreach ($case_desc as $key => $value) {
-            $modalities_subquery .= $value ." as " .
-                $DB->quote("$scan_id_types[$key]_QC_Status") . ",";
+            $modalities_subquery .= "$value as " .
+                $DB->quote("$scan_id_types[$key]_QC_Status").",";
         }
 
         // =================================================
