@@ -330,7 +330,13 @@ class IssueForm extends Component {
         // is set to the empty option instead of an array of
         // the user's sites.
         if (newIssue) {
-            formData.centerID = null;
+          formData.centerID = null;
+        } else {
+          // if we edit an issue
+          // a NULL centerID (= All Sites) is converted to the ALL Sites option
+          if (formData.centerID == null) {
+            formData.centerID = 'all';
+          }
         }
 
         this.setState({
@@ -373,9 +379,6 @@ class IssueForm extends Component {
 
     for (let key in myFormData) {
       if (myFormData[key] !== '') {
-        // All Sites selected - Ignore value to store NULL in DB
-        if (key == 'centerID' && myFormData[key] == '0') continue;
-
         formData.append(key, myFormData[key]);
       }
     }

@@ -61,7 +61,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             FROM issues as i
             LEFT JOIN modules m
               ON (m.ID=i.module)
-            LEFT JOIN candidate c 
+            LEFT JOIN candidate c
               ON (i.candID=c.CandID)
             LEFT JOIN session s
               ON (i.sessionID = s.ID)
@@ -99,7 +99,30 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             $module = &$modules[$mname];
         }
 
-        $cids = isset($row['centerId']) ? [$row['centerId']] : $this->_siteList;
+        if (isset($row['centerId'])) {
+            // $cids: int array
+            // If centerId is set
+            // convert the value from string to int array
+            $cids = [intval($row['centerId'])];
+
+            // $row['centerId']: string array
+            // If $row['centerId'] is not set
+            // convert the value from string to string array
+            $row['centerId'] = [$row['centerId']];
+        } else {
+            // set $cids to all centersID (int array)
+            $cids = $this->_siteList;
+
+            // set $row['centerId'] to all centersID
+            // Use getCenterIDs and convert values to string (string array)
+            $row['centerId'] = array_map(
+                "strval",
+                \User::singleton()->getCenterIDs()
+            );
+            // For filter to work for 'All Sites'
+            array_push($row['centerId'], "all");
+        }
+
         $row['lastUpdate'] = \Utility::toDateDisplayFormat($row['lastUpdate']);
         return new IssueRow($row, $cids, $module);
     }

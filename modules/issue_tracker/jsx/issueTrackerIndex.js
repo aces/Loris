@@ -95,7 +95,14 @@ class IssueTrackerIndex extends Component {
       };
       break;
     case 'Site':
-      result = <td>{this.state.data.fieldOptions.sites[cell]}</td>;
+      let sites = [];
+      if (cell.includes('all')) {
+        sites.push(this.state.data.fieldOptions.sites['all']);
+      } else {
+        sites = cell.map((v) => this.state.data.fieldOptions.sites[v]).filter((v) => v != undefined);
+      }
+
+      result = <td>{sites.join(', ')}</td>;
       break;
     case 'PSCID':
       if (row.PSCID !== null) {
@@ -109,7 +116,7 @@ class IssueTrackerIndex extends Component {
       break;
     case 'Visit Label':
       if (row['Visit Label'] !== null) {
-        link =(
+        link = (
           <a href={loris.BaseURL + '/instrument_list/?candID=' +
                   row.CandID + '&sessionID=' + row.SessionID }>
             {cell}
@@ -203,7 +210,7 @@ class IssueTrackerIndex extends Component {
       {label: 'Watching', show: false, filter: {
         name: 'watching',
         type: 'checkbox',
-        }},
+      }},
     ];
 
     const filterPresets = [

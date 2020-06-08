@@ -29,6 +29,7 @@
 require_once "Email.class.inc";
 
 use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
+use \LORIS\issue_tracker\Issue_Tracker;
 
 //TODO: or split it into two files... :P
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
@@ -95,8 +96,14 @@ function editIssue()
     if (array_key_exists('sessionID', $validatedInput)) {
         $issueValues['sessionID'] = $validatedInput['sessionID'];
     }
+
     if (array_key_exists('candID', $validatedInput)) {
         $issueValues['candID'] = $validatedInput['candID'];
+    }
+
+    // All Sites selected - Ignore value to store NULL in DB
+    if (isset($issueValues["centerID"]) && $issueValues["centerID"] === 'all') {
+        $issueValues["centerID"] = null;
     }
 
     // Get changed values to save in history
@@ -429,6 +436,27 @@ function getWatching($issueID)
 }
 
 /**
+ * Returns the site name in the database corresponding to the centerID
+ *
+ * @param int $centerID - must match one from the psc table or 0
+ *
+ * @return string
+ */
+function getSiteName($centerID): string
+{
+    if ($centerID == "all") {
+        $sites = Issue_Tracker::getSiteOptions(false, true);
+        return $sites["all"];
+    }
+
+    $db =& Database::singleton();
+    return $db->pselectOne(
+        "SELECT Name FROM psc WHERE CenterID=:centerID",
+        array('centerID' => $centerID)
+    );
+}
+
+/**
  * Gets the changes to values, and the comments relevant to the given issue
  *
  * @param int $issueID the issueID
@@ -457,11 +485,7 @@ function getComments($issueID)
             $comment['newValue'] = $modules[$mid]->getLongName();
             continue;
         } else if ($comment['fieldChanged'] === 'centerID') {
-            $site = $db->pselectOne(
-                "SELECT Name FROM psc WHERE CenterID=:centerID",
-                array('centerID' => $comment['newValue'])
-            );
-            $comment['newValue']     = $site;
+            $comment['newValue']     = getSiteName($comment['newValue']);
             $comment['fieldChanged'] = 'site';
             continue;
         } else if ($comment['fieldChanged'] === 'candID') {
@@ -575,15 +599,7 @@ function getIssueFields()
     $sites = array();
 
     //get field options
-    if ($user->hasPermission('access_all_profiles')) {
-        // get the list of study sites - to be replaced by the Site object
-        $sites = Utility::getSiteList(false, true);
-    } else {
-        // allow only to view own site data
-        $sites = $user->getStudySites();
-    }
-
-    $sites[0] = "All Sites";
+    $sites = Issue_Tracker::getSiteOptions(false, true);
 
     //not yet ideal permissions
     $assignees = array();
@@ -601,7 +617,7 @@ function getIssueFields()
         $assignee_expanded = $db->pselect(
             "SELECT DISTINCT u.Real_name, u.UserID FROM users u
              LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
+             WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
             array(
                 'CenterID' => $CenterID,
                 'DCC'      => $DCCID,
@@ -681,8 +697,8 @@ WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
 
         $desc = $db->pselect(
             "SELECT issueComment
-FROM issues_comments WHERE issueID=:i
-ORDER BY dateAdded LIMIT 1",
+            FROM issues_comments WHERE issueID=:i
+            ORDER BY dateAdded LIMIT 1",
             array('i' => $issueID)
         );
 
@@ -713,8 +729,11 @@ ORDER BY dateAdded LIMIT 1",
         // We need to unescape the string here:
         // React is escaping the string in the template
         // This fixes an issue with multiple escaping (#6643)
-        $comment           = $desc[0]['issueComment'];
-        $issueData['desc'] = html_entity_decode($comment) ?? '';
+        $issueData['desc'] = '';
+        if (count($desc) > 0) {
+            $comment           = $desc[0]['issueComment'];
+            $issueData['desc'] = html_entity_decode($comment);
+        }
     }
     $issueData['comment'] = null;
 

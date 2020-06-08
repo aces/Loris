@@ -68,6 +68,27 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     }
 
     /**
+     * Returns a list of sites in the database with an additional All Sites option
+     *
+     * @return array an associative array("center ID" => "site name")
+     */
+    static function getSiteOptions(): array
+    {
+        $user  = \User::singleton();
+        $sites = array();
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $sites = \Utility::getSiteList();
+        } else {
+            // allow only to view own site data
+            $sites = $user->getStudySites();
+        }
+        $sites["all"] = "All Sites";
+
+        return $sites;
+    }
+
+    /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
@@ -79,13 +100,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $db   = \Database::singleton();
 
         //sites
-        $sites = array();
-        if ($user->hasPermission('access_all_profiles')) {
-            $sites = \Utility::getSiteList();
-        } else {
-            // allow only to view own site data
-            $sites = $user->getStudySites();
-        }
+        $sites = Issue_Tracker::getSiteOptions();
 
         //reporters
         $reporters         = array();
