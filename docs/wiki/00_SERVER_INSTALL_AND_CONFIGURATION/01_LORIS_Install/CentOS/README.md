@@ -10,15 +10,20 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 # System Requirements - Install dependencies
 
 Default dependencies installed by CentOS 7.x may not meet the version requirements for LORIS deployment or development:
-* MariaDB 10.3 is supported for LORIS 23.* 
+* MariaDB 10.3 is supported for LORIS 23.*   
+
 * PHP 7.3 is supported for LORIS 23.*
 
 In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](../../../../../README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
- * Apache 2.4 or higher
- * [Composer](https://getcomposer.org)
- * NodeJS 8.0 or higher
- * NPM >= 8.0
- * make
+ * Apache 2.4 or higher  
+ 
+ * [Composer](https://getcomposer.org)  
+ 
+ * NodeJS 8.0 or higher  
+ 
+ * NPM >= 8.0  
+ 
+ * make  
 
 ## Apache2
 ```bash
@@ -111,9 +116,12 @@ cp docs/config/apache-site /etc/httpd/conf.d/apache-site.conf
 ```
 
 Customize and Verify your settings: 
-* Paths and settings in `/etc/httpd/conf.d/apache-site.conf` should be populated appropriately for your server. Replace placeholders such as `%LORISROOT%` with `/var/www/loris`, `%PROJECTNAME%` with `loris`, `%LOGDIRECTORY%` with `/var/log/httpd/loris-error.log` 
- * DocumentRoot should point to `/var/www/loris/htdocs`
- * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd /var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
+* Paths and settings in `/etc/httpd/conf.d/apache-site.conf` should be populated appropriately for your server. Replace placeholders such as `%LORISROOT%` with `/var/www/loris`, `%PROJECTNAME%` with `loris`, `%LOGDIRECTORY%` with `/var/log/httpd/loris-error.log`   
+
+ * DocumentRoot should point to `/var/www/loris/htdocs`  
+ 
+ * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd   
+/var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
 
 Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS environment. You can find an example in `loris/docs/config/apache2-site` for setup of `<VirtualHost>` in the loris.conf file you will create. Adjust the parameters according to your configuration.
 ```
@@ -131,9 +139,11 @@ sudo systemctl status httpd
 
 For the purpose of following LORIS conventions and easy understanding of all LORIS documentation, we recommend the following account names: 
 
-* `lorisadmin` unix user with sudo permission who will setup and manage the LORIS back-end
-* `lorisuser` MySQL database user with limited (insert, delete, update, select...) permissions, for database transactions requested by the Loris front-end
-* `admin` default front-end username for LORIS administrator account (login via browser)
+* `lorisadmin` unix user with sudo permission who will setup and manage the LORIS back-end  
+
+* `lorisuser` MySQL database user with limited (insert, delete, update, select...) permissions, for database transactions requested by the Loris front-end  
+
+* `admin` default front-end username for LORIS administrator account (login via browser)  
 
 ## Run the LORIS install script to set up directories
 
