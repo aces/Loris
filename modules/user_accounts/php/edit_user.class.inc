@@ -52,10 +52,6 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if (!$this->isCreatingNewUser()) {
-            $user = \User::factory($this->identifier);
-        }
-
         if ($editor->hasPermission('user_accounts_multisite')) {
             return true;
         }
@@ -65,6 +61,7 @@ class Edit_User extends \NDB_Form
                 return true;
             }
             $user = \User::factory($this->identifier);
+            // Make sure that the editor and the user share site associations.
             return array_intersect(
                 $user->getData('CenterIDs'),
                 $editor->getData('CenterIDs')
@@ -213,7 +210,8 @@ class Edit_User extends \NDB_Form
         // 2) Certain old permissions that the editor is not permitted to alter
         // In addition, old permissions should be removed if the editor has
         // removed them and the editor has permissions to remove them.
-        $newPermissions    = array_keys($values['permID']) ?? array();
+        $newPermissions    = isset($values['permID'])
+            ? array_keys($values['permID']) : array();
         $editorPermissions = $editor->getPermissionIDs() ?? array();
         $permIDs           = array();
         // store the permission IDs
@@ -396,7 +394,7 @@ class Edit_User extends \NDB_Form
                 //Check if examiner already in db for site
                 $result = $DB->pselectRow(
                     "SELECT epr.centerID
-                           FROM examiners_psc_rel epr 
+                           FROM examiners_psc_rel epr
                            WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                     array(
                         "eid" => $examinerID,
@@ -667,7 +665,7 @@ class Edit_User extends \NDB_Form
         $this->addGroup(
             $group,
             'Password_Group',
-            'Password',
+            'New Password',
             $this->_GUIDelimiter,
             false
         );
@@ -684,6 +682,7 @@ class Edit_User extends \NDB_Form
         $this->addBasicText(
             'First_name',
             'First name',
+            [],
             array(
                 'oninvalid' => $onInvalidMsg,
                 'onchange'  => "this.setCustomValidity('')",
@@ -701,6 +700,7 @@ class Edit_User extends \NDB_Form
         $this->addBasicText(
             'Last_name',
             'Last name',
+            [],
             array(
                 'oninvalid' => $onInvalidMsg,
                 'onchange'  => "this.setCustomValidity('')",
@@ -1244,7 +1244,7 @@ class Edit_User extends \NDB_Form
             && ($values['active_from'] > $values['active_to'])
         ) {
             $errors['active_timeWindows']
-                = 'Please notice that the "Active from" 
+                = 'Please notice that the "Active from"
                 date should be lesser or equal to the "Active to" date.';
         }
         return $errors;

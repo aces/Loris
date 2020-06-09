@@ -29,6 +29,18 @@ use \Psr\Http\Message\ResponseInterface;
 class Module extends \Module
 {
     /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) && $user->hasPermission('data_entry');
+    }
+
+    /**
      * The instruments module loads instruments in LORIS.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request

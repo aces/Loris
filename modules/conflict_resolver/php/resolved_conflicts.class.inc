@@ -150,6 +150,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $this->addBasicText(
             'candID',
             'CandID:',
+            [],
             array(
                 'size'      => 9,
                 'maxlength' => 6,
@@ -158,6 +159,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $this->addBasicText(
             'pSCID',
             'PSCID:',
+            [],
             array(
                 'size'      => 9,
                 'maxlength' => 7,
@@ -210,8 +212,8 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             if ($r['question'] === 'Examiner') {
                 if (!empty($r['CorrectAnswer'])) {
                     $r['correct_answer'] = $DB->pselectOne(
-                        'SELECT full_name 
-                         FROM examiners 
+                        'SELECT full_name
+                         FROM examiners
                          WHERE examinerID=:eid',
                         array('eid' => $r['correct_answer'])
                     );

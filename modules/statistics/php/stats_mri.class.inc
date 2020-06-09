@@ -225,12 +225,17 @@ class Stats_MRI extends \NDB_Form
 
         $this->tpl_data['showTable'] = true;
 
-        //PROJECTS
+        // PROJECTS
+        $allProjectList = \Utility::getProjectList();
+
         $projects     = array();
         $projects[''] = 'All Projects';
-        foreach (\Utility::getProjectList() as $key => $value) {
-            $projects[$key] = $value;
+
+        $userProjectsIDs = $user->getData('ProjectIDs');
+        foreach ($userProjectsIDs as $ProjectID) {
+            $projects[$ProjectID] = $allProjectList[$ProjectID];
         }
+
         $currentProject = null;
         if ($_REQUEST['MRIProject'] ?? '') {
             $currentProject = htmlspecialchars($_REQUEST['MRIProject']);

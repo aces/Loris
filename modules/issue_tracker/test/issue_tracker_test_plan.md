@@ -1,5 +1,5 @@
 Issue Tracker Filter Form [Automation Testing]
-1. User can access the page iff they have issue tracker reporter or developer permission
+1. A user can access the module only if they have one or more of the `issue_tracker_reporter` or `issue_tracker_developer` permissions.
 2. User can see data from other sites iff they have access_all_profiles permission
 3. Test that all filters work. Nothing should be filtered at first loading.
 4. Test that all tabs (with filters) work and redirect to the correct table. My issues should be missing assignee filter and closed issues should be missing status filter. 
@@ -14,7 +14,8 @@ Issue Tracker Create New Issue [Manual Testing]
 4. Submit invalid and valid PSCID and visit label pairs. Error messages should respond accordingly. Not that you cannot submit PSCIDs from other sites unless you have access all profiles permission
 5. Submit just a visit label - this should give an error message.
 6. Check that all values are propagated and saved correctly.
-7. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
+7. Add an attachment to the new issue and make sure that it is successfully uploaded.
+8. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
 
 Issue Tracker Edit Existing Issue [Manual Testing]
 1. User can access the page if they have (developer or reporter permission) and (they have either access_all_profiles or are a member of the site of the issue or the site has no issue).
@@ -24,10 +25,26 @@ Issue Tracker Edit Existing Issue [Manual Testing]
 5. Submit just a visit label - this should give an error message.
 6. Check that all values are propagated and saved correctly.
 7. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
-
+8. Check that an attachment can be adding to an existing issue.
+9. Test if users assigned to issues can upload attachments.
+10. Test if users can delete their own uploaded attachments.
+11. Test if user assigned to issue cannot delete attachments of issue owner.
 
 Permissions [Automation Testing]
 1. Remove access all profile permission.
 2. Remove reporter permission
 3. Remove developer permission
 4. Test that the module behaves correctly as described above. 
+
+**Test the Issue Tracker Dashboard widget**
+1. The dashboard widget named My Tasks, should display the correct number of assigned issues.
+2. Check if the number changes when a new issue has been assigned to you or removed.
+3. Verify clicking on Your assigned issues, will redirect you to the issue tracker module and where all issues contain you as the assignee.
+
+**Test the Issue Tracker Candidate Dashboard widget**
+1. Find an issue with a PSCID assigned to it.
+2. Visit the Candidate Dashboard for the foregoing candidate.
+3. View the Open Issues widget and verify all issues of the candidate exist in the widget.
+4. The number of comments an issue has should be displayed correctly in the widget.
+5. The links should redirect the user to the correct issue.
+6. Create or assign an issue to a PSCID and see if the foregoing works correctly for the new issue.

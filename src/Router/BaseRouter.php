@@ -115,10 +115,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         if (preg_match("/^([0-9]{6})$/", $components[0])) {
             // FIXME: This assumes the baseURL is under /
             $path    = $uri->getPath();
-            $baseurl = $uri->withPath("/")->withQuery("");
+            $baseurl = $uri->withPath("")->withQuery("");
 
             $factory->setBaseURL($baseurl);
-
             switch (count($components)) {
                 case 1:
                     $request = $request
@@ -147,6 +146,8 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             }
         }
 
+        // Fall through to 404. We don't have any routes that go farther
+        // than 1 level..
         return (new \LORIS\Middleware\PageDecorationMiddleware(
             $this->user
         ))->process(

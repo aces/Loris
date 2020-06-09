@@ -59,12 +59,15 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
     }
 
     /**
-     * Determines whether the DataProvisioner should filter out rows which
-     * do not match the user's site.
+     * Determines which site permission(s) should be used to determine
+     * whether or not non-user sites are filtered out. If the user has
+     * any of the permissions, non-user sites are *NOT* filtered out.
+     * If the result is null, the page does not use site filters at all.
      *
-     * @return bool true if the data provisioner should filter non-matching sites.
+     * @return ?array
      */
-    abstract public function useSiteFilter() : bool;
+    abstract public function allSitePermissionNames() : ?array;
+
 
     /**
      * Determines whether the DataProvisioner should filter out rows which
@@ -101,16 +104,15 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
     {
         $provisioner = $this->getBaseDataProvisioner();
 
-        $user = \NDB_Factory::singleton()->user();
-
         // UserSiteMatch throws an exception if used on a model without a getCenterID
         // or getCenterIDs function, so we only apply it on sub-classes that
         // specifically say they support it.
-        if ($this->useSiteFilter()
-            && $user->hasPermission("access_all_profiles") == false
-        ) {
+        $allSitePerms = $this->allSitePermissionNames();
+        if ($allSitePerms != null) {
             $provisioner = $provisioner->filter(
-                new \LORIS\Data\Filters\UserSiteMatch()
+                new \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch(
+                    $allSitePerms
+                )
             );
         }
 

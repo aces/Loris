@@ -28,7 +28,7 @@ command:
 INSERT INTO psc (Name, Alias, MRI_alias, Study_site) VALUES ('Montreal','MTL','MTL','Y');
 ```
 
-> Please refer to the [SQL Dictionary](SQL Dictionary.md) for additional information about
+> Please refer to the [SQL Dictionary](../../99_Developers/SQL_Dictionary.md) for additional information about
 > this table and its fields.
 
 ### API

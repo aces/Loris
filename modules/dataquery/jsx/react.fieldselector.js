@@ -189,19 +189,21 @@ class FieldList extends Component {
       start = 0;
     }
 
-    // Display the fields using the FieldItem component
-    for (let i = start; i < items.length; i += 1) {
-      fieldName = items[i].key[1];
-      desc = items[i].value.Description;
-      type = items[i].value.Type || 'varchar(255)';
+    let filteredItems = items.filter((item) => {
+        fieldName = item.key[1];
+        desc = item.value.Description;
+        return (fieldName.toLowerCase().indexOf(filter) != -1 ||
+            desc.toLowerCase().indexOf(filter) != -1);
+    });
 
-      if (fieldName.toLowerCase().indexOf(filter) == -1 && desc.toLowerCase().indexOf(filter) == -1) {
-        continue;
-      }
+    // Display the fields using the FieldItem component
+    for (let i = start; i < filteredItems.length; i += 1) {
+      fieldName = filteredItems[i].key[1];
+      type = filteredItems[i].value.Type || 'varchar(255)';
 
       // Check if field is a file, if so set flag to true
       isFile = false;
-      if (items[i].value.IsFile) {
+      if (filteredItems[i].value.IsFile) {
         isFile = true;
       }
 
@@ -238,7 +240,7 @@ class FieldList extends Component {
     return (
       <div className='list-group col-md-9 col-sm-12'>
         {fields}
-        <PaginationLinks Total={items.length} Active={this.props.PageNumber} onChangePage={this.props.changePage} RowsPerPage={rowsPerPage}/>
+        <PaginationLinks Total={filteredItems.length} Active={this.props.PageNumber} onChangePage={this.props.changePage} RowsPerPage={rowsPerPage}/>
       </div>
     );
   }

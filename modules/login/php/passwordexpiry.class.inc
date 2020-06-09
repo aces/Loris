@@ -88,6 +88,7 @@ class PasswordExpiry extends \NDB_Form
     {
         $this->_user = \User::factory($this->_username);
         $plaintext   = htmlspecialchars_decode($values['password']);
+        $confirm     = htmlspecialchars_decode($values['confirm']);
 
         try {
             new \Password($plaintext);
@@ -99,6 +100,13 @@ class PasswordExpiry extends \NDB_Form
         if (!$this->_user->isPasswordDifferent($plaintext)) {
             $this->tpl_data['error_message'] = 'You cannot keep the same password';
             return array('password' => 'You cannot keep the same password');
+        }
+
+        // Ensure that the password and confirm password fields match.
+        // TODO This validation should be done on the front-end too.
+        if ($plaintext !== $confirm) {
+            $this->tpl_data['error_message'] = 'The passwords do not match';
+            return array('password' => 'The passwords do not match');
         }
 
         return array();
