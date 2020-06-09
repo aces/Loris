@@ -92,7 +92,10 @@ death for candidates. (PR #4929)
 - Add language parameter when creating a new timepoint for multilingual studies. (PR #4976)
  
 #### Data Release
-- Added filters to data release module. (PR #5224)
+- Add filters to data release module. (PR #5224)
+
+#### MRI Violations
+- Add support for multiple MRI protocols (PR #4321)
 
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database
