@@ -107,8 +107,16 @@ class PasswordExpiry extends \NDB_Form
         // Ensure that the password is not the user's email
         // Otherwise an exception is thrown in User.class::updatePassword
         // TODO This validation should be done on the front-end too.
-        if ($plaintext == $data['Email']) {
+        if ($plaintext === $data['Email']) {
             $error_msg = "You cannot use your email as your password.";
+            $this->tpl_data['error_message'] = $error_msg;
+            return array('password' => $error_msg);
+        }
+
+        // Ensure that the password is not the user's username
+        // TODO This validation should be done on the front-end too.
+        if ($plaintext === $this->_username) {
+            $error_msg = "You cannot use your username as your password.";
             $this->tpl_data['error_message'] = $error_msg;
             return array('password' => $error_msg);
         }
