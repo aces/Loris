@@ -42,7 +42,7 @@ When creating or editing a user: (subtest: edit_user)
 14. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change). [Automated]
 15. Verify that if the editor does not have permission 'Across all sites add and edit users' then the site drop-down list is populated with
     the editor's associated sites, otherwise all sites are displayed.
-16. Check that if the 'Display additional information' entry is set to false in the Configuration module, fields Degree,
+16. Check that if the 'Additional user information' entry is set to false in the Configuration module, fields Degree,
     Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and 
     FAX are not shown.
 17. Check that the 'Examiner At:' and 'Examiner Status' sections are available only if you have the 'Across all sites add and certify examiners'.
@@ -61,7 +61,7 @@ When creating or editing a user: (subtest: edit_user)
     without saving any changes to the user profile.
 28. Check that if config setting 'Enable "Pwned Password" check' is set to 'Yes', then validation to make sure that the password
     entered (both for add user and edit user pages) has not been pwned is done. Also check that disabling this setting disables the 
-    validation. Example of a pwned password: a1b2c3!!
+    validation. Example of a pwned password: AKAX89Wn
 29. Check that a 'Reject user' button will be available on the edit user page if the editee is a user whose account is awaiting approval and the editee
     has not yet logged in.
 30. Edit a user that fits the conditions listed above and reject it. Make sure that the user has been removed from the database and does not show up in
