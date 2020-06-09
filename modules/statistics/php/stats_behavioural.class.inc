@@ -114,7 +114,7 @@ class Stats_Behavioural extends \NDB_Form
                     'ID'   => $currentProject,
                     'Name' => $projects[$currentProject],
                 );
-            $Param_Project       ='AND (s.ProjectID IS NULL 
+            $Param_Project       = 'AND (s.ProjectID IS NULL
                                    OR c.RegistrationProjectID=:pid)';
             $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } else {
@@ -128,9 +128,8 @@ class Stats_Behavioural extends \NDB_Form
         if (is_numeric($currentProject) && intval($currentProject) >= 0) {
             $subprojects = \Utility::getSubprojectsForProject($currentProject);
             $subprojList = implode(',', array_keys($subprojects));
-            $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
-                $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+                $suproject_query = "AND s.SubprojectID IN ($subprojList)";
             }
             $Visits = \Utility::getExistingVisitLabels($currentProject);
         }
@@ -145,7 +144,7 @@ class Stats_Behavioural extends \NDB_Form
                     COUNT(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                WHERE 
+                WHERE
                     s.Active='Y' AND c.Active='Y'
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
