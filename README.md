@@ -13,7 +13,7 @@ LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web app
 This Readme covers installation of LORIS version <b>23</b> on <b>Ubuntu</b>.
 ([CentOS Readme also available](/docs/CentOS-install.md)).
 
-Please consult the LORIS Installation Markdowns for [Ubuntu](/docs/Ubuntu-install.md) or [CentOS](/docs/CentOS-install.md) for more information. Installation instructions and further information about LORIS for developers can be found on the [LORIS ReadTheDocs website](https://acesloris.readthedocs.io/en/latest/).
+Please consult the [LORIS Installation Markdowns](/docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install) for more information. Installation instructions and further information about LORIS for developers can be found on the [LORIS ReadTheDocs website](https://acesloris.readthedocs.io/en/latest/).
 
 #### Heroku
 
@@ -40,7 +40,8 @@ These dependencies are subject to change so be sure to verify your version of My
 
 ### Install Steps
 
-Consult the LORIS Installation Markdowns for either [Ubuntu](/docs/Ubuntu-install.md) or [CentOS](/docs/CentOS-install.md) for more information.
+<<<<<<< HEAD
+Consult the [LORIS Installation Markdowns](/docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install) for more information.
 
 1. Set up LINUX user and group lorisadmin and create LORIS base directory:
 
@@ -66,7 +67,7 @@ Download the latest release from the [releases page](https://github.com/aces/Lor
 
 3. Run installer script to install core code, and libraries. The script will prompt for information and so that it can create directories automatically.
 
-For more information, please read the Installation Markdowns for either [Ubuntu](/docs/Ubuntu-install.md) or [CentOS](/docs/CentOS-install.md).
+For more information, please read the [Installation Markdowns](/docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install).
 
  ```bash
  cd /var/www/$projectname/tools
