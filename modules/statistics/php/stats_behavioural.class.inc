@@ -96,10 +96,11 @@ class Stats_Behavioural extends \NDB_Form
 
         $this->tpl_data['Centers'] = $centers;
 
-        //PROJECTS
+        // PROJECTS
 
-        $projects['']   = 'All Projects';
         $allProjectList = \Utility::getProjectList();
+        $projects       = array();
+        $projects['']   = 'All Projects';
 
         $userProjectsIDs = $user->getData('ProjectIDs');
         foreach ($userProjectsIDs as $ProjectID) {

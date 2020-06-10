@@ -32,6 +32,7 @@
                       "Selected" : "{if $files[file].Selected}{$files[file].Selected}{/if}",
 
                       "Caveat" : "{$files[file].Caveat}",
+                      "CaveatViolationsResolvedID" : "{$files[file].CaveatViolationsResolvedID}",
                       "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
                       'HeaderInfo' : {
                           'XStep' : "{$files[file].Xstep}",

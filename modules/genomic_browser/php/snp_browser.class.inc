@@ -68,7 +68,7 @@ class SNP_Browser extends \NDB_Menu_Filter
             'LPAD(candidate.CandID, 6, "0") AS DCCID',
             'candidate.PSCID',
             'candidate.Sex',
-            'cohort.SubprojectID as Subproject',
+            'subproj.title as Subproject',
             'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
             'candidate.ExternalID as externalID',
             'SNP.Chromosome as Chromosome',
@@ -132,8 +132,10 @@ class SNP_Browser extends \NDB_Menu_Filter
         // If a candidate has no SNP records, they will not appear.
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
-                    from session s GROUP BY s.CandID) AS cohort
-            ON (cohort.CandID = candidate.CandID)
+                from session s GROUP BY s.CandID) AS cohort
+                ON (cohort.CandID = candidate.CandID)
+            LEFT JOIN subproject AS subproj
+                ON (cohort.SubprojectID = subproj.SubprojectID)
             LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
             JOIN SNP_candidate_rel ON (candidate.CandID = SNP_candidate_rel.CandID)
             LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)

@@ -610,12 +610,12 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             )
         );
         $this->safeGet($this->url . '/dashboard/');
-        // Raisin bread has 206 unresolved violated scans. We are adding three
+        // Raisin bread has 173 unresolved violated scans. We are adding three
         // in setup(): one resolved, and two unresolved. The total
-        // number of unresolved violations is thus 208
+        // number of unresolved violations is thus 175
         $this->_testMytaskPanelAndLink(
             ".mri_violations",
-            "208",
+            "175",
             "- MRI Violated Scans"
         );
         $this->resetPermissions();
@@ -639,15 +639,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         );
         $this->safeGet($this->url . '/dashboard/');
         // Raisin bread has 164 unresolved violated scans that are not assigned
-        // to any site and 18 unresolved violations assigned to DCC. We are
+        // to any site and 3 unresolved violations assigned to DCC. We are
         // adding three in setup(): one resolved, another unresolved assigned to
         // center ID 55 and another not assigned to any site. The total number of
         // unresolved violations that are either assigned to DCC or not assigned to
-        // any site is thus: 164+18+1 = 184.
+        // any site is thus: 164+3+1 = 168.
         // Note that the test user is only assigned to sites DCC
         $this->_testMytaskPanelAndLink(
             ".mri_violations",
-            "183",
+            "168",
             "- MRI Violated Scans"
         );
         $this->resetPermissions();

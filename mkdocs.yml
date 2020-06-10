@@ -4,33 +4,33 @@ nav:
     - Home: 'index.md'
     - Wiki: 'wiki/index.md'
     - Server Install and Configuration: 
-        - 'Prerequisities and Assumptions': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/00 - Prerequisites And Assumptions/README.md'
-        - 'Database Configuration': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/00 - Prerequisites And Assumptions/Database Configuration.md'
+        - 'Prerequisities and Assumptions': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/00_Prerequisites_And_Assumptions/README.md'
+        - 'Database Configuration': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/00_Prerequisites_And_Assumptions/Database_Configuration.md'
         - Installation:
-            - 'Ubuntu Install': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/01 - LORIS Install/Ubuntu/README.md'
-            - 'CentOS Install': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/01 - LORIS Install/CentOS/README.md'
+            - 'Ubuntu Install': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md'
+            - 'CentOS Install': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md'
         - Website Configuration: 
-            - 'Website Configuration': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/README.md'
-            - 'Handling Large File Uploads': 'wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/Handling Large File Uploads.md'
-            - 'Enabling reCAPTCHA': 'wiki/99\ -\ Developers/reCAPTCHA.md docs/wiki/00\ -\ SERVER\ INSTALL\ AND\ CONFIGURATION/02\ -\ Website\ Configuration/reCAPTCHA.md'
+            - 'Website Configuration': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/README.md'
+            - 'Handling Large File Uploads': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/Handling_Large_File_Uploads.md'
+            - 'Enabling reCAPTCHA': 'wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/reCAPTCHA.md'
     - Study Parameters Setup:
         - Study Variables: 
-            - 'Introduction': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/00 - Introduction to Study Variables.md'
-            - 'Projects': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/02 - Projects.md'
-            - 'Sites': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/03 - Sites.md'
-            - 'Subprojects': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/04 - Subprojects.md'
-            - 'Timepoints': 'wiki/01 - STUDY PARAMETERS SETUP/01 - Study Variables/05 - Timepoints.md'
-        - Clinical Instruments: 'wiki/01 - STUDY PARAMETERS SETUP/02 - Clinical Instruments/README.md'
-        - Modules: 'wiki/01 - STUDY PARAMETERS SETUP/03 - Loris Modules/README.md'
+            - 'Introduction': 'wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/00_Introduction_to_Study_Variables.md'
+            - 'Projects': 'wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/02_Projects.md'
+            - 'Sites': 'wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/03_Sites.md'
+            - 'Subprojects': 'wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/04_Subprojects.md'
+            - 'Timepoints': 'wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/05_Timepoints.md'
+        - Clinical Instruments: 'wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/README.md'
+        - Modules: 'wiki/01_STUDY_PARAMETERS_SETUP/03_Loris_Modules/README.md'
 
             
-    - Getting Started: 'wiki/02 - GETTING STARTED/README.md'
-    - Help and Troubleshooting: 'wiki/03 - HELP AND TROUBLESHOOTING/README.md'
+    - Getting Started: 'wiki/02_GETTING_STARTED/README.md'
+    - Help and Troubleshooting: 'wiki/03_HELP_AND_TROUBLESHOOTING/README.md'
     - API: 'API/LorisRESTAPI.md'
     - Developers: 
-        - 'Overview': 'wiki/99 - Developers/README.md'
+        - 'Overview': 'wiki/99_Developers/README.md'
         - 'Coding Standards': 'CodingStandards.md'
-        - 'SQL Dictionary': 'wiki/99 - Developers/SQL Dictionary.md'
-        - 'Automated Testing': 'wiki/99 - Developers/Automated Testing.md'
+        - 'SQL Dictionary': 'wiki/99_Developers/SQL_Dictionary.md'
+        - 'Automated Testing': 'wiki/99_Developers/Automated_Testing.md'
         - 'Style Guide (for help text)': 'HelpStyleGuide.md'
 theme: readthedocs

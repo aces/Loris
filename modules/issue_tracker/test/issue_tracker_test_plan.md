@@ -35,3 +35,16 @@ Permissions [Automation Testing]
 2. Remove reporter permission
 3. Remove developer permission
 4. Test that the module behaves correctly as described above. 
+
+**Test the Issue Tracker Dashboard widget**
+1. The dashboard widget named My Tasks, should display the correct number of assigned issues.
+2. Check if the number changes when a new issue has been assigned to you or removed.
+3. Verify clicking on Your assigned issues, will redirect you to the issue tracker module and where all issues contain you as the assignee.
+
+**Test the Issue Tracker Candidate Dashboard widget**
+1. Find an issue with a PSCID assigned to it.
+2. Visit the Candidate Dashboard for the foregoing candidate.
+3. View the Open Issues widget and verify all issues of the candidate exist in the widget.
+4. The number of comments an issue has should be displayed correctly in the widget.
+5. The links should redirect the user to the correct issue.
+6. Create or assign an issue to a PSCID and see if the foregoing works correctly for the new issue.
