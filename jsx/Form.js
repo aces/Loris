@@ -489,7 +489,7 @@ class SelectElement extends Component {
     }
 
     return (
-      <div className={elementClass}>
+      <div className={this.props.dynamicTable ? '' : elementClass}>
         {label}
         <div className={inputClass}>
           <select
@@ -528,6 +528,7 @@ SelectElement.propTypes = {
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+  dynamicTable: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
@@ -545,6 +546,7 @@ SelectElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  dynamicTable: false,
 };
 
 /**
