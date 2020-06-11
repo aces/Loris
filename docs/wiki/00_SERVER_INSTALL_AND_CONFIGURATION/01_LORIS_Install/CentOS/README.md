@@ -10,9 +10,9 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 # System Requirements - Install dependencies
 
 Default dependencies installed by CentOS 7.x may not meet the version requirements for LORIS deployment or development:
-* MariaDB 10.3 is supported for LORIS 23.*   
+* MariaDB 10.3 is supported for LORIS 23.   
 
-* PHP 7.3 is supported for LORIS 23.*
+* PHP 7.3 (or higher) is supported for LORIS 23. PHP 7.4 is recommended.
 
 In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](../../../../../README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
  * Apache 2.4 or higher  
@@ -31,7 +31,7 @@ sudo yum install httpd
 sudo systemctl enable httpd
 sudo systemctl start httpd
 ```
-## PHP 7.3
+## PHP 7.4
 ```bash
 sudo yum install epel-release
 sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
@@ -39,9 +39,10 @@ sudo yum install yum-utils
 sudo yum update
 
 # By default, the repository for PHP 5.4 is enabled
+# Make sure to have only one repository for PHP enabled
 sudo yum-config-manager --disable remi-php54
-sudo yum-config-manager --enable remi-php73
-sudo yum install php php-pdo php-pdo_mysql php73-php-fpm php73-php-gd php73-php-json php73-php-mbstring php73-php-mysqlnd php73-php-xml php73-php-xmlrpc php73-php-opcache php73-php-mysql
+sudo yum-config-manager --enable remi-php74
+sudo yum install php php-pdo php-pdo_mysql php-fpm php-gd php-json php-mbstring php-mysqlnd php-xml php-xmlrpc php-opcache
 ```
 ## MariaDB
 
@@ -104,8 +105,7 @@ Download the latest release from the [releases page](https://github.com/aces/Lor
 wget https://github.com/aces/Loris/archive/v$VERSION.tar.gz
 tar -zxf Loris-%VERSION%.tar.gz
 cp -r Loris-%VERSION%/ /var/www/loris
-chown -R lorisadmin /var/www/loris
-
+chown -R lorisadmin:apache /var/www/loris
 ```
 
 Alternatively the latest development branch can be obtained by forking the [LORIS repository](http://github.com/aces/Loris) for development purposes. We do not support unstable dev branches. 

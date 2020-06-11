@@ -90,7 +90,7 @@ sudo a2ensite $projectname
 sudo service apache2 reload
 ```
     
-6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation, then restart apache.
+6. Open your browser and go to: `<loris-url>/installdb.php`. This web page will prompt you for your mysql connection information. Follow the instructions to finalize LORIS installation, then restart apache.
 
 If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli.requirements.php) and also [this](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors).
 
