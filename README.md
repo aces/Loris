@@ -99,9 +99,10 @@ If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli
 ## Community
 
 ### Get in touch
-For questions and troubleshooting guidance beyond what is covered in our GitHub Wiki, please subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) and email us there. 
+For questions and troubleshooting guidance beyond what is covered in our documentation, please subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) and email us there. 
 
-### GitHub Issues
+### Support and GitHub Issues
+For troubleshooting specific installation issues or errors, please see the [Installation troubleshooting guide](), and then contact us via the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
 For bug reporting and new feature requests, please search and report via our GitHub Issues. 
 Please include details such as the version of LORIS you're using as well as information
 such as the OS you're using, your PHP and Apache versions, etc.
