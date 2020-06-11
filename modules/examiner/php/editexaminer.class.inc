@@ -192,15 +192,15 @@ class EditExaminer extends \NDB_Form
                         'TID' => $testID,
                     )
                 );
-                if (empty($oldVals)) {
-                    throw new \LorisException(
-                        'Certification data could not be found'
-                    );
+
+                $oldVal  = null;
+                $oldDate = null;
+                if (!empty($oldVals)) {
+                    // since there is an ORDER BY in pselect
+                    // $oldVals[0] corresponds to the latest date
+                    $oldVal  = $oldVals[0]['new'] ?? null;
+                    $oldDate = $oldVals[0]['new_date'] ?? null;
                 }
-                // since there is an ORDER BY in pselect
-                // $oldVals[0] corresponds to the latest date
-                $oldVal  = $oldVals[0]['new'] ?? null;
-                $oldDate = $oldVals[0]['new_date'] ?? null;
 
                 $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
