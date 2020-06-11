@@ -68,7 +68,7 @@ $(document).ready(function() {
         });
       }
       div.appendChild(wrap);
-      document.getElementById('page').appendChild(div);
+      document.getElementById('wrap').appendChild(div);
       div.setAttribute('class', 'help-content');
       $(div).addClass('visible');
       btn.addEventListener('click', function(e) {
