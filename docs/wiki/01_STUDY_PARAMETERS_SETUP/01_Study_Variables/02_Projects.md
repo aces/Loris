@@ -23,9 +23,8 @@ Projects can be added directly in SQL using the following command. The `recruitm
 INSERT INTO Project (Name, recruitmentTarget) VALUES('%PROJECT_NAME%', NULL);
 ```
 
-
 ### API
- _not yet available. See [API documentation](../../../API/) for latest additions_
+_not yet available. See [API documentation](../../../API/LorisRESTAPI_v0.0.3.md) for latest additions_
  
 ## Interaction With LORIS
 **Projects** can have a direct effect on some LORIS modules where users will only be able to access data affiliated with their own projects.

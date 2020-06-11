@@ -29,7 +29,7 @@ INSERT INTO visit (VisitName) VALUES ('V1');
 ```
 
 ### API
- _not yet available. See [API documentation](../../../API/) for latest additions_
+_not yet available. See [API documentation](../../../API/LorisRESTAPI_v0.0.3.md) for latest additions_
  
 ## Interaction With LORIS
 

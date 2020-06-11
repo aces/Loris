@@ -5,10 +5,6 @@ import os
 import shutil
 import sys
 
-# from tempfile import TemporaryDirectory
-# TODO Use TemporaryDirectory for docs_dir
-
-
 class RootPlugin(BasePlugin):
     config_scheme = (
         ('ignore_folders', config_options.Type(list, default=[])),
@@ -29,11 +25,7 @@ class RootPlugin(BasePlugin):
         config['docs_dir'] = self.docs_dir
         # Add all md files from directory, keeping folder structure
         self.paths = self.gen_from_dir()
-        # Add any files in the original docs directory
-        #if os.path.exists(self.orig_docs_dir):
-        #    self.dir_copy(self.orig_docs_dir,
-        #                  self.docs_dir)
-
+        
     def on_serve(self, server, config, **kwargs):
         builder = list(server.watcher._tasks.values())[0]['func']
 
@@ -61,33 +53,16 @@ class RootPlugin(BasePlugin):
         paths = []
         for root, dirs, files in os.walk("."):
             for f in files:
-                if ".md" in f:
+                if any (s in f for s in ('.md', '.svg', '.png', '.jpg')):
                     doc_root = "./" + self.docs_dir + root[1:]
                     orig = "{}/{}".format(root, f)
                     new = "{}/{}".format(doc_root, f)
                     try:
                         os.makedirs(doc_root, exist_ok=True)
                         shutil.copy(orig, new)
-                        #print("{} --> {}".format(orig, new))
                         paths.append((orig, new))
                     except Exception as e:
                         print("ERROR: {}.. skipping {}".format(e, orig))
 
             dirs[:] = [d for d in dirs if self.valid_dir(d)]
         return paths
-
-    def dir_copy(self, root_src_dir, root_dst_dir):
-
-        if(sys.version_info >= (3, 8)):
-            shutil.copytree(root_src_dir, root_dst_dir, dirs_exist_ok=True)
-        else:
-            for src_dir, _, files in os.walk(root_src_dir):
-                dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
-                if not os.path.exists(dst_dir):
-                    os.makedirs(dst_dir)
-                for file_ in files:
-                    src_file = os.path.join(src_dir, file_)
-                    dst_file = os.path.join(dst_dir, file_)
-                    if os.path.exists(dst_file):
-                        os.remove(dst_file)
-                    shutil.copy(src_file, dst_dir)

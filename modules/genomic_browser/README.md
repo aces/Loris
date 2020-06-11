@@ -32,4 +32,4 @@ uploading functionality to work.
 
 - For the methylation tab to work, the `genomic_cpg_annotation` table should be filled with data from the Illumina HumanMethylation450k probe annotations file. This file can be found at ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/ProductFiles/HumanMethylation450/HumanMethylation450_15017482_v1-2.csv. Use the script `modules/genomic_browser/tools/HumanMethylation450k_annotations_to_sql.py` to transfer the csv file from Illumina's FTP to a mysql transaction file. (The process of loading the SQL file can take 5 to 10 minutes)
 - The `GenomicDataPath` configuration specifies where files are uploaded.
-- To enable uploads, please consult instructions for [Handling Large File Uploads](../../docs/wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/Handling Large File Uploads.md).
+- To enable uploads, please consult instructions for [Handling Large File Uploads](../../docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/Handling_Large_File_Uploads.md).
