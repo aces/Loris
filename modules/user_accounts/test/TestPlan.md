@@ -81,9 +81,9 @@ When creating or editing a user: (subtest: edit_user)
 
 ### Widget registration on the dashboard page
 
-36. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
-    account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries
-    in the User Account page with the following Selection Filter: Site set to the user's site and Pending Approval
-    set to 'Yes'. The Site displayed will be 'All user sites'. Check that you are taken to that page (with the
-    Selection Filter correctly set) when you click on the task.
+36. Verify that if a user has `user_accounts_multisite` permission, the correct number of pending account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries in the User Account page with the following Selection Filter: Site set to all sites except Data Coordinating Center and Pending Approval set to 'Yes'. The Site displayed will be 'All'. Check that you are taken to that page (with the Selection Filter correctly set) when you click on the task.
     [Automate Test on Travis_CI]
+
+37. Verify that if a user has `user_accounts` without `user_accounts_multisite` permission, the correct number of pending account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries in the User Account page with the following Selection Filter: Site set to the user's site and Pending Approval set to 'Yes'. The Site displayed will be 'All User Sites'. Check that you are taken to that page (with the Selection Filter correctly set) when you click on the task.
+    [Automate Test on Travis_CI]
+
