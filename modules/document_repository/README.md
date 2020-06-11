@@ -6,8 +6,8 @@
 
 ## Intended Users
 
- LORIS users can view, download, upload, and delete files, as well as edit information pertaining to those files.
- This module is used primarily by study coordinators/administrators who share study protocols and manuals, as well as data entry staff who consult these documents.
+LORIS users can view, download, upload, and delete files, as well as edit information pertaining to those files.
+This module is used primarily by study coordinators/administrators who share study protocols and manuals, as well as data entry staff who consult these documents.
 
 ## Scope
 
@@ -33,5 +33,12 @@ post_max_size = 1024M           // Maximum size of POST data that PHP will accep
 
 - A mail server is required to send out email notification regarding the Document Repository updates.
 
-- Interactions: Notifications from the Document Repository module are visible on the Dashboard panel.
-  
+## Interactions with LORIS
+
+Users can enable notifications for the document_repository in the My Preferences module. Once activated, users receive an email each time one of the following event occurs:
+* Addition, deletion or modification of a file (by another user)
+* Addition of a category (by another user)
+
+### Dashboard Widget
+
+The `Document Repository Notifications` panel is displayed on the dashboard and displays the last 4 recently-uploaded documents for projects/sites relevant to the current user. A document status is `New` if it was created after current user's last login date.
