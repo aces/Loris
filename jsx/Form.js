@@ -445,7 +445,7 @@ class SelectElement extends Component {
     // Add error message
     if (this.props.hasError || (this.props.required && this.props.value === '')) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = elementClass + ' has-error';
     }
 
     let newOptions = {};
@@ -485,7 +485,7 @@ class SelectElement extends Component {
           {requiredHTML}
         </label>
       );
-      inputClass = this.props.noMargins ? '' : 'col-sm-9';
+      inputClass = 'col-sm-9';
     }
 
     return (
