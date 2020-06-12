@@ -13,6 +13,13 @@
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+/**
+ * Phan has an issue with the FakeDatabase->trackChanges function. It appears
+ * that this function exists only to prevent an unnecessary call during unit
+ * tests so we don't need phan to bother us.
+ *
+ * @phan-file-suppress PhanUnusedProtectedMethodParameter
+ */
 class FakePDO extends PDO
 {
     public function __construct () {}
