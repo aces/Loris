@@ -67,20 +67,7 @@ class Stats_Behavioural extends \NDB_Form
         $DB      = $factory->database();
         $user    = $factory->user();
 
-        //SITES
-
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-
-        $paramCenters      = array();
-        $list_of_sites_ids = array_keys($list_of_sites);
-        foreach ($list_of_sites_ids as $key => $siteID) {
-            $paramCenters[] = ":paramSiteID$key";
-            $this->params["paramSiteID$key"] = $siteID;
-        }
+        // SITES
 
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
@@ -89,15 +76,13 @@ class Stats_Behavioural extends \NDB_Form
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
-                    AND Study_site = 'Y'
-	            AND CenterID IN (" . implode(',', $paramCenters) . ")",
-            $this->params
+                    AND Study_site = 'Y'",
+            array()
         );
 
         $this->tpl_data['Centers'] = $centers;
 
         // PROJECTS
-
         $allProjectList = \Utility::getProjectList();
         $projects       = array();
         $projects['']   = 'All Projects';
@@ -108,13 +93,6 @@ class Stats_Behavioural extends \NDB_Form
         }
 
         $this->tpl_data['Projects'] = $projects;
-
-        $paramProjects = array();
-        foreach ($userProjectsIDs as $key => $projectID) {
-            $paramProjects[] = ":paramProjectID$key";
-            $this->params["paramProjectID$key"] = $projectID;
-        }
-
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if (isset($_REQUEST['site'])
@@ -172,10 +150,6 @@ class Stats_Behavioural extends \NDB_Form
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
-                    AND s.CenterID IN
-                        (" . implode(',', $paramCenters) . ")
-                    AND c.RegistrationProjectID IN
-                        (" . implode(',', $paramProjects) . ")
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
@@ -248,10 +222,6 @@ class Stats_Behavioural extends \NDB_Form
                     AND f.CommentID LIKE 'DDE%'
                     AND c.Active = 'Y'
                     AND s.CenterID <> '1'
-                    AND s.CenterID IN 
-                        (" . implode(',', $paramCenters) . ")
-                    AND c.RegistrationProjectID IN 
-                        (" . implode(',', $paramProjects) . ")
                     $suproject_query
                     $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
