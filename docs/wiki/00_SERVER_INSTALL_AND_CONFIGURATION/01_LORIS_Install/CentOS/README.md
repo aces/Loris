@@ -10,9 +10,9 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 # System Requirements - Install dependencies
 
 Default dependencies installed by CentOS 7.x may not meet the version requirements for LORIS deployment or development:
-* MariaDB 10.3 is supported for LORIS 23.*   
+* MariaDB 10.3 is supported for LORIS 23.   
 
-* PHP 7.3 is supported for LORIS 23.*
+* PHP 7.3 (or higher) is supported for LORIS 23. PHP 7.4 is recommended.
 
 In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](../../../../../README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
  * Apache 2.4 or higher  
@@ -31,13 +31,18 @@ sudo yum install httpd
 sudo systemctl enable httpd
 sudo systemctl start httpd
 ```
-## PHP 7.3
+## PHP 7.4
 ```bash
 sudo yum install epel-release
 sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 sudo yum install yum-utils
 sudo yum update
-sudo yum --enablerepo=remi-php73 install php php-pdo php-pdo_mysql php73-php-fpm php73-php-gd php73-php-json php73-php-mbstring php73-php-mysqlnd php73-php-xml php73-php-xmlrpc php73-php-opcache php73-php-mysql
+
+# By default, the repository for PHP 5.4 is enabled
+# Make sure to have only one repository for PHP enabled
+sudo yum-config-manager --disable remi-php54
+sudo yum-config-manager --enable remi-php74
+sudo yum install php php-pdo php-pdo_mysql php-fpm php-gd php-json php-mbstring php-mysqlnd php-xml php-xmlrpc php-opcache
 ```
 ## MariaDB
 
@@ -56,7 +61,7 @@ gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 ```
 
-Install PGP key with:
+Install GPG key with:
 ```
 sudo rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 ```
@@ -100,6 +105,7 @@ Download the latest release from the [releases page](https://github.com/aces/Lor
 wget https://github.com/aces/Loris/archive/v$VERSION.tar.gz
 tar -zxf Loris-%VERSION%.tar.gz
 cp -r Loris-%VERSION%/ /var/www/loris
+chown -R lorisadmin:apache /var/www/loris
 ```
 
 Alternatively the latest development branch can be obtained by forking the [LORIS repository](http://github.com/aces/Loris) for development purposes. We do not support unstable dev branches. 
@@ -108,27 +114,23 @@ Alternatively the latest development branch can be obtained by forking the [LORI
 
 A sample apache configuration file is in `docs/config/apache2-site`. 
 The install script will ask if you want to automatically create/install apache config files.
-It is recommended to perform this step **manually** --: copy our sample file to the apache configuration directory (`/etc/httpd/conf.d/`) and add the `.conf` file extension:
+It is recommended to perform this step **manually** --: copy our sample file to the apache configuration directory (`/etc/httpd/conf.d/`) and adjust the parameters according to your configuration:
 
 ```bash
 cd /var/www/loris
-cp docs/config/apache-site /etc/httpd/conf.d/apache-site.conf
+cp docs/config/apache2-site /etc/httpd/conf.d/loris.conf
 ```
 
 Customize and Verify your settings: 
-* Paths and settings in `/etc/httpd/conf.d/apache-site.conf` should be populated appropriately for your server. Replace placeholders such as `%LORISROOT%` with `/var/www/loris`, `%PROJECTNAME%` with `loris`, `%LOGDIRECTORY%` with `/var/log/httpd/loris-error.log`   
+ * Paths and settings in `/etc/httpd/conf.d/loris.conf` should be populated appropriately for your server. 
+   Replace placeholders such as:
 
- * DocumentRoot should point to `/var/www/loris/htdocs`  
- 
- * The `smarty/templates_c/` directory must be writable by Apache (e.g. by running: `sudo chgrp -R httpd   
-/var/www/loris/smarty/templates_c` and `sudo chmod 775 /var/www/loris/smarty/templates_c`).
-
-Create the Apache configuration `/etc/httpd/conf.d/loris.conf` for your LORIS environment. You can find an example in `loris/docs/config/apache2-site` for setup of `<VirtualHost>` in the loris.conf file you will create. Adjust the parameters according to your configuration.
 ```
 - %LORISROOT%    i.e. /var/www/loris
 - %PROJECTNAME%  i.e loris
 - %LOGDIRECTORY%  .i.e /var/log/httpd
 ```
+ * DocumentRoot should point to `/var/www/loris/htdocs`
 
 Finally, restart apache:
 ```bash

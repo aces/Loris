@@ -18,7 +18,7 @@ LORIS requires a LAMP stack in order to run, specifically:
 
 * MySQL 5.7 (or MariaDB 10.3) (or higher)  
 
-* PHP 7.3 (or higher)  
+* PHP 7.3 (or higher) - PHP 7.4 recommended
 
 Additionally, the following package manager are required to build LORIS:  
 
@@ -44,19 +44,19 @@ The following Ubuntu packages are required and should be installed using
 
 * software-properties-common  
 
-* php7.3-mysql  
+* php7.4-mysql  
 
-* php7.3-xml  
+* php7.4-xml  
 
-* php7.3-mbstring  
+* php7.4-mbstring  
 
-* php7.3-gd  
+* php7.4-gd  
 
-* php7.3-zip  
+* php7.4-zip  
 
-* php7.3-curl (for development instances only)  
+* php7.4-curl (for development instances only)  
 
-* libapache2-mod-php7.3  
+* libapache2-mod-php7.4  
 
 
 ## Getting the source code
@@ -154,7 +154,7 @@ cd /var/www/loris/tools/
 
 ## Configuring the database
 
-The install script will tell you to navigate to <loris-url>/installdb.php.
+Open your browser and go to: `<loris-url>/installdb.php`.
 
 MySQL (or MariaDB) must be installed and a root or admin-level MySQL user must
 be created before continuing. (This is not the same as a unix root credential.)
