@@ -437,6 +437,8 @@ class DataTable extends Component {
                     celldata,
                     row
                 );
+            } else {
+                cell = <td>{celldata}</td>;
             }
             if (cell !== null) {
                 curRow.push(React.cloneElement(cell, {key: 'td_col_' + j}));
