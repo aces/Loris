@@ -1,4 +1,9 @@
 # NEW
+
+# CLEAN-UP
+
+
+# 23.0
 2018-05-18-adding_physiological_all_sites_permissions.sql
 2018-07-23-battery_manager_permissions.sql
 2019-02-08-multiple_mri_protocols.sql
@@ -18,13 +23,11 @@
 2020-04-20-Rename_highlander_permission.sql
 2020-04-27-AddViolatedScansOwnSitePermission.sql
 
-
-# CLEAN-UP
+## 23.0 - cleanup
 2019-12-05-RemoveMenus.sql
 2019-12-06-Remove-DataIntegrityFlag.sql
 2020-02-05-NoHostConfig.sql
 2020-02-28-foreign_key_issues_modules.sql
-
 
 # 22.0
 2019-04-30-project-rel-rename.sql
