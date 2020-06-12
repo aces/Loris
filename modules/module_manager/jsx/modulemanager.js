@@ -121,7 +121,7 @@ class ModuleManagerIndex extends Component {
               options={{'Y': 'Yes', 'N': 'No'}}
               value={cell}
               onUserInput={this.toggleActive}
-              dynamicTable={true}
+              noMargins={true}
             /></td>;
     }
     cell = this.mapColumn(column, cell);

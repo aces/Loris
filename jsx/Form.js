@@ -430,7 +430,7 @@ class SelectElement extends Component {
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
 
     // Add required asterisk
     if (required) {
@@ -477,7 +477,7 @@ class SelectElement extends Component {
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
     let label = null;
-    let inputClass = 'col-sm-12';
+    let inputClass = this.props.noMargins ? '' : 'col-sm-12';
     if (this.props.label && this.props.label != '') {
       label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -485,11 +485,11 @@ class SelectElement extends Component {
           {requiredHTML}
         </label>
       );
-      inputClass = 'col-sm-9';
+      inputClass = this.props.noMargins ? '' : 'col-sm-9';
     }
 
     return (
-      <div className={this.props.dynamicTable ? '' : elementClass}>
+      <div className={elementClass}>
         {label}
         <div className={inputClass}>
           <select
@@ -528,7 +528,7 @@ SelectElement.propTypes = {
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
-  dynamicTable: PropTypes.bool,
+  noMargins: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
@@ -546,7 +546,7 @@ SelectElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
-  dynamicTable: false,
+  noMargins: false,
 };
 
 /**
