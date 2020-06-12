@@ -19,7 +19,6 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
 
-
 /**
  * Provides the PHP code for the menu filter for the electrophysiology browser
  *
@@ -49,10 +48,7 @@ class Sessions extends \NDB_Page
     {
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasStudySite()
-                || $user->hasCenter($this->timepoint->getCenterID())
-                && $user->hasPermission('electrophysiology_browser_view_site')
-                    )
-        );
+                && $user->hasPermission('electrophysiology_browser_view_site') ) );
     }
 
     /**
