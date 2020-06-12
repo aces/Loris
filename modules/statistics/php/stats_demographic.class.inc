@@ -114,6 +114,7 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data['DropdownOptions']  = $dropdownOpt;
         $tpl_data['DropdownSelected'] = $dropdownSelected;
         $tpl_data['Centers']          = $centers ?? array();
+
         foreach ($data as $row) {
             $subproj = $row['SubprojectID'];
             $vl      = $row['VLabel'];
@@ -125,8 +126,24 @@ class Stats_Demographic extends \NDB_Form
                 && $this->_inCenter($center, $centers)
             ) {
                 $C = 'C' . $center;
-                // Ensure $tpl_data['data'] is not null before continuing
-                $tpl_data['data'] = $tpl_data['data'] ?? array();
+                // Ensure keys are properly set before continuing
+                $this->setDefault($tpl_data, ['data', $subproj, $vl, $subcat]);
+                $this->setDefault($tpl_data, ['data', $subproj, $vl, 'total']);
+                $this->setDefault($tpl_data, ['data', $subproj, $subcat]);
+                $this->setDefault($tpl_data, ['data', $subproj, 'total']);
+                $this->setDefault($tpl_data, ['data', $vl, $subcat]);
+                $this->setDefault($tpl_data, ['data', $vl, 'total']);
+                $this->setDefault($tpl_data, ['data', $subproj, $C, $vl, $subcat]);
+                $this->setDefault($tpl_data, ['data', $subproj, $C, $vl, 'total']);
+                $this->setDefault($tpl_data, ['data', $subproj, $C, $subcat]);
+                $this->setDefault($tpl_data, ['data', $subproj, $C, 'total']);
+                $this->setDefault($tpl_data, ['data', $C, $vl, $subcat]);
+                $this->setDefault($tpl_data, ['data', $C, $vl, 'total']);
+                $this->setDefault($tpl_data, ['data', $C, $subcat]);
+                $this->setDefault($tpl_data, ['data', $C, 'total']);
+                $this->setDefault($tpl_data, ['data', $subcat]);
+                $this->setDefault($tpl_data, ['data', 'total']);
+
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$subcat]      += $row['val'];
@@ -144,13 +161,38 @@ class Stats_Demographic extends \NDB_Form
                 $tpl_data['data'][$subcat]     += $row['val'];
                 $tpl_data['data']['total']     += $row['val'];
             }
-
         }
         $tpl_data['render_table'] = $renderTable;
         $smarty->assign($tpl_data);
         $html = $smarty->fetch('table_statistics.tpl');
         return $html;
+    }
 
+    /**
+     * Stats_demographic function
+     * Check if keys in an array are defined
+     * and set default value otherwise (array|0)
+     *
+     * @param array $array   the array passed by reference
+     * @param array $indexes the indexes of the path to the value
+     *
+     * @return void
+     */
+    function setDefault(&$array, $indexes)
+    {
+        $total  = count($indexes)-1;
+        $parent = &$array;
+
+        foreach ($indexes as $i=>$index) {
+            if (!isset($parent[$index])) {
+                if ($i == $total) {
+                    $parent[$index] = 0;
+                } else {
+                    $parent[$index] = array();
+                }
+            }
+            $parent = &$parent[$index];
+        }
     }
 
     /**
@@ -174,10 +216,22 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
+        $factory        = \NDB_Factory::singleton();
+        $user           = $factory->user();
+        $allProjectList = \Utility::getProjectList();
+
         $projects     = array();
         $projects[''] = 'All Projects';
-        foreach (\Utility::getProjectList() as $key => $value) {
-            $projects[$key] = $value;
+
+        $userProjectsIDs = $user->getData('ProjectIDs');
+        foreach ($userProjectsIDs as $ProjectID) {
+            $projects[$ProjectID] = $allProjectList[$ProjectID];
+        }
+
+        if ($user->hasPermission('access_all_profiles')) {
+            $projectsString = implode(",", array_keys($allProjectList));
+        } else {
+            $projectsString = implode(",", $userProjectsIDs);
         }
 
         $demographicProject = $_REQUEST['DemographicProject'] ?? '';
@@ -271,6 +325,7 @@ class Stats_Demographic extends \NDB_Form
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active = 'Y'
                           $paramProject
@@ -299,6 +354,7 @@ class Stats_Demographic extends \NDB_Form
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1
@@ -329,6 +385,7 @@ class Stats_Demographic extends \NDB_Form
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND ps.participant_status=5
@@ -355,6 +412,7 @@ class Stats_Demographic extends \NDB_Form
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+                          AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1 OR
@@ -387,6 +445,7 @@ class Stats_Demographic extends \NDB_Form
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1
@@ -421,12 +480,13 @@ class Stats_Demographic extends \NDB_Form
                           AND c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
 	            	  AND s.CenterID IN (" . $sitesString . ")
+                          AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND (ps.participant_status=1
                           OR ps.participant_status IS NULL)
                           AND c.Active='Y'
                           $paramProject
-                          $paramSite) 
+                          $paramSite)
                                 as res
               GROUP BY rowid",
             $this->params ?? array()
@@ -469,6 +529,7 @@ class Stats_Demographic extends \NDB_Form
                 AND c.RegistrationCenterID <> '1'
                 AND s.CenterID <> '1'
 		AND s.CenterID IN (" . $sitesString . ")
+                AND c.RegistrationProjectID IN (" . $projectsString . ")
                 AND f.Data_entry='Complete'
                 AND f.Administration='All'
                 AND f.CommentID NOT LIKE 'DDE%'
@@ -485,10 +546,11 @@ class Stats_Demographic extends \NDB_Form
                 JOIN flag f ON (f.SessionID=s.ID)
                 JOIN ".$db->escape($demographicInstrument).
                      " i USING(CommentID)
-                WHERE s.Active='Y' 
+                WHERE s.Active='Y'
                     AND c.RegistrationCenterID <> '1'
                     AND s.CenterID <> '1'
 		    AND s.CenterID IN (" . $sitesString . ")
+                    AND c.RegistrationProjectID IN (" . $projectsString . ")
                     $paramProject
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
@@ -524,8 +586,9 @@ class Stats_Demographic extends \NDB_Form
                         count(s.CandID) as val
                 FROM session s
                 JOIN candidate c ON (s.CandID=c.CandID)
-                WHERE s.active='Y' AND s.CenterID <> '1' 
+                WHERE s.active='Y' AND s.CenterID <> '1'
 		AND s.CenterID IN (" . $sitesString . ")
+                AND c.RegistrationProjectID IN (" . $projectsString . ")
                 AND c.RegistrationCenterID <> '1'
                 AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
                 $subprojectQuery)

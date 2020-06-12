@@ -715,7 +715,12 @@ ORDER BY dateAdded LIMIT 1",
         $issueData['attachments']    = $attachments;
         $issueData['whoami']         = $username;
         $issueData['othersWatching'] = getWatching($issueID);
-        $issueData['desc']           = $desc[0]['issueComment'] ?? '';
+
+        // We need to unescape the string here:
+        // React is escaping the string in the template
+        // This fixes an issue with multiple escaping (#6643)
+        $comment           = $desc[0]['issueComment'];
+        $issueData['desc'] = html_entity_decode($comment) ?? '';
     }
     $issueData['comment'] = null;
 

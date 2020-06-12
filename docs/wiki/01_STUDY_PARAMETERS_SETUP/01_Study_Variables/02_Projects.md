@@ -1,7 +1,7 @@
 # Projects
 
 ## Overview
-The **Project** represents a study in LORIS and can have different subprojects (see [Subproject setup](04 - Subprojects.md) page) which, in turn, can be affiliated with different visits (see [Timepoints setup](05 - Timepoints.md) page).
+The **Project** represents a study in LORIS and can have different subprojects (see [Subproject setup](04_Subprojects.md) page) which, in turn, can be affiliated with different visits (see [Timepoints setup](05_Timepoints.md) page).
 
 **Projects** are defined in the `Project` table of the database.
          

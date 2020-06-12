@@ -249,6 +249,7 @@ class IssueForm extends Component {
             required={false}
             disabled={!hasEditPermission}
             value={this.state.formData.priority}
+            sortByValue={false}
           />
           <SelectElement
             name='category'

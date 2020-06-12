@@ -127,7 +127,7 @@ class ImagingBrowserIndex extends Component {
         type: 'select',
         options: options.projects,
       }},
-      {label: 'Vist Label', show: true, filter: {
+      {label: 'Visit Label', show: true, filter: {
         name: 'visitLabel',
         type: 'text',
       }},

@@ -1,12 +1,19 @@
 # Reset Password Test Plan
 
-1. Change your password expiry in the backend so that it is a date in the past.
-2. Login to LORIS. You should see an update password page.
-3. Try out different passwords. When you type a password that is not in accordance with the listed rules, you should get an error notice:
-   - The password must be at least 8 characters long
-   - The password must contain at least 1 letter, 1 number and 1 character from !@#$%^&*()
-   - The password and the user name must not be the same
-   - The password and the email address must not be the same.
-4. Try entering unmatched passwords. You should get an error notice.
-5. Try entering the same password that you currently have. You should get an error notice.
-5. Create a new password which complies with the rules and submit. Logout. Try logging back in with new password to see if it works.
+1. In the `users` table in the database, update the `Password_expiry` cell for a user you are testing to be a date in the past.
+2. Login as that user. You should see an update password page.
+3. Try using a very short password (e.g. "pass"). You should get an error.
+4. Try using a very weak password (e.g. "password"). You should get an error.
+5. Try entering unmatched passwords. You should get an error notice.
+6. Try entering the same password that you currently have. You should get an error notice.
+7. Try entering the user's email as the new password. You should get an error.
+8. Try entering the user's username as the new password. You should get an error.
+9. Enable the `usePwnedPasswordsAPI` via the Configuration module or the back-end. Enter the password "correct horse battery staple".
+    (The service will report that this password is known to be exposed in online password breaches and, while complex in terms of entropy,
+     should not be used as a password.) You should get an error notice. If your firewall is configured to prevent a connection with this
+    API, you will NOT get an error message and the password will successfully register in LORIS. 
+10. Create a new, complex password and submit. A complex password is usually one that is long or contains many different kinds of characters,
+    such as numbers, upper and lower case letters, and special characters.
+    You can use the website https://lowe.github.io/tryzxcvbn/ to interactively create a password using the same complexity-scoring algorithm as LORIS. 
+    A password receiving at least a score of 3 on this site will work for LORIS.
+11. Logout. Try logging back in with new password to see if it works.

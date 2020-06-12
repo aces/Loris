@@ -21,7 +21,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Project
+class Project implements \JsonSerializable
 {
     private static $_instances = array();
 
@@ -466,5 +466,18 @@ class Project
                 )
             );
         }
+    }
+
+    /**
+     * Specify data which should be serialized to JSON.
+     * Returns data which can be serialized by json_encode(), which is a value of
+     * any type other than a resource.
+     *
+     * @see    https://www.php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed
+     */
+    public function jsonSerialize()
+    {
+        return $this->_projectName;
     }
 }

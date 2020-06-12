@@ -195,6 +195,8 @@ class DataTable extends Component {
       } else if (isString) {
         // if string with text convert to lowercase
         val = val.toLowerCase();
+      } else if (Array.isArray(val)) {
+        val = val.join(', ');
       } else {
         val = undefined;
       }
@@ -437,10 +439,7 @@ class DataTable extends Component {
                 );
             }
             if (cell !== null) {
-                // Note: Can't currently pass a key, need to update columnFormatter
-                // to not return a <td> node. Using createFragment instead.
-                // let key = 'td_col_' + j;
-                curRow.push(cell);
+                curRow.push(React.cloneElement(cell, {key: 'td_col_' + j}));
             } else {
                 curRow.push(createFragment({celldata}));
             }
@@ -449,8 +448,8 @@ class DataTable extends Component {
         const rowIndexDisplay = index[i].Content;
         rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>
-            <td>{rowIndexDisplay}</td>
-            {curRow}
+              <td key={'td_' + rowIndex}>{rowIndexDisplay}</td>
+              {curRow}
             </tr>
         );
     }
@@ -573,7 +572,7 @@ DataTable.propTypes = {
   // parameters of the form: func(ColumnName, CellData, EntireRowData)
   getFormattedCell: PropTypes.func,
   onSort: PropTypes.func,
-  actions: PropTypes.object,
+  actions: PropTypes.array,
   hide: PropTypes.object,
   nullTableShow: PropTypes.bool,
 };

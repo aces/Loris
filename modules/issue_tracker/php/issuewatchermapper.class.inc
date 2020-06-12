@@ -61,7 +61,7 @@ class IssueWatcherMapper implements Mapper
 
         return new IssueRow(
             $newrow,
-            $resource->getCenterID(),
+            $resource->getCenterIDs(),
             $resource->getModule()
         );
     }

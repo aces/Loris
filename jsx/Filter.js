@@ -66,7 +66,13 @@ class Filter extends Component {
           element = <TextboxElement key={filter.name}/>;
           break;
         case 'select':
-          element = <SelectElement key={filter.name} options={filter.options}/>;
+          element = (
+            <SelectElement
+              key={filter.name}
+              options={filter.options}
+              sortByValue={filter.sortByValue}
+            />
+          );
           break;
         case 'multiselect':
           element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
@@ -136,9 +142,9 @@ Filter.propTypes = {
   clearFilter: PropTypes.func.isRequired,
   id: PropTypes.string,
   name: PropTypes.string,
-  columns: PropTypes.string,
+  columns: PropTypes.number,
   title: PropTypes.string,
-  fields: PropTypes.object.isRequired,
+  fields: PropTypes.array.isRequired,
 };
 
 export default Filter;
