@@ -1,18 +1,13 @@
 <?php
 /**
  * This file is used by the Configuration module to update
- * or insert values into the Config table.
+ * or insert values into the subproject table.
  *
- * PHP version 5
- *
- * @category Main
- * @package  Loris
- * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 
-$user =& User::singleton();
+$factory = NDB_Factory::singleton();
+$user    = $factory->user();
 if (!$user->hasPermission('config')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -23,11 +18,18 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$factory = NDB_Factory::singleton();
-$db      = $factory->database();
+$db = $factory->database();
 $SubprojectList = Utility::getSubprojectList();
-$recTarget      = empty($_POST['RecruitmentTarget'])
-    ? null : $_POST['RecruitmentTarget'];
+$recTarget      = $_POST['RecruitmentTarget'];
+
+
+// Basic validation
+if (!Utility::valueIsPositiveInteger($recTarget)) {
+    printAndExit(
+        400,
+        ['error' => 'Recruitment Target must be an integer greater than zero']
+    );
+}
 
 if ($_POST['subprojectID'] === 'new') {
     if (!in_array($_POST['title'], $SubprojectList) && !empty($_POST['title'])) {
@@ -41,9 +43,7 @@ if ($_POST['subprojectID'] === 'new') {
             )
         );
     } else {
-        header("HTTP/1.1 409 Conflict");
-        print '{ "error" : "Conflict" }';
-        exit();
+        printAndExit(409, ['error' => 'Conflict']);
     }
 } else {
     $db->update(
@@ -57,8 +57,21 @@ if ($_POST['subprojectID'] === 'new') {
         array("SubprojectID" => $_POST['subprojectID'])
     );
 }
-header("HTTP/1.1 200 OK");
-print '{ "ok" : "Success" }';
-exit();
+// FIXME: This should probably be a 201 Created instead.
+printAndExit(200, ["ok" => "Subproject updated successfully"]);
 
-
+/**
+ * Prints a parameter converted to JSON-encoded string.
+ *
+ * @param int                  $code The HTTP Response Code.
+ * @param array<string,string> $msg  A key-value pair representing the JSON to
+ *                                   be returned from this file.
+ *
+ * @return void
+ */
+function printAndExit(int $code, array $msg): void
+{
+    http_response_code($code);
+    print json_encode($msg);
+    exit;
+}

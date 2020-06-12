@@ -14,13 +14,17 @@
  */
 use \LORIS\StudyEntities\Candidate\CandID;
 
-$user = \NDB_Factory::singleton()->user();
-if (!$user->hasAnyPermission(
-    array(
-        'candidate_parameter_edit',
-        'candidate_parameter_view'
-    )
-)
+$user      = \NDB_Factory::singleton()->user();
+$candID    = new CandID($_GET['candID']);
+$candidate = \Candidate::singleton($candID);
+
+if (!$user->hasPermission('access_all_profiles')
+    && !($user->hasAnyPermission(
+        array(
+            'candidate_parameter_edit',
+            'candidate_parameter_view'
+        )
+    ) && $user->hasCenter($candidate->getCenterID()))
 ) {
     header("HTTP/1.1 403 Forbidden");
     exit;

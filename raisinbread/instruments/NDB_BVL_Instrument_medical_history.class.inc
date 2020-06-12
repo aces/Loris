@@ -280,27 +280,9 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         );
 
         // Concussion table headers
-
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Incident"
-        );
-
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Hospitalized?"
-        );
-
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Age"
-        );
+        $group[] = $this->createLabel('Incident');
+        $group[] = $this->createLabel('Hospitalized?');
+        $group[] = $this->createLabel('Age');
 
         $this->form->addGroup(
             $group,

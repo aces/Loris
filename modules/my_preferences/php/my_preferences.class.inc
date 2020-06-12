@@ -9,6 +9,8 @@ namespace LORIS\my_preferences;
 class My_Preferences extends \NDB_Form
 {
     private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be ' .
+                                        'your user name.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
                                         'identical: please choose another one';
@@ -240,6 +242,7 @@ class My_Preferences extends \NDB_Form
         $this->addBasicText(
             'First_name',
             'First name',
+            [],
             array(
                 'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
                 'onchange'  => "this.setCustomValidity('')",
@@ -256,6 +259,7 @@ class My_Preferences extends \NDB_Form
         $this->addBasicText(
             'Last_name',
             'Last name',
+            [],
             array(
                 'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
                 'onchange'  => "this.setCustomValidity('')",
@@ -268,6 +272,7 @@ class My_Preferences extends \NDB_Form
         $this->addBasicText(
             'Email',
             'Email address',
+            [],
             array(
                 'oninvalid' => "this.setCustomValidity('Email address is required')",
                 'onchange'  => "this.setCustomValidity('')",
@@ -380,6 +385,11 @@ class My_Preferences extends \NDB_Form
 
         if ($values['Email'] === $plaintext) {
             $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+        }
+
+        // Make sure the user is not using their username as their password.
+        if ($this->identifier === $plaintext) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_USER;
         }
 
         // Ensure that the password and confirm password fields match.

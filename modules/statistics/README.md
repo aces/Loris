@@ -39,6 +39,10 @@ from instruments, and the imaging statistics use data from both the
 files and tarchive tables. The default tabs are described in further
 detail below.
 
+The `statistics` module registers widgets on the `dashboard` module. These
+widgets are used to provide information regarding the recruitment of candidates
+and scanning sessions within the study.
+
 ### Demographic Statistics
 
 This tab provides general statistics relating to the number of candidates

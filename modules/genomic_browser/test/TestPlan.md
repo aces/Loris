@@ -1,18 +1,15 @@
 ## Genomic Browser - Test Plan
 
-## Table of Contents  
+### Table of Contents  
 
-### [Permissions](#permissions_link)
-### [Navigation](#navigation_link)
-### [Features](#features_link)
-### [Filtering](#data_filtering_link)  
-### [Datatable](#datatable_link)
-### [Download](#data_download_link)  
-### [Upload](#data_upload_link)  
-### [Help](#help_link)
-### [Help content](#help_content_link)
-### [Tooltips](#tooltips_link)
-
+#### [Permissions](#permissions_link)
+#### [Navigation](#navigation_link)
+#### [Features](#features_link)
+#### [Filtering](#data_filtering_link)  
+#### [Datatable](#datatable_link)
+#### [Download](#data_download_link)  
+#### [Upload](#data_upload_link)  
+#### [Help content](#help_content_link)
 <br>
 
 <a name="permissions_link">
@@ -52,7 +49,7 @@ The following permissions should be available in the database
 ***
 #### For a user with genomic_data_manager and one of genomic_data_manager or genomic_browser_view_allsites
 
-- In the File tab of the genomic browser, there should be a *Upload File* button  
+- In the File tab of the Genomic Browser, there should be a *Upload File* button  
 
 *** 
 
@@ -61,7 +58,7 @@ The following permissions should be available in the database
 
 ## Page Navigation and Display
 
-- There should be 6 tabs unders the breadcrumb: Profile, GWAS, SNP, CNV, Methylation and Files
+- There should be 6 tabs under the breadcrumbs: Profile, GWAS, SNP, CNV, Methylation and Files
 - Clicking each tab should present it as active and the 5 other tabs should remain in the same order.
 
 <a name="features_link">
@@ -134,14 +131,14 @@ No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
         - All the filters are contains filters (Shows all records that contains this value)
 - The datatable should display the following columns (Summary fields)
 
-|No.|PSCID|Sex|RsID|Observed Base|Reference Base|Function Prediction|Damaging|Exonic Function|
-| ---| --- | ---| --- | ---| --- | ---| ---| ---|
-| | | | | | | | | | |
+|No.|PSCID|Sex|RsID|Allele A|Allele B|Reference Base|Minor Allele|Function Prediction|Damaging|Exonic Function|
+| ---| --- | ---| --- | ---| --- | ---| ---| ---| ---| ---|
+| | | | | | | | | | | | |
 
 - Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
 
-|No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Size|Gene Symbol|Gene Name|Platform|RsID|SNP|Name|SNP Description|External Source|Observed Base|Reference Base|Array Report|Markers|Validation Method|Validated|Function Prediction|Damaging|Genotype Quality|Exonic Function|
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---| --- | --- | --- |
+|No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Gene Symbol|Gene Name|Platform|RsID|SNP Name|SNP Description|External Source|Allele A|Allele B|Reference Base|Minor Allele|Array Report|Markers|Validation Method|Validated|Function Prediction|Damaging|Genotype Quality|Exonic Function|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
@@ -151,9 +148,9 @@ No.|PSC|DCCID|PSCID|Sex|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 
 #### CNV tab
 
-- Clicking on the *Candidate filters* block header should hide its content.
-- Clicking on the *Genomic Range filters* block header should hide its content.
-- Clicking on the *CNV filters* block header should hide its content.
+- Clicking on the *Candidate Filters* block header should hide its content.
+- Clicking on the *Genomic Range Filters* block header should hide its content.
+- Clicking on the *CNV Filters* block header should hide its content.
 - Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
     - Candidate filters
         - *Site* dropdown should present all sites for a user with the genomic_browser_view_allsites permission
@@ -286,7 +283,7 @@ The following columns should be presented
 - The file content should follow the filtered values of the tab.
 
 ### View Genomic File
-- The view genomic file page should provide a *Download* button for each file.
+- The "Files" tab (or Genomic File Uploader subpage) should provide a *Download* button for each file.
 - Clicking on the *Download* button should trigger a file download.
 
 <a name="data_upload_link">
@@ -294,14 +291,9 @@ The following columns should be presented
 
 ## Data Upload
 
-> Under construction
-
-<a name="help_link">
-</a>
-
-## Help
-
-***
+Files may be uploaded under the Files tab (Genomic File Uploader subpage) IFF the Genomic Browser back-end is properly customized/configured and sample files of the appropriate format are available for upload testing.
+. 
+Currently this will only work for methylation beta-values files formatted for the Illumina 450k platform, and only once certain probe metadata is already loaded into the database.  
 
 <a name="help_content_link">
 </a>
@@ -310,10 +302,4 @@ The following columns should be presented
 
 - The help panel should appear when clicking on the question mark in the LORIS menu bar.  
 - The help text should be accurate at formatted properly.
-
-<a name="tooltips_link">
-</a>
-
-## Tooltips
-> Under construction
-
+- Help text should be appropriate to each subpage (tab) displayed, e.g SNP tab. 

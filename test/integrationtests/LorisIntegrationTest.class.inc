@@ -15,6 +15,16 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverElement;
+use Facebook\WebDriver\WebDriverExpectedCondition;
+use Facebook\WebDriver\WebDriverSelect;
+use Facebook\WebDriver\Exception\StaleElementReferenceException;
+use Facebook\WebDriver\Exception\ElementNotVisibleException;
+use Facebook\WebDriver\Exception\NoSuchElementException;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -67,7 +77,7 @@ abstract class LorisIntegrationTest extends TestCase
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url");
+        $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
 
         $this->DB->insert(
@@ -111,14 +121,9 @@ abstract class LorisIntegrationTest extends TestCase
 
         $dev          = $this->config->getSettingFromXML('dev');
         $selenium_url = $dev['selenium_url'] ?? 'http://localhost:4444/wd/hub';
-        $profile      = new FirefoxProfile();
-        $profile->setPreference("setAcceptUntrustedCertificates", true);
-        $profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
-        $profile->setPreference(
-            "security.insecure_field_warning.contextual.enabled",
-            false
-        );
         $desired_capabilities = DesiredCapabilities::firefox();
+        $desired_capabilities->setCapability('acceptSslCerts', false);
+
         // running headless model in Travis
         if (getenv('HEADLESS')) {
             $desired_capabilities->setCapability(
@@ -126,7 +131,6 @@ abstract class LorisIntegrationTest extends TestCase
                 ['args' => ['-headless']]
             );
         }
-        $desired_capabilities->setCapability(FirefoxDriver::PROFILE, $profile);
 
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
@@ -162,29 +166,28 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         */
-        $usernameEl = $this->webDriver->findElement(
+        $usernameEl = $this->safeFindElement(
             WebDriverBy::Name("username")
         );
-        $passwordEl = $this->webDriver->findElement(
+        $passwordEl = $this->safeFindElement(
             WebDriverBy::Name("password")
         );
 
         $usernameEl->sendKeys($username);
         $passwordEl->sendKeys($password);
 
-        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $login = $this->safeFindElement(WebDriverBy::Name("login"));
         $login->click();
 
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
         $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::xpath(
-                    "//div[@id='page'] | //input[@name='username']"
-                )
+            WebDriverExpectedCondition::visibilityOfElementLocated(
+                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
         );
+
     }
 
     /**
@@ -460,14 +463,15 @@ abstract class LorisIntegrationTest extends TestCase
      * Helper function to decorate the webdriver->get function so it
      * ensure that the new page is load before it returns.
      *
-     * @param string $url The url to get.
+     * @param string $url        The url to get.
+     * @param int    $waitPeriod After this amount of seconds, the wait period
+     *                           finishes and an exception is thrown.
      *
-     * @return ?\RemoteWebDriver
+     * @return \Facebook\WebDriver\Remote\RemoteWebDriver
      */
-    function safeGet($url)
+    function safeGet($url,$waitPeriod=15)
     {
         $newWebDriver = null;
-
         // keep a reference from the actual page
         $oldBody = $this->safeFindElement(
             WebDriverBy::xPath(
@@ -476,18 +480,13 @@ abstract class LorisIntegrationTest extends TestCase
                 "
             )
         );
-
-        try {
             // Load the new page
-            $newWebDriver = $this->webDriver->get($url);
-
-            // Use the old page reference until it detaches from the DOM
-            while (true) {
-                $oldBody->isDisplayed();
-            }
-        } catch (StaleElementReferenceException $e) {
-            return $newWebDriver;
-        }
+        $newWebDriver = $this->webDriver->get($url);
+        $wait         = new WebDriverWait($newWebDriver, $waitPeriod);
+        $wait->until(
+            WebDriverExpectedCondition::stalenessOf($oldBody)
+        );
+        return $newWebDriver;
     }
 
     /**
@@ -499,18 +498,18 @@ abstract class LorisIntegrationTest extends TestCase
      * @param int         $waitPeriod After this amount of seconds, the wait period
      *                                finishes and an exception is thrown.
      *
-     * @throws NoSuchElementException if the element cannot be found after the
+     * @throws Facebook\WebDriver\Exception\NoSuchElementException
+     *          if the element cannot be found after the
      *                                wait period.
      *
-     * @return WebDriverElement the element found.
+     * @return Facebook\WebDriver\Remote\RemoteWebElement the element found.
      */
     function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
-        $wait = new WebDriverWait($this->webDriver, $waitPeriod);
+        $wait = new WebDriverWait($this->webDriver, $waitPeriod, 500);
         $wait->until(
-            WebDriverExpectedCondition::presenceOfElementLocated($by)
+            WebDriverExpectedCondition::visibilityOfElementLocated($by)
         );
-
         return $this->webDriver->findElement($by);
     }
 
@@ -649,5 +648,63 @@ abstract class LorisIntegrationTest extends TestCase
         return $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
+    }
+    /**
+     * Testing filter funtion and clear button
+     *
+     * @param string $element        The input element loaction (css selector)
+     * @param string $row            React Table row number
+     * @param string $btn            clear filter button
+     * @param string $test_value     The test value
+     * @param string $expect_records The records number in the table
+     *
+     * @return void
+     */
+    function _filterTest($element,$row,$btn,$test_value, $expect_records): void
+    {
+        // get element from the page
+
+        if (strpos($element, "select") === false) {
+            $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
+            $el->sendKeys($test_value);
+        } else {
+            $el_dropdown = new WebDriverSelect(
+                $this->safeFindElement(WebDriverBy::cssSelector("$element"))
+            );
+            $el_dropdown->selectByVisibleText($test_value);
+        }
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("$row")
+            )->getText();
+            // 4 means there are 4 records under this site.
+            $this->assertContains($expect_records, $bodyText);
+            //test clear filter
+            $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+    }
+
+    /**
+     * Utility method for classes that register widgets on the dashboard: ensure that
+     * the task panel has the expected content.
+     *
+     * @param string $className class Name of widget in the task panel
+     * @param string $value     the total count displayed for that widget
+     * @param string $label     label for that widget
+     *
+     * @return void
+     */
+    function _testMytaskPanelAndLink($className, $value, $label): void
+    {
+        $this->safeGet($this->url . '/dashboard/');
+        $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
+        $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
+        $this->assertContains($value, $bodyText);
+        $this->safeClick(WebDriverBy::cssSelector($className));
+        $this->webDriver->wait(3, 500)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::Id('lorisworkspace')
+            )
+        );
+        $pageSource = $this->webDriver->getPageSource();
+        $this->assertContains($label, $pageSource);
     }
 }

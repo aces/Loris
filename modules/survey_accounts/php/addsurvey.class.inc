@@ -96,6 +96,21 @@ class AddSurvey extends \NDB_Form
             );
         }
 
+        $projectID = $db->pselectOne(
+            "SELECT ProjectID FROM session
+            WHERE CandID=:v_CandID
+            AND Visit_Label=:v_VL",
+            array(
+                'v_CandID' => $values['CandID'],
+                'v_VL'     => $values['VL']
+            )
+        );
+        if (!\NDB_Factory::singleton()->user()->hasProject($projectID)) {
+            return array(
+                'Project' => "You are not affiliated with this session's project"
+            );
+        }
+
         $instrument_list = $db->pselect(
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID

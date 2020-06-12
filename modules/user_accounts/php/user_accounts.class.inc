@@ -2,7 +2,7 @@
 /**
  * The menu for user accounts
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -15,7 +15,7 @@ namespace LORIS\user_accounts;
 /**
  * The menu for user accounts
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -26,6 +26,12 @@ namespace LORIS\user_accounts;
 
 class User_Accounts extends \DataFrameworkMenu
 {
+    const PERMISSIONS    = [
+        'user_accounts',
+        'user_accounts_multisite',
+    ];
+    public $skipTemplate = true;
+
     /**
      * Overloading this method to allow access to users account
      *
@@ -35,18 +41,18 @@ class User_Accounts extends \DataFrameworkMenu
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('user_accounts');
+        return $user->hasAnyPermission(self::PERMISSIONS);
     }
 
     /**
      * Tells the base class that this page's provisioner can support the
-     * UserSiteMatch filter.
+     * HasAnyPermissionOrUserSiteMatch filter.
      *
-     * @return bool true
+     * @return ?array of permissions or null
      */
-    public function useSiteFilter() : bool
+    public function allSitePermissionNames() : ?array
     {
-        return true;
+        return ['user_accounts_multisite'];
     }
 
     /**

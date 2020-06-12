@@ -26,6 +26,8 @@ use \Psr\Http\Message\ResponseInterface;
 class Edit_User extends \NDB_Form
 {
     private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be ' .
+                                        'your user name.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
                                         'identical: please choose another one';
@@ -52,10 +54,6 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if (!$this->isCreatingNewUser()) {
-            $user = \User::factory($this->identifier);
-        }
-
         if ($editor->hasPermission('user_accounts_multisite')) {
             return true;
         }
@@ -65,6 +63,7 @@ class Edit_User extends \NDB_Form
                 return true;
             }
             $user = \User::factory($this->identifier);
+            // Make sure that the editor and the user share site associations.
             return array_intersect(
                 $user->getData('CenterIDs'),
                 $editor->getData('CenterIDs')
@@ -213,7 +212,8 @@ class Edit_User extends \NDB_Form
         // 2) Certain old permissions that the editor is not permitted to alter
         // In addition, old permissions should be removed if the editor has
         // removed them and the editor has permissions to remove them.
-        $newPermissions    = array_keys($values['permID']) ?? array();
+        $newPermissions    = isset($values['permID'])
+            ? array_keys($values['permID']) : array();
         $editorPermissions = $editor->getPermissionIDs() ?? array();
         $permIDs           = array();
         // store the permission IDs
@@ -396,7 +396,7 @@ class Edit_User extends \NDB_Form
                 //Check if examiner already in db for site
                 $result = $DB->pselectRow(
                     "SELECT epr.centerID
-                           FROM examiners_psc_rel epr 
+                           FROM examiners_psc_rel epr
                            WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                     array(
                         "eid" => $examinerID,
@@ -667,7 +667,7 @@ class Edit_User extends \NDB_Form
         $this->addGroup(
             $group,
             'Password_Group',
-            'Password',
+            'New Password',
             $this->_GUIDelimiter,
             false
         );
@@ -684,6 +684,7 @@ class Edit_User extends \NDB_Form
         $this->addBasicText(
             'First_name',
             'First name',
+            [],
             array(
                 'oninvalid' => $onInvalidMsg,
                 'onchange'  => "this.setCustomValidity('')",
@@ -701,6 +702,7 @@ class Edit_User extends \NDB_Form
         $this->addBasicText(
             'Last_name',
             'Last name',
+            [],
             array(
                 'oninvalid' => $onInvalidMsg,
                 'onchange'  => "this.setCustomValidity('')",
@@ -1094,6 +1096,16 @@ class Edit_User extends \NDB_Form
         ) {
             $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
         }
+
+        // Make sure the user is not using their username as their password.
+        if ((isset($values['UserID'])
+            && $values['UserID'] === $values['Password_hash'])
+            || (!empty($this->identifier)
+            && $this->identifier === $values['Password_hash'])
+        ) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_USER;
+        }
+
         if (!is_null($this->identifier)) {
             $pass = $DB->pselectOne(
                 "SELECT COALESCE(Password_hash) "
@@ -1244,7 +1256,7 @@ class Edit_User extends \NDB_Form
             && ($values['active_from'] > $values['active_to'])
         ) {
             $errors['active_timeWindows']
-                = 'Please notice that the "Active from" 
+                = 'Please notice that the "Active from"
                 date should be lesser or equal to the "Active to" date.';
         }
         return $errors;

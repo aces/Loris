@@ -10,9 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
 require_once __DIR__."/../../../test/integrationtest"
 ."s/LorisIntegrationTest.class.inc";
+use Facebook\WebDriver\WebDriverBy;
  /**
   * Help_editor automated integration tests
   *
@@ -35,8 +35,6 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $md5String = md5("TestTestTest");
-        $window    = new WebDriverWindow($this->webDriver);
-        $window->maximize();
         $this->DB->insert(
             "help",
             array(
