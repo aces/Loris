@@ -47,6 +47,17 @@
               html: true,
               container: 'body'
             });
+
+            // Make Navigation bar toggle change glyphicon up/down
+            $('.nav-button').on("click", function() {
+              if ($(this).hasClass('collapsed')) {
+                // change chevron to up
+                $('.toggle-icon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+              } else {
+                // change chevron to down
+                $('.toggle-icon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+              }
+            });
           });
         </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
@@ -67,92 +78,94 @@
 
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="nav-left">
-               <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse"
-                        data-target="#example-navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="glyphicon glyphicon-chevron-down" style="color:white"></span>
-                    </button>
-                    <button type="button" class="navbar-toggle help-button">
-                        <span class="sr-only">Toggle navigation</span>
-                        <img width=17 src="{$baseurl}/images/help.gif">
-                    </button>
-                   {if $bvl_feedback}
-                   <button type="button" class="navbar-toggle">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="glyphicon glyphicon-edit" style="color:white"></span>
-                    </button>
-                   {/if}
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" id="nav-left">
+               <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed nav-button" data-toggle="collapse"
+                            data-target="#example-navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
+                        </button>
+                        <button type="button" class="navbar-toggle help-button">
+                            <span class="sr-only">Toggle navigation</span>
+                            <img width=17 src="{$baseurl}/images/help.gif">
+                        </button>
+                       {if $bvl_feedback}
+                       <button type="button" class="navbar-toggle">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="glyphicon glyphicon-edit" style="color:white"></span>
+                        </button>
+                       {/if}
 
 
-                   <!-- toggle sidebar in mobile view -->
-                    {if $control_panel}
-                        <a id="menu-toggle" href="#" class="navbar-brand">
-                            <span class="glyphicon glyphicon-th-list"></span>
-                        </a>
-                    {/if}
-
-                   <!-- toggle feedback in mobile view -->
-
-
-                    <a class="navbar-brand" href="{$baseurl}/">LORIS{if $sandbox}: DEV{/if}</a>
-               </div>
-               <div class="collapse navbar-collapse" id="example-navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        {foreach from=$menus item=menuitems key=category}
-                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle">{$category}<b class="caret"></b>
-                                    <ul class="dropdown-menu">
-                                        {section name=itemloop loop=$menuitems}
-                                        <li><a href="{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
-                                        {/section}
-                                    </ul>
-                                </a>
-                        {/foreach}
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right" id="nav-right">
-                        {if $bvl_feedback}
-                        <li class="hidden-xs hidden-sm">
-                            <a href="#" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
-                                <span class="glyphicon glyphicon-edit"></span>
+                       <!-- toggle sidebar in mobile view -->
+                        {if $control_panel}
+                            <a id="menu-toggle" href="#" class="navbar-brand">
+                                <span class="glyphicon glyphicon-th-list"></span>
                             </a>
-                        </li>
                         {/if}
 
-                        <li class="hidden-xs hidden-sm">
-                            <a href="#" class="navbar-brand pull-right help-button">
-                                <img width=17 src="{$baseurl}/images/help.gif">
-                            </a>
-                        </li>
-                        <li class="nav">
-                            <a href="#"
-                               id="site-affiliations"
-                               data-toggle="tooltip"
-                               data-placement="bottom"
-                               title="{$user.SitesTooltip}">
-                                Site Affiliations: {$userNumSites}
-                            </a>
-                        </li>
+                       <!-- toggle feedback in mobile view -->
 
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">
-                                {$user.Real_name|escape} <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{$baseurl}/my_preferences/">
-                                        My Preferences
+
+                        <a class="navbar-brand" href="{$baseurl}/">LORIS{if $sandbox}: DEV{/if}</a>
+                   </div>
+                   <div class="collapse navbar-collapse" id="example-navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            {foreach from=$menus item=menuitems key=category}
+                                 <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$category}<b class="caret"></b>
+                                        <ul class="dropdown-menu">
+                                            {section name=itemloop loop=$menuitems}
+                                            <li><a href="{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
+                                            {/section}
+                                        </ul>
                                     </a>
-                                </li>
-                                <li>
-                                    <a href="{$baseurl}/?logout=true">
-                                        Log Out
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                            {/foreach}
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right" id="nav-right">
+                            {if $bvl_feedback}
+                            <li class="hidden-xs hidden-sm">
+                                <a href="#" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+                            </li>
+                            {/if}
+
+                            <li class="hidden-xs hidden-sm">
+                                <a href="#" class="navbar-brand pull-right help-button">
+                                    <img width=17 src="{$baseurl}/images/help.gif">
+                                </a>
+                            </li>
+                            <li class="nav">
+                                <a href="#"
+                                   id="site-affiliations"
+                                   data-toggle="tooltip"
+                                   data-placement="bottom"
+                                   title="{$user.SitesTooltip}">
+                                    Site Affiliations: {$userNumSites}
+                                </a>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">
+                                    {$user.Real_name|escape} <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{$baseurl}/my_preferences/">
+                                            My Preferences
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{$baseurl}/?logout=true">
+                                            Log Out
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                   </div>
                </div>
             </nav>
         {/if}

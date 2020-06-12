@@ -5,17 +5,17 @@
 
 <div class="col-md-3">
 <ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
+    <li class="active"><a id="#projectnew{$ProjectID}" href="#projectnew" data-toggle="tab" class="active">New ProjectID</a></li>
     {foreach from=$projects key=ProjectID item=project name=configContent}
-    <li {if $smarty.foreach.configContent.first}class="active"{/if}><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$project.Name}</a></li>
+    <li><a id="#project{$ProjectID}" href="#project{$ProjectID}" data-toggle="tab">{$project.Name}</a></li>
     {/foreach}
-    <li {if count($projects) == 0}class="active"{/if}><a href="#projectnew" data-toggle="tab" {if count($projects) == 0}class="active"{/if}>New ProjectID</a></li>
 </ul>
 </div>
 
 <div class="col-md-7">
     <div class="tab-content">
     {foreach from=$projects key=ProjectID item=project name=tabContent}
-    <div id="project{$ProjectID}" class="tab-pane {if $smarty.foreach.tabContent.first} active{/if}">
+    <div id="project{$ProjectID}" class="tab-pane">
         <h2>{$project.Name} (ProjectID: {$ProjectID})</h2>
         <br>
         <form class="form-horizontal" role="form" method="post" id="form{$ProjectID}">
@@ -73,7 +73,7 @@
         </form>
     </div>
     {/foreach}
-    <div id="projectnew" class="tab-pane {if count($projects) == 0}{count($projects)} active{/if}">
+    <div id="projectnew" class="tab-pane active">
         <h2>New Project</h2>
         <br>
         <form class="form-horizontal" role="form" method="post" id="form{$ProjectID}">

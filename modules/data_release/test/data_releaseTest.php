@@ -1,4 +1,5 @@
 <?php
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**

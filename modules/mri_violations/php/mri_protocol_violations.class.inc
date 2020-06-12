@@ -37,12 +37,10 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        $this->tpl_data['violated_scans_modifications']
-            = $user->hasPermission('violated_scans_edit');
         return $user->hasAnyPermission(
             array(
                 'violated_scans_view_allsites',
-                'violated_scans_edit'
+                'violated_scans_view_ownsite'
             )
         );
     }

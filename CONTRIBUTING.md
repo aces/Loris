@@ -62,7 +62,7 @@ issues and/or Redmine tickets (if applicable).
     4. For SQL patches that are _optional_ (e.g. those that perform some 
             cleanup), place them in `SQL/Cleanup_patches/`.
     5. The files for our test database (Raisinbread) must be updated if they were modified.
-        Detailed instructions for this step can be found [here](https://github.com/aces/Loris/tree/minor/raisinbread#exporting-rb).
+        Detailed instructions for this step can be found in the Raisin Bread [README.md](./raisinbread/README.md#exporting-rb).
 * Include a test for any new module in the `modules/MODULENAME/test/`
   directory. You can look at other modules for examples of how to
   write tests.
@@ -75,6 +75,7 @@ request description and tag it with **Caveat for Existing Projects**.
 This helps us to document our release notes.
 * You can run the command `make checklanguage` to ensure that documentation
 you've contributed contains language that is friendly and accessible.
+* Be sure to modify the `CHANGELOG.md` file.
 
 If you're unsure about any of the above, feel free to ask us for
 clarification via the mailing list.

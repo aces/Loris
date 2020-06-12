@@ -28,7 +28,7 @@
 });
 </script>
 {/literal}
-<form method="post" name="edit_user" autocomplete="new-password">
+<form method="post" name="edit_user" autocomplete="off">
     {if $form.errors}
     <div class="alert alert-danger" role="alert">
         The form you submitted contains data entry errors

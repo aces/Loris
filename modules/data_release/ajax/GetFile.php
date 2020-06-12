@@ -53,7 +53,8 @@ $permission = $db->pselectOne(
         'fileID' => $fileID,
     )
 );
-if (empty($permission)) {
+
+if (empty($permission) && !$user->hasPermission('superuser')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }

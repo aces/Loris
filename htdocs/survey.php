@@ -82,7 +82,7 @@ class DirectDataEntryMainPage
             array('key' => $this->key)
         );
         $this->CommentID = $DB->pselectOne(
-            "SELECT CommentID FROM participant_accounts 
+            "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
             array('key' => $this->key)
         );
@@ -94,8 +94,8 @@ class DirectDataEntryMainPage
         if (empty($this->TestName) && empty($this->CommentID)) {
             throw new Exception("Data has already been submitted.", 403);
         }
-        $pageNum = null;
 
+        $pageNum = null;
         if (!empty($_REQUEST['pageNum'])) {
             $pageNum = $_REQUEST['pageNum'];
         }
@@ -125,7 +125,9 @@ class DirectDataEntryMainPage
         $this->tpl_data  = array(
             'nextpage'    => $this->NextPageNum,
             'prevpage'    => $this->PrevPageNum,
-            'pageNum'     => $pageNum ? $pageNum + 1: 1,
+            'pageNum'     =>
+                $pageNum && is_numeric($pageNum) ?
+                    intval($pageNum) + 1 : 1,
             'totalPages'  => $totalPages,
             'key'         => $this->key,
             'study_title' => $config->getSetting('title'),
@@ -146,6 +148,11 @@ class DirectDataEntryMainPage
         if ($currentPage === null) {
             return 1;
         }
+
+        if (!is_numeric($currentPage)) {
+            return -1;
+        }
+
         $nextPage = $currentPage+1;
         return intval(
             \Database::singleton()->pselectOne(
@@ -182,15 +189,15 @@ class DirectDataEntryMainPage
 
         if ($currentPage === 'finalpage') {
             return $DB->pselectOne(
-                "SELECT MAX(Order_number) 
-                FROM instrument_subtests 
+                "SELECT MAX(Order_number)
+                FROM instrument_subtests
                 WHERE Test_name=:TN",
                 array('TN' => $this->TestName)
             );
         }
         $prevPage = $currentPage-1;
         return $DB->pselectOne(
-            "SELECT Order_number FROM instrument_subtests 
+            "SELECT Order_number FROM instrument_subtests
             WHERE Test_name=:TN AND Order_number=:PN",
             array(
                 'TN' => $this->TestName,
@@ -320,8 +327,8 @@ class DirectDataEntryMainPage
      */
     function display()
     {
-        $DB           = Database::singleton();
-            $nextpage = null;
+        $DB       = Database::singleton();
+        $nextpage = null;
 
         if (isset($_REQUEST['nextpage'])) {
             $nextpage = "survey.php?key=$_REQUEST[key]&pageNum=$_REQUEST[nextpage]";
@@ -358,7 +365,6 @@ class DirectDataEntryMainPage
                 $this->tpl_data['workspace'] = '';
 
                 $this->tpl_data['review'] = $this->caller->instrument->getReview();
-
             }
             $this->tpl_data['lastpage']  = "survey.php?key=$_REQUEST[key]";
             $this->tpl_data['finalpage'] = true;
@@ -403,4 +409,3 @@ if (!class_exists('UnitTestCase')) {
     $Runner = new DirectDataEntryMainPage();
     $Runner->run();
 }
-
