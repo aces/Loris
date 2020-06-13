@@ -30,36 +30,36 @@ $db = \Database::singleton();
 
 switch($tab) {
 case 'candidateInfo':
-    editCandInfoFields($db, $user);
+    editCandInfoFields($db);
     break;
 
 case 'probandInfo':
-    editProbandInfoFields($db, $user);
+    editProbandInfoFields($db);
     break;
 
 case 'familyInfo':
-    editFamilyInfoFields($db, $user);
+    editFamilyInfoFields($db);
     break;
 
 case 'deleteFamilyMember':
-    deleteFamilyMember($db, $user);
+    deleteFamilyMember($db);
     break;
 
 case 'participantStatus':
-    editParticipantStatusFields($db, $user);
+    editParticipantStatusFields($db);
     break;
 
 case 'consentStatus':
-    editConsentStatusFields($db, $user);
+    editConsentStatusFields($db);
     break;
 
 
 case 'candidateDOB':
-    editCandidateDOB($db, $user);
+    editCandidateDOB($db);
     break;
 
 case 'candidateDOD':
-    editCandidateDOD($db, $user);
+    editCandidateDOD($db);
     break;
 
 default:
@@ -76,7 +76,7 @@ default:
  *
  * @return void
  */
-function editCandInfoFields($db)
+function editCandInfoFields(\Database $db)
 {
 
     $candID = $_POST['candID'];
@@ -153,7 +153,7 @@ function editCandInfoFields($db)
  *
  * @return void
  */
-function editProbandInfoFields($db)
+function editProbandInfoFields(\Database $db)
 {
     //Sanitizing the post data
     $sanitize = array_map('htmlentities', $_POST);
@@ -218,7 +218,7 @@ function editProbandInfoFields($db)
  *
  * @return void
  */
-function editFamilyInfoFields($db)
+function editFamilyInfoFields(\Database $db)
 {
     $candID = $_POST['candID'];
 
@@ -312,7 +312,7 @@ function editFamilyInfoFields($db)
  *
  * @return void
  */
-function deleteFamilyMember($db)
+function deleteFamilyMember(\Database $db)
 {
     $candID         = $_POST['candID'];
     $familyMemberID = $_POST['familyDCCID'];
@@ -342,7 +342,7 @@ function deleteFamilyMember($db)
  *
  * @return void
  */
-function editParticipantStatusFields($db)
+function editParticipantStatusFields(\Database $db)
 {
     $candID = $_POST['candID'];
 
@@ -395,7 +395,7 @@ function editParticipantStatusFields($db)
  *
  * @return void
  */
-function editConsentStatusFields($db)
+function editConsentStatusFields(\Database $db)
 {
     // Get CandID
     $candIDParam = $_POST['candID'];
@@ -558,14 +558,13 @@ function editCandidateDOB(\Database $db): void
 /**
  * Handles the updating of candidate's date of death.
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editCandidateDOD(\Database $db, \User $user): void
+function editCandidateDOD(\Database $db): void
 {
     $candID       = new CandID($_POST['candID']);
     $dod          = new DateTime($_POST['dod']);
