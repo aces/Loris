@@ -572,11 +572,16 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
 
         $projMatch   = !empty(
             array_intersect(
-                $this->getProjectID(),
+                $this->getProjectIDs(),
                 $user->getProjectIDs()
             )
         );
-        $centerMatch = !empty(array_intersect($this->getCenterIDs(), $centers));
+        $centerMatch = !empty(
+            array_intersect(
+                $this->getCenterIDs(), 
+                $user->getCenterIDs()
+            )
+        );
 
         return $projMatch && $centerMatch;
     }
