@@ -112,7 +112,7 @@ $importer->processData();
 if (!$importer->hasSharedCandidates()) {
     die("The mapping file and data file have no candidates in common.\n");
 }
-echo "{$importer->hasSharedCandidates()} candidates found.\n";
+echo count($importer->sharedCandidates()) . " candidates found.\n";
 
 $skippedCount = count($importer->candidatesSkipped);
 if ($skippedCount > 0) {
