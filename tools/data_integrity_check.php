@@ -22,13 +22,6 @@ $instruments       = array_filter(
 );
 $numberOfTestNames = count($instrument_arr);
 $numberOfTestNamesWithTables = count($instruments);
-if ($numberOfTestNames !== $numberOfTestNamesWithTables) {
-    $helper->printError(
-        'Found entries in the `test_names` table that do not have appear to '
-        . 'be installed: ' . join(', ', array_diff($instrument_arr, $instruments))
-    );
-}
-
 
 $helper->printSuccess("Looking for orphaned instrument/flag");
 foreach ($instruments as $instrument) {
