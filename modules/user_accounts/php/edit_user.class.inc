@@ -64,14 +64,9 @@ class Edit_User extends \NDB_Form
             if ($this->isCreatingNewUser()) {
                 return true;
             }
-            $user = \User::factory($this->identifier);
-            // Make sure that the editor and the user share site associations.
-            return array_intersect(
-                $user->getData('CenterIDs'),
-                $editor->getData('CenterIDs')
-            ) == $user->getData(
-                'CenterIDs'
-            );
+            // Return true if the editor is allowed to edit the information
+            // of the user.
+            return \User::factory($this->identifier)->isAccessibleBy($editor);
         }
 
         return false;

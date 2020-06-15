@@ -391,12 +391,13 @@ This can be used for almost any class within LORIS. In the section right below, 
 
 ### **Testing Queries**
 
-**To know before starting:** if you encounter a user/database object declaration like this: 
+**To know before starting:** if you encounter a user/database/config object declaration like this: 
 
 
 ```
-    $DB   = \Database::singleton();
-    $user = \User::singleton();
+    $DB      = \Database::singleton();
+    $config  = \NDB_Config::singleton();
+    $user    = \User::singleton();
 ```
 
 
@@ -406,6 +407,7 @@ Please update the code to use this LORIS standard declaration:
 ```
     $factory = NDB_Factory::singleton();
     $DB      = $factory->database();
+    $config  = $factory->config();
     $user    = $factory->user();
 ```
 
