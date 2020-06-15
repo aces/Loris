@@ -109,7 +109,7 @@ case INSTRUMENT_IMPORT:
 
 
 $importer->processData();
-if (!$importer->hasSharedCandidates()) {
+if (!$importer->sharedCandidates()) {
     die("The mapping file and data file have no candidates in common.\n");
 }
 echo count($importer->sharedCandidates()) . " candidates found.\n";
