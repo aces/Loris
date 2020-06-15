@@ -430,7 +430,7 @@ class SelectElement extends Component {
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
 
     // Add required asterisk
     if (required) {
@@ -445,7 +445,7 @@ class SelectElement extends Component {
     // Add error message
     if (this.props.hasError || (this.props.required && this.props.value === '')) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = elementClass + ' has-error';
     }
 
     let newOptions = {};
@@ -477,7 +477,7 @@ class SelectElement extends Component {
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
     let label = null;
-    let inputClass = 'col-sm-12';
+    let inputClass = this.props.noMargins ? '' : 'col-sm-12';
     if (this.props.label && this.props.label != '') {
       label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -528,6 +528,7 @@ SelectElement.propTypes = {
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+  noMargins: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
@@ -545,6 +546,7 @@ SelectElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  noMargins: false,
 };
 
 /**

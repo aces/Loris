@@ -133,6 +133,7 @@ class ModuleManagerIndex extends Component {
               options={{'Y': 'Yes', 'N': 'No'}}
               value={cell}
               onUserInput={this.toggleActive}
+              noMargins={true}
             /></td>;
     }
     cell = this.mapColumn(column, cell);
@@ -176,7 +177,6 @@ class ModuleManagerIndex extends Component {
         fields={fields}
         getFormattedCell={this.formatColumn}
       />
-
     );
   }
 }
