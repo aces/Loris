@@ -42,7 +42,7 @@ class OutputWrapper
     public function __construct(SPLFileInfo $logDirectory = null)
     {
         $this->_logDirectory = new SPLFileInfo(
-            $logDirectory ?? __DIR__ . '/tools/'
+            $logDirectory ?? \NDB_Factory::singleton->config()->getSetting('log')
         );
     }
 
@@ -88,7 +88,11 @@ class OutputWrapper
             }
 
             // Format the output to colour the whole line.
-            $output = sprintf("\n\e[%sm$line\e[0m", self::COLOURS[$colour]);
+            $output = sprintf(
+                "\n\e[%sm%s\e[0m", 
+                self::COLOURS[$colour],
+                $line
+            );
         }
 
         fwrite($handle, $output . PHP_EOL);
