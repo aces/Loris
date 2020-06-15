@@ -16,6 +16,8 @@ use \Psr\Http\Server\RequestHandlerInterface;
 class FilesDownloadHandler implements RequestHandlerInterface
 {
 
+    const ERROR_EMPTY_FILENAME = 'Invalid filename: cannot be empty';
+    const ERROR_FILE_NOT_FILE = 'File requested is not a file';
     /**
      * The target download directory.
      *
@@ -30,19 +32,24 @@ class FilesDownloadHandler implements RequestHandlerInterface
      */
     public function __construct(\SplFileInfo $downloadDirectory)
     {
+        if (! $downloadDirectory->isDir()) {
+            throw new \LorisException(
+                sprintf(
+                    "Download directory %s is not a directory",
+                    htmlentities($downloadDirectory->getPathname())
+                )
+            );
+        }
+
+        if (! $downloadDirectory->isReadable()) {
+            throw new \LorisException(
+                sprintf(
+                    "Download directory %s is not readable",
+                    htmlentities($downloadDirectory->getPathname())
+                )
+            );
+        }
         $this->downloadDirectory = $downloadDirectory;
-
-        if (! $this->downloadDirectory->isDir()) {
-            throw new \LorisException(
-                'Download directory is not a directory'
-            );
-        }
-
-        if (! $this->downloadDirectory->isReadable()) {
-            throw new \LorisException(
-                'Download directory is not readable'
-            );
-        }
     }
 
     /**
@@ -68,8 +75,8 @@ class FilesDownloadHandler implements RequestHandlerInterface
         $filename = basename($request->getAttribute('filename'));
 
         if (empty($filename)) {
-            throw new \InvalidArgumentException(
-                'Invalid filename: cannot be empty'
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                self::ERROR_EMPTY_FILENAME
             );
         }
 
@@ -87,7 +94,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
 
         if (!is_file($targetPath)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'File requested is not a file.'
+                self::ERROR_FILE_NOT_FILE
             );
         }
 
