@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-require_once 'generic_includes.php';
+require_once '../generic_includes.php';
 require_once 'CandidateImporter.php';
 require_once 'VisitImporter.php';
 require_once 'InstrumentImporter.php';
