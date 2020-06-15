@@ -112,9 +112,9 @@ INSERT INTO `permissions` VALUES
     (65,'violated_scans_view_ownsite','Violated Scans: View Violated Scans from own site','2'),
     (66,'document_repository_edit','Document Repository: Edit and Upload','2'),
     (67,'candidate_dod_edit', 'Edit dates of death', 2),
-    (68, 'survey_accounts_view', 'Survey Module: View', 2),
-    (69, 'imaging_quality_control_view','Imaging Quality Control: View','2'),
-    (70, 'behavioural_quality_control_view','Behavioural Quality Control: View','2');
+    (68,'survey_accounts_view', 'Survey Accounts: View module', 2),
+    (69,'imaging_quality_control_view','Imaging Quality Control: View module','2'),
+    (70,'behavioural_quality_control_view','Behavioural Quality Control: View module','2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
