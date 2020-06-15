@@ -109,7 +109,7 @@ class Filter extends Component {
         });
         return (
           <li className='dropdown'>
-            <a 
+            <a
               className='dropdown-toggle'
               data-toggle='dropdown'
               role='button'

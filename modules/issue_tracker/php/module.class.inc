@@ -94,7 +94,7 @@ class Module extends \Module
                      . $DB->quote($user->getData('UserID')),
                     '',
                     '',
-                    $baseURL . "/issue_tracker/?#My%20Issues",
+                    $baseURL . "/issue_tracker/?assignee=" . $user->getUsername(),
                     "issue_tracker"
                 )
             ];
