@@ -84,6 +84,8 @@ class Module extends \Module
 
         switch($type) {
         case 'usertasks':
+            $url = 'assignee=' . $user->getUsername() . '&status=acknowledged&'.
+                   'status=assigned&status=feedback&status=new&status=resolved';
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
@@ -94,7 +96,7 @@ class Module extends \Module
                      . $DB->quote($user->getData('UserID')),
                     '',
                     '',
-                    $baseURL . "/issue_tracker/?assignee=" . $user->getUsername(),
+                    $baseURL . "/issue_tracker/?$url",
                     "issue_tracker"
                 )
             ];
