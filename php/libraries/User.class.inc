@@ -577,7 +577,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         );
         $centerMatch = !empty(
             array_intersect(
-                $this->getCenterIDs(), 
+                $this->getCenterIDs(),
                 $user->getCenterIDs()
             )
         );
