@@ -159,7 +159,6 @@ if (count($tables) > 0) {
     echo "Do you want to delete them now? (y/N)" . PHP_EOL;
     $input = trim(fgets(STDIN));
     if (mb_strtolower($input) === 'y') {
-        echo 'drop';
         dropRemainingTables($tables);
     }
 }
