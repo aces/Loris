@@ -17,7 +17,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
 {
 
     const ERROR_EMPTY_FILENAME = 'Invalid filename: cannot be empty';
-    const ERROR_FILE_NOT_FILE = 'File requested is not a file';
+    const ERROR_FILE_NOT_FILE  = 'File requested is not a file';
     /**
      * The target download directory.
      *
