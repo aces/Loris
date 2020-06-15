@@ -33,15 +33,25 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
     /**
      * Create a DataDictRowProvisioner, which gets rows for
      * the datadict menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The Loris instance whose
+     *                                    dictionary should be retrieved
      */
     function __construct(\LORIS\LorisInstance $loris)
     {
         $this->loris = $loris;
     }
 
-    public function getAllInstances() : \Traversable {
+    /**
+     * Get all dictionary instances, honouring parameter_type_override
+     * if applicable
+     *
+     * @return \Traversable
+     */
+    public function getAllInstances() : \Traversable
+    {
         $modules = $this->loris->getActiveModules();
-        $DB = $this->loris->getDatabaseConnection();
+        $DB      = $this->loris->getDatabaseConnection();
 
         $dict = [];
 
@@ -53,30 +63,38 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
 
         foreach ($modules as $module) {
             $mdict = $module->getDataDictionary($this->loris);
-            $dict = array_merge($dict, array_map(function($item) use ($overrides) {
-                $name = $item->getCategory()->getName() . '_' . $item->getName();
-                $desc = '';
-                $status = 'Unchanged';
-                if(isset($overrides[$name])) {
-                    $desc = $overrides[$name]['Description'];
-                    $status = 'Modified';
-                } else {
-                    $desc = $item->getDescription();
-                }
+            $dict  = array_merge(
+                $dict,
+                array_map(
+                    function ($item) use ($overrides) {
+                        $name   = $item->getCategory()->getName()
+                            . '_' . $item->getName();
+                        $desc   = '';
+                        $status = 'Unchanged';
+                        if (isset($overrides[$name])) {
+                            $desc   = $overrides[$name]['Description'];
+                            $status = 'Modified';
+                        } else {
+                            $desc = $item->getDescription();
+                        }
 
-                if ($desc == '') {
-                    $status = 'Empty';
-                }
-                return $this->getInstance(
-                    [
-                        'source_from' => $item->getCategory()->getName(),
-                        'name' => $name,
-                        'source_field' => $item->getName(),
-                        'description' => $desc,
-                        'description_status' => $status,
-                    ]
-                );
-            }, $mdict));
+                        if ($desc == '') {
+                            $status = 'Empty';
+                        }
+                        return $this->getInstance(
+                            [
+                                'source_from'        =>
+                                $item->getCategory()->getName(),
+                                'name'               => $name,
+                                'source_field'       => $item->getName(),
+                                'description'        => $desc,
+                                'description_status' => $status,
+                            ]
+                        );
+                    },
+                    $mdict
+                )
+            );
         }
         return new \ArrayIterator($dict);
     }

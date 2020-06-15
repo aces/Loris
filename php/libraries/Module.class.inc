@@ -331,8 +331,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
 
         $this->lorisinstance = $request->getAttribute("loris");
-        $pagename = $this->getName();
-        $path     = trim($request->getURI()->getPath(), "/");
+        $pagename            = $this->getName();
+        $path = trim($request->getURI()->getPath(), "/");
         if (!empty($path)) {
             // There is a subpage
             $pagename = explode("/", $path)[0];

@@ -198,8 +198,12 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return void
      */
-    function addSelect(string $name, string $label, array $options, array $attribs=array())
-    {
+    function addSelect(
+        string $name,
+        string $label,
+        array $options,
+        array $attribs=array()
+    ) {
         $attribs = array_merge(
             ['class' => 'form-control input-sm'],
             $attribs

@@ -541,16 +541,42 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     // the feature is completely deprecated.
                     $this->testName = $this->testName ?? trim($pieces[1]);
                     $this->table    = $this->table ?? trim($pieces[1]);
-                    $dictcat = new \LORIS\Data\Dictionary\Category($this->testName, $this->getFullName());
+
                     // Now that we have the category, add things that are added by addMetaDatafields() but
                     // aren't in the .linst file
                     $this->dictionary = array_merge($this->dictionary,
+                    $dictcat        = new \LORIS\Data\Dictionary\Category(
+                        $this->testName,
+                        $this->getFullName()
+                    );
+
+                    // Now that we have the category, add things that are added by
+                    // addMetaDatafields() but aren't in the .linst file
+                    $this->dictionary = array_merge(
+                        $this->dictionary,
                         [
-                        new DictionaryItem('Date_taken', 'Date of Administration', $dictcat),
-                        new DictionaryItem('Candidate_age', 'Candidate Age (Months)', $dictcat),
-                        new DictionaryItem('Window_Difference', 'Window difference from test battery (days)', $dictcat),
-                        new DictionaryItem('Examiner', 'Examiner', $dictcat),
-                        ]);
+                            new DictionaryItem(
+                                'Date_taken',
+                                'Date of Administration',
+                                $dictcat
+                            ),
+                            new DictionaryItem(
+                                'Candidate_age',
+                                'Candidate Age (Months)',
+                                $dictcat
+                            ),
+                            new DictionaryItem(
+                                'Window_Difference',
+                                'Window difference from test battery (days)',
+                                $dictcat
+                            ),
+                            new DictionaryItem(
+                                'Examiner',
+                                'Examiner',
+                                $dictcat
+                            ),
+                        ]
+                    );
                     break;
                 case 'title':
                     $this->fullName = $pieces[1];
@@ -619,7 +645,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         } else {
                             $this->addTextElement($pieces[1], $pieces[2]);
                         }
-                        $this->dictionary[] = new DictionaryItem($pieces[1], $pieces[2], $dictcat);
+                        $this->dictionary[] = new DictionaryItem(
+                            $pieces[1],
+                            $pieces[2],
+                            $dictcat
+                        );
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $pieces[1],
@@ -645,7 +675,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         } else {
                             $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
-                        $this->dictionary[] = new DictionaryItem($pieces[1], $pieces[2], $dictcat);
+                        $this->dictionary[] = new DictionaryItem(
+                            $pieces[1],
+                            $pieces[2],
+                            $dictcat,
+                        );
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $pieces[1],
@@ -674,7 +708,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 'emptyOptionValue' => null,
                             ];
                         }
-                        $this->dictionary[] = new DictionaryItem($pieces[1], $pieces[2], $dictcat);
+                        $this->dictionary[] = new DictionaryItem(
+                            $pieces[1],
+                            $pieces[2],
+                            $dictcat
+                        );
 
                         $this->dictionary[] = new DictionaryItem(
                             $pieces[1],
@@ -1159,10 +1197,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         return $this->fullName;
     }
 
-    public function getDataDictionary() : iterable {
-         return $this->dictionary;
-    }
-
     /**
      * Returns the dictionary for this instrument.
      *
@@ -1184,5 +1218,15 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     function getSubtestList(): array
     {
         return $this->subtests;
+    }
+
+    /*
+     * Returns the dictionary for this instrument.
+     *
+     * @return \LORIS\Data\Dictionary\DictionaryItem[]
+     */
+    public function getDataDictionary() : iterable
+    {
+         return $this->dictionary;
     }
 }
