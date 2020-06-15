@@ -50,7 +50,7 @@ abstract class DataImporter
      *
      * @var string[]
      */
-    protected $sharedCandidates = array();
+    public $sharedCandidates = array();
 
     /**
      * A mapping of old PSCIDs to new PSCIDS.
