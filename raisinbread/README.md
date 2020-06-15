@@ -19,13 +19,6 @@ If RaisinBread is being installed for the first time, the steps outlined below i
 [Configuring](#Configuring) section must be completed. 
 
 ### Manual RB Installation
-You can install test data by running `php tools/raisinbread_refresh.php` or 
-`make testdata`.
-
-If any errors are encountered during the execution of that script, this document
-should assist you in troubleshooting.
-
-### Installing RB
 The RaisinBread data is stored in the form of SQL INSERT statements located in the 
 `/raisinbread/RB_files/` directory and grouped by the database table they belong to. 
 These statements rely on the pre-existence of the SQL tables and thus the data is 
