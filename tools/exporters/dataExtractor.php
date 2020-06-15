@@ -225,8 +225,8 @@ FROM candidate c
 INNER JOIN session s ON c.CandID = s.CandID
 INNER JOIN flag f ON f.SessionID = s.ID
 INNER JOIN $table t ON t.CommentID = f.CommentID
-WHERE DATE(t.Date_taken) < :cutoffDate " .
-'AND f.CommentID NOT LIKE "DDE%"';
+WHERE DATE(t.Date_taken) < :cutoffDate 
+AND f.CommentID NOT LIKE "DDE%";
 QUERY;
 
         $params['cutoffDate'] = $cutoffDate;
