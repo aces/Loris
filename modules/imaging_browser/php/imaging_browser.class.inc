@@ -112,10 +112,11 @@ class Imaging_Browser extends \DataFrameworkMenu
         }
 
         // get list of projects
-        $list_of_projects = [];
-        $projectList      = \Utility::getProjectList();
-        foreach ($projectList as $key => $project) {
-            unset($projectList[$key]);
+        $allProjectList   = \Utility::getProjectList();
+        $list_of_projects = array();
+        $userProjectsIDs  = $user->getData('ProjectIDs');
+        foreach ($userProjectsIDs as $ProjectID) {
+            $project = $allProjectList[$ProjectID];
             $list_of_projects[$project] = $project;
         }
 
