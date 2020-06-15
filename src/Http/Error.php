@@ -50,7 +50,10 @@ class Error extends HtmlResponse
         $uri     = $request->getURI();
         $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
         // Admistrator email.
-        $contact  = $factory->config()->getSetting('mail')['From'];
+        $contact  = $request
+            ->getAttribute('loris')
+            ->getConfiguration()
+            ->getSetting('mail')['From'];
         $tpl_data = array(
                      'message' => $message,
                      'baseurl' => $baseurl,
@@ -58,9 +61,9 @@ class Error extends HtmlResponse
                     );
         // Add issue tracker data if the error is encountered by an authenticated
         // user with the correct permissions.
-        $user = $factory->user();
+        $user = $request->getAttribute('user');
         if (! $user instanceof \LORIS\AnonymousUser) {
-            $canReport = $factory->user()->hasAnyPermission(
+            $canReport = $user->hasAnyPermission(
                 [
                  'issue_tracker_reporter',
                  'issue_tracker_developer',
