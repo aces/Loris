@@ -568,7 +568,6 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
      */
     public function isAccessibleBy(\User $user): bool
     {
-        $centers = $user->getCenterIDs();
 
         $projMatch   = !empty(
             array_intersect(
@@ -586,4 +585,3 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         return $projMatch && $centerMatch;
     }
 }
-
