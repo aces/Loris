@@ -867,5 +867,10 @@ class UtilityTest extends TestCase
             $expected
         );
 
+        // Check leading front-slash
+        $this->assertEquals(
+            \Utility::pathJoin('/a', '/b/c'),
+            '/a/b/c'
+        );
     }
 }

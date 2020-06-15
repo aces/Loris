@@ -1035,16 +1035,21 @@ class Utility
     {
         // This array stores the components of the final path.
         $result = [];
+
+        $addSlash = (strpos($paths[0], '/') === 0);
+
         foreach ($paths as $part) {
             // Remove all leading forward-slashes from $part.
             $part = ltrim($part, '/');
             // Remove trailing forward-slashes from $part.
             while (mb_substr($part, -1) === '/') {
-                $part = chop($part, '/');
+                $part = rtrim($part, '/');
             }
             $result[] = $part;
         }
-        return implode('/', $result);
+        
+        // If the first part began with a front-slash, add it back
+        return ($addSlash ? '/' : '') . implode('/', $result);
     }
 }
 
