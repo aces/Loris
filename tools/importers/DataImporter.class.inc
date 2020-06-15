@@ -244,9 +244,9 @@ abstract class DataImporter
      * Returns a visual representation of the SQL queries to be run in order to
      * perform data import. Used for displaying to users and logging.
      *
-     * @return string[] SQL commands to be run to perform import.
+     * @return string SQL commands to be run to perform import.
      */
-    protected function report(): array
+    public function report(): string
     {
         $report = array_merge(
             $this->formatUPDATEStatements(),
