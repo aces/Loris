@@ -91,7 +91,7 @@ if ($mode !== COLUMN_EXPORT
 // Create default output path. This value will be overwritten below if a user
 // specifies a custom path.
 // e.g. /var/www/loris/project/data_export/
-$filepath = $config->getSetting('base') . OUTPUT_FOLDER;
+$filepath =  OUTPUT_FOLDER;
 
 $query  = '';
 $params = array();
