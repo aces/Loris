@@ -578,7 +578,7 @@ function editCandidateDOD(\Database $db): void
     if (!empty($dod)) {
         $config    = \NDB_Config::singleton();
         $dodFormat = $config->getSetting('dodFormat');
-        if ($dobFormat === 'Ym') {
+        if ($dodFormat === 'Ym') {
             $strippedDate = $dod->format('Y-m-01');
         } else {
             $dodString = $dod->format('Y-m-d');
