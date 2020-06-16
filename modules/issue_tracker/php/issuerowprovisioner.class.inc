@@ -37,8 +37,9 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     function __construct()
     {
+        $factory         = \NDB_Factory::singleton();
+        $user            = $factory->user();
         $this->_siteList = array_keys(\Utility::getSiteList(false));
-        $user            = \User::singleton();
         $userID          = $user->getUsername();
         //note that this needs to be in the same order as the headers array
         parent::__construct(

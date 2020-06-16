@@ -9,6 +9,8 @@ namespace LORIS\my_preferences;
 class My_Preferences extends \NDB_Form
 {
     private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be ' .
+                                        'your user name.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
                                         'identical: please choose another one';
@@ -99,8 +101,9 @@ class My_Preferences extends \NDB_Form
      */
     function _process($values)
     {
-        $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
+        $DB      = $factory->database();
 
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
@@ -375,14 +378,20 @@ class My_Preferences extends \NDB_Form
     function _validateMyPreferences(array $values): array
     {
         // create DB object
-        $DB     = \Database::singleton();
-        $errors = array();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $errors  = array();
 
         // NOTE The 'Password_hash' key actually represents a plaintext password
         $plaintext = $values['Password_hash'];
 
         if ($values['Email'] === $plaintext) {
             $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+        }
+
+        // Make sure the user is not using their username as their password.
+        if ($this->identifier === $plaintext) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_USER;
         }
 
         // Ensure that the password and confirm password fields match.

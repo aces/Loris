@@ -215,9 +215,46 @@ class DocIndex extends React.Component {
 
     let tabList = [
       {id: 'browse', label: 'Browse'},
-      {id: 'upload', label: 'Upload'},
-      {id: 'category', label: 'Category'},
     ];
+    let uploadDoc;
+    let uploadCategory;
+    if (loris.userHasPermission('document_repository_view')) {
+      tabList.push(
+        {
+          id: 'upload',
+          label: 'Upload',
+        },
+      );
+      tabList.push(
+        {
+          id: 'category',
+          label: 'Category',
+        },
+      );
+
+      uploadDoc = (
+        <TabPane TabId={tabList[1].id}>
+          <DocUploadForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/Files`}
+            maxUploadSize={this.state.data.maxUploadSize}
+            refreshPage={this.fetchData}
+            category={this.state.newCategory}
+          />
+        </TabPane>
+      );
+
+      uploadCategory = (
+        <TabPane TabId={tabList[2].id}>
+          <DocCategoryForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/UploadCategory`}
+            refreshPage={this.fetchData}
+            newCategoryState={this.newCategoryState}
+          />
+        </TabPane>
+      );
+    }
     const parentTree = this.state.global ? null : (
       <div>
         <ParentTree
@@ -286,23 +323,8 @@ class DocIndex extends React.Component {
         <TabPane TabId={tabList[0].id}>
           {treeTable}
         </TabPane>
-        <TabPane TabId={tabList[1].id}>
-          <DocUploadForm
-            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/Files`}
-            maxUploadSize={this.state.data.maxUploadSize}
-            refreshPage={this.fetchData}
-            category={this.state.newCategory}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[2].id}>
-          <DocCategoryForm
-            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/UploadCategory`}
-            refreshPage={this.fetchData}
-            newCategoryState={this.newCategoryState}
-          />
-        </TabPane>
+        {uploadDoc}
+        {uploadCategory}
       </Tabs>
     );
   }

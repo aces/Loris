@@ -56,7 +56,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     {
         $provisioner = new IssueRowProvisioner();
 
-        $user = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
 
         if ($user->hasPermission('access_all_profiles') === false) {
             $provisioner = $provisioner->filter(
@@ -75,8 +76,9 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      */
     function toJSON(): string
     {
-        $user = \User::singleton();
-        $db   = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
 
         //sites
         $sites = array();
@@ -129,6 +131,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
 
         $priorities = array(
+            'low'       => 'Low',
             'normal'    => 'Normal',
             'high'      => 'High',
             'urgent'    => 'Urgent',

@@ -115,7 +115,7 @@ echo ""
 
 mkdir -p ../smarty/templates_c
 # Setting 770 permissions for templates_c
-chmod 770 ../smarty/templates_c
+sudo chmod 770 ../smarty/templates_c
 
 # Detecting distribution
 if ! os_distro=$(hostnamectl 2>/dev/null)

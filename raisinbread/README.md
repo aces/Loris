@@ -9,7 +9,19 @@ adjusted when existing features are changed or removed.
 The sections below provide some insights into installing, modifying and exporting 
 the dataset.
 
-### Installing RB
+### Automated RB Installation
+The script `tools/raisinbread_refresh.php` includes functionality that drops all existing tables in the
+database and sources all of the RaisinBread data automatically. The script will preserve some server configuration settings in your database to simplify the process of switching between development environments. This tool can be run through the provided Makefile. To run this script, navigate to the LORIS
+root directory and run the following command:
+
+```bash
+make testdata
+```
+
+If RaisinBread is being installed for the first time, the steps outlined below in the 
+[Configuring](#Configuring) section must be completed. 
+
+### Manual RB Installation
 The RaisinBread data is stored in the form of SQL INSERT statements located in the 
 `/raisinbread/RB_files/` directory and grouped by the database table they belong to. 
 These statements rely on the pre-existence of the SQL tables and thus the data is 

@@ -192,15 +192,15 @@ class EditExaminer extends \NDB_Form
                         'TID' => $testID,
                     )
                 );
-                if (empty($oldVals)) {
-                    throw new \LorisException(
-                        'Certification data could not be found'
-                    );
+
+                $oldVal  = null;
+                $oldDate = null;
+                if (!empty($oldVals)) {
+                    // since there is an ORDER BY in pselect
+                    // $oldVals[0] corresponds to the latest date
+                    $oldVal  = $oldVals[0]['new'] ?? null;
+                    $oldDate = $oldVals[0]['new_date'] ?? null;
                 }
-                // since there is an ORDER BY in pselect
-                // $oldVals[0] corresponds to the latest date
-                $oldVal  = $oldVals[0]['new'] ?? null;
-                $oldDate = $oldVals[0]['new_date'] ?? null;
 
                 $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
@@ -264,11 +264,7 @@ class EditExaminer extends \NDB_Form
                 }
             }
         }
-
-        $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
-        $url     = "{$baseurl}/examiner/editExaminer/?identifier="
-               . $examinerID;
-        header("Location: " . $url, true, 303);
+        header("Refresh:0");
     }
 
     /**
@@ -386,15 +382,11 @@ class EditExaminer extends \NDB_Form
 
         // check that there is both a status and a date (neither can be null)
         foreach ($values['certStatus'] as $instrumentID => $certificationStatus) {
-            if (empty($certificationStatus)
-                || empty($values['date_cert'][$instrumentID])
+            if (($certificationStatus == "certified")
+                && empty($values['date_cert'][$instrumentID])
             ) {
-                if (($certificationStatus == "certified")
-                    && empty($values['date_cert'][$instrumentID])
-                ) {
-                    $errors['certStatus[' . $instrumentID .']'] = 'Both certification
-                        status and date must be filled out';
-                }
+                  $errors['certStatus[' . $instrumentID .']'] = 'Both certification
+                  status and date must be filled out';
             }
         }
 

@@ -30,8 +30,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
  */
 class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
-    protected $projectdir;
-    protected $moduledir;
+    protected $lorisinstance;
     protected $user;
 
     /**
@@ -44,9 +43,15 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
      */
     public function __construct(\User $user, string $projectdir, string $moduledir)
     {
-        $this->user       = $user;
-        $this->projectdir = $projectdir;
-        $this->moduledir  = $moduledir;
+        $this->user          = $user;
+        $this->lorisinstance = new \LORIS\LorisInstance(
+            \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
+            [
+             $projectdir . "/modules",
+             $moduledir,
+            ]
+        );
     }
 
     /**
@@ -66,7 +71,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         // Remove any trailing slash remaining, so that foo/ and foo are the same
         // route
         $path    = preg_replace("/\/$/", "", $path);
-        $request = $request->withAttribute("user", $this->user);
+        $request = $request->withAttribute("user", $this->user)
+            ->withAttribute("loris", $this->lorisinstance);
+
         if ($path == "") {
             if ($this->user instanceof \LORIS\AnonymousUser) {
                 $modulename = "login";
@@ -84,9 +91,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $components = preg_split("/\/+?/", $path);
             $modulename = $components[0];
         }
-        if (is_dir($this->moduledir . "/" . $modulename)
-            || is_dir($this->projectdir . "/modules/" . $modulename)
-        ) {
+
+        $factory = \NDB_Factory::singleton();
+        if ($this->lorisinstance->hasModule($modulename)) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
 
@@ -96,7 +103,6 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $baseurl = $uri->withPath($baseurl)->withQuery("");
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
 
-            $factory = \NDB_Factory::singleton();
             $factory->setBaseURL($baseurl);
 
             $module  = \Module::factory($modulename);
@@ -112,7 +118,6 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $path    = $uri->getPath();
             $baseurl = $uri->withPath("")->withQuery("");
 
-            $factory = \NDB_Factory::singleton();
             $factory->setBaseURL($baseurl);
             if (count($components) == 1) {
                 $request = $request

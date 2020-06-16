@@ -67,7 +67,8 @@ class Attachment extends \NDB_Page implements ETagCalculator
                         ID = :ID';
         $result  = $DB->pselectRow($query, array('ID' => $ID));
 
-        $config = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
         $attachment_data_dir = rtrim(
             $config->getSetting('IssueTrackerDataPath'),
             '/'

@@ -38,7 +38,8 @@ class Issue extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $user    =& \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
         $issueID = $this->issueID;
         if ((empty($issueID)
             || !isset($issueID))
@@ -101,7 +102,7 @@ class Issue extends \NDB_Form
         if (!$issueID) {
             return true;
         }
-        $issueData = \Database::singleton()->pselectRow(
+        $issueData = \NDB_Factory::singleton()->database()->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
             array('issueID' => $issueID)
         );

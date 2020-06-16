@@ -98,7 +98,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
             'LPAD(candidate.CandID, 6, "0") AS DCCID',
             'candidate.PSCID',
             'candidate.Sex',
-            'cohort.SubprojectID as Subproject',
+            'subproj.title as Subproject',
             'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
             'candidate.ExternalID as externalID',
             "$file_subquery as File",
@@ -127,6 +127,8 @@ class Genomic_Browser extends \NDB_Menu_Filter
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
                 from session s GROUP BY s.CandID) AS cohort
                 ON (cohort.CandID=candidate.CandID)
+            LEFT JOIN subproject AS subproj
+                ON (cohort.SubprojectID = subproj.SubprojectID)
             LEFT JOIN psc ON (psc.CenterID= candidate.RegistrationCenterID)
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";

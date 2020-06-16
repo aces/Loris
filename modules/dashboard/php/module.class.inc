@@ -135,9 +135,10 @@ class Module extends \Module
      */
     private function _getTasksWidget()
     {
-        $DB      = \NDB_Factory::singleton()->database();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         $modules = \Module::getActiveModules($DB);
-        $user    = \User::singleton();
+        $user    = $factory->user();
 
         $widgets = [];
         foreach ($modules as $module) {

@@ -37,7 +37,7 @@ interface Authenticator
      *
      * @param ServerRequestInterface $request The incoming request
      *
-     * @return bool true iff the request is valid
+     * @return bool true only if the request is valid
      */
     public function authenticate(ServerRequestInterface $request) : bool;
 }

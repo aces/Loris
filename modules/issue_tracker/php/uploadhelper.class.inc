@@ -104,7 +104,8 @@ class UploadHelper
      */
     function setFullPath(Object &$fileToUpload) : void
     {
-        $config = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
         $attachment_data_dir = trim(
             rtrim(
                 $config->getSetting('IssueTrackerDataPath'),
@@ -221,7 +222,8 @@ class UploadHelper
      */
     function endWithFailure() : void
     {
-        $DB = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         $DB->rollBack();
     }
 
@@ -233,7 +235,8 @@ class UploadHelper
      */
     function endWithSuccess() : void
     {
-        $DB = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         $DB->commit();
     }
 }
