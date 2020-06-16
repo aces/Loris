@@ -1047,7 +1047,7 @@ class Utility
             }
             $result[] = $part;
         }
-        
+
         // If the first part began with a front-slash, add it back
         return ($addSlash ? '/' : '') . implode('/', $result);
     }
