@@ -1025,7 +1025,7 @@ class Utility
     }
 
     /**
-     * A PHP implementation of python's os.path.join.
+     * Joins strings together to create a well-formed filepath.
      *
      * @param string ...$paths The path components to be joined.
      *
@@ -1052,4 +1052,3 @@ class Utility
         return ($addSlash ? '/' : '') . implode('/', $result);
     }
 }
-
