@@ -83,12 +83,12 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                         }
                         return $this->getInstance(
                             [
-                                'source_from'        =>
-                                $item->getCategory()->getName(),
+                                'source_from'        => $item->getCategory()->getName(),
                                 'name'               => $name,
                                 'source_field'       => $item->getName(),
                                 'description'        => $desc,
                                 'description_status' => $status,
+                                'datascope' => $item->getScope(),
                             ]
                         );
                     },

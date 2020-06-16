@@ -178,6 +178,19 @@ class DataDictIndex extends Component {
                 },
             },
         },
+        {
+            label: 'Data Scope',
+            show: true,
+            filter: {
+                name: 'datascope',
+                type: 'select',
+                options: {
+                    'candidate': 'Candidate',
+                    'session': 'Session',
+                    'project': 'Project',
+                },
+            },
+        },
     ];
     return (
         <FilterableDataTable
