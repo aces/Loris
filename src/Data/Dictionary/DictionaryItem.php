@@ -120,4 +120,8 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
     public function getScope() : Scope {
         return $this->scope;
     }
+
+    public function getDataType() : \LORIS\Data\Type {
+        return $this->typ;
+    }
 }
