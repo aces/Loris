@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 define("DEBUG", false);
 
 /**
@@ -831,9 +832,9 @@ class Database
      * @param array<string,string> $params Values to use for binding to prepared
      *                                     statement
      *
-     * @return array<string,string> Associative array of form ColumnName => Value
-     *                              for each column in the first row of the
-     *                              query, or null.
+     * @return array<string,string>|null Associative array of form
+     *                              ColumnName => Value for each column in the
+     *                              first row of the query, or null.
      */
     function pselectRow(string $query, array $params): ?array
     {
