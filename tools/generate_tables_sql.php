@@ -71,13 +71,12 @@ foreach($instruments AS $instrument){
             //no SQL need be generated.
             case "title":
             case "header":
-                continue;
-            break;
+                break;
 
             //generate specific column definitions for specific types of HTML elements
             default:
                 if((array_key_exists(1,$bits) ? $bits[1] : "") == "") {
-                    continue;
+                    continue 2;
                 }
                 if($bits[0]=="select"){
                     $bits[0]=enumizeOptions(
