@@ -4,7 +4,6 @@
 
 A Loris module consists of a group of pages that perform a specific function or assist with a specific task. Examples of modules include `Document Repository`, `Candidate List (Access Profiles)`, `Imaging Browser` ...
 
-
 ## Directory structure
 
 Create a new folder corresponding to your module name under `modules/`. 
@@ -45,7 +44,6 @@ You should create a class `php/mynewmodulerow.class.inc` to represent a Menu Fil
 provide basic structure for the row and include permission flags that can restrict data to users
 affiliated with a given Site or Project.
 
-
 [See this file for an example](../../../modules/dicom_archive/php/dicomarchiverow.class.inc).
 
 ##### Row Provisioner.
@@ -73,7 +71,7 @@ Be sure to familiarize yourself with our [ReactJS guidelines](./ReactJS Guidelin
 A pull request to create a new module must contain SQL modifications in order for LORIS to detect the module
 and serve it with appropriate access control.
 
-Please make sure that all SQL changes follow our [SQL code standards](https://github.com/aces/Loris/blob/master/docs/SQLModelingStandard.md).
+Please make sure that all SQL changes follow our [SQL code standards](../../SQLModelingStandard.md).
 
 #### Module permissions
 
@@ -139,7 +137,7 @@ A pull request containing a new module `my_new_module` must contain the followin
 * e.g. `SQL/New_patches/$date_Add-New-Module.sql` -- SQL statements to modify an existing LORIS instance to be compatible with the new module.
 
 ## Required modifications to existing files
-* `SQL/0000-00-02-Permission.sql` -- Adding new permissions for your module
+* `SQL/0000-00-01-Permission.sql` -- Adding new permissions for your module
 * `SQL/0000-00-02-Modules.sql` -- Containing an entry for the new module
 
 ## Optional new files
