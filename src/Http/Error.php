@@ -44,8 +44,6 @@ class Error extends HtmlResponse
         int $status,
         string $message = ''
     ) {
-
-
         $uri     = $request->getURI();
         $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
         // Admistrator email.
@@ -58,18 +56,18 @@ class Error extends HtmlResponse
                      'baseurl' => $baseurl,
                      'contact' => $contact,
                     );
-        // Add issue tracker data if the error is encountered by an authenticated
-        // user with the correct permissions.
-        $user = $request->getAttribute('user');
-        if (! $user instanceof \LORIS\AnonymousUser) {
-            $canReport = $user->hasAnyPermission(
-                [
-                 'issue_tracker_reporter',
-                 'issue_tracker_developer',
-                ]
-            );
+        // Add issue tracker data if the error is encountered by a user with
+        // the correct permissions.
+        $user      = $request->getAttribute('user');
+        $canReport = $user->hasAnyPermission(
+            [
+             'issue_tracker_reporter',
+             'issue_tracker_developer',
+            ]
+        );
+        if ($canReport) {
             $tpl_data['issueTrackerURL'] = '/issue_tracker/issue/new';
-            $tpl_data['canReport']       = $canReport;
+            $tpl_data['canReport']       = true;
         }
 
         $template_file = (string) $status . '.tpl';
