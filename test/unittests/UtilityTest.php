@@ -429,31 +429,6 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getTestNameUsingFullName returns the correct 
-     * Test_name for the given Full_name
-     *
-     * @covers Utility::getTestNameUsingFullName
-     * @return void
-     */
-    public function testGetTestNameUsingFullName()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn(
-                array(
-                    array('Test_name' => 'test1',
-                          'Full_name' => 'description1'),
-                    array('Test_name' => 'test2',
-                          'Full_name' => 'description2'))
-            );
-
-        $this->assertEquals(
-            'test1', 
-            Utility::getTestNameUsingFullName('description1')
-        );
-    }
-
-    /**
      * Test that getVisitList returns a list of visit labels
      * This is the simplest case of this function
      * TODO Potential edge cases: Set 'Active' to 'N'
