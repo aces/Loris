@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace LORIS\Data\Dictionary;
+use \LORIS\Data\Scope;
 
 use \LORIS\Data\Scope;
 use \LORIS\Data\Type;
@@ -114,5 +115,9 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
     public function isAccessibleBy(\User $user): bool
     {
         return true;
+    }
+
+    public function getScope() : Scope {
+        return $this->scope;
     }
 }

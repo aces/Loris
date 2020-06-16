@@ -566,22 +566,26 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             new DictionaryItem(
                                 'Date_taken',
                                 'Date of Administration',
-                                $dictcat
+                                $dictcat,
+                                $scope,
                             ),
                             new DictionaryItem(
                                 'Candidate_age',
                                 'Candidate Age (Months)',
-                                $dictcat
+                                $dictcat,
+                                $scope,
                             ),
                             new DictionaryItem(
                                 'Window_Difference',
                                 'Window difference from test battery (days)',
-                                $dictcat
+                                $dictcat,
+                                $scope,
                             ),
                             new DictionaryItem(
                                 'Examiner',
                                 'Examiner',
-                                $dictcat
+                                $dictcat,
+                                $scope,
                             ),
                         ]
                     );
@@ -656,7 +660,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->dictionary[] = new DictionaryItem(
                             $pieces[1],
                             $pieces[2],
-                            $dictcat
+                            $dictcat,
+                            $scope,
                         );
                     }
                     $this->dictionary[] = new DictionaryItem(
@@ -687,6 +692,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $pieces[1],
                             $pieces[2],
                             $dictcat,
+                            $scope,
                         );
                     }
                     $this->dictionary[] = new DictionaryItem(
@@ -719,7 +725,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->dictionary[] = new DictionaryItem(
                             $pieces[1],
                             $pieces[2],
-                            $dictcat
+                            $dictcat,
+                            $scope,
                         );
 
                         $this->dictionary[] = new DictionaryItem(
