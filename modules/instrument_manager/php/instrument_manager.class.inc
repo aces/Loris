@@ -161,7 +161,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
             // If no adminUser is configured, automatic installation is not
             // possible, so this is the last step.
             return new \LORIS\Http\Response\JSON\OK(
-                self::UPLOAD_NO_INSTALL
+                json_encode(self::UPLOAD_NO_INSTALL)
             );
         }
 
