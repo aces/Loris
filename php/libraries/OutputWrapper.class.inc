@@ -42,7 +42,7 @@ class OutputWrapper
     public function __construct(SPLFileInfo $logDirectory = null)
     {
         $this->_logDirectory = new SPLFileInfo(
-            $logDirectory ?? \NDB_Factory::singleton->config()->getSetting('log')
+            $logDirectory ?? \NDB_Factory::singleton()->config()->getSetting('log')
         );
     }
 
@@ -82,14 +82,14 @@ class OutputWrapper
         if (!empty($colour) && stream_isatty($handle)) {
             // Verify a valid colour is supplied
             if (!array_key_exists(strtolower($colour), self::COLOURS)) {
-                throw InvalidArgumentException(
+                throw new InvalidArgumentException(
                     "Invalid argument for colour (`$colour`)"
                 );
             }
 
             // Format the output to colour the whole line.
             $output = sprintf(
-                "\n\e[%sm%s\e[0m", 
+                "\n\e[%sm%s\e[0m",
                 self::COLOURS[$colour],
                 $line
             );
