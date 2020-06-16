@@ -45,7 +45,6 @@ class Error extends HtmlResponse
         string $message = ''
     ) {
 
-        $factory = \NDB_Factory::singleton();
 
         $uri     = $request->getURI();
         $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
