@@ -42,8 +42,8 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'endYear', "End year for study recruitment or data collection", 1, 0, 'text', ID, 'End year', 6 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ageMin', 'Minimum candidate age in years (0+)', 1, 0, 'text', ID, 'Minimum candidate age', 7 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ageMax', 'Maximum candidate age in years', 1, 0, 'text', ID, 'Maximum candidate age', 8 FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dobFormat', "Format of the Date of Birth", 1, 0, 'text', ID, 'DOB Format', 9 FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dodFormat', 'Format of the Date of Death', 1, 0, 'text', ID, 'DOD Format', 10 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dobFormat', "Format of the Date of Birth", 1, 0, 'date_format', ID, 'DOB Format', 9 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dodFormat', 'Format of the Date of Death', 1, 0, 'date_format', ID, 'DOD Format', 10 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useProband', "Enable for proband data collection", 1, 0, 'boolean', ID, 'Use proband', 11 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useFamilyID', 'Enable if family members are recruited for the study', 1, 0, 'boolean', ID, 'Use family', 12 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useExternalID', "Enable if data is used for blind data distribution, or from external data sources", 1, 0, 'boolean', ID, 'Use external ID', 13 FROM ConfigSettings WHERE Name="study";
@@ -182,8 +182,8 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE
 INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name="ImagingUploaderAutoLaunch";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Modify this to your project's citation policy" FROM ConfigSettings WHERE Name="citation_policy";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "" FROM ConfigSettings WHERE Name="CSPAdditionalHeaders";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "YMd" FROM ConfigSettings WHERE Name="dobFormat";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "YMd"  FROM ConfigSettings WHERE Name="dodFormat";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "Ymd" FROM ConfigSettings WHERE Name="dobFormat";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "Ymd"  FROM ConfigSettings WHERE Name="dodFormat";
 
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="imagePath";
