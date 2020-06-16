@@ -37,7 +37,13 @@ class VisitImporter extends DataImporter
             array()
         );
         foreach ($result as $row) {
-            $this->existingSessions[$row['CandID']] = $row['Visit_label'];
+            if (!array_key_exists($row['CandID'], $this->existingSessions)) {
+                $this->existingSessions[$row['CandID']] = array();
+            }
+            array_push(
+                $this->existingSessions[$row['CandID']],
+                $row['Visit_label']
+            );
         }
 
         // Read list of excluded visit labels into an array.
@@ -102,7 +108,7 @@ class VisitImporter extends DataImporter
             'where' => $where,
         );
 
-        if (!empty($this->existingSessions[$newCandID])
+        if (empty($this->existingSessions[$newCandID])
             || !in_array(
                 $row['Visit_label'],
                 $this->existingSessions[$newCandID],
