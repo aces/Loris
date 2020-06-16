@@ -139,7 +139,7 @@ class Stats_Behavioural extends \NDB_Form
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
-            $Visits = \Utility::getExistingVisitLabels($currentProject);
+            $Visits = \Utility::getVisitList($currentProject);
         }
 
         $this->tpl_data['Visits'] = $Visits ?? '';
