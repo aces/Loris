@@ -59,14 +59,14 @@ class CandidateImporter extends DataImporter
         unset($data['PSCID']);
 
         // Get the new PSCID value using the old PSCID found in the row.
-        $where = array(
+        $where = [
             'PSCID' => $this->newPSCID(
                 $row[$this->dataHeaders[parent::OLD_PSCID]]
             )
-        );
-        $this->UPDATEQueue[] = array(
+        ];
+        $this->UPDATEQueue[] = [
             'data'  => $data,
             'where' => $where
-        );
+        ];
     }
 }

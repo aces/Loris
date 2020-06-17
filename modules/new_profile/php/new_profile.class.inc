@@ -106,8 +106,8 @@ class New_Profile extends \NDB_Form
             }
             $result = [
                 'candID' => $this->_candID,
-                'pscid'  => $this->_pscid,
-            );
+                'pscid'  => $this->_pscid
+            ];
             return (new \LORIS\Http\Response\JSON\Created(json_encode($result)))
                 ->withHeader("Allow", "POST");
         }

@@ -766,40 +766,10 @@ class Utility
      */
     static function getExistingVisitLabels(int $projectID = null): array
     {
-<<<<<<< HEAD
         throw new \DeprecatedException(
             'This function is deprecated. Please use Utility::getVisitList() '
             . 'instead.'
         );
-=======
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
-        $qparams = [];
-
-        if ($projectID != null) {
-            $ExtraProject_Criteria
-                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
-            $qparams["ProjectID"]  = $projectID;
-        } else {
-            $ExtraProject_Criteria ='';
-        }
-        $query          = "SELECT DISTINCT Visit_label FROM session s
-            JOIN candidate c ON (s.CandID = c.Candid)
-            JOIN psc ON (s.CenterID = psc.CenterID)
-            WHERE c.Active = 'Y'
-            AND s.Active = 'Y'
-            AND c.Entity_type != 'Scanner'
-            AND psc.CenterID!= '1'
-            $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels    = $db->pselect($query, $qparams);
-        $visits         = [];
-        $numVisitLabels = count($visitlabels);
-        for ($i = 0; $i < $numVisitLabels; $i++) {
-            $visits[$visitlabels[$i]['Visit_label']]
-                = ($visitlabels[$i]['Visit_label']);
-        }
-        return $visits;
->>>>>>> f8663dce9... Add class and module php code
     }
 
     /**

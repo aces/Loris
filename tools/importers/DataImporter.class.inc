@@ -33,13 +33,13 @@ abstract class DataImporter
     const NEW_CANDID = 2;
 
     /* An associative array of CSV headers to rows of CSV data */
-    protected $dataRows = array();
+    protected $dataRows = [];
 
     /* An associative array of CSV headers to rows of CSV data. Contains a
      * mapping of the original PSCIDs used in the source databse to the
      * new PSCIDs and the new CandIDs.
      */
-    protected $mappingRows = array();
+    protected $mappingRows = [];
 
     /* The table in the DB to update */
     protected $table = '';
@@ -50,40 +50,40 @@ abstract class DataImporter
      *
      * @var string[]
      */
-    public $sharedCandidates = array();
+    public $sharedCandidates = [];
 
     /**
      * A mapping of old PSCIDs to new PSCIDS.
      *
      * @var array<string,string>
      */
-    protected $PSCIDMapping = array();
+    protected $PSCIDMapping = [];
 
     /**
      * A mapping of new PSCIDs to new CandIDs.
      *
      * @var array<string,string>
      */
-    protected $candIDMapping = array();
+    protected $candIDMapping = [];
 
     /**
      * An array of all PSCIDs the `candidate` table of the database.
      *
      * @var string[]
      */
-    protected $existingPSCIDs = array();
+    protected $existingPSCIDs = [];
 
     /* An array of PSCIDs that are present in the mapping file but skipped for
      * processing. */
-    public $candidatesSkipped = array();
+    public $candidatesSkipped = [];
 
     /* An array containing informaiton to be formatted into a MySQL UPDATE
      * statement. */
-    protected $UPDATEQueue = array();
+    protected $UPDATEQueue = [];
 
     /* An array containing informaiton to be formatted into a MySQL INSERT
      * statement. */
-    protected $INSERTQueue = array();
+    protected $INSERTQueue = [];
 
 
     /**
@@ -115,7 +115,7 @@ abstract class DataImporter
         $this->calculateSharedCandidates();
         $this->existingPSCIDs = \NDB_Factory::singleton()->database()->pselectCol(
             'SELECT PSCID from candidate',
-            array()
+            []
         );
     }
 
@@ -323,7 +323,7 @@ abstract class DataImporter
     {
         $commandQueue = $this->UPDATEQueue;
         if (count($commandQueue) < 1) {
-            return array();
+            return [];
         }
         $formattedCommand = <<<SQL
 UPDATE %s
@@ -331,10 +331,10 @@ SET %s
 WHERE %s;
 
 SQL;
-        $report           = array();
+        $report           = [];
         foreach ($commandQueue as $command) {
-            $setString   = array();
-            $whereString = array();
+            $setString   = [];
+            $whereString = [];
             // Iterate over all columns and create a formatted string.
             // There will only be one column for COLUMN_IMPORT mode but several
             // for VISIT_IMPORT.
@@ -366,10 +366,10 @@ SQL;
     {
         $commandQueue = $this->INSERTQueue;
         if (count($commandQueue) < 1) {
-            return array();
+            return [];
         }
         // Format commands for printing.
-        $report           = array();
+        $report           = [];
         $formattedCommand = <<<SQL
 INSERT INTO %s
 (%s)
@@ -384,10 +384,10 @@ SQL;
                 implode(
                     ',',
                     array_map(
-                        array(
+                        [
                             $this,
                             'quoteWrapUnlessNULL',
-                        ),
+                        ],
                         array_values($command['data'])
                     )
                 )
@@ -450,11 +450,11 @@ SQL;
     static function csvToArray(string $filename = '', string $delimiter = ','): array
     {
         if (!file_exists($filename) || !is_readable($filename)) {
-            return array();
+            return [];
         }
 
         $header = null;
-        $data   = array();
+        $data   = [];
         if (($handle = fopen($filename, 'r')) !== false) {
             while (($row = fgetcsv($handle, 1000, $delimiter)) !== false) {
                 if (!$header) {
