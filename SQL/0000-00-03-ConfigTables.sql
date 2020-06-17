@@ -263,4 +263,4 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 'pd'    FROM ConfigSettings WHER
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false'  FROM ConfigSettings WHERE Name="usePwnedPasswordsAPI";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'Y-m-d H:i:s'  FROM ConfigSettings WHERE Name="dateDisplayFormat";
 INSERT INTO Config (ConfigID, Value) SELECT ID, '/data/issue_tracker/' FROM ConfigSettings WHERE Name="IssueTrackerDataPath";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 'loris-dev@bic.mni.mcgill.ca'  FROM ConfigSettings WHERE Name="adminContactEmail";
+INSERT INTO Config (ConfigID, Value) SELECT ID, ''  FROM ConfigSettings WHERE Name="adminContactEmail";
