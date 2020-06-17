@@ -25,7 +25,7 @@ if (!$user->hasPermission('quality_control')) {
 }
 
 $db          =& Database::singleton();
-$searchArray = array();
+$searchArray = [];
 
     $query = "SELECT DISTINCT ses.candID FROM session AS ses
                 JOIN test_battery AS tst
@@ -46,7 +46,7 @@ if (isset($_REQUEST['instrument']) && !empty($_REQUEST['instrument'])
 
 $result = $db->pselect($query, $searchArray);
 
-$flattened_result = array();
+$flattened_result = [];
 
 if ($result == null) {
     $flattened_result[0] = "Not found";
@@ -56,7 +56,7 @@ if ($result == null) {
     }
 }
 
-$response = array();
+$response = [];
 $response["suggestions"] = $flattened_result;
 print json_encode($response);
 
