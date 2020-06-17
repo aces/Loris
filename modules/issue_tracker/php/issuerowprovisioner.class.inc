@@ -100,13 +100,9 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         }
 
         if (isset($row['centerId'])) {
-            // $cids: int array
-            // If centerId is set
             // convert the value from string to int array
             $cids = [intval($row['centerId'])];
 
-            // $row['centerId']: string array
-            // If $row['centerId'] is not set
             // convert the value from string to string array
             $row['centerId'] = [$row['centerId']];
         } else {
@@ -117,10 +113,8 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             // Use getCenterIDs and convert values to string (string array)
             $row['centerId'] = array_map(
                 "strval",
-                \User::singleton()->getCenterIDs()
+                $this->_siteList
             );
-            // For filter to work for 'All Sites'
-            array_push($row['centerId'], "all");
         }
 
         $row['lastUpdate'] = \Utility::toDateDisplayFormat($row['lastUpdate']);

@@ -8,7 +8,7 @@
 5. Test that the watching checkbox works correctly (issues that your userID is watching in issues_watching table)
 6. Check that links to issues in table are correct.
 7. Check that table sorts and displays additional pages correctly 
-8. Check that a user who does not have `access_all_profiles` permission and belongs to only one site can see all issues with a site set to NULL.
+8. Check that a user who does not have `access_all_profiles` permission and belongs to only one site can see all issues with a NULL centerID. Check that they have the label `All Sites` in the Site column. 
 
 ## Issue Tracker Create New Issue [Manual Testing]
 1. User can access the page if they have `issue_tracker_reporter` or `issue_tracker_developer` permission.

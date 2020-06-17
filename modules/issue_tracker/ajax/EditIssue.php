@@ -101,11 +101,6 @@ function editIssue()
         $issueValues['candID'] = $validatedInput['candID'];
     }
 
-    // All Sites selected - Ignore value to store NULL in DB
-    if (isset($issueValues["centerID"]) && $issueValues["centerID"] === 'all') {
-        $issueValues["centerID"] = null;
-    }
-
     // Get changed values to save in history
     $historyValues = getChangedValues($issueValues, $issueID);
 
@@ -326,7 +321,10 @@ function getChangedValues($issueValues, $issueID)
     $changedValues = [];
     foreach ($issueValues as $key => $value) {
         // Only include fields that have changed
-        if ($issueValues[$key] != ($issueData[$key] ?? '') && !empty($value)) {
+        // centerID is allowed to be NULL
+        if ($issueValues[$key] != ($issueData[$key] ?? '')
+            && (!empty($value) || $key === 'centerID')
+        ) {
             $changedValues[$key] = $value;
         }
     }
@@ -349,9 +347,10 @@ function updateHistory($values, $issueID)
     $db   =& Database::singleton();
 
     foreach ($values as $key => $value) {
-        if (!empty($value)) {
+        // centerID is allowed to be NULL
+        if (!empty($value) || $key === 'centerID') {
             $changedValues = [
-                'newValue'     => $value,
+                'newValue'     => $value ?? '',
                 'fieldChanged' => $key,
                 'issueID'      => $issueID,
                 'addedBy'      => $user->getData('UserID'),
@@ -444,9 +443,8 @@ function getWatching($issueID)
  */
 function getSiteName($centerID): string
 {
-    if ($centerID == "all") {
-        $sites = Issue_Tracker::getSiteOptions(false, true);
-        return $sites["all"];
+    if ($centerID == null) {
+        return "All Sites";
     }
 
     $db =& Database::singleton();
@@ -598,10 +596,10 @@ function getIssueFields()
     $user  =& User::singleton();
     $sites = array();
 
-    //get field options
-    $sites = Issue_Tracker::getSiteOptions(false, true);
+    // get field options
+    $sites = Issue_Tracker::getSites(false, true);
 
-    //not yet ideal permissions
+    // not yet ideal permissions
     $assignees = array();
     if ($user->hasPermission('access_all_profiles')) {
         $assignee_expanded = $db->pselect(
