@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 require_once 'generic_includes.php';
 /**
  * This class is designed to assist in writing command-line interface tools
@@ -11,7 +12,7 @@ require_once 'generic_includes.php';
 class OutputWrapper
 {
     // Error codes
-    const ERROR_LOGDIR_NOT_DIR = 'Configuration setting for Log directory is '
+    const ERROR_LOGDIR_NOT_DIR      = 'Configuration setting for Log directory is '
         . 'not a directory.';
     const ERROR_LOGDIR_NOT_WRITABLE = 'Log directory is not writable.';
     // Colours mapped to ANSI escape codes.
@@ -43,7 +44,7 @@ class OutputWrapper
      *
      * @return void
      */
-    public function __construct(SPLFileInfo $logDirectory = null)
+    public function __construct(?SPLFileInfo $logDirectory = null)
     {
         $logDir = new SPLFileInfo(
             $logDirectory ?? \NDB_Factory::singleton()->config()->getSetting('log')
@@ -86,7 +87,7 @@ class OutputWrapper
         string $line,
         string $colour = '',
         $handle = STDOUT
-    ) {
+    ): void {
         $output = $line;
         // If a valid colour is supplied and the output is going to a TTY,
         // colourize the output.
