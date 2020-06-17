@@ -10,8 +10,12 @@ require_once 'generic_includes.php';
  */
 class OutputWrapper
 {
-    // Colours associated with the bash shell.
-    // @see https://misc.flogisoft.com/bash/tip_colors_and_formatting
+    // Error codes
+    const ERROR_LOGDIR_NOT_DIR = 'Configuration setting for Log directory is '
+        . 'not a directory.';
+    const ERROR_LOGDIR_NOT_WRITABLE = 'Log directory is not writable.';
+    // Colours mapped to ANSI escape codes.
+    // @see https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
     const COLOURS = [
         'red'    => '31',
         'yellow' => '33',
@@ -41,9 +45,16 @@ class OutputWrapper
      */
     public function __construct(SPLFileInfo $logDirectory = null)
     {
-        $this->_logDirectory = new SPLFileInfo(
+        $logDir = new SPLFileInfo(
             $logDirectory ?? \NDB_Factory::singleton()->config()->getSetting('log')
         );
+        if ($logDir->isDir() === false) {
+            throw new \ConfigurationException(self::ERROR_LOGDIR_NOT_DIR);
+        }
+        if ($logDir->isWritable() === false) {
+            throw new \ConfigurationException(self::ERROR_LOGDIR_NOT_WRITABLE);
+        }
+        $this->_logDirectory = $logDir;
     }
 
     /**
