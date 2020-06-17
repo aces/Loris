@@ -46,6 +46,16 @@ class Schedule_Module extends \DataFrameworkMenu
     {
         return false;
     }
+    /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function allSitePermissionNames() : ?array
+    {
+        return null;
+    }
 
     /**
      * {@inheritDoc}
