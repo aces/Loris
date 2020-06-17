@@ -36,7 +36,7 @@ class Statistics_DD_Site extends statistics_site
      */
     function _hasAccess(\User $user) : bool
     {
-        //TODO: Create a permission specific to statistics
+        // TODO (#6742): Create a permission specific to statistics
         $hasAccessToAllProfiles = $user->hasAllPermissions(
             array(
                 'access_all_profiles',
@@ -46,14 +46,9 @@ class Statistics_DD_Site extends statistics_site
 
         $hasCenterPermission = false;
 
-        // TODO: There are no means of set permissions per site
-        // for a given user right now: (e.g.) The user X can have
-        // the permission data_entry on site Y but not on site Z.
-        // Currently, hasCenterPermission() function is only checking
-        // if the user have a given center AND a given permission
-        // not if it have the permission for this specific center.
-        // This logic will be implemented in hasCenterPermission()
-        // in near versions when the permission framework allow it.
+        // TODO (#6742): There are no means of setting permissions per site
+        // for a given user right now (see #6742 for more info)
+
         // If a CenterID is passed in the request, check if the user has the
         // data_entry permission at the site/center specified by CenterID.
         if (!empty($_REQUEST['CenterID'])) {
@@ -62,14 +57,8 @@ class Statistics_DD_Site extends statistics_site
                 intval($_REQUEST['CenterID'])
             );
         } else {
-            // For the short term the user we'll be granted access
-            // if at least have permission AND one of the centers
-            // The filter _checkCriteria() (please see bellow)
-            // takes care of restricting access to sites the user belongs to.
-            // When logic reimplemented on hasCenterPermission(),
-            // _checkCriteria() will take care of retriving information
-            // only for those centers the user has the specific permission.
-            // (please see notes about hasCenterPermission() above)
+            // FIXME (#6742): For the short term the user will be granted access
+            // if they have permission for a minimum of one of the centers
             foreach ($user->getCenterIDs() as $centerID) {
                 if ($user->hasCenterPermission('data_entry', intval($centerID))) {
                     $hasCenterPermission = true;
@@ -79,6 +68,7 @@ class Statistics_DD_Site extends statistics_site
         }
         return $hasAccessToAllProfiles || $hasCenterPermission;
     }
+
     /**
      * CheckCriteria function
      *
@@ -89,19 +79,14 @@ class Statistics_DD_Site extends statistics_site
      */
     function _checkCriteria($centerID, $projectID)
     {
-        // TODO: There are no means of set permissions per site
-        // for a given user right now: (e.g.) The user X can have
-        // the permission data_entry on site Y but not on site Z.
-        // Currently, hasCenterPermission() function is only checking
-        // if the user have a given center AND a given permission
-        // not if it have the permission for this specific center.
-        // This logic will be implemented in hasCenterPermission()
-        // in near versions when the permission framework allow it
-        // The filter _checkCriteria() takes care of restricting
-        // the user access only to the sites it belongs to.
+        // TODO (#6743): _checkCriteria takes care of restricting data access
+        // to sites the user belongs to.
         // When logic reimplemented on hasCenterPermission(),
-        // _checkCriteria() will take care of retriving information
+        // _checkCriteria() will take care of retrieving information
         // only for those centers the user has the specific permission.
+
+        // TODO (#6743): There are no means of setting permissions per site
+        // for a given user right now (see #6743 for more info)
         if (!empty($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
@@ -136,6 +121,7 @@ class Statistics_DD_Site extends statistics_site
             $this->query_vars['pid'] = $projectID;
         }
     }
+
     /**
      * Notexcluded function
      *
