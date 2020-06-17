@@ -105,11 +105,9 @@ class Visits extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Create an array representation of this endpoint's reponse body
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;

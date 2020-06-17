@@ -70,11 +70,9 @@ class View_Genomic_File extends \NDB_Form
     /**
      * Populates tpl form data using values from a Genomic_File object.
      *
-     * @param ?string $category type of data: raw,cleaned,gwas
-     *
      * @return void
      */
-    private function _setFileData(?string $category = null): void
+    private function _setFileData(): void
     {
         if (empty($this->genomic_file_id)) {
             $files = \Database::singleton()->pselect(

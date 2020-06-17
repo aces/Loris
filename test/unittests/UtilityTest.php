@@ -372,29 +372,6 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getVisitList() returns the correct information
-     * 
-     * @covers Utility::getVisitList()
-     * @return void
-     */
-    public function testGetVisitList()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn($this->_visitInfo);
-
-        /**
-         * The output is in the form 'Vist_label' => 'Visit_label'(with uppercase)
-         */
-        $this->assertEquals(
-            array(
-                'visitLabel' => 'VisitLabel',
-                'label' => 'Label'),
-            Utility::getVisitList()
-        );
-    }
-   
-    /**
      * Test that getSiteList() returns the correct list from the database
      * 
      * @note I am testing both methods in the same test because 
@@ -511,14 +488,14 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getExistingVisitLabels returns a list of visit labels
+     * Test that getVisitList returns a list of visit labels
      * This is the simplest case of this function
      * TODO Potential edge cases: Set 'Active' to 'N'
      *
-     * @covers Utility::getExistingVisitLabels
+     * @covers Utility::getVisitList()
      * @return void
      */
-    public function testGetExistingVisitLabels()
+    public function testGetVisitList()
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -537,18 +514,18 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array('VL1' => 'VL1',
                   'VL2' => 'VL2'),
-            Utility::getExistingVisitLabels()
+            Utility::getVisitList()
         );
     }
 
     /**
-     * Test that getExistingVisitLabels returns only 
+     * Test that getVisitList returns only 
      * visit labels related to the given project ID
      *
-     * @covers Utility::getExistingVisitLabels
+     * @covers Utility::getVisitList
      * @return void
      */
-    public function testGetExistingVisitLabelsWithProjectID()
+    public function testGetVisitListWithProjectID()
     {
         /**
          * The 'with' assertion is included to ensure that the mySQL query changes
@@ -571,7 +548,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             array('VL1' => 'VL1'),
-            Utility::getExistingVisitLabels(1)
+            Utility::getVisitList(1)
         );
     }
 
@@ -857,5 +834,43 @@ class UtilityTest extends TestCase
     public function testValueIsPositiveIntegerReturnsTrue($int): void
     {
         $this->assertTrue(\Utility::valueIsPositiveInteger($int));
+    }
+
+    /**
+     * Tests the pathJoin function. Test cases adapted from blog post on
+     * Python's os.path.join as this function is meant to give the same
+     * beahviour.
+     *
+     * @see https://www.geeksforgeeks.org/python-os-path-join-method/
+     *
+     * @covers Utility::pathJoin
+     * @return void
+     */
+    public function testPathJoin(): void
+    {
+        $expected = 'a/b/c';
+
+        $this->assertEquals(
+            \Utility::pathJoin('a', 'b', 'c'),
+            $expected
+        );
+        $this->assertEquals(
+            \Utility::pathJoin('a', 'b/c'),
+            $expected
+        );
+        $this->assertEquals(
+            \Utility::pathJoin('a/b', 'c'),
+            $expected
+        );
+        $this->assertEquals(
+            \Utility::pathJoin('a/b', '/c'),
+            $expected
+        );
+
+        // Check leading front-slash
+        $this->assertEquals(
+            \Utility::pathJoin('/a', '/b/c'),
+            '/a/b/c'
+        );
     }
 }
