@@ -69,8 +69,8 @@ if (isset($flags['add'])) {
 }
 
 /**
- * Adds a new entry to the `modules` table based on a path supplied in the
- * $moduledir parameter.
+ * Adds a new entry to the `modules` table for any subdirectories under $moduledir
+ * that are valid modules
  *
  * @param string $moduledir The path to a directory containing code for a
  *                          LORIS module.
