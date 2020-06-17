@@ -63,7 +63,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
      */
     public function toJSON() : string
     {
-        $obj      = array(
+        $obj      = [
             'Candidate'  => $this->_candid,
             'PSCID'      => $this->_pscid,
             'Visit'      => $this->_visitlabel,
@@ -73,7 +73,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
             'ScanType'   => $this->_scantype,
             'QC_status'  => $this->_qcstatus,
             'Selected'   => $this->_selected,
-        );
+        ];
         $filename = basename($this->_filename);
         $candid   = $obj['Candidate'];
         $visit    = $obj['Visit'];

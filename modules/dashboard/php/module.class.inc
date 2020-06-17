@@ -83,11 +83,11 @@ class Module extends \Module
         $dashboard_links = $config->getExternalLinks('dashboard');
         $links           = [];
         foreach ($dashboard_links as $text => $url) {
-            $links[] = array(
+            $links[] = [
                 'url'        => $url,
                 'label'      => $text,
                 'WindowName' => md5($url),
-            );
+            ];
         }
 
         $footer = "";

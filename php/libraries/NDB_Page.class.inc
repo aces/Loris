@@ -55,7 +55,7 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Form defaults
      */
-    var $defaults = array();
+    var $defaults = [];
 
     /**
      * If true, the default display function will not try to load any template.
@@ -68,7 +68,7 @@ class NDB_Page implements RequestHandlerInterface
      * A list of arrays to be used as field options on
      * front-end forms and menu filters.
      */
-    var $fieldOptions = array();
+    var $fieldOptions = [];
 
     public $Module;
     public $template;
@@ -89,7 +89,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @var array<mixed>
      */
-    protected $tpl_data = array();
+    protected $tpl_data = [];
 
     /**
      * Does the setup required for this page. By default, sets up elements
@@ -114,7 +114,7 @@ class NDB_Page implements RequestHandlerInterface
         $this->page       = $page;
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
-        $this->defaults   = array();
+        $this->defaults   = [];
 
         $this->template = $page;
     }
@@ -152,14 +152,14 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return void
      */
-    function addFile($name, $label, $attribs=array())
+    function addFile($name, $label, $attribs=[])
     {
         $this->form->addElement(
             'file',
             $name,
             $label,
-            array(),
-            array_merge(array('class' => 'fileUpload'), $attribs)
+            [],
+            array_merge(['class' => 'fileUpload'], $attribs)
         );
     }
 
@@ -191,10 +191,10 @@ class NDB_Page implements RequestHandlerInterface
         string $name,
         string $label,
         array $options,
-        array $attribs=array()
+        array $attribs=[]
     ) {
         $attribs = array_merge(
-            array('class' => 'form-control input-sm'),
+            ['class' => 'form-control input-sm'],
             $attribs
         );
         $this->form->addElement('select', $name, $label, $options, $attribs);
@@ -237,9 +237,9 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return void
      */
-    function addBasicText($field, $label, $options=array(), $attribs=array())
+    function addBasicText($field, $label, $options=[], $attribs=[])
     {
-        $attribs = array_merge(array('class' => 'form-control input-sm'), $attribs);
+        $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
         $this->form->addElement('text', $field, $label, $options, $attribs);
     }
 
@@ -256,13 +256,13 @@ class NDB_Page implements RequestHandlerInterface
     function addBasicTextArea(
         $field,
         $label,
-        $attribs=array()
+        $attribs=[]
     ) {
         $attribs = array_merge(
-            array('class' => 'form-control input-sm'),
+            ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('textarea', $field, $label, array(), $attribs);
+        $this->form->addElement('textarea', $field, $label, [], $attribs);
     }
 
     /**
@@ -282,13 +282,13 @@ class NDB_Page implements RequestHandlerInterface
     function addBasicDate(
         $field,
         $label,
-        $options=array(),
-        $attribs=array(
+        $options=[],
+        $attribs=[
             'class' => 'form-control input-sm',
             'style' => 'max-width:33%; display:inline-block;',
-        )
+        ]
     ) {
-        if ($options === array() && !empty($this->dateOptions)) {
+        if ($options === [] && !empty($this->dateOptions)) {
             $options = $this->dateOptions;
         }
         $this->form->addElement('date', $field, $label, $options, $attribs);
@@ -304,13 +304,13 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return void
      */
-    function addCheckbox($name, $label, $attribs=array())
+    function addCheckbox($name, $label, $attribs=[])
     {
         $attribs = array_merge(
-            array('class' => 'form-control input-sm'),
+            ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('advcheckbox', $name, $label, array(), $attribs);
+        $this->form->addElement('advcheckbox', $name, $label, [], $attribs);
     }
 
     /**
@@ -329,18 +329,18 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return void
      */
-    function addRadio($name, $groupLabel, $radios, $options=array())
+    function addRadio($name, $groupLabel, $radios, $options=[])
     {
-        $radGroup = array();
+        $radGroup = [];
         foreach ($radios as $radElement) {
             $radGroup[] = $this->createRadio(
                 $name,
                 $radElement['label'],
                 $options,
-                array(
+                [
                     'class' => 'form-control input-sm',
                     'value' => $radElement['value'],
-                )
+                ]
             );
         }
         $this->addGroup($radGroup, $name . '_group', $groupLabel, null, false);
@@ -356,9 +356,9 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return void
      */
-    function addHidden($name, $value=null, $attribs=array())
+    function addHidden($name, $value=null, $attribs=[])
     {
-        $this->form->addElement('hidden', $name, $value, array(), $attribs);
+        $this->form->addElement('hidden', $name, $value, [], $attribs);
     }
 
     /**
@@ -375,18 +375,18 @@ class NDB_Page implements RequestHandlerInterface
     function addTextAreaGroup(
         $field,
         $label,
-        $not_answered_options=array(
+        $not_answered_options=[
             ''             => '',
             'not_answered' => 'Not Answered',
-        )
+        ]
     ) {
-        $group   = array();
+        $group   = [];
         $group[] = $this->createTextArea($field, '');
         $group[] = $this->createSelect(
             $field . '_status',
             '',
             $not_answered_options,
-            array('class' => 'form-control input-sm not-answered')
+            ['class' => 'form-control input-sm not-answered']
         );
 
         $this->addGroup($group, $field . '_group', $label, null, false);
@@ -405,9 +405,9 @@ class NDB_Page implements RequestHandlerInterface
     function addPassword(
         $field,
         $label=null,
-        $attribs=array('class' => 'form-control input-sm')
+        $attribs=['class' => 'form-control input-sm']
     ) {
-        $this->form->addElement('password', $field, $label, array(), $attribs);
+        $this->form->addElement('password', $field, $label, [], $attribs);
     }
 
     /**
@@ -484,7 +484,7 @@ class NDB_Page implements RequestHandlerInterface
         $field,
         $label,
         $options=null,
-        $attribs=array('class' => 'form-control input-sm')
+        $attribs=['class' => 'form-control input-sm']
     ) {
         return $this->form->createElement(
             "select",
@@ -522,10 +522,10 @@ class NDB_Page implements RequestHandlerInterface
     function createText(
         $field,
         $label=null,
-        $attribs=array()
+        $attribs=[]
     ) {
-        $attr = array_merge(array('class' => 'form-control input-sm'), $attribs);
-        return $this->form->createElement("text", $field, $label, array(), $attr);
+        $attr = array_merge(['class' => 'form-control input-sm'], $attribs);
+        return $this->form->createElement("text", $field, $label, [], $attr);
     }
 
     /**
@@ -542,8 +542,8 @@ class NDB_Page implements RequestHandlerInterface
             "textarea",
             $field,
             $label,
-            array(),
-            array('class' => 'form-control input-sm')
+            [],
+            ['class' => 'form-control input-sm']
         );
     }
 
@@ -565,10 +565,10 @@ class NDB_Page implements RequestHandlerInterface
         $field,
         $label,
         $dateOptions=null,
-        $attribs=array(
+        $attribs=[
             'class' => 'form-control input-sm',
             'style' => 'max-width:33%; display:inline-block;',
-        )
+        ]
     ) {
         return $this->form->createElement(
             "date",
@@ -594,7 +594,7 @@ class NDB_Page implements RequestHandlerInterface
             "advcheckbox",
             $field,
             $label,
-            array(),
+            [],
             $attribs
         );
     }
@@ -633,13 +633,13 @@ class NDB_Page implements RequestHandlerInterface
     function createPassword(
         $field,
         $label=null,
-        $attribs=array('class' => 'form-control input-sm')
+        $attribs=['class' => 'form-control input-sm']
     ) {
         return $this->form->createElement(
             'password',
             $field,
             $label,
-            array(),
+            [],
             $attribs
         );
     }
@@ -741,7 +741,7 @@ class NDB_Page implements RequestHandlerInterface
         // get the defaults
         $localDefaults = $this->_getDefaults();
         if (!is_array($localDefaults)) {
-            $localDefaults = array();
+            $localDefaults = [];
         }
         // set the quickform object defaults
         $this->_setDefaults(array_merge($this->defaults, $localDefaults));
@@ -778,7 +778,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return array The defaults
      */
-    function _setDefaults($defaults = array())
+    function _setDefaults($defaults = [])
     {
         $this->defaults = $defaults;
         $this->form->setDefaults($defaults);
@@ -804,7 +804,7 @@ class NDB_Page implements RequestHandlerInterface
         // In the future release, dialogs should be replaced with bootstrap dialogs
         // and datepickers only created by modernizr
 
-        $files = array(
+        $files = [
             $baseurl . '/js/jquery/jquery-1.11.0.min.js',
             $baseurl . '/js/helpHandler.js',
             $baseurl . '/js/modernizr/modernizr.min.js',
@@ -828,7 +828,7 @@ class NDB_Page implements RequestHandlerInterface
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Form.js',
             $baseurl . '/js/components/Markdown.js',
-        );
+        ];
         return $files;
     }
 
@@ -845,12 +845,12 @@ class NDB_Page implements RequestHandlerInterface
         $factory = NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
 
-        $files = array(
+        $files = [
             $baseurl . "/bootstrap/css/bootstrap.min.css",
             $baseurl . "/bootstrap/css/custom-css.css",
             $baseurl . "/js/jquery/datepicker/datepicker.css",
             $baseurl . '/vendor/sweetalert/sweetalert.css',
-        );
+        ];
         return $files;
     }
 
@@ -910,6 +910,6 @@ class NDB_Page implements RequestHandlerInterface
      */
     function toJSON(): string
     {
-        return json_encode(array('error' => 'Not implemented'));
+        return json_encode(['error' => 'Not implemented']);
     }
 }

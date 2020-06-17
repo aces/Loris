@@ -84,14 +84,14 @@ class Stats_Behavioural extends \NDB_Form
               WHERE CenterID <> '1'
                     AND Study_site = 'Y'
 	            AND CenterID IN (" . $sitesString . ")",
-            array()
+            []
         );
 
         $this->tpl_data['Centers'] = $centers;
 
         // PROJECTS
         $allProjectList = \Utility::getProjectList();
-        $projects       = array();
+        $projects       = [];
         $projects['']   = 'All Projects';
 
         $userProjectsIDs = $user->getData('ProjectIDs');
@@ -105,10 +105,10 @@ class Stats_Behavioural extends \NDB_Form
             if (isset($_REQUEST['site'])
                 && $_REQUEST['site'] == $row['NumericID']
             ) {
-                $this->tpl_data['CurrentSite'] = array(
+                $this->tpl_data['CurrentSite'] = [
                     'ID'   => $row['NumericID'],
                     'Name' => $row['LongName'],
-                );
+                ];
             }
 
         }
@@ -117,10 +117,10 @@ class Stats_Behavioural extends \NDB_Form
         ) {
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
-                = array(
+                = [
                     'ID'   => $currentProject,
                     'Name' => $projects[$currentProject],
-                );
+                ];
             $Param_Project       ='AND (s.ProjectID IS NULL 
                                    OR c.RegistrationProjectID=:pid)';
             $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
@@ -161,7 +161,7 @@ class Stats_Behavioural extends \NDB_Form
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         foreach ($result as $row) {
@@ -234,7 +234,7 @@ class Stats_Behavioural extends \NDB_Form
                     $suproject_query
                     $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         foreach ($result as $row) {
@@ -301,9 +301,9 @@ class Stats_Behavioural extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/statistics/js/form_stats_behavioural.js",
-            )
+            ]
         );
     }
 
@@ -319,7 +319,7 @@ class Stats_Behavioural extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 }

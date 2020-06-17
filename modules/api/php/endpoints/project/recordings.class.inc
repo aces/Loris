@@ -74,7 +74,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -84,7 +84,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array("v0.0.3");
+        return ["v0.0.3"];
     }
 
     /**
@@ -146,7 +146,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $filter = new HasAnyPermissionOrUserSiteMatch(
-            array('electrophysiology_browser_view_allsites')
+            ['electrophysiology_browser_view_allsites']
         );
 
         $provisioner = new \LORIS\api\Provisioners\ProjectRecordingsRowProvisioner(
@@ -161,7 +161,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->toArray($request->getAttribute('user'));
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
-            array('Recordings' => $recordings)
+            ['Recordings' => $recordings]
         );
 
         return $this->_cache;

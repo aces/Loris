@@ -64,7 +64,7 @@ class ElectrophysiologyBrowserRowProvisioner
                 SELECT type FROM ImagingFileTypes WHERE Description LIKE '%(EEG)'
               )
             GROUP BY SessionID",
-            array()
+            []
         );
     }
 

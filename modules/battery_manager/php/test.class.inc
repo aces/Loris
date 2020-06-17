@@ -68,7 +68,7 @@ class Test implements \LORIS\Data\DataInstance
      */
     public function toSQL() : array
     {
-        return array(
+        return [
             'ID'           => $this->row['id']              ?? null,
             'Test_name'    => $this->row['testName']        ?? null,
             'AgeMinDays'   => $this->row['ageMinDays']      ?? null,
@@ -80,6 +80,6 @@ class Test implements \LORIS\Data\DataInstance
             'firstVisit'   => $this->row['firstVisit']      ?? null,
             'instr_order'  => $this->row['instrumentOrder'] ?? null,
             'Active'       => $this->row['active']          ?? null,
-        );
+        ];
     }
 }

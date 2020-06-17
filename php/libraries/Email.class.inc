@@ -49,7 +49,7 @@ class Email
     static function send(
         string $to,
         string $template,
-        array $tpl_data = array(),
+        array $tpl_data = [],
         string $reply_to = '',
         string $from = '',
         string $cc = '',

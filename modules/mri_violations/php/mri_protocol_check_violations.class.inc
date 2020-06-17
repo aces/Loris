@@ -39,10 +39,10 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'violated_scans_view_allsites',
                 'violated_scans_view_ownsite'
-            )
+            ]
         );
     }
 
@@ -81,7 +81,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
             )
             LEFT JOIN psc p ON (p.CenterID = s.CenterID)
             WHERE $siteClause";
-        $this->columns  = array(
+        $this->columns  = [
             'l.PatientName',
             'l.CandID',
             'l.Visit_label',
@@ -94,9 +94,9 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
             'l.ValidRegex',
             'l.SeriesUID',
             'l.TarchiveID as TarchiveID',
-        );
+        ];
         $this->order_by = 'PatientName';
-        $this->headers  = array(
+        $this->headers  = [
             'PatientName',
             'CandID',
             'Visit_label',
@@ -109,20 +109,20 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
             'ValidRegex',
             'SeriesUID',
             'TarchiveID'
-        );
+        ];
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
-        $this->validFilters = array(
+        $this->validFilters = [
             'l.TarchiveID',
             'l.SeriesUID',
             'l.PatientName',
             'l.CandID',
-        );
-        $this->formToFilter = array(
+        ];
+        $this->formToFilter = [
             'TarchiveID'  => 'l.TarchiveID',
             'SeriesUID'   => 'l.SeriesUID',
             'PatientName' => 'l.PatientName',
             'CandID'      => 'l.CandID',
-        );
+        ];
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
     }
 
@@ -141,37 +141,37 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
             'TarchiveID',
             'Tarchive ID:',
             [],
-            array(
+            [
                 "size"      => 9,
                 "maxlength" => 20,
-            )
+            ]
         );
         $this->addBasicText(
             'PatientName',
             'PatientName:',
             [],
-            array(
+            [
                 "size"      => 20,
                 "maxlength" => 64,
-            )
+            ]
         );
         $this->addBasicText(
             'CandID',
             'CandID:',
             [],
-            array(
+            [
                 "size"      => 20,
                 "maxlength" => 6,
-            )
+            ]
         );
         $this->addBasicText(
             'SeriesUID',
             'DICOM Series UID:',
             [],
-            array(
+            [
                 "size"      => 20,
                 "maxlength" => 64,
-            )
+            ]
         );
 
     }
@@ -203,10 +203,10 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
                 if ($key == 'Severity') {
                     $this->tpl_data['items'][$x]['severity'] = $val;
                 }
-                $row           = array(
+                $row           = [
                     'value' => $val,
                     'name'  => $key,
-                );
+                ];
                 $row['CandID'] = isset($item['CandID']) ? $item['CandID'] : '';
                 $row['CommentID'] = isset($item['CommentID'])
                     ? $item['CommentID']
@@ -235,10 +235,10 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
                            "mri_protocol_check_violations_columnFormatter.js";
         return array_merge(
             $depends,
-            array(
+            [
                 $baseurl . $columnFormatter,
                 $baseurl . "/mri_violations/js/mri_protocol_check_violations.js",
-            )
+            ]
         );
     }
 }

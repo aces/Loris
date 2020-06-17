@@ -192,7 +192,7 @@ class TestEndpoint implements RequestHandlerInterface
                          firstVisit
                   FROM test_battery";
         // Select duplicate entry from Test Battery
-        $entries = $this->db->pselect($query, array());
+        $entries = $this->db->pselect($query, []);
 
         $testArray = $test->toSQL();
         foreach ($entries as $entry) {

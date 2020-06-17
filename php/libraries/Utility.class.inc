@@ -58,11 +58,11 @@ class Utility
                 "Argument 1 does not match expected date format (YYYY-MM-DD)"
             );
         }
-        $dob = array(
+        $dob = [
             'year' => $matches[1],
             'mon'  => $matches[2],
             'day'  => $matches[3],
-        );
+        ];
 
         if (!preg_match(
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
@@ -74,11 +74,11 @@ class Utility
                 "Argument 2 does not match expected date format (YYYY-MM-DD)"
             );
         }
-        $testdate = array(
+        $testdate = [
             'year' => $matches[1],
             'mon'  => $matches[2],
             'day'  => $matches[3],
-        );
+        ];
 
         if ($testdate['day'] < $dob['day']) {
             $testdate['day'] += 30;
@@ -89,11 +89,11 @@ class Utility
             $testdate['year']--;
         }
 
-        $age = array(
+        $age = [
             'year' => (int)$testdate['year'] - (int)$dob['year'],
             'mon'  => (int)$testdate['mon'] - (int)$dob['mon'],
             'day'  => (int)$testdate['day'] - (int)$dob['day'],
-        );
+        ];
 
         return $age;
     }
@@ -111,7 +111,7 @@ class Utility
         $query = "SELECT ConsentID, Name, Label FROM consent";
         $key   = "ConsentID";
 
-        $result = $DB->pselectWithIndexKey($query, array(), $key);
+        $result = $DB->pselectWithIndexKey($query, [], $key);
 
         return $result;
     }
@@ -133,7 +133,7 @@ class Utility
 
         // get the list of study sites - to be replaced by the Site object
         $query         = "SELECT CenterID, Name FROM psc ";
-        $whereElements = array();
+        $whereElements = [];
 
         if ($study_site) {
                 $whereElements[] = "Study_site='Y'";
@@ -144,10 +144,10 @@ class Utility
         if (!empty($whereElements)) {
             $query .= "WHERE ".implode(" AND ", $whereElements);
         }
-        $result = $DB->pselect($query, array());
+        $result = $DB->pselect($query, []);
 
         // fix the array
-        $list = array();
+        $list = [];
         foreach ($result as $row) {
             $list[$row["CenterID"]] = $row["Name"];
         }
@@ -192,7 +192,7 @@ class Utility
     {
         $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
-        $qparams = array();
+        $qparams = [];
 
         if ($projectID != null) {
             $ExtraProject_Criteria
@@ -230,9 +230,9 @@ class Utility
         // get the list of projects
         $projects = $DB->pselectColWithIndexKey(
             "SELECT ProjectID, Name FROM Project",
-            array(),
+            [],
             'ProjectID'
-        ) ?? array();
+        ) ?? [];
         return $projects;
     }
 
@@ -254,13 +254,13 @@ class Utility
                 "SELECT * FROM subproject
                 JOIN project_subproject_rel USING (SubprojectID) 
                 WHERE ProjectID=:pID",
-                array('pID' => $projectID)
+                ['pID' => $projectID]
             );
         } else {
-            $subprojects = $DB->pselect("SELECT * FROM subproject", array());
+            $subprojects = $DB->pselect("SELECT * FROM subproject", []);
         }
 
-        $subprojs = array();
+        $subprojs = [];
         foreach ($subprojects as $row) {
             $subprojs[$row['SubprojectID']] = $row['title'];
         }
@@ -278,7 +278,7 @@ class Utility
     static function getSubprojectsForProject(?int $projectID = null): array
     {
         if (is_null($projectID)) {
-            return array();
+            return [];
         }
         return self::getSubprojectList($projectID);
     }
@@ -300,7 +300,7 @@ class Utility
         $db      = $factory->database();
 
         $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $testName = $db->pselectOne($query, array('CID' => $commentID));
+        $testName = $db->pselectOne($query, ['CID' => $commentID]);
 
         return $testName;
     }
@@ -328,7 +328,7 @@ class Utility
         $seqs = $structure['seq'];
         // handle the situation where there exists only one seq
         if (isset($seqs['#'])) {
-            $seqs = array($seqs);
+            $seqs = [$seqs];
         }
         $regex = "";
         foreach ($seqs AS $seq) {
@@ -416,7 +416,7 @@ class Utility
             WHERE t.Test_name=b.Test_name
             AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge
             AND b.Active='Y'";
-        $params = array('CandAge' => $age);
+        $params = ['CandAge' => $age];
 
         if (!is_null($stage)) {
             $query .= " AND b.Stage=:BatStage";
@@ -426,8 +426,8 @@ class Utility
         $query .= " GROUP BY Test_name ORDER BY Test_name";
 
         // get the list of instruments
-        $rows  = array();
-        $tests = array();
+        $rows  = [];
+        $tests = [];
         $rows  = $DB->pselect($query, $params);
 
         // repackage the array
@@ -452,7 +452,7 @@ class Utility
     static function associativeToNumericArray(array $associative_array): array
     {
         if (!array_key_exists(0, $associative_array)) {
-            return array($associative_array);
+            return [$associative_array];
         }
         return $associative_array;
     }
@@ -491,7 +491,7 @@ class Utility
     static function asArray($var): array
     {
         if (!is_array($var)) {
-            return array($var);
+            return [$var];
         }
         return $var;
     }
@@ -535,9 +535,9 @@ class Utility
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names ORDER BY Full_name",
-            array()
+            []
         );
-        $instruments   = array();
+        $instruments   = [];
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
                 $instruments[$row['Test_name']] =$row['Full_name'];
@@ -559,13 +559,13 @@ class Utility
         $config        = $Factory->config();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
-            array()
+            []
         );
         $doubleDataEntryInstruments = $config->getSetting(
             'DoubleDataEntryInstruments'
         );
 
-        $instruments = array();
+        $instruments = [];
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
                 if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
@@ -589,11 +589,11 @@ class Utility
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $instruments   = array();
+        $instruments   = [];
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
              ORDER BY Full_name",
-            array()
+            []
         );
         foreach ($instruments_q as $key) {
             $instruments[$key['Test_name']] =$key['Full_name'];
@@ -621,7 +621,7 @@ class Utility
         $DB       =& \Database::singleton();
         $num_null = $DB->pselectOne(
             $query,
-            array()
+            []
         );
         if ($num_null > 0) {
             return true;
@@ -644,7 +644,7 @@ class Utility
 
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
-        $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
+        $stage = $db->pselect($query, ['Cand_id' => $Cand_id]);
         return $stage[0]['Current_stage'];
     }
 
@@ -662,7 +662,7 @@ class Utility
         $db      = $factory->database();
 
         $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
-        $stage = $db->pselect($query, array('CandID' => $Cand_id));
+        $stage = $db->pselect($query, ['CandID' => $Cand_id]);
         return intval($stage[0]['SubprojectID']);
     }
 
@@ -684,7 +684,7 @@ class Utility
         $db         = $factory->database();
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
-            array('fname' => $fullname)
+            ['fname' => $fullname]
         );
         if (is_array($instrument) && count($instrument)) {
             list(,$test_name) = each($instrument[0]);
@@ -724,29 +724,29 @@ class Utility
         $DB      = $factory->database();
 
         //get sourcefield using instrument
-        $sourcefields = array();
+        $sourcefields = [];
         if (!is_null($instrument)) {
             $sourcefields = $DB->pselect(
                 "SELECT SourceField, Name FROM parameter_type
                 WHERE queryable='1' AND sourcefrom = :sf
                 ORDER BY Name",
-                array('sf' => $instrument)
+                ['sf' => $instrument]
             );
         } elseif (!is_null($commentID)) { //get sourcefield using commentid
             $instrument   = $DB->pselectOne(
                 "SELECT Test_name FROM flag WHERE CommentID = :cid",
-                array('cid' => $commentID)
+                ['cid' => $commentID]
             );
             $sourcefields = $DB->pselect(
                 "SELECT SourceField, Name FROM parameter_type
                 WHERE queryable = '1' AND sourcefrom = :instrument
                 ORDER BY Name",
-                array('instrument' => $instrument)
+                ['instrument' => $instrument]
             );
         } elseif (!is_null($name)) { //get all source fields
             $sourcefields = $DB->pselectRow(
                 "SELECT * FROM parameter_type WHERE Name = :pn",
-                array('pn' => $name)
+                ['pn' => $name]
             );
         }
         return $sourcefields;
@@ -766,10 +766,40 @@ class Utility
      */
     static function getExistingVisitLabels(int $projectID = null): array
     {
+<<<<<<< HEAD
         throw new \DeprecatedException(
             'This function is deprecated. Please use Utility::getVisitList() '
             . 'instead.'
         );
+=======
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $qparams = [];
+
+        if ($projectID != null) {
+            $ExtraProject_Criteria
+                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
+            $qparams["ProjectID"]  = $projectID;
+        } else {
+            $ExtraProject_Criteria ='';
+        }
+        $query          = "SELECT DISTINCT Visit_label FROM session s
+            JOIN candidate c ON (s.CandID = c.Candid)
+            JOIN psc ON (s.CenterID = psc.CenterID)
+            WHERE c.Active = 'Y'
+            AND s.Active = 'Y'
+            AND c.Entity_type != 'Scanner'
+            AND psc.CenterID!= '1'
+            $ExtraProject_Criteria ORDER BY Visit_label";
+        $visitlabels    = $db->pselect($query, $qparams);
+        $visits         = [];
+        $numVisitLabels = count($visitlabels);
+        for ($i = 0; $i < $numVisitLabels; $i++) {
+            $visits[$visitlabels[$i]['Visit_label']]
+                = ($visitlabels[$i]['Visit_label']);
+        }
+        return $visits;
+>>>>>>> f8663dce9... Add class and module php code
     }
 
     /**
@@ -799,7 +829,7 @@ class Utility
             $test_names = $DB->pselect(
                 "SELECT DISTINCT Test_name_display FROM test_battery
                 WHERE Visit_label=:vl",
-                array('vl' => $visit_label)
+                ['vl' => $visit_label]
             );
         } else {
             $test_names = $DB->pselect(
@@ -811,7 +841,7 @@ class Utility
                 WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
                 AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
                 ORDER BY t.Full_name",
-                array('vl' => $visit_label)
+                ['vl' => $visit_label]
             );
         }
 
@@ -827,7 +857,7 @@ class Utility
      */
     static function resolvePath(string $path): string
     {
-        $resolvedPath = array();
+        $resolvedPath = [];
         // do some normalization
         $path        = str_replace('//', '/', $path);
         $path_pieces = explode('/', $path);
@@ -904,9 +934,9 @@ class Utility
         $languagesDB = $DB->pselect(
             "SELECT language_id, language_label
              FROM language",
-            array()
+            []
         );
-        $languages   = array();
+        $languages   = [];
         foreach ($languagesDB as $language) {
             $languages[$language['language_id']] = $language['language_label'];
         }
@@ -1001,10 +1031,10 @@ class Utility
             "SELECT ID, Scan_type 
              FROM mri_scan_type mri
                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-            array()
+            []
         );
 
-        $scan_types = array();
+        $scan_types = [];
         foreach ($scan_types_DB as $scan_type) {
             $scan_types[$scan_type['ID']] = $scan_type['Scan_type'];
         }
