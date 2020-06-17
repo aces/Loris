@@ -2,7 +2,7 @@
 /**
  * Candidate_list automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
 /**
@@ -33,11 +34,25 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $project        = 'select[name="project"]';
     static $advancedFilter = ".table-header > div > div > div:nth-child(2) >".
                              " button:nth-child(1)";
-    static $openProfile    = ".table-header > div > div > div:nth-child(2) >".
+    // advanced filter
+    static $scanDone    = 'select[name="scanDone"]';
+    static $Participant = 'select[name="participantStatus"]';
+    static $dob         = 'input[name="DoB"]';
+    static $visitCount  = 'input[name="visitCount"]';
+    static $feedback    = 'select[name="feedback"]';
+    static $lastVisit   = 'select[name="latestVisitStatus"]';
+    static $edc         = 'input[name="edc"]';
+
+
+
+
+
+
+    static $openProfile = ".table-header > div > div > div:nth-child(2) >".
                              " button:nth-child(2)";
-    static $clearFilter    = ".col-sm-9 > .btn";
-    static $display        = ".table-header > div > div > div:nth-child(1)";
-    static $pscidLink      = "tr:nth-child(1) a";
+    static $clearFilter = ".col-sm-9 > .btn";
+    static $display     = ".table-header > div > div > div:nth-child(1)";
+    static $pscidLink   = "tr:nth-child(1) a";
 
     /**
      * Backs up the useEDC config value and sets the value to a known
@@ -71,8 +86,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->setupPermissions(array("access_all_profiles"));
         $this->safeGet($this->url . "/candidate_list/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertNotContains(
             "You do not have access to this page.",
             $bodyText
@@ -88,16 +104,17 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testCandidateListPageLoads()
     {
         $this->safeGet($this->url . "/candidate_list/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Access Profile", $bodyText);
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
-         $btn           = self::$advancedFilter;
-            $buttonText = $this->webDriver->executescript(
-                "return document.querySelector('$btn').textContent"
-            );
-            $this->assertContains("Advanced", $buttonText);
+        $btn        = self::$advancedFilter;
+        $buttonText = $this->safeFindElement(
+            WebDriverBy::cssSelector($btn)
+        )->getText();
+        $this->assertContains("Advanced", $buttonText);
     }
     /**
      * Tests that, after clicking the "Advanced" button, all of the
@@ -108,43 +125,42 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testCandidateListAdvancedOptionsAppear()
     {
         $this->safeGet($this->url . "/candidate_list/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Access Profile", $bodyText);
         // Switch to Advanced mode
-         $btn = self::$advancedFilter;
-        $this->webDriver->executescript(
-            "return document.querySelector('$btn').click()"
-        );
+        $btn = self::$advancedFilter;
+        $this->safeClick(WebDriverBy::cssSelector($btn));
            // Go through each element and ensure it's on the page after clicking
            // advanced
-        $scanDoneOptions = $this->webDriver->findElement(
+        $scanDoneOptions = $this->safeFindElement(
             WebDriverBy::Name("scanDone")
         );
            $this->assertEquals("select", $scanDoneOptions->getTagName());
-        $participantsStatusOptions = $this->webDriver->findElement(
+        $participantsStatusOptions = $this->safeFindElement(
             WebDriverBy::Name("participantStatus")
         );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $dobOptions = $this->webDriver->findElement(WebDriverBy::Name("DoB"));
+           $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoB"));
            $this->assertEquals("input", $dobOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$dobOptions->getAttribute("type"));
-           $sexOptions = $this->webDriver->findElement(WebDriverBy::Name("sex"));
+           $sexOptions = $this->safeFindElement(WebDriverBy::Name("sex"));
            $this->assertEquals("select", $sexOptions->getTagName());
            $this->assertEquals("input", $dobOptions->getTagName());
            // Not currently done in Loris.
            //$this->assertEquals("number",$dobOptions->getAttribute("type"));
            //$this->assertEquals("0",$dobOptions->getAttribute("min"));
-           $edcOptions = $this->webDriver->findElement(WebDriverBy::Name("edc"));
+           $edcOptions = $this->safeFindElement(WebDriverBy::Name("edc"));
            $this->assertEquals("input", $edcOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$edcOptions->getAttribute("type"));
-        $latestVisitOptions = $this->webDriver->findElement(
+        $latestVisitOptions = $this->safeFindElement(
             WebDriverBy::Name("latestVisitStatus")
         );
            $this->assertEquals("select", $latestVisitOptions->getTagName());
-        $feedbackOptions = $this->webDriver->findElement(
+        $feedbackOptions = $this->safeFindElement(
             WebDriverBy::Name("feedback")
         );
            $this->assertEquals("select", $feedbackOptions->getTagName());
@@ -158,78 +174,133 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testFilters()
     {
         $this->safeGet($this->url . "/candidate_list/");
-
-        //testing is done with user affiliated to only site=1 and project=1
-        //numbers below should reflect these affiliations.
-
-        $this-> _testFilter(self::$PSCID, "0 rows", 'test');
-        $this-> _testFilter(self::$PSCID, "1 rows", 'MTL001');
-        $this-> _testFilter(self::$DCCID, "1 rows", '300001');
-        $this-> _testFilter(self::$DCCID, "0 rows", 'test');
-        $this-> _testFilter(self::$visitLabel, "362", '1');
-        $this-> _testFilter(self::$visitLabel, "223", '2');
-        $this-> _testFilter(self::$site, "7 rows", '1');
-        $this-> _testFilter(self::$site, "165", '2');
-        $this-> _testFilter(self::$entityType, "436", '1');
-
-        // test advanced filter - sex
-        // Switch to Advanced mode
-         $btn = self::$advancedFilter;
-        $this->webDriver->executescript(
-            "return document.querySelector('$btn').click()"
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clearFilter,
+            'test',
+            "0 rows",
         );
-           //female
-           $this-> _testFilter(self::$sex, "20 rows displayed of 225", '1');
-           // male
-           $this-> _testFilter(self::$sex, "20 rows displayed of 210", '2');
-
-    }
-    /**
-     * Testing filter funtion and clear button
-     *
-     * @param string $element The input element loaction
-     * @param string $records The records number in the table
-     * @param string $value   The test value
-     *
-     * @return void
-     */
-    function _testFilter($element,$records,$value)
-    {
-        // get element from the page
-        if (strpos($element, "select") === false) {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
-            );
-        } else {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                 event = new Event('change', { bubbles: true });
-                 input.dispatchEvent(event);
-                "
-            );
-        }
-            $row      = self::$display;
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$row').textContent"
-            );
-            // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
-            //test clear filter
-            $btn = self::$clearFilter;
-            $this->webDriver->executescript(
-                "document.querySelector('$btn').click();"
-            );
-            $inputText = $this->webDriver->executescript(
-                "return document.querySelector('$element').value"
-            );
-            $this->assertEquals("", $inputText);
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clearFilter,
+            'MTL001',
+            "1 rows"
+        );
+        $this->_filterTest(
+            self::$DCCID,
+            self::$display,
+            self::$clearFilter,
+            '300001',
+            "1 rows"
+        );
+        $this->_filterTest(
+            self::$DCCID,
+            self::$display,
+            self::$clearFilter,
+            'test',
+            '0 row'
+        );
+        $this->_filterTest(
+            self::$visitLabel,
+            self::$display,
+            self::$clearFilter,
+            'V1',
+            "362"
+        );
+        $this->_filterTest(
+            self::$visitLabel,
+            self::$display,
+            self::$clearFilter,
+            'V2',
+            "223"
+        );
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clearFilter,
+            'Data Coordinating Center',
+            '7 rows'
+        );
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clearFilter,
+            "Montreal",
+            '165'
+        );
+        $this->_filterTest(
+            self::$entityType,
+            self::$display,
+            self::$clearFilter,
+            "Human",
+            '436'
+        );
+        $this->safeClick(WebDriverBy::cssSelector(self::$advancedFilter));
+        $this->_filterTest(
+            self::$sex,
+            self::$display,
+            self::$clearFilter,
+            "Female",
+            '225'
+        );
+        $this->_filterTest(
+            self::$sex,
+            self::$display,
+            self::$clearFilter,
+            "Male",
+            '210'
+        );
+        $this->_filterTest(
+            self::$scanDone,
+            self::$display,
+            self::$clearFilter,
+            "Yes",
+            '17 rows'
+        );
+        $this->_filterTest(
+            self::$Participant,
+            self::$display,
+            self::$clearFilter,
+            "Active",
+            '436'
+        );
+        $this->_filterTest(
+            self::$dob,
+            self::$display,
+            self::$clearFilter,
+            "2003-06-30",
+            '1 row'
+        );
+        $this->_filterTest(
+            self::$visitCount,
+            self::$display,
+            self::$clearFilter,
+            "3",
+            '79'
+        );
+        $this->_filterTest(
+            self::$feedback,
+            self::$display,
+            self::$clearFilter,
+            "closed",
+            '11 rows'
+        );
+        $this->_filterTest(
+            self::$lastVisit,
+            self::$display,
+            self::$clearFilter,
+            "Visit",
+            '413'
+        );
+        $this->_filterTest(
+            self::$edc,
+            self::$display,
+            self::$clearFilter,
+            "2003-07-30",
+            '1 row'
+        );
     }
     /**
      * Tests that, when user only has data_entry permisson, user
@@ -243,16 +314,14 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         //click open profile button
         $btn = self::$openProfile;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
+        $this->safeClick(WebDriverBy::cssSelector($btn));
         // input PSCID and DCCID
         $dccid = "#lorisworkspace > div > div:nth-child(1) > div >".
                  " div:nth-child(2)>form>div>div:nth-child(1)>div>div>input";
         $pscid = "#lorisworkspace > div > div:nth-child(1) > div >".
                  " div:nth-child(2)>form>div>div:nth-child(2)>div>div>input";
         // to do react input value
-        $this->webDriver->executescript(
+        $this->webDriver->executeScript(
             "input = document.querySelector('$dccid');
                  lastValue = input.value;
                  input.value = '300001';
@@ -260,7 +329,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                  input._valueTracker.setValue(lastValue);
                  input.dispatchEvent(event);"
         );
-        $this->webDriver->executescript(
+        $this->webDriver->executeScript(
             "input = document.querySelector('$pscid');
                  lastValue = input.value;
                  input.value = 'MTL001';
@@ -270,10 +339,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );sleep(2);
-        $URL =  $this->webDriver->executescript("return window.location.href;");
+        $this->safeClick(WebDriverBy::cssSelector($btn));
+        $URL =  $this->webDriver->executeScript("return window.location.href;");
         $this->assertContains("300001", $URL);
         $this->resetPermissions();
     }
@@ -284,17 +351,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testPscidLink()
     {
-        $this->markTestSkipped(
-            'This test needs work. It is causing failures sometimes for '
-            . 'unkown reasons.'
-        );
         $this->safeGet($this->url . "/candidate_list/");
         $link = self::$pscidLink;
-        $this->webDriver->executescript(
-            "document.querySelector('$link').click();"
-        );
-                $bodyText = $this->webDriver
-                    ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->safeClick(WebDriverBy::cssSelector($link));
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains(
             "Candidate Profile",
             $bodyText

@@ -67,7 +67,7 @@ class Stats_Behavioural extends \NDB_Form
         $DB      = $factory->database();
         $user    = $factory->user();
 
-        //SITES
+        // SITES
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = \Utility::getSiteList();
         } else {
@@ -89,8 +89,15 @@ class Stats_Behavioural extends \NDB_Form
 
         $this->tpl_data['Centers'] = $centers;
 
-        $projects     = \Utility::getProjectList();
-        $projects[''] = 'All Projects';
+        // PROJECTS
+        $allProjectList = \Utility::getProjectList();
+        $projects       = array();
+        $projects['']   = 'All Projects';
+
+        $userProjectsIDs = $user->getData('ProjectIDs');
+        foreach ($userProjectsIDs as $ProjectID) {
+            $projects[$ProjectID] = $allProjectList[$ProjectID];
+        }
 
         $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
@@ -132,7 +139,7 @@ class Stats_Behavioural extends \NDB_Form
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
-            $Visits = \Utility::getExistingVisitLabels($currentProject);
+            $Visits = \Utility::getVisitList($currentProject);
         }
 
         $this->tpl_data['Visits'] = $Visits ?? '';

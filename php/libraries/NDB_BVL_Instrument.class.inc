@@ -597,20 +597,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     </font>
                     </p>\n"
                 );
-                //print all the field error messages in one block
-                foreach (array_keys($submittedData) AS $key) {
-                    $error = $this->form->getElementError($key);
-                    if (!empty($error)) {
-                        // FIXME: Why is this here? The body of this if
-                        // statement does nothing.. -- Dave
-                        $element = $this->form->getElement($key);
-                        if (method_exists($element, "getLabel")) {
-                            // print "<font color='red'>"
-                            // .$element->getLabel()
-                            // .": $error</font><br>\n";
-                        }
-                    }
-                }
+
                 return false;
             }
         }
@@ -1727,6 +1714,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "textarea",
             $field,
             null,
+            [],
             array(
                 'cols' => 25,
                 'rows' => 4,
@@ -1771,6 +1759,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "textarea",
             $field,
             $label,
+            [],
             array(
                 'cols'  => 25,
                 'rows'  => 4,

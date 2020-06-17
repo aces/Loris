@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
@@ -88,10 +88,10 @@ class Issue_TrackerTest extends LorisIntegrationTest
     function testIssueTrackerDoespageLoad()
     {
         $this->safeGet($this->url . "/issue_tracker/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Issues", $bodyText);
+        $this->assertContains("Issue Tracker", $bodyText);
     }
 
     /**
@@ -103,10 +103,10 @@ class Issue_TrackerTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array("issue_tracker_reporter"));
         $this->safeGet($this->url . "/issue_tracker/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Issues", $bodyText);
+        $this->assertContains("Issue Tracker", $bodyText);
         $this->resetPermissions();
     }
 
@@ -117,20 +117,22 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerFilter()
     {
-        $this->_testFilter('issueID', '999999');
-        $this->_testFilter('status', 'new');
-        $this->_testFilter('priority', 'low');
-        $this->_testFilter('reporter', 'TestUser');
+        $this->_testFilter('999999');
+        $this->_testFilter('new');
+        $this->_testFilter('low');
+        $this->_testFilter('TestUser');
     }
     /**
      * Tests that Issue Tracker filter
      *
-     * @param string $name  input the element name which we need test
+     * FIXME This test seems to just check the page source for a string and not
+     * actually use the menu filters.
+     *
      * @param string $value input the value that we expect
      *
      * @return void
      */
-    private function _testFilter($name,$value)
+    private function _testFilter(string $value)
     {
         $this->webDriver->get($this->url . "/issue_tracker/?format=json");
         $bodyText = $this->webDriver->getPageSource();

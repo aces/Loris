@@ -11,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/".
     "LorisIntegrationTest.class.inc";
@@ -36,9 +36,6 @@ class ConfigurationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1280, 1024);
-        $window->setSize($size);
     }
 
     /**

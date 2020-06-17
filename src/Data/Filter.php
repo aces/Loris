@@ -33,7 +33,7 @@ namespace LORIS\Data;
 interface Filter
 {
     /**
-     * Filter returns true IFF the resource should be filtered out of the results
+     * Filter returns true only if the resource should be filtered out of the results
      * displayed to user.
      *
      * @param \User        $user     The user that the data is being filtered on

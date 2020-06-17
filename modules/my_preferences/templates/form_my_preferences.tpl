@@ -1,5 +1,5 @@
 <br />
-<form method="post" name="edit_user" id="edit_user">
+<form method="post" name="my_preferences" id="my_preferences" autocomplete="off">
     <h3>Password Rules</h3>
       <ul>
         <li>The password must be at least 8 characters long.</li>

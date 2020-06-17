@@ -108,7 +108,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             'N' => 'No',
             'Y' => 'Yes',
         ];
-        $visitlabels   = \Utility::getExistingVisitLabels();
+        $visitlabels   = \Utility::getVisitList();
         // Fields used for selection filter and upload form
         $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
         $this->addBasicText('candID', 'CandID');
@@ -541,7 +541,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             'UploadedBy'               => $user_name,
             'UploadDate'               => $date,
             'UploadLocation'           => $this->uploaded_file_path,
-            'SessionID'                => $sessionid ?? '',
+            'SessionID'                => $sessionid ?? null,
             'PatientName'              => $pname,
             'IsPhantom'                => $IsPhantom,
             'TarchiveID'               => null,

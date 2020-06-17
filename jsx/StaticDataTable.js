@@ -150,9 +150,29 @@ class StaticDataTable extends Component {
         document.body.removeChild(link);
       }
     });
+    const correctReactLinks = (csvData) => {
+      for (const index in csvData) {
+        if (csvData.hasOwnProperty(index)) {
+          for (const indexChild in csvData[index]) {
+            if (csvData[index].hasOwnProperty(indexChild)
+              || indexChild == null) {
+              if (csvData[index][indexChild] == null) {
+                csvData[index][indexChild] = [''];
+              } else if (csvData[index][indexChild].type === 'a') {
+                csvData[index][indexChild] = [
+                  csvData[index][indexChild].props['href'],
+                ];
+              }
+            }
+          }
+        }
+      }
+      return csvData;
+    };
+    const csvDownload = correctReactLinks([...csvData]);
     csvworker.postMessage({
       cmd: 'SaveFile',
-      data: csvData,
+      data: csvDownload,
       headers: this.props.Headers,
       identifiers: this.props.RowNameMap,
     });

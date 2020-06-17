@@ -81,7 +81,7 @@ class Imaging_Session_ControlPanel
         foreach ($linkedInstruments as $v) {
             $qresult = $DB->pselectRow(
                 "SELECT f.CommentID, tn.Full_name FROM flag f
-            JOIN test_names tn ON f.Test_name = tn.Test_name 
+            JOIN test_names tn ON f.Test_name = tn.Test_name
             WHERE f.Test_name = :tname AND f.SessionID = :v_sessions_id
             AND f.CommentID NOT LIKE 'DDE_%'",
                 array(
@@ -89,19 +89,16 @@ class Imaging_Session_ControlPanel
                     'v_sessions_id' => $this->sessionID,
                 )
             );
-            if (is_null($qresult)) {
-                throw new \LorisException(
-                    'Could not find linked instruments for specified '
-                    . 'test name and session ID'
+            if (!is_null($qresult)) {
+                $links[] = array(
+                    "FEName"    => $qresult['Full_name'],
+                    "BEName"    => $v,
+                    "CommentID" => $qresult['CommentID'],
                 );
             }
-            $links[] = array(
-                "FEName"    => $qresult['Full_name'],
-                "BEName"    => $v,
-                "CommentID" => $qresult['CommentID'],
-            );
+            // else 'Could not find linked instruments';
         }
-        $subjectData['links'] = (empty($links)) ? "" : $links;
+        $subjectData['links'] = $links;
 
         $candidate = \Candidate::singleton($timePoint->getCandID());
 

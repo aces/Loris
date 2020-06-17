@@ -36,12 +36,7 @@ class UploadCategory extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            array(
-                'document_repository_view',
-                'document_repository_delete',
-            )
-        );
+        return $user->hasPermission('document_repository_view');
     }
 
 

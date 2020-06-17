@@ -381,7 +381,7 @@ function insertBetaValues(&$fileToUpload)
         $sample_label_prefix = date('U', strtotime($fileToUpload->date_inserted));
         array_walk(
             $headers,
-            function (&$item, $key, $prefix) {
+            function (&$item, $prefix) {
                 $item = $prefix . '_' . trim($item);
             },
             $sample_label_prefix

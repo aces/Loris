@@ -133,11 +133,9 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Generates a JSON representation of this project following the API
      * specification.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;

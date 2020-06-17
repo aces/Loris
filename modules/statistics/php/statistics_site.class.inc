@@ -119,7 +119,7 @@ class Statistics_Site extends \NDB_Menu
             $this->query_vars['cid'] = $centerID;
         } else {
             $list_of_permitted_sites = (array) null;
-            $currentUser = \User::singleton();
+            $currentUser = \NDB_Factory::singleton()->user();
 
             if ($currentUser->hasPermission('access_all_profiles')) {
                 $list_of_permitted_sites = array_keys(\Utility::getSiteList());

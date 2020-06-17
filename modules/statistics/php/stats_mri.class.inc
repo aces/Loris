@@ -225,12 +225,17 @@ class Stats_MRI extends \NDB_Form
 
         $this->tpl_data['showTable'] = true;
 
-        //PROJECTS
+        // PROJECTS
+        $allProjectList = \Utility::getProjectList();
+
         $projects     = array();
         $projects[''] = 'All Projects';
-        foreach (\Utility::getProjectList() as $key => $value) {
-            $projects[$key] = $value;
+
+        $userProjectsIDs = $user->getData('ProjectIDs');
+        foreach ($userProjectsIDs as $ProjectID) {
+            $projects[$ProjectID] = $allProjectList[$ProjectID];
         }
+
         $currentProject = null;
         if ($_REQUEST['MRIProject'] ?? '') {
             $currentProject = htmlspecialchars($_REQUEST['MRIProject']);
@@ -321,7 +326,7 @@ class Stats_MRI extends \NDB_Form
             }
         }
 
-        $Visits = \Utility::getExistingVisitLabels($currentProject);
+        $Visits = \Utility::getVisitList($currentProject);
         $this->tpl_data['scan_types']     = $scan_types;
         $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected ?? array());
         $this->tpl_data['Scans_selected'] = $scans_selected;
@@ -393,7 +398,7 @@ class Stats_MRI extends \NDB_Form
             );
         }
 
-        $M_Visits = \Utility::getExistingVisitLabels($currentProject);
+        $M_Visits = \Utility::getVisitList($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
             "Breakdown By Scan Type",
             $MRIHeader,

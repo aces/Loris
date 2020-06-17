@@ -128,6 +128,7 @@ class Edit_Help_Content extends \NDB_Form
         $this->addBasicTextArea(
             'content',
             'Content',
+            [],
             array(
                 'cols' => 140,
                 'rows' => 30,

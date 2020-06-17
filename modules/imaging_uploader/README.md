@@ -35,6 +35,8 @@ insertion pipeline is triggered.
 
 ## Requirements
 
+This module requires the use of another software package, [LORIS-MRI](https://github.com/aces/Loris-MRI). It consists of a series of scripts used for validation of image uploads.
+
 For a successful upload:
 - The CandID must exist in the database
 - The PSCID must be valid for the CandID
@@ -67,7 +69,13 @@ LORIS-MRI install process.
 
 The imaging uploader has the following configurations that affect its usage:
 
-#### Install Configurations
+### LORIS-MRI
+
+The imaging insertion pipelines and libraries in the Loris-MRI repo must be installed, configured, and tested before imaging data can be loaded into LORIS via this module. Please visit
+[the documentation for LORIS-MRI](https://github.com/aces/Loris-MRI#installation) 
+for more information.
+
+### Install Configurations
 
 To enable the Imaging Uploader to handle large files, please follow the
 instructons for [Handling Large File Uploads](../../docs/wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/Handling Large File Uploads.md).
@@ -97,4 +105,3 @@ study) are present
 - If `ImagingUploaderAutoLaunch` configuration is enabled, the Server Process
 Manager under the Admin menu can be consulted for scans insertion progress 
 (exit codes, error files, etc...). 
-

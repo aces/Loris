@@ -31,8 +31,9 @@ if (isset($_REQUEST['action'])) {
  */
 function uploadPublication() : void
 {
-    $db   = Database::singleton();
-    $user = \User::singleton();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
+    $user    = $factory->user();
     if (!$user->hasPermission('publication_propose')
         || !$user->hasPermission('publication_view')
     ) {
@@ -131,8 +132,9 @@ function processFiles($pubID) : void
     if (empty($_FILES)) {
         return;
     }
-    $db     = \Database::singleton();
-    $config = \NDB_Config::singleton();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
+    $config  = \NDB_Config::singleton();
 
     $publicationPath = $config->getSetting('publication_uploads');
 
@@ -419,9 +421,10 @@ function notify($pubID, $type) : void
         showPublicationError("Unexpected notification type: $type", 400);
     }
 
-    $db        = \Database::singleton();
+    $factory   = \NDB_Factory::singleton();
+    $db        = $factory->database();
     $config    = \NDB_Config::singleton();
-    $user      = \User::singleton();
+    $user      = $factory->user();
     $emailData = array();
 
     $data = $db->pselectRow(
@@ -480,7 +483,8 @@ function editProject() : void
 
     if (isset($id)) {
         // double check that current user has edit access
-        $user        = \User::singleton();
+        $factory     = \NDB_Factory::singleton();
+        $user        = $factory->user();
         $creatorUser = $db->pselectOne(
             'SELECT UserID FROM publication WHERE PublicationID=:id',
             array('id' => $id)

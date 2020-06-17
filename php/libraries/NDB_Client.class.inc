@@ -121,7 +121,7 @@ class NDB_Client
         //    See: https://github.com/jquery/jquery/issues/2012
         // 4. Allow data URLs for fonts, because our bootstrap theme
         //    seems to load a font that way.
-        // 5. Allow reCAPTCHA domains iff the CAPTCHA keys were set
+        // 5. Allow reCAPTCHA domains only if the CAPTCHA keys were set
         //    up by the project
         header(
             "Content-Security-Policy: "
@@ -201,7 +201,7 @@ class NDB_Client
     /**
      * Returns true if the user is logged in
      *
-     * @return true iff user is logged in
+     * @return true only if user is logged in
      */
     function isLoggedIn()
     {
