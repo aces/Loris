@@ -810,7 +810,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         );
         return $res['Description'] ?? '';
     }
-     /*
+    /**
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
