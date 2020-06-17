@@ -835,4 +835,42 @@ class UtilityTest extends TestCase
     {
         $this->assertTrue(\Utility::valueIsPositiveInteger($int));
     }
+
+    /**
+     * Tests the pathJoin function. Test cases adapted from blog post on
+     * Python's os.path.join as this function is meant to give the same
+     * beahviour.
+     *
+     * @see https://www.geeksforgeeks.org/python-os-path-join-method/
+     *
+     * @covers Utility::pathJoin
+     * @return void
+     */
+    public function testPathJoin(): void
+    {
+        $expected = 'a/b/c';
+
+        $this->assertEquals(
+            \Utility::pathJoin('a', 'b', 'c'),
+            $expected
+        );
+        $this->assertEquals(
+            \Utility::pathJoin('a', 'b/c'),
+            $expected
+        );
+        $this->assertEquals(
+            \Utility::pathJoin('a/b', 'c'),
+            $expected
+        );
+        $this->assertEquals(
+            \Utility::pathJoin('a/b', '/c'),
+            $expected
+        );
+
+        // Check leading front-slash
+        $this->assertEquals(
+            \Utility::pathJoin('/a', '/b/c'),
+            '/a/b/c'
+        );
+    }
 }

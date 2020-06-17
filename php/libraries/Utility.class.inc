@@ -1023,5 +1023,32 @@ class Utility
     {
         return rtrim($path, '/\\') . '/';
     }
-}
 
+    /**
+     * Joins strings together to create a well-formed filepath.
+     *
+     * @param string ...$paths The path components to be joined.
+     *
+     * @return string Path components joined without any doubled forward-slashes.
+     */
+    public static function pathJoin(string ...$paths)
+    {
+        // This array stores the components of the final path.
+        $result = [];
+
+        $addSlash = (strpos($paths[0], '/') === 0);
+
+        foreach ($paths as $part) {
+            // Remove all leading forward-slashes from $part.
+            $part = ltrim($part, '/');
+            // Remove trailing forward-slashes from $part.
+            while (mb_substr($part, -1) === '/') {
+                $part = rtrim($part, '/');
+            }
+            $result[] = $part;
+        }
+
+        // If the first part began with a front-slash, add it back
+        return ($addSlash ? '/' : '') . implode('/', $result);
+    }
+}
