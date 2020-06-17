@@ -191,7 +191,7 @@ class ServerProcessesMonitor
             } else {
                 // Process is not running. Report this, along with exit code.
                 // If exit code is unknown, then process crashed unexpectedly.
-                // Process executed successfully iff exit code == 0.
+                // Process executed successfully only if exit code == 0.
                 $exitCode = $matchingProcess->getExitCode();
                 $state    = ($exitCode == 'unknown' || $exitCode != 0) ?
                               'ERROR' : 'SUCCESS';

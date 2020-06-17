@@ -21,6 +21,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   let hashName;
   let patientname = row.PatientName;
   let uid = row.SeriesUID;
+  let tarchiveId = row.TarchiveID;
+  let candId = row.CandID;
+  let pscId = row.PSCID;
+  let timeRun = row.TimeRun != null && row.TimeRun.length >= 'YYYY-MM-DD'.length
+      ? row.TimeRun.substr(0, 'YYYY-MM-DD'.length) : null;
+  let seriesDescription = row['Series Description Or Scan Type'];
   let url;
   let log;
 
@@ -31,7 +37,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
                   onClick={loris.loadFilteredMenuClickHandler(
                       'mri_violations/mri_protocol_check_violations',
                       {PatientName: patientname,
-                       SeriesUID: uid}
+                       SeriesUID: uid,
+                       TarchiveID: tarchiveId,
+                       CandID: candId}
                   )}>Protocol Violation</a>
            </td>
            );
@@ -43,7 +51,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
                onClick={loris.loadFilteredMenuClickHandler(
                    'mri_violations/mri_protocol_violations',
                       {PatientName: patientname,
-                       SeriesUID: uid}
+                       SeriesUID: uid,
+                       TarchiveID: tarchiveId,
+                       CandID: candId,
+                       PSCID: pscId,
+                       TimeRun: timeRun,
+                       SeriesDescription: seriesDescription}
                )}>Could not identify scan type</a>
            </td>
            );

@@ -76,7 +76,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         // Removed 0.0.2 since session requires a project.
-        return array('v0.0.3-dev');
+        return array('v0.0.3');
     }
 
     /**
@@ -128,6 +128,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         case 'dicoms':
             $handler = new Dicoms($this->_visit);
             break;
+        case 'recordings':
+            $handler = new Recordings($this->_visit);
+            break;
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }
@@ -144,11 +147,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Generates a response fitting the API specification for this endpoint.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if ($this->_visit === null) {
             return new \LORIS\Http\Response\JSON\NotFound('Visit not found');

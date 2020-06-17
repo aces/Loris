@@ -36,7 +36,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      */
     function __construct()
     {
-        $config   = \NDB_Config::singleton();
+        $factory  = \NDB_Factory::singleton();
+        $config   = $factory->config();
         $maybeEDC = '';
 
         if ($config->getSetting("useEDC") === "true") {

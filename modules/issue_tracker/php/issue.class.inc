@@ -15,6 +15,7 @@
 namespace LORIS\issue_tracker;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 /**
  * Creates the form for NDB_Form_issue_tracker
  *
@@ -37,7 +38,8 @@ class Issue extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $user    =& \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
         $issueID = $this->issueID;
         if ((empty($issueID)
             || !isset($issueID))
@@ -100,16 +102,41 @@ class Issue extends \NDB_Form
         if (!$issueID) {
             return true;
         }
-        $issueData = \Database::singleton()->pselectRow(
+        $issueData = \NDB_Factory::singleton()->database()->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
             array('issueID' => $issueID)
         );
         return (is_null($issueData)
             || in_array($issueData['centerID'], $user->getData('CenterIDs'))
             || ($user->hasPermission('access_all_profiles'))
-            || (!empty($issueData['centerID']))
+            || (empty($issueData['centerID']))
         );
     }
+
+    /**
+     * Ensure $this->issueID is set so that _hasAccess is valid
+     * before calling the parent middleware.
+     *
+     * @param ServerRequestInterface  $request The PSR7 request being processed.
+     * @param RequestHandlerInterface $handler The handler to handle the request
+     *                                         after processing the middleware.
+     *
+     * @return ResponseInterface
+     */
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        $results = array();
+        preg_match(
+            '#/issue/([0-9]+|new)$#',
+            $request->getURI()->getPath(),
+            $results
+        );
+        $this->issueID = $results[1] ?? null;
+        return parent::process($request, $handler);
+    }
+
     /**
      * Handle the incoming request for an issue. This extracts URLs of the form
      * /issue_tracker/issue/3 and extracts the issueID so that it's accessible
@@ -121,13 +148,6 @@ class Issue extends \NDB_Form
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $results = array();
-        preg_match(
-            '#/issue/([0-9]+|new)$#',
-            $request->getURI()->getPath(),
-            $results
-        );
-        $this->issueID = $results[1] ?? null;
         if (empty($this->issueID) && $this->issueID != "new") {
             // Should probably be a bad request, but we don't have a 400.tpl
             // template.

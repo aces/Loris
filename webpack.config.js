@@ -60,6 +60,13 @@ const mod = {
        ],
         enforce: 'pre',
       },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ],
+      },
    ],
   };
 
@@ -69,25 +76,33 @@ const mod = {
  *
  * @param {string} mname - The LORIS module name
  * @param {array} entries - The webpack entry points for the module
+ * @param {boolean} override - Is the module an override or a native LORIS module.
  *
  * @return {object} - The webpack configuration
  */
-function lorisModule(mname, entries) {
+function lorisModule(mname, entries, override=false) {
     let entObj = {};
+    let base = './modules';
+
+    if (override) {
+        base = './project/modules';
+    }
+
     for (let i = 0; i < entries.length; i++) {
         entObj[entries[i]] =
-            './modules/' + mname + '/jsx/' + entries[i] + '.js';
+            base + '/' + mname + '/jsx/' + entries[i] + '.js';
     }
     return {
         entry: entObj,
         output: {
-            path: path.resolve(__dirname, 'modules') + '/' + mname + '/js/',
+            path: path.resolve(__dirname, base) + '/' + mname + '/js/',
             filename: '[name].js',
             library: ['lorisjs', mname, '[name]'],
             libraryTarget: 'window',
         },
         externals: {
-            react: 'React',
+            'react': 'React',
+            'react-dom': 'ReactDOM',
         },
         node: {
             fs: 'empty',
@@ -97,6 +112,7 @@ function lorisModule(mname, entries) {
         optimization: optimization,
         resolve: resolve,
         module: mod,
+        mode: 'none',
     };
 }
 
@@ -120,7 +136,8 @@ const config = [
             libraryTarget: 'window',
         },
         externals: {
-            react: 'React',
+            'react': 'React',
+            'react-dom': 'ReactDOM',
         },
         node: {
             fs: 'empty',
@@ -132,13 +149,14 @@ const config = [
         module: mod,
     },
     // Modules
-    lorisModule('media', ['mediaIndex']),
-    lorisModule('issue_tracker', ['issueTrackerIndex', 'index']),
+    lorisModule('media', ['CandidateMediaWidget', 'mediaIndex']),
+    lorisModule('issue_tracker', ['issueTrackerIndex', 'index', 'CandidateIssuesWidget']),
     lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
     lorisModule('document_repository', ['docIndex', 'editFormIndex']),
-    lorisModule('candidate_parameters', ['CandidateParameters']),
+    lorisModule('candidate_parameters', ['CandidateParameters', 'ConsentWidget']),
     lorisModule('configuration', ['SubprojectRelations']),
     lorisModule('conflict_resolver', [
+        'CandidateConflictsWidget',
         'conflictResolverIndex',
         'resolvedConflictsIndex',
     ]),
@@ -153,8 +171,6 @@ const config = [
     lorisModule('datadict', ['dataDictIndex']),
     lorisModule('data_release', [
         'dataReleaseIndex',
-        'uploadFileForm',
-        'addPermissionForm',
     ]),
     lorisModule('dataquery', [
         'react.app',
@@ -169,12 +185,9 @@ const config = [
     lorisModule('electrophysiology_browser', [
         'electrophysiologyBrowserIndex',
         'electrophysiologySessionView',
-        'components/electrophysiology_session_panels',
-        'components/Sidebar',
-        'components/SidebarContent',
     ]),
     lorisModule('genomic_browser', ['profileColumnFormatter']),
-    lorisModule('imaging_browser', ['ImagePanel', 'imagingBrowserIndex']),
+    lorisModule('imaging_browser', ['ImagePanel', 'imagingBrowserIndex', 'CandidateScanQCSummaryWidget']),
     lorisModule('instrument_builder', [
         'react.instrument_builder',
         'react.questions',
@@ -197,14 +210,17 @@ const config = [
     lorisModule('module_manager', ['modulemanager']),
     lorisModule('imaging_qc', ['imagingQCIndex']),
     lorisModule('server_processes_manager', ['server_processes_managerIndex']),
-    // lorisModule('instruments', ['instrumentlistwidget']),
+    lorisModule('instruments', ['CandidateInstrumentList']),
     lorisModule('candidate_profile', ['CandidateInfo']),
 ];
 
 // Support project overrides
 if (fs.existsSync('./project/webpack-project.config.js')) {
-  const projConfig = require('./project/webpack-project.config.js');
-  config[0].entry = Object.assign(config[0].entry, projConfig);
+    const projConfig = require('./project/webpack-project.config.js');
+
+    for (const [module, files] of Object.entries(projConfig)) {
+        config.push(lorisModule(module, files, true));
+    }
 }
 
 module.exports = config;

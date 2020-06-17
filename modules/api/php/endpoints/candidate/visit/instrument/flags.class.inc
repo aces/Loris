@@ -77,7 +77,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return array(
             'v0.0.2',
-            'v0.0.3-dev',
+            'v0.0.3',
         );
     }
 
@@ -96,7 +96,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         case 'PUT':
         case 'PATCH':
-            // TODO :: I don`t think this was working in v0.0.3-dev
+            // TODO :: I don`t think this was working in v0.0.3
             return new \LORIS\Http\Response\JSON\NotImplemented();
 
         case 'OPTIONS':
@@ -113,11 +113,9 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Handles a GET request
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         $body = (new \LORIS\api\Views\Visit\Flags(
             $this->_visit,

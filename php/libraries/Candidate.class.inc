@@ -669,7 +669,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         $candID = $this->getCandID();
 
-        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn
+        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn, Label
             FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
             WHERE CandidateID=:cid";
         $where = array('cid' => $candID);
@@ -789,6 +789,26 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             }
         }
         return $projMatch && $centerMatch;
+    }
+
+    /**
+     * Return a human readable description of the participant status for this
+     * candidate.
+     *
+     * @param \Database $db The database to get the description from
+     *
+     * @return string
+     */
+    public function getParticipantStatusDescription(\Database $db) : string
+    {
+        $res = $db->pselectRow(
+            "SELECT pso.Description
+             FROM participant_status ps
+                JOIN participant_status_options pso ON (ps.participant_status=pso.ID)
+             WHERE CandID=:candid",
+            ['candid' => $this->getCandID()],
+        );
+        return $res['Description'] ?? '';
     }
 
 }

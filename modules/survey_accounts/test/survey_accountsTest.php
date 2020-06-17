@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -76,10 +77,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "candidate",
             array(
                 'CandID'                => '999888',
-                'RegistrationCenterID'  => '55',
+                'RegistrationCenterID'  => '1',
                 'UserID'                => '1',
                 'PSCID'                 => '8888',
-                'RegistrationProjectID' => '7777',
+                'RegistrationProjectID' => '1',
             )
         );
         $this->DB->insert(
@@ -87,8 +88,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             array(
                 'ID'           => '111111',
                 'CandID'       => '999888',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
+                'CenterID'     => '1',
+                'ProjectID'    => '1',
                 'UserID'       => '1',
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
@@ -110,8 +111,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             array(
                 'ID'           => '111112',
                 'CandID'       => '999999',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
+                'CenterID'     => '1',
+                'ProjectID'    => '1',
                 'UserID'       => '1',
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
@@ -217,9 +218,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         //Visit does not exist for given candidate.
         $this->safeGet($this->url . "/survey_accounts/");
         $btn = self::$add;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click()"
-        );
+        $this->safeClick(WebDriverBy::cssSelector($btn));
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
@@ -289,6 +288,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     {
         // get element from the page
         if (strpos($element, "select") == false) {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  lastValue = input.value;
@@ -303,6 +303,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             );
             $this->assertContains($records, $bodyText);
         } else {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  input.selectedIndex = '$value';

@@ -145,7 +145,7 @@ class Dataquery extends \NDB_Form
                 "group"  => "true",
             )
         );
-        $this->tpl_data['visits'] = \Utility::getExistingVisitLabels();
+        $this->tpl_data['visits'] = \Utility::getVisitList();
 
         $sessions = array_map(
             function ($element) {

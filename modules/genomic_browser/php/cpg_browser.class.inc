@@ -141,9 +141,9 @@ class CpG_Browser extends \NDB_Menu_Filter
 
         // If a candidate has no CPG records, they will not appear.
         $this->query = " FROM candidate
-            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID 
+            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
                     from session s GROUP BY s.CandID) AS cohort
-                ON (cohort.CandID = candidate.CandID) 
+                ON (cohort.CandID = candidate.CandID)
             LEFT JOIN psc
                 ON (psc.CenterID = candidate.RegistrationCenterID)
             LEFT JOIN genomic_sample_candidate_rel gscr
@@ -154,8 +154,8 @@ class CpG_Browser extends \NDB_Menu_Filter
                 USING (cpg_name)
             LEFT JOIN genotyping_platform platform
                 ON (gca.platform_id = platform.PlatformID)
-            WHERE 
-            cpg.beta_value IS NOT NULL AND 
+            WHERE
+            cpg.beta_value IS NOT NULL AND
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
         $user = \User::singleton();
@@ -297,7 +297,7 @@ class CpG_Browser extends \NDB_Menu_Filter
             'Subproject:',
             array('' => 'Any') + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
+        $this->addBasicText('dob', 'Date of Birth:', [], array('maxlength' => 10));
 
         $show_results_options
             = array(

@@ -20,7 +20,7 @@ window.addEventListener('load', () => {
     async function loadVisits(candidate) {
         let visits = candidate.Visits.map(async function(visit) {
             // FIXME: This shouldn't use the dev version. See #6058
-            let response = await fetch(loris.BaseURL + '/api/v0.0.3-dev/candidates/' + candidate.Meta.CandID + '/' + visit);
+            let response = await fetch(loris.BaseURL + '/api/v0.0.3/candidates/' + candidate.Meta.CandID + '/' + visit);
             let data = await response.json();
             return data;
         });

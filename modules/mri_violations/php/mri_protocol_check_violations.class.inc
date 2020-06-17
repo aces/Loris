@@ -41,7 +41,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         return $user->hasAnyPermission(
             array(
                 'violated_scans_view_allsites',
-                'violated_scans_edit'
+                'violated_scans_view_ownsite'
             )
         );
     }
@@ -53,13 +53,40 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->query    = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
-                         ON m.ID=l.Scan_type WHERE 1=1 ";
+        // Find which sites the user has access to
+        $user            = \User::singleton();
+        $accessibleSites = $user->hasPermission('violated_scans_view_allsites')
+            ? \Utility::getSiteList() : \User::singleton()->getStudySites();
+
+        // Build the component of the WHERE clause (for the query below)
+        // that will be used to restrict the search to the data associated
+        // to sites the user has access to
+        $siteClauseElements = [];
+        foreach (array_keys($accessibleSites) as $siteID) {
+            $siteClauseElements[] = \Database::singleton()->quote($siteID);
+        }
+        $siteClause = sprintf(
+            "(p.CenterID IS NULL OR p.CenterID IN (%s))",
+            implode(',', $siteClauseElements)
+        );
+
+        $this->query    = " FROM mri_violations_log l 
+            LEFT JOIN mri_scan_type m
+            ON m.ID=l.Scan_type 
+            LEFT JOIN mri_protocol_checks_group mpcg 
+            ON (mpcg.MriProtocolChecksGroupID = l.MriProtocolChecksGroupID)
+            LEFT JOIN candidate c ON (l.CandID=c.CandID)
+            LEFT JOIN session s ON (
+              l.Visit_label = s.Visit_label AND l.CandID=s.CandID
+            )
+            LEFT JOIN psc p ON (p.CenterID = s.CenterID)
+            WHERE $siteClause";
         $this->columns  = array(
             'l.PatientName',
             'l.CandID',
             'l.Visit_label',
             'm.Scan_type',
+            'mpcg.Name',
             'l.Severity',
             'l.Header',
             'l.Value',
@@ -74,13 +101,14 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
             'CandID',
             'Visit_label',
             'Scan_type',
+            'MRI_Protocol_Checks_Group',
             'Severity',
             'Header',
             'Value',
             'ValidRange',
             'ValidRegex',
             'SeriesUID',
-            'TarchiveID',
+            'TarchiveID'
         );
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->validFilters = array(
@@ -112,6 +140,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         $this->addBasicText(
             'TarchiveID',
             'Tarchive ID:',
+            [],
             array(
                 "size"      => 9,
                 "maxlength" => 20,
@@ -120,6 +149,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         $this->addBasicText(
             'PatientName',
             'PatientName:',
+            [],
             array(
                 "size"      => 20,
                 "maxlength" => 64,
@@ -128,6 +158,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         $this->addBasicText(
             'CandID',
             'CandID:',
+            [],
             array(
                 "size"      => 20,
                 "maxlength" => 6,
@@ -136,6 +167,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         $this->addBasicText(
             'SeriesUID',
             'DICOM Series UID:',
+            [],
             array(
                 "size"      => 20,
                 "maxlength" => 64,

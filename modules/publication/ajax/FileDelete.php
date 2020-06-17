@@ -13,8 +13,9 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 $uploadID = $_REQUEST['uploadID'];
-$db       = \Database::singleton();
-$user     = \User::singleton();
+$factory  = \NDB_Factory::singleton();
+$db       = $factory->database();
+$user     = $factory->user();
 $config   = \NDB_Config::singleton();
 
 $query      = "SELECT PublicationID, Filename ".

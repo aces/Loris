@@ -57,6 +57,7 @@ services:
     environment:
       - LORIS_DB_CONFIG=test/config.xml
       - SELENIUM_REQUIRED=true
+      - DOCKER_WEB_SERVER=http://web:8000
     depends_on:
       - db
       - selenium
@@ -64,7 +65,7 @@ services:
     entrypoint: /app/test/wait-for-services.sh
 
   selenium-debug:
-    image: selenium/standalone-firefox-debug:2.53.1
+    image: selenium/standalone-firefox-debug:3.8.1-aluminum
     links:
       - web-debug:web
     ports:

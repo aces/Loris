@@ -26,9 +26,13 @@ use \Psr\Http\Message\ResponseInterface;
 class Edit_User extends \NDB_Form
 {
     private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be ' .
+                                        'your user name.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
                                         'identical: please choose another one';
+    private const EMAIL_NOT_UNIQUE         = 'This email address is already ' .
+                                                'in use';
 
     /**
      * Determines whether this form is in edit or create mode.
@@ -52,21 +56,17 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if ($editor->hasPermission('user_accounts')) {
-            if ($editor->hasPermission('user_accounts_multisite')) {
-                return true;
-            }
+        if ($editor->hasPermission('user_accounts_multisite')) {
+            return true;
+        }
 
+        if ($editor->hasPermission('user_accounts')) {
             if ($this->isCreatingNewUser()) {
                 return true;
             }
-            $user = \User::factory($this->identifier);
-            return array_intersect(
-                $user->getData('CenterIDs'),
-                $editor->getData('CenterIDs')
-            ) == $user->getData(
-                'CenterIDs'
-            );
+            // Return true if the editor is allowed to edit the information
+            // of the user.
+            return \User::factory($this->identifier)->isAccessibleBy($editor);
         }
 
         return false;
@@ -167,7 +167,8 @@ class Edit_User extends \NDB_Form
      */
     function _isEditingOwnAccount()
     {
-        $editor = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $editor  = $factory->user();
         return !$this->isCreatingNewUser()
             && ($editor->getUsername() == $this->identifier);
     }
@@ -181,12 +182,15 @@ class Edit_User extends \NDB_Form
      */
     function _process($values)
     {
-        $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $config  = $factory->config();
+
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
         $permissionsAdded   = array();
-        $editor = \User::singleton();
+        $editor = $factory->user();
+
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
         //create the user
@@ -209,7 +213,8 @@ class Edit_User extends \NDB_Form
         // 2) Certain old permissions that the editor is not permitted to alter
         // In addition, old permissions should be removed if the editor has
         // removed them and the editor has permissions to remove them.
-        $newPermissions    = array_keys($values['permID']) ?? array();
+        $newPermissions    = isset($values['permID'])
+            ? array_keys($values['permID']) : array();
         $editorPermissions = $editor->getPermissionIDs() ?? array();
         $permIDs           = array();
         // store the permission IDs
@@ -392,7 +397,7 @@ class Edit_User extends \NDB_Form
                 //Check if examiner already in db for site
                 $result = $DB->pselectRow(
                     "SELECT epr.centerID
-                           FROM examiners_psc_rel epr 
+                           FROM examiners_psc_rel epr
                            WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                     array(
                         "eid" => $examinerID,
@@ -627,7 +632,8 @@ class Edit_User extends \NDB_Form
         parent::setup();
 
         ///get the value for additional_user_info flag
-        $config = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
         $additional_user_info = $config->getSetting('additional_user_info');
 
         //------------------------------------------------------------
@@ -663,7 +669,7 @@ class Edit_User extends \NDB_Form
         $this->addGroup(
             $group,
             'Password_Group',
-            'Password',
+            'New Password',
             $this->_GUIDelimiter,
             false
         );
@@ -680,6 +686,7 @@ class Edit_User extends \NDB_Form
         $this->addBasicText(
             'First_name',
             'First name',
+            [],
             array(
                 'oninvalid' => $onInvalidMsg,
                 'onchange'  => "this.setCustomValidity('')",
@@ -697,6 +704,7 @@ class Edit_User extends \NDB_Form
         $this->addBasicText(
             'Last_name',
             'Last name',
+            [],
             array(
                 'oninvalid' => $onInvalidMsg,
                 'onchange'  => "this.setCustomValidity('')",
@@ -744,7 +752,8 @@ class Edit_User extends \NDB_Form
         //------------------------------------------------------------
 
         // get user permissions
-        $editor      = \User::singleton();
+        $factory     = \NDB_Factory::singleton();
+        $editor      = $factory->user();
         $siteOptions = array();
         $site        = array();
 
@@ -789,7 +798,8 @@ class Edit_User extends \NDB_Form
             $groupB = array();
 
             //get site aliases
-            $DB      = \Database::singleton();
+            $factory = \NDB_Factory::singleton();
+            $DB      = $factory->database();
             $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
 
             foreach ($aliases as $row) {
@@ -943,7 +953,7 @@ class Edit_User extends \NDB_Form
                   JOIN users u ON (u.ID = up.userID)
                   WHERE p.code = 'send_to_dcc'";
 
-        $results = \Database::singleton()->pselect($query, array());
+        $results = \NDB_Factory::singleton()->database()->pselect($query, array());
 
         $group   = array();
         $group[] = $this->form->createElement(
@@ -1013,9 +1023,11 @@ class Edit_User extends \NDB_Form
      */
     function _validateEditUser($values)
     {
-        $editor = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $editor  = $factory->user();
         // create DB object
-        $DB     = \Database::singleton();
+        $DB = $factory->database();
+
         $errors = array();
 
         // NOTE The 'Password_hash' key actually represents a plaintext password
@@ -1090,6 +1102,16 @@ class Edit_User extends \NDB_Form
         ) {
             $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
         }
+
+        // Make sure the user is not using their username as their password.
+        if ((isset($values['UserID'])
+            && $values['UserID'] === $values['Password_hash'])
+            || (!empty($this->identifier)
+            && $this->identifier === $values['Password_hash'])
+        ) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_USER;
+        }
+
         if (!is_null($this->identifier)) {
             $pass = $DB->pselectOne(
                 "SELECT COALESCE(Password_hash) "
@@ -1240,7 +1262,7 @@ class Edit_User extends \NDB_Form
             && ($values['active_from'] > $values['active_to'])
         ) {
             $errors['active_timeWindows']
-                = 'Please notice that the "Active from" 
+                = 'Please notice that the "Active from"
                 date should be lesser or equal to the "Active to" date.';
         }
         return $errors;
@@ -1275,7 +1297,7 @@ class Edit_User extends \NDB_Form
 
         // Email already exists in database
         if ($result > 0) {
-            return 'The email address already exists';
+            return self::EMAIL_NOT_UNIQUE;
         }
 
         return null;
