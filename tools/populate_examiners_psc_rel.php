@@ -25,13 +25,13 @@ $db     =& Database::singleton();
 
 $examinersRows = $db->pselect(
     "SELECT * FROM examiners",
-    array()
+    []
 );
 
 //get all instruments to update examiner fields
 $instruments = Utility::getAllInstruments();
 
-$examinersOrganized =array();
+$examinersOrganized =[];
 
 // ASSERT DB state
 // Make sure there is no cause for errors
@@ -39,7 +39,7 @@ $errorPRE =false;
 ///////// examiners.centerID not in psc.CenterID
 $pscCheck = $db->pselect(
     "SELECT * FROM examiners WHERE centerID NOT IN (SELECT centerID FROM psc)",
-    array()
+    []
 );
 if (!empty($pscCheck)) {
     $errorPRE =true;
@@ -51,7 +51,7 @@ if (!empty($pscCheck)) {
 ///////// examiners.centerID is null
 $pscNullCheck = $db->pselect(
     "SELECT * FROM examiners WHERE centerID IS NULL",
-    array()
+    []
 );
 if (!empty($pscNullCheck)) {
     $errorPRE =true;
@@ -63,7 +63,7 @@ if (!empty($pscNullCheck)) {
 ///////// examiners.full_name is null
 $nameNullCheck = $db->pselect(
     "SELECT * FROM examiners WHERE full_name IS NULL OR full_name =''",
-    array()
+    []
 );
 if (!empty($nameNullCheck)) {
     $errorPRE =true;
@@ -75,7 +75,7 @@ if (!empty($nameNullCheck)) {
 ///////// examiners.full_name is null
 $activeNullCheck = $db->pselect(
     "SELECT * FROM examiners WHERE active IS NULL OR active =''",
-    array()
+    []
 );
 if (!empty($activeNullCheck)) {
     $errorPRE =true;
@@ -87,7 +87,7 @@ if (!empty($activeNullCheck)) {
 ///////// examiners.full_name is null
 $pendingNullCheck = $db->pselect(
     "SELECT * FROM examiners WHERE pending_approval IS NULL OR pending_approval =''",
-    array()
+    []
 );
 if (!empty($pendingNullCheck)) {
     $errorPRE =true;
@@ -101,7 +101,7 @@ $certCheck = $db->pselect(
     "SELECT DISTINCT examinerID 
      FROM certification 
      WHERE examinerID NOT IN (SELECT examinerID FROM examiners)",
-    array()
+    []
 );
 if (!empty($certCheck)) {
     $errorPRE =true;
@@ -116,7 +116,7 @@ foreach ($instruments as $table => $name) {
         $instCheck = $db->pselect(
             "SELECT * FROM ".$table
             ." WHERE Examiner NOT IN (SELECT examinerID FROM examiners)",
-            array()
+            []
         );
         if (!empty($instCheck)) {
             $errorPRE =true;
@@ -131,7 +131,7 @@ $frrCheck = $db->pselect(
     "SELECT * FROM final_radiological_review 
       WHERE Final_Examiner2 NOT IN (SELECT examinerID FROM examiners) 
           OR Final_Examiner NOT IN (SELECT examinerID FROM examiners) ",
-    array()
+    []
 );
 if (!empty($frrCheck)) {
     $errorPRE =true;
@@ -154,12 +154,12 @@ ERRORS;
 }
 
 foreach ($examinersRows as $k => $row) {
-    $item = array(
+    $item = [
         'examinerID'       => $row['examinerID'],
         'centerID'         => $row['centerID'],
         'active'           => $row['active'],
         'pending_approval' => $row['pending_approval'],
-    );
+    ];
     // Compare without spaces, without cases
     $examinersOrganized[strtolower(
         str_replace(
@@ -203,8 +203,8 @@ foreach ($examinersOrganized as $name => $data_array) {
             .$oldExaminerID."=>".$finalExaminerID."\n";
         $db->update(
             'certification',
-            array('examinerID' => $finalExaminerID),
-            array('examinerID' => $oldExaminerID)
+            ['examinerID' => $finalExaminerID],
+            ['examinerID' => $oldExaminerID]
         );
 
         // UPDATE final_radiological_review
@@ -212,13 +212,13 @@ foreach ($examinersOrganized as $name => $data_array) {
             .$oldExaminerID."=>".$finalExaminerID."\n";
         $db->update(
             'final_radiological_review',
-            array('Final_Examiner' => $finalExaminerID),
-            array('Final_Examiner' => $oldExaminerID)
+            ['Final_Examiner' => $finalExaminerID],
+            ['Final_Examiner' => $oldExaminerID]
         );
         $db->update(
             'final_radiological_review',
-            array('Final_Examiner2' => $finalExaminerID),
-            array('Final_Examiner2' => $oldExaminerID)
+            ['Final_Examiner2' => $finalExaminerID],
+            ['Final_Examiner2' => $oldExaminerID]
         );
         // UPDATE instrument tables
         foreach ($instruments as $table => $name) {
@@ -229,14 +229,14 @@ foreach ($examinersOrganized as $name => $data_array) {
                     . "$oldExaminerID => $finalExaminerID\n";
                 $db->update(
                     $table,
-                    array('Examiner' => $finalExaminerID),
-                    array('Examiner' => $oldExaminerID)
+                    ['Examiner' => $finalExaminerID],
+                    ['Examiner' => $oldExaminerID]
                 );
             }
         }
         // DELETE examiners additional entries
         echo "    -> DELETING duplicate examinerID: ".$oldExaminerID."\n\n";
-        $db->delete('examiners', array('examinerID' => $oldExaminerID));
+        $db->delete('examiners', ['examinerID' => $oldExaminerID]);
     }
 }
 

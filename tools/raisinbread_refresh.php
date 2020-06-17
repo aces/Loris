@@ -221,7 +221,7 @@ printHeader('Changing the admin password...');
 echo 'Please choose a new password for the admin user:' . PHP_EOL;
 flush();
 // Invoke the script `tools/resetpassword.php` for user 'admin'.
-$cmd = implode(' ', array('php', __DIR__ . '/resetpassword.php', 'admin'));
+$cmd = implode(' ', ['php', __DIR__ . '/resetpassword.php', 'admin']);
 exec($cmd);
 
 printHeader('Test data successfully installed.');
