@@ -486,9 +486,9 @@ class TimePoint
     /**
      * Gets this timepoint's screening status.
      *
-     * @return string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
+     * @return ?string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
      */
-    function getScreeningStatus(): string
+    function getScreeningStatus(): ?string
     {
         return $this->_timePointInfo["Screening"];
     }
