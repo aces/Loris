@@ -43,12 +43,11 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private const ADMIN_EMAIL     = 'admin@example.com';
     private const ADMIN_EMAIL_NEW = 'tester@example.com';
 
-    private $_name        = '.col-xs-12:nth-child(4) .form-control';
-    private $_site        = '.col-xs-12:nth-child(2) >.row.form-control, select';
-    private $_clearFilter = 'button[type="reset"]';
-    private $_table       = '#dynamictable > tbody > tr:nth-child(1)';
-    private $_addUserBtn  = "#default-panel > div > div > div.table-header >".
-                            " div > div > div:nth-child(2) > button:nth-child(1)";
+    private $_name        = 'input[name="username"]';
+    private $_site        = 'select[name="site"]';
+    private $_clearFilter = ".nav-tabs a";
+    private $_table       = "#dynamictable > tbody > tr";
+    private $_addUserBtn  = "div:nth-child(2) > .btn:nth-child(1)";
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -152,7 +151,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function _testFilter($element,$table,$records,$value)
     {
         // get element from the page
-        if (strpos($element, "select") == false) {
+        if (strpos($element, "select") === false) {
             $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
