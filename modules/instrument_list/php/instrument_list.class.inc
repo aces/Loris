@@ -354,7 +354,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $query .= " WHERE f.SessionID=:SID
             AND LEFT(f.CommentID, 3) != 'DDE'";
 
-        if (\NDB_BVL_Battery::columnsHasNull('test_subgroups', 'group_order')) {
+        if (\Database::columnsHasNull('test_subgroups', 'group_order')) {
             $query .= " ORDER BY Subgroup_name";
         } else {
             $query .= " ORDER BY Subgroup_order";
