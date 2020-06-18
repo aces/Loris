@@ -67,63 +67,6 @@ class BVL_Feedback_Panel
             );
     }
     /**
-     * Returns all the sourcefrom instruments from parameter_type
-     *
-     * @param string|null $instrument If specified, return fields from this
-     *                                test_name
-     * @param string|null $commentID  If specified, return fields for this
-     *                                commentid
-     * @param string|null $name       If specified, return fields for this
-     *                                parameter_type name
-     *
-     * @return  ?array Format: array(
-     *              0 => array(
-     *                   'SourceField' => value
-     *                   'Name'        => name
-     *
-     *              )
-     *         )
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
-     */
-    static function getSourcefields(
-        ?string $instrument = null,
-        ?string $commentID = null,
-        ?string $name = null
-    ): ?array {
-
-        $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
-
-        //get sourcefield using instrument
-        $sourcefields = array();
-        if (!is_null($instrument)) {
-            $sourcefields = $DB->pselect(
-                "SELECT SourceField, Name FROM parameter_type
-                WHERE queryable='1' AND sourcefrom = :sf
-                ORDER BY Name",
-                array('sf' => $instrument)
-            );
-        } elseif (!is_null($commentID)) { //get sourcefield using commentid
-            $instrument   = $DB->pselectOne(
-                "SELECT Test_name FROM flag WHERE CommentID = :cid",
-                array('cid' => $commentID)
-            );
-            $sourcefields = $DB->pselect(
-                "SELECT SourceField, Name FROM parameter_type
-                WHERE queryable = '1' AND sourcefrom = :instrument
-                ORDER BY Name",
-                array('instrument' => $instrument)
-            );
-        } elseif (!is_null($name)) { //get all source fields
-            $sourcefields = $DB->pselectRow(
-                "SELECT * FROM parameter_type WHERE Name = :pn",
-                array('pn' => $name)
-            );
-        }
-        return $sourcefields;
-    }
-    /**
      * Function to display the feedback panel at the timepoint list,
      * instrument list or instrument level.
      *
@@ -155,7 +98,7 @@ class BVL_Feedback_Panel
         $summary = $this->feedbackThread->getSummaryOfThreads();
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
         $field_names
-            = BVL_Feedback_Panel::getSourcefields($_REQUEST['test_name'] ?? '');
+            = Utility::getSourcefields($_REQUEST['test_name'] ?? '');
         $fields      = array();
         $fields['Across All Fields'] = 'Across All Fields';
         foreach ($field_names as $field_name) {

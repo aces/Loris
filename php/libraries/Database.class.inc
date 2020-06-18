@@ -301,7 +301,32 @@ class Database
     {
         return $this->_realinsert($table, $set, true, false, true);
     }
-
+    /**
+     * Checks to see if a table contains a specified column
+     *
+     * @param string $table_name The table to check for a column.
+     * @param string $column     The column name to check the table for.
+     *
+     * @return boolean true if the table has at least one NULL in the column
+     * @note   This should really be in the Database.class.inc file... -anyhowstep
+     */
+    static function columnsHasNull(string $table_name, string $column): bool
+    {
+        //$config   =& NDB_Config::singleton();
+        //$database = $config->getSetting('database');
+        $query    = "SELECT count(*)
+            FROM {$table_name}
+            WHERE {$column} is NULL";
+        $DB       =& \Database::singleton();
+        $num_null = $DB->pselectOne(
+            $query,
+            array()
+        );
+        if ($num_null > 0) {
+            return true;
+        }
+        return false;
+    }
     /**
      * Insert row into the database or update on duplicate key without validating
      * input.

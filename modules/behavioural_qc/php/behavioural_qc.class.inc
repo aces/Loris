@@ -258,7 +258,7 @@ class Behavioural_QC extends \NDB_Form
         ) {
 
             $where      .= " AND FieldName = :FN";
-            $field_names = \BVL_Feedback_Panel::getSourcefields($test_name);
+            $field_names = \Utility::getSourcefields($test_name);
 
             $query = $select . $where;
 

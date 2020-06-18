@@ -702,7 +702,7 @@ class UtilityTest extends TestCase
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the instrument parameter is specified
      *
-     * @covers BVL_Feedback_Panel::getSourcefields()
+     * @covers Utility::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsWithInstrumentSpecified()
@@ -719,7 +719,7 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array(0 => array('SourceField' => 'instrument_field',
                              'Name' => 'instrument_name')),
-            BVL_Feedback_Panel::getSourcefields('instrument1', null, null)
+            Utility::getSourcefields('instrument1', null, null)
         );
     }
 
@@ -727,7 +727,7 @@ class UtilityTest extends TestCase
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the commentID parameter is specified
      *
-     * @covers BVL_Feedback_Panel::getSourcefields()
+     * @covers Utility::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsWithCommentIDSpecified()
@@ -743,7 +743,7 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array(0 => array('SourceField' => 'commentID_field',
                              'Name' => 'commentID_name')),
-            BVL_Feedback_Panel::getSourcefields(null, '1', null)
+            Utility::getSourcefields(null, '1', null)
         );
     }
 
@@ -751,7 +751,7 @@ class UtilityTest extends TestCase
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the name parameter is specified
      *
-     * @covers BVL_Feedback_Panel::getSourcefields()
+     * @covers Utility::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsWithNameSpecified()
@@ -767,7 +767,7 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array(0 => array('SourceField' => 'name_field',
                              'Name' => 'name_name')),
-            BVL_Feedback_Panel::getSourcefields(null, null, 'name_name')
+            Utility::getSourcefields(null, null, 'name_name')
         );
     }
 
@@ -775,7 +775,7 @@ class UtilityTest extends TestCase
      * Test an edge case of getSourcefields where all three parameters are specified
      * In this case, it should only use the instrument parameter
      *
-     * @covers BVL_Feedback_Panel::getSourcefields()
+     * @covers Utility::getSourcefields()
      * @return void
      */
     public function testGetSourcefieldsWithAllThreeParameters()
@@ -792,7 +792,7 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             array(0 => array('SourceField' => 'instrument_field',
                              'Name' => 'instrument_name')),
-            BVL_Feedback_Panel::getSourcefields('instrument1', '1', 'name')
+            Utility::getSourcefields('instrument1', '1', 'name')
         );
     }
 
