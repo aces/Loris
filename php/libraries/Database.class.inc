@@ -307,7 +307,7 @@ class Database
      * @param string $table_name The table to check for a column.
      * @param string $column     The column name to check the table for.
      *
-     * @return boolean true if the table has at least one NULL in the column
+     * @return bool true if the table has at least one NULL in the column
      * @note   This should really be in the Database.class.inc file... -anyhowstep
      */
     static function columnsHasNull(string $table_name, string $column): bool
