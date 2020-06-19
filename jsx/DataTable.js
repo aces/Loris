@@ -8,6 +8,10 @@ import createFragment from 'react-addons-create-fragment';
  * Displays a set of data that is receives via props.
  */
 class DataTable extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -34,12 +38,25 @@ class DataTable extends Component {
     this.renderActions = this.renderActions.bind(this);
   }
 
+  /**
+   * Set the component page variable
+   * to a new value
+   *
+   * @param {int} i - Page index
+   */
   changePage(i) {
     const page = this.state.page;
     page.number = i;
     this.setState({page});
   }
 
+  /**
+   * Update the sort column
+   * If component sort.column is already set to column
+   * Toggle sort.ascending
+   *
+   * @param {int} column - The column index
+   */
   setSortColumn(column) {
     if (this.state.sort.column === column) {
       this.toggleSortOrder();
@@ -48,12 +65,20 @@ class DataTable extends Component {
     }
   }
 
+  /**
+   * Update the sort column
+   *
+   * @param {int} column - The column index
+   */
   updateSortColumn(column) {
     const sort = this.state.sort;
     sort.column = column;
     this.setState({sort});
   }
 
+  /**
+   * Toggle sort.ascending
+   */
   toggleSortOrder() {
     const sort = this.state.sort;
     sort.ascending = !sort.ascending;
@@ -63,10 +88,10 @@ class DataTable extends Component {
   /**
    * Updates page state
    *
-   * @param {int} number of page
+   * @param {int} number - Number of page
    */
   updatePageNumber(number) {
-    const page = this.sate.page;
+    const page = this.state.page;
     page.number = number;
     this.setState({page});
   }
@@ -74,7 +99,7 @@ class DataTable extends Component {
   /**
    * Update number of rows per page
    *
-   * @param {object} e event from which to abstract value
+   * @param {object} e - Event from which to abstract value
    */
   updatePageRows(e) {
     const page = Object.assign({}, this.state.page);
@@ -83,6 +108,11 @@ class DataTable extends Component {
     this.setState({page});
   }
 
+  /**
+   * Export the filtered rows and columns into a csv
+   *
+   * @param {int[]} filteredRowIndexes - The filtered Row Indexes
+   */
   downloadCSV(filteredRowIndexes) {
     let csvData = filteredRowIndexes.map((id) => this.props.data[id]);
     // Map cell data to proper values if applicable.
@@ -120,6 +150,11 @@ class DataTable extends Component {
     });
   }
 
+  /**
+   * Get the Filtered Row Indexes
+   *
+   * @return {int[]}
+   */
   getFilteredRowIndexes() {
     let useKeyword = false;
     let filterValuesCount = Object.keys(this.props.filter).length;
@@ -170,6 +205,12 @@ class DataTable extends Component {
     return filteredIndexes;
   }
 
+  /**
+   * Sort the given rows according to the sort configuration
+   *
+   * @param {int[]} rowIndexes - The row indexes
+   * @return {Object[]}
+   */
   sortRows(rowIndexes) {
     const index = [];
 
@@ -339,10 +380,18 @@ class DataTable extends Component {
     return result;
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     $('.dynamictable').DynamicTable();
   }
 
+  /**
+   * Renders the Actions buttons.
+   *
+   * @return {string[]} - Array of React Elements
+   */
   renderActions() {
     if (this.props.actions) {
       return this.props.actions.map((action, key) => {
@@ -359,6 +408,11 @@ class DataTable extends Component {
     }
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {string} - HTML markup for the component
+   */
   render() {
     if (
       (this.props.data === null || this.props.data.length === 0)

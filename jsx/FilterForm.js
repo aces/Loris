@@ -24,6 +24,10 @@ import Panel from 'Panel';
  *
  */
 class FilterForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -38,6 +42,9 @@ class FilterForm extends Component {
     this.queryString = QueryString.get();
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     let filter = {};
     let queryString = this.queryString;
@@ -170,6 +177,11 @@ class FilterForm extends Component {
     this.props.onUpdate(filter);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {string} - HTML markup for the component
+   */
   render() {
     // Get formatted children
     let formChildren = this.getFormChildren();

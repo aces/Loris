@@ -1,7 +1,11 @@
 /* exported RMarkdown */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+const ReactMarkdown = require('react-markdown');
+
 /**
- * This file contains a React component which renders markdown text into HTML.
+ * React component which renders markdown text into HTML.
  * by way of JSX.
  *
  * Only very basic markdown is supported. In particular:
@@ -18,12 +22,12 @@
  * @version 0.0.1
  *
  */
-
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-const ReactMarkdown = require('react-markdown');
-
 class Markdown extends Component {
+  /**
+   * Renders the React component.
+   *
+   * @return {string} - HTML markup for the component
+   */
   render() {
     return <ReactMarkdown source={this.props.content} />;
   }

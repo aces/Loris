@@ -28,11 +28,18 @@ import swal from 'sweetalert2';
  *
  */
 class Modal extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor() {
     super();
     this.handleClose = this.handleClose.bind(this);
   }
 
+  /**
+   * Display a warning message on close
+   */
   handleClose() {
     if (this.props.throwWarning) {
       swal.fire({
@@ -49,6 +56,11 @@ class Modal extends Component {
     }
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {string} - HTML markup for the component
+   */
   render() {
     const {show, children, onSubmit, title} = this.props;
 

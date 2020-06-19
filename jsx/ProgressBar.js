@@ -1,3 +1,6 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * React ProgressBar.
  *
@@ -7,11 +10,12 @@
  * Note: This component relies on Bootstrap 3 progress-bar classes
  * (http://getbootstrap.com/components/#progress)
  */
-
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-
 class ProgressBar extends Component {
+  /**
+   * Renders the React component.
+   *
+   * @return {string} - HTML markup for the component
+   */
   render() {
     const progressStyle = {
       display: (this.props.value < 0 ? 'none' : 'block'),

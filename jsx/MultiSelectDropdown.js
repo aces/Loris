@@ -1,23 +1,35 @@
 /* exported SelectField, SearchField, SelectDropdown */
 
-/*
- Note this is only used in DQT
- For generic SelectDropdown, see Select in Form.js
- */
-
 import React, {Component} from 'react';
 
+/**
+ * MultiSelect Dropdown component
+ * Note this is only used in DQT
+ * For generic SelectDropdown, see Select in Form.js
+ */
 class SelectField extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
   }
 
+  /**
+   * Toggle checkbox
+   */
   toggleCheckbox() {
     this.props.toggleCheckbox(this.props.label);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {string} - HTML markup for the component
+   */
   render() {
     let checked = (this.props.checked) ? 'checked' : '';
     let input;
@@ -42,7 +54,14 @@ class SelectField extends Component {
   }
 }
 
+/**
+ * Search Field React component
+ */
 class SearchField extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -50,13 +69,28 @@ class SearchField extends Component {
     this.updateFilter = this.updateFilter.bind(this);
   }
 
+  /**
+   * Clear the filter
+   */
   clearFilter() {
     this.props.updateFilter('');
   }
+
+  /**
+   * Update the filter
+   * with the event target value
+   *
+   * @param {object} event
+   */
   updateFilter(event) {
     this.props.updateFilter(event.target.value);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {string} - HTML markup for the component
+   */
   render() {
     return (
       <li className="dropdownSearch">
@@ -79,7 +113,14 @@ class SearchField extends Component {
   }
 }
 
+/**
+ * Select Dropdown React component
+ */
 class SelectDropdown extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -98,11 +139,18 @@ class SelectDropdown extends Component {
     this.updateFilter = this.updateFilter.bind(this);
   }
 
+  /**
+   * Toggle Dropdown
+   */
   toggleDropdown() {
     let open = !this.state.open;
     this.setState({open});
   }
 
+  /**
+   * Toggle the checkbox
+   * @param {string} key
+   */
   toggleCheckbox(key) {
     if (this.props.multi) {
       let action = (this.props.options[key]) ? 'uncheck' : 'check';
@@ -113,6 +161,9 @@ class SelectDropdown extends Component {
     }
   }
 
+  /**
+   * Select all options
+   */
   selectAll() {
     for (let option in this.props.options) {
       if (!this.props.options[option]) {
@@ -121,6 +172,9 @@ class SelectDropdown extends Component {
     }
   }
 
+  /**
+   * Deselect all options
+   */
   deselectAll() {
     for (let option in this.props.options) {
       if (this.props.options[option]) {
@@ -129,10 +183,21 @@ class SelectDropdown extends Component {
     }
   }
 
+  /**
+   * Update the filter React component variable
+   * with the given parameter
+   *
+   * @param {string} filter
+   */
   updateFilter(filter) {
     this.setState({filter});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {string} - HTML markup for the component
+   */
   render() {
     let parentDivClass = 'btn-group col-xs-12';
     let selectLabel = 'None Selected';
