@@ -25,6 +25,12 @@ use Facebook\WebDriver\WebDriverSelect;
  */
 class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 {
+    //filter location
+    static $fullname       = 'input[name="fullname"]'; 
+    static $citationName   = 'input[name="citationName"]';
+    static $startDate      = 'input[name="startDate"]';
+    static $endDate        = 'input[name="endDate"]'; 
+    static $present        = 'select[name="present"]';
 
     // Initial array data
 
@@ -98,55 +104,21 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that, after clicking the "filter" button, all of the
-     * advanced filters appear on the page.
+     * Tests clear button in the form
+     * The form should refreash and the data should be gone.
      *
      * @return void
      */
-    function testFilterWithData()
+    function testFilters()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better.'
+        $this->safeGet($this->url . "/acknowledgements/");sleep(10);
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clearFilter,
+            'test',
+            "0 rows",
         );
-
-        $this->_testFilter("fullName", self::$testData['full_name']);
-        $this->_testFilter("citatioName", self::$testData['citation_name']);
-        $this->_testFilter("startDate", self::$testData['start_date']);
-        $this->_testFilter("endDate", self::$testData['end_date']);
-        $this->_testFilter("present", self::$testData['present']);
-
-    }
-    /**
-     * Test filter function
-     *
-     * @param string $element the test element
-     * @param string $value   the value
-     *
-     * @return void
-     */
-    private function _testFilter($element,$value)
-    {
-        $this->safeGet($this->url . "/acknowledgements/");
-        if ($element == "startDate" || $element == "endDate") {
-            $this->webDriver->executescript(
-                "document.getElementsByName('$element')[0].value='$value'"
-            );
-        } elseif ($element == "present") {
-            $select  = $this->safeFindElement(WebDriverBy::Name($element));
-            $element = new WebDriverSelect($select);
-            $element->selectByVisibleText($value);
-        } else {
-            $this->webDriver->findElement(
-                WebDriverBy::Name($element)
-            )->sendKeys($value);
-        }
-        $this->webDriver->findElement(
-            WebDriverBy::ID("showdata_advanced_options")
-        )->click();
-        $this->safeGet($this->url . "/acknowledgements/?format=json");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains($value, $bodyText);
     }
     /**
      * Tests that, adding a new record, then this record appears on the page.
