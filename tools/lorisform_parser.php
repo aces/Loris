@@ -22,7 +22,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize("../project/config.xml");
 
-$instrumentsToSkip = array();
+$instrumentsToSkip = [];
 $instruments       = getExcludedInstruments();
 foreach ($instruments as $instrument) {
     if (isset($instrument)) {
@@ -243,7 +243,7 @@ function getExcludedInstruments()
     $config =& NDB_Config::singleton();
     $excluded_instruments = $config->getSetting('excluded_instruments');
 
-    $ex_instruments =array();
+    $ex_instruments = [];
     foreach ($excluded_instruments as $instruments) {
         foreach (Utility::asArray($instruments) as $instrument) {
             $ex_instruments[$instrument] = $instrument;

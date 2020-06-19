@@ -23,7 +23,7 @@ require_once __DIR__ . "/generic_includes.php";
  */
 const MIN_NUMBER_OF_ARGS = 4;
 // Possible script actions
-$actions = array('delete_timepoint');
+$actions = ['delete_timepoint'];
 
 //define the command line parameters
 if (count($argv) < MIN_NUMBER_OF_ARGS
@@ -73,10 +73,7 @@ $candExists = $DB->pselectOne(
     "SELECT COUNT(*) 
       FROM candidate 
       WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
-    array(
-        'cid' => $CandID,
-        'pid' => $PSCID,
-    )
+    ['cid' => $CandID, 'pid' => $PSCID]
 );
 if ($candExists == 0) {
     echo "\nThe candidate with CandID : $CandID  and PSCID : $PSCID either does ".
@@ -88,10 +85,7 @@ if ($sessionID != null) {
     $sessionExists = $DB->pselectOne(
         "SELECT COUNT(*) FROM session 
         WHERE ID=:sid AND CandID=:cid AND Active ='Y'",
-        array(
-            'sid' => $sessionID,
-            'cid' => $CandID,
-        )
+        ['sid' => $sessionID, 'cid' => $CandID]
     );
     if ($sessionExists == 0) {
         die(
@@ -102,7 +96,7 @@ if ($sessionID != null) {
     // Check for existence of imaging data
     $filesExist = $DB->pselectOne(
         "SELECT COUNT(*) FROM files WHERE SessionID=:sid",
-        array('sid' => $sessionID)
+        ['sid' => $sessionID]
     );
     $numFiles   = (int)$filesExist;
     if ($numFiles > 0) {
@@ -176,7 +170,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
 
     $instruments = $DB->pselect(
         'SELECT Test_name, CommentID FROM flag WHERE SessionID=:sid',
-        array('sid' => $sessionID)
+        ['sid' => $sessionID]
     );
 
     // Print each instrument instance
@@ -186,7 +180,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
                 'SELECT CommentID FROM '
                 . $DB->escape($instrument['Test_name'])
                 . ' WHERE CommentID=:cid',
-                array('cid' => $instrument['CommentID'])
+                ['cid' => $instrument['CommentID']]
             );
             echo "\n{$instrument['Test_name']}\n";
             echo "-----------------------------------------\n";
@@ -202,7 +196,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         $result = $DB->pselect(
             'SELECT * FROM conflicts_unresolved 
             WHERE CommentId1=:cid OR CommentId2=:cid',
-            array('cid' => $instrument['CommentID'])
+            ['cid' => $instrument['CommentID']]
         );
         print_r($result);
         echo "\nConflicts Resolved\n";
@@ -210,7 +204,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         $result = $DB->pselect(
             'SELECT * FROM conflicts_resolved 
             WHERE CommentId1=:cid OR CommentId2=:cid',
-            array('cid' => $instrument['CommentID'])
+            ['cid' => $instrument['CommentID']]
         );
         print_r($result);
     }
@@ -219,7 +213,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     echo "------\n";
     $result = $DB->pselect(
         'SELECT * FROM flag WHERE SessionID=:sid',
-        array('sid' => $sessionID)
+        ['sid' => $sessionID]
     );
     print_r($result);
 
@@ -228,7 +222,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     echo "-------\n";
     $result = $DB->pselect(
         'SELECT * FROM media WHERE session_id=:sid',
-        array('sid' => $sessionID)
+        ['sid' => $sessionID]
     );
     print_r($result);
 
@@ -237,7 +231,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     echo "-------\n";
     $result = $DB->pselect(
         'SELECT * FROM issues WHERE sessionID=:sid',
-        array('sid' => $sessionID)
+        ['sid' => $sessionID]
     );
     print_r($result);
 
@@ -246,7 +240,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     echo "-------\n";
     $result = $DB->pselect(
         'SELECT * FROM mri_upload WHERE SessionID=:sid',
-        array('sid' => $sessionID)
+        ['sid' => $sessionID]
     );
     print_r($result);
 
@@ -255,7 +249,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     echo "---------\n";
     $result = $DB->pselect(
         'SELECT * FROM session WHERE ID=:id',
-        array('id' => $sessionID)
+        ['id' => $sessionID]
     );
     print_r($result);
 
@@ -264,17 +258,17 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     echo "----------------------\n";
     $result = $DB->pselect(
         'SELECT * from feedback_bvl_thread WHERE SessionID =:sid',
-        array('sid' => $sessionID)
+        ['sid' => $sessionID]
     );
     print_r($result);
     $feedbackIDs = $DB->pselect(
         'SELECT FeedbackID from feedback_bvl_thread WHERE SessionID =:sid',
-        array('sid' => $sessionID)
+        ['sid' => $sessionID]
     );
     foreach ($feedbackIDs as $id) {
         $result = $DB->pselect(
             'SELECT * from feedback_bvl_entry WHERE FeedbackID=:fid',
-            array('fid' => $id['FeedbackID'])
+            ['fid' => $id['FeedbackID']]
         );
         print_r($result);
     }
@@ -288,25 +282,25 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
                 echo "\n-- Deleting Instrument $name.\n";
                 $DB->delete(
                     $instrument['Test_name'],
-                    array('CommentID' => $instrument['CommentID'])
+                    ['CommentID' => $instrument['CommentID']]
                 );
 
                 // Delete from conflicts
                 $DB->delete(
                     'conflicts_unresolved',
-                    array('CommentId1' => $instrument['CommentID'])
+                    ['CommentId1' => $instrument['CommentID']]
                 );
                 $DB->delete(
                     'conflicts_unresolved',
-                    array('CommentId2' => $instrument['CommentID'])
+                    ['CommentId2' => $instrument['CommentID']]
                 );
                 $DB->delete(
                     'conflicts_resolved',
-                    array('CommentId1' => $instrument['CommentID'])
+                    ['CommentId1' => $instrument['CommentID']]
                 );
                 $DB->delete(
                     'conflicts_resolved',
-                    array('CommentId2' => $instrument['CommentID'])
+                    ['CommentId2' => $instrument['CommentID']]
                 );
             } catch (DatabaseException $e) {
                 echo "\nERROR:\n";
@@ -315,33 +309,33 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         }
         // Delete from flag
         echo "\n-- Deleting from flag.\n";
-        $DB->delete('flag', array('SessionID' => $sessionID));
+        $DB->delete('flag', ['SessionID' => $sessionID]);
 
         //Delete from media
         echo "\n-- Deleting from media.\n";
-        $DB->delete('media', array('session_id' => $sessionID));
+        $DB->delete('media', ['session_id' => $sessionID]);
 
         //Delete from issues
         echo "\n-- Deleting from issues.\n";
-        $DB->delete('issues', array('sessionID' => $sessionID));
+        $DB->delete('issues', ['sessionID' => $sessionID]);
 
         // Delete from mri_upload
         echo "\n-- Deleting from mri upload.\n";
-        $DB->delete('mri_upload', array('SessionID' => $sessionID));
+        $DB->delete('mri_upload', ['SessionID' => $sessionID]);
 
         // Delete from feedback
         echo "\n-- Deleting from feedback.\n";
         foreach ($feedbackIDs as $id) {
             $DB->delete(
                 'feedback_bvl_entry',
-                array('FeedbackID' => $id['FeedbackID'])
+                ['FeedbackID' => $id['FeedbackID']]
             );
         }
-        $DB->delete('feedback_bvl_thread', array('SessionID' => $sessionID));
+        $DB->delete('feedback_bvl_thread', ['SessionID' => $sessionID]);
 
         // Delete from session
         echo "\n-- Deleting from session.\n";
-        $DB->delete('session', array('ID' => $sessionID));
+        $DB->delete('session', ['ID' => $sessionID]);
     } else {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
@@ -349,7 +343,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
             $output .= "\n-- Deleting Instrument $name.\n";
             _printResultsSQL(
                 $instrument['Test_name'],
-                array('CommentID' => $instrument['CommentID']),
+                ['CommentID' => $instrument['CommentID']],
                 $output,
                 $DB
             );
@@ -357,46 +351,46 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
             // Delete from conflicts
             _printResultsSQL(
                 'conflicts_unresolved',
-                array('CommentId1' => $instrument['CommentID']),
+                ['CommentId1' => $instrument['CommentID']],
                 $output,
                 $DB
             );
             _printResultsSQL(
                 'conflicts_unresolved',
-                array('CommentId2' => $instrument['CommentID']),
+                ['CommentId2' => $instrument['CommentID']],
                 $output,
                 $DB
             );
             _printResultsSQL(
                 'conflicts_resolved',
-                array('CommentId1' => $instrument['CommentID']),
+                ['CommentId1' => $instrument['CommentID']],
                 $output,
                 $DB
             );
             _printResultsSQL(
                 'conflicts_resolved',
-                array('CommentId2' => $instrument['CommentID']),
+                ['CommentId2' => $instrument['CommentID']],
                 $output,
                 $DB
             );
         }
         // Delete from flag
         $output .= "\n-- Deleting from flag.\n";
-        _printResultsSQL('flag', array('SessionID' => $sessionID), $output, $DB);
+        _printResultsSQL('flag', ['SessionID' => $sessionID], $output, $DB);
 
         // Delete from media
         $output .= "\n-- Deleting from media.\n";
-        _printResultsSQL('media', array('session_id' => $sessionID), $output, $DB);
+        _printResultsSQL('media', ['session_id' => $sessionID], $output, $DB);
 
         // Delete from issues
         $output .= "\n-- Deleting from issues.\n";
-        _printResultsSQL('issues', array('sessionID' => $sessionID), $output, $DB);
+        _printResultsSQL('issues', ['sessionID' => $sessionID], $output, $DB);
 
         // Delete from mri_upload
         $output .= "\n-- Deleting from MRI upload.\n";
         _printResultsSQL(
             'mri_upload',
-            array('SessionID' => $sessionID),
+            ['SessionID' => $sessionID],
             $output,
             $DB
         );
@@ -406,21 +400,21 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         foreach ($feedbackIDs as $id) {
             _printResultsSQL(
                 'feedback_bvl_entry',
-                array('FeedbackID' => $id['FeedbackID']),
+                ['FeedbackID' => $id['FeedbackID']],
                 $output,
                 $DB
             );
         }
         _printResultsSQL(
             'feedback_bvl_thread',
-            array('SessionID' => $sessionID),
+            ['SessionID' => $sessionID],
             $output,
             $DB
         );
 
         // Delete from session
         $output .= "\n-- Deleting from session.\n";
-        _printResultsSQL('session', array('ID' => $sessionID), $output, $DB);
+        _printResultsSQL('session', ['ID' => $sessionID], $output, $DB);
 
         if ($printToSQL) {
             _exportSQL($output, $CandID, $sessionID);
