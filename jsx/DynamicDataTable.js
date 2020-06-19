@@ -83,7 +83,9 @@ class DynamicDataTable extends Component {
       return (
         <button className='btn-info has-spinner'>
           Loading
-          <span className='glyphicon glyphicon-refresh glyphicon-refresh-animate'/>
+          <span
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'
+          />
         </button>
       );
     }
