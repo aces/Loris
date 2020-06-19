@@ -45,10 +45,10 @@ if ($_GET['action'] == 'addpermission') {
         $data_release_id = $_POST['data_release_id'];
         $DB->insertIgnore(
             'data_release_permissions',
-            array(
+            [
                 'userid'          => $userid,
                 'data_release_id' => $data_release_id,
-            )
+            ]
         );
 
     } elseif (empty($_POST['data_release_id'])
@@ -62,15 +62,15 @@ if ($_GET['action'] == 'addpermission') {
                   ? "version IS NULL OR version=:drv" : "version=:drv";
         $IDs    = $DB->pselectCol(
             $query,
-            array(':drv' => $data_release_version)
+            [':drv' => $data_release_version]
         );
         foreach ($IDs as $ID) {
             $DB->insertIgnore(
                 'data_release_permissions',
-                array(
+                [
                     'userid'          => $userid,
                     'data_release_id' => $ID,
-                )
+                ]
             );
         }
     }
@@ -115,10 +115,10 @@ if ($_GET['action'] == 'addpermission') {
             foreach ($versionFiles[$version] as $fileId) {
                 $DB->insertOnDuplicateUpdate(
                     'data_release_permissions',
-                    array(
+                    [
                         'userid'          => $userId,
                         'data_release_id' => $fileId,
-                    )
+                    ]
                 );
             }
         }
@@ -129,10 +129,10 @@ if ($_GET['action'] == 'addpermission') {
             foreach ($versionFiles[$version] as $fileId) {
                 $DB->delete(
                     'data_release_permissions',
-                    array(
+                    [
                         'userid'          => $userId,
                         'data_release_id' => $fileId,
-                    )
+                    ]
                 );
             }
         }

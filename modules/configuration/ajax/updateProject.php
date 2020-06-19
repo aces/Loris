@@ -31,7 +31,7 @@ $projectAlias  = $_POST['Alias'] ?? '';
 $recTarget     = empty($_POST['recruitmentTarget'])
     ? null : $_POST['recruitmentTarget'];
 $projectID     = $_POST['ProjectID'] ?? null;
-$subprojectIDs = $_POST['SubprojectIDs'] ?? array();
+$subprojectIDs = $_POST['SubprojectIDs'] ?? [];
 
 $project = null;
 
@@ -40,7 +40,7 @@ if ($projectID == 'new') {
     // Give Conflict response if this project already exists.
     if (in_array($_POST['Name'], $ProjectList, true)) {
         http_response_code(409);
-        echo json_encode(array('error' => 'Conflict'));
+        echo json_encode(['error' => 'Conflict']);
         exit;
     }
 
@@ -70,6 +70,6 @@ if (!empty($subprojectIDs)) {
 }
 
 http_response_code(200);
-echo json_encode(array('ok' => 'Success'));
+echo json_encode(['ok' => 'Success']);
 exit;
 

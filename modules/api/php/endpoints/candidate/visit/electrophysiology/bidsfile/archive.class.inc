@@ -53,7 +53,7 @@ class Archive extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -64,9 +64,9 @@ class Archive extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.3',
-        );
+        ];
     }
 
     /**
@@ -117,10 +117,10 @@ class Archive extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_cache = new \LORIS\Http\Response(
             $body,
             200,
-            array(
+            [
                 'Content-Type'        => 'recording/tsv',
                 'Content-Disposition' => 'attachment; filename=' . $filename,
-            )
+            ]
         );
 
         return $this->_cache;

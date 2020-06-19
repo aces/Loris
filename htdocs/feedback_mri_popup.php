@@ -32,7 +32,7 @@ if (!$user->hasPermission('imaging_browser_qc')
     return;
 }
 
-$tpl_data = array();
+$tpl_data = [];
 $tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
 
 // instantiate feedback mri object
@@ -84,18 +84,18 @@ if ($comments->objectType == 'volume') {
                     AND f.AcquisitionProtocolID=st.ID
                     AND s.Active='Y'";
 
-    $qparams = array('FID' => $comments->fileID);
+    $qparams = ['FID' => $comments->fileID];
 } elseif ($comments->objectType == 'visit') {
     $query = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID
                 FROM session AS s, candidate AS c
               WHERE s.ID=:SID AND s.CandID=c.CandID AND s.Active='Y'";
 
-    $qparams = array('SID' => $comments->sessionID);
+    $qparams = ['SID' => $comments->sessionID];
 } else {
     $query = "SELECT c.CandID FROM session AS s, candidate AS c
                 WHERE s.ID=:SID AND s.CandID=c.CandID AND s.Active='Y'";
 
-    $qparams = array('SID' => $comments->sessionID);
+    $qparams = ['SID' => $comments->sessionID];
 }
 
 $result = $DB->pselect($query, $qparams);
@@ -115,7 +115,7 @@ $comment_types = $comments->getAllCommentTypes();
 // loop through the comment types
 $i = 0;
 foreach ($comment_types AS $comment_type_id => $comment_array) {
-    $tpl_data['comment'][$i] = array();
+    $tpl_data['comment'][$i] = [];
     $CommentTpl =& $tpl_data['comment'][$i];
 
     // print the status select field if it exists
@@ -142,14 +142,14 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
     foreach ($predefined_comments
         AS $predefined_comment_id => $predefined_comment_text
     ) {
-        $CommentTpl['predefined'][$j] = array();
+        $CommentTpl['predefined'][$j] = [];
         $PredefinedTpl =& $CommentTpl['predefined'][$j];
         // print a form element
         $PredefinedTpl['id'] = $predefined_comment_id;
         $PredefinedTpl['predefined_text'] = $predefined_comment_text['Comment'];
 
         // print the comment text
-        $Saved = $saved_comments[$comment_type_id] ?? array();
+        $Saved = $saved_comments[$comment_type_id] ?? [];
         if ($Saved['predefined'][$predefined_comment_id] ?? false) {
             $CommentTpl['predefined'][$j]['checked'] = true;
         }

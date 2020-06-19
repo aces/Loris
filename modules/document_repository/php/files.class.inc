@@ -47,10 +47,10 @@ class Files extends \NDB_Page
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'document_repository_view',
                 'document_repository_delete',
-            )
+            ]
         );
     }
 
@@ -116,7 +116,7 @@ class Files extends \NDB_Page
                 $uploadedBy = $DB->pselectOne(
                     "SELECT uploaded_by FROM document_repository
                     WHERE File_Name=:name",
-                    array('name' => $record)
+                    ['name' => $record]
                 );
                 $file       = $path. "$uploadedBy/$record";
                 return (new \LORIS\Http\Response())
@@ -197,20 +197,20 @@ class Files extends \NDB_Page
         $fileName = $DB->pselectOne(
             "SELECT File_name FROM document_repository
              WHERE record_id =:identifier",
-            array(':identifier' => $rid)
+            [':identifier' => $rid]
         );
         $dataDir  = $DB->pselectOne(
             "SELECT Data_dir FROM document_repository WHERE record_id =:identifier",
-            array(':identifier' => $rid)
+            [':identifier' => $rid]
         );
 
         //if user has document repository delete permission
         if ($user->hasPermission('document_repository_delete')) {
-            $DB->delete("document_repository", array("record_id" => $rid));
-            $msg_data = array(
+            $DB->delete("document_repository", ["record_id" => $rid]);
+            $msg_data = [
                 'deleteDocument' => $baseURL. "/document_repository/",
                 'document'       => $fileName,
-            );
+            ];
             $Notifier->notify($msg_data);
         }
 
@@ -232,10 +232,10 @@ class Files extends \NDB_Page
         $db    = \Database::singleton();
         $query = $db->pselect(
             "SELECT * FROM document_repository_categories",
-            array()
+            []
         );
         //categories
-        $categoriesList = array();
+        $categoriesList = [];
         foreach ($query as $value) {
              $arr = $this->parseCategory($value);
              $categoriesList[$arr['id']] =$arr['name'];
@@ -245,7 +245,7 @@ class Files extends \NDB_Page
         //instrument
         $instruments     = $db->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Test_name",
-            array()
+            []
         );
         $instrumentsList = array_combine($instruments, $instruments);
         //docFile
@@ -261,15 +261,15 @@ class Files extends \NDB_Page
                 "version " .
                 "FROM document_repository " .
                 " WHERE record_id = :record_id";
-        $where   = array('record_id' => $id);
+        $where   = ['record_id' => $id];
         $docData = $db->pselectRow($query, $where);
 
-        $result = array(
+        $result = [
             'categories'  => $categoriesList,
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
-        );
+        ];
 
         return $result;
     }
@@ -293,7 +293,7 @@ class Files extends \NDB_Page
                 $parent_id = $value['parent_id'];
                 $query     = "SELECT * FROM document_repository_categories".
                             " WHERE id=:parent_id";
-                $where     = array('parent_id' => $parent_id);
+                $where     = ['parent_id' => $parent_id];
                 $value     = $DB->pselectRow($query, $where);
                 if (is_null($value)) {
                     throw new \LorisException(
@@ -304,10 +304,10 @@ class Files extends \NDB_Page
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
-        return array(
+        return [
             "name" => $categoryName,
             "id"   => $id,
-        );
+        ];
     }
 
     /**
@@ -339,7 +339,7 @@ class Files extends \NDB_Page
 
         $site       = $DB->pselectOne(
             "SELECT CenterID FROM psc WHERE Name=:name",
-            array('name' => $site)
+            ['name' => $site]
         );
         $instrument = !empty($req['instrument']) ? $req['instrument'] : null;
         $pscid      = !empty($req['pscid'])      ? $req['pscid']      : null;
@@ -381,7 +381,7 @@ class Files extends \NDB_Page
 
                 $DB->insert(
                     'document_repository',
-                    array(
+                    [
                         'File_category' => $category,
                         'For_site'      => $site,
                         'comments'      => $comments,
@@ -394,12 +394,12 @@ class Files extends \NDB_Page
                         'PSCID'         => $pscid,
                         'visitLabel'    => $visit,
                         'File_type'     => $fileType,
-                    )
+                    ]
                 );
-                $msg_data = array(
+                $msg_data = [
                     'newDocument' => $baseURL . "/document_repository/",
                     'document'    => $fileName,
-                );
+                ];
                 $uploadNotifier->notify($msg_data);
                 $uploadOK = true;
         }
@@ -418,7 +418,7 @@ class Files extends \NDB_Page
         $fileCount =  $DB->pselectOne(
             "SELECT COUNT(*) FROM document_repository
              WHERE File_Name=:name",
-            array('name' => $filename)
+            ['name' => $filename]
         );
         if ((int)$fileCount > 0) {
             return true;

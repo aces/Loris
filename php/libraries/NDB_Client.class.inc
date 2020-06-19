@@ -98,7 +98,7 @@ class NDB_Client
             FROM Config c
             JOIN ConfigSettings cs ON (c.ConfigID=cs.ID)
             WHERE cs.Name=:nm",
-            array("nm" => "CSPAdditionalHeaders")
+            ["nm" => "CSPAdditionalHeaders"]
         );
         if (empty($config_additions)) {
             $config_additions = "";
@@ -132,7 +132,7 @@ class NDB_Client
             . $config_additions
         );
         // start php session
-        $sessionOptions = array('cookie_httponly' => true);
+        $sessionOptions = ['cookie_httponly' => true];
         $sessionOptions['cookie_samesite'] = true;
 
         // API Detect

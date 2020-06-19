@@ -37,7 +37,7 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionRead()
     {
-        $this->setupPermissions(array("battery_manager_view"));
+        $this->setupPermissions(["battery_manager_view"]);
         $this->safeGet($this->url . "/battery_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -53,7 +53,7 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/battery_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

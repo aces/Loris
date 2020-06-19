@@ -72,7 +72,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
               ON (i.issueID = ic.issueID)
             GROUP BY i.issueID, w.userID
             ORDER BY i.issueID DESC",
-            array('username' => $userID)
+            ['username' => $userID]
         );
     }
 

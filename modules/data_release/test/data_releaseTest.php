@@ -76,7 +76,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function _loadWithPermission(string $permission): string
     {
-        $this->setupPermissions(array($permission));
+        $this->setupPermissions([$permission]);
         $this->safeGet($this->url . "/data_release/");
         return $this->safeFindElement(
             WebDriverBy::cssSelector("body")
