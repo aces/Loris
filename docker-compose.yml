@@ -50,7 +50,7 @@ services:
   integration-tests:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php7.debug
     volumes:
       - ./:/app
     working_dir: /app
