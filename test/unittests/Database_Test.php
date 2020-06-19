@@ -870,7 +870,9 @@ class Database_Test extends TestCase
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stub->_PDO->expects($this->once())
-            ->method("prepare")->with($this->equalTo("SHOW TABLES"));
+            ->method("prepare")
+            ->with($this->equalTo("SHOW TABLES"))
+            ->willReturn(new PDOStatement());
         $stub->prepare("SHOW TABLES");
     }
 
