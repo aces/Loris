@@ -58,6 +58,7 @@ vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
 # Ensure strict typing is used in these files
 declare -a strict_libraries=(
     'Database.class.inc'
+    'OutputWrapper.class.inc'
 )
 
 vendor/bin/phpcs --standard=test/StrictTypesCS.xml --extensions=php,inc "${strict_libraries[@]/#/php/libraries/}" || exit $?;
