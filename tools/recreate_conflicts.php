@@ -49,8 +49,8 @@ if ($action=='all') {
     $allInstruments = Utility::getAllInstruments();
     $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 } else {
-    $allInstruments = array($action => $action);
-    $ddeInstruments = array($action => $action);
+    $allInstruments = [$action => $action];
+    $ddeInstruments = [$action => $action];
 }
 // clear the unresolved conflicts for all the instruments
 foreach ($allInstruments as $instrument => $Full_name) {
@@ -64,7 +64,7 @@ foreach ($allInstruments as $instrument => $Full_name) {
                                      WHERE Test_name=:testname AND CommentID
                                            NOT LIKE 'DDE%' AND s.Active='Y'
                                            AND c.Active='Y'",
-        array('testname' => $instrument)
+        ['testname' => $instrument]
     );
 
     foreach ($clear_conflicts as $conflict) {
@@ -85,7 +85,7 @@ foreach ($ddeInstruments as $test) {
                                        AND EXISTS (SELECT 'x' FROM flag dde WHERE
                                            dde.CommentID=CONCAT('DDE_',sde.CommentID)
                                        AND Data_entry='Complete')",
-        array('testname' => $test)
+        ['testname' => $test]
     );
 
     foreach ($instruments as $instrument) {
