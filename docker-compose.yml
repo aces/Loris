@@ -24,7 +24,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php7.debug
     volumes:
       - ./:/app
       - ./test/test_instrument:/app/project/instruments
