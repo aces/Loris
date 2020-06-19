@@ -32,6 +32,7 @@ declare -a tools_list=(
     'mri_violations_resolver.php'
     'populate_examiners_psc_rel.php'
     'raisinbread_refresh.php'
+    'recreate_conflicts.php'
     'resetpassword.php'
     'setconfig.php'
     'single_use/Cleanup_multiple_firstVisits.php'

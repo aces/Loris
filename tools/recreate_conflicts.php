@@ -12,11 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
-set_include_path(get_include_path().":".__DIR__."/../project/libraries:".":".__DIR__."/../php/libraries:");
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
+require_once __DIR__ . 'generic_includes.php';
 
 $config = NDB_Config::singleton();
 $db     = Database::singleton();
@@ -47,7 +43,7 @@ if (empty($argv[1]) || $argv[1] == 'help') {
  * Get cmd-line arguments
  */
 // get $action argument
-$action         = $argv[1];
+$action = $argv[1];
 
 if ($action=='all') {
     $allInstruments = Utility::getAllInstruments();
@@ -57,7 +53,7 @@ if ($action=='all') {
     $ddeInstruments = array($action => $action);
 }
 // clear the unresolved conflicts for all the instruments
-foreach ($allInstruments as $instrument=>$Full_name) {
+foreach ($allInstruments as $instrument => $Full_name) {
     $clear_conflicts = $db->pselect(
         "SELECT CommentID, Test_name,
                                             CONCAT('DDE_', CommentID)
