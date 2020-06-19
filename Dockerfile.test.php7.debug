@@ -9,5 +9,5 @@ RUN echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini
 RUN echo "xdebug.remote_autostart=on" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 # Install extensions through the scripts the container provides
-RUN docker-php-ext-install pdo_mysql zip && \
+RUN docker-php-ext-install pdo_mysql && \
     docker-php-ext-install zip
