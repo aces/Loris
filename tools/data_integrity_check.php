@@ -1,14 +1,13 @@
+#!/usr/bin/env php
 <?php declare(strict_types=1);
 /**
  * This tool verifies that the data contained in the LORIS database is well-formed
  * and contains no major issues. For example, it checks that tables referenced
  * in one part of the database exist elsewhere.
  */
-require_once __DIR__ . '/generic_includes.php';
-require_once __DIR__ . '/cli_helper.class.inc';
+require_once 'generic_includes.php';
 
-
-$helper = new CLI_Helper();
+$helper = new OutputWrapper();
 
 // Verifies that instruments registered in the test_names table have
 // corresponding per-instrument tables containing the data.
