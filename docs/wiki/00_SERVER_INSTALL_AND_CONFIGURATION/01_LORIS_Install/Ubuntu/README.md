@@ -111,33 +111,6 @@ This is required for the install process in order to automatically generate
 Apache configuration files. Sudo priviledges can be revoked once the install
 is completed. 
 
-```bash
-sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
-```
-
-Next, add Apache to the _lorisadmin_ group
-
-```bash
-sudo usermod -a -G lorisadmin www-data
-```
-Then, set the password for the _lorisadmin_ account
-
-```bash
-sudo passwd lorisadmin
-su - lorisadmin
-```
-If the _loris root_ directory has not already been created, create it here
-
-```bash
-sudo mkdir -m 755 -p /var/www/loris
-```
-
-Finally, change the _loris root_ directory owner to the _lorisadmin_ account
-
-```bash
-sudo chown lorisadmin.lorisadmin /var/www/loris
-```
-
 ## Creating the lorisadmin user
 
 ```bash
