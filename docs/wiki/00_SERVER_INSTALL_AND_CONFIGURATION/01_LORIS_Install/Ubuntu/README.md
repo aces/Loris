@@ -117,7 +117,8 @@ is completed.
 # Create lorisadmin user and group
 # Give lorisadmin `sudo` permission. This is required for the install process
 # in order to automatically generate Apache configuration files.
-# Sudo privileges can be revoked once the install is completed.
+# 
+# Sudo privileges should be revoked once the install is completed.
 sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
 # Add apache to the lorisadmin group
 sudo usermod -a -G lorisadmin www-data
