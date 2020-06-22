@@ -96,7 +96,7 @@ class ServerProcessLauncher
 
         $db->insert(
             'server_processes',
-            array(
+            [
                 'pid'            => $process->getPid(),
                 'type'           => $process->getType(),
                 'stdout_file'    => $process->getStdoutFile(),
@@ -104,7 +104,7 @@ class ServerProcessLauncher
                 'exit_code_file' => $process->getExitCodeFile(),
                 'userid'         => $process->getUserId(),
                 'start_time'     => $process->getStartTime(),
-            )
+            ]
         );
 
         return $db->lastInsertID;

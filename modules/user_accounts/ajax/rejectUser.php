@@ -62,5 +62,5 @@ if (!Edit_User::canRejectAccount($rejectee)) {
     );
 }
 
-$db->delete('users', array("UserID" => $username));
+$db->delete('users', ["UserID" => $username]);
 header("HTTP/1.1 204 No Content");

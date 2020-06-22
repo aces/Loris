@@ -57,7 +57,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -68,10 +68,10 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.2',
             'v0.0.3',
-        );
+        ];
     }
 
     /**

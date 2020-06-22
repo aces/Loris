@@ -101,12 +101,12 @@ OUTPUT;
                 $bits[0] = "varchar(255)";
                 break;
             case "radio":
-                $bits[0] =enumizeOptions($bits[3], $table = array(), $bits[1]);
+                $bits[0] =enumizeOptions($bits[3], $table = [], $bits[1]);
                 break;
             case "select":
                 $bits[0]   =enumizeOptions(
                     $bits[3] ?? null,
-                    $table = array(),
+                    $table = [],
                     $bits[1]
                 );
                 break;

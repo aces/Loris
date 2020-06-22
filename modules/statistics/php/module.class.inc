@@ -197,7 +197,7 @@ class Module extends \Module
             "SELECT COUNT(*) FROM candidate c
              WHERE c.Active='Y' AND c.Entity_type='Human'
              AND c.RegistrationCenterID <> 1",
-            array()
+            []
         );
         return $totalRecruitment;
     }
@@ -274,7 +274,7 @@ class Module extends \Module
             FROM candidate c
             WHERE c.Sex=:sex AND c.Active='Y' AND c.Entity_type='Human'
             AND c.RegistrationCenterID <> 1",
-            array('sex' => $sex)
+            ['sex' => $sex]
         );
     }
 
@@ -296,10 +296,10 @@ class Module extends \Module
             FROM candidate c
             WHERE c.Sex=:sex AND c.Active='Y' AND c.RegistrationProjectID=:PID
             AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
-            array(
+            [
                 'sex' => $sex,
                 'PID' => $projectID,
-            )
+            ]
         );
     }
 
@@ -322,7 +322,7 @@ class Module extends \Module
               AND c.RegistrationProjectID=:PID
               AND c.Entity_type='Human'
               AND c.RegistrationCenterID <> 1",
-            array('PID' => $projectID)
+            ['PID' => $projectID]
         );
     }
 }

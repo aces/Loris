@@ -41,7 +41,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      * Table headers
      */
     private $_loadingUI
-        =  array(
+        =  [
             'Server Processes Manager' => '#bc2 > a:nth-child(2) > div',
             //table headers
             'No.'                      => '#dynamictable > thead > tr',
@@ -54,7 +54,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             'User ID'                  => '#dynamictable > thead > tr',
             'Start Time'               => '#dynamictable > thead > tr',
             'End Time'                 => '#dynamictable > thead > tr',
-        );
+        ];
     /**
      * Tests that the page does not load if config setting mriCodePath has
      * not been set.
@@ -64,7 +64,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     function testDoesNotLoadWithoutMRICodePath()
     {
         $this->setupConfigSetting('mriCodePath', null);
-        $this->setupPermissions(array("server_processes_manager"));
+        $this->setupPermissions(["server_processes_manager"]);
         $this->safeGet($this->url . "/server_processes_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -83,7 +83,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     {
         // This function sets mriCodePath for all future functions
         $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/server_processes_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -99,7 +99,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithPermission()
     {
-        $this->setupPermissions(array("server_processes_manager"));
+        $this->setupPermissions(["server_processes_manager"]);
         $this->safeGet($this->url . "/server_processes_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

@@ -44,10 +44,10 @@ class Issue extends \NDB_Form
         if ((empty($issueID)
             || !isset($issueID))
             && !$user->hasAnyPermission(
-                array(
+                [
                     'issue_tracker_reporter',
                     'issue_tracker_developer',
-                )
+                ]
             )
         ) {
             header("HTTP/1.1 403 Forbidden");
@@ -104,7 +104,7 @@ class Issue extends \NDB_Form
         }
         $issueData = \NDB_Factory::singleton()->database()->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
-            array('issueID' => $issueID)
+            ['issueID' => $issueID]
         );
         return (is_null($issueData)
             || in_array($issueData['centerID'], $user->getData('CenterIDs'))
@@ -127,7 +127,7 @@ class Issue extends \NDB_Form
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $results = array();
+        $results = [];
         preg_match(
             '#/issue/([0-9]+|new)$#',
             $request->getURI()->getPath(),

@@ -104,10 +104,10 @@ class New_Profile extends \NDB_Form
                     json_encode($this->_error)
                 );
             }
-            $result = array(
+            $result = [
                 'candID' => $this->_candID,
-                'pscid'  => $this->_pscid,
-            );
+                'pscid'  => $this->_pscid
+            ];
             return (new \LORIS\Http\Response\JSON\Created(json_encode($result)))
                 ->withHeader("Allow", "POST");
         }
@@ -135,11 +135,11 @@ class New_Profile extends \NDB_Form
         $ageMin    = $config->getSetting('ageMin');
         $dobFormat = $config->getSetting('dobFormat');
         $edc       = $config->getSetting('useEDC');
-        $sex       = array(
+        $sex       = [
             'male'   => 'Male',
             'female' => 'Female',
             'other'  => 'Other',
-        );
+        ];
         $pscidSet  = "false";
         $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
         $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
@@ -147,12 +147,12 @@ class New_Profile extends \NDB_Form
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
-        $psc_labelOptions   = array();
+        $psc_labelOptions   = [];
         if ($num_sites > 1) {
             foreach ($user_list_of_sites as $siteID) {
                 $center = $DB->pselectRow(
                     "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                    array('cid' => $siteID)
+                    ['cid' => $siteID]
                 );
                 if (!is_null($center)) {
                     $psc_labelOptions[$siteID] = $center['Name'];
@@ -162,7 +162,7 @@ class New_Profile extends \NDB_Form
         $site = $psc_labelOptions;
 
         // Get projects for the select dropdown
-        $projList = array();
+        $projList = [];
         $projects = \Utility::getProjectList();
         foreach ($projects as $projectID => $projectName) {
             $projList[$projectID] = $projectName;
@@ -175,7 +175,7 @@ class New_Profile extends \NDB_Form
             $pscidSet = "true";
         }
 
-        $this->fieldOptions = array(
+        $this->fieldOptions = [
             'minYear'   => $minYear,
             'maxYear'   => $maxYear,
             'dobFormat' => $dobFormat,
@@ -184,9 +184,9 @@ class New_Profile extends \NDB_Form
             'pscidSet'  => $pscidSet,
             'site'      => $site,
             'project'   => $project,
-        );
+        ];
 
-        $this->form->addFormRule(array(&$this, '_validateNewCandidate'));
+        $this->form->addFormRule([&$this, '_validateNewCandidate']);
     }
 
     /**
@@ -199,7 +199,7 @@ class New_Profile extends \NDB_Form
     function _validateNewCandidate($values): array
     {
         $this->_error = null;
-        $errors       = array();
+        $errors       = [];
         $factory      = \NDB_Factory::singleton();
         $config       = $factory->config();
         $user         = $factory->user();
@@ -278,7 +278,7 @@ class New_Profile extends \NDB_Form
                 $errors['pscid'] = 'PSCID does not match the required structure';
             } elseif ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
-                array('V_PSCID' => $values['pscid'])
+                ['V_PSCID' => $values['pscid']]
             ) > 0
             ) {
                 $errors['pscid'] = 'PSCID has already been registered';

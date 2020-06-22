@@ -76,7 +76,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
                 ORDER BY c.PSCID ASC
             ",
-            array()
+            []
         );
     }
 

@@ -50,7 +50,7 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -61,10 +61,10 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.2',
             'v0.0.3',
-        );
+        ];
     }
 
     /**
@@ -118,10 +118,10 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
         return new \LORIS\Http\Response(
             $body,
             200,
-            array(
+            [
                 'Content-Type'        => 'image/jpeg',
                 'Content-Disposition' => 'attachment; filename=' . $filename,
-            )
+            ]
         );
     }
 
@@ -140,11 +140,11 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return '';
         }
 
-        $signature = array(
+        $signature = [
             'filename' => $info->getFilename(),
             'size'     => $info->getSize(),
             'mtime'    => $info->getMTime(),
-        );
+        ];
 
         return md5(json_encode($signature));
     }

@@ -459,12 +459,12 @@ abstract class AbstractServerProcess
         //--------------------------------------------------------------------------
         // Update object and database values to reflect what was computed previously
         //--------------------------------------------------------------------------
-        $setValues   = array(
+        $setValues   = [
             'exit_text' => $exitText,
             'exit_code' => $exitCode,
             'end_time'  => $endTime,
-        );
-        $whereValues = array('id' => $this->getId());
+        ];
+        $whereValues = ['id' => $this->getId()];
 
         try {
             $this->getDatabaseProvider()->getDatabase()->update(

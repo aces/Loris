@@ -20,7 +20,7 @@ class InstrumentImporter extends DataImporter
     const PSCID_LENGTH = 6;
 
     /* An array of CommentIDs that exist in the database. */
-    protected $existingCommentIDs = array();
+    protected $existingCommentIDs = [];
 
     /**
      * {@inheritDoc}
@@ -43,7 +43,7 @@ class InstrumentImporter extends DataImporter
         // Access list of existing CommentIDs
         $this->existingCommentIDs = \Database::singleton()->pselectCol(
             'SELECT CommentID from flag',
-            array()
+            []
         );
 
         // Create a mapping between PSCIDs and new PSCIDs to new CandIDs.
@@ -77,11 +77,11 @@ class InstrumentImporter extends DataImporter
 
         $newCommentID = \Database::singleton()->pselectOne(
             $query,
-            array(
+            [
                 'newCandID'  => $newCandID,
                 'visitLabel' => $data['Visit_label'],
                 'table'      => $this->table,
-            )
+            ]
         );
 
         // Validate
@@ -95,11 +95,11 @@ class InstrumentImporter extends DataImporter
 
         // Update the flag table
         $command['table']    = 'flag';
-        $command['data']     = array(
+        $command['data']     = [
             'Data_entry'     => $data['Data_entry'],
             'Administration' => $data['Administration'],
-        );
-        $command['where']    = array('CommentID' => $newCommentID);
+        ];
+        $command['where']    = ['CommentID' => $newCommentID];
         $this->UPDATEQueue[] = $command;
         unset($command);
         // Unset all values that don't belong in the instrument table
@@ -113,7 +113,7 @@ class InstrumentImporter extends DataImporter
         // Update the instrument table
         $command['table']    = $this->table;
         $command['data']     = $data;
-        $command['where']    = array('CommentID' => $newCommentID);
+        $command['where']    = ['CommentID' => $newCommentID];
         $this->UPDATEQueue[] = $command;
     }
 }

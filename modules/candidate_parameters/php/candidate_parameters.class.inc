@@ -46,10 +46,10 @@ class Candidate_Parameters extends \NDB_Form
         // one of the candidate_parameter permissions AND have the candidate's site.
         return $user->hasPermission('access_all_profiles') ||
             ($user->hasAnyPermission(
-                array(
+                [
                     'candidate_parameter_view',
                     'candidate_parameter_edit',
-                )
+                ]
             )
                 && $user->hasCenter($candidate->getCenterID())
             );
@@ -77,9 +77,9 @@ class Candidate_Parameters extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/candidate_parameters/js/CandidateParameters.js",
-            )
+            ]
         );
     }
 

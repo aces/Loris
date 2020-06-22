@@ -29,7 +29,7 @@ if (isset($argv[1]) && $argv[1] === "confirm") {
 
 // Create a mapping of IDs and Names from the LorisMenu table.
 // This array is indexed by the NAME.
-$result = $DB->pselect('SELECT ID,Name FROM modules', array());
+$result = $DB->pselect('SELECT ID,Name FROM modules', []);
 if (empty($result)) {
     throw new \DatabaseException(
         'Could not load data from the `modules` table. Please make sure you '
@@ -99,14 +99,14 @@ foreach ($correctMapping as $issueID => $modulesTableID) {
     $result       = $DB->pselect(
         "SELECT i.issueID,lm.Link as module FROM LorisMenu lm 
         INNER JOIN issues i ON (i.module=lm.ID AND i.issueID=:id)",
-        array('id' => $issueID)
+        ['id' => $issueID]
     );
     $idBefore     = $result[0]['issueID'];
     $moduleBefore = $result[0]['module'];
 
     $moduleAfter = $DB->pselectOne(
         'SELECT name FROM modules WHERE ID=:id',
-        array('id' => $modulesTableID)
+        ['id' => $modulesTableID]
     );
     echo sprintf(
         "Issue ID: %s. Module before (`LorisMenu`): `%s`. Module after "

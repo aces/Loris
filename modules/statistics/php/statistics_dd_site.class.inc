@@ -27,7 +27,7 @@ class Statistics_DD_Site extends statistics_site
 {
 
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     /**
      * CheckCriteria function
@@ -78,10 +78,10 @@ class Statistics_DD_Site extends statistics_site
 
         $this->instruments = array_filter(
             $this->instruments,
-            array(
+            [
                 &$this,
                 'notexcluded',
-            )
+            ]
         );
     }
 

@@ -135,7 +135,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     public function testCreateTimepointPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );

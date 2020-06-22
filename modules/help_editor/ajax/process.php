@@ -33,14 +33,14 @@ if (!empty($_POST['helpID'])
     $help_file = HelpFile::factory($helpID);
     // update the help file
     $help_file->update(
-        array(
+        [
             'topic'   => $_POST['title'],
             'content' => $_POST['content'],
             'updated' => date(
                 'Y-m-d h:i:s',
                 time()
             ),
-        )
+        ]
     );
 } else {
     //content does not exist insert the help file
@@ -50,7 +50,7 @@ if (!empty($_POST['helpID'])
     ) {
         //create parent help section first
         $parentID = HelpFile::insert(
-            array(
+            [
                 'hash'    => md5($_POST['section']),
                 'topic'   => "",
                 'content' => "Under construction",
@@ -58,7 +58,7 @@ if (!empty($_POST['helpID'])
                     'Y-m-d h:i:s',
                     time()
                 ),
-            )
+            ]
         );
          // check errors
     }
@@ -69,7 +69,7 @@ if (!empty($_POST['helpID'])
 
         // insert the help file
         $helpID = HelpFile::insert(
-            array(
+            [
                 'parentID' => $_POST['parentID'],
                 'hash'     => md5($_POST['subsection']),
                 'topic'    => $_POST['title'],
@@ -78,7 +78,7 @@ if (!empty($_POST['helpID'])
                     'Y-m-d h:i:s',
                     time()
                 ),
-            )
+            ]
         );
 
     } else if (!empty($_POST['section'])
@@ -86,7 +86,7 @@ if (!empty($_POST['helpID'])
     ) {
         //default case
         $helpID = HelpFile::insert(
-            array(
+            [
                 'hash'    => md5($_POST['section']),
                 'topic'   => $_POST['title'],
                 'content' => $_POST['content'],
@@ -94,7 +94,7 @@ if (!empty($_POST['helpID'])
                     'Y-m-d h:i:s',
                     time()
                 ),
-            )
+            ]
         );
     }
 }

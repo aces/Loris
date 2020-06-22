@@ -9,9 +9,9 @@ require_once 'DataImporter.class.inc';
  */
 class VisitImporter extends DataImporter
 {
-    public $excludedVisitLabels = array();
+    public $excludedVisitLabels = [];
     public $excludedCount       = 0;
-    public $existingSessions    = array();
+    public $existingSessions    = [];
 
     /**
      * {@inheritDoc}
@@ -34,11 +34,11 @@ class VisitImporter extends DataImporter
         // when to build UPDATE vs. INSERT statements.
         $result = \Database::singleton()->pselect(
             'SELECT CandID,Visit_label FROM session',
-            array()
+            []
         );
         foreach ($result as $row) {
             if (!array_key_exists($row['CandID'], $this->existingSessions)) {
-                $this->existingSessions[$row['CandID']] = array();
+                $this->existingSessions[$row['CandID']] = [];
             }
             array_push(
                 $this->existingSessions[$row['CandID']],
@@ -102,11 +102,11 @@ class VisitImporter extends DataImporter
         // We don't want PSCID information from the CSV file included in the
         // SET statement. It's only used for linking.
         unset($data['PSCID']);
-        $where   = array('CandID' => $newCandID);
-        $command = array(
+        $where   = ['CandID' => $newCandID];
+        $command = [
             'data'  => $data,
             'where' => $where,
-        );
+        ];
 
         if (empty($this->existingSessions[$newCandID])
             || !in_array(

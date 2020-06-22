@@ -51,7 +51,7 @@ class AttachmentProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             ORDER BY
                 date_added
             ",
-            array('issueID' => $issueID),
+            ['issueID' => $issueID],
             '\LORIS\issue_tracker\Models\AttachmentDTO'
         );
     }
