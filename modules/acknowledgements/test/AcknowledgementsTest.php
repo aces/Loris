@@ -106,8 +106,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests clear button in the form
-     * The form should refreash and the data should be gone.
+     * Tests filter and clearfilter function
      *
      * @return void
      */
