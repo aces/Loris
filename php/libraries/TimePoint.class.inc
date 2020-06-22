@@ -84,7 +84,7 @@ class TimePoint
     static function &singleton(SessionID $sessionID)
     {
         // instantiate new TimePoint object
-        static $timePointList = array();
+        static $timePointList = [];
         if (!isset($timePointList[(string) $sessionID])) {
             try {
                 $timePointList[(string) $sessionID] = new TimePoint();

@@ -270,7 +270,7 @@ class NDB_BVL_Feedback
 
         return intval(
             NDB_Factory::singleton()->database()
-                ->pselectOne($query, array(':name' => $name))
+                ->pselectOne($query, [':name' => $name])
         );
     }
 
