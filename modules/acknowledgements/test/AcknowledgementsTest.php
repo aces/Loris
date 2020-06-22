@@ -26,11 +26,13 @@ use Facebook\WebDriver\WebDriverSelect;
 class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 {
     //filter location
-    static $fullname       = 'input[name="fullname"]'; 
+    static $fullname       = 'input[name="fullName"]'; 
     static $citationName   = 'input[name="citationName"]';
     static $startDate      = 'input[name="startDate"]';
     static $endDate        = 'input[name="endDate"]'; 
     static $present        = 'select[name="present"]';
+    static $display        = '.table-header > .row > div > div:nth-child(1)';
+    static $clearFilter    = 'button[type="reset"]';
 
     // Initial array data
 
@@ -53,8 +55,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         'affiliations'  => 'McGill',
         'degrees'       => 'Bachelors',
         'roles'         => 'Investigators',
-        'start_date'    => '2015-11-11',
-        'end_date'      => '2016-11-11',
+        'start_date'    => '2016-11-11',
+        'end_date'      => '2017-11-11',
         'present'       => 'Yes',
     );
     /**
@@ -111,13 +113,41 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testFilters()
     {
-        $this->safeGet($this->url . "/acknowledgements/");sleep(10);
+        $this->safeGet($this->url . "/acknowledgements/");
         $this->_filterTest(
-            self::$PSCID,
+            self::$fullname,
             self::$display,
             self::$clearFilter,
-            'test',
-            "0 rows",
+            self::$testData['full_name'],
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$citationName,
+            self::$display,
+            self::$clearFilter,
+            self::$testData['citation_name'],
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$startDate,
+            self::$display,
+            self::$clearFilter,
+            self::$testData['start_date'],
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$endDate,
+            self::$display,
+            self::$clearFilter,
+            self::$testData['end_date'],
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$present,
+            self::$display,
+            self::$clearFilter,
+            self::$testData['present'],
+            "31"
         );
     }
     /**
@@ -127,29 +157,42 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testAddNewRecord()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better.'
-        );
-
         $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeFindElement(
+            WebDriverBy::cssSelector("div:nth-child(2) > .btn:nth-child(1)")
+        )->click();
         //insert ordering
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("addOrdering")
         )->sendKeys(self::$newData['ordering']);
         //insert Full name
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("addFullName")
         )->sendKeys(self::$newData['full_name']);
         //insert Citation name
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("addCitationName")
         )->sendKeys(self::$newData['citation_name']);
+        $this->safeFindElement(
+            WebDriverBy::Name("addStartDate")
+        )->sendKeys(self::$newData['start_date']);
+        $this->safeFindElement(
+            WebDriverBy::Name("addEndDate")
+        )->sendKeys(self::$newData['end_date']);
+        $el_dropdown = new WebDriverSelect(
+            $this->safeFindElement(WebDriverBy::Name("addPresent"))
+        );
+        $el_dropdown->selectByVisibleText("Yes");
         //expecting to find the value,after clicking save button
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
-        //test filter
-        $this->_testFilter("fullName", self::$newData['full_name']);
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("#swal2-title")
+            )->getText();
+            // 4 means there are 4 records under this site.
+            $this->assertContains("Success!", $bodyText);
+
     }
 }
 
