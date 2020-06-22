@@ -45,17 +45,17 @@ class ConsentStatus extends Component {
             success: (data) => {
                 let formData = {};
                 let consents = data.consents;
-                for (let consentStatus in consents) {
-                    if (consents.hasOwnProperty(consentStatus)) {
-                        let consentDate = consentStatus + '_date';
-                        let consentDate2 = consentStatus + '_date2';
-                        let consentWithdrawal = consentStatus + '_withdrawal';
-                        let consentWithdrawal2 = consentStatus + '_withdrawal2';
-                        formData[consentStatus] = data.consentStatuses[consentStatus];
-                        formData[consentDate] = data.consentDates[consentStatus];
-                        formData[consentDate2] = data.consentDates[consentStatus];
-                        formData[consentWithdrawal] = data.withdrawals[consentStatus];
-                        formData[consentWithdrawal2] = data.withdrawals[consentStatus];
+                for (let cStatus in consents) {
+                    if (consents.hasOwnProperty(cStatus)) {
+                        let cDate = cStatus + '_date';
+                        let cDate2 = cStatus + '_date2';
+                        let cWithdrawal = cStatus + '_withdrawal';
+                        let cWithdrawal2 = cStatus + '_withdrawal2';
+                        formData[cStatus] = data.consentStatuses[cStatus];
+                        formData[cDate] = data.consentDates[cStatus];
+                        formData[cDate2] = data.consentDates[cStatus];
+                        formData[cWithdrawal] = data.withdrawals[cStatus];
+                        formData[cWithdrawal2] = data.withdrawals[cStatus];
                     }
                 }
                 this.setState({
@@ -155,7 +155,10 @@ class ConsentStatus extends Component {
                     return;
                 }
                 if (date1 > today) {
-                    alert(label + ' withdrawal date cannot be later than today!');
+                    alert(
+                      label
+                      + ' withdrawal date cannot be later than today!'
+                    );
                     return;
                 }
             }
@@ -231,7 +234,8 @@ class ConsentStatus extends Component {
                     dateRequired[i] = true;
                     // If answer was previously 'yes' and consent is now being withdrawn, enable and require withdrawal date
                     // If consent was previously withdrawn and stays withdrawn, enable and require withdrawal date
-                    if (oldConsent === 'yes' || (oldConsent === 'no' && withdrawalDate)) {
+                    if (oldConsent === 'yes'
+                       || (oldConsent === 'no' && withdrawalDate)) {
                         withdrawalDisabled[i] = false;
                         withdrawalRequired[i] = true;
                     }
@@ -253,7 +257,8 @@ class ConsentStatus extends Component {
                 let consentDate = consentStatus + '_date';
                 let consentDate2 = consentStatus + '_date2';
                 let consentDateLabel = 'Date of ' + statusLabel;
-                let consentDateConfirmationLabel = 'Confirmation Date of ' + statusLabel;
+                let consentDateConfirmationLabel = 'Confirmation Date of '
+                                                   + statusLabel;
                 let consentWithdrawal = consentStatus + '_withdrawal';
                 let consentWithdrawal2 = consentStatus + '_withdrawal2';
                 let consentWithdrawalLabel = 'Date of Withdrawal of Consent';
@@ -321,14 +326,15 @@ class ConsentStatus extends Component {
         }
 
         let formattedHistory = [];
-        for (let consentKey in this.state.Data.history) {
-            if (this.state.Data.history.hasOwnProperty(consentKey)) {
-                let consentLabel = this.state.Data.history[consentKey].label;
-                let consentType = this.state.Data.history[consentKey].consentType;
-                for (let field in this.state.Data.history[consentKey]) {
-                    if (this.state.Data.history[consentKey].hasOwnProperty(field)) {
+        const history = this.state.Data.history;
+        for (let consentKey in history) {
+            if (history.hasOwnProperty(consentKey)) {
+                let consentLabel = history[consentKey].label;
+                let consentType = history[consentKey].consentType;
+                for (let field in history[consentKey]) {
+                    if (history[consentKey].hasOwnProperty(field)) {
                         let line = '';
-                        let historyConsent = this.state.Data.history[consentKey][field];
+                        let historyConsent = history[consentKey][field];
                         for (let field2 in historyConsent) {
                             if (historyConsent.hasOwnProperty(field2)) {
                                 let current = historyConsent[field2];
@@ -354,7 +360,8 @@ class ConsentStatus extends Component {
                                             line += ' ';
                                             break;
                                         case consentType + '_withdrawal':
-                                            line += 'Date of Consent Withdrawal: ';
+                                            line += 'Date of '
+                                                    + 'Consent Withdrawal: ';
                                             line += current;
                                             line += ' ';
                                             break;
@@ -377,8 +384,14 @@ class ConsentStatus extends Component {
                     ref="form"
                     class="col-md-6"
                 >
-                    <StaticElement label="PSCID" text={this.state.Data.pscid} />
-                    <StaticElement label="DCCID" text={this.state.Data.candID} />
+                    <StaticElement
+                      label="PSCID"
+                      text={this.state.Data.pscid}
+                    />
+                    <StaticElement
+                      label="DCCID"
+                      text={this.state.Data.candID}
+                    />
                     {consents}
                     {updateButton}
                     {formattedHistory}
