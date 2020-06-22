@@ -191,7 +191,7 @@ class My_Preferences extends \NDB_Form
         }
 
         // send the user an email
-        $msg_data          = array();
+        $msg_data          = [];
         $msg_data['study'] = $config->getSetting('title');
         $msg_data['realname'] = $values['Real_name'];
 
