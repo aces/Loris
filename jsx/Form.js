@@ -44,7 +44,9 @@ class FormElement extends Component {
     const filter = this.props.formElements;
 
     Object.keys(filter).forEach(function(objKey, index) {
-      const userInput = this.props.onUserInput ? this.props.onUserInput : filter[objKey].onUserInput;
+      const userInput = this.props.onUserInput ?
+        this.props.onUserInput :
+        filter[objKey].onUserInput;
       const value = filter[objKey].value ? filter[objKey].value : '';
       formElementsHTML.push(
         <div key={'el_' + index} className={colClass}>
@@ -458,7 +460,9 @@ class SelectElement extends Component {
       }
       optionList = Object.keys(newOptions).sort().map(function(option) {
         return (
-          <option value={newOptions[option]} key={newOptions[option]}>{option}</option>
+          <option value={newOptions[option]} key={newOptions[option]}>
+            {option}
+          </option>
         );
       });
     } else {
@@ -669,7 +673,9 @@ class TagsElement extends Component {
           <datalist id={this.props.id + '_list'}>
             {Object.keys(options).map(function(option) {
               return (
-                <option value={options[option]} key={option}>{options[option]}</option>
+                <option value={options[option]} key={option}>
+                  {options[option]}
+                </option>
               );
             })}
           </datalist>
@@ -1501,7 +1507,9 @@ class LinkElement extends Component {
           {this.props.label}
         </label>
         <div className="col-sm-9">
-          <p className="form-control-static"><a href={this.props.href}>{this.props.text}</a></p>
+          <p className="form-control-static">
+            <a href={this.props.href}>{this.props.text}</a>
+          </p>
         </div>
       </div>
     );
@@ -1739,7 +1747,9 @@ class LorisElement extends Component {
         break;
       default:
         console.warn(
-          'Element of type ' + elementProps.type + ' is not currently implemented!'
+          'Element of type ' +
+          elementProps.type +
+          ' is not currently implemented!'
         );
         break;
     }

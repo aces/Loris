@@ -113,6 +113,7 @@ function lorisModule(mname, entries, override=false) {
         resolve: resolve,
         module: mod,
         mode: 'none',
+        stats: 'errors-warnings',
     };
 }
 
@@ -147,6 +148,7 @@ const config = [
         optimization: optimization,
         resolve: resolve,
         module: mod,
+        stats: 'errors-warnings',
     },
     // Modules
     lorisModule('media', ['CandidateMediaWidget', 'mediaIndex']),

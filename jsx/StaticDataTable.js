@@ -388,7 +388,10 @@ class StaticDataTable extends Component {
           );
         } else {
           headers.push(
-            <th key={'th_col_' + colIndex} onClick={this.setSortColumn(i).bind(this)}>
+            <th
+              key={'th_col_' + colIndex}
+              onClick={this.setSortColumn(i).bind(this)}
+            >
               {this.props.Headers[i]}
             </th>
           );
@@ -553,7 +556,10 @@ class StaticDataTable extends Component {
     return (
       <div className="panel panel-default">
         {header}
-        <table className="table table-hover table-primary table-bordered" id="dynamictable">
+        <table
+          className="table table-hover table-primary table-bordered"
+          id="dynamictable"
+        >
           <thead>
             <tr className="info">{headers}</tr>
           </thead>
