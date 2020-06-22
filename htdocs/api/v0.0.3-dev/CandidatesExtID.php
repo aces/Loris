@@ -23,7 +23,7 @@ require_once 'APIBase.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Candidates extends APIBase
+class CandidatesExtID extends APIBase
 {
     var $RequestData;
 
@@ -272,9 +272,9 @@ if (isset($_REQUEST['PrintCandidates'])) {
         }
         fclose($fp);
 
-        $obj = new Candidates($_SERVER['REQUEST_METHOD'], json_decode($data, true));
+        $obj = new CandidatesExtID($_SERVER['REQUEST_METHOD'], json_decode($data, true));
     } else {
-        $obj = new Candidates($_SERVER['REQUEST_METHOD']);
+        $obj = new CandidatesExtID($_SERVER['REQUEST_METHOD']);
     }
     print $obj->toJSONString();
 }
