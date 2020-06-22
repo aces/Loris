@@ -7,8 +7,6 @@ use \Psr\Http\Message\ResponseInterface;
  * Post method handles updating a file.
  * Delete method handles deleting a file.
  * Get method handles getting a file.
- *            (Files/id) will return file's infomation
- *            (Files/name) will download this file
  * Put method handles editing a file.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3

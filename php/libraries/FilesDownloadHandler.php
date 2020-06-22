@@ -55,11 +55,6 @@ class FilesDownloadHandler implements RequestHandlerInterface
     /**
      * Given an HTTP request, serve the file to the client.
      *
-     * All files uploaded will get the same permissions.
-     *
-     * If the overwrite property is set to true, existing files will be
-     * overwritten.
-     *
      * @param ServerRequestInterface $request An HTTP Request that contains files.
      *
      * @return ResponseInterface
