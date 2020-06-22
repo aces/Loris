@@ -9,7 +9,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once __DIR__ . '/cli_helper.class.inc';
 use \LORIS\Http\Client;
 use \LORIS\Http\Request;
 
@@ -21,7 +20,7 @@ define('MINIMUM_MARIADB_VERSION', '10.3');
 define('MINIMUM_NODE_VERSION', '8.0');
 define('MINIMUM_COMPOSER_VERSION', '1.4');
 
-$helper = new CLI_Helper();
+$helper = new OutputWrapper();
 $helper->enableLogging(basename($argv[0]));
 
 $versionFilepath = __DIR__ . '/../VERSION';
