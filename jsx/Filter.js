@@ -39,8 +39,11 @@ class Filter extends Component {
   onFieldUpdate(name, value, id, type) {
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = (!(type === 'textbox' || type === 'date'));
-    if (value === null || value === '' ||
-        (value.constructor === Array && value.length === 0)) {
+    if (
+      value === null
+      || value === ''
+      || (value.constructor === Array && value.length === 0)
+    ) {
       delete filter[name];
     } else {
       filter[name] = {value, exactMatch};
@@ -67,10 +70,18 @@ class Filter extends Component {
           );
           break;
         case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
+          element = <SelectElement
+            key={filter.name}
+            options={filter.options}
+            multiple={true}
+            emptyOption={false}
+          />;
           break;
         case 'numeric':
-          element = <NumericElement key={filter.name} options={filter.options}/>;
+          element = <NumericElement
+            key={filter.name}
+            options={filter.options}
+          />;
           break;
         case 'date':
           element = <DateElement key={filter.name}/>;

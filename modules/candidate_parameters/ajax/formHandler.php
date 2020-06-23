@@ -105,7 +105,7 @@ function editCandInfoFields(\Database $db)
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
 
-    foreach (array_keys($_POST ?? array()) as $field) {
+    foreach (array_keys($_POST ?? []) as $field) {
         if (!empty($_POST[$field])) {
             if (substr($field, 0, 4) === 'PTID') {
                 $ptid = substr($field, 4);
@@ -514,10 +514,10 @@ function editConsentStatusFields(\Database $db)
                 $db->update(
                     'candidate_consent_rel',
                     $updateStatus,
-                    array(
+                    [
                         'CandidateID' => $candID,
                         'ConsentID'   => $consentID,
-                    )
+                    ]
                 );
             } else {
                 $db->insert('candidate_consent_rel', $updateStatus);
@@ -549,8 +549,8 @@ function editCandidateDOB(\Database $db): void
         }
         $db->update(
             'candidate',
-            array('DoB' => $strippedDate ?? $dob),
-            array('CandID' => $candID->__toString())
+            ['DoB' => $strippedDate ?? $dob],
+            ['CandID' => $candID->__toString()]
         );
     }
 }
@@ -585,8 +585,8 @@ function editCandidateDOD(\Database $db): void
         }
         $db->update(
             'candidate',
-            array('DoD' => $strippedDate ?? $dodString),
-            array('CandID' => $candID->__toString())
+            ['DoD' => $strippedDate ?? $dodString],
+            ['CandID' => $candID->__toString()]
         );
     }
 }

@@ -31,5 +31,5 @@ nav:
         - 'SQL Dictionary': 'wiki/99_Developers/SQL_Dictionary.md'
         - 'Automated Testing': 'wiki/99_Developers/Automated_Testing.md'
         - 'Style Guide (for help text)': 'HelpStyleGuide.md'
-
+        - 'Code Review Guide': 'wiki/99\ -\ Developers/Code\ Review\ Checklist.md docs/wiki/99\ -\ Developers/Code\ Review\ Guide.md'
 theme: readthedocs

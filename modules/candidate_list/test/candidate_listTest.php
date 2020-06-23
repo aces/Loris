@@ -82,7 +82,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testPageLoadsWithoutPermissionsAccessAllProfiles()
     {
-        $this->setupPermissions(array("access_all_profiles"));
+        $this->setupPermissions(["access_all_profiles"]);
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -308,7 +308,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testDataEntryAndOpenProfile()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet($this->url . "/candidate_list/");
         //click open profile button
         $btn = self::$openProfile;

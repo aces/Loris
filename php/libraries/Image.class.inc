@@ -67,7 +67,7 @@ class Image
                        ON (mst.ID = f.AcquisitionProtocolID)
                      WHERE f.FileID = :v_fileid
                     ',
-                    array('v_fileid' => $fileid)
+                    ['v_fileid' => $fileid]
                 );
             if (empty($dbrow)) {
                 throw new \NotFound('There is no file with that FileID');
@@ -109,10 +109,10 @@ class Image
                          f.FileID = :v_fileid AND
                          pt.Name = :v_headername
                       ',
-                array(
+                [
                     'v_fileid'     => $this->_fileid,
                     'v_headername' => $headername,
-                )
+                ]
             );
         return $dbrow['Value'] ?? '';
     }
@@ -140,7 +140,7 @@ class Image
                        WHERE
                          f.FileID = :v_fileid
                       ',
-                array('v_fileid' => $this->_fileid)
+                ['v_fileid' => $this->_fileid]
             );
         return array_reduce(
             $dbrows,
@@ -148,7 +148,7 @@ class Image
                 $carry[$row['name']] = $row['value'];
                 return $carry;
             },
-            array()
+            []
         );
     }
 
@@ -171,7 +171,7 @@ class Image
              WHERE
                FileID = :v_fileid
             ',
-            array('v_fileid' => $this->_fileid)
+            ['v_fileid' => $this->_fileid]
         );
 
         if (is_array($row)) {
@@ -197,12 +197,12 @@ class Image
      */
     public function saveQcStatus(\LORIS\ImageQcStatus $qcstatus): void
     {
-        $values = array(
+        $values = [
             'QCStatus'         => $qcstatus->getQcStatus(),
             'Selected'         => $qcstatus->isSelected() ? 'true' : 'false',
             'QCLastChangeTime' => time(),
             'FileID'           => $this->_fileid,
-        );
+        ];
 
         \NDB_Factory::singleton()->database()->replace(
             'files_qcstatus',
@@ -231,7 +231,7 @@ class Image
              WHERE
                f.FileID = :v_fileid
             ',
-            array('v_fileid' => $this->_fileid)
+            ['v_fileid' => $this->_fileid]
         );
 
         return array_map(

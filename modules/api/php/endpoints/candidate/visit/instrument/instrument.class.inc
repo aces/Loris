@@ -60,11 +60,11 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array(
+        return [
             'GET',
             'PUT',
             'PATCH',
-        );
+        ];
     }
 
     /**
@@ -75,10 +75,10 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.2',
             'v0.0.3',
-        );
+        ];
     }
 
     /**
@@ -127,11 +127,9 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Handles a GET request
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         $body = (new \LORIS\api\Views\Visit\Instrument(
             $this->_visit,

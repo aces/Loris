@@ -144,12 +144,12 @@ class Timepoint_List extends \NDB_Menu
 
                 if (!in_array(
                     $timePoint->getCurrentStage(),
-                    array(
+                    [
                         null,
                         'Not Started',
                         'Visit',
                         'Screening',
-                    )
+                    ]
                 )
                 ) {
                     // for static stages, don't bother showing current status

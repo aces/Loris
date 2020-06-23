@@ -47,7 +47,7 @@ class MediaTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionRead()
     {
-        $this->setupPermissions(array("media_read"));
+        $this->setupPermissions(["media_read"]);
         $this->safeGet($this->url . "/media/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -63,7 +63,7 @@ class MediaTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/media/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

@@ -20,6 +20,9 @@
         </properties>
     </rule>
 
+    <!-- Make sure there aren't extra parameters in function docs -->
+    <rule ref="PEAR.Commenting.FunctionComment.ExtraParamComment"/>
+
     <!-- Equal signs need to be aligned with other equal signs -->
     <rule ref="Generic.Formatting.MultipleStatementAlignment">
         <properties>

@@ -28,7 +28,7 @@ namespace LORIS\imaging_browser;
 class MRINavigation
 {
 
-    public $urlParams = array();
+    public $urlParams = [];
 
     /**
      *  Gets the session
@@ -44,7 +44,7 @@ class MRINavigation
             ->getProperty('mriSessionsListed');
 
         if (!is_array($this->FilteredSessionList)) {
-            $this->FilteredSessionList = array();
+            $this->FilteredSessionList = [];
         }
         $this->currentListIndex = array_search(
             $this->sessionID,

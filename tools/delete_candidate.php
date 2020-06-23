@@ -44,7 +44,7 @@ require_once "generic_includes.php";
 const MIN_NUMBER_OF_ARGS = 4;
 
 // Possible script actions
-$actions = array('delete_candidate');
+$actions = ['delete_candidate'];
 
 //define the command line parameters
 if (count($argv) < MIN_NUMBER_OF_ARGS
@@ -89,10 +89,10 @@ $candExists = $DB->pselectOne(
     "SELECT COUNT(*) 
       FROM candidate 
       WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
-    array(
+    [
         'cid' => $CandID,
         'pid' => $PSCID,
-    )
+    ]
 );
 if ($candExists == 0) {
     echo "\nThe candidate with CandID : $CandID  and PSCID : $PSCID either does ".
@@ -103,10 +103,10 @@ $entityType = $DB->pselectOne(
     "SELECT Entity_type 
       FROM candidate 
       WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
-    array(
+    [
         'cid' => $CandID,
         'pid' => $PSCID,
-    )
+    ]
 );
 if ($entityType === "Scanner") {
     echo "\nThe candidate with CandID : $CandID  and PSCID : $PSCID is a scanner ".
@@ -191,7 +191,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
                 " $CandID $PSCID $sid $subOutputType"
             );
             //echo $out;
-            $match    = array();
+            $match    = [];
             $nbDelete = preg_match_all("/(DELETE FROM .*;)/", $out, $match);
             if ($nbDelete > 0) {
                 for ($i=0; $i < $nbDelete; $i++) {
@@ -207,7 +207,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "--------------------\n";
     $result = $DB->pselect(
         'SELECT * FROM participant_status WHERE CandID=:cid',
-        array('cid' => $CandID)
+        ['cid' => $CandID]
     );
     print_r($result);
 
@@ -216,7 +216,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "----------------------------\n";
     $result = $DB->pselect(
         'SELECT * FROM participant_status_history WHERE CandID=:cid',
-        array('cid' => $CandID)
+        ['cid' => $CandID]
     );
     print_r($result);
 
@@ -225,7 +225,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "---------------------\n";
     $result = $DB->pselect(
         'SELECT * FROM parameter_candidate WHERE CandID=:cid',
-        array('cid' => $CandID)
+        ['cid' => $CandID]
     );
     print_r($result);
 
@@ -234,7 +234,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "-----------\n";
     $result = $DB->pselect(
         'SELECT * FROM SNP_candidate_rel WHERE CandID=:cid',
-        array('cid' => $CandID)
+        ['cid' => $CandID]
     );
     print_r($result);
 
@@ -243,7 +243,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "-----------\n";
     $result = $DB->pselect(
         'SELECT * FROM CNV WHERE CandID=:cid',
-        array('cid' => $CandID)
+        ['cid' => $CandID]
     );
     print_r($result);
 
@@ -252,7 +252,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "-----------\n";
     $result = $DB->pselect(
         'SELECT * FROM genomic_candidate_files_rel WHERE CandID=:cid',
-        array('cid' => $CandID)
+        ['cid' => $CandID]
     );
     print_r($result);
 
@@ -261,7 +261,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "-----------\n";
     $result = $DB->pselect(
         'SELECT * FROM genomic_sample_candidate_rel WHERE CandID=:cid',
-        array('cid' => $CandID)
+        ['cid' => $CandID]
     );
     print_r($result);
 
@@ -270,7 +270,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "-----------\n";
     $result = $DB->pselect(
         'SELECT * FROM issues WHERE candID=:cid',
-        array('cid' => $CandID)
+        ['cid' => $CandID]
     );
     print_r($result);
 
@@ -279,7 +279,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "-----------\n";
     $result = $DB->pselect(
         'SELECT * FROM candidate WHERE CandID=:cid',
-        array('cid' => $CandID)
+        ['cid' => $CandID]
     );
     print_r($result);
 
@@ -290,37 +290,37 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
             $PSCID . "\n";
 
         //delete from the participant_status table
-        $DB->delete("participant_status", array("CandID" => $CandID));
+        $DB->delete("participant_status", ["CandID" => $CandID]);
 
         //delete from the participant_status_history table
-        $DB->delete("participant_status_history", array("CandID" => $CandID));
+        $DB->delete("participant_status_history", ["CandID" => $CandID]);
 
         //delete from parameter_candidate
-        $DB->delete("parameter_candidate", array("CandID" => $CandID));
+        $DB->delete("parameter_candidate", ["CandID" => $CandID]);
 
         //delete from SNP_candidate_rel
-        $result = $DB->delete("SNP_candidate_rel", array("CandID" => $CandID));
+        $result = $DB->delete("SNP_candidate_rel", ["CandID" => $CandID]);
 
         //delete from CNV
-        $result = $DB->delete("CNV", array("CandID" => $CandID));
+        $result = $DB->delete("CNV", ["CandID" => $CandID]);
 
         //delete from genomic_candidate_files_rel
         $result = $DB->delete(
             "genomic_candidate_files_rel",
-            array("CandID" => $CandID)
+            ["CandID" => $CandID]
         );
 
         //delete from genomic_sample_candidate_rel
         $result = $DB->delete(
             "genomic_sample_candidate_rel",
-            array("CandID" => $CandID)
+            ["CandID" => $CandID]
         );
 
         //delete from issues
-        $result = $DB->delete("issues", array("candID" => $CandID));
+        $result = $DB->delete("issues", ["candID" => $CandID]);
 
         //delete from candidate
-        $DB->delete("candidate", array("CandID" => $CandID));
+        $DB->delete("candidate", ["CandID" => $CandID]);
     } elseif ($printToSQL) {
         echo "Generating all DELETE statements for CandID: " . $CandID
             . " And PSCID: " .
@@ -329,7 +329,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from the participant_status table
         _printResultsSQL(
             "participant_status",
-            array("CandID" => $CandID),
+            ["CandID" => $CandID],
             $output,
             $DB
         );
@@ -337,7 +337,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from the participant_status_history table
         _printResultsSQL(
             "participant_status_history",
-            array("CandID" => $CandID),
+            ["CandID" => $CandID],
             $output,
             $DB
         );
@@ -345,7 +345,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from parameter_candidate
         _printResultsSQL(
             "parameter_candidate",
-            array("CandID" => $CandID),
+            ["CandID" => $CandID],
             $output,
             $DB
         );
@@ -353,18 +353,18 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from SNP_candidate_rel
         _printResultsSQL(
             "SNP_candidate_rel",
-            array("CandID" => $CandID),
+            ["CandID" => $CandID],
             $output,
             $DB
         );
 
         //delete from CNV
-        _printResultsSQL("CNV", array("CandID" => $CandID), $output, $DB);
+        _printResultsSQL("CNV", ["CandID" => $CandID], $output, $DB);
 
         //delete from genomic_candidate_files_rel
         _printResultsSQL(
             "genomic_candidate_files_rel",
-            array("CandID" => $CandID),
+            ["CandID" => $CandID],
             $output,
             $DB
         );
@@ -372,16 +372,16 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from genomic_sample_candidate_rel
         _printResultsSQL(
             "genomic_sample_candidate_rel",
-            array("CandID" => $CandID),
+            ["CandID" => $CandID],
             $output,
             $DB
         );
 
         //delete from issues
-        _printResultsSQL("issues", array("candID" => $CandID), $output, $DB);
+        _printResultsSQL("issues", ["candID" => $CandID], $output, $DB);
 
         //delete from candidate
-        _printResultsSQL("candidate", array("CandID" => $CandID), $output, $DB);
+        _printResultsSQL("candidate", ["CandID" => $CandID], $output, $DB);
 
         _exportSQL($output, $CandID);
     }

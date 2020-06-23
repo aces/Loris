@@ -55,7 +55,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
      */
     public function toJSON() : string
     {
-        $obj = array(
+        $obj = [
             'CandID'  => $this->_candid,
             'Project' => $this->_projectname,
             'PSCID'   => $this->_pscid,
@@ -63,7 +63,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
             'EDC'     => $this->_edc,
             'DoB'     => $this->_dob,
             'Sex'     => $this->_sex,
-        );
+        ];
 
         return json_encode($obj);
     }

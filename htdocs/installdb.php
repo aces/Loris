@@ -84,7 +84,7 @@ ini_set('default_charset', 'utf-8');
 // gzip handler.
 //ob_start('ob_gzhandler');
 ob_start();
-$tpl_data = array();
+$tpl_data = [];
 
 // Page 1: Help, prompt server, root username, root password
 // Page 2: 1. Connect with username/password

@@ -200,7 +200,7 @@ class SinglePointLogin
 
         //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
-            $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
+            $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, ["HS256"]);
         } catch (Exception $e) {
             return false;
         }
@@ -239,7 +239,7 @@ class SinglePointLogin
          //////////////////////////
         $this->_username = isset($username) ? $username : 'Unknown';
 
-        $setArray = array(
+        $setArray = [
             'userID'          => $this->_username,
             'Success'         => 'Y',
             'Failcode'        => null,
@@ -250,7 +250,7 @@ class SinglePointLogin
             'Page_requested'  => isset($_SERVER['REQUEST_URI'])
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
-        );
+        ];
         // don't waste execution time if no form was submitted
 
         if (empty($username)) {
@@ -288,7 +288,7 @@ class SinglePointLogin
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
-        $row   = $DB->pselectRow($query, array('username' => $username));
+        $row   = $DB->pselectRow($query, ['username' => $username]);
 
         if (is_null($row) || intval($row['User_count'] ?? 0) !== 1) {
             /* Display generic failure message to front-end so that an
@@ -329,8 +329,8 @@ class SinglePointLogin
                     );
                     \NDB_Factory::singleton()->database()->update(
                         'users',
-                        array('Password_hash' => $newHash),
-                        array('UserID' => $username)
+                        ['Password_hash' => $newHash],
+                        ['UserID' => $username]
                     );
                 }
 
@@ -480,11 +480,11 @@ class SinglePointLogin
             "WHERE userID = :username " .
             "AND Success = 'Y'" .
         ");";
-        $params = array(
+        $params = [
             'username'            => $username,
             'timeWindowInMinutes' => $shortWindowInMinutes,
             'ip'                  => $_SERVER['REMOTE_ADDR'],
-        );
+        ];
 
         // Query DB for login attempts.
         $database  = \NDB_Factory::singleton()->database();
@@ -582,7 +582,7 @@ class SinglePointLogin
                   FROM user_login_history 
                   WHERE UserID = :username";
 
-        $row = $DB->pselectRow($query, array('username' => $username));
+        $row = $DB->pselectRow($query, ['username' => $username]);
 
         /* If the login timestamp is null then this is the user's first time
          * logging in. This will always be the case in our CI environment.
@@ -598,8 +598,8 @@ class SinglePointLogin
         if ($interval->days > $maximumDaysInactive) {
             $DB->update(
                 'users',
-                array('Active' => 'N'),
-                array('UserID' => $username)
+                ['Active' => 'N'],
+                ['UserID' => $username]
             );
             return true;
         }
