@@ -26,13 +26,13 @@ use Facebook\WebDriver\WebDriverSelect;
 class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 {
     //filter location
-    static $fullname       = 'input[name="fullName"]'; 
-    static $citationName   = 'input[name="citationName"]';
-    static $startDate      = 'input[name="startDate"]';
-    static $endDate        = 'input[name="endDate"]'; 
-    static $present        = 'select[name="present"]';
-    static $display        = '.table-header > .row > div > div:nth-child(1)';
-    static $clearFilter    = 'button[type="reset"]';
+    static $fullname     = 'input[name="fullName"]';
+    static $citationName = 'input[name="citationName"]';
+    static $startDate    = 'input[name="startDate"]';
+    static $endDate      = 'input[name="endDate"]';
+    static $present      = 'select[name="present"]';
+    static $display      = '.table-header > .row > div > div:nth-child(1)';
+    static $clearFilter  = 'button[type="reset"]';
 
     // Initial array data
 
