@@ -148,7 +148,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $displayAllFields = false;
 
     public $WrapperTextElements           = [];
-    public $WrapperNumericElements        = []:
+    public $WrapperNumericElements        = [];
     public $WrapperDateWithStatusElements = [];
 
     /**
