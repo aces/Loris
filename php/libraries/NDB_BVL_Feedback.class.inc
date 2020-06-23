@@ -271,7 +271,7 @@ class NDB_BVL_Feedback
                     FROM  `feedback_bvl_type`
                     WHERE  `Name` =  :name ";
 
-        return $db->pselectOneInt($query, array(':name' => $name));
+        return $db->pselectOneInt($query, [':name' => $name]);
     }
 
     /**
@@ -322,7 +322,7 @@ class NDB_BVL_Feedback
                   feedback_bvl_type.Feedback_type = feedback_bvl_thread.Feedback_type
                   WHERE feedback_bvl_thread.FeedbackID = :FID";
 
-        return $db->pselectOne($query, array('FID' => $feedbackID));
+        return $db->pselectOne($query, ['FID' => $feedbackID]);
     }
 
     /**
@@ -357,7 +357,7 @@ class NDB_BVL_Feedback
 
         $query = "SELECT Status FROM feedback_bvl_thread WHERE FeedbackID = :FID";
 
-        return $db->pselectOne($query, array('FID' => $feedbackID));
+        return $db->pselectOne($query, ['FID' => $feedbackID]);
     }
 
     /**

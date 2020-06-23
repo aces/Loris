@@ -991,8 +991,8 @@ class Database
      * Helper function used to select a single cell from the database and convert
      * it to an integer.
      *
-     * @param string $query  The SQL statement to run
-     * @param array  $params Values to use for binding in the prepared statement
+     * @param string   $query  The SQL statement to run
+     * @param string[] $params Values to use for binding in the prepared statement
      *
      * @return ?int A cell from the database converted to an integer value. If
      * the query returns a value that cannot be validated as an integer, the

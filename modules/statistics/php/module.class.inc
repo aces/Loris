@@ -197,7 +197,7 @@ class Module extends \Module
             "SELECT COUNT(*) FROM candidate c
              WHERE c.Active='Y' AND c.Entity_type='Human'
              AND c.RegistrationCenterID <> 1",
-            array()
+            []
         ) ?? 0;
     }
 
@@ -273,13 +273,8 @@ class Module extends \Module
             FROM candidate c
             WHERE c.Sex=:sex AND c.Active='Y' AND c.Entity_type='Human'
             AND c.RegistrationCenterID <> 1",
-<<<<<<< HEAD
             ['sex' => $sex]
-        );
-=======
-            array('sex' => $sex)
         ) ?? 0;
->>>>>>> d355d3ebb... Change exception to null
     }
 
     /**
@@ -303,13 +298,8 @@ class Module extends \Module
             [
                 'sex' => $sex,
                 'PID' => $projectID,
-<<<<<<< HEAD
             ]
-        );
-=======
-            )
         ) ?? 0;
->>>>>>> d355d3ebb... Change exception to null
     }
 
 
@@ -331,12 +321,7 @@ class Module extends \Module
               AND c.RegistrationProjectID=:PID
               AND c.Entity_type='Human'
               AND c.RegistrationCenterID <> 1",
-<<<<<<< HEAD
             ['PID' => $projectID]
-        );
-=======
-            array('PID' => $projectID)
         ) ?? 0;
->>>>>>> d355d3ebb... Change exception to null
     }
 }
