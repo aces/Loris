@@ -13,7 +13,7 @@ $output_file = sprintf("project_statistics_%s.csv", date('Y-m-d'));
 $projectname = $config->getSetting('title');
 $helper->printSuccess("Generating project statistics for $projectname");
 
-$headers = array(
+$headers = [
     'Project',
     'Number of Scanning - Visits',
     'Number of Sites',
@@ -23,7 +23,7 @@ $headers = array(
     'number of candidates',
     'GB of imaging data (raw and processed)',
     'number of scans',
-);
+];
 
 // initialize array that will contain the CSV data.
 $project_statistics            = [];
@@ -31,30 +31,30 @@ $project_statistics['Project'] = $projectname;
 // Number of Scanning - Visits
 $project_statistics['Number of Scanning - Visits'] = $DB->pselectOne(
     "select count(*) from session where Scan_done='Y'",
-    array()
+    []
 );
 // Number of Sites
 $project_statistics['Number of Sites'] = $DB->pselectOne(
     "select count(*) from psc WHERE CenterID <>1",
-    array()
+    []
 );
 // Variable Count
 $project_statistics['Variable Count'] = $DB->pselectOne(
     "select count(*) from parameter_type 
     where queryable='1' and Name not like '%_status'",
-    array()
+    []
 );
 
 // Number of instruments
 $project_statistics['Number of instruments'] = $DB->pselectOne(
     "select count(*) from test_names",
-    array()
+    []
 );
 // Total number of visits (for all candidates)
 $project_statistics['total number of visits (for all candidates)'] = $DB->pselectOne(
     "select count(*) from session 
     where Active='Y' AND Current_stage <> 'Not Started'",
-    array()
+    []
 );
 
 // Number of candidates
@@ -63,7 +63,7 @@ $project_statistics['number of candidates'] = $DB->pselectOne(
     WHERE c.Active = 'Y' 
     and c.RegistrationCenterID <> 1 
     and c.Entity_type != 'Scanner'",
-    array()
+    []
 );
 
 // GB of imaging data (raw and processed).
@@ -94,7 +94,7 @@ if (is_dir($dir_path)) {
 // number of scans
 $project_statistics['number of scans'] = $DB->pselectOne(
     "select count(*) from files",
-    array()
+    []
 );
 
 // Extracts data from each query and puts into $project_statistics array
