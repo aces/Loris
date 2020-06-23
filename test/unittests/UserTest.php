@@ -88,10 +88,10 @@ class UserTest extends TestCase
      * @var array
      */
     private $_projectInfo = array(0 => array('ProjectID' => '1',
-                                         'Name' => 'project_test'),
-                              1 => array('ProjectID' => '3',
-                                         'Name' => 'project_test2')
-                        );
+                                             'Name' => 'project_test'),
+                                  1 => array('ProjectID' => '3',
+                                             'Name' => 'project_test2')
+                            );
 
 
     /**
@@ -120,10 +120,10 @@ class UserTest extends TestCase
      * @var array
      */
     private $_uprojrInfo = array(0 => array('UserID' => '1',
-                                         'ProjectID' => '1'),
-                              1 => array('UserID' => '1',
-                                         'ProjectID' => '3')
-                        );
+                                            'ProjectID' => '1'),
+                                 1 => array('UserID' => '1',
+                                            'ProjectID' => '3')
+                           );
     /**
      * Examiners_psc_rel table information
      *
@@ -138,6 +138,7 @@ class UserTest extends TestCase
                                          'active' => 'Y',
                                          'pending_approval' => 'N')
                         );
+
     /**
      * User object used for testing
      *
@@ -177,7 +178,7 @@ class UserTest extends TestCase
      *       This can be changed when the rest of the User class updates how it 
      *       declares its database. - Alexandra Livadas
      * 
-     *@var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit_Framework_MockObject_MockObject
      */
     private $_mockDB;
     /**
@@ -371,6 +372,21 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that getProjectIDs returns the correct array of project IDs of the user
+     *
+     * @return void
+     * @covers User::getProjectIDs
+     */
+    public function testGetProjectIDs()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->assertEquals(
+            $this->_userInfoComplete['ProjectIDs'],
+            $this->_user->getProjectIDs()
+        );
+    }
+
+    /**
      * Test that getLanguagePreference returns the correct integer from the user
      *
      * @return void
@@ -487,6 +503,30 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->assertFalse($this->_user->hasCenter(5));
+    }
+
+    /**
+     * Test that hasProject returns true when the user has this project ID
+     *
+     * @return void
+     * @covers User::hasProject
+     */
+    public function testHasProjectWhenTrue()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->assertTrue($this->_user->hasProject(3));
+    }
+
+    /**
+     * Test that hasProject returns false when the user does not have this project ID
+     *
+     * @return void
+     * @covers User::hasProject
+     */
+    public function testHasProjectWhenFalse()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->assertFalse($this->_user->hasProject(5));
     }
 
     /**
@@ -642,7 +682,8 @@ class UserTest extends TestCase
      * @return void
      * @covers User::isPasswordDifferent
      */
-    public function testPasswordChangedReturnsTrue() {
+    public function testPasswordChangedReturnsTrue()
+    {
         $this->_user = \User::factory(self::USERNAME);
         // Should return true (i.e. the password has changed) because random
         // strings should not generate a match.
@@ -660,7 +701,8 @@ class UserTest extends TestCase
      * @return void
      * @covers User::isPasswordDifferent
      */
-    public function testPasswordChangedReturnsFalse() {
+    public function testPasswordChangedReturnsFalse()
+    {
         // Update the password again to make sure another test hasn't
         // interfered.
         $this->_user = \User::factory(self::USERNAME);
@@ -674,6 +716,90 @@ class UserTest extends TestCase
 
         $this->assertFalse($this->_user->isPasswordDifferent($password));
     }
+
+    /**
+     * Test that getLastLogin returns a \DateTime object when the query returns
+     * a timestamp
+     *
+     * @return void
+     * @covers User::getLastLogin
+     */
+    public function testGetLastLoginWhenNotEmpty()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $timestamp = '2020-06-15 09:49:23';
+        $this->_mockDB->expects($this->any())
+            ->method('pselectOne')
+            ->with(
+                $this->stringContains("WHERE Login_timestamp <")
+            )
+            ->willReturn($timestamp);
+
+        $this->assertEquals(
+            new \DateTime('2020-06-15 09:49:23'),
+            $this->_user->getLastLogin($this->_mockDB)
+        );
+    }
+
+    /**
+     * Test that getLastLogin returns null when the query returns empty
+     *
+     * @return void
+     * @covers User::getLastLogin
+     */
+    public function testGetLastLoginWhenEmpty()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $timestamp = '';
+        $this->_mockDB->expects($this->any())
+            ->method('pselectOne')
+            ->with(
+                $this->stringContains("WHERE Login_timestamp <")
+            )
+            ->willReturn($timestamp);
+
+        $this->assertEquals(
+            null,
+            $this->_user->getLastLogin($this->_mockDB)
+        );
+    }
+
+    /**
+     * Test that isAccessibleBy returns true if the given user
+     * has a matching center ID and project ID
+     *
+     * @return void
+     * @covers User::isAccessibleBy
+     */
+    public function testIsAccessibleByTrue()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $mockUser = $this->getMockBuilder('\User')->getMock();
+        $mockUser->expects($this->once())->method("getCenterIDs")
+            ->willReturn(array(1, 2));
+        $mockUser->expects($this->once())->method("getProjectIDs")
+            ->willReturn(array(1, 3));
+        $this->assertTrue($this->_user->isAccessibleBy($mockUser));
+    }
+
+    /**
+     * Test that isAccessibleBy returns false if the given user
+     * has no matching center IDs or project IDs
+     *
+     * @return void
+     * @covers User::isAccessibleBy
+     */
+    public function testIsAccessibleByFalse()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $mockUser = $this->getMockBuilder('\User')->getMock();
+        $mockUser->expects($this->once())->method("getCenterIDs")
+            ->willReturn(array(2, 2));
+        $mockUser->expects($this->once())->method("getProjectIDs")
+            ->willReturn(array(4, 4));
+        $this->assertFalse($this->_user->isAccessibleBy($mockUser));
+    }
+
 
     /**
      * Set up the fake tables in the database to set up a new user object
@@ -709,6 +835,14 @@ class UserTest extends TestCase
         $this->_dbMock->setFakeTableData(
             "examiners_psc_rel",
             $this->_eprInfo
+        );
+        $this->_dbMock->setFakeTableData(
+            "permissions",
+            $this->_permissionsInfo
+        );
+        $this->_dbMock->setFakeTableData(
+            "user_perm_rel",
+            $this->_upermInfo
         );
     }
 }
