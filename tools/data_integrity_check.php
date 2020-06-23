@@ -40,9 +40,9 @@ foreach ($instruments as $instrument) {
             Test_name = :instrument AND
             {$instrument}.CommentID IS NULL
     ",
-        array(
+        [
             "instrument" => $instrument
-        )
+        ]
     );
 
     $flag_str = $instrument . " flag";
@@ -63,7 +63,7 @@ foreach ($instruments as $instrument) {
         WHERE
             flag.CommentID IS NULL
     ",
-        array()
+        []
     );
 
     foreach ($orphan_instrument_arr as $orphan_instrument) {
@@ -107,7 +107,7 @@ $duplicate_flag_arr = $DB->pselect(
             ) > 1
         )
 ",
-    array()
+    []
 );
 foreach ($duplicate_flag_arr as $duplicate_flag) {
     $helper->printError(

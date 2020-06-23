@@ -18,7 +18,6 @@ find docs modules htdocs php src tools \
 # Also run PHPCS on all tools/ scripts in this array
 declare -a tools_list=(
     'assign_missing_instruments.php'
-    'cli_helper.class.inc'
     'data_integrity_check.php'
     'delete_candidate.php'
     'delete_ignored_conflicts.php'
