@@ -1504,8 +1504,8 @@ class Database
      *   | version_compile_os      | Linux                        |
      *   +-------------------------+------------------------------+
      *
-     * @return array<int,array> An associative array representing the results of the
-     *                  query.
+     * @return array<int,string[]> An associative array representing the results
+     *                  of the query.
      */
     private function _getServerVariables(): array
     {
