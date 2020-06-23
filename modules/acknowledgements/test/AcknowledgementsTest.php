@@ -175,23 +175,22 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("addStartDate")
         )->sendKeys(self::$newData['start_date']);
-        $this->safeFindElement(
-            WebDriverBy::Name("addEndDate")
-        )->sendKeys(self::$newData['end_date']);
         $el_dropdown = new WebDriverSelect(
             $this->safeFindElement(WebDriverBy::Name("addPresent"))
         );
         $el_dropdown->selectByVisibleText("Yes");
         //expecting to find the value,after clicking save button
         $this->safeFindElement(
-            WebDriverBy::Name("fire_away")
+            WebDriverBy::cssSelector('button[name="fire_away"]')
         )->click();
-            $bodyText = $this->safeFindElement(
-                WebDriverBy::cssSelector("#swal2-title")
-            )->getText();
-            // 4 means there are 4 records under this site.
-            $this->assertContains("Success!", $bodyText);
-
+        $this->safeGet($this->url . "/acknowledgements/");
+        $this->_filterTest(
+            self::$fullname,
+            self::$display,
+            self::$clearFilter,
+            self::$newData['full_name'],
+            "1 row"
+        );
     }
 }
 
