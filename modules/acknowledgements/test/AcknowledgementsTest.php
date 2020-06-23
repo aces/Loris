@@ -186,7 +186,6 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
-        sleep(1);
             $bodyText = $this->safeFindElement(
                 WebDriverBy::cssSelector("#swal2-title")
             )->getText();
