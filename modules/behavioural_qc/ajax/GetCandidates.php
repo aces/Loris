@@ -19,7 +19,7 @@ if (!$user->hasPermission('quality_control')) {
 }
 
 $db          = \NDB_Factory::singleton()->database();
-$searchArray = array();
+$searchArray = [];
 
 $query = "SELECT DISTINCT ses.candID FROM session AS ses
             JOIN test_battery AS tst
@@ -36,7 +36,7 @@ if (isset($_REQUEST['instrument']) && !empty($_REQUEST['instrument'])
     $query   .= " AND tst.Test_Name = :NAM";
     $testname = $db->pselectOne(
         "SELECT Test_name FROM test_names WHERE Full_name =:fname",
-        array('fname' => $_REQUEST['instrument'])
+        ['fname' => $_REQUEST['instrument']]
     );
     $searchArray['NAM'] = $testname;
 }

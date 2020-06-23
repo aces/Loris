@@ -833,7 +833,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $seqs = $structure['seq'];
         // handle the situation where there exists only one seq
         if (isset($seqs['#'])) {
-            $seqs = array($seqs);
+            $seqs = [$seqs];
         }
         $regex = "";
         foreach ($seqs AS $seq) {
