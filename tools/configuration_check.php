@@ -141,7 +141,7 @@ foreach ($result as $setting) {
 }
 
 if (! $config->settingEnabled('usePwnedPasswordsAPI')) {
-    printWarning(
+    $helper->printWarning(
         "Configuration setting `usePwnedPasswordsAPI` is disabled. Connection "
         . "test skipped."
     );
