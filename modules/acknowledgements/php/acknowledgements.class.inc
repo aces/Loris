@@ -116,6 +116,8 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             $DB->insert('acknowledgements', $results);
             unset($values);
 
+
+            header("Location: {$baseurl}/acknowledgements/", true, 303);
             return true;
         }
     }
