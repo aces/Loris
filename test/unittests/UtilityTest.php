@@ -105,6 +105,24 @@ class UtilityTest extends TestCase
               'language_label' => 'LA2')
         );
     /**
+     * Mri_scan_type table information
+     *
+     * @var array contains scan information retrieved by getScanTypeList method
+     */
+    private $_mriInfo = array(0 => array('ID' => 123,
+                                         'Scan_type' => "scan 1"),
+                              1 => array('ID' => 234,
+                                         'Scan_type' => "scan 2")
+                        );
+    /**
+     * Files table information
+     *
+     * @var array contains scan information retrieved by getScanTypeList method
+     */
+    private $_fileInfo = array(0 => array('AcquisitionProtocolID' => 123),
+                               1 => array('AcquisitionProtocolID' => 234)
+                         );
+    /**
      * NDB_Factory used in tests.
      * Test doubles are injected to the factory object.
      *
@@ -123,6 +141,31 @@ class UtilityTest extends TestCase
      * @var \Database | PHPUnit_Framework_MockObject_MockObject
      */
     private $_dbMock;
+
+    /**
+     * A mock NDB_Config variable used to set up a mock DB
+     *
+     * @note Used in the _setMockDB function
+     *
+     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     */
+    private $_mockConfig;
+    /**
+     * A mock Database variable
+     *
+     * @note Used in the _setMockDB function
+     *
+     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     */
+    private $_mockDB;
+    /**
+     * A mock Database variable
+     *
+     * @note Used in the _setMockDB function
+     *
+     * @var NDB_Factory
+     */
+    private $_mockFactory;
 
     /**
      * This method is called before each test
@@ -203,7 +246,7 @@ class UtilityTest extends TestCase
     /**
      * Test that getConsentList() returns a list from the database
      *
-     * @covers Utility::getConsentList()
+     * @covers Utility::getConsentList
      * @return void
      */
     public function testGetConsentList()
@@ -217,7 +260,7 @@ class UtilityTest extends TestCase
     /**
      * Test that getProjectList() returns a list from the database
      *
-     * @covers Utility::getProjectList()
+     * @covers Utility::getProjectList
      * @return void
      */
     public function testGetProjectList()
@@ -236,7 +279,7 @@ class UtilityTest extends TestCase
     /**
      * Test that getSubprojectList() returns a list of subprojects from the database
      *
-     * @covers Utility::getSubprojectList()
+     * @covers Utility::getSubprojectList
      * @return void
      */
     public function testGetSubprojectList()
@@ -263,7 +306,7 @@ class UtilityTest extends TestCase
      * Test that getSubprojectList() returns the correct subproject 
      * when a ProjectID is specified
      *
-     * @covers Utility::getSubprojectList()
+     * @covers Utility::getSubprojectList
      * @return void
      */
     public function testGetSubprojectListWithProjectID()
@@ -293,9 +336,53 @@ class UtilityTest extends TestCase
     }
 
     /**
+     * Test that getSubprojectsForProject calls getSubprojectList and
+     * returns the same information as the test above
+     *
+     * @return void
+     * @covers Utility::getSubprojectsForProject
+     */
+    public function testGetSubprojectsForProject()
+    {
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with(
+                $this->stringContains(
+                    "JOIN project_subproject_rel USING (SubprojectID)"
+                )
+            )
+            ->willReturn(
+                array(
+                    array('SubprojectID' => '123',
+                        'title' => 'DemoProject')
+                )
+            );
+
+        $this->assertEquals(
+            array('123' => 'DemoProject'),
+            Utility::getSubprojectsForProject(123)
+        );
+    }
+
+    /**
+     * Test that getSubprojectsForProject returns an empty array
+     * if no project ID is given
+     *
+     * @return void
+     * @covers Utility::getSubprojectsForProject
+     */
+    public function testGetSubprojectsForProjectWithoutID()
+    {
+        $this->assertEquals(
+            array(),
+            Utility::getSubprojectsForProject()
+        );
+    }
+
+    /**
      * Test that getAllInstruments() returns the proper information
      * 
-     * @covers Utility::getAllInstruments()
+     * @covers Utility::getAllInstruments
      * @return void
      */
     public function testGetInstruments()
@@ -315,7 +402,7 @@ class UtilityTest extends TestCase
     /**
      * Test that getAllDDEInstruments() returns the proper information
      *
-     * @covers Utility::getAllDDEInstruments()
+     * @covers Utility::getAllDDEInstruments
      * @return void
      */
     public function testGetAllDDEInstruments()
@@ -344,7 +431,7 @@ class UtilityTest extends TestCase
     /**
      * Test that getDirectInstruments() returns tests with isDirectEntry=true
      *
-     * @covers Utility::getDirectInstruments()
+     * @covers Utility::getDirectInstruments
      * @return void
      */
     public function testGetDirectInstruments()
@@ -372,7 +459,7 @@ class UtilityTest extends TestCase
      *       they have the same fuctionality
      * TODO Potential edge cases: test with the study_site and DCC booleans as false
      *
-     * @covers Utility::getSiteList()
+     * @covers Utility::getSiteList
      * @return void
      */
     public function testGetSiteList()
@@ -433,7 +520,7 @@ class UtilityTest extends TestCase
      * This is the simplest case of this function
      * TODO Potential edge cases: Set 'Active' to 'N'
      *
-     * @covers Utility::getVisitList()
+     * @covers Utility::getVisitList
      * @return void
      */
     public function testGetVisitList()
@@ -517,7 +604,7 @@ class UtilityTest extends TestCase
      * Test that getVisitInstruments() returns the correct 
      * information for the given visit label
      *
-     * @covers Utility::getVisitInstruments()
+     * @covers Utility::getVisitInstruments
      * @return void
      */
     public function testGetVisitInstruments()
@@ -544,7 +631,7 @@ class UtilityTest extends TestCase
      * Test an edge case of getVisitInstruments() where there is no 
      * 'Test_name_display' column in the given table
      *
-     * @covers Utility::getVisitInstruments()
+     * @covers Utility::getVisitInstruments
      * @return void
      */
     public function testGetVisitInstrumentsWithoutTestNameDisplay()
@@ -571,7 +658,7 @@ class UtilityTest extends TestCase
      * Test that lookupBattery returns the correct information 
      * without the stage specified
      * 
-     * @covers Utility::lookupBattery()
+     * @covers Utility::lookupBattery
      * @return void
      */
     public function testLookupBattery()
@@ -595,7 +682,7 @@ class UtilityTest extends TestCase
      * Test that lookupBattery returns the correct information 
      * with the stage specified
      *
-     * @covers Utility::lookupBattery()
+     * @covers Utility::lookupBattery
      * @return void
      */
     public function testLookupBatteryWithStage()
@@ -617,10 +704,84 @@ class UtilityTest extends TestCase
     }
 
     /**
+     * Test that associativeToNumericArray correctly converts
+     * an array to numeric form
+     *
+     * @return void
+     * @covers Utility::associativeToNumericArray
+     */
+    public function testAssociativeToNumericArray()
+    {
+        $associative = array('Test_name' => 'test1',
+                             'Stage' => 'stage1');
+        $this->assertEquals(
+            array(0 => $associative),
+            Utility::associativeToNumericArray($associative)
+        );
+    }
+
+    /**
+     * Test that associativeToNumericArray returns the same array
+     * if given a numeric array
+     *
+     * @return void
+     * @covers Utility::associativeToNumericArray
+     */
+    public function testAssociativeToNumericArrayWithNumericArray()
+    {
+        $associative = array(0 => array('Test_name' => 'test1',
+            'Stage' => 'stage1'));
+        $this->assertEquals(
+            $associative,
+            Utility::associativeToNumericArray($associative)
+        );
+    }
+
+    /**
+     * Test that asArray returns the given variable in array form
+     *
+     * @covers Utility::asArray
+     * @return void
+     */
+    public function testAsArray()
+    {
+        $var = "Test";
+        $this->assertEquals(array($var), Utility::asArray($var));
+    }
+
+    /**
+     * Test that nullifyEmpty changes an empty string to null
+     *
+     * @covers Utility::nullifyEmpty
+     * @return void
+     */
+    public function testNullifyEmpty()
+    {
+        $var = array('ID' => '123', 'Name' => '');
+        $this->assertEquals(
+            array('ID' => '123', 'Name' => null),
+            Utility::nullifyEmpty($var, "Name")
+        );
+    }
+
+    /**
+     * Test that asArray returns the given variable as is if it
+     * is already an array
+     *
+     * @covers Utility::asArray
+     * @return void
+     */
+    public function testAsArrayWithArrayGiven()
+    {
+        $var = array("Test");
+        $this->assertEquals($var, Utility::asArray($var));
+    }
+
+    /**
      * Tests that getSourcefields will return an empty array 
      * if no parameters are specified
      *
-     * @covers Utility::getSourcefields()
+     * @covers Utility::getSourcefields
      * @return void
      */
     public function testGetSourcefieldsReturnsNothingWithNoParameters()
@@ -635,7 +796,7 @@ class UtilityTest extends TestCase
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the instrument parameter is specified
      *
-     * @covers Utility::getSourcefields()
+     * @covers Utility::getSourcefields
      * @return void
      */
     public function testGetSourcefieldsWithInstrumentSpecified()
@@ -660,7 +821,7 @@ class UtilityTest extends TestCase
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the commentID parameter is specified
      *
-     * @covers Utility::getSourcefields()
+     * @covers Utility::getSourcefields
      * @return void
      */
     public function testGetSourcefieldsWithCommentIDSpecified()
@@ -684,7 +845,7 @@ class UtilityTest extends TestCase
      * Test that getSourcefields returns the correct information 
      * and uses the correct query when the name parameter is specified
      *
-     * @covers Utility::getSourcefields()
+     * @covers Utility::getSourcefields
      * @return void
      */
     public function testGetSourcefieldsWithNameSpecified()
@@ -708,7 +869,7 @@ class UtilityTest extends TestCase
      * Test an edge case of getSourcefields where all three parameters are specified
      * In this case, it should only use the instrument parameter
      *
-     * @covers Utility::getSourcefields()
+     * @covers Utility::getSourcefields
      * @return void
      */
     public function testGetSourcefieldsWithAllThreeParameters()
@@ -729,8 +890,10 @@ class UtilityTest extends TestCase
         );
     }
 
-    /*
-     * dataProvider for function testValueIsPositiveIntegerReturnsFalse
+    /**
+     * DataProvider for function testValueIsPositiveIntegerReturnsFalse
+     *
+     * @return array
      */
     public function notPositiveIntegerValues(): array
     {
@@ -749,8 +912,10 @@ class UtilityTest extends TestCase
                );
     }
 
-    /*
-     * dataProvider for function testValueIsPositiveIntegerReturnsTrue
+    /**
+     * DataProvider for function testValueIsPositiveIntegerReturnsTrue
+     *
+     * @return array
      */
     public function positiveIntegerValues(): array
     {
@@ -762,7 +927,15 @@ class UtilityTest extends TestCase
     }
 
     /**
+     * Test that valueIsPositiveInteger returns false if given negative ints
+     * or values that are not integers
+     *
+     * @param $notInt from dataProvider
+     *
      * @dataProvider notPositiveIntegerValues
+     *
+     * @covers Utility::valueIsPositiveInteger
+     * @return void
      */
     public function testValueIsPositiveIntegerReturnsFalse($notInt): void
     {
@@ -770,7 +943,14 @@ class UtilityTest extends TestCase
     }
 
     /**
+     * Test that valueIsPositiveInteger returns true when given positive ints
+     *
+     * @param $int from dataProvider
+     *
      * @dataProvider positiveIntegerValues
+     *
+     * @covers Utility::valueIsPositiveInteger
+     * @return void
      */
     public function testValueIsPositiveIntegerReturnsTrue($int): void
     {
@@ -780,7 +960,7 @@ class UtilityTest extends TestCase
     /**
      * Tests the pathJoin function. Test cases adapted from blog post on
      * Python's os.path.join as this function is meant to give the same
-     * beahviour.
+     * behaviour.
      *
      * @see https://www.geeksforgeeks.org/python-os-path-join-method/
      *
@@ -812,6 +992,263 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             \Utility::pathJoin('/a', '/b/c'),
             '/a/b/c'
+        );
+    }
+
+    /**
+     * Test that columnsHasNull returns true if the specified column
+     * in the table has a null entry
+     *
+     * @covers Utility::columnsHasNull
+     * @return void
+     */
+    public function testColumnsHasNullTrue()
+    {
+        $this->_setMockDB();
+        $this->_mockDB->run("DROP TEMPORARY TABLE IF EXISTS users");
+        $tableData = array(0 => array('ID' => 1,
+                                      'UserID' => '11111',
+                                      'Real_name' => 'Some Name',
+                                      'Email' => 'email1'),
+                           1 => array('ID' => 2,
+                                      'UserID' => '22222',
+                                      'Real_name' => null,
+                                      'Email' => 'email2')
+                     );
+        $this->_mockDB->setFakeTableData("users", $tableData);
+        $this->assertTrue(Utility::columnsHasNull("users", "Real_name"));
+    }
+
+    /**
+     * Test that columnsHasNull returns false if the specified column
+     * in the table does not have a null entry
+     *
+     * @covers Utility::columnsHasNull
+     * @return void
+     */
+    public function testColumnsHasNullFalse()
+    {
+        $this->_setMockDB();
+        $this->_mockDB->run("DROP TEMPORARY TABLE IF EXISTS users");
+        $tableData = array(0 => array('ID' => 1,
+                                      'UserID' => '11111',
+                                      'Real_name' => 'Some Name',
+                                      'Email' => 'email1'),
+                           1 => array('ID' => 2,
+                                      'UserID' => '22222',
+                                      'Real_name' => 'Other Name',
+                                      'Email' => 'email2')
+                     );
+        $this->_mockDB->setFakeTableData("users", $tableData);
+        $this->assertFalse(Utility::columnsHasNull("users", "Real_name"));
+    }
+
+    /**
+     * Test that resolvePath removes instances of '..' and replaces
+     * '//' with '/'
+     *
+     * @covers Utility::resolvePath
+     * @return void
+     */
+    public function testResolvePath()
+    {
+        $path = "..//..//php/libraries/Utility.class.inc";
+        $expected = "php/libraries/Utility.class.inc";
+        $this->assertEquals($expected, Utility::resolvePath($path));
+    }
+
+    /**
+     * Test that getMaxUploadSize returns the correct value
+     *
+     * @covers Utility::getMaxUploadSize
+     * @return void
+     */
+    public function testGetMaxUploadSize()
+    {
+        $umf = ini_get('upload_max_filesize');
+        $pms = ini_get('post_max_size');
+        $val = Utility::returnBytes($umf) < Utility::returnBytes($pms) ? $umf : $pms;
+        $this->assertEquals($val, Utility::getMaxUploadSize());
+    }
+
+    /**
+     * Test that returnBytes returns the correct value
+     *
+     * @covers Utility::returnBytes
+     * @return void
+     */
+    public function testReturnBytes()
+    {
+        $this->assertEquals(64, Utility::returnBytes('64'));
+        $this->assertEquals(65536, Utility::returnBytes('64K'));
+        $this->assertEquals(2097152, Utility::returnBytes('2M'));
+        $this->assertEquals(4294967296, Utility::returnBytes('4G'));
+    }
+
+    /**
+     * Test that randomString returns a random string with the correct
+     * length and with the correct characters specified
+     *
+     * @covers Utility::randomString
+     * @return void
+     */
+    public function testRandomString()
+    {
+        $var = Utility::randomString(4, 'abcdefghijklmnopqrstuvwxyz');
+        $this->assertEquals(4, strlen($var));
+        $this->assertFalse(strpbrk($var, '1234567890'));
+        $this->assertFalse(strpbrk($var, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'));
+    }
+
+    /**
+     * Test that toDateDisplayFormat returns a properly formatted
+     * date string
+     *
+     * @covers Utility::toDateDisplayFormat
+     * @return void
+     */
+    public function testToDateDisplayFormat()
+    {
+        $this->_setMockDB();
+        $date = "2000-01-01";
+        $this->assertEquals(
+            "2000-01-01 00:00:00",
+            Utility::toDateDisplayFormat($date)
+        );
+    }
+
+    /**
+     * Test that toDateDisplayFormat throws a LorisException if
+     * the string is badly formatted
+     *
+     * @covers Utility::toDateDisplayFormat
+     * @return void
+     */
+    public function testToDateDisplayFormatThrowsException()
+    {
+        $this->_setMockDB();
+        $date = "2000-01-";
+        $this->expectException('\LorisException');
+        Utility::toDateDisplayFormat($date);
+    }
+
+    /**
+     * Test that getScanTypeList returns the scan type information
+     * in the correct format
+     *
+     * @covers Utility::getScanTypeList
+     * @return void
+     */
+    public function testGetScanTypeList()
+    {
+        $this->_setMockDB();
+        $expected = array(123 => 'scan 1', 234 => 'scan 2');
+        $this->_mockDB->setFakeTableData("mri_scan_type", $this->_mriInfo);
+        $this->_mockDB->setFakeTableData("files", $this->_fileInfo);
+        $this->assertEquals($expected, Utility::getScanTypeList());
+    }
+
+    /**
+     * Test that appendForwardSlash appends a forward slash to the given path.
+     * Also asserts that if the path already has a forward slash, it does nothing.
+     *
+     * @covers Utility::appendForwardSlash
+     * @return void
+     */
+    public function testAppendForwardSlash()
+    {
+        $path = "/php/libraries";
+        $pathWithSlash = "/php/libraries/";
+        $this->assertEquals(
+            $pathWithSlash,
+            Utility::appendForwardSlash($path)
+        );
+        $this->assertEquals(
+            $pathWithSlash,
+            Utility::appendForwardSlash($pathWithSlash)
+        );
+    }
+
+    /**
+     * Test that structureToPCRE returns the regex form of the given structure.
+     * This test covers the different cases of the function.
+     *
+     * @covers Utility::structureToPCRE
+     * @return void
+     */
+    public function testStructureToPCRE()
+    {
+        $structure = array(
+            'seq' => array(
+                0 => array('@' => array('type' => 'alpha',
+                                        'minLength' => '1',
+                                        'maxLength' => '5')
+                ),
+                1 => array('@' => array('type' => 'alphanumeric',
+                                        'length' => '2')
+                ),
+                2 => array('@' => array('type' => 'static'),
+                           '#' => '1-3'
+                ),
+                3 => array('@' => array('type' => 'set'),
+                           '#' => '1||3'
+                ),
+                4 => array('@' => array('type' => 'set'),
+                           '#' => '1-3'
+                ),
+            )
+        );
+        $this->assertEquals(
+            '/^[a-z]{1,5}[0-9a-z]{2,2}(1-3){1,1}(1||3){1,1}[1-3]{1,1}$/i',
+            Utility::structureToPCRE($structure)
+        );
+    }
+
+    /**
+     * Test structureToPCRE with the site and project abbreviations set
+     *
+     * @covers Utility::structureToPCRE
+     * @return void
+     */
+    public function testStructureToPCREWithAbbreviations()
+    {
+        $structure = array(
+            'seq' => array(
+                0 => array('@' => array('type' => 'siteAbbrev',
+                                        'minLength' => '1',
+                                        'maxLength' => '5')
+                ),
+                1 => array('@' => array('type' => 'projectAbbrev',
+                                        'minLength' => '1',
+                                        'maxLength' => '5')
+                )
+            )
+        );
+        $this->assertEquals(
+            '/^MTL{1,5}P1{1,5}$/i',
+            Utility::structureToPCRE($structure, "MTL", "P1")
+        );
+    }
+
+
+    /**
+     * Set up a mock database for some of the tests above
+     *
+     * @return void
+     */
+    private function _setMockDB()
+    {
+        $this->_mockFactory = \NDB_Factory::singleton();
+        $this->_mockFactory->reset();
+        $this->_mockFactory->setTesting(false);
+        $this->_mockConfig = $this->_mockFactory->Config(CONFIG_XML);
+        $database          = $this->_mockConfig->getSetting('database');
+        $this->_mockDB     = \Database::singleton(
+            $database['database'],
+            $database['username'],
+            $database['password'],
+            $database['host'],
+            true
         );
     }
 }
