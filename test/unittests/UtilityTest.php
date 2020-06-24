@@ -52,15 +52,6 @@ class UtilityTest extends TestCase
               'IsDirectEntry' => 0)
         );
     /**
-     * Visit_Windows table information
-     * 
-     * @var array contains information retrieved by the getVisitList() method
-     */
-    private $_visitInfo = array(
-        array('Visit_label' => 'visitLabel'),
-        array('Visit_label' => 'label')
-        );
-    /**
      * Psc table information
      * 
      * @var array contains psc information retrieved by getSiteList method
@@ -71,14 +62,6 @@ class UtilityTest extends TestCase
         array('CenterID' => '2',
               'Name' => 'site2')
         );
-    /**
-     * Flag table information
-     * 
-     * @var array contains flag information retreived 
-     *      by getTestNameByCommentID method
-     */
-    private $_flagInfo = array('Test_name' => 'test_flag1',
-                               'CommentID' => 'ID123');
     /**
      * Session table information
      * 
@@ -958,7 +941,8 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Tests the pathJoin function. Test cases adapted from blog post on
+     * Tests the
+     * n function. Test cases adapted from blog post on
      * Python's os.path.join as this function is meant to give the same
      * behaviour.
      *
