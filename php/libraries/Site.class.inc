@@ -34,7 +34,7 @@ class Site
      */
     static function &singleton(int $centerID)
     {
-        static $siteList = array();
+        static $siteList = [];
         if (!isset($siteList[$centerID])) {
             try {
                 $siteList[$centerID] = new Site();
@@ -67,7 +67,7 @@ class Site
         $query  = "SELECT Name, PSCArea, Alias, MRI_alias, Account, Study_site
                       FROM psc
                    WHERE CenterID = :CID";
-        $result = $db->pselectRow($query, array('CID' => $centerID));
+        $result = $db->pselectRow($query, ['CID' => $centerID]);
 
         //store site data in the object property
         if (is_array($result) && count($result) > 0) {

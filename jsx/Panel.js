@@ -71,9 +71,17 @@ class Panel extends Component {
     ) : '';
 
     return (
-      <div className="panel panel-primary" style={{height: this.props.panelSize}}>
+      <div
+        className="panel panel-primary"
+        style={{height: this.props.panelSize}}
+      >
         {panelHeading}
-        <div id={this.props.id} className={this.panelClass} role="tabpanel" style={{height: 'calc(100% - 3em)'}}>
+        <div
+          id={this.props.id}
+          className={this.panelClass}
+          role="tabpanel"
+          style={{height: 'calc(100% - 3em)'}}
+        >
           <div className="panel-body"
                style={{...this.props.style, height: this.props.height}}>
             {this.props.children}

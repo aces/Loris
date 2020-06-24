@@ -121,4 +121,4 @@ LORIS is made by staff developers at the [McGill Centre for Integrative Neurosci
 
 Visit [the LORIS website](https://loris.ca) for the history of LORIS and our **Technical Papers**.
 
-The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, and Samir Das.
+The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, James McKinney, and Samir Das.

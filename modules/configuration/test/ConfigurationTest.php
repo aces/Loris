@@ -47,7 +47,7 @@ class ConfigurationTest extends LorisIntegrationTest
     {
         $this->DB->delete(
             "subproject",
-            array('title' => 'Test Test Test')
+            ['title' => 'Test Test Test']
         );
         parent::tearDown();
     }
@@ -76,7 +76,7 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testConfigPermission()
     {
-         $this->setupPermissions(array("config"));
+         $this->setupPermissions(["config"]);
          $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -91,7 +91,7 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testConfigWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

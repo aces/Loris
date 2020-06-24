@@ -55,7 +55,7 @@ class Module extends \Module
         }
 
         $path           = $request->getURI()->getPath();
-        $pathComponents = array();
+        $pathComponents = [];
 
         // Breakdown path information from the request.
         preg_match(

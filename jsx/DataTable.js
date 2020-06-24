@@ -202,9 +202,17 @@ class DataTable extends Component {
       }
 
       if (this.props.RowNameMap) {
-        index.push({RowIdx: idx, Value: val, Content: this.props.RowNameMap[idx]});
+        index.push({
+          RowIdx: idx,
+          Value: val,
+          Content: this.props.RowNameMap[idx],
+        });
       } else {
-        index.push({RowIdx: idx, Value: val, Content: idx + 1});
+        index.push({
+          RowIdx: idx,
+          Value: val,
+          Content: idx + 1,
+        });
       }
     }
 
@@ -289,7 +297,11 @@ class DataTable extends Component {
           if (exactMatch) {
             result = searchArray.includes(searchKey);
           } else {
-            result = (searchArray.find((e) => (e.indexOf(searchKey) > -1))) !== undefined;
+            result = (
+              searchArray.find(
+                (e) => (e.indexOf(searchKey) > -1)
+              )
+            ) !== undefined;
           }
           break;
         default:
@@ -348,7 +360,10 @@ class DataTable extends Component {
   }
 
   render() {
-    if ((this.props.data === null || this.props.data.length === 0) && !this.props.nullTableShow) {
+    if (
+      (this.props.data === null || this.props.data.length === 0)
+      && !this.props.nullTableShow
+    ) {
       return (
         <div>
           <div className="row">
@@ -553,7 +568,11 @@ class DataTable extends Component {
     return (
       <div style={{margin: '14px'}}>
         {header}
-        <table className="table table-hover table-primary table-bordered dynamictable" id="dynamictable">
+        <table
+          className="table table-hover table-primary
+            table-bordered dynamictable"
+          id="dynamictable"
+        >
           <thead>
             <tr className="info">{headers}</tr>
           </thead>

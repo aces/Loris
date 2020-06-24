@@ -73,17 +73,17 @@ class User_Accounts extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        $yesNoOptions = array(
+        $yesNoOptions = [
             'Y' => 'Yes',
             'N' => 'No',
-        );
+        ];
 
-        return array(
+        return [
             'sites'            => \Utility::getSiteList(false),
             'projects'         => \Utility::getProjectList(),
             'actives'          => $yesNoOptions,
             'pendingApprovals' => $yesNoOptions,
-        );
+        ];
     }
 
     /**
@@ -108,7 +108,7 @@ class User_Accounts extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/user_accounts/js/userAccountsIndex.js")
+            [$baseURL . "/user_accounts/js/userAccountsIndex.js"]
         );
     }
 }

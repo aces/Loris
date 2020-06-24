@@ -36,7 +36,7 @@ class DatabaseException extends LorisException
      * @param array  $bindparams The prepared statement bindings used to try
      *                           and execute this statement
      */
-    function __construct($msg, $query = '', $bindparams = array())
+    function __construct($msg, $query = '', $bindparams = [])
     {
         parent::__construct($msg);
         $this->query  = $query;

@@ -55,7 +55,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -66,10 +66,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.2',
             'v0.0.3',
-        );
+        ];
     }
 
     /**
@@ -106,11 +106,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Create an array of this project's candidate's CandID
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;

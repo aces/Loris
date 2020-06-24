@@ -50,7 +50,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected $validPassword = 'sufficient length and complexity';
 
-    private $_oldConfig = array();
+    private $_oldConfig = [];
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -82,7 +82,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         $this->DB->insert(
             "users",
-            array(
+            [
                 'ID'               => 999990,
                 'UserID'           => 'UnitTester',
                 'Real_name'        => 'Unit Tester',
@@ -95,23 +95,23 @@ abstract class LorisIntegrationTest extends TestCase
                 'Password_hash'    => $password,
                 'Password_expiry'  => '2099-12-31',
                 'Pending_approval' => 'N',
-            )
+            ]
         );
 
         $this->DB->insert(
             "user_psc_rel",
-            array(
+            [
                 'UserID'   => 999990,
                 'CenterID' => 1,
-            )
+            ]
         );
 
         $this->DB->insert(
             "user_project_rel",
-            array(
+            [
                 'UserID'    => 999990,
                 'ProjectID' => 1,
-            )
+            ]
         );
 
         $this->resetPermissions();
@@ -205,9 +205,9 @@ abstract class LorisIntegrationTest extends TestCase
         }
 
         // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
+        $this->DB->delete("user_login_history", ['userID' => 'UnitTester']);
+        $this->DB->delete("user_perm_rel", ["UserID" => '999990']);
+        $this->DB->delete("users", ["UserID" => 'UnitTester']);
         // Close the browser and end the session
         if ($this->webDriver) {
             $this->webDriver->quit();
@@ -231,7 +231,7 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
-            array("configName" => $configName)
+            ["configName" => $configName]
         );
 
         if (is_array($configID) && empty($configID)) {
@@ -241,18 +241,18 @@ abstract class LorisIntegrationTest extends TestCase
         }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
-            array("confID" => $configID)
+            ["confID" => $configID]
         );
 
-        $this->_oldConfig[$configName] = array(
+        $this->_oldConfig[$configName] = [
             'ConfigID' => $configID,
             'OldValue' => $oldVal,
-        );
+        ];
 
         $this->DB->update(
             "Config",
-            array("Value" => $value),
-            array("ConfigID" => $configID)
+            ["Value" => $value],
+            ["ConfigID" => $configID]
         );
     }
 
@@ -271,8 +271,8 @@ abstract class LorisIntegrationTest extends TestCase
         if (isset($this->_oldConfig[$configName])) {
             $this->DB->update(
                 "Config",
-                array("Value" => $this->_oldConfig[$configName]['OldValue']),
-                array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
+                ["Value" => $this->_oldConfig[$configName]['OldValue']],
+                ["ConfigID" => $this->_oldConfig[$configName]['ConfigID']]
             );
         }
     }
@@ -288,7 +288,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function setupPermissions($permissions)
     {
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        $this->DB->delete("user_perm_rel", ["UserID" => '999990']);
         $prepare = $this->DB->prepare(
             "INSERT INTO user_perm_rel
                 SELECT 999990, PermID
@@ -298,8 +298,8 @@ abstract class LorisIntegrationTest extends TestCase
         foreach ($permissions as $value) {
             $this->DB->execute(
                 $prepare,
-                array("perm" => $value),
-                array('nofetch' => true)
+                ["perm" => $value],
+                ['nofetch' => true]
             );
         }
     }
@@ -324,11 +324,11 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function changeStudySite()
     {
-        $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
+        $this->DB->insert("psc", ["CenterID" => 99, "Alias" => "BBQ"]);
         $this->DB->update(
             "user_psc_rel",
-            array("CenterID" => 99),
-            array("UserID" => 999990)
+            ["CenterID" => 99],
+            ["UserID" => 999990]
         );
     }
 
@@ -342,10 +342,10 @@ abstract class LorisIntegrationTest extends TestCase
         $this->DB->run('SET foreign_key_checks =0');
         $this->DB->update(
             "user_psc_rel",
-            array("CenterID" => 1),
-            array("UserID" => 999990)
+            ["CenterID" => 1],
+            ["UserID" => 999990]
         );
-        $this->DB->delete("psc", array("CenterID" => 99));
+        $this->DB->delete("psc", ["CenterID" => 99]);
         $this->DB->run('SET foreign_key_checks =1');
     }
 
@@ -361,12 +361,12 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $this->DB->insert(
             "subproject",
-            array(
+            [
                 "SubprojectID"      => $SubprojectID,
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
                 "RecruitmentTarget" => "100",
-            )
+            ]
         );
     }
 
@@ -381,11 +381,11 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $this->DB->delete(
             "subproject",
-            array(
+            [
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
                 "RecruitmentTarget" => "100",
-            )
+            ]
         );
     }
 
@@ -429,7 +429,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function deleteCandidate($pscid)
     {
-        $this->DB->delete("candidate", array("PSCID" => $pscid));
+        $this->DB->delete("candidate", ["PSCID" => $pscid]);
     }
 
     /**
@@ -561,7 +561,7 @@ abstract class LorisIntegrationTest extends TestCase
 
             $this->webDriver->executeScript(
                 "arguments[0].click();",
-                array($webElement)
+                [$webElement]
             );
         }
     }
@@ -643,7 +643,7 @@ abstract class LorisIntegrationTest extends TestCase
         string $path,
         string $permission = ''
     ): string {
-        $this->setupPermissions(array($permission));
+        $this->setupPermissions([$permission]);
         $this->safeGet($this->url . $path);
         return $this->safeFindElement(
             WebDriverBy::cssSelector("body")

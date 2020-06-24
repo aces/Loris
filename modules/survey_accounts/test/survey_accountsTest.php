@@ -52,40 +52,40 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         parent::setUp();
         $this->DB->insert(
             "psc",
-            array(
+            [
                 'CenterID'  => '55',
                 'Name'      => 'TESTinPSC',
                 'Alias'     => 'tst',
                 'MRI_alias' => 'test',
-            )
+            ]
         );
         $this->DB->insert(
             "Project",
-            array(
+            [
                 'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
-            )
+            ]
         );
         $this->DB->insert(
             "subproject",
-            array(
+            [
                 'SubprojectID' => '55',
                 'title'        => 'TESTinSubproject',
-            )
+            ]
         );
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => '999888',
                 'RegistrationCenterID'  => '1',
                 'UserID'                => '1',
                 'PSCID'                 => '8888',
                 'RegistrationProjectID' => '1',
-            )
+            ]
         );
         $this->DB->insert(
             "session",
-            array(
+            [
                 'ID'           => '111111',
                 'CandID'       => '999888',
                 'CenterID'     => '1',
@@ -94,21 +94,21 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
                 'Visit'        => 'In Progress',
-            )
+            ]
         );
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => '999999',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
                 'PSCID'                 => '8889',
                 'RegistrationProjectID' => '7777',
-            )
+            ]
         );
         $this->DB->insert(
             "session",
-            array(
+            [
                 'ID'           => '111112',
                 'CandID'       => '999999',
                 'CenterID'     => '1',
@@ -117,17 +117,17 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
                 'Visit'        => 'In Progress',
-            )
+            ]
         );
         $this->DB->insert(
             "participant_accounts",
-            array(
+            [
                 'SessionID'       => '111111',
                 'Email'           => 'TestTestTest@example.com',
                 'Test_name'       => 'Test',
                 'Status'          => 'In Progress',
                 'OneTimePassword' => 'Test',
-            )
+            ]
         );
     }
 
@@ -140,38 +140,38 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->DB->delete(
             "participant_accounts",
-            array('SessionID' => '111111')
+            ['SessionID' => '111111']
         );
         $this->DB->delete(
             "session",
-            array('CandID' => '999888')
+            ['CandID' => '999888']
         );
         $this->DB->delete(
             "candidate",
-            array('CandID' => '999888')
+            ['CandID' => '999888']
         );
         $this->DB->delete(
             "session",
-            array('CandID' => '999999')
+            ['CandID' => '999999']
         );
         $this->DB->delete(
             "candidate",
-            array('CandID' => '999999')
+            ['CandID' => '999999']
         );
         $this->DB->delete(
             "subproject",
-            array('SubprojectID' => '55')
+            ['SubprojectID' => '55']
         );
         $this->DB->delete(
             "psc",
-            array('CenterID' => '55')
+            ['CenterID' => '55']
         );
         $this->DB->delete(
             "Project",
-            array(
+            [
                 'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
-            )
+            ]
         );
         parent::tearDown();
     }
@@ -183,7 +183,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsDoespageLoad()
     {
-        $this->setupPermissions(array("user_accounts"));
+        $this->setupPermissions(["user_accounts"]);
         $this->safeGet($this->url . "/survey_accounts/");
         $bodyText
             = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
@@ -199,7 +199,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsWithoutPermission()
     {
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/survey_accounts/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

@@ -20,7 +20,8 @@
         "php-webdriver/webdriver" : "^1.8.2",
         "phan/phan": ">=2.3.0",
         "phpmd/phpmd": "~2.8",
-        "phpstan/phpstan": "^0.12"
+        "phpstan/phpstan": "0.12.17",
+        "slevomat/coding-standard": "^6.0"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"

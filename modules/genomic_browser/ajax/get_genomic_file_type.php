@@ -23,7 +23,7 @@ $DB     =& Database::singleton();
 $result = $DB->pselect(
     'SELECT analysis_modality as genomicFileType
        FROM genomic_analysis_modality_enum',
-    array()
+    []
 );
 header('Content-Type: application/json; charset=UTF-8');
 echo json_encode($result);

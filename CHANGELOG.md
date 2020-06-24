@@ -17,7 +17,8 @@ changes in the following format: PR #1234***
 #### Bug Fixes
 - *Add item here*
 ### Modules
-#### *Add module here*
+#### Issue Tracker
+- Readability of comments and history was improved. (PR #6138)
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects

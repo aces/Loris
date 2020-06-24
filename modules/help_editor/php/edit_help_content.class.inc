@@ -46,7 +46,7 @@ class Edit_Help_Content extends \NDB_Form
     function _getDefaults()
     {
         //Get the default values
-        $defaults = array();
+        $defaults = [];
 
         // Sanitize user input
         $safeSection    = $_REQUEST['section'] ?
@@ -54,7 +54,7 @@ class Edit_Help_Content extends \NDB_Form
         $safeSubsection = $_REQUEST['subsection'] ?
             htmlspecialchars($_REQUEST['subsection']) : '';
 
-        $defaults = array();
+        $defaults = [];
 
         if (isset($_REQUEST['helpID'])) {
             $helpID = htmlspecialchars($_REQUEST['helpID']);
@@ -129,10 +129,10 @@ class Edit_Help_Content extends \NDB_Form
             'content',
             'Content',
             [],
-            array(
+            [
                 'cols' => 140,
                 'rows' => 30,
-            )
+            ]
         );
 
     }
@@ -150,9 +150,9 @@ class Edit_Help_Content extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/help_editor/js/help_editor_helper.js",
-            )
+            ]
         );
     }
 }

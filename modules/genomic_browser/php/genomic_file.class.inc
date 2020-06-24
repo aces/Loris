@@ -22,9 +22,9 @@ namespace LORIS\genomic_browser;
  */
 class Genomic_File
 {
-    var $fileData   = array();
-    var $parameters = array();
-    var $QCData     = array();
+    var $fileData   = [];
+    var $parameters = [];
+    var $QCData     = [];
 
     /**
      * Construct a GenomicFile
@@ -36,7 +36,7 @@ class Genomic_File
     function __construct(int $fileID)
     {
         $db     =& \Database::singleton();
-        $params = array('FID' => $fileID);
+        $params = ['FID' => $fileID];
 
         $query    = "SELECT * FROM genomic_files WHERE GenomicFileID=:FID";
         $fileData = $db->pselectRow($query, $params);

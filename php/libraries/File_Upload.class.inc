@@ -33,7 +33,7 @@ class File_Upload
     public $fileImport        = true;
     public $filenamePrefix    = "";
     public $createDirectories = true;
-    public $errorLog          = array();
+    public $errorLog          = [];
     public $moveOrCopy        = "move";
     public $isCLImport        = false;
     public $handlerArgs;
@@ -190,7 +190,7 @@ class File_Upload
     {
         $class  =$this->fileHandlers[$field]['class'];
         $method =$this->fileHandlers[$field]['methods'][$action];
-        $args   =array();
+        $args   =[];
 
         //If handlerArgs are being passed, include them
         if (is_array($this->handlerArgs)) {
@@ -198,14 +198,14 @@ class File_Upload
         }
 
         //Call the method
-        $func = array(
+        $func = [
             $class,
             $method,
-        );
-        $args = array(
+        ];
+        $args = [
             &$this,
             $args,
-        );
+        ];
 
         $output =call_user_func_array($func, $args);
 
@@ -420,13 +420,13 @@ class File_Upload
      * @return boolean true
      * @see    File_Upload::processFiles()
      */
-    function setFileHandler($fieldName, $className, $methods=array())
+    function setFileHandler($fieldName, $className, $methods=[])
     {
-        $default_methods =array(
+        $default_methods =[
             "verify" => "isValid",
             "import" => "importFile",
             "move"   => "getTargetDirectory",
-        );
+        ];
         if (!empty($methods) && is_array($methods)) {
             $methods =array_merge($default_methods, $methods);
         } else {
@@ -493,7 +493,7 @@ class File_Upload
       */
     function getSplitFilename($name)
     {
-        $file = array();
+        $file = [];
         // NOTE This could probably be better written using pathinfo()
         if (strstr($name, ".")) {
             $extpos       =strrpos($name, ".");
@@ -751,7 +751,7 @@ class File_Upload
     function setError($field, $msg)
     {
         if (!is_array($this->errorLog[$field])) {
-            $this->errorLog[$field] = array();
+            $this->errorLog[$field] = [];
         }
         if (is_array($msg)) {
             $this->errorLog[$field] =array_merge($this->errorLog[$field], $msg);
