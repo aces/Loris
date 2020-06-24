@@ -836,14 +836,6 @@ class UserTest extends TestCase
             "examiners_psc_rel",
             $this->_eprInfo
         );
-        $this->_dbMock->setFakeTableData(
-            "permissions",
-            $this->_permissionsInfo
-        );
-        $this->_dbMock->setFakeTableData(
-            "user_perm_rel",
-            $this->_upermInfo
-        );
     }
 }
 
