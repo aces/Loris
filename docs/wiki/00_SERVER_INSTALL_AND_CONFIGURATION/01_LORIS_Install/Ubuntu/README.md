@@ -111,31 +111,22 @@ This is required for the install process in order to automatically generate
 Apache configuration files. Sudo priviledges can be revoked once the install
 is completed. 
 
+## Creating the lorisadmin user
+
 ```bash
+# Create lorisadmin user and group
+# Give lorisadmin `sudo` permission. This is required for the install process
+# in order to automatically generate Apache configuration files.
+# 
+# Sudo privileges should be revoked once the install is completed.
 sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
-```
-
-Next, add Apache to the _lorisadmin_ group
-
-```bash
+# Add apache to the lorisadmin group
 sudo usermod -a -G lorisadmin www-data
-```
-Then, set the password for the _lorisadmin_ account
-
-```bash
+# Set the password for the lorisadmin account
 sudo passwd lorisadmin
+sudo mkdir -m 755 -p /var/www/$projectname
+sudo chown lorisadmin.lorisadmin /var/www/$projectname
 su - lorisadmin
-```
-If the _loris root_ directory has not already been created, create it here
-
-```bash
-sudo mkdir -m 755 -p /var/www/loris
-```
-
-Finally, change the _loris root_ directory owner to the _lorisadmin_ account
-
-```bash
-sudo chown lorisadmin.lorisadmin /var/www/loris
 ```
 
 ## Running the install script
