@@ -39,6 +39,7 @@ declare -a tools_list=(
     'single_use/Convert_LorisMenuID_to_ModuleID.php'
     'generate_tables_sql.php'
     'lorisform_parser.php'
+    'fix_timepoint_date_problems.php'
 )
 
 # And on all PHP files in this array
@@ -59,7 +60,6 @@ vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
 declare -a strict_libraries=(
     'Database.class.inc'
     'OutputWrapper.class.inc'
-    'fix_timepoint_date_problems.php'
 )
 
 vendor/bin/phpcs --standard=test/StrictTypesCS.xml --extensions=php,inc "${strict_libraries[@]/#/php/libraries/}" || exit $?;

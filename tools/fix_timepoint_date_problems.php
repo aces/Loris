@@ -70,16 +70,16 @@ $db = \Database::singleton();
 if (empty($argv[1]) || $argv[1] == 'help') {
     //phpcs:disable
     echo <<<USAGE
-Usage: 
+Usage:
     fix_timepoint_date_problems.php help - displays this msg
     fix_timepoint_date_problems.php fix_date        <candID> <newCorrectDate> <dob/edc>
     fix_timepoint_date_problems.php fix_date        <candID> <newCorrectDate> <screening/visit> <sessionID>
-    fix_timepoint_date_problems.php diagnose        <candID> 
+    fix_timepoint_date_problems.php diagnose        <candID>
     fix_timepoint_date_problems.php diagnose        <candID> [<newCorrectDate> <dob/edc/>]
     fix_timepoint_date_problems.php diagnose        <candID> [<newCorrectDate> <screening/visit> <sessionID>]\n");
     fix_timepoint_date_problems.php add_instrument  <candID> <sessionID> <test_name>
     NOTES: The date format is: YYYY-MM-DD.
-    fix_date: updates the dates in candidate or session table. 
+    fix_date: updates the dates in candidate or session table.
                 Does not alter the BVL battery
 USAGE;
     //phpcs:enable
@@ -102,7 +102,7 @@ case 'fix_date':
     // date type
     $dateType = strtolower($argv[4]);
     // sessionID
-    if (in_array($dateType, array('screening', 'visit'))) {
+    if (in_array($dateType, ['screening', 'visit'])) {
         $sessionID = $argv[5];
     }
     break;
@@ -116,7 +116,7 @@ case 'diagnose':
     if (!empty($argv[4])) {
         $dateType = strtolower($argv[4]);
         // sessionID only present when dateType defined
-        if (in_array($dateType, array('screening', 'visit'))) {
+        if (in_array($dateType, ['screening', 'visit'])) {
             $sessionID = $argv[5];
         }
     }
@@ -136,7 +136,7 @@ case 'add_instrument':
 * below and in local functions
 */
 // check the $action options
-if (!in_array($action, array('diagnose', 'fix_date', 'add_instrument'))) {
+if (!in_array($action, ['diagnose', 'fix_date', 'add_instrument'])) {
     fwrite(
         STDERR,
         "Error: invalid 1st argument ($action).\n Available options are:" .
@@ -232,7 +232,7 @@ case 'fix_date':
 case 'diagnose':
     if (!empty($sessionID)) {
            // overwrite the array to include the provided $sessionID only
-           $listOfTimePoints = array($sessionID);
+           $listOfTimePoints = [$sessionID];
     }
 
     // print out candidate info
@@ -344,7 +344,7 @@ function addInstrument($sessionID, $testName)
     $success = $battery->addInstrument($testName);
 
     // get CommentID of the newly assigned instrument
-    $query = "SELECT CommentID FROM flag 
+    $query = "SELECT CommentID FROM flag
         WHERE SessionID='$sessionID' AND Test_name='$testName'";
 
     /*
@@ -423,9 +423,9 @@ function fixDate($candID, $dateType, $newDate, $sessionID = null)
 
     // check the args
     if (empty($dateType)
-        || !in_array($dateType, array('dob', 'edc', 'screening', 'visit'))
+        || !in_array($dateType, ['dob', 'edc', 'screening', 'visit'])
         || empty($newDate)
-        || (in_array($dateType, array('screening', 'visit')) && empty($sessionID))
+        || (in_array($dateType, ['screening', 'visit']) && empty($sessionID))
     ) {
         throw new LorisException("Please pass a valid set of arguments\n");
     }
@@ -445,10 +445,10 @@ function fixDate($candID, $dateType, $newDate, $sessionID = null)
     $candidate =& Candidate::singleton($candID);
 
     // fixing DOB or EDC
-    if (in_array($dateType, array('dob', 'edc'))) {
+    if (in_array($dateType, ['dob', 'edc'])) {
         // set and where arrays
-        $setArray   = array($dateType => $newDate);
-        $whereArray = array('CandID' => $candID);
+        $setArray   = [$dateType => $newDate];
+        $whereArray = ['CandID' => $candID];
 
         // update candidate table record
         $success = $db->update('candidate', $setArray, $whereArray);
@@ -504,8 +504,8 @@ function fixDate($candID, $dateType, $newDate, $sessionID = null)
         }
 
         // set and where arrays for the update
-        $setArray   = array("Date_".$dateType => $newDate);
-        $whereArray = array("ID" => $sessionID);
+        $setArray   = ["Date_".$dateType => $newDate];
+        $whereArray = ["ID" => $sessionID];
 
         // update session table record
         $success = $db->update('session', $setArray, $whereArray);
@@ -561,9 +561,9 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
     if (!empty($dateType) || !empty($newDate)) {
         // check the args
         if (empty($dateType)
-            || !in_array($dateType, array('dob', 'edc', 'screening', 'visit'))
+            || !in_array($dateType, ['dob', 'edc', 'screening', 'visit'])
             || empty($newDate)
-            || (            in_array($dateType, array('screening', 'visit'))
+            || (in_array($dateType, ['screening', 'visit'])
             && empty($sessionID))
         ) {
             throw new LorisException("Please pass a valid set of arguments\n");
@@ -621,7 +621,7 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
     }
 
     // initialize the array
-    $missingInstruments = array();
+    $missingInstruments = [];
 
     // check/diagnose the battery for each stage
     foreach ($stageList as $stage => $stageData) {
