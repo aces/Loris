@@ -620,6 +620,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @param string $needle   This string should be in $haystack.
      * @param string $haystack The HTML body of the page.
+     * @param string $jsError  React render error message.
      *
      * @return void
      */
@@ -627,8 +628,7 @@ abstract class LorisIntegrationTest extends TestCase
         string $needle,
         string $haystack,
         string $jsError= "An error occured while loading the page."
-    ): void
-    {
+    ): void {
         $this->assertContains($needle, $haystack);
         $this->assertNotContains($jsError, $haystack);
         $this->resetPermissions();
