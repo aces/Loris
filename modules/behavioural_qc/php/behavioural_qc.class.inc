@@ -1,33 +1,16 @@
 <?php
-/**
- * This is a file called used by the behavioural qc browser
- * auto-complete to retrieve candidates for a given
- * instrument and/or visit.
- *
- * PHP Version 7
- *
- * @category Behavioural
- * @package  Loris
- * @author   Evan McIlroy <evanmcilroy@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
 namespace LORIS\behavioural_qc;
 /**
- * Dashboard: displays recruitment and study progression charts,
- * user tasks and document repository notifications
+ * This class contains functions to assist a researcher in assuring that
+ * behavioural data is complete and consistent. It displays incomplete forms
+ * as well as conflicts in data entry.
  *
- * @category Behavioural
- * @package  Loris
- * @author   Evan McIlroy <evanmcilroy@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Behavioural_QC extends \NDB_Form
 {
-
     /**
-     * Class that returns the Behavioural Quality Control.
+     * {@inheritDoc}
      *
      * @param \User $user The user whose access is being checked
      *
@@ -35,7 +18,7 @@ class Behavioural_QC extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('quality_control'));
+        return $user->hasPermission('quality_control');
     }
 
     /**
@@ -775,7 +758,10 @@ class Behavioural_QC extends \NDB_Form
                     ['display' => $full_name]
                 );
             } else {
-                $test_name = \Utility::getTestNameUsingFullName($full_name);
+                $test_name = $DB->pselectOne(
+                    "SELECT Test_name FROM test_names WHERE Full_name =:fname",
+                    ['fname' => $full_name]
+                );
             }
         }
         return $test_name;

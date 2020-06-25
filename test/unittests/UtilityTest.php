@@ -1,18 +1,11 @@
 <?php declare(strict_types=1);
+require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
+use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for Utility class.
  *
- * PHP Version 7
- *
- * @category Tests
- * @package  Test
- * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
- *           John Saigle <john.saigle@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
-use PHPUnit\Framework\TestCase;
 class UtilityTest extends TestCase
 {
     /**
@@ -398,33 +391,6 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getTestNameByCommentID returns 
-     * the correct test name for the given CommentID
-     * 
-     * @note In the Utility class there is a note saying this method 
-     *       should be moved to a different module. 
-     *
-     * @covers Utility::getTestNameByCommentID
-     * @return void 
-     */
-    public function testGetTestNameByCommentID()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselectOne')
-            ->with(
-                $this->stringContains(
-                    "SELECT Test_name FROM flag WHERE CommentID=:CID"
-                )
-            )
-            ->willReturn("test_flag1");
-
-        $this->assertEquals(
-            "test_flag1",
-            Utility::getTestNameByCommentID("ID123")
-        );
-    }
-
-    /**
      * Test that getStageUsingCandID returns the proper 
      * current stage for the given CandID
      * 
@@ -459,31 +425,6 @@ class UtilityTest extends TestCase
         $this->assertEquals(
             '2', 
             Utility::getSubprojectIDUsingCandID('1')
-        );
-    }
-
-    /**
-     * Test that getTestNameUsingFullName returns the correct 
-     * Test_name for the given Full_name
-     *
-     * @covers Utility::getTestNameUsingFullName
-     * @return void
-     */
-    public function testGetTestNameUsingFullName()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn(
-                array(
-                    array('Test_name' => 'test1',
-                          'Full_name' => 'description1'),
-                    array('Test_name' => 'test2',
-                          'Full_name' => 'description2'))
-            );
-
-        $this->assertEquals(
-            'test1', 
-            Utility::getTestNameUsingFullName('description1')
         );
     }
 
