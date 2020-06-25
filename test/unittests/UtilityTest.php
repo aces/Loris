@@ -1,10 +1,26 @@
 <?php declare(strict_types=1);
+/**
+ * Unit test for Candidate class
+ *
+ * PHP Version 5
+ *
+ * @category Tests
+ * @package  Main
+ * @author   Karolina Marasinska <karolina.marasinska@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for Utility class.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category Tests
+ * @package  Test
+ * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
+ *           John Saigle <john.saigle@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class UtilityTest extends TestCase
 {
@@ -87,24 +103,6 @@ class UtilityTest extends TestCase
         array('language_id' => '2',
               'language_label' => 'LA2')
         );
-    /**
-     * Mri_scan_type table information
-     *
-     * @var array contains scan information retrieved by getScanTypeList method
-     */
-    private $_mriInfo = array(0 => array('ID' => 123,
-                                         'Scan_type' => "scan 1"),
-                              1 => array('ID' => 234,
-                                         'Scan_type' => "scan 2")
-                        );
-    /**
-     * Files table information
-     *
-     * @var array contains scan information retrieved by getScanTypeList method
-     */
-    private $_fileInfo = array(0 => array('AcquisitionProtocolID' => 123),
-                               1 => array('AcquisitionProtocolID' => 234)
-                         );
     /**
      * NDB_Factory used in tests.
      * Test doubles are injected to the factory object.
@@ -1125,10 +1123,20 @@ class UtilityTest extends TestCase
      */
     public function testGetScanTypeList()
     {
-        $this->_setMockDB();
+        $this->_dbMock->expects($this->once())->method('pselect')
+            ->with(
+                $this->stringContains(
+                    "JOIN files f ON (f.AcquisitionProtocolID=mri.ID)"
+                )
+            )
+            ->willReturn(
+                array(0 => array('ID' => 123,
+                                          'Scan_type' => 'scan 1'),
+                               1 => array('ID' => 234,
+                                          'Scan_type' => 'scan 2')
+                )
+            );
         $expected = array(123 => 'scan 1', 234 => 'scan 2');
-        $this->_mockDB->setFakeTableData("mri_scan_type", $this->_mriInfo);
-        $this->_mockDB->setFakeTableData("files", $this->_fileInfo);
         $this->assertEquals($expected, Utility::getScanTypeList());
     }
 
@@ -1152,68 +1160,6 @@ class UtilityTest extends TestCase
             Utility::appendForwardSlash($pathWithSlash)
         );
     }
-
-    /**
-     * Test that structureToPCRE returns the regex form of the given structure.
-     * This test covers the different cases of the function.
-     *
-     * @covers Utility::structureToPCRE
-     * @return void
-     */
-    public function testStructureToPCRE()
-    {
-        $structure = array(
-            'seq' => array(
-                0 => array('@' => array('type' => 'alpha',
-                                        'minLength' => '1',
-                                        'maxLength' => '5')
-                ),
-                1 => array('@' => array('type' => 'alphanumeric',
-                                        'length' => '2')
-                ),
-                2 => array('@' => array('type' => 'static'),
-                           '#' => '1-3'
-                ),
-                3 => array('@' => array('type' => 'set'),
-                           '#' => '1||3'
-                ),
-                4 => array('@' => array('type' => 'set'),
-                           '#' => '1-3'
-                ),
-            )
-        );
-        $this->assertEquals(
-            '/^[a-z]{1,5}[0-9a-z]{2,2}(1-3){1,1}(1||3){1,1}[1-3]{1,1}$/i',
-            Utility::structureToPCRE($structure)
-        );
-    }
-
-    /**
-     * Test structureToPCRE with the site and project abbreviations set
-     *
-     * @covers Utility::structureToPCRE
-     * @return void
-     */
-    public function testStructureToPCREWithAbbreviations()
-    {
-        $structure = array(
-            'seq' => array(
-                0 => array('@' => array('type' => 'siteAbbrev',
-                                        'minLength' => '1',
-                                        'maxLength' => '5')
-                ),
-                1 => array('@' => array('type' => 'projectAbbrev',
-                                        'minLength' => '1',
-                                        'maxLength' => '5')
-                )
-            )
-        );
-        $this->assertEquals(
-            '/^MTL{1,5}P1{1,5}$/i',
-            Utility::structureToPCRE($structure, "MTL", "P1")
-        );
-    }
-
 
     /**
      * Set up a mock database for some of the tests above
