@@ -54,7 +54,6 @@ declare -a ignored_files=(
     tools/single_use/remove_logged_passwords.php
     tools/deprecated/create_candidates.php
     tools/deprecated/excelDump.php
-    tools/fix_timepoint_date_problems.php
 )
 
 declare -a params=(
@@ -78,7 +77,6 @@ fi
 declare -a strict_libraries=(
     'Database.class.inc'
     'OutputWrapper.class.inc'
-    'fix_timepoint_date_problems.php'
 )
 
 declare -a params=(
