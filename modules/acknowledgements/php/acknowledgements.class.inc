@@ -77,6 +77,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $baseurl = $factory->settings()->getBaseURL();
+
         // create user object and check appropriate permission
         $user = $factory->user();
         if (!$user->hasPermission('acknowledgements_edit')) {

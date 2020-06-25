@@ -623,9 +623,14 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    private function _verifyPermission(string $needle, string $haystack): void
+    private function _verifyPermission(
+        string $needle,
+        string $haystack,
+        string $jsError= "An error occured while loading the page."
+    ): void
     {
         $this->assertContains($needle, $haystack);
+        $this->assertNotContains($jsError, $haystack);
         $this->resetPermissions();
     }
 
