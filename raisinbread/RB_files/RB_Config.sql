@@ -98,6 +98,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (104,103,'/data/data_rel
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (105,104,'YMd');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (106,105,'Y-m-d H:i:s');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (107,106,'/data/issue_tracker/');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (108,105,'');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (108,107,'');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
