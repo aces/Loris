@@ -5,9 +5,9 @@
     <div class="col-sm-2">
         {html_options id="DemographicSite" options=$Sites name="DemographicSite" selected=$CurrentSite.ID class="form-control"}
     </div>
-        <div class="col-sm-3">
-            {html_options id="DemographicProject" options=$Projects name="DemographicProject" selected=$CurrentProject.ID class="form-control"}
-        </div>
+    <div class="col-sm-3">
+        {html_options id="DemographicProject" options=$Projects name="DemographicProject" selected=$CurrentProject.ID class="form-control"}
+    </div>
     <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_demographic.js"></script>
     <button  onClick="updateDemographicTab()" class="btn btn-primary btn-small">Submit Query</button>
     <br><br>
@@ -15,7 +15,9 @@
         <thead>
         <tr>
             <th colspan="2" id="demog">Demographics</th>
-            <th>Undefined</th>
+            {if {$CurrentProject.ID > 0}}
+                <th>Undefined</th>
+            {/if}
             {foreach from=$Subprojects item=name key=proj}
                 <th>{$name}</th>
             {/foreach}
@@ -25,10 +27,12 @@
         <tbody align="right">
         <tr>
             <td colspan="2" align="left">Registered candidates</td>
-            {if {$registered[$keyid]}>0}
-                <td><b>{$registered[NULL]}</b></td>
-            {else}
-                <td><b>0</b></td>
+            {if {$CurrentProject.ID > 0}}
+                {if {$registered[$keyid]}>0}
+                    <td><b>{$registered[NULL]}</b></td>
+                {else}
+                    <td><b>0</b></td>
+                {/if}
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$registered[$keyid]}>0}
@@ -42,14 +46,16 @@
         <tr >
             <td rowspan="2" align="left" style="vertical-align:middle;background-color: #FFFFFF;">Participant Status</td>
             <td align="left" class="status_active">Active</td>
-            {if {$registered[$NULL]}>0}
-                {if {$ps_active[$NULL]}>0}
-                    <td class="status_active">{$ps_active[$NULL]}<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+            {if {$CurrentProject.ID > 0}}
+                {if {$registered[$NULL]}>0}
+                    {if {$ps_active[$NULL]}>0}
+                        <td class="status_active">{$ps_active[$NULL]}<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                    {else}
+                        <td class="status_active">0<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                    {/if}
                 {else}
-                    <td class="status_active">0<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                    <td class="status_active">0<font size="1"><b>/0</b></font></td>
                 {/if}
-            {else}
-                <td class="status_active">0<font size="1"><b>/0</b></font></td>
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$registered[$keyid]}>0}
@@ -59,7 +65,7 @@
                         <td class="status_active">0<font size="1"><b>/{$registered[$keyid]}</b></font></td>
                     {/if}
                 {else}
-                <td class="status_active">0<font size="1"><b>/0</b></font></td>
+                    <td class="status_active">0<font size="1"><b>/0</b></font></td>
                 {/if}
             {/foreach}
             {if {$registered.total}>0}
@@ -74,14 +80,16 @@
         </tr>
         <tr class="status_inactive">
             <td align="left" class="status_inactive">Inactive</td>
-            {if {$registered[$NULL]}>0}
-                {if {$ps_inactive[$NULL]}>0}
-                    <td class="status_inactive">{$ps_inactive[$NULL]}<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+            {if {$CurrentProject.ID > 0}}
+                {if {$registered[$NULL]}>0}
+                    {if {$ps_inactive[$NULL]}>0}
+                        <td class="status_inactive">{$ps_inactive[$NULL]}<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                    {else}
+                        <td class="status_inactive">0<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                    {/if}
                 {else}
-                    <td class="status_inactive">0<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                    <td class="status_inactive">0<font size="1"><b>/0</b></font></td>
                 {/if}
-            {else}
-                <td class="status_inactive">0<font size="1"><b>/0</b></font></td>
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$registered[$keyid]}>0}
@@ -109,14 +117,16 @@
         <tr>
             <td rowspan="2" align="left" style="vertical-align:middle">Sex</td>
             <td align="left" >Male</td>
-            {if {$ps_active[$NULL]}>0}
-                {if {$sex_male[$NULL]}>0}
-                    <td>{$sex_male[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+            {if {$CurrentProject.ID > 0}}
+                {if {$ps_active[$NULL]}>0}
+                    {if {$sex_male[$NULL]}>0}
+                        <td>{$sex_male[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                    {else}
+                        <td>0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                    {/if}
                 {else}
-                    <td>0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                    <td>0<font size="1"><b>/0</b></font></td>
                 {/if}
-            {else}
-                <td>0<font size="1"><b>/0</b></font></td>
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$ps_active[$keyid]}>0}
@@ -142,14 +152,16 @@
         </tr>
         <tr>
             <td align="left">Female</td>
-            {if {$ps_active[$NULL]}>0}
-                {if {$sex_female[$NULL]}>0}
-                    <td >{$sex_female[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+            {if {$CurrentProject.ID > 0}}
+                {if {$ps_active[$NULL]}>0}
+                    {if {$sex_female[$NULL]}>0}
+                        <td >{$sex_female[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                    {else}
+                        <td >0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                    {/if}
                 {else}
-                    <td >0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                    <td >0<font size="1"><b>/0</b></font></td>
                 {/if}
-            {else}
-                <td >0<font size="1"><b>/0</b></font></td>
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$ps_active[$keyid]}>0}
@@ -176,10 +188,12 @@
         </tr>
         <tr>
             <td colspan="2" align="left" style="vertical-align:middle">Age Average (months)</td>
-            {if {$age_avg[$NULL]}>0}
-                <td>{$age_avg[$NULL]}</td>
-            {else}
-                <td>0</td>
+            {if {$CurrentProject.ID > 0}}
+                {if {$age_avg[$NULL]}>0}
+                    <td>{$age_avg[$NULL]}</td>
+                {else}
+                    <td>0</td>
+                {/if}
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$age_avg[$keyid]}>0}
