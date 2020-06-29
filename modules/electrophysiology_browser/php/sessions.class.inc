@@ -37,6 +37,7 @@ class Sessions extends \NDB_Page
     public $skipTemplate = true; // stops from looking for a smarty template
     protected $timepoint;
     protected $sessionID;
+    protected $candidate;
 
     /**
      * Determine whether the user has permission to view this page
@@ -47,29 +48,29 @@ class Sessions extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('electrophysiology_browser_view_allsites')
+        return (($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasCenter($this->timepoint->getCenterID())
                 && $user->hasPermission('electrophysiology_browser_view_site')
             )
-        );
+        ) && $user->hasProject($this->candidate->getProjectID()));
     }
 
     /**
-     * Handles a login request
+     * Load the required variables in order to check that the  user
+     * has access to the session.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
      *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return ResponseInterface
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
-    {
-        $path       = $request->getUri()->getPath();
-        $parameters = $request->getQueryParams();
-        $user       = $request->getAttribute('user');
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : ResponseInterface {
 
+        $path    = $request->getUri()->getPath();
         $matches = [];
 
-        // check that the session ID is of type integer
         if (preg_match('#/sessions/(\d+)#', $path, $matches) !== 1) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
@@ -82,6 +83,26 @@ class Sessions extends \NDB_Page
 
         $this->timepoint = \NDB_Factory::singleton()->timepoint($session_id);
         $this->sessionID = $session_id;
+
+        $candID          = $this->timepoint->getCandID();
+        $this->candidate = \Candidate::singleton($candID);
+
+        parent::loadResources($user, $request);
+        return (new \LORIS\Http\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
+    }
+
+    /**
+     * Handles a login request
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $parameters = $request->getQueryParams();
+        $user       = $request->getAttribute('user');
 
         if (!$this->_hasAccess($user)) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
