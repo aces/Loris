@@ -281,14 +281,47 @@ class RequestAccount extends \NDB_Form
                 $err['captcha'] = 'Please complete the reCaptcha!';
             }
         }
-        // Send an email to the administrator informing them that a user has
-        // requested an account.
-        if (empty($err)) {
+        // Show success message even if email already exists for security reasons
+        $this->tpl_data['success'] = true;
+
+        // If there are error messages, return early without sending emails.
+        if (!empty($err)) {
+            return;
+        }
+
+        // Send an email to all users meeting the following criteria:
+        //     - Associated with the Site
+        //     - Associated with the Project
+        //     - Have the User Management permission
+        $query  = <<<SQL
+        SELECT DISTINCT u.Email,u.userID 
+        FROM users u 
+        JOIN user_psc_rel upr 
+        ON u.ID = upr.UserID 
+        JOIN user_project_rel uprojr 
+        ON u.ID = uprojr.UserID 
+        WHERE upr.CenterID=:center
+        AND uprojr.ProjectID=:project
+SQL;
+        $result = $DB->pselect(
+            $query,
+            ['center' => $site, 'project' => $project]
+        );
+        foreach ($result as $row) {
+            $hasPermission = \User::factory($row['userID'])
+                ->hasAnyPermission(
+                    ['user_accounts', 'user_accounts_multisite']
+                );
+            if ($hasPermission === false) {
+                continue;
+            }
+
+            // Send email to users with User Management permissions.
             $config    = \NDB_Factory::singleton()->config();
             $studyName = $config->getSetting('title');
 
             \Email::send(
-                $config->getSetting('mail')['From'],
+                $row['Email'],
                 'request_account.tpl',
                 [
                     'Study'     => $studyName,
@@ -298,7 +331,5 @@ class RequestAccount extends \NDB_Form
                 ],
             );
         }
-        // Show success message even if email already exists for security reasons
-        $this->tpl_data['success'] = true;
     }
 }
