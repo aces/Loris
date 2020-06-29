@@ -1036,6 +1036,66 @@ class CandidateTest extends TestCase
         $this->assertFalse($result);
     }
 
+    /**
+     * Test that structureToPCRE returns the regex form of the given structure.
+     * This test covers the different cases of the function.
+     *
+     * @covers Candidate::structureToPCRE
+     * @return void
+     */
+    public function testStructureToPCRE()
+    {
+        $structure = array(
+            'seq' => array(
+                0 => array('@' => array('type' => 'alpha',
+                    'minLength' => '1',
+                    'maxLength' => '5')
+                ),
+                1 => array('@' => array('type' => 'alphanumeric',
+                    'length' => '2')
+                ),
+                2 => array('@' => array('type' => 'static'),
+                    '#' => '1-3'
+                ),
+                3 => array('@' => array('type' => 'set'),
+                    '#' => '1||3'
+                ),
+                4 => array('@' => array('type' => 'set'),
+                    '#' => '1-3'
+                ),
+            )
+        );
+        $this->assertEquals(
+            '/^[a-z]{1,5}[0-9a-z]{2,2}(1-3){1,1}(1||3){1,1}[1-3]{1,1}$/i',
+            Candidate::structureToPCRE($structure)
+        );
+    }
+
+    /**
+     * Test structureToPCRE with the site and project abbreviations set
+     *
+     * @covers Candidate::structureToPCRE
+     * @return void
+     */
+    public function testStructureToPCREWithAbbreviations()
+    {
+        $structure = array(
+            'seq' => array(
+                0 => array('@' => array('type' => 'siteAbbrev',
+                    'minLength' => '1',
+                    'maxLength' => '5')
+                ),
+                1 => array('@' => array('type' => 'projectAbbrev',
+                    'minLength' => '1',
+                    'maxLength' => '5')
+                )
+            )
+        );
+        $this->assertEquals(
+            '/^MTL{1,5}P1{1,5}$/i',
+            Candidate::structureToPCRE($structure, "MTL", "P1")
+        );
+    }
 
     /**
      * Test Candidate::createNew
