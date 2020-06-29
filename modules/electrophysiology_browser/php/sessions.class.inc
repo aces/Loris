@@ -76,14 +76,9 @@ class Sessions extends \NDB_Page
             throw new \DomainException("Invalid session");
         }
         $session_id = intval($matches[1]);
-        try {
-            $this->timepoint = \NDB_Factory::singleton()->timepoint(
-                $session_id
-            );
-            $this->sessionID = $session_id;
-        } catch(\LorisException $e) {
-            throw $e;
-        }
+
+        $this->timepoint = \NDB_Factory::singleton()->timepoint($session_id);
+        $this->sessionID = $session_id;
 
         $candID          = $this->timepoint->getCandID();
         $this->candidate = \Candidate::singleton($candID);
