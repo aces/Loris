@@ -50,9 +50,8 @@ class Sessions extends \NDB_Page
     {
         return (($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasCenter($this->timepoint->getCenterID())
-                && $user->hasPermission('electrophysiology_browser_view_site')
-            )
-        ) && $user->hasProject($this->candidate->getProjectID()));
+                && $user->hasPermission('electrophysiology_browser_view_site'))
+            ) && $user->hasProject($this->candidate->getProjectID()));
     }
 
     /**
