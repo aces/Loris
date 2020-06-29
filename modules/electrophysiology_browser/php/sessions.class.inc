@@ -60,7 +60,8 @@ class Sessions extends \NDB_Page
      * @param \User                  $user    The user to load the resources for
      * @param ServerRequestInterface $request The PSR15 Request being handled
      *
-     * @throws \LorisException If the session is non-numerical or does not exist
+     * @throws \DomainException If the session id is non-numerical
+     * @throws \LorisException  If the session is not found
      *
      * @return void
      */
@@ -72,7 +73,7 @@ class Sessions extends \NDB_Page
         $matches = [];
 
         if (preg_match('#/sessions/(\d+)#', $path, $matches) !== 1) {
-            throw new \LorisException("Invalid session");
+            throw new \DomainException("Invalid session");
         }
         $session_id = intval($matches[1]);
         try {
@@ -81,7 +82,7 @@ class Sessions extends \NDB_Page
             );
             $this->sessionID = $session_id;
         } catch(\LorisException $e) {
-            throw new \LorisException("Session not found");
+            throw $e;
         }
 
         $candID          = $this->timepoint->getCandID();
