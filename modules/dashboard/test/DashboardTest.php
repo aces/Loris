@@ -40,12 +40,12 @@ class DashboardTest extends LorisIntegrationTest
         //Insert a pending user
         $this->DB->insert(
             "users",
-            array(
+            [
                 'UserID'                 => 'testUser1',
                 'Email'                  => 'test@test.com',
                 'Password'               => 'AA1234567!',
                 'PasswordChangeRequired' => false
-            )
+            ]
         );
         $user_id = $this->DB->pselectOne(
             "SELECT ID FROM users WHERE UserID=:test_user_id",

@@ -217,7 +217,7 @@ class Edit_User extends \NDB_Form
             ? array_keys($values['permID']) : [];
         $editorPermissions = $editor->getPermissionIDs() ?? [];
         $permIDs           = [];
-        $passwordExpired = false;
+        $passwordExpired   = false;
         // store the permission IDs
         if (!empty($values['permID'])) {
             // An editor can only grant permissions that they have already been
