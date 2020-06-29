@@ -52,9 +52,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Database table containing data referenced by $this->commentID
      *
-     * @access protected
+     * @access public
      */
-    protected $table;
+    public $table;
 
     /**
      * Cache location for the date of administration
@@ -88,9 +88,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Array of required fields to check
      *
-     * @access protected
+     * @access public
      */
-    protected $requiredElements = [];
+    var $_requiredElements = [];
 
     /**
      * Array of date fields to be processed into QuickForm dates
@@ -113,7 +113,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @access public
      */
-    public $doubleDataEntryDiffIgnoreColumns
+    var $_doubleDataEntryDiffIgnoreColumns
         = [
             'CommentID',
             'UserID',
