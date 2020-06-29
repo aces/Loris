@@ -40,62 +40,62 @@ class NDB_BVL_Battery_Test extends TestCase
 
         $this->DB->setFakeTableData(
             "test_names",
-            array(
-                array(
+            [
+                [
                     'ID'            => 1,
                     'Test_name'     => 'ActiveTestByAge',
                     'Full_name'     => 'Active Test 1',
                     'Sub_group'     => 1,
                     'IsDirectEntry' => 0
-                ),
-                array(
+                ],
+                [
                     'ID'            => 2,
                     'Test_name'     => 'ActiveTestByAge2',
                     'Full_name'     => 'Active Test 2',
                     'Sub_group'     => 1,
                     'IsDirectEntry' => 0
-                ),
-                array(
+                ],
+                [
                     'ID'            => 3,
                     'Test_name'     => 'InactiveTest',
                     'Full_name'     => 'Inactive Test 1',
                     'Sub_group'     => 1,
                     'IsDirectEntry' => 0
-                ),
-                array(
+                ],
+                [
                     'ID'            => 4,
                     'Test_name'     => 'ActiveTestByVisit',
                     'Full_name'     => 'Active Test by Visit 1',
                     'Sub_group'     => 1,
                     'IsDirectEntry' => 0
-                ),
-                array(
+                ],
+                [
                     'ID'            => 5,
                     'Test_name'     => 'ActiveTestByVisit2',
                     'Full_name'     => 'Active Test by Visit 2',
                     'Sub_group'     => 1,
                     'IsDirectEntry' => 0
-                ),
-                array(
+                ],
+                [
                     'ID'            => 6,
                     'Test_name'     => 'ActiveTestByFirstVisit',
                     'Full_name'     => 'Active Test by First Visit 2',
                     'Sub_group'     => 1,
                     'IsDirectEntry' => 0
-                ),
-                array(
+                ],
+                [
                     'ID'            => 7,
                     'Test_name'     => 'ActiveTestByNotFirstVisit',
                     'Full_name'     => 'Active Test by Not First Visit 2',
                     'Sub_group'     => 1,
                     'IsDirectEntry' => 0
-                ),
-            )
+                ],
+            ]
         );
         $this->DB->setFakeTableData(
             "test_battery",
-            array(
-                array(
+            [
+                [
                     'ID'           => 1,
                     'Test_name'    => 'ActiveTestByAge',
                     'AgeMinDays'   => 0,
@@ -106,8 +106,8 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'  => null,
                     'CenterID'     => null,
                     'firstVisit'   => null,
-                ),
-                array(
+                ],
+                [
                     'ID'           => 2,
                     'Test_name'    => 'ActiveTestByAge2',
                     'AgeMinDays'   => 0,
@@ -118,8 +118,8 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'  => null,
                     'CenterID'     => '1',
                     'firstVisit'   => null,
-                ),
-                array(
+                ],
+                [
                     'ID'           => 3,
                     'Test_name'    => 'InactiveTest',
                     'AgeMinDays'   => 0,
@@ -130,8 +130,8 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'  => 'V01',
                     'CenterID'     => '1',
                     'firstVisit'   => null,
-                ),
-                array(
+                ],
+                [
                     'ID'           => 4,
                     'Test_name'    => 'ActiveTestByVisit',
                     'AgeMinDays'   => 0,
@@ -142,8 +142,8 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'  => 'V01',
                     'CenterID'     => null,
                     'firstVisit'   => null,
-                ),
-                array(
+                ],
+                [
                     'ID'           => 5,
                     'Test_name'    => 'ActiveTestByVisit2',
                     'AgeMinDays'   => 0,
@@ -154,8 +154,8 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'  => 'V01',
                     'CenterID'     => '1',
                     'firstVisit'   => null,
-                ),
-                array(
+                ],
+                [
                     'ID'           => 6,
                     'Test_name'    => 'ActiveTestByFirstVisit',
                     'AgeMinDays'   => 0,
@@ -166,8 +166,8 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'  => null,
                     'CenterID'     => '1',
                     'firstVisit'   => 'Y',
-                ),
-                array(
+                ],
+                [
                     'ID'           => 7,
                     'Test_name'    => 'ActiveTestByNotFirstVisit',
                     'AgeMinDays'   => 0,
@@ -178,8 +178,8 @@ class NDB_BVL_Battery_Test extends TestCase
                     'Visit_label'  => null,
                     'CenterID'     => '1',
                     'firstVisit'   => 'N',
-                ),
-            )
+                ],
+            ]
         );
 
     }
@@ -216,12 +216,12 @@ class NDB_BVL_Battery_Test extends TestCase
 
         $this->assertEquals(
             $instruments,
-            array(
+            [
                 'ActiveTestByAge',
                 'ActiveTestByAge2',
                 'ActiveTestByFirstVisit',
                 'ActiveTestByNotFirstVisit',
-            )
+            ]
         );
     }
 
@@ -238,10 +238,10 @@ class NDB_BVL_Battery_Test extends TestCase
 
         $this->assertEquals(
             $instruments,
-            array(
+            [
                 'ActiveTestByVisit',
                 'ActiveTestByVisit2',
-            )
+            ]
         );
     }
 
@@ -274,17 +274,17 @@ class NDB_BVL_Battery_Test extends TestCase
 
         $this->assertEquals(
             $instrumentsByAge,
-            array(
+            [
                 'ActiveTestByAge',
                 'ActiveTestByFirstVisit',
-            )
+            ]
         );
 
         $this->assertEquals(
             $instrumentsByVisit,
-            array(
+            [
                 'ActiveTestByVisit',
-            )
+            ]
         );
     }
 
@@ -309,11 +309,11 @@ class NDB_BVL_Battery_Test extends TestCase
 
         $this->assertEquals(
             $firstVisitInstruments,
-            array(
+            [
                 'ActiveTestByAge',
                 'ActiveTestByAge2',
                 'ActiveTestByFirstVisit',
-            )
+            ]
         );
 
         $notFirstVisitInstruments = $battery->lookupBattery(
@@ -327,11 +327,11 @@ class NDB_BVL_Battery_Test extends TestCase
 
         $this->assertEquals(
             $notFirstVisitInstruments,
-            array(
+            [
                 'ActiveTestByAge',
                 'ActiveTestByAge2',
                 'ActiveTestByNotFirstVisit',
-            )
+            ]
         );
     }
 
