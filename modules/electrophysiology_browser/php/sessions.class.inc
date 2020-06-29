@@ -79,18 +79,9 @@ class Sessions extends \NDB_Page
         }
 
         $session_id = intval($matches[1]);
-        try {
-            $this->timepoint = \NDB_Factory::singleton()->timepoint(
-                $session_id
-            );
-            $this->sessionID = $session_id;
-        } catch(\LorisException $e) {
-            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-                ->process(
-                    $request,
-                    new \LORIS\Http\StringStream("Session not found")
-                )->withStatus(404);
-        }
+
+        $this->timepoint = \NDB_Factory::singleton()->timepoint($session_id);
+        $this->sessionID = $session_id;
 
         if (!$this->_hasAccess($user)) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
