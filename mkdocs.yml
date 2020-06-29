@@ -27,7 +27,9 @@ nav:
         - Modules: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/03_Loris_Modules/README.md'
     - Getting Started: 'docs/wiki/02_GETTING_STARTED/README.md'
     - Help and Troubleshooting: 'docs/wiki/03_HELP_AND_TROUBLESHOOTING/README.md'
-    - API: 'docs/API/LorisRESTAPI.md'
+    - REST API:
+        - 'Stable' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.2.md'
+        - 'Dev' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.3-dev.md'
     - Developers:
         - Overview: 'docs/wiki/99_Developers/README.md'
         - 'Coding Standards': 'docs/CodingStandards.md'

@@ -24,7 +24,7 @@ INSERT INTO subproject (title) VALUES('SCI');
 ```
 
 ### API
-_not yet available. See [API documentation](../../../API/LorisRESTAPI_v0.0.3.md) for latest additions_
+_not yet available. See [API documentation](../../99_Developers/LORIS-REST-API-0.0.3-dev.md) for latest additions_
  
 ## Interaction With LORIS
 
