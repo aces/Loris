@@ -357,6 +357,8 @@ class Utility
      * @param mixed $var The variable to be converted to an array.
      *
      * @return array If $var is an array, var, otherwise an array containing $var
+     *
+     * @deprecated
      */
     static function toArray($var)
     {

@@ -83,6 +83,7 @@ class Create_Timepoint extends \NDB_Form
 
         //Project
         $user_list_of_projects = $user->getProjectIDs();
+        $project = null;
         if (count($user_list_of_projects) == 1) {
             //if there is only one project, autoselect first project from array of 1
             $project = \Project::getProjectFromID(array_pop($user_list_of_projects));
