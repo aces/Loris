@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * This class features the code for the menu portion of the LORIS
  * electrophysiology browser module.
@@ -61,34 +60,34 @@ class Sessions extends \NDB_Page
      * @param \User                  $user    The user to load the resources for
      * @param ServerRequestInterface $request The PSR15 Request being handled
      *
-     * @return ResponseInterface
+     * @throws \LorisException If the session is non-numerical or does not exist
+     *
+     * @return void
      */
     public function loadResources(
         \User $user, ServerRequestInterface $request
-    ) : ResponseInterface {
+    ) : void {
 
         $path    = $request->getUri()->getPath();
         $matches = [];
 
         if (preg_match('#/sessions/(\d+)#', $path, $matches) !== 1) {
-            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-                ->process(
-                    $request,
-                    new \LORIS\Http\StringStream("Invalid session")
-                )->withStatus(404);
+            throw new \LorisException("Invalid session");
         }
-
         $session_id = intval($matches[1]);
-
-        $this->timepoint = \NDB_Factory::singleton()->timepoint($session_id);
-        $this->sessionID = $session_id;
+        try {
+            $this->timepoint = \NDB_Factory::singleton()->timepoint(
+                $session_id
+            );
+            $this->sessionID = $session_id;
+        } catch(\LorisException $e) {
+            throw new \LorisException("Session not found");
+        }
 
         $candID          = $this->timepoint->getCandID();
         $this->candidate = \Candidate::singleton($candID);
 
         parent::loadResources($user, $request);
-        return (new \LORIS\Http\Response())
-            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 
     /**

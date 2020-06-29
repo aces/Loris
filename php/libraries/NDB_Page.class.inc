@@ -716,13 +716,11 @@ class NDB_Page implements RequestHandlerInterface
      * @param User                   $user    The user to load the resources for
      * @param ServerRequestInterface $request The PSR15 Request being handled
      *
-     * @return ResponseInterface
+     * @return void
      */
     public function loadResources(
         \User $user, ServerRequestInterface $request
-    ) : ResponseInterface {
-        return (new \LORIS\Http\Response())
-            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
+    ) : void {
     }
 
     /**
