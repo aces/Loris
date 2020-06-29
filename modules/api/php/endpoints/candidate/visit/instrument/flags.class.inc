@@ -93,11 +93,10 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         switch ($request->getMethod()) {
         case 'GET':
             return $this->_handleGET($request);
-
         case 'PUT':
+            return $this->_handlePUT($request);
         case 'PATCH':
-            // TODO :: I don`t think this was working in v0.0.3
-            return new \LORIS\Http\Response\JSON\NotImplemented();
+            return $this->_handlePATCH($request);
 
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
@@ -126,6 +125,81 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $body
         );
     }
+
+    /**
+     * Handles a PUT request
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
+    {
+        // TODO :: Check permissions. How??
+
+        if (!$this->_instrument->determineDataEntryAllowed()) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Can not update instruments that are flagged as complete.'
+            );
+        }
+
+        $data = json_decode((string) $request->getBody(), true);
+
+        if (!$this->_instrument->validate($data)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Could not update.'
+            );
+        }
+
+        try {
+            $instrumentname = $this->_instrument->testName;
+            $this->_instrument->clearInstrument();
+            $this->_instrument->_save($data[$instrumentname]);
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError();
+        }
+        return (new \LORIS\Http\Response())
+            ->withStatus(204);
+    }
+
+    /**
+     * Handles a PATCH request.
+     * Same as handlePatch but the instrument is not cleared before save
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
+    {
+        // TODO :: Check permissions. How??
+
+        if (!$this->_instrument->determineDataEntryAllowed()) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Can not update instruments that are flagged as complete.'
+            );
+        }
+
+        $data = json_decode((string) $request->getBody(), true);
+
+        if (!$this->_instrument->validate($data)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Could not update.'
+            );
+        }
+
+        try {
+            $instrumentname = $this->_instrument->testName;
+            $this->_instrument->_save($data[$instrumentname]);
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError();
+        }
+        return (new \LORIS\Http\Response())
+            ->withStatus(204);
+    }
+
 
     /**
      * Implements the ETagCalculator interface
