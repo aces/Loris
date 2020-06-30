@@ -13,5 +13,5 @@ File packages can be downloaded containing just the recording signal, the events
 - Events (tsv): events recorded during the session.   
 
 On the left, *Next* and *Previous* buttons can be used to navigate between sessions. Navigate back to the main page of the module by clicking on its name in the breadcrumb trail placed at the top of the page.
-
- <b id="f1">1:</b> More information on the EEG-BIDS can be found [here](https://www.nature.com/articles/s41597-019-0104-8). 
+___
+<sup> <b id="f1">1:</b> More information on the EEG-BIDS can be found [here](https://www.nature.com/articles/s41597-019-0104-8). </sup>
