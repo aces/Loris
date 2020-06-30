@@ -4,7 +4,7 @@ This page displays all available information collected for an individual recordi
 
 Summary information about the candidate, the recording session and the hardware used is displayed.
 
-Recording files can be downloaded individually or as a compressed folder (*All Files* download):
+File packages can be downloaded containing just the recording signal, the events, or other metadata for this session - or all files compressed together (*All Files* download).  These file packages are organized according to the EEG-BIDS standard, and available for download as follows:
 
 - EEG: the file containing the session recording data.    
 - Electrode info (tsv): contains electrode locations.    
