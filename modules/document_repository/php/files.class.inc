@@ -83,7 +83,7 @@ class Files extends \NDB_Page
             );
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                array("GET,POST,PUT,DELETE")
+                ["GET,POST,PUT,DELETE"]
             ));
         }
     }
@@ -339,7 +339,7 @@ class Files extends \NDB_Page
         }
 
         $response = $uploader->handle($request);
-        if (!in_array($response->getStatusCode(), array(200, 201), true)) {
+        if (!in_array($response->getStatusCode(), [200, 201], true)) {
             // Something went wrong. Return early to skip further processing.
             return $response;
         }
@@ -348,7 +348,7 @@ class Files extends \NDB_Page
         $site = $body['forSite']       !== '' ? $body['forSite'] : null;
         $site = $DB->pselectOne(
             "SELECT CenterID FROM psc WHERE Name=:name",
-            array('name' => $site)
+            ['name' => $site]
         );
 
         // Set empty values equal to NULL for insertion into the database.
@@ -365,18 +365,18 @@ class Files extends \NDB_Page
         $DB->insert(
             'document_repository',
             [
-             'File_category' => $category,
-             'For_site'      => $site,
-             'comments'      => $comments,
-             'version'       => $version,
-             'File_name'     => $filename,
-             'File_size'     => $fileSize,
-             'Data_dir'      => "$name/$filename",
-             'uploaded_by'   => $name,
-             'Instrument'    => $instrument,
-             'PSCID'         => $pscid,
-             'visitLabel'    => $visit,
-             'File_type'     => $fileType,
+                'File_category' => $category,
+                'For_site'      => $site,
+                'comments'      => $comments,
+                'version'       => $version,
+                'File_name'     => $filename,
+                'File_size'     => $fileSize,
+                'Data_dir'      => "$name/$filename",
+                'uploaded_by'   => $name,
+                'Instrument'    => $instrument,
+                'PSCID'         => $pscid,
+                'visitLabel'    => $visit,
+                'File_type'     => $fileType,
             ]
         );
 
@@ -384,10 +384,10 @@ class Files extends \NDB_Page
             "document_repository",
             "upload"
         );
-        $msg_data       = array(
+        $msg_data       = [
             'newDocument' => 'Document Repository',
             'document'    => $filename,
-        );
+        ];
         $uploadNotifier->notify($msg_data);
 
         return $response;

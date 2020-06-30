@@ -24,11 +24,11 @@ namespace LORIS\document_repository;
  */
 class Document_Repository extends \NDB_Menu_Filter_Form
 {
-    private const PERMISSIONS = array(
+    private const PERMISSIONS = [
         'document_repository_view',
         'document_repository_edit',
         'document_repository_delete',
-    );
+    ];
     public $AjaxModule        = true;
     public $skipTemplate      = true;
 
