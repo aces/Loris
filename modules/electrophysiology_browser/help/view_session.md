@@ -1,6 +1,6 @@
 # View Session
 
-This page displays all available information collected for an individual recording session.
+This page displays information from an individual recording session.
 
 Summary information about the candidate, the recording session and the hardware used is displayed.
 
