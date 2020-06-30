@@ -70,10 +70,10 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
             implode(',', $siteClauseElements)
         );
 
-        $this->query    = " FROM mri_violations_log l 
+        $this->query    = " FROM mri_violations_log l
             LEFT JOIN mri_scan_type m
-            ON m.ID=l.Scan_type 
-            LEFT JOIN mri_protocol_checks_group mpcg 
+            ON m.ID=l.Scan_type
+            LEFT JOIN mri_protocol_checks_group mpcg
             ON (mpcg.MriProtocolChecksGroupID = l.MriProtocolChecksGroupID)
             LEFT JOIN candidate c ON (l.CandID=c.CandID)
             LEFT JOIN session s ON (
@@ -173,7 +173,6 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
                 "maxlength" => 64,
             ]
         );
-
     }
 
 

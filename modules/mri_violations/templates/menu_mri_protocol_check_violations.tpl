@@ -57,7 +57,19 @@
         </div>
     </div>
 </div>
- <div class="dynamictable" id="datatable"></div>
+
+<div id="tabs" style="background: white">
+    <ul class="nav nav-tabs">
+        <li class="statsTab active"><a class="statsTabLink">Protocol violations</a></li>
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/mri_violations/mri_protocol_violations/">Resolved violations</a></li>
+    </ul>
+    <div class="tab-content" style="margin: 14px;">
+        <div class="tab-pane active">
+            <div class="dynamictable" id="datatable"></div>
+        </div>
+    </div>
+</div>
+
 <script>
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var hasWritePermission = {json_encode($hasWritePermission)};

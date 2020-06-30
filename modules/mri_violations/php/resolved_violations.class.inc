@@ -218,7 +218,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
                 series_description as Series_Description,
-                'Could not identify scan type' as Problem, 
+                'Could not identify scan type' as Problem,
                 SeriesUID,
                 md5(concat_WS(':',
                               minc_location,
@@ -227,17 +227,17 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                               time_run
                    )
                 ) as hash,
-                mpvs.ID as join_id,                
+                mpvs.ID as join_id,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_protocol_violated_scans AS mpvs
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=mpvs.ID 
+            ON (violations_resolved.ExtID=mpvs.ID
             AND violations_resolved.TypeTable='mri_protocol_violated_scans')
             LEFT JOIN candidate c
             ON (mpvs.CandID = c.CandID)
             LEFT JOIN session s
-            ON (SUBSTRING_INDEX(mpvs.PatientName,'_',-1) = s.Visit_label 
+            ON (SUBSTRING_INDEX(mpvs.PatientName,'_',-1) = s.Visit_label
                 AND mpvs.CandID = s.CandID
             )
             LEFT JOIN psc p
@@ -258,10 +258,10 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_violations_log AS mrl
-            LEFT JOIN mri_scan_type 
+            LEFT JOIN mri_scan_type
             ON (mri_scan_type.ID=mrl.Scan_type)
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=mrl.LogID 
+            ON (violations_resolved.ExtID=mrl.LogID
             AND violations_resolved.TypeTable='mri_violations_log')
             LEFT JOIN candidate c
             ON (mrl.CandID=c.CandID)
@@ -277,7 +277,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 null,
                 MincFile,
                 null,
-                Reason, 
+                Reason,
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun))
                    as hash,
@@ -286,10 +286,10 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 violations_resolved.Resolved as Resolved
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=MRICandidateErrors.ID 
+            ON (violations_resolved.ExtID=MRICandidateErrors.ID
             AND violations_resolved.TypeTable='MRICandidateErrors')
             WHERE Resolved <> '0')
-            as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
+            as v LEFT JOIN psc site ON (site.CenterID = v.Site)
             LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
             LEFT JOIN subproject as subpjct
                  ON (v.Subproject = subpjct.SubprojectID)

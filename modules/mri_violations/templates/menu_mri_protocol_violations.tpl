@@ -73,15 +73,15 @@
         <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/mri_violations/mri_protocol_check_violations/">Protocol violations</a></li>
         <li class="statsTab active"><a class="statsTabLink">Resolved violations</a></li>
     </ul>
-    <div class="tab-content">
+    <div class="tab-content" style="margin: 14px;">
         <div class="tab-pane active">
 
             <!-- Mri- protocol table  -->
-            <div id='hide' style="font-weight: bold" class="toggle_mri_tbl">
+            <div id='hide' style="font-weight: bold; padding:10px" class="toggle_mri_tbl">
                 <span class="glyphicon glyphicon-minus"></span> Hide mri-protocol Table
             </div>
 
-            <div id='show' style="font-weight: bold" class="toggle_mri_tbl">
+            <div id='show' style="font-weight: bold; padding:10px" class="toggle_mri_tbl">
                 <span class="glyphicon glyphicon-plus"></span> Show mri-protocol Table
             </div>
 
@@ -103,10 +103,10 @@
                     {else}
                         {assign var=rowBorder value=''}
                     {/if}
-                    
+
                     {foreach from=$mpgroup item=protocol}
                         <tr>
-                        {foreach from=$protocol key=k item=v}   
+                        {foreach from=$protocol key=k item=v}
                             <td id="row_{$protocol.ID}_td_{$k}" class='description' nowrap {$rowBorder}>
                                 {$v}
                             </td>
@@ -124,8 +124,8 @@
                     <td align="right" id="pageLinks"></td>
                 </tr>
             </table>
-          <div class="dynamictable" id="datatable"></div> 
-             
+          <div class="dynamictable" id="datatable"></div>
+
       </div>
     </div>
 </div>
@@ -136,7 +136,7 @@ var table = RDynamicDataTable({
      "DataURL" : "{$baseurl}/mri_violations/mri_protocol_violations/?format=json",
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PatientName"
-     
+
   });
 ReactDOM.render(table, document.getElementById("datatable"));
 
