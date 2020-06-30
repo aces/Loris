@@ -11,5 +11,4 @@ File packages can be downloaded containing just the recording signal, the events
 - Channels info (tsv): channel status and filter settings.    
 - Events (tsv): events recorded during the session.   
 
-The compressed folder’s structure follows the BIDS standard for the EEG modality. More information about the BIDS standard can be found through their [website](https://bids.neuroimaging.io/).   
 On the left, *Next* and *Previous* buttons can be used to navigate between sessions by their number (the leftmost column in the front page of the module). Navigate back to the main page of the module by clicking on its name in the breadcrumb trail placed at the top of the page.
