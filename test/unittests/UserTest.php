@@ -1,6 +1,6 @@
 <?php declare (strict_types=1);
 /**
- * Unit tests for the User class
+ * Unit tests for the User and UserPermissions class
  *
  * PHP Version 7
  *
@@ -13,7 +13,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 /**
- * Unit tests for the User class
+ * Unit tests for the User and UserPermissions class
  *
  * @category Tests
  * @package  Main
@@ -139,6 +139,37 @@ class UserTest extends TestCase
                                          'pending_approval' => 'N')
                         );
 
+    private $_permInfo = array(0 => array('permID' => 1,
+                                          'code' => "superuser",
+                                          'description' => "superuser description",
+                                          'categoryID' => 1),
+                               1 => array('permID' => 2,
+                                          'code' => "test_permission",
+                                          'description' => "description 1",
+                                          'categoryID' => 2),
+                               2 => array('permID' => 3,
+                                          'code' => "test_permission2",
+                                          'description' => "description 2",
+                                          'categoryID' => 3),
+                               3 => array('permID' => 4,
+                                          'code' => "test_permission3",
+                                          'description' => "description 3",
+                                          'categoryID' => 4)
+                         );
+    private $_userPermInfo = array(0 => array('permID' => 1,
+                                              'userID' => 1),
+                                   1 => array('permID' => 2,
+                                              'userID' => 1),
+                                   2 => array('permID' => 3,
+                                              'userID' => 1)
+                             );
+    private $_categoryInfo = array(0 => array('ID' => 1,
+                                              'Description' => "superuser category"),
+                                   1 => array('ID' => 2,
+                                              'Description' => "category 1"),
+                                   2 => array('ID' => 3,
+                                              'Description' => "category 2")
+                             );
     /**
      * User object used for testing
      *
@@ -800,6 +831,331 @@ class UserTest extends TestCase
         $this->assertFalse($this->_user->isAccessibleBy($mockUser));
     }
 
+    /**
+     * Test that the select function from UserPermissions returns false
+     * if there is no user for the given username
+     *
+     * @covers UserPermissions::select
+     * @return void
+     */
+    public function testUserPermissionsSelectFalse()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->assertFalse($this->_user->select("111111"));
+    }
+
+    /**
+     * Test that the select function from UserPermissions returns true
+     * if the user exists and correctly sets the permissions of the user.
+     * Also tests that hasPermission returns true when given a correct
+     * permission code
+     *
+     * @covers UserPermissions::select
+     * @covers UserPermissions::hasPermission
+     * @return void
+     */
+    public function testUserPermissionsSelectTrue()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->assertTrue($this->_user->select(self::USERNAME));
+        $this->assertTrue($this->_user->hasPermission("test_permission"));
+    }
+
+    /**
+     * Test that hasAllPermissions throws an exception if an
+     * empty array is given
+     *
+     * @covers UserPermissions::hasAllPermissions
+     * @return void
+     */
+    public function testHasAllPermissionsThrowsException()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->expectException('LorisException');
+        $this->_user->hasAllPermissions(array());
+    }
+
+    /**
+     * Test that hasAllPermissions returns true if the user
+     * has all the permissions in the array
+     *
+     * @covers UserPermissions::hasAllPermissions
+     * @return void
+     */
+    public function testHasAllPermissionsReturnsTrue()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->assertTrue(
+            $this->_user->hasAllPermissions(
+                array("superuser", "test_permission", "test_permission2")
+            )
+        );
+    }
+
+    /**
+     * Test that hasAllPermissions returns false if the user does not have
+     * all of the permissions given in the array
+     *
+     * @covers UserPermissions::hasAllPermissions
+     * @covers UserPermissions::removePermissions
+     * @return void
+     */
+    public function testHasAllPermissionsReturnsFalse()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->_user->removePermissions(array(3));
+        $this->assertFalse(
+            $this->_user->hasAllPermissions(
+                array("superuser", "test_permission", "test_permission2")
+            )
+        );
+    }
+
+    /**
+     * Test that hasAnyPermission throws an exception if the array
+     * given is void
+     *
+     * @covers UserPermissions::hasAnyPermission
+     * @return void
+     */
+    public function testHasAnyPermissionThrowsException()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->expectException('LorisException');
+        $this->_user->hasAnyPermission(array());
+    }
+
+    /**
+     * Test that hasAnyPermission returns true if the user has the
+     * given permissions
+     *
+     * @covers UserPermissions::hasAnyPermission
+     * @return void
+     */
+    public function testHasAnyPermissionReturnsTrue()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->assertTrue(
+            $this->_user->hasAnyPermission(array("superuser", "test_permission2"))
+        );
+    }
+
+    /**
+     * Test that getPermissions returns the array of permissions the user has
+     *
+     * @covers UserPermissions::getPermissions
+     * @return void
+     */
+    public function testGetPermissions()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->assertEquals(
+            $this->_user->getPermissions(),
+            array('superuser' => true,
+                  'test_permission' => true,
+                  'test_permission2' => true,
+                  'test_permission3' => false)
+        );
+    }
+
+    /**
+     * Test that addPermissions adds the permission with the given permID
+     * to the list of user permissions
+     *
+     * @covers UserPermissions::addPermissions
+     * @return void
+     */
+    public function testAddPermissions()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->_user->addPermissions(array(4));
+        $this->assertEquals(
+            $this->_user->getPermissions(),
+            array('superuser' => true,
+                  'test_permission' => true,
+                  'test_permission2' => true,
+                  'test_permission3' => true)
+        );
+    }
+
+    /**
+     * Test that removePermissions removes all the user's permissions
+     * if there is no parameter given
+     *
+     * @covers UserPermissions::removePermissions
+     * @return void
+     */
+    public function testRemoveAllPermissions()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->_user->removePermissions();
+        $this->assertEquals(
+            $this->_user->getPermissions(),
+            array('superuser' => false,
+                  'test_permission' => false,
+                  'test_permission2' => false,
+                  'test_permission3' => false)
+        );
+    }
+
+    /**
+     * Test that removePermissions removes the permission with the given
+     * permID from the user's permissions
+     *
+     * @covers UserPermissions::removePermissions
+     * @return void
+     */
+    public function testRemovePermissions()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->_user->removePermissions(array(3, 4));
+        $this->assertEquals(
+            $this->_user->getPermissions(),
+            array('superuser' => true,
+                'test_permission' => true,
+                'test_permission2' => false,
+                'test_permission3' => false)
+        );
+    }
+
+    /**
+     * Test that getPermissionIDs returns the list of permission IDs for the user
+     *
+     * @covers UserPermissions::getPermissionIDs
+     * @return void
+     */
+    public function testGetPermissionIDs()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->assertEquals($this->_user->getPermissionIDs(), array(1, 2, 3));
+    }
+
+    /**
+     * Test that getPermissionsVerbose returns the list of user permissions
+     * with all the information from the database
+     *
+     * @covers UserPermissions::getPermissionsVerbose
+     * @return void
+     */
+    public function testGetPermissionsVerbose()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->_dbMock->setFakeTableData(
+            "permissions_category",
+            $this->_categoryInfo
+        );
+        $this->assertEquals(
+            $this->_user->getPermissionsVerbose(),
+            array(0 => array('permID' => '1',
+                             'code' => "superuser",
+                             'description' => "superuser description",
+                             'type' => "superuser category"),
+                  1 => array('permID' => '2',
+                             'code' => "test_permission",
+                             'description' => "description 1",
+                             'type' => "category 1"),
+                  2 => array('permID' => '3',
+                             'code' => "test_permission2",
+                             'description' => "description 2",
+                             'type' => "category 2")
+            )
+        );
+    }
+
+    /**
+     * Test that hasCenterPermission returns true when the user
+     * has superuser permissions
+     *
+     * @covers User::hasCenterPermission
+     * @return void
+     */
+    public function testHasCenterPermissionTrueWithSuperuser()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->assertTrue($this->_user->hasCenterPermission("test", 1));
+    }
+
+    /**
+     * Test that hasCenterPermission returns true if the user does not have
+     * superuser permissions but has the given permission code and center ID
+     *
+     * @covers User::hasCenterPermission
+     * @covers UserPermissions::removePermissions
+     * @return void
+     */
+    public function testHasCenterPermissionTrueWithoutSuperuser()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->_user->removePermissions(array(1));
+        $this->assertTrue($this->_user->hasCenterPermission("test_permission", 1));
+    }
+
+    /**
+     * Test that hasCenterPermission returns false if the user does not have
+     * the given permissions code
+     *
+     * @covers User::hasCenterPermission
+     * @covers UserPermissions::removePermissions
+     * @return void
+     */
+    public function testHasCenterPermissionIncorrectPermission()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->_user->removePermissions(array(1, 3));
+        $this->assertFalse($this->_user->hasCenterPermission("test_permission2", 1));
+    }
+
+    /**
+     * Test that hasCenterPermission returns false if the user does not have
+     * superuser permissions and does not have the given center ID
+     *
+     * @covers User::hasCenterPermission
+     * @covers UserPermissions::removePermissions
+     * @return void
+     */
+    public function testHasCenterPermissionIncorrectCenter()
+    {
+        $this->_user = \User::factory(self::USERNAME);
+        $this->_setPermissions();
+        $this->_user->removePermissions(array(1));
+        $this->assertFalse($this->_user->hasCenterPermission("test_permission", 2));
+    }
+    
+    /**
+     * Set up user permissions. Used to reset the permissions at the beginning of
+     * every permissions-related unit test
+     *
+     * @return void
+     */
+    private function _setPermissions()
+    {
+        $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS permissions");
+        $this->_dbMock->run("DROP TEMPORARY TABLE IF EXISTS user_perm_rel");
+        $this->_dbMock->setFakeTableData(
+            "permissions",
+            $this->_permInfo
+        );
+        $this->_dbMock->setFakeTableData(
+            "user_perm_rel",
+            $this->_userPermInfo
+        );
+        $this->_user->select(self::USERNAME);
+    }
 
     /**
      * Set up the fake tables in the database to set up a new user object
