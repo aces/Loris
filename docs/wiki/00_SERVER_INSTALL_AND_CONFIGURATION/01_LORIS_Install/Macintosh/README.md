@@ -15,7 +15,7 @@ The following list provides foresight into the proceeding sections and versions 
  * Homebrew
  * Apache (a.k.a httpd)
  * PHP (tested on v7.4.7)
- * PHP extension: ast-0.1.5
+ * PHP extension: ast-1.0.5
  * pkg-config
  * Composer
  * Node.js (npm)
@@ -249,10 +249,10 @@ Type into your terminal and hit enter:
 brew install composer
 ```
 
-## 2.0 Install PHP extension: ext-ast ^0.1.5 for phan/phan
+## 2.0 Install PHP extension: ext-ast ^1.0.5 for phan/phan
 Type into your terminal and hit enter:
 ```
-pecl install ast-0.1.5;
+pecl install ast-1.0.5;
 ```
 
 ## 2.1 Install Node.js
