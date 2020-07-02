@@ -1098,7 +1098,11 @@ class Edit_User extends \NDB_Form
         }
 
         // Make sure the user is not using their username as their password.
-        if ((isset($values['UserID'])
+        // case 1 - New user and Make user name match email address not checked
+        // case 2 - New user and Make user name match email address checked
+        //          already handled in email/password check
+        // case 3 - Edit user
+        if ((isset($values['UserID']) && !isset($values['NA_UserID'])
             && $values['UserID'] === $values['Password_hash'])
             || (!empty($this->identifier)
             && $this->identifier === $values['Password_hash'])
@@ -1113,8 +1117,8 @@ class Edit_User extends \NDB_Form
                 array('UID' => $this->identifier)
             );
 
-            //case of new user the password column will be null
-            //so either password should be set or
+            // case of new user the password column will be null
+            // so either password should be set or
             // password should be generated
             if (is_null($pass)
                 && empty($values['Password_hash'])
