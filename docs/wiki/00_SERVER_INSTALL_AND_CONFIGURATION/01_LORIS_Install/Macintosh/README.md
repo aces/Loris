@@ -14,7 +14,7 @@ The following list provides foresight into the proceeding sections and versions 
  * XCode Command Line Tools
  * Homebrew
  * Apache (a.k.a httpd)
- * PHP (tested on v7.2.14)
+ * PHP (tested on v7.4.7)
  * PHP extension: ast-0.1.5
  * pkg-config
  * Composer
@@ -131,9 +131,9 @@ sudo apachectl -k restart
 
 Type these commands into your terminal and hit enter:
 ```
-brew install php72
-brew link php72
-brew services start php72
+brew install php@7.4
+brew link php@7.4
+brew services start php@7.4
 brew install pkg-config
 ```
 
