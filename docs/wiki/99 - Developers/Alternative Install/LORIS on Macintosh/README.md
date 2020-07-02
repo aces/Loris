@@ -1,10 +1,6 @@
 ### Mac is no longer supported as of 15.10.
 Nothing in this document is an official recommendation for LORIS but is only intended to be helpful!
 
-## Important Notes: 
-- We recommend installing LORIS on Ubuntu or CentOS as macOS is no longer supported for "production" as of v15.10
-- These instructions were last tested on LORIS version v20.*
-
 # How to install a developer instance of LORIS on macOS
 
 This is a guide on how to get a LORIS instance running on your Apple computer for development. You're expected to have basic understanding of using a terminal and editing configuration files.
@@ -14,17 +10,17 @@ For production servers, we recommend installing LORIS on Ubuntu or CentOS.
 
 The following list provides foresight into the proceeding sections and versions to install:
 
- * macOS (tested on Catalina 10.15.4)
+ * macOS (tested on Mojave 10.14.3)
  * XCode Command Line Tools
  * Homebrew
  * Apache (a.k.a httpd)
- * PHP (tested on v7.3.15)
+ * PHP (tested on v7.4.7)
  * PHP extension: ast-1.0.5
  * pkg-config
  * Composer
  * Node.js (npm)
- * MySQL (tested with 10.4.11-MariaDB)
- * Xdebug (tested on v2.9.2)
+ * MySQL (tested with 10.3.12-MariaDB)
+ * Xdebug (tested on v2.6.1)
  
 # 1.1 Pre-Requirements
 
@@ -135,9 +131,9 @@ sudo apachectl -k restart
 
 Type these commands into your terminal and hit enter:
 ```
-brew install php@7.3
-brew link php@7.3
-brew services start php@7.3
+brew install php@7.4
+brew link php@7.4
+brew services start php@7.4
 brew install pkg-config
 ```
 
@@ -176,28 +172,9 @@ sudo apachectl -k restart
 
 Xdebug allows debugging with breakpoints (such as when using an IDE ex. Intellij).
 
-You will need to install autoconf:
+Type into your terminal and hit enter:
 ```
-brew install autoconf
-```
-
-Obtain the Xdebug source code:
-`git clone https://github.com/xdebug/xdebug.git`
-
-Then run the commands as follow in the folder of the source code:
-
-1) `phpize`
-
-2) `./configure`
-
-3) `make`
-
-4) `sudo cp modules/xdebug.so /usr/local/php/extensions` (create the directory if it doesn't exit).
-
-Finally inside `php.ini` add:
-
-```
-zend_extension=/usr/local/php/extensions/xdebug.so
+pecl install xdebug
 ```
 
 ### 1.7.1 Configure Xdebug for local development
@@ -230,7 +207,7 @@ xdebug.idekey=phpstorm
 sudo apachectl -k restart
 ```
 
-### 1.7.2 Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx) (suggested)
+### 1.7.2 Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx) (recommended)
 
 **a.** Install from the GitHub repository.
 
