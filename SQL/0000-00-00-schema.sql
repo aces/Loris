@@ -94,7 +94,7 @@ CREATE TABLE `users` (
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
-  `Password_expiry` date NOT NULL default '1990-04-01',
+  `PasswordChangeRequired` tinyint(1) NOT NULL default 0,
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
@@ -108,8 +108,8 @@ CREATE TABLE `users` (
 
 
 
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry)
-VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N','2016-03-30');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,PasswordChangeRequired)
+VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N',0);
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,
@@ -830,7 +830,7 @@ CREATE TABLE `mri_violations_log` (
   `Value` varchar(255) DEFAULT NULL,
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
-  `MriProtocolChecksGroupID` INT(4) UNSIGNED NOT NULL,
+  `MriProtocolChecksGroupID` INT(4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),

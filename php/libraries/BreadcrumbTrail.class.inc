@@ -40,7 +40,7 @@ class BreadcrumbTrail
      */
     public function __construct(Breadcrumb ...$crumbs)
     {
-        $this->breadcrumbs = $crumbs ?? array();
+        $this->breadcrumbs = $crumbs ?? [];
     }
 
     /**

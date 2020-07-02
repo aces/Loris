@@ -45,7 +45,7 @@ class FilesUploadHandler implements RequestHandlerInterface
      *
      * @var string[]
      */
-    protected $permittedMIMETypes = array();
+    protected $permittedMIMETypes = [];
 
     /**
      * A UNIX permissions octet.
@@ -157,7 +157,7 @@ class FilesUploadHandler implements RequestHandlerInterface
                     ->withBody(
                         new \LORIS\Http\StringStream(
                             json_encode(
-                                array('error' => $message)
+                                ['error' => $message]
                             )
                         )
                     );
@@ -192,7 +192,7 @@ class FilesUploadHandler implements RequestHandlerInterface
                         ->withBody(
                             new \LORIS\Http\StringStream(
                                 json_encode(
-                                    array('error' => 'File type not allowed')
+                                    ['error' => 'File type not allowed']
                                 )
                             )
                         );
@@ -211,7 +211,7 @@ class FilesUploadHandler implements RequestHandlerInterface
                     ->withBody(
                         new \LORIS\Http\StringStream(
                             json_encode(
-                                array('error' => 'Could not upload file')
+                                ['error' => 'Could not upload file']
                             )
                         )
                     );

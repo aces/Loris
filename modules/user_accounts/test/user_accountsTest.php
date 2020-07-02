@@ -10,6 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
+use Facebook\WebDriver\WebDriverKeys;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -60,36 +63,36 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $password = new \Password($this->validPassword);
         $this->DB->insert(
             "users",
-            array(
-                'ID'               => 999995,
-                'UserID'           => 'UnitTesterTwo',
-                'Real_name'        => 'Unit Tester 2',
-                'First_name'       => 'Unit 2',
-                'Last_name'        => 'Tester 2',
-                'Email'            => 'tester2@example.com',
-                'Privilege'        => 0,
-                'PSCPI'            => 'N',
-                'Active'           => 'Y',
-                'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
-                'Pending_approval' => 'N',
-            )
+            [
+                'ID'                     => 999995,
+                'UserID'                 => 'UnitTesterTwo',
+                'Real_name'              => 'Unit Tester 2',
+                'First_name'             => 'Unit 2',
+                'Last_name'              => 'Tester 2',
+                'Email'                  => 'tester2@example.com',
+                'Privilege'              => 0,
+                'PSCPI'                  => 'N',
+                'Active'                 => 'Y',
+                'Password_hash'          => $password,
+                'PasswordChangeRequired' => false,
+                'Pending_approval'       => 'N'
+            ]
         );
 
         $this->DB->insert(
             "user_psc_rel",
-            array(
+            [
                 'UserID'   => 999995,
                 'CenterID' => 1,
-            )
+            ]
         );
 
         $this->DB->insert(
             "user_project_rel",
-            array(
+            [
                 'UserID'    => 999995,
                 'ProjectID' => 1,
-            )
+            ]
         );
     }
 
@@ -150,6 +153,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         // get element from the page
         if (strpos($element, "select") == false) {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  lastValue = input.value;
@@ -164,6 +168,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             );
             $this->assertContains($value, $bodyText);
         } else {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  input.selectedIndex = '$value';
@@ -171,11 +176,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
-                    $bodyText = $this->webDriver->executescript(
-                        "return document.querySelector('#default-panel".
+            $row      = "#default-panel".
                         " > div > div > div.table-header > div > div >".
-                        " div:nth-child(1)').textContent"
-                    );
+                        " div:nth-child(1)";
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector($row)
+            )->getText();
                     // 4 means there are 4 records under this site.
                     $this->assertContains($records, $bodyText);
         }
@@ -242,9 +248,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // adding a new user for react test
         $this->safeGet($this->url . "/user_accounts/");
         $btn = $this->_addUserBtn;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
+        $this->safeClick(WebDriverBy::cssSelector($btn));
+
         $field = $this->safeFindElement(WebDriverBy::Name('UserID'));
         $field->clear();
         $field->sendKeys('userid');
@@ -492,10 +497,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        $this->DB->delete("users", array("UserID" => 'userid'));
-        $this->DB->delete("user_psc_rel", array("UserID" => 999995));
-        $this->DB->delete("user_project_rel", array("UserID" => 999995));
-        $this->DB->delete("users", array("UserID" => 'UnitTesterTwo'));
+        $this->DB->delete("users", ["UserID" => 'userid']);
+        $this->DB->delete("user_psc_rel", ["UserID" => 999995]);
+        $this->DB->delete("user_project_rel", ["UserID" => 999995]);
+        $this->DB->delete("users", ["UserID" => 'UnitTesterTwo']);
         parent::tearDown();
     }
 }

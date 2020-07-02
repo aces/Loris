@@ -41,14 +41,14 @@ class Dicom_Archive extends \DataFrameworkMenu
     }
 
     /**
-     * Tells the base class that this page's provisioner can support
-     * the UserSiteMatch filter.
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
      *
-     * @return bool always false
+     * @return ?array of site permissions or null
      */
-    public function useSiteFilter() : bool
+    public function allSitePermissionNames() : ?array
     {
-        return false;
+        return ['dicom_archive_view_allsites'];
     }
 
     /**
@@ -105,9 +105,9 @@ class Dicom_Archive extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/dicom_archive/js/dicom_archive.js",
-            )
+            ]
         );
     }
 }

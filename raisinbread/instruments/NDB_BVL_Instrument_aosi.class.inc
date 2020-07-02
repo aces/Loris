@@ -124,7 +124,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 
         $this->addSelect(
             "examiner_location",
-            "(Circle One)",
+            "Examiner location",
             array(
              null               => '',
              "examiner"         => "Examiner",

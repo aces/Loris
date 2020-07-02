@@ -58,7 +58,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -68,9 +68,9 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.3',
-        );
+        ];
     }
 
     /**
@@ -209,11 +209,11 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $info = $recording->getFileInfo();
 
-        $signature = array(
+        $signature = [
             'filename' => $this->_filename,
             'size'     => $info->getSize(),
             'mtime'    => $info->getMTime(),
-        );
+        ];
 
         return md5(json_encode($signature));
     }

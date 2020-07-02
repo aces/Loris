@@ -39,10 +39,10 @@ if (!is_numeric($value) && $value !== "null") {
 $results = $cdb->queryView(
     "DQG-2.0",
     "search",
-    array(
+    [
         "reduce" => "false",
         "key"    => "[\"$category\", \"$fieldName\", $value]",
-    )
+    ]
 );
 
 $sessionResults = array_map(

@@ -44,11 +44,11 @@ class Login extends \NDB_Page
         $study_links = $config->getExternalLinks('Studylinks');
         foreach ($study_links as $label => $url) {
             $WindowName = md5($url);
-            $this->tpl_data['studylinks'][] = array(
+            $this->tpl_data['studylinks'][] = [
                 'url'        => $url,
                 'label'      => $label,
                 'windowName' => $WindowName,
-            );
+            ];
         }
 
         $this->tpl_data['study_description'] = html_entity_decode(

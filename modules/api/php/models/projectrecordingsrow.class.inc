@@ -58,7 +58,7 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
      */
     public function toJSON() : string
     {
-        $obj = array(
+        $obj = [
             'Candidate'  => $this->_candid,
             'PSCID'      => $this->_pscid,
             'Visit'      => $this->_visitlabel,
@@ -67,7 +67,7 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
             'File'       => $this->_filename,
             'Modality'   => $this->_modality,
             'InsertTime' => $this->_inserttime,
-        );
+        ];
 
         $filename = basename($obj['File']);
         $candid   = $obj['Candidate'];

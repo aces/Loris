@@ -1,6 +1,6 @@
 <img src="./htdocs/images/LORIS_logo.svg" width="35%">
 
-[![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris) 
+[![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris)
 [![Minimum PHP Version](https://img.shields.io/travis/php-v/aces/loris/master?color=787CB5)](https://php.net/)
 [![Documentation Status](https://readthedocs.org/projects/acesloris/badge/?version=latest)](https://acesloris.readthedocs.io/en/latest/?badge=latest)
 
@@ -11,9 +11,10 @@ LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web app
 * Try the LORIS demo instance at https://demo.loris.ca.
 
 This Readme covers installation of LORIS version <b>23</b> on <b>Ubuntu</b>.
-([CentOS Readme also available](./docs/wiki/00%20-%20SERVER%20INSTALL%20AND%20CONFIGURATION/01%20-%20LORIS%20Install/CentOS/README.CentOS7.md)).
 
-Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
+([CentOS Readme also available](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md)).
+
+Please consult the [Ubuntu Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md) or [CentOS Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md) for more information. These installation instructions and more LORIS documentation for developers can also be found on the [LORIS ReadTheDocs website](https://acesloris.readthedocs.io/en/latest/).
 
 #### Heroku
 
@@ -29,7 +30,7 @@ Deploy and log in with username *admin* and the password that's set up during de
 #### System Requirements
 
  * Apache **2.4** or higher
- * MySQL >= 5.7 (or MariaDB >= 10.3) 
+ * MySQL >= 5.7 (or MariaDB >= 10.3)
  * PHP <b>7.3</b> or higher
  * [Composer](https://getcomposer.org/) <b>1.4</b> or higher
  * NodeJS <b>8.0</b> or higher
@@ -40,7 +41,7 @@ These dependencies are subject to change so be sure to verify your version of My
 
 ### Install Steps
 
-Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
+Consult the [Ubuntu Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md) or [CentOS Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md) for more information.
 
 1. Set up LINUX user and group lorisadmin and create LORIS base directory:
 
@@ -66,7 +67,7 @@ Download the latest release from the [releases page](https://github.com/aces/Lor
 
 3. Run installer script to install core code, and libraries. The script will prompt for information and so that it can create directories automatically.
 
-For more information, please read the [Installing Loris wiki page](https://github.com/aces/Loris/wiki/Installing-Loris).
+For more information, please read the [Ubuntu Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md) or [CentOS Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md).
 
  ```bash
  cd /var/www/$projectname/tools
@@ -82,15 +83,15 @@ For more information, please read the [Installing Loris wiki page](https://githu
 5. Apache configuration
 
 If your apache configuration was not completed by the Install script, run the following enable rewriting of LORIS, enable your `$projectname` site, and restart apache:  (run by user who has root privileges)
-    
+
 ```bash
 sudo a2enmod rewrite
 sudo a2dissite default
 sudo a2ensite $projectname
 sudo service apache2 reload
 ```
-    
-6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation, then restart apache.
+
+6. Open your browser and go to: `<loris-url>/installdb.php`. This web page will prompt you for your mysql connection information. Follow the instructions to finalize LORIS installation, then restart apache.
 
 If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli.requirements.php) and also [this](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors).
 
@@ -99,24 +100,25 @@ If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli
 ## Community
 
 ### Get in touch
-For questions and troubleshooting guidance beyond what is covered in our GitHub Wiki, please subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) and email us there. 
+For questions and troubleshooting guidance beyond what is covered in our documentation, please subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) and email us there. 
 
-### GitHub Issues
+### Support and GitHub Issues
+For troubleshooting specific installation issues or errors, please see the [Installation troubleshooting guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Troubleshooting.md), and then contact us via the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
 For bug reporting and new feature requests, please search and report via our GitHub Issues. 
+
 Please include details such as the version of LORIS you're using as well as information
 such as the OS you're using, your PHP and Apache versions, etc.
 
 ## Contributing
 
-The [LORIS team](http://loris.ca) at the Montreal Neurological Institute (MNI) is very happy to get code contributions and features from the global LORIS community. 
+We are very happy to get code contributions and features from the global LORIS community. 
 
-### Contributing Code
 If you would like to contribute to LORIS development, please consult our [Contributing Guide](./CONTRIBUTING.md).
 
 ## Powered by MCIN
 
-LORIS is made by staff developers at the McGill Centre for Integrative Neuroscience ([MCIN.ca](www.mcin.ca)), led by Alan Evans and Samir Das at the Montreal Neurological Institute. 
+LORIS is made by staff developers at the [McGill Centre for Integrative Neuroscience](http://www.mcin.ca), led by Alan Evans and Samir Das at The Neuro (Montreal Neurological Institute-Hospital).
 
-See [LORIS.ca](www.loris.ca) for our current team, the history of LORIS, and our **Technical Papers**.
+Visit [the LORIS website](https://loris.ca) for the history of LORIS and our **Technical Papers**.
 
-The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, and Samir Das.  
+The original (pre-GitHub) LORIS development team from 1999-2010 included: Dario Vins, Alex Zijdenbos, Jonathan Harlap, Matt Charlet, Andrew Corderey, Sebastian Muehlboeck, James McKinney, and Samir Das.

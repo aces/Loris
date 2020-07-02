@@ -166,7 +166,7 @@ foreach ($instruments AS $instrument) {
 
                 // Skip lines that contains only label or notes where bit[1] is empty.
                 if (empty($bits[1])) {
-                    continue;
+                    continue 2;
                 }
 
                 print "\tInserting $table $bits[1]\n";
@@ -175,7 +175,7 @@ foreach ($instruments AS $instrument) {
                 $Name = $table . "_" . $bits[1];
                 if (in_array($Name, $parameterNames, true)) {
                     // this specific table_field combination was already inserted, skip.
-                    continue;
+                    continue 2;
                 }
                 $parameterCount++;
                 $query_params = array(

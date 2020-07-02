@@ -126,7 +126,7 @@ abstract class ProvisionerInstance implements Provisioner
         // If it implements both Filter and Mapper, run the filter first so
         // that the mapping is less expensive.
         if ($this->modifier instanceof Filter) {
-            $callback = function ($current, $key, $iterator) use ($user) {
+            $callback = function ($current) use ($user) {
                 return $this->modifier->filter($user, $current);
             };
 

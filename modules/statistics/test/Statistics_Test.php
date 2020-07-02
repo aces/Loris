@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -49,7 +50,7 @@ class StatisticsTest extends LorisIntegrationTest
      */
     function testLoadPageWithoutPermission()
     {
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/statistics/");
 
         // Test that the Imaging menu appears in the first row
@@ -71,7 +72,7 @@ class StatisticsTest extends LorisIntegrationTest
      */
     function testLoadPageWithPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet($this->url . "/statistics/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

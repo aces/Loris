@@ -42,16 +42,16 @@ $client->initialize();
 $config =& NDB_Config::singleton();
 
 // Meta fields that should be removed
-$defaultFields = array(
+$defaultFields = [
     'CommentID',
     'UserID',
     'Testdate',
     'Window_Difference',
     'Candidate_Age',
     'Data_entry_completion_status',
-);
+];
 
-$instruments         = array();
+$instruments         = [];
 $instrumentSpecified = false;
 
 $confirm = false;
@@ -92,7 +92,7 @@ if ($confirm === false) {
  */
 function detectIgnoreColumns($instruments)
 {
-    $instrumentFields = array();
+    $instrumentFields = [];
 
     foreach ($instruments as $instrument) {
         echo "Checking DDE ignore fields for " . $instrument . "\n";
@@ -109,7 +109,7 @@ function detectIgnoreColumns($instruments)
                     if (!in_array($DDEField, $this->defaultFields)) {
                         $instrumentFields = array_merge(
                             $instrumentFields,
-                            array($DDEField => $instrument)
+                            [$DDEField => $instrument]
                         );
                     }
                 }
@@ -145,7 +145,7 @@ function defaultIgnoreColumns()
         foreach ($this->defaultFields as $field) {
             $defaultQuery  = "SELECT TableName, FieldName, Value1, Value2 
           FROM conflicts_unresolved WHERE FieldName = '$field'";
-            $defaultColumn = $db->pselectOne($defaultQuery, array());
+            $defaultColumn = $db->pselectOne($defaultQuery, []);
             echo "TableName, FieldName, Value1, Value2: ";
             print_r($defaultColumn);
             echo "\n";
@@ -178,7 +178,7 @@ function ignoreColumn($instrument, $instrumentFields)
             $query        = "SELECT TableName, FieldName, Value1, Value2 
                 FROM conflicts_unresolved 
                 WHERE TableName = '$instrument' AND FieldName = '$field'";
-            $ignoreColumn = $db->pselectOne($query, array());
+            $ignoreColumn = $db->pselectOne($query, []);
             echo "TableName, FieldName, Value1, Value2: ";
             print_r($ignoreColumn);
             echo  "\n";

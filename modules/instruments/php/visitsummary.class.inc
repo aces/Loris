@@ -55,7 +55,7 @@ class VisitSummary extends \NDB_Page
             );
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                array('GET')
+                ['GET']
             );
         }
     }
@@ -97,7 +97,7 @@ class VisitSummary extends \NDB_Page
                 s.Visit,
                 s.Approval
             ORDER BY s.Visit_label, f.Test_name, f.CommentID",
-            array('candid' => $candid, 'vl' => $visitLabel)
+            ['candid' => $candid, 'vl' => $visitLabel]
         );
 
         foreach ($bvl_result as $key => $row) {

@@ -115,7 +115,7 @@ class Candidate_Profile extends \NDB_Page
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . '/js/components/CSSGrid.js')
+            [$baseURL . '/js/components/CSSGrid.js']
         );
     }
 
@@ -130,7 +130,7 @@ class Candidate_Profile extends \NDB_Page
             return new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb(
                     'Access Profile',
-                    '/candidate_list'
+                    '/candidate_list/?betaprofile=1'
                 ),
             );
         }
@@ -140,11 +140,11 @@ class Candidate_Profile extends \NDB_Page
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
                 'Access Profile',
-                '/candidate_list'
+                '/candidate_list/?betaprofile=1'
             ),
             new \LORIS\Breadcrumb(
                 "Candidate Dashboard $candid / $pscid",
-                "/$candid"
+                "/candidate_profile/$candid"
             )
         );
     }

@@ -39,7 +39,7 @@ $query = "SELECT Inserting, InsertionComplete
 
 $row       = $DB->pselectRow(
     $query,
-    array('uploadId' => $uploadId)
+    ['uploadId' => $uploadId]
 );
 $inserting = $row['Inserting'] ?? '';
 $insertionComplete = $row['InsertionComplete'] ?? '';
@@ -57,16 +57,16 @@ if ($summary) {
 
 $notifications = $DB->pselect(
     $query,
-    array('processId' => $uploadId)
+    ['processId' => $uploadId]
 );
 
 // Return JSON object encapsulating the response
 echo json_encode(
-    array(
+    [
         'inserting'         => $inserting,
         'insertionComplete' => $insertionComplete,
         'notifications'     => $notifications ?? '',
-    )
+    ]
 );
 
 /**

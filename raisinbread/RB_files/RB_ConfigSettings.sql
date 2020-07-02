@@ -42,7 +42,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (42,'StudyDescription','Description of the Study',1,0,'textarea',39,'Study Description',2);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (43,'www','Web address settings',1,0,NULL,NULL,'WWW',4);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (44,'host','Host',1,0,'text',43,'Host',1);
-INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (45,'url','Main URL where LORIS can be accessed',1,0,'text',43,'Main LORIS URL',2);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (46,'mantis_url','Bug tracker URL',0,0,'text',43,'Bug tracker URL',3);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (47,'dashboard','Settings that affect the appearance of the dashboard and its charts',1,0,NULL,NULL,'Dashboard',5);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (48,'projectDescription','Description of the study displayed in main dashboard panel',1,0,'textarea',47,'Project Description',1);
@@ -103,5 +102,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (104,'dodFormat','Format of the Date of Death',1,0,'text',1,'DOD Format',10);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (105,'dateDisplayFormat','The date format to use throughout LORIS for displaying date information - formats for date inputs are browser- and locale-dependent.',1,0,'text',1,'Date display format',27);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (106,'IssueTrackerDataPath','Path to Issue Tracker data files',1,0,'web_path',26,'Issue Tracker Data Path',8);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (107,'adminContactEmail','An email address that users can write to in order to report issues or ask question',1,0,'text',1,'Administrator Email',28);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
