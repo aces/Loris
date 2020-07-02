@@ -142,9 +142,7 @@ class Next_Stage extends \NDB_Form
     {
         parent::setup();
 
-        $this->timepoint = \TimePoint::singleton(
-            new \SessionID($this->identifier)
-        );
+        $this->timepoint = \TimePoint::singleton(new \SessionID($this->identifier));
         $this->candidate = \Candidate::singleton($this->timepoint->getCandID());
 
         $timePoint = $this->timepoint;

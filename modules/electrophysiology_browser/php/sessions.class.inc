@@ -81,7 +81,7 @@ class Sessions extends \NDB_Page
         $session_id = intval($matches[1]);
         try {
             $this->timepoint = \NDB_Factory::singleton()->timepoint(
-                $session_id
+                new \SessionID(strval($session_id))
             );
             $this->sessionID = $session_id;
         } catch(\LorisException $e) {
@@ -143,17 +143,17 @@ class Sessions extends \NDB_Page
     {
         $db = \NDB_Factory::singleton()->database();
 
-        $query = 'SELECT 
-                DISTINCT(pf.SessionID) 
-              FROM physiological_file pf 
-                LEFT JOIN session s ON (s.ID=pf.SessionID) 
+        $query = 'SELECT
+                DISTINCT(pf.SessionID)
+              FROM physiological_file pf
+                LEFT JOIN session s ON (s.ID=pf.SessionID)
                 LEFT JOIN candidate c USING (CandID)
-                LEFT JOIN psc ON (s.CenterID=psc.CenterID) 
-                LEFT JOIN physiological_output_type pot 
-                  USING (PhysiologicalOutputTypeID) 
-              WHERE 
-                s.Active = "Y" 
-                AND pf.FileType IN ("bdf", "cnt", "edf", "set", "vhdr", "vsm") 
+                LEFT JOIN psc ON (s.CenterID=psc.CenterID)
+                LEFT JOIN physiological_output_type pot
+                  USING (PhysiologicalOutputTypeID)
+              WHERE
+                s.Active = "Y"
+                AND pf.FileType IN ("bdf", "cnt", "edf", "set", "vhdr", "vsm")
               ORDER BY pf.SessionID';
 
         $response = [];
@@ -216,10 +216,10 @@ class Sessions extends \NDB_Page
         $fileCollection = [];
         $params         = [];
         $params['SID']  = $this->sessionID;
-        $query          = 'SELECT 
-                         pf.PhysiologicalFileID, 
-                         pf.FilePath 
-                       FROM 
+        $query          = 'SELECT
+                         pf.PhysiologicalFileID,
+                         pf.FilePath
+                       FROM
                          physiological_file pf ';
 
         if ($outputType != 'all_types') {
@@ -393,11 +393,11 @@ class Sessions extends \NDB_Page
         ];
 
         foreach ($queries as $query_key => $query_value) {
-            $query_statement = "SELECT 
+            $query_statement = "SELECT
                               DISTINCT(FilePath), '$query_value' AS FileType
-                            FROM 
-                              $query_key 
-                            WHERE 
+                            FROM
+                              $query_key
+                            WHERE
                               PhysiologicalFileID=:PFID";
             $query_statement = $db->pselectRow($query_statement, $params);
             if (isset($query_statement['FileType'])) {
@@ -413,14 +413,14 @@ class Sessions extends \NDB_Page
             }
         }
 
-        $queryFDT = "SELECT 
-                   Value AS FilePath, 
-                   'physiological_fdt_file' AS FileType 
-                 FROM 
-                   physiological_parameter_file 
-                   JOIN parameter_type AS pt USING (ParameterTypeID) 
-                 WHERE 
-                   pt.Name='fdt_file' 
+        $queryFDT = "SELECT
+                   Value AS FilePath,
+                   'physiological_fdt_file' AS FileType
+                 FROM
+                   physiological_parameter_file
+                   JOIN parameter_type AS pt USING (ParameterTypeID)
+                 WHERE
+                   pt.Name='fdt_file'
                    AND PhysiologicalFileID=:PFID";
         $queryFDT = $db->pselectRow($queryFDT, $params);
         if (isset($queryFDT['FileType'])) {

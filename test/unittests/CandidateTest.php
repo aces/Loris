@@ -69,7 +69,7 @@ class CandidateTest extends TestCase
     private $_factoryForDB;
 
     /**
-     * NDB_Config used in tests for methods that use 
+     * NDB_Config used in tests for methods that use
      * Database::singleton()
      *
      * @note This is setup and used in the _setUpMockDB() method
@@ -140,7 +140,7 @@ class CandidateTest extends TestCase
                                    );
 
         $this->_listOfProjects = array(
-                                     array('ProjectID' => 1, 
+                                     array('ProjectID' => 1,
                                            'Name'      => 'testProject'));
 
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
@@ -247,7 +247,7 @@ class CandidateTest extends TestCase
 
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
-    
+
         $this->_candidate->setData(array());
     }
 
@@ -275,7 +275,7 @@ class CandidateTest extends TestCase
         );
     }
 
-    /** 
+    /**
      * Test getProjectID returns the correct ProjectID for the candidate
      *
      * @covers Candidate::getProjectID
@@ -306,7 +306,7 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselectColWithIndexKey')
             ->willReturn(array("1"=>'testProject'));
-       
+
         $this->assertEquals("testProject", $this->_candidate->getProjectTitle());
     }
 
@@ -441,7 +441,7 @@ class CandidateTest extends TestCase
         $this->markTestSkipped("getCandidateEthnicity is a deprecated function");
     }
 
-    /** 
+    /**
      * Test isActive returns the correct string for the candidate
      *
      * @covers Candidate::isActive
@@ -458,7 +458,7 @@ class CandidateTest extends TestCase
         );
     }
 
-    /** 
+    /**
      * Test registeredBy returns the correct string for the candidate
      *
      * @covers Candidate::registeredBy
@@ -548,8 +548,8 @@ class CandidateTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "SELECT SubprojectID 
-                    FROM project_subproject_rel 
+                    "SELECT SubprojectID
+                    FROM project_subproject_rel
                     WHERE ProjectID = :prj"
                 )
             )
@@ -561,7 +561,7 @@ class CandidateTest extends TestCase
                                    1 => 1,
                                    2 => 2
                                );
-        
+
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->assertEquals(
@@ -626,7 +626,7 @@ class CandidateTest extends TestCase
             ->method('pselectOne')
             ->with($this->stringContains("AND VisitNo = 1"))
             ->willReturn('');
-        
+
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals('', $this->_candidate->getFirstVisit());
     }
@@ -649,9 +649,9 @@ class CandidateTest extends TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(2, $this->_candidate->getNextVisitNo());
     }
- 
+
     /**
-     * Test getNextVisitNo returns 1 if the query result is null 
+     * Test getNextVisitNo returns 1 if the query result is null
      *
      * @covers Candidate::getNextVisitNo
      * @return void
@@ -839,7 +839,7 @@ class CandidateTest extends TestCase
 
     /**
      * Test getConsents returns correct array of information
-     * 
+     *
      * @covers Candidate::getConsents
      * @return void
      */
@@ -847,7 +847,7 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
- 
+
         $result = array(
                       array('ConsentID'     => 1,
                             'Name'          => 'name1',
@@ -1039,7 +1039,7 @@ class CandidateTest extends TestCase
 
     /**
      * Test Candidate::createNew
-     * TODO This function calls Site::singleton() and User::singleton() 
+     * TODO This function calls Site::singleton() and User::singleton()
      *      So these need to be mocked in some way. It also uses the $_SESSION
      *      array, which requires user interaction, which makes it harder to test.
      *
@@ -1051,7 +1051,7 @@ class CandidateTest extends TestCase
         $this->markTestIncomplete("Test not implemented!");
     }
 
-    /** 
+    /**
      * Set up test doubles behavior for Candidate::select() method
      *
      * @return void

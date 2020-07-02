@@ -193,9 +193,8 @@ switch ($action)
 
    // check/diagnose each timepoint separately
    foreach ($listOfTimePoints as $sessionID) {
-
        // create timepoint object
-       $timePoint =& TimePoint::singleton($sessionID);
+       $timePoint =& TimePoint::singleton(new \SessionID(strval($sessionID)));
 
        // print out the $sessionID
        fwrite(STDERR, "\n Timepoint ".$timePoint->getVisitLabel()." ; SubProjectID: ".$timePoint->getSubprojectID()." ; Effective DOB: ".$timePoint->getEffectiveDateOfBirth()." ; (SessionID): $sessionID \n");
@@ -264,13 +263,13 @@ function addInstrument($sessionID, $testName)
     $db =& Database::singleton();
 
     // create timepoint object
-    $timePoint =& TimePoint::singleton($sessionID);
+    $timePoint =& TimePoint::singleton(new \SessionID(strval($sessionID)));
 
     // create battery object
     $battery = new NDB_BVL_Battery();
 
     // set the SessionID for the battery
-    $success = $battery->selectBattery($sessionID);
+    $success = $battery->selectBattery(new \SessionID(strval($sessionID)));
 
     // check if the instrument is already in the battery
     $existingBattery = $battery->getBattery();
@@ -382,7 +381,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         // fixing Date_screening or Date_visit
 
         // create timepoint object
-        $timePoint =& TimePoint::singleton($sessionID);
+        $timePoint =& TimePoint::singleton(new \SessionID(strval($sessionID)));
 
         // check if the timepoint is started before attempting to make changes to it
         if ($timePoint->getCurrentStage() == 'Not Started') {
@@ -408,7 +407,8 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         * add Feedback
         */
         // feedback object
-        $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID);
+        $sID = $sessionID ? new \SessionID(strval($sessionID)) : NULL;
+        $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), null, $sID);
 
         // add the new thread
         $success = $feedback->createThread('visit', '5', "The date of $dateType has been changed to $newDate.", 'N');
@@ -453,7 +453,7 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
     }
 
     // create timepoint object
-    $timePoint =& TimePoint::singleton($sessionID);
+    $timePoint =& TimePoint::singleton(new \SessionID(strval($sessionID)));
 
     // candidate object - needed to get the dob/edc
    // $candidate =& Candidate::singleton($timePoint->getCandID());

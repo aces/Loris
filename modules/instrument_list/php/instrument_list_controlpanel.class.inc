@@ -32,9 +32,9 @@ namespace LORIS\instrument_list;
 class Instrument_List_ControlPanel extends \TimePoint
 {
     /**
-     * Construct funcion
+     * Construct function
      *
-     * @param string $sessionID the value of sessionID
+     * @param \SessionID $sessionID the value of sessionID
      *
      * @return void
      */

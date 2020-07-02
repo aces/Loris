@@ -106,7 +106,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $visit = \NDB_Factory::singleton()->timepoint(
-                new \SessionID($sessionid)
+                new \SessionID(strval($sessionid))
             );
         } catch (\LorisException | \TypeError $e) {
             $visit = null;
