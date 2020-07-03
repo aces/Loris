@@ -1476,7 +1476,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        return $fieldValue == 0 ? $fieldValue : -1;
+        return is_int($fieldValue) ? $fieldValue : -1;
     }
 
     /**
