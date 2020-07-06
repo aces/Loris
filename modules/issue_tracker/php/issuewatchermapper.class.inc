@@ -13,8 +13,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\issue_tracker;
-use \LORIS\Data\{Mapper, DataInstance
-};
+use \LORIS\Data\Mapper;
 
 /**
  * A IssueWatcherMapper is a \LORIS\Data\Mapper which maps User ID
@@ -33,16 +32,15 @@ class IssueWatcherMapper implements Mapper
      * Maps the User ID to 'true' if it belongs to the current user and to 'false'
      * if it does not.
      *
-     * @param \User                    $user     The user this data is being mapped
-     *                                           for.
-     * @param \LORIS\Data\DataInstance $resource The data instance being mapped.
+     * @param \User             $user     The user this data is being mapped for.
+     * @param \JsonSerializable $resource The data instance being mapped.
      *
-     * @return \LORIS\Data\DataInstance the mapped data
+     * @return \JsonSerializable the mapped data
      */
     public function map(
         \User $user,
-        DataInstance $resource
-    ) : DataInstance {
+        \JsonSerializable $resource
+    ) : \JsonSerializable {
 
         static $config = null;
         if ($config === null) {
@@ -50,7 +48,7 @@ class IssueWatcherMapper implements Mapper
             $config  = $factory->config()->getSetting("imaging_modules");
         }
 
-        $newrow = json_decode($resource->toJSON(), true);
+        $newrow = json_decode(json_encode($resource), true);
         if (isset($newrow['userId'])
             && $newrow['userId'] === $user->getUsername()
         ) {

@@ -75,7 +75,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
+        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
@@ -588,8 +588,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $subprojList = [];
 
         $projID  = $this->getProjectID();
-        $query   = "SELECT SubprojectID 
-                    FROM project_subproject_rel 
+        $query   = "SELECT SubprojectID
+                    FROM project_subproject_rel
                     WHERE ProjectID = :prj";
         $params  = ['prj' => $projID];
         $subproj = \NDB_Factory::singleton()
@@ -617,7 +617,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        $query  = "SELECT Visit_label FROM session 
+        $query  = "SELECT Visit_label FROM session
           LEFT JOIN candidate USING (CandID)
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
@@ -748,8 +748,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
+            "SELECT ID,Description
+            FROM participant_status_options
             WHERE parentID=:pid",
             ['pid' => $parentID]
         );
@@ -806,7 +806,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
              FROM participant_status ps
                 JOIN participant_status_options pso ON (ps.participant_status=pso.ID)
              WHERE CandID=:candid",
-            ['candid' => $this->getCandID()],
+            ['candid' => $this->getCandID()]
         );
         return $res['Description'] ?? '';
     }

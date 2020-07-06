@@ -61,9 +61,9 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      *
      * @param array $row The database row from the LORIS Database class.
      *
-     * @return \LORIS\Data\DataInstance An instance representing a test.
+     * @return \JsonSerializable An instance representing a test.
      */
-    public function getInstance($row) : \LORIS\Data\DataInstance
+    public function getInstance($row) : \JsonSerializable
     {
         return new Test($row);
     }

@@ -68,9 +68,9 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      *
      * @param array $row The database row from the LORIS Database class.
      *
-     * @return \LORIS\Data\DataInstance An instance representing this row.
+     * @return \JsonSerializable An instance representing this row.
      */
-    public function getInstance($row) : \LORIS\Data\DataInstance
+    public function getInstance($row) : \JsonSerializable
     {
             return new MediaFile($row);
     }

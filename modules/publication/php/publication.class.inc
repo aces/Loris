@@ -21,10 +21,29 @@ namespace LORIS\publication;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Publication extends \NDB_Menu_Filter_Form
+class Publication extends \NDB_Menu_Filter_Form implements \JsonSerializable
 {
-    public $AjaxModule   = true;
-    public $skipTemplate = true;
+    /**
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param Module $module     The test name being accessed
+     * @param string $page       The subtest being accessed (may be an empty string)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     */
+    function __construct(
+        \Module $module,
+        string $page,
+        string $identifier,
+        string $commentID
+    ) {
+        parent::__construct($module, $page, $identifier, $commentID);
+        $this->skipTemplate = true;
+        $this->AjaxModule   = true;
+    }
+
     /**
      * Returns true if user has access to this page.
      *
@@ -236,12 +255,12 @@ class Publication extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
+     * Converts the results of this menu filter
+     * to be retrieved with ?format=json
      *
-     * @return string json encoded string of the headers and data from this table
+     * @return array which can be serialized by json_encode()
      */
-    function toJSON() : string
+    public function jsonSerialize() : array
     {
         $result = $this->toArray();
         // run values through htmlspecialchars decode to unescape
@@ -254,7 +273,7 @@ class Publication extends \NDB_Menu_Filter_Form
         );
         $result['form'] = $this->form->form;
 
-        return json_encode($result);
+        return $result;
     }
 }
 

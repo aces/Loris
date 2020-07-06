@@ -11,7 +11,7 @@ namespace LORIS\issue_tracker;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class IssueRow implements \LORIS\Data\DataInstance
+class IssueRow implements \JsonSerializable
 {
     protected $DBRow;
     protected $CenterIDs;
@@ -35,13 +35,13 @@ class IssueRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Implements \LORIS\Data\DataInstance interface for this row.
+     * Implements \JsonSerializable interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
-        return json_encode($this->DBRow);
+        return $this->DBRow;
     }
 
     /**

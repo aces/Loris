@@ -38,7 +38,7 @@ class CandidatesProvisioner extends DBRowProvisioner
     {
         parent::__construct(
             '
-             SELECT 
+             SELECT
                c.CandID as CandID,
                p.Name as ProjectName,
                c.PSCID as PSCID,
@@ -65,9 +65,9 @@ class CandidatesProvisioner extends DBRowProvisioner
      *
      * @param array $row The database row from the LORIS Database class.
      *
-     * @return \LORIS\Data\DataInstance
+     * @return \JsonSerializable
      */
-    public function getInstance($row) : \LORIS\Data\DataInstance
+    public function getInstance($row) : \JsonSerializable
     {
         return new CandidatesRow($row);
     }

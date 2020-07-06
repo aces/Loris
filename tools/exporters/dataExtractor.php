@@ -34,16 +34,16 @@ const OUTPUT_FOLDER = __DIR__ . '/../../project/data_export/';
 
 
 $usage = <<<USAGE
-Usage: 
+Usage:
 To export columns from a specified table:
 php {$argv[0]} %s <table> <column[,column2,...]> <date> [outfile]\n
        <table>      The name of a table in the database from which to extract
                     data.
        <column>     The name of a column in the database from which to extract
-                    data. Can also specify multiple columns using a 
+                    data. Can also specify multiple columns using a
                     comma-separated list.
        <date>       Values in the table that occur before this date will
-                    be excluded. Used in instrument extraction. 
+                    be excluded. Used in instrument extraction.
                     Format YYYY-MM-DD.
        [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
@@ -53,12 +53,12 @@ php {$argv[0]} %s <table> <column[,column2,...]> <date> [outfile]\n
        <table>      The name of a table in the database from which to extract
                     data. Should correspond to an instrument.
        <column>     The name of a column in the database from which to extract
-                    data. Can also specify multiple columns using a 
+                    data. Can also specify multiple columns using a
                     comma-separated list.
                     The CommentID column will always be included so it is not
                     necessary to provide it in this list.
        <date>       Values in the table that occur before this date will
-                    be excluded. Used in instrument extraction. 
+                    be excluded. Used in instrument extraction.
                     Format YYYY-MM-DD.
        [outfile]    Optional. The target path (parent folder) where CSV data
                     will be written. Default is LORIS_BASE/project/data_export/.
@@ -184,7 +184,7 @@ if ($mode === VISIT_EXPORT) {
     // Format of output filename: <table_column_dataExtract_output.csv>
     $filename = sprintf(
         "%s_dataExtract_output.csv",
-        $table,
+        $table
     );
 
     if ($mode === COLUMN_EXPORT) {
@@ -225,7 +225,7 @@ FROM candidate c
 INNER JOIN session s ON c.CandID = s.CandID
 INNER JOIN flag f ON f.SessionID = s.ID
 INNER JOIN $table t ON t.CommentID = f.CommentID
-WHERE DATE(t.Date_taken) < :cutoffDate 
+WHERE DATE(t.Date_taken) < :cutoffDate
 AND f.CommentID NOT LIKE "DDE%";
 QUERY;
 

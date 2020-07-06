@@ -48,7 +48,7 @@ class MapIterator extends \IteratorIterator
      * Overrides the \IteratorIterator \Iterator interface to apply
      * the map passed in the constructor.
      *
-     * @return DataInstance
+     * @return \JsonSerializable
      */
     public function current()
     {

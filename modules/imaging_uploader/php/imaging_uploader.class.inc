@@ -11,6 +11,7 @@
  * @link     https://github.com/mohadesz/Loris-Trunk
  */
 namespace LORIS\imaging_uploader;
+use LORIS\publication\Module;
 use LORIS\server_processes_manager as SP;
 /**
  * This module allows a zipped/tgz/gz file to be uploaded into the incoming folder
@@ -22,12 +23,32 @@ use LORIS\server_processes_manager as SP;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Imaging_Uploader extends \NDB_Menu_Filter_Form
+class Imaging_Uploader extends \NDB_Menu_Filter_Form implements \JsonSerializable
 {
-    var $show_queries    = true;
-    var $temp_path       = null;
-    var $AjaxModule      = true;
-    public $skipTemplate = true;
+    var $show_queries = true;
+    var $temp_path    = null;
+
+    /**
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param Module $module     The test name being accessed
+     * @param string $page       The subtest being accessed (may be an empty string)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     */
+    function __construct(
+        \Module $module,
+        string $page,
+        string $identifier,
+        string $commentID
+    ) {
+        parent::__construct($module, $page, $identifier, $commentID);
+        $this->skipTemplate = true;
+        $this->AjaxModule   = true;
+    }
+
     /**
      * ID of the uploaded file in mri_upload table (if upload successful).
      * If the file is a reupload of an existing file, then it will be set to
@@ -408,9 +429,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $updateFile = isset($args['values']['overwrite'])
             ? (boolean) $args['values']['overwrite'] : false;
         $id         = $db->pselectOne(
-            "SELECT 
-                IF (InsertionComplete=0 AND 
-                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+            "SELECT
+                IF (InsertionComplete=0 AND
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID
                 FROM mri_upload WHERE UploadLocation LIKE :ul",
             ['ul' => "%$file_name"]
         );
@@ -557,9 +578,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             // wildcard for files that were uploaded to a random temp path.
             $fileName = $file->fileInfo['name'];
             $id       = $db->pselectOne(
-                "SELECT 
-                IF (InsertionComplete=0 AND 
-                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+                "SELECT
+                IF (InsertionComplete=0 AND
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID
                 FROM mri_upload WHERE UploadLocation LIKE :ul",
                 ['ul' => "%$fileName"]
             );
@@ -750,13 +771,14 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
         );
     }
+
     /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
+     * Converts the results of this menu filter
+     * to be retrieved with ?format=json
      *
-     * @return string json encoded string of the headers and data from this table
+     * @return array which can be serialized by json_encode()
      */
-    function toJSON(): string
+    public function jsonSerialize() : array
     {
         $result            = $this->toArray();
         $result['form']    = $this->form->form;
@@ -766,7 +788,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             'ImagingUploaderAutoLaunch'
         );
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
-        return json_encode($result);
+        return $result;
     }
 }
 

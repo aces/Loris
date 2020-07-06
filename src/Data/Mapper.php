@@ -14,7 +14,7 @@
 namespace LORIS\Data;
 
 /**
- * A Mapper represents an object that maps data from one DataInstance type to
+ * A Mapper represents an object that maps data from one \JsonSerializable type to
  * another.
  *
  * It can be used to add, remove, or modify data coming from a Provisioner
@@ -34,16 +34,16 @@ interface Mapper
 {
     /**
      * Map returns a copy of $resource that has been modified in some way
-     * It must return a new DataInstance without having modified the original.
+     * It must return a new \JsonSerializable without having modified the original.
      *
      * The data mapping should be a pure function of the original data and
      * the user that it's being mapped for.
      *
-     * @param \User        $user     The user that this is being mapped on
+     * @param \User             $user     The user that this is being mapped on
      *                               behalf of.
-     * @param DataInstance $resource The data being mapped from.
+     * @param \JsonSerializable $resource The data being mapped from.
      *
-     * @return DataInstance a new DataInstance with the map applied.
+     * @return \JsonSerializable a new \JsonSerializable with the map applied.
      */
-    public function map(\User $user, DataInstance $resource) : DataInstance;
+    public function map(\User $user, \JsonSerializable $resource) : \JsonSerializable;
 }

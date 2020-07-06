@@ -26,9 +26,27 @@ namespace LORIS\acknowledgements;
  * @link     https://github.com/aces/Loris
  */
 
-class Acknowledgements extends \NDB_Menu_Filter_Form
+class Acknowledgements extends \NDB_Menu_Filter_Form implements \JsonSerializable
 {
-    public $skipTemplate = true;
+    /**
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param Module $module     The test name being accessed
+     * @param string $page       The subtest being accessed (may be an empty string)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     */
+    function __construct(
+        \Module $module,
+        string $page,
+        string $identifier,
+        string $commentID
+    ) {
+        parent::__construct($module, $page, $identifier, $commentID);
+        $this->skipTemplate = true;
+    }
 
     /**
      * Determine whether user should be granted access.
@@ -191,12 +209,12 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
+     * Converts the results of this menu filter
+     * to be retrieved with ?format=json
      *
-     * @return string JSON
+     * @return array which can be serialized by json_encode()
      */
-    function toJSON(): string
+    public function jsonSerialize() : array
     {
         $config = \NDB_Config::singleton();
 
@@ -208,7 +226,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $result['minYear']         = $config->getSetting('startYear');
         $result['maxYear']         = $config->getSetting('endYear');
 
-        return json_encode($result);
+        return $result;
     }
 
     /**
@@ -229,7 +247,5 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                 $baseurl . '/acknowledgements/js/acknowledgementsIndex.js',
             ]
         );
-
     }
-
 }

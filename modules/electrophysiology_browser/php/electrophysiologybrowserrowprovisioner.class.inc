@@ -39,7 +39,7 @@ class ElectrophysiologyBrowserRowProvisioner
     {
 
         parent::__construct(
-            "SELECT 
+            "SELECT
               psc.Name                                  AS Site,
               c.PSCID                                   AS PSCID,
               c.CandID                                  AS DCCID,
@@ -56,10 +56,10 @@ class ElectrophysiologyBrowserRowProvisioner
               LEFT JOIN candidate c USING (CandID)
               LEFT JOIN psc         ON (s.CenterID=psc.CenterID)
               LEFT JOIN Project     ON (s.ProjectID=Project.ProjectID)
-              LEFT JOIN physiological_output_type pot 
+              LEFT JOIN physiological_output_type pot
                 USING (PhysiologicalOutputTypeID)
             WHERE c.Active='Y'
-              AND s.Active='Y' 
+              AND s.Active='Y'
               AND pf.FileType IN (
                 SELECT type FROM ImagingFileTypes WHERE Description LIKE '%(EEG)'
               )
@@ -74,9 +74,9 @@ class ElectrophysiologyBrowserRowProvisioner
      *
      * @param array $row The database row from the LORIS Database class.
      *
-     * @return \LORIS\Data\DataInstance An instance representing this row.
+     * @return \JsonSerializable An instance representing this row.
      */
-    public function getInstance($row) : \LORIS\Data\DataInstance
+    public function getInstance($row) : \JsonSerializable
     {
         $cid = (int )$row['CenterID'];
         $pid = (int )$row['ProjectID'];

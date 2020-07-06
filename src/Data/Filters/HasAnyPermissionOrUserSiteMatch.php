@@ -13,8 +13,6 @@
  */
 namespace LORIS\Data\Filters;
 
-use \LORIS\Data\DataInstance;
-
 /**
  * This class will apply the userSiteMatch filter is the user do not have any of the
  * given permissions. For instance, if a user do not have 'access_all_profiles' then
@@ -43,12 +41,12 @@ class HasAnyPermissionOrUserSiteMatch extends UserSiteMatch
      * Will return true if the user has any of the permissions or if the user's
      * site(s) match the resource's.
      *
-     * @param \User        $user     The user that request access to the ressouce.
-     * @param DataInstance $resource The data being filtered.
+     * @param \User             $user     The user that request access to the ressouce.
+     * @param \JsonSerializable $resource The data being filtered.
      *
      * @return bool
      */
-    public function filter(\User $user, DataInstance $resource) : bool
+    public function filter(\User $user, \JsonSerializable $resource) : bool
     {
         if ($user->hasAnyPermission($this->_permissions)) {
             return true;

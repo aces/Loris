@@ -21,7 +21,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Menu extends NDB_Page
+class NDB_Menu extends NDB_Page implements \JsonSerializable
 {
     /**
      * The menu's name
@@ -121,12 +121,12 @@ class NDB_Menu extends NDB_Page
     }
 
     /**
-     * {@inheritDoc}
+     * Implements \JsonSerializable interface
      *
-     * @return string
+     * @return array which can be serialized by json_encode()
      */
-    function toJSON(): string
+    public function jsonSerialize() : array
     {
-        return json_encode(['error' => 'Not implemented']);
+        return ['error' => 'Not implemented'];
     }
 }

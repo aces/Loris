@@ -18,7 +18,7 @@ namespace LORIS\Data;
  * the SQL database) and applies filters or maps to the data. It represents
  * arbitrarily structured data such as a row in a table. Implementations
  * know the details of the data, but a Provisioner itself only deals with
- * DataInstance objects, Filters and Mappers.
+ * \JsonSerializable objects, Filters and Mappers.
  *
  * Filters generally do things like site based or project based permissions to
  * the data, while mappers do things like anonymization of data.
@@ -45,7 +45,7 @@ interface Provisioner
 
     /**
      * Map returns a new Provisioner which is identical to this one, except
-     * with the given map applied to the DataInstance objects returned
+     * with the given map applied to the \JsonSerializable objects returned
      * by execute.
      *
      * @param Mapper $map The map to apply
@@ -60,7 +60,7 @@ interface Provisioner
      *
      * @param \User $user The user who data is being provisioned on behalf of.
      *
-     * @return \Traversable of DataInstance objects
+     * @return \Traversable of \JsonSerializable objects
      */
     public function execute(\User $user) : \Traversable;
 }

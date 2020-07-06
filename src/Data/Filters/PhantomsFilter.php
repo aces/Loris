@@ -11,7 +11,6 @@
  */
 namespace LORIS\Data\Filters;
 
-use \Loris\Data\DataInstance;
 use \LORIS\Data\Filter;
 
 /**
@@ -30,12 +29,12 @@ class PhantomsFilter implements Filter
     /**
      * Implements the \LORIS\Data\Filter interface
      *
-     * @param \User        $user     The user that request access to the ressource.
-     * @param DataInstance $resource The data being filtered.
+     * @param \User             $user     The user that request access to the ressource.
+     * @param \JsonSerializable $resource The data being filtered.
      *
      * @return bool true if the data is not a phantom image
      */
-    public function filter(\User $user, DataInstance $resource) : bool
+    public function filter(\User $user, \JsonSerializable $resource) : bool
     {
         if (!$resource->isPhantom()) {
             // This filter only have jurisdiction over phantom images.

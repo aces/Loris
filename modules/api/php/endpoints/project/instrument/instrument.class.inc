@@ -113,7 +113,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
-            json_decode($this->_instrument->toJSON(), true)
+            json_decode(json_encode($this->_instrument), true)
         );
 
         return $this->_cache;

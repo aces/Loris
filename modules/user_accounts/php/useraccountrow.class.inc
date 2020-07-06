@@ -7,7 +7,7 @@ namespace LORIS\user_accounts;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class UserAccountRow implements \LORIS\Data\DataInstance
+class UserAccountRow implements \JsonSerializable
 {
     protected $DBRow;
 
@@ -45,13 +45,13 @@ class UserAccountRow implements \LORIS\Data\DataInstance
         return $this->ProjectIDs;
     }
 
-     /**
-      * Implements \LORIS\Data\DataInstance interface for this row.
-      *
-      * @return string the instance data.
-      */
-    public function toJSON(): string
+    /**
+     * Implements \JsonSerializable interface for this row.
+     *
+     * @return array which can be serialized by json_encode()
+     */
+    public function jsonSerialize() : array
     {
-        return json_encode($this->DBRow);
+        return $this->DBRow;
     }
 }

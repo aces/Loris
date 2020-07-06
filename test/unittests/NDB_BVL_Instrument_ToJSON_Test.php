@@ -60,7 +60,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
     }
 
     function testMetaData() {
-        $json = $this->i->toJSON();
+        $json = json_encode($this->i);
         $outArray = json_decode($json, true);
         $ExpectedMeta = [
             'InstrumentVersion' => "1l",
@@ -79,7 +79,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
         $this->i->addSelect("FieldName2", "Field Description 2", $not_answered);
         $this->i->form->addElement('select', "multiselect1", "Test Question", $value, array("multiple" => 'multiple'));
         $this->i->form->addElement('select', "multiselect2", "Test Question", $not_answered, array('multiple' => "multiple"));
-        $json = $this->i->toJSON();
+        $json = json_encode($this->i);
         $outArray = json_decode($json, true);
         $selectElement = $outArray['Elements'][0];
         $selectElement2 = $outArray['Elements'][1];
@@ -150,7 +150,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
     function testTextElement() {
         $this->i->addTextElement("FieldName", "Field Description for Text", array("value" => "Option"));
         $this->i->addTextAreaElement("FieldName2", "Field Description2 for Text", array("value" => "Option"));
-        $json = $this->i->toJSON();
+        $json = json_encode($this->i);
         $outArray = json_decode($json, true);
         $textElement = $outArray['Elements'][0];
         $textareaElement = $outArray['Elements'][1];
@@ -222,7 +222,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
                 "addEmptyOption" => true,
             ]
         );
-        $json = $this->i->toJSON();
+        $json = json_encode($this->i);
         $outArray = json_decode($json, true);
         $dateElement = $outArray['Elements'][0];
         $dateElement2 = $outArray['Elements'][1];
@@ -260,7 +260,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
 
     function testNumericElement() {
         $this->i->addNumericElement("TestElement", "Test Description");
-        $json = $this->i->toJSON();
+        $json = json_encode($this->i);
         $outArray = json_decode($json, true);
         $numericElement = $outArray['Elements'][0];
 
@@ -287,7 +287,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
             "FieldName2",
             null
         );
-        $json = $this->i->toJSON();
+        $json = json_encode($this->i);
         $outArray = json_decode($json, true);
         $scoreElement = $outArray['Elements'][0];
         $scoreElement2 = $outArray['Elements'][1];
@@ -322,7 +322,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
             "Field Description",
             "45"
         );
-        $json = $this->i->toJSON();
+        $json = json_encode($this->i);
         $outArray = json_decode($json, true);
         $headerElement = $outArray['Elements'][0];
         $headerElement2= $outArray['Elements'][1];
@@ -351,7 +351,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
 
     function testLabelElement() {
         $this->i->addLabel("I am a label");
-        $json = $this->i->toJSON();
+        $json = json_encode($this->i);
         $outArray = json_decode($json, true);
         $labelElement = $outArray['Elements'][0];
 
@@ -378,7 +378,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
         $this->i->testName = "Test";
 
 
-        $json = $this->i->toJSON();
+        $json = json_encode($this->i);
         $outArray = json_decode($json, true);
         $page1 = $outArray['Elements'][0];
         $page2 = $outArray['Elements'][1];

@@ -13,8 +13,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\dicom_archive;
-use \LORIS\Data\{Mapper, DataInstance
-};
+use \LORIS\Data\Mapper;
 
 /**
  * A DICOMArchiveAnonymizer is a \LORIS\Data\Mapper which anonymizes improperly
@@ -34,23 +33,22 @@ class DICOMArchiveAnonymizer implements Mapper
      * meet the regular expressions defined in the LORIS configuration for valid
      * patient names or ids.
      *
-     * @param \User                    $user     The user this data is being mapped
-     *                                           for.
-     * @param \LORIS\Data\DataInstance $resource The unanonymized data being mapped.
+     * @param \User             $user     The user this data is being mapped for.
+     * @param \JsonSerializable $resource The unanonymized data being mapped.
      *
-     * @return \LORIS\Data\DataInstance the anonymized data
+     * @return \JsonSerializable the anonymized data
      */
     public function map(
         \User $user,
-        DataInstance $resource
-    ) : DataInstance {
+        \JsonSerializable $resource
+    ) : \JsonSerializable {
 
         static $config = null;
         if ($config === null) {
             $config = \NDB_Config::singleton()->getSetting("imaging_modules");
         }
 
-        $newrow = json_decode($resource->toJSON(), true);
+        $newrow = json_decode(json_encode($resource), true);
         $cid    = $resource->getCenterID();
 
         // escape any forward slashes

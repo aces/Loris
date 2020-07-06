@@ -105,7 +105,7 @@ abstract class ProvisionerInstance implements Provisioner
      *
      * @param \User $user The user who data is being provisioned on behalf of.
      *
-     * @return \Traversable of DataInstance objects
+     * @return \Traversable of \JsonSerializable objects
      */
     public function execute(\User $user) : \Traversable
     {

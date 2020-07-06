@@ -20,7 +20,7 @@ namespace LORIS\api\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class CandidatesRow implements \LORIS\Data\DataInstance
+class CandidatesRow implements \JsonSerializable
 {
     private $_candid;
     private $_projectname;
@@ -34,7 +34,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     /**
      * Create a new CandidatesRow.
      *
-     * @param array $row An array of candidate's propeties
+     * @param array $row An array of candidate's properties
      */
     public function __construct(array $row)
     {
@@ -49,11 +49,11 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Implements \LORIS\Data\DataInstance interface for this row.
+     * Implements \JsonSerializable interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
         $obj = [
             'CandID'  => $this->_candid,
@@ -65,7 +65,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
             'Sex'     => $this->_sex,
         ];
 
-        return json_encode($obj);
+        return $obj;
     }
 
     /**

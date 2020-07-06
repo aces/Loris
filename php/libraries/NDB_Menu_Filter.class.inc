@@ -22,7 +22,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter extends NDB_Menu
+class NDB_Menu_Filter extends NDB_Menu implements \JsonSerializable
 {
     var $AjaxModule = false;
 
@@ -695,7 +695,7 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         switch($this->format) {
         case 'json':
-            return $this->toJSON();
+            return json_encode($this);
         }
         if ($this->skipTemplate) {
             return "";
@@ -818,15 +818,16 @@ class NDB_Menu_Filter extends NDB_Menu
     }
 
     /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
+     * Converts the results of this menu filter
+     * to be retrieved with ?format=json
      *
-     * @return string a json encoded string of the headers and data from this table
+     * @return array which can be serialized by json_encode()
      */
-    function toJSON(): string
+    public function jsonSerialize() : array
     {
-        return json_encode($this->toArray());
+        return $this->toArray();
     }
+
     /**
      * Returns the full list of candidates, users, etc.
      *

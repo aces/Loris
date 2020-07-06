@@ -21,7 +21,9 @@ namespace Loris\Behavioural;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
+class NDB_BVL_Instrument_LINST
+    extends \NDB_BVL_Instrument
+    implements \JsonSerializable
 {
     /**
      * FIXME: LINST instruments should parse the full name
@@ -803,15 +805,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     }
 
     /**
-     * Returns a JSON representation of the currently instantiated
-     * instrument.
+     * Returns an array representation of the currently instantiated instrument.
      *
-     * The format of the JSON representation is specified in the
+     * The format of the array representation is specified in the
      * docs/API/InstrumentFormat documentation.
      *
-     * @return string containing valid JSON
+     * @return array which can be serialized by json_encode()
      */
-    function toJSON(): string
+    public function jsonSerialize() : array
     {
         $jsonObject = [
             'Meta'     => [
@@ -938,10 +939,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             ];
             $jsonObject['Elements'][] = $pageElement;
         }
-        return json_encode($jsonObject);
+        return $jsonObject;
     }
-
-
 }
-
 

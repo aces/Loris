@@ -62,7 +62,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             FROM issues as i
             LEFT JOIN modules m
               ON (m.ID=i.module)
-            LEFT JOIN candidate c 
+            LEFT JOIN candidate c
               ON (i.candID=c.CandID)
             LEFT JOIN session s
               ON (i.sessionID = s.ID)
@@ -82,9 +82,9 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      *
      * @param array $row The database row from the LORIS Database class.
      *
-     * @return \LORIS\Data\DataInstance An instance representing this row.
+     * @return \JsonSerializable An instance representing this row.
      */
-    public function getInstance($row) : \LORIS\Data\DataInstance
+    public function getInstance($row) : \JsonSerializable
     {
         // We need the module descriptor to get the full name. Since modules
         // are likely to appear in multiple issues, keep a cache of descriptors

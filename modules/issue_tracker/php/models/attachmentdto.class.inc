@@ -16,7 +16,7 @@ namespace LORIS\issue_tracker\Models;
  * It is doing the mapping between the issues_attachments table columns
  * and the JSON object properties returned to the frontend.
  *
- * Additionally, it implements the DataInstance interface
+ * Additionally, it implements the \JsonSerializable interface
  * so it can be used by a Database Provisioner.
  *
  * @category Issue_Tracker
@@ -25,28 +25,26 @@ namespace LORIS\issue_tracker\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class AttachmentDTO implements \LORIS\Data\DataInstance
+class AttachmentDTO implements \JsonSerializable
 {
     /**
-     * Implements \LORIS\Data\DataInstance interface for this row.
+     * Implements \JsonSerializable interface for this row.
      *
-     * @return string
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON(): string
+    public function jsonSerialize() : array
     {
-        return json_encode(
-            [
-                'ID'          => $this->ID,
-                'issueID'     => $this->issueID,
-                'file_hash'   => $this->file_hash,
-                'date_added'  => $this->date_added,
-                'file_name'   => $this->file_name,
-                'deleted'     => $this->deleted,
-                'user'        => $this->user,
-                'description' => $this->description,
-                'file_size'   => $this->file_size,
-                'mime_type'   => $this->mime_type,
-            ]
-        );
+        return [
+            'ID'          => $this->ID,
+            'issueID'     => $this->issueID,
+            'file_hash'   => $this->file_hash,
+            'date_added'  => $this->date_added,
+            'file_name'   => $this->file_name,
+            'deleted'     => $this->deleted,
+            'user'        => $this->user,
+            'description' => $this->description,
+            'file_size'   => $this->file_size,
+            'mime_type'   => $this->mime_type,
+        ];
     }
 }

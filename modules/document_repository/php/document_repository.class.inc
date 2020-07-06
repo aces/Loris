@@ -22,15 +22,34 @@ namespace LORIS\document_repository;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
-class Document_Repository extends \NDB_Menu_Filter_Form
+class Document_Repository extends \NDB_Menu_Filter_Form implements \JsonSerializable
 {
     private const PERMISSIONS = [
         'document_repository_view',
         'document_repository_edit',
         'document_repository_delete',
     ];
-    public $AjaxModule        = true;
-    public $skipTemplate      = true;
+
+    /**
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param Module $module     The test name being accessed
+     * @param string $page       The subtest being accessed (may be an empty string)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     */
+    function __construct(
+        \Module $module,
+        string $page,
+        string $identifier,
+        string $commentID
+    ) {
+        parent::__construct($module, $page, $identifier, $commentID);
+        $this->skipTemplate = true;
+        $this->AjaxModule   = true;
+    }
 
     /**
      * Checking user permissions
@@ -180,16 +199,16 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
+     * Converts the results of this menu filter
+     * to be retrieved with ?format=json
      *
-     * @return string a json encoded string of the headers and data from this table
+     * @return array which can be serialized by json_encode()
      */
-    function toJSON(): string
+    public function jsonSerialize() : array
     {
         $result = $this->toArray();
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
-        return json_encode($result);
+        return $result;
     }
 
     /**

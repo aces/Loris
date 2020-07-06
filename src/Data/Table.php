@@ -29,7 +29,7 @@ namespace LORIS\Data;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class Table
+class Table implements \JsonSerializable
 {
     /**
      * The data Provisioner used for this table.
@@ -60,7 +60,7 @@ class Table
      *
      * @param \User $user The user who is attempting to load the table.
      *
-     * @return \Traversable of DataInstance values of all the filtered data.
+     * @return \Traversable of \JsonSerializable values of all the filtered data.
      */
     public function getRows(\User $user) : \Traversable
     {
@@ -81,7 +81,7 @@ class Table
 
         $results = [];
         foreach ($allRows as $row) {
-            $results[] = json_decode($row->toJSON($user), true);
+            $results[] = json_decode(json_encode($row), true);
         }
         return $results;
     }
@@ -89,13 +89,12 @@ class Table
     /**
      * Serializes this table to JSON for $user.
      *
-     * @param \User $user The user who is attempting to load the table.
-     *
-     * @return string of valid JSON representing this data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON(\User $user) : string
+    public function jsonSerialize() : array
     {
-        return json_encode($this->toArray($user));
+        $user = \NDB_Factory::singleton()->user();
+        return $this->toArray($user);
     }
 
     /**
