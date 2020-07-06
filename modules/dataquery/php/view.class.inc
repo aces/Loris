@@ -43,7 +43,7 @@ class View extends \NDB_Page
             return $this->_handlePUT($request);
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                array('PUT')
+                ['PUT']
             );
         }
     }
@@ -66,18 +66,18 @@ class View extends \NDB_Page
         // Retrieve the Query params for CouchDB.
         $children = $values['children'];
         $category = 'demographics';
-        $results  = array();
+        $results  = [];
 
         if (isset($category) && $category) {
             $category = urlencode($category);
             $results  = $cdb->queryView(
                 "DQG-2.0",
                 "datadictionary",
-                array(
+                [
                     "reduce"   => "false",
                     "startkey" => "[\"$category\"]",
                     "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
-                )
+                ]
             );
         }
 
@@ -96,10 +96,10 @@ class View extends \NDB_Page
             $results        = $cdb->queryView(
                 "DQG-2.0",
                 "search",
-                array(
+                [
                     "reduce" => "false",
                     "key"    => "[\"$category\", \"$fieldName\", $value]",
-                )
+                ]
             );
             $sessionResults = array_map(
                 function ($element) {
@@ -109,15 +109,15 @@ class View extends \NDB_Page
             );
 
             // Populates rule.candidates and rule.session
-            $visits   = array();
-            $sessions = array();
+            $visits   = [];
+            $sessions = [];
             for ($k=0; $k<count($sessionResults); $k++) {
                 $session = $sessionResults[$k];
                 array_push($visits, $session[1]);
-                $session_keys          = array($session[0], $session[0]);
+                $session_keys          = [$session[0], $session[0]];
                 $sessions[$session[1]] = $session_keys;
             }
-            $candidates = array($sessionResults[0][0] => $visits);
+            $candidates = [$sessionResults[0][0] => $visits];
 
             $candidatesResult['allCandidates'] = $candidates;
             $candidatesResult['allSessions']   = $sessions;
