@@ -1187,13 +1187,13 @@ class LorisForm
     /**
      * Reimplements the HTML_QuickForm validate API.
      *
-     * @param array|null $values    Optional array of values to validate
+     * @param array|null $vals Optional array of values to validate
      *
      * @return bool true if all registered rules passed
      */
     function validate(?array $vals = null)
     {
-        if(isset($vals)) {
+        if (isset($vals)) {
             $this->setDefaults($vals);
             $values = $vals;
         } else {

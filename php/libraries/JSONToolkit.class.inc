@@ -43,6 +43,7 @@ class JSONToolkit
      * JSONToolkit constructor.
      *
      * @param string $instrumentName Name of instrument whose data to manipulate
+     *
      * @throws \LorisException
      */
     function __construct(string $instrumentName)
@@ -54,7 +55,9 @@ class JSONToolkit
             array("tbln" => $instrumentName)
         );
         if (empty($checkInstrument)) {
-            throw new \Exception("The instrument ". $instrumentName . "was not found in the database.");
+            throw new \Exception(
+                "The instrument $instrumentName was not found in the database."
+            );
         }
 
         $queryData = $db->pselectWithIndexKey(
@@ -64,20 +67,26 @@ class JSONToolkit
         );
 
         $this->instrName = $instrumentName;
-        $this->flagData = $queryData;
+        $this->flagData  = $queryData;
     }
 
     /**
      * Select list of CommentIDs where a field has certain value
      *
-     * @param array $conditionArray     The array of conditions to meet for selection
-     *                                  Given as field => value, checks if the value at field === value
-     * @return array                    List of commentIDs
+     * @param array $conditionArray The array of conditions to meet for selection
+     *                              Given as field => value, checks if the value
+     *                              at field === value
+     *
+     * @return array                 List of commentIDs
      */
     public function selectCMIDs(array $conditionArray) : array
     {
-        // Function specifying what to select
-        $fn = function(& $cmids, $cmid, $instrData) {
+        /*
+         * Function specifying what to select
+         *
+         * @SupressWarnings("unused")
+         */
+        $fn = function (& $cmids, $cmid, $instrData) {
             $cmids[] = $cmid;
         };
         return $this->genericSelect($conditionArray, $fn);
@@ -86,14 +95,16 @@ class JSONToolkit
     /**
      * Select all data where a field has certain value
      *
-     * @param array $conditionArray     Array of conditions to meet for selection
-     *                                  Given as field => value, checks if the value at field === value
-     * @return array                    Array of instrument data with CommentID as key
+     * @param array $conditionArray Array of conditions to meet for selection
+     *                              Given as field => value, checks if the
+     *                              value at field === value
+     *
+     * @return array                 Array of instrument data with CommentID as key
      */
     public function selectAll(array $conditionArray) : array
     {
         // Function specifying what to select
-        $fn = function(& $results, $cmid, $instrData) {
+        $fn = function (& $results, $cmid, $instrData) {
             $results[$cmid] = $instrData;
         };
         return $this->genericSelect($conditionArray, $fn);
@@ -102,19 +113,21 @@ class JSONToolkit
     /**
      * Select value of $selected when $field has $val
      *
-     * @param string $selected          Name of field to return values of
-     * @param array $conditionArray     Array of conditions to meet for selection
-     *                                  Given as field => value, checks if the value at field === value
-     * @return array                    Array of values for $selected
-     *                                  CommentID as key
+     * @param string $selected       Name of field to return values of
+     * @param array  $conditionArray Array of conditions to meet for selection
+     *                               Given as field => value, checks if the
+     *                               value at field === value
+     *
+     * @return array                  Array of values for $selected
+     *                                CommentID as key
      */
     public function selectField(
         string $selected,
         array $conditionArray
     ) : array {
         // Function specifying what to select
-        $fn = function(& $results, $cmid, $instrData) use($selected) {
-            if(key_exists($selected, $instrData)) {
+        $fn = function (& $results, $cmid, $instrData) use ($selected) {
+            if (key_exists($selected, $instrData)) {
                 $results[$cmid] = $instrData[$selected];
             }
         };
@@ -125,12 +138,14 @@ class JSONToolkit
      * Generic method for selecting values that meet conditions
      * Customization through function parameter
      *
-     * @param array $conditionArray     Array of conditions to meet for selection
-     *                                  Given as field => value, checks if the value at field === value
-     * @param callable $fn              Function that specifies how the return array is constructed
+     * @param array    $conditionArray Array of conditions to meet for selection
+     *                                 Given as field => value, checks if the
+     *                                 value at field === value
+     * @param callable $fn             Function that specifies how the return array
+     *                                 is constructed
      *
-     * @return array                    Array of values that meet conditions, constructed by $fn
-     *                                  CommentID as key.
+     * @return array                   Array of values that meet conditions,
+     *                                 constructed by $fn. CommentID as key.
      */
     public function genericSelect(
         array $conditionArray,
@@ -156,10 +171,10 @@ class JSONToolkit
     /**
      * Renames field of instrument
      *
-     * @param string $oldName   Name of field to rename
-     * @param string $newName   What the field will be renamed as
+     * @param string $oldName Name of field to rename
+     * @param string $newName What the field will be renamed as
      *
-     * @return int              Return number of fields altered
+     * @return int            Number of fields altered
      * @throws \DatabaseException
      */
     public function rename(
@@ -167,9 +182,9 @@ class JSONToolkit
         string $newName
     ) : int {
         // Function specifying rename operation
-        $fn = function($instrData, $oldName) use($newName) {
+        $fn = function ($instrData, $oldName) use ($newName) {
             // Make sure a field $newName does not already exist
-            if(!key_exists($newName, $instrData)) {
+            if (!key_exists($newName, $instrData)) {
                 // rename field in array
                 $fieldNames = array_keys($instrData);
                 $fieldNames[array_search($oldName, $fieldNames)] = $newName;
@@ -190,7 +205,7 @@ class JSONToolkit
     /**
      * Drop field from instrument data
      *
-     * @param string $field     Name of field to be dropped
+     * @param string $field Name of field to be dropped
      *
      * @return int              Return number of fields altered
      * @throws \DatabaseException
@@ -198,7 +213,7 @@ class JSONToolkit
     public function drop(string $field) : int
     {
         // Function specifying drop operation
-        $fn = function($instrData, $field) {
+        $fn = function ($instrData, $field) {
             unset($instrData[$field]);
             return $instrData;
         };
@@ -209,10 +224,11 @@ class JSONToolkit
      * Generic method for performing operations directly on flag table
      * Customization through function parameter
      *
-     * @param string $field A field to check for before performing operation
-     * @param callable $fn Function that specifies how the return array is constructed
+     * @param string   $field A field to check for before performing operation
+     * @param callable $fn    Function that specifies how the return array is
+     *                        constructed.
      *
-     * @return int              Number of fields altered
+     * @return int            Number of fields altered
      * @throws \DatabaseException
      */
     public function genericOperation(
@@ -221,7 +237,7 @@ class JSONToolkit
     ) : int {
 
         // Do not modify if metadata field
-        if($this->checkMetaData($field)) {
+        if ($this->checkMetaData($field)) {
             throw new \Exception("Modification of metadata field forbidden.");
         }
 
@@ -246,7 +262,12 @@ class JSONToolkit
                     continue;
                 }
 
-                $instrument = \NDB_BVL_Instrument::factory($this->instrName, $cmid, '', true);
+                $instrument = \NDB_BVL_Instrument::factory(
+                    $this->instrName,
+                    $cmid,
+                    '',
+                    true
+                );
 
                 // Unset metadata fields for validation
                 $validationData = $instrData;
@@ -272,12 +293,15 @@ class JSONToolkit
                     $dataAltered++;
                     $instrument->score();
                 } else {
-                    throw new \Exception("Operation can not be performed due to a validation error for CommentID $cmid.");
+                    throw new \Exception(
+                        "Operation can not be performed due to ".
+                        "a validation error for CommentID $cmid."
+                    );
                 }
             }
         }
 
-        if($dataAltered) {
+        if ($dataAltered) {
             $this->resetFlag();
         }
         return $dataAltered;
@@ -288,10 +312,11 @@ class JSONToolkit
      * (Alter value of $field to $newVal if the
      * $conditionalField has value $conditionalValue)
      *
-     * @param string $field             The name of field whos data will be changed.
-     * @param string $newVal            The value that the field will be changed to.
-     * @param array $conditionArray     The array of conditions to meet for modification
-     *                                  Given as field => value, checks if the value at field === value
+     * @param string $field          The name of field whos data will be changed.
+     * @param string $newVal         The value that the field will be changed to.
+     * @param array  $conditionArray The array of conditions to meet for modification
+     *                               Given as field => value, checks if the value at
+     *                               field === value
      *
      * @return int                      Return number of fields altered
      * @throws \DatabaseException
@@ -303,8 +328,12 @@ class JSONToolkit
         string $newVal,
         array $conditionArray
     ) : int {
-        // Simple modification function, setting field to new value
-        $fn = function($value) use($newVal) {
+        /*
+         * Simple modification function, setting field to new value
+         *
+         * @SupressWarnings("unused")
+         */
+        $fn = function ($value) use ($newVal) {
             return $newVal === 'null' ? null : $newVal;
         };
         return $this->customModify(
@@ -317,17 +346,17 @@ class JSONToolkit
     /**
      * Alter value of a field using given operation
      *
-     * @param callable $fn                  Function containing the operation to be done
-     *                                      on the specified field
-     * @param string $field                 The name of the field to modify
-     * @param array|null $conditionArray    The array of conditions to meet for modification
-     *                                      Given as field => value, checks if the value at field === value
+     * @param callable   $fn             Function containing the operation to be done
+     *                                   on the specified field
+     * @param string     $field          The name of the field to modify
+     * @param array|null $conditionArray The array of conditions to meet for
+     *                                   modification. Given as field => value,
+     *                                   checks if the value a field === value.
      *
      * @return int                          Return number of fields altered
      * @throws \DatabaseException
      * @throws \LorisException
      * @throws \NotFound
-     *
      */
     public function customModify(
         callable $fn,
@@ -336,7 +365,7 @@ class JSONToolkit
     ) : int {
 
         // Do not modify if metadata field
-        if($this->checkMetaData($field)) {
+        if ($this->checkMetaData($field)) {
             throw new  \Exception("Modification of metadata field forbidden.");
         }
 
@@ -356,7 +385,9 @@ class JSONToolkit
             }
 
             // If conditions given, check if conditions are met
-            if (isset($conditionArray) && !$this->checkConditions($instrData, $conditionArray)) {
+            if (isset($conditionArray)
+                && !$this->checkConditions($instrData, $conditionArray)
+            ) {
                 continue;
             }
 
@@ -364,14 +395,19 @@ class JSONToolkit
             $newVal = $fn($instrData[$field]);
 
             // If field already has the new value, continue
-            if($newVal === $oldVal) {
+            if ($newVal === $oldVal) {
                 continue;
             }
 
             // set new value
             $instrData[$field] = $newVal;
 
-            $instrument = \NDB_BVL_Instrument::factory($this->instrName, $cmid, '', true);
+            $instrument = \NDB_BVL_Instrument::factory(
+                $this->instrName,
+                $cmid,
+                '',
+                true
+            );
 
             // Unset metadata fields before validating
             $validationData = $instrData;
@@ -385,11 +421,14 @@ class JSONToolkit
                 $dataAltered++;
                 $instrument->score();
             } else {
-                throw new \Exception("Operation can not be performed due to a validation error for CommentID $cmid.");
+                throw new \Exception(
+                    "Operation can not be performed due to a ".
+                    "validation error for CommentID $cmid."
+                );
             }
         }
         // If any data was altered, reset the flag data variable
-        if($dataAltered) {
+        if ($dataAltered) {
             $this->resetFlag();
         }
         return $dataAltered;
@@ -401,7 +440,7 @@ class JSONToolkit
      * an instrument's data for a given fieldname
      * (e.g. $field "name" given: search for "name_status")
      *
-     * @param string $field     Name of the field to check for relative status field
+     * @param string $field Name of the field to check for relative status field
      *
      * @return bool             Return true if status field found
      */
@@ -426,9 +465,10 @@ class JSONToolkit
     /**
      * Checks whether all conditions are met in an array of data
      *
-     * @param array $data               The array of data to parse through for conditions
-     * @param array $conditionArray     The conditions to check for in the data
-     *                                  Given as field => value, checks if the value at field === value
+     * @param array $data           The array of data to parse through for conditions
+     * @param array $conditionArray The conditions to check for in the data
+     *                              Given as field => value, checks if the
+     *                              value at field === value
      *
      * @return bool                     Return true if all conditions met
      */
@@ -438,12 +478,12 @@ class JSONToolkit
     ) : bool {
         $pass = true;
 
-        foreach($conditionArray as $field => $value) {
+        foreach ($conditionArray as $field => $value) {
             if (!key_exists($field, $data)) {
                 // if the field does not exist in the data, condition not met
                 $pass = false;
-            } elseif ($data[$field] != $value &&
-                !($value === 'null' && empty($data[$field]))
+            } elseif ($data[$field] != $value
+                && !($value === 'null' && empty($data[$field]))
             ) {
                 // if the value does not match the data value, condition not met
                 // including null option
@@ -456,7 +496,7 @@ class JSONToolkit
     /**
      * Checks whether the field passed is a metadata field
      *
-     * @param string $field     The field to check
+     * @param string $field The field to check
      *
      * @return bool             Return true if metadata field
      */
@@ -467,10 +507,12 @@ class JSONToolkit
 
     /**
      * Resets flagData variable with query to DB
+     *
+     * @return void
      */
     public function resetFlag() : void
     {
-        $db = \Database::singleton();
+        $db        = \Database::singleton();
         $queryData = $db->pselectWithIndexKey(
             "SELECT CommentID, Data FROM flag WHERE Test_name =:tbln",
             array("tbln" => $this->instrName),
