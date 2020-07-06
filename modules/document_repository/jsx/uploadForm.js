@@ -159,6 +159,7 @@ class DocUploadForm extends Component {
       body: formObject,
     })
     .then((resp) => {
+      console.error(resp);
       if (resp.ok) {
         swal.fire('Upload Successful!', '', 'success').then((result) => {
           if (result.value) {
@@ -169,11 +170,11 @@ class DocUploadForm extends Component {
       } else {
         resp.json().then((data) => {
           swal.fire('Could not upload file', data.error, 'error');
+        }).catch((error) => {
+          console.error(error);
+          swal.fire('Could not upload file', error, 'error');
         });
       }
-    })
-    .catch((error) => {
-      console.error(error);
     });
   }
 
