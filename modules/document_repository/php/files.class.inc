@@ -389,7 +389,6 @@ class Files extends \NDB_Page
             'document'    => $filename,
         ];
         $uploadNotifier->notify($msg_data);
-        print_r($response);
 
         return $response;
     }
