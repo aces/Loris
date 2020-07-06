@@ -1,5 +1,7 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
+require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/generic_includes.php";
 /**
  * PHP Version 7
  *
@@ -20,7 +22,7 @@ define('MINIMUM_MARIADB_VERSION', '10.3');
 define('MINIMUM_NODE_VERSION', '8.0');
 define('MINIMUM_COMPOSER_VERSION', '1.4');
 
-$helper = new \OutputWrapper();
+$helper = new OutputWrapper();
 $helper->enableLogging(basename($argv[0]));
 
 $versionFilepath = __DIR__ . '/../VERSION';
