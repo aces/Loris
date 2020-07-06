@@ -7,7 +7,7 @@ require_once __DIR__ . "/generic_includes.php";
  * configuration settings and server paths to make sure that the application
  * and underlying architecture are set up to allow LORIS to run properly.
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 use \LORIS\Http\Client;
 use \LORIS\Http\Request;
