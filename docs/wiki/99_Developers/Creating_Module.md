@@ -41,7 +41,7 @@ the class `\DataFrameworkMenu`.
 
 ##### Data Instance
 You should create a class `php/mynewmodulerow.class.inc` to represent a Menu Filter row. This will
-provide basic structure for the row and include permission flags that can restrict data to users
+provide basic structure for the row and will likely restrict data access to users
 affiliated with a given Site or Project.
 
 [See this file for an example](../../../modules/dicom_archive/php/dicomarchiverow.class.inc).
