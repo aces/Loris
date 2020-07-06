@@ -3,13 +3,11 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
 /**
- * PHP Version 7
+ * This script is used to validate the configuration of LORIS. It checks
+ * configuration settings and server paths to make sure that the application
+ * and underlying architecture are set up to allow LORIS to run properly.
  *
- * @category Main
- * @package  Loris
- * @author   John Saigle <john.saigle@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
  */
 use \LORIS\Http\Client;
 use \LORIS\Http\Request;
@@ -97,7 +95,7 @@ evaluateVersionRequirement('Composer', $versionString, MINIMUM_COMPOSER_VERSION)
 // Check "web paths". This is a data type found in the ConfigSettings table.
 // Settings with this Data Type are expected to exist on the file system and
 // should be writable by the current user.
-$username = $helper->getUsername();
+$username = get_current_user();
 $helper->printLine("Checking web path settings...");
 $query  = <<<QUERY
 SELECT 

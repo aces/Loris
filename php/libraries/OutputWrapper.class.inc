@@ -39,15 +39,21 @@ class OutputWrapper
     /**
      * Create a new command line helper.
      *
-     * @param ?SPLFileInfo $logDirectory The directory that will contain log
-     *                                   files written by this script.
+     * @param ?SPLFileInfo $logDirectory The full path to the directory that
+     *                                   will contain log files written by this
+     *                                   script.
      *
      * @return void
      */
     public function __construct(?SPLFileInfo $logDirectory = null)
     {
+        $config = \NDB_Factory::singleton()->config();
         $logDir = new SPLFileInfo(
-            $logDirectory ?? \NDB_Factory::singleton()->config()->getSetting('log')
+            $logDirectory ??
+            \Utility::pathJoin(
+                $config->getSetting('base'),
+                $config->getSetting('log')
+            )
         );
         if ($logDir->isDir() === false) {
             throw new \ConfigurationException(self::ERROR_LOGDIR_NOT_DIR);
