@@ -38,6 +38,7 @@ declare -a tools_list=(
     'setconfig.php'
     'single_use/Cleanup_multiple_firstVisits.php'
     'single_use/Convert_LorisMenuID_to_ModuleID.php'
+    'single_use/24.0_permission_changes.php'
     'generate_tables_sql.php'
     'lorisform_parser.php'
 )
