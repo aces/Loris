@@ -158,9 +158,8 @@ class DocUploadForm extends Component {
       credentials: 'same-origin',
       body: formObject,
     })
-    .then((resp) => resp.json())
-    .then((data) => {
-      if (data == 'uploaded successfully') {
+    .then((resp) => {
+      if (resp.ok) {
         swal.fire('Upload Successful!', '', 'success').then((result) => {
           if (result.value) {
             this.setState({formData: {}});
@@ -168,7 +167,9 @@ class DocUploadForm extends Component {
           }
         });
       } else {
-        swal.fire('Could not upload file', data.error, 'error');
+        resp.json().then((data) => {
+          swal.fire('Could not upload file', data.error, 'error');
+        });
       }
     })
     .catch((error) => {
