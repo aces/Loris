@@ -152,15 +152,9 @@ class FilesUploadHandler implements RequestHandlerInterface
                 $message = (new \UploadException($file->getError()))
                     ->getMessage();
 
-                return (new \LORIS\Http\Response())
-                    ->withStatus(500)
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            json_encode(
-                                ['error' => $message]
-                            )
-                        )
-                    );
+                return new \LORIS\Http\Response\JSON\InternalServerError(
+                    "Upload error: $message"
+                );
             }
 
             /* basename() is used here to prevent path traversal characters
@@ -187,15 +181,9 @@ class FilesUploadHandler implements RequestHandlerInterface
                     true
                 )
                 ) {
-                    return (new \LORIS\Http\Response())
-                        ->withStatus(403)
-                        ->withBody(
-                            new \LORIS\Http\StringStream(
-                                json_encode(
-                                    ['error' => 'File type not allowed']
-                                )
-                            )
-                        );
+                    return new \LORIS\Http\Response\JSON\Forbidden(
+                        'File type not allowed'
+                    );
                 }
             }
 
@@ -206,21 +194,14 @@ class FilesUploadHandler implements RequestHandlerInterface
                 error_log(
                     'Could not upload file: ' . $e->getMessage()
                 );
-                return (new \LORIS\Http\Response())
-                    ->withStatus(500)
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            json_encode(
-                                ['error' => 'Could not upload file']
-                            )
-                        )
-                    );
+                return new \LORIS\Http\Response\JSON\InternalServerError(
+                    'Could not upload file'
+                );
             }
             chmod($targetPath, $this->permissions);
         }
 
-        return (new \LORIS\Http\Response())
-                    ->withStatus(201);
+        return new \LORIS\Http\Response\JSON\Created();
     }
 }
 
