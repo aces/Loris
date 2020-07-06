@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "LorisApiTest.php";
+require_once __DIR__ . "/LorisApiAuthenticationTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
@@ -16,8 +16,12 @@ require_once __DIR__ . "LorisApiTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiDicomsTests extends LorisApiTests
+class LorisApiDicomsTests extends LorisApiAuthenticationTest
 {
+    protected $candidTest = "400162";
+    protected $tarfileTest = "DCM_2016-08-15_ImagingUpload-18-25-i9GRv3.tar";
+    protected $processidTest = "";
+
     /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/dicoms
@@ -26,58 +30,71 @@ class LorisApiDicomsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitDicoms(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/dicoms",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/dicoms/",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $this->assertEquals(200, $response->getStatusCode());
-                $headers = $response->getHeaders();
-                $this->assertNotEmpty($headers);
-                foreach ($headers as $header) {
-                    $this->assertNotEmpty($header);
-                    //$this->assertIsString($header[0]);
-                }
-                // Verify the endpoint has a body
-                $body = $response->getBody();
-                $this->assertNotEmpty($body);
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+
+        $candidatesMetaJson   = array_keys($candidatesArray['Meta']);
+        $candidatesDicomtarsJson   = array_keys($candidatesArray['DicomTars'][0]);
+        $candidatesSeriesinfoJson   = array_keys($candidatesArray['DicomTars'][0]['SeriesInfos']);
+
+        // Test if body contains:
+        // Meta:
+        //      CandID: "115788",
+        //      Visit: "V3"
+        // DicomTars:
+        //      0:
+        //          Tarname: "DCM_2018-04-20_ImagingUpload-14-25-U1OlWq.tar",
+        //          SeriesInfo:
+        //              SeriesDescription, "T2 and PD"
+        //              SeriesNumber, 3
+        //              EchoTime, "13"
+        //              RepetitionTime, "3850",
+        //              InversionTime	null
+        //              SliceThickness	"3"
+        //              Modality	"MR"
+        //              SeriesUID	"1.3.12.2.1107.5.2.32.351…17435860771290643.0.0.0"
+
+        $this->assertArrayHasKey('CandID', $candidatesMetaJson);
+        $this->assertArrayHasKey('Visit', $candidatesMetaJson);
+
+        $this->assertArrayHasKey('Tarname', $candidatesDicomtarsJson);
+        $this->assertArrayHasKey('SeriesInfos', $candidatesDicomtarsJson);
+
+        $this->assertArrayHasKey('SeriesDescription', $candidatesSeriesinfoJson);
+        $this->assertArrayHasKey('SeriesNumber', $candidatesSeriesinfoJson);
+        $this->assertArrayHasKey('EchoTime', $candidatesSeriesinfoJson);
+        $this->assertArrayHasKey('RepetitionTime', $candidatesSeriesinfoJson);
+        $this->assertArrayHasKey('InversionTime', $candidatesSeriesinfoJson);
+        $this->assertArrayHasKey('SliceThickness', $candidatesSeriesinfoJson);
+        $this->assertArrayHasKey('Modality', $candidatesSeriesinfoJson);
+        $this->assertArrayHasKey('SeriesUID', $candidatesSeriesinfoJson);
+
+
+        $this->assertIsString($candidatesMetaJson['CandID']);
+        $this->assertIsString($candidatesMetaJson['Project']);
+
+        $this->assertIsString($candidatesDicomtarsJson['Tarname']);
+        $this->assertIsArray($candidatesDicomtarsJson['SeriesInfos']);
+
+        $this->assertIsString($candidatesSeriesinfoJson['SeriesDescription']);
+        $this->assertIsArray($candidatesSeriesinfoJson['SeriesNumber']);
+        $this->assertIsString($candidatesSeriesinfoJson['EchoTime']);
+        $this->assertIsArray($candidatesSeriesinfoJson['RepetitionTime']);
+        $this->assertIsString($candidatesSeriesinfoJson['InversionTime']);
+        $this->assertIsArray($candidatesSeriesinfoJson['SliceThickness']);
+        $this->assertIsString($candidatesSeriesinfoJson['Modality']);
+        $this->assertIsArray($candidatesSeriesinfoJson['SeriesUID']);
     }
 
     /**
@@ -89,27 +106,23 @@ class LorisApiDicomsTests extends LorisApiTests
      */
     public function testPostCandidatesCandidVisitDicoms(): void
     {
-        $this->guzzleLogin();
+        parent::setUp();
         $candid   = '115788';
         $visit    = 'V2';
         $response = $this->client->request(
             'POST',
-            "$this->base_uri/candidates/$candid/$visit/dicoms",
+            "candidates/$candid/$visit/dicoms",
             [
                 'headers' => $this->headers,
                 'json'    => $this->headers
             ]
         );
         $this->assertEquals(201, $response->getStatusCode());
-        $headers = $response->getHeaders();
-        $this->assertNotEmpty($headers);
-        foreach ($headers as $header) {
-            $this->assertNotEmpty($header);
-            //$this->assertIsString($header[0]);
-        }
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
+
+
     }
 
     /**
@@ -120,75 +133,19 @@ class LorisApiDicomsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitDicomsTarname(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->tarfileTest",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v           = $visitsArray['Visits'][$visit];
-                $response    = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/dicoms",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $dicomsArray = json_decode(
-                    (string) utf8_encode(
-                        $response->getBody()->getContents()
-                    ),
-                    true
-                );
-                $files       = array_keys($dicomsArray['DicomTars']);
-                foreach ($files as $file) {
-                    $tar      = $dicomsArray['DicomTars'][$file]['Tarname'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri/candidates/$id/$v/recordings/$tar",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $this->assertEquals(200, $response->getStatusCode());
-                    $headers = $response->getHeaders();
-                    $this->assertNotEmpty($headers);
-                    foreach ($headers as $header) {
-                        $this->assertNotEmpty($header);
-                        //$this->assertIsString($header[0]);
-                    }
-                    // Verify the endpoint has a body
-                    $body = $response->getBody();
-                    $this->assertNotEmpty($body);
-                }
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
     }
 
     // THESE ENDPOINTS DO NOT EXIST YET
@@ -201,75 +158,18 @@ class LorisApiDicomsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitDicomsTarnameProcesses(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/dicoms/$this->tarfileTest/processes",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/dicoms",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $recordingsArray = json_decode(
-                    (string) utf8_encode(
-                        $response->getBody()->getContents()
-                    ),
-                    true
-                );
-                $files           = array_keys($recordingsArray['DicomTars']);
-                foreach ($files as $file) {
-                    $tar      = $recordingsArray['DicomTars'][$file]['Tarname'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri/candidates/$id/$v/dicoms/$tar/processes",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $this->assertEquals(200, $response->getStatusCode());
-                    $headers = $response->getHeaders();
-                    $this->assertNotEmpty($headers);
-                    foreach ($headers as $header) {
-                        $this->assertNotEmpty($header);
-                        //$this->assertIsString($header[0]);
-                    }
-                    // Verify the endpoint has a body
-                    $body = $response->getBody();
-                    $this->assertNotEmpty($body);
-                }
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -281,95 +181,21 @@ class LorisApiDicomsTests extends LorisApiTests
     public function testGetCandidatesCandidVisitDicomsTarnameProcessesProcessid():
     void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "
+            candidates/$this->candidTest/$this->visitTest/dicoms/$this->tarfileTest/processes/$this->processidTest",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
+        $this->assertEquals(
+            200,
+            $response->getStatusCode()
         );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v           = $visitsArray['Visits'][$visit];
-                $response    = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/dicoms/",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $dicomsArray = json_decode(
-                    (string) utf8_encode(
-                        $response->getBody()->getContents()
-                    ),
-                    true
-                );
-                $files       = array_keys($dicomsArray['DicomTars']);
-                foreach ($files as $file) {
-                    $tar      = $dicomsArray['DicomTars'][$file]['Tarname'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri/candidates/$id/$v/dicoms/$tar/processes",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $processIdsArray = json_decode(
-                        (string) utf8_encode(
-                            $response->getBody()->getContents()
-                        ),
-                        true
-                    );
-                    $processIDs      = array_keys($processIdsArray['DicomTars']);
-                    foreach ($processIDs as $processid) {
-                        $response = $this->client->request(
-                            'GET',
-                            "$this->base_uri/
-                            candidates/$id/$v/dicoms/$tar/processes/$processid",
-                            [
-                                'headers' => $this->headers
-                            ]
-                        );
-                        $this->assertEquals(
-                            200,
-                            $response->getStatusCode()
-                        );
-                        $headers = $response->getHeaders();
-                        $this->assertNotEmpty($headers);
-                        foreach ($headers as $header) {
-                            $this->assertNotEmpty($header);
-                            //$this->assertIsString($header[0]);
-                        }
-                        // Verify the endpoint has a body
-                        $body = $response->getBody();
-                        $this->assertNotEmpty($body);
-                    }
-                }
-            }
-        }
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
-
 }

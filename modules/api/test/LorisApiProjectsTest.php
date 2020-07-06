@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "LorisApiTest.php";
+require_once __DIR__ . "/LorisApiAuthenticationTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
@@ -16,8 +16,11 @@ require_once __DIR__ . "LorisApiTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiProjectsTests extends LorisApiTests
+class LorisApiProjectsTests extends LorisApiAuthenticationTest
 {
+    protected $projectIdTest = "Pumpernickel";
+    protected $candidTest = "115788";
+    protected $visitTest = "V1";
     /**
      * Tests the HTTP GET request for the endpoint /projects
      *
@@ -25,24 +28,41 @@ class LorisApiProjectsTests extends LorisApiTests
      */
     public function testGetProjects(): void
     {
-        $this->guzzleLogin();
+        parent::setUp();
         $response = $this->client->request(
             'GET',
-            "$this->base_uri/projects",
+            "projects",
             [
                 'headers' => $this->headers
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
-        $headers = $response->getHeaders();
-        $this->assertNotEmpty($headers);
-        foreach ($headers as $header) {
-            $this->assertNotEmpty($header);
-            //$this->assertIsString($header[0]);
-        }
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
+
+        $projectsArray     = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+
+        $this->assertArrayHasKey('Projects', $projectsArray);
+        $this->assertArrayHasKey('Pumpernickel', $projectsArray['Projects']);
+        $this->assertArrayHasKey('useEDC', $projectsArray['Projects']['Pumpernickel']);
+        $this->assertArrayHasKey('PSCID', $projectsArray['Projects']['Pumpernickel']);
+        $this->assertArrayHasKey('Type', $projectsArray['Projects']['Pumpernickel']);
+        $this->assertArrayHasKey('Regex', $projectsArray['Projects']['Pumpernickel']);
+        $this->assertArrayHasKey('Validity', $projectsArray['Projects']['Pumpernickel']);
+
+        $this->assertIsArray($projectsArray['Projects']);
+        $this->assertIsArray($projectsArray['Projects']['Pumpernickel']);
+        $this->assertIsString($projectsArray['Projects']['Pumpernickel']['useEDC']);
+        $this->assertIsArray($projectsArray['Projects']['Pumpernickel']['PSCID']);
+        $this->assertIsString($projectsArray['Projects']['Pumpernickel']['PSCID']);
+        $this->assertIsString($projectsArray['Projects']['Pumpernickel']['Validity']);
+
     }
 
     /**
@@ -52,40 +72,35 @@ class LorisApiProjectsTests extends LorisApiTests
      */
     public function testGetProjectsProject(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/projects",
+            "projects/$this->projectId",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $projectsProjectArray     = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
-        $projectIds   = array_keys($candidsArray['Projects']);
-        foreach ($projectIds as $projectId) {
-            $response = $this->client->request(
-                'GET',
-                "$this->base_uri/projects/$projectId",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $this->assertEquals(200, $response->getStatusCode());
-            $headers = $response->getHeaders();
-            $this->assertNotEmpty($headers);
-            foreach ($headers as $header) {
-                $this->assertNotEmpty($header);
-                //$this->assertIsString($header[0]);
-            }
-            // Verify the endpoint has a body
-            $body = $response->getBody();
-            $this->assertNotEmpty($body);
-        }
+
+        $this->assertArrayHasKey('Meta', $projectsProjectArray);
+        $this->assertArrayHasKey('Project', $projectsProjectArray['Meta']);
+        $this->assertArrayHasKey('Candidates', $projectsProjectArray);
+
+        $this->assertIsArray($projectsProjectArray['Meta']);
+        $this->assertIsString($projectsProjectArray['Meta']['Project']);
+        $this->assertIsArray($projectsProjectArray['Candidates']);
+        $this->assertIsString($projectsProjectArray['Candidates']['0']);
+
     }
 
     /**
@@ -95,40 +110,35 @@ class LorisApiProjectsTests extends LorisApiTests
      */
     public function testGetProjectsProjectCandidates(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/projects",
+            "projects/$this->projectId/candidates",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $projectsProjectArray     = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
-        $projectIds   = array_keys($candidsArray['Projects']);
-        foreach ($projectIds as $projectId) {
-            $response = $this->client->request(
-                'GET',
-                "$this->base_uri/projects/$projectId/candidates",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $this->assertEquals(200, $response->getStatusCode());
-            $headers = $response->getHeaders();
-            $this->assertNotEmpty($headers);
-            foreach ($headers as $header) {
-                $this->assertNotEmpty($header);
-                //$this->assertIsString($header[0]);
-            }
-            // Verify the endpoint has a body
-            $body = $response->getBody();
-            $this->assertNotEmpty($body);
-        }
+
+        $this->assertArrayHasKey('Meta', $projectsProjectArray);
+        $this->assertArrayHasKey('Project', $projectsProjectArray['Meta']);
+        $this->assertArrayHasKey('Candidates', $projectsProjectArray);
+
+        $this->assertIsArray($projectsProjectArray['Meta']);
+        $this->assertIsString($projectsProjectArray['Meta']['Project']);
+        $this->assertIsArray($projectsProjectArray['Candidates']);
+        $this->assertIsString($projectsProjectArray['Candidates']['0']);
+
     }
 
     /**
@@ -138,40 +148,51 @@ class LorisApiProjectsTests extends LorisApiTests
      */
     public function testGetProjectsProjectImages(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/projects",
+            "projects/$this->projectId/images",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+        $projectsImagesArray     = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
-        $projectIds   = array_keys($candidsArray['Projects']);
-        foreach ($projectIds as $projectId) {
-            $response = $this->client->request(
-                'GET',
-                "$this->base_uri/projects/$projectId/images",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $this->assertEquals(200, $response->getStatusCode());
-            $headers = $response->getHeaders();
-            $this->assertNotEmpty($headers);
-            foreach ($headers as $header) {
-                $this->assertNotEmpty($header);
-                //$this->assertIsString($header[0]);
-            }
-            // Verify the endpoint has a body
-            $body = $response->getBody();
-            $this->assertNotEmpty($body);
-        }
+
+        $this->assertArrayHasKey('Images', $projectsImagesArray);
+        $this->assertArrayHasKey('0', $projectsImagesArray['Images']);
+        $this->assertArrayHasKey('Candidate', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey('PSCID', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey('Visit', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey('Visit_date', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey('Site', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey('InsertTime', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey('ScanType', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey('QC_status', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey('Selected', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey('Link', $projectsImagesArray['Images']['0']);
+
+        $this->assertIsArray($projectsImagesArray['Images']);
+        $this->assertIsArray($projectsImagesArray['Images']['0']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['Candidate']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['PSCID']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['Visit']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['Visit_date']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['Site']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['InsertTime']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['ScanType']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['QC_status']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['Selected']);
+        $this->assertIsString($projectsImagesArray['Images']['0']['Link']);
+
     }
 
     /**
@@ -181,40 +202,36 @@ class LorisApiProjectsTests extends LorisApiTests
      */
     public function testGetProjectsProjectVisits(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/projects",
+            "projects/$this->projectId/visits",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $projectsVisitsArray     = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
-        $projectIds   = array_keys($candidsArray['Projects']);
-        foreach ($projectIds as $projectId) {
-            $response = $this->client->request(
-                'GET',
-                "$this->base_uri/projects/$projectId/visits",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $this->assertEquals(200, $response->getStatusCode());
-            $headers = $response->getHeaders();
-            $this->assertNotEmpty($headers);
-            foreach ($headers as $header) {
-                $this->assertNotEmpty($header);
-                //$this->assertIsString($header[0]);
-            }
-            // Verify the endpoint has a body
-            $body = $response->getBody();
-            $this->assertNotEmpty($body);
-        }
+
+        $this->assertArrayHasKey('Meta', $projectsVisitsArray);
+        $this->assertArrayHasKey('Project', $projectsVisitsArray['Images']);
+        $this->assertArrayHasKey('Visits', $projectsVisitsArray);
+        $this->assertArrayHasKey('0', $projectsVisitsArray['Visit']);
+
+        $this->assertIsArray($projectsImagesArray['Meta']);
+        $this->assertIsString($projectsImagesArray['Meta']['Project']);
+        $this->assertIsArray($projectsImagesArray['Visits']);
+        $this->assertIsString($projectsImagesArray['Visits']['0']);
+
     }
 
     /**
@@ -224,40 +241,18 @@ class LorisApiProjectsTests extends LorisApiTests
      */
     public function testGetProjectsProjectInstruments(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/projects",
+            "projects/$projectIdTest/instruments",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $projectIds   = array_keys($candidsArray['Projects']);
-        foreach ($projectIds as $projectId) {
-            $response = $this->client->request(
-                'GET',
-                "$this->base_uri/projects/$projectId/instruments",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $this->assertEquals(200, $response->getStatusCode());
-            $headers = $response->getHeaders();
-            $this->assertNotEmpty($headers);
-            foreach ($headers as $header) {
-                $this->assertNotEmpty($header);
-                //$this->assertIsString($header[0]);
-            }
-            // Verify the endpoint has a body
-            $body = $response->getBody();
-            $this->assertNotEmpty($body);
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -268,56 +263,18 @@ class LorisApiProjectsTests extends LorisApiTests
      */
     public function testGetProjectsProjectInstrumentsInstrument(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/projects",
+            "projects/$this->projectId/instruments/$instrument",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $projectIds   = array_keys($candidsArray['Projects']);
-        foreach ($projectIds as $projectId) {
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/projects/$projectId/instruments",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $instruments = array_keys($visitsArray['Instruments']);
-            foreach ($instruments as $instrument) {
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/projects/$projectId/instruments/$instrument",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $this->assertEquals(200, $response->getStatusCode());
-                $headers = $response->getHeaders();
-                $this->assertNotEmpty($headers);
-                foreach ($headers as $header) {
-                    $this->assertNotEmpty($header);
-                    //$this->assertIsString($header[0]);
-                }
-                // Verify the endpoint has a body
-                $body = $response->getBody();
-                $this->assertNotEmpty($body);
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -328,7 +285,7 @@ class LorisApiProjectsTests extends LorisApiTests
      */
     public function testPatchProjectsProjectInstrumentsInstrument(): void
     {
-        $this->guzzleLogin();
+        parent::setUp();
         $response = $this->client->request(
             'PATCH',
             'https://spelletier-dev.loris.ca
@@ -339,12 +296,6 @@ class LorisApiProjectsTests extends LorisApiTests
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
-        $headers = $response->getHeaders();
-        $this->assertNotEmpty($headers);
-        foreach ($headers as $header) {
-            $this->assertNotEmpty($header);
-            //$this->assertIsString($header[0]);
-        }
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);

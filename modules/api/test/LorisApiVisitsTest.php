@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "LorisApiTest.php";
+require_once __DIR__ . "/LorisApiAuthenticationTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
@@ -16,8 +16,10 @@ require_once __DIR__ . "LorisApiTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiVisitsTests extends LorisApiTests
+class LorisApiVisitsTests extends LorisApiAuthenticationTest
 {
+    protected $candidTest = "400162";
+    protected $visitTest  = "V6";
     /**
      * Tests the HTTP GET request for the endpoint /candidates/{candid}/{visit}
      *
@@ -25,58 +27,27 @@ class LorisApiVisitsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisit(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $this->assertEquals(200, $response->getStatusCode());
-                $headers = $response->getHeaders();
-                $this->assertNotEmpty($headers);
-                foreach ($headers as $header) {
-                    $this->assertNotEmpty($header);
-                    //$this->assertIsString($header[0]);
-                }
-                // Verify the endpoint has a body
-                $body = $response->getBody();
-                $this->assertNotEmpty($body);
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+        // To test: if body contains:
+        // Meta:
+        //      CandID, Project, Site, EDC (optional), DoB, Sex
+        // Stages: [] if visit not started,
+        // Stages:
+        //      Visit:
+        //          Date: "YYYY-MM-DD",
+        //          Status,
+
     }
 
     /**
@@ -86,7 +57,7 @@ class LorisApiVisitsTests extends LorisApiTests
      */
     public function testPutCandidatesCandidVisit(): void
     {
-        $this->guzzleLogin();
+        parent::setUp();
         $candid   = '115788';
         $visit    = 'V2';
         $json     = ['CandID'  => $candid,
@@ -97,7 +68,7 @@ class LorisApiVisitsTests extends LorisApiTests
         ];
         $response = $this->client->request(
             'PUT',
-            "$this->base_uri/candidates/$candid/$visit",
+            "candidates/$candid/$visit",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -105,19 +76,12 @@ class LorisApiVisitsTests extends LorisApiTests
         );
         // Verify the status code
         $this->assertEquals(201, $response->getStatusCode());
-        // Verify the endpoint has a header
-        $headers = $response->getHeaders();
-        $this->assertNotEmpty($headers);
-        foreach ($headers as $header) {
-            $this->assertNotEmpty($header);
-            //$this->assertIsString($header[0]);
-        }
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
         $response = $this->client->request(
             'PUT',
-            "$this->base_uri/candidates/$candid/$visit",
+            "candidates/$candid/$visit",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -136,58 +100,18 @@ class LorisApiVisitsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitQcImaging(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::setUp();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/qc/imaging",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/qc/imaging",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $this->assertEquals(200, $response->getStatusCode());
-                $headers = $response->getHeaders();
-                $this->assertNotEmpty($headers);
-                foreach ($headers as $header) {
-                    $this->assertNotEmpty($header);
-                    //$this->assertIsString($header[0]);
-                }
-                // Verify the endpoint has a body
-                $body = $response->getBody();
-                $this->assertNotEmpty($body);
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -198,7 +122,7 @@ class LorisApiVisitsTests extends LorisApiTests
      */
     public function testPutCandidatesCandidVisitQcImaging(): void
     {
-        $this->guzzleLogin();
+        parent::setUp();
         $candid   = '300003';
         $visit    = 'V3';
         $json     = ['CandID'  => $candid,
@@ -209,7 +133,7 @@ class LorisApiVisitsTests extends LorisApiTests
         ];
         $response = $this->client->request(
             'PUT',
-            "$this->base_uri/candidates/$candid/$visit",
+            "candidates/$candid/$visit",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -217,19 +141,12 @@ class LorisApiVisitsTests extends LorisApiTests
         );
         // Verify the status code
         $this->assertEquals(201, $response->getStatusCode());
-        // Verify the endpoint has a header
-        $headers = $response->getHeaders();
-        $this->assertNotEmpty($headers);
-        foreach ($headers as $header) {
-            $this->assertNotEmpty($header);
-            //$this->assertIsString($header[0]);
-        }
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
         $response = $this->client->request(
             'PUT',
-            "$this->base_uri/candidates/$candid/$visit",
+            "candidates/$candid/$visit",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -239,6 +156,4 @@ class LorisApiVisitsTests extends LorisApiTests
         // so it already exists
         $this->assertEquals(204, $response->getStatusCode());
     }
-
-
 }

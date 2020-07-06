@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "LorisApiTest.php";
+require_once __DIR__ . "/LorisApiAuthenticationTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
@@ -16,8 +16,11 @@ require_once __DIR__ . "LorisApiTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiRecordingsTests extends LorisApiTests
+class LorisApiRecordingsTests extends LorisApiAuthenticationTest
 {
+    protected $frecordTest = "sub-OTT167_ses-V1_task-faceO_eeg.edf";
+    protected $frecordTestFile = "bids_imports/Face13_BIDSVersion_1.1.0/sub-OTT167/ses-V1/eeg/sub-OTT167_ses-V1_task-faceO_eeg.edf";
+    protected $visitTest  = "V1";
     /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings
@@ -26,58 +29,18 @@ class LorisApiRecordingsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitRecordings(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::visitTest();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/recordings",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/recordings",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $this->assertEquals(200, $response->getStatusCode());
-                $headers = $response->getHeaders();
-                $this->assertNotEmpty($headers);
-                foreach ($headers as $header) {
-                    $this->assertNotEmpty($header);
-                    //$this->assertIsString($header[0]);
-                }
-                // Verify the endpoint has a body
-                $body = $response->getBody();
-                $this->assertNotEmpty($body);
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -88,75 +51,18 @@ class LorisApiRecordingsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitRecordingsEdffile(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::visitTest();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/recordings",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $recordingsArray = json_decode(
-                    (string) utf8_encode(
-                        $response->getBody()->getContents()
-                    ),
-                    true
-                );
-                $recordFiles     = array_keys($recordingsArray['Files']);
-                foreach ($recordFiles as $recordFile) {
-                    $frecord  = $recordingsArray['Files'][$recordFile]['Filename'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri/candidates/$id/$v/recordings/$frecord",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $this->assertEquals(200, $response->getStatusCode());
-                    $headers = $response->getHeaders();
-                    $this->assertNotEmpty($headers);
-                    foreach ($headers as $header) {
-                        $this->assertNotEmpty($header);
-                        //$this->assertIsString($header[0]);
-                    }
-                    // Verify the endpoint has a body
-                    $body = $response->getBody();
-                    $this->assertNotEmpty($body);
-                }
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -167,76 +73,18 @@ class LorisApiRecordingsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitRecordingsEdffileChannels(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::visitTest();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/channels",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/recordings",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $recordingsArray = json_decode(
-                    (string) utf8_encode(
-                        $response->getBody()->getContents()
-                    ),
-                    true
-                );
-                $recordFiles     = array_keys($recordingsArray['Files']);
-                foreach ($recordFiles as $recordFile) {
-                    $frecord  = $recordingsArray['Files'][$recordFile]['Filename'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri
-                        /candidates/$id/$v/recordings/$frecord/channels",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $this->assertEquals(200, $response->getStatusCode());
-                    $headers = $response->getHeaders();
-                    $this->assertNotEmpty($headers);
-                    foreach ($headers as $header) {
-                        $this->assertNotEmpty($header);
-                        //$this->assertIsString($header[0]);
-                    }
-                    // Verify the endpoint has a body
-                    $body = $response->getBody();
-                    $this->assertNotEmpty($body);
-                }
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -248,76 +96,18 @@ class LorisApiRecordingsTests extends LorisApiTests
     public function testGetCandidatesCandidVisitRecordingsEdffileChannelsMeta():
     void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::visitTest();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/channels/meta",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/recordings",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $recordingsArray = json_decode(
-                    (string) utf8_encode(
-                        $response->getBody()->getContents()
-                    ),
-                    true
-                );
-                $recordFiles     = array_keys($recordingsArray['Files']);
-                foreach ($recordFiles as $recordFile) {
-                    $frecord  = $recordingsArray['Files'][$recordFile]['Filename'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri
-                        /candidates/$id/$v/recordings/$frecord/channels/meta",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $this->assertEquals(200, $response->getStatusCode());
-                    $headers = $response->getHeaders();
-                    $this->assertNotEmpty($headers);
-                    foreach ($headers as $header) {
-                        $this->assertNotEmpty($header);
-                        //$this->assertIsString($header[0]);
-                    }
-                    // Verify the endpoint has a body
-                    $body = $response->getBody();
-                    $this->assertNotEmpty($body);
-                }
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -328,77 +118,18 @@ class LorisApiRecordingsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodes(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::visitTest();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/electrodes",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/recordings",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $recordingsArray = json_decode(
-                    (string) utf8_encode(
-                        $response->getBody()->getContents()
-                    ),
-                    true
-                );
-                $recordFiles     = array_keys($recordingsArray['Files']);
-                foreach ($recordFiles as $recordFile) {
-                    $frecord  = $recordingsArray['Files'][$recordFile]['Filename'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri
-                        /candidates/$id/$v/recordings/$frecord/electrodes",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $this->assertEquals(200, $response->getStatusCode());
-                    $headers = $response->getHeaders();
-                    $this->assertNotEmpty($headers);
-                    foreach ($headers as $header) {
-                        $this->assertNotEmpty($header);
-                        //$this->assertIsString($header[0]);
-                    }
-
-                    // Verify the endpoint has a body
-                    $body = $response->getBody();
-                    $this->assertNotEmpty($body);
-                }
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -410,76 +141,18 @@ class LorisApiRecordingsTests extends LorisApiTests
     public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodesMeta():
     void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::visitTest();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/electrodes/meta",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/recordings",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $recordingsArray = json_decode(
-                    (string) utf8_encode(
-                        $response->getBody()->getContents()
-                    ),
-                    true
-                );
-                $recordFiles     = array_keys($recordingsArray['Files']);
-                foreach ($recordFiles as $recordFile) {
-                    $frecord  = $recordingsArray['Files'][$recordFile]['Filename'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri
-                        /candidates/$id/$v/recordings/$frecord/electrodes/meta",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $this->assertEquals(200, $response->getStatusCode());
-                    $headers = $response->getHeaders();
-                    $this->assertNotEmpty($headers);
-                    foreach ($headers as $header) {
-                        $this->assertNotEmpty($header);
-                        //$this->assertIsString($header[0]);
-                    }
-                    // Verify the endpoint has a body
-                    $body = $response->getBody();
-                    $this->assertNotEmpty($body);
-                }
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -490,70 +163,18 @@ class LorisApiRecordingsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileEvents(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::visitTest();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/events/meta",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode($response->getBody()->getContents()),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode($response->getBody()->getContents()),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/recordings",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $recordingsArray = json_decode(
-                    (string) utf8_encode($response->getBody()->getContents()),
-                    true
-                );
-                $recordFiles     = array_keys($recordingsArray['Files']);
-                foreach ($recordFiles as $recordFile) {
-                    $frecord  = $recordingsArray['Files'][$recordFile]['Filename'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri
-                        /candidates/$id/$v/recordings/$frecord/events/meta",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $this->assertEquals(200, $response->getStatusCode());
-                    $headers = $response->getHeaders();
-                    $this->assertNotEmpty($headers);
-                    foreach ($headers as $header) {
-                        $this->assertNotEmpty($header);
-                        //$this->assertIsString($header[0]);
-                    }
-                    // Verify the endpoint has a body
-                    $body = $response->getBody();
-                    $this->assertNotEmpty($body);
-                }
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
@@ -564,76 +185,17 @@ class LorisApiRecordingsTests extends LorisApiTests
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileEventsMeta(): void
     {
-        $this->guzzleLogin();
-        $response     = $this->client->request(
+        parent::visitTest();
+        $response = $this->client->request(
             'GET',
-            "$this->base_uri/candidates",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/events/meta",
             [
                 'headers' => $this->headers
             ]
         );
-        $candidsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $candids      = array_keys($candidsArray['Candidates']);
-        foreach ($candids as $candid) {
-            $id          = $candidsArray['Candidates'][$candid]['CandID'];
-            $response    = $this->client->request(
-                'GET',
-                "$this->base_uri/candidates/$id",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $visitsArray = json_decode(
-                (string) utf8_encode(
-                    $response->getBody()->getContents()
-                ),
-                true
-            );
-            $visits      = array_keys($visitsArray['Visits']);
-            foreach ($visits as $visit) {
-                $v        = $visitsArray['Visits'][$visit];
-                $response = $this->client->request(
-                    'GET',
-                    "$this->base_uri/candidates/$id/$v/recordings",
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $recordingsArray = json_decode(
-                    (string) utf8_encode(
-                        $response->getBody()->getContents()
-                    ),
-                    true
-                );
-                $recordFiles     = array_keys($recordingsArray['Files']);
-                foreach ($recordFiles as $recordFile) {
-                    $frecord  = $recordingsArray['Files'][$recordFile]['Filename'];
-                    $response = $this->client->request(
-                        'GET',
-                        "$this->base_uri
-                        /candidates/$id/$v/recordings/$frecord/events/meta",
-                        [
-                            'headers' => $this->headers
-                        ]
-                    );
-                    $this->assertEquals(200, $response->getStatusCode());
-                    $headers = $response->getHeaders();
-                    $this->assertNotEmpty($headers);
-                    foreach ($headers as $header) {
-                        $this->assertNotEmpty($header);
-                        //$this->assertIsString($header[0]);
-                    }
-                    // Verify the endpoint has a body
-                    $body = $response->getBody();
-                    $this->assertNotEmpty($body);
-                }
-            }
-        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
-
 }
