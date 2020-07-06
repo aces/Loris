@@ -23,7 +23,7 @@ JOIN user_perm_rel upr
 ON u.ID = upr.UserID 
 JOIN permissions p 
 ON upr.permID = p.permID 
-WHERE p.code=':code'";
+WHERE p.code=:code";
 
 $newPermissions = [
     'survey_accounts_view',
@@ -68,6 +68,6 @@ function grantNewCodeToUsers(string $code, array $users): void
             ['user' => $user]
         );
         echo "Granting permission `$code` to user `$user`\n";
-        //$DB->insert('user_perm_rel', ['userID' => $uid, 'permID' => $permID]);
+        $DB->insert('user_perm_rel', ['userID' => $uid, 'permID' => $permID]);
     }
 }
