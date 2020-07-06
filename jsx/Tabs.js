@@ -193,6 +193,9 @@ class VerticalTabs extends Component {
 
   getTabs() {
     let tabs = (this.props.tabs).map(function(tab) {
+      const error = tab.error ?
+        <span className='glyphicon glyphicon-exclamation-sign pull-right' style={{color: '#b94a48'}}/>
+        : null;
       let tabClass = this.state.activeTab === tab.id ? 'active' : null;
       let href = '#' + tab.id;
       let tabID = 'tab-' + tab.id;
@@ -209,6 +212,7 @@ class VerticalTabs extends Component {
              onClick={this.handleClick.bind(null, tab.id)}
           >
             {tab.label}
+            {error}
           </a>
         </li>
       );
