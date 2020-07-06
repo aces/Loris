@@ -277,4 +277,4 @@ if (isset($_REQUEST['PrintCandidates'])) {
         $obj = new Candidates($_SERVER['REQUEST_METHOD']);                         
     }                                                                              
     print $obj->toJSONString();                                                    
-                                                                                  
+}                                                                              
