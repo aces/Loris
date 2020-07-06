@@ -269,25 +269,8 @@ class RequestAccount extends \NDB_Form
             }
         }
 
-        // Verify reCAPTCHA
-        $err = [];
-        if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
-            $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
-            $resp      = $recaptcha->verify(
-                $values['g-recaptcha-response'],
-                $_SERVER['REMOTE_ADDR']
-            );
-            if (!$resp->isSuccess()) {
-                $err['captcha'] = 'Please complete the reCaptcha!';
-            }
-        }
         // Show success message even if email already exists for security reasons
         $this->tpl_data['success'] = true;
-
-        // If there are error messages, return early without sending emails.
-        if (!empty($err)) {
-            return;
-        }
 
         // Send an email to all users meeting the following criteria:
         //     - Associated with the Site
@@ -300,7 +283,7 @@ class RequestAccount extends \NDB_Form
                JOIN user_project_rel uprojr
                    (ON u.ID = uprojr.UserID)
             WHERE upr.CenterID=:center
-                AND uprojr.ProjectID=:project"
+                AND uprojr.ProjectID=:project";
         $result = $DB->pselect(
             $query,
             ['center' => $site, 'project' => $project]
