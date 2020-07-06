@@ -2102,7 +2102,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Loop over this instance data
         foreach ($thisData AS $key=>$value) {
-            if (!in_array($key, $this->doubleDataEntryDiffIgnoreColumns)) {
+            if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
                 if ($otherData[$key] != $value) {
                     $diff[] = [
                         'TableName'      => $this->table,
