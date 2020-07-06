@@ -526,8 +526,8 @@ class ListElements extends Component {
         break;
       case 'numeric':
         newState.Options = {
-          MinValue: 0,
-          MaxValue: 0,
+          MinValue: null,
+          MaxValue: null,
         };
         break;
       default:
@@ -698,12 +698,12 @@ class AddElement extends Component {
       }
     }
 
-        // Checking for error on numeric field
+    // Checking for error on numeric field
     if (selected === 'numeric') {
       let min = this.state.Options.MinValue;
       let max = this.state.Options.MaxValue;
 
-      if (min >= max) {
+      if (min != null && max != null && min >= max) {
         let temp = (this.state.error) ? this.state.error : {};
         temp.numeric = 'Max value must be larger than min value';
         this.setState({
@@ -712,7 +712,7 @@ class AddElement extends Component {
         hasError = true;
       }
 
-            // If error corrected, remove error message and error
+      // If error corrected, remove error message and error
       if (!hasError && this.state.error) {
         let temp = this.state.error;
         delete temp.numeric;
