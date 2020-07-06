@@ -479,7 +479,7 @@ class FieldSelector extends Component {
 }
 
 FieldSelector.propTypes = {
-  selectedFields: PropTypes.array
+  selectedFields: PropTypes.object
 };
 
 window.CategoryItem = CategoryItem;

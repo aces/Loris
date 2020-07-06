@@ -50,11 +50,11 @@ const SavedQueriesList = (props) => {
   );
 };
 SavedQueriesList.propTypes = {
-  queryDetails: PropTypes.array,
+  queryDetails: PropTypes.object,
   queriesLoaded: PropTypes.bool,
 };
 SavedQueriesList.defaultProps = {
-  queryDetails: [],
+  queryDetails: {},
   queriesLoaded: false,
 };
 

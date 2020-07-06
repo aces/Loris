@@ -1033,11 +1033,11 @@ class ManageSavedQueryRow extends Component {
   }
 }
 ManageSavedQueryRow.propTypes = {
-  Name: PropTypes.string,
+  Name: PropTypes.object,
   Query: PropTypes.object,
 };
 ManageSavedQueryRow.defaultProps = {
-  Name: 'Unknown',
+  Name: null,
   Query: {
     Fields: []
   },

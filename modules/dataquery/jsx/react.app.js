@@ -1118,11 +1118,11 @@ class DataQueryApp extends Component {
   }
 }
 DataQueryApp.propTypes = {
-  SavedQueries: PropTypes.array,
+  SavedQueries: PropTypes.object,
   AllSessions: PropTypes.array,
 };
 DataQueryApp.defaultProps = {
-  SavedQueries: [],
+  SavedQueries: {},
   AllSessions: [],
 };
 
