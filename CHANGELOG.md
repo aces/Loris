@@ -15,7 +15,7 @@ changes in the following format: PR #1234***
 #### Updates and Improvements
 - Module-specific permissions added for Survey Accounts, Imaging Behavioural
 Quality Control, and Behavioural Quality Control. This may impact access to these
-modules for existing users.
+modules for existing users. (PR #6041)
 #### Bug Fixes
 - *Add item here*
 ### Modules
@@ -113,4 +113,3 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
-
