@@ -117,7 +117,7 @@ We strongly encourage that new modules include integration tests. These must be 
 A new module must contain a `README.md` file that briefly describes the functionality of the module.
 Examples can be found in any existing module.
 
-It must also contain help text that will be displayed to users. In contrast to the README, this should
+The new module must also a markdown file under `help/` that will be displayed to users. In contrast to the README, this should
 be written in a friendly and non-technical tone. Please see the [Help Text Style Guide](./Help Style Guide.md).
 
 ### Issuing a pull request
