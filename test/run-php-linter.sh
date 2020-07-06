@@ -42,12 +42,6 @@ declare -a tools_list=(
     'lorisform_parser.php'
 )
 
-# And on all PHP files in this array
-declare -a test_list=(
-    'integrationtests/LorisIntegrationTest.class.inc'
-    'integrationtests/LorisIntegrationTestWithCandidate.class.inc'
-)
-
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
     php/ \
     htdocs/ \
