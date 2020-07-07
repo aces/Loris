@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+<!-- Before opening a new issue, please search for related issues or duplicates. -->
+<!-- For install questions and support for ongoing project, please contact our community listserv: loris-dev [at] bic.mni.mcgill.ca --> 
 ### Describe the bug
 <!-- A clear and concise description of what the bug is -->
 
