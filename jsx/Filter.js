@@ -70,7 +70,7 @@ class Filter extends Component {
   /**
    * Renders the filter fields.
    *
-   * @return {string[]} - HTML markups for the filter form components
+   * @return {JSX[]} - React markups for the filter form components
    */
   renderFilterFields() {
     return this.props.fields.reduce((result, field) => {
@@ -135,7 +135,7 @@ class Filter extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     return (

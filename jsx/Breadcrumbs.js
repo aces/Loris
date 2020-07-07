@@ -79,7 +79,7 @@ class Breadcrumbs extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     const baseURL = this.props.baseURL;

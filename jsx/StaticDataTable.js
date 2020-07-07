@@ -420,7 +420,7 @@ class StaticDataTable extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     if (this.props.Data === null || this.props.Data.length === 0) {

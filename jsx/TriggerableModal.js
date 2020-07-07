@@ -52,7 +52,7 @@ class TriggerableModal extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     const {label, onUserInput} = this.props;

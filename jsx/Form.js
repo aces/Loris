@@ -38,7 +38,7 @@ class FormElement extends Component {
 
   /**
    * Get form elements
-   * @return {string[]} - An array of element HTML markup
+   * @return {JSX[]} - An array of element React markup
    */
   getFormElements() {
     const formElementsHTML = [];
@@ -100,7 +100,7 @@ class FormElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let encType = this.props.fileUpload ? 'multipart/form-data' : null;
@@ -184,7 +184,7 @@ class FieldsetElement extends Component {
 
   /**
    * Get form elements
-   * @return {string[]} - An array of element HTML markup
+   * @return {JSX[]} - An array of element React markup
    */
   getFormElements() {
     const formElementsHTML = [];
@@ -213,7 +213,7 @@ class FieldsetElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     // Generate form elements
@@ -324,7 +324,7 @@ class SearchableDropdown extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let required = this.props.required ? 'required' : null;
@@ -495,7 +495,7 @@ class SelectElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let multiple = this.props.multiple ? 'multiple' : null;
@@ -745,7 +745,7 @@ class TagsElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
@@ -959,7 +959,7 @@ class TextareaElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
@@ -1062,7 +1062,7 @@ class TextboxElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
@@ -1214,7 +1214,7 @@ class DateElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
@@ -1327,7 +1327,7 @@ class TimeElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
@@ -1413,7 +1413,7 @@ class NumericElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     const {disabled, required} = this.props;
@@ -1507,7 +1507,7 @@ class FileElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     const required = this.props.required ? 'required' : null;
@@ -1656,7 +1656,7 @@ class StaticElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     return (
@@ -1703,7 +1703,7 @@ class HeaderElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     const Tag = 'h' + this.props.headerLevel;
@@ -1744,7 +1744,7 @@ class LinkElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     return (
@@ -1803,7 +1803,7 @@ class CheckboxElement extends React.Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
@@ -1893,7 +1893,7 @@ class ButtonElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     return (
@@ -1942,7 +1942,7 @@ ButtonElement.defaultProps = {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
    render() {
      return (
@@ -1984,7 +1984,7 @@ class LorisElement extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let elementProps = this.props.element;
@@ -2079,7 +2079,7 @@ class RadioElement extends React.Component {
   /**
    * Generate layout
    *
-   * @return {string[]} - An array of element HTML markup
+   * @return {JSX[]} - An array of element React markup
    */
   generateLayout() {
     let layout = [];
@@ -2156,7 +2156,7 @@ class RadioElement extends React.Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let errorMessage = null;
@@ -2247,7 +2247,7 @@ class SliderElement extends React.Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let errorMessage = null;

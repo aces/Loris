@@ -28,7 +28,7 @@ class SelectField extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let checked = (this.props.checked) ? 'checked' : '';
@@ -89,7 +89,7 @@ class SearchField extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     return (
@@ -196,7 +196,7 @@ class SelectDropdown extends Component {
   /**
    * Renders the React component.
    *
-   * @return {string} - HTML markup for the component
+   * @return {JSX} - React markup for the component
    */
   render() {
     let parentDivClass = 'btn-group col-xs-12';
