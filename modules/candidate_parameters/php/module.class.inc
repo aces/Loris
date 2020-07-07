@@ -42,6 +42,10 @@ class Module extends \Module
                 return [];
             }
 
+            if (!\NDB_Factory::singleton()->settings()->consentEnabled()) {
+                return [];
+            }
+
             // The candidate getConsents only returns the types of
             // consents that the candidate has saved, we want to
             // summarize all of the types configured in the database.
