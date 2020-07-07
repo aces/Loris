@@ -44,7 +44,7 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface, MiddlewareChai
 
         // Decorate the request.
         return (new \LORIS\Middleware\PageDecorationMiddleware(
-            \NDB_Factory::singleton()->user()
+            $request->getAttribute('user')
         ))->process(
             $request,
             new \LORIS\Router\NoopResponder(
