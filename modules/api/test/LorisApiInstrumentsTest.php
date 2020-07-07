@@ -16,7 +16,7 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
+class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
 {
     protected $instrumentTest = "medical_history";
     protected $candidTest     = "300001";
@@ -30,7 +30,7 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitInstruments(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/instruments",
@@ -49,25 +49,73 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
             ),
             true
         );
-        $instrumentsMetaJson        = array_keys($instrumentsArray['Meta']);
-        $instrumentsInstrumentsJson = array_keys($instrumentsArray['Instruments']);
 
-        $this->assertArrayHasKey('CandID', $instrumentsMetaJson);
-        $this->assertArrayHasKey('Visit', $instrumentsMetaJson);
-        $this->assertArrayHasKey('0', $instrumentsInstrumentsJson);
-        $this->assertArrayHasKey('1', $instrumentsInstrumentsJson);
-        $this->assertArrayHasKey('2', $instrumentsInstrumentsJson);
-        $this->assertArrayHasKey('3', $instrumentsInstrumentsJson);
-        $this->assertArrayHasKey('4', $instrumentsInstrumentsJson);
+        $this->assertArrayHasKey(
+            'CandID',
+            $instrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $instrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $instrumentsArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            '1',
+            $instrumentsArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            '2',
+            $instrumentsArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            '3',
+            $instrumentsArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            '4',
+            $instrumentsArray['Instruments']
+        );
 
-        $this->assertIsString($instrumentsMetaJson['CandID']);
-        $this->assertIsString($instrumentsMetaJson['Visit']);
-        $this->assertIsString($instrumentsMetaJson['0']);
-        $this->assertIsString($instrumentsMetaJson['1']);
-        $this->assertIsString($instrumentsMetaJson['2']);
-        $this->assertIsString($instrumentsMetaJson['3']);
-        $this->assertIsString($instrumentsMetaJson['4']);
-
+        $this->assertSame(gettype($instrumentsArray), 'array');
+        $this->assertSame(
+            gettype($instrumentsArray['Meta']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($instrumentsArray['Meta']['CandID']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($instrumentsArray['Meta']['Visit']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($instrumentsArray['Instruments']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($instrumentsArray['Meta']['0']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($instrumentsArray['Meta']['1']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($instrumentsArray['Meta']['2']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($instrumentsArray['Meta']['3']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($instrumentsArray['Meta']['4']),
+            'string'
+        );
     }
 
     /**
@@ -78,10 +126,11 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest",
             [
                 'headers' => $this->headers
             ]
@@ -91,34 +140,91 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $instrumentsInstrumentsArray = json_decode(
+        $InstrumentsArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
-        $instrumentsInstrumentsMetaJson = array_keys($instrumentsInstrumentsArray['Meta']);
-        $instrumentsInstrumentsInstrJson     = array_keys($instrumentsInstrumentsArray[$this->instrumentTest]);
 
-        $this->assertArrayHasKey('Candidate', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Visit', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('DDE', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Instrument', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('CommentID', $instrumentsInstrumentsInstrJson);
-        $this->assertArrayHasKey('UserID', $instrumentsInstrumentsInstrJson);
-        $this->assertArrayHasKey('Examiner', $instrumentsInstrumentsInstrJson);
-        $this->assertArrayHasKey('Testdate', $instrumentsInstrumentsInstrJson);
-        $this->assertArrayHasKey('Data_entry_completion_status', $instrumentsInstrumentsInstrJson);
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'CommentID',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'UserID',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Examiner',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Testdate',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Data_entry_completion_status',
+            $InstrumentsArray[$this->instrumentTest]
+        );
 
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Candidate']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Visit']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['DDE']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Instrument']);
-        $this->assertIsString($instrumentsInstrumentsInstrJson['CommentID']);
-        $this->assertIsString($instrumentsInstrumentsInstrJson['UserID']);
-        $this->assertIsString($instrumentsInstrumentsInstrJson['Examiner']);
-        $this->assertIsString($instrumentsInstrumentsInstrJson['Testdate']);
-        $this->assertIsString($instrumentsInstrumentsInstrJson['Data_entry_completion_status']);
+        $this->assertSame(
+            gettype($InstrumentsArray['Meta']['CandID']),
+            'string'
+        );
+
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Candidate'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Visit'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['DDE'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Instrument'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['CommentID'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['UserID'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['Examiner'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['Testdate'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['Data_entry_completion_status'],
+            'string'
+        );
 
     }
 
@@ -130,16 +236,17 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        parent::setUp();
-        $candid = '300003';
-        $visit  = 'V1';
-        $instrument  = 'aosi';
-        $json     = [
-            'Meta' => [
-                'CandID'  => $candid,
-                'Visit'   => $visit,
-                'DDE'    => false,
-                'Instrument' => $instrument],
+        $this->setUp();
+        $candid     = '300003';
+        $visit      = 'V1';
+        $instrument = 'aosi';
+        $json       = [
+            'Meta'      => [
+                'CandID'     => $candid,
+                'Visit'      => $visit,
+                'DDE'        => false,
+                'Instrument' => $instrument
+            ],
             $instrument => [
                 'UserID' => "2"
             ]
@@ -163,28 +270,26 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      * Tests the HTTP PUT request for the
      * endpoint /projects/{project}/instruments{instrument}
      *
-     * @param string $this->candidTest candidate ID
-     * @param string $visit  visit ID
-     *
      * @return void
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        parent::setUp();
-        $candid = '300003';
-        $visit  = 'V1';
-        $instrument  = 'aosi';
-        $json     = [
-            'Meta' => [
-                'CandID'  => $candid,
-                'Visit'   => $visit,
-                'DDE'    => false,
-                'Instrument' => $instrument],
+        $this->setUp();
+        $candid     = '300003';
+        $visit      = 'V1';
+        $instrument = 'aosi';
+        $json       = [
+            'Meta'      => [
+                'CandID'     => $candid,
+                'Visit'      => $visit,
+                'DDE'        => false,
+                'Instrument' => $instrument
+            ],
             $instrument => [
                 'UserID' => "2"
             ]
         ];
-        $response = $this->client->request(
+        $response   = $this->client->request(
             'PUT',
             "candidates/$candid/$visit/instruments/$instrument",
             [
@@ -206,43 +311,84 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitInstrumentsInstrumentFlags(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/flags",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest/flags",
             [
-                 'headers' => $this->headers
-             ]
+                'headers' => $this->headers
+            ]
         );
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $instrumentsInstrumentsArray     = json_decode(
+        $InstrumentsArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
-        $instrumentsInstrumentsMetaJson  = array_keys($instrumentsInstrumentsArray['Meta']);
-        $instrumentsInstrumentsFlagsJson = array_keys($instrumentsInstrumentsArray['Flags']);
 
-        $this->assertArrayHasKey('Candidate', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Visit', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('DDE', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Instrument', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Data_entry', $instrumentsInstrumentsFlagsJson);
-        $this->assertArrayHasKey('Administration', $instrumentsInstrumentsFlagsJson);
-        $this->assertArrayHasKey('Validity', $instrumentsInstrumentsFlagsJson);
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Data_entry',
+            $InstrumentsArray['Flags']
+        );
+        $this->assertArrayHasKey(
+            'Administration',
+            $InstrumentsArray['Flags']
+        );
+        $this->assertArrayHasKey(
+            'Validity',
+            $InstrumentsArray['Flags']
+        );
 
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Candidate']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Visit']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['DDE']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Instrument']);
-        $this->assertIsString($instrumentsInstrumentsFlagsJson['Data_entry']);
-        $this->assertIsString($instrumentsInstrumentsFlagsJson['Administration']);
-        $this->assertIsString($instrumentsInstrumentsFlagsJson['Validity']);
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Candidate'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Visit'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['DDE'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Instrument'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Flags']['Data_entry'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Flags']['Administration'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Flags']['Validity'],
+            'string'
+        );
 
     }
 
@@ -254,21 +400,22 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrumentFlags(): void
     {
-        parent::setUp();
-        $candid = '300003';
-        $visit  = 'V1';
-        $instrument  = 'aosi';
-        $json     = [
-            'Meta' => [
+        $this->setUp();
+        $candid     = '300003';
+        $visit      = 'V1';
+        $instrument = 'aosi';
+        $json       = [
+            'Meta'  => [
                 'Candidate'  => $candid,
-                'Visit'   => $visit,
-                'DDE'    => false,
-                'Instrument' => $instrument],
+                'Visit'      => $visit,
+                'DDE'        => false,
+                'Instrument' => $instrument
+            ],
             'Flags' => [
                 'Data_entry' => "2"
             ]
         ];
-        $response = $this->client->request(
+        $response   = $this->client->request(
             'PATCH',
             "candidates/$candid/$visit/instruments/$instrument/flags",
             [
@@ -290,21 +437,22 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrumentFlags(): void
     {
-        parent::setUp();
-        $candid = '300004';
-        $visit  = 'V1';
-        $instrument  = 'aosi';
-        $json     = [
-            'Meta' => [
+        $this->setUp();
+        $candid     = '300004';
+        $visit      = 'V1';
+        $instrument = 'aosi';
+        $json       = [
+            'Meta'  => [
                 'Candidate'  => $candid,
-                'Visit'   => $visit,
-                'DDE'    => false,
-                'Instrument' => $instrument],
+                'Visit'      => $visit,
+                'DDE'        => false,
+                'Instrument' => $instrument
+            ],
             'Flags' => [
                 'Validity' => "2"
             ]
         ];
-        $response = $this->client->request(
+        $response   = $this->client->request(
             'PUT',
             "candidates/$candid/$visit/instruments/$instrument/flags",
             [
@@ -326,7 +474,7 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/instruments/
@@ -340,35 +488,87 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $instrumentsInstrumentsArray     = json_decode(
+        $InstrumentsArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
-        $instrumentsInstrumentsMetaJson  = array_keys($instrumentsInstrumentsArray['Meta']);
-        $instrumentsInstrumentsDdeJson = array_keys($instrumentsInstrumentsArray[$this->instrumentTest]);
 
-        $this->assertArrayHasKey('Candidate', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Visit', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('DDE', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Instrument', $instrumentsInstrumentsMetaJson);
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
 
-        $this->assertArrayHasKey('CommentID', $instrumentsInstrumentsDdeJson);
-        $this->assertArrayHasKey('UserID', $instrumentsInstrumentsDdeJson);
-        $this->assertArrayHasKey('Examiner', $instrumentsInstrumentsDdeJson);
-        $this->assertArrayHasKey('Testdate', $instrumentsInstrumentsDdeJson);
-        $this->assertArrayHasKey('Data_entry_completion_status', $instrumentsInstrumentsDdeJson);
+        $this->assertArrayHasKey(
+            'CommentID',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'UserID',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Examiner',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Testdate',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Data_entry_completion_status',
+            $InstrumentsArray[$this->instrumentTest]
+        );
 
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Candidate']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Visit']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['DDE']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Instrument']);
-        $this->assertIsString($instrumentsInstrumentsDdeJson['CommentID']);
-        $this->assertIsString($instrumentsInstrumentsDdeJson['UserID']);
-        $this->assertIsString($instrumentsInstrumentsDdeJson['Examiner']);
-        $this->assertIsString($instrumentsInstrumentsDdeJson['Testdate']);
-        $this->assertIsString($instrumentsInstrumentsDdeJson['Data_entry_completion_status']);
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Candidate'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Visit'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['DDE'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Instrument'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['CommentID'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['UserID'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['Examiner'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['Testdate'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray[$this->instrumentTest]['Data_entry_completion_status'],
+            'string'
+        );
 
     }
 
@@ -380,21 +580,22 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        parent::setUp();
-        $candid = '300003';
-        $visit  = 'V1';
-        $instrument  = 'aosi';
-        $json     = [
-            'Meta' => [
-                'CandID'  => $candid,
-                'Visit'   => $visit,
-                'DDE'    => true,
-                'Instrument' => $instrument],
-            $instrument=> [
+        $this->setUp();
+        $candid     = '300003';
+        $visit      = 'V1';
+        $instrument = 'aosi';
+        $json       = [
+            'Meta'      => [
+                'CandID'     => $candid,
+                'Visit'      => $visit,
+                'DDE'        => true,
+                'Instrument' => $instrument
+            ],
+            $instrument => [
                 'UserID' => "2"
             ]
         ];
-        $response = $this->client->request(
+        $response   = $this->client->request(
             'PATCH',
             "candidates/$candid/$visit/instruments/$instrument/dde",
             [
@@ -416,21 +617,22 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        parent::setUp();
-        $candid = '300003';
-        $visit  = 'V1';
-        $instrument  = 'aosi';
-        $json     = [
-            'Meta' => [
-                'CandID'  => $candid,
-                'Visit'   => $visit,
-                'DDE'    => false,
-                'Instrument' => $instrument],
+        $this->setUp();
+        $candid     = '300003';
+        $visit      = 'V1';
+        $instrument = 'aosi';
+        $json       = [
+            'Meta'      => [
+                'CandID'     => $candid,
+                'Visit'      => $visit,
+                'DDE'        => false,
+                'Instrument' => $instrument
+            ],
             $instrument => [
                 'UserID' => "2"
             ]
         ];
-        $response = $this->client->request(
+        $response   = $this->client->request(
             'PUT',
             "candidates/$candid/$visit/instruments/$instrument/flags/dde",
             [
@@ -467,31 +669,70 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $instrumentsInstrumentsArray     = json_decode(
+        $InstrumentsArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
-        $instrumentsInstrumentsMetaJson  = array_keys($instrumentsInstrumentsArray['Meta']);
-        $instrumentsInstrumentsFlagsJson = array_keys($instrumentsInstrumentsArray['Flags']);
 
-        $this->assertArrayHasKey('Candidate', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Visit', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('DDE', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Instrument', $instrumentsInstrumentsMetaJson);
-        $this->assertArrayHasKey('Data_entry', $instrumentsInstrumentsFlagsJson);
-        $this->assertArrayHasKey('Administration', $instrumentsInstrumentsFlagsJson);
-        $this->assertArrayHasKey('Validity', $instrumentsInstrumentsFlagsJson);
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Data_entry',
+            $InstrumentsArray['Flags']
+        );
+        $this->assertArrayHasKey(
+            'Administration',
+            $InstrumentsArray['Flags']
+        );
+        $this->assertArrayHasKey(
+            'Validity',
+            $InstrumentsArray['Flags']
+        );
 
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Candidate']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Visit']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['DDE']);
-        $this->assertIsString($instrumentsInstrumentsMetaJson['Instrument']);
-        $this->assertIsString($instrumentsInstrumentsFlagsJson['Data_entry']);
-        $this->assertIsString($instrumentsInstrumentsFlagsJson['Administration']);
-        $this->assertIsString($instrumentsInstrumentsFlagsJson['Validity']);
-
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Candidate'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Visit'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['DDE'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Meta']['Instrument'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Flags']['Data_entry'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Flags']['Administration'],
+            'string'
+        );
+        $this->assertSame(
+            $InstrumentsArray['Flags']['Validity'],
+            'string'
+        );
     }
 
     /**
@@ -500,23 +741,24 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      *
      * @return void
      */
-    public function testPatchCandidatesCandidVisitInstrumentsInstrumentDdeFlags(): void
+    public function testPatchCandidVisitInstrumentsInstrumentDdeFlags(): void
     {
-        parent::setUp();
-        $candid = '300003';
-        $visit  = 'V1';
-        $instrument  = 'aosi';
-        $json     = [
-            'Meta' => [
-                'CandID'  => $candid,
-                'Visit'   => $visit,
-                'DDE'    => false,
-                'Instrument' => $instrument],
+        $this->setUp();
+        $candid     = '300003';
+        $visit      = 'V1';
+        $instrument = 'aosi';
+        $json       = [
+            'Meta'      => [
+                'CandID'     => $candid,
+                'Visit'      => $visit,
+                'DDE'        => false,
+                'Instrument' => $instrument
+            ],
             $instrument => [
                 'UserID' => "2"
             ]
         ];
-        $response = $this->client->request(
+        $response   = $this->client->request(
             'PATCH',
             "candidates/$candid/$visit/instruments/$instrument/dde/flags",
             [
@@ -536,23 +778,24 @@ class LorisApiInstrumentsTests extends LorisApiAuthenticationTest
      *
      * @return void
      */
-    public function testPutCandidatesCandidVisitInstrumentsInstrumentDdeFlags(): void
+    public function testPutCandidVisitInstrumentsInstrumentDdeFlags(): void
     {
-        parent::setUp();
-        $candid = '300003';
-        $visit  = 'V1';
-        $instrument  = 'aosi';
-        $json     = [
-            'Meta' => [
-                'CandID'  => $candid,
-                'Visit'   => $visit,
-                'DDE'    => false,
-                'Instrument' => $instrument],
+        $this->setUp();
+        $candid     = '300003';
+        $visit      = 'V1';
+        $instrument = 'aosi';
+        $json       = [
+            'Meta'      => [
+                'CandID'     => $candid,
+                'Visit'      => $visit,
+                'DDE'        => false,
+                'Instrument' => $instrument
+            ],
             $instrument => [
                 'UserID' => "2"
             ]
         ];
-        $response = $this->client->request(
+        $response   = $this->client->request(
             'PUT',
             "candidates/$candid/$visit/instruments/$instrument/flags/dde",
             [

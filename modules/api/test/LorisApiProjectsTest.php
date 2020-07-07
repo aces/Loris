@@ -16,11 +16,11 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiProjectsTests extends LorisApiAuthenticationTest
+class LorisApiProjectsTest extends LorisApiAuthenticationTest
 {
     protected $projectIdTest = "Pumpernickel";
-    protected $candidTest = "115788";
-    protected $visitTest = "V1";
+    protected $candidTest    = "115788";
+    protected $visitTest     = "V1";
     /**
      * Tests the HTTP GET request for the endpoint /projects
      *
@@ -28,7 +28,7 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
      */
     public function testGetProjects(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
             "projects",
@@ -41,27 +41,70 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $projectsArray     = json_decode(
+        $projectsArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
 
-        $this->assertArrayHasKey('Projects', $projectsArray);
-        $this->assertArrayHasKey('Pumpernickel', $projectsArray['Projects']);
-        $this->assertArrayHasKey('useEDC', $projectsArray['Projects']['Pumpernickel']);
-        $this->assertArrayHasKey('PSCID', $projectsArray['Projects']['Pumpernickel']);
-        $this->assertArrayHasKey('Type', $projectsArray['Projects']['Pumpernickel']);
-        $this->assertArrayHasKey('Regex', $projectsArray['Projects']['Pumpernickel']);
-        $this->assertArrayHasKey('Validity', $projectsArray['Projects']['Pumpernickel']);
+        $this->assertArrayHasKey(
+            'Projects',
+            $projectsArray
+        );
+        $this->assertArrayHasKey(
+            'Pumpernickel',
+            $projectsArray['Projects']
+        );
+        $this->assertArrayHasKey(
+            'useEDC',
+            $projectsArray['Projects']['Pumpernickel']
+        );
+        $this->assertArrayHasKey(
+            'PSCID',
+            $projectsArray['Projects']['Pumpernickel']
+        );
+        $this->assertArrayHasKey(
+            'Type',
+            $projectsArray['Projects']['Pumpernickel']['PSCID']
+        );
+        $this->assertArrayHasKey(
+            'Regex',
+            $projectsArray['Projects']['Pumpernickel']['PSCID']
+        );
 
-        $this->assertIsArray($projectsArray['Projects']);
-        $this->assertIsArray($projectsArray['Projects']['Pumpernickel']);
-        $this->assertIsString($projectsArray['Projects']['Pumpernickel']['useEDC']);
-        $this->assertIsArray($projectsArray['Projects']['Pumpernickel']['PSCID']);
-        $this->assertIsString($projectsArray['Projects']['Pumpernickel']['PSCID']);
-        $this->assertIsString($projectsArray['Projects']['Pumpernickel']['Validity']);
+        $this->assertSame(
+            gettype(
+                $projectsArray['Projects']
+            ),
+            'array'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsArray['Projects']['Pumpernickel']
+            ),
+            'array'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsArray['Projects']['Pumpernickel']['useEDC']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsArray['Projects']['Pumpernickel']['PSCID']
+            ),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsArray['Projects']['Pumpernickel']['PSCID']['Type']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsArray['Projects']['Pumpernickel']['PSCID']['Regex']),
+            'string'
+        );
 
     }
 
@@ -72,10 +115,10 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProject(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectId",
+            "projects/$this->projectIdTest",
             [
                 'headers' => $this->headers
             ]
@@ -85,21 +128,46 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $projectsProjectArray     = json_decode(
+        $projectsProjectArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
 
-        $this->assertArrayHasKey('Meta', $projectsProjectArray);
-        $this->assertArrayHasKey('Project', $projectsProjectArray['Meta']);
-        $this->assertArrayHasKey('Candidates', $projectsProjectArray);
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsProjectArray
+        );
+        $this->assertArrayHasKey(
+            'Project',
+            $projectsProjectArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Candidates',
+            $projectsProjectArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $projectsProjectArray['Candidates']
+        );
 
-        $this->assertIsArray($projectsProjectArray['Meta']);
-        $this->assertIsString($projectsProjectArray['Meta']['Project']);
-        $this->assertIsArray($projectsProjectArray['Candidates']);
-        $this->assertIsString($projectsProjectArray['Candidates']['0']);
+        $this->assertSame(
+            gettype($projectsProjectArray['Meta']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsProjectArray['Meta']['Project']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsProjectArray['Candidates']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsProjectArray['Candidates']['0']),
+            'string'
+        );
 
     }
 
@@ -110,10 +178,10 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectCandidates(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectId/candidates",
+            "projects/$this->projectIdTest/candidates",
             [
                 'headers' => $this->headers
             ]
@@ -123,21 +191,42 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $projectsProjectArray     = json_decode(
+        $projectsProjectArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
 
-        $this->assertArrayHasKey('Meta', $projectsProjectArray);
-        $this->assertArrayHasKey('Project', $projectsProjectArray['Meta']);
-        $this->assertArrayHasKey('Candidates', $projectsProjectArray);
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsProjectArray
+        );
+        $this->assertArrayHasKey(
+            'Project',
+            $projectsProjectArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Candidates',
+            $projectsProjectArray
+        );
 
-        $this->assertIsArray($projectsProjectArray['Meta']);
-        $this->assertIsString($projectsProjectArray['Meta']['Project']);
-        $this->assertIsArray($projectsProjectArray['Candidates']);
-        $this->assertIsString($projectsProjectArray['Candidates']['0']);
+        $this->assertSame(
+            gettype($projectsProjectArray['Meta']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsProjectArray['Meta']['Project']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsProjectArray['Candidates']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsProjectArray['Candidates']['0']),
+            'string'
+        );
 
     }
 
@@ -148,10 +237,10 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectImages(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectId/images",
+            "projects/$this->projectIdTest/images",
             [
                 'headers' => $this->headers
             ]
@@ -160,39 +249,110 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
-        $projectsImagesArray     = json_decode(
+        $projectsImagesArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
 
-        $this->assertArrayHasKey('Images', $projectsImagesArray);
-        $this->assertArrayHasKey('0', $projectsImagesArray['Images']);
-        $this->assertArrayHasKey('Candidate', $projectsImagesArray['Images']['0']);
-        $this->assertArrayHasKey('PSCID', $projectsImagesArray['Images']['0']);
-        $this->assertArrayHasKey('Visit', $projectsImagesArray['Images']['0']);
-        $this->assertArrayHasKey('Visit_date', $projectsImagesArray['Images']['0']);
-        $this->assertArrayHasKey('Site', $projectsImagesArray['Images']['0']);
-        $this->assertArrayHasKey('InsertTime', $projectsImagesArray['Images']['0']);
-        $this->assertArrayHasKey('ScanType', $projectsImagesArray['Images']['0']);
-        $this->assertArrayHasKey('QC_status', $projectsImagesArray['Images']['0']);
-        $this->assertArrayHasKey('Selected', $projectsImagesArray['Images']['0']);
-        $this->assertArrayHasKey('Link', $projectsImagesArray['Images']['0']);
+        $this->assertArrayHasKey(
+            'Images',
+            $projectsImagesArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $projectsImagesArray['Images']
+        );
+        $this->assertArrayHasKey(
+            'Candidate',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'PSCID',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Visit_date',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Site',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'InsertTime',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'ScanType',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'QC_status',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Selected',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Link',
+            $projectsImagesArray['Images']['0']
+        );
 
-        $this->assertIsArray($projectsImagesArray['Images']);
-        $this->assertIsArray($projectsImagesArray['Images']['0']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['Candidate']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['PSCID']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['Visit']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['Visit_date']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['Site']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['InsertTime']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['ScanType']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['QC_status']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['Selected']);
-        $this->assertIsString($projectsImagesArray['Images']['0']['Link']);
-
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['Candidate']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['PSCID']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['Visit']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['Visit_date']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['Site']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['InsertTime']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['ScanType']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['QC_status']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['Selected']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsImagesArray['Images']['0']['Link']),
+            'string'
+        );
     }
 
     /**
@@ -202,10 +362,10 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectVisits(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectId/visits",
+            "projects/$this->projectIdTest/visits",
             [
                 'headers' => $this->headers
             ]
@@ -215,22 +375,46 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $projectsVisitsArray     = json_decode(
+        $projectsVisitsArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
 
-        $this->assertArrayHasKey('Meta', $projectsVisitsArray);
-        $this->assertArrayHasKey('Project', $projectsVisitsArray['Images']);
-        $this->assertArrayHasKey('Visits', $projectsVisitsArray);
-        $this->assertArrayHasKey('0', $projectsVisitsArray['Visit']);
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsVisitsArray
+        );
+        $this->assertArrayHasKey(
+            'Project',
+            $projectsVisitsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visits',
+            $projectsVisitsArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $projectsVisitsArray['Visits']
+        );
 
-        $this->assertIsArray($projectsImagesArray['Meta']);
-        $this->assertIsString($projectsImagesArray['Meta']['Project']);
-        $this->assertIsArray($projectsImagesArray['Visits']);
-        $this->assertIsString($projectsImagesArray['Visits']['0']);
+        $this->assertSame(
+            gettype($projectsVisitsArray['Meta']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsVisitsArray['Meta']['Project']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsVisitsArray['Visits']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsVisitsArray['Visits']['0']),
+            'string'
+        );
 
     }
 
@@ -241,10 +425,10 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectInstruments(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
-            "projects/$projectIdTest/instruments",
+            "projects/$this->projectIdTest/instruments",
             [
                 'headers' => $this->headers
             ]
@@ -253,6 +437,82 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
+
+        $projectsInstrArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsInstrArray
+        );
+        $this->assertArrayHasKey(
+            'Project',
+            $projectsInstrArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instruments',
+            $projectsInstrArray
+        );
+        $this->assertArrayHasKey(
+            'radiology_review',
+            $projectsInstrArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            'bmi',
+            $projectsInstrArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            'medical_history',
+            $projectsInstrArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            'aosi',
+            $projectsInstrArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            'mri_parameter_form',
+            $projectsInstrArray['Instruments']
+        );
+
+        $this->assertSame(
+            gettype($projectsInstrArray['Meta']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsInstrArray['Meta']['Project']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrArray['Instruments']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsInstrArray['Instruments']['aosi']),
+            'array'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsInstrArray['Instruments']['aosi']['Fullname']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsInstrArray['Instruments']['aosi']['Subgroup']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsInstrArray['Instruments']['aosi']['DoubleDataEntryEnabled']
+            ),
+            'boolean'
+        );
+
     }
 
     /**
@@ -263,10 +523,10 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectInstrumentsInstrument(): void
     {
-        parent::setUp();
+        $this->setUp();
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectId/instruments/$instrument",
+            "projects/$this->projectIdTest/instruments/aosi",
             [
                 'headers' => $this->headers
             ]
@@ -275,6 +535,93 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
+
+        $projectsInstrumentsAosiArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsInstrumentsAosiArray
+        );
+        $this->assertArrayHasKey(
+            'InstrumentVersion',
+            $projectsInstrumentsAosiArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'InstrumentFormatVersion',
+            $projectsInstrumentsAosiArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'ShortName',
+            $projectsInstrumentsAosiArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'LongName',
+            $projectsInstrumentsAosiArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'IncludeMetaDataFields',
+            $projectsInstrumentsAosiArray['Meta']
+        );
+
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Meta']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Meta']['InstrumentVersion']),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsInstrumentsAosiArray['Meta']['InstrumentFormatVersion']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsInstrumentsAosiArray['Meta']['ShortName']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Meta']['LongName']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Meta']['IncludeMetaDataFields']),
+            'string'
+        );
+
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Elements']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Elements']['0']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Elements']['0']['Type']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Elements']['0']['GroupType']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Elements']['0']['Elements']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsInstrumentsAosiArray['Elements']['0']['Description']),
+            'string'
+        );
+
     }
 
     /**
@@ -282,17 +629,35 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
      * endpoint /projects/{project}/instruments/{instrument}
      *
      * @return void
-     */
+
     public function testPatchProjectsProjectInstrumentsInstrument(): void
     {
-        parent::setUp();
+        $this->setUp();
+        $json     = [
+            'Meta' => [
+                'InstrumentVersion'  => '11',
+                'InstrumentFormatVersion'   => "v0.0.1a-dev",
+                'ShortName'    => "aosi",
+                'LongName'    => "AOSI",
+                'IncludeMetaDataFields' => "true"
+            ],
+            "Elements" => [
+                "0" => [
+                    'Type' => "ElementGroup",
+                    'GroupType' => "Page",
+                    'Elements' => [],
+                    'Description' => "Item Re-Adminstration",
+                ],
+            ]
+
+        ];
+
         $response = $this->client->request(
             'PATCH',
-            'https://spelletier-dev.loris.ca
-            /api/v0.0.3//candidates/300001/V1/instruments/aosi',
+            "projects/$this->projectIdTest/instruments/aosi",
             [
                 'headers' => $this->headers,
-                'json'    => []
+                'json' => $json
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -300,5 +665,5 @@ class LorisApiProjectsTests extends LorisApiAuthenticationTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
     }
-
+     */
 }

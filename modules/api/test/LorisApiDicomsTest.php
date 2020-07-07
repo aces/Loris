@@ -16,10 +16,11 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiDicomsTests extends LorisApiAuthenticationTest
+class LorisApiDicomsTest extends LorisApiAuthenticationTest
 {
-    protected $candidTest = "400162";
-    protected $tarfileTest = "DCM_2016-08-15_ImagingUpload-18-25-i9GRv3.tar";
+    protected $candidTest    = "400162";
+    protected $visitTest     = "V6";
+    protected $tarfileTest   = "DCM_2016-08-15_ImagingUpload-18-25-i9GRv3.tar";
     protected $processidTest = "";
 
     /**
@@ -30,7 +31,7 @@ class LorisApiDicomsTests extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitDicoms(): void
     {
-        parent::setUp();
+        $$this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/dicoms",
@@ -42,59 +43,160 @@ class LorisApiDicomsTests extends LorisApiAuthenticationTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
+        $DicomArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
 
+        $this->assertArrayHasKey('Meta', $DicomArray);
+        $this->assertArrayHasKey('CandID', $DicomArray['Meta']);
+        $this->assertArrayHasKey('Visit', $DicomArray['Meta']);
 
-        $candidatesMetaJson   = array_keys($candidatesArray['Meta']);
-        $candidatesDicomtarsJson   = array_keys($candidatesArray['DicomTars'][0]);
-        $candidatesSeriesinfoJson   = array_keys($candidatesArray['DicomTars'][0]['SeriesInfos']);
+        $this->assertArrayHasKey(
+            'DicomTars',
+            $DicomArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $DicomArray['DicomTars']
+        );
+        $this->assertArrayHasKey(
+            'Tarname',
+            $DicomArray['DicomTars']['0']
+        );
 
-        // Test if body contains:
-        // Meta:
-        //      CandID: "115788",
-        //      Visit: "V3"
-        // DicomTars:
-        //      0:
-        //          Tarname: "DCM_2018-04-20_ImagingUpload-14-25-U1OlWq.tar",
-        //          SeriesInfo:
-        //              SeriesDescription, "T2 and PD"
-        //              SeriesNumber, 3
-        //              EchoTime, "13"
-        //              RepetitionTime, "3850",
-        //              InversionTime	null
-        //              SliceThickness	"3"
-        //              Modality	"MR"
-        //              SeriesUID	"1.3.12.2.1107.5.2.32.351…17435860771290643.0.0.0"
+        $this->assertArrayHasKey(
+            'SeriesInfo',
+            $DicomArray['DicomTars']['0']
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $DicomArray['DicomTars']['0']['SeriesInfo']
+        );
+        $this->assertArrayHasKey(
+            'SeriesDescription',
+            $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+        );
+        $this->assertArrayHasKey(
+            'SeriesDescription',
+            $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+        );
+        $this->assertArrayHasKey(
+            'SeriesNumber',
+            $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+        );
+        $this->assertArrayHasKey(
+            'EchoTime',
+            $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+        );
+        $this->assertArrayHasKey(
+            'RepetitionTime',
+            $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+        );
+        $this->assertArrayHasKey(
+            'InversionTime',
+            $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+        );
+        $this->assertArrayHasKey(
+            'SliceThickness',
+            $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+        );
+        $this->assertArrayHasKey(
+            'Modality',
+            $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+        );
+        $this->assertArrayHasKey(
+            'SeriesUID',
+            $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+        );
 
-        $this->assertArrayHasKey('CandID', $candidatesMetaJson);
-        $this->assertArrayHasKey('Visit', $candidatesMetaJson);
+        $this->assertSame(gettype($DicomArray), 'array');
+        $this->assertSame(gettype($DicomArray['Meta']), 'array');
+        $this->assertSame(
+            gettype($DicomArray['Meta']['CandID']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($DicomArray['Meta']['Visit']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($DicomArray['DicomTars']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($DicomArray['DicomTars']['0']),
+            'array'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']
+            ),
+            'array'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['0']
+            ),
+            'array'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['0']['SeriesDescription']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['0']['SeriesNumber']
+            ),
+            'integer'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['0']['EchoTime']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['0']['RepetitionTime']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['0']['InversionTime']
+            ),
+            'NULL'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['1']['InversionTime']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['0']['SliceThickness']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['0']['Modality']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $DicomArray['DicomTars']['0']['SeriesInfo']['0']['SeriesUID']
+            ),
+            'string'
+        );
 
-        $this->assertArrayHasKey('Tarname', $candidatesDicomtarsJson);
-        $this->assertArrayHasKey('SeriesInfos', $candidatesDicomtarsJson);
-
-        $this->assertArrayHasKey('SeriesDescription', $candidatesSeriesinfoJson);
-        $this->assertArrayHasKey('SeriesNumber', $candidatesSeriesinfoJson);
-        $this->assertArrayHasKey('EchoTime', $candidatesSeriesinfoJson);
-        $this->assertArrayHasKey('RepetitionTime', $candidatesSeriesinfoJson);
-        $this->assertArrayHasKey('InversionTime', $candidatesSeriesinfoJson);
-        $this->assertArrayHasKey('SliceThickness', $candidatesSeriesinfoJson);
-        $this->assertArrayHasKey('Modality', $candidatesSeriesinfoJson);
-        $this->assertArrayHasKey('SeriesUID', $candidatesSeriesinfoJson);
-
-
-        $this->assertIsString($candidatesMetaJson['CandID']);
-        $this->assertIsString($candidatesMetaJson['Project']);
-
-        $this->assertIsString($candidatesDicomtarsJson['Tarname']);
-        $this->assertIsArray($candidatesDicomtarsJson['SeriesInfos']);
-
-        $this->assertIsString($candidatesSeriesinfoJson['SeriesDescription']);
-        $this->assertIsArray($candidatesSeriesinfoJson['SeriesNumber']);
-        $this->assertIsString($candidatesSeriesinfoJson['EchoTime']);
-        $this->assertIsArray($candidatesSeriesinfoJson['RepetitionTime']);
-        $this->assertIsString($candidatesSeriesinfoJson['InversionTime']);
-        $this->assertIsArray($candidatesSeriesinfoJson['SliceThickness']);
-        $this->assertIsString($candidatesSeriesinfoJson['Modality']);
-        $this->assertIsArray($candidatesSeriesinfoJson['SeriesUID']);
     }
 
     /**
@@ -106,22 +208,25 @@ class LorisApiDicomsTests extends LorisApiAuthenticationTest
      */
     public function testPostCandidatesCandidVisitDicoms(): void
     {
-        parent::setUp();
-        $candid   = '115788';
-        $visit    = 'V2';
-        $response = $this->client->request(
-            'POST',
-            "candidates/$candid/$visit/dicoms",
-            [
-                'headers' => $this->headers,
-                'json'    => $this->headers
-            ]
-        );
-        $this->assertEquals(201, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+        $$this->setUp();
+        try{
+            $response = $this->client->request(
+                'POST',
+                "candidates/$this->candidTest/$this->visitTest/dicoms",
+                [
+                    'headers' => $this->headers,
+                    'json'    => []
+                ]
+            );
+            // Verify the status code
+            $this->assertEquals(201, $response->getStatusCode());
+            // Verify the endpoint has a body
+            $body = $response->getBody();
+            $this->assertNotEmpty($body);
 
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
 
     }
 
@@ -133,10 +238,11 @@ class LorisApiDicomsTests extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitDicomsTarname(): void
     {
-        parent::setUp();
+        $$this->setUp();
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/recordings/$this->tarfileTest",
+            "candidates/$this->candidTest/$this->visitTest/" .
+            "dicoms/$this->tarfileTest",
             [
                 'headers' => $this->headers
             ]
@@ -145,6 +251,24 @@ class LorisApiDicomsTests extends LorisApiAuthenticationTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
+
+        $resource        = fopen($this->tarfileTest, 'w');
+        $stream          = GuzzleHttp\Psr7\stream_for($resource);
+        $response_stream = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/dicoms/" .
+            "$this->tarfileTest",
+            [
+                'headers' => $this->headers,
+                'save_to' => $stream
+            ]
+        );
+        $this->assertEquals(200, $response_stream->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_stream->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->tarfileTest);
 
     }
 
@@ -158,18 +282,24 @@ class LorisApiDicomsTests extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitDicomsTarnameProcesses(): void
     {
-        parent::setUp();
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/dicoms/$this->tarfileTest/processes",
-            [
-                'headers' => $this->headers
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+        $$this->setUp();
+        try {
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/dicoms/" .
+                "$this->tarfileTest/processes",
+                [
+                    'headers' => $this->headers
+                ]
+            );
+            $this->assertEquals(200, $response->getStatusCode());
+            // Verify the endpoint has a body
+            $body = $response->getBody();
+            $this->assertNotEmpty($body);
+
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
 
     /**
@@ -181,21 +311,25 @@ class LorisApiDicomsTests extends LorisApiAuthenticationTest
     public function testGetCandidatesCandidVisitDicomsTarnameProcessesProcessid():
     void
     {
-        parent::setUp();
-        $response = $this->client->request(
-            'GET',
-            "
-            candidates/$this->candidTest/$this->visitTest/dicoms/$this->tarfileTest/processes/$this->processidTest",
-            [
-                'headers' => $this->headers
-            ]
-        );
-        $this->assertEquals(
-            200,
-            $response->getStatusCode()
-        );
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+        $$this->setUp();
+        try{
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/dicoms/" .
+                "$this->tarfileTest/processes/$this->processidTest",
+                [
+                    'headers' => $this->headers
+                ]
+            );
+            $this->assertEquals(
+                200,
+                $response->getStatusCode()
+            );
+            // Verify the endpoint has a body
+            $body = $response->getBody();
+            $this->assertNotEmpty($body);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
 }
