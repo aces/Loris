@@ -201,7 +201,9 @@ class FilesUploadHandler implements RequestHandlerInterface
             chmod($targetPath, $this->permissions);
         }
 
-        return new \LORIS\Http\Response\JSON\Created();
+        return new \LORIS\Http\Response\JSON\Created(
+            ['message' => 'File uploaded successfully']
+        );
     }
 }
 
