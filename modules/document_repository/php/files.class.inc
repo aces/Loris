@@ -141,7 +141,10 @@ class Files extends \NDB_Page
         $DB      = $factory->database();
         $user    = $factory->user();
         $config  = $factory->config();
-        $path    = \Utility::appendForwardSlash(
+        if (! $user->hasPermission('document_repository_delete')) {
+            return;
+        }
+        $path = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
         );
         // create Database object
@@ -160,16 +163,12 @@ class Files extends \NDB_Page
             [':identifier' => $rid]
         );
 
-        //if user has document repository delete permission
-        if ($user->hasPermission('document_repository_delete')) {
-            $DB->delete("document_repository", ["record_id" => $rid]);
-            $msg_data = [
-                'deleteDocument' => $baseURL. "/document_repository/",
-                'document'       => $fileName,
-            ];
-            $Notifier->notify($msg_data);
-        }
-
+        $DB->delete("document_repository", ["record_id" => $rid]);
+        $msg_data = [
+            'deleteDocument' => $baseURL. "/document_repository/",
+            'document'       => $fileName,
+        ];
+        $Notifier->notify($msg_data);
         $path = $path.$dataDir;
 
         if (file_exists($path)) {
@@ -275,11 +274,11 @@ class Files extends \NDB_Page
      */
     function uploadDocFile($request): ResponseInterface
     {
-        $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
-        $config  = $factory->config();
-        $user    = $factory->user();
-        $name    = $user->getUsername();
+        $instance = $request->getAttribute('loris');
+        $DB       = $instance->getDatabaseConnection();
+        $config   = $instance->getConfiguration();
+        $user     = $request->getAttribute('user');
+        $name     = $user->getUsername();
 
         if (! $user->hasPermission('document_repository_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -313,9 +312,11 @@ class Files extends \NDB_Page
         }
 
         // Initialize FilesUploadHandler
-        $path = \Utility::appendForwardSlash(
-            $config->getSetting("documentRepositoryPath")
+        $path = \Utility::pathJoin(
+            $config->getSetting("documentRepositoryPath"),
+            $name
         );
+        mkdir($path, 0600);
 
         $targetdir = new \SplFileInfo($path);
 
