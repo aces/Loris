@@ -21,6 +21,15 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
     protected $instrumentTest = "medical_history";
     protected $candidTest     = "300001";
     protected $visitTest      = "V1";
+    /**
+     * Call to setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $this->guzzleLogin();
+    }
 
     /**
      * Tests the HTTP GET request for the
@@ -30,7 +39,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitInstruments(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/instruments",
@@ -126,7 +134,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/instruments/" .
@@ -236,7 +243,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $this->setUp();
         $candid     = '300003';
         $visit      = 'V1';
         $instrument = 'aosi';
@@ -274,7 +280,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $this->setUp();
         $candid     = '300003';
         $visit      = 'V1';
         $instrument = 'aosi';
@@ -311,7 +316,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitInstrumentsInstrumentFlags(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/instruments/" .
@@ -400,7 +404,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrumentFlags(): void
     {
-        $this->setUp();
         $candid     = '300003';
         $visit      = 'V1';
         $instrument = 'aosi';
@@ -437,7 +440,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrumentFlags(): void
     {
-        $this->setUp();
         $candid     = '300004';
         $visit      = 'V1';
         $instrument = 'aosi';
@@ -474,7 +476,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/instruments/
@@ -580,7 +581,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        $this->setUp();
         $candid     = '300003';
         $visit      = 'V1';
         $instrument = 'aosi';
@@ -617,7 +617,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        $this->setUp();
         $candid     = '300003';
         $visit      = 'V1';
         $instrument = 'aosi';
@@ -743,7 +742,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testPatchCandidVisitInstrumentsInstrumentDdeFlags(): void
     {
-        $this->setUp();
         $candid     = '300003';
         $visit      = 'V1';
         $instrument = 'aosi';
@@ -780,7 +778,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function testPutCandidVisitInstrumentsInstrumentDdeFlags(): void
     {
-        $this->setUp();
         $candid     = '300003';
         $visit      = 'V1';
         $instrument = 'aosi';

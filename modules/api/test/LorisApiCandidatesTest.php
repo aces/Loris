@@ -19,6 +19,18 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
 class LorisApiCandidatesTest extends LorisApiAuthenticationTest
 {
     protected $candidTest = '300001';
+
+    /**
+     * Call to setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $this->guzzleLogin();
+    }
+
+
     /**
      * Tests the HTTP GET request for the endpoint /candidates
      *
@@ -26,7 +38,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidates(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates",
@@ -123,7 +134,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandid(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest",
@@ -209,8 +219,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
      */
     public function testPostCandidatesCandid(): void
     {
-        $this->setUp();
-
         // First, create a valid new candidate
         $json_new     = [
             'Candidate' =>
@@ -296,5 +304,4 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
         // Verify the status code
         $this->assertEquals('"error":"No project named: "', $message);
     }
-
 }

@@ -24,6 +24,15 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
     protected $candidTest      = "300174";
     protected $visitTest       = "V1";
     /**
+     * Call to setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $this->guzzleLogin();
+    }
+    /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings
      *
@@ -31,7 +40,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitRecordings(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings",
@@ -95,7 +103,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdffile(): void
     {
-        $this->setUp();
         $resource = fopen($this->frecordTest, 'w');
         $stream   = GuzzleHttp\Psr7\stream_for($resource);
         $response = $this->client->request(
@@ -113,7 +120,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
         $this->assertNotEmpty($body);
 
         $this->assertFileIsReadable($this->frecordTest);
-
     }
 
     /**
@@ -124,7 +130,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdffileChannels(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/" .
@@ -307,7 +312,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
     public function testGetCandidatesCandidVisitRecordingsEdffileChannelsMeta():
     void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -490,7 +494,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodes(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -631,7 +634,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
     public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodesMeta():
     void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -772,7 +774,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileEvents(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -913,7 +914,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileEventsMeta(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -1043,6 +1043,5 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
             gettype($recordingsEventsMetaArray['TaskEvents']['0']['EventFilePath']),
             'string'
         );
-
     }
 }

@@ -21,13 +21,21 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
     protected $candidTest = "400162";
     protected $visitTest  = "V6";
     /**
+     * Call to setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $this->guzzleLogin();
+    }
+    /**
      * Tests the HTTP GET request for the endpoint /candidates/{candid}/{visit}
      *
      * @return void
      */
     public function testGetCandidatesCandidVisit(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest",
@@ -103,7 +111,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
             gettype($candidatesVisitArray['Stages']['Visit']['Status']),
             'string'
         );
-
     }
 
     /**
@@ -113,7 +120,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
-        $this->setUp();
         $candid   = '115788';
         $visit    = 'V2';
         $json     = ['CandID'  => $candid,
@@ -156,7 +162,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitQcImaging(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/qc/imaging",
@@ -213,7 +218,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
      */
     public function testPutCandidatesCandidVisitQcImaging(): void
     {
-        $this->setUp();
         $candid   = '300003';
         $visit    = 'V3';
         $json     = ['CandID'  => $candid,

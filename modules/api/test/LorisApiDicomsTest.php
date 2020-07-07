@@ -24,6 +24,16 @@ class LorisApiDicomsTest extends LorisApiAuthenticationTest
     protected $processidTest = "";
 
     /**
+     * Call to setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $this->guzzleLogin();
+    }
+
+    /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/dicoms
      *
@@ -31,7 +41,6 @@ class LorisApiDicomsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitDicoms(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/dicoms",
@@ -208,7 +217,6 @@ class LorisApiDicomsTest extends LorisApiAuthenticationTest
      */
     public function testPostCandidatesCandidVisitDicoms(): void
     {
-        $this->setUp();
         try{
             $response = $this->client->request(
                 'POST',
@@ -238,7 +246,6 @@ class LorisApiDicomsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitDicomsTarname(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/" .
@@ -282,7 +289,6 @@ class LorisApiDicomsTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitDicomsTarnameProcesses(): void
     {
-        $this->setUp();
         try {
             $response = $this->client->request(
                 'GET',
@@ -311,7 +317,6 @@ class LorisApiDicomsTest extends LorisApiAuthenticationTest
     public function testGetCandidatesCandidVisitDicomsTarnameProcessesProcessid():
     void
     {
-        $this->setUp();
         try{
             $response = $this->client->request(
                 'GET',

@@ -21,6 +21,17 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
     protected $candidTest    = "676061";
     protected $visitTest     = "V4";
     protected $imagefileTest = "demo_676061_V4_t1_001.mnc";
+
+    /**
+     * Call to setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $this->guzzleLogin();
+    }
+
     /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/images
@@ -29,7 +40,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitImages(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/",
@@ -84,7 +94,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitImagesFilename(): void
     {
-        $this->setUp();
         $resource = fopen($this->imagefileTest, 'w');
         $stream   = GuzzleHttp\Psr7\stream_for($resource);
         $response = $this->client->request(
@@ -133,7 +142,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitImagesFilenameQc(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/" .
@@ -268,7 +276,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
      */
     public function testPutCandidatesCandidVisitImagesFilenameQc(): void
     {
-        $this->setUp();
         $candid   = '587630';
         $visit    = 'V1';
         $filename = 'demo_587630_V1_t1_001.mnc';
@@ -311,7 +318,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitImagesFilenameFormatBbrowser(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/" .
@@ -397,7 +403,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitImagesFilenameFormatRaw(): void
     {
-        $this->setUp();
         try {
             $response = $this->client->request(
                 'GET',
@@ -426,7 +431,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
     public function testGetCandidatesCandidVisitImagesFilenameFormatThumbnail():
     void
     {
-        $this->setUp();
         $resource        = fopen($this->imagefileTest, 'w');
         $stream          = GuzzleHttp\Psr7\stream_for($resource);
         $response_stream = $this->client->request(
@@ -454,7 +458,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitImagesFilenameHeaders(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/" .
@@ -691,7 +694,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
      */
     public function testGetCandidatesCandidVisitImagesFilenameHeadersFull(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/" .
@@ -772,7 +774,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
     public function testGetCandidatesCandidVisitImagesFilenameHeadersHeadername():
     void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/" .

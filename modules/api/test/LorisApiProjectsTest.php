@@ -22,13 +22,21 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
     protected $candidTest    = "115788";
     protected $visitTest     = "V1";
     /**
+     * Call to setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $this->guzzleLogin();
+    }
+    /**
      * Tests the HTTP GET request for the endpoint /projects
      *
      * @return void
      */
     public function testGetProjects(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "projects",
@@ -115,7 +123,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProject(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "projects/$this->projectIdTest",
@@ -168,7 +175,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
             gettype($projectsProjectArray['Candidates']['0']),
             'string'
         );
-
     }
 
     /**
@@ -178,7 +184,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectCandidates(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "projects/$this->projectIdTest/candidates",
@@ -237,7 +242,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectImages(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "projects/$this->projectIdTest/images",
@@ -362,7 +366,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectVisits(): void
     {
-        $this->setUp();
+        $this->guzzleLogin();
         $response = $this->client->request(
             'GET',
             "projects/$this->projectIdTest/visits",
@@ -415,7 +419,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
             gettype($projectsVisitsArray['Visits']['0']),
             'string'
         );
-
     }
 
     /**
@@ -425,7 +428,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectInstruments(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "projects/$this->projectIdTest/instruments",
@@ -512,7 +514,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
             ),
             'boolean'
         );
-
     }
 
     /**
@@ -523,7 +524,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
      */
     public function testGetProjectsProjectInstrumentsInstrument(): void
     {
-        $this->setUp();
         $response = $this->client->request(
             'GET',
             "projects/$this->projectIdTest/instruments/aosi",
@@ -632,7 +632,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
 
     public function testPatchProjectsProjectInstrumentsInstrument(): void
     {
-        $this->setUp();
         $json     = [
             'Meta' => [
                 'InstrumentVersion'  => '11',
