@@ -128,7 +128,9 @@ class Filter extends Component {
       <ul className='nav nav-tabs navbar-right' style={{borderBottom: 'none'}}>
         {filterPresets()}
         <li>
-          <a role='button' onClick={this.props.clearFilter}>Clear Filter</a>
+          <a role='button' name='reset' onClick={this.props.clearFilter}>
+            Clear Filter
+          </a>
         </li>
       </ul>
     );
