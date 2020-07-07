@@ -32,12 +32,12 @@ class JSONToolkit
 {
     var $instrName;
     var $flagData;
-    var $metadataFields = array(
+    var $metadataFields = [
         'Date_taken',
         'Examiner',
         'Candidate_Age',
         'Window_Difference'
-    );
+    ];
 
     /**
      * JSONToolkit constructor.
@@ -52,7 +52,7 @@ class JSONToolkit
 
         $checkInstrument = $db->pselect(
             "SELECT Test_name FROM test_battery WHERE Test_name=:tbln",
-            array("tbln" => $instrumentName)
+            ["tbln" => $instrumentName]
         );
         if (empty($checkInstrument)) {
             throw new \Exception(
@@ -62,7 +62,7 @@ class JSONToolkit
 
         $queryData = $db->pselectWithIndexKey(
             "SELECT CommentID, Data FROM flag WHERE Test_name =:tbln",
-            array("tbln" => $instrumentName),
+            ["tbln" => $instrumentName],
             'CommentID'
         );
 
@@ -151,7 +151,7 @@ class JSONToolkit
         array $conditionArray,
         callable $fn
     ) : array {
-        $results = array();
+        $results = [];
         foreach ($this->flagData as $cmid => $data) {
             if (is_null($data['Data'])) {
                 continue;
@@ -287,8 +287,8 @@ class JSONToolkit
                     $db = \Database::singleton();
                     $db->unsafeupdate(
                         "flag",
-                        array("Data" => $newData),
-                        array("CommentID" => $cmid)
+                        ["Data" => $newData],
+                        ["CommentID" => $cmid]
                     );
                     $dataAltered++;
                     $instrument->score();
@@ -515,7 +515,7 @@ class JSONToolkit
         $db        = \Database::singleton();
         $queryData = $db->pselectWithIndexKey(
             "SELECT CommentID, Data FROM flag WHERE Test_name =:tbln",
-            array("tbln" => $this->instrName),
+            ["tbln" => $this->instrName],
             'CommentID'
         );
         $this->flagData = $queryData;

@@ -1202,8 +1202,8 @@ class LorisForm
             }
             $values = $this->getSubmitValues();
         }
-
         $errors = [];
+
         foreach ($this->form as $elName => $el) {
             if ($el['type'] === 'group') {
                 if (isset($el['required'])) {
