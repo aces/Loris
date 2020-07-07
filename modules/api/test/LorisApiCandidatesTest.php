@@ -27,7 +27,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
      */
     public function setUp()
     {
-        $this->guzzleLogin();
+        parent::setUp();
     }
 
 
