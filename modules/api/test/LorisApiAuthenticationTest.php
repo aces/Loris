@@ -31,12 +31,11 @@ class LorisApiAuthenticationTest extends LorisIntegrationTest
      */
     public function setUp()
     {
-        parent::setUp();
         $this->base_uri = "$this->url/api/v0.0.3/";
         $this->client   = new Client(['base_uri' => $this->base_uri]);
         $response       = $this->client->request(
             'POST',
-            "$this->base_uri/login",
+            "login",
             [
                 'json' => ['username' => "UnitTester",
                     'password' => $this->validPassword
