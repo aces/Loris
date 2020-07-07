@@ -36,7 +36,12 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
-            $user->hasPermission('document_repository_view');
+            $user->hasAnyPermission(
+                array(
+                    'document_repository_view',
+                    'document_repository_delete',
+                )
+            );
     }
 
     /**

@@ -42,7 +42,7 @@ When creating or editing a user: (subtest: edit_user)
 14. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change). [Automated]
 15. Verify that if the editor does not have permission 'Across all sites add and edit users' then the site drop-down list is populated with
     the editor's associated sites, otherwise all sites are displayed.
-16. Check that if the 'Display additional information' entry is set to false in the Configuration module, fields Degree,
+16. Check that if the 'Additional user information' entry is set to false in the Configuration module, fields Degree,
     Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and 
     FAX are not shown.
 17. Check that the 'Examiner At:' and 'Examiner Status' sections are available only if you have the 'Across all sites add and certify examiners'.
@@ -61,7 +61,7 @@ When creating or editing a user: (subtest: edit_user)
     without saving any changes to the user profile.
 28. Check that if config setting 'Enable "Pwned Password" check' is set to 'Yes', then validation to make sure that the password
     entered (both for add user and edit user pages) has not been pwned is done. Also check that disabling this setting disables the 
-    validation. Example of a pwned password: a1b2c3!!
+    validation. Example of a pwned password: AKAX89Wn
 29. Check that a 'Reject user' button will be available on the edit user page if the editee is a user whose account is awaiting approval and the editee
     has not yet logged in.
 30. Edit a user that fits the conditions listed above and reject it. Make sure that the user has been removed from the database and does not show up in
@@ -81,9 +81,9 @@ When creating or editing a user: (subtest: edit_user)
 
 ### Widget registration on the dashboard page
 
-36. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
-    account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries
-    in the User Account page with the following Selection Filter: Site set to the user's site and Pending Approval
-    set to 'Yes'. The Site displayed will be 'All user sites'. Check that you are taken to that page (with the
-    Selection Filter correctly set) when you click on the task.
+36. Verify that if a user has `user_accounts_multisite` permission, the correct number of pending account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries in the User Account page with the following Selection Filter: Site set to all sites except Data Coordinating Center and Pending Approval set to 'Yes'. The Site displayed will be 'All'. Check that you are taken to that page (with the Selection Filter correctly set) when you click on the task.
     [Automate Test on Travis_CI]
+
+37. Verify that if a user has `user_accounts` without `user_accounts_multisite` permission, the correct number of pending account approvals is displayed in the My Task panel of the dashboard page. This should be the number of entries in the User Account page with the following Selection Filter: Site set to the user's site and Pending Approval set to 'Yes'. The Site displayed will be 'All User Sites'. Check that you are taken to that page (with the Selection Filter correctly set) when you click on the task.
+    [Automate Test on Travis_CI]
+

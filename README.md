@@ -11,9 +11,9 @@ LORIS (Longitudinal Online Research and Imaging System) is a self-hosted web app
 * Try the LORIS demo instance at https://demo.loris.ca.
 
 This Readme covers installation of LORIS version <b>23</b> on <b>Ubuntu</b>.
-([CentOS Readme also available](./docs/wiki/00%20-%20SERVER%20INSTALL%20AND%20CONFIGURATION/01%20-%20LORIS%20Install/CentOS/README.CentOS7.md)).
+([CentOS Readme also available](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md)).
 
-Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
+Please consult the [Ubuntu Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md) or [CentOS Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md) for more information. These installation instructions and more LORIS documentation for developers can also be found on the [LORIS ReadTheDocs website](https://acesloris.readthedocs.io/en/latest/).
 
 #### Heroku
 
@@ -40,7 +40,7 @@ These dependencies are subject to change so be sure to verify your version of My
 
 ### Install Steps
 
-Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
+Consult the [Ubuntu Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md) or [CentOS Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md) for more information.
 
 1. Set up LINUX user and group lorisadmin and create LORIS base directory:
 
@@ -66,7 +66,7 @@ Download the latest release from the [releases page](https://github.com/aces/Lor
 
 3. Run installer script to install core code, and libraries. The script will prompt for information and so that it can create directories automatically.
 
-For more information, please read the [Installing Loris wiki page](https://github.com/aces/Loris/wiki/Installing-Loris).
+For more information, please read the [Ubuntu Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md) or [CentOS Installation guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md).
 
  ```bash
  cd /var/www/$projectname/tools
@@ -90,7 +90,7 @@ sudo a2ensite $projectname
 sudo service apache2 reload
 ```
     
-6. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation, then restart apache.
+6. Open your browser and go to: `<loris-url>/installdb.php`. This web page will prompt you for your mysql connection information. Follow the instructions to finalize LORIS installation, then restart apache.
 
 If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli.requirements.php) and also [this](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors).
 
@@ -99,9 +99,10 @@ If you use MySQL 8, please read [this link](https://www.php.net/manual/en/mysqli
 ## Community
 
 ### Get in touch
-For questions and troubleshooting guidance beyond what is covered in our GitHub Wiki, please subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) and email us there. 
+For questions and troubleshooting guidance beyond what is covered in our documentation, please subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) and email us there. 
 
-### GitHub Issues
+### Support and GitHub Issues
+For troubleshooting specific installation issues or errors, please see the [Installation troubleshooting guide](docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Troubleshooting.md), and then contact us via the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
 For bug reporting and new feature requests, please search and report via our GitHub Issues. 
 Please include details such as the version of LORIS you're using as well as information
 such as the OS you're using, your PHP and Apache versions, etc.

@@ -30,13 +30,16 @@ namespace LORIS\issue_tracker;
  */
 class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
+    private $_siteList;
+
     /**
      * Create a IssueRowProvisioner, which gets rows for the issues menu table.
      */
     function __construct()
     {
-        $user   = \User::singleton();
-        $userID = $user->getUsername();
+        $this->_siteList = array_keys(\Utility::getSiteList(false));
+        $user            = \User::singleton();
+        $userID          = $user->getUsername();
         //note that this needs to be in the same order as the headers array
         parent::__construct(
             "SELECT i.issueID,
@@ -96,8 +99,8 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             $module = &$modules[$mname];
         }
 
-        $cid = $row['centerId'];
+        $cids = isset($row['centerId']) ? [$row['centerId']] : $this->_siteList;
         $row['lastUpdate'] = \Utility::toDateDisplayFormat($row['lastUpdate']);
-        return new IssueRow($row, $cid, $module);
+        return new IssueRow($row, $cids, $module);
     }
 }

@@ -62,7 +62,7 @@
 ### Dashboard Widget - "My Tasks" for Violated scans
 1. Ensure the total of Violated scans corresponds with the correct 
     number of rows inside the MRI Violations module.
-2. Verify that either `violated_scans_view_allsites` or `violated_scans_edit` permissions 
+2. Verify that either `violated_scans_view_allsites` or `violated_scans_view_ownsites` permissions 
     are necessary for the user to view the widget.
 3. Click on the total number of Violated Scans and check if redirection
     to the MRI Violation module succeeds.

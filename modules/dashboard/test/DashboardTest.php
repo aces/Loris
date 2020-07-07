@@ -11,7 +11,6 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverExpectedCondition;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
@@ -116,59 +115,6 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
 
-        $this->DB->insert(
-            "mri_protocol_violated_scans",
-            array(
-                'ID'                 => '1001',
-                'CandID'             => '999888',
-                'PatientName'        => '[Test]PatientName',
-                'time_run'           => '2009-06-29 04:00:44',
-                'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
-                'series_description' => 'Test Series Description',
-                'SeriesUID'          => '5555',
-                'MriProtocolGroupID' => 11,
-            )
-        );
-        $this->DB->insert(
-            "mri_protocol_violated_scans",
-            array(
-                'ID'                 => '1002',
-                'CandID'             => '999888',
-                'PatientName'        => '[Test]PatientName',
-                'time_run'           => '2008-06-29 04:00:44',
-                'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
-                'series_description' => 'Test Series Description',
-                'SeriesUID'          => '5556',
-                'MriProtocolGroupID' => 11,
-            )
-        );
-        $this->DB->insert(
-            "violations_resolved",
-            array(
-                'ExtID'     => '1001',
-                'hash'      => 'this is not a null value',
-                'TypeTable' => 'mri_protocol_violated_scans',
-                'Resolved'  => 'other',
-            )
-        );
-        $this->DB->insert(
-            "violations_resolved",
-            array(
-                'ExtID'     => '1002',
-                'hash'      => 'this is not a null value',
-                'TypeTable' => 'MRICandidateErrors',
-                'Resolved'  => 'unresolved',
-            )
-        );
-        $this->DB->insert(
-            "MRICandidateErrors",
-            array(
-                'ID'          => '1002',
-                'PatientName' => '[Test]PatientName',
-                'MincFile'    => 'assembly/test2/test2/mri/test2/test2.mnc',
-                'SeriesUID'   => '5556',
-            )
-        );
         //Insert an incomplete form data
         $this->DB->insert(
             "test_names",
@@ -328,38 +274,6 @@ class DashboardTest extends LorisIntegrationTest
             array(
                 'CandID'               => '999888',
                 'RegistrationCenterID' => '55',
-            )
-        );
-        $this->DB->delete(
-            "mri_protocol_violated_scans",
-            array(
-                'ID'     => '1001',
-                'CandID' => '999888',
-            )
-        );
-        $this->DB->delete(
-            "mri_protocol_violated_scans",
-            array(
-                'ID'     => '1002',
-                'CandID' => '999888',
-            )
-        );
-        $this->DB->delete(
-            "violations_resolved",
-            array(
-                'ExtID'     => '1001',
-                'TypeTable' => 'mri_protocol_violated_scans',
-            )
-        );
-        $this->DB->delete(
-            "MRICandidateErrors",
-            array('ID' => '1002')
-        );
-        $this->DB->delete(
-            "violations_resolved",
-            array(
-                'ExtID'     => '1002',
-                'TypeTable' => 'mri_protocol_violated_scans',
             )
         );
         $this->DB->delete(
@@ -616,31 +530,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertContains("test.jpg", $bodyText);
         $this->resetPermissions();
     }
-    /**
-     * Test the link with right value and permission
-     *
-     * @param string $className class Name of template
-     * @param string $value     the total of test data
-     * @param string $dataSeed  test result
-     *
-     * @return void
-     */
-    private function _testMytaskPanelAndLink($className,$value,$dataSeed)
-    {
-        $this->safeGet($this->url . '/dashboard/');
-        $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
-        $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
-        $this->assertContains($value, $bodyText);
-        $this->safeClick(WebDriverBy::cssSelector($className));
-        $this->webDriver->wait(3, 500)->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::Id('lorisworkspace')
-            )
-        );
-        $pageSource = $this->webDriver->getPageSource();
-        $this->assertContains($dataSeed, $pageSource);
 
-    }
     /**
      *  If test on local machine, then run this function.
      *

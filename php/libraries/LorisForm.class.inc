@@ -1960,7 +1960,13 @@ class LorisForm
         case 'submit':
             return $this->createSubmit($elname, $label, $attribs);
         case 'static':
-            $el         = $this->createBase($elname, $label, $attribs);
+            /* the $options was passed to the 2nd parameter pre-v23.0 for some
+             reason, it is important not to impact the existing instruments. */
+            $el         = $this->createBase(
+                $elname,
+                is_string($options) ? $options : $label,
+                $attribs
+            );
             $el['type'] = 'static';
             break;
         case 'advcheckbox':
@@ -2066,7 +2072,10 @@ class LorisForm
                     // If the value is coming from a React DateElement with input
                     // type='month' and is missing the dd part, convert month-year
                     // format to a valid SQL format (i.e. yyyy-mm-dd)
-                    if (strlen($value) === 7 && strpos(strtolower($key), 'date')) {
+                    if (is_string($value)
+                        && strlen($value) === 7
+                        && strpos(strtolower($key), 'date')
+                    ) {
                         $value = sprintf("%s-01", $value);
                     }
                     $arr[$key] = $value;

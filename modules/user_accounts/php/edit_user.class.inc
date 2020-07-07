@@ -26,6 +26,8 @@ use \Psr\Http\Message\ResponseInterface;
 class Edit_User extends \NDB_Form
 {
     private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be ' .
+                                        'your user name.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
                                         'identical: please choose another one';
@@ -52,10 +54,6 @@ class Edit_User extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if (!$this->isCreatingNewUser()) {
-            $user = \User::factory($this->identifier);
-        }
-
         if ($editor->hasPermission('user_accounts_multisite')) {
             return true;
         }
@@ -65,6 +63,7 @@ class Edit_User extends \NDB_Form
                 return true;
             }
             $user = \User::factory($this->identifier);
+            // Make sure that the editor and the user share site associations.
             return array_intersect(
                 $user->getData('CenterIDs'),
                 $editor->getData('CenterIDs')
@@ -1097,6 +1096,20 @@ class Edit_User extends \NDB_Form
         ) {
             $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
         }
+
+        // Make sure the user is not using their username as their password.
+        // case 1 - New user and Make user name match email address not checked
+        // case 2 - New user and Make user name match email address checked
+        //          already handled in email/password check
+        // case 3 - Edit user
+        if ((isset($values['UserID']) && !isset($values['NA_UserID'])
+            && $values['UserID'] === $values['Password_hash'])
+            || (!empty($this->identifier)
+            && $this->identifier === $values['Password_hash'])
+        ) {
+            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_USER;
+        }
+
         if (!is_null($this->identifier)) {
             $pass = $DB->pselectOne(
                 "SELECT COALESCE(Password_hash) "
@@ -1104,8 +1117,8 @@ class Edit_User extends \NDB_Form
                 array('UID' => $this->identifier)
             );
 
-            //case of new user the password column will be null
-            //so either password should be set or
+            // case of new user the password column will be null
+            // so either password should be set or
             // password should be generated
             if (is_null($pass)
                 && empty($values['Password_hash'])

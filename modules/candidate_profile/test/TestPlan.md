@@ -16,7 +16,7 @@
 
 ## Widget Permissions
 For a module that adds a widget and a candidate which has data for
-that widget (ie. the media module for CandID 491446 in Raisinbread):
+that widget (ie. the media module for CandID 587630 (DCC090) or CandID 300001 (MTL001) in Raisinbread):
 1. Ensure that the card appears when accessing that candidate as a
    user who has appropriate permission and access to the module
    itself.

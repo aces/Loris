@@ -58,7 +58,7 @@ class Instrument
         $isDDE = strpos($instrumentdata['CommentID'], 'DDE_') === 0;
 
         $meta = array(
-            'Candidate'  => (string) $this->_timepoint->getCandID(),
+            'Candidate'  => $this->_timepoint->getCandID(),
             'Visit'      => $this->_timepoint->getVisitLabel(),
             'DDE'        => $isDDE,
             'Instrument' => $instrumentname,

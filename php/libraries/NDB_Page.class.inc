@@ -494,21 +494,14 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Create a QuickForm label element but does not add it to the form
      *
-     * FIXME: LorisForm::createElement does not use the label parameter when
-     *        the element type is "static". Also, the $labelString paramter here
-     *        has been placed as the fourth parameter which is actually the $options
-     *        array in the createElement function! - Alexandra Livadas
-     *
      * @param string $labelString The label to attach to the element
      *
      * @return array representing label element
      */
-    function createLabel(
-        $labelString
-    ) {
+    function createLabel($labelString)
+    {
         return $this->form->createElement(
             "static",
-            null,
             null,
             $labelString
         );
@@ -584,8 +577,6 @@ class NDB_Page implements RequestHandlerInterface
 
     /**
      * Creates an HTML checkbox but does not add it to the form.
-     *
-     * FIXME: $closer is never used or explained. - Alexandra Livadas
      *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
