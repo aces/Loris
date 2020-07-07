@@ -19,15 +19,11 @@ use GuzzleHttp\Client;
  */
 class LorisApiAuthenticationTest extends LorisIntegrationTest
 {
+
     protected $client;
     protected $headers;
     protected $base_uri;
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->guzzleLogin();
-    }
     /**
      * Used to log in with GuzzleHttp\Client
      *

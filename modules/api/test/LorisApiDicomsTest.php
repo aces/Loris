@@ -30,7 +30,7 @@ class LorisApiDicomsTest extends LorisApiAuthenticationTest
      */
     public function setUp()
     {
-        parent::setUp();
+        $this->guzzleLogin();
     }
 
     /**

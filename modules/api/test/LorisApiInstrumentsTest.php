@@ -28,7 +28,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
      */
     public function setUp()
     {
-        parent::setUp();
+        $this->guzzleLogin();
     }
 
     /**
