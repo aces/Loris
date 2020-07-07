@@ -34,7 +34,7 @@ $DB = Database::singleton();
 
 $result = $DB->pselectOne(
     "SELECT DefaultEmail FROM participant_emails WHERE Test_name=:TN",
-    array('TN' => $_REQUEST['test_name'])
+    ['TN' => $_REQUEST['test_name']]
 );
 if (empty($result)) {
     print "";

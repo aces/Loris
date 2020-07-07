@@ -90,7 +90,7 @@ class Stats_MRI extends \NDB_Form
         $renderTable=true
     ): string {
 
-        $tpl_data = array();
+        $tpl_data = [];
         // Sanitize test name if present. Otherwise use empty string.
         $tpl_data['test_name']  = isset($_REQUEST['test_name'])
             ? htmlspecialchars($_REQUEST['test_name'])
@@ -220,15 +220,15 @@ class Stats_MRI extends \NDB_Form
         $DB      = $factory->database();
         $user    = $factory->user();
 
-        $bigTable_params = array();
-        $this->params    = array();
+        $bigTable_params = [];
+        $this->params    = [];
 
         $this->tpl_data['showTable'] = true;
 
         // PROJECTS
         $allProjectList = \Utility::getProjectList();
 
-        $projects     = array();
+        $projects     = [];
         $projects[''] = 'All Projects';
 
         $userProjectsIDs = $user->getData('ProjectIDs');
@@ -240,10 +240,10 @@ class Stats_MRI extends \NDB_Form
         if ($_REQUEST['MRIProject'] ?? '') {
             $currentProject = htmlspecialchars($_REQUEST['MRIProject']);
             $this->tpl_data['CurrentProject']
-                = array(
+                = [
                     'ID'   => $currentProject,
                     'Name' => $projects[$currentProject],
-                );
+                ];
             $sqlVar        = 'AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
             $this->params['pid']    = htmlspecialchars($_REQUEST['MRIProject']);
@@ -285,19 +285,19 @@ class Stats_MRI extends \NDB_Form
               WHERE CenterID <> '1'
                 AND Study_site = 'Y'
 	        AND CenterID IN (" . $sitesString . ")",
-            array()
+            []
         );
-        $sites     = array();
+        $sites     = [];
         $sites[''] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
             if (isset($_REQUEST['MRIsite'])
                 && $_REQUEST['MRIsite'] == $row['NumericID']
             ) {
-                $this->tpl_data['CurrentSite'] = array(
+                $this->tpl_data['CurrentSite'] = [
                     'ID'   => $row['NumericID'],
                     'Name' => $row['LongName'],
-                );
+                ];
             }
         }
 
@@ -306,29 +306,29 @@ class Stats_MRI extends \NDB_Form
             "SELECT mst.ID, mst.Scan_type
               FROM mri_scan_type mst
                 JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
-            array()
+            []
         );
 
-        $scan_types = array();
+        $scan_types = [];
         foreach ($Scan_type_results as $row) {
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
 
-        $scans_selected = array();
+        $scans_selected = [];
         if ($_REQUEST['Scans'] ?? '') {
             $scans_selected_input = explode(",", $_REQUEST['Scans']);
         }
         if (empty($scans_selected_input)) {
-            $scans_selected = $scan_types ?? array();
+            $scans_selected = $scan_types ?? [];
         } else {
             foreach ($scans_selected_input as $key => $scid) {
                 $scans_selected[$scid] =$scan_types[$scid];
             }
         }
 
-        $Visits = \Utility::getExistingVisitLabels($currentProject);
+        $Visits = \Utility::getVisitList($currentProject);
         $this->tpl_data['scan_types']     = $scan_types;
-        $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected ?? array());
+        $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected ?? []);
         $this->tpl_data['Scans_selected'] = $scans_selected;
         $this->tpl_data['Sites']          = $sites;
         $this->tpl_data['Projects']       = $projects;
@@ -342,11 +342,11 @@ class Stats_MRI extends \NDB_Form
             $this->tpl_data['mri_table_exists'] = false;
             return;
         }
-        $MRISubcategories = array(
+        $MRISubcategories = [
             'Complete',
             'Partial Run',
             'No Scan',
-        );
+        ];
 
         //Check if a specific scan is requested otherwise display first
         //available scan
@@ -367,7 +367,7 @@ class Stats_MRI extends \NDB_Form
 
         // Check if the mri_parameter_form contains the necessary columns before
         // running the query
-        $result         = array();
+        $result         = [];
         $scanDoneExists = false;
         if ($DB->columnExists('mri_parameter_form', $MRI_Type . "_Scan_Done")) {
             $scanDoneExists = true;
@@ -398,7 +398,7 @@ class Stats_MRI extends \NDB_Form
             );
         }
 
-        $M_Visits = \Utility::getExistingVisitLabels($currentProject);
+        $M_Visits = \Utility::getVisitList($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
             "Breakdown By Scan Type",
             $MRIHeader,
@@ -418,9 +418,9 @@ class Stats_MRI extends \NDB_Form
 
         //considers the naming convention of
         // mri_parameter_form is "scanType_scan_done"
-        $Scan_data_results =array();
+        $Scan_data_results =[];
         foreach ($scans_selected as $key => $scan) {
-            $scan_params = array_merge(array('scan' => $scan), $this->params);
+            $scan_params = array_merge(['scan' => $scan], $this->params);
 
             //INSERT COUNT TOTAL
             $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOne(
@@ -593,7 +593,7 @@ class Stats_MRI extends \NDB_Form
      */
     function initializeStatsArray(array $subcategories): array
     {
-        $to_ret = array('total' => 0);
+        $to_ret = ['total' => 0];
         // Initialize all values to 0.
         foreach ($subcategories as $subcat) {
             $to_ret[$subcat] = 0;
@@ -614,10 +614,10 @@ class Stats_MRI extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/statistics/js/table_statistics.js",
                 $baseURL . "/statistics/js/form_stats_MRI.js",
-            )
+            ]
         );
     }
     /**
@@ -632,7 +632,7 @@ class Stats_MRI extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 

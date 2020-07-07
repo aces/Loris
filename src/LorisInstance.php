@@ -64,9 +64,6 @@ class LorisInstance
     /**
      * Retrieve all active module descriptors from the given database.
      *
-     * @param \Database $db an open connection to a database containing a 'modules'
-     *                      table
-     *
      * @return \Module[]
      */
     public function getActiveModules(): array
@@ -91,6 +88,8 @@ class LorisInstance
      * Return true if the LORISInstance has a module named
      * $name. To be installed it must be both available on
      * the filesystem and active in the modules table.
+     *
+     * @param string $name The name of a LORIS module.
      *
      * @return bool
      */

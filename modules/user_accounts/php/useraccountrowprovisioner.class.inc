@@ -30,7 +30,7 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
              LEFT JOIN user_project_rel uprr ON (uprr.UserID=u.ID)
              GROUP BY u.ID
              ORDER BY u.UserID",
-            array()
+            []
         );
     }
 

@@ -34,7 +34,7 @@ $value          = $_REQUEST['value'];
 $results        = $cdb->queryView(
     "DQG-2.0",
     "search",
-    array(
+    [
         "reduce"   => "false",
         "startkey" => "[\"$category\", \"$fieldName\", \"$value\"]",
         "endkey"   => "[\"$category\", \"$fieldName\", \"$value"
@@ -43,7 +43,7 @@ $results        = $cdb->queryView(
                           //  unicode character
                           . mb_convert_encoding('&#x9999;', 'UTF-8', 'HTML-ENTITIES')
                           . "\"]",
-    )
+    ]
 );
 $sessionResults = array_map(
     function ($element) {
