@@ -128,7 +128,8 @@ class DicomArchive extends Component {
       }},
       {label: 'Sex', show: true, filter: {
         name: 'sex',
-        type: 'text',
+        type: 'select',
+        options: {M: 'M', F: 'F', O: 'O'},
       }},
       {label: 'Date of Birth', show: true, filter: {
         name: 'dateOfBirth',

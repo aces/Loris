@@ -11,8 +11,9 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-$user    = \User::singleton();
-$message = array('message' => null);
+$factory = \NDB_Factory::singleton();
+$user    = $factory->user();
+$message = ['message' => null];
 
 if (userCanDownload($user)) {
     // Make sure that the user isn't trying to break out of the $path

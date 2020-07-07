@@ -37,10 +37,10 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'document_repository_view',
                 'document_repository_delete',
-            )
+            ]
         );
     }
     /**
@@ -55,16 +55,16 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $db    = \Database::singleton();
         $query = $db->pselect(
             "SELECT * FROM document_repository_categories",
-            array()
+            []
         );
         //categories
-        $categoriesList = array();
+        $categoriesList = [];
         foreach ($query as $value) {
                $arr = $this->parseCategory($value);
                $categoriesList[$arr['id']] =$arr['name'];
         }
         //site
-        $siteList = array();
+        $siteList = [];
 
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
@@ -87,7 +87,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         //instrument
         $instruments     = $db->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Test_name",
-            array()
+            []
         );
         $instrumentsList = array_combine($instruments, $instruments);
 
@@ -100,12 +100,12 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
-        $this->fieldOptions = array(
+        $this->fieldOptions = [
             'fileCategories' => $categoriesList,
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-        );
+        ];
         return;
     }
     /**
@@ -127,7 +127,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 $parent_id = $value['parent_id'];
                 $query     = "SELECT * FROM document_repository_categories".
                             " where id=$parent_id";
-                $value     = $DB->pselectRow($query, array());
+                $value     = $DB->pselectRow($query, []);
                 if (is_null($value)) {
                     throw new \LorisException(
                         'Could not find data for specified parent ID. '
@@ -137,10 +137,10 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
-         return array(
+         return [
              "name" => $categoryName,
              "id"   => $id,
-         );
+         ];
     }
 
     /**
@@ -225,9 +225,9 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/document_repository/js/docIndex.js",
-            )
+            ]
         );
     }
 

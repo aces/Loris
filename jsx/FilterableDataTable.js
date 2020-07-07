@@ -110,12 +110,12 @@ FilterableDataTable.defaultProps = {
 FilterableDataTable.propTypes = {
   name: PropTypes.string.isRequired,
   title: PropTypes.string,
-  data: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
   filterPresets: PropTypes.object,
-  fields: PropTypes.object.isRequired,
+  fields: PropTypes.array.isRequired,
   columns: PropTypes.number,
   getFormattedCell: PropTypes.func,
-  actions: PropTypes.object,
+  actions: PropTypes.array,
 };
 
 export default FilterableDataTable;

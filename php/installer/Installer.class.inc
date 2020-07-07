@@ -26,8 +26,15 @@ namespace LORIS\Installer;
  */
 class Installer
 {
-
     private $_lastErr;
+
+    private const SCHEMA_FILES = ['00-schema.sql',
+        '01-Permission.sql',
+        '02-Modules.sql',
+        '03-ConfigTables.sql',
+        '04-Help.sql',
+        '05-ElectrophysiologyTables.sql'
+    ];
 
     /**
      * Get the last error that occurred in this install process.
@@ -96,11 +103,12 @@ class Installer
      */
     private function _schemaFilesExist()
     {
-        return file_exists(__DIR__ . "/../../SQL/0000-00-00-schema.sql")
-        && file_exists(__DIR__ . "/../../SQL/0000-00-01-Permission.sql")
-        && file_exists(__DIR__ . "/../../SQL/0000-00-02-Modules.sql")
-        && file_exists(__DIR__ . "/../../SQL/0000-00-03-ConfigTables.sql")
-        && file_exists(__DIR__ . "/../../SQL/0000-00-04-Help.sql");
+        foreach (self::SCHEMA_FILES as $fileName) {
+            if (!file_exists(__DIR__ . '/../../SQL/0000-00-'.$fileName)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -231,21 +239,11 @@ class Installer
             return false;
         }
 
-        if ($this->_sourceSchemaFile($DB, "00-schema.sql") == false) {
-            return false;
-        };
-        if ($this->_sourceSchemaFile($DB, "01-Permission.sql") == false) {
-            return false;
-        };
-        if ($this->_sourceSchemaFile($DB, "02-Modules.sql") == false) {
-            return false;
-        };
-        if ($this->_sourceSchemaFile($DB, "03-ConfigTables.sql") == false) {
-            return false;
-        };
-        if ($this->_sourceSchemaFile($DB, "04-Help.sql") == false) {
-            return false;
-        };
+        foreach (self::SCHEMA_FILES as $fileName) {
+            if ($this->_sourceSchemaFile($DB, $fileName) == false) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -355,7 +353,7 @@ class Installer
     {
         $prepared = $DB->prepare(
             "UPDATE Config SET Value=:q_val WHERE
-				ConfigID=(SELECT ID FROM ConfigSettings 
+				ConfigID=(SELECT ID FROM ConfigSettings
 					WHERE Name=:q_sett)"
         );
         $prepared->execute(['q_val' => $value, 'q_sett' => $setting]);
@@ -440,7 +438,7 @@ class Installer
         $connectHost = $connectHost['host'];
 
         $userExistsQ = $DB->prepare(
-            "SELECT 'x' FROM mysql.user 
+            "SELECT 'x' FROM mysql.user
 			WHERE user=:q_user AND host=:q_host"
         );
         $userExistsQ->execute(
@@ -542,7 +540,6 @@ class Installer
                UserID=:q_userID,
                Password_hash=:q_password,
                Active='Y',
-               Password_expiry=DATE_ADD(NOW(),INTERVAL 30 DAY)
              WHERE ID=1"
         );
         return $stmt->execute(

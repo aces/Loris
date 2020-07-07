@@ -54,7 +54,7 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
-        $this->_selectMultipleElements = array('current_concussion_symptoms');
+        $this->selectMultipleElements = array('current_concussion_symptoms');
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
@@ -280,27 +280,9 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         );
 
         // Concussion table headers
-
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Incident"
-        );
-
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Hospitalized?"
-        );
-
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Age"
-        );
+        $group[] = $this->createLabel('Incident');
+        $group[] = $this->createLabel('Hospitalized?');
+        $group[] = $this->createLabel('Age');
 
         $this->form->addGroup(
             $group,

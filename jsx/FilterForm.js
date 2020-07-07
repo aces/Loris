@@ -80,7 +80,9 @@ class FilterForm extends Component {
         let callbackFunc = child.props.onUserInput;
         let callbackName = callbackFunc.name;
         let elementName = child.type.displayName;
-        let queryFieldName = (child.props.name === 'candID') ? 'candidateID' : child.props.name;
+        let queryFieldName = (child.props.name === 'candID') ?
+          'candidateID' :
+          child.props.name;
         let filterValue = this.queryString[queryFieldName];
         // If callback function was not set, set it to onElementUpdate() for form
         // elements and to clearFilter() for <ButtonElement type='reset'/>.
@@ -157,7 +159,11 @@ class FilterForm extends Component {
 
     // Update query string
     let queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;
-    this.queryString = QueryString.set(this.queryString, queryFieldName, fieldValue);
+    this.queryString = QueryString.set(
+      this.queryString,
+      queryFieldName,
+      fieldValue
+    );
 
     // Update filter and get new filter object
     let filter = this.setFilter(type, fieldName, fieldValue);
@@ -171,8 +177,13 @@ class FilterForm extends Component {
 
     if (formElements) {
       Object.keys(formElements).forEach(function(fieldName) {
-        let queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;
-        formElements[fieldName].onUserInput = this.onElementUpdate.bind(null, formElements[fieldName].type);
+        let queryFieldName = (fieldName === 'candID') ?
+          'candidateID' :
+          fieldName;
+        formElements[fieldName].onUserInput = this.onElementUpdate.bind(
+          null,
+          formElements[fieldName].type
+        );
         formElements[fieldName].value = this.queryString[queryFieldName];
       }.bind(this));
     }

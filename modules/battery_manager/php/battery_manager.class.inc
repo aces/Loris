@@ -82,9 +82,9 @@ class Battery_Manager extends \NDB_Page
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/battery_manager/js/batteryManagerIndex.js",
-            )
+            ]
         );
     }
 }

@@ -86,12 +86,12 @@ class Module extends \Module
          * before continuing.
          */
         $config        = \NDB_Config::singleton()->getSetting("imaging_modules");
-        $configOptions = array(
+        $configOptions = [
             'patientNameRegex',
             'LegoPhantomRegex',
             'LivingPhantomRegex',
             'patientIDRegex',
-        );
+        ];
         $configError   = 'Configuration settings missing for DICOM anonymization. ' .
             'Please ensure that the following settings are configured to ' .
             'be valid regular expressions: ';

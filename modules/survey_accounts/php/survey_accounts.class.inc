@@ -22,10 +22,8 @@ namespace LORIS\survey_accounts;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Survey_Accounts extends \NDB_Menu_Filter
+class Survey_Accounts extends \DataFrameworkMenu
 {
-    public $skipTemplate = true;
-
     /**
      * Determine if user has permission to access this page
      *
@@ -39,41 +37,63 @@ class Survey_Accounts extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup internal class variables which are required by NDB_Meny_Filter
-     * for generating the query which the table data is based on
+     * {@inheritDoc}
      *
-     * @return void
+     * @return bool
      */
-    function _setupVariables()
+    public function useSiteFilter() : bool
     {
-        // the base query
-        $query = " FROM participant_accounts p 
-            JOIN session s ON (p.SessionID=s.ID)
-            JOIN candidate c ON (c.CandID=s.CandID)
-            WHERE c.Active = 'Y'
-            AND   s.Active = 'Y'";
+        return true;
+    }
 
-        // set the class variables
-        $this->columns      = array(
-            'c.PSCID AS PSCID',
-            's.Visit_label AS Visit',
-            'p.Email as Email',
-            'p.Test_name as SurveyName',
-            'p.OneTimePassword as URL',
-            'p.Status',
-        );
-        $this->query        = $query;
-        $this->order_by     = 'PSCID';
-        $this->fieldOptions = [
+    /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function allSitePermissionNames() : ?array
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array
+     */
+    public function getFieldOptions() : array
+    {
+        return [
             'visits'      => \Utility::getVisitList(),
             'instruments' => \Utility::getDirectInstruments(),
         ];
     }
 
     /**
-     * Gathers JS dependecies and merge them with the parent
+     * {@inheritDoc}
      *
-     * @return array of javascript to be inserted
+     * @return \LORIS\Data\Provisioner
+     */
+    public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
+    {
+        return new SurveyAccountsProvisioner();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array
      */
     function getJSDependencies()
     {
@@ -82,9 +102,9 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/survey_accounts/js/surveyAccountsIndex.js",
-            )
+            ]
         );
     }
 }

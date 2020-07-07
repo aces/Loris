@@ -57,7 +57,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -68,7 +68,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array('v0.0.3-dev');
+        return ['v0.0.3'];
     }
 
     /**

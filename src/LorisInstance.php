@@ -6,11 +6,17 @@ namespace LORIS;
  * A LorisInstance represents an installed instance of a LORIS
  * project.
  *
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class LorisInstance
 {
     protected $modulesDirs;
+    /**
+     * An object representing configuration settings for this LORIS instance.
+     *
+     * @var \NDB_Config
+     */
+    private $config;
     private $DB;
 
     /**
@@ -19,12 +25,18 @@ class LorisInstance
      *
      * @param \Database $db         A database connection to this
      *                              instance.
+     * @param \NDB_Config $config   A set of configuration settings used by this
+     *                              instance.
      * @param string[]  $moduleDirs A list of directories that may
      *                              contain modules for this instance.
      */
-    public function __construct(\Database $db, array $modulesDirs)
-    {
+    public function __construct(
+        \Database $db,
+        \NDB_Config $config,
+        array $modulesDirs
+    ) {
         $this->DB          = $db;
+        $this->config      = $config;
         $this->modulesDirs = $modulesDirs;
     }
 
@@ -52,9 +64,6 @@ class LorisInstance
     /**
      * Retrieve all active module descriptors from the given database.
      *
-     * @param \Database $db an open connection to a database containing a 'modules'
-     *                      table
-     *
      * @return \Module[]
      */
     public function getActiveModules(): array
@@ -80,6 +89,8 @@ class LorisInstance
      * $name. To be installed it must be both available on
      * the filesystem and active in the modules table.
      *
+     * @param string $name The name of a LORIS module.
+     *
      * @return bool
      */
     public function hasModule(string $name) : bool
@@ -103,5 +114,16 @@ class LorisInstance
             }
         }
         return false;
+    }
+
+    /**
+     * Returns an NDB_Config object used for interacting with configuration
+     * settings for this instance.
+     *
+     * @return \NDB_Config
+     */
+    public function getConfiguration(): \NDB_Config
+    {
+        return $this->config;
     }
 }

@@ -125,7 +125,7 @@ class NDB_Form extends NDB_Page
     function save()
     {
         if ($this->form->validate()) {
-            $this->form->process(array(&$this, "_save"));
+            $this->form->process([&$this, "_save"]);
         }
     }
 
@@ -200,9 +200,9 @@ class NDB_Form extends NDB_Page
      */
     function toArray(): array
     {
-        return array(
+        return [
             'fieldOptions' => $this->fieldOptions,
-        );
+        ];
     }
 
     /**

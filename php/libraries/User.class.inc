@@ -21,7 +21,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class User extends UserPermissions
+class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleResource
 {
     /**
      * Stores user information
@@ -29,7 +29,7 @@ class User extends UserPermissions
      * @var    array
      * @access private
      */
-    protected $userInfo = array();
+    protected $userInfo = [];
     /**
      * The date format used by MySQL.
      *
@@ -73,7 +73,7 @@ class User extends UserPermissions
             WHERE users.UserID = :UID
             GROUP BY users.ID";
 
-        $row = $DB->pselectRow($query, array('UID' => $username));
+        $row = $DB->pselectRow($query, ['UID' => $username]);
 
         if (is_null($row)) {
             $obj = new \LORIS\AnonymousUser();
@@ -87,9 +87,9 @@ class User extends UserPermissions
         $user_centerID_query =  $DB->pselect(
             "SELECT CenterID FROM user_psc_rel upr
                         WHERE upr.UserID= :UID",
-            array('UID' => $row['ID'])
+            ['UID' => $row['ID']]
         );
-        $user_cid            = array();
+        $user_cid            = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
             $user_cid[$key] = intval($val['CenterID']);
@@ -97,7 +97,7 @@ class User extends UserPermissions
 
         $user_pid = $DB->pselectCol(
             "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
-            array('uid' => $row['ID'])
+            ['uid' => $row['ID']]
         );
         foreach ($user_pid as $k=>$pid) {
             $user_pid[$k] = intval($pid);
@@ -116,21 +116,21 @@ class User extends UserPermissions
                     AND (epr.active='Y'
                           OR (epr.active='N' AND epr.pending_approval='Y')
                         )",
-            array(
+            [
                 "fn" => $row['Real_name'],
-            )
+            ]
         );
 
-        $examiner_info =array();
+        $examiner_info =[];
         if (!empty($examiner_check) && !is_null($examiner_check)) {
             foreach ($examiner_check as $val) {
                 if ($val['active'] == 'Y') {
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
-                $examiner_info[$val['centerID']] =array(
+                $examiner_info[$val['centerID']] =[
                     $val['active'],
                     $val['radiologist'],
-                );
+                ];
             }
         }
         // store user data in object property
@@ -190,7 +190,7 @@ class User extends UserPermissions
         \Database::singleton()->update(
             'users',
             $set,
-            array('UserID' => $this->userInfo['UserID'])
+            ['UserID' => $this->userInfo['UserID']]
         );
     }
 
@@ -350,8 +350,8 @@ class User extends UserPermissions
     function getStudySites(): array
     {
         $site_arr         = $this->getCenterIDs();
-        $user_study_sites = array();
-        $site = array();
+        $user_study_sites = [];
+        $site = [];
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
@@ -472,7 +472,7 @@ class User extends UserPermissions
                userID = :v_userid AND
                Success = 'Y'
             ",
-            array('v_userid' => $this->userInfo['UserID'])
+            ['v_userid' => $this->userInfo['UserID']]
         );
         return $count > 0;
     }
@@ -482,37 +482,29 @@ class User extends UserPermissions
      * database.
      *
      * @param \Password $password The plain text password to be hashed and saved.
-     * @param ?DateTime $expiry   When the password will expire. Can be set to a
-     *                            date in the past in order to create a one-time
-     *                            password.
+     * @param bool      $expired  Whether the password is expired. If so, a reset
+     *                            will be triggered on the user's next login.
      *
      * @return void
      */
     function updatePassword(
         \Password $password,
-        ?\DateTime $expiry = null
+        bool $expired = false
     ): void {
         if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(
                 'Password cannot be set to email'
             );
         }
-        // Set default expiry date value to 6 months in the future.
-        $expiry = $expiry ?? new \DateTime(
-            date('Y-m-d', strtotime('+6 months'))
-        );
 
         $this->update(
-            array(
-                'Password_hash'   => $password,
-                'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
-            )
+            [
+                'Password_hash'          => $password,
+                'PasswordChangeRequired' => $expired ? 1 : 0
+            ]
         );
-        // XXX This class should use DateTime objects instead of strings so
-        // that formatting doens't need to be specified and so that Date math
-        // is simpler and safer.
-        $this->userInfo['Password_hash']   = (string) $password;
-        $this->userInfo['Password_expiry'] = $expiry->format('Y-m-d');
+        $this->userInfo['Password_hash']          = (string) $password;
+        $this->userInfo['PasswordChangeRequired'] = $expired;
     }
 
     /**
@@ -550,12 +542,38 @@ class User extends UserPermissions
                     FROM user_login_history
                     WHERE userID=:UserID AND Success='Y')
                 AND userID=:UserID AND Success='Y'",
-            array('UserID' => $this->getUsername())
+            ['UserID' => $this->getUsername()]
         );
         if (empty($time)) {
             return null;
         }
         return new \DateTime($time);
     }
-}
 
+    /**
+     * Implements the AccessibleResource interface. A user can
+     * be accessed by another user if they have a project and a site in common.
+     *
+     * @param \User $user The "editing" user trying to access this user object.
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+
+        $projMatch   = !empty(
+            array_intersect(
+                $this->getProjectIDs(),
+                $user->getProjectIDs()
+            )
+        );
+        $centerMatch = !empty(
+            array_intersect(
+                $this->getCenterIDs(),
+                $user->getCenterIDs()
+            )
+        );
+
+        return $projMatch && $centerMatch;
+    }
+}

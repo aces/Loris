@@ -7,6 +7,11 @@ $(document).ready(function() {
     $('.wrapper').toggleClass('active');
   });
   $('.help-button').click(function(e) {
+    if ($(this).hasClass('help-open')) {
+      $(this).removeClass('help-open');
+    } else {
+      $(this).addClass('help-open');
+    }
     let helpContent = $('div.help-content');
     if (helpContent.length) {
       helpContent.toggle();
@@ -63,11 +68,12 @@ $(document).ready(function() {
         });
       }
       div.appendChild(wrap);
-      document.getElementById('page').appendChild(div);
+      document.getElementById('wrap').appendChild(div);
       div.setAttribute('class', 'help-content');
       $(div).addClass('visible');
       btn.addEventListener('click', function(e) {
         $(div).hide();
+        $('.help-button').removeClass('help-open');
         e.preventDefault();
       });
       e.preventDefault();
