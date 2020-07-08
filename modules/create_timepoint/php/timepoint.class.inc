@@ -223,7 +223,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $values['visit'] ?? null,
             $site,
             $project,
-            intval($values['languages']) ?? null,
+            intval($values['languages']) ?? null
         );
         return new \LORIS\Http\Response\JsonResponse(
             $response
