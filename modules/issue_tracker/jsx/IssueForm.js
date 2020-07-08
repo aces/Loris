@@ -89,6 +89,11 @@ class IssueForm extends Component {
     let attachmentUploadBtn = null;
     let attachmentFileElement = null;
 
+    const siteOptions = this.state.Data.sites;
+    // Add an 'All Sites' options in the Site dropdown
+    // to allow NULL value
+    siteOptions['all'] = 'All Sites';
+
     if (this.state.isNewIssue) {
       headerText = 'Create New Issue';
       lastUpdateValue = 'Never!';
@@ -223,7 +228,7 @@ class IssueForm extends Component {
             name='centerID'
             label='Site'
             emptyOption={true}
-            options={this.state.Data.sites}
+            options={siteOptions}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.centerID}
@@ -330,7 +335,13 @@ class IssueForm extends Component {
         // is set to the empty option instead of an array of
         // the user's sites.
         if (newIssue) {
-            formData.centerID = null;
+          formData.centerID = null;
+        } else {
+          // if we edit an issue
+          // a NULL centerID (= All Sites) is converted to the ALL Sites option
+          if (formData.centerID == null) {
+            formData.centerID = 'all';
+          }
         }
 
         this.setState({
@@ -373,6 +384,10 @@ class IssueForm extends Component {
 
     for (let key in myFormData) {
       if (myFormData[key] !== '') {
+        // All Sites selected - Ignore value to store NULL in DB
+        if (myFormData['centerID'] == 'all') {
+          myFormData['centerID'] = null;
+        }
         formData.append(key, myFormData[key]);
       }
     }

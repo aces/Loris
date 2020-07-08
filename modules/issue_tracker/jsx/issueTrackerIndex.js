@@ -95,7 +95,12 @@ class IssueTrackerIndex extends Component {
       };
       break;
     case 'Site':
-      result = <td>{this.state.data.fieldOptions.sites[cell]}</td>;
+      // if cell is an array containing all sites values
+      if (JSON.stringify(Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)) {
+        result = <td>All Sites</td>;
+      } else {
+        result = <td>{cell.map((v) => this.state.data.fieldOptions.sites[v]).filter((v) => v != undefined).join(', ')}</td>;
+      }
       break;
     case 'PSCID':
       if (row.PSCID !== null) {
@@ -109,7 +114,7 @@ class IssueTrackerIndex extends Component {
       break;
     case 'Visit Label':
       if (row['Visit Label'] !== null) {
-        link =(
+        link = (
           <a href={loris.BaseURL + '/instrument_list/?candID=' +
                   row.CandID + '&sessionID=' + row.SessionID }>
             {cell}
@@ -182,7 +187,7 @@ class IssueTrackerIndex extends Component {
         }},
       {label: 'Site', show: true, filter: {
         name: 'site',
-        type: 'select',
+        type: 'multiselect',
         options: options.sites,
         }},
       {label: 'PSCID', show: true, filter: {
@@ -203,7 +208,7 @@ class IssueTrackerIndex extends Component {
       {label: 'Watching', show: false, filter: {
         name: 'watching',
         type: 'checkbox',
-        }},
+      }},
     ];
 
     const filterPresets = [
