@@ -65,5 +65,6 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (63,'module_manager_edit','Module Manager: edit installed modules',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (64,'candidate_dod_edit','Edit dates of death',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (65,'violated_scans_view_ownsite','Violated Scans: View Violated Scans from own site',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (66,'document_repository_edit','Document Repository: Upload and edit files',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

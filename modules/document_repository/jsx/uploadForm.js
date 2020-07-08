@@ -158,9 +158,9 @@ class DocUploadForm extends Component {
       credentials: 'same-origin',
       body: formObject,
     })
-    .then((resp) => resp.json())
-    .then((data) => {
-      if (data == 'uploaded successfully') {
+    .then((resp) => {
+      console.error(resp);
+      if (resp.ok) {
         swal.fire('Upload Successful!', '', 'success').then((result) => {
           if (result.value) {
             this.setState({formData: {}});
@@ -168,11 +168,13 @@ class DocUploadForm extends Component {
           }
         });
       } else {
-        swal.fire('Duplicate File Name!', '', 'error');
+        resp.json().then((data) => {
+          swal.fire('Could not upload file', data.error, 'error');
+        }).catch((error) => {
+          console.error(error);
+          swal.fire('Unknown Error', 'Please report the issue or contact your administrator', 'error');
+        });
       }
-    })
-    .catch((error) => {
-      console.error(error);
     });
   }
 
