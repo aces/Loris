@@ -281,14 +281,16 @@ class RequestAccount extends \NDB_Form
         //     - Associated with the Site
         //     - Associated with the Project
         //     - Have the User Management permission
-        $query  = "SELECT DISTINCT u.Email,u.userID
-             FROM users u
-                JOIN user_psc_rel upr
-                    (ON u.ID = upr.UserID)
-               JOIN user_project_rel uprojr
-                   (ON u.ID = uprojr.UserID)
-            WHERE upr.CenterID=:center
-                AND uprojr.ProjectID=:project";
+        $query = <<<SQL
+        SELECT DISTINCT u.Email,u.userID
+        FROM users u
+            JOIN user_psc_rel upr
+                ON u.ID = upr.UserID
+            JOIN user_project_rel uprojr
+                ON u.ID = uprojr.UserID
+        WHERE upr.CenterID=:center
+            AND uprojr.ProjectID=:project
+SQL;
         $result = $DB->pselect(
             $query,
             ['center' => $site, 'project' => $project]
