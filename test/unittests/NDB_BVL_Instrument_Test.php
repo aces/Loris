@@ -260,6 +260,53 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ]
             ]
         );
+
+        $textRules = $this->_instrument->XINRules['FieldName'];
+        $textAreaRules = $this->_instrument->XINRules['FieldName2'];
+        $this->assertEquals(
+            $textRules,
+            [
+                'message' => 'This field is required.',
+                'group' => 'FieldName_group',
+                'rules' => ['FieldName_status{@}=={@}', 'Option']
+            ]
+        );
+        $this->assertEquals(
+            $textAreaRules,
+            [
+                'message' => 'This field is required.',
+                'group' => 'FieldName2_group',
+                'rules' => ['FieldName2_status{@}=={@}', 'Option']
+            ]
+        );
+    }
+
+    /**
+     * Test that addTextAreaElementRD adds a group element to the instrument
+     *
+     * @covers NDB_BVL_Instrument::addTextAreaElementRD
+     * @return void
+     */
+    function testAddTextAreaElement()
+    {
+        $this->_instrument->addTextAreaElementRD(
+            "FieldName1", "Field Description1", array("value" => "Option")
+        );
+        $json = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        $this->assertEquals(
+            $outArray['Elements'][0],
+            ['Type' => "Group", 'Error' => "Unimplemented"]
+        );
+        $textRules = $this->_instrument->XINRules['FieldName1'];
+        $this->assertEquals(
+            $textRules,
+            [
+                'message' => 'You must specify or select from the drop-down',
+                'group' => 'FieldName1_group',
+                'rules' => ['FieldName1_status{@}=={@}', 'Option']
+            ]
+        );
     }
 
     /**
@@ -548,5 +595,110 @@ class NDB_BVL_Instrument_Test extends TestCase
             ]
         );
     }
+
+    /**
+     * Test that setup correctly sets the commentID and page values of the
+     * instrument and that getCommentID returns the commentID value.
+     *
+     * @covers NDB_BVL_Instrument::setup
+     * @covers NDB_BVL_Instrument::getCommentID
+     * @return void
+     */
+    function testSetup()
+    {
+        $this->_instrument->setup("commentID", "page");
+        $this->assertEquals("commentID", $this->_instrument->getCommentID());
+        $this->assertEquals("page", $this->_instrument->page);
+
+    }
+
+    /**
+     * Test that calculateAgeMonths returns the correct number of months
+     * for the given age array.
+     *
+     * @covers NDB_BVL_Instrument::calculateAgeMonths
+     * @return void
+     */
+    function testCalculateAgeMonths()
+    {
+        $age = array('year' => 3, 'mon' => 4, 'day' => 23);
+        $months = $this->_instrument->calculateAgeMonths($age);
+        $this->assertEquals(40.8, $months);
+    }
+
+    /**
+     * Test that calculateAgeDays returns the correct number of days
+     * for the given age array
+     *
+     * @covers NDB_BVL_Instrument::calculateAgeDays
+     * @return void
+     */
+    function testCalculateAgeDays()
+    {
+        $age = array('year' => 3, 'mon' => 4, 'day' => 23);
+        $days = $this->_instrument->calculateAgeDays($age);
+        $this->assertEquals(1238, $days);
+    }
+
+    /**
+     * Test that addYesNoElement adds an element to the instrument with
+     * yes/no options
+     *
+     * @covers NDB_BVL_Instrument::addYesNoElement
+     * @return void
+     */
+    function testAddYesNoElement()
+    {
+        $this->_instrument->addYesNoElement("field1", "label1");
+        $json = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        $this->assertEquals(
+            $outArray['Elements'][0],
+            array('Type' => 'select',
+                  'Name' => 'field1',
+                  'Description' => 'label1',
+                  'Options' => array('Values' => array('' => '',
+                                                       'yes' => 'Yes',
+                                                       'no' => 'No'),
+                                     'RequireResponse' => true)
+            )
+        );
+    }
+
+    /**
+     * Test that addYesNoElement adds an element and registers a XIN rule
+     * if specified.
+     *
+     * @covers NDB_BVL_Instrument::addYesNoElementWithRules
+     * @return void
+     */
+    function testAddYesNoElementWithRules()
+    {
+        $this->_instrument->addYesNoElement(
+            "field1", "label1", ["rule1"], "Rule message"
+        );
+        $json = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        $this->assertEquals(
+            $outArray['Elements'][0],
+            array('Type' => 'select',
+                'Name' => 'field1',
+                'Description' => 'label1',
+                'Options' => array('Values' => array('' => '',
+                    'yes' => 'Yes',
+                    'no' => 'No'),
+                    'RequireResponse' => true)
+            )
+        );
+        $rules = $this->_instrument->XINRules["field1"];
+        $this->assertEquals(
+            $rules,
+            array('message' => 'Rule message',
+                  'group' => '',
+                  'rules' => ['rule1']
+            )
+        );
+    }
+
 }
 ?>
