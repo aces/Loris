@@ -33,7 +33,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->login();
+        $this->login("UnitTester", $this->validPassword);
     }
 
     /**
@@ -49,9 +49,12 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     /**
      * Used to log in with GuzzleHttp\Client
      *
+     * @param string $username The username to log in as
+     * @param string $password The (plain text) password to login as.
+     *
      * @return void
      */
-    public function login()
+    public function login($username, $password)
     {
         $this->base_uri = "$this->url/api/v0.0.3/";
         $this->client   = new Client(['base_uri' => $this->base_uri]);
@@ -59,8 +62,8 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
             'POST',
             "login",
             [
-                'json' => ['username' => "UnitTester",
-                    'password' => $this->validPassword
+                'json' => ['username' => $username,
+                    'password' => $password
                 ]
             ]
         );
