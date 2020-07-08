@@ -75,7 +75,6 @@ INSERT INTO `permissions` VALUES
     (25,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2'),
     (28,'instrument_builder', 'Instrument Builder: Create and Edit instrument forms', '2'),
     (29,'data_dict_edit','Edit Data Dictionary','2'),
-    (30,'quality_control','Quality Control access','2'),
     (31,'candidate_parameter_view','View Candidate Parameters','2'),
     (32,'candidate_parameter_edit','Edit Candidate Parameters','2'),
     (33,'genomic_browser_view_site','View Genomic Browser data from own site','2'),
@@ -111,7 +110,10 @@ INSERT INTO `permissions` VALUES
     (63,'module_manager_edit', 'Module Manager: edit installed modules', 2),
     (64,'candidate_dod_edit', 'Edit dates of death', 2),
     (65,'violated_scans_view_ownsite','Violated Scans: View Violated Scans from own site','2'),
-    (66,'document_repository_edit','Document Repository: Edit and Upload','2');
+    (66,'document_repository_edit','Document Repository: Edit and Upload','2'),
+    (67,'survey_accounts_view', 'Survey Accounts: View module', 2),
+    (68,'imaging_quality_control_view','Imaging Quality Control: View module','2'),
+    (69,'behavioural_quality_control_view','Behavioural Quality Control: View module','2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
