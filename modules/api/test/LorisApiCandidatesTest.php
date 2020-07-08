@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticationTest.php";
+require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
@@ -16,20 +16,29 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiCandidatesTest extends LorisApiAuthenticationTest
+class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
 {
     protected $candidTest = '300001';
 
     /**
-     * Call to setUp()
+     * Call to LorisApiAuthenticationTest::setUp()
      *
      * @return void
      */
     public function setUp()
     {
-	parent::setUp();
+        parent::setUp();
     }
 
+    /**
+     * Call to LorisApiAuthenticationTest::tearDown()
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+    }
 
     /**
      * Tests the HTTP GET request for the endpoint /candidates
@@ -55,33 +64,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey('Candidates', $candidatesArray);
-        $this->assertArrayHasKey('0', $candidatesArray['Candidates']);
-        $this->assertArrayHasKey(
-            'CandID',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'Project',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'Site',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'EDC',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'DoB',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'Sex',
-            $candidatesArray['Candidates']['0']
         );
 
         $this->assertSame(
@@ -125,6 +107,32 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey('Candidates', $candidatesArray);
+        $this->assertArrayHasKey('0', $candidatesArray['Candidates']);
+        $this->assertArrayHasKey(
+            'CandID',
+            $candidatesArray['Candidates']['0']
+        );
+        $this->assertArrayHasKey(
+            'Project',
+            $candidatesArray['Candidates']['0']
+        );
+        $this->assertArrayHasKey(
+            'Site',
+            $candidatesArray['Candidates']['0']
+        );
+        $this->assertArrayHasKey(
+            'EDC',
+            $candidatesArray['Candidates']['0']
+        );
+        $this->assertArrayHasKey(
+            'DoB',
+            $candidatesArray['Candidates']['0']
+        );
+        $this->assertArrayHasKey(
+            'Sex',
+            $candidatesArray['Candidates']['0']
+        );
     }
 
     /**
@@ -153,18 +161,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey(
-            'Meta',
-            $candidatesCandidArray
-        );
-        $this->assertArrayHasKey(
-            'Visits',
-            $candidatesCandidArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $candidatesCandidArray['Visits']
-        );
         $this->assertSame(
             gettype($candidatesCandidArray),
             'array'
@@ -210,6 +206,19 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey(
+            'Meta',
+            $candidatesCandidArray
+        );
+        $this->assertArrayHasKey(
+            'Visits',
+            $candidatesCandidArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $candidatesCandidArray['Visits']
+        );
+
     }
 
     /**
@@ -245,22 +254,12 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
         $this->assertNotEmpty($body);
 
         // Second, create a candidate that already exist
-        $json_exist     = [
-            'Candidate' =>
-                [
-                    'Project' => "Pumpernickel",
-                    'Site'    => "Data Coordinating Center",
-                    'EDC'     => "2020-01-01",
-                    'DoB'     => "2020-01-01",
-                    'Sex'     => "Female"
-                ]
-        ];
         $response_exist = $this->client->request(
             'POST',
             "candidates",
             [
                 'headers' => $this->headers,
-                'json'    => $json_exist
+                'json'    => $json_new
             ]
         );
         // Verify the status code
@@ -280,28 +279,19 @@ class LorisApiCandidatesTest extends LorisApiAuthenticationTest
                 ]
         ];
 
-        try{
-            $response_invalid = $this->client->request(
-                'POST',
-                "candidates",
-                [
-                    'headers' => $this->headers,
-                    'json'    => $json_invalid
-                ]
-            );
-            // Verify the status code
-            $this->assertEquals(201, $response_invalid->getStatusCode());
-            // Verify the endpoint has a body
-            $body = $response_invalid->getBody();
-            $this->assertNotEmpty($body);
-
-        } catch (\Exception $e) {
-            $message = explode(
-                '}',
-                explode('{', $e->getMessage())[1]
-            )[0];
-        }
+        $response_invalid = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_invalid
+            ],
+        );
         // Verify the status code
-        $this->assertEquals('"error":"No project named: "', $message);
+        $this->assertEquals(400, $response_invalid->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_invalid->getBody();
+        $this->assertNotEmpty($body);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticationTest.php";
+require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
@@ -16,15 +16,16 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiRecordingsTest extends LorisApiAuthenticationTest
+class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
 {
     protected $frecordTest     = "sub-OTT174_ses-V1_task-faceO_eeg.edf";
     protected $frecordTestFile = "bids_imports/Face13_BIDSVersion_1.1.0/" .
     "sub-OTT174/ses-V1/eeg/sub-OTT174_ses-V1_task-faceO_eeg.edf";
     protected $candidTest      = "300174";
     protected $visitTest       = "V1";
+
     /**
-     * Call to setUp()
+     * Call to LorisApiAuthenticationTest::setUp()
      *
      * @return void
      */
@@ -32,6 +33,17 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
     {
         parent::setUp();
     }
+
+    /**
+     * Call to LorisApiAuthenticationTest::tearDown()
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+    }
+
     /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings
@@ -58,18 +70,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey('Meta', $recordingsArray);
-        $this->assertArrayHasKey('CandID', $recordingsArray['Meta']);
-        $this->assertArrayHasKey('Visit', $recordingsArray['Meta']);
-        $this->assertArrayHasKey('Files', $recordingsArray);
-        $this->assertArrayHasKey('0', $recordingsArray['Files']);
-        $this->assertArrayHasKey('OutputType', $recordingsArray['Files']['0']);
-        $this->assertArrayHasKey('Filename', $recordingsArray['Files']['0']);
-        $this->assertArrayHasKey(
-            'AcquisitionModality',
-            $recordingsArray['Files']['0']
-        );
-
         $this->assertSame(gettype($recordingsArray), 'array');
         $this->assertSame(gettype($recordingsArray['Meta']), 'array');
         $this->assertSame(
@@ -93,6 +93,17 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
             'array'
         );
 
+        $this->assertArrayHasKey('Meta', $recordingsArray);
+        $this->assertArrayHasKey('CandID', $recordingsArray['Meta']);
+        $this->assertArrayHasKey('Visit', $recordingsArray['Meta']);
+        $this->assertArrayHasKey('Files', $recordingsArray);
+        $this->assertArrayHasKey('0', $recordingsArray['Files']);
+        $this->assertArrayHasKey('OutputType', $recordingsArray['Files']['0']);
+        $this->assertArrayHasKey('Filename', $recordingsArray['Files']['0']);
+        $this->assertArrayHasKey(
+            'AcquisitionModality',
+            $recordingsArray['Files']['0']
+        );
     }
 
     /**
@@ -148,78 +159,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-        $this->assertArrayHasKey(
-            'Meta',
-            $recChannelsArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $recChannelsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $recChannelsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Channels',
-            $recChannelsArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $recChannelsArray['Channels']
-        );
-        $this->assertArrayHasKey(
-            'ChannelName',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelDescription',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelTypeDescription',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelStatus',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'StatusDescription',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'SamplingFrequency',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'LowCutoff',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'HighCutoff',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ManualFlag',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'Notch',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'Reference',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'Unit',
-            $recChannelsArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelFilePath',
-            $recChannelsArray['Channels']['0']
         );
 
         $this->assertSame(
@@ -301,6 +240,78 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey(
+            'Meta',
+            $recChannelsArray
+        );
+        $this->assertArrayHasKey(
+            'CandID',
+            $recChannelsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $recChannelsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Channels',
+            $recChannelsArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $recChannelsArray['Channels']
+        );
+        $this->assertArrayHasKey(
+            'ChannelName',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ChannelDescription',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ChannelTypeDescription',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ChannelStatus',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'StatusDescription',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'SamplingFrequency',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'LowCutoff',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'HighCutoff',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ManualFlag',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'Notch',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'Reference',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'Unit',
+            $recChannelsArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ChannelFilePath',
+            $recChannelsArray['Channels']['0']
+        );
     }
 
     /**
@@ -330,79 +341,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $recChannelsMetaArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $recChannelsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $recChannelsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Channels',
-            $recChannelsMetaArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $recChannelsMetaArray['Channels']
-        );
-        $this->assertArrayHasKey(
-            'ChannelName',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelDescription',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelTypeDescription',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelStatus',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'StatusDescription',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'SamplingFrequency',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'LowCutoff',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'HighCutoff',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ManualFlag',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'Notch',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'Reference',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'Unit',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelFilePath',
-            $recChannelsMetaArray['Channels']['0']
         );
 
         $this->assertSame(
@@ -484,6 +422,78 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey(
+            'Meta',
+            $recChannelsMetaArray
+        );
+        $this->assertArrayHasKey(
+            'CandID',
+            $recChannelsMetaArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $recChannelsMetaArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Channels',
+            $recChannelsMetaArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $recChannelsMetaArray['Channels']
+        );
+        $this->assertArrayHasKey(
+            'ChannelName',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ChannelDescription',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ChannelTypeDescription',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ChannelStatus',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'StatusDescription',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'SamplingFrequency',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'LowCutoff',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'HighCutoff',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ManualFlag',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'Notch',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'Reference',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'Unit',
+            $recChannelsMetaArray['Channels']['0']
+        );
+        $this->assertArrayHasKey(
+            'ChannelFilePath',
+            $recChannelsMetaArray['Channels']['0']
+        );
     }
 
     /**
@@ -512,59 +522,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $recChannelsArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $recChannelsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $recChannelsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Electrodes',
-            $recChannelsArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $recChannelsArray['Electrodes']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeName',
-            $recChannelsArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeType',
-            $recChannelsArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeMaterial',
-            $recChannelsArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'X',
-            $recChannelsArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'Y',
-            $recChannelsArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'Z',
-            $recChannelsArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'Impedance',
-            $recChannelsArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeFilePath',
-            $recChannelsArray['Electrodes']['0']
         );
 
         $this->assertSame(
@@ -623,6 +580,59 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
             gettype($recChannelsArray['Electrodes']['0']['ElectrodeFilePath']),
             'string'
         );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $recChannelsArray
+        );
+        $this->assertArrayHasKey(
+            'CandID',
+            $recChannelsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $recChannelsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Electrodes',
+            $recChannelsArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $recChannelsArray['Electrodes']
+        );
+        $this->assertArrayHasKey(
+            'ElectrodeName',
+            $recChannelsArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'ElectrodeType',
+            $recChannelsArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'ElectrodeMaterial',
+            $recChannelsArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'X',
+            $recChannelsArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'Y',
+            $recChannelsArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'Z',
+            $recChannelsArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'Impedance',
+            $recChannelsArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'ElectrodeFilePath',
+            $recChannelsArray['Electrodes']['0']
+        );
     }
 
     /**
@@ -652,59 +662,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $recChannelsMetaArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $recChannelsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $recChannelsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Electrodes',
-            $recChannelsMetaArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $recChannelsMetaArray['Electrodes']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeName',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeType',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeMaterial',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'X',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'Y',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'Z',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'Impedance',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeFilePath',
-            $recChannelsMetaArray['Electrodes']['0']
         );
 
         $this->assertSame(
@@ -764,6 +721,58 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey(
+            'Meta',
+            $recChannelsMetaArray
+        );
+        $this->assertArrayHasKey(
+            'CandID',
+            $recChannelsMetaArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $recChannelsMetaArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Electrodes',
+            $recChannelsMetaArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $recChannelsMetaArray['Electrodes']
+        );
+        $this->assertArrayHasKey(
+            'ElectrodeName',
+            $recChannelsMetaArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'ElectrodeType',
+            $recChannelsMetaArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'ElectrodeMaterial',
+            $recChannelsMetaArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'X',
+            $recChannelsMetaArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'Y',
+            $recChannelsMetaArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'Z',
+            $recChannelsMetaArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'Impedance',
+            $recChannelsMetaArray['Electrodes']['0']
+        );
+        $this->assertArrayHasKey(
+            'ElectrodeFilePath',
+            $recChannelsMetaArray['Electrodes']['0']
+        );
     }
 
     /**
@@ -792,59 +801,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $recordingsEventsArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $recordingsEventsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $recordingsEventsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'TaskEvents',
-            $recordingsEventsArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $recordingsEventsArray['TaskEvents']
-        );
-        $this->assertArrayHasKey(
-            'Onset',
-            $recordingsEventsArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'Duration',
-            $recordingsEventsArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventCode',
-            $recordingsEventsArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventSample',
-            $recordingsEventsArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventType',
-            $recordingsEventsArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'TrialType',
-            $recordingsEventsArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'ResponseTime',
-            $recordingsEventsArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventFilePath',
-            $recordingsEventsArray['TaskEvents']['0']
         );
 
         $this->assertSame(
@@ -904,6 +860,58 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey(
+            'Meta',
+            $recordingsEventsArray
+        );
+        $this->assertArrayHasKey(
+            'CandID',
+            $recordingsEventsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $recordingsEventsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'TaskEvents',
+            $recordingsEventsArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $recordingsEventsArray['TaskEvents']
+        );
+        $this->assertArrayHasKey(
+            'Onset',
+            $recordingsEventsArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'Duration',
+            $recordingsEventsArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'EventCode',
+            $recordingsEventsArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'EventSample',
+            $recordingsEventsArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'EventType',
+            $recordingsEventsArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'TrialType',
+            $recordingsEventsArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'ResponseTime',
+            $recordingsEventsArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'EventFilePath',
+            $recordingsEventsArray['TaskEvents']['0']
+        );
     }
 
     /**
@@ -932,59 +940,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $recordingsEventsMetaArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $recordingsEventsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $recordingsEventsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'TaskEvents',
-            $recordingsEventsMetaArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $recordingsEventsMetaArray['TaskEvents']
-        );
-        $this->assertArrayHasKey(
-            'Onset',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'Duration',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventCode',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventSample',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventType',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'TrialType',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'ResponseTime',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventFilePath',
-            $recordingsEventsMetaArray['TaskEvents']['0']
         );
 
         $this->assertSame(
@@ -1042,6 +997,59 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
         $this->assertSame(
             gettype($recordingsEventsMetaArray['TaskEvents']['0']['EventFilePath']),
             'string'
+        );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $recordingsEventsMetaArray
+        );
+        $this->assertArrayHasKey(
+            'CandID',
+            $recordingsEventsMetaArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $recordingsEventsMetaArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'TaskEvents',
+            $recordingsEventsMetaArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $recordingsEventsMetaArray['TaskEvents']
+        );
+        $this->assertArrayHasKey(
+            'Onset',
+            $recordingsEventsMetaArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'Duration',
+            $recordingsEventsMetaArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'EventCode',
+            $recordingsEventsMetaArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'EventSample',
+            $recordingsEventsMetaArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'EventType',
+            $recordingsEventsMetaArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'TrialType',
+            $recordingsEventsMetaArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'ResponseTime',
+            $recordingsEventsMetaArray['TaskEvents']['0']
+        );
+        $this->assertArrayHasKey(
+            'EventFilePath',
+            $recordingsEventsMetaArray['TaskEvents']['0']
         );
     }
 }

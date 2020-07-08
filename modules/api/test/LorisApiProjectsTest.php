@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticationTest.php";
+require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
@@ -16,13 +16,14 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiProjectsTest extends LorisApiAuthenticationTest
+class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
     protected $projectIdTest = "Pumpernickel";
     protected $candidTest    = "115788";
     protected $visitTest     = "V1";
+
     /**
-     * Call to setUp()
+     * Call to LorisApiAuthenticationTest::setUp()
      *
      * @return void
      */
@@ -30,6 +31,18 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
     {
         parent::setUp();
     }
+
+    /**
+     * Call to LorisApiAuthenticationTest::tearDown()
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+    }
+
+
     /**
      * Tests the HTTP GET request for the endpoint /projects
      *
@@ -54,31 +67,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Projects',
-            $projectsArray
-        );
-        $this->assertArrayHasKey(
-            'Pumpernickel',
-            $projectsArray['Projects']
-        );
-        $this->assertArrayHasKey(
-            'useEDC',
-            $projectsArray['Projects']['Pumpernickel']
-        );
-        $this->assertArrayHasKey(
-            'PSCID',
-            $projectsArray['Projects']['Pumpernickel']
-        );
-        $this->assertArrayHasKey(
-            'Type',
-            $projectsArray['Projects']['Pumpernickel']['PSCID']
-        );
-        $this->assertArrayHasKey(
-            'Regex',
-            $projectsArray['Projects']['Pumpernickel']['PSCID']
         );
 
         $this->assertSame(
@@ -114,6 +102,30 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey(
+            'Projects',
+            $projectsArray
+        );
+        $this->assertArrayHasKey(
+            'Pumpernickel',
+            $projectsArray['Projects']
+        );
+        $this->assertArrayHasKey(
+            'useEDC',
+            $projectsArray['Projects']['Pumpernickel']
+        );
+        $this->assertArrayHasKey(
+            'PSCID',
+            $projectsArray['Projects']['Pumpernickel']
+        );
+        $this->assertArrayHasKey(
+            'Type',
+            $projectsArray['Projects']['Pumpernickel']['PSCID']
+        );
+        $this->assertArrayHasKey(
+            'Regex',
+            $projectsArray['Projects']['Pumpernickel']['PSCID']
+        );
     }
 
     /**
@@ -142,23 +154,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey(
-            'Meta',
-            $projectsProjectArray
-        );
-        $this->assertArrayHasKey(
-            'Project',
-            $projectsProjectArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Candidates',
-            $projectsProjectArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $projectsProjectArray['Candidates']
-        );
-
         $this->assertSame(
             gettype($projectsProjectArray['Meta']),
             'array'
@@ -174,6 +169,23 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
         $this->assertSame(
             gettype($projectsProjectArray['Candidates']['0']),
             'string'
+        );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsProjectArray
+        );
+        $this->assertArrayHasKey(
+            'Project',
+            $projectsProjectArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Candidates',
+            $projectsProjectArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $projectsProjectArray['Candidates']
         );
     }
 
@@ -203,19 +215,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey(
-            'Meta',
-            $projectsProjectArray
-        );
-        $this->assertArrayHasKey(
-            'Project',
-            $projectsProjectArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Candidates',
-            $projectsProjectArray
-        );
-
         $this->assertSame(
             gettype($projectsProjectArray['Meta']),
             'array'
@@ -231,6 +230,19 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
         $this->assertSame(
             gettype($projectsProjectArray['Candidates']['0']),
             'string'
+        );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsProjectArray
+        );
+        $this->assertArrayHasKey(
+            'Project',
+            $projectsProjectArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Candidates',
+            $projectsProjectArray
         );
 
     }
@@ -258,55 +270,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Images',
-            $projectsImagesArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $projectsImagesArray['Images']
-        );
-        $this->assertArrayHasKey(
-            'Candidate',
-            $projectsImagesArray['Images']['0']
-        );
-        $this->assertArrayHasKey(
-            'PSCID',
-            $projectsImagesArray['Images']['0']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $projectsImagesArray['Images']['0']
-        );
-        $this->assertArrayHasKey(
-            'Visit_date',
-            $projectsImagesArray['Images']['0']
-        );
-        $this->assertArrayHasKey(
-            'Site',
-            $projectsImagesArray['Images']['0']
-        );
-        $this->assertArrayHasKey(
-            'InsertTime',
-            $projectsImagesArray['Images']['0']
-        );
-        $this->assertArrayHasKey(
-            'ScanType',
-            $projectsImagesArray['Images']['0']
-        );
-        $this->assertArrayHasKey(
-            'QC_status',
-            $projectsImagesArray['Images']['0']
-        );
-        $this->assertArrayHasKey(
-            'Selected',
-            $projectsImagesArray['Images']['0']
-        );
-        $this->assertArrayHasKey(
-            'Link',
-            $projectsImagesArray['Images']['0']
         );
 
         $this->assertSame(
@@ -357,6 +320,55 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
             gettype($projectsImagesArray['Images']['0']['Link']),
             'string'
         );
+
+        $this->assertArrayHasKey(
+            'Images',
+            $projectsImagesArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $projectsImagesArray['Images']
+        );
+        $this->assertArrayHasKey(
+            'Candidate',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'PSCID',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Visit_date',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Site',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'InsertTime',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'ScanType',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'QC_status',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Selected',
+            $projectsImagesArray['Images']['0']
+        );
+        $this->assertArrayHasKey(
+            'Link',
+            $projectsImagesArray['Images']['0']
+        );
     }
 
     /**
@@ -386,23 +398,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey(
-            'Meta',
-            $projectsVisitsArray
-        );
-        $this->assertArrayHasKey(
-            'Project',
-            $projectsVisitsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visits',
-            $projectsVisitsArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $projectsVisitsArray['Visits']
-        );
-
         $this->assertSame(
             gettype($projectsVisitsArray['Meta']),
             'array'
@@ -418,6 +413,23 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
         $this->assertSame(
             gettype($projectsVisitsArray['Visits']['0']),
             'string'
+        );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsVisitsArray
+        );
+        $this->assertArrayHasKey(
+            'Project',
+            $projectsVisitsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visits',
+            $projectsVisitsArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $projectsVisitsArray['Visits']
         );
     }
 
@@ -445,39 +457,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $projectsInstrArray
-        );
-        $this->assertArrayHasKey(
-            'Project',
-            $projectsInstrArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Instruments',
-            $projectsInstrArray
-        );
-        $this->assertArrayHasKey(
-            'radiology_review',
-            $projectsInstrArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            'bmi',
-            $projectsInstrArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            'medical_history',
-            $projectsInstrArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            'aosi',
-            $projectsInstrArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            'mri_parameter_form',
-            $projectsInstrArray['Instruments']
         );
 
         $this->assertSame(
@@ -514,6 +493,39 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
             ),
             'boolean'
         );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsInstrArray
+        );
+        $this->assertArrayHasKey(
+            'Project',
+            $projectsInstrArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instruments',
+            $projectsInstrArray
+        );
+        $this->assertArrayHasKey(
+            'radiology_review',
+            $projectsInstrArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            'bmi',
+            $projectsInstrArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            'medical_history',
+            $projectsInstrArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            'aosi',
+            $projectsInstrArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            'mri_parameter_form',
+            $projectsInstrArray['Instruments']
+        );
     }
 
     /**
@@ -541,31 +553,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $projectsInstrumentsAosiArray
-        );
-        $this->assertArrayHasKey(
-            'InstrumentVersion',
-            $projectsInstrumentsAosiArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'InstrumentFormatVersion',
-            $projectsInstrumentsAosiArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'ShortName',
-            $projectsInstrumentsAosiArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'LongName',
-            $projectsInstrumentsAosiArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'IncludeMetaDataFields',
-            $projectsInstrumentsAosiArray['Meta']
         );
 
         $this->assertSame(
@@ -620,6 +607,31 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
         $this->assertSame(
             gettype($projectsInstrumentsAosiArray['Elements']['0']['Description']),
             'string'
+        );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsInstrumentsAosiArray
+        );
+        $this->assertArrayHasKey(
+            'InstrumentVersion',
+            $projectsInstrumentsAosiArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'InstrumentFormatVersion',
+            $projectsInstrumentsAosiArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'ShortName',
+            $projectsInstrumentsAosiArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'LongName',
+            $projectsInstrumentsAosiArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'IncludeMetaDataFields',
+            $projectsInstrumentsAosiArray['Meta']
         );
 
     }

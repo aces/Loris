@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticationTest.php";
+require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
@@ -16,19 +16,30 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
+class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
 {
     protected $instrumentTest = "medical_history";
     protected $candidTest     = "300001";
     protected $visitTest      = "V1";
+
     /**
-     * Call to setUp()
+     * Call to LorisApiAuthenticationTest::setUp()
      *
      * @return void
      */
     public function setUp()
     {
         parent::setUp();
+    }
+
+    /**
+     * Call to LorisApiAuthenticationTest::tearDown()
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
     }
 
     /**
@@ -56,35 +67,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'CandID',
-            $instrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $instrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $instrumentsArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            '1',
-            $instrumentsArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            '2',
-            $instrumentsArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            '3',
-            $instrumentsArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            '4',
-            $instrumentsArray['Instruments']
         );
 
         $this->assertSame(gettype($instrumentsArray), 'array');
@@ -124,6 +106,35 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
             gettype($instrumentsArray['Meta']['4']),
             'string'
         );
+
+        $this->assertArrayHasKey(
+            'CandID',
+            $instrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $instrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $instrumentsArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            '1',
+            $instrumentsArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            '2',
+            $instrumentsArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            '3',
+            $instrumentsArray['Instruments']
+        );
+        $this->assertArrayHasKey(
+            '4',
+            $instrumentsArray['Instruments']
+        );
     }
 
     /**
@@ -152,43 +163,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey(
-            'Candidate',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'DDE',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Instrument',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'CommentID',
-            $InstrumentsArray[$this->instrumentTest]
-        );
-        $this->assertArrayHasKey(
-            'UserID',
-            $InstrumentsArray[$this->instrumentTest]
-        );
-        $this->assertArrayHasKey(
-            'Examiner',
-            $InstrumentsArray[$this->instrumentTest]
-        );
-        $this->assertArrayHasKey(
-            'Testdate',
-            $InstrumentsArray[$this->instrumentTest]
-        );
-        $this->assertArrayHasKey(
-            'Data_entry_completion_status',
-            $InstrumentsArray[$this->instrumentTest]
         );
 
         $this->assertSame(
@@ -233,6 +207,42 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'CommentID',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'UserID',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Examiner',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Testdate',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Data_entry_completion_status',
+            $InstrumentsArray[$this->instrumentTest]
+        );
     }
 
     /**
@@ -336,35 +346,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey(
-            'Candidate',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'DDE',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Instrument',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Data_entry',
-            $InstrumentsArray['Flags']
-        );
-        $this->assertArrayHasKey(
-            'Administration',
-            $InstrumentsArray['Flags']
-        );
-        $this->assertArrayHasKey(
-            'Validity',
-            $InstrumentsArray['Flags']
-        );
-
         $this->assertSame(
             $InstrumentsArray['Meta']['Candidate'],
             'string'
@@ -394,6 +375,34 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Data_entry',
+            $InstrumentsArray['Flags']
+        );
+        $this->assertArrayHasKey(
+            'Administration',
+            $InstrumentsArray['Flags']
+        );
+        $this->assertArrayHasKey(
+            'Validity',
+            $InstrumentsArray['Flags']
+        );
     }
 
     /**
@@ -496,44 +505,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey(
-            'Candidate',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'DDE',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Instrument',
-            $InstrumentsArray['Meta']
-        );
-
-        $this->assertArrayHasKey(
-            'CommentID',
-            $InstrumentsArray[$this->instrumentTest]
-        );
-        $this->assertArrayHasKey(
-            'UserID',
-            $InstrumentsArray[$this->instrumentTest]
-        );
-        $this->assertArrayHasKey(
-            'Examiner',
-            $InstrumentsArray[$this->instrumentTest]
-        );
-        $this->assertArrayHasKey(
-            'Testdate',
-            $InstrumentsArray[$this->instrumentTest]
-        );
-        $this->assertArrayHasKey(
-            'Data_entry_completion_status',
-            $InstrumentsArray[$this->instrumentTest]
-        );
-
         $this->assertSame(
             $InstrumentsArray['Meta']['Candidate'],
             'string'
@@ -571,6 +542,43 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
             'string'
         );
 
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
+
+        $this->assertArrayHasKey(
+            'CommentID',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'UserID',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Examiner',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Testdate',
+            $InstrumentsArray[$this->instrumentTest]
+        );
+        $this->assertArrayHasKey(
+            'Data_entry_completion_status',
+            $InstrumentsArray[$this->instrumentTest]
+        );
     }
 
     /**
@@ -675,35 +683,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey(
-            'Candidate',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'DDE',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Instrument',
-            $InstrumentsArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Data_entry',
-            $InstrumentsArray['Flags']
-        );
-        $this->assertArrayHasKey(
-            'Administration',
-            $InstrumentsArray['Flags']
-        );
-        $this->assertArrayHasKey(
-            'Validity',
-            $InstrumentsArray['Flags']
-        );
-
         $this->assertSame(
             $InstrumentsArray['Meta']['Candidate'],
             'string'
@@ -731,6 +710,35 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticationTest
         $this->assertSame(
             $InstrumentsArray['Flags']['Validity'],
             'string'
+        );
+
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Data_entry',
+            $InstrumentsArray['Flags']
+        );
+        $this->assertArrayHasKey(
+            'Administration',
+            $InstrumentsArray['Flags']
+        );
+        $this->assertArrayHasKey(
+            'Validity',
+            $InstrumentsArray['Flags']
         );
     }
 

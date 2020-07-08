@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticationTest.php";
+require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
@@ -16,14 +16,14 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiImagesTest extends LorisApiAuthenticationTest
+class LorisApiImagesTest extends LorisApiAuthenticatedTest
 {
     protected $candidTest    = "676061";
     protected $visitTest     = "V4";
     protected $imagefileTest = "demo_676061_V4_t1_001.mnc";
 
     /**
-     * Call to setUp()
+     * Call to LorisApiAuthenticationTest::setUp()
      *
      * @return void
      */
@@ -32,6 +32,15 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
         parent::setUp();
     }
 
+    /**
+     * Call to LorisApiAuthenticationTest::tearDown()
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+    }
     /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/images
@@ -59,14 +68,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey('Meta', $imagesArray);
-        $this->assertArrayHasKey('CandID', $imagesArray['Meta']);
-        $this->assertArrayHasKey('Visit', $imagesArray['Meta']);
-        $this->assertArrayHasKey('Files', $imagesArray);
-        $this->assertArrayHasKey('OutputType', $imagesArray['Files']['0']);
-        $this->assertArrayHasKey('Filename', $imagesArray['Files']['0']);
-        $this->assertArrayHasKey('AcquisitionType', $imagesArray['Files']['0']);
-
         $this->assertSame(gettype($imagesArray), 'array');
         $this->assertSame(gettype($imagesArray['Meta']), 'array');
         $this->assertSame(gettype($imagesArray['Meta']['CandID']), 'string');
@@ -84,6 +85,14 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
             gettype($imagesArray['Files']['0']['AcquisitionType']),
             'string'
         );
+
+        $this->assertArrayHasKey('Meta', $imagesArray);
+        $this->assertArrayHasKey('CandID', $imagesArray['Meta']);
+        $this->assertArrayHasKey('Visit', $imagesArray['Meta']);
+        $this->assertArrayHasKey('Files', $imagesArray);
+        $this->assertArrayHasKey('OutputType', $imagesArray['Files']['0']);
+        $this->assertArrayHasKey('Filename', $imagesArray['Files']['0']);
+        $this->assertArrayHasKey('AcquisitionType', $imagesArray['Files']['0']);
     }
 
     /**
@@ -154,60 +163,11 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
-
         $imagesArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
-        );
-        $this->assertArrayHasKey(
-            'Meta',
-            $imagesArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $imagesArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $imagesArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'QC',
-            $imagesArray
-        );
-        $this->assertArrayHasKey(
-            'Selected',
-            $imagesArray
-        );
-        $this->assertArrayHasKey(
-            'Caveats',
-            $imagesArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $imagesArray['Caveats']
-        );
-        $this->assertArrayHasKey(
-            'Severity',
-            $imagesArray['Caveats']['0']
-        );
-        $this->assertArrayHasKey(
-            'Header',
-            $imagesArray['Caveats']['0']
-        );
-        $this->assertArrayHasKey(
-            'Value',
-            $imagesArray['Caveats']['0']
-        );
-        $this->assertArrayHasKey(
-            'ValidRange',
-            $imagesArray['Caveats']['0']
-        );
-        $this->assertArrayHasKey(
-            'ValidRegex',
-            $imagesArray['Caveats']['0']
         );
 
         $this->assertSame(
@@ -264,6 +224,60 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
             'NULL'
         );
 
+        $imagesArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+        $this->assertArrayHasKey(
+            'Meta',
+            $imagesArray
+        );
+        $this->assertArrayHasKey(
+            'CandID',
+            $imagesArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $imagesArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'QC',
+            $imagesArray
+        );
+        $this->assertArrayHasKey(
+            'Selected',
+            $imagesArray
+        );
+        $this->assertArrayHasKey(
+            'Caveats',
+            $imagesArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $imagesArray['Caveats']
+        );
+        $this->assertArrayHasKey(
+            'Severity',
+            $imagesArray['Caveats']['0']
+        );
+        $this->assertArrayHasKey(
+            'Header',
+            $imagesArray['Caveats']['0']
+        );
+        $this->assertArrayHasKey(
+            'Value',
+            $imagesArray['Caveats']['0']
+        );
+        $this->assertArrayHasKey(
+            'ValidRange',
+            $imagesArray['Caveats']['0']
+        );
+        $this->assertArrayHasKey(
+            'ValidRegex',
+            $imagesArray['Caveats']['0']
+        );
     }
 
     /**
@@ -337,21 +351,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
             ),
             true
         );
-        $this->assertArrayHasKey('order', $imagesArray);
-        $this->assertArrayHasKey('xspace', $imagesArray);
-        $this->assertArrayHasKey('space_length', $imagesArray['xspace']);
-        $this->assertArrayHasKey('start', $imagesArray['xspace']);
-        $this->assertArrayHasKey('step', $imagesArray['xspace']);
-
-        $this->assertArrayHasKey('yspace', $imagesArray);
-        $this->assertArrayHasKey('space_length', $imagesArray['yspace']);
-        $this->assertArrayHasKey('start', $imagesArray['yspace']);
-        $this->assertArrayHasKey('step', $imagesArray['yspace']);
-
-        $this->assertArrayHasKey('zspace', $imagesArray);
-        $this->assertArrayHasKey('space_length', $imagesArray['zspace']);
-        $this->assertArrayHasKey('start', $imagesArray['zspace']);
-        $this->assertArrayHasKey('step', $imagesArray['zspace']);
 
         $this->assertSame(gettype($imagesArray), 'array');
         $this->assertSame(gettype($imagesArray['xspace']), 'array');
@@ -391,6 +390,22 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
             gettype($imagesArray['zspace']['step']),
             'string'
         );
+
+        $this->assertArrayHasKey('order', $imagesArray);
+        $this->assertArrayHasKey('xspace', $imagesArray);
+        $this->assertArrayHasKey('space_length', $imagesArray['xspace']);
+        $this->assertArrayHasKey('start', $imagesArray['xspace']);
+        $this->assertArrayHasKey('step', $imagesArray['xspace']);
+
+        $this->assertArrayHasKey('yspace', $imagesArray);
+        $this->assertArrayHasKey('space_length', $imagesArray['yspace']);
+        $this->assertArrayHasKey('start', $imagesArray['yspace']);
+        $this->assertArrayHasKey('step', $imagesArray['yspace']);
+
+        $this->assertArrayHasKey('zspace', $imagesArray);
+        $this->assertArrayHasKey('space_length', $imagesArray['zspace']);
+        $this->assertArrayHasKey('start', $imagesArray['zspace']);
+        $this->assertArrayHasKey('step', $imagesArray['zspace']);
     }
 
     // NOT WORKING : error (blank poge) ##############################
@@ -476,92 +491,6 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey('Meta', $imagesHeadersArray);
-        $this->assertArrayHasKey('Physical', $imagesHeadersArray);
-        $this->assertArrayHasKey('Description', $imagesHeadersArray);
-        $this->assertArrayHasKey('Dimensions', $imagesHeadersArray);
-        $this->assertArrayHasKey('ScannerInfo', $imagesHeadersArray);
-
-        $this->assertArrayHasKey('Meta', $imagesHeadersArray);
-        $this->assertArrayHasKey('CandID', $imagesHeadersArray['Meta']);
-        $this->assertArrayHasKey('Visit', $imagesHeadersArray['Meta']);
-        $this->assertArrayHasKey('File', $imagesHeadersArray['Meta']);
-        $this->assertArrayHasKey('TE', $imagesHeadersArray['Physical']);
-        $this->assertArrayHasKey('TR', $imagesHeadersArray['Physical']);
-        $this->assertArrayHasKey('TI', $imagesHeadersArray['Physical']);
-        $this->assertArrayHasKey(
-            'SliceThickness',
-            $imagesHeadersArray['Physical']
-        );
-        $this->assertArrayHasKey(
-            'SeriesName',
-            $imagesHeadersArray['Description']
-        );
-        $this->assertArrayHasKey(
-            'SeriesDescription',
-            $imagesHeadersArray['Description']
-        );
-        $this->assertArrayHasKey(
-            'XSpace',
-            $imagesHeadersArray['Dimensions']
-        );
-        $this->assertArrayHasKey(
-            'Length',
-            $imagesHeadersArray['Dimensions']['XSpace']
-        );
-        $this->assertArrayHasKey(
-            'StepSize',
-            $imagesHeadersArray['Dimensions']['XSpace']
-        );
-        $this->assertArrayHasKey(
-            'YSpace',
-            $imagesHeadersArray['Dimensions']
-        );
-        $this->assertArrayHasKey(
-            'Length',
-            $imagesHeadersArray['Dimensions']['YSpace']
-        );
-        $this->assertArrayHasKey(
-            'StepSize',
-            $imagesHeadersArray['Dimensions']['YSpace']
-        );
-        $this->assertArrayHasKey(
-            'YSpace',
-            $imagesHeadersArray['Dimensions']
-        );
-        $this->assertArrayHasKey(
-            'Length',
-            $imagesHeadersArray['Dimensions']['YSpace']
-        );
-        $this->assertArrayHasKey(
-            'StepSize',
-            $imagesHeadersArray['Dimensions']['YSpace']
-        );
-        $this->assertArrayHasKey(
-            'ScannerInfo',
-            $imagesHeadersArray
-        );
-        $this->assertArrayHasKey(
-            'Manufacturer',
-            $imagesHeadersArray['ScannerInfo']
-        );
-        $this->assertArrayHasKey(
-            'Model',
-            $imagesHeadersArray['ScannerInfo']
-        );
-        $this->assertArrayHasKey(
-            'SoftwareVersion',
-            $imagesHeadersArray['ScannerInfo']
-        );
-        $this->assertArrayHasKey(
-            'SerialNumber',
-            $imagesHeadersArray['ScannerInfo']
-        );
-        $this->assertArrayHasKey(
-            'FieldStrength',
-            $imagesHeadersArray['ScannerInfo']
         );
 
         $this->assertSame(
@@ -683,6 +612,92 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
         $this->assertSame(
             gettype($imagesHeadersArray['ScannerInfo']['FieldStrength']),
             'string'
+        );
+
+        $this->assertArrayHasKey('Meta', $imagesHeadersArray);
+        $this->assertArrayHasKey('Physical', $imagesHeadersArray);
+        $this->assertArrayHasKey('Description', $imagesHeadersArray);
+        $this->assertArrayHasKey('Dimensions', $imagesHeadersArray);
+        $this->assertArrayHasKey('ScannerInfo', $imagesHeadersArray);
+
+        $this->assertArrayHasKey('Meta', $imagesHeadersArray);
+        $this->assertArrayHasKey('CandID', $imagesHeadersArray['Meta']);
+        $this->assertArrayHasKey('Visit', $imagesHeadersArray['Meta']);
+        $this->assertArrayHasKey('File', $imagesHeadersArray['Meta']);
+        $this->assertArrayHasKey('TE', $imagesHeadersArray['Physical']);
+        $this->assertArrayHasKey('TR', $imagesHeadersArray['Physical']);
+        $this->assertArrayHasKey('TI', $imagesHeadersArray['Physical']);
+        $this->assertArrayHasKey(
+            'SliceThickness',
+            $imagesHeadersArray['Physical']
+        );
+        $this->assertArrayHasKey(
+            'SeriesName',
+            $imagesHeadersArray['Description']
+        );
+        $this->assertArrayHasKey(
+            'SeriesDescription',
+            $imagesHeadersArray['Description']
+        );
+        $this->assertArrayHasKey(
+            'XSpace',
+            $imagesHeadersArray['Dimensions']
+        );
+        $this->assertArrayHasKey(
+            'Length',
+            $imagesHeadersArray['Dimensions']['XSpace']
+        );
+        $this->assertArrayHasKey(
+            'StepSize',
+            $imagesHeadersArray['Dimensions']['XSpace']
+        );
+        $this->assertArrayHasKey(
+            'YSpace',
+            $imagesHeadersArray['Dimensions']
+        );
+        $this->assertArrayHasKey(
+            'Length',
+            $imagesHeadersArray['Dimensions']['YSpace']
+        );
+        $this->assertArrayHasKey(
+            'StepSize',
+            $imagesHeadersArray['Dimensions']['YSpace']
+        );
+        $this->assertArrayHasKey(
+            'YSpace',
+            $imagesHeadersArray['Dimensions']
+        );
+        $this->assertArrayHasKey(
+            'Length',
+            $imagesHeadersArray['Dimensions']['YSpace']
+        );
+        $this->assertArrayHasKey(
+            'StepSize',
+            $imagesHeadersArray['Dimensions']['YSpace']
+        );
+        $this->assertArrayHasKey(
+            'ScannerInfo',
+            $imagesHeadersArray
+        );
+        $this->assertArrayHasKey(
+            'Manufacturer',
+            $imagesHeadersArray['ScannerInfo']
+        );
+        $this->assertArrayHasKey(
+            'Model',
+            $imagesHeadersArray['ScannerInfo']
+        );
+        $this->assertArrayHasKey(
+            'SoftwareVersion',
+            $imagesHeadersArray['ScannerInfo']
+        );
+        $this->assertArrayHasKey(
+            'SerialNumber',
+            $imagesHeadersArray['ScannerInfo']
+        );
+        $this->assertArrayHasKey(
+            'FieldStrength',
+            $imagesHeadersArray['ScannerInfo']
         );
     }
 

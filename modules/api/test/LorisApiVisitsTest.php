@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticationTest.php";
+require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP requests to every
@@ -16,12 +16,13 @@ require_once __DIR__ . "/LorisApiAuthenticationTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiVisitsTest extends LorisApiAuthenticationTest
+class LorisApiVisitsTest extends LorisApiAuthenticatedTest
 {
     protected $candidTest = "400162";
     protected $visitTest  = "V6";
+
     /**
-     * Call to setUp()
+     * Call to LorisApiAuthenticationTest::setUp()
      *
      * @return void
      */
@@ -29,6 +30,18 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
     {
         parent::setUp();
     }
+
+    /**
+     * Call to LorisApiAuthenticationTest::tearDown()
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+    }
+
+
     /**
      * Tests the HTTP GET request for the endpoint /candidates/{candid}/{visit}
      *
@@ -52,26 +65,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
                 $response->getBody()->getContents()
             ),
             true
-        );
-
-        $this->assertArrayHasKey('Meta', $candidatesVisitArray);
-        $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Site', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Battery', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Stages', $candidatesVisitArray);
-        $this->assertArrayHasKey(
-            'Visit',
-            $candidatesVisitArray['Stages']
-        );
-        $this->assertArrayHasKey(
-            'Date',
-            $candidatesVisitArray['Stages']['Visit']
-        );
-        $this->assertArrayHasKey(
-            'Status',
-            $candidatesVisitArray['Stages']['Visit']
         );
 
         $this->assertSame(gettype($candidatesVisitArray), 'array');
@@ -111,6 +104,27 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
             gettype($candidatesVisitArray['Stages']['Visit']['Status']),
             'string'
         );
+
+        $this->assertArrayHasKey('Meta', $candidatesVisitArray);
+        $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('Site', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('Battery', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('Stages', $candidatesVisitArray);
+        $this->assertArrayHasKey(
+            'Visit',
+            $candidatesVisitArray['Stages']
+        );
+        $this->assertArrayHasKey(
+            'Date',
+            $candidatesVisitArray['Stages']['Visit']
+        );
+        $this->assertArrayHasKey(
+            'Status',
+            $candidatesVisitArray['Stages']['Visit']
+        );
+
     }
 
     /**
@@ -180,12 +194,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
             true
         );
 
-        $this->assertArrayHasKey('Meta', $candidatesVisitArray);
-        $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Visit', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('SessionQC', $candidatesVisitArray);
-        $this->assertArrayHasKey('Pending', $candidatesVisitArray);
-
         $this->assertSame(gettype($candidatesVisitArray), 'array');
         $this->assertSame(
             gettype($candidatesVisitArray['Meta']),
@@ -208,6 +216,11 @@ class LorisApiVisitsTest extends LorisApiAuthenticationTest
             'boolean'
         );
 
+        $this->assertArrayHasKey('Meta', $candidatesVisitArray);
+        $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('Visit', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('SessionQC', $candidatesVisitArray);
+        $this->assertArrayHasKey('Pending', $candidatesVisitArray);
     }
 
     /**
