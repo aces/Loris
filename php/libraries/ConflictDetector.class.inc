@@ -104,14 +104,14 @@ class ConflictDetector
     function clearConflictsForField(array $diffLine): void
     {
         $deleteWhere = array(
-                        'TableName'      => $diffLine['TableName'],
-                        'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
-                        'ExtraKey1'      => $diffLine['ExtraKey1'],
-                        'ExtraKey2'      => $diffLine['ExtraKey2'],
-                        'FieldName'      => $diffLine['FieldName'],
-                        'CommentId1'     => $diffLine['CommentId1'],
-                        'CommentId2'     => $diffLine['CommentId2'],
-                       );
+            'TableName'      => $diffLine['TableName'],
+            'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
+            'ExtraKey1'      => $diffLine['ExtraKey1'],
+            'ExtraKey2'      => $diffLine['ExtraKey2'],
+            'FieldName'      => $diffLine['FieldName'],
+            'CommentId1'     => $diffLine['CommentId1'],
+            'CommentId2'     => $diffLine['CommentId2'],
+        );
 
         \Database::singleton()->delete('conflicts_unresolved', $deleteWhere);
     }
@@ -139,7 +139,7 @@ class ConflictDetector
      *
      * @return boolean True if there are conflicts that exist, false otherwise
      */
-    function isInstrumentInstanceInConflictState(string $commentId): bool
+    static function isInstrumentInstanceInConflictState(string $commentId): bool
     {
         $conflictCount = \Database::singleton()->pselectOne(
             "SELECT COUNT(*) FROM conflicts_unresolved WHERE CommentId1=:CID",

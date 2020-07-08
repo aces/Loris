@@ -63,7 +63,17 @@ class Stats_Behavioural extends \NDB_Form
     {
         parent::setup();
 
-        $DB =& \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
+
+        //SITES
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+        $sitesString = implode(",", array_keys($list_of_sites));
 
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
@@ -72,16 +82,16 @@ class Stats_Behavioural extends \NDB_Form
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
-                    AND Study_site = 'Y'",
+                    AND Study_site = 'Y'
+	            AND CenterID IN (" . $sitesString . ")",
             array()
         );
 
         $this->tpl_data['Centers'] = $centers;
 
-        $projects[null] = 'All Projects';
-        foreach (\Utility::getProjectList() as $key=>$value) {
-            $projects[$key] = $value;
-        }
+        $projects     = \Utility::getProjectList();
+        $projects[''] = 'All Projects';
+
         $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
@@ -89,9 +99,9 @@ class Stats_Behavioural extends \NDB_Form
                 && $_REQUEST['site'] == $row['NumericID']
             ) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
 
         }
@@ -101,10 +111,11 @@ class Stats_Behavioural extends \NDB_Form
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = array(
-                   'ID'   => $currentProject,
-                   'Name' => $projects[$currentProject],
-                  );
-            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+                    'ID'   => $currentProject,
+                    'Name' => $projects[$currentProject],
+                );
+            $Param_Project       ='AND (s.ProjectID IS NULL 
+                                   OR c.RegistrationProjectID=:pid)';
             $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } else {
             $currentProject = '';
@@ -142,6 +153,7 @@ class Stats_Behavioural extends \NDB_Form
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
+	            AND s.CenterID IN (" . $sitesString . ")
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
@@ -153,13 +165,13 @@ class Stats_Behavioural extends \NDB_Form
             // so that they don't wrap. Note that "c"(enter array) needs to
             // be a reference since we'll be modifying it.
             $center = $row['CenterID'];
-            $vl     = $row['VLabel'];
+            $vl     = intval($row['VLabel']);
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
             if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += $row['val'];
+                $c[$vl]['total'] += intval($row['val']);
             } else {
-                $c[$vl]['total'] = $row['val'];
+                $c[$vl]['total'] = intval($row['val']);
             }
             if (isset($c['all']['total'])) {
                 $c['all']['total'] += $row['val'];
@@ -199,27 +211,28 @@ class Stats_Behavioural extends \NDB_Form
         }
         // DDE STATS
         $result = $DB->pselect(
-            "SELECT s.CenterID, 
-                f.Data_Entry as Data_Entry, 
-                s.visit_label as VLabel,
-                COUNT(s.CandID) as val
+            "SELECT s.CenterID,
+                    f.Data_Entry as Data_Entry,
+                    s.visit_label as VLabel,
+                    COUNT(s.CandID) as val
                 FROM session as s
-                    JOIN candidate as c ON (s.CandID=c.CandID)
-                    JOIN flag as f ON (f.SessionID=s.ID)
-                WHERE s.Active='Y' 
-                AND s.Current_stage <> 'Recycling Bin'
-                AND f.CommentID LIKE 'DDE%' 
-                AND c.Active='Y'
-                AND s.CenterID <> '1'
-                $suproject_query
-                $Param_Project
+                    JOIN candidate as c ON(s.CandID=c.CandID)
+                    JOIN flag as f ON(f.SessionID=s.ID)
+                WHERE s.Active = 'Y'
+                    AND s.Current_stage <> 'Recycling Bin'
+                    AND f.CommentID LIKE 'DDE%'
+                    AND c.Active = 'Y'
+                    AND s.CenterID <> '1'
+                    AND s.CenterID IN(" . $sitesString . ")
+                    $suproject_query
+                    $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
             $this->params ?? array()
         );
 
         foreach ($result as $row) {
             $center = $row['CenterID'];
-            $vl     = $row['VLabel'];
+            $vl     = intval($row['VLabel']);
             $c      =& $this->tpl_data['dde']['C' . $center];
 
             if (isset($c[$vl]['total'])) {
@@ -279,7 +292,7 @@ class Stats_Behavioural extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/statistics/js/form_stats_behavioural.js",
+                $baseURL . "/statistics/js/form_stats_behavioural.js",
             )
         );
     }

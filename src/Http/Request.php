@@ -22,8 +22,6 @@ namespace LORIS\Http;
  *
  * It is intended to reduce our coupling to any particular PSR15 implementation.
  */
-class Request 
-    extends \GuzzleHttp\Psr7\Request
-    implements \Psr\Http\Message\RequestInterface
+class Request extends \GuzzleHttp\Psr7\Request implements \Psr\Http\Message\RequestInterface
 {
 }

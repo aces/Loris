@@ -1,3 +1,4 @@
+import React from 'react';
 import ProjectFormFields from './projectFields';
 
 class PublicationUploadForm extends React.Component {
@@ -20,24 +21,8 @@ class PublicationUploadForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
-    this.validateEmail = this.validateEmail.bind(this);
     this.setFileData = this.setFileData.bind(this);
     this.fetchData = this.fetchData.bind(this);
-  }
-
-  validateEmail(field, email) {
-    let formErrors = this.state.formErrors;
-
-    // don't supply error if email is blank
-    if (email === '' || email === null || email === undefined) {
-      delete formErrors[field];
-      // if email is invalid, set error, else nullify error
-    } else if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) === false) {
-      formErrors[field] = 'Invalid email';
-    } else {
-      delete formErrors[field];
-    }
-    this.setState({formErrors});
   }
 
   fetchData() {
@@ -194,16 +179,20 @@ class PublicationUploadForm extends React.Component {
     let createElements;
     let formClass = 'col-md-12 col-lg-12';
     if (!this.props.editMode) {
-      createElements = [
-        <h3 className="col-md-offset-3 col-lg-offset-3">Propose a new project</h3>,
-        <TextboxElement
-          name="title"
-          label="Title"
-          onUserInput={this.setFormData}
-          required={true}
-          value={this.state.formData.title}
-        />,
-      ];
+      createElements = (
+        <div key='propose_new_project'>
+          <h3 className="col-md-offset-3 col-lg-offset-3">
+            Propose a new project
+          </h3>
+          <TextboxElement
+            name="title"
+            label="Title"
+            onUserInput={this.setFormData}
+            required={true}
+            value={this.state.formData.title}
+          />
+        </div>
+    );
       // if not in edit mode, shrink form for consistent display
       formClass = 'col-md-8 col-lg-7';
     }
@@ -226,7 +215,6 @@ class PublicationUploadForm extends React.Component {
               setFileData={this.setFileData}
               addListItem={this.addListItem}
               removeListItem={this.removeListItem}
-              validateEmail={this.validateEmail}
               toggleEmailNotify={this.toggleEmailNotify}
               uploadTypes={this.state.Data.uploadTypes}
               users={this.state.Data.users}

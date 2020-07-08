@@ -42,5 +42,5 @@ interface Filter
      *
      * @return bool true if and only if the user should see the resource Instance
      */
-    function filter(\User $user, DataInstance $resource) : bool;
+    public function filter(\User $user, DataInstance $resource) : bool;
 }

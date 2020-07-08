@@ -79,26 +79,26 @@ class MediaTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-      * Testing React filter in this page.
-      *
-      * @return void
-      */
+     * Testing React filter in this page.
+     *
+     * @return void
+     */
     function testBrowseFilter()
     {
         $this->safeGet($this->url . "/media/");
         $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
         $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
         $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
-        $this->_testFilter(self::$Language, self::$table, "27", "2");
+        $this->_testFilter(self::$Language, self::$table, "26", "2");
         $this->_testFilter(self::$Instrument, self::$table, "4 rows", "2");
         $this->_testFilter(self::$Site, self::$table, "12 rows", "2");
 
     }
     /**
-      * Testing the link React filter in this page.
-      *
-      * @return void
-      */
+     * Testing the link React filter in this page.
+     *
+     * @return void
+     */
     function testVisitAndEditLink()
     {
         $this->markTestSkipped(

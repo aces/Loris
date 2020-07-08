@@ -108,13 +108,10 @@ class DirectDataEntryMainPage
                 FROM instrument_subtests
                 WHERE Test_name=:TN AND Order_number=:PN",
                 array(
-                 'TN' => $this->TestName,
-                 'PN' => $pageNum,
+                    'TN' => $this->TestName,
+                    'PN' => $pageNum,
                 )
             );
-        }
-        if ($this->Subtest === array()) {
-            $this->Subtest = "";
         }
 
         $totalPages        = $DB->pselectOne(
@@ -126,13 +123,13 @@ class DirectDataEntryMainPage
 
         $this->CommentID = $this->getCommentID();
         $this->tpl_data  = array(
-                            'nextpage'    => $this->NextPageNum,
-                            'prevpage'    => $this->PrevPageNum,
-                            'pageNum'     => $pageNum ? $pageNum + 1: 1,
-                            'totalPages'  => $totalPages,
-                            'key'         => $this->key,
-                            'study_title' => $config->getSetting('title'),
-                           );
+            'nextpage'    => $this->NextPageNum,
+            'prevpage'    => $this->PrevPageNum,
+            'pageNum'     => $pageNum ? $pageNum + 1: 1,
+            'totalPages'  => $totalPages,
+            'key'         => $this->key,
+            'study_title' => $config->getSetting('title'),
+        );
     }
 
 
@@ -155,8 +152,8 @@ class DirectDataEntryMainPage
                 "SELECT Order_number FROM instrument_subtests
                 WHERE Test_name=:TN AND Order_number=:PN",
                 array(
-                 'TN' => $this->TestName,
-                 'PN' => $nextPage,
+                    'TN' => $this->TestName,
+                    'PN' => $nextPage,
                 )
             )
         );
@@ -196,8 +193,8 @@ class DirectDataEntryMainPage
             "SELECT Order_number FROM instrument_subtests 
             WHERE Test_name=:TN AND Order_number=:PN",
             array(
-             'TN' => $this->TestName,
-             'PN' => $prevPage,
+                'TN' => $this->TestName,
+                'PN' => $prevPage,
             )
         );
     }
@@ -229,7 +226,7 @@ class DirectDataEntryMainPage
             "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
             array(
-             'key' => $this->key,
+                'key' => $this->key,
             )
         );
     }
@@ -309,8 +306,8 @@ class DirectDataEntryMainPage
         $DB->update(
             "participant_accounts",
             array(
-             'UserEaseRating' => $ease,
-             'UserComments'   => $comments,
+                'UserEaseRating' => $ease,
+                'UserComments'   => $comments,
             ),
             array('OneTimePassword' => $this->key)
         );
@@ -372,23 +369,23 @@ class DirectDataEntryMainPage
             $this->tpl_data['complete']  = true;
 
             $this->updateStatus('Complete');
-            $Responses      = $DB->update(
+            $DB->update(
                 $this->TestName,
                 array(
-                 'Date_taken' => date('Y-m-d'),
+                    'Date_taken' => date('Y-m-d'),
                 ),
                 array(
-                 'CommentID' => $this->CommentID,
+                    'CommentID' => $this->CommentID,
                 )
             );
-            $Responses_flag = $DB->update(
+            $DB->update(
                 'flag',
                 array(
-                 'Data_entry'     => 'Complete',
-                 'Administration' => 'All',
+                    'Data_entry'     => 'Complete',
+                    'Administration' => 'All',
                 ),
                 array(
-                 'CommentID' => $this->CommentID,
+                    'CommentID' => $this->CommentID,
                 )
             );
 

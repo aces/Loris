@@ -44,8 +44,8 @@ class DocTree extends \NDB_Page
     {
         return $user->hasAnyPermission(
             array(
-             'document_repository_view',
-             'document_repository_delete',
+                'document_repository_view',
+                'document_repository_delete',
             )
         );
     }
@@ -63,28 +63,26 @@ class DocTree extends \NDB_Page
         if ($request->getMethod()=='GET') {
             $id = basename($request->getUri()->getPath());
             return (new \LORIS\Http\Response())
-            ->withHeader("Content-Type", "text/plain")
-            ->withStatus(200)
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode($this->fileTree($id))
-                )
-            );
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($this->fileTree($id))
+                    )
+                );
         }
     }
     /**
      * This method will return an array of document_repository_categories
      *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return array All the data from the document_repository_categories table
      */
     public function getTreeData()
     {
-          $DB       = \Database::singleton();
-          $category = $DB->pselect(
-              "SELECT * FROM document_repository_categories",
-              array()
-          );
-          return $category;
+        return \Database::singleton()->pselect(
+            "SELECT * FROM document_repository_categories",
+            array()
+        );
     }
     /**
      * This method will return an array of all children's categories
@@ -119,22 +117,21 @@ class DocTree extends \NDB_Page
      *
      * @return array the result
      */
-    Public function getParents($data, $id)
+    public function getParents($data, $id)
     {
         $arr = array();
         foreach ($data as $v) {
             if ($v['id'] == $id) {
                 $arr[] = $v;
                 if ($v['parent_id'] != 0) {
-                     $arr = array_merge(
-                         $this->getParents($data, $v['parent_id']),
-                         $arr
-                     );
+                    $arr = array_merge(
+                        $this->getParents($data, $v['parent_id']),
+                        $arr
+                    );
                 }
             }
         }
-            return $arr;
-
+        return $arr;
     }
     /**
      * This method will return a json of the parent's categroies and

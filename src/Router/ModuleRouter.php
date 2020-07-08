@@ -13,6 +13,7 @@
  */
 
 namespace LORIS\Router;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -44,30 +45,28 @@ class ModuleRouter extends PrefixRouter
     public function __construct(\Module $module, string $moduledir)
     {
         $this->module = $module;
-        parent::__construct(
-            new \ArrayIterator(
-                [
-                 "/css/"    => new ModuleFileRouter(
-                     $module,
-                     $moduledir,
-                     "css",
-                     "text/css"
-                 ),
-                 "/js/"     => new ModuleFileRouter(
-                     $module,
-                     $moduledir,
-                     "js",
-                     "application/javascript"
-                 ),
-                 "/static/" => new ModuleFileRouter(
-                     $module,
-                     $moduledir,
-                     "static",
-                     ""
-                 ),
-                ]
-            )
-        );
+
+        $arr = [
+                "/css/"    => new ModuleFileRouter(
+                    $module,
+                    $moduledir,
+                    "css",
+                    "text/css"
+                ),
+                "/js/"     => new ModuleFileRouter(
+                    $module,
+                    $moduledir,
+                    "js",
+                    "application/javascript"
+                ),
+                "/static/" => new ModuleFileRouter(
+                    $module,
+                    $moduledir,
+                    "static",
+                    ""
+                ),
+               ];
+        parent::__construct(new \ArrayIterator($arr));
     }
 
     /**

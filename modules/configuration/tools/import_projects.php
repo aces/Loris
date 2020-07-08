@@ -49,11 +49,11 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
             $windowDiff = $row['options']['WindowDifference'];
         }
         $ins = array(
-                'SubprojectID'     => $row['id'],
-                'title'            => $row['title'],
-                'useEDC'           => 0,
-                'WindowDifference' => $windowDiff,
-               );
+            'SubprojectID'     => $row['id'],
+            'title'            => $row['title'],
+            'useEDC'           => 0,
+            'WindowDifference' => $windowDiff,
+        );
         if ($row['options']['useEDC'] === '1'
             || $row['options']['useEDC'] === 'true'
         ) {
@@ -72,10 +72,10 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-p")
     $db       = $factory->database();
     foreach ($projects['project'] as $row) {
         $insert = array(
-                   'ProjectID'         => $row['id'],
-                   'Name'              => $row['title'],
-                   'recruitmentTarget' => $row['recruitmentTarget'],
-                  );
+            'ProjectID'         => $row['id'],
+            'Name'              => $row['title'],
+            'recruitmentTarget' => $row['recruitmentTarget'],
+        );
         $insert = Utility::nullifyEmpty($insert, 'recruitmentTarget');
         $db->insert('Project', $insert);
     }

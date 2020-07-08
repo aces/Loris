@@ -39,19 +39,19 @@ $keys        = array_map(
     },
     $sessions
 );
-$results = $cdb->queryView(
+$results     = $cdb->queryView(
     "DQG-2.0",
     "instruments",
     array(
-     "reduce"       => "false",
-     "include_docs" => "true",
-     "keys"         => $keys,
+        "reduce"       => "false",
+        "include_docs" => "true",
+        "keys"         => $keys,
     ),
     true
 );
-$keys    = null;
-$cdb     = null;
-$client  = null;
+$keys        = null;
+$cdb         = null;
+$client      = null;
 //print $results;
 /*
 $justTheDocs = array_map(function($row) {

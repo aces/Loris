@@ -39,7 +39,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             'Source Field'       => '#dynamictable > thead > tr > th:nth-child(4)',
             'Description'        => '#dynamictable > thead > tr > th:nth-child(5)',
             'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)',
-           );
+        );
 
     /**
      * Inserting testing data
@@ -52,14 +52,14 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "parameter_type",
             array(
-             'Name'        => 'TestParameterNotRealMAGICNUMBER335',
-             'Type'        => 'varchar(255)',
-             'Description' => 'I am a fake description used only for testing'.
+                'Name'        => 'TestParameterNotRealMAGICNUMBER335',
+                'Type'        => 'varchar(255)',
+                'Description' => 'I am a fake description used only for testing'.
                                       ' you should not see me. MAGICNUMBER335',
-             'SourceFrom'  => 'nowhere',
-             'SourceField' => 'imaginary',
-             'Queryable'   => true,
-             'IsFile'      => 0,
+                'SourceFrom'  => 'nowhere',
+                'SourceField' => 'imaginary',
+                'Queryable'   => true,
+                'IsFile'      => 0,
             )
         );
     }
@@ -163,10 +163,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-      * Testing UI elements when page loads
-      *
-      * @return void
-      */
+     * Testing UI elements when page loads
+     *
+     * @return void
+     */
     function testPageUIs()
     {
         $this->safeGet($this->url . "/datadict/");

@@ -27,28 +27,28 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     // Initial array data
 
     static $testData = array(
-                        'ID'            => '999',
-                        'ordering'      => '999',
-                        'full_name'     => 'Demo Test',
-                        'citation_name' => "Demo's Citation",
-                        'affiliations'  => 'mcgill',
-                        'degrees'       => 'bachelors',
-                        'roles'         => 'investigators',
-                        'start_date'    => '2015-01-01',
-                        'end_date'      => '2016-01-01',
-                        'present'       => 'Yes',
-                       );
+        'ID'            => '999',
+        'ordering'      => '999',
+        'full_name'     => 'Demo Test',
+        'citation_name' => "Demo's Citation",
+        'affiliations'  => 'mcgill',
+        'degrees'       => 'bachelors',
+        'roles'         => 'investigators',
+        'start_date'    => '2015-01-01',
+        'end_date'      => '2016-01-01',
+        'present'       => 'Yes',
+    );
     static $newData  = array(
-                        'ordering'      => '9999',
-                        'full_name'     => 'Test Test',
-                        'citation_name' => "Test's Citation",
-                        'affiliations'  => 'McGill',
-                        'degrees'       => 'Bachelors',
-                        'roles'         => 'Investigators',
-                        'start_date'    => '2015-11-11',
-                        'end_date'      => '2016-11-11',
-                        'present'       => 'Yes',
-                       );
+        'ordering'      => '9999',
+        'full_name'     => 'Test Test',
+        'citation_name' => "Test's Citation",
+        'affiliations'  => 'McGill',
+        'degrees'       => 'Bachelors',
+        'roles'         => 'Investigators',
+        'start_date'    => '2015-11-11',
+        'end_date'      => '2016-11-11',
+        'present'       => 'Yes',
+    );
     /**
      * Insert testing data into the database
      * author: Wang Shen
@@ -145,9 +145,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             $element = new WebDriverSelect($select);
             $element->selectByVisibleText($value);
         } else {
-             $this->webDriver->findElement(
-                 WebDriverBy::Name($element)
-             )->sendKeys($value);
+            $this->webDriver->findElement(
+                WebDriverBy::Name($element)
+            )->sendKeys($value);
         }
         $this->webDriver->findElement(
             WebDriverBy::ID("showdata_advanced_options")

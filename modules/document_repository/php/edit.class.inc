@@ -34,6 +34,24 @@ class Edit extends \NDB_Page
     {
         return $user->hasPermission('document_repository_view');
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'Edit',
+                "/" . $_GET['lorispath']
+            )
+        );
+    }
+
     /**
      * Include additional JS files:
      *  1. editForm.js - reactified form to update repository

@@ -56,33 +56,33 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
 
         // Columns displayed in the result table
         $this->columns = array(
-                          'pid',
-                          'type',
-                          'stdout_file',
-                          'stderr_file',
-                          'exit_code_file',
-                          'exit_code',
-                          'userid',
-                          'start_time',
-                          'end_time',
-                          'exit_text',
-                         );
+            'pid',
+            'type',
+            'stdout_file',
+            'stderr_file',
+            'exit_code_file',
+            'exit_code',
+            'userid',
+            'start_time',
+            'end_time',
+            'exit_text',
+        );
 
         // Allow to sort on pid, type and userid
         $this->validFilters = array(
-                               'pid',
-                               'type',
-                               'userid',
-                              );
+            'pid',
+            'type',
+            'userid',
+        );
 
         $this->query = " FROM server_processes 
                          WHERE 1=1";
 
         $this->formToFilter = array(
-                               'pid'    => 'pid',
-                               'type'   => 'type',
-                               'userid' => 'userid',
-                              );
+            'pid'    => 'pid',
+            'type'   => 'type',
+            'userid' => 'userid',
+        );
 
     }
 
@@ -99,7 +99,7 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL .
+                $baseURL .
              "/server_processes_manager/js/server_processes_managerIndex.js",
             )
         );

@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * This parses all of the instruments and generates a staging file (ip_output.txt)

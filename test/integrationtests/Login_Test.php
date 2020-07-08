@@ -41,7 +41,7 @@ class LorisLoginTest extends LorisIntegrationTest
        $this->assertEquals('Login', $login->getAttribute("value"));
 
        $username->sendKeys("UnitTester");
-       $password->sendKeys("4test4");
+       $password->sendKeys($this->validPassword);
 
        $login->click();
 

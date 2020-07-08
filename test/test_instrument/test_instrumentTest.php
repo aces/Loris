@@ -30,19 +30,21 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $this->DB->insert("candidate", array(
-            'CandID'               => '900000',
-            'PSCID'                => 'TST0001',
-            'RegistrationCenterID' => 1,
-            'Active'               => 'Y',
-            'UserID'               => 1,
-            'Entity_type'          => 'Human'
+            'CandID'                => '900000',
+            'PSCID'                 => 'TST0001',
+            'RegistrationCenterID'  => 1,
+            'RegistrationProjectID' => 1,
+            'Active'                => 'Y',
+            'UserID'                => 1,
+            'Entity_type'           => 'Human'
         ));
         $this->DB->insert('session', array(
-            'ID' => '999999',
-            'CandID' => '900000',
-            'Visit_label' => 'V1',
-            'CenterID' => 1,
-            'Current_stage'   => 'Not Started',
+            'ID'             => '999999',
+            'CandID'         => '900000',
+            'Visit_label'    => 'V1',
+            'CenterID'       => 1,
+            'ProjectID'      => 1,
+            'Current_stage'  => 'Not Started',
         ));
 	$this->DB->insert('test_names', array(
 	    'ID' => '999999',

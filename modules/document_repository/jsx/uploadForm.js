@@ -1,5 +1,9 @@
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import swal from 'sweetalert2';
 import Loader from 'Loader';
+
 /**
  * Media Upload Form
  *
@@ -10,26 +14,27 @@ import Loader from 'Loader';
  * @version 1.0.0
  *
  * */
-class DocUploadForm extends React.Component {
+class DocUploadForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       data: {},
+      error: false,
       formData: {},
       uploadResult: null,
       errorMessage: null,
       isLoaded: false,
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -64,7 +69,8 @@ class DocUploadForm extends React.Component {
           <FormElement
             name="docUpload"
             fileUpload={true}
-            onSubmit={this.handleSubmit}
+            onSubmit={this.uploadFile}
+            method="POST"
           >
             <h3>Upload a file</h3><br/>
             <SelectElement
@@ -136,28 +142,16 @@ class DocUploadForm extends React.Component {
  *                      ******     Helper methods     *******
  *********************************************************************************/
 
-
-  /**
-   * Handle form submission
-   * @param {object} e - Form submission event
-   */
-  handleSubmit(e) {
-    e.preventDefault();
-      this.uploadFile();
-        this.setState({
-          formData: {}, // reset form data after successful file upload
-        });
-  }
-
   uploadFile() {
     // Set form data and upload the media file
     let formData = this.state.formData;
-    let formObject= new FormData();
+    let formObject = new FormData();
     for (let key in formData) {
       if (formData[key] !== '') {
         formObject.append(key, formData[key]);
       }
     }
+
     fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
@@ -165,17 +159,20 @@ class DocUploadForm extends React.Component {
       body: formObject,
     })
     .then((resp) => resp.json())
-    .then((data)=>{
-      console.log(data);
+    .then((data) => {
       if (data == 'uploaded successfully') {
-      swal('Upload Successful!', '', 'success');
-      this.props.refreshPage();
-      } else {
-      this.setState({
-          formData: formData,
+        swal.fire('Upload Successful!', '', 'success').then((result) => {
+          if (result.value) {
+            this.setState({formData: {}});
+            this.props.refreshPage();
+          }
         });
-      swal('Duplicate File Name!', '', 'error');
+      } else {
+        swal.fire('Duplicate File Name!', '', 'error');
       }
+    })
+    .catch((error) => {
+      console.error(error);
     });
   }
 
@@ -196,6 +193,7 @@ class DocUploadForm extends React.Component {
 DocUploadForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  refreshPage: PropTypes.func.isRequired,
 };
 
 export default DocUploadForm;

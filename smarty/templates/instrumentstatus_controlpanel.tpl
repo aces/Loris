@@ -83,7 +83,7 @@
             <li>
                 <span class="fa-li"><i class="{$icon}" width="12" height="12"></i></span>
             {if $subtest != $subtests[item].Name}
-                <a href="{$baseurl}/instruments/{$test_name}/?candID={$candID}&sessionID={$sessionID}&subtest={$subtests[item].Name}&commentID={$commentID}">{$subtests[item].Description}</a>
+                <a href="{$baseurl}/instruments/{$test_name}/{$subtests[item].Name}/?candID={$candID}&sessionID={$sessionID}&commentID={$commentID}">{$subtests[item].Description}</a>
             {else}
                 {$subtests[item].Description}
             {/if}

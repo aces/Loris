@@ -35,5 +35,5 @@ interface DataInstance
      *
      * @return string of data in JSON format.
      */
-    function toJSON() : string;
-};
+    public function toJSON() : string;
+}

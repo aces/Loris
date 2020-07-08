@@ -371,7 +371,8 @@ The JSON object is of the form:
         "CandID" : CandID,
         "Visit"  : VisitLabel,
         "Site"   : SiteName,
-        "Battery": "NameOfSubproject"
+        "Battery": "NameOfSubproject",
+        "Project" : ProjectName
     },
     "Stages" : {
         "Screening" :  {

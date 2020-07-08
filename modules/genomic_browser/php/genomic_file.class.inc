@@ -1,25 +1,25 @@
 <?php
 /**
-* Contains the Genomic_File class used for LORIS Genomic data
-*
-* PHP Version 7
-*
-* @category LORIS_Module
-* @package  Genomics
-* @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
-*/
+ * Contains the Genomic_File class used for LORIS Genomic data
+ *
+ * PHP Version 7
+ *
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 namespace LORIS\genomic_browser;
 /**
-    * This object represents a genomic file in the genomic_files table.
-    *
-    * @category LORIS_Module
-    * @package  Genomics
-    * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
-    * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-    * @link     https://www.github.com/aces/Loris/
-*/
+ * This object represents a genomic file in the genomic_files table.
+ *
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class Genomic_File
 {
     var $fileData   = array();
@@ -27,12 +27,12 @@ class Genomic_File
     var $QCData     = array();
 
     /**
-    * Construct a GenomicFile
-    *
-    * @param integer $fileID The FileID to be loaded
-    *
-    * @return void
-    */
+     * Construct a GenomicFile
+     *
+     * @param integer $fileID The FileID to be loaded
+     *
+     * @return void
+     */
     function __construct(int $fileID)
     {
         $db     =& \Database::singleton();
@@ -61,13 +61,13 @@ class Genomic_File
     }
 
     /**
-    * Gets a parameter for this file from the appropriate place.
-    *
-    * @param string $parameterName The parameter to be retrieved.
-    *
-    * @return ?string The value of the requested parameter. All values will be
-    * represented as strings even if they are e.g. ints or dates.
-    */
+     * Gets a parameter for this file from the appropriate place.
+     *
+     * @param string $parameterName The parameter to be retrieved.
+     *
+     * @return ?string The value of the requested parameter. All values will be
+     * represented as strings even if they are e.g. ints or dates.
+     */
     public function getParameter(string $parameterName): ?string
     {
         if (isset($this->QCData[$parameterName])) {

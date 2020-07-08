@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * This script is used to move mri violations to the resolved tab in bulk.
@@ -47,7 +48,7 @@ $query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
           v.Problem, v.SeriesUID, v.hash, v.join_id, v.Resolved FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
-                c.ProjectID as Project,
+                s.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
                 series_description as Series_Description,
@@ -69,7 +70,7 @@ $query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
             ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL UNION SELECT PatientName,
                 TimeRun,
-                c.ProjectID as Project,
+                s.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
                 mri_scan_type.Scan_type,
@@ -93,7 +94,7 @@ $query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
             ON (p.CenterID = s.CenterID)
             WHERE Resolved is NULL UNION SELECT PatientName,
                 TimeRun,
-                c.ProjectID as Project,
+                s.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
                 null,

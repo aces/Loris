@@ -14,6 +14,8 @@
 #       *  Database connection credentials: specify credentials to the test DB which you create in step 1
 #       *  Set sandbox mode to 1: <sandbox>1</sandbox>
 
+set -euo pipefail
+
 host="127.0.0.1"
 database="LorisTest"
 username="SQLTestUser"

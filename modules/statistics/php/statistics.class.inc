@@ -70,7 +70,7 @@ class Statistics extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/statistics/js/statistics.js",
+                $baseURL . "/statistics/js/statistics.js",
             )
         );
     }

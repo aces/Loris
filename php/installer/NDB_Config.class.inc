@@ -64,8 +64,8 @@ class NDB_Config extends \NDB_Config
         // to the current directory. Nothing else needs to be supported.
         if ($setting == "paths") {
             return [
-                    "base" => __DIR__ . "/../../",
-                   ];
+                "base" => __DIR__ . "/../../",
+            ];
         }
         return null;
     }

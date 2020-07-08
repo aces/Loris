@@ -195,7 +195,7 @@ table th {
 
 .frozenHeader {
     position: absolute;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 .headerColm {
@@ -765,12 +765,12 @@ a:hover {
 .list-group-item.active:hover {
     z-index: 2;
     color: white;
-    background-color: #246EB6;
-    border-color: #246EB6;
+    background-color: #E4EBF2;
+    border-color: #E4EBF2;
 }
 
 .list-group-item:hover {
-    background-color: #E4EBF2;
+    background-color: #fff;
 }
 
 a.list-group-item:hover,

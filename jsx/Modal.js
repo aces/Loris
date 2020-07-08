@@ -35,7 +35,7 @@ class Modal extends Component {
 
   handleClose() {
     if (this.props.throwWarning) {
-      swal({
+      swal.fire({
         title: 'Are You Sure?',
         text: 'Leaving the form will result in the loss of any information ' +
           'entered.',

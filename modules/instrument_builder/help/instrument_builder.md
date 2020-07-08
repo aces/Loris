@@ -1,46 +1,47 @@
 # Instrument Builder
 
-The Instrument Builder module is designed to create new behavioural forms on the database. Existing instruments that were created using the instrument builder can be added under the "Load Instrument (optional)" heading. Most new instruments will be generated through the "Create Instrument" tab.
+This module allows you to create new behavioural forms in your LORIS database.
 
-There are a series of buttons that specify the type of information each field in the form conveys.
+If you want to edit an existing instrument form created with this module, go to the **Load** tab and open the file from your computer.
 
-Field Types, by Category :
+If you are creating a new instrument, navigate to the **Build** tab. Use the fields and dropdown menus provided to build out the questions for your new instrument. Important information on each Field Type and how to use it is below in this Help text.
 
-<u>Information</u>
+After entering a question, click **Add row** and it will appear in the "form preview" just above, showing fields added already to your form. Click on any field in this form preview to modify with the **Edit** or **Delete* buttons.
 
-  • Header :: Used to specify a title for the page or section of the instrument. Text will appear in boldface at the center of the page.
+Once you are satisfied with the instrument form, navigate to the **Save** tab. Populate the fields and click **Save**.
 
-  • Label :: Functions as a subtitle to introduce a subset of questions
+**Important** to know when defining fields storing data
 
-  • Scored Field :: Specifies any field that will have data entry. The type of scored field should be indicated under the "data entry" section
+_"Question Name"_ will be the database table (back-end) field name, never seen by users. This name must be unique and fairly brief, and no special characters or spaces can go into this name. It's recommended to begin with the question number e.g. `q09_number_cigarettes_daily`.
 
-<u>Data Entry</u>
+_"Question Text"_ is the prompt seen by users or survey respondents entering data into the form. The full text of the question goes here.
 
-• Textbox :: Used for fields with free text, preferably short answers\
+#### Field types, by category
 
-• Textarea :: Used for free text fields with longer inputs such as general comments, etc.
+_Some fields display or calculate information :_
+- Header : for the Title of an instrument, page or section. Appears bold and centered in the form. 
+- Label : for explanations or blocks of text, e.g. instructions for the next section of questions
+- Scored Field : for storing calculated values (this can include dates which are calculated instead of entered)
 
-• Dropdown :: Used for forced choice fields. The options for the dropdown menu need to be specified.  Once "Dropdown" is selected, the user will see an added row labeled as "Dropdown option". Once the option has been entered, press "add option". This new option should appear in the "preview" menu. The field "not_answered" will be automatically added to each dropdown menu. Once all options have been added, click "add row". For subsequent dropdown scored fields, previous dropdown options will be preserved. If the user would like to create a new dropdown menu, click "reset".
+_Data entry fields_ :
 
-• Multiselect :: Used for fields that have a select box where multiple options can be chosen.
+- Textbox : for short-answer text questions (do not use for numbers).
 
-• Date :: Used for creating a date field such as Date of Birth
+- Textarea : for long-answer questions, e.g. comment fields.
 
-• Numeric :: Used for creating a numeric field such as Height, Weight, etc.
+- Dropdown : for selecting one option from a list. To create the list of options, type in the "Dropdown option" row and then click "add option". In the "preview" dropdown underneath you'll see your new option.  Type again in the boxes to begin defining your second option, and when all options are added, click "add row".
 
-<u>Formatting</u>
+Note: _"not_answered"_ will be automatically added as the last option for any dropdown. 
+The next time you add a dropdown field, you'll see your last options list is suggested for convenience - click "reset" to clear them.  
+	
+- Multiselect : for selecting one or more options from a list. see _Dropdown_ for information on creating/re-using Options.
 
-• Blank Line :: Can be used to separate sections within the same page of an instrument. The "Question Name" and "Question Text" can be left blank.
+- Date : for dates such as _Date of first reported incident_
 
-• Page Break :: Used to add a new page within the instrument. The "Question Text" can be populated with the name of the new page, if desired.
+- Numeric : for numbers - e.g. height, weight, etc. Ranges can be specified to enforce valid data entry.
 
-**Note on Question Names: **
-"Question Name" is the field name as it appears (only) in the back-end of the database. The "Question Text" will be seen by users on the database once the instrument has been uploaded. Users have the option of entering the same content into both the "Question Name" and "Question Text" boxes, but generally the "Question Name" is more brief and is formatted with the question number (ie. q9_short_name). Question names are unique and should not contain spaces. 
+_Formatting fields_ for cosmetic/visual form features:
 
-After each question entry, click "add row" to add the new field to the instrument code.
-
-This should appear in table format at the bottom of the page. Each row can also be added to the table simply by pressing the enter key.
-
-If a mistake was made while creating the instrument, users can directly edit the field names in the table at the bottom of the page. By clicking on the field name, a cursor should appear. The user can then make the appropriate changes and hit enter once finished. It is also possible to rearrange or delete fields using the "Options" column.
-
-Once the user is satisfied with their instrument, it can be saved and validated.
+- Blank Line : for separating blocks of questions. Leave blank "Question Name" and "Question Text".	
+- Page Break : for adding a new page within the instrument. The "Question Text" should be populated with the name of the new page. 
+Note that the first page of an instrument should be the _Top_ page (containing scores), followed by _page 1_.	

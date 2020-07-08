@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This script generates data-only dumps for all tables in the currently active database.
  * Each table in the database gets dumped into a single file in the following location :
@@ -15,7 +15,7 @@
  * allowing to dump data using only the database name. The functionality to input
  * credentials interactively should be added.
  *
- * PHP Version
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -35,6 +35,18 @@ $tableNames = $DB->pselectCol("
                       WHERE TABLE_SCHEMA =:dbn",
     array("dbn"=>$databaseInfo['database'])
 );
+
+$dbUser = $databaseInfo["quatUser"];
+$dbPassword = $databaseInfo["quatPassword"];
+$dbHost = $databaseInfo["host"];
+
+if (empty($dbUser) || empty($dbPassword) || empty($dbHost)) {
+    echo "\n\n Some database credentials are missing, please ensure administrator 
+    credentials (quatUser, quatPassword) and a host value are available in your 
+    configuration file. \n\n";
+    die();
+}
+
 /*
  * Definitions of the flags used in the command below (ORDERING is IMPORTANT):
  * --complete-insert -> Use complete INSERT statements that include column names
@@ -54,10 +66,13 @@ $tableNames = $DB->pselectCol("
  *                      values to accommodate for timezone differences.
  */
 
+
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
-    $filename = __DIR__ . "/../../raisinbread/RB_files/RB_$tableName.sql";
-    exec('mysqldump '.$databaseInfo['database'].' '.
+    $paths = \NDB_Config::singleton()->getSetting('paths');
+    $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
+    exec('mysqldump -u '.escapeshellarg($dbUser).' -p'.escapeshellarg($dbPassword).' -h '.escapeshellarg($dbHost).' '.
+        escapeshellarg($databaseInfo['database']).' '.
         '--complete-insert '.
         '--no-create-db '.
         '--no-create-info '.

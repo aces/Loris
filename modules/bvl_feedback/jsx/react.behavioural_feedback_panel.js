@@ -112,7 +112,7 @@ class FeedbackPanelContent extends Component {
 
       return (
         <div className="panel-collapse collapse in">
-          <div className="panel-body" style={{overflowX: 'auto'}}>
+          <div className="panel-body">
             {table}
           </div>
         </div>

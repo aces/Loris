@@ -38,10 +38,10 @@ class ServerProcessLauncher
     private $_databaseProvider;
 
     /**
-      * Accessor for field $_databaseProvider
-      *
-      * @return IDatabaseProvider value of field $_databaseProvider
-      */
+     * Accessor for field $_databaseProvider
+     *
+     * @return IDatabaseProvider value of field $_databaseProvider
+     */
     public function getDatabaseProvider()
     {
         if (is_null($this->_databaseProvider)) {
@@ -52,13 +52,13 @@ class ServerProcessLauncher
     }
 
     /**
-      * Mutator for field $_databaseProvider
-      *
-      * @param mixed $databaseProvider new value of field
-      *                                $_databaseProvider
-      *
-      * @return void
-      */
+     * Mutator for field $_databaseProvider
+     *
+     * @param mixed $databaseProvider new value of field
+     *                                $_databaseProvider
+     *
+     * @return void
+     */
     public function setDatabaseProvider($databaseProvider)
     {
         $this->_databaseProvider = $databaseProvider;
@@ -70,7 +70,7 @@ class ServerProcessLauncher
      *
      * @param AbstractServerProcess $process the process that was just started
      *
-     * @return void
+     * @return string
      * @throws \InvalidArgumentException if the process is null or if either the
      *                                  PID or the process start time is null.
      */
@@ -97,13 +97,13 @@ class ServerProcessLauncher
         $db->insert(
             'server_processes',
             array(
-             'pid'            => $process->getPid(),
-             'type'           => $process->getType(),
-             'stdout_file'    => $process->getStdoutFile(),
-             'stderr_file'    => $process->getStderrFile(),
-             'exit_code_file' => $process->getExitCodeFile(),
-             'userid'         => $process->getUserId(),
-             'start_time'     => $process->getStartTime(),
+                'pid'            => $process->getPid(),
+                'type'           => $process->getType(),
+                'stdout_file'    => $process->getStdoutFile(),
+                'stderr_file'    => $process->getStderrFile(),
+                'exit_code_file' => $process->getExitCodeFile(),
+                'userid'         => $process->getUserId(),
+                'start_time'     => $process->getStartTime(),
             )
         );
 
@@ -128,7 +128,7 @@ class ServerProcessLauncher
      *
      * @param AbstractServerProcess $process process to launch.
      *
-     * @return int ID of the process saved in the database.
+     * @return ?int ID of the process saved in the database.
      *
      * @throws \LorisException if the process cannot be launched successfully.
      */
@@ -152,7 +152,7 @@ class ServerProcessLauncher
             );
         }
 
-        return $this->_saveProcess($process);
+        return intval($this->_saveProcess($process));
     }
 
     /**
@@ -161,7 +161,7 @@ class ServerProcessLauncher
      * @param int    $mriUploadId    ID of the MRI upload in the mri_upload table.
      * @param string $sourceLocation location of the MRI file
      *
-     * @return int ID (in the database) of the launched process or null
+     * @return ?int ID (in the database) of the launched process or null
      *             if the process could not be run
      */
     public function mriUpload($mriUploadId, $sourceLocation)

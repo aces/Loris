@@ -1,3 +1,5 @@
+import React from 'react';
+
 class EmailElement extends React.Component {
   constructor() {
     super();
@@ -39,7 +41,7 @@ class EmailElement extends React.Component {
         </label>
         <div className="col-sm-7">
           <input
-            type="text"
+            type="email"
             className="form-control"
             name={this.props.name}
             id={this.props.id}
@@ -170,13 +172,15 @@ class ProjectFormFields extends React.Component {
     for (let i = 0; i <= this.props.numFiles; i++) {
       let fileName = 'file_' + i;
       fileFields.push(
-        <FileElement
-          name={fileName}
-          id={'publicationUploadEl_' + i}
-          onUserInput={this.props.setFileData}
-          label="File to upload"
-          value={this.props.formData[fileName]}
-        />
+        <div key={'file_element_' + i}>
+          <FileElement
+            name={fileName}
+            id={'publicationUploadEl_' + i}
+            onUserInput={this.props.setFileData}
+            label="File to upload"
+            value={this.props.formData[fileName]}
+          />
+        </div>
       );
       if (this.props.formData[fileName]) {
         let publicationType = 'publicationType_' + i;
@@ -223,7 +227,6 @@ class ProjectFormFields extends React.Component {
               name={name}
               label={c.name + (c.name.slice(-1) === 's' ? '\'' : '\'s') + ' Email'}
               onUserInput={this.setCollaboratorEmail}
-              onUserBlur={this.props.validateEmail}
               toggleEmailNotify={this.toggleEmailNotify}
               errorMessage={this.props.formErrors[name]}
               required={false}
@@ -281,9 +284,12 @@ class ProjectFormFields extends React.Component {
     let collabEmails = this.createCollabEmailFields();
     let fileFields = this.createFileFields();
 
-    let voiHelp = (<div>For help finding variables of interest, consult
+    let voiHelp = (
+      <span>
+        For help finding variables of interest, consult
       the <a href={loris.BaseURL + '/datadict/'}>Data Dictionary</a>
-      </div>);
+      </span>
+    );
     let collabNames = [];
     if (this.props.formData.collaborators) {
       collabNames = this.props.formData.collaborators.map((c) => c.name);
@@ -326,7 +332,6 @@ class ProjectFormFields extends React.Component {
           name="leadInvestigatorEmail"
           label="Lead Investigator Email"
           onUserInput={this.props.setFormData}
-          onUserBlur={this.props.validateEmail}
           toggleEmailNotify={this.toggleEmailNotify}
           errorMessage={this.props.formErrors.leadInvestigatorEmail}
           required={true}
@@ -407,7 +412,8 @@ class ProjectFormFields extends React.Component {
           text={voiHelp}
         />
         {fileFields}
-        <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'}/>
+        <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'}
+        />
       </div>
     );
   }

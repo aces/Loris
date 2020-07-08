@@ -272,18 +272,3 @@ INSERT INTO ImagingFileTypes
   ('edf',  'European data format (EEG)'),
   ('cnt',  'Neuroscan CNT data format (EEG)');
 
-
--- Insert into Config tables
-INSERT INTO ConfigSettings
-  (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
-  SELECT
-    'default_bids_vl',
-    'Default visit label to use when no visit label set in the BIDS dataset',
-    1,
-    0,
-    'text',
-    ID as parentID,
-    'Default visit label for BIDS dataset',
-    (SELECT MAX(OrderNumber) + 1 FROM ConfigSettings WHERE Parent=parentID)
-  FROM ConfigSettings
-  WHERE Name="imaging_pipeline";

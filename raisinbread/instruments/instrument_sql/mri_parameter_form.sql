@@ -13,7 +13,7 @@ CREATE TABLE `mri_parameter_form` (
 `Window_Difference` varchar(255) default NULL,
 `mri_dataset_name` varchar(255) default NULL,
 `type_of_data` enum('participant','human_phantom','geometric_phantom') default NULL,
-`site` enum('64','30','60','40','1','7','8','54','61','58','21','47','59','53','10','48','18','66','11','13','15','20','22','16','44','46','49','69','17','55','32','62','63','57','56','6','65','26','25','71','28','73','5','38','68','36','67','29','43','34','52','50','72','37','70','51') default NULL,
+`site` varchar(255) default NULL,
 `total_duration_hours` varchar(255) default NULL,
 `total_duration_hours_status` enum('not_answered') default NULL,
 `total_duration_minutes` varchar(255) default NULL,

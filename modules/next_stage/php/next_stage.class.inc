@@ -52,9 +52,9 @@ class Next_Stage extends \NDB_Form
         // check user permissions
         if (!$user->hasPermission('data_entry')
             || !in_array(
-                $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
+            $timePoint->getData('CenterID'),
+            $user->getData('CenterIDs')
+        )
         ) {
             return false;
         }
@@ -81,7 +81,7 @@ class Next_Stage extends \NDB_Form
         // set the date for the new stage
         $timePoint->setData(
             array(
-             "Date_".$newStage => $values['date1'],
+                "Date_".$newStage => $values['date1'],
             )
         );
 
@@ -89,7 +89,7 @@ class Next_Stage extends \NDB_Form
         if (isset($values['SubprojectID'])) {
             $timePoint->setData(
                 array(
-                 'SubprojectID' => $values['SubprojectID'],
+                    'SubprojectID' => $values['SubprojectID'],
                 )
             );
         }
@@ -98,7 +98,7 @@ class Next_Stage extends \NDB_Form
         if (isset($values['scan_done'])) {
             $timePoint->setData(
                 array(
-                 'Scan_done' => $values['scan_done'],
+                    'Scan_done' => $values['scan_done'],
                 )
             );
         }
@@ -152,12 +152,12 @@ class Next_Stage extends \NDB_Form
         $config    =& \NDB_Config::singleton();
 
         $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $config->getSetting('startYear'),
-                        'maxYear'        => $config->getSetting('endYear'),
-                       );
+            'language'       => 'en',
+            'format'         => 'YMd',
+            'addEmptyOption' => true,
+            'minYear'        => $config->getSetting('startYear'),
+            'maxYear'        => $config->getSetting('endYear'),
+        );
 
         $this->addHidden('candID', $timePoint->getData('CandID'));
         $this->addHidden('sessionID', $timePoint->getData('SessionID'));
@@ -171,9 +171,9 @@ class Next_Stage extends \NDB_Form
                 'scan_done',
                 'Scan Done',
                 array(
-                 null => null,
-                 'Y'  => 'Yes',
-                 'N'  => 'No',
+                    null => null,
+                    'Y'  => 'Yes',
+                    'N'  => 'No',
                 )
             );
             $this->addRule('scan_done', 'Scan done is required', 'required');
@@ -215,7 +215,7 @@ class Next_Stage extends \NDB_Form
     /**
      * Validate function
      *
-     * @param string $values the value
+     * @param array $values the value
      *
      * @return array|bool
      */
@@ -232,7 +232,10 @@ class Next_Stage extends \NDB_Form
         /* Check that dates are present. Return early as there is no point
          * doing further processing otherwise.
          */
-        if (!isset($values['date1'], $values['date2'])) {
+        if (!isset($values['date1'], $values['date2'])
+            || is_null($values['date1'])
+            || is_null($values['date2'])
+        ) {
             $errors['date1'] .= "Both date fields are required.";
             return $errors;
         }
@@ -253,7 +256,7 @@ class Next_Stage extends \NDB_Form
         if ($stage == 'Visit') {
             // compare the dates date of MRI
             // must be > DOB - ONLY WHEN starting Visit stage
-            $date = $values['date1'];
+            $date = $values['date1'] ?? '';
 
             if (empty($values['scan_done'])
                 && $config->getSetting('useScanDone')!='false'

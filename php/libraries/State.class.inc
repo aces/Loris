@@ -51,7 +51,7 @@ class State
      * Sets the username
      *
      * @param string|null $username the user's username or null when clearing
-     *                      SESSION state.
+     *                              SESSION state.
      *
      * @return void
      */
@@ -107,10 +107,10 @@ class State
     function getLastURL(): ?string
     {
         $timepointSubMenus = array(
-                              'instrument_list',
-                              'create_timepoint',
-                              'demographics',
-                             );
+            'instrument_list',
+            'create_timepoint',
+            'demographics',
+        );
 
         $caller =& NDB_Caller::singleton();
         if (isset($_REQUEST['test_name'])

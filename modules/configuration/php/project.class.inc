@@ -9,7 +9,7 @@
  * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
-*/
+ */
 
 namespace LORIS\configuration;
 
@@ -23,7 +23,7 @@ namespace LORIS\configuration;
  * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
-*/
+ */
 class Project extends \NDB_Form
 {
     /**
@@ -41,23 +41,25 @@ class Project extends \NDB_Form
 
 
     /**
-    * Loads the project page.
-    *
-    * @return void
-    */
+     * Loads the project page.
+     *
+     * @return void
+     */
     function setup()
     {
         parent::setup();
-        $factory     = \NDB_Factory::singleton();
-        $config      = $factory->config();
-        $projectList = \Utility::getProjectList();
-        $projects    = array();
+        $factory        = \NDB_Factory::singleton();
+        $config         = $factory->config();
+        $projectList    = \Utility::getProjectList();
+        $subprojectList = \Utility::getSubprojectList();
+        $projects       = array();
         foreach ($projectList as $ProjectID => $Name) {
             $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
-            $projects[$ProjectID]['subprojects']
+            $projects[$ProjectID]['projectSubprojects']
                 = \Utility::getSubprojectsForProject($ProjectID);
         }
-        $this->tpl_data['projects'] = $projects;
+        $this->tpl_data['projects']    = $projects;
+        $this->tpl_data['subprojects'] = $subprojectList;
     }
 
     /**

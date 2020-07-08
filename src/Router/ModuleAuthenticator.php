@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\Router;
+
 use \Psr\Http\Message\ServerRequestInterface;
 
 // FIXME: This shouldn't be in the middleware namespace. There

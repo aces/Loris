@@ -28,9 +28,6 @@ namespace LORIS\Http\Response;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class JsonResponse
-    extends \Zend\Diactoros\Response\JsonResponse
-    implements \Psr\Http\Message\ResponseInterface
+class JsonResponse extends \Zend\Diactoros\Response\JsonResponse implements \Psr\Http\Message\ResponseInterface
 {
 }
-

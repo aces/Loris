@@ -63,8 +63,8 @@ class Candidate_List extends \NDB_Menu_Filter
                           'GROUP_CONCAT(DISTINCT sp.title) as Subproject',
                           'c.Entity_type AS EntityType',
                           'MAX(s.Scan_done) as scanDone',
+                          'MAX(s.EEG_done) as eegDone',
                           'COALESCE(pso.Description,"Active") AS ParticipantStatus',
-                          'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
                           'c.Sex',
                           'COUNT(DISTINCT s.Visit_label) AS VisitCount',
                           "IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback",
@@ -84,7 +84,6 @@ class Candidate_List extends \NDB_Menu_Filter
             LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
             LEFT JOIN participant_status_options pso
                 ON (ps.participant_status=pso.ID)
-            LEFT JOIN Project p ON (c.ProjectID=p.ProjectID)
             LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
             WHERE c.Active = 'Y'";
 

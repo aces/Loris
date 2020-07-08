@@ -205,12 +205,6 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     $result = $DB->pselect('SELECT * FROM issues WHERE sessionID=:sid', array('sid' => $sessionID));
     print_r($result);
 
-   // Print from mri_acquisition_dates
-    echo "\nMRI Acquisition Dates\n";
-    echo "-------\n";
-    $result = $DB->pselect('SELECT * FROM mri_acquisition_dates WHERE SessionID=:sid', array('sid' => $sessionID));
-    print_r($result);
-
    // Print from mri_upload
     echo "\nMRI Upload\n";
     echo "-------\n";
@@ -275,10 +269,6 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         echo "\n-- Deleting from issues.\n";
         $DB->delete('issues', array('sessionID' => $sessionID));
 
-        // Delete from mri_acquisition_dates
-        echo "\n-- Deleting from mri acquisition dates.\n";
-        $DB->delete('mri_acquisition_dates', array('SessionID' => $sessionID));
-
         // Delete from mri_upload
         echo "\n-- Deleting from mri upload.\n";
         $DB->delete('mri_upload', array('SessionID' => $sessionID));
@@ -317,10 +307,6 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         // Delete from issues
         $output .= "\n-- Deleting from issues.\n";
         _printResultsSQL('issues', array('sessionID' => $sessionID), $output, $DB);
-
-        // Delete from mri_acquisition_dates
-        $output .= "\n-- Deleting from MRI acquisition dates.\n";
-        _printResultsSQL('mri_acquisition_dates', array('SessionID' => $sessionID), $output, $DB);
 
         // Delete from mri_upload
         $output .= "\n-- Deleting from MRI upload.\n";

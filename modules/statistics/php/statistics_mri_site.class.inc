@@ -43,7 +43,7 @@ class Statistics_Mri_Site extends Statistics_Site
             $this->query_vars['cid'] = $centerID;
         }
         if (!empty($projectID)) {
-            $this->query_criteria   .= " AND c.ProjectID =:pid ";
+            $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         }
     }
@@ -52,9 +52,9 @@ class Statistics_Mri_Site extends Statistics_Site
      *
      * @param string $issue the value of issue
      *
-     * @return void
+     * @return string
      */
-    function _getIssueName($issue)
+    function _getIssueName(string $issue)
     {
         switch($issue) {
         case "Tarchive_Missing":
@@ -190,17 +190,20 @@ class Statistics_Mri_Site extends Statistics_Site
     function setup()
     {
         $this->issues = array(
-                         "Tarchive_Missing",
-                         "Files_Missing",
-                         "PF_Missing",
-                        );
+            "Tarchive_Missing",
+            "Files_Missing",
+            "PF_Missing",
+        );
 
         $DB     =& \Database::singleton();
         $sqlRow = "SELECT CenterID as ID,".
                   " PSCArea as Name FROM psc WHERE CenterID=:cid";
         $center = $DB->pselectRow($sqlRow, array('cid' => $_REQUEST['CenterID']));
-        $id     = $center['ID'];
-        $name   = $center['Name'];
+        if (is_null($center)) {
+            throw new \LorisException('Invalid CenterID specified');
+        }
+        $id   = $center['ID'];
+        $name = $center['Name'];
         // List of all visits. Add to it any time a new one is seen, so
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given issue in the
@@ -222,18 +225,18 @@ class Statistics_Mri_Site extends Statistics_Site
                     $visits[] = $row['Visit_label'];
                 }
                 $results[$row['Visit_label']][] = array(
-                                                   'test_url'  => $test_url,
-                                                   'CandID'    => $row['CandID'],
-                                                   'SessionID' => $row['SessionID'],
-                                                   'CommentID' => $row['CommentID'],
-                                                   'PSCID'     => $row['PSCID'],
-                                                  );
+                    'test_url'  => $test_url,
+                    'CandID'    => $row['CandID'],
+                    'SessionID' => $row['SessionID'],
+                    'CommentID' => $row['CommentID'],
+                    'PSCID'     => $row['PSCID'],
+                );
             }
             $data[] = array(
-                       'name'        => $this->_getIssueName($issue),
-                       'count'       => $complete_count,
-                       'incompletes' => $results,
-                      );
+                'name'        => $this->_getIssueName($issue),
+                'count'       => $complete_count,
+                'incompletes' => $results,
+            );
         }
 
         $this->tpl_data["data"]     = $data;

@@ -52,14 +52,14 @@ if ($_REQUEST['OverwriteQuery'] === "false") {
 }
 
 $baseDocument = array(
-                 '_id'        => $qid,
-                 'Meta'       => array(
-                                  'DocType' => 'SavedQuery',
-                                  'user'    => $user->getUserName(),
-                                 ),
-                 'Fields'     => array(),
-                 'Conditions' => array(),
-                );
+    '_id'        => $qid,
+    'Meta'       => array(
+        'DocType' => 'SavedQuery',
+        'user'    => $user->getUserName(),
+    ),
+    'Fields'     => array(),
+    'Conditions' => array(),
+);
 if (isset($_REQUEST['QueryName'])) {
     $baseDocument['Meta']['name'] = $_REQUEST['QueryName'];
 }

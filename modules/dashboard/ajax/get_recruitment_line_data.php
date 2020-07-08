@@ -34,12 +34,12 @@ $list_of_sites = Utility::getAssociativeSiteList(true, false);
 
 foreach ($list_of_sites as $siteID => $siteName) {
     $recruitmentData['datasets'][] = array(
-                                      "name" => $siteName,
-                                      "data" => getRecruitmentData(
-                                          $siteID,
-                                          $recruitmentData['labels']
-                                      ),
-                                     );
+        "name" => $siteName,
+        "data" => getRecruitmentData(
+            $siteID,
+            $recruitmentData['labels']
+        ),
+    );
 }
 
 print json_encode($recruitmentData);
@@ -99,9 +99,9 @@ function getRecruitmentData($siteID, $labels)
              AND YEAR(c.Date_registered)=:Year
              AND c.Entity_type='Human'",
             array(
-             'Site'  => $siteID,
-             'Month' => $month,
-             'Year'  => $year,
+                'Site'  => $siteID,
+                'Month' => $month,
+                'Year'  => $year,
             )
         );
     }

@@ -29,7 +29,7 @@ class Notify
      * @param string   $type     The name of the notification type
      * @param string   $message  The message itself
      * @param int|null $centerID CenterID of the target recipients
-     *                         (if null, goes to all users)
+     *                           (if null, goes to all users)
      *
      * @return void
      */
@@ -47,11 +47,11 @@ class Notify
         }
 
         $setArray = array(
-                     'NotificationTypeID' => $typeID,
-                     'TimeSpooled'        => date("Y-m-d H:i:s"),
-                     'Message'            => $message,
-                     'CenterID'           => $centerID,
-                    );
+            'NotificationTypeID' => $typeID,
+            'TimeSpooled'        => date("Y-m-d H:i:s"),
+            'Message'            => $message,
+            'CenterID'           => $centerID,
+        );
         \Database::singleton()->insert('notification_spool', $setArray);
     }
 

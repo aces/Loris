@@ -172,9 +172,9 @@ abstract class NDB_Notifier_Abstract
     /**
      * Getter for user issuing notification
      *
-     * @return array   User issuing notification in form [ID,name,email]
+     * @return \User issuing the notification
      */
-    public function getNotifier(): array
+    public function getNotifier(): \User
     {
         return $this->notifier;
     }
@@ -196,12 +196,15 @@ abstract class NDB_Notifier_Abstract
      */
     private function _getAdminUser(): array
     {
-        $result           = \Database::singleton()->pselectRow(
+        $result = \Database::singleton()->pselectRow(
             "SELECT ID, Real_name, Email FROM users WHERE UserID='admin'",
             array()
         );
-        $info_array       = array();
-        $info_array['ID'] = $result['ID'];
+        if (is_null($result)) {
+            return array();
+        }
+        $info_array          = array();
+        $info_array['ID']    = $result['ID'];
         $info_array['name']  = $result['Real_name'];
         $info_array['email'] = $result['Email'];
         return $info_array;
@@ -238,9 +241,9 @@ abstract class NDB_Notifier_Abstract
                     AND nm.operation_type=:ot
                     ";
         $params = array(
-                   "nm" => $this->module,
-                   "ot" => $this->operation,
-                  );
+            "nm" => $this->module,
+            "ot" => $this->operation,
+        );
 
         if (!$this->_asAdmin) {
             $query        .=" AND (FIND_IN_SET(upsc.CenterID,:cid) > 0 
@@ -289,8 +292,8 @@ abstract class NDB_Notifier_Abstract
              WHERE nm.module_name=:mid
                   AND nm.operation_type=:ot",
             array(
-             "mid" => $this->module,
-             "ot"  => $this->operation,
+                "mid" => $this->module,
+                "ot"  => $this->operation,
             )
         );
 
@@ -369,15 +372,15 @@ abstract class NDB_Notifier_Abstract
         \Database::singleton()->insert(
             'notification_history',
             array(
-             "module_id"    => $this->getNotificationModuleID(
-                 $this->module,
-                 $this->operation
-             ),
-             "service_id"   => $this->getNotificationServiceID(
-                 $service
-             ),
-             "trigger_user" => $trigger_user,
-             "target_user"  => $target_user,
+                "module_id"    => $this->getNotificationModuleID(
+                    $this->module,
+                    $this->operation
+                ),
+                "service_id"   => $this->getNotificationServiceID(
+                    $service
+                ),
+                "trigger_user" => $trigger_user,
+                "target_user"  => $target_user,
             )
         );
     }
@@ -488,9 +491,9 @@ abstract class NDB_Notifier_Abstract
                       AND operation_type=:ot
                     ";
         $params = array(
-                   "mn" => $module,
-                   "ot" => $operation_type,
-                  );
+            "mn" => $module,
+            "ot" => $operation_type,
+        );
         return intval(\Database::singleton()->pselectOne($query, $params));
     }
 

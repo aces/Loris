@@ -45,7 +45,7 @@ $(function () {
         $.ajax({
             type: 'post',
             url: loris.BaseURL + '/configuration/ajax/process.php',
-            data: {id: id},
+            data: {remove: id},
             success: function () {
                 if ($(button).parent().parent().parent().children().length > 1) {
                     $(button).parent().parent().remove();
@@ -56,7 +56,7 @@ $(function () {
 
                     resetForm($(button).parent().parent());
                     $(button).parent().parent().children('.form-control').attr('name', name);
-                    $(button).addClass('remove-new').removeClass('btn-remove')
+                    $(button).addClass('remove-new').removeClass('btn-remove');
                 }
             },
             error: function(xhr, desc, err) {
@@ -72,7 +72,8 @@ $(function () {
 
         var form = $(this).serialize();
 
-        //validate(form);
+        // Clear previous feedback
+        $('.submit-area > label').remove();
 
         $.ajax({
             type: 'post',
@@ -80,13 +81,12 @@ $(function () {
             data: form,
             success: function () {
                 var html = "<label>Submitted</label>";
-                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
-                $('input[type="reset"]').attr('disabled','disabled');
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500);
+                location.reload();
             },
             error: function(xhr, desc, err) {
-                var html = "<label>One or more fields with multiple-entry option has duplicate values</label>";
-                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
-                $('input[type="reset"]').attr('disabled','disabled')
+                var html = "<label>" + xhr.responseText + "</label>";
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000);
             }
         });
     });

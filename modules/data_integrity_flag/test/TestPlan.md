@@ -6,7 +6,7 @@
    [Manual Testing]
 3. Check that results are being shown/populated in the bottom table.
    [Manual Testing]
-4. Ensure that clicking on the instrument link takes you to the Data Team Helper with the correct instrument and visit label.
+4. Ensure that clicking on the instrument link takes you to the Behavioural Quality Control with the correct instrument and visit label.
    [Manual Testing]
 ### Selection Filter
 5. Check that the filters in the Selection Filter work:

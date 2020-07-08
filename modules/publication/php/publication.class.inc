@@ -98,52 +98,52 @@ class Publication extends \NDB_Menu_Filter_Form
         $query .= " GROUP BY p.PublicationID ";
 
         $this->columns = array(
-                          'p.Title',
-                          'pcli.Name as LeadInvestigator',
-                          'p.DateProposed',
-                          'ps.Label', // Status (Approved, Pending, Rejected, etc.)
-                          'p.Description',
-                          'GROUP_CONCAT(DISTINCT pc.Name)', // Collaborators
+            'p.Title',
+            'pcli.Name as LeadInvestigator',
+            'p.DateProposed',
+            'ps.Label', // Status (Approved, Pending, Rejected, etc.)
+            'p.Description',
+            'GROUP_CONCAT(DISTINCT pc.Name)', // Collaborators
                           // vv Variables of Interest vv
                           // need to use IFNULL since GROUP_CONCAT seems to fail
                           // if first column has no entries
-                          'GROUP_CONCAT(
+            'GROUP_CONCAT(
                             DISTINCT IFNULL(pt.Name, ""), IFNULL(tn.Test_name,"")
                           )',
-                          'GROUP_CONCAT(DISTINCT pk.Label)', // Keywords
-                          'p.PublicationID',
-                         );
+            'GROUP_CONCAT(DISTINCT pk.Label)', // Keywords
+            'p.PublicationID',
+        );
 
         $this->query   = $query;
         $this->headers = array(
-                          'Title',
-                          'Lead Investigator',
-                          'Date Proposed',
-                          'Approval Status',
-                          'Description',
-                          'Collaborators',
-                          'Variables Of Interest',
-                          'Keywords',
-                          'Publication ID',
-                         );
+            'Title',
+            'Lead Investigator',
+            'Date Proposed',
+            'Approval Status',
+            'Description',
+            'Collaborators',
+            'Variables Of Interest',
+            'Keywords',
+            'Publication ID',
+        );
 
         $this->validFilters = array(
-                               'p.Title',
-                               'p.ApprovalStatus',
-                               'pc.Name',
-                               'pk.Label',
-                               'pcli.Name', // Lead Investigator's name
-                               'pt.Name',
-                              );
+            'p.Title',
+            'p.ApprovalStatus',
+            'pc.Name',
+            'pk.Label',
+            'pcli.Name', // Lead Investigator's name
+            'pt.Name',
+        );
 
         $this->formToFilter = array(
-                               'titleOrDescription'  => 'p.Title',
-                               'approvalStatus'      => 'ps.Label',
-                               'collaborators'       => 'pc.Name',
-                               'keywords'            => 'pk.Label',
-                               'variablesOfInterest' => 'pt.Name',
-                               'leadInvestigator'    => 'pcli.Name',
-                              );
+            'titleOrDescription'  => 'p.Title',
+            'approvalStatus'      => 'ps.Label',
+            'collaborators'       => 'pc.Name',
+            'keywords'            => 'pk.Label',
+            'variablesOfInterest' => 'pt.Name',
+            'leadInvestigator'    => 'pcli.Name',
+        );
     }
 
     /**

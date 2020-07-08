@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * This script allows recreation of conflicts

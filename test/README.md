@@ -3,7 +3,7 @@
 ## Requirements
 You will need Docker Engine, Docker Compose, and NodeJS.
 
-Please follow the directions [here](https://docs.docker.com/engine/installation/) to install Docker Engine. Be sure to also [create a Docker group](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/create-a-docker-group) so Docker can be run without using `sudo`.
+Please follow the directions [here](https://docs.docker.com/engine/installation/) to install Docker Engine. Be sure to also [create a Docker group](https://docs.docker.com/install/linux/linux-postinstall/) so Docker can be run without using `sudo`.
 
 Next, install Docker Compose:
 

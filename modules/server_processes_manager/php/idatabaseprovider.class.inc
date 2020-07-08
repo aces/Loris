@@ -26,10 +26,10 @@ namespace LORIS\server_processes_manager;
 interface IDatabaseProvider
 {
     /**
-      * Gets a database object used to access the database.
-      *
-      * @return \Database object used to access the database.
-      */
+     * Gets a database object used to access the database.
+     *
+     * @return \Database object used to access the database.
+     */
     function getDatabase();
 }
 

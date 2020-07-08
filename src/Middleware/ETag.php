@@ -12,6 +12,7 @@
  */
 
 namespace LORIS\Middleware;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
@@ -61,7 +62,7 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
             if ($clientETag == $endpointETag) {
                 // It matches, so just return a 304 Not modified instead of
                 // doing any work.
-                return new \LORIS\Http\Response\NotModified(
+                return new \LORIS\Http\Response\JSON\NotModified(
                     $endpointETag
                 );
             }

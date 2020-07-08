@@ -33,13 +33,13 @@ abstract class IdentifierGenerator
     protected $length;
     protected $minValue;
     protected $maxValue;
-    protected $prefix = '';
+    protected $siteAlias = '';
 
     /**
-    * Generates a new unused identifier to represent a Candidate in LORIS.
-    *
-    * @return string The new identifier
-    */
+     * Generates a new unused identifier to represent a Candidate in LORIS.
+     *
+     * @return string The new identifier
+     */
     protected function createNewID(): string
     {
         // Check that it is possible to create a new ID.
@@ -76,7 +76,7 @@ abstract class IdentifierGenerator
      * the new ID will be an incremented value of that parameter.
      *
      * @param string $id An existing ID. This function will increment based on
-     *                                      this value if present.
+     *                   this value if present.
      *
      * @return string The new ID.
      */

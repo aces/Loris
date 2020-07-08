@@ -67,7 +67,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                 $row  = $DB->pselectRow(
                     "SELECT cr.ConflictID, cr.TableName, cr.ExtraKeyColumn,
                     cr.ExtraKey1, cr.ExtraKey2, cr.FieldName, cr.CommentId1,
-                    cr.Value1, cr.CommentId2, cr.Value2, c.ProjectID
+                    cr.Value1, cr.CommentId2, cr.Value2, s.ProjectID
                     FROM conflicts_unresolved cr
                     JOIN flag f ON (cr.CommentId1=f.CommentID)
                     JOIN session s ON (f.SessionID=s.ID)
@@ -87,30 +87,30 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                         array('CID' => $row['CommentId2'])
                     );
                     $resolutionLog = array(
-                                      'UserID'         => $user->getUsername(),
-                                      'User1'          => $user1,
-                                      'User2'          => $user2,
-                                      'TableName'      => $row['TableName'],
-                                      'ExtraKeyColumn' => $row['ExtraKeyColumn'],
-                                      'ExtraKey1'      => $row['ExtraKey1'],
-                                      'ExtraKey2'      => $row['ExtraKey2'],
-                                      'FieldName'      => $row['FieldName'],
-                                      'CommentId1'     => $row['CommentId1'],
-                                      'CommentId2'     => $row['CommentId2'],
-                                      'OldValue1'      => $row['Value1'],
-                                      'OldValue2'      => $row['Value2'],
-                                      'NewValue'       => $val,
-                                      'ConflictID'     => $row['ConflictID'],
-                                     );
+                        'UserID'         => $user->getUsername(),
+                        'User1'          => $user1,
+                        'User2'          => $user2,
+                        'TableName'      => $row['TableName'],
+                        'ExtraKeyColumn' => $row['ExtraKeyColumn'],
+                        'ExtraKey1'      => $row['ExtraKey1'],
+                        'ExtraKey2'      => $row['ExtraKey2'],
+                        'FieldName'      => $row['FieldName'],
+                        'CommentId1'     => $row['CommentId1'],
+                        'CommentId2'     => $row['CommentId2'],
+                        'OldValue1'      => $row['Value1'],
+                        'OldValue2'      => $row['Value2'],
+                        'NewValue'       => $val,
+                        'ConflictID'     => $row['ConflictID'],
+                    );
 
                     $DB->insert('conflicts_resolved', $resolutionLog);
 
                     // update the source tables
                     $setArray    = array(
-                                    $row['FieldName'] => (
+                        $row['FieldName'] => (
                                     $val == '1' ? $row['Value1'] : $row['Value2']
                                     ),
-                                   );
+                    );
                     $whereArray1 = array('CommentID' => $row['CommentId1']);
                     $whereArray2 = array('CommentID' => $row['CommentId2']);
                     if ($row['ExtraKeyColumn'] != null) {
@@ -184,21 +184,21 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
     {
         // set the class variables
         $this->columns = array(
-                          'conflicts_unresolved.TableName as instrument',
-                          'session.CandID as candID',
-                          'candidate.PSCID as pscid',
-                          'session.Visit_label as visit_label',
-                          'Project.Name as Project',
-                         );
+            'conflicts_unresolved.TableName as instrument',
+            'session.CandID as candID',
+            'candidate.PSCID as pscid',
+            'session.Visit_label as visit_label',
+            'Project.Name as Project',
+        );
 
         $this->columns = array_merge(
             $this->columns,
             array(
-             'conflicts_unresolved.FieldName as question',
-             '"" as Correct_Answer',
-             'conflicts_unresolved.Value1 as Value1',
-             'conflicts_unresolved.Value2 as Value2',
-             "MD5(
+                'conflicts_unresolved.FieldName as question',
+                '"" as Correct_Answer',
+                'conflicts_unresolved.Value1 as Value1',
+                'conflicts_unresolved.Value2 as Value2',
+                "MD5(
                  CONCAT_WS(
                      ':',
                      conflicts_unresolved.TableName,
@@ -211,7 +211,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                  )
              )
              as Hash",
-             '(SELECT name FROM psc WHERE CenterID=session.CenterID) as site',
+                '(SELECT name FROM psc WHERE CenterID=session.CenterID) as site',
             )
         );
 
@@ -219,7 +219,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
-            LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
+            LEFT JOIN Project ON (session.ProjectID=Project.ProjectID )
             WHERE session.Active='Y' AND candidate.Active ='Y'";
 
         $user = \User::singleton();
@@ -232,18 +232,18 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $this->group_by = '';
         $this->order_by = 'conflicts_unresolved.TableName, session.Visit_label';
         $this->headers  = array(
-                           'Instrument',
-                           'CandID',
-                           'PSCID',
-                           'Visit Label',
-                           'Project',
-                           'Question',
-                           'Correct Answer',
-                           'Value1',
-                           'Value2',
-                           'Hash',
-                           'Site',
-                          );
+            'Instrument',
+            'CandID',
+            'PSCID',
+            'Visit Label',
+            'Project',
+            'Question',
+            'Correct Answer',
+            'Value1',
+            'Value2',
+            'Hash',
+            'Site',
+        );
     }
 
     /**
@@ -287,9 +287,9 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         }
 
         $labelOptions = array(
-                         'addEmptyOption'   => true,
-                         'emptyOptionValue' => '',
-                        );
+            'addEmptyOption'   => true,
+            'emptyOptionValue' => '',
+        );
 
         // Add form elements
         $this->addSelect('site', 'For Site:', $sites);
@@ -299,16 +299,16 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             'candID',
             'CandID:',
             array(
-             'size'      => 9,
-             'maxlength' => 6,
+                'size'      => 9,
+                'maxlength' => 6,
             )
         );
         $this->addBasicText(
             'pSCID',
             'PSCID:',
             array(
-             'size'      => 9,
-             'maxlength' => 7,
+                'size'      => 9,
+                'maxlength' => 7,
             )
         );
         $this->addBasicText('question', 'Question:');
@@ -409,9 +409,9 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             $data[] = $row;
         }
         return array(
-                'Headers' => $unanonymized['Headers'],
-                'Data'    => $data,
-               );
+            'Headers' => $unanonymized['Headers'],
+            'Data'    => $data,
+        );
     }
 
     /**
@@ -427,7 +427,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . '/conflict_resolver/js/conflictResolverIndex.js',
+                $baseURL . '/conflict_resolver/js/conflictResolverIndex.js',
             )
         );
     }

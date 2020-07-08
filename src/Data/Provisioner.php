@@ -63,4 +63,4 @@ interface Provisioner
      * @return \Traversable of DataInstance objects
      */
     public function execute(\User $user) : \Traversable;
-};
+}

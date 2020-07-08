@@ -33,7 +33,7 @@ class HelpRow implements \LORIS\Data\DataInstance
      * Create a new HelpRow
      *
      * @param array $row The row (in the same format as \Database::pselectRow returns
-     *                     returns
+     *                   returns
      */
     public function __construct(array $row)
     {

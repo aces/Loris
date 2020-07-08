@@ -22,10 +22,29 @@ namespace LORIS\data_release;
  * @author   Justin Kat <justinkat@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
-*/
+ */
 
 class Data_Release extends \NDB_Menu_Filter
 {
+    /**
+     * Check user permissions
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        // check user permissions
+        return $user->hasAnyPermission(
+            array(
+                'data_release_view',
+                'data_release_upload',
+                'data_release_edit_file_access'
+            )
+        );
+    }
+
     /**
      * Setup variables
      *
@@ -40,10 +59,10 @@ class Data_Release extends \NDB_Menu_Filter
 
         // set the class variables
         $this->columns = array(
-                          'file_name',
-                          'version',
-                          'upload_date',
-                         );
+            'file_name',
+            'version',
+            'upload_date',
+        );
         $this->query   = " FROM data_release dr";
 
         if (!$user->hasPermission("superuser")) {
@@ -57,20 +76,20 @@ class Data_Release extends \NDB_Menu_Filter
         $this->group_by     = '';
         $this->order_by     = 'upload_date';
         $this->headers      = array(
-                               'file_name',
-                               'version',
-                               'upload_date',
-                              );
+            'file_name',
+            'version',
+            'upload_date',
+        );
         $this->validFilters = array(
-                               'file_name',
-                               'version',
-                               'upload_date',
-                              );
+            'file_name',
+            'version',
+            'upload_date',
+        );
         $this->formToFilter = array(
-                               'file_name'   => 'file_name',
-                               'version'     => 'version',
-                               'upload_date' => 'upload_date',
-                              );
+            'file_name'   => 'file_name',
+            'version'     => 'version',
+            'upload_date' => 'upload_date',
+        );
 
         $userUpload     = $user->hasPermission("data_release_upload");
         $userEditAccess = $user->hasPermission("data_release_edit_file_access");

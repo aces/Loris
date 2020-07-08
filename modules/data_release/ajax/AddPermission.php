@@ -5,13 +5,13 @@
  *
  * PHP Version 7
  *
- *  @todo use the 'addpermissionSuccess' flag for front-end enhancements
+ * @todo use the 'addpermissionSuccess' flag for front-end enhancements
  *
- *  @category Loris
- *  @package  Data_Release
- *  @author   Justin Kat <justinkat@gmail.com>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/aces/Loris
+ * @category Loris
+ * @package  Data_Release
+ * @author   Justin Kat <justinkat@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
  */
 
 $user     = \User::singleton();
@@ -29,8 +29,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
         $DB->insertIgnore(
             'data_release_permissions',
             array(
-             'userid'          => $userid,
-             'data_release_id' => $data_release_id,
+                'userid'          => $userid,
+                'data_release_id' => $data_release_id,
             )
         );
 
@@ -51,8 +51,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
             $DB->insertIgnore(
                 'data_release_permissions',
                 array(
-                 'userid'          => $userid,
-                 'data_release_id' => $ID,
+                    'userid'          => $userid,
+                    'data_release_id' => $ID,
                 )
             );
         }
@@ -115,8 +115,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
                         $DB->insert(
                             'data_release_permissions',
                             array(
-                             'userid'          => $userid,
-                             'data_release_id' => $fileID,
+                                'userid'          => $userid,
+                                'data_release_id' => $fileID,
                             )
                         );
                     }
@@ -140,8 +140,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
                         $DB->insert(
                             'data_release_permissions',
                             array(
-                             'userid'          => $userid,
-                             'data_release_id' => $fileID,
+                                'userid'          => $userid,
+                                'data_release_id' => $fileID,
                             )
                         );
                     }
@@ -152,8 +152,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
                         $DB->delete(
                             'data_release_permissions',
                             array(
-                             'userid'          => $userid,
-                             'data_release_id' => $fileID,
+                                'userid'          => $userid,
+                                'data_release_id' => $fileID,
                             )
                         );
                     }
@@ -168,8 +168,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
                         $DB->delete(
                             'data_release_permissions',
                             array(
-                             'userid'          => $userid,
-                             'data_release_id' => $fileID,
+                                'userid'          => $userid,
+                                'data_release_id' => $fileID,
                             )
                         );
                     }

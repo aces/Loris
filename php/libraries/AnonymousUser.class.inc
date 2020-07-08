@@ -4,11 +4,11 @@
  *
  * PHP Version 7
  *
- *  @category Main
- *  @package  Main
- *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Main
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS;
 
@@ -17,11 +17,11 @@ namespace LORIS;
  * This allows one to type hint User parameters or return values without needing
  * to worry about the case where the user is not logged in.
  *
- *  @category Main
- *  @package  Main
- *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Main
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class AnonymousUser extends \User
 {

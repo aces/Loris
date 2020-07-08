@@ -12,8 +12,8 @@
    Uploader table on the 'fly', as fields are being filled out. Ensure that this works no matter what page of results
    from the query to the uploads table you are currently on. Ensure that 'Clear Filters' button works.
    [Manual Testing]      
-5. Ensure that the 'Upload' tab has the CandID, PSCID, and Visit Label greyed out upon loading. These greyed out fields remain
-   as such if the 'Phantom Scans' is set to Yes, and become fillable and required fields if 'Phantom Scans' is set to No.  
+5. Ensure that the 'Upload' tab has the CandID, PSCID, and Visit Label greyed out. These greyed out fields remain
+   empty if the 'Phantom Scans' is set to Yes, and are properly filled based on the uploaded filename if 'Phantom Scans' is set to No.  
    [Manual Testing]
 6. Test validation errors for 'CandID', 'PSCID', and 'Visit Label' in the 'Upload' tab and ensure that the appropriate
    error messages are displayed under the relevant form elements.
@@ -47,7 +47,6 @@
    - A file that is not of type `.tgz` or `tar.gz` or `.zip` (e.g. a `.jpg` or `.txt`)
    - A file that exceeds the max upload size
    - A file that that does not match the `PSCID_CandID_VisitLabel` convention
-      (once the PSCID, CandID, and Visit Label fields of the form have been validated)
 
    [Manual Testing]
 

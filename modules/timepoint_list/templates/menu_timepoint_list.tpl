@@ -14,11 +14,9 @@
     <th>
       Biological Sex
     </th>
-    {if $candidate.ProjectTitle != ""}
-      <th>
-        Project
-      </th>
-    {/if}
+    <th>
+      Project
+    </th>
     {foreach from=$candidate.DisplayParameters item=value key=name}
       <th>
         {$name}
@@ -40,11 +38,9 @@
     <td>
       {$candidate.Sex}
     </td>
-    {if $candidate.ProjectTitle != ""}
       <td>
         {$candidate.ProjectTitle}
       </td>
-    {/if}
     {foreach from=$candidate.DisplayParameters item=value key=name}
       <td>
         {$value}
@@ -82,6 +78,7 @@
             <th>Visit Label<BR>(Click to Open)</th>
             <th>Subproject</th>
             <th>Site</th>
+            <th>Project</th>
             <th>Stage</th>
             <th>Stage Status</th>
             <th>Date of Stage</th>
@@ -100,7 +97,8 @@
 
             <td>{$timePoints[timepoint].SubprojectTitle}</td>
 
-            <td>{$timePoints[timepoint].CenterName}</td>
+            <td>{$timePoints[timepoint].SiteAlias}</td>
+            <td>{$timePoints[timepoint].ProjectName}</td>
 
             {if $timePoints[timepoint].staticStage != "" || $timePoints[timepoint].Current_stage == "Not Started"}
             <td colspan="3">{$timePoints[timepoint].Current_stage}</td>

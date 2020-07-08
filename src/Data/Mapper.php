@@ -12,6 +12,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\Data;
+
 /**
  * A Mapper represents an object that maps data from one DataInstance type to
  * another.
@@ -44,5 +45,5 @@ interface Mapper
      *
      * @return DataInstance a new DataInstance with the map applied.
      */
-    function map(\User $user, DataInstance $resource) : DataInstance;
+    public function map(\User $user, DataInstance $resource) : DataInstance;
 }

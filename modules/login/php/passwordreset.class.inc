@@ -10,7 +10,7 @@
  * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
-*/
+ */
 namespace LORIS\login;
 
 /**
@@ -66,15 +66,19 @@ class PasswordReset extends \NDB_Form
         try {
             // check that the email is valid
             if ($user->isEmailValid()) {
-                  $config = \NDB_Config::singleton();
-                  // generate a new password
-                  $password = \User::newPassword();
-                  // reset the password in the database
-                  // expire password so user must change it upon login
-                  $user->updatePassword($password, '1999-01-01');
+                $config = \NDB_Config::singleton();
+                // generate a new password
+                $password = \Utility::randomString();
+                // reset the password in the database
+                // expire password so user must change it upon login
+                $user->updatePassword(
+                    new \Password($password),
+                    new \DateTime('1999-01-01')
+                );
                   // send the user an email
-                  $msg_data['study']    = $config->getSetting('title');
-                  $msg_data['url']      = $config->getSetting('url');
+                  $msg_data          = array();
+                  $msg_data['study'] = $config->getSetting('title');
+                  $msg_data['url']   = $config->getSetting('url');
                   $msg_data['realname'] = $user->getData('Real_name');
                   $msg_data['password'] = $password;
                   \Email::send($email, 'lost_password.tpl', $msg_data);
@@ -87,7 +91,9 @@ class PasswordReset extends \NDB_Form
                 );
             }
         } catch(\Exception $e) {
-            error_log("Unhandled exception in reset_password.");
+            error_log(
+                "Unhandled exception in reset_password: `{$e->getMessage()}`"
+            );
         }
     }
 

@@ -47,7 +47,7 @@ abstract class AbstractServerProcess
     /**
      * ID of the process when recorded in the database.
      *
-     * @var int.
+     * @var int
      */
 
     private $_id;
@@ -55,35 +55,35 @@ abstract class AbstractServerProcess
     /**
      * Unix process ID for that process
      *
-     * @var int.
+     * @var int
      */
     private $_pid;
 
     /**
      * Type of process
      *
-     * @var string.
+     * @var string
      */
     private $_type;
 
     /**
      * Full path of the file containing the process's stdout.
      *
-     * @var string.
+     * @var string
      */
     private $_stdoutFile;
 
     /**
      * Full path of the file containing the process's stderr.
      *
-     * @var string.
+     * @var string
      */
     private $_stderrFile;
 
     /**
      * Full path of the file containing the process's return code.
      *
-     * @var string.
+     * @var string
      */
     private $_exitCodeFile;
 
@@ -91,41 +91,41 @@ abstract class AbstractServerProcess
     /**
      * Process's exit code, read in $exitCodeFile.
      *
-     * @var int.
+     * @var int
      */
     private $_exitCode;
 
     /**
      * ID of the user who launched the process
      *
-     * @var string.
+     * @var string
      */
     private $_userId;
 
     /**
      * Time at which the process was launched (in format PROCESS_TIME_FORMAT)
      *
-     * @var string.
+     * @var string
      */
     private $_startTime;
 
     /**
      * Time at which the process finished (in format PROCESS_TIME_FORMAT)
      *
-     * @var string.
+     * @var string
      */
     private $_endTime;
 
     /**
      * Process exit text.
      *
-     * @var string.
+     * @var string
      */
     private $_exitText;
 
     /**
-      * Build a new server process
-      *
+     * Build a new server process
+     *
      * @param int    $id           ID of the process in the database.
      * @param int    $pid          PID for this process
      * @param string $type         type of process
@@ -270,21 +270,21 @@ abstract class AbstractServerProcess
     }
 
     /**
-      * Gets directory where all temporary files created by this task should go
-      *
-      * @return string full path to the temporary directory
-      */
+     * Gets directory where all temporary files created by this task should go
+     *
+     * @return string full path to the temporary directory
+     */
     protected function getTmpDir()
     {
         return sys_get_temp_dir();
     }
 
     /**
-      * Determines whether this task is currently running or not by examining whether
-      * its associated process is running.
-      *
-      * @return boolean true if the task is running, false otherwise
-      */
+     * Determines whether this task is currently running or not by examining whether
+     * its associated process is running.
+     *
+     * @return boolean true if the task is running, false otherwise
+     */
     public function isRunning()
     {
         if (is_null($this->getPid())) {
@@ -372,15 +372,15 @@ abstract class AbstractServerProcess
     }
 
     /**
-      * Updates the current object and its associated information in the database
-      * in order to reflect the task's current state. This should be done if
-      * execution of the task is finished to update all attributes related to the
-      * task's completion status (return code, return text, end time).
-      *
-      * @return boolean true if the operation succeeded, false otherwise.
-      * @throws \UnexpectedValueException if the return code file does not exists,
-      *                                  cannot be read or has invalid content
-      */
+     * Updates the current object and its associated information in the database
+     * in order to reflect the task's current state. This should be done if
+     * execution of the task is finished to update all attributes related to the
+     * task's completion status (return code, return text, end time).
+     *
+     * @return boolean true if the operation succeeded, false otherwise.
+     * @throws \UnexpectedValueException if the return code file does not exists,
+     *                                  cannot be read or has invalid content
+     */
     private function _syncTaskProperties()
     {
         // Task is still running so there's nothing to do.
@@ -460,10 +460,10 @@ abstract class AbstractServerProcess
         // Update object and database values to reflect what was computed previously
         //--------------------------------------------------------------------------
         $setValues   = array(
-                        'exit_text' => $exitText,
-                        'exit_code' => $exitCode,
-                        'end_time'  => $endTime,
-                       );
+            'exit_text' => $exitText,
+            'exit_code' => $exitCode,
+            'end_time'  => $endTime,
+        );
         $whereValues = array('id' => $this->getId());
 
         try {

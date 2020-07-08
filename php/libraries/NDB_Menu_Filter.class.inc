@@ -2,7 +2,7 @@
 /**
  * This class features the code for the Menu Filter.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main
@@ -160,8 +160,6 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // build the menu
         $this->_build();
-
-        return true;
     }
 
     /**
@@ -214,10 +212,10 @@ class NDB_Menu_Filter extends NDB_Menu
      * set.
      *
      * @param array $values An array of the form
-     *                             [FormFieldName => Value,
-     *                             FormFieldName2 => Value2,
-     *                             ...
-     *                             ]
+     *                      [FormFieldName => Value,
+     *                      FormFieldName2 => Value2,
+     *                      ...
+     *                      ]
      *                      to retrieve the values from.
      *
      * @return array of filters in the same form as the $values parameter
@@ -255,10 +253,10 @@ class NDB_Menu_Filter extends NDB_Menu
      * it into the current filter.
      *
      * @param array $order An array of the form
-     *                      [
-     *                          'field' => Form Field Name
-     *                          'fieldOrder' => "ASC|DESC"
-     *                      ]
+     *                     [
+     *                     'field' => Form Field Name
+     *                     'fieldOrder' => "ASC|DESC"
+     *                     ]
      *
      * @return void (modifies both $_SESSION and $this->filter as
      *         a side-effect.)
@@ -406,13 +404,13 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setFilterForm()
     {
-        return true;
+        return;
     }
     /**
-    * Gets the base query
-    *
-    * @return string ($query)
-    */
+     * Gets the base query
+     *
+     * @return string ($query)
+     */
     function _getBaseQuery()
     {
         $query = "SELECT ";
@@ -426,14 +424,14 @@ class NDB_Menu_Filter extends NDB_Menu
 
     }
     /**
-    * Adds filters
-    *
-    * @param string $prepared_key filter key
-    * @param string $field        filter field
-    * @param string $val          filter value
-    *
-    * @return string ($query)
-    */
+     * Adds filters
+     *
+     * @param string $prepared_key filter key
+     * @param string $field        filter field
+     * @param string $val          filter value
+     *
+     * @return string ($query)
+     */
     function _addValidFilters($prepared_key, $field, $val)
     {
         $query = '';
@@ -574,9 +572,9 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         return array(
-                'clause' => $WhereClause,
-                'params' => $qparams,
-               );
+            'clause' => $WhereClause,
+            'params' => $qparams,
+        );
     }
 
     /**
@@ -661,8 +659,6 @@ class NDB_Menu_Filter extends NDB_Menu
             }
             $x++;
         }
-
-        return true;
     }
 
     /**
@@ -711,10 +707,13 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function getCSVData()
     {
-        $list['data']    = $this->_getFullList();
-        $list['headers'] = $this->headers;
+        return $this->arrayToCSV(
+            array(
+                'data'    => $this->_getFullList(),
+                'headers' => $this->headers,
+            )
+        );
 
-        return $this->arrayToCSV($list);
     }
 
     /**
@@ -738,12 +737,12 @@ class NDB_Menu_Filter extends NDB_Menu
     }
 
     /**
-    * Coverts array into CSV string
-    *
-    * @param array $array the array to be converted
-    *
-    * @return string CSV string of data
-    */
+     * Coverts array into CSV string
+     *
+     * @param array $array the array to be converted
+     *
+     * @return string CSV string of data
+     */
     function arrayToCSV(array $array): string
     {
         $fp = fopen("php://temp", 'w+');
@@ -788,10 +787,10 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         return array(
-                'Headers'      => $headers,
-                'Data'         => $MappedData,
-                'fieldOptions' => $this->fieldOptions,
-               );
+            'Headers'      => $headers,
+            'Data'         => $MappedData,
+            'fieldOptions' => $this->fieldOptions,
+        );
     }
 
     /**
@@ -875,9 +874,9 @@ class NDB_Menu_Filter extends NDB_Menu
         return array_merge(
             $depends,
             array(
-             $baseURL . '/js/components/PaginationLinks.js',
-             $baseURL . '/js/components/StaticDataTable.js',
-             $baseURL . '/js/components/DynamicDataTable.js',
+                $baseURL . '/js/components/PaginationLinks.js',
+                $baseURL . '/js/components/StaticDataTable.js',
+                $baseURL . '/js/components/DynamicDataTable.js',
             )
         );
     }

@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * detects the duplicated commentids for the given instrument

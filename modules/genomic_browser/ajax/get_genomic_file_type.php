@@ -4,12 +4,12 @@
  *
  * PHP Version 5
  *
- *  @category   Loris
- *  @package    Genomic_Module
- *  @author     Loris Team <loris.mni@bic.mni.mcgill.ca>
- *  @contriutor Xavier Lecours boucher <xavier.lecoursboucher@mcgill.ca>
- *  @license    Loris license
- *  @link       https://github.com/aces/Loris-Trunk
+ * @category   Loris
+ * @package    Genomic_Module
+ * @author     Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @contriutor Xavier Lecours boucher <xavier.lecoursboucher@mcgill.ca>
+ * @license    Loris license
+ * @link       https://github.com/aces/Loris-Trunk
  */
 
 $userSingleton =& User::singleton();

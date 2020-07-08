@@ -11,8 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-use \LORIS\Http\Client;
-use \LORIS\Http\Request;
 /**
  * User class. This deals with any User management except permissions,
  * which is contained in the UserPermissions base class.
@@ -32,6 +30,13 @@ class User extends UserPermissions
      * @access private
      */
     protected $userInfo = array();
+    /**
+     * The date format used by MySQL.
+     *
+     * @var    string
+     * @access private
+     */
+    public const MYSQL_DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * Constructor
@@ -40,7 +45,7 @@ class User extends UserPermissions
      *
      * @param string|null $username Identifies the user
      *
-     * @return User
+     * @return \User A User object if the User specified by $username exists
      * @access public
      */
     public static function &factory(?string $username = null): \User
@@ -70,6 +75,14 @@ class User extends UserPermissions
 
         $row = $DB->pselectRow($query, array('UID' => $username));
 
+        if (is_null($row)) {
+            $obj = new \LORIS\AnonymousUser();
+            return $obj;
+        }
+
+        //Change 'language_preference' to number rather than a string
+        $row['language_preference'] = (int)$row['language_preference'];
+
         // get user sites
         $user_centerID_query =  $DB->pselect(
             "SELECT CenterID FROM user_psc_rel upr
@@ -80,6 +93,14 @@ class User extends UserPermissions
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
             $user_cid[$key] = intval($val['CenterID']);
+        }
+
+        $user_pid = $DB->pselectCol(
+            "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
+            array('uid' => $row['ID'])
+        );
+        foreach ($user_pid as $k=>$pid) {
+            $user_pid[$k] = intval($pid);
         }
 
         // Get examiner information
@@ -96,7 +117,7 @@ class User extends UserPermissions
                           OR (epr.active='N' AND epr.pending_approval='Y')
                         )",
             array(
-             "fn" => $row['Real_name'],
+                "fn" => $row['Real_name'],
             )
         );
 
@@ -107,15 +128,16 @@ class User extends UserPermissions
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
                 $examiner_info[$val['centerID']] =array(
-                                                   $val['active'],
-                                                   $val['radiologist'],
-                                                  );
+                    $val['active'],
+                    $val['radiologist'],
+                );
             }
         }
         // store user data in object property
-        $row['examiner']  = $examiner_info;
-        $row['CenterIDs'] = $user_cid;
-        $obj->userInfo    = $row;
+        $row['examiner']   = $examiner_info;
+        $row['CenterIDs']  = $user_cid;
+        $row['ProjectIDs'] = $user_pid;
+        $obj->userInfo     = $row;
         return $obj;
     }
 
@@ -141,22 +163,17 @@ class User extends UserPermissions
 
 
     /**
-     * Inserts a user
+     * Inserts data into the `users` table.
      *
      * @param array $set The array formatted for use in a Database call
      *
-     * @return bool True
+     * @return void
      * @access public
      * @static
      */
-    public function insert(array $set): bool
+    public static function insert(array $set): void
     {
-        // create DB object
-        $DB =& Database::singleton();
-
-        $DB->insert('users', $set);
-
-        return true;
+        \Database::singleton()->insert('users', $set);
     }
 
 
@@ -165,21 +182,16 @@ class User extends UserPermissions
      *
      * @param array $set The array formatted for use in a Database call
      *
-     * @return bool True
+     * @return void
      * @access public
      */
-    public function update(array $set): bool
+    public function update(array $set): void
     {
-        // create DB object
-        $DB =& Database::singleton();
-
-        $DB->update(
+        \Database::singleton()->update(
             'users',
             $set,
             array('UserID' => $this->userInfo['UserID'])
         );
-
-        return true;
     }
 
     /**
@@ -273,10 +285,10 @@ class User extends UserPermissions
     }
 
      /**
-     * Get the user's site's ID number
-     *
-     * @return array
-     */
+      * Get the user's site's ID number
+      *
+      * @return array
+      */
     function getCenterID()
     {
         throw new \LorisException(
@@ -294,6 +306,16 @@ class User extends UserPermissions
     function getCenterIDs(): array
     {
         return $this->userInfo['CenterIDs'];
+    }
+
+    /**
+     * Get the user's sites' ID numbers
+     *
+     * @return array
+     */
+    function getProjectIDs(): array
+    {
+        return $this->userInfo['ProjectIDs'];
     }
 
     /**
@@ -329,6 +351,7 @@ class User extends UserPermissions
     {
         $site_arr         = $this->getCenterIDs();
         $user_study_sites = array();
+        $site = array();
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
@@ -371,129 +394,6 @@ class User extends UserPermissions
     }
 
     /**
-     * Generates a random alphanumeric password
-     *
-     * @param int $length Length of password to generate (has to be >= 2)
-     *
-     * @return string
-     * @access public
-     * @static
-     */
-    public static function newPassword($length = 8): string
-    {
-        // start with a blank password
-        $password = '';
-
-        $numbers      = '0123456789';
-        $specialChars = '!@#$%^*()';
-        // & not part of $specialChars since it causes URL to break
-
-        $possible = $numbers . $specialChars . 'abcdefghijklmnopqrstuvwxyz';
-
-        // length of possible characters minus one
-        $possible_cnt = strlen($possible) - 1;
-
-        // add random characters to $password until $length is reached
-        for ($i = 0; $i < $length-2; $i++) {
-            $password .= substr($possible, random_int(0, $possible_cnt), 1);
-        }
-
-        if (strpbrk($password, $specialChars) === false) {
-            $password .= substr(
-                $specialChars,
-                random_int(0, strlen($specialChars)-1),
-                1
-            );
-        }
-
-        if (strpbrk($password, $numbers) === false) {
-            $password .= random_int(0, 9);
-        }
-
-        for ($i = strlen($password); $i < $length; $i++) {
-            $password .= substr($possible, random_int(0, $possible_cnt), 1);
-        }
-
-        return $password;
-    }
-
-
-    /**
-     * Check password strength
-     *
-     * If the password fails a comparison, it is not strong
-     *
-     * @param string $password  Password to check
-     * @param array  $values    Values that can not be in the password
-     *                          should contain ie. the user's name
-     * @param array  $operators Operators used in comparison of values
-     *                          array
-     *
-     * @return boolean
-     * @access public
-     * @static
-     */
-    public static function isPasswordStrong(
-        $password,
-        $values = array(),
-        $operators = array()
-    ): bool {
-        // FIXME: This should be cleaned up to more cleanly separate
-        // concerns. The "values" and "operators" are the same at
-        // every call site, and some of them are only required because
-        // the function is static despite working with instance data.
-        // (ie the second value/operator pair is always the UserID of
-        // the user whose password is being checked, the third is their
-        // email, and the first is the "Confirm" password which has
-        // nothing to do with whether the password is strong or not..)
-        $CharTypes = 0;
-        // less than 8 characters
-        if (strlen($password) < 8) {
-            return false;
-        }
-
-        // nothing but letters
-        if (!preg_match('/[^A-Za-z]/', $password)) {
-            return false;
-        }
-
-        // nothing but numbers
-        if (!preg_match('/[^0-9]/', $password)) {
-            return false;
-        }
-
-        // preg_match returns 1 on match, 0 on non-match
-        $CharTypes += preg_match('/[0-9]+/', $password);
-        $CharTypes += preg_match('/[A-Za-z]+/', $password);
-        $CharTypes += preg_match('/[!\\\$\^@#%&\*\(\)]+/', $password);
-        if ($CharTypes < 3) {
-            return false;
-        }
-
-        // compare password to values
-        foreach ($values as $key => $value) {
-            switch ($operators[$key]) {
-            case '==':
-                // They must be equal, so the whole thing is false
-                // if they're not.
-                if ($password != $value) {
-                    return false;
-                }
-                break;
-            case '!=':
-                if ($password == $value) {
-                    return false;
-                }
-                break;
-            default:
-                throw new \LorisException("Invalid operator in isPasswordStrong");
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Check if user belongs to DCC
      *
      * @return boolean
@@ -501,99 +401,7 @@ class User extends UserPermissions
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return ($this->userInfo['CenterID'] == 1);
-    }
-
-    /**
-     * Updates the password for this user into the appropriate field in the
-     * database.
-     *
-     * @param string $password The plain text password to be hashed and saved.
-     * @param string $expiry   The password expiry date. If not supplied, the
-     *                         password expiry date will be set to now+6months.
-     *
-     * @return void
-     */
-    function updatePassword(string $password, string $expiry = ''): void
-    {
-        $password = htmlspecialchars_decode($password);
-        if ($expiry === '') {
-            $expiry = date(
-                'Y-m-d',
-                strtotime('+6 months')
-            );
-        }
-
-        $updateArray = array('Password_expiry' => $expiry);
-
-        $updateArray['Password_hash'] = password_hash(
-            $password,
-            PASSWORD_DEFAULT
-        );
-
-        $this->update($updateArray);
-    }
-
-    /**
-     * Use the Pwned Passwords API to determine whether a user is trying
-     * to use a password that has been revealed in public data breaches.
-     *
-     * @param string $password The password to check for pwnage.
-     *
-     * @return bool Whether the password is known to be pwned.
-     */
-    static function pwnedPassword(string $password): bool
-    {
-
-        // If the project is configured to disable the Pwned Password check,
-        // always return false (meanning that the password has not been pwned).
-        if ('true' !== \NDB_Factory::singleton()->config()->getSetting(
-            'usePwnedPasswordsAPI'
-        )
-        ) {
-            return false;
-        }
-
-        /* The pwned passwords API searches a range of password hashes to
-         * protect the actual SHA1 hash from being revealed.
-         * More here: <https://haveibeenpwned.com/API/v2#PwnedPasswords>
-         *
-         * NOTE your webserver will need to be configured to allow going
-         * connections to the link below. If you encounter errors please
-         * verify your firewall settings.
-         */
-        $hash       = sha1($password);
-        $hashPrefix = substr(sha1($password), 0, 5);
-        // $url        = "https://api.pwnedpasswords.com/range/$hashPrefix";
-
-        $client   = new Client('https://api.pwnedpasswords.com');
-        $response = $client->sendRequest(
-            new Request('GET', "/range/$hashPrefix")
-        );
-
-        /* We don't want password changes to fail in case there is a
-         * networking issue while making the request. If the API can't be
-         * reached for any reason, we will skip the pwned password check.
-         */
-        if (!$response->getStatusCode() === 200) {
-            return false;
-        }
-        $hashSuffixes = explode("\n", $response->getBody()->getContents());
-        /* The response will be one long string consisting of suffixes matching
-         * our hash prefix, followed by a colon and the number of times the
-         * password has occurred in data breaches.
-         * Here we iterate over all of the suffixes and check whether the prefix
-         * and the whole suffix line together contain $hash as a substring at
-         * the beginning of the line.
-         * Check the API documentation linked above if you want more info.
-         */
-        foreach ($hashSuffixes as $suffix) {
-            $line = strtolower($hashPrefix . $suffix);
-            if ($hash == substr($line, 0, strlen($hash))) {
-                return true;
-            }
-        }
-        return false;
+        return (in_array(1, $this->userInfo['CenterIDs']));
     }
 
     /**
@@ -608,6 +416,22 @@ class User extends UserPermissions
         return in_array(
             $center_id,
             $this->getCenterIDs(),
+            true
+        );
+    }
+
+    /**
+     * Determines if the user has a project
+     *
+     * @param int $projectID The project ID
+     *
+     * @return bool
+     */
+    public function hasProject(int $projectID) : bool
+    {
+        return in_array(
+            $projectID,
+            $this->getProjectIDs(),
             true
         );
     }
@@ -637,17 +461,76 @@ class User extends UserPermissions
      */
     public function hasLoggedIn(): bool
     {
-        $count = (\NDB_Factory::singleton()->database())->pselectOne(
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $count = $DB->pselectOne(
             "SELECT
                COUNT(1)
              FROM user_login_history
              WHERE
-               UserID = :v_userid AND
+               userID = :v_userid AND
                Success = 'Y'
             ",
             array('v_userid' => $this->userInfo['UserID'])
         );
         return $count > 0;
+    }
+
+    /**
+     * Updates the password for this user into the appropriate field in the
+     * database.
+     *
+     * @param \Password $password The plain text password to be hashed and saved.
+     * @param ?DateTime $expiry   When the password will expire. Can be set to a
+     *                            date in the past in order to create a one-time
+     *                            password.
+     *
+     * @return void
+     */
+    function updatePassword(
+        \Password $password,
+        ?\DateTime $expiry = null
+    ): void {
+        if (password_verify($this->userInfo['Email'], (string) $password)) {
+            throw new \InvalidArgumentException(
+                'Password cannot be set to email'
+            );
+        }
+        // Set default expiry date value to 6 months in the future.
+        $expiry = $expiry ?? new \DateTime(
+            date('Y-m-d', strtotime('+6 months'))
+        );
+
+        $this->update(
+            array(
+                'Password_hash'   => $password,
+                'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
+            )
+        );
+        // XXX This class should use DateTime objects instead of strings so
+        // that formatting doens't need to be specified and so that Date math
+        // is simpler and safer.
+        $this->userInfo['Password_hash']   = (string) $password;
+        $this->userInfo['Password_expiry'] = $expiry->format('Y-m-d');
+    }
+
+    /**
+     * Determines if the supplied password parameter is different than a User's
+     * current password (the one stored in the database).
+     *
+     * @param string $plaintextPassword The new desired password string entered
+     *                                  by the user.
+     *
+     * @return bool  true if the password has changed, false otherwise.
+     */
+    function isPasswordDifferent(
+        string $plaintextPassword
+    ): bool {
+        return ! password_verify(
+            $plaintextPassword,
+            (string) $this->userInfo['Password_hash']
+        );
     }
 }
 

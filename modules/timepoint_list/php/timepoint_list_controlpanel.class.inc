@@ -39,7 +39,7 @@ Class TimePoint_List_ControlPanel extends \Candidate
      * select function provide by the Candidate class.
      *
      * @param integer $candID A 6 digit Loris CandID that matches
-     * a candidate in the candidate table
+     *                        a candidate in the candidate table
      *
      * @return null As a side-effect loads candidate into current object
      */
@@ -65,11 +65,6 @@ Class TimePoint_List_ControlPanel extends \Candidate
 
         $this->tpl_data['isDataEntryPerson']
             = $user->hasCenterPermission("data_entry", $cand_CenterID);
-
-        $this->tpl_data['candidate_parameters_view']
-            = $user->hasCenterPermission('candidate_parameter_view', $cand_CenterID);
-        $this->tpl_data['candidate_parameters_edit']
-            = $user->hasCenterPermission('candidate_parameter_edit', $cand_CenterID);
 
         //set the baseurl of the tpl_data
         $factory  = \NDB_Factory::singleton();

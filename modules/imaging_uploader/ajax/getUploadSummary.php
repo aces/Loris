@@ -41,8 +41,8 @@ $row       = $DB->pselectRow(
     $query,
     array('uploadId' => $uploadId)
 );
-$inserting = $row['Inserting'];
-$insertionComplete = $row['InsertionComplete'];
+$inserting = $row['Inserting'] ?? '';
+$insertionComplete = $row['InsertionComplete'] ?? '';
 
 /* Get the active notifications from table notification_spool. Only get the ones
  *  with Verbose == 'N' if summary is set to true.
@@ -63,9 +63,9 @@ $notifications = $DB->pselect(
 // Return JSON object encapsulating the response
 echo json_encode(
     array(
-     'inserting'         => $inserting,
-     'insertionComplete' => $insertionComplete,
-     'notifications'     => $notifications,
+        'inserting'         => $inserting,
+        'insertionComplete' => $insertionComplete,
+        'notifications'     => $notifications ?? '',
     )
 );
 

@@ -1,6 +1,5 @@
 <script language="javascript" src="{$baseurl}/configuration/js/project.js">
 </script>
-<script language="javascript" src="{$baseurl}/configuration/js/SubprojectRelations.js"></script>
 <p>Use this page to manage the configuration of existing projects, or to add a new one.</p>
 <p>To configure study subprojects <a href="{$baseurl}/configuration/subproject/">click here</a>.</p>
 
@@ -31,6 +30,14 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Short name of the project (4 characters or less)'}">
+                            <label class="col-sm-12 control-label">Alias</label>
+                        </div>
+                        <div class="col-sm-12 col-md-9">
+                            <input class="form-control projectAlias" name="Alias" value="{$project.Alias}">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
                             <label class="col-sm-12 control-label">Recruitment Target</label>
                         </div>
@@ -39,20 +46,28 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'These subprojects will be automatically displayed for any candidate affiliated with this project at timepoint creation.'}">
+                            <label class="col-sm-12 control-label">Affiliated Subprojects</label>
+                        </div>
+                        <div class="col-sm-12 col-md-9">
+                            <select name="SubprojectIDs" class="form-control projectSubprojectIDs" multiple>
+                              {foreach from=$subprojects key=SubprojectID item=subproject}
+                                  {if $subproject|in_array:$project.projectSubprojects}
+                                      <option value="{$SubprojectID}" selected>{$subproject}</option>
+                                  {else}
+                                      <option value="{$SubprojectID}">{$subproject}</option>
+                                  {/if}
+                              {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
-                            <button id="saveproject{$ProjectID}" class="btn btn-primary saveproject">Save</button>
-                            <button class="btn btn-default" type="reset">Reset</button>
+                            <button id="saveproject{$ProjectID}" class="btn btn-primary saveproject submit-area">Save</button>
+                            <button class="btn btn-default submit-area" type="reset">Reset</button>
                             <label class="saveStatus"></label>
                         </div>
                     </div>
-                    <div class="relatedsubprojects" id="subprojects{$ProjectID}"></div>
-                <script>
-                    var filterTable = RSubprojectRelations({
-                        ProjectID : {$ProjectID},
-                        Relations: {$project.subprojects|@json_encode}
-                    });
-                    ReactDOM.render(filterTable, document.getElementById("subprojects{$ProjectID}"));
-                </script>
 
             </fieldset>
         </form>
@@ -73,6 +88,14 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Short name of the project (4 characters or less)'}">
+                        <label class="col-sm-12 control-label">Alias</label>
+                    </div>
+                    <div class="col-sm-12 col-md-9">
+                        <input class="form-control projectAlias" name="Alias" placeholder="Please add an alias here" value="">
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
                         <label class="col-sm-12 control-label">Recruitment Target</label>
                     </div>
@@ -80,10 +103,23 @@
 			            <input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="Please add a recruitment target here" value="">
                     </div>
                 </div>
+                <div>
+                  <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'These subprojects will be automatically displayed for any candidate affiliated with this project at timepoint creation.'}">
+                    <label class="col-sm-12 control-label">Affiliated Subprojects</label>
+                  </div>
+                  <div class="col-sm-12 col-md-9">
+                    <div class="col-sm-12 col-md-9">
+                      <select name="SubprojectIDs" class="form-control projectSubprojectIDs" multiple>
+                        {foreach from=$subprojects key=SubprojectID item=subproject}
+                            <option value="{$SubprojectID}">{$subproject}</option>
+                        {/foreach}
+                      </select>
+                    </div>
+                </div>
                 <div class="form-group">
                     <div class="col-sm-offset-3 col-sm-9">
-                        <button id="saveprojectnew" class="btn btn-primary saveproject">Save</button>
-                        <button class="btn btn-default" type="reset">Reset</button>
+                        <button id="saveprojectnew" class="btn btn-primary saveproject submit-area">Save</button>
+                        <button class="btn btn-default submit-area" type="reset">Reset</button>
                         <label class="saveStatus"></label>
                     </div>
                 </div>

@@ -1,21 +1,24 @@
 <?php
 namespace LORIS\Middleware;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 
-class AnonymousPageDecorationMiddleware implements MiddlewareInterface {
+class AnonymousPageDecorationMiddleware implements MiddlewareInterface
+{
     protected $JSFiles;
     protected $CSSFiles;
     protected $Config;
     protected $BaseURL;
 
-    public function __construct(string $baseurl, \NDB_Config $config, array $JS, array $CSS) {
-        $this->JSFiles = $JS;
+    public function __construct(string $baseurl, \NDB_Config $config, array $JS, array $CSS)
+    {
+        $this->JSFiles  = $JS;
         $this->CSSFiles = $CSS;
-        $this->Config = $config;
-        $this->BaseURL = $baseurl;
+        $this->Config   = $config;
+        $this->BaseURL  = $baseurl;
     }
 
     /**
@@ -26,14 +29,15 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface {
      *
      * @return ResponseInterface The response with the page content
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface {
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
         // Basic page outline variables
         $tpl_data = array(
-            'study_title' => $this->Config->getSetting('title'),
-            'baseurl'     => $this->BaseURL,
-            'currentyear' => date('Y'),
-            'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
-        );
+                     'study_title' => $this->Config->getSetting('title'),
+                     'baseurl'     => $this->BaseURL,
+                     'currentyear' => date('Y'),
+                     'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
+                    );
 
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
@@ -46,19 +50,19 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface {
             $WindowName = md5($url);
 
             $tpl_data['links'][] = array(
-                'url'        => $url,
-                'label'      => $label,
-                'windowName' => $WindowName,
-            );
+                                    'url'        => $url,
+                                    'label'      => $label,
+                                    'windowName' => $WindowName,
+                                   );
         }
 
         $undecorated = $handler->handle($request);
         // Finally, the actual content and render it..
         $tpl_data += array(
-            'jsfiles'   => $this->JSFiles,
-            'cssfiles'  => $this->CSSFiles,
-            'workspace' => $undecorated->getBody(),
-        );
+                      'jsfiles'   => $this->JSFiles,
+                      'cssfiles'  => $this->CSSFiles,
+                      'workspace' => $undecorated->getBody(),
+                     );
 
         $smarty = new \Smarty_neurodb;
         $smarty->assign($tpl_data);

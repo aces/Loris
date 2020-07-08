@@ -66,8 +66,8 @@ class AddSurvey extends \NDB_Form
             WHERE PSCID=:v_PSCID 
             AND CandID=:v_CandID AND Active='Y'",
             array(
-             'v_PSCID'  => $values['PSCID'],
-             'v_CandID' => $values['CandID'],
+                'v_PSCID'  => $values['PSCID'],
+                'v_CandID' => $values['CandID'],
             )
         );
         $error         = "PSCID and DCC ID do not match "
@@ -83,17 +83,17 @@ class AddSurvey extends \NDB_Form
             AND UPPER(Visit_label)=UPPER(:v_VL) 
             AND Active='Y'",
             array(
-             'v_CandID' => $values['CandID'],
-             'v_VL'     => $values['VL'],
+                'v_CandID' => $values['CandID'],
+                'v_VL'     => $values['VL'],
             )
         );
 
         if ($numSessions != 1) {
             return array(
-                    'VL' => "Visit ".
+                'VL' => "Visit ".
                             $values['VL'].
                             " does not exist for given candidate",
-                   );
+            );
         }
 
         $instrument_list = $db->pselect(
@@ -103,17 +103,17 @@ class AddSurvey extends \NDB_Form
              AND UPPER(s.Visit_label)=UPPER(:v_VL) 
              AND s.Active='Y'",
             array(
-             'v_CandID' => $values['CandID'],
-             'v_VL'     => $values['VL'],
+                'v_CandID' => $values['CandID'],
+                'v_VL'     => $values['VL'],
             )
         );
         $reminder        = " already exists for given candidate for visit ";
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
                 return array(
-                        'Test_name' => "Instrument ". $values['Test_name'].
+                    'Test_name' => "Instrument ". $values['Test_name'].
                                        $reminder. $values['VL'],
-                       );
+                );
             }
         }
 
@@ -165,8 +165,8 @@ class AddSurvey extends \NDB_Form
             "SELECT ID FROM session".
             " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
             array(
-             'v_CandID' => $values['CandID'],
-             'v_VL'     => $values['VL'],
+                'v_CandID' => $values['CandID'],
+                'v_VL'     => $values['VL'],
             )
         );
 
@@ -176,8 +176,8 @@ class AddSurvey extends \NDB_Form
             "SELECT 'x' FROM participant_accounts
             WHERE Test_name=:TN AND SessionID=:SID",
             array(
-             'TN'  => $values['Test_name'],
-             'SID' => $SessionID,
+                'TN'  => $values['Test_name'],
+                'SID' => $SessionID,
             )
         );
         if ($InstrumentExists == 'x') {
@@ -204,12 +204,12 @@ class AddSurvey extends \NDB_Form
             $db->insert(
                 "participant_accounts",
                 array(
-                 'SessionID'       => $SessionID,
-                 'Test_name'       => $values['Test_name'],
-                 'Email'           => $values['Email'],
-                 'Status'          => $status,
-                 'OneTimePassword' => $key,
-                 'CommentID'       => $commentID,
+                    'SessionID'       => $SessionID,
+                    'Test_name'       => $values['Test_name'],
+                    'Email'           => $values['Email'],
+                    'Status'          => $status,
+                    'OneTimePassword' => $key,
+                    'CommentID'       => $commentID,
                 )
             );
         } catch(\DatabaseException $e) {
@@ -223,11 +223,11 @@ class AddSurvey extends \NDB_Form
             $www    = $config->getSetting("www");
 
             $msg_data = array(
-                         'study'     => $config->getSetting("title"),
-                         'url'       => $www['url'] . '/survey.php?key=' .
+                'study'     => $config->getSetting("title"),
+                'url'       => $www['url'] . '/survey.php?key=' .
                                          urlencode($key),
-                         'EmailForm' => $values['email_dialog'],
-                        );
+                'EmailForm' => $values['email_dialog'],
+            );
             \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
         }
     }
@@ -285,7 +285,7 @@ class AddSurvey extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
+                $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
             )
         );
     }

@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * script to move config.xml data to the database

@@ -9,7 +9,7 @@
  * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 namespace LORIS\genomic_browser;
 
 /**
@@ -22,23 +22,23 @@ namespace LORIS\genomic_browser;
  * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 
 class View_Genomic_File extends \NDB_Form
 {
     /**
      * Variables to store the DCCID, genomic file ID
-    */
+     */
     var $candID;
     var $genomic_file_ID;
 
     /**
-    * Determine whether the user has permission to view this page
-    *
-    * @param \User $user The user whose access is being checked
-    *
-    * @return bool whether the user has access
-    */
+     * Determine whether the user has permission to view this page
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool whether the user has access
+     */
     function _hasAccess(\User $user): bool
     {
         // Add site control? See Imaging Browser example
@@ -68,12 +68,12 @@ class View_Genomic_File extends \NDB_Form
     }
 
     /**
-    * Populates tpl form data using values from a Genomic_File object.
-    *
-    * @param ?string $category type of data: raw,cleaned,gwas
-    *
-    * @return void
-    */
+     * Populates tpl form data using values from a Genomic_File object.
+     *
+     * @param ?string $category type of data: raw,cleaned,gwas
+     *
+     * @return void
+     */
     private function _setFileData(?string $category = null): void
     {
         if (empty($this->genomic_file_id)) {
@@ -84,8 +84,8 @@ class View_Genomic_File extends \NDB_Form
             );
         } else {
             $files = array(
-                      array('GenomicFileID' => $this->genomic_file_id),
-                     );
+                array('GenomicFileID' => $this->genomic_file_id),
+            );
         }
         $this->tpl_data['files'] = array();
         foreach ($files as $fileRow) {
@@ -101,30 +101,30 @@ class View_Genomic_File extends \NDB_Form
 
             // load $file array
             $file = array(
-                     'FileID'           => $fileRow['GenomicFileID'],
-                     'Filename'         => $paramFilename,
-                     'FullFilename'     => $FileObj->getParameter('FileName'),
-                     'FilePackage'      => $FileObj->getParameter('FilePackage'),
-                     'FileType'         => $FileObj->getParameter('FileType'),
-                     'FileSize'         => $FileObj->getParameter('FileSize'),
-                     'Description'      => $FileObj->getParameter('Description'),
-                     'Category'         => $FileObj->getParameter('Category'),
-                     'Pipeline'         => $FileObj->getParameter('Pipeline'),
-                     'Algorithm'        => $FileObj->getParameter('Algorithm'),
-                     'Normalization'    => $paramNormalization,
-                     'SampleID'         => $FileObj->getParameter('SampleID'),
-                     'Caveat'           => $FileObj->getParameter('Caveat'),
-                     'Notes'            => $FileObj->getParameter('Notes'),
-                     'AnalysisProtocol' => $paramAnalysisProtocol,
-                     'AnalysisModality' => $FileObj->getParameter(
-                         'AnalysisModality'
-                     ),
-                     'AnalysisDate'     => $FileObj->getParameter('Date_taken'),
-                     'FileInsertDate'   => $paramFileInsertDate,
-                     'Selected'         => $FileObj->getParameter('Selected'),
-                     'QCStatus'         => $FileObj->getParameter('QCStatus'),
-                     'QCDate'           => $paramQCDate,
-                    );
+                'FileID'           => $fileRow['GenomicFileID'],
+                'Filename'         => $paramFilename,
+                'FullFilename'     => $FileObj->getParameter('FileName'),
+                'FilePackage'      => $FileObj->getParameter('FilePackage'),
+                'FileType'         => $FileObj->getParameter('FileType'),
+                'FileSize'         => $FileObj->getParameter('FileSize'),
+                'Description'      => $FileObj->getParameter('Description'),
+                'Category'         => $FileObj->getParameter('Category'),
+                'Pipeline'         => $FileObj->getParameter('Pipeline'),
+                'Algorithm'        => $FileObj->getParameter('Algorithm'),
+                'Normalization'    => $paramNormalization,
+                'SampleID'         => $FileObj->getParameter('SampleID'),
+                'Caveat'           => $FileObj->getParameter('Caveat'),
+                'Notes'            => $FileObj->getParameter('Notes'),
+                'AnalysisProtocol' => $paramAnalysisProtocol,
+                'AnalysisModality' => $FileObj->getParameter(
+                    'AnalysisModality'
+                ),
+                'AnalysisDate'     => $FileObj->getParameter('Date_taken'),
+                'FileInsertDate'   => $paramFileInsertDate,
+                'Selected'         => $FileObj->getParameter('Selected'),
+                'QCStatus'         => $FileObj->getParameter('QCStatus'),
+                'QCDate'           => $paramQCDate,
+            );
 
             $this->tpl_data['files'][] = $file;
         }

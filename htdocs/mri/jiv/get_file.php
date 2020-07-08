@@ -12,11 +12,11 @@
  *
  * PHP Version 5
  *
- *  @category Loris
- *  @package  MRI
- *  @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license  Loris license
- *  @link     https://github.com/aces/Loris-Trunk
+ * @category Loris
+ * @package  MRI
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
  */
 
 require_once __DIR__ . "/../../../vendor/autoload.php";
@@ -43,9 +43,9 @@ $tarchivePath = $pipeline['tarchiveLibraryDir'];
 // Basic config validation
 if (!validConfigPaths(
     array(
-     $imagePath,
-     $DownloadPath,
-     $tarchivePath,
+        $imagePath,
+        $DownloadPath,
+        $tarchivePath,
     )
 )
 ) {
@@ -192,7 +192,6 @@ function validConfigPaths(array $paths): bool
                 'Config paths are not initialized. Please ensure that valid paths ' .
                 'are set for imagePath, downloadPath and tarchiveLibraryDir'
             );
-            return false;
         }
         if ($p === '/') {
             throw new \LorisException(
@@ -200,7 +199,6 @@ function validConfigPaths(array $paths): bool
                 ' Please verify your path settings for imagePath, ' .
                 'downloadPath and tarchiveLibraryDir.'
             );
-            return false;
         }
     }
     return true;
