@@ -46,7 +46,7 @@ class OutputWrapper
      */
     public function __construct(?SPLFileInfo $logDirectory = null)
     {
-        $config = \NDB_Factory::singleton()->config();
+        $config     = \NDB_Factory::singleton()->config();
         $pathString = $logDirectory ?? $config->getSetting('log');
 
         // If the log directory is a partial path, try appending it to the
