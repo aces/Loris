@@ -18,7 +18,7 @@ class Behavioural_QC extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('quality_control');
+        return $user->hasPermission('behavioural_quality_control_view');
     }
 
     /**
