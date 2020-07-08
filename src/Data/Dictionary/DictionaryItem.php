@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace LORIS\Data\Dictionary;
 use \LORIS\Data\Scope;
+use \LORIS\Data\Type;
 
 use \LORIS\Data\Scope;
 use \LORIS\Data\Type;

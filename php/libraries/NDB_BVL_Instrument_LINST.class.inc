@@ -20,6 +20,11 @@ use \LORIS\Data\Types\IntegerType;
 use \LORIS\Data\Types\Enumeration;
 use \LORIS\Data\Types\DateType;
 
+use \LORIS\Data\Types\StringType;
+use \LORIS\Data\Types\IntegerType;
+use \LORIS\Data\Types\Enumeration;
+use \LORIS\Data\Types\DateType;
+
 /**
  * Base class for all NeuroDB behavioural instruments
  *
@@ -568,24 +573,29 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 'Date of Administration',
                                 $dictcat,
                                 $scope,
+                                new \LORIS\Data\Types\DateType(),
                             ),
                             new DictionaryItem(
                                 'Candidate_age',
                                 'Candidate Age (Months)',
                                 $dictcat,
                                 $scope,
+                                new \LORIS\Data\Types\Duration(),
                             ),
                             new DictionaryItem(
                                 'Window_Difference',
                                 'Window difference from test battery (days)',
                                 $dictcat,
                                 $scope,
+                                new \LORIS\Data\Types\Duration(),
                             ),
                             new DictionaryItem(
                                 'Examiner',
                                 'Examiner',
                                 $dictcat,
                                 $scope,
+                                // Should this be an enum of examiners?
+                                new StringType(255),
                             ),
                         ]
                     );
@@ -662,6 +672,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $pieces[2],
                             $dictcat,
                             $scope,
+                            new StringType(255),
                         );
                     }
                     $this->dictionary[] = new DictionaryItem(
@@ -693,6 +704,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $pieces[2],
                             $dictcat,
                             $scope,
+                            new StringType(),
                         );
                     }
                     $this->dictionary[] = new DictionaryItem(
@@ -727,6 +739,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $pieces[2],
                             $dictcat,
                             $scope,
+                            new DateType(),
                         );
 
                         $this->dictionary[] = new DictionaryItem(
