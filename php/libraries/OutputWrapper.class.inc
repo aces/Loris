@@ -51,18 +51,29 @@ class OutputWrapper
 
         // If the log directory is a partial path, try appending it to the
         // LORIS base directory.
-        if (!strpos($logDir, '/') === 0) {
+        if (strpos($logDir, '/') !== 0) {
             $logDir = \Utility::pathJoin(
                 $config->getSetting('base'),
                 $logDir
             );
         }
+        print_r($logDir);
         $logDir = new SPLFileInfo($logDir);
         if ($logDir->isDir() === false) {
-            throw new \ConfigurationException(self::ERROR_LOGDIR_NOT_DIR);
+            throw new \ConfigurationException(
+                sprintf(
+                    self::ERROR_LOGDIR_NOT_DIR . ": `%s`",
+                    $logDir->getRealPath()
+                )
+            );
         }
         if ($logDir->isWritable() === false) {
-            throw new \ConfigurationException(self::ERROR_LOGDIR_NOT_WRITABLE);
+            throw new \ConfigurationException(
+                sprintf(
+                    self::ERROR_LOGDIR_NOT_WRITABLE . ": `%s`",
+                    $logDir->getRealPath()
+                )
+            );
         }
         $this->_logDirectory = $logDir;
     }
