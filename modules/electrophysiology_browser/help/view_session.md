@@ -4,9 +4,9 @@ This page displays information from an individual recording session.
 
 Summary information about the candidate, the recording session and the hardware used is displayed.
 
-Files can be downloaded containing just the recording signal, the events, or other metadata, or all files compressed together, for the current session. These files are organized according to the EEG-BIDS standard<sup id="1">[1](#f1)</sup>, and are available for download as follows:
+Files can be downloaded containing only the recording signal, the events, or other metadata, or all files compressed together, for the current session. These files are organized according to the EEG-BIDS standard<sup id="1">[1](#f1)</sup>, and are available for download as follows:
 
-- All files (tgz): a compressed folder containingscan all the recording data as well as metadata for the EEG scan session.
+- All files (tgz): a compressed folder containing all the recording data as well as the metadata for the EEG scan session.
 - EEG: the file containing the session recording data.    
 - Electrode info (tsv): contains electrode locations.    
 - Channels info (tsv): channel status and filter settings.    
