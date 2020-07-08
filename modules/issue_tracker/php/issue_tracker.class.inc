@@ -81,7 +81,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         bool $study_site = true,
         bool $DCC = true
     ): array {
-        $user = \User::singleton();
+        $user  = \User::singleton();
+
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = \Utility::getSiteList($study_site, $DCC);
@@ -112,7 +113,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             $sites = $user->getStudySites();
         }
 
-        //reporters
+        // reporters
         $reporters         = [];
         $reporter_expanded = $db->pselect(
             "SELECT u.UserID,
@@ -127,7 +128,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         }
 
         //assignees
-        $assignees         = [];
+        $assignees    = [];
         $assignee_expanded = $db->pselect(
             "SELECT u.UserID,
                     u.Real_name

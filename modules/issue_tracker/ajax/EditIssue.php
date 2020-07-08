@@ -451,7 +451,7 @@ function getWatching($issueID)
  *
  * @return ?string
  */
-function getSiteName($centerID): ?string
+function getSiteName($centerID): string
 {
     if ($centerID == null) {
         return "All Sites";
