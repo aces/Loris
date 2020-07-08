@@ -47,23 +47,22 @@ class OutputWrapper
     public function __construct(?SPLFileInfo $logDirectory = null)
     {
         $config = \NDB_Factory::singleton()->config();
-        $logDir = $logDirectory ?? $config->getSetting('log');
+        $pathString = $logDirectory ?? $config->getSetting('log');
 
         // If the log directory is a partial path, try appending it to the
         // LORIS base directory.
-        if (strpos($logDir, '/') !== 0) {
-            $logDir = \Utility::pathJoin(
+        if (strpos($pathString, '/') !== 0) {
+            $pathString = \Utility::pathJoin(
                 $config->getSetting('base'),
-                $logDir
+                $pathString
             );
         }
-        print_r($logDir);
-        $logDir = new SPLFileInfo($logDir);
+        $logDir = new SPLFileInfo($pathString);
         if ($logDir->isDir() === false) {
             throw new \ConfigurationException(
                 sprintf(
                     self::ERROR_LOGDIR_NOT_DIR . ": `%s`",
-                    $logDir->getRealPath()
+                    $pathString
                 )
             );
         }
@@ -71,7 +70,7 @@ class OutputWrapper
             throw new \ConfigurationException(
                 sprintf(
                     self::ERROR_LOGDIR_NOT_WRITABLE . ": `%s`",
-                    $logDir->getRealPath()
+                    $pathString
                 )
             );
         }
