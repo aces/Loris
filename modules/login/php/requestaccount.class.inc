@@ -245,7 +245,7 @@ class RequestAccount extends \NDB_Form
                     ["fn" => $fullname]
                 );
 
-                // If examiner not in table add him
+                // Add new account to the examiner tables
                 if (empty($examinerID)) {
                     $DB->insert(
                         'examiners',
@@ -271,6 +271,11 @@ class RequestAccount extends \NDB_Form
 
         // Show success message even if email already exists for security reasons
         $this->tpl_data['success'] = true;
+
+        // Don't send out emails if this is a sandbox VM.
+        if ($factory->config()->settingEnabled('sandbox')) {
+            return;
+        }
 
         // Send an email to all users meeting the following criteria:
         //     - Associated with the Site
