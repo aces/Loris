@@ -80,8 +80,8 @@ INSERT INTO `permissions` VALUES
     (32,'candidate_parameter_edit','Edit Candidate Parameters','2'),
     (33,'genomic_browser_view_site','View Genomic Browser data from own site','2'),
     (34,'genomic_browser_view_allsites','View Genomic Browser data across all sites','2'),
-    (35,'document_repository_view','View and upload files in Document Repository','2'),
-    (36,'document_repository_delete','Delete files in Document Repository','2'),
+    (35,'document_repository_view','Document Repository: View','2'),
+    (36,'document_repository_delete','Document Repository: Delete','2'),
     (37,'server_processes_manager','View and manage server processes','2'),
     (38,'imaging_uploader','Imaging Uploader','2'),
     (39,'acknowledgements_view','View Acknowledgements','2'),
@@ -110,7 +110,8 @@ INSERT INTO `permissions` VALUES
     (62,'module_manager_view', 'Module Manager: access the module', 2),
     (63,'module_manager_edit', 'Module Manager: edit installed modules', 2),
     (64,'candidate_dod_edit', 'Edit dates of death', 2),
-    (65,'violated_scans_view_ownsite','Violated Scans: View Violated Scans from own site','2');
+    (65,'violated_scans_view_ownsite','Violated Scans: View Violated Scans from own site','2'),
+    (66,'document_repository_edit','Document Repository: Edit and Upload','2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

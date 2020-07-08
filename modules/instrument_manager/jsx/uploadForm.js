@@ -51,8 +51,8 @@ class InstrumentUploadForm extends Component {
         });
       }
       if (data.error) {
-         swal({
-          title: 'An error occured',
+         swal.fire({
+          title: 'An error occurred',
           type: 'error',
           text: data.error,
         });
