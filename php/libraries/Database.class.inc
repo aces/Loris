@@ -1487,4 +1487,74 @@ class Database
             $this->_PDO->errorInfo[2]
         );
     }
+
+    /**
+     * Returns the version information from the database, e.g.
+     *
+     *   +-------------------------+------------------------------+
+     *   | Variable_name           | Value                        |
+     *   +-------------------------+------------------------------+
+     *   | innodb_version          | 5.7.29                       |
+     *   | protocol_version        | 10                           |
+     *   | slave_type_conversions  |                              |
+     *   | tls_version             | TLSv1,TLSv1.1,TLSv1.2        |
+     *   | version                 | 5.7.29                       |
+     *   | version_comment         | MySQL Community Server (GPL) |
+     *   | version_compile_machine | x86_64                       |
+     *   | version_compile_os      | Linux                        |
+     *   +-------------------------+------------------------------+
+     *
+     * @return array<int,string[]> An associative array representing the results
+     *                  of the query.
+     */
+    private function _getServerVariables(): array
+    {
+        return $this
+            ->_PDO
+            ->query('show variables like "%version%"')
+            ->fetchAll();
+    }
+
+    /**
+     * Get a specific server variable from the database specified by
+     * $variable parameter.
+     *
+     * @param string $variable The name of a version variable. See function
+     *                         comment for _getServerVariables().
+     *
+     * @return string The value of the variable.
+     *
+     * @throws InvalidArgumentException
+     */
+    private function _getServerVariable(string $variable): string
+    {
+        foreach ($this->_getServerVariables() as $row) {
+            if (strtolower($variable) === $row['Variable_name']) {
+                return $row['Value'];
+            }
+        }
+        throw new InvalidArgumentException(
+            "Variable name `$variable` does not exist in the database"
+        );
+    }
+
+    /**
+     * Returns the numeric version result for the database.
+     *
+     * @return string Example: 5.7.29
+     */
+    public function getVersion(): string
+    {
+        return $this->_getServerVariable('version');
+    }
+
+    /**
+     * Returns the result of the 'version_comment' variable found in MySQL.
+     *
+     * @return string Example: "MySQL Community Server (GPL)"
+     */
+    public function getArchitecture(): string
+    {
+        return $this->_getServerVariable('version_comment');
+    }
 }
