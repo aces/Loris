@@ -281,7 +281,7 @@ class RequestAccount extends \NDB_Form
         //     - Associated with the Site
         //     - Associated with the Project
         //     - Have the User Management permission
-        $query = <<<SQL
+        $query  = <<<SQL
         SELECT DISTINCT u.Email,u.userID
         FROM users u
             JOIN user_psc_rel upr
