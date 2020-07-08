@@ -30,7 +30,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticationTest
      */
     public function setUp()
     {
-        $this->guzzleLogin();
+        parent::setUp();
     }
     /**
      * Tests the HTTP GET request for the

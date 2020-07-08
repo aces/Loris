@@ -28,7 +28,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticationTest
      */
     public function setUp()
     {
-        $this->guzzleLogin();
+        parent::setUp();
     }
     /**
      * Tests the HTTP GET request for the endpoint /projects

@@ -29,7 +29,7 @@ class LorisApiImagesTest extends LorisApiAuthenticationTest
      */
     public function setUp()
     {
-        $this->guzzleLogin();
+        parent::setUp();
     }
 
     /**
