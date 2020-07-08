@@ -19,7 +19,7 @@ namespace LORIS\api\Models;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class ProjectRecordingsRow implements \JsonSerializable
+class ProjectRecordingsRow implements \LORIS\Data\DataInstance
 {
     private $_candid;
     private $_pscid;
@@ -52,7 +52,7 @@ class ProjectRecordingsRow implements \JsonSerializable
     }
 
     /**
-     * Implements \JsonSerializable interface for this row.
+     * Implements \LORIS\Data\DataInstance interface for this row.
      *
      * @return array which can be serialized by json_encode()
      */

@@ -26,27 +26,9 @@ namespace LORIS\conflict_resolver;
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-class Resolved_Conflicts extends \NDB_Menu_Filter implements \JsonSerializable
+class Resolved_Conflicts extends \NDB_Menu_Filter
 {
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be an empty string)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     */
-    function __construct(
-        \Module $module,
-        string $page,
-        string $identifier,
-        string $commentID
-    ) {
-        parent::__construct($module, $page, $identifier, $commentID);
-        $this->skipTemplate = true;
-    }
+    public $skipTemplate = true;
 
     /**
      * Returns true if the user has permission to access
@@ -245,17 +227,17 @@ class Resolved_Conflicts extends \NDB_Menu_Filter implements \JsonSerializable
     }
 
     /**
-     * Converts the results of this menu filter
-     * to be retrieved with ?format=json
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
      *
-     * @return array which can be serialized by json_encode()
+     * @return string a json encoded string of the headers and data from this table
      */
-    public function jsonSerialize() : array
+    function toJSON(): string
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;
 
-        return $result;
+        return json_encode($result);
     }
 
     /**

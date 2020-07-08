@@ -23,7 +23,7 @@ namespace LORIS\Data\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class DicomTarDTO implements \JsonSerializable
+class DicomTarDTO implements \LORIS\Data\DataInstance
 {
     private $tarchiveid;
 
@@ -98,7 +98,7 @@ class DicomTarDTO implements \JsonSerializable
     }
 
     /**
-     * Implements \JsonSerializable interface
+     * Implements \LORIS\Data\DataInstance interface
      *
      * @return array which can be serialized by json_encode()
      */

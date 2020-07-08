@@ -15,11 +15,11 @@ namespace LORIS\Data\Filters;
 
 /**
  * UserProjectMatch filters out data for any resource which is not part of one of the
- * user's projects. For a \JsonSerializable to be compatible with the UserProjectMatch
+ * user's projects. For a DataInstance to be compatible with the UserProjectMatch
  * filter, it must implement a getProjectIDs or getProjectID method which returns
  * an integer (or array) of ProjectIDs that the data belongs to. The data will be
  * filtered out unless the User is a member of at least one project that the resource
- * \JsonSerializable is a member of.
+ * DataInstance is a member of.
  *
  * @category   Data
  * @package    Main
@@ -33,13 +33,13 @@ class UserProjectMatch implements \LORIS\Data\Filter
     /**
      * Implements the \LORIS\Data\Filter interface
      *
-     * @param \User             $user     The user that the data is being
+     * @param \User                    $user     The user that the data is being
      *                                           filtered for.
-     * @param \JsonSerializable $resource The data being filtered.
+     * @param \LORIS\Data\DataInstance $resource The data being filtered.
      *
      * @return bool true if the user has a project in common with the data
      */
-    public function filter(\User $user, \JsonSerializable $resource) : bool
+    public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
         if (method_exists($resource, 'getProjectIDs')) {
             // If the Resource belongs to multiple ProjectIDs, the user can

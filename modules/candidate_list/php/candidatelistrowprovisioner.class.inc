@@ -86,9 +86,9 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      *
      * @param array $row The database row from the LORIS Database class.
      *
-     * @return \JsonSerializable An instance representing this row.
+     * @return \LORIS\Data\DataInstance An instance representing this row.
      */
-    public function getInstance($row) : \JsonSerializable
+    public function getInstance($row) : \LORIS\Data\DataInstance
     {
         // XXX This should probably be updated to allow users
         // to access candidates who have any session at one of the

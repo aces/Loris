@@ -31,13 +31,13 @@ class HideFileFilter implements \LORIS\Data\Filter
     /**
      * Implements the HideFileFilter interface
      *
-     * @param \User             $user     The user that the data is being
-     *                                    filtered for.
-     * @param \JsonSerializable $resource The data being filtered.
+     * @param \User                    $user     The user that the data is being
+     *                                           filtered for.
+     * @param \LORIS\Data\DataInstance $resource The data being filtered.
      *
      * @return bool Whether the file should be shown.
      */
-    public function filter(\User $user, \JsonSerializable $resource) : bool
+    public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
         return $resource->getHideFile() !== self::HIDE;
     }

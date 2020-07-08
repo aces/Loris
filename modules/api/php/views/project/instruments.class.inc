@@ -33,7 +33,7 @@ class Instruments
     private $_project;
 
     /**
-     * The project instruments \JsonSerializable.
+     * The project instruments datainstance.
      *
      * @var ProjectInstrumentsRow[]
      */

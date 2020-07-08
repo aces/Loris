@@ -21,7 +21,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Form extends NDB_Page implements \JsonSerializable
+class NDB_Form extends NDB_Page
 {
     /**
      * Stores the template
@@ -206,13 +206,13 @@ class NDB_Form extends NDB_Page implements \JsonSerializable
     }
 
     /**
-     * Implements \JsonSerializable interface
+     * {@inheritDoc}
      *
-     * @return array which can be serialized by json_encode()
+     * @return string
      */
-    public function jsonSerialize() : array
+    function toJSON(): string
     {
-        return $this->toArray();
+        return json_encode($this->toArray());
     }
 }
 

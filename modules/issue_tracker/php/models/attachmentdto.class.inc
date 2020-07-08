@@ -16,7 +16,7 @@ namespace LORIS\issue_tracker\Models;
  * It is doing the mapping between the issues_attachments table columns
  * and the JSON object properties returned to the frontend.
  *
- * Additionally, it implements the \JsonSerializable interface
+ * Additionally, it implements the DataInstance interface
  * so it can be used by a Database Provisioner.
  *
  * @category Issue_Tracker
@@ -25,10 +25,10 @@ namespace LORIS\issue_tracker\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class AttachmentDTO implements \JsonSerializable
+class AttachmentDTO implements \LORIS\Data\DataInstance
 {
     /**
-     * Implements \JsonSerializable interface for this row.
+     * Implements \LORIS\Data\DataInstance interface for this row.
      *
      * @return array which can be serialized by json_encode()
      */

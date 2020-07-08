@@ -26,7 +26,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page implements RequestHandlerInterface, \JsonSerializable
+class NDB_Page implements RequestHandlerInterface
 {
     /**
      * The name of the test_name being accessed
@@ -722,7 +722,7 @@ class NDB_Page implements RequestHandlerInterface, \JsonSerializable
     {
         switch($this->format) {
         case 'json':
-            return json_encode($this);
+            return $this->toJSON();
         }
         if ($this->skipTemplate) {
             return "";
@@ -903,13 +903,13 @@ class NDB_Page implements RequestHandlerInterface, \JsonSerializable
     }
 
     /**
-     * Converts the results of this form
-     * to be retrieved with ?format=json
+     * Converts the results of this form to a JSON format to be retrieved
+     * with ?format=json
      *
-     * @return array which can be serialized by json_encode()
+     * @return string a json encoded string of the options to send to the form
      */
-    public function jsonSerialize() : array
+    function toJSON(): string
     {
-        return ['error' => 'Not implemented'];
+        return json_encode(['error' => 'Not implemented']);
     }
 }

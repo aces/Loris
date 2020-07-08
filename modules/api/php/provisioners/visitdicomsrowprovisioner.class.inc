@@ -46,7 +46,7 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
                ON (s.ID=t.SessionID)
              JOIN candidate c
                ON (s.CandID=c.CandID)
-             WHERE
+             WHERE 
                c.Active=\'Y\' AND
                s.Active=\'Y\' AND
                s.ID = :v_sessionid
@@ -63,9 +63,9 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
      *
      * @param array $row The database row from the LORIS Database class.
      *
-     * @return \JsonSerializable An instance representing this row.
+     * @return \LORIS\Data\DataInstance An instance representing this row.
      */
-    public function getInstance($row) : \JsonSerializable
+    public function getInstance($row) : \LORIS\Data\DataInstance
     {
         return (new \LORIS\DicomTar(intval($row['tarchiveid'])))
             ->asDTO();

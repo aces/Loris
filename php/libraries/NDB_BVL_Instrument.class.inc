@@ -8,7 +8,7 @@ use \Loris\StudyEntities\Candidate\CandID;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-abstract class NDB_BVL_Instrument extends NDB_Page implements \JsonSerializable
+abstract class NDB_BVL_Instrument extends NDB_Page
 {
     protected const ERROR_CERTIFICATION_BAD_FORMATTING
         = 'Certification settings are not formatted correctly in the '
@@ -493,7 +493,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page implements \JsonSerializable
             // Mostly here for debugging. Realisticly, the JSON
             // representation will be retrieved through the API,
             // not the display function.
-            return json_encode($this);
+            return $this->toJSON();
         } else {
             $smarty    = new Smarty_NeuroDB;
             $formArray = $this->form->toElementArray();
@@ -2625,16 +2625,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page implements \JsonSerializable
         return $formArray;
 
     }
-
     /**
-     * Returns an array representation of the currently instantiated instrument.
+     * Returns a JSON representation of the currently instantiated
+     * instrument.
      *
-     * The format of the array representation is specified in the
+     * The format of the JSON representation is specified in the
      * docs/API/InstrumentFormat documentation.
      *
-     * @return array which can be serialized by json_encode()
+     * @return string containing valid JSON
      */
-    public function jsonSerialize() : array
+    function toJSON(): string
     {
         $smarty = new Smarty_NeuroDB;
         //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
@@ -2657,7 +2657,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page implements \JsonSerializable
         $smarty->assign('fullname', $this->getFullName());
         $html = $smarty->fetch("instrument_json.tpl");
 
-        return json_decode($html, true);
+        return json_encode(json_decode($html));
     }
 
     /**

@@ -115,7 +115,7 @@ foreach ($duplicate_flag_arr as $duplicate_flag) {
             "Duplicate flag. SessionID: `%s`. Test Name: `%s`. CommentID: `%s`",
             $duplicate_flag["SessionID"],
             $duplicate_flag["Test_name"],
-            $duplicate_flag["CommentID"]
+            $duplicate_flag["CommentID"],
         )
     );
 }

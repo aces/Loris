@@ -14,6 +14,8 @@
  */
 namespace LORIS\Data\Provisioners;
 
+use \LORIS\Data\DataInstance;
+
 /**
  * A DBRowProvisioner is an instance of ProvisionerInstance which
  * takes an SQL query and the bind parameters to go with it, and
@@ -45,22 +47,22 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
     }
 
     /**
-     * Convert a single row from the query to a \JsonSerializable suitable for use
+     * Convert a single row from the query to a DataInstance suitable for use
      * by filters and mappers.
      *
      * This must be implemented by users of this class in order to convert
-     * the database row to a suitable \JsonSerializable model.
+     * the database row to a suitable DataInstance model.
      *
      * @param array $row The database row returned from the PDO
      *
-     * @return \JsonSerializable The row converted to a \JsonSerializable
+     * @return DataInstance The row converted to a DataInstance
      */
-    abstract public function getInstance($row) : \JsonSerializable;
+    abstract public function getInstance($row) : DataInstance;
 
     /**
      * GetAllInstances implements the abstract method from
      * ProvisionerInstance by executing the query, and calling getInstance
-     * on the result to convert it from a PHP array to a \JsonSerializable
+     * on the result to convert it from a PHP array to a DataInstance
      * model.
      *
      * This is lazily evaluated, such that only one row of the Traversable
@@ -76,7 +78,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      *
-     * @return \Traversable which returns \JsonSerializable for row when traversed.
+     * @return \Traversable which returns DataInstance for row when traversed.
      */
     public function getAllInstances() : \Traversable
     {
@@ -89,10 +91,9 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
         }
 
         // Wrap an \IteratorIterator to convert from a PDOStatement row to
-        // a \JsonSerializable.
+        // a DataInstance.
         $iterator = new class($stmt, $this) extends \IteratorIterator {
             protected $outer;
-
             /**
              * Constructor creates a closure over the PDO statement and outer class
              * in order to have access to getInstance()
@@ -109,7 +110,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
             /**
              * Override IteratorIterator to call the closure's getInstance
              *
-             * @return \JsonSerializable
+             * @return DataInstance
              */
             public function current()
             {

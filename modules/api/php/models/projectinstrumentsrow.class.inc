@@ -20,7 +20,7 @@ namespace LORIS\api\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ProjectInstrumentsRow implements \JsonSerializable
+class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
 {
     private $_shortname;
     private $_fullname;
@@ -88,7 +88,7 @@ class ProjectInstrumentsRow implements \JsonSerializable
     }
 
     /**
-     * Implements \JsonSerializable interface for this row.
+     * Implements \LORIS\Data\DataInstance interface for this row.
      *
      * @return array which can be serialized by json_encode()
      */

@@ -20,7 +20,7 @@ namespace LORIS\api\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ProjectImagesRow implements \JsonSerializable
+class ProjectImagesRow implements \LORIS\Data\DataInstance
 {
     private $_candid;
     private $_pscid;
@@ -57,7 +57,7 @@ class ProjectImagesRow implements \JsonSerializable
     }
 
     /**
-     * Implements \JsonSerializable interface for this row.
+     * Implements \LORIS\Data\DataInstance interface for this row.
      *
      * @return array which can be serialized by json_encode()
      */

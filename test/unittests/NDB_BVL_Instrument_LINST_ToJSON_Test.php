@@ -65,7 +65,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $instrument = "table{@}Test\ntitle{@}Test Instrument";
         $base64 = "data://text/plain;base64," . base64_encode($instrument);
         $this->i->loadInstrumentFile($base64, true);
-        $json = json_encode($this->i);
+        $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $ExpectedMeta = [
             'InstrumentVersion' => "1l",
@@ -99,7 +99,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $base64 = "data://text/plain;base64," . base64_encode($instrument);
         $this->i->loadInstrumentFile($base64, true);
-        $json = json_encode($this->i);
+        $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $instrumentJSON = array(
             "Meta" => [
@@ -223,7 +223,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $base64 = "data://text/plain;base64," . base64_encode($instrument);
         $this->i->loadInstrumentFile($base64, true);
-        $json = json_encode($this->i);
+        $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $ExpectedMeta = $instrumentJSON = array(
             "Meta" => [

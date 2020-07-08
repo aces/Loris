@@ -25,7 +25,7 @@ namespace LORIS\dicom_archive;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class DICOMArchiveRow implements \JsonSerializable
+class DICOMArchiveRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
     protected $CenterID;
@@ -44,7 +44,7 @@ class DICOMArchiveRow implements \JsonSerializable
     }
 
     /**
-     * Implements \JsonSerializable interface for this row.
+     * Implements \LORIS\Data\DataInstance interface for this row.
      *
      * @return array which can be serialized by json_encode()
      */

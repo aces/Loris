@@ -24,29 +24,10 @@ namespace LORIS\examiner;
  * @link     https://www.github.com/aces/Loris
  */
 
-class Examiner extends \NDB_Menu_Filter_Form implements \JsonSerializable
+class Examiner extends \NDB_Menu_Filter_Form
 {
+    public $skipTemplate  = true;
     var $useCertification = false;
-
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be an empty string)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     */
-    function __construct(
-        \Module $module,
-        string $page,
-        string $identifier,
-        string $commentID
-    ) {
-        parent::__construct($module, $page, $identifier, $commentID);
-        $this->skipTemplate = true;
-    }
 
     /**
      * Checks if the user has access to examiner menu filter
@@ -83,24 +64,24 @@ class Examiner extends \NDB_Menu_Filter_Form implements \JsonSerializable
         $centerIDs = implode(',', $user->getCenterIDs());
 
         if ($user->hasPermission('examiner_multisite')) {
-                $query = "
-                        FROM examiners e
-                            LEFT JOIN examiners_psc_rel epr ON
+                $query = " 
+                        FROM examiners e 
+                            LEFT JOIN examiners_psc_rel epr ON 
                                 (epr.examinerID=e.examinerID)
-                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
-                            LEFT JOIN certification c ON
-                                (c.examinerID=e.examinerID and c.pass = 'certified')
-                            LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID) 
+                            LEFT JOIN certification c ON 
+                                (c.examinerID=e.examinerID and c.pass = 'certified') 
+                            LEFT JOIN test_names tn ON (tn.ID = c.testID) 
                         WHERE 1=1 ";
         } else {
 
               $query = "
-                        FROM examiners e
-                            LEFT JOIN examiners_psc_rel epr ON
+                        FROM examiners e 
+                            LEFT JOIN examiners_psc_rel epr ON 
                                 (epr.examinerID=e.examinerID)
-                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
-                            LEFT JOIN certification c ON
-                                (c.examinerID=e.examinerID and c.pass = 'certified')
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID) 
+                            LEFT JOIN certification c ON 
+                                (c.examinerID=e.examinerID and c.pass = 'certified') 
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
                         WHERE FIND_IN_SET(epr.centerID, '$centerIDs')";
         }
@@ -348,12 +329,12 @@ class Examiner extends \NDB_Menu_Filter_Form implements \JsonSerializable
     }
 
     /**
-     * Converts the results of this menu filter
-     * to be retrieved with ?format=json
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
      *
-     * @return array which can be serialized by json_encode()
+     * @return string JSON
      */
-    public function jsonSerialize() : array
+    function toJSON(): string
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;
@@ -361,7 +342,7 @@ class Examiner extends \NDB_Menu_Filter_Form implements \JsonSerializable
         // Include whether or not certification is being used
         $result['useCertification'] = ($this->useCertification === '1') ?: false;
 
-        return $result;
+        return json_encode($result);
     }
 
     /**

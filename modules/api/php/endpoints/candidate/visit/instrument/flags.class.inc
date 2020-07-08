@@ -136,6 +136,6 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_instrument));
+        return md5($this->_instrument->toJSON());
     }
 }

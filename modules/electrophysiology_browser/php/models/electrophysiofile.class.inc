@@ -22,7 +22,7 @@ namespace LORIS\electrophysiology_browser\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ElectrophysioFile implements \JsonSerializable
+class ElectrophysioFile implements \LORIS\Data\DataInstance
 {
     private $_fileData   = [];
     private $_parameters = [];
@@ -37,7 +37,7 @@ class ElectrophysioFile implements \JsonSerializable
 
         $db = \NDB_Factory::singleton()->database();
 
-        $query    = "SELECT
+        $query    = "SELECT 
                        PhysiologicalFileID,
                        PhysiologicalModalityID,
                        PhysiologicalOutputTypeID,
@@ -46,8 +46,8 @@ class ElectrophysioFile implements \JsonSerializable
                        FileType,
                        AcquisitionTime,
                        InsertedByUser,
-                       FilePath
-                     FROM physiological_file
+                       FilePath  
+                     FROM physiological_file 
                      WHERE PhysiologicalFileID=:PFID";
         $params   = ['PFID' => $physiologicalFileID];
         $fileData = $db->pselectRow($query, $params);
@@ -56,12 +56,12 @@ class ElectrophysioFile implements \JsonSerializable
             $this->_fileData[$key] = $value;
         }
 
-        $query        = "SELECT
-                           pt.Name,
+        $query        = "SELECT 
+                           pt.Name, 
                            ppf.Value
                          FROM physiological_parameter_file as ppf
                            LEFT JOIN parameter_type as pt USING (ParameterTypeID)
-                         WHERE
+                         WHERE 
                           PhysiologicalFileID=:PFID";
         $parameterRaw = $db->pselect($query, $params);
 
@@ -84,12 +84,12 @@ class ElectrophysioFile implements \JsonSerializable
     }
 
     /**
-     * Implements \JsonSerializable interface
+     * Implements \LORIS\Data\DataInstance interface
      *
-     * @return array which can be serialized by json_encode()
+     * @return string which can be serialized by json_encode()
      */
-    public function jsonSerialize() : array
+    public function jsonSerialize() : string
     {
-        return [];
+        return '';
     }
 }

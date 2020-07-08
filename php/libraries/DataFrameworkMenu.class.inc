@@ -34,7 +34,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-abstract class DataFrameworkMenu extends NDB_Menu_Filter implements \JsonSerializable
+abstract class DataFrameworkMenu extends NDB_Menu_Filter
 {
 
     /**
@@ -125,12 +125,12 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter implements \JsonSeriali
     }
 
     /**
-     * Converts the results of this menu filter
-     * to be retrieved with ?format=json
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
      *
-     * @return array which can be serialized by json_encode()
+     * @return string a json encoded string of the headers and data from this table
      */
-    public function jsonSerialize() : array
+    public function toJSON(): string
     {
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisionerWithFilters());
@@ -138,13 +138,15 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter implements \JsonSeriali
             function ($row) {
                 return array_values($row);
             },
-            json_decode(json_encode($table), true)
+            json_decode($table->toJSON(\NDB_Factory::singleton()->user()), true)
         );
 
-        return [
-            'Data'         => $arr,
-            'fieldOptions' => $this->getFieldOptions(),
-        ];
+        return json_encode(
+            [
+                'Data'         => $arr,
+                'fieldOptions' => $this->getFieldOptions(),
+            ]
+        );
     }
 }
 

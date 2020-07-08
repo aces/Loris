@@ -30,7 +30,7 @@ namespace LORIS\module_manager;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class ModuleRow implements \JsonSerializable
+class ModuleRow implements \LORIS\Data\DataInstance
 {
     protected $Module;
     protected $DBRow;
@@ -48,7 +48,7 @@ class ModuleRow implements \JsonSerializable
     }
 
     /**
-     * Implements \JsonSerializable interface for this row.
+     * Implements \LORIS\Data\DataInstance interface for this row.
      *
      * @return array which can be serialized by json_encode()
      */

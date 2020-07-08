@@ -43,7 +43,7 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
              SELECT
                s.CandID as Candidate,
                c.PSCID as PSCID,
-               c.Entity_type as Entity_type,
+               c.Entity_type as Entity_type, 
                s.Visit_label as Visit,
                s.Date_visit as Visit_date,
                s.CenterID as CenterID,
@@ -87,9 +87,9 @@ class ProjectImagesRowProvisioner extends DBRowProvisioner
      *
      * @param array $row The database row from the LORIS Database class.
      *
-     * @return \JsonSerializable An instance representing this row.
+     * @return \LORIS\Data\DataInstance An instance representing this row.
      */
-    public function getInstance($row) : \JsonSerializable
+    public function getInstance($row) : \LORIS\Data\DataInstance
     {
         return new ProjectImagesRow($row);
     }
