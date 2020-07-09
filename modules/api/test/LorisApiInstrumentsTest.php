@@ -59,7 +59,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: " .
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
                 "candidates/$this->candidTest/$this->visitTest/instruments"
             );
         }
@@ -161,7 +162,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: " .
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
                 "candidates/$this->candidTest/$this->visitTest/instruments/" .
                 "$this->instrumentTest"
             );
@@ -291,7 +293,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: PATCH" .
+            $this->markTestIncomplete(
+                "Endpoint not found: PATCH" .
                 "candidates/$candid/$visit/instruments/$instrument"
             );
         }
@@ -333,7 +336,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: PUT" .
+            $this->markTestIncomplete(
+                "Endpoint not found: PUT" .
                 "candidates/$candid/$visit/instruments/$instrument"
             );
         }
@@ -361,7 +365,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: GET" .
+            $this->markTestIncomplete(
+                "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/instruments/" .
                 "$this->instrumentTest/flags"
             );
@@ -469,7 +474,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: PATCH" .
+            $this->markTestIncomplete(
+                "Endpoint not found: PATCH" .
                 "candidates/$candid/$visit/instruments/$instrument/flags"
             );
         }
@@ -511,7 +517,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: PUT" .
+            $this->markTestIncomplete(
+                "Endpoint not found: PUT" .
                 "candidates/$candid/$visit/instruments/$instrument/flags"
             );
         }
@@ -539,8 +546,10 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: GET" .
-                "candidates/$candid/$visit/instruments/$instrument/dde"
+            $this->markTestIncomplete(
+                "Endpoint not found: GET" .
+                "candidates/$this->candidTest/$this->visitTest/instruments/" .
+                "$this->instrumentTest/dde"
             );
         }
         $this->assertEquals(200, $response->getStatusCode());
@@ -663,7 +672,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: PATCH" .
+            $this->markTestIncomplete(
+                "Endpoint not found: PATCH" .
                 "candidates/$candid/$visit/instruments/$instrument/dde"
             );
         }
@@ -705,7 +715,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: PUT" .
+            $this->markTestIncomplete(
+                "Endpoint not found: PUT" .
                 "candidates/$candid/$visit/instruments/$instrument/dde"
             );
         }
@@ -735,7 +746,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: GET" .
+            $this->markTestIncomplete(
+                "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/instruments/
             $this->instrumentTest/dde/flags"
             );
@@ -843,7 +855,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: GET" .
+            $this->markTestIncomplete(
+                "Endpoint not found: GET" .
                 "candidates/$candid/$visit/instruments/$instrument/dde/flags",
             );
         }
@@ -885,7 +898,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: GET" .
+            $this->markTestIncomplete(
+                "Endpoint not found: GET" .
                 "candidates/$candid/$visit/instruments/$instrument/dde/flags",
             );
         }

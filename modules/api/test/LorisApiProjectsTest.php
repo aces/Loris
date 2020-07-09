@@ -541,7 +541,8 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete("Endpoint not found: GET" .
+            $this->markTestIncomplete(
+                "Endpoint not found: GET" .
                 "projects/$this->projectIdTest/instruments/aosi",
             );
         }
