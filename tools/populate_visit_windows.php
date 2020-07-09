@@ -48,7 +48,7 @@ class VisitWindowPopulator
      */
     function __construct()
     {
-        $this->DB = Database::singleton();
+        $this->DB     = Database::singleton();
         $this->Config = NDB_Config::singleton();
     }
 
@@ -64,13 +64,13 @@ class VisitWindowPopulator
     {
         $verify = $this->DB->pselectOne(
             "SELECT 'x' FROM Visit_Windows WHERE Visit_label=:VL",
-            array('VL' => $visit)
+            ['VL' => $visit]
         );
         if ($verify === 'x') {
             return;
         }
         print "Inserting $visit\n";
-        $x = $this->DB->insert("Visit_Windows", array('Visit_label' => $visit));
+        $x = $this->DB->insert("Visit_Windows", ['Visit_label' => $visit]);
     }
 
     /**
@@ -83,13 +83,13 @@ class VisitWindowPopulator
         // Can't use Utility::getVisits() because that uses the Visit_Window table..
         $vls = $this->Config->getSetting("visitLabel");
         foreach (Utility::associativeToNumericArray($vls) as $visits) {
-            foreach (Utility::associativeToNumericArray($visits['labelSet']['item']) as $item) {
+            foreach (Utility::associativeToNumericArray(
+                $visits['labelSet']['item']
+            ) as $item) {
                 $visit = $item['@']['value'];
                 if (!empty($visit)) {
                     $this->insertIfMissing($visit);
                 }
-
-
             };
         }
     }
