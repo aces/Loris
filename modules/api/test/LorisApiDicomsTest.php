@@ -226,24 +226,20 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
      */
     public function testPostCandidatesCandidVisitDicoms(): void
     {
-        try{
-            $response = $this->client->request(
-                'POST',
-                "candidates/$this->candidTest/$this->visitTest/dicoms",
-                [
-                    'headers' => $this->headers,
-                    'json'    => []
-                ]
-            );
-            // Verify the status code
-            $this->assertEquals(201, $response->getStatusCode());
-            // Verify the endpoint has a body
-            $body = $response->getBody();
-            $this->assertNotEmpty($body);
-
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-        }
+        $response = $this->client->request(
+            'POST',
+            "candidates/$this->candidTest/$this->visitTest/dicoms",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => []
+            ]
+        );
+        // Verify the status code - TODO METHOD NOT ALLOWED YET
+        $this->assertEquals(405, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
 
     }
 
@@ -288,7 +284,7 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
 
     }
 
-    // THESE ENDPOINTS DO NOT EXIST YET
+    // THESE ENDPOINTS DO NOT EXIST YET, this is why the tests assert the response is 404
 
     /**
      * Tests the HTTP GET request for the
@@ -304,10 +300,11 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
                 "candidates/$this->candidTest/$this->visitTest/dicoms/" .
                 "$this->tarfileTest/processes",
                 [
-                    'headers' => $this->headers
+                    'http_errors' => false,
+                    'headers'     => $this->headers
                 ]
             );
-            $this->assertEquals(200, $response->getStatusCode());
+            $this->assertEquals(404, $response->getStatusCode());
             // Verify the endpoint has a body
             $body = $response->getBody();
             $this->assertNotEmpty($body);
@@ -326,24 +323,18 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
     public function testGetCandidatesCandidVisitDicomsTarnameProcessesProcessid():
     void
     {
-        try{
-            $response = $this->client->request(
-                'GET',
-                "candidates/$this->candidTest/$this->visitTest/dicoms/" .
-                "$this->tarfileTest/processes/$this->processidTest",
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $this->assertEquals(
-                200,
-                $response->getStatusCode()
-            );
-            // Verify the endpoint has a body
-            $body = $response->getBody();
-            $this->assertNotEmpty($body);
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/dicoms/" .
+            "$this->tarfileTest/processes/$this->processidTest",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+            ]
+        );
+        $this->assertEquals(404, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 }

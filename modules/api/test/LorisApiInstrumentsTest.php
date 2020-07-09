@@ -19,7 +19,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
 {
     protected $instrumentTest = "medical_history";
-    protected $candidTest     = "300001";
+    protected $candidTest     = "300004";
     protected $visitTest      = "V1";
 
     /**
@@ -87,23 +87,23 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'array'
         );
         $this->assertSame(
-            gettype($instrumentsArray['Meta']['0']),
+            gettype($instrumentsArray['Instruments']['0']),
             'string'
         );
         $this->assertSame(
-            gettype($instrumentsArray['Meta']['1']),
+            gettype($instrumentsArray['Instruments']['1']),
             'string'
         );
         $this->assertSame(
-            gettype($instrumentsArray['Meta']['2']),
+            gettype($instrumentsArray['Instruments']['2']),
             'string'
         );
         $this->assertSame(
-            gettype($instrumentsArray['Meta']['3']),
+            gettype($instrumentsArray['Instruments']['3']),
             'string'
         );
         $this->assertSame(
-            gettype($instrumentsArray['Meta']['4']),
+            gettype($instrumentsArray['Instruments']['4']),
             'string'
         );
 
@@ -253,7 +253,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $candid     = '300003';
+        $candid     = '300004';
         $visit      = 'V1';
         $instrument = 'aosi';
         $json       = [
@@ -290,7 +290,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $candid     = '300003';
+        $candid     = '300004';
         $visit      = 'V1';
         $instrument = 'aosi';
         $json       = [

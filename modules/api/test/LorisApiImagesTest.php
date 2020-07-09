@@ -53,7 +53,8 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/",
             [
-                'headers' => $this->headers
+                'headers'     => $this->headers,
+                'http_errors' => false
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -110,8 +111,9 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/images/" .
             "$this->imagefileTest",
             [
-                'headers' => $this->headers,
-                'save_to' => $stream
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'save_to'     => $stream
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -126,7 +128,8 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/images/" .
             "$this->imagefileTest",
             [
-                'headers' => $this->headers
+                'headers'     => $this->headers,
+                'http_errors' => false,
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -156,7 +159,8 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/images/" .
             "$this->imagefileTest/qc",
             [
-                'headers' => $this->headers
+                'headers'     => $this->headers,
+                'http_errors' => false,
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -224,12 +228,6 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             'NULL'
         );
 
-        $imagesArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
         $this->assertArrayHasKey(
             'Meta',
             $imagesArray
@@ -316,8 +314,9 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             'PUT',
             "candidates/$candid/$visit/images/$filename/qc",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json
             ]
         );
         // Verify the status code
@@ -337,7 +336,8 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/images/" .
             "$this->imagefileTest/format/brainbrowser",
             [
-                'headers' => $this->headers
+                'headers'     => $this->headers,
+                'http_errors' => false,
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -424,7 +424,8 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
                 "candidates/$this->candidTest/$this->visitTest/images/" .
                 "$this->imagefileTest/format/raw",
                 [
-                    'headers' => $this->headers
+                    'headers'     => $this->headers,
+                    'http_errors' => false,
                 ]
             );
             $this->assertEquals(200, $response->getStatusCode());
@@ -454,6 +455,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             "$this->imagefileTest/format/thumbnail",
             [
                 'headers' => $this->headers,
+                'http_errors' => false,
                 'save_to' => $stream
             ]
         );
@@ -478,7 +480,8 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/images/" .
             "$this->imagefileTest/headers",
             [
-                'headers' => $this->headers
+                'headers'     => $this->headers,
+                'http_errors' => false,
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -714,7 +717,8 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/images/" .
             "$this->imagefileTest/headers/full",
             [
-                'headers' => $this->headers
+                'headers'     => $this->headers,
+                'http_errors' => false,
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -794,7 +798,8 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/images/" .
             "$this->imagefileTest/headers/headername",
             [
-                'headers' => $this->headers
+                'headers'     => $this->headers,
+                'http_errors' => false,
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());

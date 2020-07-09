@@ -19,8 +19,6 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
     protected $projectIdTest = "Pumpernickel";
-    protected $candidTest    = "115788";
-    protected $visitTest     = "V1";
 
     /**
      * Call to LorisApiAuthenticationTest::setUp()
@@ -378,7 +376,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
      */
     public function testGetProjectsProjectVisits(): void
     {
-        $this->guzzleLogin();
         $response = $this->client->request(
             'GET',
             "projects/$this->projectIdTest/visits",
