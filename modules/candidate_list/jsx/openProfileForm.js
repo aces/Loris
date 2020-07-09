@@ -70,7 +70,9 @@ class OpenProfileForm extends Component {
               className: 'alert alert-info text-center',
             };
             if (this.props.betaProfileLink) {
-                window.location.href = loris.BaseURL + '/candidate_profile/' + state.CandID;
+                window.location.href = loris.BaseURL
+                                       + '/candidate_profile/'
+                                       + state.CandID;
             } else {
                 window.location.href = loris.BaseURL + '/' + state.CandID;
             }

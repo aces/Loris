@@ -11,7 +11,9 @@ function notAnswered() {
     } else {
       $('.' + name).prop('disabled', true);
       $(this).parent().addClass('has-warning');
-      $(this).after('<div class="col-xs-12 warning" id="' + name + '">Any entered data will not be saved</div>');
+      $(this).after('<div class="col-xs-12 warning" id="'
+        + name
+        + '">Any entered data will not be saved</div>');
     }
   } else if (index === 0) {
     $('[name=' + name + ']').prop('disabled', false);
@@ -20,7 +22,9 @@ function notAnswered() {
   } else {
     $('[name=' + name + ']').prop('disabled', true);
     $(this).parent().addClass('has-warning');
-    $(this).after('<div class="col-xs-12 warning" id="' + name + '">Any entered data will not be saved</div>');
+    $(this).after('<div class="col-xs-12 warning" id="'
+      + name
+      + '">Any entered data will not be saved</div>');
   }
 }
 

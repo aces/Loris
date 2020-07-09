@@ -31,11 +31,23 @@ class ImagePanelHeader extends Component {
     let arrow;
     if (this.props.Expanded) {
       arrow = <span onClick={this.props.onToggleBody}
-                    className="pull-right clickable glyphicon arrow glyphicon-chevron-up">
+                    className="
+                      pull-right
+                      clickable
+                      glyphicon
+                      arrow
+                      glyphicon-chevron-up
+                    ">
               </span>;
     } else {
       arrow = <span onClick={this.props.onToggleBody}
-                    className="pull-right clickable glyphicon arrow glyphicon-chevron-down">
+                    className="
+                      pull-right
+                      clickable
+                      glyphicon
+                      arrow
+                      glyphicon-chevron-down
+                    ">
               </span>;
     }
     let headerButton = (
@@ -57,7 +69,10 @@ class ImagePanelHeader extends Component {
       <div className="panel-heading clearfix">
         <input type="checkbox" data-file-id={this.props.FileID}
                className="mripanel user-success"/>
-        <h3 className="panel-title" data-toggle="tooltip" title={this.props.Filename}>
+        <h3 className="panel-title"
+            data-toggle="tooltip"
+            title={this.props.Filename}
+        >
           {this.props.Filename}
         </h3>
         {QCStatusLabel}
@@ -95,8 +110,14 @@ class ImagePanelHeadersTable extends Component {
 
   render() {
     return (
-      <table className=
-               "table table-hover table-bordered header-info col-xs-12 dynamictable">
+      <table className="
+        table
+        table-hover
+        table-bordered
+        header-info
+        col-xs-12
+        dynamictable
+      ">
         <tbody>
         <tr>
           <th className="info col-xs-2">Voxel Size</th>

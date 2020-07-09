@@ -79,7 +79,13 @@ class InstrumentUploadForm extends Component {
                   onUserInput={this.fileSelected}
                   value={this.state.selectedFile}
                 />
-                <button className="btn btn-default" onClick={this.upload} disabled={disabled()}>Install</button>
+                <button
+                  className="btn btn-default"
+                  onClick={this.upload}
+                  disabled={disabled()}
+                >
+                  Install
+                </button>
               </div>
             </div>
           </div>

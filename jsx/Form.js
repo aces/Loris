@@ -445,7 +445,9 @@ class SelectElement extends Component {
     }
 
     // Add error message
-    if (this.props.hasError || (this.props.required && this.props.value === '')) {
+    if (this.props.hasError
+       || (this.props.required && this.props.value === '')
+    ) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
     }
@@ -905,7 +907,11 @@ class TextboxElement extends Component {
   }
 
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'textbox');
+    this.props.onUserInput(
+      this.props.name,
+      e.target.value,
+      e.target.id, 'textbox',
+    );
   }
 
   handleBlur(e) {
@@ -1039,7 +1045,12 @@ class DateElement extends Component {
   }
 
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
+    this.props.onUserInput(
+      this.props.name,
+      e.target.value,
+      e.target.id,
+      'date',
+    );
   }
 
   render() {
@@ -1168,7 +1179,8 @@ class TimeElement extends Component {
             required={required}
             disabled={disabled}
             pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])(:([0-5][0-9]))?"
-            title="Input must be in one of the following formats: HH:MM or HH:MM:SS"
+            title={'Input must be in one of the following formats: '
+                  + 'HH:MM or HH:MM:SS'}
           />
         </div>
       </div>

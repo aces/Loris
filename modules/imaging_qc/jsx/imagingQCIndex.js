@@ -29,15 +29,20 @@ class ImagingQCIndex extends Component {
       switch (column) {
       case 'Scan Done in MRI PF':
         if (cell == 'Yes') {
-          let mpfURL = loris.BaseURL + '/instruments/mri_parameter_form/?commentID=' +
-              row.CommentID + '&sessionID=' + row['Session ID'] +
-              '&candID=' + row.DCCID;
+          let mpfURL = loris.BaseURL
+                       + '/instruments/mri_parameter_form/?commentID='
+                       + row.CommentID
+                       + '&sessionID='
+                       + row['Session ID']
+                       + '&candID='
+                       + row.DCCID;
           result = <td><a href={mpfURL}>{cell}</a></td>;
         }
       case 'Scan Location':
         if (cell == 'In Imaging Browser') {
-          let imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
-              row['Session ID'];
+          let imgURL = loris.BaseURL
+                       + '/imaging_browser/viewSession/?sessionID='
+                       + row['Session ID'];
           result = <td><a href={imgURL}>{cell}</a></td>;
         }
       case 'Tarchive':
