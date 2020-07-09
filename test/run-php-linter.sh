@@ -41,6 +41,7 @@ declare -a tools_list=(
     'single_use/Convert_LorisMenuID_to_ModuleID.php'
     'generate_tables_sql.php'
     'lorisform_parser.php'
+    'populate_visit_windows.php'
 )
 
 # And on all PHP files in this array
