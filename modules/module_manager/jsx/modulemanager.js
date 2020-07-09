@@ -78,8 +78,8 @@ class ModuleManagerIndex extends Component {
               if (success === true) {
                 swal.fire({
                   title: 'Success!',
-                  text: 'Updated ' + id + ' status!' +
-                    'To apply changes the interface must be reloaded. proceed ?',
+                  text: 'Updated ' + id + ' status! ' +
+                    'To apply changes the interface must be reloaded. Proceed?',
                   type: 'success',
                   showCancelButton: true,
                   confirmButtonText: 'Reload the page',
