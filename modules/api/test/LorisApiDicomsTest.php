@@ -235,8 +235,12 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
                 'json'        => []
             ]
         );
+        if ($response->getStatusCode() === 405) {
+            $this->markTestIncomplete("The method POST is not available for the" .
+            "endpoint candidates/$this->candidTest/$this->visitTest/dicoms");
+        }
         // Verify the status code - TODO METHOD NOT ALLOWED YET
-        $this->assertEquals(405, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
@@ -256,23 +260,30 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/" .
             "dicoms/$this->tarfileTest",
             [
-                'headers' => $this->headers
-            ]
+                'headers'     => $this->headers,
+                'http_errors' => false
+           ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/dicoms "
+            );
+        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $resource        = fopen($this->tarfileTest, 'w');
-        $stream          = GuzzleHttp\Psr7\stream_for($resource);
+        $resource = fopen($this->tarfileTest, 'w');
+        $stream = GuzzleHttp\Psr7\stream_for($resource);
         $response_stream = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/dicoms/" .
             "$this->tarfileTest",
             [
+                'http_errors' => false,
                 'headers' => $this->headers,
-                'save_to' => $stream
+                'save_to' => $stream,
             ]
         );
         $this->assertEquals(200, $response_stream->getStatusCode());
@@ -281,7 +292,6 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
         $this->assertNotEmpty($body);
 
         $this->assertFileIsReadable($this->tarfileTest);
-
     }
 
     // THESE ENDPOINTS DO NOT EXIST YET, this is why the tests assert the response is 404
@@ -294,24 +304,25 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitDicomsTarnameProcesses(): void
     {
-        try {
-            $response = $this->client->request(
-                'GET',
-                "candidates/$this->candidTest/$this->visitTest/dicoms/" .
-                "$this->tarfileTest/processes",
-                [
-                    'http_errors' => false,
-                    'headers'     => $this->headers
-                ]
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/dicoms/" .
+            "$this->tarfileTest/processes",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/dicoms "
             );
-            $this->assertEquals(404, $response->getStatusCode());
-            // Verify the endpoint has a body
-            $body = $response->getBody();
-            $this->assertNotEmpty($body);
-
-        } catch (Exception $e) {
-            echo $e->getMessage();
         }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
     }
 
     /**
@@ -332,7 +343,11 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
                 'http_errors' => false,
             ]
         );
-        $this->assertEquals(404, $response->getStatusCode());
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/dicoms "
+            );
+        $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);

@@ -53,7 +53,8 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'GET',
             "candidates/$this->candidTest/$this->visitTest",
             [
-                'headers' => $this->headers
+                'http_errors' => false,
+                'headers'     => $this->headers
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -146,8 +147,9 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'PUT',
             "candidates/$candid/$visit",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
         // Verify the status code
@@ -159,8 +161,9 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'PUT',
             "candidates/$candid/$visit",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
         // Verify the status code; should be 204 because it was just created,
@@ -243,8 +246,9 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'PUT',
             "candidates/$candid/$visit",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
         // Verify the status code
@@ -256,8 +260,9 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'PUT',
             "candidates/$candid/$visit",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
         // Verify the status code; should be 204 because it was just created,

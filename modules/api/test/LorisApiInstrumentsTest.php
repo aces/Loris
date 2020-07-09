@@ -54,9 +54,15 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'GET',
             "candidates/$this->candidTest/$this->visitTest/instruments",
             [
-                'headers' => $this->headers
+                'http_errors' => false,
+                'headers'     => $this->headers
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/instruments"
+            );
+        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -150,9 +156,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/instruments/" .
             "$this->instrumentTest",
             [
-                'headers' => $this->headers
+                'http_errors' => false,
+                'headers'     => $this->headers
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/instruments/" .
+                "$this->instrumentTest"
+            );
+        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -272,10 +285,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'PATCH',
             "candidates/$candid/$visit/instruments/$instrument",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: PATCH" .
+                "candidates/$candid/$visit/instruments/$instrument"
+            );
+        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -308,10 +327,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'PUT',
             "candidates/$candid/$visit/instruments/$instrument",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: PUT" .
+                "candidates/$candid/$visit/instruments/$instrument"
+            );
+        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -331,9 +356,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/instruments/" .
             "$this->instrumentTest/flags",
             [
-                'headers' => $this->headers
+                'http_errors' => false,
+                'headers'     => $this->headers
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: GET" .
+                "candidates/$this->candidTest/$this->visitTest/instruments/" .
+                "$this->instrumentTest/flags"
+            );
+        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -431,10 +463,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'PATCH',
             "candidates/$candid/$visit/instruments/$instrument/flags",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: PATCH" .
+                "candidates/$candid/$visit/instruments/$instrument/flags"
+            );
+        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -467,10 +505,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'PUT',
             "candidates/$candid/$visit/instruments/$instrument/flags",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: PUT" .
+                "candidates/$candid/$visit/instruments/$instrument/flags"
+            );
+        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -490,9 +534,15 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/instruments/
                  $this->instrumentTest/dde",
             [
-                'headers' => $this->headers
+                'http_errors' => false,
+                'headers'     => $this->headers,
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: GET" .
+                "candidates/$candid/$visit/instruments/$instrument/dde"
+            );
+        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -607,10 +657,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'PATCH',
             "candidates/$candid/$visit/instruments/$instrument/dde",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: PATCH" .
+                "candidates/$candid/$visit/instruments/$instrument/dde"
+            );
+        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -641,12 +697,18 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$candid/$visit/instruments/$instrument/flags/dde",
+            "candidates/$candid/$visit/instruments/$instrument/dde",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: PUT" .
+                "candidates/$candid/$visit/instruments/$instrument/dde"
+            );
+        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -668,9 +730,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/instruments/
             $this->instrumentTest/dde/flags",
             [
-                'headers' => $this->headers
+                'http_errors' => false,
+                'headers'     => $this->headers,
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: GET" .
+                "candidates/$this->candidTest/$this->visitTest/instruments/
+            $this->instrumentTest/dde/flags"
+            );
+        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -768,10 +837,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'PATCH',
             "candidates/$candid/$visit/instruments/$instrument/dde/flags",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: GET" .
+                "candidates/$candid/$visit/instruments/$instrument/dde/flags",
+            );
+        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -802,12 +877,18 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$candid/$visit/instruments/$instrument/flags/dde",
+            "candidates/$candid/$visit/instruments/$instrument/dde/flags",
             [
-                'headers' => $this->headers,
-                'json'    => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete("Endpoint not found: GET" .
+                "candidates/$candid/$visit/instruments/$instrument/dde/flags",
+            );
+        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
