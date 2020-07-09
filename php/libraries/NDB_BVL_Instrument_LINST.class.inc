@@ -502,14 +502,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 'Delimiter' => $this->_GUIDelimiter,
             ];
 
-            // This needs to be initialized to a valid category, phan doesn't
-            // know enough about the LINST format to know that the "table" case
-            // is always encountered before the other dictionary items.
-            $dictcat = new \LORIS\Data\Dictionary\Category(
-                "Unknown",
-                "Unknown Category"
-            );
-
             while (($line = fgets($fp, 4096)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
                 $this->LinstLines[] = $pieces;
@@ -557,8 +549,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                     // Now that we have the category, add things that are added by addMetaDatafields() but
                     // aren't in the .linst file
-                    $this->dictionary = array_merge($this->dictionary,
-                    $dictcat        = new \LORIS\Data\Dictionary\Category(
+                    $this->dictcategory = new \LORIS\Data\Dictionary\Category(
                         $this->testName,
                         $this->getFullName()
                     );
@@ -571,28 +562,24 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             new DictionaryItem(
                                 'Date_taken',
                                 'Date of Administration',
-                                $dictcat,
                                 $scope,
                                 new \LORIS\Data\Types\DateType(),
                             ),
                             new DictionaryItem(
                                 'Candidate_age',
                                 'Candidate Age (Months)',
-                                $dictcat,
                                 $scope,
                                 new \LORIS\Data\Types\Duration(),
                             ),
                             new DictionaryItem(
                                 'Window_Difference',
                                 'Window difference from test battery (days)',
-                                $dictcat,
                                 $scope,
                                 new \LORIS\Data\Types\Duration(),
                             ),
                             new DictionaryItem(
                                 'Examiner',
                                 'Examiner',
-                                $dictcat,
                                 $scope,
                                 // Should this be an enum of examiners?
                                 new StringType(255),
@@ -670,7 +657,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->dictionary[] = new DictionaryItem(
                             $pieces[1],
                             $pieces[2],
-                            $dictcat,
                             $scope,
                             new StringType(255),
                         );
@@ -702,7 +688,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->dictionary[] = new DictionaryItem(
                             $pieces[1],
                             $pieces[2],
-                            $dictcat,
                             $scope,
                             new StringType(),
                         );
@@ -737,7 +722,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->dictionary[] = new DictionaryItem(
                             $pieces[1],
                             $pieces[2],
-                            $dictcat,
                             $scope,
                             new DateType(),
                         );

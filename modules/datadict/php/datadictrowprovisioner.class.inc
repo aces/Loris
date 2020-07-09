@@ -63,38 +63,34 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
 
         foreach ($modules as $module) {
             $mdict = $module->getDataDictionary($this->loris);
-            $dict  = array_merge(
-                $dict,
-                array_map(
-                    function ($item) use ($overrides) {
-                        $name   = $item->getCategory()->getName()
-                            . '_' . $item->getName();
-                        $desc   = '';
-                        $status = 'Unchanged';
-                        if (isset($overrides[$name])) {
-                            $desc   = $overrides[$name]['Description'];
-                            $status = 'Modified';
-                        } else {
-                            $desc = $item->getDescription();
-                        }
+            foreach($mdict as $cat) {
+                foreach($cat->getItems() as $item) {
+                    $name   = $cat->getName() . '_' . $item->getName();
+                    $desc   = '';
+                    $status = 'Unchanged';
+                    if (isset($overrides[$name])) {
+                        $desc   = $overrides[$name]['Description'];
+                        $status = 'Modified';
+                    } else {
+                        $desc = $item->getDescription();
+                    }
 
-                        if ($desc == '') {
-                            $status = 'Empty';
-                        }
-                        return $this->getInstance(
+                    if ($desc == '') {
+                        $status = 'Empty';
+                    }
+                    $dict[] = $this->getInstance(
                             [
-                                'source_from'        => $item->getCategory()->getName(),
+                                'source_from'        => $cat->getName(),
                                 'name'               => $name,
                                 'source_field'       => $item->getName(),
                                 'description'        => $desc,
                                 'description_status' => $status,
                                 'datascope' => $item->getScope(),
+                                'type' => $item->getDataType(),
                             ]
                         );
-                    },
-                    $mdict
-                )
-            );
+                }
+            } 
         }
         return new \ArrayIterator($dict);
     }
