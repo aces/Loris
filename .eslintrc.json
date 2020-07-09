@@ -23,7 +23,7 @@
     }],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
-    "prefer-rest-params": "warn",
+    "prefer-rest-params": "error",
     "array-callback-return": 0,
     "require-jsdoc": "warn",
     "no-implicit-globals": 0,
