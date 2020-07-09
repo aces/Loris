@@ -26,6 +26,12 @@ namespace LORIS\statistics;
 class Stats_Behavioural extends \NDB_Form
 {
     /**
+     * The default params
+     */
+    protected $siteParams    = array();
+    protected $projectParams = array();
+
+    /**
      * Checking user's permission
      *
      * @param \User $user The user whose access is being checked
@@ -67,40 +73,12 @@ class Stats_Behavioural extends \NDB_Form
         $DB      = $factory->database();
         $user    = $factory->user();
 
-        //SITES
-
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-
-        $paramCenters      = array();
-        $list_of_sites_ids = array_keys($list_of_sites);
-        foreach ($list_of_sites_ids as $key => $siteID) {
-            $paramCenters[] = ":paramSiteID$key";
-            $this->params["paramSiteID$key"] = $siteID;
-        }
-
-        $centers = $DB->pselect(
-            "SELECT CONCAT('C', CenterID) as ID,
-                    CenterID as NumericID,
-                    IFNULL(PSCArea,Name) as LongName,
-                    Name as ShortName
-              FROM psc
-              WHERE CenterID <> '1'
-                    AND Study_site = 'Y'
-	            AND CenterID IN (" . implode(',', $paramCenters) . ")",
-            $this->params
-        );
-
-        $this->tpl_data['Centers'] = $centers;
-
         // PROJECTS
 
         $allProjectList = \Utility::getProjectList();
         $projects       = array();
         $projects['']   = 'All Projects';
+        $Param_Project  = '';
 
         $userProjectsIDs = $user->getData('ProjectIDs');
         foreach ($userProjectsIDs as $ProjectID) {
@@ -108,25 +86,6 @@ class Stats_Behavioural extends \NDB_Form
         }
 
         $this->tpl_data['Projects'] = $projects;
-
-        $paramProjects = array();
-        foreach ($userProjectsIDs as $key => $projectID) {
-            $paramProjects[] = ":paramProjectID$key";
-            $this->params["paramProjectID$key"] = $projectID;
-        }
-
-        foreach ($centers as $row) {
-            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if (isset($_REQUEST['site'])
-                && $_REQUEST['site'] == $row['NumericID']
-            ) {
-                $this->tpl_data['CurrentSite'] = array(
-                    'ID'   => $row['NumericID'],
-                    'Name' => $row['LongName'],
-                );
-            }
-
-        }
 
         if ($_REQUEST['BehaviouralProject'] ?? ''
         ) {
@@ -137,13 +96,27 @@ class Stats_Behavioural extends \NDB_Form
                     'ID'   => $currentProject,
                     'Name' => $projects[$currentProject],
                 );
-            $Param_Project       ='AND (s.ProjectID IS NULL 
+            $Param_Project ='AND (s.ProjectID IS NULL 
                                    OR c.RegistrationProjectID=:pid)';
-            $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
+            $this->projectParams['pid']
+                = htmlspecialchars($_REQUEST['BehaviouralProject']);
+        } elseif (!empty($userProjectsIDs)) {
+
+            $currentProject = '';
+            $paramProjects  = array();
+            foreach ($userProjectsIDs as $key => $projectID) {
+                $paramProjects[] = ":paramProjectID$key";
+                $this->projectParams["paramProjectID$key"] = $projectID;
+            }
+            $Param_Project ="AND (s.ProjectID IS NULL 
+                                   OR s.ProjectID IN
+                                       (" . implode(',', $paramProjects) . ")
+                                 )";
         } else {
             $currentProject = '';
-            $Param_Project  = '';
+            $Param_Project  ="AND (s.ProjectID IS NULL)";
         }
+
         //
         //SUBPROJECTS
         $suproject_query = '';
@@ -159,6 +132,57 @@ class Stats_Behavioural extends \NDB_Form
 
         $this->tpl_data['Visits'] = $Visits ?? '';
 
+        //SITES
+
+        $Param_Centers = '';
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+
+        if (!empty($list_of_sites)) {
+            $paramCenters      = array();
+            $list_of_sites_ids = array_keys($list_of_sites);
+            foreach ($list_of_sites_ids as $key => $siteID) {
+                $paramCenters[] = ":paramSiteID$key";
+                $this->siteParams["paramSiteID$key"] = $siteID;
+            }
+            $Param_Centers = "AND (s.CenterID IS NULL 
+                              OR s.CenterID IN
+                                  (" . implode(',', $paramCenters) . ")
+                            )";
+        } else {
+            $Param_Centers = "AND (s.CenterID IS NULL)";
+        }
+
+        $centers = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+                    CenterID as NumericID,
+                    IFNULL(PSCArea,Name) as LongName,
+                    Name as ShortName
+              FROM psc as s
+              WHERE s.CenterID <> '1'
+                    AND s.Study_site = 'Y'
+                    $Param_Centers",
+            $this->siteParams ?? array()
+        );
+
+        $this->tpl_data['Centers'] = $centers;
+
+        foreach ($centers as $row) {
+            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
+            if (isset($_REQUEST['site'])
+                && $_REQUEST['site'] == $row['NumericID']
+            ) {
+                $this->tpl_data['CurrentSite'] = array(
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
+            }
+
+        }
+
         //---- BEHAVIORAL STATS -----
         $result = $DB->pselect(
             "SELECT s.CenterID,
@@ -172,14 +196,11 @@ class Stats_Behavioural extends \NDB_Form
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
-                    AND s.CenterID IN
-                        (" . implode(',', $paramCenters) . ")
-                    AND c.RegistrationProjectID IN
-                        (" . implode(',', $paramProjects) . ")
-                    $suproject_query
                     $Param_Project
+                    $suproject_query
+                    $Param_Centers
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
-            $this->params ?? array()
+            array_merge($this->projectParams, $this->siteParams) ?? array()
         );
 
         foreach ($result as $row) {
@@ -248,14 +269,11 @@ class Stats_Behavioural extends \NDB_Form
                     AND f.CommentID LIKE 'DDE%'
                     AND c.Active = 'Y'
                     AND s.CenterID <> '1'
-                    AND s.CenterID IN 
-                        (" . implode(',', $paramCenters) . ")
-                    AND c.RegistrationProjectID IN 
-                        (" . implode(',', $paramProjects) . ")
-                    $suproject_query
                     $Param_Project
+                    $suproject_query
+                    $Param_Centers
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
-            $this->params ?? array()
+            array_merge($this->projectParams, $this->siteParams) ?? array()
         );
 
         foreach ($result as $row) {
