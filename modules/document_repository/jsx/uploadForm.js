@@ -172,7 +172,11 @@ class DocUploadForm extends Component {
           swal.fire('Could not upload file', data.error, 'error');
         }).catch((error) => {
           console.error(error);
-          swal.fire('Unknown Error', 'Please report the issue or contact your administrator', 'error');
+          swal.fire(
+            'Unknown Error',
+            'Please report the issue or contact your administrator',
+            'error'
+          );
         });
       }
     });

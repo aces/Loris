@@ -9,8 +9,11 @@ $(function() {
       <div className="row">
         <div className="col-md-9 col-lg-7">
           <MediaEditForm
-            DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${args.id}`}
-            action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+            DataURL={loris.BaseURL
+                    + '/media/ajax/FileUpload.php?action=getData&idMediaFile='
+                    + args.id}
+            action={loris.BaseURL
+                   + '/media/ajax/FileUpload.php?action=edit'}
           />
         </div>
       </div>

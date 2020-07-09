@@ -88,8 +88,9 @@ class DataReleaseIndex extends Component {
             || this.props.hasPermission('data_release_view')
             || this.props.hasPermission('data_release_upload')
             || this.props.hasPermission('data_release_edit_file_access')) {
-          const downloadURL = loris.BaseURL + '/data_release/ajax/GetFile.php?File=' +
-            encodeURIComponent(row['File Name']);
+          const downloadURL = loris.BaseURL
+            + '/data_release/ajax/GetFile.php?File='
+            + encodeURIComponent(row['File Name']);
           result = (
             <td>
               <a
@@ -152,8 +153,14 @@ class DataReleaseIndex extends Component {
         onClick={this.uploadFile}
       >
         <UploadFileForm
-          DataURL={`${loris.BaseURL}/data_release/ajax/FileUpload.php?action=getData`}
-          action={`${loris.BaseURL}/data_release/ajax/FileUpload.php?action=upload`}
+          DataURL={
+            loris.BaseURL
+            + '/data_release/ajax/FileUpload.php?action=getData'
+          }
+          action={
+            loris.BaseURL
+            + '/data_release/ajax/FileUpload.php?action=upload'
+          }
           fetchData={this.fetchData}
         />
       </Modal>
@@ -171,8 +178,14 @@ class DataReleaseIndex extends Component {
         onClick={this.addPermission}
       >
         <AddPermissionForm
-          DataURL={`${loris.BaseURL}/data_release/?format=json`}
-          action={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=addpermission`}
+          DataURL={
+            loris.BaseURL
+            + '/data_release/?format=json'
+          }
+          action={
+            loris.BaseURL
+            + '/data_release/ajax/AddPermission.php?action=addpermission'
+          }
           fetchData={this.fetchData}
         />
       </Modal>
@@ -182,8 +195,14 @@ class DataReleaseIndex extends Component {
     const managePermissionsForm =
       this.props.hasPermission('data_release_edit_file_access') && (
         <ManagePermissionsForm
-          DataURL={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=getPermissions`}
-          action={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=managepermissions`}
+          DataURL={
+            loris.BaseURL
+            + '/data_release/ajax/AddPermission.php?action=getPermissions'
+          }
+          action={
+            loris.BaseURL
+            + '/data_release/ajax/AddPermission.php?action=managepermissions'
+          }
           options={this.state.data.fieldOptions}
           fetchData={this.fetchData}
           show={this.state.show.managePermissionsForm}

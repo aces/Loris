@@ -221,7 +221,13 @@ function getColorFuncs(modalities) {
         obj[mlabel] = 'rgb(' + (200 - (step*i)) + ', 20, 60)';
 
         mlabel = modalities[i] + ' - Other';
-        obj[mlabel] = 'rgb(' + (200 - (step*i)) + ', ' + (200 - (step*i)) + ', ' + (200 - (step*i)) + ')';
+        obj[mlabel] = 'rgb('
+                      + (200 - (step*i))
+                      + ', '
+                      + (200 - (step*i))
+                      + ', '
+                      + (200 - (step*i))
+                      + ')';
     }
     return obj;
 }
