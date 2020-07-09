@@ -129,7 +129,9 @@ class UploadFileForm extends Component {
     let fileSize = formData.file ? Math.round((formData.file.size/1024)) : null;
     const maxSizeAllowed = this.state.data.maxUploadSize;
     if (parseInt(fileSize, 10) > parseInt(maxSizeAllowed, 10)*1024) {
-      let msg = 'File size exceeds the maximum allowed (' + maxSizeAllowed + ')';
+      let msg = 'File size exceeds the maximum allowed ('
+                + maxSizeAllowed
+                + ')';
       errorMessage['Filesize'] = msg;
       hasError['Filesize'] = true;
       swal({
@@ -180,7 +182,10 @@ class UploadFileForm extends Component {
         if (responseUrl.searchParams.has('duplicate')) {
           swal({
             title: 'Are you sure?',
-            text: 'A file with this name already exists!\n Would you like to overwrite existing file?\n Note that the version associated with the file will also be overwritten.',
+            text: 'A file with this name already exists!\n '
+                  + 'Would you like to overwrite existing file?\n '
+                  + 'Note that the version associated with '
+                  + 'the file will also be overwritten.',
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Yes, I am sure!',

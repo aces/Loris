@@ -252,8 +252,12 @@ class NewProfileIndex extends React.Component {
     } else {
       profile = (
         <div>
-          <p>New candidate created. DCCID: {this.state.newData.candID} PSCID: {this.state.newData.pscid} </p>
-          <p><a href = {'/' + this.state.newData.candID}> Access this candidate </a></p>
+          <p>{'New candidate created. '
+              + 'DCCID: ' + this.state.newData.candID + ' '
+              + 'PSCID: ' + this.state.newData.pscid + ' '}</p>
+          <p><a href = {'/' + this.state.newData.candID}>
+              Access this candidate
+          </a></p>
           <p><a href = "/new_profile/" > Recruit another candidate </a></p>
         </div>
       );

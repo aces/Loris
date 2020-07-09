@@ -103,7 +103,11 @@ class LoadPane extends Component {
     return (
       <TabPane Title='Load Instrument' {...this.props}>
         <div className='col-sm-6 col-xs-12'>
-          <div id='load_alert' style={{display: alert.display}} className={alert.class} role='alert'>
+          <div id='load_alert'
+               style={{display: alert.display}}
+               className={alert.class}
+               role='alert'
+          >
             <button type='button' className='close' onClick={this.resetAlert}>
               <span aria-hidden='true'>&times;</span>
             </button>
@@ -329,10 +333,14 @@ class DisplayElements extends Component {
               <LorisElement element={element}/>
             </td>
             <td style={colStyles}>
-              <button onClick={this.props.editElement.bind(null, i)} className="button">
+              <button onClick={this.props.editElement.bind(null, i)}
+                      className="button"
+              >
                 Edit
               </button>
-              <button onClick={this.props.deleteElement.bind(null, i)} className="button">
+              <button onClick={this.props.deleteElement.bind(null, i)}
+                      className="button"
+              >
                 Delete
               </button>
             </td>
@@ -551,11 +559,19 @@ class BuildPane extends Component {
     return (
       <TabPane Title='Build Instrument' {...this.props}>
         <div className='form-group col-xs-12'>
-          <label htmlFor='selected-input' className='col-xs-2 col-sm-1 control-label'>Page:</label>
+          <label htmlFor='selected-input'
+                 className='col-xs-2 col-sm-1 control-label'
+          >Page:</label>
           <div className='col-sm-4'>
             <div className='btn-group'>
-              <button id='selected-input' type='button' className='btn btn-default dropdown-toggle' data-toggle='dropdown'>
-                <span id='search_concept'>{this.state.Elements[this.state.currentPage].Description}</span>
+              <button id='selected-input'
+                      type='button'
+                      className='btn btn-default dropdown-toggle'
+                      data-toggle='dropdown'
+              >
+                <span id='search_concept'>
+                  {this.state.Elements[this.state.currentPage].Description}
+                </span>
                 <span className='caret'/>
               </button>
               <ul className='dropdown-menu' role='menu'>
@@ -572,7 +588,10 @@ class BuildPane extends Component {
           draggable = {draggable}
         />
         <div className='row'>
-          <AddElement updateQuestions={this.addQuestion} addPage={this.addPage}/>
+          <AddElement
+            updateQuestions={this.addQuestion}
+            addPage={this.addPage}
+          />
         </div>
       </TabPane>
     );
@@ -598,7 +617,10 @@ class InstrumentBuilderApp extends Component {
   saveInstrument() {
     // Call to external function, passing it the save information and the elements
     // to save
-    Instrument.save(this.refs.savePane.state, this.refs.buildPane.state.Elements);
+    Instrument.save(
+      this.refs.savePane.state,
+      this.refs.buildPane.state.Elements
+    );
   }
   // Load an instrument
   loadCallback(elements, info) {
