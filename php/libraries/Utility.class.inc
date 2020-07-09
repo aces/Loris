@@ -220,16 +220,27 @@ class Utility
     /**
      * Returns a list of study Projects
      *
+     * @param int|null $userID Limit projects for the ones
+     *                         provided user has access to.
+     *
      * @return array an associative array("projectID" => "project title")
      * @access public
      */
-    static function getProjectList(): array
+    static function getProjectList(?int $userID = null): array
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
+
+        $where = '';
+        if ($userID != null) {
+            $where = "WHERE UserID = $userID";
+        }
+
         // get the list of projects
         $projects = $DB->pselectColWithIndexKey(
-            "SELECT ProjectID, Name FROM Project",
+            "SELECT DISTINCT p.ProjectID, Name FROM Project as p ".
+            "JOIN user_project_rel as u ON p.ProjectID = u.ProjectID ".
+            $where,
             [],
             'ProjectID'
         ) ?? [];
