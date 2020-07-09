@@ -19,8 +19,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-use LORIS\StudyEntities\Candidate\CandID;
-
 set_include_path(
     get_include_path().":".
     __DIR__."/../project/tools:".
@@ -29,6 +27,8 @@ set_include_path(
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
+
+use LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * This script deletes the specified candidate information.
