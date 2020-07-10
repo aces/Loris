@@ -67,6 +67,8 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
                 ]
             ]
         );
+	
+        $this->assertEquals(200, $response->getStatusCode());
         $token          = json_decode(
             $response->getBody()->getContents()
         )->token ?? null;
@@ -74,7 +76,6 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         if ($token === null) {
             throw new \LorisException("Login failed");
         }
-        $this->assertEquals(200, $response->getStatusCode());
         $headers       = [
             'Authorization' => "Bearer $token",
             'Accept'        => 'application/json'
