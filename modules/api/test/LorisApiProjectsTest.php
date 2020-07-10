@@ -341,7 +341,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         } else {
             $this->assertSame(
                 gettype($qc_status),
-                null
+                'NULL'
             );
         }
         $selected = $projectsImagesArray['Images']['0']['QC_status'];
@@ -353,7 +353,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         } else {
             $this->assertSame(
                 gettype($selected),
-                null
+                'NULL'
             );
         }
         $this->assertSame(
