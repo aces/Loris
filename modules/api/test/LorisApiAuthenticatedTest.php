@@ -67,9 +67,8 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
                 ]
             ]
         );
-	
         $this->assertEquals(200, $response->getStatusCode());
-        $token          = json_decode(
+        $token = json_decode(
             $response->getBody()->getContents()
         )->token ?? null;
 
