@@ -206,17 +206,27 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList  = \Utility::getProjectList();
-        $projectList2 = [];
-        foreach ($projectList as $key => $value) {
-            $projectList2[$value] = $value;
+        // get list of projects
+        $list_of_projects = [];
+        $userProjectsIDs  = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName = \Project::getProjectFromID($projectID)->getName();
+            $list_of_projects[$projectName] = $projectName;
         }
-        $subprojectList  = \Utility::getSubprojectList();
-        $subprojectList2 = [];
-        foreach ($subprojectList as $key => $value) {
-            $subprojectList2[$value] = $value;
+
+        // Subproject
+        $list_of_subprojects = [];
+        foreach ($userProjectsIDs as $projectID) {
+            $subprojects = \Project::getProjectFromID($projectID)->getSubprojects();
+            foreach ($subprojects as $subproject) {
+                $subprojectId = $subproject->subprojectId;
+                if (!isset($list_of_subprojects[$subprojectId])) {
+                    $subprojectName = $subproject->title;
+                    $list_of_subprojects[$subprojectName] = $subprojectName;
+                }
+            }
         }
-        //print_r($subprojectList2);
+
         $uploaderList = [];
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
@@ -235,8 +245,8 @@ class Imaging_QC extends \NDB_Menu_Filter
         $this->fieldOptions
             = [
                 'site'             => $siteList,
-                'project'          => $projectList2,
-                'subproject'       => $subprojectList2,
+                'project'          => $list_of_projects,
+                'subproject'       => $list_of_subprojects,
                 'scanType'         => $scan_types,
                 'mRIParameterForm' => [
                     "Incomplete" => "Incomplete",

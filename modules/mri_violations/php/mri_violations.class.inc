@@ -53,7 +53,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
      */
     function _process($values)
     {
-        if (!is_array($values) || count($values) ==0) {
+        if (!is_array($values) || count($values) == 0) {
             return true;
         }
         $DB   = \Database::singleton();
@@ -106,7 +106,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 // Table 1: mri_protocol_violated_scans
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     "SELECT ID
-                    FROM mri_protocol_violated_scans 
+                    FROM mri_protocol_violated_scans
                     WHERE (:hash = md5(concat_WS(
                               ':',minc_location,PatientName,SeriesUID,time_run)
                                    )
@@ -117,6 +117,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
                     $newlyResolved['ExtID']     = $ID_mri_protocol_violated_scans;
                 }
+
                 // Table 2: mri_violations_log
                 $ID_mri_violations_log = $DB->pselectOne(
                     "SELECT LogID
@@ -319,8 +320,8 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // Build a list of existing problem types based on data in db
         $problemTypes = $db->pselect(
             "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
-            UNION 
-            SELECT DISTINCT 'Could not identify scan type' 
+            UNION
+            SELECT DISTINCT 'Could not identify scan type'
             FROM mri_protocol_violated_scans
             UNION
             SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
@@ -340,8 +341,14 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->addBasicText('SeriesUID', 'Series UID');
         $this->addSelect("ProblemType", "Type of problem", $problemOptions);
 
-        // project
-        $list_of_projects = ['' => 'Any'] + \Utility::getProjectList();
+        // get list of projects
+        $list_of_projects = ['' => 'Any'];
+        $userProjectsIDs  = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName = \Project::getProjectFromID($projectID)->getName();
+            $list_of_projects[$projectID] = $projectName;
+        }
+
         $this->addSelect(
             'Project',
             'Project',
@@ -349,8 +356,17 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         );
 
         // Subproject
-        $list_of_subprojects = ['' => 'Any'] +
-            \Utility::getSubprojectList();
+        $list_of_subprojects = ['' => 'Any'];
+        foreach ($userProjectsIDs as $projectID) {
+            $subprojects = \Project::getProjectFromID($projectID)->getSubprojects();
+            foreach ($subprojects as $subproject) {
+                $subprojectId = $subproject->subprojectId;
+                if (!isset($list_of_subprojects[$subprojectId])) {
+                    $subprojectName = $subproject->title;
+                    $list_of_subprojects[$subprojectId] = $subprojectName;
+                }
+            }
+        }
         $this->addSelect(
             'Subproject',
             'Subproject',

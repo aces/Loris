@@ -92,18 +92,25 @@ class Candidate_List extends \DataFrameworkMenu
             $site_options[$name] = $name;
         }
 
-        // get the list of projects
-        $list_of_projects = \Utility::getProjectList();
-        $project_options  = [];
-        foreach ($list_of_projects as $id => $name) {
-            $project_options[$name] = $name;
+        // get list of projects
+        $project_options = [];
+        $userProjectsIDs = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName = \Project::getProjectFromID($projectID)->getName();
+            $project_options[$projectName] = $projectName;
         }
 
         // get the list of subprojects
-        $list_of_subprojects = \Utility::getSubprojectList();
-        $subproject_options  = [];
-        foreach ($list_of_subprojects as $id => $name) {
-            $subproject_options[$name] = $name;
+        $subproject_options = [];
+        foreach ($userProjectsIDs as $projectID) {
+            $subprojects = \Project::getProjectFromID($projectID)->getSubprojects();
+            foreach ($subprojects as $subproject) {
+                $subprojectId = $subproject->subprojectId;
+                if (!isset($subproject_options[$subprojectId])) {
+                    $subprojectName = $subproject->title;
+                    $subproject_options[$subprojectName] = $subprojectName;
+                }
+            }
         }
 
         // get the list participant status options

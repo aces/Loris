@@ -203,8 +203,10 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $visits = \Utility::getVisitList();
-        $db     = \Database::singleton();
+        $visits  = \Utility::getVisitList();
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $user    = $factory->user();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table
         $this->tpl_data['mri_table_exists'] = true;
@@ -215,18 +217,17 @@ class Stats_Demographic extends \NDB_Form
 
         $this->tpl_data['showTable'] = true;
 
-        //PROJECTS
-        $factory        = \NDB_Factory::singleton();
-        $user           = $factory->user();
+        // PROJECTS
         $allProjectList = \Utility::getProjectList();
+        $projects       = ['' => 'All Projects'];
 
-        $projects     = [];
-        $projects[''] = 'All Projects';
-
-        $userProjectsIDs = $user->getData('ProjectIDs');
-        foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+        $userProjectsIDs = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName          = \Project::getProjectFromID($projectID)
+                                    ->getName();
+            $projects[$projectID] = $projectName;
         }
+        $this->tpl_data['Projects'] = $projects;
 
         if ($user->hasPermission('access_all_profiles')) {
             $projectsString = implode(",", array_keys($allProjectList));

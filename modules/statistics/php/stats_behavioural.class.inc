@@ -95,18 +95,6 @@ class Stats_Behavioural extends \NDB_Form
 
         $this->tpl_data['Centers'] = $centers;
 
-        // PROJECTS
-        $allProjectList = \Utility::getProjectList();
-        $projects       = [];
-        $projects['']   = 'All Projects';
-        $Param_Project  = '';
-
-        $userProjectsIDs = $user->getData('ProjectIDs');
-        foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
-        }
-
-        $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if (isset($_REQUEST['site'])
@@ -119,6 +107,16 @@ class Stats_Behavioural extends \NDB_Form
             }
 
         }
+
+        // PROJECTS
+        $projects        = ['' => 'All Projects'];
+        $userProjectsIDs = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName          = \Project::getProjectFromID($projectID)
+                                    ->getName();
+            $projects[$projectID] = $projectName;
+        }
+        $this->tpl_data['Projects'] = $projects;
 
         if ($_REQUEST['BehaviouralProject'] ?? ''
         ) {
@@ -141,10 +139,11 @@ class Stats_Behavioural extends \NDB_Form
                 $paramProjects[] = ":paramProjectID$key";
                 $this->projectParams["paramProjectID$key"] = $projectID;
             }
-            $Param_Project ="AND (s.ProjectID IS NULL 
+            $Param_Project = "AND (s.ProjectID IS NULL 
                                    OR s.ProjectID IN
                                        (" . implode(',', $paramProjects) . ")
                                  )";
+
         } else {
             $currentProject = '';
             $Param_Project  ="AND (s.ProjectID IS NULL)";
@@ -226,7 +225,7 @@ class Stats_Behavioural extends \NDB_Form
                     COUNT(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                WHERE 
+                WHERE
                     s.Active='Y' AND c.Active='Y'
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'

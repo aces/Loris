@@ -96,10 +96,10 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
 
         // get list of projects
         $list_of_projects = [];
-        $projectList      = \Utility::getProjectList();
-        foreach ($projectList as $key => $project) {
-            unset($projectList[$key]);
-            $list_of_projects[$project] = $project;
+        $userProjectsIDs  = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName = \Project::getProjectFromID($projectID)->getName();
+            $list_of_projects[$projectName] = $projectName;
         }
 
         return [

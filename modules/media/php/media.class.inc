@@ -95,6 +95,14 @@ class Media extends \DataFrameworkMenu
             }
         }
 
+        // get list of projects
+        $projectList     = [];
+        $userProjectsIDs = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName = \Project::getProjectFromID($projectID)->getName();
+            $projectList[$projectID] = $projectName;
+        }
+
         $instrumentList   = [];
         $instrumentsQuery = $db->pselect(
             "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
@@ -129,7 +137,7 @@ class Media extends \DataFrameworkMenu
             'fileTypes'     => $fileTypeList,
             'visits'        => $visitList,
             'sites'         => $siteList,
-            'projects'      => \Utility::getProjectList(),
+            'projects'      => $projectList,
             'instruments'   => $instrumentList,
             'languages'     => $languageList,
             'hidden'        => $hiddenOptions,

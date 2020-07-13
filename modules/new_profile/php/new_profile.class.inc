@@ -152,13 +152,14 @@ class New_Profile extends \NDB_Form
         $user_list_of_sites = $user->getData('CenterIDs');
         $site = \Utility::getSiteNameListByIDs($user_list_of_sites);
 
-        // Get projects for the select dropdown
-        $projList = [];
-        $projects = \Utility::getProjectList();
-        foreach ($projects as $projectID => $projectName) {
-            $projList[$projectID] = $projectName;
+        // get list of projects
+        $list_of_projects = [];
+        $userProjectsIDs  = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName = \Project::getProjectFromID($projectID)->getName();
+            $list_of_projects[$projectID] = $projectName;
         }
-        $project = $projList ?? null;
+        $project = $list_of_projects ?? null;
 
         // Get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');

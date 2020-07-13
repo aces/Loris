@@ -200,23 +200,29 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         // Build the component of the WHERE clause (for the query below)
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
-        $siteClauseElements = [];
-        foreach (array_keys($accessibleSites) as $siteID) {
-            $siteClauseElements[] = \Database::singleton()->quote($siteID);
-        }
-        $siteClause = sprintf(
+        $siteClauseElements = array_keys($accessibleSites);
+        $siteClause         = sprintf(
             "(v.Site IS NULL OR v.Site IN (%s))",
             implode(',', $siteClauseElements)
         );
 
-        $this->query    = " FROM (
+        // Build the component of the WHERE clause (for the query below)
+        // that will be used to restrict the search to the data associated
+        // to projects the user has access to
+        $projectClauseElements = $user->getProjectIDs();
+        $projectClause         = sprintf(
+            "(v.Project IS NULL OR v.Project IN (%s))",
+            implode(',', $projectClauseElements)
+        );
+
+        $this->query = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
                 s.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
                 series_description as Series_Description,
-                'Could not identify scan type' as Problem, 
+                'Could not identify scan type' as Problem,
                 SeriesUID,
                 md5(concat_WS(':',
                               minc_location,
@@ -225,17 +231,17 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                               time_run
                    )
                 ) as hash,
-                mpvs.ID as join_id,                
+                mpvs.ID as join_id,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_protocol_violated_scans AS mpvs
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=mpvs.ID 
+            ON (violations_resolved.ExtID=mpvs.ID
             AND violations_resolved.TypeTable='mri_protocol_violated_scans')
             LEFT JOIN candidate c
             ON (mpvs.CandID = c.CandID)
             LEFT JOIN session s
-            ON (SUBSTRING_INDEX(mpvs.PatientName,'_',-1) = s.Visit_label 
+            ON (SUBSTRING_INDEX(mpvs.PatientName,'_',-1) = s.Visit_label
                 AND mpvs.CandID = s.CandID
             )
             LEFT JOIN psc p
@@ -256,10 +262,10 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_violations_log AS mrl
-            LEFT JOIN mri_scan_type 
+            LEFT JOIN mri_scan_type
             ON (mri_scan_type.ID=mrl.Scan_type)
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=mrl.LogID 
+            ON (violations_resolved.ExtID=mrl.LogID
             AND violations_resolved.TypeTable='mri_violations_log')
             LEFT JOIN candidate c
             ON (mrl.CandID=c.CandID)
@@ -275,7 +281,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 null,
                 MincFile,
                 null,
-                Reason, 
+                Reason,
                 SeriesUID,
                 md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun))
                    as hash,
@@ -284,14 +290,15 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 violations_resolved.Resolved as Resolved
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=MRICandidateErrors.ID 
+            ON (violations_resolved.ExtID=MRICandidateErrors.ID
             AND violations_resolved.TypeTable='MRICandidateErrors')
             WHERE Resolved <> '0')
-            as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
+            as v LEFT JOIN psc site ON (site.CenterID = v.Site)
             LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
             LEFT JOIN subproject as subpjct
                  ON (v.Subproject = subpjct.SubprojectID)
-            WHERE $siteClause";
+            WHERE $siteClause AND $projectClause";
+
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = [
@@ -360,6 +367,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 'Protocol Violation'           => 'MRI Protocol Check violation',
             ]
         );
+
         // violation resolved
         $this->addSelect(
             'Resolved',
@@ -374,20 +382,36 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 'other'         => 'Other',
             ]
         );
-        // project
-        $list_of_projects = \Utility::getProjectList();
+
+        // get list of projects
+        $list_of_projects = ['' => 'All'];
+        $userProjectsIDs  = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName = \Project::getProjectFromID($projectID)->getName();
+            $list_of_projects[$projectID] = $projectName;
+        }
         $this->addSelect(
             'Project',
             'Project',
-            ['' => 'All'] + $list_of_projects
+            $list_of_projects
         );
 
         // Subproject
-        $list_of_subprojects = \Utility::getSubprojectList();
+        $list_of_subprojects = ['' => 'All'];
+        foreach ($userProjectsIDs as $projectID) {
+            $subprojects = \Project::getProjectFromID($projectID)->getSubprojects();
+            foreach ($subprojects as $subproject) {
+                $subprojectId = $subproject->subprojectId;
+                if (!isset($list_of_subprojects[$subprojectId])) {
+                    $subprojectName = $subproject->title;
+                    $list_of_subprojects[$subprojectId] = $subprojectName;
+                }
+            }
+        }
         $this->addSelect(
             'Subproject',
             'Subproject',
-            ['' => 'All'] + $list_of_subprojects
+            $list_of_subprojects
         );
 
         // Get sites

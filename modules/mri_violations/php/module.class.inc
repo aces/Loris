@@ -40,13 +40,19 @@ class Module extends \Module
         // Build the component of the WHERE clause (for the query below)
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
-        $siteClauseElements = [];
-        foreach (array_keys($accessibleSites) as $siteID) {
-            $siteClauseElements[] = \Database::singleton()->quote($siteID);
-        }
-        $siteClause = sprintf(
+        $siteClauseElements = array_keys($accessibleSites);
+        $siteClause         = sprintf(
             "(v.Site IS NULL OR v.Site IN (%s))",
             implode(',', $siteClauseElements)
+        );
+
+        // Build the component of the WHERE clause (for the query below)
+        // that will be used to restrict the search to the data associated
+        // to projects the user has access to
+        $projectClauseElements = $user->getProjectIDs();
+        $projectClause         = sprintf(
+            "(v.Project IS NULL OR v.Project IN (%s))",
+            implode(',', $projectClauseElements)
         );
 
         // Subquery to retrieve tghe violations in table mri_protocol_violated_scans
@@ -106,7 +112,7 @@ class Module extends \Module
             FROM mri_violations_log AS mrl
             LEFT JOIN mri_scan_type ON (mri_scan_type.ID=mrl.Scan_type)
             LEFT JOIN violations_resolved ON (
-                  violations_resolved.ExtID=mrl.LogID 
+                  violations_resolved.ExtID=mrl.LogID
               AND violations_resolved.TypeTable='mri_violations_log'
             )
             LEFT JOIN candidate c ON (mrl.CandID=c.CandID)
@@ -150,12 +156,11 @@ class Module extends \Module
               $mriViolationsLogSubquery
               UNION
               $mriCandidateErrorsSubquery
-            ) AS v 
-            LEFT JOIN psc site ON (site.CenterID = v.Site) 
+            ) AS v
+            LEFT JOIN psc site ON (site.CenterID = v.Site)
             LEFT JOIN Project AS pjct ON (v.Project = pjct.ProjectID)
             LEFT JOIN subproject AS subpjct ON (v.Subproject = subpjct.SubprojectID)
-            WHERE $siteClause
-        ";
+            WHERE $siteClause AND $projectClause";
 
         return $query;
     }

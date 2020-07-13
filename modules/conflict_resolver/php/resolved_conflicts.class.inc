@@ -168,11 +168,12 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $this->addBasicText('question', 'Question:');
         $this->addBasicText('resolutionTimestamp', 'Resolution Timestamp:');
 
-        // Project list, if applicable
+        // get list of projects
         $list_of_projects = [];
-        $projectList      = \Utility::getProjectList();
-        foreach ($projectList as $key => $value) {
-            $list_of_projects[$value] = $value;
+        $userProjectsIDs  = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName = \Project::getProjectFromID($projectID)->getName();
+            $list_of_projects[$projectName] = $projectName;
         }
         $this->addSelect('project', 'Project: ', $list_of_projects);
     }
