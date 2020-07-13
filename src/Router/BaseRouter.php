@@ -92,7 +92,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $modulename = $components[0];
         }
 
-        $factory = \NDB_Factory::singleton();
+        $factory  = \NDB_Factory::singleton();
         $ehandler = new \LORIS\Middleware\ExceptionHandlingMiddleware();
         if ($this->lorisinstance->hasModule($modulename)) {
             $uri    = $request->getURI();
@@ -135,7 +135,8 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         return $ehandler->process(
             $request,
             (new \LORIS\Middleware\PageDecorationMiddleware($this->user))
-                ->process($request,
+                ->process(
+                    $request,
                     new NoopResponder(new \LORIS\Http\Error($request, 404))
                 )
         );
