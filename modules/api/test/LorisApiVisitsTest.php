@@ -1,6 +1,7 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
+require_once __DIR__ .
+    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP requests to every
