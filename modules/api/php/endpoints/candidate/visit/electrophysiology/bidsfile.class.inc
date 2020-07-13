@@ -47,7 +47,7 @@ class BidsFile extends Endpoint
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -57,9 +57,9 @@ class BidsFile extends Endpoint
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.3',
-        );
+        ];
     }
 
     /**

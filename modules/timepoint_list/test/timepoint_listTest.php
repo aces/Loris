@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
 /**
@@ -27,7 +28,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
      * Contents (columns) of the session table displayed when accessing
      * the time point list page for candidate TST0001.
      */
-    private static $_TST0001_SESSION = array(
+    private static $_TST0001_SESSION = [
         'Test',
         '',
         'DCC',
@@ -39,7 +40,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         '',
         '',
         '',
-    );
+    ];
 
     /**
      * Candidate ID for candidate TST0001.
@@ -88,7 +89,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
             $elements      = $actualSessions[$i]->findElements(
                 WebDriverBy::xpath('.//td')
             );
-            $actualSession = array();
+            $actualSession = [];
             foreach ($elements as $e) {
                 $actualSession[] = $e->getText();
             }
@@ -110,7 +111,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         // Candidate TST0002
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => '900001',
                 'PSCID'                 => 'TST0002',
                 'RegistrationCenterID'  => 1,
@@ -118,41 +119,41 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
                 'Active'                => 'Y',
                 'UserID'                => 1,
                 'Entity_type'           => 'Human',
-            )
+            ]
         );
 
         // Session for candidate TST0002: should not be listed on the page
         $this->DB->insert(
             'session',
-            array(
+            [
                 'ID'          => '999998',
                 'CandID'      => '900001',
                 'Visit_label' => 'Test',
                 'CenterID'    => 1,
                 'ProjectID'   => 1,
-            )
+            ]
         );
 
         // Inactive session for candidate TST0001: should not appear
         // on the page
         $this->DB->insert(
             'session',
-            array(
+            [
                 'ID'          => '999997',
                 'CandID'      => self::$_TST0001_CANDID,
                 'Visit_label' => 'Test2',
                 'CenterID'    => 1,
                 'ProjectID'   => 1,
                 'Active'      => 'N',
-            )
+            ]
         );
         $this->safeGet(
             $this->url . "/" .  self::$_TST0001_CANDID . "/"
         );
-        $this->_validateSessionTableContents(array(self::$_TST0001_SESSION));
-        $this->DB->delete('session', array('ID' => '999997'));
-        $this->DB->delete('session', array('ID' => '999998'));
-        $this->DB->delete('candidate', array('CandID' => 900001));
+        $this->_validateSessionTableContents([self::$_TST0001_SESSION]);
+        $this->DB->delete('session', ['ID' => '999997']);
+        $this->DB->delete('session', ['ID' => '999998']);
+        $this->DB->delete('candidate', ['CandID' => 900001]);
     }
 }
 

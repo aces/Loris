@@ -53,7 +53,7 @@ class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -64,9 +64,9 @@ class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.3',
-        );
+        ];
     }
 
     /**
@@ -97,11 +97,9 @@ class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Create an array representation of this endpoint's response body
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;
@@ -119,10 +117,10 @@ class Channels extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_cache = new \LORIS\Http\Response(
             $body,
             200,
-            array(
+            [
                 'Content-Type'        => 'recording/tsv',
                 'Content-Disposition' => 'attachment; filename=' . $filename,
-            )
+            ]
         );
 
         return $this->_cache;

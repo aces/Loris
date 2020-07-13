@@ -65,7 +65,7 @@ class VisitController
                  visit v
 ORDER BY ID
                 ',
-                array()
+                []
             )
         );
     }
@@ -95,7 +95,7 @@ ORDER BY ID
                  v.VisitName = :name
                 ORDER BY ID
                 ',
-                array('name' => $visit)
+                ['name' => $visit]
             )
         );
     }
@@ -109,11 +109,11 @@ ORDER BY ID
     {
         return array_map(
             function ($row) {
-                return array(
+                return [
                     new \LORIS\Visit($row['name'], $row['ID']),
                     $row['project'],    // will be modified to object when
                     $row['subproject'], // available
-                );
+                ];
             },
             $this->database->pselect(
                 'SELECT
@@ -131,7 +131,7 @@ ORDER BY ID
                  ON vps.ProjectSubprojectRelID = psr.ProjectSubprojectRelID
                 ORDER BY ID, project, subproject
                 ',
-                array()
+                []
             )
         );
     }

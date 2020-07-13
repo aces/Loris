@@ -156,33 +156,27 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         if (!$hasAccess) {
             return false;
         }
-
         if (isset($_POST['ClearInstrument'])) {
-            if (isset($_POST['deleteconfirm']) && isset($_POST['deleteconfirm2']) ) {
-                $user = User::singleton();
-                if ($user->hasPermission('send_to_dcc')) {
-                    $instrument = \NDB_BVL_Instrument::factory(
-                        $this->testname,
-                        $this->_commentID,
-                        $this->subtest ?? ''
-                    );
-                    $instrument->clearInstrument();
-                    return false;
-                } else {
-                    return false;
-                }
+            $user = User::singleton();
+            if ($user->hasPermission('send_to_dcc')) {
+                $instrument = \NDB_BVL_Instrument::factory(
+                    $this->testname,
+                    $this->_commentID,
+                    $this->subtest ?? ''
+                );
+                $instrument->clearInstrument();
+                return false;
             } else {
                 return false;
             }
         }
         // get control panel selections from _REQUEST
-        $possibleFlags = array(
+        $possibleFlags = [
             'setDataEntry',
             'setAdministration',
             'setValidity',
-        );
+        ];
         $flagsToSave   = array_intersect($possibleFlags, array_keys($_REQUEST));
-
         // make sure there are at least one flag to save
         if (is_array($flagsToSave) && count($flagsToSave) > 0) {
             foreach ($flagsToSave AS $flagToSave) {
@@ -190,7 +184,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $this->$method($_REQUEST[$flagToSave]);
             }
         }
-
         return true;
     }
 

@@ -37,23 +37,24 @@ if (!file_exists($FullPath)) {
 $fileID     = $db->pselectOne(
     "SELECT ID FROM data_release WHERE "
     . "file_name=:fn",
-    array('fn' => $File)
+    ['fn' => $File]
 );
 $uid        = $db->pselectOne(
     "SELECT ID FROM users WHERE "
     . "UserID=:userid",
-    array('userid' => $user->getUsername())
+    ['userid' => $user->getUsername()]
 );
 $permission = $db->pselectOne(
     "SELECT 'X' 
           FROM data_release_permissions 
           WHERE userid=:uid AND data_release_id=:fileID",
-    array(
+    [
         'uid'    => $uid,
         'fileID' => $fileID,
-    )
+    ]
 );
-if (empty($permission)) {
+
+if (empty($permission) && !$user->hasPermission('superuser')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }

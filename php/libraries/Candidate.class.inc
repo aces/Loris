@@ -69,7 +69,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $CandArray = array('Candidate' => (string) $candID);
+        $CandArray = ['Candidate' => (string) $candID];
 
         // make a local reference to the Database object
         $db = $factory->database();
@@ -102,10 +102,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         $headerSetting = $config->getSetting('HeaderTable');
         if (!empty($headerSetting)) {
-            $params = array();
+            $params = [];
             $parameterCandSettings = $headerSetting['parameter_candidate'];
             if (!is_array($parameterCandSettings)) {
-                $parameterCandSettings = array($parameterCandSettings);
+                $parameterCandSettings = [$parameterCandSettings];
             }
             foreach ($parameterCandSettings as $parameter_type) {
                 $row = $db->pselectRow(
@@ -115,10 +115,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
                     LEFT JOIN parameter_type pt ON
                     (pc.ParameterTypeID=pt.ParameterTypeID)
                     WHERE c.CandID=:Candidate AND pt.Name=:PTName",
-                    array(
+                    [
                         'Candidate' => $candID,
                         'PTName'    => $parameter_type,
-                    )
+                    ]
                 );
                 // Sanitize values coming from the parameter_candidate table
                 // before injecting them into the HTML table.
@@ -250,7 +250,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         }
 
         // Insert the new candidate into the database if everything is fine.
-        $setArray = array(
+        $setArray = [
             'RegistrationCenterID'  => $centerID,
             'PSCID'                 => $PSCID,
             'DoB'                   => $dateOfBirth,
@@ -262,7 +262,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             'Entity_type'           => 'Human',
             'RegisteredBy'          => $user->getUsername(),
             'UserID'                => $user->getUsername(),
-        );
+        ];
 
         if ($config->getSetting('useExternalID') === 'true') {
             $externalID = (new \ExternalIDGenerator(
@@ -313,10 +313,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $candidateIDs = array(
+        $candidateIDs = [
             ':candidate_id' => $candID,
             ':pscid'        => $PSCID,
-        );
+        ];
 
         // get candidate data from database
         $query = "SELECT CandID
@@ -401,9 +401,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         \NDB_Factory::singleton()->database()->update(
             'candidate',
             $newData,
-            array(
+            [
                 'CandID' => $this->getData('CandID'),
-            )
+            ]
         );
         return true;
     }
@@ -556,7 +556,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     {
         $factory = NDB_Factory::singleton();
         //make sure it returns an array
-        $visitLabelArray = array();
+        $visitLabelArray = [];
 
         $candID = $this->getCandID();
 
@@ -566,7 +566,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
-        $result = $db->pselect($query, array('Candidate' => $candID));
+        $result = $db->pselect($query, ['Candidate' => $candID]);
 
         // map the array [VisitNo]=>Visit_label
         foreach ($result as $row) {
@@ -585,13 +585,13 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function getValidSubprojects(): array
     {
-        $subprojList = array();
+        $subprojList = [];
 
         $projID  = $this->getProjectID();
         $query   = "SELECT SubprojectID 
                     FROM project_subproject_rel 
                     WHERE ProjectID = :prj";
-        $params  = array('prj' => $projID);
+        $params  = ['prj' => $projID];
         $subproj = \NDB_Factory::singleton()
             ->database()
             ->pselect($query, $params);
@@ -621,7 +621,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
           LEFT JOIN candidate USING (CandID)
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
-        $where  = array('cid' => $candID);
+        $where  = ['cid' => $candID];
         try {
             $result = $db->pselectOne($query, $where);
         } catch (DomainException $ex) {
@@ -648,7 +648,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
                     FROM candidate AS c
                         LEFT JOIN session AS s USING (CandID)
                     WHERE c.CandID=:CaID AND s.Active='Y' AND c.Active='Y'";
-        $result = $db->pselectOne($query, array('CaID' => $this->getCandID()));
+        $result = $db->pselectOne($query, ['CaID' => $this->getCandID()]);
 
         if ($result === null) {
             return 1;
@@ -672,7 +672,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn, Label
             FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
             WHERE CandidateID=:cid";
-        $where = array('cid' => $candID);
+        $where = ['cid' => $candID];
         $key   = "ConsentID";
 
         $consentList = $db->pselectWithIndexKey($query, $where, $key);
@@ -705,7 +705,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = Utility::structureToPCRE(
+        $regex         = self::structureToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev,
             $projectAbbrev
@@ -727,9 +727,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             "SELECT ID,Description
             FROM participant_status_options
             WHERE parentID IS NULL",
-            array()
+            []
         );
-        $option_array = array();
+        $option_array = [];
         foreach ($options as $option) {
             $option_array[$option['ID']] = $option['Description'];
         }
@@ -751,9 +751,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             "SELECT ID,Description 
             FROM participant_status_options 
             WHERE parentID=:pid",
-            array('pid' => $parentID)
+            ['pid' => $parentID]
         );
-        $option_array = array();
+        $option_array = [];
         foreach ($options as $option) {
             $option_array[$option['ID']] = $option['Description'];
         }
@@ -810,6 +810,94 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         );
         return $res['Description'] ?? '';
     }
+    /**
+     * Transforms a config structure (such as in PSCID) into a
+     * Perl-compatible regex expression for validation
+     *
+     * @param array       $structure     the structure root
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
+     *
+     * @return string the regex pattern
+     *
+     * @note    This should probably be moved to the Candidate class, since it's
+     *       only used there to validate the PSCID
+     * @cleanup
+     */
+    static function structureToPCRE(
+        array $structure,
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
+    ): string {
+        $seqs = $structure['seq'];
+        // handle the situation where there exists only one seq
+        if (isset($seqs['#'])) {
+            $seqs = [$seqs];
+        }
+        $regex = "";
+        foreach ($seqs AS $seq) {
+            $unit = "";
 
+            switch($seq['@']['type']) {
+            case 'alpha':
+                $unit .= '[a-z]';
+                break;
+
+            case 'alphanumeric':
+                $unit .= '[0-9a-z]';
+                break;
+
+            case 'numeric':
+                $unit .= '[0-9]';
+                break;
+
+            case 'static':
+                $unit .= '('.$seq['#'].')';
+                break;
+
+            case 'set':
+                if (strpos($seq['#'], '|') !== false) {
+                    $unit .= '('.$seq['#'].')';
+                } else {
+                    $unit .= '['.$seq['#'].']';
+                }
+                break;
+
+            case 'siteAbbrev':
+                $unit .= $siteAbbrev;
+                break;
+            case 'projectAbbrev':
+                $unit .= $projectAbbrev;
+                break;
+            } // end switch
+
+            $length = "";
+            if (isset($seq['@']['length'])) {
+                $length .= $seq['@']['length'];
+            } elseif (isset($seq['@']['minLength'])) {
+                $length .= $seq['@']['minLength'];
+            } else {
+                $length .= '1';
+            }
+
+            $length .= ',';
+
+            if (isset($seq['@']['length'])) {
+                $length .= $seq['@']['length'];
+            } elseif (isset($seq['@']['maxLength'])) {
+                $length .= $seq['@']['maxLength'];
+            } elseif (!isset($seq['@']['length'])
+                && !isset($seq['@']['minLength'])
+            ) {
+                $length .= '1';
+            }
+
+            $regex .= $unit.'{'.$length.'}';
+
+        } // end foreach seq
+
+        return '/^'.$regex.'$/i';
+    }
 }
 

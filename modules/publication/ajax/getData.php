@@ -13,10 +13,11 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 if (isset($_REQUEST['action'])) {
-    $db      = \Database::singleton();
-    $user    = \User::singleton();
+    $factory = \NDB_Factory::singleton();
+    $db      = $factory->database();
+    $user    = $factory->user();
     $action  = $_REQUEST['action'];
-    $message = array('message' => null);
+    $message = ['message' => null];
 
     if ($action === 'getData') {
         if (userCanGetData($db, $user)) {
@@ -51,17 +52,17 @@ if (isset($_REQUEST['action'])) {
  */
 function getData($db) : array
 {
-    $data   = array();
+    $data   = [];
     $titles = $db->pselectCol(
         'SELECT Title FROM publication',
-        array()
+        []
     );
 
     // for selecting behavioral variables of interest
     $bvlVOIs = $db->pselect(
         "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
         "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
-        array()
+        []
     );
 
     // merge variables and test names into one array
@@ -72,7 +73,7 @@ function getData($db) : array
     sort($bvlVOIs);
 
     // sets keys and values to be equal
-    $allVOIs = array();
+    $allVOIs = [];
     $allVOIs['Behavioral'] = array_combine($bvlVOIs, $bvlVOIs);
 
     // imaging VoIs -- filter out non-human readable DICOM tags
@@ -83,7 +84,7 @@ function getData($db) : array
          JOIN parameter_type_category ptc 
          ON ptc.ParameterTypeCategoryID=ptcr.ParameterTypeCategoryID 
          WHERE ptc.Name='MRI Variables'",
-        array()
+        []
     );
 
     sort($imgVOIs);
@@ -95,19 +96,19 @@ function getData($db) : array
         "SELECT ID, Real_name FROM users ".
         "WHERE Active='Y' AND Pending_approval='N' ".
         "ORDER BY Real_name",
-        array(),
+        [],
         'ID'
     );
 
     $kws = $db->pselectCol(
         'SELECT Label FROM publication_keyword',
-        array()
+        []
     );
     $kws = array_combine($kws, $kws);
 
     $collabs = $db->pselectCol(
         'SELECT Name FROM publication_collaborator',
-        array()
+        []
     );
     $collabs = array_combine($collabs, $collabs);
 
@@ -140,7 +141,7 @@ function getProjectData($db, $user, $id) : array
         'WHERE p.PublicationID=:pid ';
     $result = $db->pselectRow(
         $query,
-        array('pid' => $id)
+        ['pid' => $id]
     );
 
     if (!$result) {
@@ -156,7 +157,7 @@ function getProjectData($db, $user, $id) : array
             'SELECT pu.UserID as ID '.
             'FROM publication_users_edit_perm_rel pu '.
             'WHERE PublicationID=:p',
-            array('p' => $id)
+            ['p' => $id]
         );
 
         $userCanEdit = (
@@ -170,7 +171,7 @@ function getProjectData($db, $user, $id) : array
         $description    = htmlspecialchars_decode($result['Description']);
         $rejectedReason = htmlspecialchars_decode($result['RejectedReason']);
 
-        $pubData = array(
+        $pubData = [
             'title'                 => $title,
             'description'           => $description,
             'leadInvestigator'      => $result['LeadInvestigator'],
@@ -185,7 +186,7 @@ function getProjectData($db, $user, $id) : array
             'userCanEdit'           => $userCanEdit,
             'statusOpts'            => getStatusOptions(),
             'uploadTypes'           => getUploadTypes(),
-        );
+        ];
 
         // if user can edit, retrieve getData() options to allow modifications
         if ($userCanEdit) {
@@ -211,7 +212,7 @@ function getVOIs($id) : array
         'LEFT JOIN publication_parameter_type_rel pptr '.
         'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
         'WHERE pptr.PublicationID=:pid',
-        array('pid' => $id)
+        ['pid' => $id]
     );
     $testNames = $db->pselectCol(
         'SELECT Test_name '.
@@ -219,7 +220,7 @@ function getVOIs($id) : array
         'LEFT JOIN test_names tn '.
         'ON tn.ID=ptnr.TestNameID '.
         'WHERE PublicationID=:pid',
-        array('pid' => $id)
+        ['pid' => $id]
     );
     $vois      =  array_merge($testNames, $fields);
     return $vois;
@@ -239,7 +240,7 @@ function getKeywords($id) : array
         'LEFT JOIN publication_keyword_rel pkr '.
         'ON pkr.PublicationKeywordID=pk.PublicationKeywordID '.
         'WHERE pkr.PublicationID=:pid',
-        array('pid' => $id)
+        ['pid' => $id]
     );
 
     return $kws;
@@ -261,7 +262,7 @@ function getCollaborators($id) : array
         'LEFT JOIN publication_collaborator_rel pcr '.
         'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
         'WHERE pcr.PublicationID=:pid',
-        array('pid' => $id)
+        ['pid' => $id]
     );
 
     return $collaborators;
@@ -280,7 +281,7 @@ function getFiles($id) : array
 
     $files = $db->pselect(
         'SELECT * FROM publication_upload WHERE PublicationID=:pid',
-        array('pid' => $id)
+        ['pid' => $id]
     );
 
     foreach ($files as $key => $f) {
@@ -301,10 +302,10 @@ function getStatusOptions() : array
     $db        = \Database::singleton();
     $rawStatus = $db->pselect(
         'SELECT * FROM publication_status',
-        array()
+        []
     );
 
-    $statusOpts = array();
+    $statusOpts = [];
     foreach ($rawStatus as $rs) {
         $statusOpts[$rs['PublicationStatusID']] = $rs['Label'];
     }
@@ -323,7 +324,7 @@ function getUploadTypes() : array
 
     return $db->pselectColWithIndexKey(
         'SELECT PublicationUploadTypeID, Label FROM publication_upload_type',
-        array(),
+        [],
         'PublicationUploadTypeID'
     );
 }
@@ -346,14 +347,14 @@ function userCanGetData($db, $user, $pubID = null) : bool
 
     $origUser = $db->pselectOne(
         'SELECT UserID FROM publication WHERE PublicationID=:p',
-        array('p' => $pubID)
+        ['p' => $pubID]
     );
 
     $userIDs = $db->pselectCol(
         'SELECT pu.UserID as ID '.
         'FROM publication_users_edit_perm_rel pu '.
         'WHERE PublicationID=:p',
-        array('p' => $pubID)
+        ['p' => $pubID]
     );
 
     $userCanEdit = (

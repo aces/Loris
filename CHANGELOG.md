@@ -13,11 +13,13 @@ changes in the following format: PR #1234***
 #### Features
 - *Add item here*
 #### Updates and Improvements
-- *Add item here*
+- Module-specific permissions added for Survey Accounts, Imaging Behavioural
+Quality Control, and Behavioural Quality Control. (PR #6041)
 #### Bug Fixes
 - *Add item here*
 ### Modules
-#### *Add module here*
+#### Issue Tracker
+- Readability of comments and history was improved. (PR #6138)
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
@@ -26,10 +28,7 @@ changes in the following format: PR #1234***
 - *Add item here*
 
 
-
-
-
-## LORIS 23.0 (Release Date: ??)
+## LORIS 23.0.0 (Release Date: 2020-06-12)
 
 ### Core
 #### Features
@@ -48,6 +47,7 @@ database (PR #5260)
 #### Bug Fixes
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)
 - Fix bug where examiner form field was incorrectly hidden (PR #6085)
+- Fix special character double escaping in instruments (PR #6223)
 
 ### Modules 
 #### Candidate Profile
@@ -55,18 +55,13 @@ database (PR #5260)
   modules. (Various PRs)
 
 ##### Issue Tracker
-- The issue_tracker module now has the feature of uploading attachments to new or existing issues.
+- The issue_tracker module now has the feature of uploading attachments to new or existing issues. (PR #5394)
 - All sites now appear in the dropdown for site, not only study sites. (PR #6135)
-
 
 #### Battery Manager
 - New module created to manage the entries in the `test_battery` table of the database.
 This allows projects to modify their instrument battery without requiring backend access.
  (PR #4221)
- 
-#### Issue Tracker
-- The `issue_tracker` module now has the feature of uploading attachments to new or existing
-issues. (PR #5394)
  
 #### Module Manager
 - New module created to manage the status of installed modules. (PR #6015)
@@ -83,8 +78,10 @@ death for candidates. (PR #4929)
 - Add language parameter when creating a new timepoint for multilingual studies. (PR #4976)
  
 #### Data Release
-- Added filters to data release module. (PR #5224)
+- Add filters to data release module. (PR #5224)
 
+#### MRI Violations
+- Add support for multiple MRI protocols (PR #4321)
 
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database
@@ -95,6 +92,7 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 
 ### Notes For Existing Projects
 - PHP should be upgraded to 7.3 to before upgrading LORIS.
+- For dev instances, php7.3-curl is now a required dependency.
 - Legacy Quickform instruments may have issues due to code changes (PR #4928)
 - Customized entries in the `LorisMenu` and `LorisMenuPermissions` tables need to be 
 transferred to the new module table and handled accordingly. (PR #5839)
@@ -106,6 +104,8 @@ the list of modules.(PR #5824)
 exception). It is recommended to run this tool for existing projects (PR #5270)
 - New tool for automatically adding modules to the modules table. This tool should 
 be used by projects having custom modules not in LORIS. (PR #5913)
+- Duplicate filenames in the data release module will cause an error when downloading. Make sure to remove all filename duplications before upgrading to this version. (PR #6461)
+- New tool for detecting and reporting the presence of double escaped special characters in the database instruments (PR #6477)
 
 ### Notes For Developers
 - The tool `phpstan` has been added to our automated test suite. (PR #4928)

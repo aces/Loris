@@ -11,7 +11,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
 require_once __DIR__ . "/../../../test/integrationtests"
     . "/LorisIntegrationTestWithCandidate.class.inc";
 
@@ -134,7 +135,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     public function testCreateTimepointPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );

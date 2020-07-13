@@ -20,6 +20,8 @@ clean:
 	rm -f smarty/templates_c/*
 	rm -f VERSION
 	rm -rf vendor
+	rm -rf node_modules
+	rm package-lock.json
 
 # Perform static analysis checks
 checkstatic: phpdev

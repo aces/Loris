@@ -63,17 +63,17 @@ class UploadHelper
         if (!isset($files['file']['tmp_name'])
             || empty($files['file']['tmp_name'])
         ) {
-            return array(
+            return [
                 'error' =>
                     'The server is not configured to receive a file this large.'
-            );
+            ];
         }
         $this->_user   = $user;
         $this->_bytes  = $files['file']['size'];
         $this->_values = $values;
 
         $this->_fileToUpload
-            = (object) array(
+            = (object) [
                 'file'        => $files['file']['name'],
                 'file_hash'   => $this->generateHash($files['file']['tmp_name']),
                 'mime_type'   => $this->getFileMimeType($files['file']['name']),
@@ -81,7 +81,7 @@ class UploadHelper
                 'size'        => $this->_bytes,
                 'inserted_by' => $this->_user->getData('UserID'),
                 'description' => $this->_values['fileDescription'] ?? '',
-            );
+            ];
 
         $this->setFullPath($this->_fileToUpload);
 
@@ -90,7 +90,7 @@ class UploadHelper
         $this->registerFile($this->_fileToUpload);
         $this->endWithSuccess();
 
-        return array('success' => true);
+        return ['success' => true];
     }
 
     /**
@@ -138,7 +138,7 @@ class UploadHelper
     function registerFile(Object &$fileToUpload) : void
     {
         $DB     = \NDB_Factory::singleton()->database();
-        $values = array(
+        $values = [
             'issueID'     => $this->_values['issueID'],
             'file_hash'   => $fileToUpload->file_hash,
             'date_added'  => date('Y-m-d h:i:s', time()),
@@ -148,7 +148,7 @@ class UploadHelper
             'description' => $fileToUpload->description,
             'file_size'   => $fileToUpload->size,
             'mime_type'   => $fileToUpload->mime_type
-        );
+        ];
         try {
             $DB->insert('issues_attachments', $values);
             // Move file from tmp to issue_tracker attachment directory.
@@ -172,7 +172,7 @@ class UploadHelper
      */
     function getFileMimeType(string $file) : string
     {
-        $known_mime_types = array(
+        $known_mime_types = [
             'htm'  => 'text/html',
             'csv'  => 'text/csv',
             'exe'  => 'application/octet-stream',
@@ -188,7 +188,7 @@ class UploadHelper
             'html' => 'text/html',
             'png'  => 'image/png',
             'jpeg' => 'image/jpg',
-        );
+        ];
         if (strpos($file, '.') !== false) {
             $file_extension = strtolower(substr(strrchr($file, '.'), 1));
             if (array_key_exists($file_extension, $known_mime_types)) {

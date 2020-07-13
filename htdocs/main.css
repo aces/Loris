@@ -33,7 +33,6 @@ html, body {
 #page {
     min-height: 100vh;
     position: relative;
-    padding-top: 50px;
 }
 
 
@@ -671,8 +670,8 @@ tr.directentry {
     border-color: #246EB6;
     border-width: 0px 0px 1px 1px;
     height: auto;
-    position: fixed;
-    top: 50px;
+    position: absolute;
+    top: 52px;
     right: 0px;
     overflow-y: auto;
     z-index: 1000;

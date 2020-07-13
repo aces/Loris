@@ -75,6 +75,7 @@ request description and tag it with **Caveat for Existing Projects**.
 This helps us to document our release notes.
 * You can run the command `make checklanguage` to ensure that documentation
 you've contributed contains language that is friendly and accessible.
+* Be sure to modify the `CHANGELOG.md` file.
 
 If you're unsure about any of the above, feel free to ask us for
 clarification via the mailing list.

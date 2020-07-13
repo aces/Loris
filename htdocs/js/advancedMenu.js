@@ -1,12 +1,15 @@
-/* export isElementSet, showAdvancedOptionsCheck */
-
+/**
+ * Is element set
+ *
+ * @return {int} - returns 0|1
+ */
 function isElementSet() {
   'use strict';
   let set = 0;
-  let options = $('.advancedOptions option:selected'); // /get all the selected dropdowns for the TR with the ID advancedOptions
+  let options = $('.advancedOptions option:selected'); // get all the selected dropdowns for the TR with the ID advancedOptions
   let texts = $('.advancedOptions input[type=text]');
-    // /brows through the selected dropdowns
-    // /if any of the dropdown is not equal to 'All' then set the variable set to true
+    // brows through the selected dropdowns
+    // if any of the dropdown is not equal to 'All' then set the variable set to true
   options.each(function() {
     let value = $(this).text();
     if (value !== 'All') {
@@ -26,9 +29,13 @@ function isElementSet() {
   return set;
 }
 
+/**
+ * Show advanced options check
+ * Toggle visibility
+ */
 function showAdvancedOptionsCheck() {
   'use strict';
-  let els = $('.advancedOptions'); // /get all the TR elements with the ID advancedOptions
+  let els = $('.advancedOptions'); // get all the TR elements with the ID advancedOptions
   let set = isElementSet();
   if (set) {
     els.show();

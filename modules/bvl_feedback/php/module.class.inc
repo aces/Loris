@@ -76,9 +76,9 @@ class Module extends \Module
                 JOIN feedback_bvl_type fbt USING (Feedback_type)
                 WHERE fbth.Status='opened' AND fbth.Active='Y'
                 ORDER BY Testdate DESC LIMIT 4",
-                array()
+                []
             );
-            $frontend_feedback = array();
+            $frontend_feedback = [];
             foreach ($bvl_feedback as $row) {
                 if (new \DateTime($row['Testdate']) > $last_login) {
                     $row['new'] = true;
@@ -99,7 +99,7 @@ class Module extends \Module
                 case 'instrument':
                     $instrument = $DB->pselectOne(
                         "SELECT Test_name from flag WHERE CommentID=:cid",
-                        array('cid' => $row['CommentID'])
+                        ['cid' => $row['CommentID']]
                     );
                     if (!empty($instrument)) {
                         $url = '/instruments/'. $instrument

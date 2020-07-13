@@ -31,11 +31,23 @@ class ImagePanelHeader extends Component {
     let arrow;
     if (this.props.Expanded) {
       arrow = <span onClick={this.props.onToggleBody}
-                    className="pull-right clickable glyphicon arrow glyphicon-chevron-up">
+                    className="
+                      pull-right
+                      clickable
+                      glyphicon
+                      arrow
+                      glyphicon-chevron-up
+                    ">
               </span>;
     } else {
       arrow = <span onClick={this.props.onToggleBody}
-                    className="pull-right clickable glyphicon arrow glyphicon-chevron-down">
+                    className="
+                      pull-right
+                      clickable
+                      glyphicon
+                      arrow
+                      glyphicon-chevron-down
+                    ">
               </span>;
     }
     let headerButton = (
@@ -57,7 +69,10 @@ class ImagePanelHeader extends Component {
       <div className="panel-heading clearfix">
         <input type="checkbox" data-file-id={this.props.FileID}
                className="mripanel user-success"/>
-        <h3 className="panel-title" data-toggle="tooltip" title={this.props.Filename}>
+        <h3 className="panel-title"
+            data-toggle="tooltip"
+            title={this.props.Filename}
+        >
           {this.props.Filename}
         </h3>
         {QCStatusLabel}
@@ -95,8 +110,14 @@ class ImagePanelHeadersTable extends Component {
 
   render() {
     return (
-      <table className=
-               "table table-hover table-bordered header-info col-xs-12 dynamictable">
+      <table className="
+        table
+        table-hover
+        table-bordered
+        header-info
+        col-xs-12
+        dynamictable
+      ">
         <tbody>
         <tr>
           <th className="info col-xs-2">Voxel Size</th>
@@ -376,9 +397,15 @@ class ImagePanelQCCaveatSelector extends Component {
     // Link caveat to MRI Violations if set true
     let mriViolationsLink = null;
     if (this.props.SeriesUID && this.props.Caveat === '1') {
-      mriViolationsLink = '/mri_violations/?' +
-        'submenu=mri_protocol_check_violations&SeriesUID=' +
-        this.props.SeriesUID + '&filter=true';
+        // If there is a manual caveat that was set, the link
+        // will take you to it, even though there might also
+        // be a caveat that was set by the MRI piepline (i.e
+        // not manual). Note that manual caveat are always
+        // resolved
+        if (this.props.CaveatViolationsResolvedID) {
+            mriViolationsLink = '/mri_violations/resolved_violations/?' +
+              'SeriesUID=' + this.props.SeriesUID + '&filter=true';
+        }
     }
 
     return (
@@ -405,6 +432,7 @@ ImagePanelQCCaveatSelector.propTypes = {
   HasQCPerm: PropTypes.string,
   SeriesUID: PropTypes.string,
   Caveat: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
 class ImagePanelQCSNRValue extends Component {
@@ -452,6 +480,7 @@ class ImagePanelQCPanel extends Component {
           HasQCPerm={this.props.HasQCPerm}
           Caveat={this.props.Caveat}
           SeriesUID={this.props.SeriesUID}
+          CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
         />
         <ImagePanelQCSNRValue
           FileID={this.props.FileID}
@@ -470,6 +499,7 @@ ImagePanelQCPanel.propTypes = {
   Caveat: PropTypes.string,
   SeriesUID: PropTypes.string,
   SNR: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
 class DownloadButton extends Component {
@@ -654,6 +684,7 @@ class ImagePanelBody extends Component {
               HasQCPerm={this.props.HasQCPerm}
               QCStatus={this.props.QCStatus}
               Caveat={this.props.Caveat}
+              CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
               Selected={this.props.Selected}
               SNR={this.props.SNR}
               SeriesUID={this.props.SeriesUID}
@@ -692,6 +723,7 @@ ImagePanelBody.propTypes = {
   OtherTimepoints: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   Checkpic: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
 class ImagePanel extends Component {
@@ -745,6 +777,7 @@ class ImagePanel extends Component {
               HasQCPerm={this.props.HasQCPerm}
               QCStatus={this.props.QCStatus}
               Caveat={this.props.Caveat}
+              CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
               Selected={this.props.Selected}
               SNR={this.props.SNR}
 
@@ -778,6 +811,7 @@ ImagePanel.propTypes = {
   HeaderInfo: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   Checkpic: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
 let RImagePanel = React.createFactory(ImagePanel);

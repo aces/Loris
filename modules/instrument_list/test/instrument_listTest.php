@@ -10,7 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
@@ -34,11 +35,11 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
      * Table headers
      */
     private $_loadingUI
-        =  array(
+        =  [
             'Access Profile'  => '#bc2 > a:nth-child(2) > div',
             '300001 / MTL001' => '#bc2 > a:nth-child(3) > div',
             'TimePoint V1'    => '#bc2 > a:nth-child(4) > div',
-        );
+        ];
     /**
      * Tests that, when loading the Instrument list module, some
      * text appears in the body.
@@ -64,7 +65,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentListDoespageLoadWithPermission()
     {
-        $this->setupPermissions(array("access_all_profiles"));
+        $this->setupPermissions(["access_all_profiles"]);
         $this->webDriver->get(
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
@@ -82,7 +83,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentListDoespageLoadWithoutPermission()
     {
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->webDriver->get(
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"

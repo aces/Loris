@@ -26,10 +26,10 @@ namespace LORIS\statistics;
 class Statistics_Site extends \NDB_Menu
 {
 
-    var $instruments    = array();
-    var $issues         = array();
+    var $instruments    = [];
+    var $issues         = [];
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     /**
      * Checking user's permission
@@ -42,10 +42,10 @@ class Statistics_Site extends \NDB_Menu
     {
         //TODO: Create a permission specific to statistics
         $hasAccessToAllProfiles = $user->hasAllPermissions(
-            array(
+            [
                 'access_all_profiles',
                 'data_entry',
-            )
+            ]
         );
 
         $hasCenterPermission = false;
@@ -119,7 +119,7 @@ class Statistics_Site extends \NDB_Menu
             $this->query_vars['cid'] = $centerID;
         } else {
             $list_of_permitted_sites = (array) null;
-            $currentUser = \User::singleton();
+            $currentUser = \NDB_Factory::singleton()->user();
 
             if ($currentUser->hasPermission('access_all_profiles')) {
                 $list_of_permitted_sites = array_keys(\Utility::getSiteList());
@@ -135,8 +135,8 @@ class Statistics_Site extends \NDB_Menu
                 }
             }
 
-            $params    = array();
-            $centerIDs = array();
+            $params    = [];
+            $centerIDs = [];
             foreach ($list_of_permitted_sites as $key => $siteID) {
                 $params[]            = ":id$key";
                 $centerIDs["id$key"] = $siteID;
@@ -248,7 +248,7 @@ class Statistics_Site extends \NDB_Menu
         if (!empty($_REQUEST['CenterID'])) {
             $center   = $DB->pselectRow(
                 $sqlRow,
-                array('cid' => $_REQUEST['CenterID'])
+                ['cid' => $_REQUEST['CenterID']]
             );
             $centerID = $center['ID'] ?? '';
             $name     = $center['Name'] ?? '';
@@ -265,10 +265,10 @@ class Statistics_Site extends \NDB_Menu
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given instrument in the
         // template
-        $visits = array();
+        $visits = [];
 
         $this->_setInstrumentName();
-        $data = array();
+        $data = [];
         foreach ($this->instruments as $instrument=>$label) {
 
             if ($DB->tableExists($instrument)) {
@@ -290,20 +290,20 @@ class Statistics_Site extends \NDB_Menu
                     if (!in_array($row['Visit_label'], $visits)) {
                         $visits[] = $row['Visit_label'];
                     }
-                    $arrayVar = array(
+                    $arrayVar = [
                         'test_url'  => $test_url,
                         'CandID'    => $row['CandID'],
                         'SessionID' => $row['SessionID'],
                         'CommentID' => $row['CommentID'],
                         'PSCID'     => $row['PSCID'],
-                    );
+                    ];
                     $results[$row['Visit_label']][] = $arrayVar;
                 }
-                $data[] = array(
+                $data[] = [
                     'name'        => $label,
                     'count'       => $complete_count,
                     'incompletes' => $results,
-                );
+                ];
             }
         }
 
@@ -326,7 +326,7 @@ class Statistics_Site extends \NDB_Menu
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 }
