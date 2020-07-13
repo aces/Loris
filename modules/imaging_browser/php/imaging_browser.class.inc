@@ -112,12 +112,11 @@ class Imaging_Browser extends \DataFrameworkMenu
         }
 
         // get list of projects
-        $allProjectList   = \Utility::getProjectList();
-        $list_of_projects = array();
-        $userProjectsIDs  = $user->getData('ProjectIDs');
-        foreach ($userProjectsIDs as $ProjectID) {
-            $project = $allProjectList[$ProjectID];
-            $list_of_projects[$project] = $project;
+        $list_of_projects = [];
+        $userProjectsIDs  = $user->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectName = \Project::getProjectFromID($projectID)->getName();
+            $list_of_projects[$projectName] = $projectName;
         }
 
         // get visit QC status options
