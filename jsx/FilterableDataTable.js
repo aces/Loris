@@ -29,6 +29,7 @@ class FilterableDataTable extends Component {
     };
     this.updateFilter = this.updateFilter.bind(this);
     this.clearFilter = this.clearFilter.bind(this);
+    this.validFilters = this.validFilters.bind(this);
   }
 
   /**
@@ -38,6 +39,9 @@ class FilterableDataTable extends Component {
    */
   updateFilter(filter) {
     this.setState({filter});
+    if (this.props.updateFilterCallback) {
+        this.props.updateFilterCallback(filter);
+    }
   }
 
   /**
@@ -49,17 +53,46 @@ class FilterableDataTable extends Component {
   }
 
   /**
+   * Returns the filter state, with filters that are
+   * set to an invalid option removed from the returned
+   * filters
+   *
+   * @return {object}
+   */
+  validFilters() {
+      let filters = {};
+      this.props.fields.forEach((field) => {
+        const filtername = field.filter.name;
+        const filterval = this.state.filter[filtername];
+        if (!this.state.filter[filtername]) {
+            return;
+        }
+
+        if (field.filter.type !== 'select') {
+            return;
+        }
+
+        if (!(filterval.value in field.filter.options)) {
+            return;
+        }
+        filters[filtername] = filterval;
+      });
+      return filters;
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
+    const filters = this.validFilters();
     const filter = (
       <Filter
         name={this.props.name + '_filter'}
         id={this.props.name + '_filter'}
         columns={this.props.columns}
-        filter={this.state.filter}
+        filter={filters}
         fields={this.props.fields}
         updateFilter={this.updateFilter}
         clearFilter={this.clearFilter}
@@ -70,7 +103,7 @@ class FilterableDataTable extends Component {
       <DataTable
         data={this.props.data}
         fields={this.props.fields}
-        filter={this.state.filter}
+        filter={filters}
         actions={this.props.actions}
         getFormattedCell={this.props.getFormattedCell}
         getMappedCell={this.props.getMappedCell}
@@ -125,6 +158,7 @@ FilterableDataTable.propTypes = {
   columns: PropTypes.number,
   getFormattedCell: PropTypes.func,
   actions: PropTypes.array,
+  updateFilterCallback: PropTypes.func,
 };
 
 export default FilterableDataTable;
