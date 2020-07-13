@@ -31,6 +31,13 @@ require_once 'NDB_Config.class.inc';
 class NDB_BVL_Instrument_Test extends TestCase
 {
     private $_instrument;
+    private $_factory;
+    private $_mockConfig;
+    private $_mockDB;
+
+    private $_factoryForDB;
+    private $_config;
+    private $_DB;
     /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
@@ -58,15 +65,15 @@ class NDB_BVL_Instrument_Test extends TestCase
             'State' => $this->session
         );
 
-        $factory = \NDB_Factory::singleton();
-        $factory->setTesting(true);
+        $this->_factory = \NDB_Factory::singleton();
+        $this->_factory->setTesting(true);
 
-        $mockdb = $this->getMockBuilder("\Database")->getMock();
-        $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
+        $this->_mockDB = $this->getMockBuilder("\Database")->getMock();
+        $this->_mockConfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-        \NDB_Factory::$db = $mockdb;
-        \NDB_Factory::$testdb = $mockdb;
-        \NDB_Factory::$config = $mockconfig;
+        \NDB_Factory::$db = $this->_mockDB;
+        \NDB_Factory::$testdb = $this->_mockDB;
+        \NDB_Factory::$config = $this->_mockConfig;
 
         $this->quickForm = new \LorisForm();
 
@@ -956,5 +963,199 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
     }
 
+    /**
+     * Test that getCommentID returns the correct string
+     *
+     * @covers NDB_BVL_Instrument::getCommentID
+     * @return void
+     */
+    function testGetCommentID()
+    {
+        $this->_instrument->commentID = 'commentID1';
+        $this->assertEquals("commentID1", $this->_instrument->getCommentID());
+    }
+
+    /**
+     * Test that getSessionID gets the correct data from the database
+     *
+     * @covers NDB_BVL_Instrument::getSessionID
+     * @return void
+     */
+    function testGetSessionID()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->assertEquals("123", $this->_instrument->getSessionID());
+    }
+
+    /**
+     * Test that getSessionID returns -1 if nothing was found in the
+     * database for the given commentID
+     *
+     * @covers NDB_BVL_Instrument::getSessionID
+     * @return void
+     */
+    function testGetSessionIDReturnsNegative()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID2';
+        $this->assertEquals(-1, $this->_instrument->getSessionID());
+    }
+
+    /**
+     * Test that getVisitLabel returns the correct visit label
+     * for the given session ID
+     *
+     * @covers NDB_BVL_Instrument::getVisitLabel
+     * @return void
+     */
+    function testGetVisitLabel()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->assertEquals("123", $this->_instrument->getSessionID());
+        $this->assertEquals("V1", $this->_instrument->getVisitLabel());
+    }
+
+    /**
+     * Test that getVistiLabel returns an empty string
+     * if nothing was found in the database
+     *
+     * @covers NDB_BVL_Instrument::getVisitLabel
+     * @return void
+     */
+    function testGetVisitLabelReturnsEmpty()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID2';
+        $this->assertEquals("", $this->_instrument->getVisitLabel());
+    }
+
+    /**
+     * Test that getSubprojectID returns the correct value
+     * for the given session ID
+     *
+     * @covers NDB_BVL_Instrument::getSubprojectID
+     * @return void
+     */
+    function testGetSubprojectID()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->assertEquals(2, $this->_instrument->getSubprojectID());
+    }
+
+    /**
+     * Test that getSubprojectID returns null if nothing was found
+     *
+     * @covers NDB_BVL_Instrument::getSubprojectID
+     * @return void
+     */
+    function testGetSubprojectIDReturnsNull()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID2';
+        $this->assertEquals(null, $this->_instrument->getSubprojectID());
+    }
+
+    /**
+     * Test that getDoB returns the correct date of birth from the database
+     *
+     * @covers NDB_BVL_Instrument::getDoB
+     * @return void
+     */
+    function testGetDoB()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->assertEquals('1999-01-01', $this->_instrument->getDoB());
+    }
+
+    /**
+     * Test that getDoD returns the correct date of death from the database
+     *
+     * @covers NDB_BVL_Instrument::getDoD
+     * @return void
+     */
+    function testGetDoD()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->assertEquals('2005-01-01', $this->_instrument->getDoD());
+    }
+
+    /**
+     * Test that getPSCID returns the correct data from the database
+     *
+     * @covers NDB_BVL_Instrument::getPSCID
+     * @return void
+     */
+    function testGetPSCID()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->assertEquals('345', $this->_instrument->getPSCID());
+    }
+
+    /**
+     * Private function to set fake table data to be tested
+     *
+     * @return void
+     */
+    private function _setTableData()
+    {
+        $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS flag");
+        $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS session");
+        $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS candidate");
+        $this->_DB->setFakeTableData(
+            "flag",
+            [['SessionID' => '123', 'CommentID' => 'commentID1']]
+        );
+        $this->_DB->setFakeTableData(
+            "candidate",
+            [
+                [
+                    'CandID' => 1,
+                    'DoB' => '1999-01-01',
+                    'DoD' => '2005-01-01',
+                    'PSCID' => '345'
+                ]
+            ]
+        );
+        $this->_DB->setFakeTableData(
+            "session",
+            [['ID' => '123', 'CandID' => 1]]
+        );
+    }
+
+    /**
+     * Private function to set up the mock DB used for testing
+     *
+     * @return void
+     */
+    private function _setUpMockDB()
+    {
+        $this->_factoryForDB = \NDB_Factory::singleton();
+        $this->_factoryForDB->reset();
+        $this->_factoryForDB->setTesting(false);
+        $this->_config = $this->_factoryForDB->Config(CONFIG_XML);
+        $database     = $this->_config->getSetting('database');
+        $this->_DB     = \Database::singleton(
+            $database['database'],
+            $database['username'],
+            $database['password'],
+            $database['host'],
+            1
+        );
+    }
 }
 ?>
