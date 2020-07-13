@@ -24,17 +24,26 @@
     "react/jsx-uses-vars": "error",
     "prefer-rest-params": "error",
     "array-callback-return": 0,
-    "require-jsdoc": "warn",
+    "require-jsdoc": "error",
     "no-implicit-globals": 0,
     "no-invalid-this": 0,
     "no-alert": 0,
     "new-cap": ["error", {
       "capIsNewExceptions": ["DynamicTable"]
     }],
-    "no-console": ["error", {
+    "no-console": ["warn", {
       "allow": ["info", "warn", "error"]
     }]
   },
+  "overrides": [
+    {
+      "files": ["modules/**"],
+      "rules": {
+        "max-len": [1, 80, 2, {"ignoreComments": true}],
+        "require-jsdoc": "warn"
+      }
+    }
+  ],
   "globals": {
     "React": true,
     "ReactDOM": true,
