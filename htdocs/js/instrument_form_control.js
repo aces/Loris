@@ -1,3 +1,6 @@
+/**
+ * Display a warning if a form element is not answered
+ */
 function notAnswered() {
   'use strict';
   let name = $(this).attr('name');
@@ -31,6 +34,7 @@ function notAnswered() {
 /**
  * Appends a hidden empty value, if a multiselect dropdown has nothing selected
  * Required to trigger validation on the backend
+ *
  * @param {JQuery} form <form> element
  * @param {JQuery} element <select> element
  */
