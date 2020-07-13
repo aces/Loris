@@ -569,13 +569,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 'Candidate_age',
                                 'Candidate Age (Months)',
                                 $scope,
-                                new \LORIS\Data\Types\Duration(),
+                                new \LORIS\Data\Types\Interval(),
                             ),
                             new DictionaryItem(
                                 'Window_Difference',
                                 'Window difference from test battery (days)',
                                 $scope,
-                                new \LORIS\Data\Types\Duration(),
+                                new \LORIS\Data\Types\Interval(),
                             ),
                             new DictionaryItem(
                                 'Examiner',

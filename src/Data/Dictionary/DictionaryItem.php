@@ -125,4 +125,21 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
     public function getDataType() : \LORIS\Data\Type {
         return $this->typ;
     }
+
+    /**
+     * The DictionaryItem instance implements the AccessibleResource
+     * interface in order to make it possible to restrict items per
+     * user. However, by default DictionaryItems are accessible by
+     * all users. In order to restrict access to certain items, a
+     * module would need to extend this class and override the
+     * isAccessibleBy method with its prefered business logic.
+     *
+     * @param \User $user The user whose access should be
+     *                    validated
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool {
+        return true;
+    }
 }

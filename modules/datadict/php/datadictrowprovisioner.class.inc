@@ -79,16 +79,18 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                         $status = 'Empty';
                     }
                     $dict[] = $this->getInstance(
-                            [
-                                'source_from'        => $cat->getName(),
-                                'name'               => $name,
-                                'source_field'       => $item->getName(),
-                                'description'        => $desc,
-                                'description_status' => $status,
-                                'datascope' => $item->getScope(),
-                                'type' => $item->getDataType(),
-                            ]
-                        );
+                        $item,
+                        [
+                            'module'        => $module->getName(),
+                            'category'     => $cat->getName(),
+                            'name'               => $name,
+                            'source_field'       => $item->getName(),
+                            'description'        => $desc,
+                            'description_status' => $status,
+                            'datascope' => $item->getScope(),
+                            'type' => $item->getDataType(),
+                        ]
+                    );
                 }
             } 
         }
@@ -102,8 +104,8 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
-    public function getInstance($row) : \LORIS\Data\DataInstance
+    public function getInstance(\LORIS\Data\Dictionary\DictionaryItem $item, array $row) : \LORIS\Data\DataInstance
     {
-        return new DataDictRow($row);
+        return new DataDictRow($item, $row);
     }
 }
