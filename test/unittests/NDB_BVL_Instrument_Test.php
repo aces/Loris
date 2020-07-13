@@ -287,7 +287,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * @covers NDB_BVL_Instrument::addTextAreaElementRD
      * @return void
      */
-    function testAddTextAreaElement()
+    function testAddTextAreaElementRD()
     {
         $this->_instrument->addTextAreaElementRD(
             "FieldName1", "Field Description1", array("value" => "Option")
@@ -298,6 +298,38 @@ class NDB_BVL_Instrument_Test extends TestCase
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
         );
+        $groupEl = $this->_instrument->form->form['FieldName1_group'];
+        $this->assertEquals(
+            $groupEl,
+            [
+                'type' => 'group',
+                'name' => 'FieldName1_group',
+                'elements' => [
+                    ['label' => null,
+                     'name' => 'FieldName1',
+                     'type' => 'textarea',
+                     'html' => $this->_instrument->form
+                         ->renderElement($groupEl['elements'][0])
+                    ],
+                    ['label' => '',
+                     'name' => 'FieldName1_status',
+                     'class' => 'form-control input-sm',
+                     'type' => 'select',
+                     'options' => ['' => '',
+                                   '88_refused' => '88 Refused',
+                                   '99_do_not_know' => '99 Do not know',
+                                   'not_answered' => 'Not Answered'
+                                  ],
+                     'html' => $this->_instrument->form
+                         ->renderElement($groupEl['elements'][1])
+                    ],
+                ],
+                'label' => 'Field Description1',
+                'delimiter' => ' ',
+                'options' => false,
+                'html' => $this->_instrument->form->groupHTML($groupEl)
+            ]
+        );
         $textRules = $this->_instrument->XINRules['FieldName1'];
         $this->assertEquals(
             $textRules,
@@ -305,6 +337,67 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'message' => 'You must specify or select from the drop-down',
                 'group' => 'FieldName1_group',
                 'rules' => ['FieldName1_status{@}=={@}', 'Option']
+            ]
+        );
+    }
+
+    /**
+     * Test that addHourMinElement returns a group element with the correct
+     * data and sets an appropriate XINRule
+     *
+     * @covers NDB_BVL_Instrument::addHourMinElement
+     * @return void
+     */
+    function testAddHourMinElement()
+    {
+        $this->_instrument->addHourMinElement(
+            "hourMinField", "hourMinLabel", ["value" => "Option"], "Rule_message"
+        );
+        $json = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        $this->assertEquals(
+            $outArray['Elements'][0],
+            ['Type' => "Group", 'Error' => "Unimplemented"]
+        );
+        $groupEl = $this->_instrument->form->form['hourMinField_group'];
+        $this->assertEquals(
+            $groupEl,
+            [
+                'type' => 'group',
+                'name' => 'hourMinField_group',
+                'elements' => [
+                    ['label' => null,
+                     'name' => 'hourMinField',
+                     'type' => 'time',
+                     'html' => $this->_instrument->form
+                         ->renderElement($groupEl['elements'][0])
+                    ],
+                    ['label' => '',
+                     'name' => 'hourMinField_status',
+                     'class' => 'form-control input-sm',
+                     'type' => 'select',
+                     'options' => [null => '',
+                                   'dnk' => 'DNK',
+                                   'refusal' => 'Refusal',
+                                   'not_answered' => 'Not Answered',
+                                  ],
+                     'html' => $this->_instrument->form
+                         ->renderElement($groupEl['elements'][1])
+                    ]
+                ],
+                'label' => 'hourMinLabel',
+                'delimiter' => ' ',
+                'options' => false,
+                'html' => $this->_instrument->form->groupHTML($groupEl)
+            ]
+        );
+        $rules = $this->_instrument->XINRules['hourMinField'];
+        $this->assertEquals(
+            $rules,
+            [
+                'message' => 'Rule_message',
+                'group' => 'hourMinField_group',
+                'rules' => ['Option', 'hourMinField_status{@}=={@}']
             ]
         );
     }
@@ -398,6 +491,103 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
+     * Test that addMonthYear creates a date element with the correct data
+     * and that it adds the element name to the monthYearFields array.
+     *
+     * @covers NDB_BVL_Instrument::addMonthYear
+     * @return void
+     */
+    function testMonthYearElement()
+    {
+        $this->_instrument->addMonthYear("Field1", "Label 1", ['value' => 'Option']);
+        $this->assertEquals(
+            $this->_instrument->form->form["Field1"],
+            [
+                'label' => 'Label 1',
+                'name' => 'Field1',
+                'type' => 'date',
+                'options' => ['value' => 'Option',
+                              'format' => 'YM']
+            ]
+        );
+        $this->assertEquals($this->_instrument->monthYearFields[0], "Field1");
+    }
+
+    /**
+     * Test that addCustomDateElement creates a group element with
+     * the correct data and sets a XINRule
+     *
+     * @covers NDB_BVL_Instrument::addCustomDateElement
+     * @return void
+     */
+    function testAddCustomDateElement()
+    {
+        $this->_instrument->addCustomDateElement(
+            "CustomName", "Date Label", array("value" => "Option")
+        );
+        $json = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        $this->assertEquals(
+            $outArray['Elements'][0],
+            ['Type' => "Group", 'Error' => "Unimplemented"]
+        );
+        $groupEl = $this->_instrument->form->form['CustomName_date_group'];
+        $this->assertEquals(
+            $groupEl,
+            [
+                'type' => 'group',
+                'name' => 'CustomName_date_group',
+                'elements' => [
+                    [
+                        'label' => null,
+                        'name' => 'CustomName_date',
+                        'class' => 'form-control input-sm',
+                        'type' => 'date',
+                        'html' => $this->_instrument->form
+                            ->renderElement($groupEl['elements'][0]),
+                        'options' => ['value' => 'Option']
+                    ],
+                    [
+                        'label' => null,
+                        'name' => 'CustomName_date_status',
+                        'class' => 'form-control input-sm',
+                        'type' => 'select',
+                        'options' => [
+                            null => '',
+                            '88_refused' => "88 Refused",
+                            '99_do_not_know' => "99 Do not know",
+                            'not_answered'   => "Not Answered"
+                        ],
+                        'html' => $this->_instrument->form
+                            ->renderElement($groupEl['elements'][1])
+                    ]
+                ],
+                'label' => 'Date Label',
+                'delimiter' => "</td>\n<td>",
+                'options' => false,
+                'html' => $this->_instrument->form->groupHTML($groupEl)
+            ]
+        );
+        $rule1 = $this->_instrument->XINRules['CustomName_date'];
+        $this->assertEquals(
+            $rule1,
+            [
+                'message' => "You must specify or select from the drop-down",
+                'group' => 'CustomName_date_group',
+                'rules' => ['CustomName_date_status{@}=={@}']
+            ]
+        );
+        $rule2 = $this->_instrument->XINRules['CustomName_date_status'];
+        $this->assertEquals(
+            $rule2,
+            [
+                'message' => "You must specify or select from the drop-down",
+                'group' => 'CustomName_date_group',
+                'rules' => ['CustomName_date{@}=={@}']
+            ]
+        );
+    }
+    /**
      * Test that addNumericElement adds the correct data to the instrument
      *
      * @covers NDB_BVL_Instrument::addNumericElement
@@ -422,7 +612,73 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ]
             ]
         );
+    }
 
+    /**
+     * Test that addNumericElementRD correctly creates a group element
+     * and sets a XINRule with the proper data
+     *
+     * @covers NDB_BVL_Instrument::addNumericElementRD
+     * @return void
+     */
+    function testNumericElementRD()
+    {
+        $this->_instrument->addNumericElementRD("TestElement", "Test Description");
+        $json = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        $numericElement = $outArray['Elements'][0];
+        $this->assertEquals(
+            $numericElement,
+            ['Type' => "Group", 'Error' => "Unimplemented"]
+        );
+        $groupEl = $this->_instrument->form->form['TestElement_group'];
+        $this->assertEquals(
+            $groupEl,
+            [
+                'type' => 'group',
+                'name' => 'TestElement_group',
+                'elements' => [
+                    [
+                        'type' => 'text',
+                        'name' => 'TestElement',
+                        'label' => 'Test Description',
+                        'class' => 'form-control input-sm',
+                        'numeric' => true,
+                        'numericMsg' => 'Numbers only, please',
+                        'html' => $this->_instrument->form
+                            ->renderElement($groupEl['elements'][0])
+                    ],
+                    [
+                        'type' => 'select',
+                        'name' => 'TestElement_status',
+                        'label' => null,
+                        'class' => 'form-control input-sm not-answered',
+                        'options' => [
+                            '' => '',
+                            '88_refused' => '88 Refused',
+                            '99_do_not_know' => '99 Do not know',
+                            'not_answered' => 'Not Answered'
+                        ],
+                        'html' => $this->_instrument->form
+                            ->renderElement($groupEl['elements'][1])
+                    ]
+                ],
+                'label' => 'Test Description',
+                'delimiter' => ' ',
+                'options' => false,
+                'numeric' => [0],
+                'html' => $this->_instrument->form->groupHTML($groupEl)
+            ]
+        );
+        $rule = $this->_instrument->XINRules['TestElement'];
+        $this->assertEquals(
+            $rule,
+            [
+                'message' => 'This field is required',
+                'group' => 'TestElement_group',
+                'rules' => ['TestElement_status{@}=={@}']
+            ]
+        );
     }
 
     /**
