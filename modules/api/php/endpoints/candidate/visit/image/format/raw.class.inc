@@ -115,6 +115,14 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $mincpath = \NDB_Factory::singleton()->config()
             ->getSetting('MINCToolsPath') ?? '';
 
+        if (!$mincpath) {
+            error_log(
+                'Invalid MINCToolsPath configuration setting:' .
+                'MINCToolsPath is null'
+            );
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
+
         $minctooldir = new \SPLFileInfo($mincpath);
         if (!$minctooldir->isDir() || !$minctooldir->isReadable()) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
