@@ -142,7 +142,6 @@ class ViewDataTabPane extends Component {
     this.getOrCreateDownloadLink = this.getOrCreateDownloadLink.bind(this);
     this.downloadData = this.downloadData.bind(this);
     this.handleDataDisplay = this.handleDataDisplay.bind(this);
-    this.setDataForCSV = this.setDataForCSV.bind(this);
     this.downloadDataCSV = this.downloadDataCSV.bind(this);
   }
 
@@ -313,36 +312,8 @@ class ViewDataTabPane extends Component {
     }
   }
 
-  setDataForCSV(csvData) {
-    this.setState({csvData: csvData});
-  }
-
   downloadDataCSV() {
-
     document.querySelector('.downloadCSV').click();
-
-    // const csvworker = new Worker(loris.BaseURL + '/dqt/js/workers/savecsv.js');
-    //
-    // csvworker.addEventListener('message', (e) => {
-    //   if (e.data.cmd === 'SaveCSV') {
-    //     const dataDate = new Date().toISOString();
-    //     const dataURL = window.URL.createObjectURL(e.data.message);
-    //     const link = document.createElement('a');
-    //     link.download = 'data-' + dataDate + '.csv';
-    //     link.type = 'text/csv';
-    //     link.href = dataURL;
-    //     document.body.appendChild(link);
-    //     $(link)[0].click();
-    //     document.body.removeChild(link);
-    //   }
-    // });
-    //
-    // csvworker.postMessage({
-    //   cmd: 'SaveFile',
-    //   data: this.state.csvData,
-    //   headers: this.props.Headers,
-    //   identifiers: this.props.RowNameMap,
-    // });
   }
 
   render() {
@@ -438,8 +409,6 @@ class ViewDataTabPane extends Component {
         RowNumLabel='Identifiers'
         Data={this.props.Data}
         RowNameMap={this.props.RowInfo}
-        displayCSV={false}
-        getDataCSV={this.setDataForCSV}
       />
     ) : (
       <>
