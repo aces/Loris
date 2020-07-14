@@ -253,7 +253,7 @@ class ViewDataTabPane extends Component {
     }
 
     if (FileList.length < 100 || confirm('You are trying to download more than 100 files. This may be slow or crash your web browser.\n\nYou may want to consider splitting your query into more, smaller queries by defining more restrictive filters.\n\nPress OK to continue with attempting to download current files or cancel to abort.')) {
-      saveworker = new Worker(loris.BaseURL + '/dataquery/js/workers/savezip.js');
+      saveworker = new Worker(loris.BaseURL + '/dqt/js/workers/savezip.js');
       saveworker.addEventListener('message', (e) => {
         let link,
           progress,

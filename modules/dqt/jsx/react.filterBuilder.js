@@ -82,7 +82,7 @@ class FilterRule extends Component {
     let rule = this.props.rule;
     if (event.target.value) {
       rule.instrument = event.target.value;
-      $.get(loris.BaseURL + '/dataquery/ajax/datadictionary.php', {category: rule.instrument}, (data) => {
+      $.get(loris.BaseURL + '/dqt/ajax/datadictionary.php', {category: rule.instrument}, (data) => {
         rule.fields = data;
         this.props.updateRule(this.props.index, rule);
       }, 'json');
@@ -167,7 +167,7 @@ class FilterRule extends Component {
         this.props.updateSessions(this.props.index, rule);
       };
       let ajaxRetrieve = (script) => {
-        $.get(loris.BaseURL + '/dataquery/ajax/' + script,
+        $.get(loris.BaseURL + '/dqt/ajax/' + script,
           {
             category: rule.instrument,
             field: rule.field,

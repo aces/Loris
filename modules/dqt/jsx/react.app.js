@@ -118,7 +118,7 @@ class DataQueryApp extends Component {
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
         curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
+          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
             data: {
               DocID: this.state.queryIDs[key][i]
             },
@@ -177,7 +177,7 @@ class DataQueryApp extends Component {
 
     let filter = this.saveFilterGroup(this.state.filter);
 
-    $.post(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
+    $.post(loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
       Fields: this.state.selectedFields,
       Filters: filter,
       QueryName: name,
@@ -194,7 +194,7 @@ class DataQueryApp extends Component {
           queryIDs.User.push(id);
         }
       }
-      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
+      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID=' + id,
         (value) => {
           let queries = this.state.savedQueries;
 
@@ -241,7 +241,7 @@ class DataQueryApp extends Component {
     // Get given fields of the instrument for the rule.
     // This call is made synchronously
     $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
+      url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
       success: (data) => {
         rule.fields = data;
       },
@@ -285,7 +285,7 @@ class DataQueryApp extends Component {
         break;
     }
     $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
+      url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script,
       success: (data) => {
         let i,
           allSessions = {},
@@ -444,7 +444,7 @@ class DataQueryApp extends Component {
     });
     for (let i = 0; i < fieldsList.length; i++) {
       $.ajax({
-        url: loris.BaseURL + '/dataquery/ajax/datadictionary.php',
+        url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
         success: (data) => {
           if (data[0].value.IsFile) {
             let key = data[0].key[0] + ',' + data[0].key[1];
@@ -642,7 +642,7 @@ class DataQueryApp extends Component {
         sectionedSessions = JSON.stringify(sessionInfo);
         $.ajax({
           type: 'POST',
-          url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php',
+          url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=retrieveCategoryDocs.php',
           data: {
             DocType: category,
             Sessions: sectionedSessions
