@@ -318,27 +318,31 @@ class ViewDataTabPane extends Component {
   }
 
   downloadDataCSV() {
-    const csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
-    csvworker.addEventListener('message', (e) => {
-      if (e.data.cmd === 'SaveCSV') {
-        const dataDate = new Date().toISOString();
-        const dataURL = window.URL.createObjectURL(e.data.message);
-        const link = document.createElement('a');
-        link.download = 'data-' + dataDate + '.csv';
-        link.type = 'text/csv';
-        link.href = dataURL;
-        document.body.appendChild(link);
-        $(link)[0].click();
-        document.body.removeChild(link);
-      }
-    });
-    csvworker.postMessage({
-      cmd: 'SaveFile',
-      data: this.state.csvData,
-      headers: this.props.Headers,
-      identifiers: this.props.RowNameMap,
-    });
+    document.querySelector('.downloadCSV').click();
+
+    // const csvworker = new Worker(loris.BaseURL + '/dqt/js/workers/savecsv.js');
+    //
+    // csvworker.addEventListener('message', (e) => {
+    //   if (e.data.cmd === 'SaveCSV') {
+    //     const dataDate = new Date().toISOString();
+    //     const dataURL = window.URL.createObjectURL(e.data.message);
+    //     const link = document.createElement('a');
+    //     link.download = 'data-' + dataDate + '.csv';
+    //     link.type = 'text/csv';
+    //     link.href = dataURL;
+    //     document.body.appendChild(link);
+    //     $(link)[0].click();
+    //     document.body.removeChild(link);
+    //   }
+    // });
+    //
+    // csvworker.postMessage({
+    //   cmd: 'SaveFile',
+    //   data: this.state.csvData,
+    //   headers: this.props.Headers,
+    //   identifiers: this.props.RowNameMap,
+    // });
   }
 
   render() {

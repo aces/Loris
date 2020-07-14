@@ -358,3 +358,11 @@ h4 {
   flex-flow: row nowrap;
   justify-content: center;
 }
+
+/*
+ * Hide (default) Download Table as CSV
+ * from StaticDataTable.
+ */
+.downloadCSV {
+    display: none;
+}
