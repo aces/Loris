@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\dataquery;
+namespace LORIS\dqt;
 
 /**
  * Data Querying Module
@@ -23,7 +23,7 @@ namespace LORIS\dataquery;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Dataquery extends \NDB_Form
+class Dqt extends \NDB_Form
 {
     /**
      * Check user access permission
@@ -171,13 +171,13 @@ class Dataquery extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/dataquery/js/arrayintersect.js",
-                $baseURL . "/dataquery/js/react.fieldselector.js",
-                $baseURL . "/dataquery/js/react.filterBuilder.js",
-                $baseURL . "/dataquery/js/react.tabs.js",
-                $baseURL . "/dataquery/js/react.sidebar.js",
-                $baseURL . "/dataquery/js/react.app.js",
-                $baseURL . "/dataquery/js/jstat.js",
+                $baseURL . "/dqt/js/arrayintersect.js",
+                $baseURL . "/dqt/js/react.fieldselector.js",
+                $baseURL . "/dqt/js/react.filterBuilder.js",
+                $baseURL . "/dqt/js/react.tabs.js",
+                $baseURL . "/dqt/js/react.sidebar.js",
+                $baseURL . "/dqt/js/react.app.js",
+                $baseURL . "/dqt/js/jstat.js",
                 $baseURL . "/js/components/StaticDataTable.js",
                 $baseURL . "/js/flot/jquery.flot.min.js",
                 $baseURL . '/js/components/PaginationLinks.js',
@@ -201,7 +201,7 @@ class Dataquery extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/dataquery/css/dataquery.css",
+                $baseURL . "/dqt/css/dataquery.css",
             ]
         );
     }
