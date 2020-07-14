@@ -157,6 +157,11 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
                 "Error 400: PUT candidates/$candid/$visit"
             );
         }
+        if ($response->getStatusCode() === 204) {
+            $this->markTestSkipped(
+                "Candidate $candid already exist"
+            );
+        }
         // Verify the status code
         $this->assertEquals(201, $response->getStatusCode());
         // Verify the endpoint has a body
