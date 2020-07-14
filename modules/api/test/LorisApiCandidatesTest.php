@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ .
-    "/../../../test/integrationtests/LorisApiAuthenticatedTest.php";
+    "/LorisApiAuthenticatedTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
