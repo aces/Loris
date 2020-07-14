@@ -44,7 +44,7 @@ use_directory_urls: False
 
 theme:
     name: readthedocs
-    custom_dir: 'docs/themes/loris_theme/'
+    custom_dir: 'themes/loris_theme/'
     navigation_depth: 4
 
 plugins:
