@@ -16,7 +16,7 @@
  * @package  Loris
  * @author   Various <example@example.com>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 
 set_include_path(
