@@ -69,6 +69,7 @@ class FilterableDataTable extends Component {
         }
 
         if (field.filter.type !== 'select') {
+            filters[filtername] = filterval;
             return;
         }
 
