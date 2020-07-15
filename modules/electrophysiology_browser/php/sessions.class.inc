@@ -50,7 +50,7 @@ class Sessions extends \NDB_Page
         return (($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasCenter($this->timepoint->getCenterID())
                 && $user->hasPermission('electrophysiology_browser_view_site'))
-            ) && $user->hasProject($this->candidate->getProjectID()));
+            ) && $user->hasProject($this->timepoint->getProject()->getId()));
     }
 
     /**
@@ -85,9 +85,6 @@ class Sessions extends \NDB_Page
         } catch(\LorisException $e) {
             throw new \NotFound("Session not found");
         }
-
-        $candID          = $this->timepoint->getCandID();
-        $this->candidate = \Candidate::singleton($candID);
 
         parent::loadResources($user, $request);
     }
