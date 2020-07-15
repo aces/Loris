@@ -315,7 +315,7 @@ class RequestAccount extends \NDB_Form
                     'UserID'    => $from,
                     'Real_name' => $fullname,
                     'Email'     => $from,
-                ],
+                ]
             );
         }
     }
