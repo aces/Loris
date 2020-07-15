@@ -73,10 +73,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * String to separate the group elements
-     *
-     * @access public
      */
-    public $GUIDelimiter = "</td>\n<td>";
+    var $_GUIDelimiter = "</td>\n<td>";
 
     /**
      * Commonly used level of indentation
