@@ -44,18 +44,12 @@ declare -a tools_list=(
     'populate_visit_windows.php'
 )
 
-# And on all PHP files in this array
-declare -a test_list=(
-    'integrationtests/LorisIntegrationTest.class.inc'
-    'integrationtests/LorisIntegrationTestWithCandidate.class.inc'
-)
-
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
     php/ \
     htdocs/ \
     modules/ \
+    "test/integrationtests/" \
     "${tools_list[@]/#/tools/}" \
-    "${test_list[@]/#/test/}" \
     || exit $?;
 
 # Ensure strict typing is used in these files
