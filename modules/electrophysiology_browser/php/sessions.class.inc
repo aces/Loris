@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * This class features the code for the menu portion of the LORIS
  * electrophysiology browser module.
@@ -37,6 +36,7 @@ class Sessions extends \NDB_Page
     public $skipTemplate = true; // stops from looking for a smarty template
     protected $timepoint;
     protected $sessionID;
+    protected $candidate;
 
     /**
      * Determine whether the user has permission to view this page
@@ -47,11 +47,46 @@ class Sessions extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('electrophysiology_browser_view_allsites')
+        return (($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasCenter($this->timepoint->getCenterID())
-                && $user->hasPermission('electrophysiology_browser_view_site')
-            )
-        );
+                && $user->hasPermission('electrophysiology_browser_view_site'))
+            ) && $user->hasProject($this->timepoint->getProject()->getId()));
+    }
+
+    /**
+     * Load the required variables in order to check that the  user
+     * has access to the session.
+     *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @throws \NotFound If the session id is non-numerical
+     * @throws \LorisException  If the session is not found
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+
+        $path    = $request->getUri()->getPath();
+        $matches = [];
+
+        if (preg_match('#/sessions/(\d+)#', $path, $matches) !== 1) {
+            throw new \NotFound("Invalid session");
+        }
+        $session_id = intval($matches[1]);
+
+        try {
+            $this->timepoint = \NDB_Factory::singleton()->timepoint(
+                $session_id
+            );
+            $this->sessionID = $session_id;
+        } catch(\LorisException $e) {
+            throw new \NotFound("Session not found");
+        }
+
+        parent::loadResources($user, $request);
     }
 
     /**
@@ -63,34 +98,8 @@ class Sessions extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $path       = $request->getUri()->getPath();
         $parameters = $request->getQueryParams();
         $user       = $request->getAttribute('user');
-
-        $matches = [];
-
-        // check that the session ID is of type integer
-        if (preg_match('#/sessions/(\d+)#', $path, $matches) !== 1) {
-            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-                ->process(
-                    $request,
-                    new \LORIS\Http\StringStream("Invalid session")
-                )->withStatus(404);
-        }
-
-        $session_id = intval($matches[1]);
-        try {
-            $this->timepoint = \NDB_Factory::singleton()->timepoint(
-                $session_id
-            );
-            $this->sessionID = $session_id;
-        } catch(\LorisException $e) {
-            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-                ->process(
-                    $request,
-                    new \LORIS\Http\StringStream("Session not found")
-                )->withStatus(404);
-        }
 
         if (!$this->_hasAccess($user)) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))

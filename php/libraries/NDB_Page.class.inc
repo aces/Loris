@@ -710,6 +710,20 @@ class NDB_Page implements RequestHandlerInterface
     }
 
     /**
+     * This function can be overridden in a module's page to load the necessary
+     * resources to check the permissions of a user.
+     *
+     * @param User                   $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+    }
+
+    /**
      * Displays the form
      *
      * @return string of the content to be inserted into the template
