@@ -77,8 +77,14 @@ class Sessions extends \NDB_Page
         }
         $session_id = intval($matches[1]);
 
-        $this->timepoint = \NDB_Factory::singleton()->timepoint($session_id);
-        $this->sessionID = $session_id;
+        try {
+            $this->timepoint = \NDB_Factory::singleton()->timepoint(
+                $session_id
+            );
+            $this->sessionID = $session_id;
+        } catch(\LorisException $e) {
+            throw new \NotFound("Session not found");
+        }
 
         $candID          = $this->timepoint->getCandID();
         $this->candidate = \Candidate::singleton($candID);
