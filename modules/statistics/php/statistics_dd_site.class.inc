@@ -37,12 +37,10 @@ class Statistics_DD_Site extends statistics_site
     function _hasAccess(\User $user) : bool
     {
         // TODO (#6742): Create a permission specific to statistics
-        $hasAccessToAllProfiles = $user->hasAllPermissions(
-            array(
-                'access_all_profiles',
-                'data_entry',
-            )
-        );
+        $hasAccessToAllProfiles = $user->hasPermission('access_all_profiles');
+        if ($hasAccessToAllProfiles) {
+            return true;
+        }
 
         $hasCenterPermission = false;
 
@@ -91,20 +89,12 @@ class Statistics_DD_Site extends statistics_site
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
-            $list_of_permitted_sites = (array) null;
-            $currentUser = \User::singleton();
+            $list_of_permitted_sites = [];
+            $currentUser = \NDB_Factory::singleton()->user();
             if ($currentUser->hasPermission('access_all_profiles')) {
                 $list_of_permitted_sites = array_keys(\Utility::getSiteList());
             } else {
-                foreach ($currentUser->getCenterIDs() as $centerID) {
-                    if ($currentUser->hasCenterPermission(
-                        'data_entry',
-                        intval($centerID)
-                    )
-                    ) {
-                        array_push($list_of_permitted_sites, $centerID);
-                    }
-                }
+                $list_of_permitted_sites = $currentUser->getCenterIDs();
             }
             $params    = array();
             $centerIDs = array();
@@ -178,13 +168,13 @@ class Statistics_DD_Site extends statistics_site
             "SELECT count(s.CandID)  FROM session s, candidate c,
                 flag f, $safe_instrument i
              WHERE
-                s.ID=f.SessionID AND f.CommentID=i.CommentID 
-                AND s.CandID=c.CandID  
-                AND s.Active='Y' 
+                s.ID=f.SessionID AND f.CommentID=i.CommentID
+                AND s.CandID=c.CandID
+                AND s.Active='Y'
                 AND s.CenterID <> '1'
                 AND s.Current_stage <> 'Recycling Bin'
                 $this->query_criteria
-                AND f.Data_entry='Complete' AND f.Administration='All' 
+                AND f.Data_entry='Complete' AND f.Administration='All'
                 AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID",
             $this->query_vars
         );
@@ -205,10 +195,10 @@ class Statistics_DD_Site extends statistics_site
         $safe_instrument = $DB->escape($instrument);
         $result          = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,
-                lower(s.Visit_label) as Visit_label 
+                lower(s.Visit_label) as Visit_label
                 FROM session s, candidate c, flag f, $safe_instrument i
-                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND 
-                s.CandID=c.CandID  AND s.Active='Y' 
+                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND
+                s.CandID=c.CandID  AND s.Active='Y'
                 AND s.CenterID <> '1'
                 $this->query_criteria
                 AND s.Current_stage <> 'Recycling Bin'
