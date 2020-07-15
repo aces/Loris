@@ -324,6 +324,11 @@ class Stats_Behavioural extends \NDB_Form
             } else {
                 $c[$vl]['total'] = $value;
             }
+            if (isset($c[$vl]['total'])) {
+                $c[$vl]['total'] += intval($row['val']);
+            } else {
+                $c[$vl]['total'] = intval($row['val']);
+            }
             if (isset($c['all']['total'])) {
                 $c['all']['total'] += $value;
             } else {
