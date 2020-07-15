@@ -258,7 +258,7 @@ function editFamilyInfoFields(\Database $db)
                 $db->update('family', $updateValues, ['ID' => $siblingID]);
             }
         } else {
-            $familyID    = $db->pselectOne(
+            $familyID    = $db->pselectOneInt(
                 "SELECT max(FamilyID) from family",
                 []
             );

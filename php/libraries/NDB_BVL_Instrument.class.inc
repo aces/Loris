@@ -1036,9 +1036,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Return the full, human readable name for the
      * current instrument.
      *
-     * @return string the full name of the instrument
+     * @return ?string the full name of the instrument
      */
-    abstract public function getFullName(): string;
+    abstract public function getFullName(): ?string;
 
     /**
      * Gets the current object instance CommentID
@@ -1455,17 +1455,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getSessionID(): int
     {
         $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $fieldValue = \Database::singleton()->pselectOne(
+        $fieldValue = \Database::singleton()->pselectOneInt(
             $query,
             [
                 'CID' => $this->getCommentID(),
             ]
         );
 
-        if (!empty($fieldValue)) {
-            return $fieldValue;
-        }
-        return -1;
+        return is_int($fieldValue) ? $fieldValue : -1;
     }
 
     /**
@@ -2188,9 +2185,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Get the candidates DOB.
      *
-     * @return string The candidate's DOB.
+     * @return ?string The candidate's DOB.
      */
-    function getDoB()
+    function getDoB(): ?string
     {
         $db        = \Database::singleton();
         $CommentID = $this->getCommentID();

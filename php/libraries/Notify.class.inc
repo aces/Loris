@@ -64,10 +64,13 @@ class Notify
      */
     static function getTypeID(string $type): int
     {
-        $typeID = \Database::singleton()->pselectOne(
+        $result = \NDB_Factory::singleton()->database()->pselectOneInt(
             "SELECT NotificationTypeID FROM notification_types WHERE Type=:TP",
             ['TP' => $type]
         );
-        return $typeID;
+        if (is_null($result)) {
+            throw new \NotFound();
+        }
+        return $result;
     }
 }

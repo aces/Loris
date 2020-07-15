@@ -835,6 +835,8 @@ class Database
      * @return array<string,string>|null Associative array of form
      *                              ColumnName => Value for each column in the
      *                              first row of the query, or null.
+     *
+     * @throws \DomainException When the query returns multiple rows.
      */
     function pselectRow(string $query, array $params): ?array
     {
@@ -966,25 +968,50 @@ class Database
     /**
      * Runs a query as a prepared statement and returns the value of the first
      * column of the first row.
-     *
-     * FIXME This function does not have a return type declaration because
-     * the function pselectRow will sometimes return a string and sometimes
-     * return an array. This behaviour should be made consistent (i.e. perhaps
-     * returning an array of a single element) so that we can properly enforce
-     * types.
+     * Regardless of the type in the database, this function will return that
+     * value as a string. The calling code is responsible for doing the relevant
+     * validation with respect to the type of the data returned.
      *
      * @param string               $query  The SQL statement to run
      * @param array<string,string> $params Values to use for binding in the
      *                                     prepared statement
      *
-     * @return mixed The value returned by the query: array, string, or false.
+     * @return ?string A single cell from the database.
      */
-    function pselectOne(string $query, array $params)
+    function pselectOne(string $query, array $params): ?string
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
             $result = array_values($result)[0];
         }
+        return $result;
+    }
+
+    /**
+     * Helper function used to select a single cell from the database and convert
+     * it to an integer.
+     *
+     * @param string   $query  The SQL statement to run
+     * @param string[] $params Values to use for binding in the prepared statement
+     *
+     * @return ?int A cell from the database converted to an integer value. If
+     * the query returns a value that cannot be validated as an integer, the
+     * function returns null. The calling code is responsible for handling the
+     * null case appropriately.
+     *
+     * @throws \DomainException When the cell returned by the query cannot be
+     *                          validated as an integer.
+     */
+    function pselectOneInt(string $query, array $params): ?int
+    {
+        $result = filter_var(
+            $this->pselectOne($query, $params),
+            FILTER_VALIDATE_INT
+        );
+        if ($result === false) {
+            return null;
+        }
+
         return $result;
     }
 

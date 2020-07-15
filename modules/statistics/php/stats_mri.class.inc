@@ -423,7 +423,7 @@ class Stats_MRI extends \NDB_Form
             $scan_params = array_merge(['scan' => $scan], $this->params);
 
             //INSERT COUNT TOTAL
-            $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOne(
+            $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOneInt(
                 "SELECT COUNT(*)
                 FROM files fi
                     JOIN session s ON (fi.SessionID=s.ID)
@@ -470,7 +470,7 @@ class Stats_MRI extends \NDB_Form
             }
 
             //QC STATUS: PASSED TOTAL
-            $Scan_data_results[$key]['qc_pass_count']['total'] = $DB->pselectOne(
+            $Scan_data_results[$key]['qc_pass_count']['total'] = $DB->pselectOneInt(
                 "SELECT COUNT(*)
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
@@ -522,7 +522,7 @@ class Stats_MRI extends \NDB_Form
             }
 
             //QC STATUS: FAILED TOTAL
-            $Scan_data_results[$key]['qc_fail_count']['total'] = $DB->pselectOne(
+            $Scan_data_results[$key]['qc_fail_count']['total'] = $DB->pselectOneInt(
                 "SELECT COUNT(*)
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
