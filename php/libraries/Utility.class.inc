@@ -178,7 +178,8 @@ class Utility
         return $DB->pselectColWithIndexKey(
             "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
             implode(', ', $params) . ")",
-            $values
+            $values,
+            'ID'
         );
     }
 
