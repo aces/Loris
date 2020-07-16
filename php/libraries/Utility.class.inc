@@ -175,18 +175,11 @@ class Utility
             $values[$para] = $siteID;
         }
 
-        $sites = $DB->pselect(
+        return $DB->pselectColWithIndexKey(
             "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
             implode(', ', $params) . ")",
             $values
         );
-
-        $list = [];
-        foreach ($sites as $site) {
-            $list[$site['ID']] = $site['Name'];
-        }
-
-        return $list;
     }
 
     /**
