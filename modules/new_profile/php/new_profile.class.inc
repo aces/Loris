@@ -245,6 +245,9 @@ class New_Profile extends \NDB_Form
                 $errors['edcDate'] = 'Expected Date of Confinement is not a '
                     . 'valid date.';
             }
+        } else if (empty($values['dobDate'])) {
+            $errors['dobDate'] = "Date of Birth cannot be empty 
+            if Expected Date isn't configured.";
         }
 
         // Validate sex fields
