@@ -179,7 +179,7 @@ class Utility
             "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
             implode(', ', $params) . ")",
             $values,
-            'CenterID'
+            'ID'
         );
     }
 
