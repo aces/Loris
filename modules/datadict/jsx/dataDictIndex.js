@@ -25,9 +25,11 @@ class DataDictIndex extends Component {
     super(props);
 
     this.state = {
-      data: {},
+      data: [],
       error: false,
       isLoaded: false,
+      isLoading: false,
+      fieldOptions: {'sourceFrom': {'abc': 'def'}},
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -38,8 +40,18 @@ class DataDictIndex extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    this.fetchData()
-      .then( () => this.setState({isLoaded: true}));
+      // Load the field options. This comes from a separate request than the
+      // table data stream. Once the fieldOptions are loaded, we set isLoaded
+      // to true so that the page is displayed with the data that's been
+      // retrieved.
+      fetch(this.props.fieldsURL, {credentials: 'same-origin'})
+          .then((resp) => resp.json())
+          .then((data) => this.setState({fieldOptions: data, isLoaded: true}))
+        .catch((error) => {
+            this.setState({error: true});
+            console.error(error);
+        });
+    this.fetchData();
   }
 
   /**
@@ -47,14 +59,72 @@ class DataDictIndex extends Component {
    *
    * @return {object}
    */
-  fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
-        .then((resp) => resp.json())
-        .then((data) => this.setState({data}))
-        .catch((error) => {
-            this.setState({error: true});
-            console.error(error);
-        });
+    fetchData() {
+        const processLines = async (data) => {
+            const utf8Decoder = new TextDecoder('utf-8');
+            let row = [];
+            let colStart = -1;
+            let rowStart = 0;
+            for (let i = 0; i < data.length; i++) {
+                switch (data[i]) {
+                    case 0x1e: // end of column
+                        const rowdata = data.slice(colStart+1, i);
+                        const encoded = utf8Decoder.decode(rowdata);
+                        colStart = i;
+                        row.push(encoded);
+                        continue;
+                    case 0x1f: // end of row
+                        this.state.data.push(row);
+                        rowStart = i+1;
+                        colStart = i;
+                        row = [];
+                        continue;
+                    case 0x04: // end of stream
+                        // Force re-render
+                        this.state.data.push(row);
+                        return {remainder: [], eos: true};
+                }
+            }
+            return {remainder: data.slice(rowStart), eos: false};
+        };
+
+        return (async () => {
+            const response = await fetch(
+                this.props.dataURL,
+                {credentials: 'same-origin'},
+            );
+            const reader = response.body.getReader();
+
+            let remainder = [];
+            let doneLoop = false;
+            while (!doneLoop) {
+                await reader.read().then(({done, value}) => {
+                        let combined;
+                        if (remainder.length == 0) {
+                            combined = value;
+                        } else {
+                            combined = new Uint8Array(
+                                value.length + remainder.length
+                            );
+                            for (let i = 0; i < remainder.length; i++) {
+                                combined[i] = remainder[i];
+                            }
+                            for (let i = 0; i < value.length; i++) {
+                                combined[i+remainder.length] = value[i];
+                            }
+                        }
+                        return processLines(combined);
+                    }).then(({remainder: rem, eos}) => {
+                        this.setState({isLoading: !eos, data: this.state.data});
+                        doneLoop = eos;
+                        remainder = rem;
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        doneLoop = true;
+                    });
+            };
+    })();
   }
 
   /**
@@ -107,7 +177,7 @@ class DataDictIndex extends Component {
       return <Loader/>;
     }
 
-    let options = this.state.data.fieldOptions;
+    const options = this.state.fieldOptions;
     let fields = [
         {
             label: 'Source From',
@@ -159,8 +229,9 @@ class DataDictIndex extends Component {
     return (
         <FilterableDataTable
            name="datadict"
-           data={this.state.data.Data}
+           data={this.state.data}
            fields={fields}
+           loading={this.state.isLoading}
            getFormattedCell={this.formatColumn}
         />
     );
@@ -174,7 +245,8 @@ DataDictIndex.propTypes = {
 window.addEventListener('load', () => {
   ReactDOM.render(
       <DataDictIndex
-        dataURL={`${loris.BaseURL}/datadict/?format=json`}
+        dataURL={`${loris.BaseURL}/datadict/?format=binary`}
+        fieldsURL={`${loris.BaseURL}/datadict/fields`}
       />,
       document.getElementById('lorisworkspace')
   );
