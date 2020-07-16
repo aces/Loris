@@ -1941,7 +1941,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $group,
             $name . "_date_group",
             $label,
-            $this->GUIDelimiter,
+            $this->_GUIDelimiter,
             false
         );
         unset($group);
