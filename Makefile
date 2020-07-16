@@ -25,7 +25,6 @@ clean:
 
 # Perform static analysis checks
 checkstatic: phpdev
-	npm run lint:shell
 	npm run lint:php
 	vendor/bin/phan
 	npm run lint:javascript
