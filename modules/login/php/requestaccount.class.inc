@@ -182,7 +182,7 @@ class RequestAccount extends \NDB_Form
         $project  = $_REQUEST["project"];
         $fullname = $name." ".$lastname;
 
-        $vals = array(
+        $vals = [ 
             'UserID'               => $from,
             'Real_name'            => $fullname,
             'First_name'           => $name,
@@ -190,7 +190,7 @@ class RequestAccount extends \NDB_Form
             'Pending_approval'     => 'Y',
             'Email'                => $from,
             'account_request_date' => date('Y-m-d'),
-        );
+        ];
 
         // check email address' uniqueness
         $result = $DB->pselectOne(
