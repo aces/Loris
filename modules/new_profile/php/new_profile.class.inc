@@ -208,8 +208,7 @@ class New_Profile extends \NDB_Form
         $db           = $factory->database();
 
         // Validate DOB fields
-        if (isset($values['dobDate'])
-            && isset($values['dobDateConfirm'])
+        if (isset($values['dobDate'], $values['dobDateConfirm'])
             && $values['dobDate'] != $values['dobDateConfirm']
         ) {
             $errors['dobDate'] = 'Date of Birth fields must match.';
