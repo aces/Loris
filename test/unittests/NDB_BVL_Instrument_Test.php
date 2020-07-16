@@ -1089,7 +1089,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->assertEquals('2005-01-01', $this->_instrument->getDoD());
+        $this->assertEquals('2016-01-01', $this->_instrument->getDoD());
     }
 
     /**
@@ -1107,6 +1107,462 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
+     * Test that loadInstanceData returns data from the correct database
+     *
+     * @covers NDB_BVL_Instrument::loadInstanceData
+     * @return void
+     */
+    function testLoadInstanceData()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'flag';
+        $defaults = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $defaults['Testdate'] = '2020-01-01 00:00:00';
+        $this->assertEquals(
+            $defaults,
+            [
+                'ID' => '1000000',
+                'SessionID' => '123',
+                'Test_name' => 'Test_name1',
+                'CommentID' => 'commentID1',
+                'Data_entry' => null,
+                'Administration' => null,
+                'Validity' => null,
+                'Exclusion' => null,
+                'Flag_status' => null,
+                'UserID' => '456',
+                'Testdate' => '2020-01-01 00:00:00',
+                'Data' => null
+            ]
+        );
+    }
+
+    /**
+     * Test that getFieldValue returns the correct data from the table
+     *
+     * @covers NDB_BVL_Instrument::getFieldValue
+     * @return void
+     */
+    function testGetFieldValue()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->assertEquals(
+            'Test Examiner',
+            $this->_instrument->getFieldValue('Examiner')
+        );
+    }
+
+    /**
+     * Test that getCandidateAge returns the age from DoB to the date the
+     * instrument was taken if the DoD of the candidate is after the date taken
+     *
+     * @covers NDB_BVL_Instrument::getCandidateAge
+     * @return void
+     */
+    function testGetCandidateAgeDoDAfterDateTaken()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->assertEquals(
+            ['year' => 11, 'mon' => 4, 'day' => 4],
+            $this->_instrument->getCandidateAge()
+        );
+    }
+
+    /**
+     * Test that getCandidateAge returns the age from DoB to the date taken
+     * if the DoD of the candidate is empty
+     *
+     * @covers NDB_BVL_Instrument::getCandidateAge
+     * @return void
+     */
+    function testGetCandidateAgeNoDoD()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_DB->run("UPDATE candidate SET DoD=null WHERE CandID=1");
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->assertEquals(
+            ['year' => 11, 'mon' => 4, 'day' => 4],
+            $this->_instrument->getCandidateAge()
+        );
+    }
+
+    /**
+     * Test that getCandidateAge returns the age from DoB to DoD if the
+     * DoD of the candidate is before the date taken of the instrument
+     *
+     * @covers NDB_BVL_Instrument::getCandidateAge
+     * @return void
+     */
+    function testGetCandidateAgeWithDoD()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_DB->run("UPDATE candidate SET DoD='2005-06-02' WHERE CandID=1");
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->assertEquals(
+            ['year' => 6, 'mon' => 5, 'day' => 1],
+            $this->_instrument->getCandidateAge()
+        );
+    }
+
+    /**
+     * Test that getCandidateAge returns the age from DoB to the given date
+     *
+     * @covers NDB_BVL_Instrument::getCandidateAge
+     * @return void
+     */
+    function testGetCandidateAgeWithDateGiven()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->assertEquals(
+            ['year' => 4, 'mon' => 8, 'day' => 3],
+            $this->_instrument->getCandidateAge('2003-09-04')
+        );
+    }
+
+    /**
+     * Test that _setDefaultsArray changes the candidate age and sets
+     * the instrument's dateTimeFields value
+     *
+     * @covers NDB_BVL_Instrument::_setDefaultsArray
+     * @return void
+     */
+    function testSetDefaultsArray()
+    {
+        $defaults = ['Test' => 'Test1',
+                     'Window_Difference' => 1,
+                     'Candidate_Age' => '2020-01-01'
+        ];
+        $result = $this->_instrument->_setDefaultsArray($defaults);
+        $defaults['Candidate_Age'] = '2020-01-01 (Age out of range)';
+        $this->assertEquals($defaults, $result);
+        $this->assertEquals(["Date_taken"], $this->_instrument->dateTimeFields);
+    }
+
+    /**
+     * Test that _saveCandidateAge calculates the candidate age and
+     * window difference values and saves them to the database
+     *
+     * @covers NDB_BVL_Instrument::_saveCandidateAge
+     * @return void
+     */
+    function testSaveCandidateAge()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->testName = 'Test Name1';
+        $values = ['Date_taken' => '2005-06-06'];
+        $this->_instrument->_saveCandidateAge($values);
+        $this->assertEquals(
+            $values,
+            [
+                'Date_taken' => '2005-06-06',
+                'Candidate_Age' => 77.2,
+                'Window_Difference' => 0
+            ]
+        );
+    }
+
+    /**
+     * Test that _nullStatus sets the value of a field to empty if its
+     * correlated status field has a value set
+     *
+     * @covers NDB_BVL_Instrument::_nullStatus
+     * @return void
+     */
+    function testNullStatus()
+    {
+        $values = ['Test1' => 'field1',
+                   'Test2' => 'field2',
+                   'Test3' => 'field3',
+                   'Test1_status' => 'status1',
+                   'Test2_status' => 'status2',
+                   'Test3_status' => ''
+        ];
+        $this->_instrument->_nullStatus($values);
+        $this->assertEquals(
+            $values,
+            [
+                'Test1' => '',
+                'Test2' => '',
+                'Test3' => 'field3',
+                'Test1_status' => 'status1',
+                'Test2_status' => 'status2',
+                'Test3_status' => ''
+            ]
+        );
+    }
+
+    /**
+     * Test that _saveValues correctly preprocesses the given array and
+     * then updates the instrument table in the database accordingly
+     *
+     * @covers NDB_BVL_Instrument::_saveValues
+     * @covers NDB_BVL_Instrument::_save
+     * @return void
+     */
+    function testSaveValueAndSave()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->testName = 'TestName1';
+        $this->_instrument->formType = "XIN";
+        $values = ['Date_taken' => '2005-06-06',
+                   'arthritis_age' => 2,
+                   'arthritis_age_status' => 'status'
+        ];
+        $this->_instrument->_saveValues($values);
+        $dbData = $this->_DB->pselect("SELECT * FROM medical_history", []);
+        $this->assertEquals('77.2', $dbData[0]['Candidate_Age']);
+        $this->assertEquals('0', $dbData[0]['Window_Difference']);
+        $this->assertEquals(null, $dbData[0]['arthritis_age']);
+        $this->assertEquals('', $dbData[0]['arthritis_age_status']);
+    }
+
+    /**
+     * Test that freeze correctly freezes the form related to the instrument
+     *
+     * @covers NDB_BVL_Instrument::freeze
+     * @return void
+     */
+    function testFreeze()
+    {
+        $this->_instrument->freeze();
+        $this->assertTrue($this->_instrument->form->frozen);
+    }
+
+    /**
+     * Test that getDateOfAdministration gets the Date_taken
+     * from the instrument table
+     *
+     * @covers NDB_BVL_Instrument::getDateOfAdministration
+     * @return void
+     */
+    function testGetDateOfAdministration()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->assertEquals(
+            '2010-05-05',
+            $this->_instrument->getDateOfAdministration()
+        );
+    }
+
+    /**
+     * Test that setRequired sets the required value of the form
+     *
+     * @note This test is being skipped because there is an error in
+     * the setRequired method. Once this is resolved, this test can
+     * be implemented.
+     *
+     * @covers NDB_BVL_Instrument::setRequired
+     * @return void
+     */
+    function testSetRequired()
+    {
+        $this->markTestSkipped("Error in setRequired method");
+        $this->_instrument->setRequired("Required_el");
+        $this->assertEquals("Required_el", $this->_instrument->form->_required[]);
+    }
+
+    /**
+     * Test that XINValidate returns true if there are no errors
+     * for the given elements array
+     *
+     * @covers NDB_BVL_Instrument::XINValidate
+     * @return void
+     */
+    function testXINValidatNoErrors()
+    {
+        $elements = ['el1' => 'val1',
+                     'el2' => 'val2'
+        ];
+        $this->assertTrue($this->_instrument->XINValidate($elements));
+    }
+    /**
+     * Test that XINRegisterRule sets the values in the XINRules
+     * array for the appropriate element name
+     *
+     * @covers NDB_BVL_Instrument::XINRegisterRule
+     * @return void
+     */
+    function testXINRegisterRule()
+    {
+        $this->_instrument->XINRegisterRule(
+            'elname1', ['rule1', 'rule2'], 'message1', 'group1'
+        );
+        $this->assertEquals(
+            $this->_instrument->XINRules['elname1'],
+            [
+                'message' => 'message1',
+                'group' => 'group1',
+                'rules' => ['rule1', 'rule2']
+            ]
+        );
+    }
+
+    /**
+     * Test that the progress of data entry completion is 100 and that the status is
+     * 'Complete' if the _requiredElements array is empty
+     *
+     * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
+     * @covers NDB_BVL_Instrument::_determineDataEntryCompletionStatus
+     * @return void
+     */
+    function testDetermineDataEntryCompletionProgressNoRequiredEl()
+    {
+        $this->_instrument->_requiredElements = [];
+        $this->assertEquals(
+            100,
+            $this->_instrument->determineDataEntryCompletionProgress()
+        );
+        $this->assertEquals(
+            'Complete',
+            $this->_instrument->_determineDataEntryCompletionStatus()
+        );
+    }
+
+    /**
+     * Test that the progress of data entry completion is 0 and that the status is
+     * 'Incomplete' if the _requiredElements field and status field are not set
+     *
+     * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
+     * @covers NDB_BVL_Instrument::_determineDataEntryCompletionStatus
+     * @return void
+     */
+    function testDetermineDataEntryCompletionProgressWithUnanswered()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->_DB->run(
+            "UPDATE medical_history SET arthritis_age=null
+                WHERE CommentID='commentID1'"
+        );
+        $this->_DB->run(
+            "UPDATE medical_history SET arthritis_age_status=null
+                WHERE CommentID='commentID1'"
+        );
+        $this->_instrument->_requiredElements = ['arthritis_age'];
+        $this->assertEquals(
+            0,
+            $this->_instrument->determineDataEntryCompletionProgress()
+        );
+        $this->assertEquals(
+            'Incomplete',
+            $this->_instrument->_determineDataEntryCompletionStatus()
+        );
+    }
+
+    /**
+     * Test that the progress of data entry completion is 100 and that the status is
+     * 'Complete' if the _requiredElements field and status field have set values
+     *
+     * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
+     * @covers NDB_BVL_Instrument::_determineDataEntryCompletionStatus
+     * @return void
+     */
+    function testDetermineDataEntryCompletionProgressWithAnswered()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->_DB->run(
+            "UPDATE medical_history SET arthritis_age=60
+                WHERE CommentID='commentID1'"
+        );
+        $this->_DB->run(
+            "UPDATE medical_history SET arthritis_age_status='done'
+                WHERE CommentID='commentID1'"
+        );
+        $this->_instrument->_requiredElements = ['arthritis_age'];
+        $this->assertEquals(
+            100,
+            $this->_instrument->determineDataEntryCompletionProgress()
+        );
+        $this->assertEquals(
+            'Complete',
+            $this->_instrument->_determineDataEntryCompletionStatus()
+        );
+    }
+
+    /**
+     * Test that getDataEntryCompletionStatus returns the correct data
+     * from the database
+     *
+     * @covers NDB_BVL_Instrument::getDataEntryCompletionStatus
+     * @return void
+     */
+    function testGetDataEntryCompletionStatus()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->assertEquals(
+            'Incomplete',
+            $this->_instrument->getDataEntryCompletionStatus()
+        );
+    }
+
+    /**
+     * Test that _setDataEntryCompletionStatus correctly sets the
+     * 'Data_entry_completion_status value in the instrument table
+     *
+     * @covers NDB_BVL_Instrument::_setDataEntryCompletionStatus
+     * @return void
+     */
+    function testSetDataEntryCompletionStatus()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->_setDataEntryCompletionStatus('Complete');
+        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $this->assertEquals('Complete', $data['Data_entry_completion_status']);
+    }
+
+    /**
+     * Test that _setDataEntryCompletionStatus throws an exception if
+     * the given status is not 'Complete' or 'Incomplete'
+     *
+     * @covers NDB_BVL_Instrument::_setDataEntryCompletionStatus
+     * @return void
+     */
+    function testSetDataEntryCompletionStatusThrowsException()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->expectException('Exception');
+        $this->_instrument->_setDataEntryCompletionStatus('BadString');
+    }
+
+    /**
      * Private function to set fake table data to be tested
      *
      * @return void
@@ -1116,9 +1572,18 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS flag");
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS session");
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS candidate");
+        $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS medical_history");
+        $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS test_battery");
         $this->_DB->setFakeTableData(
             "flag",
-            [['SessionID' => '123', 'CommentID' => 'commentID1']]
+            [
+                [
+                    'SessionID' => '123',
+                    'CommentID' => 'commentID1',
+                    'Test_name' => 'Test_name1',
+                    'UserID'    => '456'
+                ]
+            ]
         );
         $this->_DB->setFakeTableData(
             "candidate",
@@ -1126,14 +1591,44 @@ class NDB_BVL_Instrument_Test extends TestCase
                 [
                     'CandID' => 1,
                     'DoB' => '1999-01-01',
-                    'DoD' => '2005-01-01',
+                    'DoD' => '2016-01-01',
                     'PSCID' => '345'
                 ]
             ]
         );
         $this->_DB->setFakeTableData(
             "session",
-            [['ID' => '123', 'CandID' => 1]]
+            [
+                [
+                    'ID' => '123',
+                    'CandID' => 1,
+                    'SubprojectID' => '12'
+                ]
+            ]
+        );
+        $this->_DB->setFakeTableData(
+            "medical_history",
+            [
+                [
+                    'CommentID' => 'commentID1',
+                    'UserID' => '456',
+                    'Examiner' => 'Test Examiner',
+                    'Date_taken' => '2010-05-05 00:00:01',
+                    'Data_entry_completion_status' => 'Incomplete'
+                ]
+            ]
+        );
+        $this->_DB->setFakeTableData(
+            "test_battery",
+            [
+                [
+                    'Active' => 'Y',
+                    'Test_name' => 'TestName1_proband',
+                    'SubprojectID' => '12',
+                    'AgeMinDays' => 0,
+                    'AgeMaxDays' => 100
+                ]
+            ]
         );
     }
 
