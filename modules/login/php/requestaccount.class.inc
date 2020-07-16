@@ -182,7 +182,7 @@ class RequestAccount extends \NDB_Form
         $project  = $_REQUEST["project"];
         $fullname = $name." ".$lastname;
 
-        $vals = [ 
+        $vals = [
             'UserID'               => $from,
             'Real_name'            => $fullname,
             'First_name'           => $name,
