@@ -43,11 +43,11 @@ class Imaging_Browser extends \DataFrameworkMenu
         * part of a study site and are permitted to view their own site.
          */
         return $user->hasAnyPermission(
-            array(
+            [
                 'imaging_browser_view_allsites',
                 'imaging_browser_phantom_allsites',
                 'imaging_browser_phantom_ownsite',
-            )
+            ]
         )
             || (
                 $user->hasStudySite()
@@ -56,14 +56,17 @@ class Imaging_Browser extends \DataFrameworkMenu
     }
 
     /**
-     * Tells the base class that this page's provisioner can support
-     * the UserSiteMatch filter.
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
      *
-     * @return bool always false
+     * @return ?array of site permissions or null
      */
-    public function useSiteFilter() : bool
+    public function allSitePermissionNames() : ?array
     {
-        return false;
+        return [
+            'imaging_browser_view_allsites',
+            'imaging_browser_phantom_allsites',
+        ];
     }
 
     /**
@@ -85,7 +88,7 @@ class Imaging_Browser extends \DataFrameworkMenu
     {
         // create user object
         $user     = \User::singleton();
-        $siteList = array();
+        $siteList = [];
 
         // get list of sites available for the user
         if ($user->hasPermission('imaging_browser_view_allsites')
@@ -109,7 +112,7 @@ class Imaging_Browser extends \DataFrameworkMenu
         }
 
         // get list of projects
-        $list_of_projects = array();
+        $list_of_projects = [];
         $projectList      = \Utility::getProjectList();
         foreach ($projectList as $key => $project) {
             unset($projectList[$key]);
@@ -117,16 +120,16 @@ class Imaging_Browser extends \DataFrameworkMenu
         }
 
         // get visit QC status options
-        $visitQCStatus = array(
+        $visitQCStatus = [
             'Pass' => 'Pass',
             'Fail' => 'Fail',
-        );
+        ];
 
         // get Pending/New options
-        $pending = array(
+        $pending = [
             'P' => 'Pending',
             'N' => 'New',
-        );
+        ];
 
         // get list of scan types
         $all_scan_types = \Utility::getScanTypeList();
@@ -216,9 +219,9 @@ class Imaging_Browser extends \DataFrameworkMenu
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array(
+            [
                 $baseurl . "/imaging_browser/js/imagingBrowserIndex.js",
-            )
+            ]
         );
     }
 }

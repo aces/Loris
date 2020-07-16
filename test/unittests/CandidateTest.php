@@ -41,7 +41,7 @@ class CandidateTest extends TestCase
            'Active'       => 'Y',
            'RegisteredBy' => 'Admin Admin',
            'UserID'       => 'admin',
-           'RegistrationProjectID'    => 1,
+           'RegistrationProjectID'    => '1',
            'ProjectTitle' => '',
           );
 
@@ -430,6 +430,17 @@ class CandidateTest extends TestCase
         );
     }
 
+    /**
+     * Test getCandidateEthnicity returns the correct ethnicity of the candidate
+     *
+     * @covers Candidate::getCandidateEthnicity
+     * @return void
+     */
+    public function testGetCandidateEthnicity()
+    {
+        $this->markTestSkipped("getCandidateEthnicity is a deprecated function");
+    }
+
     /** 
      * Test isActive returns the correct string for the candidate
      *
@@ -537,7 +548,7 @@ class CandidateTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                   "SELECT SubprojectID 
+                    "SELECT SubprojectID 
                     FROM project_subproject_rel 
                     WHERE ProjectID = :prj"
                 )
@@ -917,6 +928,175 @@ class CandidateTest extends TestCase
             $result
         );
     }
+
+    /**
+     * Test that getParticipantStatusDescription returns the correct
+     * description given the candID
+     *
+     * @return void
+     * @covers Candidate::getParticipantStatusOptions
+     */
+    public function testParticipantStatusDescription()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+        $this->_setUpMockDB();
+        $this->_DB->setFakeTableData(
+            "participant_status_options",
+            array(
+                0 => array(
+                    'ID'          => '1',
+                    'Description' => 'description1',
+                    'parentID'    => 1),
+                1 => array(
+                    'ID'          => '2',
+                    'Description' => 'description2',
+                    'parentID'    => 2
+                ))
+        );
+        $this->_DB->setFakeTableData(
+            "participant_status",
+            array(
+                0 => array(
+                    'CandID' => '969664',
+                    'participant_status' => '2'
+                )
+            )
+        );
+        $result = $this->_candidate->getParticipantStatusDescription($this->_DB);
+        $this->_DB->run("DROP TEMPORARY TABLE participant_status_options");
+        $this->_DB->run("DROP TEMPORARY TABLE participant_status");
+        $this->assertEquals($result, 'description2');
+    }
+
+    /**
+     * Test that isAccessibleBy returns true if the center IDs and project IDs
+     * of a given user match those of the candidate
+     *
+     * @return void
+     * @covers Candidate::isAccessibleBy
+     */
+    function testIsAccessibleBy()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+        $user = $this->getMockBuilder('\User')->getMock();
+        $user->expects($this->once())->method("getCenterIDs")
+            ->willReturn(array(1, 2));
+        $user->expects($this->once())->method("getProjectIDs")
+            ->willReturn(array(1, 3));
+
+        $result = $this->_candidate->isAccessibleBy($user);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test that isAccessibleBy returns false if the project IDs of a user
+     * do not match the candidate's project ID
+     *
+     * @return void
+     * @covers Candidate::isAccessibleBy
+     */
+    function testIsAccessibleByNoProject()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+        $this->_setUpMockDB();
+
+        $user = $this->getMockBuilder('\User')->getMock();
+        $user->expects($this->once())->method("getCenterIDs")
+            ->willReturn(array(1, 2));
+        $user->expects($this->once())->method("getProjectIDs")
+            ->willReturn(array(2, 3));
+
+        $result = $this->_candidate->isAccessibleBy($user);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test that isAccessibleBy returns false if the center IDs
+     * of a given user do not match the center ID of the candidate
+     *
+     * @return void
+     * @covers Candidate::isAccessibleBy
+     */
+    function testIsAccessibleByNoCenter()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+        $this->_setUpMockDB();
+
+        $user = $this->getMockBuilder('\User')->getMock();
+        $user->expects($this->once())->method("getCenterIDs")
+            ->willReturn(array(1, 3));
+        $user->expects($this->once())->method("getProjectIDs")
+            ->willReturn(array(1, 3));
+
+        $result = $this->_candidate->isAccessibleBy($user);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test that structureToPCRE returns the regex form of the given structure.
+     * This test covers the different cases of the function.
+     *
+     * @covers Candidate::structureToPCRE
+     * @return void
+     */
+    public function testStructureToPCRE()
+    {
+        $structure = array(
+            'seq' => array(
+                0 => array('@' => array('type' => 'alpha',
+                    'minLength' => '1',
+                    'maxLength' => '5')
+                ),
+                1 => array('@' => array('type' => 'alphanumeric',
+                    'length' => '2')
+                ),
+                2 => array('@' => array('type' => 'static'),
+                    '#' => '1-3'
+                ),
+                3 => array('@' => array('type' => 'set'),
+                    '#' => '1||3'
+                ),
+                4 => array('@' => array('type' => 'set'),
+                    '#' => '1-3'
+                ),
+            )
+        );
+        $this->assertEquals(
+            '/^[a-z]{1,5}[0-9a-z]{2,2}(1-3){1,1}(1||3){1,1}[1-3]{1,1}$/i',
+            Candidate::structureToPCRE($structure)
+        );
+    }
+
+    /**
+     * Test structureToPCRE with the site and project abbreviations set
+     *
+     * @covers Candidate::structureToPCRE
+     * @return void
+     */
+    public function testStructureToPCREWithAbbreviations()
+    {
+        $structure = array(
+            'seq' => array(
+                0 => array('@' => array('type' => 'siteAbbrev',
+                    'minLength' => '1',
+                    'maxLength' => '5')
+                ),
+                1 => array('@' => array('type' => 'projectAbbrev',
+                    'minLength' => '1',
+                    'maxLength' => '5')
+                )
+            )
+        );
+        $this->assertEquals(
+            '/^MTL{1,5}P1{1,5}$/i',
+            Candidate::structureToPCRE($structure, "MTL", "P1")
+        );
+    }
+
     /**
      * Test Candidate::createNew
      * TODO This function calls Site::singleton() and User::singleton() 

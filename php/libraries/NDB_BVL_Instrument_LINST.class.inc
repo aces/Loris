@@ -32,11 +32,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
     public $InstrumentType = 'LINST';
 
-    public $LinstQuestions = array();
+    public $LinstQuestions = [];
 
-    public $LinstLines = array();
-
-    private $_selectMultipleElements;
+    public $LinstLines = [];
 
     /**
      * Sets up the variables required for a LINST instrument to load
@@ -65,14 +63,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $dateOptions = array(
+        $dateOptions = [
             'language'         => 'en',
             'format'           => 'YMd',
             'minYear'          => $config->getSetting('startYear'),
             'maxYear'          => $config->getSetting('endYear'),
             'addEmptyOption'   => true,
             'emptyOptionValue' => null,
-        );
+        ];
 
         $this->dateOptions = $dateOptions;
 
@@ -122,7 +120,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         unset($elements['key'], $elements['pageNum'], $elements['nextpage']);
         $this->XINDebug = false;  //Turn this on to see rules debuggin output
 
-        $errors = array();
+        $errors = [];
         foreach ($elements AS $elname => $elvalue) {
             //If the element is a group (and thus elvalue is an array)
             //trigger the Null Value default rule if ANY of the values
@@ -197,7 +195,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
                 }
-                $rules_array = array();
+                $rules_array = [];
                 foreach ($registered_rules as $registered) {
                     $rules = $registered['rules'];
 
@@ -263,7 +261,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
                     }
                 } else if (substr($elname, -7) != "_status"
-                    && !in_array($elname, array("page", "subtest"))
+                    && !in_array($elname, ["page", "subtest"])
                 ) {
                     $errors[$elname] = "Required.";
                     if ($this->XINDebug) {
@@ -362,11 +360,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         // the if statement and use the same logic for "old" instruments and "new"
         // instruments
         //  -- Dave
-        $rule = array(
+        $rule = [
             'message' => $message,
             'group'   => $group,
-            'rules'   => array(),
-        );
+            'rules'   => [],
+        ];
 
         foreach ($rules AS $rule_cmd) {
             $rule['rules'][] = $rule_cmd;
@@ -397,10 +395,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             if (!isset($this->form)) {
                 $this->form = new \LorisForm();
             }
-            $this->dateTimeFields = array("Date_taken");
+            $this->dateTimeFields = ["Date_taken"];
             $this->formType       = 'XIN';
 
-            $this->form->addFormRule(array(&$this, 'XINValidate'));
+            $this->form->addFormRule([&$this, 'XINValidate']);
             $fp = fopen($filename, "r");
 
             // Add elements is only true if we're parsing the current page,
@@ -408,21 +406,21 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             // parse the whole file for table{@} and other meta elements
             $addElements = true;
             if (!empty($this->page)) {
-                $currentPage = $_REQUEST['subtest'];
+                $currentPage = $this->page;
                 $addElements = false;
             } else {
                 $currentPage = 'top';
                 $addElements = true;
             }
 
-            $parsingPage       = 'top';
-            $firstSelectOfPage = true;
+            $parsingPage      = 'top';
+            $firstFieldOfPage = true;
 
-            $Group = array(
+            $Group = [
                 'Name'      => null,
-                'Elements'  => array(),
+                'Elements'  => [],
                 'Delimiter' => $this->_GUIDelimiter,
-            );
+            ];
 
             while (($line = fgets($fp, 4096)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
@@ -438,6 +436,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     || $fieldname == "Window_Difference"
                     || $fieldname == "Examiner"
                 ) {
+                    if ($firstFieldOfPage) {
+                        $this->_requiredElements[] = $fieldname;
+                        $firstFieldOfPage          = false;
+                    }
                     continue;
                 }
                 switch($type) {
@@ -447,17 +449,17 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         "SELECT Subtest_name
                         FROM instrument_subtests
                         WHERE Test_name=:testinst AND Description=:parsing",
-                        array(
+                        [
                             'testinst' => $this->testName,
                             'parsing'  => $parsingPage,
-                        )
+                        ]
                     );
                     if ($currentPage == $pageName) {
                         $addElements = true;
                     } else {
                         $addElements = false;
                     }
-                    $firstSelectOfPage = true;
+                    $firstFieldOfPage = true;
                     break;
                 case 'table':
                     $this->testName = trim($pieces[1]);
@@ -495,7 +497,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         );
 
                         $Group['Name']     = null;
-                        $Group['Elements'] = array();
+                        $Group['Elements'] = [];
                     }
                     break;
 
@@ -531,7 +533,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $this->addTextElement($pieces[1], $pieces[2]);
                         }
                     }
-                    $this->LinstQuestions[$pieces[1]] = array('type' => 'text');
+                    if ($firstFieldOfPage) {
+                        $this->_requiredElements[] = $fieldname;
+                        $firstFieldOfPage          = false;
+                    }
+                    $this->LinstQuestions[$pieces[1]] = ['type' => 'text'];
                     break;
                 case 'textarea':
                     $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
@@ -545,7 +551,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
                     }
-                    $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
+                    if ($firstFieldOfPage) {
+                        $this->_requiredElements[] = $fieldname;
+                        $firstFieldOfPage          = false;
+                    }
+                    $this->LinstQuestions[$pieces[1]] = ['type' => 'textarea'];
                     break;
                 case 'date':
                     if (strpos($pieces[1], "_date") !== false) {
@@ -559,14 +569,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
                             $dateOptions = null;
                         } else {
-                            $dateOptions = array(
+                            $dateOptions = [
                                 'language'         => 'en',
                                 'format'           => 'YMd',
                                 'minYear'          => $pieces[3],
                                 'maxYear'          => $pieces[4],
                                 'addEmptyOption'   => true,
                                 'emptyOptionValue' => null,
-                            );
+                            ];
                         }
 
                         // Set date format
@@ -597,28 +607,36 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             );
                         }
                     }
-                    $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
+                    if ($firstFieldOfPage) {
+                        $this->_requiredElements[] = $fieldname;
+                        $firstFieldOfPage          = false;
+                    }
+                    $this->LinstQuestions[$pieces[1]] = ['type' => 'date'];
                     break;
                 case 'numeric':
                     if ($addElements) {
                         $this->addNumericElement($pieces[1], $pieces[2]);
                     }
+                    if ($firstFieldOfPage) {
+                        $this->_requiredElements[] = $fieldname;
+                        $firstFieldOfPage          = false;
+                    }
                     // FIXME: This variable is never populated.
-                    $options = array();
+                    $options = [];
                     $this->LinstQuestions[$pieces[1]]
-                        = array(
+                        = [
                             'type'    => 'numeric',
                             'options' => $options,
-                        );
+                        ];
                     break;
 
                 case 'selectmultiple':
                     $type = 'multiple';
-                    $this->_selectMultipleElements[] = $pieces[1];
+                    $this->selectMultipleElements[] = $pieces[1];
                     // fall through and also execute select code below
                 case 'select':
                     $options = preg_split("/{-}/", trim($pieces[3]));
-                    $opt     = array();
+                    $opt     = [];
 
                     foreach ($options as $o) {
                         $arr = explode("=>", $o);
@@ -662,7 +680,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     $pieces[1],
                                     $pieces[2],
                                     $opt,
-                                    array("multiple" => "multiple")
+                                    ["multiple" => "multiple"]
                                 );
                             } else {
                                 $this->form->addElement(
@@ -675,11 +693,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                         }
                     }
-                    if ($firstSelectOfPage) {
-                        $this->_requiredElements[] = $pieces[1];
-                        $firstSelectOfPage         = false;
+                    if ($firstFieldOfPage) {
+                        $this->_requiredElements[] = $fieldname;
+                        $firstFieldOfPage          = false;
                     }
-                    $this->LinstQuestions[$pieces[1]] = array('type' => 'select');
+                    $this->LinstQuestions[$pieces[1]] = ['type' => 'select'];
                     break;
                 case 'header':
                     if ($addElements) {
@@ -706,7 +724,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             );
                         }
                     }
-                    $this->LinstQuestions[$pieces[1]] = array('type' => 'score');
+                    $this->LinstQuestions[$pieces[1]] = ['type' => 'score'];
                     break;
                 default:
                     break;
@@ -795,17 +813,17 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     function toJSON(): string
     {
-        $jsonObject = array(
-            'Meta'     => array(
+        $jsonObject = [
+            'Meta'     => [
                 "InstrumentVersion"       => "1l",
                 "InstrumentFormatVersion" => "v0.0.1a-dev",
                 "ShortName"               => "",
                 "LongName"                => "",
                 "IncludeMetaDataFields"   => "true",
-            ),
-            'Elements' => array(),
-        );
-        $elements   = array();
+            ],
+            'Elements' => [],
+        ];
+        $elements   = [];
         $pageTitle  = 'Top';
 
         foreach ($this->LinstLines as $value) {
@@ -813,7 +831,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 $lastIndex = count($elements) - 1;
                 $elements[$lastIndex]['Options']['RequireResponse'] = true;
             } else {
-                $element         = array();
+                $element         = [];
                 $element['Type'] = $value[0];
                 $element['Name'] = $value[1];
                 $specialCase     = false;
@@ -826,7 +844,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $element['Type'] = 'select';
                 case 'select':
                     $selectOptions = preg_split("/{-}/", trim($value[3]));
-                    $opt           = array();
+                    $opt           = [];
                     $RequireResponse = false;
                     foreach ($selectOptions as $o) {
                         $arr = explode("=>", $o);
@@ -847,35 +865,35 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
                     }
                     $AllowMultiple      = ($specialCase ? true : false);
-                    $element['Options'] = array(
+                    $element['Options'] = [
                         'Values'          => $opt,
                         'AllowMultiple'   => $AllowMultiple,
                         'RequireResponse' => $RequireResponse,
-                    );
+                    ];
                     break;
                 case 'textarea':
                     $specialCase     = true;
                     $element['Type'] = 'text';
                 case 'text':
                     $textType           = ($specialCase ? 'large' : 'small');
-                    $element['Options'] = array('Type' => $textType);
+                    $element['Options'] = ['Type' => $textType];
                     break;
                 case 'date':
                     $minDate            = $value[3] . "-01-01";
                     $maxDate            = rtrim($value[4]) . "-12-31";
-                    $element['Options'] = array(
+                    $element['Options'] = [
                         'MinDate' => $minDate,
                         'MaxDate' => $maxDate,
-                    );
+                    ];
                     break;
                 case 'numeric':
                     $minval = isset($value[3]) ? (int) $value[3] : null;
                     $maxval = (int) rtrim($value[4] ?? null);
-                    $element['Options'] = array(
+                    $element['Options'] = [
                         'NumberType' => 'integer',
                         'MinValue'   => $minval,
                         'MaxValue'   => $maxval,
-                    );
+                    ];
                     break;
                 case 'score':
                     break;
@@ -884,15 +902,15 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     unset($element['Name']);
                     break;
                 case 'page':
-                    $pageElement = array(
+                    $pageElement = [
                         "Type"        => "ElementGroup",
                         "GroupType"   => "Page",
                         "Description" => $pageTitle,
                         "Elements"    => $elements,
-                    );
+                    ];
                     $jsonObject['Elements'][] = $pageElement;
                     unset($element['Type']);
-                    $elements  = array();
+                    $elements  = [];
                     $pageTitle = rtrim($value[2]);
                     break;
                 case 'table':
@@ -912,12 +930,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         if (empty($jsonObject['Elements'])) {
             $jsonObject['Elements'] = $elements;
         } else {
-            $pageElement = array(
+            $pageElement = [
                 "Type"        => "ElementGroup",
                 "GroupType"   => "Page",
                 "Description" => $pageTitle,
                 "Elements"    => $elements,
-            );
+            ];
             $jsonObject['Elements'][] = $pageElement;
         }
         return json_encode($jsonObject);

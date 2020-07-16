@@ -51,8 +51,8 @@ class InstrumentUploadForm extends Component {
         });
       }
       if (data.error) {
-         swal({
-          title: 'An error occured',
+         swal.fire({
+          title: 'An error occurred',
           type: 'error',
           text: data.error,
         });
@@ -79,7 +79,13 @@ class InstrumentUploadForm extends Component {
                   onUserInput={this.fileSelected}
                   value={this.state.selectedFile}
                 />
-                <button className="btn btn-default" onClick={this.upload} disabled={disabled()}>Install</button>
+                <button
+                  className="btn btn-default"
+                  onClick={this.upload}
+                  disabled={disabled()}
+                >
+                  Install
+                </button>
               </div>
             </div>
           </div>

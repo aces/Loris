@@ -23,7 +23,7 @@ $db     = Database::singleton();
 
 $publication_date = $_GET["date"];
 
-$columns = array(
+$columns = [
     'full_name'     => 'Full Name',
     'citation_name' => 'Citation Name',
     'affiliations'  => 'Affiliations',
@@ -32,7 +32,7 @@ $columns = array(
     'start_date'    => 'Start Date',
     'end_date'      => 'End Date',
     'present'       => 'Present?',
-);
+];
 
 $keysAsString   = implode(', ', array_keys($columns));
 $valuesAsString = implode('","', array_values($columns));
@@ -43,7 +43,7 @@ $results = $db->pselect(
     " FROM acknowledgements
     WHERE start_date <= :publication_date
     ORDER BY ordering ASC",
-    array('publication_date' => $publication_date)
+    ['publication_date' => $publication_date]
 );
 echo "<html>";
 echo "<table border='1'>";

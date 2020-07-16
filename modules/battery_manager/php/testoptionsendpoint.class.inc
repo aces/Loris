@@ -58,7 +58,7 @@ class TestOptionsEndpoint extends \NDB_Page
      */
     private function _getOptions() : array
     {
-        return array(
+        return [
             'instruments' => \Utility::getAllInstruments(),
             'stages'      => $this->_getStageList(),
             'subprojects' => \Utility::getSubprojectList(null),
@@ -66,7 +66,7 @@ class TestOptionsEndpoint extends \NDB_Page
             'sites'       => \Utility::getSiteList(false),
             'firstVisit'  => $this->_getYesNoList(),
             'active'      => $this->_getYesNoList(),
-        );
+        ];
     }
 
     /**
@@ -76,14 +76,14 @@ class TestOptionsEndpoint extends \NDB_Page
      */
     private function _getStageList() : array
     {
-        return array(
+        return [
             "Not Started"   => 'Not Started',
             "Screening"     => 'Screening',
             "Visit"         => 'Visit',
             "Approval"      => "Approval",
             "Subject"       => "Subject",
             "Recycling Bin" => "Recycling Bin",
-        );
+        ];
     }
 
     /**
@@ -93,10 +93,10 @@ class TestOptionsEndpoint extends \NDB_Page
      */
     private function _getYesNoList() : array
     {
-        return array(
+        return [
             'Y' => 'Yes',
             'N' => 'No',
-        );
+        ];
     }
 }
 

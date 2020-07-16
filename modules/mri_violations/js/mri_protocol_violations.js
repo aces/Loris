@@ -18,60 +18,7 @@ function change() {
     });
 }
 
-function save() {
-    "use strict";
-    var default_value, id, value;
-    /**To get the default value**/
-    $('.description').focus(function (event) {
-        id = event.target.id;
-        default_value = $("#" + id).text();
-    });
-
-    $('.description').keypress(
-      function(event) {
-        if (event.which === 13 || event.keyCode === 13) {
-          event.preventDefault();
-          var id = '#' + event.target.id;
-          $(id).blur();
-        }
-      }
-    );
-
-    $('.description').blur(
-      function(event) {
-          event.stopImmediatePropagation();
-          id = event.target.id;
-          value = $('#'+id).text();
-          if (value !== default_value) {
-            $('.description').attr('contenteditable', false);
-            swal({
-              title: "Are you sure?",
-              text: "Are you sure you want to edit this field?",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonText: 'Yes, I am sure!',
-              cancelButtonText: "No, cancel it!"
-            }, function(isConfirm) {
-              if (isConfirm) {
-                $.post(
-                  loris.BaseURL + '/mri_violations/ajax/UpdateMRIProtocol.php',
-                  {
-                    field_id: id,
-                    field_value: value
-                  }
-                );
-              } else {
-                $('#' + id).text(default_value);
-              }
-            });
-            $('.description').attr('contenteditable', true);
-          }
-      }
-    );
-}
-
 $(function () {
     "use strict";
     change();
-    save();
 });

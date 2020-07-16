@@ -1,44 +1,62 @@
 ## Imaging Browser test plan
 	
-### A. Imaging Browser front page
-1. User can load Imaging Browser module front page IFF has permission imaging_browser_view_site, imaging_browser_view_allsites, imaging_browser_phantom_allsites or imaging_browser_phantom_ownsite [Partial Automation Testing; To ADD phantom permissions automated tests]
-2. User can see other sites Imaging datasets IFF has permission imaging_browser_view_allsites. User can see only own site Imaging datasets IFF has permission imaging_browser_view_site. User can see phantom data only from across all sites with the imaging_browser_phantom_allsites, and from own sites with imaging_browser_phantom_ownsite [Partial Automation Testing; TO ADD phantom permissions automated tests]
-3. Test that all Filters work.  Upon first loading, Site filter should be set to 'All User Sites' (with the dropdown menu populated with the sites the logged on user is affiliated with) IFF user does not have permission imaging_browser_view_allsites nor imaging_browser_phantom_allsites, and is set to 'All' otherwise.
-4. Test Clear Filters button
-5. Test column table is sortable by headers
-6. Test that Links work, to correct dataset (selected/native)
-7. Add more modalities (from the Scan_type column of the mri_scan_type table) to the Configuration/Imaging Modules/Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table    
+### Imaging Browser main page
+1. User can access Imaging Browser module front page if and only if they have permission `imaging_browser_view_site`, `imaging_browser_view_allsites`, `imaging_browser_phantom_allsites` or `imaging_browser_phantom_ownsite`.
+ [Partial Automation Testing]
+2. User can see other sites Imaging datasets if and only if has permission `imaging_browser_view_allsites`. User can see only own site Imaging datasets if and only if has permission `imaging_browser_view_site`. User can see phantom data only from across all sites with the `imaging_browser_phantom_allsites`, and from own sites with `imaging_browser_phantom_ownsite`. 
+ [Partial Automation Testing]
+3. Test that all filters work. When the Site filter is empty, all sites with which the user is associated should be displayed. Every site should be displayed if the user has the `imaging_browser_view_allsites` permission.
+4. Test Clear Filters button.
+5. Test column table is sortable by headers.
+6. Ensure that the hyperlinks in the Links column are active and load the correct dataset.
+7. Add more modalities (from the Scan_type column of the `mri_scan_type` table) to the Configuration -> Imaging Modules -> Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table. (This requires back-end access)
 
-### B. ViewSession / Volume List
+### View Session / Volume List
+8. Sidebar:  
+   - Ensure that all links work, including the Download DICOM option. 
+   - Ensure that projects can customize (add/remove) their list of instruments that can be linked to from the Configuration -> Imaging Modules -> Imaging Browser Links to Insruments.
+9. Select an image using the checkbox above the volume previews. Click the "3D Only" and "3D + Overlay" buttons. These should load the Brain Browser module.
+10. Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable if and only if user has permission `imaging_browser_qc`.
+11. Save button appears if and only if user has permission `imaging_browser_qc`.
+12. Test Save button works.
+13. Verify Visit-level QC controls and comments can be deleted/unchecked/emptied and saved.
+14. Test Breadcrumb link back to Imaging Browser.
 
-8. Sidebar:  all links work, including the Download DICOM option. Ensure that projects can customize (add/remove) their list of instruments that can be linked to from the Configuration/Imaging Modules/Imaging Browser Links to Insruments
-9. 3d panel overlay etc - they work.  Add panel checkbox works. 3D only or 3D+Overlay loads files if at least one image exists and is selected
-10. "Visit Level Feedback" - pops up QC window (see section E below)
-11. Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable IFF permission imaging_browser_qc
-12. Save button appears IFF permission imaging_browser_qc
-13. Test Save button works 
-14. Verify Visit-level QC controls and comments can be deleted/unchecked/emptied and saved
-15. Test Breadcrumb link back to Imaging Browser
-
-### C. Main panel:  per acquisition:
-
-16. Files can be downloaded (links clickable) only IFF has permission. Ensure that DICOM downloads are
+### Main panel:  Per Acquisition
+15. Files can be downloaded (links clickable) if and only if user has at least one of the module permissions. Ensure that DICOM downloads are
 prepended with the Patient Name.
-17. Scan-level QC flags (Selected, pass/fail, Caveat emptor) viewable to all, modifiable IFF permission imaging_browser_qc. Caveat List link is viewable with the Violated Scans: View all-sites Violated Scans permission
-18. Selected:  can be set back to Null (blank)
-19. BrainBrowser link works (launches window)
-20. Link to Comments link works (launches window)
-21. Longitudinal View button launches BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints
+16. Scan-level QC flags (Selected, pass/fail, Caveat emptor) are viewable to all, modifiable if and only if user has permission `imaging_browser_qc`.  
+17. There will be a Caveat link just above the Caveat drop-down in the image panel of a given scan if and only if there is an MRI violation with:
+       i) the same path as the image file
+       ii) the same SeriesUID as the image's SeriesUID
+       iii) header set to 'Manual Caveat set by <username>'
+       iv) resolution type set to 'Inserted with flag'
+    Search in the MRI violations' Resolved tab using the scan's SeriesUID and image file path to verify this. Note that you can see the header
+    of an MRI violation by clicking on the 'Protocol Violation' link in the 'Problem' column.
+18. In the imaging browser, pick a scan that does not have a Caveat link. Use the drop-down to set the Caveat to true and save your modification.
+    Ensure that there is now a link to your newly created caveat and verify that when you click on it it redirects to the MRI violations' violations
+    resolved submenu with your caveat displayed in the search result table.
+19. In the imaging browser, pick a scan that has a Caveat link. Use the drop-down to set the Caveat to false and save your modification.
+    Ensure that there is no Caveat link for that scan now. Using the MRI violation module and the technique described in 17, validate that there
+    are no MRI violations that would justify the presence of a link for that scan.
+20. Selected:  can be set back to Null (blank).
+21. Clicking on an image launches the BrainBrowser.
+22. Clicking on the "QC Comments" button opens the QC comments window.
+23. Longitudinal View button launches the BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints.
 
-### D. MRI-QC : Scan-level (Link to Comments) dialog window
+### MRI-QC : Scan-level (QC Comments) dialog window
+24. With the permission `imaging_browser_qc`, edit comments, checkboxes, and dropdown values. 
+25. Clicking Save should update the values.
+26. Data should not be editable without this permission.
 
-22. Viewable by all, editable IFF permission imaging_browser_qc
-23. Comments save, checkboxes save, dropdown values save
-24. Save button works
-25. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
+### Visit-level QC feedback dialog window
+27. On the view session page, click the button "Visit Level Feedback".
+28. The entries in this dialog should be editable when a user has the permission `imaging_browser_qc`.
+29. Try editing comments (adding new ones, deleting old ones). Click Save and ensure the data is saved.
 
-### E. Visit-level QC feedback dialog window
-26. editable IFF permission imaging_browser_qc
-27. Comments save
-28. Save button works
-29. Comments can be deleted (field cleared). 
+### Test the Candidate Dashboard widget
+30. Go to the candidate dashboard in the candidate module and check the Imaging QC Summary widget.
+    - For each visit, check that the QC status displayed matches the Imaging Browser Module by hovering over any visit to see detailed modality breakdown for visit.
+    - Click on a visit from the graph to access the imaging browser. Check that the link redirects to the correct scans in the imaging browser.
+    - For a few candidate/visits, check that all the files from the Imaging Browser Module appear in the widget for all the visits.
+

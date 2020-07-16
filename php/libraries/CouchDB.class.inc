@@ -159,7 +159,7 @@ class CouchDB
     /**
      * This array keep a reference for each instance of this class.
      */
-    private static $_instances = array();
+    private static $_instances = [];
 
     /**
      * Keep the database name
@@ -195,7 +195,7 @@ class CouchDB
      * Array of documents to be commited when the current bulk transaction
      * ends.
      */
-    public $bulkDocuments = array();
+    public $bulkDocuments = [];
 
     /**
      * An instance of SocketWrapper used in network interaction with a CouchDB
@@ -346,7 +346,7 @@ class CouchDB
     function _getURL(
         string $url,
         string $op = 'GET',
-        array $headers = array()
+        array $headers = []
     ): string {
         $handler = $this->SocketHandler;
         $handler->setHost($this->_host);
@@ -441,7 +441,7 @@ class CouchDB
     function _postURL(
         string $url,
         string $data,
-        array  $headers = array(),
+        array  $headers = [],
         bool   $printValue = false
     ): ?string {
         $handler = $this->SocketHandler;
@@ -513,7 +513,7 @@ class CouchDB
         return $this->_postURL(
             $this->_constructURL($op, $url),
             $data,
-            array(),
+            [],
             $printValue
         );
     }
@@ -526,7 +526,7 @@ class CouchDB
      *
      * @return array An associative array representing the document
      */
-    function getDoc(string $id, array $options = array()): array
+    function getDoc(string $id, array $options = []): array
     {
         $json = $this->_getRelativeURL($id);
 
@@ -548,7 +548,7 @@ class CouchDB
         }
 
         if (isset($data['error']) && $data['error'] === 'not_found') {
-            return array();
+            return [];
         }
 
         return $data;
@@ -610,12 +610,11 @@ class CouchDB
      *
      * @param array $doc A PHP array encoding the JSON document to be created
      *
-     * @return string the JSON string returned by the CouchDB server
+     * @return ?string the JSON string returned by the CouchDB server
      */
-    function postDoc(array $doc): string
+    function postDoc(array $doc): ?string
     {
-        $json = $this->_postRelativeURL("", json_encode($doc), 'POST');
-        return $json;
+        return $this->_postRelativeURL("", json_encode($doc), 'POST');
     }
 
     /**
@@ -658,7 +657,7 @@ class CouchDB
     function replaceDoc(string $id, array $doc): string
     {
         $original_doc = $this->getDoc($id);
-        if ($original_doc === array() ) {
+        if ($original_doc === [] ) {
             $this->putDoc($id, $doc);
             return "new";
         }
@@ -710,7 +709,7 @@ class CouchDB
 
             $query = $this->_postRelativeURL(
                 $url,
-                json_encode(array('keys' => $keys)),
+                json_encode(['keys' => $keys]),
                 'POST',
                 $full_json
             );
@@ -722,7 +721,7 @@ class CouchDB
         }
 
         if ($full_json) {
-            return $query ?? array();
+            return $query ?? [];
         }
         $data = json_decode($query ?? '', true);
         if (is_null($data)) {
@@ -732,7 +731,7 @@ class CouchDB
         }
 
         if (isset($data['error']) && $data['error'] == 'not_found') {
-            return array();
+            return [];
         }
         return $data['rows'];
     }
@@ -758,17 +757,17 @@ class CouchDB
      * Sends a POST request to update all the documents that have been queued
      * since the BulkTransaction was started.
      *
-     * @return string The string that was returned by CouchDB
+     * @return ?string The string that was returned by CouchDB
      */
-    function commitBulkTransaction(): string
+    function commitBulkTransaction(): ?string
     {
         if ($this->bulk !== true) {
             return '';
         }
-        $docs = json_encode(array('docs' => $this->bulkDocuments));
+        $docs = json_encode(['docs' => $this->bulkDocuments]);
 
         $this->bulk          = false;
-        $this->bulkDocuments = array();
+        $this->bulkDocuments = [];
 
         return $this->_postRelativeURL('_bulk_docs', $docs);
     }

@@ -22,7 +22,7 @@ class SliderPanel extends Component {
 }
 SliderPanel.propTypes = {
   pscid: PropTypes.string,
-  children: PropTypes.string,
+  children: PropTypes.array,
 };
 
 class FeedbackPanelContent extends Component {
@@ -376,7 +376,7 @@ class AccordionPanel extends Component {
 }
 AccordionPanel.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.string,
+  children: PropTypes.object,
 };
 
 class NewThreadPanel extends Component {
@@ -548,9 +548,11 @@ class FeedbackSummaryPanel extends Component {
           <tr key={key}>
             <td>{row.QC_Class}</td>
             <td>
-              <a href={loris.BaseURL + '/instruments/' + row.Instrument + '/?candID=' +
-                row.CandID + '&sessionID=' + row.SessionID + '&commentID=' +
-                row.CommentID}
+              <a href={loris.BaseURL
+                      + '/instruments/' + row.Instrument
+                      + '/?candID=' + row.CandID
+                      + '&sessionID=' + row.SessionID
+                      + '&commentID=' + row.CommentID}
               >
                 {row.Instrument}
               </a>
@@ -604,7 +606,7 @@ class FeedbackPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      threads: '',
+      threads: [],
       summary: null,
     };
     this.loadSummaryServerData = this.loadSummaryServerData.bind(this);
@@ -754,7 +756,7 @@ class FeedbackPanel extends Component {
   }
 }
 FeedbackPanel.propTypes = {
-  selectOptions: PropTypes.array,
+  selectOptions: PropTypes.object,
   feedbackLevel: PropTypes.string,
   candID: PropTypes.string,
   sessionID: PropTypes.string,

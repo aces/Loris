@@ -68,7 +68,7 @@ if (!empty($argv[1]) && $argv[1]!="confirm") {
         "SELECT DISTINCT Visit_label FROM session
         WHERE Active='Y' AND Visit_label NOT LIKE '%phantom%' AND Visit_label
         NOT LIKE 'Vsup%' AND COALESCE(Submitted,'N')='N'  ",
-        array()
+        []
     );
 }
 
@@ -134,7 +134,7 @@ if (isset($visit_label)) {
             s LEFT JOIN candidate c USING (CandID) 
             WHERE s.Active='Y'
             AND c.Active='Y' AND s.visit_label=:vl";
-    $where = array('vl' => $argv[1]);
+    $where = ['vl' => $argv[1]];
 
     $results = $DB->pselect($query, $where);
     foreach ($results as $result) {
@@ -144,7 +144,7 @@ if (isset($visit_label)) {
     $query   ="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s 
             LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' 
             AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
-    $results = $DB->pselect($query, array());
+    $results = $DB->pselect($query, []);
     foreach ($results as $result) {
         populateVisitLabel($result, $result['Visit_label']);
     }

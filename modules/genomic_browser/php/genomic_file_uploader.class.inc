@@ -40,10 +40,10 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'genomic_browser_view_allsites',
                 'genomic_browser_view_site',
-            )
+            ]
         );
     }
 
@@ -56,7 +56,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
             'GenomicFileID',
             'FileName',
             'Description',
@@ -65,7 +65,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
             'InsertedByUserID',
             'Caveat',
             'Notes',
-        );
+        ];
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -74,13 +74,13 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
                 function ($header) {
                         return ucwords(str_replace('_', ' ', $header));
                 },
-                array()
+                []
             )
         );
 
         $this->query = " FROM genomic_files WHERE 1=1 ";
 
-        $this->validFilters = array(
+        $this->validFilters = [
             'GenomicFileID',
             'FileName',
             'Description',
@@ -89,21 +89,21 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
             'InsertedByUserID',
             'Caveat',
             'Notes',
-        );
+        ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'file_name'         => 'FileName',
             'description'       => 'Description',
             'genomic_file_type' => 'FileType',
             'date_inserted'     => 'Date_inserted',
             'caveat'            => 'Caveat',
             'notes'             => 'Notes',
-        );
+        ];
 
-        $this->EqualityFilters = array(
+        $this->EqualityFilters = [
             'FileType',
             'Caveat',
-        );
+        ];
 
     }
 
@@ -158,11 +158,11 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/genomic_browser/js/genomic_browser.js",
                 $baseURL . "/genomic_browser/js/genomic_file_uploader.js",
                 $baseURL . "/genomic_browser/js/FileUploadModal.js",
-            )
+            ]
         );
     }
 
@@ -181,7 +181,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
         $DB      = \Database::singleton();
         $results = $DB->pselect(
             "SELECT DISTINCT $column FROM $table ",
-            array()
+            []
         );
         return array_reduce(
             $results,
@@ -192,7 +192,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
                 }
                 return $carry;
             },
-            array(null => 'Any')
+            [null => 'Any']
         );
 
     }

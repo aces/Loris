@@ -171,12 +171,13 @@ class IssueTrackerIndex extends Component {
       }},
       {label: 'Status', show: true, filter: {
         name: 'status',
-        type: 'select',
+        type: 'multiselect',
         options: options.statuses,
         }},
       {label: 'Priority', show: true, filter: {
         name: 'priority',
         type: 'select',
+        sortByValue: false,
         options: options.priorities,
         }},
       {label: 'Site', show: true, filter: {
@@ -206,10 +207,36 @@ class IssueTrackerIndex extends Component {
     ];
 
     const filterPresets = [
-      {label: 'All Issues', filter: {}},
-      {label: 'Active Issues', filter: {status: {value: 'closed', opposite: true}}},
-      {label: 'Closed Issues', filter: {status: {value: 'closed', exactMatch: true}}},
-      {label: 'My Issues', filter: {assignee: {value: this.state.data.fieldOptions.userID, exactMatch: true}}},
+      {
+        label: 'All Issues',
+        filter: {},
+      },
+      {
+        label: 'Active Issues',
+        filter: {
+          status: {
+            value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
+          },
+        },
+      },
+      {
+        label: 'Closed Issues',
+        filter: {
+          status: {
+            value: ['closed'],
+            exactMatch: true,
+          },
+        },
+      },
+      {
+        label: 'My Issues',
+        filter: {
+          assignee: {
+            value: this.state.data.fieldOptions.userID,
+            exactMatch: true,
+          },
+        },
+      },
     ];
 
     const addIssue = () => {

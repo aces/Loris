@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
@@ -27,7 +28,7 @@ require_once __DIR__
 class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
 {
     // expect UIs for Profiles Tab
-    private $_loadingProfilesUI = array(
+    private $_loadingProfilesUI = [
         'Profiles'          => '#onLoad > strong',
         'Candidate Filters' => '#lorisworkspace>div>'.
                                            'div:nth-child(2)>div>div>form>div:nth'.
@@ -46,17 +47,17 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         'SNP'               => '#dynamictable > thead',
         'CNV'               => '#dynamictable > thead',
         'CPG'               => '#dynamictable > thead',
-    );
+    ];
     // expect UIs for GWAS Tab
-    private $_loadingGWASUI = array(
+    private $_loadingGWASUI = [
         'Gwas Browser' => '#bc2 > a:nth-child(3) > div',
         'GWAS Filters' => '#lorisworkspace > div > '.
                                            'div:nth-child(2) > div >div > form >'.
                                            'div>div>div.form-group.col-sm-8>div> '.
                                            'div.panel-heading',
-    );
+    ];
     // expect UIs for SNP Tab
-    private $_loadingSNPUI = array(
+    private $_loadingSNPUI = [
         'SNP Filters'         => '#lorisworkspace > div >'.
                                            'div:nth-child(2) > div > div'.
                                            '> form > div > div:nth-child(2) >'.
@@ -74,9 +75,9 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         'Function Prediction' => '#dynamictable > thead',
         'Damaging'            => '#dynamictable > thead',
         'Exonic Function'     => '#dynamictable > thead',
-    );
+    ];
     // expect UIs for Methylation Tab
-    private $_MethylationUI = array(
+    private $_MethylationUI = [
         'Candidate Filters'     => '#lorisworkspace > div >'.
                                            ' div:nth-child(2) > div> div > form >'.
                                            ' div>div:nth-child(1)>div.form-group.'.
@@ -90,12 +91,12 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                                            ' > form > div > div:nth-child(2) >'.
                                            ' div.form-group.col-sm-8 >'.
                                            ' div > div.panel-heading',
-    );
+    ];
     // expect UIs for Files Tab
-    private $_FilesUI = array(
+    private $_FilesUI = [
         'Genomic File Filters' => '#genomic_upload > div >'.
                              ' div.col-sm-10.col-md-8 > div > div.panel-heading',
-    );
+    ];
     /**
      * Tests that, when loading the genomic_browser module, the
      * breadcrumb is 'Genomic browser' or an error is given according
@@ -105,7 +106,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/genomic_browser/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -123,10 +124,10 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserWithPermission()
     {
         $this->setupPermissions(
-            array(
+            [
                 "genomic_browser_view_allsites",
                 "genomic_browser_view_site",
-            )
+            ]
         );
          $this->safeGet($this->url . "/genomic_browser/");
         $bodyText = $this->webDriver->findElement(

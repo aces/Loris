@@ -13,16 +13,17 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 $uploadID = $_REQUEST['uploadID'];
-$db       = \Database::singleton();
-$user     = \User::singleton();
+$factory  = \NDB_Factory::singleton();
+$db       = $factory->database();
+$user     = $factory->user();
 $config   = \NDB_Config::singleton();
 
 $query      = "SELECT PublicationID, Filename ".
     "FROM publication_upload ".
     "WHERE PublicationUploadID=:upid";
-$uploadData = $db->pselectRow($query, array('upid' => $uploadID));
+$uploadData = $db->pselectRow($query, ['upid' => $uploadID]);
 
-$message = array('message' => null);
+$message = ['message' => null];
 
 if (empty($uploadData)) {
     http_response_code(400);
@@ -34,7 +35,7 @@ if (userCanDelete($uploadData, $db, $user)) {
 
     $db->delete(
         'publication_upload',
-        array('PublicationUploadID' => $uploadID)
+        ['PublicationUploadID' => $uploadID]
     );
 
     $src  = $config->getSetting('publication_uploads') . $uploadData['Filename'];
@@ -62,14 +63,14 @@ function userCanDelete($uploadData, $db, $user) : bool
     $retVal   = false;
     $origUser = $db->pselectOne(
         'SELECT UserID FROM publication WHERE PublicationID=:pid',
-        array('pid' => $uploadData['PublicationID'])
+        ['pid' => $uploadData['PublicationID']]
     );
 
     $editors = $db->pselectCol(
         'SELECT UserID 
         FROM publication_users_edit_perm_rel 
         WHERE PublicationID=:pid',
-        array('pid' => $uploadData['PublicationID'])
+        ['pid' => $uploadData['PublicationID']]
     );
 
     // Allow user to delete if they are original uploader

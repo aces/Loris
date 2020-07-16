@@ -37,10 +37,10 @@ class NDB_Factory
     public static $db     = null;
     public static $config = null;
 
-    private static $_couchdb    = array();
+    private static $_couchdb    = [];
     private static $_user       = null;
-    private static $_candidates = array();
-    private static $_timepoints = array();
+    private static $_candidates = [];
+    private static $_timepoints = [];
 
     private $_baseURL = "";
     var $Testing; // Whether or not Mock objects should be returned instead of
@@ -94,15 +94,15 @@ class NDB_Factory
         self::$testdb = null;
         self::$db     = null;
 
-        self::$_couchdb = array();
+        self::$_couchdb = [];
         self::$_user    = null;
 
         self::$config = null;
 
         self::$_settings = null;
 
-        self::$_candidates = array();
-        self::$_timepoints = array();
+        self::$_candidates = [];
+        self::$_timepoints = [];
 
         $this->_baseURL = "";
     }
@@ -344,12 +344,12 @@ class NDB_Factory
                 'CouchDB',
                 'MockCouchDBWrap',
                 /* mock out the functions that make HTTP requests */
-                array(
+                [
                     '_getRelativeURL',
                     '_postRelativeURL',
                     '_postURL',
                     '_getURL',
-                )
+                ]
             );
             self::$_couchdb[$database] = new MockCouchDBWrap();
         } else {
