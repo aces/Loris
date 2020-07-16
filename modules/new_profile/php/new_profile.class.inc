@@ -149,15 +149,7 @@ class New_Profile extends \NDB_Form
         $num_sites          = count($user_list_of_sites);
         $psc_labelOptions   = [];
         if ($num_sites > 1) {
-            foreach ($user_list_of_sites as $siteID) {
-                $center = $DB->pselectRow(
-                    "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                    ['cid' => $siteID]
-                );
-                if (!is_null($center)) {
-                    $psc_labelOptions[$siteID] = $center['Name'];
-                }
-            }
+            $psc_labelOptions = \Utility::getSiteNameListByIDs($user_list_of_sites);
         }
         $site = $psc_labelOptions;
 
