@@ -1000,7 +1000,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->commentID = 'commentID2';
+        $this->_instrument->commentID = 'commentID3';
         $this->assertEquals(-1, $this->_instrument->getSessionID());
     }
 
@@ -1031,7 +1031,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->commentID = 'commentID2';
+        $this->_instrument->commentID = 'commentID3';
         $this->assertEquals("", $this->_instrument->getVisitLabel());
     }
 
@@ -1060,7 +1060,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_instrument->commentID = 'commentID2';
+        $this->_instrument->commentID = 'commentID3';
         $this->assertEquals(null, $this->_instrument->getSubprojectID());
     }
 
@@ -1152,7 +1152,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table = 'medical_history';
         $this->assertEquals(
-            'Test Examiner',
+            'Test Examiner1',
             $this->_instrument->getFieldValue('Examiner')
         );
     }
@@ -1563,6 +1563,60 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
+     * Test that nullScores sets the value for the given key-value pair
+     * to null in the instrument table
+     *
+     * @covers NDB_BVL_Instrument::_nullScores
+     * @return void
+     */
+    function testNullScores()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->_nullScores(['Examiner' => 'Test Examiner1']);
+        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $this->assertEquals(null, $data['Examiner']);
+    }
+
+    /**
+     * Test that diff returns an array highlighting the differences between
+     * two instruments
+     *
+     * @covers NDB_BVL_Instrument::diff
+     * @return void
+     */
+    function testDiff()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $otherInstrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array("getFullName", "getSubtestList"))->getMock();
+        $otherInstrument->commentID = 'commentID2';
+        $otherInstrument->table = 'medical_history';
+        $this->assertEquals(
+            $this->_instrument->diff($otherInstrument),
+            [
+                [
+                    'TableName' => 'medical_history',
+                    'ExtraKeyColumn' => null,
+                    'ExtraKey1' => ' ',
+                    'ExtraKey2' => ' ',
+                    'FieldName' => 'Examiner',
+                    'CommentId1' => 'commentID1',
+                    'Value1' => 'Test Examiner1',
+                    'CommentId2' => 'commentID2',
+                    'Value2' => 'Test Examiner2'
+                ]
+            ]
+        );
+    }
+
+    /**
      * Private function to set fake table data to be tested
      *
      * @return void
@@ -1582,7 +1636,13 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'CommentID' => 'commentID1',
                     'Test_name' => 'Test_name1',
                     'UserID'    => '456'
-                ]
+                ],
+                [
+                    'SessionID' => '234',
+                    'CommentID' => 'commentID2',
+                    'Test_name' => 'Test_name2',
+                    'UserID'    => '457'
+                ],
             ]
         );
         $this->_DB->setFakeTableData(
@@ -1593,6 +1653,12 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'DoB' => '1999-01-01',
                     'DoD' => '2016-01-01',
                     'PSCID' => '345'
+                ],
+                [
+                    'CandID' => 2,
+                    'DoB' => '1999-01-01',
+                    'DoD' => '2016-01-01',
+                    'PSCID' => '346'
                 ]
             ]
         );
@@ -1603,6 +1669,11 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'ID' => '123',
                     'CandID' => 1,
                     'SubprojectID' => '12'
+                ],
+                [
+                    'ID' => '234',
+                    'CandID' => 2,
+                    'SubprojectID' => '12'
                 ]
             ]
         );
@@ -1612,10 +1683,17 @@ class NDB_BVL_Instrument_Test extends TestCase
                 [
                     'CommentID' => 'commentID1',
                     'UserID' => '456',
-                    'Examiner' => 'Test Examiner',
+                    'Examiner' => 'Test Examiner1',
                     'Date_taken' => '2010-05-05 00:00:01',
                     'Data_entry_completion_status' => 'Incomplete'
-                ]
+                ],
+                [
+                    'CommentID' => 'commentID2',
+                    'UserID' => '457',
+                    'Examiner' => 'Test Examiner2',
+                    'Date_taken' => '2010-05-05 00:00:01',
+                    'Data_entry_completion_status' => 'Incomplete'
+                ],
             ]
         );
         $this->_DB->setFakeTableData(
