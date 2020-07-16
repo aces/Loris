@@ -1,6 +1,5 @@
 <?php
 namespace LORIS\Data\Types;
-
 /**
  * A TimeType represents a time of the day. (ie. 12pm.)
  *

@@ -1,6 +1,5 @@
 <?php
 namespace LORIS\Data;
-
 /**
  * Cardinality represents the number of data points which
  * apply to the scope of a data type.
