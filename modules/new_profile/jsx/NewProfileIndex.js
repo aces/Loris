@@ -146,9 +146,9 @@ class NewProfileIndex extends React.Component {
     let pscid = null;
     let site = null;
     let minYear = this.state.configData.minYear;
-    let today = (new Date()).getFullYear();
-    let maxYear = (this.state.configData.maxYear > today)
-      ? today : this.state.configData.maxYear;
+    let thisYear = (new Date()).getFullYear();
+    let dobMaxYear = (this.state.configData.maxYear > thisYear)
+      ? thisYear : this.state.configData.maxYear;
     let dateFormat = this.state.configData.dobFormat;
     let requireBirthDate = true;
 
@@ -209,7 +209,7 @@ class NewProfileIndex extends React.Component {
             name = "dobDate"
             label = "Date of Birth"
             minYear = {minYear}
-            maxYear = {maxYear}
+            maxYear = {dobMaxYear}
             dateFormat = {dateFormat}
             onUserInput = {this.setFormData}
             value = {this.state.formData.dobDate}
@@ -219,7 +219,7 @@ class NewProfileIndex extends React.Component {
             name = "dobDateConfirm"
             label = "Date of Birth Confirm"
             minYear = {minYear}
-            maxYear = {maxYear}
+            maxYear = {dobMaxYear}
             dateFormat = {dateFormat}
             onUserInput = {this.setFormData}
             value = {this.state.formData.dobDateConfirm}
