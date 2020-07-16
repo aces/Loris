@@ -302,6 +302,20 @@ class DataDictIndex extends Component {
                 type: 'text',
             },
         },
+        {
+            label: 'Data Cardinality',
+            show: true,
+            filter: {
+                name: 'cardinality',
+                type: 'select',
+                options: {
+                    'unique': 'Unique',
+                    'single': 'Single',
+                    'optional': 'Optional',
+                    'many': 'Many',
+                },
+            },
+        },
     ];
     return (
         <FilterableDataTable

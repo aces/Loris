@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace LORIS\Data\Dictionary;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Type;
+use \LORIS\Data\Cardinality;
 
 use \LORIS\Data\Scope;
 use \LORIS\Data\Type;
@@ -124,6 +125,10 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
 
     public function getDataType() : \LORIS\Data\Type {
         return $this->typ;
+    }
+
+    public function getCardinality() : \LORIS\Data\Cardinality {
+        return $this->cardinality;
     }
 
     /**

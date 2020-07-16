@@ -101,7 +101,7 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new DataDictRowProvisioner($this->lorisinstance);
+        return new DataDictRowProvisioner($this->lorisinstance, $this->categoryitems);
     }
 
     /**
@@ -160,21 +160,26 @@ class Datadict extends \DataFrameworkMenu
         $dict = [];
         $categories = [];
 
+        $this->categoryitems = [];
         foreach ($modules as $module) {
             if(!$module->hasAccess($user)) {
                 continue;
             }
-            $usermodules[] = $module;
 
             $mdict = $module->getDataDictionary($this->lorisinstance);
             $mname = $module->getName();
 
             if(count($mdict) > 0) {
+                $usermodules[] = $module;
                 $categories[$mname] = [];
 
 
                 foreach($mdict as $cat) {
                     $categories[$mname][$cat->getName()] = $cat->getDescription();
+                    $this->categoryitems[] = [
+                        'Module' => $module,
+                        'Category' => $cat,
+                    ];
                 }
             }
         }
