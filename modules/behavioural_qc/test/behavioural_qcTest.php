@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
         "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -46,7 +47,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
       */
     function testBehaviouralQCWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -64,7 +65,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
      */
     function testBehaviouralQCPermission()
     {
-         $this->setupPermissions(array("quality_control"));
+         $this->setupPermissions(["quality_control"]);
          $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

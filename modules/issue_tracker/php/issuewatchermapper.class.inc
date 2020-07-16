@@ -46,7 +46,8 @@ class IssueWatcherMapper implements Mapper
 
         static $config = null;
         if ($config === null) {
-            $config = \NDB_Config::singleton()->getSetting("imaging_modules");
+            $factory = \NDB_Factory::singleton();
+            $config  = $factory->config()->getSetting("imaging_modules");
         }
 
         $newrow = json_decode($resource->toJSON(), true);
@@ -60,7 +61,7 @@ class IssueWatcherMapper implements Mapper
 
         return new IssueRow(
             $newrow,
-            $resource->getCenterID(),
+            $resource->getCenterIDs(),
             $resource->getModule()
         );
     }

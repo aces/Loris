@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -78,7 +79,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testDicomArchivePermission()
     {
-        $this->setupPermissions(array("dicom_archive_view_allsites"));
+        $this->setupPermissions(["dicom_archive_view_allsites"]);
         $this->safeGet($this->url . "/dicom_archive/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

@@ -178,7 +178,7 @@ class Process
         }
 
         $runningPids = $this->getProcessMonitor()->getRunningProcesses(
-            array($this->getPid())
+            [$this->getPid()]
         );
 
         return count($runningPids) == 1;

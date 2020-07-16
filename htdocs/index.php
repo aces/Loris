@@ -35,7 +35,8 @@ $middlewarechain = (new \LORIS\Middleware\ContentLength())
 $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
 
 // Now that we've created the ServerRequest, handle it.
-$user = \User::singleton();
+$factory = \NDB_Factory::singleton();
+$user    = $factory->user();
 
 $entrypoint = new \LORIS\Router\BaseRouter(
     $user,

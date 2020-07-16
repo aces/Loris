@@ -48,9 +48,13 @@ class Card extends Component {
     let divStyling = {
       marginLeft: '5px',
       marginRight: '5px',
+      boxSizing: 'border-box',
     };
     if (this.props.style) {
         divStyling = {...divStyling, ...this.props.style};
+    }
+    if (this.props.cardSize) {
+        divStyling.height = this.props.cardSize;
     }
     return (
       <div style={divStyling}>
@@ -58,6 +62,8 @@ class Card extends Component {
           id={this.props.id}
           title={this.props.title}
           initCollapsed={this.props.initCollapsed}
+            style={{overflow: 'auto'}}
+           panelSize={this.props.cardSize}
         >
           <div
             onClick={this.handleClick}

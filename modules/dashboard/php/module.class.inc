@@ -83,11 +83,11 @@ class Module extends \Module
         $dashboard_links = $config->getExternalLinks('dashboard');
         $links           = [];
         foreach ($dashboard_links as $text => $url) {
-            $links[] = array(
+            $links[] = [
                 'url'        => $url,
                 'label'      => $text,
                 'WindowName' => md5($url),
-            );
+            ];
         }
 
         $footer = "";
@@ -135,9 +135,10 @@ class Module extends \Module
      */
     private function _getTasksWidget()
     {
-        $DB      = \NDB_Factory::singleton()->database();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         $modules = \Module::getActiveModules($DB);
-        $user    = \User::singleton();
+        $user    = $factory->user();
 
         $widgets = [];
         foreach ($modules as $module) {

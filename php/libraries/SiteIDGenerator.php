@@ -132,10 +132,10 @@ class SiteIDGenerator extends IdentifierGenerator
             "SELECT substring($this->kind, LENGTH('{$this->prefix}') +1)
             from candidate
             WHERE {$this->kind} LIKE '{$this->prefix}%'",
-            array()
+            []
         );
         if (empty($ids)) {
-            return array();
+            return [];
         }
         // Filter out non-numeric ids if using a numeric alphabet.
         if (empty(array_diff($this->alphabet, range('0', '9')))) {
@@ -171,7 +171,7 @@ class SiteIDGenerator extends IdentifierGenerator
         if (!$idStructure[0]) {
             // There's only one seq tag so the param format
             // needs to be fixed
-            $temp        = array();
+            $temp        = [];
             $temp[]      = $idStructure;
             $idStructure = $temp;
         }
@@ -303,7 +303,7 @@ class SiteIDGenerator extends IdentifierGenerator
         array $idStructure,
         string $setting
     ): array {
-        $seqAttributes = array();
+        $seqAttributes = [];
         foreach ($idStructure as $seq) {
             if (isset($seq['@'][$setting])) {
                 $seqAttributes[] = $seq['@'][$setting];
