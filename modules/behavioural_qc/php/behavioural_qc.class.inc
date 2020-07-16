@@ -26,7 +26,6 @@ namespace LORIS\behavioural_qc;
  */
 class Behavioural_QC extends \NDB_Form
 {
-    public $skipTemplate = true; // stops from looking for a smarty template
 
     /**
      * {@inheritDoc}
