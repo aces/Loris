@@ -167,8 +167,8 @@ class Utility
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $params = array();
-        $values = array();
+        $params = [];
+        $values = [];
         foreach ($siteIDs as $key => $siteID) {
             $para          = "cid$key";
             $params[]      = ":$para";
@@ -181,7 +181,7 @@ class Utility
             $values
         );
 
-        $list = array();
+        $list = [];
         foreach ($sites as $site) {
             $list[$site['ID']] = $site['Name'];
         }

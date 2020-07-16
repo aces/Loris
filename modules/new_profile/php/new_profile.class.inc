@@ -126,7 +126,6 @@ class New_Profile extends \NDB_Form
     function setup(): void
     {
         $factory   = \NDB_Factory::singleton();
-        $DB        = $factory->database();
         $config    = $factory->config();
         $user      = $factory->user();
         $startYear = $config->getSetting('startYear');
