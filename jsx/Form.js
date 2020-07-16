@@ -1063,6 +1063,8 @@ class DateElement extends Component {
     }
 
     const currentDate = new Date();
+    // The added '0' is needed because getmonth and getdate return
+    // values need to be padded before saving.
     const currentDay = ('0' + currentDate.getDate()).slice(-2);
     const currentMonth = ('0' + (currentDate.getMonth() + 1)).slice(-2);
 
