@@ -218,7 +218,6 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     function testSurveyAccountsAddSurvey()
     {
         $visitLabel        = 'V1';
-        $invalidVisitLabel = '';
         $instrument        = 'bmi';
 
         // Ensure that an instrument must be supplied.
@@ -259,38 +258,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("PSCID")
         )->sendKeys("8889");
-        $this->safeFindElement(
-            WebDriverBy::Name("VL")
-        )->sendKeys($visitLabel);
-        $this->safeFindElement(
-            WebDriverBy::Name("Test_name")
-        )->sendKeys($instrument);
-        $this->safeFindElement(
-            WebDriverBy::Name("fire_away")
-        )->click();
-        $bodyText =  $this->safeFindElement(
-            WebDriverBy::cssSelector(".error")
-        )->getText();
-        $this->assertContains(
-            "Visit $invalidVisitLabel does not exist for given candidate",
-            $bodyText
-        );
-
-        // Ensure that an error is thrown when an invalid visit label is
-        // supplied. This tests that the visit label is valid as well as
-        // not-empty.
-        $this->safeGet($this->url . "/survey_accounts/");
-        $btn = self::$add;
-        $this->safeClick(WebDriverBy::cssSelector($btn));
-        $this->safeFindElement(
-            WebDriverBy::Name("CandID")
-        )->sendKeys("999999");
-        $this->safeFindElement(
-            WebDriverBy::Name("PSCID")
-        )->sendKeys("8889");
-        $this->safeFindElement(
-            WebDriverBy::Name("VL")
-        )->sendKeys($invalidVisitLabel);
+        $visitField = $this->safeFindElement(
+            WebDriverBy::Name("VL"));
+        $visitOption = new WebDriverSelect($visitField);
+        $visitOption->selectByValue($visitLabel);
         $this->safeFindElement(
             WebDriverBy::Name("Test_name")
         )->sendKeys($instrument);
@@ -301,39 +272,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector(".error")
         )->getText();
         $this->assertContains(
-            "You must specify a valid Visit Label.",
-            $bodyText
-        );
-
-        // Ensure that an error is thrown a visit label is supplied for which
-        // the candidate does not have a session.
-        // NOTE This test will work only so long as the Candidate defined in
-        // this file does not have a visit $visitLabel.
-        $this->safeGet($this->url . "/survey_accounts/");
-        $btn = self::$add;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click()"
-        );
-        $this->safeFindElement(
-            WebDriverBy::Name("CandID")
-        )->sendKeys("999999");
-        $this->safeFindElement(
-            WebDriverBy::Name("PSCID")
-        )->sendKeys("8889");
-        $this->safeFindElement(
-            WebDriverBy::Name("VL")
-        )->sendKeys($visitLabel);
-        $this->safeFindElement(
-            WebDriverBy::Name("Test_name")
-        )->sendKeys($instrument);
-        $this->safeFindElement(
-            WebDriverBy::Name("fire_away")
-        )->click();
-        $bodyText =  $this->safeFindElement(
-            WebDriverBy::cssSelector(".error")
-        )->getText();
-        $this->assertContains(
-            "You must specify a valid Visit Label.",
+            "Visit $visitLabel does not exist for given candidate",
             $bodyText
         );
 
@@ -344,6 +283,9 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("PSCID")
         )->sendKeys("8889");
+        $this->safeFindElement(
+            WebDriverBy::Name("Test_name")
+        )->sendKeys($instrument);
         $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
