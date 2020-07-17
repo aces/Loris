@@ -341,7 +341,7 @@ class Instrument_List extends \NDB_Menu_Filter
             	JOIN test_names t ON (f.Test_name=t.Test_name)
             	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
             	LEFT JOIN session s ON (s.ID=f.SessionID) ";
-        $qparams = array('SID' => $this->timePoint->getSessionID());
+        $qparams = ['SID' => $this->timePoint->getSessionID()];
 
         if (!is_null($stage)) {
             $query .= "
@@ -385,9 +385,9 @@ class Instrument_List extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/instrument_list/js/instrument_list_helper.js",
-            )
+            ]
         );
     }
 

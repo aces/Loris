@@ -29,6 +29,18 @@ use \Psr\Http\Message\ResponseInterface;
 class Module extends \Module
 {
     /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) && $user->hasPermission('data_entry');
+    }
+
+    /**
      * The instruments module loads instruments in LORIS.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
@@ -42,17 +54,16 @@ class Module extends \Module
             return $resp;
         }
 
-        $pathComponents = array();
+        $path           = $request->getURI()->getPath();
+        $pathComponents = [];
 
         // Breakdown path information from the request.
         preg_match(
             "#(/*)([a-zA-Z0-9_-]+)(/*)(.*)#",
-            $request->getURI()->getPath(),
+            $path,
             $pathComponents
         );
 
-        // TODO These magic numbers should be changed to constants so that
-        // it's easier to tell what they're referring to.
         $instrumentName = $pathComponents[2];
         $page           = $pathComponents[4];
 
@@ -118,7 +129,22 @@ class Module extends \Module
                 ),
 
             ];
+        case 'candidate':
+            $factory = \NDB_Factory::singleton();
+            $baseurl = $factory->settings()->getBaseURL();
+
+            return [
+                new \LORIS\candidate_profile\CandidateWidget(
+                    "Behavioural Data",
+                    $baseurl . "/instruments/js/CandidateInstrumentList.js",
+                    'lorisjs.instruments.CandidateInstrumentList.default',
+                    [],
+                    2,
+                    2,
+                ),
+            ];
         }
         return [];
     }
 }
+

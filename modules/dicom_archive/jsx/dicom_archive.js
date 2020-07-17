@@ -86,8 +86,9 @@ class DicomArchive extends Component {
         if (row.SessionID === null || row.SessionID === '') {
           result = <td>&nbsp;</td>;
         } else {
-          let mrlURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
-            row.SessionID;
+          let mrlURL = loris.BaseURL
+                       + '/imaging_browser/viewSession/?sessionID='
+                       + row.SessionID;
           result = <td><a href={mrlURL}>{cell}</a></td>;
         }
       break;
@@ -128,7 +129,8 @@ class DicomArchive extends Component {
       }},
       {label: 'Sex', show: true, filter: {
         name: 'sex',
-        type: 'text',
+        type: 'select',
+        options: {M: 'M', F: 'F', O: 'O'},
       }},
       {label: 'Date of Birth', show: true, filter: {
         name: 'dateOfBirth',

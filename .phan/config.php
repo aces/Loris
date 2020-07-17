@@ -31,8 +31,11 @@ return [
     "dead_code_detection" => false,
     // FIXME: We should add this. Note that dead_code_detection also covers
     // unused_variable_detection. It might be a good idea to enable this first.
-    "unused_variable_detection" => false,
+    "unused_variable_detection" => true,
     "suppress_issue_types" => [
+        "PhanUnusedVariable",
+        "PhanUnusedPublicMethodParameter",
+        "PhanUnusedPublicNoOverrideMethodParameter",
         "PhanTypePossiblyInvalidDimOffset",
         "PhanUndeclaredMethod",
         "PhanTypeMismatchArgument",

@@ -121,15 +121,14 @@ $query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
             ORDER BY v.TimeRun DESC";
 
 // Filter values to modify
-$where   = array(
-            'pr' => 'Protocol Violation',
-            'sd' => '%t1%',
-           );
+$where   = [
+    'pr' => 'Protocol Violation',
+    'sd' => '%t1%',
+];
 $results = $DB->pselect($query, $where);
 
-foreach ($results AS $result) {
-
-    $newlyResolved         = array();
+foreach ($results as $result) {
+    $newlyResolved         = [];
     $newlyResolved['hash'] = $result['hash'];
     $newlyResolved['Resolved']   = 'inserted_flag';
     $newlyResolved['User']       = get_current_user();
@@ -141,10 +140,7 @@ foreach ($results AS $result) {
     $row = $DB->pselectRow(
         "SELECT * FROM violations_resolved
         WHERE hash = :ha and ExtID = :ex ",
-        array(
-         'ha' => $result['hash'],
-         'ex' => $result['join_id'],
-        )
+        ['ha' => $result['hash'], 'ex' => $result['join_id']]
     );
 
     // Insert if new
@@ -157,5 +153,4 @@ foreach ($results AS $result) {
     } else {
         print "skip\n";
     }
-
 }

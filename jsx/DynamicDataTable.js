@@ -4,7 +4,15 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import StaticDataTable from 'StaticDataTable';
 
+/**
+ * Dynamic Data Table component
+ * Results can be filtered with ajax queries
+ */
 class DynamicDataTable extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -22,17 +30,26 @@ class DynamicDataTable extends Component {
     this.xhrProgress = this.xhrProgress.bind(this);
   };
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
       // Listen for update event to update data table on outside changes
     window.addEventListener('update-datatable', this.fetchData);
   }
 
+  /**
+   * Invoked immediately before a component is unmounted and destroyed.
+   */
   componentWillUnmount() {
       // Unsubscribe from the event before component is destroyed
     window.removeEventListener('update-datatable', this.fetchData);
   }
 
+  /**
+   * Fetch data via ajax
+   */
   fetchData() {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
@@ -43,18 +60,33 @@ class DynamicDataTable extends Component {
     });
   }
 
+  /**
+   * XML Http Request
+   *
+   * @return {XMLHttpRequest}
+   */
   xhrFunction() {
     let xhr = new window.XMLHttpRequest();
     xhr.addEventListener('progress', this.xhrProgress);
     return xhr;
   }
 
+  /**
+   * XHR progress listener
+   *
+   * @param {object} evt - Event object
+   */
   xhrProgress(evt) {
     this.setState({
       loadedData: evt.loaded,
     });
   }
 
+  /**
+   * Ajax success callback
+   *
+   * @param {object} data
+   */
   ajaxSuccess(data) {
     this.setState({
       Headers: data.Headers,
@@ -63,6 +95,13 @@ class DynamicDataTable extends Component {
     });
   }
 
+  /**
+   * Ajax failure callback
+   *
+   * @param {jqXHR} data
+   * @param {string} errorCode
+   * @param {string} errorMsg
+   */
   ajaxFailure(data, errorCode, errorMsg) {
     console.error(errorCode + ': ' + errorMsg);
     this.setState({
@@ -70,6 +109,11 @@ class DynamicDataTable extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
@@ -83,7 +127,9 @@ class DynamicDataTable extends Component {
       return (
         <button className='btn-info has-spinner'>
           Loading
-          <span className='glyphicon glyphicon-refresh glyphicon-refresh-animate'/>
+          <span
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'
+          />
         </button>
       );
     }

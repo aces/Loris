@@ -45,11 +45,10 @@ Test Battery.
 
 **Testing add functionality**
   1. Check that you cannot add an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
-  2. Check that you can only enter a site that exists.
-  3. Check that you can only enter numbers between 0 and 99999 in Minumum age (days) and Maximum age (days).
-  4. Check that you can only enter numbers between 0 and 127 in Instrument order.
-  5. Check that when you try to add an entry that has an active duplicate in the table (Active = 'Y'), you receive an error message.
-  6. Try to add an entry that does not have a duplicate.
+  2. Check that you can only enter numbers between 0 and 99999 in Minumum age (days) and Maximum age (days).
+  3. Check that you can only enter numbers between 0 and 127 in Instrument order.
+  4. Check that when you try to add an entry that has an active duplicate in the table (Active = 'Y'), you receive an error message.
+  5. Try to add an entry that does not have a duplicate.
      - Ensure that a success message appears and the page goes back to the Browse tab.
      - Ensure the entry you just added is shown in data table.
 

@@ -93,9 +93,15 @@ class ViewProject extends React.Component {
         if (data.files) {
           data.files.forEach(function(f) {
             let existFileFlag = 'existingUpload_';
-            let pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
-            let pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
-            let pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
+            let pubType = existFileFlag
+                          + 'publicationType_'
+                          + f.PublicationUploadID;
+            let pubCit = existFileFlag
+                         + 'publicationCitation_'
+                         + f.PublicationUploadID;
+            let pubVer = existFileFlag
+                         + 'publicationVersion_'
+                         + f.PublicationUploadID;
             formData[pubType] = f.PublicationUploadTypeID;
             formData[pubCit] = f.Citation;
             formData[pubVer] = f.Version;
@@ -132,8 +138,10 @@ class ViewProject extends React.Component {
     let files = this.state.files;
     let toReturn = [];
     files.forEach(function(f) {
-      let download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.URL;
-      let link = <a href={download}>{f.URL}</a>;
+      let download = loris.BaseURL
+                     + '/publication/ajax/FileDownload.php?File='
+                     + f.Filename;
+      let link = <a href={download}>{f.Filename}</a>;
       let uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
       toReturn.push(
           <StaticElement
@@ -364,7 +372,9 @@ class ViewProject extends React.Component {
       }
       // Set review button only if user does not have edit permission
       // to avoid having 2 submit buttons
-      reviewBtn = this.state.userCanEdit ? undefined : <ButtonElement label="Submit" />;
+      reviewBtn = this.state.userCanEdit ?
+        undefined :
+        <ButtonElement label="Submit" />;
     } else {
       const statClassMap = {
         Pending: 'text-warning',

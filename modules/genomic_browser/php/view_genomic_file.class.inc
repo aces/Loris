@@ -70,24 +70,22 @@ class View_Genomic_File extends \NDB_Form
     /**
      * Populates tpl form data using values from a Genomic_File object.
      *
-     * @param ?string $category type of data: raw,cleaned,gwas
-     *
      * @return void
      */
-    private function _setFileData(?string $category = null): void
+    private function _setFileData(): void
     {
         if (empty($this->genomic_file_id)) {
             $files = \Database::singleton()->pselect(
                 "SELECT g.GenomicFileID
                 FROM genomic_candidate_files_rel g WHERE g.CandID=:cid ",
-                array('cid' => $this->candID)
+                ['cid' => $this->candID]
             );
         } else {
-            $files = array(
-                array('GenomicFileID' => $this->genomic_file_id),
-            );
+            $files = [
+                ['GenomicFileID' => $this->genomic_file_id],
+            ];
         }
-        $this->tpl_data['files'] = array();
+        $this->tpl_data['files'] = [];
         foreach ($files as $fileRow) {
             $FileObj = new Genomic_File(intval($fileRow['GenomicFileID']));
 
@@ -100,7 +98,7 @@ class View_Genomic_File extends \NDB_Form
             $paramQCDate           = $FileObj->getParameter('QCLastChangeTime');
 
             // load $file array
-            $file = array(
+            $file = [
                 'FileID'           => $fileRow['GenomicFileID'],
                 'Filename'         => $paramFilename,
                 'FullFilename'     => $FileObj->getParameter('FileName'),
@@ -124,7 +122,7 @@ class View_Genomic_File extends \NDB_Form
                 'Selected'         => $FileObj->getParameter('Selected'),
                 'QCStatus'         => $FileObj->getParameter('QCStatus'),
                 'QCDate'           => $paramQCDate,
-            );
+            ];
 
             $this->tpl_data['files'][] = $file;
         }

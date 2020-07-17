@@ -46,10 +46,10 @@ class InstrumentFlags
      */
     public function toArray(): array
     {
-        return array(
+        return [
             'Data_entry'     => $this->_dataentry,
             'Administration' => $this->_administration,
             'Validity'       => $this->_validity,
-        );
+        ];
     }
 }

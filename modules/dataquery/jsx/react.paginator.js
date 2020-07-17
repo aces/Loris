@@ -27,11 +27,11 @@ class PaginationLinks extends Component {
     let rowsPerPage = this.props.RowsPerPage;
     let pageLinks = [];
     let classList;
-    let lastPage = Math.ceil(this.props.total / rowsPerPage);
+    let lastPage = Math.ceil(this.props.Total / rowsPerPage);
     let startPage = Math.max(1, this.props.Active - 3);
     let lastShownPage = Math.min(this.props.Active + 3, lastPage);
 
-    if (this.props.total === 0) {
+    if (this.props.Total === 0) {
       return <div/>;
     }
 

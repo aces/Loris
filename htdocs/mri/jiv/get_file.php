@@ -42,11 +42,11 @@ $DownloadPath = $paths['DownloadPath'];
 $tarchivePath = $pipeline['tarchiveLibraryDir'];
 // Basic config validation
 if (!validConfigPaths(
-    array(
+    [
         $imagePath,
         $DownloadPath,
         $tarchivePath,
-    )
+    ]
 )
 ) {
     http_response_code(500);

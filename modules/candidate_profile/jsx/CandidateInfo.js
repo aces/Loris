@@ -152,7 +152,7 @@ export class CandidateInfo extends Component {
             },
         ];
 
-        const cardInfo = data.map((info, index) => {
+        const renderTerm = (label, value, info) => {
             const cardStyle = {
                 width: info.width || '6em',
                 padding: '1em',
@@ -165,17 +165,42 @@ export class CandidateInfo extends Component {
             }
 
             return (
-                <div style={cardStyle} key={info.label}>
-                    <dt style={{whiteSpace: 'nowrap'}}>{info.label}</dt>
-                    <dd style={valueStyle}>{info.value}</dd>
+                <div style={cardStyle} key={label}>
+                    <dt>{label}</dt>
+                    <dd style={valueStyle}>{value}</dd>
                 </div>
             );
-        });
+        };
+        const cardInfo = data.map(
+            (info) => renderTerm(info.label, info.value, info)
+        );
+
+        let extrainfo;
+        if (this.props.ExtraCandidateInfo.length > 0) {
+            // We give extra width for generic terms that we don't
+            // know anything about their size, so we err on the
+            // side of caution.
+            extrainfo = (
+                <div>
+                    <hr />
+                    <dl style={{display: 'flex', flexFlow: 'wrap', margin: 0}}>
+                            {this.props.ExtraCandidateInfo.map(
+                                (obj) => renderTerm(
+                                    obj.term,
+                                    obj.value,
+                                    {width: '12em'}
+                                )
+                            )}
+                    </dl>
+                </div>
+            );
+        }
         return (
             <div style={{width: '100%'}}>
                 <dl style={{display: 'flex', flexFlow: 'wrap', margin: 0}}>
                     {cardInfo}
                 </dl>
+                {extrainfo}
             </div>
         );
     }

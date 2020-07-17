@@ -38,7 +38,8 @@ class IssueForm extends Component {
     this.setFormData = this.setFormData.bind(this);
     this.isValidForm = this.isValidForm.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
-    this.closeAttachmentUploadModal = this.closeAttachmentUploadModal.bind(this);
+    this.closeAttachmentUploadModal = this.closeAttachmentUploadModal
+                                      .bind(this);
     this.openAttachmentUploadModal = this.openAttachmentUploadModal.bind(this);
   }
 
@@ -250,6 +251,7 @@ class IssueForm extends Component {
             required={false}
             disabled={!hasEditPermission}
             value={this.state.formData.priority}
+            sortByValue={false}
           />
           <SelectElement
             name='category'
@@ -387,7 +389,9 @@ class IssueForm extends Component {
       processData: false,
       success: function(data) {
         let msgType = 'success';
-        let message = this.state.isNewIssue ? 'You will be redirected to main page in 2 seconds!' : '';
+        let message = this.state.isNewIssue ?
+          'You will be redirected to main page in 2 seconds!' :
+          '';
         this.showAlertMessage(msgType, message);
         this.setState({
           submissionResult: 'success',

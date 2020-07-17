@@ -3,22 +3,22 @@
 }
 
 .wrapper {
-    padding-left: 250px;
+    padding-left: 200px;
     transition: all 0.4s ease 0s;
 }
 
 #sidebar-wrapper {
-    margin-left: -250px;
+    margin-left: -200px;
     margin-top: 50px;
-    left: 250px;
-    width: 250px;
+    left: 200px;
+    width: 200px;
     top: 0;
     background: #E4EBF2;
     border: 1px solid #C3D5DB;
     position: fixed;
     height: 100%;
     overflow-y: auto;
-    z-index: 1000;
+    z-index: 999;
     transition: all 0.4s ease 0s;
 }
 
@@ -37,7 +37,7 @@
 .sidebar-nav {
     position: absolute;
     top: 0;
-    width: 250px;
+    width: 200px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -119,17 +119,17 @@
 
     #sidebar-wrapper {
         left: 0;
-        color: white;
+        color: #064785;
     }
 
     .wrapper.active {
         position: relative;
-        left: 250px;
+        left: 200px;
     }
 
     .wrapper.active #sidebar-wrapper {
-        left: 250px;
-        width: 250px;
+        left: 200px;
+        width: 200px;
         transition: all 0.4s ease 0s;
     }
 

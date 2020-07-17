@@ -38,7 +38,7 @@ $value   = $args[2];
 
 $config = $DB->pselectRow(
     "SELECT ID, AllowMultiple FROM ConfigSettings WHERE Name=:config",
-    array('config' => $setting)
+    ['config' => $setting]
 );
 
 if (count($config ?? []) === 0) {
@@ -58,11 +58,11 @@ if ($multiple == '1') {
 // Determine whether to insert or update
 $newconfig = (int )$DB->pselectOne(
     "SELECT COUNT(*) FROM Config WHERE ConfigID=:id",
-    array('id' => $id)
+    ['id' => $id]
 );
 
 if ($newconfig === 0) {
-    $DB->insert("Config", array('Value' => $value, 'ConfigID' => $id));
+    $DB->insert("Config", ['Value' => $value, 'ConfigID' => $id]);
 } else {
-    $DB->update("Config", array('Value' => $value), array('ConfigID' => $id));
+    $DB->update("Config", ['Value' => $value], ['ConfigID' => $id]);
 }

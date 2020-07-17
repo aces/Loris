@@ -34,7 +34,12 @@ class AddPermissionForm extends Component {
   fetchData() {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data: data.Data, fieldOptions: data.fieldOptions}))
+      .then(
+        (data) => this.setState({
+          data: data.Data,
+          fieldOptions: data.fieldOptions,
+        })
+      )
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -166,7 +171,9 @@ class AddPermissionForm extends Component {
         });
         this.props.fetchData();
       } else {
-        let msg = response.statusText ? response.statusText : 'Submission Error!';
+        let msg = response.statusText ?
+          response.statusText :
+          'Submission Error!';
         swal.fire(msg, '', 'error');
         console.error(msg);
       }

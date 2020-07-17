@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -36,7 +37,7 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionRead()
     {
-        $this->setupPermissions(array("battery_manager_view"));
+        $this->setupPermissions(["battery_manager_view"]);
         $this->safeGet($this->url . "/battery_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -52,7 +53,7 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/battery_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

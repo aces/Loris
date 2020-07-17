@@ -69,14 +69,33 @@ class Module extends \Module
             $factory = \NDB_Factory::singleton();
             $baseurl = $factory->settings()->getBaseURL();
 
+            $DB      = $factory->database();
+            $modules = \Module::getActiveModules($DB);
+
+            $params = [];
+            foreach ($modules as $module) {
+                if (!$module->hasAccess($user)) {
+                    continue;
+                }
+
+                $candidateinfo = $module->getWidgets(
+                    'candidateinfo',
+                    $user,
+                    $options,
+                );
+                foreach ($candidateinfo as $widget) {
+                    $params[] = $widget;
+                }
+            }
+
             return [
                 new CandidateWidget(
                     "Candidate Info",
                     $baseurl . "/candidate_profile/js/CandidateInfo.js",
                     "lorisjs.candidate_profile.CandidateInfo.CandidateInfo",
-                    [],
+                    ['ExtraCandidateInfo' => $params],
                     1,
-                    1,
+                    2,
                     -100,
                 ),
             ];

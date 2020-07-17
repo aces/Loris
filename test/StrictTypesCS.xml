@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<ruleset name="LORIS Strict Types Standard">
+    <description>An iterative effort to enforce the use of strict typing in LORIS</description>
+    <config name="installed_paths" value="../../slevomat/coding-standard"/>
+
+
+     <!-- Require strict types to be declared -->
+     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+         <properties>
+             <property name="spacesCountAroundEqualsSign" value="0"/>
+         </properties>
+     </rule>
+
+     <!-- Force parameters to have type hints. Ignore errors about "useless"
+          annotations because other rulesets require that we have them. -->
+     <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint">
+         <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.UselessAnnotation"/>
+         <properties>
+             <property name="enableObjectTypeHint" value="false"/>
+         </properties>
+    </rule>
+     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint">
+         <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.UselessAnnotation"/>
+         <properties>
+             <property name="enableObjectTypeHint" value="false"/>
+         </properties>
+     </rule>
+
+     <rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
+
+     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing"/>
+
+     <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
+
+     <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHintSpacing"/>
+</ruleset>

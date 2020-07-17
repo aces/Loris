@@ -39,7 +39,7 @@ class ConflictDetector
         string $commentId1,
         string $commentId2
     ): array {
-        $diffResult = array();
+        $diffResult = [];
 
         // Get data entry status for $commentId1
         $status = new NDB_BVL_InstrumentStatus();
@@ -103,7 +103,7 @@ class ConflictDetector
      */
     function clearConflictsForField(array $diffLine): void
     {
-        $deleteWhere = array(
+        $deleteWhere = [
             'TableName'      => $diffLine['TableName'],
             'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
             'ExtraKey1'      => $diffLine['ExtraKey1'],
@@ -111,7 +111,7 @@ class ConflictDetector
             'FieldName'      => $diffLine['FieldName'],
             'CommentId1'     => $diffLine['CommentId1'],
             'CommentId2'     => $diffLine['CommentId2'],
-        );
+        ];
 
         \Database::singleton()->delete('conflicts_unresolved', $deleteWhere);
     }
@@ -128,7 +128,7 @@ class ConflictDetector
     {
         \Database::singleton()->delete(
             'conflicts_unresolved',
-            array('CommentId1' => $commentId)
+            ['CommentId1' => $commentId]
         );
     }
 
@@ -143,7 +143,7 @@ class ConflictDetector
     {
         $conflictCount = \Database::singleton()->pselectOne(
             "SELECT COUNT(*) FROM conflicts_unresolved WHERE CommentId1=:CID",
-            array('CID' => $commentId)
+            ['CID' => $commentId]
         );
         return ($conflictCount != 0);
     }

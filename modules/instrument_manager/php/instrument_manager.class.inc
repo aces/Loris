@@ -1,38 +1,20 @@
-<?php
-/**
- * Instrument_manager
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Instrument_Manager
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
- */
-
+<?php declare(strict_types=1);
 namespace LORIS\instrument_manager;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Http\EmptyStream;
 
 /**
- * Instrument_manager
+ * Contains functions used to view and manage instruments installed in LORIS.
+ * LINST instruments can be uploaded and installed automatically.
  *
- * PHP Version 7
- *
- * @category Main
- * @package  Instrument_Manager
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {
-    const PERMISSIONS = array(
+    const PERMISSIONS = [
         'instrument_manager_read',
         'instrument_manager_write'
-    );
+    ];
     // Error messages
     const ALREADY_INSTALLED     = 'This instrument already exists in the ' .
                                   'test battery.';
@@ -115,29 +97,16 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
+        $loris = $request->getAttribute('loris');
         // Ensure the user is allowed to upload.
-        if (! \User::singleton()->hasPermission('superuser')) {
-            return (new \LORIS\Http\Response())
-                ->withStatus(403, 'Forbidden')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => 'Forbidden')
-                        )
-                    )
-                );
+        if (! $request->getAttribute('user')->hasPermission('superuser')) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
         }
         // Ensure the server is properly configured.
         if (!$this->canWriteFiles()) {
-            return (new \LORIS\Http\Response())
-                ->withStatus(500, 'Internal Server Error')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::CANNOT_WRITE_FILES)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                self::CANNOT_WRITE_FILES
+            );
         }
 
         $uploaded_file = $request->getUploadedFiles()['install_file'];
@@ -163,7 +132,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
 
         $response = $uploader->handle($request);
 
-        if (!in_array($response->getStatusCode(), array(200, 201), true)) {
+        if (!in_array($response->getStatusCode(), [200, 201], true)) {
             if ($response->getStatusCode() == 409) {
                 /* Don't update the file if it already exists on the back-end.
                  * Instead, inform users that an administrator must install it
@@ -188,18 +157,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
             . escapeshellarg($fullpath)
         );
 
-        if (!$this->isQuatUserConfigured()) {
+        if (!$this->isAdminUserConfigured()) {
             // If no adminUser is configured, automatic installation is not
             // possible, so this is the last step.
-            return (new \LORIS\Http\Response())
-                ->withStatus(200, 'OK')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('message' => self::UPLOAD_NO_INSTALL)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\OK(
+                ['success' => self::UPLOAD_NO_INSTALL]
+            );
         }
 
         // Install the instrument by directly sourcing the SQL file
@@ -215,12 +178,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $e->getMessage()
             ));
         } catch (\Exception $e) {
-            return (new \LORIS\Http\Response\JSON\InternalServerError(
+            return new \LORIS\Http\Response\JSON\InternalServerError(
                 $e->getMessage()
-            ));
+            );
         }
 
-        $db_config = $this->factory->config()->getSetting('database');
+        $db_config = $loris->getConfiguration()->getSetting('database');
         exec(
             "mysql".
             " -h" . escapeshellarg($db_config['host']).
@@ -242,20 +205,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 . "credentials supplied in the config file. "
                 . "Exec output: `" . implode("\n", $output) . "`"
             );
-            return (new \LORIS\Http\Response())
-                ->withStatus(500, 'Internal Server Error')
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode(
-                            array('error' => self::UPLOAD_INSTALL_FAILED)
-                        )
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                self::UPLOAD_INSTALL_FAILED
+            );
         }
 
-        return (new \LORIS\Http\Response())
-            ->withStatus(201, 'Created')
-            ->withBody(new EmptyStream());
+        return new \LORIS\Http\Response\JSON\Created();
     }
 
     /**
@@ -265,17 +220,17 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->headers      = array(
+        $this->headers      = [
             'Instrument',
             'Instrument_Type',
             'Table_Installed',
             'Table_Valid',
             'Pages_Valid',
-        );
-        $this->columns      = array('Test_name as Instrument');
+        ];
+        $this->columns      = ['Test_name as Instrument'];
         $this->query        = " FROM test_names";
-        $this->validFilters = array();
-        $this->formToFilter = array();
+        $this->validFilters = [];
+        $this->formToFilter = [];
     }
 
     /**
@@ -309,18 +264,18 @@ class Instrument_Manager extends \NDB_Menu_Filter
             $this->headers
         );
 
-        $MappedData = array();
+        $MappedData = [];
         foreach ($data as $row) {
             $MappedData[] = array_values($row);
         }
 
-        return array(
+        return [
             'Headers'      => $headers,
             'Data'         => $MappedData,
             'fieldOptions' => $this->fieldOptions,
             'writable'     => $this->canWriteFiles(),
-            'caninstall'   => $this->isQuatUserConfigured(),
-        );
+            'caninstall'   => $this->isAdminUserConfigured(),
+        ];
     }
 
     /**
@@ -409,10 +364,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
            WHERE TABLE_SCHEMA=:dbname AND
            TABLE_NAME=:tablename
           ',
-            array(
+            [
                 'dbname'    => $this->factory->settings()->dbName(),
                 'tablename' => $instrument,
-            )
+            ]
         );
         return ($exists > 0) ? 'Exists' : 'Missing';
     }
@@ -428,7 +383,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         $count = $this->factory->database()->pselectOne(
             'SELECT count(*) FROM test_names WHERE Test_name=:v_instrument',
-            array(':v_instrument' => $instrument)
+            [':v_instrument' => $instrument]
         );
         return $count > 0;
     }
@@ -453,12 +408,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
                         " AND DATA_TYPE=:typename";
         $exists       = $db->pselectOne(
             $sqlSelectOne,
-            array(
+            [
                 'dbname'     => $this->factory->settings()->dbName(),
                 'columnname' => $columnname,
                 'tablename'  => $tablename,
                 'typename'   => $type,
-            )
+            ]
         );
         if (!$exists) {
             return "Column $columnname invalid";
@@ -523,13 +478,13 @@ class Instrument_Manager extends \NDB_Menu_Filter
                                 " AND DATA_TYPE='enum'";
                 $db_enum      = $db->pselectOne(
                     $sqlSelectOne,
-                    array(
+                    [
                         'dbname'     => $this->factory->settings()->dbName(),
                         'columnname' => $name,
                         'tablename'  => $instname,
-                    )
+                    ]
                 );
-                $options      = array();
+                $options      = [];
                 foreach ($enums as $enum) {
                     $enum_split = explode("=>", $enum);
                     $key        = $enum_split[0];
@@ -574,10 +529,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
             case 'page':
                 $exists = $db->pselectOne(
                     $sqlSelectOne,
-                    array(
+                    [
                         'testname' => $instname,
                         'testdesc' => trim($pieces[2]),
-                    )
+                    ]
                 );
                 if ($exists <= 0) {
                     return "Missing page '" . trim($pieces[2]) . "'";
@@ -598,7 +553,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      *
      * @return bool True if a adminUser is configured properly. False if not.
      */
-    protected function isQuatUserConfigured() : bool
+    protected function isAdminUserConfigured() : bool
     {
         $db        = $this->factory->database();
         $db_config = $this->factory->config()->getSetting('database');
@@ -651,10 +606,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $baseURL = $this->factory->settings()->getBaseURL();
         return array_merge(
             $depends,
-            array(
+            [
                 $baseURL . '/instrument_manager/js/instrumentManagerIndex.js',
-            )
+            ]
         );
     }
 }
-

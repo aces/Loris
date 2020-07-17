@@ -30,7 +30,8 @@ class AttachmentsList extends Component {
     };
     this.deleteAttachment = this.deleteAttachment.bind(this);
     this.openModalAttachmentDelete = this.openModalAttachmentDelete.bind(this);
-    this.closeModalAttachmentDelete = this.closeModalAttachmentDelete.bind(this);
+    this.closeModalAttachmentDelete = this.closeModalAttachmentDelete
+                                      .bind(this);
     this.displayAttachmentOptions = this.displayAttachmentOptions.bind(this);
   }
 
