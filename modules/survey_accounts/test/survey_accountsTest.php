@@ -11,6 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -183,7 +184,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsDoespageLoad()
     {
-        $this->setupPermissions(["survey_accounts_view"]);
+        $this->setupPermissions(["user_accounts"]);
         $this->safeGet($this->url . "/survey_accounts/");
         $bodyText
             = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
@@ -217,8 +218,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsAddSurvey()
     {
-        $visitLabel        = 'V1';
-        $instrument        = 'bmi';
+        $visitLabel = 'V1';
+        $instrument = 'bmi';
 
         // Ensure that an instrument must be supplied.
         $this->safeGet($this->url . "/survey_accounts/");
@@ -258,8 +259,9 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("PSCID")
         )->sendKeys("8889");
-        $visitField = $this->safeFindElement(
-            WebDriverBy::Name("VL"));
+        $visitField  = $this->safeFindElement(
+            WebDriverBy::Name("VL")
+        );
         $visitOption = new WebDriverSelect($visitField);
         $visitOption->selectByValue($visitLabel);
         $this->safeFindElement(
@@ -293,7 +295,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector(".error")
         )->getText();
         $this->assertContains(
-            "PSCID and DCC ID do not match or candidate does not exist",
+            "PSCID and CandID do not match or candidate does not exist",
             $bodyText
         );
     }

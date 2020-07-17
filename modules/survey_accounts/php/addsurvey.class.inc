@@ -64,21 +64,21 @@ class AddSurvey extends \NDB_Form
         // Check that all required fields are present.
         if (!empty($values['Email']) ) {
             if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
-                return array('Email' => 'The email address is not valid.');
+                return ['Email' => 'The email address is not valid.'];
             }
         }
         if (!empty($values['Email']) && !empty($values['Email2'])) {
             if ($values['Email'] != $values['Email2']) {
-                return array('Email2' => 'The email addresses do not match.');
+                return ['Email2' => 'The email addresses do not match.'];
             }
         }
 
         if (!empty($values['Email']) && empty($values['Email2'])) {
-            return array('Email2' => 'Please confirm the email address.');
+            return ['Email2' => 'Please confirm the email address.'];
         }
 
         if (empty($values['Test_name'])) {
-            return array('Test_name' => 'Please choose an instrument.');
+            return ['Test_name' => 'Please choose an instrument.'];
         }
 
         $numCandidates = $db->pselectOne(
@@ -98,9 +98,7 @@ class AddSurvey extends \NDB_Form
         }
 
         if (! in_array($values['VL'], \Utility::getVisitList(), true)) {
-            return array(
-                'VL' => "You must specify a valid Visit Label.",
-            );
+            return ['VL' => "You must specify a valid Visit Label."];
         }
 
         $numSessions = $db->pselectOne(
