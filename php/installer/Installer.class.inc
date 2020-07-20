@@ -539,7 +539,7 @@ class Installer
              SET
                UserID=:q_userID,
                Password_hash=:q_password,
-               Active='Y',
+               Active='Y'
              WHERE ID=1"
         );
         return $stmt->execute(
