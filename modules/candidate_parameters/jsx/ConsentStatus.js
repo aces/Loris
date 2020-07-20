@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
+import swal from 'sweetalert2';
 import Loader from 'Loader';
 
 /**
@@ -181,13 +181,13 @@ class ConsentStatus extends Component {
             contentType: false,
             processData: false,
             success: (data) => {
-                swal('Success!', 'Update successful.', 'success');
+                swal.fire('Success!', 'Update successful.', 'success');
                 this.fetchData();
             },
             error: (error) => {
                 console.error(error);
                 let errorMessage = error.responseText || 'Update failed.';
-                swal('Error!', errorMessage, 'error');
+                swal.fire('Error!', errorMessage, 'error');
             },
         });
     }

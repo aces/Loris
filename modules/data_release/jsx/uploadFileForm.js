@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
+import swal from 'sweetalert2';
 
 
 /**
@@ -134,7 +135,7 @@ class UploadFileForm extends Component {
                 + ')';
       errorMessage['Filesize'] = msg;
       hasError['Filesize'] = true;
-      swal({
+      swal.fire({
         title: 'Error',
         text: msg,
         type: 'error',
@@ -175,12 +176,12 @@ class UploadFileForm extends Component {
           errorMessage: msg,
           uploadProgress: -1,
         });
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
         console.error(msg);
       } else {
         const responseUrl = new URL(response.url);
         if (responseUrl.searchParams.has('duplicate')) {
-          swal({
+          swal.fire({
             title: 'Are you sure?',
             text: 'A file with this name already exists!\n '
                   + 'Would you like to overwrite existing file?\n '
@@ -207,7 +208,7 @@ class UploadFileForm extends Component {
             formData: {}, // reset form data after successful file upload
             uploadProgress: -1,
           });
-          swal({
+          swal.fire({
             text: 'Upload Successful!',
             title: '',
             type: 'success',
@@ -223,7 +224,7 @@ class UploadFileForm extends Component {
         errorMessage: msg,
         uploadProgress: -1,
       });
-      swal(msg, '', 'error');
+      swal.fire(msg, '', 'error');
       console.error(error);
     });
   }

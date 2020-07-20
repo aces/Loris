@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
+import swal from 'sweetalert2';
 
 class CandidateDOB extends Component {
   constructor(props) {
@@ -111,7 +112,7 @@ class CandidateDOB extends Component {
     let dob = this.state.formData.dob ?
       this.state.formData.dob : null;
     if (dob > today) {
-      swal({
+      swal.fire({
         title: 'Error!',
         text: 'Date of birth cannot be later than today!',
         type: 'error',
@@ -140,7 +141,7 @@ class CandidateDOB extends Component {
     })
     .then((resp) => {
         if (resp.ok && resp.status === 200) {
-          swal({
+          swal.fire({
             title: 'Success!',
             text: 'Date of birth updated!',
             type: 'success',
@@ -150,7 +151,7 @@ class CandidateDOB extends Component {
               this.fetchData();
           }
         } else {
-          swal({
+          swal.fire({
             title: 'Error!',
             text: 'Something went wrong.',
             type: 'error',

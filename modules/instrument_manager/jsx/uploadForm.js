@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import swal from 'sweetalert2';
 
 class InstrumentUploadForm extends Component {
   constructor(props) {
@@ -31,7 +32,7 @@ class InstrumentUploadForm extends Component {
     })
     .then((resp) => {
       if (resp.status == 201) {
-        swal({
+        swal.fire({
           title: 'Installation Successful!',
           type: 'success',
         }, function() {
@@ -42,7 +43,7 @@ class InstrumentUploadForm extends Component {
     })
     .then((data) => {
       if (data.message) {
-         swal({
+         swal.fire({
           title: 'Upload Successful!',
           type: 'success',
           text: data.message,

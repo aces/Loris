@@ -3,6 +3,7 @@ import Modal from 'jsx/Modal';
 import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
+import swal from 'sweetalert2';
 
 /**
  * Issue add/edit form
@@ -488,7 +489,7 @@ class IssueForm extends Component {
       };
     }
 
-    swal({
+    swal.fire({
       title: title,
       type: type,
       text: text,

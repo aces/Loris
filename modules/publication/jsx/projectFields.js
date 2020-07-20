@@ -1,4 +1,5 @@
 import React from 'react';
+import swal from 'sweetalert2';
 
 class EmailElement extends React.Component {
   constructor() {
@@ -101,7 +102,7 @@ class ProjectFormFields extends React.Component {
 
   deleteUpload(uploadID) {
     let self = this;
-    swal({
+    swal.fire({
       title: 'Are you sure?',
       text: 'Are you sure you want to delete this file?',
       type: 'warning',
