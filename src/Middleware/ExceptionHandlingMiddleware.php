@@ -14,10 +14,8 @@ use \Psr\Http\Server\RequestHandlerInterface;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class ExceptionHandlingMiddleware implements MiddlewareInterface, MiddlewareChainer
+class ExceptionHandlingMiddleware implements MiddlewareInterface
 {
-    use MiddlewareChainerMixin;
-
     /**
      * Attempts a request and catches stray exceptions. When an exception occurs
      * hand this off to another Middleware to decoreate the page.
@@ -33,7 +31,7 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface, MiddlewareChai
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         try {
-            return $this->next->process($request, $handler);
+            return $handler->handle($request);
         } catch (\NotFound $e) {
             error_log($e->getMessage() . $e->getTraceAsString());
             $status = 404;
