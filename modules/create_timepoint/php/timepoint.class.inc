@@ -32,14 +32,14 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        case 'POST':
+            return $this->_handlePOST($request);
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
     /**
@@ -61,12 +61,12 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\JSON\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'Forbidden':
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
 
@@ -173,16 +173,16 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $values = $this->_verifyPermissions($request, $values);
         if (isset($values['error'])) {
             switch ($values['error']) {
-                case 'BadRequest':
-                    return new \LORIS\Http\Response\JSON\BadRequest(
-                        'Failed to retrieve data for create timepoint.'
-                    );
-                case 'Forbidden':
-                    return new \LORIS\Http\Response\JSON\Forbidden(
-                        'Forbidden'
-                    );
-                default:
-                    break;
+            case 'BadRequest':
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Failed to retrieve data for create timepoint.'
+                );
+            case 'Forbidden':
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    'Forbidden'
+                );
+            default:
+                break;
             }
         }
 
