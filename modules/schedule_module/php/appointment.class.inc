@@ -114,9 +114,9 @@ class Appointment extends \NDB_Page
     	WHERE 
     		CandID = :candId
        ",
-                array(
+                [
                     "candId" => $id,
-                )
+                ]
             );
             $res       = ['PSCID'=>$candidate['PSCID']];
         } else {
@@ -129,9 +129,9 @@ class Appointment extends \NDB_Page
             WHERE 
                     PSCID = :pscid
             ",
-                array(
+                [
                     "pscid" => $id,
-                )
+                ]
             );
             $res       = ['DCCID'=>$candidate['CandID']];
         }
@@ -146,9 +146,9 @@ class Appointment extends \NDB_Page
         WHERE 
     		CandID =:Id
     ",
-            array(
+            [
                 'Id' => $candidate['CandID']
-            )
+            ]
         );
         $sessions    = [];
         foreach ($sessionlist as $session) {
@@ -175,11 +175,11 @@ class Appointment extends \NDB_Page
         // Insert appointment information
         $DB->insert(
             "appointment",
-            array(
+            [
                 "SessionId"         => $data["Session"],
                 "AppointmentTypeId" => $data["AppointmentType"],
                 "StartsAt"          => $startAt,
-            )
+            ]
         );
 
     }
@@ -199,13 +199,13 @@ class Appointment extends \NDB_Page
 
         $DB->update(
             "appointment",
-            array(
+            [
                 "StartsAt"          => $startAt,
                 "AppointmentTypeID" => $data["AppointmentType"],
-            ),
-            array(
+            ],
+            [
                 "AppointmentId" => $data["AppointmentID"],
-            )
+            ]
         );
 
     }
@@ -235,11 +235,11 @@ class Appointment extends \NDB_Page
             And
             StartsAt = :startsAt
         ",
-            array(
+            [
                 "sessionId" => $data["Session"],
                 "typeId"    => $data["AppointmentType"],
                 "startsAt"  => $startAt,
-            )
+            ]
         );
         if (!empty($duplicate_check)) {
             http_response_code(400);
@@ -264,6 +264,6 @@ class Appointment extends \NDB_Page
 
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-        $DB->delete("appointment", array("AppointmentID" => $id));
+        $DB->delete("appointment", ["AppointmentID" => $id]);
     }
 }

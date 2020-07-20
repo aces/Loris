@@ -41,12 +41,12 @@ class ScheduleTest extends LorisIntegrationTest
         parent::setUp();
         $this->DB->insert(
             "appointment",
-            array(
+            [
                 'AppointmentID'     => '1',
                 'SessionID'         => '1',
                 'AppointmentTypeID' => '2',
                 'StartsAt'          => '2020-02-02 02:02:02',
-            )
+            ]
         );
 
     }
@@ -58,7 +58,7 @@ class ScheduleTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        $this->DB->delete("appointment", array('AppointmentID' => '1'));
+        $this->DB->delete("appointment", ['AppointmentID' => '1']);
 
     }
 
@@ -212,7 +212,7 @@ class ScheduleTest extends LorisIntegrationTest
      */
     function _loadWithPermission(string $permission): string
     {
-        $this->setupPermissions(array($permission));
+        $this->setupPermissions([$permission]);
         $this->safeGet($this->url . "/schedule_module/");
         return $this->safeFindElement(
             WebDriverBy::cssSelector("body")

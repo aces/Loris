@@ -42,7 +42,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     {
         parent::__construct(
             $this->getQuery(),
-            array()
+            []
         );
 
     }

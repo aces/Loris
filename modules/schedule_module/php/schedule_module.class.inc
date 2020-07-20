@@ -72,14 +72,14 @@ class Schedule_Module extends \DataFrameworkMenu
         $DB          = $factory->database();
         $appointment_types = $DB->pselect(
             "SELECT * FROM appointment_type",
-            array()
+            []
         );
-        $appointmentTpyes  = array();
+        $appointmentTpyes  = [];
         foreach ($appointment_types as $type) {
             $appointmentTpyes[$type['AppointmentTypeID']] = $type['Name'];
         }
 
-        return array(
+        return [
             'site'            => array_combine($sites, $sites),
             'visitLabel'      => array_combine($visitlabels, $visitlabels),
             'project'         => array_combine($projects, $projects),
@@ -87,7 +87,7 @@ class Schedule_Module extends \DataFrameworkMenu
             'AppointmentType' =>  $appointmentTpyes,
             'today'           => date("Y-m-d"),
             'next30days'      => date("Y-m-d", strtotime("+30 days")),
-        );
+        ];
     }
     /**
      * {@inheritDoc}
@@ -111,9 +111,9 @@ class Schedule_Module extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/schedule_module/js/scheduleIndex.js",
-            )
+            ]
         );
     }
 }
