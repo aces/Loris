@@ -186,9 +186,6 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             }
         }
 
-        // response to send to frontend.
-        $response = [];
-
         // convert site entered to a \Site object
         $user = \User::singleton();
 
@@ -225,7 +222,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $project,
             intval($values['languages']) ?? null
         );
-        return new \LORIS\Http\Response\JsonResponse\Created();
+        return new \LORIS\Http\Response\JSON\Created();
     }
     /**
      * Validate the post data,
