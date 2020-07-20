@@ -610,12 +610,11 @@ class CouchDB
      *
      * @param array $doc A PHP array encoding the JSON document to be created
      *
-     * @return string the JSON string returned by the CouchDB server
+     * @return ?string the JSON string returned by the CouchDB server
      */
-    function postDoc(array $doc): string
+    function postDoc(array $doc): ?string
     {
-        $json = $this->_postRelativeURL("", json_encode($doc), 'POST');
-        return $json;
+        return $this->_postRelativeURL("", json_encode($doc), 'POST');
     }
 
     /**
@@ -758,9 +757,9 @@ class CouchDB
      * Sends a POST request to update all the documents that have been queued
      * since the BulkTransaction was started.
      *
-     * @return string The string that was returned by CouchDB
+     * @return ?string The string that was returned by CouchDB
      */
-    function commitBulkTransaction(): string
+    function commitBulkTransaction(): ?string
     {
         if ($this->bulk !== true) {
             return '';

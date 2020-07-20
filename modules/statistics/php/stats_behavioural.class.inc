@@ -169,29 +169,30 @@ class Stats_Behavioural extends \NDB_Form
             // so that they don't wrap. Note that "c"(enter array) needs to
             // be a reference since we'll be modifying it.
             $center = $row['CenterID'];
-            $vl     = intval($row['VLabel']);
+            $vl     = $row['VLabel'];
+            $value  = intval($row['val']);
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
-            if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += intval($row['val']);
+            if (array_key_exists('total', $c[$vl])) {
+                $c[$vl]['total'] += $value;
             } else {
-                $c[$vl]['total'] = intval($row['val']);
+                $c[$vl]['total'] = $value;
             }
             if (isset($c['all']['total'])) {
-                $c['all']['total'] += $row['val'];
+                $c['all']['total'] += $value;
             } else {
-                $c['all']['total'] = $row['val'];
+                $c['all']['total'] = $value;
             }
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['complete'] += $row['val'];
+                    $c[$vl]['complete'] += $value;
                 } else {
-                    $c[$vl]['complete'] = $row['val'];
+                    $c[$vl]['complete'] = $value;
                 }
                 if (isset($c['all']['complete'])) {
-                    $c['all']['complete'] += $row['val'];
+                    $c['all']['complete'] += $value;
                 } else {
-                    $c['all']['complete'] = $row['val'];
+                    $c['all']['complete'] = $value;
                 }
             }
             if (!empty($c) && is_array($c)) {
@@ -239,29 +240,30 @@ class Stats_Behavioural extends \NDB_Form
 
         foreach ($result as $row) {
             $center = $row['CenterID'];
-            $vl     = intval($row['VLabel']);
+            $vl     = $row['VLabel'];
+            $value  = intval($row['val']);
             $c      =& $this->tpl_data['dde']['C' . $center];
 
-            if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += $row['val'];
+            if (array_key_exists('total', $c[$vl])) {
+                $c[$vl]['total'] += $value;
             } else {
-                $c[$vl]['total'] = $row['val'];
+                $c[$vl]['total'] = $value;
             }
             if (isset($c['all']['total'])) {
-                $c['all']['total'] += $row['val'];
+                $c['all']['total'] += $value;
             } else {
-                $c['all']['total'] = $row['val'];
+                $c['all']['total'] = $value;
             }
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['complete'] += $row['val'];
+                    $c[$vl]['complete'] += $value;
                 } else {
-                    $c[$vl]['complete'] = $row['val'];
+                    $c[$vl]['complete'] = $value;
                 }
                 if (isset($c['all']['complete'])) {
-                    $c['all']['complete'] += $row['val'];
+                    $c['all']['complete'] += $value;
                 } else {
-                    $c['all']['complete'] = $row['val'];
+                    $c['all']['complete'] = $value;
                 }
             }
             if (!empty($c) && is_array($c)) {

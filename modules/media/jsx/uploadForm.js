@@ -86,8 +86,10 @@ class MediaUploadForm extends Component {
     const visits = this.state.formData.pscid ?
       this.state.Data.sessionData[this.state.formData.pscid].visits :
       {};
-    const instruments = this.state.formData.pscid && this.state.formData.visitLabel ?
-      this.state.Data.sessionData[this.state.formData.pscid].instruments[this.state.formData.visitLabel] :
+    const instruments = this.state.formData.pscid
+                        && this.state.formData.visitLabel ?
+      this.state.Data.sessionData[this.state.formData.pscid]
+        .instruments[this.state.formData.visitLabel] :
       {};
     return (
       <div className='row'>
@@ -209,7 +211,9 @@ class MediaUploadForm extends Component {
 
     let formData = this.state.formData;
     let formRefs = this.refs;
-    let mediaFiles = this.state.Data.mediaFiles ? this.state.Data.mediaFiles : [];
+    let mediaFiles = this.state.Data.mediaFiles ?
+      this.state.Data.mediaFiles :
+      [];
 
     // Validate the form
     if (!this.isValidForm(formRefs, formData)) {
@@ -218,7 +222,9 @@ class MediaUploadForm extends Component {
 
     // Validate uploaded file name
     let instrument = formData.instrument ? formData.instrument : null;
-    let fileName = formData.file ? formData.file.name.replace(/\s+/g, '_') : null;
+    let fileName = formData.file ?
+      formData.file.name.replace(/\s+/g, '_') :
+      null;
     let requiredFileName = this.getValidFileName(
       formData.pscid, formData.visitLabel, instrument
     );
@@ -236,7 +242,8 @@ class MediaUploadForm extends Component {
     if (isDuplicate >= 0) {
       swal({
         title: 'Are you sure?',
-        text: 'A file with this name already exists!\n Would you like to override existing file?',
+        text: 'A file with this name already exists!\n '
+              + 'Would you like to override existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',

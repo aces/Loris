@@ -63,18 +63,18 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "users",
             [
-                'ID'               => 999995,
-                'UserID'           => 'UnitTesterTwo',
-                'Real_name'        => 'Unit Tester 2',
-                'First_name'       => 'Unit 2',
-                'Last_name'        => 'Tester 2',
-                'Email'            => 'tester2@example.com',
-                'Privilege'        => 0,
-                'PSCPI'            => 'N',
-                'Active'           => 'Y',
-                'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
-                'Pending_approval' => 'N',
+                'ID'                     => 999995,
+                'UserID'                 => 'UnitTesterTwo',
+                'Real_name'              => 'Unit Tester 2',
+                'First_name'             => 'Unit 2',
+                'Last_name'              => 'Tester 2',
+                'Email'                  => 'tester2@example.com',
+                'Privilege'              => 0,
+                'PSCPI'                  => 'N',
+                'Active'                 => 'Y',
+                'Password_hash'          => $password,
+                'PasswordChangeRequired' => false,
+                'Pending_approval'       => 'N'
             ]
         );
 

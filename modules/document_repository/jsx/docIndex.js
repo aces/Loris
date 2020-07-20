@@ -126,11 +126,22 @@ class DocIndex extends React.Component {
     let result = <td>{cell}</td>;
     switch (column) {
       case 'File Name':
-        let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(row['File Name']);
-        result = <td><a href={downloadURL} target="_blank" download={row['File Name']}>{cell}</a></td>;
+        let downloadURL = loris.BaseURL
+                          + '/document_repository/Files/'
+                          + encodeURIComponent(row['File Name']);
+        result = <td>
+          <a
+            href={downloadURL}
+            target="_blank"
+            download={row['File Name']}
+          >
+            {cell}
+          </a>
+        </td>;
         break;
       case 'Edit':
-        let editURL = loris.BaseURL + '/document_repository/edit/' + row['Edit'];
+        let editURL = loris.BaseURL
+                      + '/document_repository/edit/' + row['Edit'];
         result = <td><a href={editURL}>Edit</a></td>;
         break;
       case 'Delete File':
@@ -159,7 +170,9 @@ class DocIndex extends React.Component {
           }
           );
         }
-        result = <td><a style={{cursor: 'pointer'}} onClick={click}>Delete</a></td>;
+        result = <td>
+          <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
+        </td>;
         break;
     }
     return result;
@@ -207,7 +220,11 @@ class DocIndex extends React.Component {
       }},
       {label: 'Date Uploaded', show: true},
       {label: 'Edit', show: true},
-      {label: 'Delete File', show: this.props.hasPermission('superUser') || this.props.hasPermission('document_repository_delete')},
+      {
+        label: 'Delete File',
+        show: this.props.hasPermission('superUser')
+          || this.props.hasPermission('document_repository_delete'),
+      },
       {label: 'File Category', show: false},
       {label: 'Category', show: false},
       {label: 'Data Dir', show: false},
@@ -263,8 +280,10 @@ class DocIndex extends React.Component {
         />
       </div>
     );
-    const treeTable = (Object.keys(this.state.tableData.length).length === 0
-                        && Object.keys(this.state.childrenNode).length === 0) ? (
+    const treeTable = (
+      Object.keys(this.state.tableData.length).length === 0
+      && Object.keys(this.state.childrenNode).length === 0
+    ) ? (
       <NullFilterableDataTable>
         <div>
           <CheckboxElement

@@ -191,15 +191,14 @@ class Module extends \Module
      *
      * @return int
      */
-    private function _getTotalRecruitment(\Database $DB)
+    private function _getTotalRecruitment(\Database $DB): int
     {
-        $totalRecruitment = $DB->pselectOne(
+        return $DB->pselectOneInt(
             "SELECT COUNT(*) FROM candidate c
              WHERE c.Active='Y' AND c.Entity_type='Human'
              AND c.RegistrationCenterID <> 1",
             []
-        );
-        return $totalRecruitment;
+        ) ?? 0;
     }
 
     /**
@@ -220,7 +219,7 @@ class Module extends \Module
         $recruitmentTarget,
         $totalRecruitment,
         \Database $db
-    ) {
+    ): array {
         $rv = [
             'total_recruitment' => $totalRecruitment,
             'title'             => $title,
@@ -269,13 +268,13 @@ class Module extends \Module
      */
     private function _getTotalSex(\Database $db, string $sex) : int
     {
-        return $db->pselectOne(
+        return $db->pselectOneInt(
             "SELECT COUNT(c.CandID)
             FROM candidate c
             WHERE c.Sex=:sex AND c.Active='Y' AND c.Entity_type='Human'
             AND c.RegistrationCenterID <> 1",
             ['sex' => $sex]
-        );
+        ) ?? 0;
     }
 
     /**
@@ -291,7 +290,7 @@ class Module extends \Module
      */
     function getTotalSexByProject(\Database $DB, string $sex, int $projectID) : int
     {
-        return $DB->pselectOne(
+        return $DB->pselectOneInt(
             "SELECT COUNT(c.CandID)
             FROM candidate c
             WHERE c.Sex=:sex AND c.Active='Y' AND c.RegistrationProjectID=:PID
@@ -300,7 +299,7 @@ class Module extends \Module
                 'sex' => $sex,
                 'PID' => $projectID,
             ]
-        );
+        ) ?? 0;
     }
 
 
@@ -313,9 +312,9 @@ class Module extends \Module
      *
      * @return int
      */
-    function getTotalRecruitmentByProject(\Database $db, int $projectID)
+    function getTotalRecruitmentByProject(\Database $db, int $projectID): int
     {
-        return $db->pselectOne(
+        return $db->pselectOneInt(
             "SELECT COUNT(*)
              FROM candidate c
              WHERE c.Active='Y'
@@ -323,6 +322,6 @@ class Module extends \Module
               AND c.Entity_type='Human'
               AND c.RegistrationCenterID <> 1",
             ['PID' => $projectID]
-        );
+        ) ?? 0;
     }
 }

@@ -318,13 +318,13 @@ abstract class NDB_Notifier_Abstract
     }
 
     /**
-     * Get email of a user from his ID
+     * Returns the email associated with the user account with ID $uid.
      *
      * @param int $uid containing the userID
      *
-     * @return string  email of the user
+     * @return ?string  email of the user
      */
-    protected function getEmail(int $uid): string
+    protected function getEmail(int $uid): ?string
     {
         return \Database::singleton()->pselectOne(
             "SELECT Email FROM users WHERE ID=:uid",

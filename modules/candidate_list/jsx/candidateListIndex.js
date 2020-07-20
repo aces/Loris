@@ -344,7 +344,9 @@ class CandidateListIndex extends Component {
     // FIXME: move toggle button in the filter component next to the clear button
     const actions = [
       {
-        label: this.state.hideFilter ? 'Show Advanced Filters' : 'Hide Advanced Filters',
+        label: this.state.hideFilter ?
+          'Show Advanced Filters' :
+          'Hide Advanced Filters',
         action: this.toggleFilters,
         name: 'advanced',
       },

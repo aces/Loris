@@ -3,7 +3,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Pagination component
+ */
 class PaginationLinks extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -13,12 +20,24 @@ class PaginationLinks extends Component {
     this.changePage = this.changePage.bind(this);
   }
 
+  /**
+   * Called by React when the component is updated.
+   *
+   * @param {object} prevProps - Previous React Component properties
+   */
   componentDidUpdate(prevProps) {
     if (this.props.Total < prevProps.Total) {
       this.props.onChangePage(1);
     }
   }
 
+  /**
+   * Creates an onClick Event Handler
+   * execyting this.props.onChangePage(i)
+   *
+   * @param {int} i - Page index
+   * @return {function(event)} - onClick Event Handler
+   */
   changePage(i) {
     return function(evt) {
       // Don't jump to the top of the page
@@ -30,6 +49,11 @@ class PaginationLinks extends Component {
     }.bind(this);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let rowsPerPage = this.props.RowsPerPage;
     let pageLinks = [];

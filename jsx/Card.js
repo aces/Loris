@@ -16,9 +16,8 @@ import Panel from 'jsx/Panel';
  */
 class Card extends Component {
   /**
-   * Construct the React component
-   *
-   * @param {array} props - The React props
+   * @constructor
+   * @param {object} props - React Component properties
    */
   constructor(props) {
     super(props);
@@ -37,9 +36,9 @@ class Card extends Component {
   }
 
   /**
-   * Render the React component
+   * Renders the React component.
    *
-   * @return {object}
+   * @return {JSX} - React markup for the component
    */
   render() {
     const cursorStyle = this.props.onClick ? {

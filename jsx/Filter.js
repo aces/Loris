@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Filter component.
+ * Filter component
  * A wrapper for form elements inside a selection filter.
  *
  * Constructs filter fields based on this.props.fields configuration object
@@ -11,12 +11,19 @@ import PropTypes from 'prop-types';
  *
  */
 class Filter extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.onFieldUpdate = this.onFieldUpdate.bind(this);
     this.renderFilterFields = this.renderFilterFields.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
      const searchParams = new URLSearchParams(location.search);
      const filter = JSON.parse(JSON.stringify(this.props.filter));
@@ -51,6 +58,11 @@ class Filter extends Component {
     this.props.updateFilter(filter);
   }
 
+  /**
+   * Renders the filter fields.
+   *
+   * @return {JSX[]} - React markups for the filter form components
+   */
   renderFilterFields() {
     return this.props.fields.reduce((result, field) => {
       const filter = field.filter;
@@ -111,6 +123,11 @@ class Filter extends Component {
     }, []);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const filterPresets = () => {
       if (this.props.filterPresets) {

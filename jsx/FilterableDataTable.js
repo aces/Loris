@@ -17,6 +17,10 @@ import Filter from 'jsx/Filter';
  * Deprecates Filter Form.
  */
 class FilterableDataTable extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -52,6 +56,11 @@ class FilterableDataTable extends Component {
     history.replaceState({}, '', '?');
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const filter = (
       <Filter

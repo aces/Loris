@@ -284,118 +284,6 @@ class Utility
     }
 
     /**
-     * Returns the test name associated with a given commentID
-     *
-     * @param string $commentID A CommentID for which you would like
-     *                          to know the test_name
-     *
-     * @return  string The test name this commentID is a part of
-     * @note    This should be moved to whatever module uses it, or perhaps
-     *       NDB_BVL_Instrument
-     * @cleanup
-     */
-    static function getTestNameByCommentID(string $commentID): string
-    {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $testName = $db->pselectOne($query, ['CID' => $commentID]);
-
-        return $testName;
-    }
-
-    /**
-     * Transforms a config structure (such as in PSCID) into a
-     * Perl-compatible regex expression for validation
-     *
-     * @param array       $structure     the structure root
-     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
-     *                                   part of the PSCID
-     * @param string|null $projectAbbrev the project abbreviation
-     *
-     * @return string the regex pattern
-     *
-     * @note    This should probably be moved to the Candidate class, since it's
-     *       only used there to validate the PSCID
-     * @cleanup
-     */
-    static function structureToPCRE(
-        array $structure,
-        ?string $siteAbbrev = null,
-        ?string $projectAbbrev = null
-    ): string {
-        $seqs = $structure['seq'];
-        // handle the situation where there exists only one seq
-        if (isset($seqs['#'])) {
-            $seqs = [$seqs];
-        }
-        $regex = "";
-        foreach ($seqs AS $seq) {
-            $unit = "";
-
-            switch($seq['@']['type']) {
-            case 'alpha':
-                $unit .= '[a-z]';
-                break;
-
-            case 'alphanumeric':
-                $unit .= '[0-9a-z]';
-                break;
-
-            case 'numeric':
-                $unit .= '[0-9]';
-                break;
-
-            case 'static':
-                $unit .= '('.$seq['#'].')';
-                break;
-
-            case 'set':
-                if (strpos($seq['#'], '|') !== false) {
-                    $unit .= '('.$seq['#'].')';
-                } else {
-                    $unit .= '['.$seq['#'].']';
-                }
-                break;
-
-            case 'siteAbbrev':
-                $unit .= $siteAbbrev;
-                break;
-            case 'projectAbbrev':
-                $unit .= $projectAbbrev;
-                break;
-            } // end switch
-
-            $length = "";
-            if (isset($seq['@']['length'])) {
-                $length .= $seq['@']['length'];
-            } elseif (isset($seq['@']['minLength'])) {
-                $length .= $seq['@']['minLength'];
-            } else {
-                $length .= '1';
-            }
-
-            $length .= ',';
-
-            if (isset($seq['@']['length'])) {
-                $length .= $seq['@']['length'];
-            } elseif (isset($seq['@']['maxLength'])) {
-                $length .= $seq['@']['maxLength'];
-            } elseif (!isset($seq['@']['length'])
-                && !isset($seq['@']['minLength'])
-            ) {
-                $length .= '1';
-            }
-
-            $regex .= $unit.'{'.$length.'}';
-
-        } // end foreach seq
-
-        return '/^'.$regex.'$/i';
-    }
-
-    /**
      * Returns a list of bvl instruments
      *
      * Returns a list of instruments for a timepoint's stage ($stage).
@@ -469,6 +357,8 @@ class Utility
      * @param mixed $var The variable to be converted to an array.
      *
      * @return array If $var is an array, var, otherwise an array containing $var
+     *
+     * @deprecated
      */
     static function toArray($var)
     {
@@ -667,32 +557,6 @@ class Utility
     }
 
     /**
-     * Looks up the test_name for the current full name
-     *
-     * @param string $fullname Descriptive name to be looked up
-     *
-     * @return  string (Non-associative array of the form array(Test1, Test2, ..))
-     * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Behavioural Quality Control?)
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
-     */
-    static function getTestNameUsingFullName(string $fullname): string
-    {
-        $test_name  = '';
-        $factory    = NDB_Factory::singleton();
-        $db         = $factory->database();
-        $instrument = $db->pselect(
-            "SELECT Test_name FROM test_names WHERE Full_name =:fname",
-            ['fname' => $fullname]
-        );
-        if (is_array($instrument) && count($instrument)) {
-            list(,$test_name) = each($instrument[0]);
-        }
-        return $test_name;
-    }
-
-    /**
      * Returns all the sourcefrom instruments from parameter_type
      *
      * @param string|null $instrument If specified, return fields from this
@@ -759,12 +623,12 @@ class Utility
      * @param integer|null $projectID Limit visit labels to labels used by this
      *                                project.
      *
-     * @return array of study visits in the format array('VL' => 'VL')
+     * @return array<string,string> Study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      *
      * @deprecated
      */
-    static function getExistingVisitLabels(int $projectID = null): array
+    static function getExistingVisitLabels(?int $projectID = null): array
     {
         throw new \DeprecatedException(
             'This function is deprecated. Please use Utility::getVisitList() '
@@ -995,9 +859,8 @@ class Utility
      */
     static function getScanTypeList(): array
     {
-        $DB = \Database::singleton();
 
-        $scan_types_DB = $DB->pselect(
+        $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
             "SELECT ID, Scan_type 
              FROM mri_scan_type mri
                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
