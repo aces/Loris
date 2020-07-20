@@ -24,7 +24,7 @@
  *
  * Note: This tool will NOT remove instruments that do exist in the
  * assigned battery but have been removed from the battery lookup table (or
- * set to Active=N).  This behavior is intended, instruments should NEVER be
+ * set to Active=N).  This behaviour is intended, instruments should NEVER be
  * removed.  Ever.
  *
  * PHP version 7
