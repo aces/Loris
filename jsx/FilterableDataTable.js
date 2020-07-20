@@ -64,7 +64,7 @@ class FilterableDataTable extends Component {
       this.props.fields.forEach((field) => {
         const filtername = field.filter.name;
         const filterval = this.state.filter[filtername];
-        if (!this.state.filter[filtername]) {
+        if (!filterval) {
             return;
         }
 
