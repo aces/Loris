@@ -184,7 +184,6 @@ class Create_Timepoint extends \NDB_Form
             $visitLabel = \Utility::asArray($visitLabel);
             if ($visitLabel['@']['subprojectID'] == $this->subprojectID) {
                 $user = \User::singleton();
-                $DB   = \Database::singleton();
                 $subprojectHasVisits = true;
                 if (isset($visitLabel['generation'])
                     && $visitLabel['generation'] !== 'sequence'
@@ -224,17 +223,8 @@ class Create_Timepoint extends \NDB_Form
                 $num_sites          = count($user_list_of_sites);
                 if ($num_sites > 1) {
                     $this->tpl_data['pscLabelAdded'] = true;
-                    $psc_labelOptions = [null => ''];
-                    foreach ($user_list_of_sites as $key => $siteID) {
-                        $center = $DB->pselectRow(
-                            "SELECT CenterID as ID, Name FROM psc 
-                        WHERE CenterID =:cid",
-                            ['cid' => $siteID]
-                        );
-                        if (!is_null($center)) {
-                            $psc_labelOptions[$siteID] = $center['Name'];
-                        }
-                    }
+                    $psc_labelOptions = [null => ''] +
+                        \Utility::getSiteNameListByIDs($user_list_of_sites);
                     $this->addSelect('psc', 'Site', $psc_labelOptions);
                     $this->addRule(
                         'psc',
@@ -248,7 +238,7 @@ class Create_Timepoint extends \NDB_Form
                 if (count($user_list_of_projects) > 1) {
                     $this->tpl_data['projectAdded'] = true;
                     $projectOptions = [null => ''];
-                    foreach ($user_list_of_projects as $key => $projectID) {
+                    foreach ($user_list_of_projects as $projectID) {
                         $project = \Project::getProjectFromID($projectID);
                         $projectOptions[$projectID] = $project->getName();
                     }

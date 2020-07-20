@@ -115,6 +115,7 @@ class Utility
 
         return $result;
     }
+
     /**
      * Returns a list of sites in the database
      *
@@ -154,6 +155,33 @@ class Utility
         return $list;
     }
 
+    /**
+     * Returns a list of sites by site IDs from the database
+     *
+     * @param array $siteIDs a list of the study center IDs
+     *
+     * @return array an associative array("center ID" => "site name")
+     */
+    static function getSiteNameListByIDs(array $siteIDs): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $params = [];
+        $values = [];
+        foreach ($siteIDs as $key => $siteID) {
+            $para          = "cid$key";
+            $params[]      = ":$para";
+            $values[$para] = $siteID;
+        }
+
+        return $DB->pselectColWithIndexKey(
+            "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
+            implode(', ', $params) . ")",
+            $values,
+            'ID'
+        );
+    }
 
     /**
      * Get the list of sites as an associative array
