@@ -736,17 +736,17 @@ class NDB_Page implements RequestHandlerInterface
     function display()
     {
         switch($this->format) {
-        case 'json':
-            return $this->toJSON();
+            case 'json':
+                return $this->toJSON();
         }
         if ($this->skipTemplate) {
             return "";
         }
         if (!$this->form->isFrozen()) {
             // hidden values
-              $this->addHidden('test_name', $this->name);
-              $this->addHidden('subtest', $this->page);
-              $this->addHidden('identifier', $this->identifier);
+            $this->addHidden('test_name', $this->name);
+            $this->addHidden('subtest', $this->page);
+            $this->addHidden('identifier', $this->identifier);
 
             // $this->form->addElement('hidden', 'test_name', $this->name);
             // $this->form->addElement('hidden', 'subtest', $this->page);
@@ -761,7 +761,7 @@ class NDB_Page implements RequestHandlerInterface
         // set the quickform object defaults
         $this->_setDefaults(array_merge($this->defaults, $localDefaults));
 
-            // trim all values
+        // trim all values
         $this->form->applyFilter('__ALL__', 'trim');
 
         // display the HTML_Quickform object
@@ -823,16 +823,16 @@ class NDB_Page implements RequestHandlerInterface
             $baseurl . '/js/jquery/jquery-1.11.0.min.js',
             $baseurl . '/js/helpHandler.js',
             $baseurl . '/js/modernizr/modernizr.min.js',
-                  // Only load minified file on production, not sandboxes
+            // Only load minified file on production, not sandboxes
             $baseurl . '/js/polyfills.js',
-                    // $baseurl . '/js/react/react-with-addons' . $min . '.js',
-                    // $baseurl . '/js/react/react-dom' . $min . '.js',
+            // $baseurl . '/js/react/react-with-addons' . $min . '.js',
+            // $baseurl . '/js/react/react-dom' . $min . '.js',
             $baseurl . ($min === '' ?
-                      '/vendor/js/react/react.development.js' :
-                      '/vendor/js/react/react.production' . $min . '.js'),
+                '/vendor/js/react/react.development.js' :
+                '/vendor/js/react/react.production' . $min . '.js'),
             $baseurl . ($min === '' ?
-                      '/vendor/js/react/react-dom.development.js' :
-                      '/vendor/js/react/react-dom.production' . $min . '.js'),
+                '/vendor/js/react/react-dom.development.js' :
+                '/vendor/js/react/react-dom.production' . $min . '.js'),
 
             $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
             $baseurl . '/js/jquery.dynamictable.js',
