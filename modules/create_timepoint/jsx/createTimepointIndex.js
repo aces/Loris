@@ -216,23 +216,20 @@ class CreateTimepoint extends React.Component {
         },
         body: send,
       }).then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else if (response.statusText === 'Conflict') {
-        return response.json();
-      }
-    })
-      .then((data) => {
-        if (data.error) {
-          // display conflicts on form.
-          this.setState({messages: JSON.parse(data.error)});
-        } else {
+        if (response.ok) {
           swal.fire('Success!', 'Time Point created.', 'success')
             .then(() => {
               window.location.replace(
                 `${this.props.baseURL}/${this.state.url.params.candID}`
               );
             });
+        } else {
+          response.json().then((data) => {
+            if (data.error) {
+              // display conflicts on form.
+              this.setState({messages: JSON.parse(data.error)});
+            }
+          });
         }
       })
       .catch((error) => {
