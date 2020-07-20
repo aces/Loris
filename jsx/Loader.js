@@ -8,6 +8,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import LoadingBar from 'jsx/LoadingBar';
 
 /**
  * Loader component
@@ -19,11 +20,17 @@ class Loader extends Component {
       height: parseInt(this.props.size),
       borderWidth: parseInt(this.props.size)/15,
     };
+    const progressBar = this.props.progress && (
+      <LoadingBar progress={this.props.progress}/>
+    );
     return (
-      <div
-        className='loader'
-        style={loaderStyle}
-      />
+      <div>
+        <div
+          className='loader'
+          style={loaderStyle}
+        />
+        {progressBar}
+      </div>
     );
   }
 }

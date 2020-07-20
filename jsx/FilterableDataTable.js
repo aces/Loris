@@ -5,6 +5,7 @@ import Panel from 'jsx/Panel';
 import {Tabs, TabPane} from 'jsx/Tabs';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
+import LoadingBar from 'jsx/LoadingBar';
 
 /**
  * FilterableDataTable component.
@@ -57,7 +58,9 @@ class FilterableDataTable extends PureComponent {
       />
     );
 
-    const dataTable = (
+    const dataTable = this.props.loading < 100 || this.props.data.length == 0 ? (
+      <LoadingBar progress={this.props.loading}/>
+    ) : (
       <DataTable
         data={this.props.data}
         fields={this.props.fields}

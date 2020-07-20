@@ -150,7 +150,7 @@ class Modal extends Component {
     const loader = loading && (
       <div style={processStyle}>
         <Loader size={20}/>
-        <h5 className='animate-flicker'>Saving...</h5>
+        <h5 className='animate-flicker'>Saving</h5>
       </div>
     );
     const successDisplay = success && (

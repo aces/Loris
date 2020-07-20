@@ -1269,13 +1269,20 @@ class NumericElement extends Component {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
     }
+
+    const label = this.props.label && (
+      <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+        {this.props.label}
+        {requiredHTML}
+      </label>
+    );
+
+    const columnSize = this.props.label ? 'col-sm-9' : 'col-sm-12';
+
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        {label}
+        <div className={columnSize}>
           <input
             type="number"
             className="form-control"
@@ -1311,7 +1318,7 @@ NumericElement.defaultProps = {
   name: '',
   min: null,
   max: null,
-  label: '',
+  label: null,
   value: null,
   id: null,
   required: false,
