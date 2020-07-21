@@ -18,8 +18,8 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  */
 class LorisApiVisitsTest extends LorisApiAuthenticatedTest
 {
-    protected $candidTest = "400162";
-    protected $visitTest  = "V6";
+    protected $candidTest = "300008";
+    protected $visitTest  = "V1";
 
     /**
      * Call to LorisApiAuthenticationTest::setUp()
@@ -135,8 +135,9 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
+        $newVisit = 'V3';
         $json     = ['CandID'  => $this->candidTest,
-            'Visit'   => $this->visitTest,
+            'Visit'   => $newVisit,
             'Site'    => "Montreal",
             'Battery' => "Fresh",
             'Project' => "Pumpernickel"
@@ -154,7 +155,8 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // Verify the status code
         // the response body should be empty unless there is an error message.
         $body = (string) $response->getBody();
-        $this->assertEquals(201, $response->getStatusCode(), $body);
+
+        $this->assertEquals(204, $response->getStatusCode(), $body);
     }
 
     /**

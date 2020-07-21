@@ -217,8 +217,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $json       = [
-            'Meta'      => [
+        $json = [
+            'Meta'                => [
                 'CandID'     => $this->candidTest,
                 'Visit'      => $this->visitTest,
                 'DDE'        => false,
@@ -231,7 +231,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response = $this->client->request(
             'PATCH',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
@@ -252,8 +253,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $json       = [
-            'Meta'      => [
+        $json     = [
+            'Meta'                => [
                 'CandID'     => $this->candidTest,
                 'Visit'      => $this->visitTest,
                 'DDE'        => false,
@@ -263,9 +264,10 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'UserID' => "2"
             ]
         ];
-        $response   = $this->client->request(
+        $response = $this->client->request(
             'PUT',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
@@ -460,8 +462,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        $json       = [
-            'Meta'      => [
+        $json     = [
+            'Meta'                => [
                 'CandID'     => $this->candidTest,
                 'Visit'      => $this->visitTest,
                 'DDE'        => true,
@@ -471,9 +473,10 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'UserID' => "2"
             ]
         ];
-        $response   = $this->client->request(
+        $response = $this->client->request(
             'PATCH',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest/dde",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
@@ -494,8 +497,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        $json       = [
-            'Meta'      => [
+        $json     = [
+            'Meta'                => [
                 'CandID'     => $this->candidTest,
                 'Visit'      => $this->visitTest,
                 'DDE'        => false,
@@ -505,9 +508,10 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'UserID' => "2"
             ]
         ];
-        $response   = $this->client->request(
+        $response = $this->client->request(
             'PUT',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest/dde",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
@@ -527,8 +531,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      *
      * @return void
      */
-    public function testGetCandidatesCandidVisitInstrumentsInstrumentDdeFlags():
-    void
+    public function testGetCandidatesCandidVisitInstrumentsInstrumentDdeFlags()
     {
         $response = $this->client->request(
             'GET',
