@@ -135,17 +135,15 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
-        $candid   = '115788';
-        $visit    = 'V1';
-        $json     = ['CandID'  => $candid,
-            'Visit'   => $visit,
-            'Site'    => "Data Coordinating Center",
+        $json     = ['CandID'  => $this->candidTest,
+            'Visit'   => $this->visitTest,
+            'Site'    => "Montreal",
             'Battery' => "Fresh",
             'Project' => "Pumpernickel"
         ];
         $response = $this->client->request(
             'PUT',
-            "candidates/$candid/$visit",
+            "candidates/$this->candidTest/$this->visitTest",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
