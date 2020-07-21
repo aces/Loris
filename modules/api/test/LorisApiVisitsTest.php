@@ -144,7 +144,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         ];
         $response = $this->client->request(
             'PUT',
-            "candidates/$this->candidTest/$this->visitTest",
+            "candidates/$this->candidTest/$newVisit",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
