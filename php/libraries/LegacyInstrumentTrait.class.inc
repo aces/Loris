@@ -32,17 +32,14 @@ trait LegacyInstrumentTrait
      * Return the full, human readable name for the
      * current instrument.
      *
-     * @return string the full name of the instrument
+     * @return ?string the full name of the instrument
      */
-    public function getFullName(): string
+    public function getFullName(): ?string
     {
-        $db = \Database::singleton();
-
-        $success = $db->pselectOne(
+        return \NDB_Factory::singleton()->database()->pselectOne(
             "SELECT Full_name FROM test_names WHERE Test_name=:TN",
             ['TN' => $this->testName]
         );
-        return $success;
     }
 
     /**

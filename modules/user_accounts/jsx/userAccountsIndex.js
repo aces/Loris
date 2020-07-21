@@ -81,9 +81,9 @@ class UserAccountsIndex extends Component {
       case 'Project':
         // If user has multiple projectss, join array of sites into string
         result = (
-          <td>{cell
-            .map((projectId) => this.state.data.fieldOptions.projects[projectId])
-            .join(', ')}
+          <td>{cell.map(
+              (projectId) => this.state.data.fieldOptions.projects[projectId]
+            ).join(', ')}
           </td>
         );
         break;

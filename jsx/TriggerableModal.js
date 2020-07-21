@@ -30,17 +30,30 @@ import Modal from 'Modal';
  *
  */
 class TriggerableModal extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor() {
     super();
     this.state = {open: false};
     this.close = this.close.bind(this);
   }
 
+  /**
+   * Close the modal
+   * and trigger onClose
+   */
   close() {
     this.setState({open: false});
     if (this.props.onClose instanceof Function) this.props.onClose();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const {label, onUserInput} = this.props;
 

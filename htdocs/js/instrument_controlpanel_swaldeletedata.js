@@ -1,3 +1,8 @@
+/**
+ * Instrument selection confirmation message
+ *
+ * @param {object} event
+ */
 function swalFunction(event) {
   swal({
     title: 'Please confirm deletion',

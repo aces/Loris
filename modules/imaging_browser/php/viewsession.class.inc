@@ -377,7 +377,7 @@ class ViewSession extends \NDB_Form
             AND mvl.Header LIKE 'Manual Caveat Set by %';
         ";
 
-        return $this->DB->pselectOne($query, ['fileID' => $fileID]);
+        return $this->DB->pselectOneInt($query, ['fileID' => $fileID]);
     }
 
     /**

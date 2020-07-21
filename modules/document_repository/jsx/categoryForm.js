@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
+import swal from 'sweetalert2';
+
 /**
  * Document Upload Form
  *
@@ -129,7 +131,7 @@ class DocCategoryForm extends React.Component {
         this.setState({
           formData: {}, // reset form data after successful file upload
         });
-        swal('Add Successful!', '', 'success');
+        swal.fire('Add Successful!', '', 'success');
     });
   }
   /**

@@ -1,6 +1,7 @@
 /* exported DocEditForm */
 import Loader from 'Loader';
 import PropTypes from 'prop-types';
+import swal from 'sweetalert2';
 /**
  * Document Edit Form
  *
@@ -141,7 +142,7 @@ class DocEditForm extends React.Component {
     })
     .then((resp) => resp.json())
     .then(()=>{
-      swal('Updated Successful!', '', 'success');
+      swal.fire('Updated Successful!', '', 'success');
       this.fetchData();
     });
   }

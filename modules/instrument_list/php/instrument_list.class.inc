@@ -169,7 +169,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $this->tpl_data['candID']    = $this->candidate->getCandID();
         $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
 
-        // get behavioral battery for this visit (time point)
+        // get behavioural battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
         $battery->selectBattery($this->timePoint->getSessionID());
 

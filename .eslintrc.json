@@ -18,14 +18,13 @@
   "rules": {
     "extends": ["eslint:recommended", "plugin:react/recommended", "google"],
     "max-len": [2, 80, 2, {
-        "ignoreComments": true,
-        "ignoreStrings": true
+        "ignoreComments": true
     }],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
-    "prefer-rest-params": "warn",
+    "prefer-rest-params": "error",
     "array-callback-return": 0,
-    "require-jsdoc": "warn",
+    "require-jsdoc": "error",
     "no-implicit-globals": 0,
     "no-invalid-this": 0,
     "no-alert": 0,
@@ -38,9 +37,10 @@
   },
   "overrides": [
     {
-      "files": ["modules/**", "htdocs/**"],
+      "files": ["modules/**"],
       "rules": {
-        "max-len": [1, 80, 2, {"ignoreComments": true}]
+        "max-len": [1, 80, 2, {"ignoreComments": true}],
+        "require-jsdoc": "warn"
       }
     }
   ],

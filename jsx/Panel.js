@@ -15,9 +15,8 @@ import PropTypes from 'prop-types';
  */
 class Panel extends Component {
   /**
-   * Construct the React component
-   *
-   * @param {array} props - The React props
+   * @constructor
+   * @param {object} props - React Component properties
    */
   constructor(props) {
     super(props);

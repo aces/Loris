@@ -217,6 +217,7 @@ class Edit_User extends \NDB_Form
             ? array_keys($values['permID']) : [];
         $editorPermissions = $editor->getPermissionIDs() ?? [];
         $permIDs           = [];
+        $passwordExpired   = false;
         // store the permission IDs
         if (!empty($values['permID'])) {
             // An editor can only grant permissions that they have already been
@@ -256,8 +257,8 @@ class Edit_User extends \NDB_Form
         unset($values['NA_UserID']);
         // generate new password
         if (!empty($values['NA_Password'])) {
-            $values['Password_hash']   = \Utility::randomString();
-            $values['Password_expiry'] = '1990-04-01';
+            $values['Password_hash'] = \Utility::randomString();
+            $passwordExpired         = true;
         }
         unset($values['NA_Password']);
         // If editing a user and nothing was specified in the password text field
@@ -493,17 +494,11 @@ class Edit_User extends \NDB_Form
         // and represents a plaintext password, not a hash.
         if (isset($values['Password_hash'])) {
 
-            // Set custom expiry date if the value is present.
-            // Otherwise, use null which will cause the expiry to be 6 months
-            // from the current date.
-            $expiry = isset($values['Password_expiry']) ?
-                new \DateTime($values['Password_expiry'])
-                : null;
             $user->updatePassword(
                 new \Password(
                     htmlspecialchars_decode($values['Password_hash'])
                 ),
-                $expiry
+                $passwordExpired
             );
         }
 
@@ -1308,19 +1303,17 @@ class Edit_User extends \NDB_Form
      *
      * @param int $permID permission ID.
      *
-     * @return string the description.
+     * @return ?string the description.
      */
-    function getDescriptionUsingPermID($permID): string
+    function getDescriptionUsingPermID($permID): ?string
     {
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        $description = $db->pselectOne(
+        return $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             ['pID' => $permID]
         );
-
-        return $description;
     }
 
     /**

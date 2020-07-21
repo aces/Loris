@@ -58,7 +58,7 @@ function getData($db) : array
         []
     );
 
-    // for selecting behavioral variables of interest
+    // for selecting behavioural variables of interest
     $bvlVOIs = $db->pselect(
         "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
         "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
@@ -74,7 +74,7 @@ function getData($db) : array
 
     // sets keys and values to be equal
     $allVOIs = [];
-    $allVOIs['Behavioral'] = array_combine($bvlVOIs, $bvlVOIs);
+    $allVOIs['Behavioural'] = array_combine($bvlVOIs, $bvlVOIs);
 
     // imaging VoIs -- filter out non-human readable DICOM tags
     $imgVOIs = $db->pselectCol(

@@ -56,6 +56,8 @@ class Edit_Help_Content extends \NDB_Form
 
         $defaults = [];
 
+        $helpID   = '';
+        $parentID = '';
         if (isset($_REQUEST['helpID'])) {
             $helpID = htmlspecialchars($_REQUEST['helpID']);
         }

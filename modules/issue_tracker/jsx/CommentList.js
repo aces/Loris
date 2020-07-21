@@ -37,7 +37,9 @@ class CommentList extends Component {
       const item = changes[key];
       const textItems = Object.keys(item.data).map(function(index, j) {
         if (index == 'comment') {
-            comment = <div style={{marginTop: '1em'}}><Markdown content={item.data[index]} /></div>;
+            comment = <div style={{marginTop: '1em'}}>
+              <Markdown content={item.data[index]} />
+            </div>;
             return;
         }
         return (
@@ -61,14 +63,18 @@ class CommentList extends Component {
       } else if (datediffSec < 60*60*24) {
           timestr = <span> {Math.round(datediffSec / (60*60))} hours ago</span>;
       } else {
-          timestr = <span> on {item.date.toLocaleDateString()} at {item.date.toTimeString()}</span>;
+          timestr = <span>
+            on {item.date.toLocaleDateString()} at {item.date.toTimeString()}
+          </span>;
       }
 
       return (
         <div key={i}>
           <hr/>
           <div className='history-item-label'>
-            Updated by <span className="history-item-user">{item.user}</span>{timestr}:
+            Updated by
+            <span className="history-item-user">{item.user}</span>
+            {timestr}:
           </div>
           <ul className='history-item-changes'>
             {textItems}

@@ -39,8 +39,7 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        // FIXME This module should have its own permission.
-        return $user->hasPermission('quality_control');
+        return $user->hasPermission('imaging_quality_control_view');
     }
 
     /**

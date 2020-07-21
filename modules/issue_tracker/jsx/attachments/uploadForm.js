@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import ProgressBar from 'ProgressBar';
+import swal from 'sweetalert2';
 
 /**
  * Issue Upload Attachment Form
@@ -88,14 +89,14 @@ class IssueUploadAttachmentForm extends Component {
             },
             uploadProgress: -1,
           });
-          swal('Upload Successful!', '', 'success');
+          swal.fire('Upload Successful!', '', 'success');
           window.location.href = this.props.baseURL
             + '/issue_tracker/issue/'
             + this.props.issue;
         } else if (data.error) {
-          swal(data.error, '', 'error');
+          swal.fire(data.error, '', 'error');
         } else {
-          swal('Permission denied', '', 'error');
+          swal.fire('Permission denied', '', 'error');
         }
       }).catch((error) => {
       console.error(error);
@@ -106,7 +107,7 @@ class IssueUploadAttachmentForm extends Component {
         errorMessage: msg,
         uploadProgress: -1,
       });
-      swal(msg, '', 'error');
+      swal.fire(msg, '', 'error');
     });
   }
 

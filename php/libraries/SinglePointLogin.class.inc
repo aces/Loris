@@ -278,7 +278,7 @@ class SinglePointLogin
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
                         UserID,
-                        Password_expiry < NOW() as Expired,
+                        PasswordChangeRequired as Expired,
                         Active,
                         Pending_approval,
                         Password_hash,

@@ -185,16 +185,27 @@ class VisitInstrumentList extends Component {
             });
 
             if (this.state.instruments.length === 0) {
-                instruments = <div>Visit has no registered instruments in test battery.</div>;
+                instruments = (
+                    <div>
+                        {'Visit has no registered instruments in test battery.'}
+                    </div>
+                );
             } else {
                 instruments = (<div>
                     <h5>Instruments</h5>
-                        <table className="table table-hover table-bordered" style={{width: '95%'}}>
+                        <table
+                            className="table table-hover table-bordered"
+                            style={{width: '95%'}}
+                        >
                             <thead>
                                 <tr>
                                     <th>Instrument</th>
-                                    <th style={{textAlign: 'center'}}>Completion</th>
-                                    <th style={{textAlign: 'center'}}>Conflicts?</th>
+                                    <th style={{textAlign: 'center'}}>
+                                        Completion
+                                    </th>
+                                    <th style={{textAlign: 'center'}}>
+                                        Conflicts?
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -235,10 +246,13 @@ class VisitInstrumentList extends Component {
             padding: '1ex',
         };
 
-        return (<div style={style} onClick={clickEnabled ? this.toggleExpanded : null}
-                onMouseEnter={this.toggleHover}
-                onMouseLeave={this.toggleHover}
-            >
+        return (
+          <div
+              style={style}
+              onClick={clickEnabled ? this.toggleExpanded : null}
+              onMouseEnter={this.toggleHover}
+              onMouseLeave={this.toggleHover}
+          >
             <div style={flexcontainer}>
                 <div style={{background: bg, width: '1%', height: '100%'}}>
                 </div>

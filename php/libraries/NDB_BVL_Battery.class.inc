@@ -380,9 +380,9 @@ class NDB_BVL_Battery
      * @param string $commentId The CommentID for which we'd like to know
      *                          the test name
      *
-     * @return string A test name
+     * @return ?string A test name
      */
-    public static function getInstrumentNameForCommentId($commentId)
+    public static function getInstrumentNameForCommentId($commentId): ?string
     {
         return \NDB_Factory::singleton()->database()
             ->pselectOne(

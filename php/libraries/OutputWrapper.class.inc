@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-require_once 'generic_includes.php';
 /**
  * This class is designed to assist in writing command-line interface tools
  * for LORIS.
@@ -39,21 +38,41 @@ class OutputWrapper
     /**
      * Create a new command line helper.
      *
-     * @param ?SPLFileInfo $logDirectory The directory that will contain log
-     *                                   files written by this script.
+     * @param ?SPLFileInfo $logDirectory The full path to the directory that
+     *                                   will contain log files written by this
+     *                                   script.
      *
      * @return void
      */
     public function __construct(?SPLFileInfo $logDirectory = null)
     {
-        $logDir = new SPLFileInfo(
-            $logDirectory ?? \NDB_Factory::singleton()->config()->getSetting('log')
-        );
+        $config     = \NDB_Factory::singleton()->config();
+        $pathString = $logDirectory ?? $config->getSetting('log');
+
+        // If the log directory is a partial path, try appending it to the
+        // LORIS base directory.
+        if (strpos($pathString, '/') !== 0) {
+            $pathString = \Utility::pathJoin(
+                $config->getSetting('base'),
+                $pathString
+            );
+        }
+        $logDir = new SPLFileInfo($pathString);
         if ($logDir->isDir() === false) {
-            throw new \ConfigurationException(self::ERROR_LOGDIR_NOT_DIR);
+            throw new \ConfigurationException(
+                sprintf(
+                    self::ERROR_LOGDIR_NOT_DIR . ": `%s`",
+                    $pathString
+                )
+            );
         }
         if ($logDir->isWritable() === false) {
-            throw new \ConfigurationException(self::ERROR_LOGDIR_NOT_WRITABLE);
+            throw new \ConfigurationException(
+                sprintf(
+                    self::ERROR_LOGDIR_NOT_WRITABLE . ": `%s`",
+                    $pathString
+                )
+            );
         }
         $this->_logDirectory = $logDir;
     }
