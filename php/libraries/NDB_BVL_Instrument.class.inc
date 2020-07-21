@@ -1463,25 +1463,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
-     * @return SessionID The sessionID
-     * @throws NotFound
+     * @return int The sessionID if found, or -1 if not found
      */
-    function getSessionID(): SessionID
+    function getSessionID(): int
     {
-        $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $result = \NDB_Factory::singleton()->database()->pselectOne(
+        $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
+        $fieldValue = \Database::singleton()->pselectOneInt(
             $query,
             [
                 'CID' => $this->getCommentID(),
             ]
         );
-        if (empty($result)) {
-            throw new NotFound(
-                "No SessionID exists for CommentID: `{$this->getCommentID()}`"
-            );
-        }
 
-        return (new SessionID($result));
+        return is_int($fieldValue) ? $fieldValue : -1;
     }
 
     /**
