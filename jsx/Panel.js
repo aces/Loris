@@ -79,7 +79,7 @@ class Panel extends Component {
           id={this.props.id}
           className={this.panelClass}
           role="tabpanel"
-          style={{height: 'calc(100% - 3em)', overflowX: 'auto'}}
+          style={{height: 'calc(100% - 3em)'}}
         >
           <div className="panel-body"
                style={{...this.props.style, height: this.props.height}}>
