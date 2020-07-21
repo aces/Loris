@@ -91,22 +91,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             gettype($instrArray['Instruments']['0']),
             'string'
         );
-        $this->assertSame(
-            gettype($instrArray['Instruments']['1']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($instrArray['Instruments']['2']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($instrArray['Instruments']['3']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($instrArray['Instruments']['4']),
-            'string'
-        );
 
         $this->assertArrayHasKey(
             'CandID',
@@ -118,22 +102,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         );
         $this->assertArrayHasKey(
             '0',
-            $instrArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            '1',
-            $instrArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            '2',
-            $instrArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            '3',
-            $instrArray['Instruments']
-        );
-        $this->assertArrayHasKey(
-            '4',
             $instrArray['Instruments']
         );
     }
@@ -249,24 +217,21 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $candid     = '300004';
-        $visit      = 'V1';
-        $instrument = 'aosi';
         $json       = [
             'Meta'      => [
-                'CandID'     => $candid,
-                'Visit'      => $visit,
+                'CandID'     => $this->candidTest,
+                'Visit'      => $this->visitTest,
                 'DDE'        => false,
-                'Instrument' => $instrument
+                'Instrument' => $this->instrumentTest
             ],
-            $instrument => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
 
         ];
         $response = $this->client->request(
             'PATCH',
-            "candidates/$candid/$visit/instruments/$instrument",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
@@ -287,23 +252,20 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $candid     = '300004';
-        $visit      = 'V1';
-        $instrument = 'aosi';
         $json       = [
             'Meta'      => [
-                'CandID'     => $candid,
-                'Visit'      => $visit,
+                'CandID'     => $this->candidTest,
+                'Visit'      => $this->visitTest,
                 'DDE'        => false,
-                'Instrument' => $instrument
+                'Instrument' => $this->instrumentTest
             ],
-            $instrument => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$candid/$visit/instruments/$instrument",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
@@ -498,23 +460,20 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        $candid     = '300003';
-        $visit      = 'V1';
-        $instrument = 'aosi';
         $json       = [
             'Meta'      => [
-                'CandID'     => $candid,
-                'Visit'      => $visit,
+                'CandID'     => $this->candidTest,
+                'Visit'      => $this->visitTest,
                 'DDE'        => true,
-                'Instrument' => $instrument
+                'Instrument' => $this->instrumentTest
             ],
-            $instrument => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
         $response   = $this->client->request(
             'PATCH',
-            "candidates/$candid/$visit/instruments/$instrument/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
@@ -535,23 +494,20 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrumentDde(): void
     {
-        $candid     = '300003';
-        $visit      = 'V1';
-        $instrument = 'aosi';
         $json       = [
             'Meta'      => [
-                'CandID'     => $candid,
-                'Visit'      => $visit,
+                'CandID'     => $this->candidTest,
+                'Visit'      => $this->visitTest,
                 'DDE'        => false,
-                'Instrument' => $instrument
+                'Instrument' => $this->instrumentTest
             ],
-            $instrument => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$candid/$visit/instruments/$instrument/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
