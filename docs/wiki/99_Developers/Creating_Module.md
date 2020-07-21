@@ -90,7 +90,7 @@ you want to provide. The best way to learn about creating JavaScript
 for a new module is by studying the code of an existing module that
 is similar to what you are trying to design.
 
-Be sure to familiarize yourself with our [ReactJS guidelines](./ReactJS
+Be sure to familiarize yourself with our [ReactJS guidelines](../../React.README.md)
 Guidelines.md).
 
 
@@ -189,7 +189,7 @@ be found in any existing module.
 The new module must also contain a markdown file under `help/` that will
 be displayed to users. In contrast to the README, this should be
 written in a friendly and non-technical tone. Please see the [Help
-Text Style Guide](./Help Style Guide.md).
+Text Style Guide](../../HelpStyleGuide.md).
 
 ### Issuing a pull request
 
