@@ -121,31 +121,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdffile(): void
     {
-        $resource = fopen($this->frecordTest, 'w');
-        $stream   = GuzzleHttp\Psr7\stream_for($resource);
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/recordings/" .
-            "$this->frecordTest",
-            [
-                'headers'     => $this->headers,
-                'http_errors' => false,
-                'save_to'     => $stream
-            ]
-        );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/recordings/" .
-                "$this->frecordTest"
-            );
-        }
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        $this->assertFileIsReadable($this->frecordTest);
+        $this->markTestSkipped('Missing data in docker image');
     }
 
     /**
@@ -165,13 +141,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/recordings/" .
-                "$this->frecordTest/channels"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -355,13 +324,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/recordings/" .
-                "$this->frecordTest/channels/meta"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -544,13 +506,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/recordings/" .
-                "$this->frecordTest/electrodes"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -692,13 +647,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/recordings/" .
-                "$this->frecordTest/electrodes/meta"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -839,13 +787,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/recordings/" .
-                "$this->frecordTest/events/meta"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();

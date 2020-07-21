@@ -20,7 +20,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
 {
     protected $instrumentTest = "medical_history";
     protected $candidTest     = "300004";
-    protected $visitTest      = "V1";
+    protected $visitTest      = "V3";
 
     /**
      * Call to LorisApiAuthenticationTest::setUp()

@@ -136,7 +136,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
     public function testPutCandidatesCandidVisit(): void
     {
         $candid   = '115788';
-        $visit    = 'V2';
+        $visit    = 'V1';
         $json     = ['CandID'  => $candid,
             'Visit'   => $visit,
             'Site'    => "Data Coordinating Center",
@@ -154,10 +154,9 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         );
 
         // Verify the status code
-        $this->assertEquals(201, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+        // the response body should be empty unless there is an error message.
+        $body = (string) $response->getBody();
+        $this->assertEquals(201, $response->getStatusCode(), $body);
     }
 
     /**
@@ -224,8 +223,8 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitQcImaging(): void
     {
-        $candid   = '300001';
-        $visit    = 'V1';
+        $candid   = '400162';
+        $visit    = 'V6';
         $json     = [
             "Meta"      => [
                 'CandID' => $candid,
@@ -244,7 +243,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             ]
         );
         // Verify the status code
-        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
