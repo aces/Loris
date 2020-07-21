@@ -34,7 +34,7 @@ class LorisApiAuthenticatedTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->login("admin", 'LORISitb100%');
+        $this->login('UnitTester', $this->validPassword);
     }
 
     /**
@@ -57,7 +57,7 @@ class LorisApiAuthenticatedTest extends TestCase
      */
     public function login($username, $password)
     {
-        $this->base_uri = "https://test-loris-dev.loris.ca/api/v0.0.3/";
+        $this->base_uri = "$this->url/api/v0.0.3/";
         $this->client   = new Client(['base_uri' => $this->base_uri]);
         $response       = $this->client->request(
             'POST',
