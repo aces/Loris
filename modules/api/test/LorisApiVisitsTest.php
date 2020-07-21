@@ -227,12 +227,12 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $candid   = '300001';
         $visit    = 'V1';
         $json     = [
-        "Meta" => [
-            'CandID'  => $candid,
-            'Visit'   => $visit
+            "Meta"      => [
+                'CandID' => $candid,
+                'Visit'  => $visit
             ],
-            'SessionQC'=> "",
-            'Pending'=> true
+            'SessionQC' => "",
+            'Pending'   => true
         ];
         $response = $this->client->request(
             'PUT',
