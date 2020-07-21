@@ -254,21 +254,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
 
-        // Second, create a candidate that already exist
-        $response_exist = $this->client->request(
-            'POST',
-            "candidates",
-            [
-                'headers' => $this->headers,
-                'json'    => $json_new
-            ]
-        );
-        // Verify the status code
-        $this->assertEquals(201, $response_exist->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response_exist->getBody();
-        $this->assertNotEmpty($body);
-
         // Finally, try to create a new candidate with an invalid input
         $json_invalid = [
             'Candidate' =>

@@ -129,28 +129,6 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
         $this->assertNotEmpty($body);
 
         $this->assertFileIsReadable($this->imagefileTest);
-
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/images/" .
-            "$this->imagefileTest",
-            [
-                'headers'     => $this->headers,
-                'http_errors' => false,
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        $imagesArray = json_decode(
-            (string)utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        $this->assertEquals(null, $imagesArray);
     }
 
     /**
