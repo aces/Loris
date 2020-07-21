@@ -59,7 +59,7 @@ Pending_approval = 'N'
 Password_expiry column value is later than today's date
 ```
 
-You can also reset your admin password with the script [tools/resetpassword.php](https://github.com/aces/Loris/blob/master/tools/resetpassword.php).
+You can also reset your admin password with the script [tools/resetpassword.php](https://github.com/aces/Loris/blob/main/tools/resetpassword.php).
 
 ```bash
 php tools/resetpassword.php admin
