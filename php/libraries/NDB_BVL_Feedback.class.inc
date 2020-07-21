@@ -321,7 +321,6 @@ class NDB_BVL_Feedback
         // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
-
         $query = "SELECT Name FROM feedback_bvl_thread
                   JOIN feedback_bvl_type ON
                   feedback_bvl_type.Feedback_type = feedback_bvl_thread.Feedback_type
