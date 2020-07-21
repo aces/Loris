@@ -111,6 +111,8 @@ class Stats_Behavioural extends \NDB_Form
         // PROJECTS
         $projects        = ['' => 'All Projects'];
         $userProjectsIDs = $user->getProjectIDs();
+        $Param_Project   = '';
+
         foreach ($userProjectsIDs as $projectID) {
             $projectName          = \Project::getProjectFromID($projectID)
                                     ->getName();
@@ -118,9 +120,7 @@ class Stats_Behavioural extends \NDB_Form
         }
         $this->tpl_data['Projects'] = $projects;
 
-        if ($_REQUEST['BehaviouralProject'] ?? ''
-        ) {
-
+        if ($_REQUEST['BehaviouralProject'] ?? '') {
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = [
@@ -143,13 +143,11 @@ class Stats_Behavioural extends \NDB_Form
                                    OR s.ProjectID IN
                                        (" . implode(',', $paramProjects) . ")
                                  )";
-
         } else {
             $currentProject = '';
             $Param_Project  ="AND (s.ProjectID IS NULL)";
         }
 
-        //
         //SUBPROJECTS
         $suproject_query = '';
         // Only search for subprojects if $currentProject is a positive int.
