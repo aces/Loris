@@ -17,17 +17,19 @@
   },
   "rules": {
     "extends": ["eslint:recommended", "plugin:react/recommended", "google"],
-    "max-len": [2, 80, 2, {
+    "max-len": ["error", {
+        "code": 80,
+        "tabWidth": 2,
         "ignoreComments": true
     }],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "prefer-rest-params": "error",
-    "array-callback-return": 0,
+    "array-callback-return": "off",
     "require-jsdoc": "error",
-    "no-implicit-globals": 0,
-    "no-invalid-this": 0,
-    "no-alert": 0,
+    "no-implicit-globals": "off",
+    "no-invalid-this": "off",
+    "no-alert": "off",
     "new-cap": ["error", {
       "capIsNewExceptions": ["DynamicTable"]
     }],
@@ -37,9 +39,36 @@
   },
   "overrides": [
     {
-      "files": ["modules/**"],
+      "files": [
+        "modules/acknowledgements/**",
+        "modules/behavioural_qc/**",
+        "modules/brainbrowser/**",
+        "modules/bvl_feedback/**",
+        "modules/candidate_list/**",
+        "modules/candidate_parameters/**",
+        "modules/configuration/**",
+        "modules/conflict_resolver/**",
+        "modules/datadict/**",
+        "modules/data_release/**",
+        "modules/dicom_archive/**",
+        "modules/document_repository/**",
+        "modules/electrophysiology_browser/**",
+        "modules/examiner/**",
+        "modules/genomic_browser/**",
+        "modules/help_editor/**",
+        "modules/imaging_browser/**",
+        "modules/imaging_qc/**",
+        "modules/imaging_uploader/**",
+        "modules/instrument_builder/**",
+        "modules/instrument_manager/**",
+        "modules/issue_tracker/**",
+        "modules/media/**",
+        "modules/module_manager/**",
+        "modules/new_profile/**",
+        "modules/publication/**",
+        "modules/survey_accounts/**"
+      ],
       "rules": {
-        "max-len": [1, 80, 2, {"ignoreComments": true}],
         "require-jsdoc": "warn"
       }
     }
