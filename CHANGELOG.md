@@ -15,6 +15,8 @@ changes in the following format: PR #1234***
 #### Updates and Improvements
 - Module-specific permissions added for Survey Accounts, Imaging Behavioural
 Quality Control, and Behavioural Quality Control. (PR #6041)
+- Addition of a new `account_request_date` in `users` table that will be used when
+requesting a new account and will be displayed in the User Accounts module (PR #6191)
 #### Bug Fixes
 - *Add item here*
 ### Modules

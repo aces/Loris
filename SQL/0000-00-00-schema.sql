@@ -100,6 +100,7 @@ CREATE TABLE `users` (
   `language_preference` integer unsigned default NULL,
   `active_from` date default NULL,
   `active_to` date default NULL,
+  `account_request_date` date default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),

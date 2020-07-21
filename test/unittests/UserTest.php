@@ -63,7 +63,8 @@ class UserTest extends TestCase
                 'Doc_Repo_Notifications' => 'Y',
                 'language_preference'    => 2,
                 'active_from'            => '2017-07-16',
-                'active_to'              => '2020-07-16'
+                'active_to'              => '2020-07-16',
+                'account_request_date'   => null
           );
     /**
      * The userInfo table that should result from calling the factory function
