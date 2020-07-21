@@ -3,7 +3,6 @@
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 use GuzzleHttp\Client;
-use \PHPUnit\Framework\TestCase;
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every
@@ -19,7 +18,7 @@ use \PHPUnit\Framework\TestCase;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiAuthenticatedTest extends TestCase
+class LorisApiAuthenticatedTest extends LorisIntegrationTest
 {
 
     protected $client;
