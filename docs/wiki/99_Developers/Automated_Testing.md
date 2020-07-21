@@ -85,7 +85,7 @@ Further information can be found at [the eslint website](https://eslint.org/docs
 
 **Dynamic testing** includes _unit tests_ and _integration tests_. A unit test is a small chunk of code that executes a function and make sure it does what it's supposed to using fake data. An integration test simulates a person using a web browser and interacting with UI elements, making sure that taking an action on a webpage causes a result that makes sense.
 
-We use Docker to help us simulate a server running LORIS. The installation and usage of Docker testing in LORIS is covered in our [testing README file in the `test/` directory](https://github.com/aces/Loris/blob/master/test/README.md).
+We use Docker to help us simulate a server running LORIS. The installation and usage of Docker testing in LORIS is covered in our [testing README file in the `test/` directory](https://github.com/aces/Loris/blob/main/test/README.md).
 
 ### Unit Tests
 
