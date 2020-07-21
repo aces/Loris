@@ -58,89 +58,83 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: " .
-                "candidates/$this->candidTest/$this->visitTest/instruments"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $InstrArray = json_decode(
+        $instrArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
             true
         );
 
-        $this->assertSame(gettype($InstrArray), 'array');
+        $this->assertSame(gettype($instrArray), 'array');
         $this->assertSame(
-            gettype($InstrArray['Meta']),
+            gettype($instrArray['Meta']),
             'array'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['CandID']),
+            gettype($instrArray['Meta']['CandID']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['Visit']),
+            gettype($instrArray['Meta']['Visit']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Instruments']),
+            gettype($instrArray['Instruments']),
             'array'
         );
         $this->assertSame(
-            gettype($InstrArray['Instruments']['0']),
+            gettype($instrArray['Instruments']['0']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Instruments']['1']),
+            gettype($instrArray['Instruments']['1']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Instruments']['2']),
+            gettype($instrArray['Instruments']['2']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Instruments']['3']),
+            gettype($instrArray['Instruments']['3']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Instruments']['4']),
+            gettype($instrArray['Instruments']['4']),
             'string'
         );
 
         $this->assertArrayHasKey(
             'CandID',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Visit',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             '0',
-            $InstrArray['Instruments']
+            $instrArray['Instruments']
         );
         $this->assertArrayHasKey(
             '1',
-            $InstrArray['Instruments']
+            $instrArray['Instruments']
         );
         $this->assertArrayHasKey(
             '2',
-            $InstrArray['Instruments']
+            $instrArray['Instruments']
         );
         $this->assertArrayHasKey(
             '3',
-            $InstrArray['Instruments']
+            $instrArray['Instruments']
         );
         $this->assertArrayHasKey(
             '4',
-            $InstrArray['Instruments']
+            $instrArray['Instruments']
         );
     }
 
@@ -161,19 +155,12 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: " .
-                "candidates/$this->candidTest/$this->visitTest/instruments/" .
-                "$this->instrumentTest"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $InstrArray = json_decode(
+        $instrArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
@@ -181,76 +168,76 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         );
 
         $this->assertSame(
-            gettype($InstrArray['Meta']['Candidate']),
+            gettype($instrArray['Meta']['Candidate']),
             'string'
         );
 
         $this->assertSame(
-            gettype($InstrArray['Meta']['Candidate']),
+            gettype($instrArray['Meta']['Candidate']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['Visit']),
+            gettype($instrArray['Meta']['Visit']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['DDE']),
+            gettype($instrArray['Meta']['DDE']),
             'boolean'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['Instrument']),
+            gettype($instrArray['Meta']['Instrument']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray[$this->instrumentTest]['CommentID']),
+            gettype($instrArray[$this->instrumentTest]['CommentID']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray[$this->instrumentTest]['Testdate']),
+            gettype($instrArray[$this->instrumentTest]['Testdate']),
             'string'
         );
         $this->assertSame(
             gettype(
-                $InstrArray[$this->instrumentTest]['Data_entry_completion_status']
+                $instrArray[$this->instrumentTest]['Data_entry_completion_status']
             ),
             'string'
         );
 
         $this->assertArrayHasKey(
             'Candidate',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Visit',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'DDE',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Instrument',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'CommentID',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
         $this->assertArrayHasKey(
             'UserID',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
         $this->assertArrayHasKey(
             'Examiner',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
         $this->assertArrayHasKey(
             'Testdate',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
         $this->assertArrayHasKey(
             'Data_entry_completion_status',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
     }
 
@@ -286,17 +273,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'json'        => $json
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: PATCH" .
-                "candidates/$candid/$visit/instruments/$instrument"
-            );
-        }
-        if ($response->getStatusCode() === 405) {
-            $this->markTestSkipped(
-                "Error 405"
-            );
-        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -334,17 +310,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'json'        => $json
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: PUT" .
-                "candidates/$candid/$visit/instruments/$instrument"
-            );
-        }
-        if ($response->getStatusCode() === 405) {
-            $this->markTestSkipped(
-                "Error 405"
-            );
-        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -368,19 +333,12 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/instruments/" .
-                "$this->instrumentTest/flags"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $InstrArray = json_decode(
+        $instrArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
@@ -388,145 +346,49 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         );
 
         $this->assertSame(
-            gettype($InstrArray['Meta']['Candidate']),
+            gettype($instrArray['Meta']['Candidate']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['Visit']),
+            gettype($instrArray['Meta']['Visit']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['DDE']),
+            gettype($instrArray['Meta']['DDE']),
             'boolean'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['Instrument']),
+            gettype($instrArray['Meta']['Instrument']),
             'string'
         );
         $this->assertArrayHasKey(
             'Candidate',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Visit',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'DDE',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Instrument',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Data_entry',
-            $InstrArray['Flags']
+            $instrArray['Flags']
         );
         $this->assertArrayHasKey(
             'Administration',
-            $InstrArray['Flags']
+            $instrArray['Flags']
         );
         $this->assertArrayHasKey(
             'Validity',
-            $InstrArray['Flags']
+            $instrArray['Flags']
         );
-    }
-
-    /**
-     * Tests the HTTP PATCH request for the
-     * endpoint /projects/{project}/instruments{instrument}/flag
-     *
-     * @return void
-     */
-    public function testPatchCandidatesCandidVisitInstrumentsInstrumentFlags(): void
-    {
-        $candid     = '300003';
-        $visit      = 'V1';
-        $instrument = 'aosi';
-        $json       = [
-            'Meta'  => [
-                'Candidate'  => $candid,
-                'Visit'      => $visit,
-                'DDE'        => false,
-                'Instrument' => $instrument
-            ],
-            'Flags' => [
-                'Data_entry' => "2"
-            ]
-        ];
-        $response   = $this->client->request(
-            'PATCH',
-            "candidates/$candid/$visit/instruments/$instrument/flags",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers,
-                'json'        => $json
-            ]
-        );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: PATCH" .
-                "candidates/$candid/$visit/instruments/$instrument/flags"
-            );
-        }
-        if ($response->getStatusCode() === 405) {
-            $this->markTestSkipped(
-                "Error 405"
-            );
-        }
-        $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-    }
-
-    /**
-     * Tests the HTTP PUT request for the
-     * endpoint /projects/{project}/instruments{instrument}
-     *
-     * @return void
-     */
-    public function testPutCandidatesCandidVisitInstrumentsInstrumentFlags(): void
-    {
-        $candid     = '300004';
-        $visit      = 'V1';
-        $instrument = 'aosi';
-        $json       = [
-            'Meta'  => [
-                'Candidate'  => $candid,
-                'Visit'      => $visit,
-                'DDE'        => false,
-                'Instrument' => $instrument
-            ],
-            'Flags' => [
-                'Validity' => "2"
-            ]
-        ];
-        $response   = $this->client->request(
-            'PUT',
-            "candidates/$candid/$visit/instruments/$instrument/flags",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers,
-                'json'        => $json
-            ]
-        );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: PUT" .
-                "candidates/$candid/$visit/instruments/$instrument/flags"
-            );
-        }
-        if ($response->getStatusCode() === 405) {
-            $this->markTestSkipped(
-                "Error 405"
-            );
-        }
-        $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
     }
 
     /**
@@ -539,26 +401,19 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/instruments/
-                 $this->instrumentTest/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest/dde",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/instruments/" .
-                "$this->instrumentTest/dde"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $InstrArray = json_decode(
+        $instrArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
@@ -566,72 +421,72 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         );
 
         $this->assertSame(
-            gettype($InstrArray['Meta']['Candidate']),
+            gettype($instrArray['Meta']['Candidate']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['Visit']),
+            gettype($instrArray['Meta']['Visit']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['DDE']),
+            gettype($instrArray['Meta']['DDE']),
+            'boolean'
+        );
+        $this->assertSame(
+            gettype($instrArray['Meta']['Instrument']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['Instrument']),
+            gettype($instrArray[$this->instrumentTest]['CommentID']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray[$this->instrumentTest]['CommentID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($InstrArray[$this->instrumentTest]['Testdate']),
+            gettype($instrArray[$this->instrumentTest]['Testdate']),
             'string'
         );
         $this->assertSame(
             gettype(
-                $InstrArray[$this->instrumentTest]['Data_entry_completion_status']
+                $instrArray[$this->instrumentTest]['Data_entry_completion_status']
             ),
             'string'
         );
 
         $this->assertArrayHasKey(
             'Candidate',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Visit',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'DDE',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Instrument',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
 
         $this->assertArrayHasKey(
             'CommentID',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
         $this->assertArrayHasKey(
             'UserID',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
         $this->assertArrayHasKey(
             'Examiner',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
         $this->assertArrayHasKey(
             'Testdate',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
         $this->assertArrayHasKey(
             'Data_entry_completion_status',
-            $InstrArray[$this->instrumentTest]
+            $instrArray[$this->instrumentTest]
         );
     }
 
@@ -666,17 +521,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'json'        => $json
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: PATCH" .
-                "candidates/$candid/$visit/instruments/$instrument/dde"
-            );
-        }
-        if ($response->getStatusCode() === 405) {
-            $this->markTestSkipped(
-                "Error 405"
-            );
-        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -714,17 +558,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'json'        => $json
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: PUT" .
-                "candidates/$candid/$visit/instruments/$instrument/dde"
-            );
-        }
-        if ($response->getStatusCode() === 405) {
-            $this->markTestSkipped(
-                "Error 405"
-            );
-        }
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -743,31 +576,19 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/instruments/
-            $this->instrumentTest/dde/flags",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest/dde/flags",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers,
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/instruments/
-            $this->instrumentTest/dde/flags"
-            );
-        }
-        if ($response->getStatusCode() === 405) {
-            $this->markTestSkipped(
-                "Error 405"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $InstrArray = json_decode(
+        $instrArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
             ),
@@ -775,159 +596,49 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         );
 
         $this->assertSame(
-            gettype($InstrArray['Meta']['Candidate']),
+            gettype($instrArray['Meta']['Candidate']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['Visit']),
+            gettype($instrArray['Meta']['Visit']),
             'string'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['DDE']),
-            'string'
+            gettype($instrArray['Meta']['DDE']),
+            'boolean'
         );
         $this->assertSame(
-            gettype($InstrArray['Meta']['Instrument']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($InstrArray['Flags']['Data_entry']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($InstrArray['Flags']['Administration']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($InstrArray['Flags']['Validity']),
+            gettype($instrArray['Meta']['Instrument']),
             'string'
         );
 
         $this->assertArrayHasKey(
             'Candidate',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Visit',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'DDE',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Instrument',
-            $InstrArray['Meta']
+            $instrArray['Meta']
         );
         $this->assertArrayHasKey(
             'Data_entry',
-            $InstrArray['Flags']
+            $instrArray['Flags']
         );
         $this->assertArrayHasKey(
             'Administration',
-            $InstrArray['Flags']
+            $instrArray['Flags']
         );
         $this->assertArrayHasKey(
             'Validity',
-            $InstrArray['Flags']
+            $instrArray['Flags']
         );
     }
-
-    /**
-     * Tests the HTTP PATCH request for the
-     * endpoint /projects/{project}/instruments{instrument}/flag
-     *
-     * @return void
-     */
-    public function testPatchCandidVisitInstrumentsInstrumentDdeFlags(): void
-    {
-        $candid     = '300003';
-        $visit      = 'V1';
-        $instrument = 'aosi';
-        $json       = [
-            'Meta'      => [
-                'CandID'     => $candid,
-                'Visit'      => $visit,
-                'DDE'        => false,
-                'Instrument' => $instrument
-            ],
-            $instrument => [
-                'UserID' => "2"
-            ]
-        ];
-        $response   = $this->client->request(
-            'PATCH',
-            "candidates/$candid/$visit/instruments/$instrument/dde/flags",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers,
-                'json'        => $json
-            ]
-        );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: GET" .
-                "candidates/$candid/$visit/instruments/$instrument/dde/flags"
-            );
-        }
-        if ($response->getStatusCode() === 405) {
-            $this->markTestSkipped(
-                "Error 405"
-            );
-        }
-        $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-    }
-
-    /**
-     * Tests the HTTP PUT request for the
-     * endpoint /projects/{project}/instruments{instrument}
-     *
-     * @return void
-     */
-    public function testPutCandidVisitInstrumentsInstrumentDdeFlags(): void
-    {
-        $candid     = '300003';
-        $visit      = 'V1';
-        $instrument = 'aosi';
-        $json       = [
-            'Meta'      => [
-                'CandID'     => $candid,
-                'Visit'      => $visit,
-                'DDE'        => false,
-                'Instrument' => $instrument
-            ],
-            $instrument => [
-                'UserID' => "2"
-            ]
-        ];
-        $response   = $this->client->request(
-            'PUT',
-            "candidates/$candid/$visit/instruments/$instrument/dde/flags",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers,
-                'json'        => $json
-            ]
-        );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: GET" .
-                "candidates/$candid/$visit/instruments/$instrument/dde/flags"
-            );
-        }
-        if ($response->getStatusCode() === 405) {
-            $this->markTestSkipped(
-                "Error 405"
-            );
-        }
-        $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-    }
-
-
 }

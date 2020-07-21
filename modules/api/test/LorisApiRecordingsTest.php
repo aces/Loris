@@ -61,7 +61,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
+            $this->markTestSkipped(
                 "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/recordings/"
             );
@@ -134,15 +134,10 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
+            $this->markTestSkipped(
                 "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/recordings/" .
                 "$this->frecordTest"
-            );
-        }
-        if ($response->getStatusCode() === 500) {
-            $this->markTestSkipped(
-                "Internal Servor error"
             );
         }
         $this->assertEquals(200, $response->getStatusCode());
@@ -171,7 +166,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
+            $this->markTestSkipped(
                 "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/recordings/" .
                 "$this->frecordTest/channels"
@@ -361,7 +356,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
+            $this->markTestSkipped(
                 "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/recordings/" .
                 "$this->frecordTest/channels/meta"
@@ -550,7 +545,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
+            $this->markTestSkipped(
                 "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/recordings/" .
                 "$this->frecordTest/electrodes"
@@ -698,7 +693,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
+            $this->markTestSkipped(
                 "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/recordings/" .
                 "$this->frecordTest/electrodes/meta"
@@ -845,7 +840,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
+            $this->markTestSkipped(
                 "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/recordings/" .
                 "$this->frecordTest/events/meta"
@@ -992,7 +987,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
+            $this->markTestSkipped(
                 "Endpoint not found: GET" .
                 "candidates/$this->candidTest/$this->visitTest/recordings/" .
                 "$this->frecordTest/events/meta"

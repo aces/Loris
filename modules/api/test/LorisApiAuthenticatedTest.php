@@ -3,6 +3,7 @@
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 use GuzzleHttp\Client;
+use \PHPUnit\Framework\TestCase;
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP request to every
@@ -18,7 +19,7 @@ use GuzzleHttp\Client;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiAuthenticatedTest extends LorisIntegrationTest
+class LorisApiAuthenticatedTest extends TestCase
 {
 
     protected $client;
@@ -33,7 +34,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->login("UnitTester", $this->validPassword);
+        $this->login("admin", 'LORISitb100%');
     }
 
     /**
@@ -56,7 +57,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      */
     public function login($username, $password)
     {
-        $this->base_uri = "$this->url/api/v0.0.3/";
+        $this->base_uri = "https://test-loris-dev.loris.ca/api/v0.0.3/";
         $this->client   = new Client(['base_uri' => $this->base_uri]);
         $response       = $this->client->request(
             'POST',

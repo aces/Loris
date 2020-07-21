@@ -152,33 +152,12 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
                 'json'        => $json
             ]
         );
-        if ($response->getStatusCode() === 400) {
-            $this->markTestIncomplete(
-                "Error 400: PUT candidates/$candid/$visit"
-            );
-        }
-        if ($response->getStatusCode() === 204) {
-            $this->markTestSkipped(
-                "Candidate $candid already exist"
-            );
-        }
+
         // Verify the status code
         $this->assertEquals(201, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
-        $response = $this->client->request(
-            'PUT',
-            "candidates/$candid/$visit",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers,
-                'json'        => $json
-            ]
-        );
-        // Verify the status code; should be 204 because it was just created,
-        // so it already exists
-        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
@@ -245,13 +224,15 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitQcImaging(): void
     {
-        $candid   = '300003';
-        $visit    = 'V3';
-        $json     = ['CandID'  => $candid,
-            'Visit'   => $visit,
-            'Site'    => "Montreal",
-            'Battery' => "Fresh",
-            'Project' => "Pumpernickel"
+        $candid   = '300001';
+        $visit    = 'V1';
+        $json     = [
+        "Meta" => [
+            'CandID'  => $candid,
+            'Visit'   => $visit
+            ],
+            'SessionQC'=> "",
+            'Pending'=> true
         ];
         $response = $this->client->request(
             'PUT',
@@ -262,35 +243,10 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
                 'json'        => $json
             ]
         );
-        if ($response->getStatusCode() === 403) {
-            $this->markTestIncomplete(
-                "Error 403: PUT candidates/$candid/$visit"
-            );
-        } elseif ($response->getStatusCode() === 400) {
-            $this->markTestIncomplete(
-                "Error 400: PUT candidates/$candid/$visit"
-            );
-        } elseif ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Error 404: PUT candidates/$candid/$visit"
-            );
-        }
         // Verify the status code
         $this->assertEquals(201, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
-        $response = $this->client->request(
-            'PUT',
-            "candidates/$candid/$visit",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers,
-                'json'        => $json
-            ]
-        );
-        // Verify the status code; should be 204 because it was just created,
-        // so it already exists
-        $this->assertEquals(204, $response->getStatusCode());
     }
 }
