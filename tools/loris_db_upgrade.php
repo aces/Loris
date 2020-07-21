@@ -30,10 +30,6 @@ $files = array_diff(scandir($path), array('.', '..'));
 print_r($files);
 echo "This script will upgrade the LORIS database to the latest release version.\n";
 
-if (!file_exists('../project/config.xml')) {
-    print("config.xml file doesn't exist. Aborting update.");
-    exit(1);
-}
 
 $v = $argv[1];
 $versionList = array();
@@ -98,14 +94,14 @@ $log_dir = "log";
 $db     = \Database::singleton();
 // backup database
 print_r("Backup your database into $log_dir/backup.sql");
-$output  = shell_exec("mysqldump -h '$host' -u '$adminUser' --password='$password' '$dbname' > '$log_dir'/backup.sql");
+shell_exec("mysqldump -h '$host' -u '$adminUser' --password='$password' '$dbname' > '$log_dir'/backup.sql");
 
 $errs = array();
 
 
-$qureys = explode(";",$query);
+$quries = explode(";",$query);
 
-foreach ($qureys as $q) {
+foreach ($quries as $q) {
    if (!empty(trim($q))) {
       if (!$mysqli->query($q)) {
          $error = ($mysqli->error);
@@ -120,15 +116,14 @@ foreach ($qureys as $q) {
       }
    }
 }
+
+
 if (empty($errs)) {
    echo "Upgrade completed successfully!";
 } else {
    // restore the database if it has any error.
    echo "Fix the errors in Database! The database will be restored!";
-print_r("Input your database password to restore your database!");
-
-$output = shell_exec("mysql -h '$host' -u '$adminUser' --password='$password' '$dbname' < '$log_dir'/backup.sql");
-print_r($output);
+shell_exec("mysql -h '$host' -u '$adminUser' --password='$password' '$dbname' < '$log_dir'/backup.sql");
  
 }
 
