@@ -243,7 +243,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$display,
             self::$clearFilter,
             "Female",
-            '225'
+            '226'
         );
         $this->_filterTest(
             self::$sex,

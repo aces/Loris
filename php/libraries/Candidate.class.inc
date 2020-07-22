@@ -7,6 +7,10 @@
  */
 
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\StudyEntities\Candidate\EntityType;
+use LORIS\StudyEntities\Candidate\Sex;
+
+/* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
 define('PSCID_NOT_SPECIFIED', 2);
@@ -94,8 +98,17 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         }
 
         // store user data in object property
-        foreach ($row AS $key=>$value) {
-            $this->candidateInfo[$key] = $value;
+        foreach ($row as $key=>$value) {
+            switch ($key){
+            case 'Sex':
+                $this->candidateInfo[$key] = new Sex($value);
+                break;
+            case 'EntityType':
+                $this->candidateInfo[$key] = new EntityType($value);
+                break;
+            default:
+                $this->candidateInfo[$key] = $value;
+            }
         }
 
         $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
@@ -182,7 +195,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *                                           written as YYYY-MM-DD. Value should
      *                                           be null unless the useEDC setting
      *                                           is configured to be true.
-     * @param string      $sex                   sex, 'Male', 'Female', or 'Other'
+     * @param Sex         $sex                   An instance of the Sex class.
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
      * @param int|null    $registrationProjectID The project ID, if available
@@ -195,7 +208,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         int $centerID,
         string $dateOfBirth,
         ?string $edc,
-        string $sex,
+        Sex $sex,
         ?string $PSCID = null,
         int $registrationProjectID = null
     ): CandID {
@@ -497,12 +510,21 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Return the candidate's sex
      *
-     * @return string|null Male|Female|Other String describing the sex
-     *                     and null if scanner
+     * @return ?Sex
      */
-    function getCandidateSex(): ?string
+    function getCandidateSex(): ?Sex
     {
         return $this->candidateInfo["Sex"];
+    }
+
+    /**
+     * Return the candidate's entity type.
+     *
+     * @return ?EntityType
+     */
+    function getEntityType(): ?EntityType
+    {
+        return $this->candidateInfo["EntityType"];
     }
 
     /**
@@ -900,4 +922,3 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         return '/^'.$regex.'$/i';
     }
 }
-

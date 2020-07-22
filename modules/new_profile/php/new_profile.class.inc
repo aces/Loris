@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 namespace LORIS\new_profile;
 
+use LORIS\StudyEntities\Candidate\Sex;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -71,7 +73,7 @@ class New_Profile extends \NDB_Form
             (int)$values['site'],
             $dob,
             $edc,
-            $values['sex'],
+            new Sex($values['sex']),
             $values['pscid'] ?? null,
             intval($values['project'])
         );
