@@ -66,7 +66,7 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
            $module = $row['Module'];
            $cat = $row['Category'];
            foreach ($cat->getItems() as $item) {
-            $name   = $cat->getName() . '_' . $item->getName();
+            $name   = $item->getName();
             $desc   = '';
             $status = 'Unchanged';
             if (isset($overrides[$name])) {
@@ -84,8 +84,11 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                 [
                     'module'        => $module->getName(),
                     'category'     => $cat->getName(),
-                    'name'               => $name,
+                    /*
+                    'fieldname'               => $name,
                     'source_field'       => $item->getName(),
+                     */
+                    'field'              => $item->getName(),
                     'description'        => $desc,
                     'description_status' => $status,
                     'datascope' => $item->getScope(),
@@ -95,42 +98,6 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
             );
            }
         }
-        /*
-        foreach ($modules as $module) {
-            $mdict = $module->getDataDictionary($this->loris);
-            foreach($mdict as $cat) {
-                foreach($cat->getItems() as $item) {
-                    $name   = $cat->getName() . '_' . $item->getName();
-                    $desc   = '';
-                    $status = 'Unchanged';
-                    if (isset($overrides[$name])) {
-                        $desc   = $overrides[$name]['Description'];
-                        $status = 'Modified';
-                    } else {
-                        $desc = $item->getDescription();
-                    }
-
-                    if ($desc == '') {
-                        $status = 'Empty';
-                    }
-                    $dict[] = $this->getInstance(
-                        $item,
-                        [
-                            'module'        => $module->getName(),
-                            'category'     => $cat->getName(),
-                            'name'               => $name,
-                            'source_field'       => $item->getName(),
-                            'description'        => $desc,
-                            'description_status' => $status,
-                            'datascope' => $item->getScope(),
-                            'type' => $item->getDataType(),
-                            'cardinality' => $item->getCardinality(),
-                        ]
-                    );
-                }
-            } 
-        }
-         */
         return new \ArrayIterator($dict);
     }
     /**

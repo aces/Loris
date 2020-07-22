@@ -65,8 +65,6 @@ class DataDictIndex extends Component {
       } else {
           this.setState({moduleFilter: ''});
       }
-
-      console.log(filter);
   }
 
   editSwal(row) {
@@ -87,7 +85,7 @@ class DataDictIndex extends Component {
               return;
           }
 
-          const url = loris.BaseURL + '/datadict/fields/' + encodeURI(row.Name);
+          const url = loris.BaseURL + '/datadict/fields/' + encodeURI(row['Field Name']);
 
           // The fetch happens asyncronously, which means that the
           // swal closes before it returns. We find the index that
@@ -97,7 +95,7 @@ class DataDictIndex extends Component {
           let odesc;
           let ostat;
           for (i = 0; i < this.state.data.Data.length; i++) {
-              if (this.state.data.Data[i][1] == row.Name) {
+              if (this.state.data.Data[i][2] == row['Field Name']) {
                   // Store the original values in case the fetch
                   // fails and we need to restore them.
                   odesc = this.state.data.Data[i][3];
@@ -113,6 +111,7 @@ class DataDictIndex extends Component {
                   break;
               }
           }
+
           fetch(url, {
                   method: 'PUT',
                   credentials: 'same-origin',
@@ -237,7 +236,7 @@ class DataDictIndex extends Component {
         },
         {
             label: 'Category',
-            show: true,
+            show: false,
             filter: {
                 name: 'Source From',
                 type: 'multiselect',
@@ -245,18 +244,10 @@ class DataDictIndex extends Component {
             },
         },
         {
-            label: 'Name',
-            show: false,
-            filter: {
-                name: 'Name',
-                type: 'text',
-            },
-        },
-        {
-            label: 'Source Field',
+            label: 'Field Name',
             show: true,
             filter: {
-                name: 'Source Field',
+                name: 'Name',
                 type: 'text',
             },
         },
