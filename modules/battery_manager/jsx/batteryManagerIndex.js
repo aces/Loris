@@ -336,8 +336,8 @@ class BatteryManagerIndex extends Component {
           type: 'select',
           options: options.active,
         }},
-      {label: 'Change Status', show: hasPermission('batter_manager_edit')},
-      {label: 'Edit Metadata', show: hasPermission('batter_manager_edit')},
+      {label: 'Change Status', show: hasPermission('battery_manager_edit')},
+      {label: 'Edit Metadata', show: hasPermission('battery_manager_edit')},
     ];
 
     const actions = [
