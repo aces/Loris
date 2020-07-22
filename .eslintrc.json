@@ -40,33 +40,23 @@
   "overrides": [
     {
       "files": [
-        "modules/acknowledgements/**",
         "modules/behavioural_qc/**",
-        "modules/brainbrowser/**",
         "modules/bvl_feedback/**",
         "modules/candidate_list/**",
         "modules/candidate_parameters/**",
-        "modules/configuration/**",
         "modules/conflict_resolver/**",
-        "modules/datadict/**",
         "modules/data_release/**",
-        "modules/dicom_archive/**",
         "modules/document_repository/**",
         "modules/electrophysiology_browser/**",
         "modules/examiner/**",
         "modules/genomic_browser/**",
-        "modules/help_editor/**",
         "modules/imaging_browser/**",
-        "modules/imaging_qc/**",
         "modules/imaging_uploader/**",
         "modules/instrument_builder/**",
         "modules/instrument_manager/**",
         "modules/issue_tracker/**",
         "modules/media/**",
-        "modules/module_manager/**",
-        "modules/new_profile/**",
-        "modules/publication/**",
-        "modules/survey_accounts/**"
+        "modules/publication/**"
       ],
       "rules": {
         "require-jsdoc": "warn"

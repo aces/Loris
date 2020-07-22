@@ -8,8 +8,12 @@ import swal from 'sweetalert2';
  *
  * @author  Shen Wang
  * @version 1.0.0
- * */
+ */
 class NewProfileIndex extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -26,6 +30,9 @@ class NewProfileIndex extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -131,6 +138,11 @@ class NewProfileIndex extends React.Component {
     this.setState({formData: formData});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     if (this.state.error) {
