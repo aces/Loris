@@ -29,7 +29,7 @@ class DataDictIndex extends Component {
       error: false,
       isLoaded: false,
       isLoading: false,
-      fieldOptions: {'sourceFrom': {'abc': 'def'}},
+      fieldOptions: {'sourceFrom': {}},
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -74,6 +74,9 @@ class DataDictIndex extends Component {
                         row.push(encoded);
                         continue;
                     case 0x1f: // end of row
+                        const rowdata2 = data.slice(colStart+1, i);
+                        const encoded2 = utf8Decoder.decode(rowdata2);
+                        row.push(encoded2);
                         this.state.data.push(row);
                         rowStart = i+1;
                         colStart = i;
