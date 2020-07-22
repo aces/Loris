@@ -30,23 +30,21 @@ class AttachmentDTO implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON(): string
+    public function jsonSerialize() : array
     {
-        return json_encode(
-            [
-                'ID'          => $this->ID,
-                'issueID'     => $this->issueID,
-                'file_hash'   => $this->file_hash,
-                'date_added'  => $this->date_added,
-                'file_name'   => $this->file_name,
-                'deleted'     => $this->deleted,
-                'user'        => $this->user,
-                'description' => $this->description,
-                'file_size'   => $this->file_size,
-                'mime_type'   => $this->mime_type,
-            ]
-        );
+        return [
+            'ID'          => $this->ID,
+            'issueID'     => $this->issueID,
+            'file_hash'   => $this->file_hash,
+            'date_added'  => $this->date_added,
+            'file_name'   => $this->file_name,
+            'deleted'     => $this->deleted,
+            'user'        => $this->user,
+            'description' => $this->description,
+            'file_size'   => $this->file_size,
+            'mime_type'   => $this->mime_type,
+        ];
     }
 }

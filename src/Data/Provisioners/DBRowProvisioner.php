@@ -95,12 +95,12 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
         $iterator = new class($stmt, $this) extends \IteratorIterator {
             protected $outer;
             /**
-         * Constructor creates a closure over the PDO statement and outer class
-         * in order to have access to getInstance()
-         *
-         * @param \PDOStatement    $rows The PDOStatement being traversed.
-         * @param DBRowProvisioner $self The outer class being closed over.
-         */
+             * Constructor creates a closure over the PDO statement and outer class
+             * in order to have access to getInstance()
+             *
+             * @param \PDOStatement    $rows The PDOStatement being traversed.
+             * @param DBRowProvisioner $self The outer class being closed over.
+             */
             public function __construct($rows, &$self)
             {
                 parent::__construct($rows);
@@ -108,10 +108,10 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
             }
 
             /**
-         * Override IteratorIterator to call the closure's getInstance
-         *
-         * @return DataInstance
-         */
+             * Override IteratorIterator to call the closure's getInstance
+             *
+             * @return DataInstance
+             */
             public function current()
             {
                 $row = parent::current();

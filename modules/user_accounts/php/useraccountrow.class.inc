@@ -45,13 +45,13 @@ class UserAccountRow implements \LORIS\Data\DataInstance
         return $this->ProjectIDs;
     }
 
-     /**
-      * Implements \LORIS\Data\DataInstance interface for this row.
-      *
-      * @return string the instance data.
-      */
-    public function toJSON(): string
+    /**
+     * Implements \LORIS\Data\DataInstance interface for this row.
+     *
+     * @return array which can be serialized by json_encode()
+     */
+    public function jsonSerialize() : array
     {
-        return json_encode($this->DBRow);
+        return $this->DBRow;
     }
 }
