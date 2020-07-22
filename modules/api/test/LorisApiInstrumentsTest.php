@@ -114,7 +114,19 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $this->markTestSkipped('Missing data in docker image');
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
