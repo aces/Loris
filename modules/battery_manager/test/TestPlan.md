@@ -31,34 +31,35 @@ Test Battery.
 
 **Testing with edit permission** [Automation Testing]
   1. Add edit permission.
-  2. Battery Manager module should now have an action button labeled "New Test".
+  2. Battery Manager module should now have **two** tabs (Browse) and (Add).
   3. The **Change Status** column should be in the data table.
   4. The **Edit Metadata** column should be in the data table.
-  5. Clicking on the "New Test" button should trigger a modal window displaying a form with the following fields:
+  5. Clicking on Add tab should hide the data table and display a form with the following fields:
      `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Subproject`, `Visit Label`, `Site`, `First Visit`,
      and `Instrument Order`.
   6. Clicking on Edit in **Edit Metadata** takes you to a new page with a form with the following fields:
      `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Subproject`, `Visit Label`, `Site`, `First Visit`,
      and `Instrument Order`.
 
-### Add Button
+### Add tab
 
 **Testing add functionality**
   1. Check that you cannot add an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
-  2. Check that you can only enter numbers between 0 and 99999 in Minumum age (days) and Maximum age (days).
-  3. Check that you can only enter numbers between 0 and 127 in Instrument order.
-  4. Check that when you try to add an entry that has an active duplicate in the table (Active = 'Y'), you receive an error message.
-  5. Try to add an entry that does not have a duplicate.
-     - Ensure that a success message appears and the modal window is closed.
+  2. Check that you can only enter a site that exists.
+  3. Check that you can only enter numbers between 0 and 99999 in Minumum age (days) and Maximum age (days).
+  4. Check that you can only enter numbers between 0 and 127 in Instrument order.
+  5. Check that when you try to add an entry that has an active duplicate in the table (Active = 'Y'), you receive an error message.
+  6. Try to add an entry that does not have a duplicate.
+     - Ensure that a success message appears and the page goes back to the Browse tab.
      - Ensure the entry you just added is shown in data table.
 
 **Testing activate functionality**
   1. Try to add an entry that has an inactive duplicate in the table (Active = 'N').
      - Ensure that you receive a warning message that allows you to activate the duplicate.
-     - Ensure that when you press "Yes", a success message appears and the modal window is closed.
+     - Ensure that when you press "Yes", a success message appears and the page goes back to the Browse tab.
      - Ensure the entry you just activated is activated in the data table.
 
-### Browse
+### Browse tab
 
 **Testing data table**
   1. After a couple of entries are added, ensure they are properly displayed in the data table.
@@ -73,11 +74,11 @@ Test Battery.
   2. Repeat step 1 using the `Activate` button.
 
 **Testing Edit Metadata column**
-  1. Press the `Edit` button in the `Edit Metadata` column on an entry in the data table to edit.
+  1. Press the `Edit` link in the `Edit Metadata` column on an entry in the data table to edit.
      - Ensure that you are taken to an Edit page with a form that is populated with the entry's values.
 
 **Test filters**
-  1. Under **Browse**, a selection filter should be present on top of the page containing the following fields:
+  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields:
      - Minimum age, Maximum age, and Instrument Order (as text fields).
      - Instrument, Stage, Subproject, Visit Label, Site, First Visit, Instrument Order, and Active (as dropdown fields with blank default option).
   2. Type text in the Minimum age and verify that the table gets filtered as you type.
@@ -96,8 +97,8 @@ Test Battery.
   6. Check that when the edited entry has the same values as another active entry in the Test Battery, you receive an error message.
   7. Try to edit an entry so that it has the same values as another deactivated entry in the Test Battery.
      - Ensure that a warning message appears giving the option to activate the other entry and deactivate the original entry.
-     - Ensure that when you press "Yes", a success message appears and the modal window is closed.
+     - Ensure that when you press "Yes", a success message appears and the page goes back to the Browse tab.
      - Ensure the original entry was deactivated and the other duplicate entry has been activated in the data table.
   8. Try to edit an entry so that it does not have a duplicate (i.e. itself or another entry).
-     - Ensure that a success message appears and the modal window is closed.
+     - Ensure that a success message appears and the page goes back to the `Browse` tab.
      - Ensure the original entry was deactivated and the new entry has been added to the data table.
