@@ -54,11 +54,14 @@ class Test implements \LORIS\Data\DataInstance
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return integer The CenterID
+     * @return array The CenterIDs
      */
-    public function getCenterID() : int
+    public function getCenterIDs() : array
     {
-        return $this->row['centerId'];
+        $siteList = array_keys(\Utility::getSiteList(false));
+        $cids = isset($this->row['centerId']) ? [$this->row['centerId']]
+            : $siteList;
+        return $cids;
     }
 
     /**
