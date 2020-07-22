@@ -114,22 +114,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/instruments/" .
-            "$this->instrumentTest",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers
-            ]
-        );
-        // The user doesn't have access to this page.
-        // php/libraries/NDB_BVL_Instrument.class.inc line 279
-        // This asserts that the endpoint exists, though the
-        // test is not complete.
-        $this->assertEquals(403, $response->getStatusCode());
-        $this->markTestIncomplete('The user do not have access to this instrument');
-
+        $this->markTestSkipped('Missing data in docker image');
     }
 
     /**
