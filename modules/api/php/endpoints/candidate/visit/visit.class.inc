@@ -217,7 +217,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!in_array($centerid, $user->getCenterIDs())) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'You can`t create candidates visit for that site'
+                "You can`t create candidates visit for the site" .
+                "$centerid. You can create candidates for $user->getCenterIDs()"
             );
         }
 

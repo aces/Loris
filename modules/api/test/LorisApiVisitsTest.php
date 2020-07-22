@@ -138,7 +138,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $newVisit = 'V2';
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $newVisit,
-            'Site'    => 'Data Coordinating Center',
+            'Site'    => 'Montreal',
             'Battery' => "Fresh",
             'Project' => "Pumpernickel"
         ];
