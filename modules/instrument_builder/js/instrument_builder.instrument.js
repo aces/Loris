@@ -90,7 +90,7 @@ var Instrument = {
             for (element of elements[i].Elements) {
                 switch (element.Type) {
                     case "line":
-                      content += 'line{@}{@}' + element.Description + "\n";
+                      content += 'line{@}{@}<br />'+"\n";
                       break;
                     case "select":
                         if (element.Options.AllowMultiple) {
@@ -275,20 +275,37 @@ var Instrument = {
                             };
                             break;
                         case "static":
-                            tempElement.Type = (pieces[1] === '') ? 'label' : 'score';
+                            if (pieces[1] === '') {
+                                if (pieces[2] === '<br />') {
+                                  tempElement.Type = 'line';
+                                } else {
+                                  tempElement.Type = 'label';
+                                }
+                            } else {
+                              tempElement.Type = 'score';
+                            }
+
                             if (tempElement.Type === 'score') {
                                 tempElement.Name = pieces[1];
                                 tempElement.selected = {
                                     id: "score",
                                     value: "Scored Field"
                                 };
-                            } else {
+                                tempElement.Description = pieces[2];
+                            }
+                            if (tempElement.Type === 'label') {
                                 tempElement.selected = {
                                     id: "label",
                                     value: "Label"
                                 };
+                                tempElement.Description = pieces[2];
                             }
-                            tempElement.Description = pieces[2];
+                            if (tempElement.Type === 'line') {
+                              tempElement.selected = {
+                                id: "line",
+                                value: "Blank line"
+                              };
+                            }
                             break;
                         case "header":
                             tempElement.Type = 'header';
@@ -298,14 +315,6 @@ var Instrument = {
                                 value: "Header"
                             };
                             break;
-                      case "line":
-                          tempElement.Type = 'line';
-                          tempElement.Description = pieces[2];
-                          tempElement.selected = {
-                            id: 'line',
-                            value: 'Blank Line'
-                          };
-                          break;
                         default:
                             break;
                     }
