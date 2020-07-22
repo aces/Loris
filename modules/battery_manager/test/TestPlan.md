@@ -34,7 +34,7 @@ Test Battery.
   2. Battery Manager module should now have an action button labeled "New Test".
   3. The **Change Status** column should be in the data table.
   4. The **Edit Metadata** column should be in the data table.
-  5. Clicking on "New Test" button should trigger a modal window displaying a form with the following fields:
+  5. Clicking on the "New Test" button should trigger a modal window displaying a form with the following fields:
      `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Subproject`, `Visit Label`, `Site`, `First Visit`,
      and `Instrument Order`.
   6. Clicking on Edit in **Edit Metadata** takes you to a new page with a form with the following fields:
@@ -49,13 +49,13 @@ Test Battery.
   3. Check that you can only enter numbers between 0 and 127 in Instrument order.
   4. Check that when you try to add an entry that has an active duplicate in the table (Active = 'Y'), you receive an error message.
   5. Try to add an entry that does not have a duplicate.
-     - Ensure that a success message appears and the Modal window is closed.
+     - Ensure that a success message appears and the modal window is closed.
      - Ensure the entry you just added is shown in data table.
 
 **Testing activate functionality**
   1. Try to add an entry that has an inactive duplicate in the table (Active = 'N').
      - Ensure that you receive a warning message that allows you to activate the duplicate.
-     - Ensure that when you press "Yes", a success message appears and the Modal window is closed.
+     - Ensure that when you press "Yes", a success message appears and the modal window is closed.
      - Ensure the entry you just activated is activated in the data table.
 
 ### Browse
@@ -96,8 +96,8 @@ Test Battery.
   6. Check that when the edited entry has the same values as another active entry in the Test Battery, you receive an error message.
   7. Try to edit an entry so that it has the same values as another deactivated entry in the Test Battery.
      - Ensure that a warning message appears giving the option to activate the other entry and deactivate the original entry.
-     - Ensure that when you press "Yes", a success message appears and the Modal window is closed.
+     - Ensure that when you press "Yes", a success message appears and the modal window is closed.
      - Ensure the original entry was deactivated and the other duplicate entry has been activated in the data table.
   8. Try to edit an entry so that it does not have a duplicate (i.e. itself or another entry).
-     - Ensure that a success message appears and the Modal window is closed.
+     - Ensure that a success message appears and the modal window is closed.
      - Ensure the original entry was deactivated and the new entry has been added to the data table.

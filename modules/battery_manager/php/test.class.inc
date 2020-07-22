@@ -59,7 +59,7 @@ class Test implements \LORIS\Data\DataInstance
     public function getCenterIDs() : array
     {
         $siteList = array_keys(\Utility::getSiteList(false));
-        $cids = isset($this->row['centerId']) ? [$this->row['centerId']]
+        $cids     = isset($this->row['centerId']) ? [$this->row['centerId']]
             : $siteList;
         return $cids;
     }
