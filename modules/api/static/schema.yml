@@ -8,7 +8,7 @@ info:
   license:
     name: 'GNU Public License, Version 3'
     url: 'https://opensource.org/licenses/GPL-3.0'
-  version: 0.0.3-dev
+  version: 0.0.3
 servers:
   - url: /api/v0.0.3
 paths:
