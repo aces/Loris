@@ -1458,6 +1458,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'CID' => $this->getCommentID(),
             ]
         );
+        if (empty($result)) {
+            throw new NotFound(
+                "No SessionID exists for CommentID: `{$this->getCommentID()}`"
+            );
+        }
 
         return (new SessionID($result));
     }
