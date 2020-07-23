@@ -196,7 +196,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         );
         $this->assertSame(
             gettype($candidatesCandidArray['Meta']['Sex']),
-            'string'
+            'array'
         );
         $this->assertSame(
             gettype($candidatesCandidArray['Visits']),
@@ -249,7 +249,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             ]
         );
         // Verify the status code
-        $this->assertEquals(201, $response_new->getStatusCode());
+        $this->assertEquals(200, $response_new->getStatusCode());
         // Verify the endpoint has a body
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);

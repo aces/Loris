@@ -135,7 +135,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
-        $this->markTestIncomplete('No access to create visits for any site');
+        $this->markTestSkipped('No access to create visits for any site');
     }
 
     /**

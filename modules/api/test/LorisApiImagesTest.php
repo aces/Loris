@@ -151,15 +151,10 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             gettype($imagesArray['Meta']['Visit']),
             'string'
         );
-        try {
-            $this->assertSame(
-                gettype($imagesArray['QC']),
-                'string'
-            );
-        } catch (Exception $e) {
-            echo 'QC is ' . gettype($imagesArray['QC']) .
-                ' but shoud be "Pass". Did you reset raisinbread?';
-        }
+        $this->assertSame(
+            gettype($imagesArray['QC']),
+            'string'
+        );
         $this->assertSame(
             gettype($imagesArray['Selected']),
             'boolean'
