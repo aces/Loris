@@ -135,32 +135,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
-        $newVisit = 'V2';
-        $json     = ['CandID'  => $this->candidTest,
-            'Visit'   => $newVisit,
-            'Site'    => 'Montreal',
-            'Battery' => "Fresh",
-            'Project' => "Pumpernickel"
-        ];
-        $response = $this->client->request(
-            'PUT',
-            "candidates/$this->candidTest/$newVisit",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers,
-                'json'        => $json
-            ]
-        );
-
-        // Verify the status code
-        // the response body should be empty unless there is an error message.
-        $body = (string) $response->getBody();
-        // This tests that the endpoint exists, but the user lacks the
-        // permissions to create candidates for any site, so the test is
-        // incomplete.
-        $this->assertEquals(403, $response->getStatusCode(), $body);
         $this->markTestIncomplete('No access to create visits for any site');
-
     }
 
     /**
