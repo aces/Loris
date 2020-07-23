@@ -8,6 +8,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -29,7 +30,7 @@ class MetaDocsTestIntegrationTest extends \LorisIntegrationTest
      */
     function testAnonymousUserDoesPageLoad()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/meta_docs");
         $selectOptions = $this->webDriver->findElement(
             WebDriverBy::Id("select")
