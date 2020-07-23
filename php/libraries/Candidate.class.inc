@@ -791,7 +791,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         }
         return $option_array;
     }
-  
+
     /**
      * Implements the AccessibleResource interface. A candidate can
      * be accessed by a user if it has a project and a site in common.
