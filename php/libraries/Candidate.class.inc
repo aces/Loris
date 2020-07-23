@@ -305,7 +305,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
                 $invalidID = true;
                 $attemptcount++;
                 if ($attemptcount > 2) {
-                    throw $e
+                    throw $e;
                 }
             }
         } while ($invalidID);
