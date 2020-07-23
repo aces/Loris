@@ -25,6 +25,11 @@ use \LORIS\StudyEntities\Candidate\CandID;
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
+ *
+ * Phan currently has bad support for PHPUnit's Mock objects which is
+ * creating false positive with the below rule.
+ *
+ * @phan-file-suppress PhanUndeclaredClassMethod
  */
 class NDB_Factory
 {
@@ -32,11 +37,12 @@ class NDB_Factory
     public static $db     = null;
     public static $config = null;
 
-    private static $_couchdb    = array();
+    private static $_couchdb    = [];
     private static $_user       = null;
-    private static $_candidates = array();
-    private static $_timepoints = array();
+    private static $_candidates = [];
+    private static $_timepoints = [];
 
+    private $_baseURL = "";
     var $Testing; // Whether or not Mock objects should be returned instead of
                   // real ones
     //
@@ -88,15 +94,17 @@ class NDB_Factory
         self::$testdb = null;
         self::$db     = null;
 
-        self::$_couchdb = array();
+        self::$_couchdb = [];
         self::$_user    = null;
 
         self::$config = null;
 
         self::$_settings = null;
 
-        self::$_candidates = array();
-        self::$_timepoints = array();
+        self::$_candidates = [];
+        self::$_timepoints = [];
+
+        $this->_baseURL = "";
     }
 
     /**
@@ -321,7 +329,7 @@ class NDB_Factory
             || empty($password)
         ) {
             // check if only some parameters given but not all AND does not
-            // enter any of the above IF statements. this behavior was never
+            // enter any of the above IF statements. this behaviour was never
             // supported and should be an error.
             throw new ConfigurationException(
                 "NDB_Factory::CouchDB() requires all parameters to be supplied."
@@ -336,12 +344,12 @@ class NDB_Factory
                 'CouchDB',
                 'MockCouchDBWrap',
                 /* mock out the functions that make HTTP requests */
-                array(
+                [
                     '_getRelativeURL',
                     '_postRelativeURL',
                     '_postURL',
                     '_getURL',
-                )
+                ]
             );
             self::$_couchdb[$database] = new MockCouchDBWrap();
         } else {
@@ -371,6 +379,18 @@ class NDB_Factory
     }
 
     /**
+     * Sets the baseURL that the settings object return by settings()
+     * should return when calling getBaseURL().
+     *
+     * @param string $baseURL The URL to be returned by the Settings object.
+     *
+     * @return void
+     */
+    public function setBaseURL(string $baseURL)
+    {
+        $this->_baseURL = $baseURL;
+    }
+    /**
      * Returns a singleton settings object
      *
      * @param string $configfile Location of XML file to parse config from
@@ -382,7 +402,7 @@ class NDB_Factory
         if (self::$_settings !== null) {
             return self::$_settings;
         }
-        self::$_settings = new Settings($this->config($configfile));
+        self::$_settings = new Settings($this->config($configfile), $this->_baseURL);
         return self::$_settings;
     }
 

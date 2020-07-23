@@ -1,6 +1,7 @@
 import FilterableDataTable from 'FilterableDataTable';
 import Loader from 'Loader';
 import PropTypes from 'prop-types';
+
 /**
  * Help Editor Archive Page.
  *
@@ -13,8 +14,12 @@ import PropTypes from 'prop-types';
  * @author LORIS Team
  * @version 1.0.0
  *
- * */
+ */
 class HelpEditor extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -29,6 +34,9 @@ class HelpEditor extends React.Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true})); ;
@@ -49,7 +57,7 @@ class HelpEditor extends React.Component {
       });
   }
 
- /**
+  /**
    * Modify behaviour of specified column cells in the Data Table component
    *
    * @param {string} column - column name
@@ -76,6 +84,11 @@ class HelpEditor extends React.Component {
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.

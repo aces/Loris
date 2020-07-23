@@ -1,3 +1,5 @@
+import swal from 'sweetalert2';
+
 $(document).ready(function(){
 $("input[name=preview]").click(function(e) {
     if($('div.help-content').length) {
@@ -65,7 +67,7 @@ $("#save-help").click(function(e) {
             helpID: helpID ? helpID : '',
         },
         success: function() {
-            swal({
+            swal.fire({
                 title: "Content update successful!",
                 type: "success",
                 showCancelButton: true,
@@ -80,7 +82,7 @@ $("#save-help").click(function(e) {
         },
         error: function(xhr, errorCode, errorMsg) {
             console.error(xhr);
-            swal({
+            swal.fire({
                 title: "Content update unsuccessful.",
                 text: errorCode + ": " + xhr.status + " " + errorMsg,
                 type: "error",

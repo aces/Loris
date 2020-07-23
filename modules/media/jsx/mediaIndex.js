@@ -40,7 +40,10 @@ class MediaIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data: data.Data, fieldOptions: data.fieldOptions}))
+      .then((data) => this.setState({
+        data: data.Data,
+        fieldOptions: data.fieldOptions,
+      }))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -81,8 +84,9 @@ class MediaIndex extends Component {
     switch (column) {
     case 'File Name':
       if (this.props.hasPermission('media_write')) {
-        const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
-          encodeURIComponent(row['File Name']);
+        const downloadURL = loris.BaseURL
+                            + '/media/ajax/FileDownload.php?File='
+                            + encodeURIComponent(row['File Name']);
         result = (
           <td className={style}>
             <a href={downloadURL} target="_blank" download={row['File Name']}>
@@ -103,7 +107,9 @@ class MediaIndex extends Component {
       result = <td className={style}>{cell}</td>;
       break;
     case 'Project':
-      result = <td className={style}>{this.state.fieldOptions.projects[cell]}</td>;
+      result = <td className={style}>
+        {this.state.fieldOptions.projects[cell]}
+      </td>;
       break;
     case 'Edit Metadata':
       if (!this.props.hasPermission('media_write')) {
@@ -111,9 +117,13 @@ class MediaIndex extends Component {
       }
       const editButton = (
             <TriggerableModal title="Edit Media File" label="Edit">
-                    <MediaEditForm
-                DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
-                action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+              <MediaEditForm
+                DataURL={loris.BaseURL
+                        + '/media/ajax/FileUpload.php'
+                        + '?action=getData&idMediaFile='
+                        + row['Edit Metadata']}
+                action={loris.BaseURL
+                       + '/media/ajax/FileUpload.php?action=edit'}
                 /* this should be passed to onSubmit function
                    upon refactoring editForm.js*/
                 fetchData={this.fetchData }
@@ -209,8 +219,10 @@ class MediaIndex extends Component {
         return (
           <TabPane TabId={tabs[1].id}>
             <MediaUploadForm
-              DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
-              action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
+              DataURL={loris.BaseURL
+                      + '/media/ajax/FileUpload.php?action=getData'}
+              action={loris.BaseURL
+                     + '/media/ajax/FileUpload.php?action=upload'}
               maxUploadSize={options.maxUploadSize}
             />
           </TabPane>

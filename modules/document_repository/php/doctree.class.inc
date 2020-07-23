@@ -38,15 +38,15 @@ class DocTree extends \NDB_Page
      *
      * @param \User $user The user whose access is being checked
      *
-     * @return bool true iff the user has access to this page.
+     * @return bool true only if the user has access to this page.
      */
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'document_repository_view',
                 'document_repository_delete',
-            )
+            ]
         );
     }
 
@@ -81,7 +81,7 @@ class DocTree extends \NDB_Page
     {
         return \Database::singleton()->pselect(
             "SELECT * FROM document_repository_categories",
-            array()
+            []
         );
     }
     /**
@@ -99,7 +99,7 @@ class DocTree extends \NDB_Page
         if ($is_first_time) {
             $arr = [];
         }
-        foreach ($data as $key => $val) {
+        foreach ($data as $val) {
             if ($val['parent_id'] == $parent_id) {
                 $arr[] = $val['id'];
                 $this->getAllNodesID($data, $val['id'], false);
@@ -119,7 +119,7 @@ class DocTree extends \NDB_Page
      */
     public function getParents($data, $id)
     {
-        $arr = array();
+        $arr = [];
         foreach ($data as $v) {
             if ($v['id'] == $id) {
                 $arr[] = $v;
@@ -143,32 +143,31 @@ class DocTree extends \NDB_Page
      */
     public function fileTree($id)
     {
-        $result           = array();
-        $allsubcategories = array();
-        $user = \User::singleton();
-        $db   = \Database::singleton();
+        $result           = [];
+        $allsubcategories = [];
+        $db = \NDB_Factory::singleton()->database();
 
         $tree = $this->getTreeData();
         $pids = $this->getAllNodesID($tree, $id);
 
         $currentcategory    = $db->pselect(
             "SELECT id,category_name,comments
-             FROM document_repository_categories WHERE id=$id",
-            array()
+             FROM document_repository_categories WHERE id=:id",
+            ['id' => $id]
         );
-        $allsubcategories[] = array('id' => $id);
-        foreach ($pids as $k=>$v) {
+        $allsubcategories[] = ['id' => $id];
+        foreach ($pids as $pid) {
             $category           = $db->pselectRow(
-                "SELECT id FROM document_repository_categories WHERE id=$v",
-                array()
+                "SELECT id FROM document_repository_categories WHERE id=:pid",
+                ['pid' => $pid]
             );
             $allsubcategories[] = $category;
         }
 
         $subcategories    = $db->pselect(
             "SELECT id,category_name,comments 
-             FROM document_repository_categories WHERE parent_id=$id",
-            array()
+             FROM document_repository_categories WHERE parent_id=:id",
+            ['id' => $id]
         );
         $parentcategories =   $this->getParents($tree, $id);
         $result['allsubcategories'] = $allsubcategories;

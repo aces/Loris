@@ -24,8 +24,13 @@ namespace LORIS\document_repository;
  */
 class Document_Repository extends \NDB_Menu_Filter_Form
 {
-    public $AjaxModule   = true;
-    public $skipTemplate = true;
+    private const PERMISSIONS = [
+        'document_repository_view',
+        'document_repository_edit',
+        'document_repository_delete',
+    ];
+    public $AjaxModule        = true;
+    public $skipTemplate      = true;
 
     /**
      * Checking user permissions
@@ -36,12 +41,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            array(
-                'document_repository_view',
-                'document_repository_delete',
-            )
-        );
+        return $user->hasAnyPermission(self::PERMISSIONS);
     }
     /**
      * Function _setupVariables
@@ -55,17 +55,17 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $db    = \Database::singleton();
         $query = $db->pselect(
             "SELECT * FROM document_repository_categories",
-            array()
+            []
         );
         //categories
-        $categoriesList = array();
+        $categoriesList = [];
         foreach ($query as $value) {
                $arr = $this->parseCategory($value);
                $categoriesList[$arr['id']] =$arr['name'];
         }
         //site
-        $siteList  = array();
-        $visitList = \Utility::getVisitList();
+        $siteList = [];
+
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
@@ -85,11 +85,11 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             }
         }
         //instrument
-        $instruments     = $db->pselect(
+        $instruments     = $db->pselectCol(
             "SELECT Test_name FROM test_names ORDER BY Test_name",
-            array()
+            []
         );
-        $instrumentsList = $this->toDocSelect($instruments, "Test_name", null);
+        $instrumentsList = array_combine($instruments, $instruments);
 
         //file types
         $fileTypeList  = [];
@@ -100,12 +100,12 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
-        $this->fieldOptions = array(
+        $this->fieldOptions = [
             'fileCategories' => $categoriesList,
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-        );
+        ];
         return;
     }
     /**
@@ -127,7 +127,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 $parent_id = $value['parent_id'];
                 $query     = "SELECT * FROM document_repository_categories".
                             " where id=$parent_id";
-                $value     = $DB->pselectRow($query, array());
+                $value     = $DB->pselectRow($query, []);
                 if (is_null($value)) {
                     throw new \LorisException(
                         'Could not find data for specified parent ID. '
@@ -137,32 +137,10 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
-         return array(
+         return [
              "name" => $categoryName,
              "id"   => $id,
-         );
-    }
-    /**
-     * Utility function to convert data from database to a
-     * (select) dropdown friendly format
-     *
-     * @param array  $options array of options
-     * @param string $item    key
-     * @param string $item2   value
-     *
-     * @return array
-     */
-    function toDocSelect($options, $item, $item2): array
-    {
-        $selectOptions = array();
-        $optionsValue  = $item;
-        if (isset($item2)) {
-            $optionsValue = $item2;
-        }
-        foreach ($options as $key => $value) {
-            $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
-        }
-        return $selectOptions;
+         ];
     }
 
     /**
@@ -207,7 +185,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         $result = $this->toArray();
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
@@ -247,9 +225,9 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/document_repository/js/docIndex.js",
-            )
+            ]
         );
     }
 

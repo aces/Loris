@@ -15,6 +15,16 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverElement;
+use Facebook\WebDriver\WebDriverExpectedCondition;
+use Facebook\WebDriver\WebDriverSelect;
+use Facebook\WebDriver\Exception\StaleElementReferenceException;
+use Facebook\WebDriver\Exception\ElementNotVisibleException;
+use Facebook\WebDriver\Exception\NoSuchElementException;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -40,7 +50,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected $validPassword = 'sufficient length and complexity';
 
-    private $_oldConfig = array();
+    private $_oldConfig = [];
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -67,41 +77,40 @@ abstract class LorisIntegrationTest extends TestCase
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url");
-        $password = new \Password($this->validPassword);
+        $this->url = getenv('DOCKER_WEB_SERVER');
+        $password  = new \Password($this->validPassword);
 
         $this->DB->insert(
             "users",
-            array(
-             'ID'               => 999990,
-             'UserID'           => 'UnitTester',
-             'Real_name'        => 'Unit Tester',
-             'First_name'       => 'Unit',
-             'Last_name'        => 'Tester',
-             'Email'            => 'tester@example.com',
-             'Privilege'        => 0,
-             'PSCPI'            => 'N',
-             'Active'           => 'Y',
-             'Password_hash'    => $password,
-             'Password_expiry'  => '2099-12-31',
-             'Pending_approval' => 'N',
-            )
+            [
+                'ID'               => 999990,
+                'UserID'           => 'UnitTester',
+                'Real_name'        => 'Unit Tester',
+                'First_name'       => 'Unit',
+                'Last_name'        => 'Tester',
+                'Email'            => 'tester@example.com',
+                'Privilege'        => 0,
+                'PSCPI'            => 'N',
+                'Active'           => 'Y',
+                'Password_hash'    => $password,
+                'Pending_approval' => 'N'
+            ]
         );
 
         $this->DB->insert(
             "user_psc_rel",
-            array(
-                'UserID'    => 999990,
-                'CenterID'  => 1,
-            )
+            [
+                'UserID'   => 999990,
+                'CenterID' => 1,
+            ]
         );
 
         $this->DB->insert(
             "user_project_rel",
-            array(
+            [
                 'UserID'    => 999990,
-                'ProjectID'  => 1,
-            )
+                'ProjectID' => 1,
+            ]
         );
 
         $this->resetPermissions();
@@ -109,21 +118,18 @@ abstract class LorisIntegrationTest extends TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword($password);
 
-        $dev = $this->config->getSettingFromXML('dev');
-        $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
-        $profile = new FirefoxProfile();
-        $profile->setPreference("setAcceptUntrustedCertificates", true);
-        $profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
-        $profile->setPreference("security.insecure_field_warning.contextual.enabled", false);
+        $dev          = $this->config->getSettingFromXML('dev');
+        $selenium_url = $dev['selenium_url'] ?? 'http://localhost:4444/wd/hub';
         $desired_capabilities = DesiredCapabilities::firefox();
-        // running headless model in Travis 
-        if (getenv('HEADLESS')){
+        $desired_capabilities->setCapability('acceptSslCerts', false);
+
+        // running headless model in Travis
+        if (getenv('HEADLESS')) {
             $desired_capabilities->setCapability(
-              'moz:firefoxOptions',
-              ['args' => ['-headless']]
-           );
+                'moz:firefoxOptions',
+                ['args' => ['-headless']]
+            );
         }
-        $desired_capabilities->setCapability(FirefoxDriver::PROFILE,$profile);
 
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
@@ -132,7 +138,9 @@ abstract class LorisIntegrationTest extends TestCase
 
         $this->login("UnitTester", $this->validPassword);
 
-        if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
+        if (extension_loaded('xdebug')
+            && function_exists("xdebug_start_code_coverage")
+        ) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
 
@@ -157,23 +165,28 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         */
-        $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
-        $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
+        $usernameEl = $this->safeFindElement(
+            WebDriverBy::Name("username")
+        );
+        $passwordEl = $this->safeFindElement(
+            WebDriverBy::Name("password")
+        );
 
         $usernameEl->sendKeys($username);
         $passwordEl->sendKeys($password);
 
-        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $login = $this->safeFindElement(WebDriverBy::Name("login"));
         $login->click();
 
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
         $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
+            WebDriverExpectedCondition::visibilityOfElementLocated(
                 WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
         );
+
     }
 
     /**
@@ -191,9 +204,9 @@ abstract class LorisIntegrationTest extends TestCase
         }
 
         // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
+        $this->DB->delete("user_login_history", ['userID' => 'UnitTester']);
+        $this->DB->delete("user_perm_rel", ["UserID" => '999990']);
+        $this->DB->delete("users", ["UserID" => 'UnitTester']);
         // Close the browser and end the session
         if ($this->webDriver) {
             $this->webDriver->quit();
@@ -215,15 +228,9 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function setupConfigSetting($configName, $value)
     {
-      /*  if (isset($this->_oldConfig[$configName])) {
-            throw new LorisException(
-                "Attempted to change already changed config setting"
-            );
-        }*/
-
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
-            array("configName" => $configName)
+            ["configName" => $configName]
         );
 
         if (is_array($configID) && empty($configID)) {
@@ -233,18 +240,18 @@ abstract class LorisIntegrationTest extends TestCase
         }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
-            array("confID" => $configID)
+            ["confID" => $configID]
         );
 
-        $this->_oldConfig[$configName] = array(
-                                          'ConfigID' => $configID,
-                                          'OldValue' => $oldVal,
-                                         );
+        $this->_oldConfig[$configName] = [
+            'ConfigID' => $configID,
+            'OldValue' => $oldVal,
+        ];
 
         $this->DB->update(
             "Config",
-            array("Value" => $value),
-            array("ConfigID" => $configID)
+            ["Value" => $value],
+            ["ConfigID" => $configID]
         );
     }
 
@@ -260,16 +267,11 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function restoreConfigSetting($configName)
     {
-        /*
-        if(!isset($this->_oldConfig[$configName])) {
-            throw new LorisException("Attempted to restore unsaved config setting");
-        }
-         */
         if (isset($this->_oldConfig[$configName])) {
             $this->DB->update(
                 "Config",
-                array("Value" => $this->_oldConfig[$configName]['OldValue']),
-                array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
+                ["Value" => $this->_oldConfig[$configName]['OldValue']],
+                ["ConfigID" => $this->_oldConfig[$configName]['ConfigID']]
             );
         }
     }
@@ -285,7 +287,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function setupPermissions($permissions)
     {
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        $this->DB->delete("user_perm_rel", ["UserID" => '999990']);
         $prepare = $this->DB->prepare(
             "INSERT INTO user_perm_rel
                 SELECT 999990, PermID
@@ -295,8 +297,8 @@ abstract class LorisIntegrationTest extends TestCase
         foreach ($permissions as $value) {
             $this->DB->execute(
                 $prepare,
-                array("perm" => $value),
-                array('nofetch' => true)
+                ["perm" => $value],
+                ['nofetch' => true]
             );
         }
     }
@@ -321,8 +323,12 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function changeStudySite()
     {
-        $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
-        $this->DB->update("user_psc_rel", array("CenterID" => 99), array("UserID" => 999990));
+        $this->DB->insert("psc", ["CenterID" => 99, "Alias" => "BBQ"]);
+        $this->DB->update(
+            "user_psc_rel",
+            ["CenterID" => 99],
+            ["UserID" => 999990]
+        );
     }
 
     /**
@@ -333,28 +339,33 @@ abstract class LorisIntegrationTest extends TestCase
     function resetStudySite()
     {
         $this->DB->run('SET foreign_key_checks =0');
-        $this->DB->update("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
-        $this->DB->delete("psc", array("CenterID" => 99));
+        $this->DB->update(
+            "user_psc_rel",
+            ["CenterID" => 1],
+            ["UserID" => 999990]
+        );
+        $this->DB->delete("psc", ["CenterID" => 99]);
         $this->DB->run('SET foreign_key_checks =1');
     }
 
     /**
      * Helper function to create a subproject
      *
-     * @param string $title Name of the subproject
+     * @param string $SubprojectID Name of the subproject
+     * @param string $title        Name of the subproject
      *
      * @return void
      */
-    function createSubproject($SubprojectID,$title)
+    function createSubproject($SubprojectID, $title)
     {
         $this->DB->insert(
             "subproject",
-            array(
-             "SubprojectID"      => $SubprojectID,
-             "title"             => $title,
-             "WindowDifference"  => "optimal",
-             "RecruitmentTarget" => "100",
-            )
+            [
+                "SubprojectID"      => $SubprojectID,
+                "title"             => $title,
+                "WindowDifference"  => "optimal",
+                "RecruitmentTarget" => "100",
+            ]
         );
     }
 
@@ -369,11 +380,11 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $this->DB->delete(
             "subproject",
-            array(
-             "title"             => $title,
-             "WindowDifference"  => "optimal",
-             "RecruitmentTarget" => "100",
-            )
+            [
+                "title"             => $title,
+                "WindowDifference"  => "optimal",
+                "RecruitmentTarget" => "100",
+            ]
         );
     }
 
@@ -417,14 +428,15 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function deleteCandidate($pscid)
     {
-        $this->DB->delete("candidate", array("PSCID" => $pscid));
+        $this->DB->delete("candidate", ["PSCID" => $pscid]);
     }
 
     /**
-     * Helper function to click on a element and wait for the new page to be loaded.
+     * Helper function to click on a element and wait for the new page to be
+     * loaded.
      * When the DOM is reloaded, the elements of the previous page become stale.
-     * Selenium will raise an exception when a function (like getText) are called on
-     * those elements.
+     * Selenium will raise an exception when a function (like getText) are
+     * called on those elements.
      *
      * Note: If the page don't reload, this will produce an infinite loop.
      *
@@ -450,14 +462,15 @@ abstract class LorisIntegrationTest extends TestCase
      * Helper function to decorate the webdriver->get function so it
      * ensure that the new page is load before it returns.
      *
-     * @param string $url The url to get.
+     * @param string $url        The url to get.
+     * @param int    $waitPeriod After this amount of seconds, the wait period
+     *                           finishes and an exception is thrown.
      *
-     * @return ?\RemoteWebDriver
+     * @return \Facebook\WebDriver\Remote\RemoteWebDriver
      */
-    function safeGet($url)
+    function safeGet($url,$waitPeriod=15)
     {
         $newWebDriver = null;
-
         // keep a reference from the actual page
         $oldBody = $this->safeFindElement(
             WebDriverBy::xPath(
@@ -466,18 +479,13 @@ abstract class LorisIntegrationTest extends TestCase
                 "
             )
         );
-
-        try {
             // Load the new page
-            $newWebDriver = $this->webDriver->get($url);
-
-            // Use the old page reference until it detaches from the DOM
-            while (true) {
-                $oldBody->isDisplayed();
-            }
-        } catch (StaleElementReferenceException $e) {
-            return $newWebDriver;
-        }
+        $newWebDriver = $this->webDriver->get($url);
+        $wait         = new WebDriverWait($newWebDriver, $waitPeriod);
+        $wait->until(
+            WebDriverExpectedCondition::stalenessOf($oldBody)
+        );
+        return $newWebDriver;
     }
 
     /**
@@ -489,18 +497,18 @@ abstract class LorisIntegrationTest extends TestCase
      * @param int         $waitPeriod After this amount of seconds, the wait period
      *                                finishes and an exception is thrown.
      *
-     * @throws NoSuchElementException if the element cannot be found after the
+     * @throws Facebook\WebDriver\Exception\NoSuchElementException
+     *          if the element cannot be found after the
      *                                wait period.
      *
-     * @return WebDriverElement the element found.
+     * @return Facebook\WebDriver\Remote\RemoteWebElement the element found.
      */
     function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
-        $wait = new WebDriverWait($this->webDriver, $waitPeriod);
+        $wait = new WebDriverWait($this->webDriver, $waitPeriod, 500);
         $wait->until(
-            WebDriverExpectedCondition::presenceOfElementLocated($by)
+            WebDriverExpectedCondition::visibilityOfElementLocated($by)
         );
-
         return $this->webDriver->findElement($by);
     }
 
@@ -552,9 +560,150 @@ abstract class LorisIntegrationTest extends TestCase
 
             $this->webDriver->executeScript(
                 "arguments[0].click();",
-                array($webElement)
+                [$webElement]
             );
         }
     }
+
+    /**
+     * Ensures that the module loads if and only if the user has the correct
+     * permissions.
+     *
+     * @param string   $path            The path to the module. Usually the same
+     *                                  name as the folder containing the module.
+     * @param string[] $permissionCodes An array of permission codes
+     *                                  corresponding to the module. Should
+     *                                  match the permission codes used in the
+     *                                  hasAccess() method of the module.
+     * @param string   $successMessage  Indicates that the module has
+     *                                  loaded successfully, i.e.
+     *                                  that the user has permission
+     *                                  to access the module. Usually
+     *                                  the name of the module, e.g.
+     *                                  "Data Release" for the
+     *                                  data_release module.
+     * @param string   $failureMessage  Indicates the user does not have
+     *                                  permission to view the module.
+     *                                  Defaults to the 403 message
+     *                                  served by
+     *                                  src/Middleware/AuthMiddleware.php.
+     *
+     * @return void
+     */
+    public function checkPagePermissions(
+        string $path,
+        array $permissionCodes,
+        string $successMessage,
+        string $failureMessage = 'You do not have access to this page'
+    ): void {
+        // Ensure a forbidden message is delivered when the user does not
+        // have any permissions set.
+        $this->_verifyPermission(
+            $failureMessage,
+            $this->_loadWithPermission($path)
+        );
+
+        // Validate that each permission code on its own is enough to load
+        // the module.
+        foreach ($permissionCodes as $code) {
+            $this->_verifyPermission(
+                $successMessage,
+                $this->_loadWithPermission($path, $code)
+            );
+        }
+    }
+
+    /**
+     * Asserts that a message appears in the HTML body of the page.
+     * Resets the permissions checked to cleanup before further tests.
+     *
+     * @param string $needle   This string should be in $haystack.
+     * @param string $haystack The HTML body of the page.
+     *
+     * @return void
+     */
+    private function _verifyPermission(string $needle, string $haystack): void
+    {
+        $this->assertContains($needle, $haystack);
+        $this->resetPermissions();
+    }
+
+    /**
+     * Helper function to set up and load a page with a given permission code.
+     *
+     * @param string $path       The path to the module. Usually the same name as
+     *                           the folder containing the module.
+     * @param string $permission A valid permission code for the data_release
+     *                           module.
+     *
+     * @return string The body text of the page loaded.
+     */
+    private function _loadWithPermission(
+        string $path,
+        string $permission = ''
+    ): string {
+        $this->setupPermissions([$permission]);
+        $this->safeGet($this->url . $path);
+        return $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+    }
+    /**
+     * Testing filter funtion and clear button
+     *
+     * @param string $element        The input element loaction (css selector)
+     * @param string $row            React Table row number
+     * @param string $btn            clear filter button
+     * @param string $test_value     The test value
+     * @param string $expect_records The records number in the table
+     *
+     * @return void
+     */
+    function _filterTest($element,$row,$btn,$test_value, $expect_records): void
+    {
+        // get element from the page
+
+        if (strpos($element, "select") === false) {
+            $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
+            $el->sendKeys($test_value);
+        } else {
+            $el_dropdown = new WebDriverSelect(
+                $this->safeFindElement(WebDriverBy::cssSelector("$element"))
+            );
+            $el_dropdown->selectByVisibleText($test_value);
+        }
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("$row")
+            )->getText();
+            // 4 means there are 4 records under this site.
+            $this->assertContains($expect_records, $bodyText);
+            //test clear filter
+            $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+    }
+
+    /**
+     * Utility method for classes that register widgets on the dashboard: ensure that
+     * the task panel has the expected content.
+     *
+     * @param string $className class Name of widget in the task panel
+     * @param string $value     the total count displayed for that widget
+     * @param string $label     label for that widget
+     *
+     * @return void
+     */
+    function _testMytaskPanelAndLink($className, $value, $label): void
+    {
+        $this->safeGet($this->url . '/dashboard/');
+        $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
+        $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
+        $this->assertContains($value, $bodyText);
+        $this->safeClick(WebDriverBy::cssSelector($className));
+        $this->webDriver->wait(3, 500)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::Id('lorisworkspace')
+            )
+        );
+        $pageSource = $this->webDriver->getPageSource();
+        $this->assertContains($label, $pageSource);
+    }
 }
-?>

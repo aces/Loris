@@ -59,31 +59,29 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
-        $obj = array(
+        $obj      = [
             'Candidate'  => $this->_candid,
             'PSCID'      => $this->_pscid,
             'Visit'      => $this->_visitlabel,
             'Visit_date' => $this->_visitdate,
             'Site'       => $this->_centername,
-            'File'       => $this->_filename,
             'InsertTime' => $this->_inserttime,
             'ScanType'   => $this->_scantype,
             'QC_status'  => $this->_qcstatus,
             'Selected'   => $this->_selected,
-        );
-
-        $filename = basename($obj['File']);
+        ];
+        $filename = basename($this->_filename);
         $candid   = $obj['Candidate'];
         $visit    = $obj['Visit'];
 
         $obj['Link']       = "/candidates/$candid/$visit/images/$filename";
         $obj['InsertTime'] = date('c', (int) $obj['InsertTime']);
 
-        return json_encode($obj);
+        return $obj;
     }
 
     /**

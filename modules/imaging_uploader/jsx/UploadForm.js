@@ -1,6 +1,6 @@
 import ProgressBar from 'ProgressBar';
 import React, {Component} from 'react';
-
+import swal from 'sweetalert2';
 /**
  * Imaging Upload Form
  *
@@ -51,18 +51,31 @@ class UploadForm extends Component {
         delete formData.candID;
         delete formData.pSCID;
         delete formData.visitLabel;
+      } else if (typeof formData.mriFile !== 'undefined') {
+        let patientName = formData.mriFile.name
+                          .replace(/\.[a-z]+\.?[a-z]+?$/i, '');
+        let ids = patientName.split('_');
+        formData.candID = ids[1];
+        formData.pSCID = ids[0];
+        // visitLabel can contain underscores
+        // join the remaining elements of patientName and use as visitLabel
+        ids.splice(0, 2);
+        formData.visitLabel = ids.join('_');
       }
     }
 
     formData[field] = value;
 
     if (field === 'mriFile') {
-      if (value.name !== '') {
+      if (value.name && formData.IsPhantom === 'N') {
         let patientName = value.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
-        let ids = patientName.split('_', 3);
+        let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        formData.visitLabel = ids[2];
+        // visitLabel can contain underscores
+        // join the remaining elements of patientName and use as visitLabel
+        ids.splice(0, 2);
+        formData.visitLabel = ids.join('_');
       }
     }
 
@@ -84,7 +97,7 @@ class UploadForm extends Component {
     // Make sure file is of type .zip|.tgz|.tar.gz format
     const properExt = new RegExp('\.(zip|tgz|tar\.gz)$');
     if (!fileName.match(properExt)) {
-      swal({
+      swal.fire({
         title: 'Invalid extension for the uploaded file!',
         text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
         type: 'error',
@@ -92,7 +105,9 @@ class UploadForm extends Component {
       });
 
       let errorMessage = {
-        mriFile: 'The file ' + fileName + ' must be of type .tgz, .tar.gz or .zip.',
+        mriFile: 'The file '
+                 + fileName
+                 + ' must be of type .tgz, .tar.gz or .zip.',
         candID: undefined,
         pSCID: undefined,
         visitLabel: undefined,
@@ -111,9 +126,10 @@ class UploadForm extends Component {
 
     if (data.IsPhantom === 'N') {
       if (!data.candID || !data.pSCID || !data.visitLabel) {
-        swal({
+        swal.fire({
           title: 'Incorrect file name!',
-          text: 'Could not determine PSCID, CandID and Visit Label based on the filename!\n',
+          text: 'Could not determine PSCID, CandID and Visit Label '
+                + 'based on the filename!\n',
           type: 'error',
           confirmButtonText: 'OK',
         });
@@ -134,9 +150,10 @@ class UploadForm extends Component {
 
     // File uploaded and completed mri pipeline
     if (mriFile.status === 'Success') {
-      swal({
+      swal.fire({
         title: 'File already exists!',
-        text: 'A file with this name has already successfully passed the MRI pipeline!\n',
+        text: 'A file with this name has already successfully passed '
+              + 'the MRI pipeline!\n',
         type: 'error',
         confirmButtonText: 'OK',
       });
@@ -145,9 +162,10 @@ class UploadForm extends Component {
 
     // File in the middle of insertion pipeline
     if (mriFile.status === 'In Progress...') {
-      swal({
+      swal.fire({
         title: 'File is currently processing!',
-        text: 'A file with this name is currently going through the MRI pipeline!\n',
+        text: 'A file with this name is currently going through '
+              + 'the MRI pipeline!\n',
         type: 'error',
         confirmButtonText: 'OK',
       });
@@ -156,9 +174,10 @@ class UploadForm extends Component {
 
     // File uploaded but failed during mri pipeline
     if (mriFile.status === 'Failure') {
-      swal({
+      swal.fire({
         title: 'Are you sure?',
-        text: 'A file with this name already exists!\n Would you like to override existing file?',
+        text: 'A file with this name already exists!\n '
+              + 'Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
@@ -167,17 +186,18 @@ class UploadForm extends Component {
         if (isConfirm) {
           this.uploadFile(true);
         } else {
-          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
+          swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
         }
       }.bind(this));
     }
 
     // Pipeline has not been triggered yet
     if (mriFile.status === 'Not Started') {
-      swal({
+      swal.fire({
         title: 'Are you sure?',
-        text: 'A file with this name has been uploaded but has not yet started the MRI pipeline.' +
-          '\n Would you like to override the existing file?',
+        text: 'A file with this name has been uploaded '
+              + 'but has not yet been processed by the MRI pipeline.\n '
+              + 'Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
@@ -186,7 +206,7 @@ class UploadForm extends Component {
         if (isConfirm) {
           this.uploadFile(true);
         } else {
-          swal('Cancelled', 'Your upload has been cancelled.', 'error');
+          swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
         }
       }.bind(this));
     }
@@ -246,10 +266,11 @@ class UploadForm extends Component {
         if (this.props.imagingUploaderAutoLaunch === 'true' ||
             this.props.imagingUploaderAutoLaunch === '1'
         ) {
-          text = 'Processing of this file by the MRI pipeline has started\n' +
-            'Select this upload in the result table to view the processing progress';
+          text = 'Processing of this file by the MRI pipeline has started\n'
+                 + 'Select this upload in the result table '
+                 + 'to view the processing progress';
         }
-        swal({
+        swal.fire({
           title: 'Upload Successful!',
           text: text,
           type: 'success',
@@ -263,9 +284,29 @@ class UploadForm extends Component {
       // - Returns to Upload tab
       error: (error, textStatus, errorThrown) => {
         let errorMessage = Object.assign({}, this.state.errorMessage);
-        let hasError = this.state.hasError;
+        let hasError = Object.assign({}, this.state.hasError);
         let messageToPrint = '';
-        errorMessage = (error.responseJSON || {}).errors || 'Submission error!';
+        if (error.responseJSON && error.responseJSON.errors) {
+          errorMessage = error.responseJSON.errors;
+        } else if (error.status == 0) {
+          errorMessage = {
+            'mriFile': ['Upload failed: a network error occured'],
+          };
+        } else if (error.status == 413) {
+          errorMessage = {
+            'mriFile': [
+              'Please make sure files are not larger than '
+              + this.props.maxUploadSize,
+            ],
+          };
+        } else {
+          errorMessage = {
+            'mriFile': [
+              'Upload failed: received HTTP response code '
+              + error.status,
+            ],
+          };
+        }
         for (let i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
             errorMessage[i] = errorMessage[i].toString();
@@ -277,12 +318,16 @@ class UploadForm extends Component {
             }
           }
         }
-        swal({
+        swal.fire({
           title: 'Submission error!',
           text: messageToPrint,
           type: 'error',
         });
-        this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
+        this.setState({
+          uploadProgress: -1,
+          errorMessage: errorMessage,
+          hasError: hasError,
+        });
       },
     });
   }

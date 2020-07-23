@@ -26,7 +26,10 @@ use LORIS\StudyEntities\Candidate\CandID;
  */
 class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 {
-
+    public $tpl_data;
+    public $ValidityEnabled;
+    public $ValidityRequired;
+    protected $instrument;
     /**
      * Construct a controller for the instrument status control panel
      *
@@ -93,7 +96,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $this->subtest ?? ''
             );
 
-            $this->_instrument = $instrument;
+            $this->instrument = $instrument;
 
             $this->ValidityEnabled  = $instrument->ValidityEnabled;
             $this->ValidityRequired = $instrument->ValidityRequired;
@@ -133,7 +136,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             }
         }
 
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("instrumentstatus_controlpanel.tpl");
         return $html;
@@ -153,33 +156,27 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         if (!$hasAccess) {
             return false;
         }
-
         if (isset($_POST['ClearInstrument'])) {
-            if (isset($_POST['deleteconfirm']) && isset($_POST['deleteconfirm2']) ) {
-                $user = User::singleton();
-                if ($user->hasPermission('send_to_dcc')) {
-                    $instrument = \NDB_BVL_Instrument::factory(
-                        $this->testname,
-                        $this->_commentID,
-                        $this->subtest ?? ''
-                    );
-                    $instrument->clearInstrument();
-                    return false;
-                } else {
-                    return false;
-                }
+            $user = User::singleton();
+            if ($user->hasPermission('send_to_dcc')) {
+                $instrument = \NDB_BVL_Instrument::factory(
+                    $this->testname,
+                    $this->_commentID,
+                    $this->subtest ?? ''
+                );
+                $instrument->clearInstrument();
+                return false;
             } else {
                 return false;
             }
         }
         // get control panel selections from _REQUEST
-        $possibleFlags = array(
+        $possibleFlags = [
             'setDataEntry',
             'setAdministration',
             'setValidity',
-        );
+        ];
         $flagsToSave   = array_intersect($possibleFlags, array_keys($_REQUEST));
-
         // make sure there are at least one flag to save
         if (is_array($flagsToSave) && count($flagsToSave) > 0) {
             foreach ($flagsToSave AS $flagToSave) {
@@ -187,7 +184,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $this->$method($_REQUEST[$flagToSave]);
             }
         }
-
         return true;
     }
 
@@ -221,10 +217,14 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $showLink = true;
                 $Validity = $this->getValidityStatus();
                 if ($Validity == null
-                    && $this->_instrument->ValidityRequired == true
+                    && $this->instrument->ValidityRequired == true
                     && $this->getAdministrationStatus() != 'None'
                 ) {
                     $showLink = false;
+                    if ($option == 'Complete') {
+                        $this->tpl_data['data_entry'][$i]['tooltip']
+                            = "To enable link, Validity option must be selected";
+                    }
                 }
 
                 if ($option == 'In Progress') {
@@ -233,12 +233,18 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     && $this->getAdministrationStatus() == 'All'
                 ) {
                     // run the data entry logic test
-                    if (isset($this->_instrument)) {
+                    if (isset($this->instrument)) {
                         if ($showLink == true) {
                             $CompStatus
-                                = $this->_instrument->getDataEntryCompletionStatus();
+                                = $this->instrument->getDataEntryCompletionStatus();
 
                             $showLink = $CompStatus == 'Complete';
+
+                            if (!$showLink) {
+                                $this->tpl_data['data_entry'][$i]['tooltip']
+                                    = "To enable link, required fields must be
+                                      filled in";
+                            }
                         }
                     }
                 }
@@ -248,7 +254,9 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     $this->tpl_data['data_entry'][$i]['showlink'] = true;
                 }
             } else {
-                $this->tpl_data['data_entry'][$i]['icon'] = 'fas fa-times';
+                $this->tpl_data['data_entry'][$i]['icon']    = 'fas fa-times';
+                $this->tpl_data['data_entry'][$i]['tooltip']
+                    = "To enable link, Administration option must be selected";
             }
             $i++;
         }
@@ -327,11 +335,12 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             // highlight the current option if it's the current status
             if ($validityStatus == $option) {
                 $this->tpl_data['validity'][$i]['icon'] = 'far fa-check-square';
-            }
-            if ($data_entry_status == 'Complete') {
-                $this->tpl_data['validity'][$i]['showLink'] = false;
             } else {
-                $this->tpl_data['validity'][$i]['showLink'] = true;
+                if ($data_entry_status == 'Complete') {
+                    $this->tpl_data['validity'][$i]['showLink'] = false;
+                } else {
+                    $this->tpl_data['validity'][$i]['showLink'] = true;
+                }
             }
             $i++;
         }
@@ -411,4 +420,3 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         return (!$timePoint->isSubmitted() || $maxThreadStatus == 'opened');
     }
 }
-

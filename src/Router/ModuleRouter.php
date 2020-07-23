@@ -16,6 +16,7 @@ namespace LORIS\Router;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Handles the base of a module's routing, adding authentication middleware
@@ -27,7 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ModuleRouter extends PrefixRouter
+class ModuleRouter implements RequestHandlerInterface
 {
     /**
      * The module being accessed.
@@ -40,33 +41,10 @@ class ModuleRouter extends PrefixRouter
      * Constructs a ModuleRouter
      *
      * @param \Module $module    The module being accessed
-     * @param string  $moduledir The base directory of $module.
      */
-    public function __construct(\Module $module, string $moduledir)
+    public function __construct(\Module $module)
     {
         $this->module = $module;
-
-        $arr = [
-                "/css/"    => new ModuleFileRouter(
-                    $module,
-                    $moduledir,
-                    "css",
-                    "text/css"
-                ),
-                "/js/"     => new ModuleFileRouter(
-                    $module,
-                    $moduledir,
-                    "js",
-                    "application/javascript"
-                ),
-                "/static/" => new ModuleFileRouter(
-                    $module,
-                    $moduledir,
-                    "static",
-                    ""
-                ),
-               ];
-        parent::__construct(new \ArrayIterator($arr));
     }
 
     /**

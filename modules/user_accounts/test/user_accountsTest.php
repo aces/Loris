@@ -10,6 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
+use Facebook\WebDriver\WebDriverKeys;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -24,8 +27,7 @@ require_once __DIR__
 class UserAccountsIntegrationTest extends LorisIntegrationTest
 {
     // The paths to the pages to which the form must submit.
-    private const FILEPATH_EDITUSER      = 'user_accounts';
-    private const FILEPATH_MYPREFERENCES = 'user_accounts/my_preferences';
+    private const FILEPATH_EDITUSER = 'user_accounts';
     // The names of the form elements for the Password and Confirm Password
     // fields.
     private const FORM_FIELD_PASSWORD        = 'Password_hash';
@@ -41,33 +43,11 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private const ADMIN_EMAIL     = 'admin@example.com';
     private const ADMIN_EMAIL_NEW = 'tester@example.com';
 
-
-    private static $_UNITTESTER = array(
-        'Data Coordinating Center',
-        'UnitTester',
-        'Unit Tester',
-        'tester@example.com',
-        'Y',
-        'N',
-    );
-    private static $_ADMIN      = array(
-        'Data Coordinating Center',
-        'admin',
-        'Admin account',
-        'admin@example.com',
-        'Y',
-        'N',
-    );
-    private $_name        = "#userAccounts_filter".
-                                " > div > div > fieldset > div:nth-child(3)".
-                                " > div > div > input";
-    private $_site        = "#userAccounts_filter".
-                                " > div > div > fieldset > div:nth-child(2)".
-                                " > div > div > select";
-    private $_clearFilter = ".col-sm-9 > .btn";
-    private $_table       = "#dynamictable > tbody > tr:nth-child(1)";
-    private $_addUserBtn  = "#default-panel > div > div > div.table-header >".
-                            " div > div > div:nth-child(2) > button:nth-child(1)";
+    private $_name        = 'input[name="username"]';
+    private $_site        = 'select[name="site"]';
+    private $_clearFilter = ".nav-tabs a";
+    private $_table       = "#dynamictable > tbody > tr";
+    private $_addUserBtn  = "div:nth-child(2) > .btn:nth-child(1)";
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -82,36 +62,36 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $password = new \Password($this->validPassword);
         $this->DB->insert(
             "users",
-            array(
-                'ID'               => 999995,
-                'UserID'           => 'UnitTesterTwo',
-                'Real_name'        => 'Unit Tester 2',
-                'First_name'       => 'Unit 2',
-                'Last_name'        => 'Tester 2',
-                'Email'            => 'tester2@example.com',
-                'Privilege'        => 0,
-                'PSCPI'            => 'N',
-                'Active'           => 'Y',
-                'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
-                'Pending_approval' => 'N',
-            )
+            [
+                'ID'                     => 999995,
+                'UserID'                 => 'UnitTesterTwo',
+                'Real_name'              => 'Unit Tester 2',
+                'First_name'             => 'Unit 2',
+                'Last_name'              => 'Tester 2',
+                'Email'                  => 'tester2@example.com',
+                'Privilege'              => 0,
+                'PSCPI'                  => 'N',
+                'Active'                 => 'Y',
+                'Password_hash'          => $password,
+                'PasswordChangeRequired' => false,
+                'Pending_approval'       => 'N'
+            ]
         );
 
         $this->DB->insert(
             "user_psc_rel",
-            array(
+            [
                 'UserID'   => 999995,
                 'CenterID' => 1,
-            )
+            ]
         );
 
         $this->DB->insert(
             "user_project_rel",
-            array(
+            [
                 'UserID'    => 999995,
                 'ProjectID' => 1,
-            )
+            ]
         );
     }
 
@@ -148,17 +128,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         );
     }
     /**
-     * Tests that, when loading the User accounts module > my_preference submodule
-     * some text appears in the body.
-     *
-     * @return void
-     */
-    function testUserAccountsMyPreferencesDoespageLoad()
-    {
-        $this->safeGet($this->url . "/user_accounts/my_preferences/");
-        $this->assertContains("My Preferences", $this->getBody());
-    }
-    /**
      * Tests that searching for users using thei user IDs works
      *
      * @return void
@@ -182,7 +151,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function _testFilter($element,$table,$records,$value)
     {
         // get element from the page
-        if (strpos($element, "select") == false) {
+        if (strpos($element, "select") === false) {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  lastValue = input.value;
@@ -197,6 +167,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             );
             $this->assertContains($value, $bodyText);
         } else {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  input.selectedIndex = '$value';
@@ -204,11 +175,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
-                    $bodyText = $this->webDriver->executescript(
-                        "return document.querySelector('#default-panel".
+            $row      = "#default-panel".
                         " > div > div > div.table-header > div > div >".
-                        " div:nth-child(1)').textContent"
-                    );
+                        " div:nth-child(1)";
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector($row)
+            )->getText();
                     // 4 means there are 4 records under this site.
                     $this->assertContains($records, $bodyText);
         }
@@ -233,95 +205,36 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         // Test changing first name
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTester',
             'First_name',
             'NewFirst'
         );
         // Test changing last name
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTester',
             'Last_name',
             'NewLast'
         );
         // Test changing 'Active' status
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTesterTwo',
             'Active',
             'No'
         );
         // Test changing Email
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTester',
             'Email',
             'newemail@example.com'
         );
         // Test changing Approval status
         $this->_verifyUserModification(
-            'user_accounts',
             'UnitTesterTwo',
             'Pending_approval',
             'No'
         );
         //TODO:add test case to ensure pending_approval
         //DOES NOT show up on UnitTester since logged in user is UnitTester
-    }
-    /**
-     * Tests various My Preference page edit operations.
-     *
-     * @return void
-     */
-    function testMyPreferencesEdits()
-    {
-        $this->_verifyUserModification(
-            'user_accounts/my_preferences',
-            'UnitTester',
-            'First_name',
-            'NewFirst'
-        );
-        $this->_verifyUserModification(
-            'user_accounts/my_preferences',
-            'UnitTester',
-            'Last_name',
-            'NewFirst'
-        );
-        $this->_verifyUserModification(
-            'user_accounts/my_preferences',
-            'UnitTester',
-            'Email',
-            'newemail@example.com'
-        );
-    }
-
-    /**
-     * Ensure that password errors are successfully triggered on the
-     * My Preferences page.
-     *
-     * @return void
-     */
-    function testMyPreferencesPasswordErrors()
-    {
-        $this->_verifyPasswordErrors(
-            self::FILEPATH_MYPREFERENCES,
-            self::UNITTESTER_USERNAME
-        );
-    }
-
-    /**
-     * Ensure that password errors are successfully triggered on the Edit User
-     * page.
-     *
-     * @return void
-     */
-    function testEditUserPasswordErrors()
-    {
-        $this->_verifyPasswordErrors(
-            self::FILEPATH_EDITUSER,
-            self::UNITTESTER_USERNAME
-        );
     }
 
     /**
@@ -334,9 +247,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // adding a new user for react test
         $this->safeGet($this->url . "/user_accounts/");
         $btn = $this->_addUserBtn;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
+        $this->safeClick(WebDriverBy::cssSelector($btn));
+
         $field = $this->safeFindElement(WebDriverBy::Name('UserID'));
         $field->clear();
         $field->sendKeys('userid');
@@ -366,7 +278,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $projectsOption  = new WebDriverSelect($projectsElement);
         $projectsOption->selectByValue("1");
         $this->safeClick(WebDriverBy::Name('fire_away'));
-        $this->_accessUser('user_accounts', 'userid');
+        $this->_accessUser('userid');
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $this->assertEquals($field->getAttribute('value'), 'first');
         $field = $this->safeFindElement(WebDriverBy::Name('Last_name'));
@@ -376,11 +288,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Modifies a field on either the user account or my preferences page
+     * Modifies a field on either the user account
      * and checks that the modification was updated on the front-end.
      *
-     * @param string $page      either 'user_accounts' or
-     *                          'user_accounts/my_preferences'.
      * @param string $userId    ID of the user to modify.
      * @param string $fieldName name of the field (on the HTML page) that should
      *                          be modified.
@@ -388,17 +298,17 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _verifyUserModification($page, $userId, $fieldName, $newValue)
+    function _verifyUserModification($userId, $fieldName, $newValue)
     {
         // Load the page
-        $this->_accessUser($page, $userId);
+        $this->_accessUser($userId);
 
         // Set the value and submit the changes
         $this->setValue($fieldName, $newValue);
-        $this->submit($page, $userId);
+        $this->submit();
 
         // Reload
-        $this->_accessUser($page, $userId);
+        $this->_accessUser($userId);
 
         // Verify changes appear on the page
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
@@ -416,26 +326,19 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     /**
      * Submit user data to the form specified by $page.
      *
-     * @param string $page   The page to submit to.
-     * @param string $userId ID of the user to modify.
-     *
      * @return void
      */
-    function submit($page, $userId): void
+    function submit(): void
     {
-        // if working on edit_user, select at least one site
-        if (strpos($page, 'my_preferences') === false) {
-            $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
-            $sitesOption  = new WebDriverSelect($sitesElement);
-            $sitesOption->selectByValue("1");
+        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+        $sitesOption  = new WebDriverSelect($sitesElement);
+        $sitesOption->selectByValue("1");
 
-            $projectsElement = $this->safeFindElement(
-                WebDriverBy::Name('ProjectIDs[]')
-            );
-            $projectsOption  = new WebDriverSelect($projectsElement);
-            $projectsOption->selectByValue("1");
-        }
-        // 'fire_away' is the name of the Submit button on the form.
+        $projectsElement = $this->safeFindElement(
+            WebDriverBy::Name('ProjectIDs[]')
+        );
+        $projectsOption  = new WebDriverSelect($projectsElement);
+        $projectsOption->selectByValue("1");
         $this->safeClick(WebDriverBy::Name('fire_away'));
     }
 
@@ -462,43 +365,27 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Runs all of the password tests for a page.
-     *
-     * @param string $page   The page to submit to.
-     * @param string $userId The user to edit
-     *
-     * @return void
-     */
-    function _verifyPasswordErrors($page, $userId): void
-    {
-        $this->_verifyPasswordMustNotEqualEmail($page, $userId);
-        $this->_verifyPasswordAndConfirmPasswordMustMatch($page, $userId);
-        $this->_verifyNewPasswordMustBeDifferent($page, $userId);
-    }
-
-    /**
      * Ensures that the user cannot set their password to be the same value
      * as their email address.
      *
-     * @param string $page   The page to submit to.
-     * @param string $userId The user to edit
-     *
      * @return void
      */
-    function _verifyPasswordMustNotEqualEmail($page, $userId): void
+    function testPasswordMustNotEqualEmail(): void
     {
         // Make sure the user's email is set to a known value. This will also
         // load the page.
         $this->_verifyUserModification(
-            $page,
-            'UnitTester',
+            self::UNITTESTER_USERNAME,
             'Email',
             self::UNITTESTER_EMAIL_NEW
         );
 
         // Try changing the password to the same value.
-        $this->_sendPasswordValues($page, $userId, self::UNITTESTER_EMAIL_NEW);
-        // This text comes from the class constants in Edit User/My Preferences
+        $this->_sendPasswordValues(
+            self::UNITTESTER_USERNAME,
+            self::UNITTESTER_EMAIL_NEW
+        );
+        // This text comes from the class constants in Edit User
         $this->assertContains('cannot be your email', $this->getBody());
     }
 
@@ -506,22 +393,18 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * Ensures that the module checks that the password and confirm password
      * field match.
      *
-     * @param string $page   The page to submit to.
-     * @param string $userId The user to edit
-     *
      * @return void
      */
-    function _verifyPasswordAndConfirmPasswordMustMatch($page, $userId): void
+    function testPasswordAndConfirmPasswordMustMatch(): void
     {
         // Send two different random strings to the password and confirm
         // password values.
         $this->_sendPasswordValues(
-            $page,
-            $userId,
+            self::UNITTESTER_USERNAME,
             \Utility::randomString(),
             \Utility::randomString()
         );
-        // This text comes from the class constants in Edit User/My Preferences
+        // This text comes from the class constants in Edit User
         $this->assertContains('do not match', $this->getBody());
     }
 
@@ -529,28 +412,23 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * Ensures that the module checks that the password and confirm password
      * field match.
      *
-     * @param string $page   The page to submit to.
-     * @param string $userId The user to edit
-     *
      * @return void
      */
-    function _verifyNewPasswordMustBeDifferent($page, $userId): void
+    function testNewPasswordMustBeDifferent(): void
     {
         $newPassword = \Utility::randomString();
         // Change the user's password to $newPassword
         $this->_sendPasswordValues(
-            $page,
-            $userId,
+            self::UNITTESTER_USERNAME,
             $newPassword
         );
         // Change the password again using the same value. This should cause
         // and error.
         $this->_sendPasswordValues(
-            $page,
-            $userId,
+            self::UNITTESTER_USERNAME,
             $newPassword
         );
-        // This text comes from the class constants in Edit User/My Preferences
+        // This text comes from the class constants in Edit User
         $this->assertContains(
             'New and old passwords are identical',
             $this->getBody()
@@ -561,7 +439,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * Loads a module, sets the password and confirm password value, submits
      * the form, and reloads the page.
      *
-     * @param string $page            The module to load
      * @param string $userId          The user to edit.
      * @param string $password        The plaintext password to use
      * @param string $confirmPassword The plaintext password to use. Will be
@@ -570,13 +447,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function _sendPasswordValues(
-        string $page,
         string $userId,
         string $password,
         string $confirmPassword = ''
     ): void {
         // Go to page
-        $this->_accessUser($page, $userId);
+        $this->_accessUser($userId);
         $this->setValue(
             self::FORM_FIELD_PASSWORD,
             $password
@@ -585,10 +461,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             self::FORM_FIELD_CONFIRMPASSWORD,
             ($confirmPassword === '') ? $password : $confirmPassword
         );
-        $this->submit(
-            $page,
-            $userId
-        );
+        $this->submit();
     }
 
     /**
@@ -604,26 +477,17 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Does one of two things: either accesses the My Preferences page of the
-     * current user of the user account page for the user whose ID is passed
-     * as argument.
+     * Accesses the current user.
      *
-     * @param string $page   either 'user_accounts' or
-                             'user_accounts/my_preferences'
      * @param string $userId ID of the user whose page should be accessed.
      *
      * @return void
      */
-    function _accessUser($page, $userId)
+    function _accessUser($userId)
     {
-        $this->safeGet($this->url . "/$page/");
-        if ($page == 'user_accounts') {
-            //     $this->safeClick(WebDriverBy::LinkText($userId));
-            $this->safeGet(
-                $this->url . "/user_accounts/edit_user/?identifier="
-                ."$userId"
-            );
-        }
+        $this->safeGet(
+            $this->url . "/user_accounts/edit_user/?identifier=$userId"
+        );
     }
     /**
      * Performed after every test.
@@ -632,10 +496,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        $this->DB->delete("users", array("UserID" => 'userid'));
-        $this->DB->delete("user_psc_rel", array("UserID" => 999995));
-        $this->DB->delete("user_project_rel", array("UserID" => 999995));
-        $this->DB->delete("users", array("UserID" => 'UnitTesterTwo'));
+        $this->DB->delete("users", ["UserID" => 'userid']);
+        $this->DB->delete("user_psc_rel", ["UserID" => 999995]);
+        $this->DB->delete("user_project_rel", ["UserID" => 999995]);
+        $this->DB->delete("users", ["UserID" => 'UnitTesterTwo']);
         parent::tearDown();
     }
 }

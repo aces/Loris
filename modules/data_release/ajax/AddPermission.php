@@ -15,23 +15,40 @@
  */
 
 $user     = \User::singleton();
+$DB       = \Database::singleton();
 $factory  = \NDB_Factory::singleton();
 $settings = $factory->settings();
 $baseURL  = $settings->getBaseURL();
-$DB       = $factory->database();
 
-if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
-    && $user->hasPermission('data_release_edit_file_access')
-) {
+if (!isset($_GET['action'])) {
+    http_response_code(400);
+    exit;
+}
+
+if (!$user->hasPermission('data_release_edit_file_access')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
+
+if ($_GET['action'] == 'addpermission') {
+
+    if (!isset($_POST) || empty($_POST)) {
+        $message = "No data was sent in the POST request";
+        http_response_code(400);
+        header('Content-Type: application/json; charset=UTF-8');
+        die(json_encode(['message' => $message]));
+    }
+
     if (!empty($_POST['data_release_id']) && empty($_POST['data_release_version'])) {
         $userid          = $_POST['userid'];
         $data_release_id = $_POST['data_release_id'];
         $DB->insertIgnore(
             'data_release_permissions',
-            array(
+            [
                 'userid'          => $userid,
                 'data_release_id' => $data_release_id,
-            )
+            ]
         );
 
     } elseif (empty($_POST['data_release_id'])
@@ -40,20 +57,20 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
         $userid = $_POST['userid'];
         $data_release_version = $_POST['data_release_version'] == 'Unversioned'
                                 ? '' : $_POST['data_release_version'];
-
-        $IDs = $DB->pselectCol(
-            "SELECT id 
-                    FROM data_release 
-                    WHERE version=:drv",
-            array('drv' => $data_release_version)
+        $query  = "SELECT id FROM data_release WHERE ";
+        $query .= $data_release_version == ''
+                  ? "version IS NULL OR version=:drv" : "version=:drv";
+        $IDs    = $DB->pselectCol(
+            $query,
+            [':drv' => $data_release_version]
         );
         foreach ($IDs as $ID) {
             $DB->insertIgnore(
                 'data_release_permissions',
-                array(
+                [
                     'userid'          => $userid,
                     'data_release_id' => $ID,
-                )
+                ]
             );
         }
     }
@@ -61,119 +78,62 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
     //does not currently do anything on the front-end
     //just a placeholder displaying if the operation succeeded or not
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
-} elseif (isset($_POST['action']) && $_POST['action'] == 'managepermissions'
-    && $user->hasPermission('data_release_edit_file_access')
-) {
-    // It is important here to not truncate all current permissions and rebuild
-    // them but instead to only make modifications to specifically altered
-    // permissions from the front end by the user. Otherwise, if a user has
-    // access to SOME files for a version, the checkbox would not be checked and
-    // on update the user will loose access to ALL files for that release.
+} elseif ($_GET['action'] == 'managepermissions') {
+    // Ensure that there is data in the request.
+    $data = json_decode($_POST['data'], true);
+    if (!isset($data) || empty($data)) {
+        $message = "No data was sent in the POST request";
+        http_response_code(400);
+        header('Content-Type: application/json; charset=UTF-8');
+        die(json_encode(['message' => $message]));
+    }
 
-    // Get permission list before any changes from main class
-    $data_release   = new LORIS\data_release\data_release(
+    // Get current user version files and list of files for each version.
+    $dataRelease      = new LORIS\data_release\data_release(
         \Module::factory('data_release'),
         '',
         '',
         '',
-        ''
     );
-    $vFiles         = $data_release->getVersionedFiles($DB);
-    $prePermissions = $data_release->getUserVersionPermissions($vFiles, $DB);
+    $userVersionFiles = $dataRelease->getUserVersionFiles($DB);
+    $versionFiles     = $dataRelease->getVersionFiles($DB);
 
-    $postPermissions = array();
-    foreach ($_POST as $key => $value) {
-        if (strpos($key, 'permissions') !== false) {
-            // at this stage each checked checkbox gets submitted as
-            // key: permission_USERID value: array(VERSION_NAME1, VERSION_NAME2)
-            $parsed_user = str_replace("permissions_", "", $key);
-            foreach ($value as $k => $v) {
-                $postPermissions[$parsed_user][] = $v;
+    // NOTE: It is important that only the user file permissions for versions
+    // that have been altered be saved to the database.
+    foreach ($data as $userId => $user) {
+        $addedVersions   = array_diff(
+            $user['versions'],
+            $userVersionFiles[$userId]['versions']
+        );
+        $removedVersions = array_diff(
+            $userVersionFiles[$userId]['versions'],
+            $user['versions']
+        );
+
+        // Add file permissions to user for each file of the added versions.
+        foreach ($addedVersions as $version) {
+            foreach ($versionFiles[$version] as $fileId) {
+                $DB->insertOnDuplicateUpdate(
+                    'data_release_permissions',
+                    [
+                        'userid'          => $userId,
+                        'data_release_id' => $fileId,
+                    ]
+                );
             }
         }
-    }
 
-    // Compare pre and post and only update changed values
-    // prePermissions array contains all users in the database
-    // postPermissions contains only users with at least one checked version
-    foreach ($prePermissions as $user=>$oldVersions) {
-        // query to get user ID
-        $query  = "SELECT ID FROM users WHERE UserID LIKE :userid";
-        $params = array('userid' => $user);
-        // PHP replaces dots "." characters by underscores "_" in variables.
-        // to be able to compare below, do the same thing
-        $userNoDot = str_replace(".", "_", $user);
-        // if user did not have any associated versions
-        if (empty($oldVersions)) {
-            // check if user now has versions
-            if (isset($postPermissions[$userNoDot])) {
-                // all versions should be added to user
-                $userid = $DB->pselectOne($query, $params);
-                // go through each version and each file associated and insert it
-                foreach ($postPermissions[$userNoDot] as $version) {
-                    foreach ($vFiles[$version] as $fileID=>$fileName) {
-                        $DB->insert(
-                            'data_release_permissions',
-                            array(
-                                'userid'          => $userid,
-                                'data_release_id' => $fileID,
-                            )
-                        );
-                    }
-                }
-            } else {
-                // nothing changed
-                continue;
-            }
-        } else {
-            // if user had associated version versions
-            // check if user still has any associated versions
-            if (isset($postPermissions[$userNoDot])) {
-                $userid = $DB->pselectOne($query, $params);
-
-                // versions should be compared individually and added or removed
-                $added   = array_diff($postPermissions[$userNoDot], $oldVersions);
-                $removed = array_diff($oldVersions, $postPermissions[$userNoDot]);
-
-                foreach ($added as $version) {
-                    foreach ($vFiles[$version] as $fileID=>$fileName) {
-                        $DB->insert(
-                            'data_release_permissions',
-                            array(
-                                'userid'          => $userid,
-                                'data_release_id' => $fileID,
-                            )
-                        );
-                    }
-                }
-
-                foreach ($removed as $version) {
-                    foreach ($vFiles[$version] as $fileID=>$fileName) {
-                        $DB->delete(
-                            'data_release_permissions',
-                            array(
-                                'userid'          => $userid,
-                                'data_release_id' => $fileID,
-                            )
-                        );
-                    }
-                }
-            } else {
-                // all version permissions should be removed
-                $userid = $DB->pselectOne($query, $params);
-
-                // go through each version and each file associated and delete it
-                foreach ($oldVersions as $version) {
-                    foreach ($vFiles[$version] as $fileID=>$fileName) {
-                        $DB->delete(
-                            'data_release_permissions',
-                            array(
-                                'userid'          => $userid,
-                                'data_release_id' => $fileID,
-                            )
-                        );
-                    }
-                }
+        // Remove file permissions from user for each file of the removed
+        // versions.
+        foreach ($removedVersions as $version) {
+            foreach ($versionFiles[$version] as $fileId) {
+                $DB->delete(
+                    'data_release_permissions',
+                    [
+                        'userid'          => $userId,
+                        'data_release_id' => $fileId,
+                    ]
+                );
             }
         }
     }
@@ -182,10 +142,30 @@ if (isset($_POST['action']) && $_POST['action'] == 'addpermission'
     //does not currently do anything on the front-end
     //just a placeholder displaying if the operation succeeded or not
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
-
+} elseif ($_GET['action'] == 'getPermissions') {
+    getManagePermissionsData($DB);
 } else {
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error adding permissions";
 }
 
+/**
+ * Gets the data for the manage permission modal window.
+ *
+ * @param \Database $DB Database Object
+ *
+ * @return void
+ */
+function getManagePermissionsData($DB): void
+{
+    // Get permission list before any changes from main class
+    $dataRelease = new LORIS\data_release\data_release(
+        \Module::factory('data_release'),
+        '',
+        '',
+        '',
+        ''
+    );
 
+    echo json_encode($dataRelease->getUserVersionFiles($DB));
+}

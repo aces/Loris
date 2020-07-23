@@ -30,7 +30,11 @@ class NDB_Caller
      *
      * @var string
      */
-    var $type;
+    public $type;
+
+    public $page;
+    public $controlPanel;
+    public $feedbackPanel;
 
     /**
      * Determines how data entry is being performed (directly from a study
@@ -137,7 +141,11 @@ class NDB_Caller
             );
 
             $this->instrument = $instrument;
-            header("Location: $redirectToOnSuccess");
+
+            if ($redirectToOnSuccess) {
+                header("Location: $redirectToOnSuccess");
+            }
+
             return "";
         }
 

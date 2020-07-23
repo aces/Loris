@@ -155,7 +155,7 @@ if (!empty($sessionID)) {
 switch ($action)
 {
  /**
-  * Fixing the behavioral battery by adding the instrument
+  * Fixing the behavioural battery by adding the instrument
   * arguments: $candID, $sessionID, $testName
   * RUN THE DIAGNOSTICS BEFORE TO SEE WHAT NEEDS TO BE FIXED
   */

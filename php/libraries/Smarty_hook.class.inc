@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This provides the implementation of the Smarty_neurodb class
+ * This provides the implementation of the Smarty_NeuroDB class
  *
  * PHP Version 7
  *
@@ -89,15 +89,15 @@ class Smarty_NeuroDB extends Smarty
         $currentDir = $this->getConfigDir();
 
         if (!is_array($currentDir)) {
-            $currentDir = array('base' => $this->loristemplate_dir);
+            $currentDir = ['base' => $this->loristemplate_dir];
         }
 
         $newdir = array_merge(
             $currentDir,
-            array(
+            [
                 'template' => $this->loristemplate_dir,
                 'project'  => $this->project_template_dir,
-            )
+            ]
         );
         $this->setConfigDir($newdir);
 

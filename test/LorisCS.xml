@@ -3,7 +3,14 @@
     <description>The coding standard for the Loris project</description>
 
     <!-- Include the PEAR standard -->
-    <rule ref="PEAR"/>
+    <rule ref="PEAR">
+        <exclude name="PEAR.Commenting.FileComment"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingCategoryTag"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingPackageTag"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingLinkTag"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingVersion"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag"/>
+    </rule>
 
     <!-- Pieces of other standards to include... -->
 
@@ -63,4 +70,7 @@
      </rule>
      <!-- Do not allow PHP closing tags because they can cause problems -->
      <rule ref="PSR2.Files.ClosingTag"/>
+
+     <!-- Force short array syntax -->
+     <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found"/>
 </ruleset>

@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -49,53 +50,25 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setUpConfigSetting("useEDC", "true");
         $this->safeGet($this->url . "/new_profile/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("New Profile", $bodyText);
         // check EDC shows on the page
         $value = "#lorisworkspace > fieldset > div > form > div > div:nth-child(3)>".
                  " div > div:nth-child(1) > label";
-        $EDC   = $this->webDriver->executescript(
-            "return document.querySelector('$value').textContent"
-        );
+        $EDC   = $this->safeFindElement(
+            WebDriverBy::cssSelector($value)
+        )->getText();
         $this->assertContains("Expected Date of Confinement", $EDC);
         // check Project shows on the page
         $value   = "#lorisworkspace > fieldset > div > form>div>div:nth-child(7)>".
                    " div > label";
-        $project = $this->webDriver->executescript(
-            "return document.querySelector('$value').textContent"
-        );
+        $project = $this->safeFindElement(
+            WebDriverBy::cssSelector($value)
+        )->getText();
         $this->assertContains("Project", $project);
 
-        $this->restoreConfigSetting("useEDC");
-    }
-
-    /**
-     * Tests that with useEDC turned off, edc related fields do not appear
-     * on the page.
-     *
-     * @return void
-     */
-    function testNewProfileLoadsWithoutEDC()
-    {
-        $this->setUpConfigSetting("useEDC", "false");
-
-        $this->safeGet($this->url . "/new_profile/");
-        try {
-            $edc1 = $this->webDriver->findElement(WebDriverBy::Name("edc1"));
-        } catch(NoSuchElementException $e) {
-            $edc1 = null;
-        }
-        $this->assertNull($edc1);
-
-        try {
-            $edc2 = $this->webDriver->findElement(WebDriverBy::Name("edc2"));
-        } catch(NoSuchElementException $e) {
-            $edc2 = null;
-        }
-
-        $this->assertNull($edc2);
         $this->restoreConfigSetting("useEDC");
     }
 
@@ -127,10 +100,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$this->dtc').value='2015-01-01'"
         );
 
-        $startVisit =  $this->webDriver->executescript(
+        $this->webDriver->executescript(
             "document.querySelector('$this->btn').click()"
         );
-        $bodyText   = $this->webDriver->executescript(
+        $bodyText = $this->webDriver->executescript(
             "return document.querySelector('#default-panel').textContent"
         );
 

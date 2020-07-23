@@ -51,7 +51,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -62,10 +62,10 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.2',
-            'v0.0.3-dev',
-        );
+            'v0.0.3',
+        ];
     }
 
     /**
@@ -105,7 +105,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         try {
-            $visit = \NDB_Factory::singleton()->timepoint($sessionid);
+            $visit = \NDB_Factory::singleton()->timepoint((int) $sessionid);
         } catch (\LorisException | \TypeError $e) {
             $visit = null;
         }
@@ -125,11 +125,9 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Returns an array representation of the requested candiate following
      * the API specifications.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         // TODO :: User permission to acces this and subendpoints
         $array = (new \LORIS\api\Views\Candidate($this->_candidate))

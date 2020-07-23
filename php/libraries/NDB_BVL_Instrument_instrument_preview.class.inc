@@ -39,7 +39,7 @@ class NDB_BVL_Instrument_Instrument_Preview
         $this->commentID = $commentID;
         $this->page      = $page;
 
-        $this->form = new \HTML_Quickform('test_form');
+        $this->form = new \LorisForm();
 
         $this->loadInstrumentFile(
             "data:text/plain;base64," . base64_encode($_REQUEST['instrumentdata']),

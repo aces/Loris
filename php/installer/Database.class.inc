@@ -94,7 +94,7 @@ class Database
     public function databaseExists($database)
     {
         $stmt = $this->PDO->prepare("SHOW DATABASES LIKE :v_db");
-        $stmt->execute(array('v_db' => $database ));
+        $stmt->execute(['v_db' => $database ]);
         $exists = !empty($stmt->fetchAll());
 
         return $exists;
@@ -113,7 +113,7 @@ class Database
     public static function canLogIn($host, $database, $username, $password)
     {
         try {
-            $test = new \PDO(
+            new \PDO(
                 "mysql:host={$host};dbname={$database};charset=UTF8",
                 $username,
                 $password

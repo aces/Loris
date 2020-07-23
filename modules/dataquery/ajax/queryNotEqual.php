@@ -38,14 +38,14 @@ $value       = $_REQUEST['value'];
 $results = $cdb->queryView(
     "DQG-2.0",
     "search",
-    array(
+    [
         "reduce"   => "false",
         "startkey" => "[\"$category\", \"$fieldName\"]",
         "endkey"   => "[\"$category\", \"$fieldName\", {}]",
-    )
+    ]
 );
 // TODO: Rewrite this using array_filter and array_map.
-$sessionResults = array();
+$sessionResults = [];
 foreach ($results as $row) {
     if ($row['key'][2] == $value) {
         continue;

@@ -26,7 +26,7 @@ namespace LORIS\statistics;
 class Statistics_Mri_Site extends Statistics_Site
 {
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     /**
      * CheckCriteria function
@@ -94,7 +94,7 @@ class Statistics_Mri_Site extends Statistics_Site
         $this->_checkCriteria($centerID, $projectID);
         $DB =& \Database::singleton();
 
-        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type", array());
+        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type", []);
         $where      = "WHERE (";
         $counter    = 1;
         foreach ($scan_types as $index=>$scan) {
@@ -107,6 +107,7 @@ class Statistics_Mri_Site extends Statistics_Site
                 $counter++;
             }
         }
+        $query = '';
         switch ($issue) {
         case 'Tarchive_Missing':
             $query = "SELECT DISTINCT f.CommentID as CommentID, 
@@ -178,10 +179,11 @@ class Statistics_Mri_Site extends Statistics_Site
 
         }
         if ($query) {
-                      $result = $DB->pselect($query, $this->query_vars);
+            $result = $DB->pselect($query, $this->query_vars);
         }
-        return $result;
+        return $result ?? [];
     }
+
     /**
      * Setup function
      *
@@ -189,16 +191,16 @@ class Statistics_Mri_Site extends Statistics_Site
      */
     function setup()
     {
-        $this->issues = array(
+        $this->issues = [
             "Tarchive_Missing",
             "Files_Missing",
             "PF_Missing",
-        );
+        ];
 
         $DB     =& \Database::singleton();
         $sqlRow = "SELECT CenterID as ID,".
                   " PSCArea as Name FROM psc WHERE CenterID=:cid";
-        $center = $DB->pselectRow($sqlRow, array('cid' => $_REQUEST['CenterID']));
+        $center = $DB->pselectRow($sqlRow, ['cid' => $_REQUEST['CenterID']]);
         if (is_null($center)) {
             throw new \LorisException('Invalid CenterID specified');
         }
@@ -208,10 +210,10 @@ class Statistics_Mri_Site extends Statistics_Site
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given issue in the
         // template
-        $visits    = array();
+        $visits    = [];
         $projectID = $_REQUEST['ProjectID'] ?? '';
 
-        $data = array();
+        $data = [];
         foreach ($this->issues as $issue) {
             // FIXME The function _completeCount() seems to be unfinished and
             // always returns null.
@@ -224,19 +226,19 @@ class Statistics_Mri_Site extends Statistics_Site
                 if (!in_array($row['Visit_label'], $visits)) {
                     $visits[] = $row['Visit_label'];
                 }
-                $results[$row['Visit_label']][] = array(
+                $results[$row['Visit_label']][] = [
                     'test_url'  => $test_url,
                     'CandID'    => $row['CandID'],
                     'SessionID' => $row['SessionID'],
                     'CommentID' => $row['CommentID'],
                     'PSCID'     => $row['PSCID'],
-                );
+                ];
             }
-            $data[] = array(
+            $data[] = [
                 'name'        => $this->_getIssueName($issue),
                 'count'       => $complete_count,
                 'incompletes' => $results,
-            );
+            ];
         }
 
         $this->tpl_data["data"]     = $data;
@@ -258,7 +260,7 @@ class Statistics_Mri_Site extends Statistics_Site
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 }

@@ -56,7 +56,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
                   LEFT JOIN candidate c ON (c.CandID=s.CandID)
                   LEFT JOIN psc ON (psc.CenterID=s.CenterID)
             WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y'",
-            array()
+            []
         );
     }
 

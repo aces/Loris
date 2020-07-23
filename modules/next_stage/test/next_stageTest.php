@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
  "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
 /**
@@ -51,7 +52,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDoesPageLoadWithPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -70,7 +71,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDoesNotPageLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->webDriver->get(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -98,7 +99,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->changeStudySite();
 
         // Check to make sure page doesn't load without permission
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->webDriver->get(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -113,7 +114,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->resetPermissions();
 
         // Check to make sure page doesn't load with permission
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->webDriver->get(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"

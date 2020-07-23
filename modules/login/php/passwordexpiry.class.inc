@@ -71,7 +71,7 @@ class PasswordExpiry extends \NDB_Form
         // be named "password" and why there's a hidden element named "login"
         // in the smarty template.)
         $this->tpl_data['username'] = $this->_username;
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule([&$this, '_validate']);
     }
 
 
@@ -89,20 +89,47 @@ class PasswordExpiry extends \NDB_Form
         $this->_user = \User::factory($this->_username);
         $data        = $this->_user->getData();
         $plaintext   = htmlspecialchars_decode($values['password']);
+        $confirm     = htmlspecialchars_decode($values['confirm']);
 
         try {
-            $password = new \Password($plaintext);
+            new \Password($plaintext);
         } catch (\InvalidArgumentException $e) {
             $this->tpl_data['error_message'] = $e->getMessage();
-            return array('password' => $e->getMessage());
+            return ['password' => $e->getMessage()];
         }
 
         if (!$this->_user->isPasswordDifferent($plaintext)) {
-            $this->tpl_data['error_message'] = 'You cannot keep the same password';
-            return array('password' => 'You cannot keep the same password');
+            $error_msg = "You cannot keep the same password.";
+            $this->tpl_data['error_message'] = $error_msg;
+            return ['password' => $error_msg];
         }
 
-        return array();
+        // Ensure that the password is not the user's email
+        // Otherwise an exception is thrown in User.class::updatePassword
+        // TODO This validation should be done on the front-end too.
+        if ($plaintext === $data['Email']) {
+            $error_msg = "You cannot use your email as your password.";
+            $this->tpl_data['error_message'] = $error_msg;
+            return ['password' => $error_msg];
+        }
+
+        // Ensure that the password is not the user's username
+        // TODO This validation should be done on the front-end too.
+        if ($plaintext === $this->_username) {
+            $error_msg = "You cannot use your username as your password.";
+            $this->tpl_data['error_message'] = $error_msg;
+            return ['password' => $error_msg];
+        }
+
+        // Ensure that the password and confirm password fields match.
+        // TODO This validation should be done on the front-end too.
+        if ($plaintext !== $confirm) {
+            $error_msg = "The passwords do not match.";
+            $this->tpl_data['error_message'] = $error_msg;
+            return ['password' => $error_msg];
+        }
+
+        return [];
     }
 
     /**

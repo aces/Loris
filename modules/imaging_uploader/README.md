@@ -35,6 +35,8 @@ insertion pipeline is triggered.
 
 ## Requirements
 
+This module requires the use of another software package, [LORIS-MRI](https://github.com/aces/Loris-MRI). It consists of a series of scripts used for validation of image uploads.
+
 For a successful upload:
 - The CandID must exist in the database
 - The PSCID must be valid for the CandID
@@ -67,19 +69,16 @@ LORIS-MRI install process.
 
 The imaging uploader has the following configurations that affect its usage:
 
-#### Install Configurations
+### LORIS-MRI
 
-To enable the Imaging Uploader to handle large files, please update the 
-`php.ini` apache configuration file. Recommended sample values appropriate for 
-compressed scans not exceeding 500M in size are: 
+The imaging insertion pipelines and libraries in the Loris-MRI repo must be installed, configured, and tested before imaging data can be loaded into LORIS via this module. Please visit
+[the documentation for LORIS-MRI](https://github.com/aces/Loris-MRI#installation) 
+for more information.
 
-```
-session.gc_maxlifetime = 10800  // After this number of seconds, stored data will be seen as 'garbage' and cleaned up by the garbage collection process.
-max_input_time = 10800          // Maximum amount of time each script may spend parsing request data (in seconds)
-max_execution_time = 10800      // Maximum execution time of each script (in seconds)
-upload_max_filesize = 1024M     // Maximum allowed size for uploaded files.
-post_max_size = 1024M           // Maximum size of POST data that PHP will accept.
-```
+### Install Configurations
+
+To enable the Imaging Uploader to handle large files, please follow the
+instructons for [Handling Large File Uploads](../../docs/wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/Handling Large File Uploads.md).
 
 #### <a name="database_config_link"></a> Database Configurations
 
@@ -106,4 +105,3 @@ study) are present
 - If `ImagingUploaderAutoLaunch` configuration is enabled, the Server Process
 Manager under the Admin menu can be consulted for scans insertion progress 
 (exit codes, error files, etc...). 
-

@@ -70,10 +70,10 @@ class Specific
      */
     public function toArray(): array
     {
-        return  array(
+        return  [
             'Meta'  => $this->_formatMeta(),
             'Value' => $this->_image->getHeader($this->_headername),
-        );
+        ];
     }
 
     /**
@@ -83,16 +83,16 @@ class Specific
      */
     private function _formatMeta(): array
     {
-        $candid     = (string) $this->_visit->getCandID();
+        $candid     = $this->_visit->getCandID();
         $visitlabel = $this->_visit->getVisitLabel();
         $filename   = $this->_image->getFileInfo()->getFilename();
 
-        return array(
+        return [
             'CandID' => $candid,
             'Visit'  => $visitlabel,
             'File'   => $filename,
             'Header' => $this->_headername,
-        );
+        ];
     }
 }
 

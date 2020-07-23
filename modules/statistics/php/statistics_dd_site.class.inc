@@ -27,7 +27,7 @@ class Statistics_DD_Site extends statistics_site
 {
 
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     /**
      * CheckCriteria function
@@ -72,16 +72,16 @@ class Statistics_DD_Site extends statistics_site
     function _setInstrumentName()
     {
         $this->instruments = \Utility::getAllInstruments();
-        foreach ($this->instruments as $k=>$v) {
+        foreach (array_keys($this->instruments) as $k) {
             $this->instruments[$k] = $k;
         }
 
         $this->instruments = array_filter(
             $this->instruments,
-            array(
+            [
                 &$this,
                 'notexcluded',
-            )
+            ]
         );
     }
 

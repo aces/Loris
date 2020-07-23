@@ -56,7 +56,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
             'GWAS.rsID AS SNP_ID',
             'SNP.Chromosome AS Chromosome',
             'SNP.StartLoc AS Position_BP',
@@ -66,7 +66,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
             'GWAS.Estimate AS Estimate',
             'GWAS.StdErr AS StdErr',
             'GWAS.Pvalue AS Pvalue',
-        );
+        ];
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -75,7 +75,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
                 function ($header) {
                         return ucwords(str_replace('_', ' ', $header));
                 },
-                array()
+                []
             )
         );
 
@@ -84,7 +84,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
             JOIN SNP ON (GWAS.SNPID = SNP.SNPID)";
 
         $this->order_by     = 'SNP.Chromosome, GWAS.Pvalue DESC';
-        $this->validFilters = array(
+        $this->validFilters = [
             'GWAS.rsID',
             'SNP.Chromosome',
             'SNP.StartLoc',
@@ -94,9 +94,9 @@ class GWAS_Browser extends \NDB_Menu_Filter
             'GWAS.Estimate',
             'GWAS.StdErr',
             'GWAS.Pvalue',
-        );
+        ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'SNP_ID'       => 'GWAS.rsID',
             'Chromosome'   => 'SNP.Chromosome',
             'BP_Position'  => 'SNP.StartLoc',
@@ -106,7 +106,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
             'Estimate'     => 'GWAS.Estimate',
             'StdErr'       => 'GWAS.StdErr',
             'Pvalue'       => 'GWAS.Pvalue',
-        );
+        ];
 
     }
 
@@ -121,14 +121,11 @@ class GWAS_Browser extends \NDB_Menu_Filter
     {
         parent::setup();
 
-        // create user object
-        $user = \User::singleton();
-
         // add form elements
-        $show_results_options = array(
+        $show_results_options = [
             'brief' => 'Summary fields',
             'full'  => 'All fields',
-        );
+        ];
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         $this->addBasicText('SNP_ID', 'SNP ID:');
@@ -136,13 +133,13 @@ class GWAS_Browser extends \NDB_Menu_Filter
         $this->addBasicText('BP_Position', 'BP Position:');
         $this->addBasicText('MAF', 'MAF:');
 
-        $alleleArray = array(
+        $alleleArray = [
             ''  => 'Any',
             'A' => 'A',
             'C' => 'C',
             'T' => 'T',
             'G' => 'G',
-        );
+        ];
         $this->addSelect('Minor_Allele', 'Minor Allele:', $alleleArray);
         $this->addSelect('Major_Allele', 'Major Allele:', $alleleArray);
 
@@ -204,10 +201,10 @@ class GWAS_Browser extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/genomic_browser/js/genomic_browser.js",
                 $baseURL . "/genomic_browser/js/gwasColumnFormatter.js",
-            )
+            ]
         );
     }
 

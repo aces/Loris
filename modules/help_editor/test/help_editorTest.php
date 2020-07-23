@@ -10,9 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
 require_once __DIR__."/../../../test/integrationtest"
 ."s/LorisIntegrationTest.class.inc";
+use Facebook\WebDriver\WebDriverBy;
  /**
   * Help_editor automated integration tests
   *
@@ -35,18 +35,16 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $md5String = md5("TestTestTest");
-        $window    = new WebDriverWindow($this->webDriver);
-        $window->maximize();
         $this->DB->insert(
             "help",
-            array(
+            [
                 'helpID'   => '999999',
                 'parentID' => '-1',
                 'hash'     => $md5String,
                 'topic'    => 'Test Topic',
                 'content'  => 'This is a test content.',
                 'created'  => '2013-04-05 00:00:00',
-            )
+            ]
         );
     }
     /**
@@ -57,7 +55,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        $this->DB->delete("help", array('helpID' => '999999'));
+        $this->DB->delete("help", ['helpID' => '999999']);
     }
 
     /**
@@ -104,7 +102,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorPermission()
     {
-         $this->setupPermissions(array("context_help"));
+         $this->setupPermissions(["context_help"]);
          $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -119,7 +117,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

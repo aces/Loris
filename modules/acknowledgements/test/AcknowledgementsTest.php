@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -26,7 +28,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 
     // Initial array data
 
-    static $testData = array(
+    static $testData = [
         'ID'            => '999',
         'ordering'      => '999',
         'full_name'     => 'Demo Test',
@@ -37,8 +39,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         'start_date'    => '2015-01-01',
         'end_date'      => '2016-01-01',
         'present'       => 'Yes',
-    );
-    static $newData  = array(
+    ];
+    static $newData  = [
         'ordering'      => '9999',
         'full_name'     => 'Test Test',
         'citation_name' => "Test's Citation",
@@ -48,7 +50,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         'start_date'    => '2015-11-11',
         'end_date'      => '2016-11-11',
         'present'       => 'Yes',
-    );
+    ];
     /**
      * Insert testing data into the database
      * author: Wang Shen
@@ -72,40 +74,29 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        $this->DB->delete("acknowledgements", array('ID' => '999'));
-        $this->DB->delete("acknowledgements", array('full_name' => 'Test Test'));
+        $this->DB->delete("acknowledgements", ['ID' => '999']);
+        $this->DB->delete("acknowledgements", ['full_name' => 'Test Test']);
         parent::tearDown();
     }
+
     /**
-     * Tests that, the homepage should have "Acknowledgements" on the page.
+     * Ensures that the module loads if and only if the user has one of the
+     * module permissions codes.
      *
      * @return void
      */
-    function testPageLoads()
+    public function testPermissions(): void
     {
-        $this->safeGet($this->url . "/acknowledgements/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Acknowledgements", $bodyText);
-    }
-    /**
-     * Tests that, the homepage should have "You do not have access to this page."
-     * on the page without permission.
-     *
-     * @return void
-     */
-    function testPageLoadsWithoutPermissions()
-    {
-        $this->setupPermissions(array("violated_scans_view_allsites"));
-        $this->safeGet($this->url . "/acknowledgements/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
-            "You do not have access to this page.",
-            $bodyText
+        $this->checkPagePermissions(
+            '/acknowledgements/',
+            [
+                'acknowledgements_view',
+                'acknowledgements_edit'
+            ],
+            "Acknowledgements"
         );
-        $this->resetPermissions();
     }
+
     /**
      * Tests that, after clicking the "filter" button, all of the
      * advanced filters appear on the page.

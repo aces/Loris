@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * Instrument_builder automated integration tests
  *
@@ -10,8 +11,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once __DIR__ . "/../../test/integrationtests/LorisIntegrationTest.class.inc";
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
 class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 {
     /**
@@ -36,7 +37,8 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'RegistrationProjectID' => 1,
             'Active'                => 'Y',
             'UserID'                => 1,
-            'Entity_type'           => 'Human'
+            'Entity_type'           => 'Human',
+            'Sex'                   => 'Female'
         ));
         $this->DB->insert('session', array(
             'ID'             => '999999',
