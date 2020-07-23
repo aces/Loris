@@ -299,9 +299,7 @@ class Candidate
                 $invalidID = true;
                 $attemptcount++;
                 if ($attemptcount > 2) {
-                    throw new LorisException(
-                        $e->getMessage()
-                    );
+                    throw $e
                 }
             }
         } while ($invalidID);
@@ -768,4 +766,3 @@ class Candidate
     }
 
 }
-
