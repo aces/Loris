@@ -1,20 +1,29 @@
-*This directory contains all the files necessary to spawn an instance of the Raisin 
-Bread demonstration dataset.*
-
 ### Overview
-The Raisin Bread (RB) database is an example dataset built for demonstration and 
+The RaisinBread (RB) database is an example dataset built for demonstration and 
 testing purposes. This dataset should be expanded when new features are added and 
 adjusted when existing features are changed or removed. 
 
 The sections below provide some insights into installing, modifying and exporting 
 the dataset.
 
-### Installing RB
+### Automated RB Installation
+The script `tools/raisinbread_refresh.php` includes functionality that drops all existing tables in the
+database and sources all of the RaisinBread data automatically. The script will preserve some server configuration settings in your database to simplify the process of switching between development environments. This tool can be run through the provided Makefile. To run this script, navigate to the LORIS
+root directory and run the following command:
+
+```bash
+make testdata
+```
+
+If RaisinBread is being installed for the first time, the steps outlined below in the 
+[Configuring](#Configuring) section must be completed. 
+
+### Manual RB Installation
 The RaisinBread data is stored in the form of SQL INSERT statements located in the 
 `/raisinbread/RB_files/` directory and grouped by the database table they belong to. 
 These statements rely on the pre-existence of the SQL tables and thus the data is 
 heavily coupled with the default LORIS schema files located in the `/SQL/` directory.
-The RaisinBread dataset also include a few example instruments, these can be found in
+The RaisinBread dataset also includes a few example instruments, these can be found in
 the `raisinbread/instruments/` directory along with their respective SQL schemas in 
 `raisinbread/instruments/instrument_sql/` and their respective Meta SQL commands in 
 `raisinbread/instruments/instrument_sql/Meta/`. 
@@ -29,10 +38,23 @@ that is not the case, replace all `mysql` commands below by the necessary values
 `mysql -u user -p -h host database_name`*
 
 ##### Sourcing SQL
-In order to be able to use the RaisinBread dataset, the LORIS SQL schema needs to be 
-sourced, followed by the different instrument schemas and finally the actual RB data. 
+If the database being used is already populated and contains any tables or data, the following
+command must be used in the main LORIS root directory. Note that these commands will erase all the data
+in the database. Ensure that a backup is available if this data is important:
+
+```bash
+cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
+    SQL/9999-99-99-drop_tables.sql | mysql
+```
+***Note:** This command can also be used at any step to empty and delete all RaisinBread tables.*
+
+***Important:** Ensure that the above commands were completed properly and that all the tables were dropped before continuing the installation process.*
+
+In order to be able to use the RaisinBread dataset, the LORIS SQL schema needs to be
+sourced, followed by the different instrument schemas and finally the actual RB data.
 The commands below assume that the current working directory is the main LORIS root
-directory.
+directory. If the tables were not deleted or created properly, the schemas can be sourced 
+directly on the mysql command line.
 
 ```bash
 cat SQL/0000-00-00-schema.sql \
@@ -49,14 +71,6 @@ cat SQL/0000-00-00-schema.sql \
     raisinbread/RB_files/*.sql | mysql
 ```
 
-Note: to empty and delete all RaisinBread tables, use the following command in the 
-main LORIS root directory
-```bash
-cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql \
-    SQL/9999-99-99-drop_tables.sql | mysql
-```
-
-
 ##### Configuring
 In order to be able to load the LORIS front-end while using the RaisinBread dataset 
 some configurations are necessary.
@@ -64,7 +78,7 @@ some configurations are necessary.
 1. Copy the `raisinbread/config/config.xml` file into `project/config.xml`
 2. Input the correct `<database>` information in the `project/config.xml` file 
 3. Change the values of the `Config` table of the SQL database to reflect the 
-correct `host`, `url` and `base` values
+correct `host` and `base` values
 4. copy the `raisinbread/instruments/` instrument PHP and LINST files to the 
 `projects/instruments/` directory
 

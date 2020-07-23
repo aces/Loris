@@ -80,26 +80,26 @@ class Next_Stage extends \NDB_Form
 
         // set the date for the new stage
         $timePoint->setData(
-            array(
+            [
                 "Date_".$newStage => $values['date1'],
-            )
+            ]
         );
 
         // set SubprojectID if applicable
         if (isset($values['SubprojectID'])) {
             $timePoint->setData(
-                array(
+                [
                     'SubprojectID' => $values['SubprojectID'],
-                )
+                ]
             );
         }
 
         // set scan done if applicable
         if (isset($values['scan_done'])) {
             $timePoint->setData(
-                array(
+                [
                     'Scan_done' => $values['scan_done'],
-                )
+                ]
             );
         }
 
@@ -151,13 +151,13 @@ class Next_Stage extends \NDB_Form
         $timePoint =& \TimePoint::singleton($this->identifier);
         $config    =& \NDB_Config::singleton();
 
-        $dateOptions = array(
+        $dateOptions = [
             'language'       => 'en',
             'format'         => 'YMd',
             'addEmptyOption' => true,
             'minYear'        => $config->getSetting('startYear'),
             'maxYear'        => $config->getSetting('endYear'),
-        );
+        ];
 
         $this->addHidden('candID', $timePoint->getData('CandID'));
         $this->addHidden('sessionID', $timePoint->getData('SessionID'));
@@ -170,11 +170,11 @@ class Next_Stage extends \NDB_Form
             $this->addSelect(
                 'scan_done',
                 'Scan Done',
-                array(
+                [
                     null => null,
                     'Y'  => 'Yes',
                     'N'  => 'No',
-                )
+                ]
             );
             $this->addRule('scan_done', 'Scan done is required', 'required');
         }
@@ -201,16 +201,16 @@ class Next_Stage extends \NDB_Form
             $this->addSelect(
                 'SubprojectID',
                 'Objective',
-                array('' => '') + $list_of_objectives
+                ['' => ''] + $list_of_objectives
             );
             $this->addRule('SubprojectID', 'Required', 'required');
         }
 
         // add date rules
         $this->addRule('date1', 'Date is required', 'required');
-        $this->addRule(array('date1', 'date2'), 'Date fields must match', 'compare');
+        $this->addRule(['date1', 'date2'], 'Date fields must match', 'compare');
 
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule([&$this, '_validate']);
     }
     /**
      * Validate function
@@ -221,14 +221,10 @@ class Next_Stage extends \NDB_Form
      */
     function _validate($values)
     {
-        $config =& \NDB_Config::singleton();
+        $config    = \NDB_Factory::singleton()->config();
+        $timePoint = \NDB_Factory::singleton()->timepoint($this->identifier);
 
-        $timePoint =& \TimePoint::singleton($this->identifier);
-        $candID    = $timePoint->getCandID();
-
-        $candidate =& \Candidate::singleton($candID);
-
-        $errors = array();
+        $errors = [];
         /* Check that dates are present. Return early as there is no point
          * doing further processing otherwise.
          */

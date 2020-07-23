@@ -11,7 +11,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
@@ -37,14 +38,14 @@ class ExaminerTest extends LorisIntegrationTest
      * Table headers
      */
     private $_loadingUI
-        =  array(
+        =  [
             'Examiner'         => '#bc2 > a:nth-child(2) > div',
             'Selection Filter' => '#lorisworkspace > div.row > '.
                                   'div.col-sm-12.col-md-7 > div > div.panel-heading',
             'Add Examiner'     => '#lorisworkspace > div > div:nth-child(1) > '.
                                   'div > div:nth-child(1)',
             'Add'              => '#examiner > div:nth-child(3) > div > button',
-        );
+        ];
 
     /**
      * Insert testing data
@@ -64,12 +65,12 @@ class ExaminerTest extends LorisIntegrationTest
     {
         $this->DB->delete(
             "examiners",
-            array('full_name' => 'Test_Examiner')
+            ['full_name' => 'Test_Examiner']
         );
 
         $this->DB->delete(
             "psc",
-            array('Name' => 'TEST_Site')
+            ['Name' => 'TEST_Site']
         );
          parent::tearDown();
     }
@@ -81,7 +82,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testResultTableLoadsWithPermission()
     {
-        $this->setupPermissions(array("examiner_view"));
+        $this->setupPermissions(["examiner_view"]);
         $this->safeGet($this->url . "/examiner/?format=json");
 
         // Check the table column headers
@@ -102,7 +103,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/examiner/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -118,7 +119,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerDoesLoadWithoutSuperuser()
     {
-        $this->setupPermissions(array('superuser'));
+        $this->setupPermissions(['superuser']);
         $this->safeGet($this->url . "/examiner/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -171,7 +172,7 @@ class ExaminerTest extends LorisIntegrationTest
         $select  = $this->safeFindElement(WebDriverBy::Name("addSite"));
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("Montreal");
-        $bodyText = $this->safeFindElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
         $this->safeGet($this->url . "/examiner/");
@@ -200,9 +201,6 @@ class ExaminerTest extends LorisIntegrationTest
             'Skipped tests until Travis and React get along better'
         );
         $this->safeGet($this->url . "/examiner/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"

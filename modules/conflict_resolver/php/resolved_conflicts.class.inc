@@ -50,7 +50,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->columns = array(
+        $this->columns = [
             'conflicts_resolved.TableName as instrument',
             'session.CandID as candID',
             'candidate.PSCID as pscid',
@@ -64,7 +64,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             'session.CenterID as CenterID',
             '(SELECT name FROM psc WHERE CenterID=session.CenterID)'
                           .' as site',
-        );
+        ];
 
         $this->query = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
@@ -83,7 +83,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $this->group_by = '';
         $this->order_by = 'conflicts_resolved.TableName, session.Visit_label';
 
-        $this->headers = array(
+        $this->headers = [
             'Instrument',
             'CandID',
             'PSCID',
@@ -96,7 +96,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             'Old Value2',
             'CenterID',
             'Site',
-        );
+        ];
     }
 
     /**
@@ -108,15 +108,14 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     {
         parent::setup();
         // Create user object
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
+        $user = \NDB_Factory::singleton()->user();
 
         // Get instruments
         $instruments = \Utility::getAllInstruments();
 
         // Get visits
         $visits = \Utility::getVisitList();
-        $visits = array_merge(array('' => 'All'), $visits);
+        $visits = array_merge(['' => 'All'], $visits);
 
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
@@ -127,7 +126,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
                 $sites[$site] = $site;
             }
             if (is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
+                $sites = ['' => 'All'] + $sites;
             }
         } else {
             // allow only to view own site data
@@ -136,13 +135,13 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
                 unset($sites[$key]);
                 $sites[$site] = $site;
             }
-            $sites = array('' => 'All User Sites') + $sites;
+            $sites = ['' => 'All User Sites'] + $sites;
         }
 
-        $labelOptions = array(
+        $labelOptions = [
             'addEmptyOption'   => true,
             'emptyOptionValue' => '',
-        );
+        ];
 
         // Add form elements
         $this->addSelect('site', 'For Site:', $sites);
@@ -151,24 +150,26 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $this->addBasicText(
             'candID',
             'CandID:',
-            array(
+            [],
+            [
                 'size'      => 9,
                 'maxlength' => 6,
-            )
+            ]
         );
         $this->addBasicText(
             'pSCID',
             'PSCID:',
-            array(
+            [],
+            [
                 'size'      => 9,
                 'maxlength' => 7,
-            )
+            ]
         );
         $this->addBasicText('question', 'Question:');
         $this->addBasicText('resolutionTimestamp', 'Resolution Timestamp:');
 
         // Project list, if applicable
-        $list_of_projects = array();
+        $list_of_projects = [];
         $projectList      = \Utility::getProjectList();
         foreach ($projectList as $key => $value) {
             $list_of_projects[$value] = $value;
@@ -211,10 +212,10 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             if ($r['question'] === 'Examiner') {
                 if (!empty($r['CorrectAnswer'])) {
                     $r['correct_answer'] = $DB->pselectOne(
-                        'SELECT full_name 
-                         FROM examiners 
+                        'SELECT full_name
+                         FROM examiners
                          WHERE examinerID=:eid',
-                        array('eid' => $r['correct_answer'])
+                        ['eid' => $r['correct_answer']]
                     );
                 }
                 $result[$k] = $r;
@@ -231,7 +232,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;
@@ -249,15 +250,15 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     function toArray()
     {
         $unanonymized = parent::toArray();
-        $data         = array();
+        $data         = [];
 
         foreach ($unanonymized['Data'] as &$row) {
             $data[] = $row;
         }
-        return array(
+        return [
             'Headers' => $unanonymized['Headers'],
             'Data'    => $data,
-        );
+        ];
     }
 
     /**
@@ -272,9 +273,9 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . '/conflict_resolver/js/resolvedConflictsIndex.js',
-            )
+            ]
         );
     }
 }

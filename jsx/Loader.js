@@ -5,26 +5,23 @@
  * @version 1.0.0
  *
  */
-
-import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Loader component
+ * Loader is a React component which shows a spinner wheel while
+ * something is loading.
+ *
+ * @param {array} props - The React props
+ *
+ * @return {DOMObject} - Loader React component
  */
-class Loader extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
+function Loader(props) {
     return (
       <div
         className='loader'
-        style={{width: parseInt(this.props.size), height: parseInt(this.props.size)}}
+        style={{width: parseInt(props.size), height: parseInt(props.size)}}
       />
     );
-  }
 }
 
 Loader.propTypes = {size: PropTypes.string};

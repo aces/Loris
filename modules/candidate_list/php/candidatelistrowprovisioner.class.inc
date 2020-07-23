@@ -36,7 +36,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      */
     function __construct()
     {
-        $config   = \NDB_Config::singleton();
+        $factory  = \NDB_Factory::singleton();
+        $config   = $factory->config();
         $maybeEDC = '';
 
         if ($config->getSetting("useEDC") === "true") {
@@ -75,7 +76,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
                 ORDER BY c.PSCID ASC
             ",
-            array()
+            []
         );
     }
 

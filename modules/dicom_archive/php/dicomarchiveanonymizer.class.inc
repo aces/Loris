@@ -50,7 +50,7 @@ class DICOMArchiveAnonymizer implements Mapper
             $config = \NDB_Config::singleton()->getSetting("imaging_modules");
         }
 
-        $newrow = json_decode($resource->toJSON(), true);
+        $newrow = json_decode(json_encode($resource), true);
         $cid    = $resource->getCenterID();
 
         // escape any forward slashes

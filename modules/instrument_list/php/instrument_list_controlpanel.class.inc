@@ -104,9 +104,9 @@ class Instrument_List_ControlPanel extends \TimePoint
             && in_array($currentStage, $this->_dynamicStageOptions)
         ) {
             $this->setData(
-                array(
+                [
                     $currentStage => $_REQUEST['setStageUpdate'],
-                )
+                ]
             );
             return;
         }
@@ -114,66 +114,16 @@ class Instrument_List_ControlPanel extends \TimePoint
         // submit to dcc (a.k.a., finalize)
         if (isset($_REQUEST['setSubmitted']) && $_REQUEST['setSubmitted'] == 'Y'
             && $this->_hasAccessSendToDCC()
-            && in_array($currentStage, array('Visit', 'Screening'))
+            && in_array($currentStage, ['Visit', 'Screening'])
             && $currentStatus != 'In Progress'
         ) {
-
-            // trigger timepoint flags
-            $config    =& \NDB_Config::singleton();
-            $study     = $config->getSetting('study');
-            $sessionID = $this->getData('SessionID');
-            $condition = $study['timepointFlagCheck_send2dcc'];
-            if ($condition && $this->getVisitStatus() == 'Pass') {
-                include_once __DIR__ .
-                    "../../modules/timepoint_flag/php/TimePoint_Flag.class.inc";
-                // object instance
-                $timepointFlagObject =& \TimePoint_Flag::singleton($sessionID);
-                // flag types
-                $flagTypeIDs = $timepointFlagObject->getFlagTypeIDs();
-                // evaluate the flags for the timepoint
-                $flagList = $timepointFlagObject->evaluateTimepointFlags();
-                // loop the list and trigger all flags expect
-                // the data entry errors
-                foreach ($flagList as $flagName=>$flagStatus) {
-                    // check if the flag exists, i.e. previously triggered
-                    if ($timepointFlagObject->timepointFlagExists(
-                        $this->getData('SessionID'),
-                        $flagName
-                    )
-                    ) {
-                        continue;
-                    }
-                    // raise flags - except missing data flags - INSERT into DB
-                    if ($flagStatus != $timepointFlagObject->showConstant(
-                        'TIMEPOINT_FLAG_MISSING_DATA'
-                    )
-                    ) {
-                        // get type
-                        $flagType = $timepointFlagObject->getFlagType($flagName);
-                        // assign status according to type
-                        $condition = $timepointFlagObject->showConstant(
-                            'TIMEPOINT_FLAG_NA_INSTRUMENT'
-                        );
-                        if ($flagStatus == $condition) {
-                            $newFlagTypeID = $flagTypeIDs[$flagStatus];
-                        } else {
-                            $newFlagTypeID = $flagTypeIDs[$flagType];
-                        }
-                        $timepointFlagObject->insertFlag($flagName, $newFlagTypeID);
-                    }
-                }
-                unset($flagList);
-                unset($flagTypeIDs);
-                unset($flagName);
-                unset($flagStatus);
-                unset($timepointFlagObject);
-            }
+            $config = \NDB_Config::singleton();
 
             // Send to DCC - set Submitted to Y
             $this->setData(
-                array(
+                [
                     'Submitted' => $_REQUEST['setSubmitted'],
-                )
+                ]
             );
             // move to next stage (approval or the bin)
             if ($currentStatus == 'Pass') {
@@ -222,27 +172,27 @@ class Instrument_List_ControlPanel extends \TimePoint
         $condition2 = $this->_hasAccessSendToDCC();
         $condition3 = !in_array(
             $currentStage,
-            array(
+            [
                 null,
                 'Not Started',
                 'Visit',
                 'Screening',
-            )
+            ]
         );
         // un-submit to dcc
         if ($condition1 && $condition2 && $condition3) {
 
             $this->setData(
-                array('Submitted' => $submitted)
+                ['Submitted' => $submitted]
             );
 
                 // revert from approval (or the bin)
             if ($currentStage == 'Approval') {
                 $this->setData(
-                    array(
+                    [
                         'Approval'      => null,
                         'Date_approval' => null,
-                    )
+                    ]
                 );
             }
                 $previousStage = $this->_determinePreviousStage();
@@ -292,9 +242,9 @@ class Instrument_List_ControlPanel extends \TimePoint
             // update the value of 'BVLQCStatus' to what is
             // in the request.
             $this->setData(
-                array(
+                [
                     'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
-                )
+                ]
             );
             return;
         } else if (isset($_REQUEST['setBVLQCStatus'])
@@ -308,7 +258,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // update the value of 'BVLQCStatus' to null.
             // Otherwise, do nothing.
             $this->setData(
-                array('BVLQCStatus' => null)
+                ['BVLQCStatus' => null]
             );
             return;
         }
@@ -319,9 +269,9 @@ class Instrument_List_ControlPanel extends \TimePoint
             // update the value of 'BVLQCType' to what is
             // in the request.
             $this->setData(
-                array(
+                [
                     'BVLQCType' => $_REQUEST['setBVLQCType'],
-                )
+                ]
             );
             return;
         } else if (isset($_REQUEST['setBVLQCType'])
@@ -335,7 +285,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // update the value of 'BVLQVType' to null.
             // Otherwise, do nothing.
             $this->setData(
-                array('BVLQCType' => null)
+                ['BVLQCType' => null]
             );
             return;
         }
@@ -378,12 +328,6 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!$this->isStudyStageDynamic($currentStage)) {
             return false;
         }
-
-        // new DB Object
-        $db =& \Database::singleton();
-
-        // create user object
-        $user =& \User::singleton();
 
         $hasAccess = $this->_hasAccessStatus();
 
@@ -456,7 +400,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 // if the current stage is dynamic AND the Timepoint
                 //is not sent to DCC (all PSC users can press buttons)
                 // OR if the stage is dynamic (Approval),
-                //the Timepoint IS submitted and the user can QC behavioral data
+                //the Timepoint IS submitted and the user can QC behavioural data
 
                 if ($option == 'In Progress') {
                     $this->tpl_data['status'][$i]['showlink'] = true;
@@ -672,10 +616,10 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         if (!in_array(
             $this->getData('Current_stage'),
-            array(
+            [
                 'Screening',
                 'Visit',
-            )
+            ]
         )
         ) {
             $returnStr = "This stage is not a Screening or Visit stage.".
@@ -684,10 +628,10 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         if (in_array(
             $this->getData($this->getData('Current_stage')),
-            array(
+            [
                 null,
                 'In Progress',
-            )
+            ]
         )
         ) {
             $returnStr = "The status of this stage is either".
@@ -770,17 +714,17 @@ class Instrument_List_ControlPanel extends \TimePoint
             && $this->getData('Submitted')=='N'
             && in_array(
                 $this->getData('Current_stage'),
-                array(
+                [
                     'Screening',
                     'Visit',
-                )
+                ]
             )
             && !in_array(
                 $this->getData($this->getData('Current_stage')),
-                array(
+                [
                     null,
                     'In Progress',
-                )
+                ]
             )
             && ($config->getSetting("useScanDone")==="false"
             || ($this->getData('Current_stage') == 'Screening'

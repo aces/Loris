@@ -94,7 +94,7 @@ class ViewDetails extends \NDB_Form
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID";
             $tarchiveData = $this->DB->pselectRow(
                 $query,
-                array('ID' => $tarchiveID)
+                ['ID' => $tarchiveID]
             );
             break;
         case "tarchive_series":
@@ -102,10 +102,10 @@ class ViewDetails extends \NDB_Form
                 ORDER BY :OField";
             $tarchiveData = $this->DB->pselect(
                 $query,
-                array(
+                [
                     'ID'     => $tarchiveID,
                     "OField" => $order,
-                )
+                ]
             );
 
             if ($this->_setProtocols()) {
@@ -131,15 +131,15 @@ class ViewDetails extends \NDB_Form
                 ORDER BY :OField";
             $tarchiveData = $this->DB->pselect(
                 $query,
-                array(
+                [
                     'ID'     => $tarchiveID,
                     'OField' => $order,
-                )
+                ]
             );
             break;
         }
 
-        return $tarchiveData ?? array();
+        return $tarchiveData ?? [];
     }
     /**
      * Validates PatientName and PatientID,
@@ -186,7 +186,7 @@ class ViewDetails extends \NDB_Form
                    . ")";
         $isPhantom = $db->pselectRow(
             $query,
-            array('tid' => $this->tpl_data['archive']['TarchiveID'])
+            ['tid' => $this->tpl_data['archive']['TarchiveID']]
         )['IsPhantom'] ?? null;
 
         if ($isPhantom === 'Y') {
@@ -250,7 +250,7 @@ class ViewDetails extends \NDB_Form
             $query           = "SELECT Scan_type, TR_min, TR_max, TE_min, TE_max,
                 TI_min, TI_max, slice_thickness_min, slice_thickness_max FROM
                 mri_protocol";
-            $this->protocols = $this->DB->pselect($query, array());
+            $this->protocols = $this->DB->pselect($query, []);
             return true;
         } catch(\LorisException $e) {
             return false;
@@ -323,11 +323,11 @@ class ViewDetails extends \NDB_Form
      * @return string name of the protocol, "Unknown" if
      *         protocol with the given id doesn't exist.
      */
-    function _getProtocolNameFromID($id)
+    function _getProtocolNameFromID($id): string
     {
         try {
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
-            $array = $this->DB->pselectRow($query, array('ID' => $id));
+            $array = $this->DB->pselectRow($query, ['ID' => $id]);
             return $array['Scan_type'] ?? 'Unknown';
         } catch (\LorisException $e) {
             return "Unknown";
@@ -362,9 +362,9 @@ class ViewDetails extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/dicom_archive/js/view_details_link.js",
-            )
+            ]
         );
     }
 

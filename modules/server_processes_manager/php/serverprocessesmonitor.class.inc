@@ -99,13 +99,14 @@ class ServerProcessesMonitor
                   WHERE 1=1";
 
         // Build ID where clause if needed
+        $idInClause = '';
         if (!is_null($idsToMonitor)) {
             $idInClause = implode(',', $idsToMonitor);
             $query      = "$query AND id IN ($idInClause)";
         }
 
         // Build userid where clause if needed
-        $params = array();
+        $params = [];
         if (!is_null($userid)) {
             $query = "$query AND userid =:requestUserid";
             $params['requestUserid'] = $userid;
@@ -138,8 +139,7 @@ class ServerProcessesMonitor
         // retrieved from the database
         //---------------------------------------------------
         $serverProcessFactory = new ServerProcessFactory();
-        $processes            = array();
-        $savedProcesses       = array();
+        $savedProcesses       = [];
         foreach ($rows as $row) {
             $savedProcesses[$row['id']] = $serverProcessFactory->getServerProcess(
                 $row['id'],
@@ -165,7 +165,7 @@ class ServerProcessesMonitor
         // consider only those whose ids were passed as argument.
         $idsToMonitor = is_null($idsToMonitor)
             ? array_keys($savedProcesses) : $idsToMonitor;
-        $processState = array();
+        $processState = [];
 
         // Compute process state for each process to monitor
         foreach ($idsToMonitor as $id) {
@@ -175,11 +175,11 @@ class ServerProcessesMonitor
 
             if (is_null($matchingProcess)) {
                 // No process with this id. Unknown id = unknown state
-                $state     = 'UNKNOWN_ID';
-                $progress  = null;
-                $exit_code = null;
-                $endTime   = null;
-                $exitText  = null;
+                $state    = 'UNKNOWN_ID';
+                $progress = null;
+                $exitCode = null;
+                $endTime  = null;
+                $exitText = null;
             } elseif ($matchingProcess->isRunning()) {
                 // We found a matching process. If it is running, compute current
                 // progress
@@ -191,7 +191,7 @@ class ServerProcessesMonitor
             } else {
                 // Process is not running. Report this, along with exit code.
                 // If exit code is unknown, then process crashed unexpectedly.
-                // Process executed successfully iff exit code == 0.
+                // Process executed successfully only if exit code == 0.
                 $exitCode = $matchingProcess->getExitCode();
                 $state    = ($exitCode == 'unknown' || $exitCode != 0) ?
                               'ERROR' : 'SUCCESS';
@@ -200,7 +200,7 @@ class ServerProcessesMonitor
             }
 
             // Add current process state to state array
-            $processState[] = array(
+            $processState[] = [
                 'ID'        => is_null($matchingProcess) ? null :
                                              $matchingProcess->getId(),
                 'PID'       => is_null($matchingProcess) ? null :
@@ -209,7 +209,7 @@ class ServerProcessesMonitor
                 'PROGRESS'  => $progress,
                 'EXIT_CODE' => $exitCode,
                 'END_TIME'  => $endTime,
-            );
+            ];
         }
 
         return $processState;

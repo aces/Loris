@@ -56,7 +56,7 @@ class Help_Editor extends \NDB_Menu_Filter
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisioner());
@@ -82,7 +82,7 @@ class Help_Editor extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/help_editor/js/help_editor.js")
+            [$baseURL . "/help_editor/js/help_editor.js"]
         );
     }
 }

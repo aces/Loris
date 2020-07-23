@@ -14,13 +14,17 @@
  */
 use \LORIS\StudyEntities\Candidate\CandID;
 
-$user = \NDB_Factory::singleton()->user();
-if (!$user->hasAnyPermission(
-    array(
-        'candidate_parameter_edit',
-        'candidate_parameter_view'
-    )
-)
+$user      = \NDB_Factory::singleton()->user();
+$candID    = new CandID($_GET['candID']);
+$candidate = \Candidate::singleton($candID);
+
+if (!$user->hasPermission('access_all_profiles')
+    && !($user->hasAnyPermission(
+        [
+            'candidate_parameter_edit',
+            'candidate_parameter_view'
+        ]
+    ) && $user->hasCenter($candidate->getCenterID()))
 ) {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -48,11 +52,16 @@ case 'participantStatus':
 case 'consentStatus':
     echo json_encode(getConsentStatusFields());
     exit;
+case 'candidateDOB':
+    echo json_encode(getDOBFields());
+    exit;
+case 'candidateDOD':
+    echo json_encode(getDODFields());
+    exit;
 default:
     header("HTTP/1.1 404 Not Found");
     exit;
 }
-
 /**
  * Handles the fetching of Candidate Info fields
  *
@@ -70,7 +79,7 @@ function getCandInfoFields()
     $caveat_options = [];
     $options        = $db->pselect(
         "SELECT ID, Description FROM caveat_options",
-        array()
+        []
     );
     foreach ($options as $row) {
         $caveat_options[$row['ID']] = $row['Description'];
@@ -79,22 +88,22 @@ function getCandInfoFields()
     // get pscid
     $pscid = $db->pselectOne(
         'SELECT PSCID FROM candidate WHERE CandID = :candid',
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
     $flag = $db->pselectOne(
         'SELECT flagged_caveatemptor FROM candidate WHERE CandID = :candid',
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
     $reason = $db->pselectOne(
         'SELECT flagged_reason FROM candidate WHERE CandID = :candid',
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
     $other = $db->pselectOne(
         'SELECT flagged_other FROM candidate WHERE CandID = :candid',
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
     $extra_parameters = $db->pselect(
@@ -105,13 +114,13 @@ function getCandInfoFields()
         JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
         WHERE ptc.Name='Candidate Parameters'
         ORDER BY pt.ParameterTypeID, pt.name ASC",
-        array()
+        []
     );
 
     $fields = $db->pselect(
         "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value 
         FROM parameter_candidate WHERE CandID=:cid",
-        array('cid' => $candID)
+        ['cid' => $candID]
     );
 
     $parameter_values = [];
@@ -149,17 +158,17 @@ function getProbandInfoFields()
     // get pscid
     $pscid = $db->pselectOne(
         'SELECT PSCID FROM candidate where CandID = :candid',
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
     $sex = $db->pselectOne(
         'SELECT ProbandSex FROM candidate where CandID = :candid',
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
     $dob = $db->pselectOne(
         'SELECT ProbandDoB FROM candidate where CandID = :candid',
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
     $extra_parameters = $db->pselect(
@@ -170,13 +179,13 @@ function getProbandInfoFields()
         JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
         WHERE ptc.Name='Candidate Parameters Proband'
         ORDER BY pt.ParameterTypeID, pt.name ASC",
-        array()
+        []
     );
 
     $fields = $db->pselect(
         "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value 
          FROM parameter_candidate WHERE CandID=:cid",
-        array('cid' => $candID)
+        ['cid' => $candID]
     );
 
     $parameter_values = [];
@@ -188,7 +197,7 @@ function getProbandInfoFields()
     $ageDifference = "Could not calculate age";
     $candidateDOB  = $db->pselectOne(
         "SELECT DoB FROM candidate WHERE CandID=:CandidateID",
-        array('CandidateID' => $candID)
+        ['CandidateID' => $candID]
     );
     if (!empty($candidateDOB) && !empty($dob)) {
         $age = \Utility::calculateAge($dob, $candidateDOB);
@@ -229,29 +238,29 @@ function getFamilyInfoFields()
     // get pscid
     $pscid = $db->pselectOne(
         'SELECT PSCID FROM candidate where CandID = :candid',
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
     $candidatesList = $db->pselect(
         "SELECT CandID FROM candidate ORDER BY CandID",
-        array()
+        []
     );
 
     $siblingsList = $db->pselect(
         "SELECT f1.CandID 
         FROM family f1 JOIN family f2
         ON f1.FamilyID=f2.FamilyID WHERE f2.CandId=:candid GROUP BY f1.CandID",
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
-    $siblings = array();
+    $siblings = [];
     foreach ($siblingsList as $key => $siblingArray) {
         foreach ($siblingArray as $ID) {
             array_push($siblings, $ID);
         }
     }
 
-    $candidates = array();
+    $candidates = [];
     // Remove own ID and sibling IDs from list of possible family members
     foreach ($candidatesList as $key => $candidate) {
         foreach ($candidate as $ID) {
@@ -268,10 +277,10 @@ function getFamilyInfoFields()
         FROM family f1 JOIN family f2 ON f1.FamilyID=f2.FamilyID
         WHERE f2.CandID = :candid AND f1.CandID <> :candid2 
           ORDER BY f1.CandID",
-        array(
+        [
             'candid'  => $candID,
             'candid2' => $candID,
-        )
+        ]
     );
 
     $result = [
@@ -301,34 +310,34 @@ function getParticipantStatusFields()
     // get pscid
     $pscid = $db->pselectOne(
         'SELECT PSCID FROM candidate where CandID = :candid',
-        array('candid' => $candID)
+        ['candid' => $candID]
     );
 
     $statusOptions = \Candidate::getParticipantStatusOptions();
-    $reasonOptions = array();
+    $reasonOptions = [];
 
     $req      = $db->pselect(
         'SELECT ID from participant_status_options where Required=1',
-        array()
+        []
     );
-    $required = array();
+    $required = [];
     foreach ($req as $k=>$row) {
         $required[$k] = $row['ID'];
     }
     $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',
-        array()
+        []
     );
-    $parentIDMap = array();
+    $parentIDMap = [];
     foreach ($parentIDs as $ID) {
-        $reasonOptions = array();
+        $reasonOptions = [];
         foreach ($ID as $parentID) {
             if ($parentID != null) {
                 $options = $db->pselect(
                     "SELECT ID, Description 
                     FROM participant_status_options 
                     WHERE parentID=:pid",
-                    array('pid' => $parentID)
+                    ['pid' => $parentID]
                 );
                 foreach ($options as $option) {
                     $reasonOptions[$option['ID']] = $option['Description'];
@@ -386,7 +395,7 @@ function getParticipantStatusHistory(CandID $candID)
               WHERE ID=psh.participant_subOptions) 
               AS suboption,  reason_specify 
             FROM participant_status_history psh WHERE CandID=:cid",
-        array('cid' => $candID)
+        ['cid' => $candID]
     );
 
     return $unformattedComments;
@@ -404,7 +413,6 @@ function getConsentStatusFields()
 {
     $candID = new CandID($_GET['candID']);
 
-    $db        = \Database::singleton();
     $candidate = \Candidate::singleton($candID);
 
     // get pscid
@@ -469,7 +477,7 @@ function getConsentStatusHistory($pscid)
          FROM candidate_consent_history 
          WHERE PSCID=:pscid 
          ORDER BY EntryDate ASC",
-        array('pscid' => $pscid)
+        ['pscid' => $pscid]
     );
 
     $formattedHistory = [];
@@ -493,3 +501,51 @@ function getConsentStatusHistory($pscid)
     }
     return $formattedHistory;
 }
+
+/**
+ * Handles the fetching of candidate's date of birth.
+ *
+ * @return array
+ */
+function getDOBFields(): array
+{
+    $candID = new CandID($_GET['candID']);
+    $db     = \Database::singleton();
+    // Get PSCID
+    $candidateData = $db->pselectRow(
+        'SELECT PSCID,DoB FROM candidate where CandID =:candid',
+        ['candid' => $candID->__toString()]
+    );
+    $pscid         = $candidateData['PSCID'] ?? null;
+    $dob           = $candidateData['DoB'] ?? null;
+    $result        = [
+        'pscid'  => $pscid,
+        'candID' => $candID->__toString(),
+        'dob'    => $dob,
+    ];
+    return $result;
+}
+
+/**
+ * Handles the fetching of candidate's date of death.
+ *
+ * @return array
+ */
+function getDODFields(): array
+{
+    $candID = new CandID($_GET['candID']);
+    $db     = \Database::singleton();
+
+    $candidateData = $db->pselectRow(
+        'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',
+        ['candid' => $candID]
+    );
+    $result        = [
+        'pscid'  => $candidateData['PSCID'],
+        'candID' => $candID->__toString(),
+        'dod'    => $candidateData['DoD'],
+        'dob'    => $candidateData['DoB'],
+    ];
+    return $result;
+}
+

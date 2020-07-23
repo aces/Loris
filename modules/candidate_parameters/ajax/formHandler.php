@@ -12,9 +12,7 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-
 use \LORIS\StudyEntities\Candidate\CandID;
-
 
 $user = \User::singleton();
 if (!$user->hasPermission('candidate_parameter_edit')) {
@@ -32,27 +30,36 @@ $db = \Database::singleton();
 
 switch($tab) {
 case 'candidateInfo':
-    editCandInfoFields($db, $user);
+    editCandInfoFields($db);
     break;
 
 case 'probandInfo':
-    editProbandInfoFields($db, $user);
+    editProbandInfoFields($db);
     break;
 
 case 'familyInfo':
-    editFamilyInfoFields($db, $user);
+    editFamilyInfoFields($db);
     break;
 
 case 'deleteFamilyMember':
-    deleteFamilyMember($db, $user);
+    deleteFamilyMember($db);
     break;
 
 case 'participantStatus':
-    editParticipantStatusFields($db, $user);
+    editParticipantStatusFields($db);
     break;
 
 case 'consentStatus':
-    editConsentStatusFields($db, $user);
+    editConsentStatusFields($db);
+    break;
+
+
+case 'candidateDOB':
+    editCandidateDOB($db);
+    break;
+
+case 'candidateDOD':
+    editCandidateDOD($db);
     break;
 
 default:
@@ -63,14 +70,13 @@ default:
 /**
  * Handles the updating of Candidate Info
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editCandInfoFields($db, $user)
+function editCandInfoFields(\Database $db)
 {
 
     $candID = $_POST['candID'];
@@ -99,7 +105,7 @@ function editCandInfoFields($db, $user)
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
 
-    foreach (array_keys($_POST ?? array()) as $field) {
+    foreach (array_keys($_POST ?? []) as $field) {
         if (!empty($_POST[$field])) {
             if (substr($field, 0, 4) === 'PTID') {
                 $ptid = substr($field, 4);
@@ -141,14 +147,13 @@ function editCandInfoFields($db, $user)
 /**
  * Handles the updating of Proband Info
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editProbandInfoFields($db, $user)
+function editProbandInfoFields(\Database $db)
 {
     //Sanitizing the post data
     $sanitize = array_map('htmlentities', $_POST);
@@ -207,14 +212,13 @@ function editProbandInfoFields($db, $user)
 /**
  * Handles the updating of Family Info
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editFamilyInfoFields($db, $user)
+function editFamilyInfoFields(\Database $db)
 {
     $candID = $_POST['candID'];
 
@@ -254,7 +258,7 @@ function editFamilyInfoFields($db, $user)
                 $db->update('family', $updateValues, ['ID' => $siblingID]);
             }
         } else {
-            $familyID    = $db->pselectOne(
+            $familyID    = $db->pselectOneInt(
                 "SELECT max(FamilyID) from family",
                 []
             );
@@ -302,14 +306,13 @@ function editFamilyInfoFields($db, $user)
 /**
  * Handles the deletion of a family member
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function deleteFamilyMember($db, $user)
+function deleteFamilyMember(\Database $db)
 {
     $candID         = $_POST['candID'];
     $familyMemberID = $_POST['familyDCCID'];
@@ -333,14 +336,13 @@ function deleteFamilyMember($db, $user)
 /**
  * Handles the updating of Participant Status
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editParticipantStatusFields($db, $user)
+function editParticipantStatusFields(\Database $db)
 {
     $candID = $_POST['candID'];
 
@@ -387,14 +389,13 @@ function editParticipantStatusFields($db, $user)
 /**
  * Handles the updating of Consent Status
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database $db database object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editConsentStatusFields($db, $user)
+function editConsentStatusFields(\Database $db)
 {
     // Get CandID
     $candIDParam = $_POST['candID'];
@@ -513,15 +514,79 @@ function editConsentStatusFields($db, $user)
                 $db->update(
                     'candidate_consent_rel',
                     $updateStatus,
-                    array(
+                    [
                         'CandidateID' => $candID,
                         'ConsentID'   => $consentID,
-                    )
+                    ]
                 );
             } else {
                 $db->insert('candidate_consent_rel', $updateStatus);
             }
             $db->insert('candidate_consent_history', $updateHistory);
         }
+    }
+}
+
+/**
+ * Handles the updating of candidate's date of birth.
+ *
+ * @param Database $db database object
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function editCandidateDOB(\Database $db): void
+{
+    $candID       = new CandID($_POST['candID']);
+    $dob          = $_POST['dob'];
+    $strippedDate = null;
+    if (!empty($dob)) {
+        $config    = \NDB_Config::singleton();
+        $dobFormat = $config->getSetting('dobFormat');
+        if ($dobFormat === 'YM') {
+            $strippedDate = date("Y-m", strtotime($dob))."-01";
+        }
+        $db->update(
+            'candidate',
+            ['DoB' => $strippedDate ?? $dob],
+            ['CandID' => $candID->__toString()]
+        );
+    }
+}
+
+/**
+ * Handles the updating of candidate's date of death.
+ *
+ * @param Database $db database object
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function editCandidateDOD(\Database $db): void
+{
+    $candID       = new CandID($_POST['candID']);
+    $dod          = new DateTime($_POST['dod']);
+    $strippedDate = null;
+    $dodString    = null;
+
+    if (!$dod) {
+        throw new \LorisException('Date not valid.');
+    }
+
+    if (!empty($dod)) {
+        $config    = \NDB_Config::singleton();
+        $dodFormat = $config->getSetting('dodFormat');
+        if ($dodFormat === 'YM') {
+            $strippedDate = $dod->format('Y-m-01');
+        } else {
+            $dodString = $dod->format('Y-m-d');
+        }
+        $db->update(
+            'candidate',
+            ['DoD' => $strippedDate ?? $dodString],
+            ['CandID' => $candID->__toString()]
+        );
     }
 }

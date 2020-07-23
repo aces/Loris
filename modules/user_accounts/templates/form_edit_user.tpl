@@ -28,7 +28,7 @@
 });
 </script>
 {/literal}
-<form method="post" name="edit_user" autocomplete="new-password">
+<form method="post" name="edit_user" autocomplete="off">
     {if $form.errors}
     <div class="alert alert-danger" role="alert">
         The form you submitted contains data entry errors
@@ -41,6 +41,7 @@
       <ul>
         <li>The password must be at least 8 characters long.</li>
         <li>The password cannot be your username or email address.</li>
+        <li>No special characters are required but your password must be sufficiently complex to be accepted.</li>
       </ul>
         <p>Please choose a unique password.</p>
         <p>We suggest using a password manager to generate one for you.</p>
@@ -404,6 +405,15 @@
 			{$form.active_to.html}
 		 </div>
 	</div>
+
+    <div class="row form-group form-inline">
+        <label class="col-sm-12 col-sm-2 form-label">
+            {$form.account_request_date.label}
+        </label>
+        <div class="col-sm-10">
+            {$form.account_request_date.html|default:'None'}
+        </div>
+    </div>
 
       <div class="row form-group form-inline">
        <label class="col-sm-2">

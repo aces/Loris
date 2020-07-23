@@ -39,10 +39,10 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return $user->hasAnyPermission(
-            array(
+            [
                 'violated_scans_view_allsites',
-                'violated_scans_edit'
-            )
+                'violated_scans_view_ownsite'
+            ]
         );
     }
 
@@ -65,7 +65,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             $hash = $key;
             $row  = $DB->pselectRow(
                 "SELECT * FROM violations_resolved WHERE hash = :hash",
-                array('hash' => $hash)
+                ['hash' => $hash]
             );
             //if row is found, check value and update if needed
             if (!empty($row)) {
@@ -77,8 +77,8 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                             break;
                         } else { // user input doesn't match DB,
                                  // so we update the DB
-                            $setArray   = array('Resolved' => (string)$val2);
-                            $whereArray = array('hash' => $hash);
+                            $setArray   = ['Resolved' => (string)$val2];
+                            $whereArray = ['hash' => $hash];
                             $DB->update(
                                 'violations_resolved',
                                 $setArray,
@@ -93,7 +93,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 if ($val==0) {
                     continue;
                 }
-                $newlyResolved         = array();
+                $newlyResolved         = [];
                 $newlyResolved['hash'] = $key;
                 $newlyResolved['Resolved']   = (string)$val;
                 $newlyResolved['User']       = $user->getUsername();
@@ -107,7 +107,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                                 "SeriesUID,time_run)))";
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     $sqlSelectOne,
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
                 if (!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
@@ -120,7 +120,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                                 "MincFile,PatientName,SeriesUID,TimeRun)))";
                 $ID_mri_violations_log = $DB->pselectOne(
                     $sqlSelectOne,
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
                 if (!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
@@ -134,7 +134,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                                 "MincFile,PatientName,SeriesUID,TimeRun)))";
                 $ID_MRICandidateErrors = $DB->pselectOne(
                     $sqlSelectOne,
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
                 if (!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
@@ -154,7 +154,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $this->columns = array(
+        $this->columns = [
             'v.Resolved as Resolution_status',
             'pjct.Name as Project',
             'subpjct.title as Subproject',
@@ -168,8 +168,8 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             'v.hash as Hash',
             'v.join_id as JoinID',
             'v.Site as SiteID',
-        );
-        $this->headers = array(
+        ];
+        $this->headers = [
             'Resolution_status',
             'Project',
             'Subproject',
@@ -183,7 +183,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             'Hash',
             'JoinID',
             'SiteID',
-        );
+        ];
 
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
@@ -192,6 +192,23 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 'JoinID',
                 'SiteID',
             ]
+        );
+
+        // Find which sites the user has access to
+        $user            = \User::singleton();
+        $accessibleSites = $user->hasPermission('violated_scans_view_allsites')
+            ? \Utility::getSiteList() : \User::singleton()->getStudySites();
+
+        // Build the component of the WHERE clause (for the query below)
+        // that will be used to restrict the search to the data associated
+        // to sites the user has access to
+        $siteClauseElements = [];
+        foreach (array_keys($accessibleSites) as $siteID) {
+            $siteClauseElements[] = \Database::singleton()->quote($siteID);
+        }
+        $siteClause = sprintf(
+            "(v.Site IS NULL OR v.Site IN (%s))",
+            implode(',', $siteClauseElements)
         );
 
         $this->query    = " FROM (
@@ -276,10 +293,10 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
             LEFT JOIN subproject as subpjct
                  ON (v.Subproject = subpjct.SubprojectID)
-            WHERE 1=1";
+            WHERE $siteClause";
         $this->order_by = 'v.TimeRun DESC';
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'PatientName' => 'v.PatientName',
             'Site'        => 'v.Site',
             'TimeRun'     => 'v.TimeRun',
@@ -290,8 +307,8 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             'Description' => 'v.Series_Description',
             'SeriesUID'   => 'v.SeriesUID',
             'Resolved'    => 'v.Resolved',
-        );
-        $this->validFilters = array(
+        ];
+        $this->validFilters = [
             'v.PatientName',
             'v.Site',
             'v.TimeRun',
@@ -302,7 +319,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             'v.Series_Description',
             'v.SeriesUID',
             'v.Resolved',
-        );
+        ];
         return;
     }
 
@@ -322,13 +339,13 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         $minYear     = $config->getSetting('startYear')
             - $config->getSetting('ageMax');
         $maxYear     = $config->getSetting('endYear');
-        $dateOptions = array(
+        $dateOptions = [
             'language'       => 'en',
             'format'         => 'YMd',
             'addEmptyOption' => true,
             'minYear'        => $minYear,
             'maxYear'        => $maxYear,
-        );
+        ];
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
@@ -338,18 +355,18 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         $this->addSelect(
             "ProblemType",
             "Type of problem",
-            array(
+            [
                 ''                             => 'Any',
                 $notMatchString                => 'Candidate Mismatch',
                 'Could not identify scan type' => 'Could not identify scan type',
                 'Protocol Violation'           => 'MRI Protocol Check violation',
-            )
+            ]
         );
         // violation resolved
         $this->addSelect(
             'Resolved',
             'Violation resolved',
-            array(
+            [
                 ''              => 'Any',
                 'reran'         => 'Reran',
                 'emailed'       => 'Emailed site/pending',
@@ -357,14 +374,14 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 'rejected'      => 'Rejected',
                 'inserted_flag' => 'Inserted with flag',
                 'other'         => 'Other',
-            )
+            ]
         );
         // project
         $list_of_projects = \Utility::getProjectList();
         $this->addSelect(
             'Project',
             'Project',
-            array('' => 'All') + $list_of_projects
+            ['' => 'All'] + $list_of_projects
         );
 
         // Subproject
@@ -372,24 +389,78 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         $this->addSelect(
             'Subproject',
             'Subproject',
-            array('' => 'All') + $list_of_subprojects
+            ['' => 'All'] + $list_of_subprojects
         );
 
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites = \Utility::getSiteList();
-            if (is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
-            }
+            $sites  = [
+                ''         => 'All (including unknown)',
+                'AllKnown' => 'All (excluding unknown)',
+                'Unknown'  => 'Unknown'
+            ];
+            $sites += \Utility::getSiteList();
         } else {
             // allow only to view own site data
-            $sites = $user->getStudySites();
-            $sites = array('' => 'All User Sites') + $sites;
+            $sites  = [
+                ''         => 'All user sites (including unknown)',
+                'AllKnown' => 'All user sites (excluding unknown)',
+                'Unknown'  => 'Unknown'
+            ];
+            $sites +=  $user->getStudySites();
         }
         $this->addSelect('Site', 'Site', $sites);
-
     }
+
+    /**
+     * Updates the array of query parameters (if needed) for a given field.
+     *
+     * @param array  $qparams      array of query parameters.
+     * @param string $field        field that appears in the query.
+     * @param string $prepared_key string to use as a placeholder in the query
+     *                             for the field.
+     * @param string $val          field value.
+     *
+     * @return void
+     *
+     * @override
+     */
+    function _addQueryParam(&$qparams, $field, $prepared_key, $val)
+    {
+        // No parameter should be added for the prepared statement if
+        // 'Unknown' or 'AllKnown' were selected in the site drop-down
+        if ($field != 'v.Site' || ($val != 'Unknown' && $val != 'AllKnown')) {
+            parent::_addQueryParam($qparams, $field, $prepared_key, $val);
+        }
+    }
+
+    /**
+     * Adds filters
+     *
+     * @param string $prepared_key filter key
+     * @param string $field        filter field
+     * @param string $val          filter value
+     *
+     * @return string ($query)
+     *
+     * @override
+     */
+    function _addValidFilters($prepared_key, $field, $val)
+    {
+        // The added AND clause differs from the one returned by
+        // parent::__addValidFilter when 'Unknown' or 'AllKnown' are
+        // selected in the sites drop-down
+        if ($field == 'v.Site' && ($val == 'Unknown' || $val == 'AllKnown')) {
+            return $val == 'Unknown'
+                ? ' AND v.Site IS NULL'
+                : ' AND v.Site IS NOT NULL';
+        }
+
+        // Standard behaviour for cases other than the above
+        return parent::_addValidFilters($prepared_key, $field, $val);
+    }
+
     /**
      * Gathers JS dependecies and merge them with the parent
      *
@@ -402,7 +473,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/mri_violations/js/columnFormatter.js")
+            [$baseURL . "/mri_violations/js/columnFormatter.js"]
         );
     }
 }

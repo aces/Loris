@@ -171,7 +171,7 @@ function uploadFile()
         try {
             // Insert or override db record if file_name already exists
             $db->insertOnDuplicateUpdate('media', $query);
-            $uploadNotifier->notify(array("file" => $fileName));
+            $uploadNotifier->notify(["file" => $fileName]);
         } catch (DatabaseException $e) {
             showMediaError("Could not upload the file. Please try again!", 500);
         }
@@ -209,7 +209,7 @@ function getUploadFields()
     $config = \NDB_Config::singleton();
 
     // Select only candidates that have had visit at user's sites
-    $qparam       = array();
+    $qparam       = [];
     $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
                       FROM candidate c
                       LEFT JOIN session s USING (CandID)
@@ -232,9 +232,11 @@ function getUploadFields()
     $languageList    = Utility::getLanguageList();
     $startYear       = $config->getSetting('startYear');
     $endYear         = $config->getSetting('endYear');
+    $visit           = '';
+    $pscid           = '';
 
     // Build array of session data to be used in upload media dropdowns
-    $sessionData = array();
+    $sessionData = [];
     foreach ($sessionRecords as $record) {
         // Populate visits
         if (!isset($sessionData[$record["PSCID"]]['visits'])) {
@@ -252,7 +254,7 @@ function getUploadFields()
 
         // Populate instruments
         $visit = $record["Visit_label"];
-        $pscid =$record["PSCID"];
+        $pscid = $record["PSCID"];
 
         if (!isset($sessionData[$pscid]['instruments'][$visit])) {
             $sessionData[$pscid]['instruments'][$visit] = [];
@@ -351,14 +353,14 @@ function showMediaError($message, $code)
  */
 function toSelect($options, $item, $item2)
 {
-    $selectOptions = array();
+    $selectOptions = [];
 
     $optionsValue = $item;
     if (isset($item2)) {
         $optionsValue = $item2;
     }
 
-    foreach ($options as $key => $value) {
+    foreach (array_keys($options) as $key) {
         $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
     }
 
@@ -376,7 +378,7 @@ function getFilesList()
     $db       =& Database::singleton();
     $fileList = $db->pselect("SELECT id, file_name FROM media", []);
 
-    $mediaFiles = array();
+    $mediaFiles = [];
     foreach ($fileList as $row) {
         $mediaFiles[$row['id']] = $row['file_name'];
     }

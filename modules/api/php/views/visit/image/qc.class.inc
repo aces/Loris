@@ -48,11 +48,11 @@ class Qc
      */
     public function toArray(): array
     {
-        $meta = array(
-            'CandID' => (string) $this->_timepoint->getCandID(),
+        $meta = [
+            'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
             'File'   => $this->_image->getFileInfo()->getFilename(),
-        );
+        ];
 
         $imageqcstatus = $this->_image->getQcStatus();
 
@@ -61,23 +61,23 @@ class Qc
 
         $caveats = array_map(
             function ($caveat) {
-                return array(
+                return [
                     'Severity'   => $caveat->getSeverity(),
                     'Header'     => $caveat->getHeader(),
                     'Value'      => $caveat->getValue(),
                     'ValidRange' => $caveat->getValidRange(),
                     'ValidRegex' => $caveat->getValidRegex(),
-                );
+                ];
             },
             $this->_image->getCaveats()
         );
 
-        return array(
+        return [
             'Meta'     => $meta,
             'QC'       => $qc,
             'Selected' => $selected,
             'Caveats'  => $caveats,
-        );
+        ];
     }
 }
 

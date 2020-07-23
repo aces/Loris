@@ -43,11 +43,11 @@ class MediaFile implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the instance data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON(): string
+    public function jsonSerialize() : array
     {
-        return json_encode($this->DBRow);
+        return $this->DBRow;
     }
 
     /**

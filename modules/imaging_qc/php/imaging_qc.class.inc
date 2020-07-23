@@ -39,8 +39,7 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        // FIXME This module should have its own permission.
-        return $user->hasPermission('quality_control');
+        return $user->hasPermission('imaging_quality_control_view');
     }
 
     /**
@@ -58,10 +57,10 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $all_scan_types_2d = $db->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri",
-            array()
+            []
         );
 
-        $all_scan_types = array();
+        $all_scan_types = [];
         foreach ($all_scan_types_2d as $row) {
             $type = $row['Scan_type'];
             $all_scan_types[$row['ID']] = $type;
@@ -184,7 +183,7 @@ class Imaging_QC extends \NDB_Menu_Filter
         $this->skipTemplate = true;
         $user      = \User::singleton();
         $db        = \Database::singleton();
-        $siteList  = array();
+        $siteList  = [];
         $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('imaging_browser_qc')) {
@@ -198,7 +197,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             // allow only to view own site data
             $siteIDs = $user->getData('CenterIDs');
             foreach ($siteIDs as $val) {
-                $site = &Site::singleton($val);
+                $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
                     $siteList[$site->getCenterName()] = $site->getCenterName();
                 }
@@ -208,30 +207,30 @@ class Imaging_QC extends \NDB_Menu_Filter
         $scan_types = $this->_getScanTypes();
 
         $projectList  = \Utility::getProjectList();
-        $projectList2 = array();
+        $projectList2 = [];
         foreach ($projectList as $key => $value) {
             $projectList2[$value] = $value;
         }
         $subprojectList  = \Utility::getSubprojectList();
-        $subprojectList2 = array();
+        $subprojectList2 = [];
         foreach ($subprojectList as $key => $value) {
             $subprojectList2[$value] = $value;
         }
         //print_r($subprojectList2);
-        $uploaderList = array();
+        $uploaderList = [];
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
-            array()
+            []
         );
         foreach ($uploaders as $up) {
             $uploaderList[$up['UploadedBy']] = $up['UploadedBy'];
         }
 
-        $scan_location = array(
+        $scan_location = [
             "In Imaging Browser"    => "Found in Imaging Browser",
             "In MRI Violated Scans" => "Found in MRI Violated Scans",
             "Missing"               => "Missing",
-        );
+        ];
 
         $this->fieldOptions
             = [
@@ -239,36 +238,36 @@ class Imaging_QC extends \NDB_Menu_Filter
                 'project'          => $projectList2,
                 'subproject'       => $subprojectList2,
                 'scanType'         => $scan_types,
-                'mRIParameterForm' => array(
+                'mRIParameterForm' => [
                     "Incomplete" => "Incomplete",
                     "Complete"   => "Complete",
-                ),
-                'scanDoneInMRIPF'  => array(
+                ],
+                'scanDoneInMRIPF'  => [
                     "Yes" => "Yes",
                     "No"  => "No",
-                ),
-                'tarchive'         => array(
+                ],
+                'tarchive'         => [
                     "In DICOM" => "In DICOM Archives",
                     "Missing"  => "Missing",
-                ),
+                ],
                 'scanLocation'     => $scan_location,
-                'qCStatus'         => array(
+                'qCStatus'         => [
                     "Pass" => "Pass",
                     "Fail" => "Fail",
-                ),
+                ],
                 'uploadedBy'       => $uploaderList,
-                'selected'         => array(
+                'selected'         => [
                     "True"  => "True",
                     "False" => "False",
-                ),
+                ],
                 'visitLabel'       => $visitList,
             ];
 
         $scan_types = $this->_getScanTypes();
-        $scans_done = array();
-        $acq_IDs    = array();
+        $scans_done = [];
+        $acq_IDs    = [];
         foreach ($scan_types as $scan_type) {
-            $query_params        = array('scan_type' => $scan_type);
+            $query_params        = ['scan_type' => $scan_type];
             $acq_IDs[$scan_type] = $db->pselectOne(
                 "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
                 $query_params
@@ -355,9 +354,9 @@ class Imaging_QC extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/imaging_qc/js/imagingQCIndex.js",
-            )
+            ]
         );
     }
 

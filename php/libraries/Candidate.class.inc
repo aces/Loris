@@ -3,16 +3,13 @@
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.
  *
- * PHP Version 7
- *
- * @category Main
- * @package  Loris
- * @author   Alex Zijdenbos <zijdenbos@example.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>
  */
 
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\StudyEntities\Candidate\EntityType;
+use LORIS\StudyEntities\Candidate\Sex;
+
 /* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
@@ -34,7 +31,7 @@ define('DOB_NOT_SPECIFIED', 6);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Candidate
+class Candidate implements \LORIS\StudyEntities\AccessibleResource
 {
     var $candidateInfo;
     var $listOfTimePoints;
@@ -77,7 +74,7 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $CandArray = array('Candidate' => (string) $candID);
+        $CandArray = ['Candidate' => (string) $candID];
 
         // make a local reference to the Database object
         $db = $factory->database();
@@ -102,18 +99,27 @@ class Candidate
         }
 
         // store user data in object property
-        foreach ($row AS $key=>$value) {
-            $this->candidateInfo[$key] = $value;
+        foreach ($row as $key=>$value) {
+            switch ($key){
+            case 'Sex':
+                $this->candidateInfo[$key] = new Sex($value);
+                break;
+            case 'EntityType':
+                $this->candidateInfo[$key] = new EntityType($value);
+                break;
+            default:
+                $this->candidateInfo[$key] = $value;
+            }
         }
 
         $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
 
         $headerSetting = $config->getSetting('HeaderTable');
         if (!empty($headerSetting)) {
-            $params = array();
+            $params = [];
             $parameterCandSettings = $headerSetting['parameter_candidate'];
             if (!is_array($parameterCandSettings)) {
-                $parameterCandSettings = array($parameterCandSettings);
+                $parameterCandSettings = [$parameterCandSettings];
             }
             foreach ($parameterCandSettings as $parameter_type) {
                 $row = $db->pselectRow(
@@ -123,10 +129,10 @@ class Candidate
                     LEFT JOIN parameter_type pt ON
                     (pc.ParameterTypeID=pt.ParameterTypeID)
                     WHERE c.CandID=:Candidate AND pt.Name=:PTName",
-                    array(
+                    [
                         'Candidate' => $candID,
                         'PTName'    => $parameter_type,
-                    )
+                    ]
                 );
                 // Sanitize values coming from the parameter_candidate table
                 // before injecting them into the HTML table.
@@ -158,7 +164,7 @@ class Candidate
                 trim($_REQUEST['PSCID'])
             ) != strtolower($this->getPSCID())
             ) {
-                throw new LorisException("IDs do not match");
+                throw new \LorisException("IDs do not match");
             }
         }
 
@@ -190,7 +196,7 @@ class Candidate
      *                                           written as YYYY-MM-DD. Value should
      *                                           be null unless the useEDC setting
      *                                           is configured to be true.
-     * @param string      $sex                   sex, 'Male', 'Female', or 'Other'
+     * @param Sex         $sex                   An instance of the Sex class.
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
      * @param int|null    $registrationProjectID The project ID, if available
@@ -203,7 +209,7 @@ class Candidate
         int $centerID,
         ?string $dateOfBirth,
         ?string $edc,
-        string $sex,
+        Sex $sex,
         ?string $PSCID = null,
         int $registrationProjectID = null
     ): CandID {
@@ -267,7 +273,7 @@ class Candidate
         }
 
         // Insert the new candidate into the database if everything is fine.
-        $setArray = array(
+        $setArray = [
             'RegistrationCenterID'  => $centerID,
             'PSCID'                 => $PSCID,
             'DoB'                   => $dateOfBirth,
@@ -279,7 +285,7 @@ class Candidate
             'Entity_type'           => 'Human',
             'RegisteredBy'          => $user->getUsername(),
             'UserID'                => $user->getUsername(),
-        );
+        ];
 
         if ($config->getSetting('useExternalID') === 'true') {
             $externalID = (new \ExternalIDGenerator(
@@ -330,10 +336,10 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $candidateIDs = array(
+        $candidateIDs = [
             ':candidate_id' => $candID,
             ':pscid'        => $PSCID,
-        );
+        ];
 
         // get candidate data from database
         $query = "SELECT CandID
@@ -418,9 +424,9 @@ class Candidate
         \NDB_Factory::singleton()->database()->update(
             'candidate',
             $newData,
-            array(
+            [
                 'CandID' => $this->getData('CandID'),
-            )
+            ]
         );
         return true;
     }
@@ -514,12 +520,21 @@ class Candidate
     /**
      * Return the candidate's sex
      *
-     * @return string|null Male|Female|Other String describing the sex
-     *                     and null if scanner
+     * @return ?Sex
      */
-    function getCandidateSex(): ?string
+    function getCandidateSex(): ?Sex
     {
         return $this->candidateInfo["Sex"];
+    }
+
+    /**
+     * Return the candidate's entity type.
+     *
+     * @return ?EntityType
+     */
+    function getEntityType(): ?EntityType
+    {
+        return $this->candidateInfo["EntityType"];
     }
 
     /**
@@ -573,7 +588,7 @@ class Candidate
     {
         $factory = NDB_Factory::singleton();
         //make sure it returns an array
-        $visitLabelArray = array();
+        $visitLabelArray = [];
 
         $candID = $this->getCandID();
 
@@ -583,7 +598,7 @@ class Candidate
 
         $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
-        $result = $db->pselect($query, array('Candidate' => $candID));
+        $result = $db->pselect($query, ['Candidate' => $candID]);
 
         // map the array [VisitNo]=>Visit_label
         foreach ($result as $row) {
@@ -602,13 +617,13 @@ class Candidate
      */
     public function getValidSubprojects(): array
     {
-        $subprojList = array();
+        $subprojList = [];
 
         $projID  = $this->getProjectID();
         $query   = "SELECT SubprojectID 
                     FROM project_subproject_rel 
                     WHERE ProjectID = :prj";
-        $params  = array('prj' => $projID);
+        $params  = ['prj' => $projID];
         $subproj = \NDB_Factory::singleton()
             ->database()
             ->pselect($query, $params);
@@ -638,8 +653,15 @@ class Candidate
           LEFT JOIN candidate USING (CandID)
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
-        $where  = array('cid' => $candID);
-        $result = $db->pselectOne($query, $where);
+        $where  = ['cid' => $candID];
+        try {
+            $result = $db->pselectOne($query, $where);
+        } catch (DomainException $ex) {
+            throw new LorisException(
+                "CandID: $candID has multiple first visits ".
+                "recorded whereas only 1 is expected."
+            );
+        }
         return $result ?? '';
     }
 
@@ -658,7 +680,7 @@ class Candidate
                     FROM candidate AS c
                         LEFT JOIN session AS s USING (CandID)
                     WHERE c.CandID=:CaID AND s.Active='Y' AND c.Active='Y'";
-        $result = $db->pselectOne($query, array('CaID' => $this->getCandID()));
+        $result = $db->pselectOne($query, ['CaID' => $this->getCandID()]);
 
         if ($result === null) {
             return 1;
@@ -679,10 +701,10 @@ class Candidate
 
         $candID = $this->getCandID();
 
-        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn
+        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn, Label
             FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
             WHERE CandidateID=:cid";
-        $where = array('cid' => $candID);
+        $where = ['cid' => $candID];
         $key   = "ConsentID";
 
         $consentList = $db->pselectWithIndexKey($query, $where, $key);
@@ -715,7 +737,7 @@ class Candidate
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = Utility::structureToPCRE(
+        $regex         = self::structureToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev,
             $projectAbbrev
@@ -737,9 +759,9 @@ class Candidate
             "SELECT ID,Description
             FROM participant_status_options
             WHERE parentID IS NULL",
-            array()
+            []
         );
-        $option_array = array();
+        $option_array = [];
         foreach ($options as $option) {
             $option_array[$option['ID']] = $option['Description'];
         }
@@ -761,13 +783,152 @@ class Candidate
             "SELECT ID,Description 
             FROM participant_status_options 
             WHERE parentID=:pid",
-            array('pid' => $parentID)
+            ['pid' => $parentID]
         );
-        $option_array = array();
+        $option_array = [];
         foreach ($options as $option) {
             $option_array[$option['ID']] = $option['Description'];
         }
         return $option_array;
     }
+  
+    /**
+     * Implements the AccessibleResource interface. A candidate can
+     * be accessed by a user if it has a project and a site in common.
+     *
+     * @param \User $user The user whose access should be validated.
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+        $centers = $user->getCenterIDs();
 
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
+        $centerMatch = in_array($this->getCenterID(), $centers, true);
+
+        if ($centerMatch === false) {
+            // getCenterID is just the RegistrationCenterID, if a visit
+            // has a center in common, we should still allow access to
+            // the candidate.
+            $timepoints = $this->getListOfTimePoints();
+            foreach ($timepoints as $sessionID) {
+                $timepoint = \TimePoint::singleton($sessionID);
+                if (in_array($timepoint->getCenterID(), $centers, true)) {
+                    $centerMatch = true;
+                    break;
+                }
+            }
+        }
+        return $projMatch && $centerMatch;
+    }
+
+    /**
+     * Return a human readable description of the participant status for this
+     * candidate.
+     *
+     * @param \Database $db The database to get the description from
+     *
+     * @return string
+     */
+    public function getParticipantStatusDescription(\Database $db) : string
+    {
+        $res = $db->pselectRow(
+            "SELECT pso.Description
+             FROM participant_status ps
+                JOIN participant_status_options pso ON (ps.participant_status=pso.ID)
+             WHERE CandID=:candid",
+            ['candid' => $this->getCandID()],
+        );
+        return $res['Description'] ?? '';
+    }
+    /**
+     * Transforms a config structure (such as in PSCID) into a
+     * Perl-compatible regex expression for validation
+     *
+     * @param array       $structure     the structure root
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
+     *
+     * @return string the regex pattern
+     *
+     * @note    This should probably be moved to the Candidate class, since it's
+     *       only used there to validate the PSCID
+     * @cleanup
+     */
+    static function structureToPCRE(
+        array $structure,
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
+    ): string {
+        $seqs = $structure['seq'];
+        // handle the situation where there exists only one seq
+        if (isset($seqs['#'])) {
+            $seqs = [$seqs];
+        }
+        $regex = "";
+        foreach ($seqs AS $seq) {
+            $unit = "";
+
+            switch($seq['@']['type']) {
+            case 'alpha':
+                $unit .= '[a-z]';
+                break;
+
+            case 'alphanumeric':
+                $unit .= '[0-9a-z]';
+                break;
+
+            case 'numeric':
+                $unit .= '[0-9]';
+                break;
+
+            case 'static':
+                $unit .= '('.$seq['#'].')';
+                break;
+
+            case 'set':
+                if (strpos($seq['#'], '|') !== false) {
+                    $unit .= '('.$seq['#'].')';
+                } else {
+                    $unit .= '['.$seq['#'].']';
+                }
+                break;
+
+            case 'siteAbbrev':
+                $unit .= $siteAbbrev;
+                break;
+            case 'projectAbbrev':
+                $unit .= $projectAbbrev;
+                break;
+            } // end switch
+
+            $length = "";
+            if (isset($seq['@']['length'])) {
+                $length .= $seq['@']['length'];
+            } elseif (isset($seq['@']['minLength'])) {
+                $length .= $seq['@']['minLength'];
+            } else {
+                $length .= '1';
+            }
+
+            $length .= ',';
+
+            if (isset($seq['@']['length'])) {
+                $length .= $seq['@']['length'];
+            } elseif (isset($seq['@']['maxLength'])) {
+                $length .= $seq['@']['maxLength'];
+            } elseif (!isset($seq['@']['length'])
+                && !isset($seq['@']['minLength'])
+            ) {
+                $length .= '1';
+            }
+
+            $regex .= $unit.'{'.$length.'}';
+
+        } // end foreach seq
+
+        return '/^'.$regex.'$/i';
+    }
 }

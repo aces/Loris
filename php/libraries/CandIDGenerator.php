@@ -29,8 +29,8 @@ class CandIDGenerator extends IdentifierGenerator
      * CandIDs should always be exactly 6 digits.
      */
     private const LENGTH     = 6;
-    private const MIN_CANDID = 100000;
-    private const MAX_CANDID = 999999;
+    private const MIN_CANDID = '100000';
+    private const MAX_CANDID = '999999';
 
     /**
      * Creates a new CandIDGenerator by initializing properties based on class
@@ -42,7 +42,7 @@ class CandIDGenerator extends IdentifierGenerator
         $this->length           = self::LENGTH;
         $this->minValue         = self::MIN_CANDID;
         $this->maxValue         = self::MAX_CANDID;
-        $this->alphabet         = range(0, 9);
+        $this->alphabet         = range('0', '9');
     }
 
     /**
@@ -54,11 +54,11 @@ class CandIDGenerator extends IdentifierGenerator
     public function generate(): CandID
     {
         $validID = false;
-        while (! $validID) {
+        do {
             $this->checkIDRangeFull();
             $id = new CandID(
                 strval(
-                    random_int($this->minValue, $this->maxValue)
+                    random_int(intval($this->minValue), intval($this->maxValue))
                 )
             );
             // Check if the ID is in use. If so, the loop will continue and a new
@@ -66,9 +66,10 @@ class CandIDGenerator extends IdentifierGenerator
             $validID = \Database::singleton()
                 ->pselectOne(
                     "SELECT count(CandID) FROM candidate WHERE CandID=:id",
-                    array('id' => (string) $id)
+                    ['id' => (string) $id]
                 ) == 0;
-        }
+        } while (! $validID);
+
         return $id;
     }
 
@@ -83,7 +84,7 @@ class CandIDGenerator extends IdentifierGenerator
         // immediately.
         return \Database::singleton()->pselectCol(
             'SELECT CandID from candidate',
-            array()
+            []
         );
     }
 }

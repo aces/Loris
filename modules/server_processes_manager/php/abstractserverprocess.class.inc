@@ -154,7 +154,7 @@ abstract class AbstractServerProcess
         $this->_stderrFile   = $stderrFile;
         $this->_exitCodeFile = $exitCodeFile;
         $this->_exitCode     = $exitCode;
-        $this->_userid       = $userid;
+        $this->_userId       = $userid;
         $this->_startTime    = $startTime;
         $this->_endTime      = $endTime;
         $this->_exitText     = $exitText;
@@ -211,13 +211,13 @@ abstract class AbstractServerProcess
     }
 
     /**
-     * Accessor for field $_userid
+     * Accessor for field $_userId
      *
-     * @return string value of $_userid
+     * @return string value of $_userId
      */
     public function getUserId()
     {
-        return $this->_userid;
+        return $this->_userId;
     }
 
     /**
@@ -291,7 +291,7 @@ abstract class AbstractServerProcess
              return false;
         }
 
-        exec("ps " . $this->getPid(), $psOutput, $psReturnCode);
+        exec("ps " . $this->getPid(), $psOutput);
         return count($psOutput) >= 2;
     }
 
@@ -459,12 +459,12 @@ abstract class AbstractServerProcess
         //--------------------------------------------------------------------------
         // Update object and database values to reflect what was computed previously
         //--------------------------------------------------------------------------
-        $setValues   = array(
+        $setValues   = [
             'exit_text' => $exitText,
             'exit_code' => $exitCode,
             'end_time'  => $endTime,
-        );
-        $whereValues = array('id' => $this->getId());
+        ];
+        $whereValues = ['id' => $this->getId()];
 
         try {
             $this->getDatabaseProvider()->getDatabase()->update(

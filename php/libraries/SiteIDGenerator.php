@@ -24,12 +24,14 @@
  */
 class SiteIDGenerator extends IdentifierGenerator
 {
-    /* Either 'PSCID' or 'ExternalID' */
     private const LENGTH = 4;
 
+    /**
+     * Either 'PSCID' or 'ExternalID'
+     *
+     * @var string
+     */
     protected $kind;
-    protected $siteAlias;
-    protected $projectAlias;
 
     /**
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
@@ -47,23 +49,16 @@ class SiteIDGenerator extends IdentifierGenerator
         // Read config settings from project/config.xml to retrieve the
         // alphabet, length, and generation method (sequential or random) used
         // to create new IDs.
-        $this->generationMethod = $this->_getIDSetting('generation');
-        $this->length           = $this->_getIDSetting('length') ?? self::LENGTH;
-        $this->alphabet         = $this->_getIDSetting('alphabet');
-        // Initialize minimum and maximum allowed values for IDs. Set the values
-        // to the lowest/highest character in $alphabet repeated $length times
-        // if the min or max is not configured in project/config.xml
-        $this->minValue = $this->_getIDSetting('min') ??
-            str_repeat(strval($this->alphabet[0]), $this->length);
-        $this->maxValue = $this->_getIDSetting('max') ??
-            str_repeat(
-                strval($this->alphabet[count($this->alphabet) - 1]),
-                $this->length
-            );
+        $this->generationMethod = $this->_getGeneration();
+        $this->length           = $this->_getLength();
+        $this->alphabet         = $this->_getAlphabet();
+        $this->minValue         = $this->_getMinValue();
+        $this->maxValue         = $this->_getMaxValue();
 
         $this->siteAlias    = $siteAlias;
         $this->projectAlias = $projectAlias;
-        $this->prefix       = $this->_getIDSetting('prefix');
+
+        $this->prefix = $this->_getPrefix();
         $this->validate();
     }
 
@@ -137,13 +132,13 @@ class SiteIDGenerator extends IdentifierGenerator
             "SELECT substring($this->kind, LENGTH('{$this->prefix}') +1)
             from candidate
             WHERE {$this->kind} LIKE '{$this->prefix}%'",
-            array()
+            []
         );
         if (empty($ids)) {
-            return array();
+            return [];
         }
         // Filter out non-numeric ids if using a numeric alphabet.
-        if ($this->alphabet === range('0', '9')) {
+        if (empty(array_diff($this->alphabet, range('0', '9')))) {
             return array_filter($ids, 'is_numeric');
         }
         return $ids;
@@ -153,9 +148,9 @@ class SiteIDGenerator extends IdentifierGenerator
      * settings relating to the PSCID structure.
      *
      * @param string $setting One of: 'generation', 'length', 'alphabet',
-     *                        'length', 'min', 'max'.
+     *                        'min', 'max'.
      *
-     * @return array|int|string|null
+     * @return array<int,int|float>|string|null
      */
     private function _getIDSetting(
         string $setting
@@ -176,7 +171,7 @@ class SiteIDGenerator extends IdentifierGenerator
         if (!$idStructure[0]) {
             // There's only one seq tag so the param format
             // needs to be fixed
-            $temp        = array();
+            $temp        = [];
             $temp[]      = $idStructure;
             $idStructure = $temp;
         }
@@ -226,19 +221,19 @@ class SiteIDGenerator extends IdentifierGenerator
                 );
             }
         }
-        // Min, max, and length values should be returned as integers or as
+        // The remaining values - min, max, and length - should be returned as
         // null if they are not set.
-        return is_null($seqValue) ? $seqValue: intval($seqValue);
+        return is_null($seqValue) ? $seqValue: $seqValue;
     }
     /**
      * Iterate over each 'seq' value and return its setting if its value is
      * configured. Do error handling to make sure that there is exactly one
      * value corresponding to the requested setting.
      *
-     * @param array  $idStructure Settings concerning ID structure extracted
-     *                            from project/config.sml
-     * @param string $setting     The name of the variable for which we want the
-     *                            value.
+     * @param array<array> $idStructure Settings concerning ID structure
+     *                                  extracted from project/config.sml
+     * @param string       $setting     The name of the variable for which we
+     *                                  want the value.
      *
      * @throws \ConfigurationException
      *
@@ -297,23 +292,105 @@ class SiteIDGenerator extends IdentifierGenerator
      * Traverse the $idStructure array and collect all values that exist
      * for $setting.
      *
-     * @param array  $idStructure Settings concerning ID structure extracted
-     *                            from project/config.xml
-     * @param string $setting     The name of the variable for which we want the
-     *                            value.
+     * @param array<array> $idStructure Settings concerning ID structure
+     *                                  extracted from project/config.xml
+     * @param string       $setting     The name of the variable for which
+     *                                  we want the value.
      *
-     * @return array The value(s) corresponding to $setting.
+     * @return array<int,mixed> The value(s) corresponding to $setting.
      */
     private static function _getSeqAttribute(
         array $idStructure,
         string $setting
     ): array {
-        $seqAttributes = array();
+        $seqAttributes = [];
         foreach ($idStructure as $seq) {
             if (isset($seq['@'][$setting])) {
                 $seqAttributes[] = $seq['@'][$setting];
             }
         }
         return $seqAttributes;
+    }
+
+    /**
+     * Initializes the alphabet property.
+     *
+     * @return array<int,int|float|string>
+     */
+    private function _getAlphabet(): array
+    {
+        $alphabet = $this->_getIDSetting('alphabet');
+        if (!is_array($alphabet)) {
+            throw new \ConfigurationException(
+                'Expecting variable $alphabet to be an array but got '
+                . gettype($this->alphabet)
+            );
+        }
+        return $alphabet;
+    }
+
+    /**
+     * Returns the value to be used for the length property.
+     *
+     * @return int
+     */
+    private function _getLength()
+    {
+        $length = $this->_getIDSetting('length') ?? self::LENGTH;
+        return intval($length);
+    }
+
+    /**
+     * Returns the value for the alphabet property.
+     *
+     * @return string
+     */
+    private function _getGeneration(): string
+    {
+        $generation = $this->_getIDSetting('generation');
+        if (!in_array($generation, ['sequential', 'random'], true)) {
+            throw new \ConfigurationException(
+                'Generation method must be either `sequential` or `random`.'
+            );
+        }
+        return $generation;
+    }
+
+    /**
+     * Returns the prefix to be use for the prefix property.
+     *
+     * @return string
+     */
+    private function _getPrefix(): string
+    {
+        return strval($this->_getIDSetting('prefix'));
+    }
+    /**
+     * Returns the minimum value for the identifier.
+     *
+     * @return string
+     */
+    private function _getMinValue(): string
+    {
+        return strval(
+            $this->_getIDSetting('min') ??
+            str_repeat(strval($this->alphabet[0]), intval($this->length))
+        );
+    }
+
+    /**
+     * Returns the maximum value for the identifier.
+     *
+     * @return string
+     */
+    private function _getMaxValue(): string
+    {
+        return strval(
+            $this->_getIDSetting('max') ??
+            str_repeat(
+                strval($this->alphabet[count($this->alphabet) - 1]),
+                intval($this->length)
+            )
+        );
     }
 }

@@ -1,18 +1,4 @@
 <?php
-/**
- * This class implements a data Instance which represents a single
- * row in the issue tracker menu table.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Tools
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\issue_tracker;
 
 /**
@@ -28,7 +14,7 @@ namespace LORIS\issue_tracker;
 class IssueRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
-    protected $CenterID;
+    protected $CenterIDs;
     protected $Module;
 
     /**
@@ -36,14 +22,14 @@ class IssueRow implements \LORIS\Data\DataInstance
      *
      * @param array   $row    The row (in the same format as \Database::pselectRow
      *                        returns.
-     * @param integer $cid    The centerID affiliated with this row.
+     * @param array   $cids   The centerIDs affiliated with this row.
      * @param \Module $module The module that this issue is for.
      */
-    public function __construct(array $row, $cid, \Module $module)
+    public function __construct(array $row, array $cids, \Module $module)
     {
-        $this->DBRow    = $row;
-        $this->CenterID = $cid;
-        $this->Module   = $module;
+        $this->DBRow     = $row;
+        $this->CenterIDs = $cids;
+        $this->Module    = $module;
 
         $this->DBRow['module'] = $module->getLongName();
     }
@@ -51,22 +37,22 @@ class IssueRow implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
-        return json_encode($this->DBRow);
+        return $this->DBRow;
     }
 
     /**
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return integer The CenterID
+     * @return array The CenterIDs
      */
-    public function getCenterID()
+    public function getCenterIDs()
     {
-        return $this->CenterID;
+        return $this->CenterIDs;
     }
 
     /**

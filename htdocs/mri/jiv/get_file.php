@@ -42,11 +42,11 @@ $DownloadPath = $paths['DownloadPath'];
 $tarchivePath = $pipeline['tarchiveLibraryDir'];
 // Basic config validation
 if (!validConfigPaths(
-    array(
+    [
         $imagePath,
         $DownloadPath,
         $tarchivePath,
-    )
+    ]
 )
 ) {
     http_response_code(500);
@@ -121,6 +121,26 @@ case 'raw_byte.gz':
 case 'xml':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'application/xml';
+    $DownloadFilename = basename($File);
+    break;
+case 'edf':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/octet-stream';
+    $DownloadFilename = basename($File);
+    break;
+case 'set':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/octet-stream';
+    $DownloadFilename = basename($File);
+    break;
+case 'tgz':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/x-gzip';
+    $DownloadFilename = basename($File);
+    break;
+case 'tsv':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'text/tab-separated-values';
     $DownloadFilename = basename($File);
     break;
 case 'nrrd':

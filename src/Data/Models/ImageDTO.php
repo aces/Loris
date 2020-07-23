@@ -16,11 +16,11 @@ namespace LORIS\Data\Models;
  * This class defines an ImageDTO which is an immutable representation of a
  * Image object. Its purpose is to provide accessors to an Image properties.
  *
- *  @category Imaging
- *  @package  Main
- *  @author   Xavier Lecours <xavier.lecours@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Imaging
+ * @package  Main
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class ImageDTO implements \LORIS\Data\DataInstance
 {
@@ -136,20 +136,18 @@ class ImageDTO implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface
      *
-     * @return string
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
-        return json_encode(
-            array(
-             'fileid'              => $this->tarchiveid,
-             'filename'            => $this->tarname,
-             'filelocation'        => $this->filelocation,
-             'outputtype'          => $this->outputtype,
-             'acquisitionprotocol' => $this->acquisitionprotocol,
-             'filetype'            => $this->filetype,
-            )
-        );
+        return [
+                'fileid'              => $this->tarchiveid,
+                'filename'            => $this->tarname,
+                'filelocation'        => $this->filelocation,
+                'outputtype'          => $this->outputtype,
+                'acquisitionprotocol' => $this->acquisitionprotocol,
+                'filetype'            => $this->filetype,
+               ];
     }
 
     /**

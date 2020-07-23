@@ -84,7 +84,9 @@ class FamilyInfo extends Component {
       return (
         <button className="btn-info has-spinner">
           Loading
-          <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+          <span
+            className="glyphicon glyphicon-refresh glyphicon-refresh-animate"
+          >
           </span>
         </button>
       );
@@ -127,7 +129,12 @@ class FamilyInfo extends Component {
             <ButtonElement
               label="Delete"
               type="button"
-              onUserInput={this.deleteFamilyMember.bind(null, candID, key, candidateList)}
+              onUserInput={this.deleteFamilyMember.bind(
+                null,
+                candID,
+                key,
+                candidateList
+              )}
             />
             <hr/>
           </div>

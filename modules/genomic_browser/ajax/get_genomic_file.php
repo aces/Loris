@@ -39,7 +39,7 @@ $results = $DB->pselect(
          genomic_files 
      WHERE 
          GenomicFileID = :v_file_id',
-    array('v_file_id' => $_GET['GenomicFileID'])
+    ['v_file_id' => $_GET['GenomicFileID']]
 );
 
 if (count($results) < 1) {
@@ -60,7 +60,7 @@ if (!file_exists($full_path) || !is_readable($full_path)) {
 
 
 $fp   = fopen($full_path, 'r');
-$size = filesize($file);
+$size = filesize($full_path);
 
 header("Content-Disposition: attachment; filename=$file_name");
 header("Content-length: $size");

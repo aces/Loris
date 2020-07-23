@@ -52,19 +52,18 @@ foreach($instruments AS $instrument){
             break;
             case "page":
                 $pages[] = $bits[2];
-                continue;
+                break;
 
             //no SQL need be generated.
             case "title":
                 $title = $bits[1];
             case "header":
-                continue;
-            break;
+                break;
 
             //generate specific column definitions for specific types of HTML elements
             default:
                 if($bits[1] == "") {
-                    continue;
+                    continue 2;
                 }
                 if($bits[0]=="select"){
                     $bits[0]=enumizeOptions($bits[3], isset($tablename) ? $tablename : null, $bits[1]);
@@ -83,8 +82,8 @@ foreach($instruments AS $instrument){
                 $bits[2]=htmlspecialchars($bits[2]);
                 $output.="`$bits[1]` $bits[0] default NULL,\n";
         }
-
     }
+
     $output.="PRIMARY KEY  (`CommentID`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
     print "Filename: $filename\n";
     $fp=fopen($filename, "w");

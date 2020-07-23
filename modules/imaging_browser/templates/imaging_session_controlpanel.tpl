@@ -30,6 +30,7 @@
        <input id="bbonly" type="button" class="btn btn-volume-viewer" accesskey="d" value="3D Only">
        <input id="bboverlay" type="button" class="btn btn-volume-viewer" accesskey="c" value="3D + Overlay">
 
+{if $subject.links|@count || $subject.tarchiveIDLoc|@count || $mantis}
     <h3>Links</h3>
     <ul>
         {foreach from=$subject.links item=link}
@@ -46,6 +47,7 @@
             <li><a target="mantis" href="{$issue_tracker_url}">Report a Bug (Mantis)</a></li>
         {/if}
     </ul>
+{/if}
 
     <h3>Visit Level QC</h3>
     <div class="visit-level-feedback">
@@ -57,9 +59,7 @@
                  </span>
         </a>
      </div>
-
-   <br>
-
+    <br>
     <div class='div-controlpanel-bottom'>
         <div class="form-group">
             <label>QC Status</label>
@@ -74,6 +74,5 @@
             {if $subject.has_permission}<input class="btn btn-default" type="submit" accesskey="s" value="Save" name="save_changes">{/if}
         </div>
    </div>
-</td>
-<td class='td-cpanel-fake'><table class='table-cpanel-fake'></table>
+
 <!-- /Control Panel -->

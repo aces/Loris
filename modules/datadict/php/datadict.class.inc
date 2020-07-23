@@ -2,7 +2,7 @@
 /**
  * Datadict module
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Datadict
  * @package  Main
@@ -14,7 +14,7 @@ namespace LORIS\datadict;
 /**
  * Datadict module
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category Datadict
  * @package  Main
@@ -23,11 +23,8 @@ namespace LORIS\datadict;
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-class Datadict extends \NDB_Menu_Filter
+class Datadict extends \DataFrameworkMenu
 {
-    var $AjaxModule   = true;
-    var $skipTemplate = true;
-
     /**
      * Overloading this method to allow access to site users (their own site
      * only) and users w/ multisite privs
@@ -43,147 +40,37 @@ class Datadict extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup variables function
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
      *
-     * @note   Setup variables function
-     * @return string
+     * @return ?array of site permissions or null
      */
-    function _buildQuery(): string
+    public function allSitePermissionNames() : ?array
     {
-        $select = " SELECT DISTINCT
-         pt.sourceFrom as source_from,
-         pt.name as name,
-         pt.sourceField as source_field,
-         coalesce(pto.description,pt.description) as description,
-         CASE
-           WHEN COALESCE(pto.description,pt.description) = '' THEN 'Empty'
-           WHEN pto.name IS NOT NULL THEN 'Modified'
-           WHEN pto.name IS NULL THEN 'Unchanged'
-         END as description_status ";
-
-        $joins = " FROM parameter_type pt
-        LEFT JOIN parameter_type_override pto USING (Name)
-        WHERE pt.Queryable=1 ";
-        $query = $select . $joins;
-        return $query;
+        return null;
     }
 
     /**
-     * Setup variables function
+     * Returns a list of instruments to use as the "Source From"
+     * filter options
      *
-     * @return void
+     * @return array Dynamic field options
      */
-    function _setupVariables()
+    public function getFieldOptions() : array
     {
-        $query       = $this->_buildQuery();
-        $this->query = " FROM (" . $query . ") as tmp";
-
-        $this->formToFilter = array(
-            'sourceFrom'  => 'pt.sourceFrom',
-            'description' => 'pt.Description',
-        );
-
-        $this->searchKeyword = array(
-            'pt.Name',
-            'pt.sourceField',
-            'pto.description',
-        );
-        // set the class variables
-
-        $this->columns = array(
-            'source_from',
-            'name',
-            'source_field',
-            'description',
-            'description_status',
-        );
-
-        $this->headers = array(
-            'Source From',
-            'Name',
-            'Source Field',
-            'Description',
-            'Description Status',
-        );
+        return [
+            'sourceFrom' => \Utility::getAllInstruments(),
+        ];
     }
 
     /**
-     * Set Filter Form
+     * Gets the data source for this menu filter.
      *
-     * @return void
+     * @return \LORIS\Data\Provisioner
      */
-    function setup()
+    public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        parent::setup();
-
-        // list of feedback statuses
-        $instruments = \Utility::getAllInstruments();
-        $this->addSelect(
-            'sourceFrom',
-            'Instruments',
-            $instruments,
-            array('multiple')
-        );
-        $this->addSelect(
-            'descriptionStatus',
-            'Description Status',
-            array(
-                'empty'     => 'Empty',
-                'modified'  => 'Modified',
-                'unchanged' => 'Unchanged',
-            )
-        );
-        $this->addBasicText('keyword', "Search keyword");
-    }
-
-    /**
-     * Add query filters
-     *
-     * @param string $prepared_key the query string
-     * @param string $key          the key of filter
-     * @param string $val          the value of filter
-     *
-     * @note   Get base query
-     * @return string
-     * @access private
-     */
-    function _addValidFilters($prepared_key, $key, $val)
-    {
-        $query = '';
-        if ((!empty($val) || $val === '0') && $key != 'order') {
-            // special rule for dropdowns where value is numeric
-            if (strtolower(substr($key, -8)) == 'centerid'
-                || strtolower(substr($key, -10)) == 'categoryid'
-                || strtolower(substr($key, -6)) == 'sex'
-            ) {
-                $query .= " AND $key = '$val' ";
-            } else {
-                if ($val == 'empty') {
-                    $query .= " AND COALESCE(pto.description,pt.description) = ''";
-                } elseif ($val=='modified') {
-                    $query .= " AND pto.name IS NOT NULL";
-                } elseif ($val=='unmodified') {
-                    $query .= " AND pto.name IS NULL";
-                } else {
-                    $query .= " AND $key LIKE '$val%' ";
-                }
-            }
-        }
-        return $query;
-    }
-
-
-    /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
-     *
-     * @return string a json encoded string of the headers and data from this table
-     */
-    function toJSON() : string
-    {
-        $result         = $this->toArray();
-        $result['form'] = $this->form->form;
-        return json_encode($result);
+        return new DataDictRowProvisioner();
     }
 
     /**
@@ -199,9 +86,9 @@ class Datadict extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/datadict/js/dataDictIndex.js",
-            )
+            ]
         );
     }
 
@@ -215,5 +102,15 @@ class Datadict extends \NDB_Menu_Filter
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb('Data Dictionary', "/$this->name")
         );
+    }
+
+    /**
+     * The datadict module does not have any concept of a project.
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return false;
     }
 }

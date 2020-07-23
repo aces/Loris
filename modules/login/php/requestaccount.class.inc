@@ -2,7 +2,7 @@
 /**
  * Implements the LORIS request account page.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category   Behavioural
  * @package    Main
@@ -32,33 +32,40 @@ class RequestAccount extends \NDB_Form
      */
     function setup()
     {
-        $config   = \NDB_Config::singleton();
-        $tpl_data = array();
-        $this->tpl_data['page_title'] = 'Request Account';
+        $this->tpl_data['page_title']  = 'Request Account';
+        $this->tpl_data['captcha_key'] = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('reCAPTCHAPublic');
+        $this->tpl_data['nonce']       = base64_encode(
+            random_bytes(16)
+        );
 
         $this->addBasicText(
             "firstname",
             "First name",
-            array(
+            [],
+            [
                 "placeholder" => "First Name",
                 "required"    => true,
-            )
+            ]
         );
         $this->addBasicText(
             "lastname",
             "Last name",
-            array(
+            [],
+            [
                 "placeholder" => "Last Name",
                 "required"    => true,
-            )
+            ]
         );
         $this->addBasicText(
             "from",
             "Email address",
-            array(
+            [],
+            [
                 "placeholder" => "Email address",
                 "required"    => true,
-            )
+            ]
         );
 
         //merging array using + sign to avoid reindexing of keys which
@@ -66,21 +73,19 @@ class RequestAccount extends \NDB_Form
         $this->addSelect(
             "site",
             "Site",
-            array("" => "Choose your site:") + \Utility::getSiteList(),
-            array("required" => true)
+            ["" => "Choose your site:"] + \Utility::getSiteList(),
+            ["required" => true]
         );
-        $this->addCheckbox("examiner", "Examiner role", array());
-        $this->addCheckbox("radiologist", "Radiologist", array());
+        $this->addSelect(
+            "project",
+            "Project",
+            ["" => "Choose your project:"] + \Utility::getProjectList(),
+            ["required" => true]
+        );
+        $this->addCheckbox("examiner", "Examiner role", []);
+        $this->addCheckbox("radiologist", "Radiologist", []);
 
-        // Get reCATPCHA keys
-        $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
-        $reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
-        // Display reCAPTCHA if both private and public keys are set
-        if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
-            $tpl_data['captcha_key'] = $reCAPTCHAPublic;
-        }
-
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule([&$this, '_validate']);
     }
 
     /**
@@ -89,10 +94,32 @@ class RequestAccount extends \NDB_Form
      * @param array $values The values that were submitted to the page.
      *
      * @return array a (possibly empty) array of errors
+     *
+     * @see https://github.com/google/recaptcha
      */
     function _validate($values): array
     {
-        $errors = array();
+        $errors = [];
+        // Verify reCAPTCHA
+        $reCAPTCHAPrivate = \NDB_Factory::singleton()
+            ->config()
+            ->getSetting('reCAPTCHAPrivate') ?? '';
+
+        // Only validate reCAPTCHA if a private key exists.
+        if (!empty($reCAPTCHAPrivate)) {
+            $resp = (new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate))
+                ->verify(
+                    $values['g-recaptcha-response'] ?? '',
+                    $_SERVER['REMOTE_ADDR']
+                );
+            // FIXME This leverages the error handling for the "site" text field.
+            // It should be done using its own error block.
+            if (!$resp->isSuccess()) {
+                $errors['site'] = "reCAPTCHA failed. Reason: "
+                    . implode(', ', $resp->getErrorCodes());
+            }
+        }
+
         // FIXME: These error checks are direct ports from when the request
         // account page was a standalone php script (with the ridiculous
         // "name must be at least 3 characters" check removed, because some
@@ -112,6 +139,9 @@ class RequestAccount extends \NDB_Form
 
         if (empty($values['site'])) {
             $errors['site'] = "Please choose a site!";
+        }
+        if (empty($values['project'])) {
+            $errors['project'] = "Please choose a project!";
         }
 
         // I don't think this is required because insert uses prepared statements,
@@ -143,26 +173,29 @@ class RequestAccount extends \NDB_Form
      */
     function _process($values)
     {
-        $DB       = \Database::singleton();
+        $factory  = \NDB_Factory::singleton();
+        $DB       = $factory->database();
         $name     = trim(htmlspecialchars($_REQUEST["firstname"], ENT_QUOTES));
         $lastname = trim(htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES));
         $from     = trim(htmlspecialchars($_REQUEST["from"], ENT_QUOTES));
         $site     = $_REQUEST["site"];
+        $project  = $_REQUEST["project"];
         $fullname = $name." ".$lastname;
 
-        $vals = array(
-            'UserID'           => $from,
-            'Real_name'        => $fullname,
-            'First_name'       => $name,
-            'Last_name'        => $lastname,
-            'Pending_approval' => 'Y',
-            'Email'            => $from,
-        );
+        $vals = [
+            'UserID'               => $from,
+            'Real_name'            => $fullname,
+            'First_name'           => $name,
+            'Last_name'            => $lastname,
+            'Pending_approval'     => 'Y',
+            'Email'                => $from,
+            'account_request_date' => date('Y-m-d'),
+        ];
 
         // check email address' uniqueness
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email=:VEmail OR UserID=:VEmail",
-            array('VEmail' => $from)
+            ['VEmail' => $from]
         );
 
         $user_id = null;
@@ -173,13 +206,29 @@ class RequestAccount extends \NDB_Form
             // Get the ID of the new user and insert into user_psc_rel
             $user_id = $DB->getLastInsertId();
 
-            $DB->insert(
-                'user_psc_rel',
-                array(
-                    'UserID'   => $user_id,
-                    'CenterID' => $site,
-                )
-            );
+            // verify site exists
+            $siteList = \Utility::getSiteList();
+            if (!is_null($site) && array_key_exists($site, $siteList)) {
+                $DB->insert(
+                    'user_psc_rel',
+                    [
+                        'UserID'   => $user_id,
+                        'CenterID' => $site,
+                    ]
+                );
+            }
+
+            // verify project exists
+            $projectList = \Utility::getProjectList();
+            if (!is_null($project) && array_key_exists($project, $projectList)) {
+                $DB->insert(
+                    'user_project_rel',
+                    [
+                        'UserID'    => $user_id,
+                        'ProjectID' => $project,
+                    ]
+                );
+            }
 
             $examinerCheck    = $_REQUEST['examiner'] ?? 'off';
             $radiologistCheck = $_REQUEST['radiologist'] ?? 'off';
@@ -194,48 +243,81 @@ class RequestAccount extends \NDB_Form
                     "SELECT e.examinerID
                  FROM examiners e
                  WHERE e.full_name=:fn",
-                    array("fn" => $fullname)
+                    ["fn" => $fullname]
                 );
 
-                // If examiner not in table add him
+                // Add new account to the examiner tables
                 if (empty($examinerID)) {
                     $DB->insert(
                         'examiners',
-                        array(
+                        [
                             'full_name'   => $fullname,
                             'radiologist' => $rad,
                             'userID'      => $user_id,
-                        )
+                        ]
                     );
                     $examinerID = $DB->getLastInsertID();
                     $DB->insert(
                         'examiners_psc_rel',
-                        array(
+                        [
                             'examinerID'       => $examinerID,
                             'centerID'         => $site,
                             'active'           => 'Y',
                             'pending_approval' => 'Y',
-                        )
+                        ]
                     );
                 }
             }
         }
 
-        // Verify reCAPTCHA
-        $err = array();
-        if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
-            $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
-            $resp      = $recaptcha->verify(
-                $values['g-recaptcha-response'],
-                $_SERVER['REMOTE_ADDR']
-            );
-            if (!$resp->isSuccess()) {
-                $errors         = $resp->getErrorCodes();
-                $err['captcha'] = 'Please complete the reCaptcha!';
-            }
-        }
         // Show success message even if email already exists for security reasons
         $this->tpl_data['success'] = true;
+
+        // Don't send out emails if this is a sandbox VM.
+        if ($factory->config()->settingEnabled('sandbox')) {
+            return;
+        }
+
+        // Send an email to all users meeting the following criteria:
+        //     - Associated with the Site
+        //     - Associated with the Project
+        //     - Have the User Management permission
+        $query  = "
+        SELECT DISTINCT u.Email,u.userID
+        FROM users u
+            JOIN user_psc_rel upr
+                ON u.ID = upr.UserID
+            JOIN user_project_rel uprojr
+                ON u.ID = uprojr.UserID
+        WHERE upr.CenterID=:center
+            AND uprojr.ProjectID=:project";
+        $result = $DB->pselect(
+            $query,
+            ['center' => $site, 'project' => $project]
+        );
+        foreach ($result as $row) {
+            $hasPermission = \User::factory($row['userID'])
+                ->hasAnyPermission(
+                    ['user_accounts', 'user_accounts_multisite']
+                );
+            if ($hasPermission === false) {
+                continue;
+            }
+
+            // Send email to users with User Management permissions.
+            $config    = \NDB_Factory::singleton()->config();
+            $studyName = $config->getSetting('title');
+
+            \Email::send(
+                $row['Email'],
+                'request_account.tpl',
+                [
+                    'Study'     => $studyName,
+                    'UserID'    => $from,
+                    'Real_name' => $fullname,
+                    'Email'     => $from,
+                ]
+            );
+        }
     }
 }
-

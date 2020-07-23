@@ -68,10 +68,10 @@ class Full
         unset($headers['check_pic_filename']);
         unset($headers['jiv_path']);
 
-        return  array(
+        return  [
             'Meta'    => $this->_formatMeta(),
             'Headers' => $headers,
-        );
+        ];
     }
 
     /**
@@ -81,15 +81,15 @@ class Full
      */
     private function _formatMeta(): array
     {
-        $candid     = (string) $this->_visit->getCandID();
+        $candid     = $this->_visit->getCandID();
         $visitlabel = $this->_visit->getVisitLabel();
         $filename   = $this->_image->getFileInfo()->getFilename();
 
-        return array(
+        return [
             'CandID' => $candid,
             'Visit'  => $visitlabel,
             'File'   => $filename,
-        );
+        ];
     }
 }
 

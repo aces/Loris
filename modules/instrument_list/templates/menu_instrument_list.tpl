@@ -172,7 +172,7 @@
 </div>
 
 <!-- table title -->
-<h3>Behavioral Battery of Instruments</h3>
+<h3>Behavioural Battery of Instruments</h3>
 
 <!-- table with list of instruments and links to open them -->
 <table class="table table-hover table-bordered dynamictable" cellpadding="2">

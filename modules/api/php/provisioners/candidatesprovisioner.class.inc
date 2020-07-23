@@ -55,7 +55,7 @@ class CandidatesProvisioner extends DBRowProvisioner
                ON (c.RegistrationProjectID = p.ProjectID)
              WHERE c.Active=\'Y\'
             ',
-            array()
+            []
         );
     }
 

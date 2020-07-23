@@ -61,4 +61,77 @@ class Module extends \Module
     {
         return "Issue Tracker";
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user, array $options) : array
+    {
+        if (!in_array($type, ['usertasks', 'candidate'], true)) {
+            return [];
+        }
+
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $baseURL = $factory->settings()->getBaseURL();
+
+        switch($type) {
+        case 'usertasks':
+            $url = 'assignee=' . $user->getUsername() . '&status=acknowledged&'.
+                   'status=assigned&status=feedback&status=new&status=resolved';
+            return [
+                new \LORIS\dashboard\TaskQueryWidget(
+                    $user,
+                    "Your assigned issue",
+                    $DB,
+                    "SELECT COUNT(*) FROM issues
+                     WHERE status != 'closed' AND assignee="
+                     . $DB->quote($user->getData('UserID')),
+                    '',
+                    '',
+                    $baseURL . "/issue_tracker/?$url",
+                    "issue_tracker"
+                )
+            ];
+        case 'candidate':
+            $candidate = $options['candidate'];
+            if ($candidate === null) {
+                return [];
+            }
+            $issues = $DB->pselect(
+                "SELECT i.issueID as ID,
+                        i.title as Title,
+                        COUNT(DISTINCT ic.issueCommentID) as comments
+                 FROM issues i
+                    LEFT JOIN issues_comments ic ON (i.issueID=ic.issueID)
+                 WHERE status != 'closed' AND CandID=:cid
+                 GROUP BY i.issueID, i.Title",
+                [ 'cid' => $candidate->getCandID() ],
+            );
+            if (empty($issues)) {
+                return [];
+            }
+            return [
+                new \LORIS\candidate_profile\CandidateWidget(
+                    "Open Issues",
+                    $baseURL . "/issue_tracker/js/CandidateIssuesWidget.js",
+                    "lorisjs.issue_tracker.CandidateIssuesWidget.default",
+                    [
+                        'Issues' => $issues,
+                    ],
+                    1,
+                    1,
+                )
+            ];
+
+        }
+        return [];
+    }
 }
