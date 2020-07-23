@@ -170,7 +170,7 @@ class ScheduleIndex extends Component {
     })
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
-        swal.fire('Success!', 'Schedule added.', 'success').then((result) => {
+        swal.fire('Success!', 'Schedule modified.', 'success').then((result) => {
           if (result.value) {
             this.closeModal();
             this.fetchData();
@@ -178,7 +178,7 @@ class ScheduleIndex extends Component {
         });
       } else {
         resp.text().then((message) => {
-          swal.fire('Error!', message, 'error');
+          swal.fire('No changes was made!', message, 'error');
         });
       }
     })
@@ -298,7 +298,7 @@ class ScheduleIndex extends Component {
             name="edit"
             label={
               <div>
-                <span className="glyphicon glyphicon-plus"/>Edit Appointment
+                Edit Appointment
               </div>
             }
             type="submit"
@@ -310,7 +310,7 @@ class ScheduleIndex extends Component {
             name="create"
             label={
               <div>
-                <span className="glyphicon glyphicon-plus"/>Create Appointment
+                Create Appointment
               </div>
             }
             type="submit"
@@ -443,7 +443,7 @@ class ScheduleIndex extends Component {
         name: 'Time',
         type: 'time',
       }},
-      {label: 'Earliset Date >=', show: false, filter: {
+      {label: 'Earliest Date >=', show: false, filter: {
         name: 'earlyDate',
         type: 'date',
         comparison: 'greaterthanorequal',

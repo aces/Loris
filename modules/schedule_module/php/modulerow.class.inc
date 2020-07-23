@@ -47,22 +47,22 @@ class ModuleRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->AppointmentID     = $row['AppointmentID'];
-        $this->SessionID         = $row['SessionID'];
-        $this->AppointmentTypeID = $row['AppointmentTypeID'];
-        $this->Day          = $row['day'];
-        $this->Time         = substr($row['time'], 0, -3);
-        $this->PSCID        = $row["PSCID"];
-        $this->CandID       = $row['CandID'];
-        $this->Visit_label  = $row['Visit_label'];
-        $this->CenterID     = $row['CenterID'];
-        $this->SubprojectID = $row['SubprojectID'];
-        $this->Project      = $row['Project'];
-        $this->Subproject   = $row['title'];
-        $this->StartsAt     = $row['StartsAt'];
+        $this->AppointmentID       = $row['AppointmentID'];
+        $this->SessionID           = $row['SessionID'];
+        $this->AppointmentTypeID   = $row['AppointmentTypeID'];
+        $this->Day                 = $row['day'];
+        $this->Time                = substr($row['time'], 0, -3);
+        $this->PSCID               = $row["PSCID"];
+        $this->CandID              = $row['CandID'];
+        $this->Visit_label         = $row['Visit_label'];
+        $this->CenterID            = $row['CenterID'];
+        $this->SubprojectID        = $row['SubprojectID'];
+        $this->Project             = $row['Project'];
+        $this->Subproject          = $row['title'];
+        $this->StartsAt            = $row['StartsAt'];
         $this->AppointmentTypeName = $row['AppointmentTypeName'];
-        $this->site            = $row['Name'];
-        $this->dataEntryStatus = $row['dataEntryStatus'];
+        $this->site                = $row['Name'];
+        $this->dataEntryStatus     = $row['dataEntryStatus'];
 
     }
 

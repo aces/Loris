@@ -1,5 +1,5 @@
 INSERT INTO modules (Name, Active) VALUES ('schedule_module', 'Y');
-INSERT INTO permissions (code, description, categoryID) VALUES('schedule_module', 'Schedule Module: edit and delete the appointment', 2);
+INSERT INTO permissions (code, description, categoryID) VALUES ('schedule_module', 'Schedule Module: edit and delete the appointment', 2);
 -- Create appointment_type table
 CREATE TABLE `appointment_type` (
   `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
