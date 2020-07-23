@@ -1447,7 +1447,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
-     * @return SessionID The sessionID if found, or -1 if not found
+     * @return SessionID The sessionID
      */
     function getSessionID(): SessionID
     {
@@ -1459,7 +1459,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        return new SessionID($result) ? $result : -1;
+        return (new SessionID($result));
     }
 
     /**

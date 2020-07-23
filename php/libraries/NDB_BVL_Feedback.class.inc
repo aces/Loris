@@ -262,15 +262,16 @@ class NDB_BVL_Feedback
      *
      * @return ?int feedback type id
      */
-    public function getFeedbackTypeIdByName(string $name): int
+    public function getFeedbackTypeIdByName($name): ?int
     {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
         $query = "SELECT  `Feedback_type`
                     FROM  `feedback_bvl_type`
                     WHERE  `Name` =  :name ";
-        return intval(
-            NDB_Factory::singleton()->database()
-                ->pselectOne($query, [':name' => $name])
-        );
+
+        return $db->pselectOneInt($query, [':name' => $name]);
     }
 
     /**
