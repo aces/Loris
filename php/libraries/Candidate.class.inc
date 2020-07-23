@@ -282,7 +282,7 @@ class Candidate
         // Generate a new CandID and insert it into the database.
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
-        $invalidID = false;
+        $invalidID    = false;
         $attemptcount = 0;
         do {
             // Reset on each iteration
