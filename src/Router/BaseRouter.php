@@ -132,13 +132,10 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 
         // Fall through to 404. We don't have any routes that go farther
         // than 1 level..
-        return $ehandler->process(
-            $request,
-            (new \LORIS\Middleware\PageDecorationMiddleware($this->user))
+        return (new \LORIS\Middleware\PageDecorationMiddleware($this->user))
                 ->process(
                     $request,
                     new NoopResponder(new \LORIS\Http\Error($request, 404))
-                )
-        );
+                );
     }
 }
