@@ -17,6 +17,7 @@ define('PSCID_NOT_SPECIFIED', 2);
 define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
+define('DOB_NOT_SPECIFIED', 6);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -79,7 +80,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
+        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
@@ -190,7 +191,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *
      * @param int         $centerID              centerID of the site to which the
      *                                           candidate will belong
-     * @param string      $dateOfBirth           date of birth written as YYYY-MM-DD
+     * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
      *                                           written as YYYY-MM-DD. Value should
      *                                           be null unless the useEDC setting
@@ -206,7 +207,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     static public function createNew(
         int $centerID,
-        string $dateOfBirth,
+        ?string $dateOfBirth,
         ?string $edc,
         Sex $sex,
         ?string $PSCID = null,
@@ -229,6 +230,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             throw new \LorisException(
                 "EDC must be specified",
                 EDC_NOT_SPECIFIED
+            );
+        }
+        if ($dateOfBirth !== null
+            && (DateTime::createFromFormat('Y-m-d', $dateOfBirth) === false
+            || empty($dateOfBirth))
+        ) {
+            throw new InvalidArgumentException(
+                "Date of Birth must be specified",
+                DOB_NOT_SPECIFIED
             );
         }
 
