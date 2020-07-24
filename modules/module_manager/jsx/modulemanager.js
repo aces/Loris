@@ -76,11 +76,29 @@ class ModuleManagerIndex extends Component {
           } else {
               const success = this.setModuleDisplayStatus(id, value);
               if (success === true) {
-                  swal.fire('Success!', 'Updated ' + id + ' status!', 'success');
+                swal.fire({
+                  title: 'Success!',
+                  text: 'Updated ' + id + ' status! '
+                        + 'To apply changes the interface must be reloaded. '
+                        + 'Proceed ?',
+                  type: 'success',
+                  showCancelButton: true,
+                  confirmButtonText: 'Reload the page',
+                  cancelButtonText: 'Continue',
+                }).then((status) => {
+                  if (status.value) {
+                    window.location.href = this.props.BaseURL
+                                           + '/module_manager';
+                  }
+                });
               } else {
                   // If we get here something went very wrong, because somehow
                   // a module was toggled that isn't in the table.
-                  swal.fire('Error!', 'Could not find module ' + id + '.', 'error');
+                  swal.fire(
+                    'Error!',
+                    'Could not find module ' + id + '.',
+                    'error'
+                  );
               }
           }
       });

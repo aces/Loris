@@ -17,3 +17,7 @@ Most of the permissions are controlled in `IssueForm.js`, dependent on values re
 
 ## Future Development
 Future development includes the ability to edit one’s own comments after submission, a pop-up or sliding view within other modules for easy issue reporting, further integration with the dashboard and with statistics, refinement of the form UI, a tabular sortable view of comments, the ability to click watching within the filter-form table and the inclusion of default users to notify in the config settings.
+
+## Interactions with LORIS
+
+The issue tracker registers widgets on the `dashboard` and `candidate_profile` dashboard.

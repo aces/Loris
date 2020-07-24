@@ -10,6 +10,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
+import swal from 'sweetalert2';
 
 /**
  * React component used to display
@@ -29,7 +30,8 @@ class AttachmentsList extends Component {
     };
     this.deleteAttachment = this.deleteAttachment.bind(this);
     this.openModalAttachmentDelete = this.openModalAttachmentDelete.bind(this);
-    this.closeModalAttachmentDelete = this.closeModalAttachmentDelete.bind(this);
+    this.closeModalAttachmentDelete = this.closeModalAttachmentDelete
+                                      .bind(this);
     this.displayAttachmentOptions = this.displayAttachmentOptions.bind(this);
   }
 
@@ -55,7 +57,7 @@ class AttachmentsList extends Component {
             + '/issue_tracker/issue/'
             + this.props.issue;
         } else {
-          swal('Permission denied', '', 'error');
+          swal.fire('Permission denied', '', 'error');
         }
       }).catch((error) => {
         console.error(error);

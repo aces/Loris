@@ -83,6 +83,7 @@ class Create_Timepoint extends \NDB_Form
 
         //Project
         $user_list_of_projects = $user->getProjectIDs();
+        $project = null;
         if (count($user_list_of_projects) == 1) {
             //if there is only one project, autoselect first project from array of 1
             $project = \Project::getProjectFromID(array_pop($user_list_of_projects));
@@ -142,7 +143,7 @@ class Create_Timepoint extends \NDB_Form
             for this study. If you are an administrator, please use the 
             Configuration module to add new subprojects.";
         }
-        $sp_labelOptions = array(null => '');
+        $sp_labelOptions = [null => ''];
         $subprojList     = null;
         //List of valid subprojects for a given project
         $subprojList = $candidate->getValidSubprojects();
@@ -158,12 +159,12 @@ class Create_Timepoint extends \NDB_Form
             }
         }
 
-        $attributes = array(
+        $attributes = [
             "onchange" => "location.href='?test_name=create_timepoint" .
                 "&candID=" . $this->identifier .
                 "&identifier=" . $this->identifier .
                 "&subprojectID='+this[this.selectedIndex].value;",
-        );
+        ];
         $this->addSelect(
             'subprojectID',
             'Subproject',
@@ -171,7 +172,7 @@ class Create_Timepoint extends \NDB_Form
             $attributes
         );
         $this->addRule('subprojectID', 'A Subproject ID is required', 'required');
-        $this->_setDefaults(array("subprojectID" => $this->subprojectID));
+        $this->_setDefaults(["subprojectID" => $this->subprojectID]);
 
         // visit label
         $visitLabelSettings  = $config->getSetting('visitLabel');
@@ -183,7 +184,6 @@ class Create_Timepoint extends \NDB_Form
             $visitLabel = \Utility::asArray($visitLabel);
             if ($visitLabel['@']['subprojectID'] == $this->subprojectID) {
                 $user = \User::singleton();
-                $DB   = \Database::singleton();
                 $subprojectHasVisits = true;
                 if (isset($visitLabel['generation'])
                     && $visitLabel['generation'] !== 'sequence'
@@ -193,7 +193,7 @@ class Create_Timepoint extends \NDB_Form
                         "longer supported in Loris."
                     );
                 }
-                $labelOptions = array('' => null);
+                $labelOptions = ['' => null];
                 $items        = \Utility::associativeToNumericArray(
                     $visitLabel['labelSet']['item']
                 );
@@ -223,17 +223,8 @@ class Create_Timepoint extends \NDB_Form
                 $num_sites          = count($user_list_of_sites);
                 if ($num_sites > 1) {
                     $this->tpl_data['pscLabelAdded'] = true;
-                    $psc_labelOptions = [null => ''];
-                    foreach ($user_list_of_sites as $key => $siteID) {
-                        $center = $DB->pselectRow(
-                            "SELECT CenterID as ID, Name FROM psc 
-                        WHERE CenterID =:cid",
-                            ['cid' => $siteID]
-                        );
-                        if (!is_null($center)) {
-                            $psc_labelOptions[$siteID] = $center['Name'];
-                        }
-                    }
+                    $psc_labelOptions = [null => ''] +
+                        \Utility::getSiteNameListByIDs($user_list_of_sites);
                     $this->addSelect('psc', 'Site', $psc_labelOptions);
                     $this->addRule(
                         'psc',
@@ -246,8 +237,8 @@ class Create_Timepoint extends \NDB_Form
                 $user_list_of_projects = $user->getProjectIDs();
                 if (count($user_list_of_projects) > 1) {
                     $this->tpl_data['projectAdded'] = true;
-                    $projectOptions = array(null => '');
-                    foreach ($user_list_of_projects as $key => $projectID) {
+                    $projectOptions = [null => ''];
+                    foreach ($user_list_of_projects as $projectID) {
                         $project = \Project::getProjectFromID($projectID);
                         $projectOptions[$projectID] = $project->getName();
                     }
@@ -269,7 +260,7 @@ class Create_Timepoint extends \NDB_Form
             the config.xml file.";
         }
 
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule([&$this, '_validate']);
 
     }
 
@@ -285,7 +276,7 @@ class Create_Timepoint extends \NDB_Form
     {
         $user = \User::singleton();
 
-        $errors = array();
+        $errors = [];
 
         // validate site entered
         $site = $val['psc'] ?? '';

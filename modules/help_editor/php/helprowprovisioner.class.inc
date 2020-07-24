@@ -49,7 +49,7 @@ class HelpRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
              WHERE helpChild.hash IS NOT NULL
              AND helpChild.topic IS NOT NULL
              ORDER BY helpChild.helpID",
-            array()
+            []
         );
     }
 

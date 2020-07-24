@@ -22,41 +22,71 @@ class CommentList extends Component {
     const changes = this.props.commentHistory.reduce(function(carry, item) {
       let label = item.dateAdded.concat(' - ', item.addedBy);
       if (!carry[label]) {
-        carry[label] = {};
+        carry[label] = {
+            data: {},
+            user: item.addedBy,
+            date: new Date(item.dateAdded),
+        };
       }
-      carry[label][item.fieldChanged] = item.newValue;
+      carry[label].data[item.fieldChanged] = item.newValue;
       return carry;
     }, {});
 
     const history = Object.keys(changes).sort().reverse().map(function(key, i) {
-      const textItems = Object.keys(changes[key]).map(function(index, j) {
+      let comment;
+      const item = changes[key];
+      const textItems = Object.keys(item.data).map(function(index, j) {
+        if (index == 'comment') {
+            comment = <div style={{marginTop: '1em'}}>
+              <Markdown content={item.data[index]} />
+            </div>;
+            return;
+        }
         return (
-          <div key={j} className='row'>
+          <li key={j} className='row' style={{color: 'rgb(149, 149, 149)'}}>
             <div className='col-md-2'>
-              <div className='col-md-8'><b>{index}</b></div>
+              <div className='col-md-8'><strong>{index}</strong></div>
               <div className='col-md-4'> to </div>
             </div>
-            <div className='col-md-10'><i>{changes[key][index]}</i></div>
-          </div>
+            <div className='col-md-10'><i>{item.data[index]}</i></div>
+          </li>
         );
       }, this);
+
+      let now = new Date();
+      const datediffSec = (now.getTime() - item.date.getTime()) / 1000;
+      let timestr;
+      if (datediffSec < 60) {
+          timestr = <span> {Math.round(datediffSec)} seconds ago</span>;
+      } else if (datediffSec < 60*60) {
+          timestr = <span> {Math.round(datediffSec / 60)} minutes ago</span>;
+      } else if (datediffSec < 60*60*24) {
+          timestr = <span> {Math.round(datediffSec / (60*60))} hours ago</span>;
+      } else {
+          timestr = <span>
+            on {item.date.toLocaleDateString()} at {item.date.toTimeString()}
+          </span>;
+      }
 
       return (
         <div key={i}>
           <hr/>
           <div className='history-item-label'>
-            <span>{key}</span> updated :
+            Updated by
+            <span className="history-item-user">{item.user}</span>
+            {timestr}:
           </div>
-          <div className='history-item-changes'>
+          <ul className='history-item-changes'>
             {textItems}
-          </div>
+          </ul>
+          {comment}
         </div>
       );
     }, this);
 
     return (
       <div id='comment-history'>
-        <h3>Comment History</h3>
+        <h3>Comments and History</h3>
         {history}
       </div>
     );

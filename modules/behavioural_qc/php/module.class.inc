@@ -33,7 +33,7 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
-            $user->hasPermission('quality_control');
+            $user->hasPermission('behavioural_quality_control_view');
     }
 
     /**

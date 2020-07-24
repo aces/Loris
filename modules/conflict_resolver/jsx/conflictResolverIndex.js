@@ -72,8 +72,16 @@ class UnresolvedConflictsPane extends Component {
           />
 
           <div className='pull-right'>
-            <input className='btn btn-sm btn-primary' name='fire_away' value='Save' type='submit'/>
-            <input className='btn btn-sm btn-primary' value='Reset' type='reset' style={{marginLeft: 3 + 'px'}}/>
+            <input className='btn btn-sm btn-primary'
+                   name='fire_away'
+                   value='Save'
+                   type='submit'
+            />
+            <input className='btn btn-sm btn-primary'
+                   value='Reset'
+                   type='reset'
+                   style={{marginLeft: 3 + 'px'}}
+            />
           </div>
 
         </form>
@@ -161,6 +169,9 @@ class ConflictResolverApp extends Component {
             Data: data,
             isLoaded: true,
           });
+          if (this.child !== undefined) {
+            this.child.updateFilterState(this.state.filter);
+          }
         }).catch((error) => {
           // console.log('error: ' + error);
     });
@@ -277,7 +288,8 @@ window.addEventListener('load', () => {
         base: loris.BaseURL,
         data: {
           unresolved: loris.BaseURL + '/conflict_resolver/?format=json',
-          resolved: loris.BaseURL + '/conflict_resolver/resolved_conflicts/?format=json',
+          resolved: loris.BaseURL
+                    + '/conflict_resolver/resolved_conflicts/?format=json',
         },
       }}
     />,
@@ -288,7 +300,8 @@ window.addEventListener('load', () => {
     if (document.getElementById('tab-ResolvedConflicts')) {
       $('#tab-ResolvedConflicts').click(function(event) {
         event.preventDefault();
-        window.location.href = loris.BaseURL + '/conflict_resolver/resolved_conflicts/';
+        window.location.href = loris.BaseURL
+                               + '/conflict_resolver/resolved_conflicts/';
         return false;
       });
       clearInterval(refresh);

@@ -51,16 +51,16 @@ class Dicoms
      */
     private static function _formatDicomTars(DicomTarDTO $dicom): array
     {
-        return array(
+        return [
             'Tarname'    => $dicom->getTarname(),
             'SeriesInfo' => array_map(
-                array(
+                [
                     'self',
                     '_formatSeries'
-                ),
+                ],
                 $dicom->getSeries()
             ),
-        );
+        ];
     }
 
     /**
@@ -73,7 +73,7 @@ class Dicoms
      */
     private static function _formatSeries(DicomSeriesDTO $series): array
     {
-        return array(
+        return [
             'SeriesDescription' => $series->getSeriesDescription(),
             'SeriesNumber'      => $series->getSeriesNumber(),
             'EchoTime'          => $series->getEchotime(),
@@ -82,7 +82,7 @@ class Dicoms
             'SliceThickness'    => $series->getSlicethickness(),
             'Modality'          => $series->getModality(),
             'SeriesUID'         => $series->getSeriesuid(),
-        );
+        ];
     }
 
     /**
@@ -92,20 +92,20 @@ class Dicoms
      */
     public function toArray(): array
     {
-        $meta = array(
+        $meta = [
             'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
-        );
+        ];
 
         $dicomtars = array_map(
             'self::_formatDicomTars',
             $this->_dicoms
         );
 
-        return array(
+        return [
             'Meta'      => $meta,
             'DicomTars' => $dicomtars,
-        );
+        ];
     }
 }
 

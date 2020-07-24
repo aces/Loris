@@ -1,6 +1,6 @@
 # Behavioural Quality Control Test Plan
 
-## [Automated testing](https://github.com/aces/Loris/blob/17.1-dev/modules/behavioural_qc/test/behavioural_qcTest.php) covers:
+## [Automated testing](/modules/behavioural_qc/test/behavioural_qcTest.php) covers:
 * Permissions (both present and absent)
 * That body text exists
 

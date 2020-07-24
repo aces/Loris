@@ -44,14 +44,42 @@ class Error extends HtmlResponse
         int $status,
         string $message = ''
     ) {
-
         $uri     = $request->getURI();
         $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
 
-        $tpl_data = array(
-                     'message' => $message,
-                     'baseurl' => $baseurl,
-                    );
+        $tpl_data = [];
+
+        $lorisInstance = $request->getAttribute('loris');
+        $user          = $request->getAttribute('user') ?? new \LORIS\AnonymousUser();
+        
+
+        // Add a link to the issue tracker as long as a LORIS Instance object
+        // is present in the request.
+        if (! $user instanceof \LORIS\AnonymousUser
+            && $lorisInstance !== null
+        ) {
+            // Add admistrator email.
+            $contact  = $lorisInstance
+                ->getConfiguration()
+                ->getSetting('mail')['From'];
+            $tpl_data = array(
+                         'message' => $message,
+                         'baseurl' => $baseurl,
+                         'contact' => $contact,
+                        );
+            // Add issue tracker data if the error is encountered by a user with
+            // the correct permissions.
+            $canReport = $user->hasAnyPermission(
+                [
+                 'issue_tracker_reporter',
+                 'issue_tracker_developer',
+                ]
+            );
+            if ($canReport) {
+                $tpl_data['issueTrackerURL'] = '/issue_tracker/issue/new';
+                $tpl_data['canReport']       = true;
+            }
+        }
 
         $template_file = (string) $status . '.tpl';
 

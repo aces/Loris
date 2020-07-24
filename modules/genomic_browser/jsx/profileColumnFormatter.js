@@ -27,11 +27,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       );
       break;
     }
-    case 'Subproject':
-      reactElement = (
-        <td>{loris.subprojectList[cell]}</td>
-      );
-      break;
     case 'File':
       if (cell === 'Y') {
         reactElement = (
@@ -54,14 +49,15 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       if (cell === 'Y') {
         reactElement = (
           <td>
-            <span
+            <a
               style={{cursor: 'pointer'}}
               onClick={loris.loadFilteredMenuClickHandler(
-                'genomic_browser/' + column.toLowerCase() + '_browser/', {DCCID: rowData[1]}
+                'genomic_browser/' + column.toLowerCase() + '_browser/',
+                {DCCID: rowData[1]}
               )}
             >
               {cell}
-            </span>
+            </a>
           </td>
         );
       } else {

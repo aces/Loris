@@ -18,6 +18,10 @@ import Filter from 'jsx/Filter';
  * Deprecates Filter Form.
  */
 class FilterableDataTable extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -44,6 +48,11 @@ class FilterableDataTable extends Component {
     history.replaceState({}, '', '?');
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const filter = (
       <Filter
@@ -110,12 +119,12 @@ FilterableDataTable.defaultProps = {
 FilterableDataTable.propTypes = {
   name: PropTypes.string.isRequired,
   title: PropTypes.string,
-  data: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
   filterPresets: PropTypes.object,
-  fields: PropTypes.object.isRequired,
+  fields: PropTypes.array.isRequired,
   columns: PropTypes.number,
   getFormattedCell: PropTypes.func,
-  actions: PropTypes.object,
+  actions: PropTypes.array,
 };
 
 export default FilterableDataTable;

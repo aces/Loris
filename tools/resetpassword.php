@@ -30,7 +30,7 @@ $user = $args[1];
 
 $validate = $DB->pselectOne(
     "SELECT UserID FROM users WHERE UserID=:username",
-    array("username" => $user)
+    ["username" => $user]
 );
 if (empty($validate)) {
     fwrite(STDERR, "Invalid username: $user\n");
@@ -49,5 +49,5 @@ $newHash = password_hash($newPass, PASSWORD_DEFAULT);
 
 // this script is assumed to be being run by an admin, since they have local
 // access to the server. There's no validation of the old password.
-$DB->update("users", array("Password_hash" => $newHash), array("UserID" => $user));
+$DB->update("users", ["Password_hash" => $newHash], ["UserID" => $user]);
 echo "\nUpdated password for $user\n";

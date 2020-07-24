@@ -59,7 +59,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
              INNER JOIN candidate c ON c.CandID=s.CandID
              LEFT JOIN language l USING (language_id)
              WHERE s.Active='Y' and c.Active='Y'",
-            array()
+            []
         );
     }
 

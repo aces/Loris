@@ -1,7 +1,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `permissions`;
 LOCK TABLES `permissions` WRITE;
-INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (1,'superuser','There can be only one Highlander',1);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (1,'superuser','Superuser - supersedes all permissions',1);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (2,'user_accounts','User management',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (3,'user_accounts_multisite','Across all sites create and edit users',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (4,'context_help','Edit help documentation',2);
@@ -63,5 +63,11 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (61,'electrophysiology_browser_view_site','View own site Electrophysiology Browser pages',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (62,'module_manager_view','Module Manager: access the module',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (63,'module_manager_edit','Module Manager: edit installed modules',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (64,'candidate_dod_edit','Edit dates of death',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (65,'violated_scans_view_ownsite','Violated Scans: View Violated Scans from own site',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (66,'document_repository_edit','Document Repository: Upload and edit files',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (67,'survey_accounts_view','Survey Accounts: view module',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (68,'imaging_quality_control_view','Imaging Quality Control: view module',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (69,'behavioural_quality_control_view','Behavioural Quality Control: view module',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

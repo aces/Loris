@@ -46,6 +46,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         $this->user          = $user;
         $this->lorisinstance = new \LORIS\LorisInstance(
             \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
             [
              $projectdir . "/modules",
              $moduledir,
@@ -91,7 +92,8 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $modulename = $components[0];
         }
 
-        $factory = \NDB_Factory::singleton();
+        $factory  = \NDB_Factory::singleton();
+        $ehandler = new \LORIS\Middleware\ExceptionHandlingMiddleware();
         if ($this->lorisinstance->hasModule($modulename)) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
@@ -107,7 +109,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $module  = \Module::factory($modulename);
             $mr      = new ModuleRouter($module);
             $request = $request->withURI($suburi);
-            return $mr->handle($request);
+            return $ehandler->process($request, $mr);
         }
         // Legacy from .htaccess. A CandID goes to the timepoint_list
         // FIXME: This should all be one candidates module, not a bunch
@@ -115,43 +117,28 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         if (preg_match("/^([0-9]{6})$/", $components[0])) {
             // FIXME: This assumes the baseURL is under /
             $path    = $uri->getPath();
-            $baseurl = $uri->withPath("/")->withQuery("");
+            $baseurl = $uri->withPath("")->withQuery("");
 
             $factory->setBaseURL($baseurl);
-
-            switch (count($components)) {
-                case 1:
-                    $request = $request
-                    ->withAttribute("baseurl", rtrim($baseurl->__toString(), '/'))
-                    ->withAttribute("CandID", $components[0]);
-                    $module  = \Module::factory("timepoint_list");
-                    $mr      = new ModuleRouter($module);
-                    return $mr->handle($request);
-                case 2:
-                    // CandID/SessionID, inherited from htaccess
-                    $request = $request
-                    ->withAttribute("baseurl", $baseurl->__toString())
-                    ->withAttribute("CandID", $components[0]);
-                    // FIXME: Validate CandID is valid before continuing.
-                    $request    = $request
-                    ->withAttribute(
-                        "TimePoint",
-                        \TimePoint::singleton($components[1])
-                    );
-                        $module = \Module::factory("instrument_list");
-                        $mr     = new ModuleRouter($module);
-                    return $mr->handle($request);
-                default:
-                    // Fall through to 404. We don't have any routes that go farther
-                    // than 2 levels..
+            if (count($components) == 1) {
+                $request = $request
+                ->withAttribute("baseurl", $baseurl->__toString())
+                ->withAttribute("CandID", $components[0]);
+                $module  = \Module::factory("timepoint_list");
+                $mr      = new ModuleRouter($module);
+                return $ehandler->process($request, $mr);
             }
         }
 
-        return (new \LORIS\Middleware\PageDecorationMiddleware(
-            $this->user
-        ))->process(
+        // Fall through to 404. We don't have any routes that go farther
+        // than 1 level..
+        return $ehandler->process(
             $request,
-            new NoopResponder(new \LORIS\Http\Error($request, 404))
+            (new \LORIS\Middleware\PageDecorationMiddleware($this->user))
+                ->process(
+                    $request,
+                    new NoopResponder(new \LORIS\Http\Error($request, 404))
+                )
         );
     }
 }
