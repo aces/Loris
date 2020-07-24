@@ -18,7 +18,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  */
 class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
-    protected $projectIdTest = "Pumpernickel";
+    protected $projectName = "Pumpernickel";
 
     /**
      * Call to LorisApiAuthenticationTest::setUp()
@@ -141,7 +141,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectIdTest",
+            "projects/$this->projectName",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -203,7 +203,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectIdTest/candidates",
+            "projects/$this->projectName/candidates",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -262,7 +262,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectIdTest/images",
+            "projects/$this->projectName/images",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -407,7 +407,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectIdTest/visits",
+            "projects/$this->projectName/visits",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -469,7 +469,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectIdTest/instruments",
+            "projects/$this->projectName/instruments",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -566,7 +566,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectIdTest/instruments/aosi",
+            "projects/$this->projectName/instruments/aosi",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
