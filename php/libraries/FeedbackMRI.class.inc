@@ -144,9 +144,9 @@ class FeedbackMRI
                       FROM feedback_mri_comments
                   WHERE ".$this->_buildWhere();
 
-        $result = $DB->pselect($query, array());
+        $result = $DB->pselect($query, []);
 
-        $comments = array();
+        $comments = [];
         // build the output array
         if (is_array($result)) {
             foreach ($result as $row) {
@@ -184,14 +184,14 @@ class FeedbackMRI
                     FROM feedback_mri_predefined_comments
                   WHERE CommentTypeID=:CTID";
 
-        $result = $DB->pselect($query, array('CTID' => $commentTypeID));
+        $result = $DB->pselect($query, ['CTID' => $commentTypeID]);
 
         // build the output array
-        $comments = array();
+        $comments = [];
         if (is_array($result)) {
             foreach ($result as $row) {
                 $PredefinedID       = $row['PredefinedCommentID'];
-                $preDefinedComments = array();
+                $preDefinedComments = [];
                 $preDefinedComments['Comment'] = stripslashes($row['Comment']);
                 $comments[$PredefinedID]       = $preDefinedComments;
             }
@@ -222,7 +222,7 @@ class FeedbackMRI
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
 
-        $parameterTypeID = $DB->pselectOne($query, array('FName' => $fieldName));
+        $parameterTypeID = $DB->pselectOne($query, ['FName' => $fieldName]);
         if (empty($parameterTypeID)) {
             return false;
         }
@@ -234,10 +234,10 @@ class FeedbackMRI
 
         $value = $DB->pselectOne(
             $query,
-            array(
+            [
                 'PTID' => $parameterTypeID,
                 'FID'  => $this->fileID,
-            )
+            ]
         );
         if (empty($value)) {
             return false;
@@ -268,7 +268,7 @@ class FeedbackMRI
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
 
-        $parameterTypeID = $DB->pselectOne($query, array('FName' => $fieldName));
+        $parameterTypeID = $DB->pselectOne($query, ['FName' => $fieldName]);
         if (empty($parameterTypeID)) {
             return false;
         }
@@ -280,31 +280,31 @@ class FeedbackMRI
 
         $updateNeeded = $DB->pselectOne(
             $query,
-            array(
+            [
                 'PTID' => $parameterTypeID,
                 'FID'  => $this->fileID,
-            )
+            ]
         );
 
         // build the query
         if ($updateNeeded) {
             $DB->update(
                 'parameter_file',
-                array('Value' => $value),
-                array(
+                ['Value' => $value],
+                [
                     'ParameterTypeID' => $parameterTypeID,
                     'FileID'          => $this->fileID,
-                )
+                ]
             );
         } else {
             $DB->insert(
                 'parameter_file',
-                array(
+                [
                     'Value'           => $value,
                     'ParameterTypeID' => $parameterTypeID,
                     'FileID'          => $this->fileID,
                     'InsertTime'      => time(),
-                )
+                ]
             );
         }
 
@@ -329,17 +329,17 @@ class FeedbackMRI
                     FROM feedback_mri_comment_types
                   WHERE CommentType=:CT";
 
-        $result = $DB->pselect($query, array('CT' => $this->objectType));
+        $result = $DB->pselect($query, ['CT' => $this->objectType]);
 
         // build the output array and keep overall section at the end of the array
-        $commentNames = array();
-        $overallName  = array();
-        $overallType  = array();
+        $commentNames = [];
+        $overallName  = [];
+        $overallType  = [];
         if (is_array($result)) {
             foreach ($result as $row) {
                 $CommentName = $row['CommentName'];
                 $CTID        = $row['CommentTypeID'];
-                $statusField = array();
+                $statusField = [];
                 // deal with CommentStatusField
                 if (!empty($row['CommentStatusField'])) {
                     $statusField = unserialize($row['CommentStatusField']);
@@ -349,18 +349,18 @@ class FeedbackMRI
                 // commentNames array we want them only at the end
                 if ($CommentName == "Overall") {
                     $overallType = $CTID;
-                    $overallName = array(
+                    $overallName = [
                         'name'   => stripslashes($CommentName),
                         'field'  => $statusField['field'] ?? 'overall',
                         'values' => $statusField['values'] ?? '',
-                    );
+                    ];
                 } else {
                     // add a row to the output array
-                    $commentNames[$CTID] = array(
+                    $commentNames[$CTID] = [
                         'name'   => stripslashes($CommentName) ?? '',
                         'field'  => $statusField['field'] ?? '',
                         'values' => $statusField['values'] ?? '',
-                    );
+                    ];
                 }
 
                 unset($statusField);
@@ -408,7 +408,7 @@ class FeedbackMRI
         $DB = \Database::singleton();
 
         // object identifier
-        $set = array();
+        $set = [];
         if ($this->objectType == 'volume') {
             // per-volume
             $set['FileID'] = $this->fileID;
@@ -429,7 +429,7 @@ class FeedbackMRI
 
             $commentTypeID = $DB->pselectOne(
                 $subquery,
-                array('PCID' => $predefinedCommentID)
+                ['PCID' => $predefinedCommentID]
             );
 
             if (empty($commentTypeID)) {
@@ -482,10 +482,10 @@ class FeedbackMRI
         // build the where depending on object and subject type
         if ($this->objectType == 'volume') {
             // per-volume
-            $where = array('FileID' => $this->fileID);
+            $where = ['FileID' => $this->fileID];
         } else {
             // per-visit
-            $where = array('SessionID' => $this->sessionID);
+            $where = ['SessionID' => $this->sessionID];
         }
         return $where;
     }

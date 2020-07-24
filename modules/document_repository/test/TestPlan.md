@@ -1,4 +1,6 @@
-1. User has access to document repository if they have the "View and upload files in Document Repository” permission or is the super user.
+# Document Repository Test Plan
+
+1. User has access to document repository if they have one of the `document_repository_*` permissions or `superuser`.
    [Automation Testing]
 2. Create a category and a sub category.
    [Automation Testing]
@@ -16,8 +18,7 @@
    [Manual Testing]
 9. Add files in the repository to test search according to file name, file type, version, site and uploaded by.
    [Manual Testing]
-10. Check that when performing a search without global filtering, the categories
-   containing the resulting files (and only those) are shown in a list format. 
+10. Check that when performing a search without global filtering, the resulting files which are under the current category are shown in a list format. 
    [Manual Testing]
 11. Check that when performing a search with global filtering, all files matching the filtered case 
    (regardless of category) are shown in a list format. 
@@ -28,20 +29,22 @@
    [Manual Testing]
 14. Edit a file in the repository: check that “Date Uploaded” date is updated.
     [Manual Testing]
-15. Check that the preference “Receive Document Repository Notifications” works.
-    [Manual Testing]
-16. Check that the performance is OK with large number of files.
-    [Manual Testing]
-17. Check that if you have the 'Receive document repository notification' activated you will receive an email each 
-    time one of the following event occurs:
+15. Visit the My Preferences module and enable notifications for the document_repository.
+    Make sure that you are notified for the follow changes:
        - Addition, deletion or modification of a file (by a user other than yourself)
        - Addition of a category (by a user other than yourself)
-    Also check that the www address contained in the notification email is correct.
     [Manual Testing]
-18. To upload large files, check that the following settings are in php.ini (default: /etc/php/{php_version}/apache2/php.ini):
-      session.gc_maxlifetime = 10800
-      max_input_time = 10800
-      max_execution_time = 10800
-      upload_max_filesize = 1024M
-      post_max_size = 1024M 
+16. Try uploading a file that exceeds the max upload limit. Ensure that an error message occurs
+    when the server has detected that the file is too large.
     [Manual Testing]
+
+### Widget registration on the dashboard page
+
+17. Verify that if a user has the 'View and upload files in Document Repository' or 'Delete files in Document Repository' 
+    permission, the latest documents to have been edited or uploaded in the document repository are displayed (4 at most) 
+    in the Document Repository panel. Clicking on a document will display it in the browser. Clicking on the Document
+    Repository button takes you to the Document Repository page.
+    [Automate Test]
+18. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document Repository panel. [Automate Test]
+19. Check that a 'New' notification is not labeled 'New' anymore after login in again. [Manual Test]
+

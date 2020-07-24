@@ -9,7 +9,7 @@ CREATE TABLE `permissions_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `permissions_category` VALUES 
+INSERT INTO `permissions_category` VALUES
   (1,'Roles'),
   (2,'Permission');
 
@@ -49,7 +49,7 @@ CREATE TABLE `user_perm_rel` (
 
 
 INSERT INTO `permissions` VALUES
-    (1,'superuser','There can be only one Highlander','1'),
+    (1,'superuser','Superuser - supersedes all permissions','1'),
     (2,'user_accounts','User management','2'),
     (3,'user_accounts_multisite','Across all sites create and edit users','2'),
     (4,'context_help','Edit help documentation','2'),
@@ -75,13 +75,12 @@ INSERT INTO `permissions` VALUES
     (25,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2'),
     (28,'instrument_builder', 'Instrument Builder: Create and Edit instrument forms', '2'),
     (29,'data_dict_edit','Edit Data Dictionary','2'),
-    (30,'quality_control','Quality Control access','2'),
     (31,'candidate_parameter_view','View Candidate Parameters','2'),
     (32,'candidate_parameter_edit','Edit Candidate Parameters','2'),
     (33,'genomic_browser_view_site','View Genomic Browser data from own site','2'),
     (34,'genomic_browser_view_allsites','View Genomic Browser data across all sites','2'),
-    (35,'document_repository_view','View and upload files in Document Repository','2'),
-    (36,'document_repository_delete','Delete files in Document Repository','2'),
+    (35,'document_repository_view','Document Repository: View','2'),
+    (36,'document_repository_delete','Document Repository: Delete','2'),
     (37,'server_processes_manager','View and manage server processes','2'),
     (38,'imaging_uploader','Imaging Uploader','2'),
     (39,'acknowledgements_view','View Acknowledgements','2'),
@@ -109,12 +108,17 @@ INSERT INTO `permissions` VALUES
     (61,'battery_manager_edit','Add, activate, and deactivate entries in Test Battery',2),
     (62,'module_manager_view', 'Module Manager: access the module', 2),
     (63,'module_manager_edit', 'Module Manager: edit installed modules', 2),
-    (64,'candidate_dod_edit', 'Edit dates of death', 2);
+    (64,'candidate_dod_edit', 'Edit dates of death', 2),
+    (65,'violated_scans_view_ownsite','Violated Scans: View Violated Scans from own site','2'),
+    (66,'document_repository_edit','Document Repository: Edit and Upload','2'),
+    (67,'survey_accounts_view', 'Survey Accounts: View module', 2),
+    (68,'imaging_quality_control_view','Imaging Quality Control: View module','2'),
+    (69,'behavioural_quality_control_view','Behavioural Quality Control: View module','2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
-  SELECT u.ID, p.permID 
-  FROM users u JOIN permissions p 
-  WHERE u.userid = 'admin' 
+  SELECT u.ID, p.permID
+  FROM users u JOIN permissions p
+  WHERE u.userid = 'admin'
   ORDER BY p.permID;
 
 -- permissions for each notification module

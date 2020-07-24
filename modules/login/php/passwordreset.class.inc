@@ -34,7 +34,7 @@ class PasswordReset extends \NDB_Form
     function setup()
     {
         $this->tpl_data['page_title'] = 'Reset Password';
-        $this->addBasicText("username", "", array("required" => true));
+        $this->addBasicText("username", "", [], ["required" => true]);
 
     }
 
@@ -72,14 +72,13 @@ class PasswordReset extends \NDB_Form
                 // reset the password in the database
                 // expire password so user must change it upon login
                 $user->updatePassword(
-                    new \Password($password),
-                    new \DateTime('1999-01-01')
+                    new \Password($password)
                 );
 
                 // send the user an email
                 $factory = \NDB_Factory::singleton();
 
-                $msg_data          = array();
+                $msg_data          = [];
                 $msg_data['study'] = $config->getSetting('title');
                 $msg_data['url']   = $factory->settings()->getBaseURL();
                 $msg_data['realname'] = $user->getData('Real_name');

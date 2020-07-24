@@ -86,9 +86,9 @@ class LogPanel extends Component {
       this.setState({logText: uploadProgress.getProgressText()});
       // If the pipeline is still running, start polling
       // If the pipeline is not running, end the polling (if any was started)
-      this.setServerPolling(
-        uploadProgress.getPipelineStatus() === UploadProgress.PIPELINE_STATUS_RUNNING
-      );
+      const pipelineStatus = uploadProgress.getPipelineStatus();
+      const pipelineStatusRunning = UploadProgress.PIPELINE_STATUS_RUNNING;
+      this.setServerPolling(pipelineStatus === pipelineStatusRunning);
     }.bind(this)); // post call
   }
 

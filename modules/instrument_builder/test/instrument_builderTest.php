@@ -11,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
               "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -49,7 +49,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentBuilderDoespageLoadWithPermission()
     {
-        $this->setupPermissions(array("instrument_builder"));
+        $this->setupPermissions(["instrument_builder"]);
         $this->safeGet($this->url . "/instrument_builder/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
@@ -64,7 +64,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentBuilderDoespageLoadWithoutPermission()
     {
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/instrument_builder/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();

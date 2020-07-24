@@ -65,9 +65,10 @@ class Attachment extends \NDB_Page implements ETagCalculator
                         issues_attachments
                     WHERE
                         ID = :ID';
-        $result  = $DB->pselectRow($query, array('ID' => $ID));
+        $result  = $DB->pselectRow($query, ['ID' => $ID]);
 
-        $config = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
         $attachment_data_dir = rtrim(
             $config->getSetting('IssueTrackerDataPath'),
             '/'
@@ -137,11 +138,11 @@ class Attachment extends \NDB_Page implements ETagCalculator
             $DB      = $factory->database();
             $DB->update(
                 'issues_attachments',
-                array('deleted' => 1),
-                array('ID' => $ID)
+                ['deleted' => 1],
+                ['ID' => $ID]
             );
             return new \LORIS\Http\Response\JsonResponse(
-                array('success' => true)
+                ['success' => true]
             );
         }
         return new \LORIS\Http\Response\JSON\Forbidden(
@@ -175,7 +176,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
                         AND USER = :user;';
         $result   = $DB->pselectOne(
             $query,
-            array('ID' => $ID, 'user' => $username)
+            ['ID' => $ID, 'user' => $username]
         );
         // Check if User shouldn't be able to Delete.
         if (empty($result)
@@ -211,11 +212,11 @@ class Attachment extends \NDB_Page implements ETagCalculator
      */
     protected function allowedMethods(): array
     {
-        return array(
+        return [
             'GET',
             'POST',
             'DELETE'
-        );
+        ];
     }
 
     /**
@@ -229,10 +230,10 @@ class Attachment extends \NDB_Page implements ETagCalculator
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'issue_tracker_reporter',
                 'issue_tracker_developer'
-            )
+            ]
         );
     }
 

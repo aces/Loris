@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -32,7 +33,7 @@ class ModuleManagerTest extends LorisIntegrationTest
      */
     function testLoadPageWithoutPermission()
     {
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/module_manager/");
 
         // Test that the Imaging menu appears in the first row
@@ -55,7 +56,7 @@ class ModuleManagerTest extends LorisIntegrationTest
     function testLoadPageWithPermission()
     {
         // View permission
-        $this->setupPermissions(array("module_manager_view"));
+        $this->setupPermissions(["module_manager_view"]);
         $this->safeGet($this->url . "/module_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -67,7 +68,7 @@ class ModuleManagerTest extends LorisIntegrationTest
         $this->resetPermissions();
 
         // Edit permission
-        $this->setupPermissions(array("module_manager_edit"));
+        $this->setupPermissions(["module_manager_edit"]);
         $this->safeGet($this->url . "/module_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -79,7 +80,7 @@ class ModuleManagerTest extends LorisIntegrationTest
         $this->resetPermissions();
 
         // Both
-        $this->setupPermissions(array("module_manager_view", "module_manager_edit"));
+        $this->setupPermissions(["module_manager_view", "module_manager_edit"]);
         $this->safeGet($this->url . "/module_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

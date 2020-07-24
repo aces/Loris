@@ -11,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/".
     "LorisIntegrationTest.class.inc";
@@ -36,9 +36,6 @@ class ConfigurationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1280, 1024);
-        $window->setSize($size);
     }
 
     /**
@@ -50,7 +47,7 @@ class ConfigurationTest extends LorisIntegrationTest
     {
         $this->DB->delete(
             "subproject",
-            array('title' => 'Test Test Test')
+            ['title' => 'Test Test Test']
         );
         parent::tearDown();
     }
@@ -79,7 +76,7 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testConfigPermission()
     {
-         $this->setupPermissions(array("config"));
+         $this->setupPermissions(["config"]);
          $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -94,7 +91,7 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testConfigWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

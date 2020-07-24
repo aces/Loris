@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 define("DEBUG", false);
 
 /**
@@ -56,13 +57,13 @@ class Database
      * NOTE There is no return type declaration for this function as it returns
      * the type `Database` which is not supported by PHPs built in return types.
      *
-     * @param string  $database     the database to select
-     * @param string  $username     the username with which to log into
-     *                              the database server
-     * @param string  $password     the password that matches the username
-     * @param string  $host         the name of the database server
-     * @param boolean $trackChanges boolean determining if changes should be
-     *                              logged to the history table
+     * @param string $database     the database to select
+     * @param string $username     the username with which to log into
+     *                             the database server
+     * @param string $password     the password that matches the username
+     * @param string $host         the name of the database server
+     * @param bool   $trackChanges boolean determining if changes should be
+     *                             logged to the history table
      *
      * @return \Database
      * @throws \DatabaseException
@@ -73,10 +74,10 @@ class Database
         string $username     = '',
         string $password     = '',
         string $host         = '',
-        bool   $trackChanges = true
+        bool $trackChanges = true
     ): \Database {
 
-        static $connections = array();
+        static $connections = [];
 
         // if no arguments, try to get the first connection or choke
         if (empty($database)
@@ -126,19 +127,19 @@ class Database
      *                                  the database server
      * @param string|null $password     the password that matches the username
      * @param string|null $host         the name of the database server
-     * @param boolean     $trackChanges whether to use the trackChanges
+     * @param bool        $trackChanges whether to use the trackChanges
      *                                  mechanism on this connection
      *
      * @return bool True if DB connection established. False otherwise.
      * @access public
      */
     function connect(
-        $database,
+        string $database,
         ?string $username,
         ?string $password,
         ?string $host,
-        bool   $trackChanges = true
-    ) : bool {
+        bool $trackChanges = true
+    ): bool {
 
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
@@ -219,7 +220,7 @@ class Database
     /**
      * Determines whether the database connection is alive
      *
-     * @return boolean
+     * @return bool
      * @access public
      */
     function isConnected(): bool
@@ -241,8 +242,8 @@ class Database
      * This will insert a row. HTML from any field in the row will be automatically
      * escaped to avoid injection.
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the new row
+     * @param string               $table the table into which to insert the row
+     * @param array<string,string> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -258,8 +259,8 @@ class Database
      * automatically escaped. This should only be called when we know the source of
      * the input is trustworthy and must contain HTML.
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the new row
+     * @param string               $table the table into which to insert the row
+     * @param array<string,string> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -274,8 +275,8 @@ class Database
      * This will insert a row. HTML from any field in the row will be automatically
      * escaped to avoid injection.
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the new row
+     * @param string               $table the table into which to insert the row
+     * @param array<string,string> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -292,8 +293,8 @@ class Database
      * value for any unique key, the row where the duplicate is present will be
      * updated.
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the row
+     * @param string               $table the table into which to insert the row
+     * @param array<string,string> $set   the values with which to fill the row
      *
      * @return bool
      */
@@ -335,8 +336,8 @@ class Database
      * value for any unique key, the row where the duplicate is present will be
      * updated. HTML from any field in the row will *not* be automatically escaped.
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the row
+     * @param string               $table the table into which to insert the row
+     * @param array<string,string> $set   the values with which to fill the row
      *
      * @return bool
      */
@@ -357,13 +358,13 @@ class Database
      *
      * This function alone does not guarantee safety.
      *
-     * @param array $set The array to be inserted as a new row
+     * @param array<string,string> $set The array to be inserted as a new row
      *
-     * @return array A copy of $set with the HTML characters escaped
+     * @return array<string,string> A copy of $set with the HTML characters escaped
      */
     private function _HTMLEscapeArray(array $set): array
     {
-        $retVal = array();
+        $retVal = [];
         foreach ($set as $key => $val) {
             /* FIXME this check is only here because of a quirk of the
              * imaging browser. The module should be refactored and this check
@@ -384,24 +385,31 @@ class Database
      *
      * Inserts a single row into the specified table, containing the values specified
      *
-     * @param string $table             the table into which to insert the row
-     * @param array  $set               the values with which to fill the new row
-     * @param bool   $autoescape        determines whether the values to be set
-     *                                  should automatically have the html escaped
-     * @param bool   $ignore            determines whether the insert throws an
-     *                                  error or is discarded when value exists in DB
-     * @param bool   $onDuplicateUpdate determines whether the row should be updated
-     *                                  upon unique key duplication
+     * @param string               $table             the table into which to
+     *                                                insert the row
+     * @param array<string,string> $set               the values with which to
+     *                                                fill the new row
+     * @param bool                 $autoescape        determines whether the
+     *                                                values to be set
+     *                                                should automatically
+     *                                                have the html escaped
+     * @param bool                 $ignore            determines whether the insert
+     *                                                throws an
+     *                                                error or is discarded
+     *                                                when value exists in DB
+     * @param bool                 $onDuplicateUpdate determines whether the row
+     *                                                should be updated
+     *                                                upon unique key duplication
      *
      * @return bool
      */
     private function _realinsert(
         string $table,
-        array  $set,
-        bool   $autoescape = true,
-        bool   $ignore = false,
-        bool   $onDuplicateUpdate = false
-    ) : bool {
+        array $set,
+        bool $autoescape = true,
+        bool $ignore = false,
+        bool $onDuplicateUpdate = false
+    ): bool {
         if ($ignore && $onDuplicateUpdate) {
             throw new DatabaseException(
                 'The Database::_realinsert() function does not accept both ignore
@@ -419,7 +427,7 @@ class Database
         $prepQ  = $query;
         $query .= $this->_implodeWithKeys(', ', $set, 'set_');
 
-        $exec_params = array();
+        $exec_params = [];
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
 
         if ($onDuplicateUpdate) {
@@ -472,8 +480,8 @@ class Database
      * Replaces into the table such if there already exists a row with
      * the same primary key it will be replaced by the new row
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the new row
+     * @param string               $table the table into which to insert the row
+     * @param array<string,string> $set   the values with which to fill the new row
      *
      * @return void
      * @access public
@@ -504,9 +512,10 @@ class Database
      * Updates a single row in the specified table. This will automatically escape
      * any HTML in the data being inserted for security.
      *
-     * @param string $table   the table into which to insert the row
-     * @param array  $set     the values with which to fill the new row
-     * @param array  $i_where the selection filter, joined as a boolean and
+     * @param string               $table   the table into which to insert the row
+     * @param array<string,string> $set     the values with which to fill the new row
+     * @param array<string,string> $i_where the selection filter, joined as a
+     *                                      boolean and
      *
      * @return void
      */
@@ -522,9 +531,11 @@ class Database
      * escape and should be used with caution, only when you know you need to
      * insert HTML and know that you can trust it.
      *
-     * @param string $table   the table into which to insert the row
-     * @param array  $set     the values with which to fill the new row
-     * @param array  $i_where the selection filter, joined as a boolean and
+     * @param string               $table   the table into which to insert the row
+     * @param array<string,string> $set     the values with which to fill the
+     *                                      new row
+     * @param array<string,string> $i_where the selection filter, joined as
+     *                                      a boolean and
      *
      * @return void
      */
@@ -542,14 +553,18 @@ class Database
      *
      * Updates a single row in the specified table
      *
-     * @param string $table      the table into which to insert the row
-     * @param array  $set        the values with which to fill the new row
-     * @param array  $i_where    the selection filter, joined as a boolean and
-     * @param bool   $autoescape determines whether the values to be set should
-     *                           automatically have the html escaped
+     * @param string               $table      the table into which to insert
+     *                                         the row
+     * @param array<string,string> $set        the values with which to fill
+     *                                         the new row
+     * @param array<string,string> $i_where    the selection filter, joined as
+     *                                         a boolean and
+     * @param bool                 $autoescape determines whether the values to
+     *                                         be set should
+     *                                         automatically have the html escaped
      *
      * @return bool Always true. An exception should be thrown if something goes
-     *              wrong.
+     *              wrong. FIXME This should probably be void.
      * @access public
      */
     private function _realupdate(
@@ -572,7 +587,7 @@ class Database
 
         /* This generates the version of the update statement which is
          * executed. */
-        $exec_params = array();
+        $exec_params = [];
         $prepQ       = "UPDATE $table SET ";
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params, 'set_');
         $prepQ      .= " WHERE ";
@@ -615,8 +630,9 @@ class Database
      *
      * Deletes a single row in the specified table
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $where the selection filter, joined as a boolean and
+     * @param string               $table the table into which to insert the row
+     * @param array<string,string> $where the selection filter, joined as
+     *                                    a boolean and
      *
      * @return void
      * @access public
@@ -641,7 +657,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $this->trackChanges($table, array(), $where, 'D');
+        $this->trackChanges($table, [], $where, 'D');
 
         $this->_printQuery($query);
         $result = $this->_PDO->exec($query);
@@ -687,7 +703,7 @@ class Database
      *
      * @return PDOStatement A PDO prepared statement representing $query
      */
-    function prepare($query)
+    function prepare(string $query): PDOStatement
     {
         return $this->_PDO->prepare($query);
     }
@@ -696,21 +712,24 @@ class Database
      * Executes a previously prepared statements using the variable
      * bindings given.
      *
-     * @param PDOStatement $prepared The prepared statement
-     * @param array        $params   The values to bind to the statement
-     *                               while executing it
-     * @param array        $options  A list of key=>value pairs.
-     *                               - nofetch : to prevent the fetchAll
-     *                               function to be excuted. Useful for
-     *                               insert or update prepared statements.
+     * @param PDOStatement         $prepared The prepared statement
+     * @param array<string,string> $params   The values to bind to the statement
+     *                                       while executing it
+     * @param array<string,string> $options  A list of key=>value pairs.
+     *                                       - nofetch : to prevent the
+     *                                       fetchAll function to be
+     *                                       excuted. Useful for insert
+     *                                       or update prepared
+     *                                       statements.
      *
-     * @return array An array of rows in the format ColName => Value after
-     *               executing the statement.
+     * @return array<int,array<string,string>> An array of rows in the format
+     *                                  ColName => Value after
+     *                                      executing the statement.
      */
     function execute(
-        $prepared,
+        PDOStatement $prepared,
         array $params,
-        array $options = array()
+        array $options = []
     ): array {
 
         $execRun = $prepared->execute($params);
@@ -720,7 +739,7 @@ class Database
         }
 
         if (!empty($options['nofetch']) && $options['nofetch'] == true) {
-            return array();
+            return [];
         }
 
         $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
@@ -736,10 +755,12 @@ class Database
     /**
      * Runs an SQL select statement as a prepared query
      *
-     * @param string $query  The SQL SELECT query to be run
-     * @param array  $params Values to use for binding to the prepared statement
+     * @param string               $query  The SQL SELECT query to be run
+     * @param array<string,string> $params Values to use for binding to the
+     *                                     prepared statement
      *
-     * @return array<string[]> An array of arrays containing the data.
+     * @return array<int,array<string,string>> An array of arrays containing
+     *                                          the data.
      *               The outside (non-associative array contains 1 element per
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
@@ -755,17 +776,19 @@ class Database
      * Runs an SQL select statement as a prepared query and re-indexes
      * the results using the given unique non-nullable key.
      *
-     * @param string $query     The SQL SELECT query to be run
-     * @param array  $params    Values to use for binding to the prepared statement
-     * @param string $uniqueKey Key to use when re-indexing, this key must be a
-     *                          single column, must be unique and must not be
-     *                          nullable
+     * @param string               $query     The SQL SELECT query to be run
+     * @param array<string,string> $params    Values to use for binding to the
+     *                                        prepared statement
+     * @param string               $uniqueKey Key to use when re-indexing, this
+     *                                        key must be a single column and
+     *                                        must be unique
      *
      * @throws LorisException     If the supplied key is empty or null
      * @throws DatabaseException  If the key is not part of the query itself
      * @throws DatabaseException  If the key is not unique within the resulting set
      *
-     * @return array An array of arrays containing the data. The outermost array is
+     * @return array<string,array<string,string>> An array of arrays containing
+     *                                  the data. The outermost array is
      *                  associative and uses the supplied $uniqueKey parameter as
      *                  a key for each of the sub-arrays with the format
      *                  rowPrimaryKey=>rowValuesArray. Each nested array represents
@@ -777,7 +800,7 @@ class Database
         string $query,
         array $params,
         string $uniqueKey
-    ) {
+    ): array {
 
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
@@ -793,7 +816,7 @@ class Database
             return $result;
         }
 
-        $filteredResult = array();
+        $filteredResult = [];
         // re-order the return array
         foreach ($result as $row) {
             // Check first that the row contains the primary key supplied
@@ -830,13 +853,17 @@ class Database
      * associative array. Automatically adds a limit clause to the query being
      * run for efficiency.
      *
-     * @param string $query  The SQL SELECT query to be run
-     * @param array  $params Values to use for binding to prepared statement
+     * @param string               $query  The SQL SELECT query to be run
+     * @param array<string,string> $params Values to use for binding to prepared
+     *                                     statement
      *
-     * @return ?array Associative array of form ColumnName => Value for each column
-     *                in the first row of the query
+     * @return array<string,string>|null Associative array of form
+     *                              ColumnName => Value for each column in the
+     *                              first row of the query, or null.
+     *
+     * @throws \DomainException When the query returns multiple rows.
      */
-    function pselectRow(string $query, array $params) : ?array
+    function pselectRow(string $query, array $params): ?array
     {
         $rows = $this->pselect($query . " LIMIT 2", $params);
         if (count($rows) > 1) {
@@ -849,22 +876,23 @@ class Database
 
     /**
      * Runs a query as a prepared statement and returns the values of the
-     * column given in the select statement. If multiple columns are given, an error
-     * is thrown.
+     * column given in the select statement. If multiple columns are given,
+     * an error is thrown.
      *
-     * @param string $query  The SQL SELECT query to be run
-     * @param array  $params Values to use for binding to prepared statement
+     * @param string               $query  The SQL SELECT query to be run
+     * @param array<string,string> $params Values to use for binding to prepared
+     *                                     statement
      *
      * @throws DatabaseException if the query selected more than one column
      *
-     * @return array Associative array of form rowID=>value containing all values
-     *               for the only column of the select statement
+     * @return array<string,string> Format: rowID=>value containing
+     *               all values for the only column of the select statement
      */
-    function pselectCol(string $query, array $params)
+    function pselectCol(string $query, array $params): array
     {
         $unprocessed = $this->pselect($query, $params);
 
-        $result = array();
+        $result = [];
         foreach ($unprocessed as $k=>$row) {
             $colNumber = count($row);
             if ($colNumber !== 1) {
@@ -886,25 +914,26 @@ class Database
      * the results using the given unique non-nullable key in the same
      * format as the pselectCol() function.
      *
-     * @param string $query     The SQL SELECT query to be run
-     * @param array  $params    Values to use for binding to the prepared statement
-     * @param string $uniqueKey Key to use when re-indexing, this key must be a
-     *                          single column, must be unique and must not be
-     *                          nullable
+     * @param string               $query     The SQL SELECT query to be run
+     * @param array<string,string> $params    Values to use for binding to the
+     *                                        prepared statement
+     * @param string               $uniqueKey Key to use when re-indexing, this
+     *                                        key must be a single column and
+     *                                        must be unique
      *
      * @throws LorisException     If the supplied key is empty or null
      * @throws DatabaseException  If the key is not part of the query itself or
      *                            if there are not exactly 2 columns selected
      * @throws DatabaseException  If the key is not unique within the resulting set
      *
-     * @return array Associative array of form uniqueKey=>value containing all
-     *               value for the non-uniqueKey element of the select statement
+     * @return array<string, string> Format: uniqueKey=>value containing all
+     *               values for the non-unique key element of the select statement
      */
     function pselectColWithIndexKey(
         string $query,
         array $params,
         string $uniqueKey
-    ) {
+    ): array {
 
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
@@ -920,7 +949,7 @@ class Database
             return $result;
         }
 
-        $filteredResult = array();
+        $filteredResult = [];
         // re-order the return array
         foreach ($result as $row) {
             $colNumber = count($row);
@@ -964,19 +993,17 @@ class Database
     /**
      * Runs a query as a prepared statement and returns the value of the first
      * column of the first row.
+     * Regardless of the type in the database, this function will return that
+     * value as a string. The calling code is responsible for doing the relevant
+     * validation with respect to the type of the data returned.
      *
-     * FIXME This function does not have a return type declaration because
-     * the function pselectRow will sometimes return a string and sometimes
-     * return an array. This behaviour should be made consistent (i.e. perhaps
-     * returning an array of a single element) so that we can properly enforce
-     * types.
+     * @param string               $query  The SQL statement to run
+     * @param array<string,string> $params Values to use for binding in the
+     *                                     prepared statement
      *
-     * @param string $query  The SQL statement to run
-     * @param array  $params Values to use for binding in the prepared statement
-     *
-     * @return mixed The value returned by the query: array, string, or false.
+     * @return ?string A single cell from the database.
      */
-    function pselectOne(string $query, array $params)
+    function pselectOne(string $query, array $params): ?string
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
@@ -986,14 +1013,42 @@ class Database
     }
 
     /**
+     * Helper function used to select a single cell from the database and convert
+     * it to an integer.
+     *
+     * @param string   $query  The SQL statement to run
+     * @param string[] $params Values to use for binding in the prepared statement
+     *
+     * @return ?int A cell from the database converted to an integer value. If
+     * the query returns a value that cannot be validated as an integer, the
+     * function returns null. The calling code is responsible for handling the
+     * null case appropriately.
+     *
+     * @throws \DomainException When the cell returned by the query cannot be
+     *                          validated as an integer.
+     */
+    function pselectOneInt(string $query, array $params): ?int
+    {
+        $result = filter_var(
+            $this->pselectOne($query, $params),
+            FILTER_VALIDATE_INT
+        );
+        if ($result === false) {
+            return null;
+        }
+
+        return $result;
+    }
+
+    /**
      * Implodes a hash including the keys (unlike php's implode)
      *
      * Sets each hash element into the format key='value', and then
      * implodes the resultant array with the specified glue
      *
-     * @param string $glue      The glue to pass to php's implode function
-     * @param array  $dataArray The array with keys to implode
-     * @param string $clause    The type of clause set_|where_
+     * @param string                $glue      The glue to pass to implode()
+     * @param array<string, string> $dataArray The array with keys to implode
+     * @param string                $clause    The type of clause set_|where_
      *
      * @return string
      */
@@ -1002,7 +1057,7 @@ class Database
         array $dataArray,
         string $clause = 'set_'
     ): string {
-        $output = array();
+        $output = [];
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
         }
@@ -1023,15 +1078,17 @@ class Database
      * Helper function to generate the string for the WHERE part of an update
      * or delete query. Generates the string in a prepared statement format.
      *
-     * @param string     $glue      The glue used to combine parts of the
-     *                              dataArray (ie " AND ").
-     * @param array      $dataArray The array representing the WHERE condition
-     *                              to be glued together into a string.
-     * @param array|null $exec_vals The values which are being bound to the
-     *                              query. Used to generate the prepared variable
-     *                              name.
-     * @param string     $prefix    A prefix to apply to prepared variable
-     *                              names.
+     * @param string                    $glue      The glue used to combine parts
+     *                                             of the dataArray (ie " AND ").
+     * @param array<string,string>      $dataArray The array representing the
+     *                                             WHERE condition to be glued
+     *                                             together into a string.
+     * @param array<string,string>|null $exec_vals The values which are being
+     *                                             bound to the query.
+     *                                             Used to generate the prepared
+     *                                             variable name.
+     * @param string                    $prefix    A prefix to apply to prepared
+     *                                             variable names.
      *
      * @return string A string that can be used to generate a prepared statement
      *                with appropriate variable names generated for data
@@ -1048,7 +1105,7 @@ class Database
             return '';
         }
 
-        $output = array();
+        $output = [];
         foreach ($dataArray as $key => $item ) {
             $varname = str_replace("%", "_percent_", $key);
             if (is_null($item)) {
@@ -1082,11 +1139,12 @@ class Database
      * Determines the difference between the old values and the new,
      * then saves a reference to that change
      *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the new row
-     * @param string $where the selection filter, joined as a boolean and
-     * @param string $type  The type of change being tracked (*I*nsert,
-     *                      *U*pdate or *D*elete)
+     * @param string               $table the table into which to insert the row
+     * @param array<string,string> $set   the values with which to fill the new row
+     * @param string               $where the selection filter, joined as a
+     *                                    boolean and
+     * @param string               $type  The type of change being tracked
+     *                                    (*I*nsert,*U*pdate or *D*elete)
      *
      * @return void As a side-effect populates history table
      */
@@ -1104,10 +1162,10 @@ class Database
         }
 
         // get the table description
-        $description = $this->pselect("SHOW INDEX FROM $table", array());
+        $description = $this->pselect("SHOW INDEX FROM $table", []);
 
         // find the primary key columns
-        $primaryKeys = array();
+        $primaryKeys = [];
         if (is_array($description)) {
             foreach ($description AS $column) {
                 if ($column['Key_name']=='PRIMARY') {
@@ -1140,7 +1198,7 @@ class Database
             foreach (array_keys($set) AS $column) {
                 $this->_preparedStoreHistory->bindParam(":histcolumn", $column);
                 // find the primary key values
-                $primaryValues = array();
+                $primaryValues = [];
 
                 $usePDOID = false;
                 foreach ($primaryKeys AS $key) {
@@ -1155,7 +1213,7 @@ class Database
                     if (is_array($this->lastInsertID)) {
                         $primaryValues = $this->lastInsertID;
                     } else {
-                        $primaryValues = array($this->lastInsertID);
+                        $primaryValues = [$this->lastInsertID];
                     }
                 }
 
@@ -1169,20 +1227,20 @@ class Database
             $query = "SELECT * FROM $table WHERE $where";
 
             // select the database data
-            $oldRows = $this->pselect($query, array());
+            $oldRows = $this->pselect($query, []);
 
             // track history for all affected rows
             foreach ($oldRows AS $oldRow) {
                 // compute the difference between the two arrays
                 if ($type == 'D') {
                     $delta = $oldRow;
-                    $set   = array();
+                    $set   = [];
                 } else {
                     $delta = array_diff_assoc($set, $oldRow);
                 }
 
                 // find the primary key values
-                $primaryValues = array();
+                $primaryValues = [];
                 foreach ($primaryKeys AS $key) {
                     $primaryValues[] = $oldRow[$key];
                 }
@@ -1209,15 +1267,18 @@ class Database
     /**
      * Print a query if showDatabaseQueries defined in config file
      *
-     * @param string $query  The query to replace
-     * @param array  $params The prepared statement parameters used for this query
-     *                       They will be replaced in the print statement so that the
-     *                       user knows what parameters were used.
+     * @param string                $query  The query to replace
+     * @param array<string, string> $params The prepared statement parameters
+     *                                      used for this query.
+     *                                      They will be replaced in the print
+     *                                      statement so that
+     *                                      the user knows what parameters
+     *                                      were used.
      *
      * @return void As a side-effect, prints to the screen if config option is
      *              enabled
      */
-    function _printQuery(string $query, array $params = array()): void
+    function _printQuery(string $query, array $params = []): void
     {
         if (!$this->_showQueries) {
             return;
@@ -1239,9 +1300,9 @@ class Database
      * without mocking every single query that needs to be used in
      * that test.
      *
-     * @param string $tableName The table name to fake
-     * @param array  $rowData   An array of data to be inserted into
-     *                          the fake table.
+     * @param string                $tableName The table name to fake
+     * @param array<string, string> $rowData   An array of data to be inserted into
+     *                                         the fake table.
      *
      * @return void
      */
@@ -1286,7 +1347,7 @@ class Database
      *
      * @param string $test_name The table to check for.
      *
-     * @return boolean true if the table exists
+     * @return bool true if the table exists
      */
     function tableExists(string $test_name): bool
     {
@@ -1299,10 +1360,10 @@ class Database
 
         $result = $this->pselectOne(
             $query,
-            array(
+            [
                 'tn' => $test_name,
                 'db' => $database['database'],
-            )
+            ]
         );
 
         if (!empty($result)) {
@@ -1317,7 +1378,7 @@ class Database
      * @param string $test_name The table to check for a column.
      * @param string $column    The column name to check the table for.
      *
-     * @return boolean true if the table has a the given column
+     * @return bool true if the table has a the given column
      */
     function columnExists(string $test_name, string $column): bool
     {
@@ -1330,11 +1391,11 @@ class Database
             AND TABLE_SCHEMA = :db";
         $effected = $this->pselectOne(
             $query,
-            array(
+            [
                 'tn' => $test_name,
                 'cn' => $column,
                 'db' => $database['database'],
-            )
+            ]
         );
         if ($effected) {
             return true;
@@ -1356,7 +1417,7 @@ class Database
         // http://php.net/manual/en/function.mysql-real-escape-string.php
         if (!empty($tableName) && is_string($tableName)) {
             $stringWithEscapedChars = str_replace(
-                array(
+                [
                     '\\',
                     "\0",
                     "\n",
@@ -1365,8 +1426,8 @@ class Database
                     '"',
                     "\x1a",
                     "`",
-                ),
-                array(
+                ],
+                [
                     '\\\\',
                     '\\0',
                     '\\n',
@@ -1375,7 +1436,7 @@ class Database
                     '\\"',
                     '\\Z',
                     "\\`",
-                ),
+                ],
                 $tableName
             );
             $fullyEscapedString     = "`".$stringWithEscapedChars."`";
@@ -1477,5 +1538,75 @@ class Database
             $this->_PDO->errorInfo[1],
             $this->_PDO->errorInfo[2]
         );
+    }
+
+    /**
+     * Returns the version information from the database, e.g.
+     *
+     *   +-------------------------+------------------------------+
+     *   | Variable_name           | Value                        |
+     *   +-------------------------+------------------------------+
+     *   | innodb_version          | 5.7.29                       |
+     *   | protocol_version        | 10                           |
+     *   | slave_type_conversions  |                              |
+     *   | tls_version             | TLSv1,TLSv1.1,TLSv1.2        |
+     *   | version                 | 5.7.29                       |
+     *   | version_comment         | MySQL Community Server (GPL) |
+     *   | version_compile_machine | x86_64                       |
+     *   | version_compile_os      | Linux                        |
+     *   +-------------------------+------------------------------+
+     *
+     * @return array<int,string[]> An associative array representing the results
+     *                  of the query.
+     */
+    private function _getServerVariables(): array
+    {
+        return $this
+            ->_PDO
+            ->query('show variables like "%version%"')
+            ->fetchAll();
+    }
+
+    /**
+     * Get a specific server variable from the database specified by
+     * $variable parameter.
+     *
+     * @param string $variable The name of a version variable. See function
+     *                         comment for _getServerVariables().
+     *
+     * @return string The value of the variable.
+     *
+     * @throws InvalidArgumentException
+     */
+    private function _getServerVariable(string $variable): string
+    {
+        foreach ($this->_getServerVariables() as $row) {
+            if (strtolower($variable) === $row['Variable_name']) {
+                return $row['Value'];
+            }
+        }
+        throw new InvalidArgumentException(
+            "Variable name `$variable` does not exist in the database"
+        );
+    }
+
+    /**
+     * Returns the numeric version result for the database.
+     *
+     * @return string Example: 5.7.29
+     */
+    public function getVersion(): string
+    {
+        return $this->_getServerVariable('version');
+    }
+
+    /**
+     * Returns the result of the 'version_comment' variable found in MySQL.
+     *
+     * @return string Example: "MySQL Community Server (GPL)"
+     */
+    public function getArchitecture(): string
+    {
+        return $this->_getServerVariable('version_comment');
     }
 }

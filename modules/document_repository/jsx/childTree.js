@@ -81,8 +81,9 @@ class ChildTree extends Component {
               </div>
                 {
                   Object.values(node)[2] !== null &&
-                    <div style={commentStyle} className="tip">{Object.values(node)[2]}</div>
-
+                    <div style={commentStyle}
+                         className="tip">{Object.values(node)[2]}
+                    </div>
                 }
             </div>
           </td>

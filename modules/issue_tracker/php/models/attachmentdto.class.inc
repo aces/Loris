@@ -35,7 +35,7 @@ class AttachmentDTO implements \LORIS\Data\DataInstance
     public function toJSON(): string
     {
         return json_encode(
-            array(
+            [
                 'ID'          => $this->ID,
                 'issueID'     => $this->issueID,
                 'file_hash'   => $this->file_hash,
@@ -46,7 +46,7 @@ class AttachmentDTO implements \LORIS\Data\DataInstance
                 'description' => $this->description,
                 'file_size'   => $this->file_size,
                 'mime_type'   => $this->mime_type,
-            )
+            ]
         );
     }
 }

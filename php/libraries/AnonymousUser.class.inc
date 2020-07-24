@@ -32,6 +32,6 @@ class AnonymousUser extends \User
      */
     public function getSiteNames() : array
     {
-        return array();
+        return [];
     }
 }

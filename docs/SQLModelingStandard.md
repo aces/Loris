@@ -99,7 +99,7 @@ infrastructure will be re-designed to follow this guideline.*
 ### Constraints
 
 - A **foreign key** constraint definition should contain `ON DELETE` and 
-  `ON UPDATE` clause. Do not rely on default behavior.
+  `ON UPDATE` clause. Do not rely on default behaviour.
 
 #### Naming
 - Although not an enforced rule, recommendation for naming constraint are 

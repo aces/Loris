@@ -17,10 +17,10 @@
     "require-dev" : {
         "squizlabs/php_codesniffer" : "3.5.3",
         "phpunit/phpunit" : "7.0.0",
-        "facebook/webdriver" : "dev-master",
-        "phan/phan": ">=2.3.0",
+        "phan/phan": ">=2.5.0",
         "phpmd/phpmd": "~2.8",
-        "phpstan/phpstan": "^0.12"
+        "phpstan/phpstan": "0.12.17",
+        "slevomat/coding-standard": "^6.0"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"

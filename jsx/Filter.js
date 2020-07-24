@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Filter component.
+ * Filter component
  * A wrapper for form elements inside a selection filter.
  *
  * Constructs filter fields based on this.props.fields configuration object
@@ -11,12 +11,19 @@ import PropTypes from 'prop-types';
  *
  */
 class Filter extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.onFieldUpdate = this.onFieldUpdate.bind(this);
     this.renderFilterFields = this.renderFilterFields.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
      const searchParams = new URLSearchParams(location.search);
      const filter = JSON.parse(JSON.stringify(this.props.filter));
@@ -40,7 +47,11 @@ class Filter extends Component {
     const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = (!(type === 'textbox' || type === 'date'));
-    if (value === null || value === '' || (value.constructor === Array && value.length === 0)) {
+    if (
+      value === null
+      || value === ''
+      || (value.constructor === Array && value.length === 0)
+    ) {
       delete filter[name];
       searchParams.delete(name);
     } else {
@@ -56,6 +67,11 @@ class Filter extends Component {
     history.replaceState(filter, '', `?${searchParams.toString()}`);
   }
 
+  /**
+   * Renders the filter fields.
+   *
+   * @return {JSX[]} - React markups for the filter form components
+   */
   renderFilterFields() {
     return this.props.fields.reduce((result, field) => {
       const filter = field.filter;
@@ -66,13 +82,27 @@ class Filter extends Component {
           element = <TextboxElement key={filter.name}/>;
           break;
         case 'select':
-          element = <SelectElement key={filter.name} options={filter.options}/>;
+          element = (
+            <SelectElement
+              key={filter.name}
+              options={filter.options}
+              sortByValue={filter.sortByValue}
+            />
+          );
           break;
         case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
+          element = <SelectElement
+            key={filter.name}
+            options={filter.options}
+            multiple={true}
+            emptyOption={false}
+          />;
           break;
         case 'numeric':
-          element = <NumericElement key={filter.name} options={filter.options}/>;
+          element = <NumericElement
+            key={filter.name}
+            options={filter.options}
+          />;
           break;
         case 'date':
           element = <DateElement key={filter.name}/>;
@@ -102,6 +132,11 @@ class Filter extends Component {
     }, []);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <FormElement
@@ -136,9 +171,9 @@ Filter.propTypes = {
   clearFilter: PropTypes.func.isRequired,
   id: PropTypes.string,
   name: PropTypes.string,
-  columns: PropTypes.string,
+  columns: PropTypes.number,
   title: PropTypes.string,
-  fields: PropTypes.object.isRequired,
+  fields: PropTypes.array.isRequired,
 };
 
 export default Filter;

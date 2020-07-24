@@ -13,6 +13,8 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\login;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Class module implements the basic LORIS module functionality
@@ -46,5 +48,27 @@ class Module extends \Module
     public function getLongName() : string
     {
         return "Login";
+    }
+
+    /**
+     * Check whether a user is currently logged in or not. If logged in, redirect to
+     * the base URL.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface the outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $user = $request->getAttribute('user');
+        if (!($user instanceof \LORIS\AnonymousUser)) {
+            return (new \LORIS\Http\Response())
+                ->withStatus(307)
+                ->withHeader(
+                    'Location',
+                    \NDB_Factory::singleton()->settings()->getBaseURL()
+                );
+        }
+        return parent::handle($request);
     }
 }
