@@ -41,7 +41,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         parent::tearDown();
     }
 
-
     /**
      * Tests the HTTP GET request for the endpoint /candidates/{candid}/{visit}
      *

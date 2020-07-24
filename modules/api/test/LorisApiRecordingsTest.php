@@ -60,12 +60,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/recordings/"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -927,13 +921,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "candidates/$this->candidTest/$this->visitTest/recordings/" .
-                "$this->frecordTest/events/meta"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();

@@ -147,16 +147,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET projects/$this->projectIdTest"
-            );
-        }
-        if ($response->getStatusCode() === 500) {
-            $this->markTestSkipped(
-                "Internal Servor error"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -219,12 +209,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "projects/$this->projectIdTest/candidates",
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -284,12 +268,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "projects/$this->projectIdTest/images"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -435,12 +413,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "projects/$this->projectIdTest/visits"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -503,12 +475,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "projects/$this->projectIdTest/instruments"
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -606,12 +572,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET" .
-                "projects/$this->projectIdTest/instruments/aosi",
-            );
-        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -702,48 +662,5 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             'IncludeMetaDataFields',
             $projectsInstrumentsAosiArray['Meta']
         );
-
     }
-
-    /**
-     * Tests the HTTP GET request for the
-     * endpoint /projects/{project}/instruments/{instrument}
-     *
-     * @return void
-
-    public function testPatchProjectsProjectInstrumentsInstrument(): void
-    {
-        $json     = [
-            'Meta' => [
-                'InstrumentVersion'  => '11',
-                'InstrumentFormatVersion'   => "v0.0.1a-dev",
-                'ShortName'    => "aosi",
-                'LongName'    => "AOSI",
-                'IncludeMetaDataFields' => "true"
-            ],
-            "Elements" => [
-                "0" => [
-                    'Type' => "ElementGroup",
-                    'GroupType' => "Page",
-                    'Elements' => [],
-                    'Description' => "Item Re-Adminstration",
-                ],
-            ]
-
-        ];
-
-        $response = $this->client->request(
-            'PATCH',
-            "projects/$this->projectIdTest/instruments/aosi",
-            [
-                'headers' => $this->headers,
-                'json' => $json
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-    }
-     */
 }
