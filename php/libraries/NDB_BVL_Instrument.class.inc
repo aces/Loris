@@ -1427,21 +1427,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * Get a the value of $field from the instrument table.
-     * Used specifically by electronic instruments to check if file
-     * is already uploaded.
      *
      * @param string $field The field to get from this instrument
      *
-     * @return string|false The value of the field, or false if it's empty.
+     * @return string The value of the field, or false if it's empty.
      */
     function getFieldValue(string $field)
     {
         $allValues = self::loadInstanceData($this);
 
-        if (!empty($allValues[$field])) {
-            return $allValues[$field];
+        if (!array_key_exists($field, $allValues)) {
+            throw new \OutOfBoundsException("Invalid field for instrument");
         }
-        return false;
+        return $allValues[$field];
     }
 
 
