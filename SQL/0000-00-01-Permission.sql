@@ -109,17 +109,11 @@ INSERT INTO `permissions` VALUES
     (62,'module_manager_view', 'Module Manager: access the module', 2),
     (63,'module_manager_edit', 'Module Manager: edit installed modules', 2),
     (64,'candidate_dod_edit', 'Edit dates of death', 2),
-<<<<<<< 7a1e16d597e1b6dfa93af6848d086ec26777c00a
     (65,'violated_scans_view_ownsite','Violated Scans: View Violated Scans from own site','2'),
     (66,'document_repository_edit','Document Repository: Edit and Upload','2'),
     (67,'survey_accounts_view', 'Survey Accounts: View module', 2),
     (68,'imaging_quality_control_view','Imaging Quality Control: View module','2'),
     (69,'behavioural_quality_control_view','Behavioural Quality Control: View module','2');
-=======
-    (65, 'survey_accounts_view', 'View the Survey module', 2),
-    (66, 'imaging_quality_control_view','View Imaging Quality Control module','2'),
-    (67, 'behavioural_quality_control_view','View Behavioural Quality Control module','2');
->>>>>>> modify all occurrences
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

@@ -1,5 +1,4 @@
-<<<<<<< 121fe1ea319ff7def685e706b9f4aa349ad8bb14
-<?php
+<?php declare(strict_types=1);
 /**
  * Behavioural_QC automated integration tests
  *
@@ -12,9 +11,6 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
-=======
-<?php declare(strict_types=1);
->>>>>>> Cleanup QC integration tests
 require_once __DIR__ .
         "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -25,7 +21,6 @@ require_once __DIR__ .
 class Behavioural_QCTest extends LorisIntegrationTest
 {
     /**
-<<<<<<< 121fe1ea319ff7def685e706b9f4aa349ad8bb14
      * Tests that, when loading the behavioural_qc module, some
      * text appears in the body.
      *
@@ -59,36 +54,24 @@ class Behavioural_QCTest extends LorisIntegrationTest
     }
     /**
      * Tests that help editor loads with the permission
-=======
      * Ensures that the module loads if and only if the user has one of the
      * module permissions codes.
->>>>>>> Cleanup QC integration tests
      *
      * @return void
      */
     public function testPermissions(): void
     {
-<<<<<<< 121fe1ea319ff7def685e706b9f4aa349ad8bb14
-<<<<<<< 95f40eb6a80aa506b5375353c3934bbc0b158ba9
-         $this->setupPermissions(["behavioural_quality_control_view"]);
-=======
-         $this->setupPermissions(array("behavioural_quality_control_view"));
->>>>>>> Apply suggestions from code review
-         $this->safeGet($this->url . "/behavioural_qc/");
+        $this->setupPermissions(["behavioural_quality_control_view"]);
+        $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
-            "You do not have access to this page.",
-            $bodyText
-=======
         $this->checkPagePermissions(
             '/behavioural_qc/',
             array(
                 'behavioural_quality_control_view',
             ),
             "Behavioural Quality Control"
->>>>>>> Cleanup QC integration tests
         );
     }
 }
