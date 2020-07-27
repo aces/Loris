@@ -282,6 +282,10 @@ class ScheduleIndex extends Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
+    case 'PSCID':
+      let url = this.props.baseURL + '/' + row['DCCID'] + '/';
+      result = <td><a href ={url}>{cell}</a></td>;
+      break;
     case 'Edit':
       result = <td><button className="btn btn-default" onClick={() => this.edit(row)}><span className="glyphicon glyphicon-edit"></span> Edit</button></td>;
       break;
@@ -305,7 +309,6 @@ class ScheduleIndex extends Component {
       result = <td>{row['AppointmentTypeName']}</td>;
       break;
     }
-
     return result;
 }
   renderScheduleFormButton() {

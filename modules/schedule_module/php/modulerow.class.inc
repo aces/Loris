@@ -39,7 +39,6 @@ class ModuleRow implements \LORIS\Data\DataInstance
     protected $AppointmentTypeName;
     protected $site;
     protected $dataEntryStatus;
-
     /**
      * Create a new ModuleRow Instance.
      *
@@ -63,7 +62,6 @@ class ModuleRow implements \LORIS\Data\DataInstance
         $this->AppointmentTypeName = $row['AppointmentTypeName'];
         $this->site                = $row['Name'];
         $this->dataEntryStatus     = $row['dataEntryStatus'];
-
     }
 
     /**
@@ -71,9 +69,9 @@ class ModuleRow implements \LORIS\Data\DataInstance
      *
      * @return string the instance data.
      */
-    public function toJSON(): string
+    public function jsonSerialize() : array
     {
-        return json_encode(
+        return
             [
                 'CandID'              => $this->CandID,
                 'PSCID'               => $this->PSCID,
@@ -93,8 +91,27 @@ class ModuleRow implements \LORIS\Data\DataInstance
                 'AppointmentTypeName' => $this->AppointmentTypeName,
                 'CenterID'            => $this->CenterID,
                 'SubprojectID'        => $this->SubprojectID,
-            ]
-        );
+            ];
+    }
+    /**
+     * Returns the CenterID for this row, for filters such as
+     * \LORIS\Data\Filters\UserSiteMatch to match again.
+     *
+     * @return integer The CenterID
+     */
+    public function getCenterID(): int
+    {
+        return $this->CenterID;
     }
 
+    /**
+     * Returns the ProjectID for this row, for filters such as
+     * \LORIS\Data\Filters\UserProjectMatch to match again.
+     *
+     * @return integer The ProjectID
+     */
+    public function getProjectID(): int
+    {
+        return $this->ProjectID;
+    }
 }
