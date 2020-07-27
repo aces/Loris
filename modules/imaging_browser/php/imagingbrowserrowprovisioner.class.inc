@@ -207,6 +207,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             WHERE 
               s.Active = 'Y' AND
               f.FileType='mnc'
+              pt.Name='acquisition_date'
             GROUP BY s.ID
             ORDER BY c.PSCID, s.Visit_label
             ",
