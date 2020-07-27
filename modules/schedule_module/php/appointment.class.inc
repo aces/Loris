@@ -244,7 +244,7 @@ class Appointment extends \NDB_Page
         if (!empty($duplicate_check)) {
             http_response_code(400);
             die(
-                  json_encode(["error"=>"This appointment already exists."])
+                json_encode(["error"=>"This appointment already exists."])
             );
         }
     }

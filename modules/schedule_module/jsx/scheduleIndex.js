@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
@@ -281,10 +282,15 @@ class ScheduleIndex extends Component {
    */
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
+console.log(row);
     switch (column) {
     case 'PSCID':
-      let url = this.props.baseURL + '/' + row['DCCID'] + '/';
+      let url = loris.BaseURL + '/' + row['CandID'] + '/';
       result = <td><a href ={url}>{cell}</a></td>;
+      break;
+    case 'Visit Label':
+      let visit = loris.BaseURL + '/instrument_list/?candID=' + row['CandID'] + '&sessionID=' + row['Edit'];
+      result = <td><a href ={visit}>{cell}</a></td>;
       break;
     case 'Edit':
       result = <td><button className="btn btn-default" onClick={() => this.edit(row)}><span className="glyphicon glyphicon-edit"></span> Edit</button></td>;
@@ -582,3 +588,5 @@ window.addEventListener('load', () => {
     document.getElementById('lorisworkspace')
   );
 });
+/* eslint-enable */
+
