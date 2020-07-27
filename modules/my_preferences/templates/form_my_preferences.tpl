@@ -1,4 +1,6 @@
-<script type="text/javascript" src="{$baseurl}/js/components/Password.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/passwordVisibility.js"></script>
+<link rel="stylesheet" href="/css/password.css" type="text/css" />
+
 <br />
 <form method="post" name="my_preferences" id="my_preferences" autocomplete="off">
     <h3>Password Rules</h3>
@@ -53,7 +55,7 @@
             {$form.Password_hash.label}
         </label>
         <div class="col-sm-4">
-            <div id="pwd"></div>
+            <input type="password" name="{$form.Password_hash.name}" />
         </div>
     </div>
     <div class="row form-group">
@@ -61,7 +63,7 @@
             {$form.__Confirm.label}
         </label>
         <div class="col-sm-4">
-            <div id="pwd-confirm"></div>
+            <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
     <div class="row form-group">
@@ -104,19 +106,5 @@
 </form>
 
 <script>
-  let pwd = RPassword({
-    inputName: "{$form.Password_hash.name}",
-  });
-  ReactDOM.render(
-    pwd,
-    document.getElementById('pwd')
-  );
-
-  let pwdConfirm = RPassword({
-    inputName: "{$form.__Confirm.name}",
-  });
-  ReactDOM.render(
-    pwdConfirm,
-    document.getElementById('pwd-confirm')
-  );
+    new PasswordVisibility();
 </script>

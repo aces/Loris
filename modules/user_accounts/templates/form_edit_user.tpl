@@ -1,5 +1,6 @@
 <br />
-<script type="text/javascript" src="{$baseurl}/js/components/Password.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/passwordVisibility.js"></script>
+<link rel="stylesheet" href="/css/password.css" type="text/css" />
 <script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
 {literal}
 <script>
@@ -129,8 +130,8 @@
             {$form.Password_hash.label}
             <span class="pwd-star password {if isset($form.Password_hash.required) && $form.Password_hash.required} required{/if}" style="color: red">*</span>
           </label>
-          <div class="col-sm-4"> 
-              <div id="pwd"></div>
+          <div class="col-sm-4">
+              <input type="password" name="{$form.Password_hash.name}" />
           </div>
           <div class="col-sm-4">{$form.NA_Password.html}</div>
           {if $form.errors.Password}
@@ -145,7 +146,7 @@
             <span class="pwd-star confirm-password {if isset($form.__Confirm.required) && $form.__Confirm.required} required{/if}" style="color: red">*</span>
         </label>
         <div class="col-sm-4">
-            <div id="pwd-confirm"></div>
+            <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
     <!-- <div class="row form-group form-inline">
@@ -464,14 +465,11 @@
           </div>
       </div>
 
-
 	{if $form.errors.active_timeWindows}
 	    <div class="alert alert-danger" role="alert">
-		{$form.errors.active_timeWindows}
+		    {$form.errors.active_timeWindows}
 	    </div>
-    	{/if}
-
-
+    {/if}
 
 	{if $form.errors.active_timeWindows}
 		<div class="row form-group form-inline form-inline has-error">
@@ -571,19 +569,5 @@
 </form>
 
 <script>
-  let pwd = RPassword({
-    inputName: "{$form.Password_hash.name}",
-  });
-  ReactDOM.render(
-    pwd,
-    document.getElementById('pwd')
-  );
-
-  let pwdConfirm = RPassword({
-    inputName: "{$form.__Confirm.name}",
-  });
-  ReactDOM.render(
-    pwdConfirm,
-    document.getElementById('pwd-confirm')
-  );
+    new PasswordVisibility();
 </script>

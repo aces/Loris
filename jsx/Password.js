@@ -10,7 +10,7 @@ import React, {Component} from 'react';
 import '../htdocs/css/password.css';
 
 /**
- *  Simple component to display an input password
+ * Display an input password
  * with a toggle option to display it in plain text
  */
 class Password extends Component {
@@ -40,7 +40,7 @@ class Password extends Component {
       type: 'password',
     };
 
-    // state initilize to off, password hidden
+    // state initilized to off, password hidden
     this.state = this.off;
 
     // callback called to toogle the visibility
@@ -48,7 +48,7 @@ class Password extends Component {
   }
 
   /**
-   * Toggle the mode of th password field
+   * Toggle the mode of the password field
    * between password|text
    * If mode is text, password is visible
    */

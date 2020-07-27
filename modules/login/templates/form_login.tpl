@@ -1,4 +1,5 @@
-<script type="text/javascript" src="{$baseurl}/js/components/Password.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/passwordVisibility.js"></script>
+<link rel="stylesheet" href="/css/password.css" type="text/css" />
 
 <div class="container">
   <div class="row">
@@ -18,7 +19,7 @@
               <input type="text" name="username" class="form-control" placeholder="Username" value="{$username}"/>
             </div>
             <div class="form-group">
-              <div id="pwd"></div>
+              <input type="password" name="password" class="form-control" placeholder="Password" aria-describedby="helpBlock" />
               {if $error_message}
                 <span id="helpBlock" class="help-block">
                     <b class="text-danger">{$error_message}</b>
@@ -53,13 +54,7 @@
     </section>
   </div>
 </div>
-<script>
-  let pwd = RPassword({
-    placeholder: "Password",
-  });
 
-  ReactDOM.render(
-    pwd,
-    document.getElementById('pwd')
-  );
+<script>
+    new PasswordVisibility();
 </script>
