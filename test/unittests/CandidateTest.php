@@ -691,7 +691,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getAgeInYears()
      * @return void
      */
-    public function testGetAgeYearsReturnsIntYears()
+    public function testGetAgeInYearsReturnsIntYears()
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
