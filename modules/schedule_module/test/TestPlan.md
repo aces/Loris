@@ -1,7 +1,7 @@
 # Schedule Module Test Plan
 
 1. Create an Appointment [Automation Testing]
-Ensure that create does NOT work if one or more of the fields are empty. 
+Ensure that create does NOT work if one or more of the required feields are empty. 
 Ensure that the available sessions are correct for the candidate. 
 After successfully making an appointment, ensure the appointment has been added properly (table is properly populated)
 
@@ -14,7 +14,7 @@ When user clicks "edit" but did not make any changes, an error swal will pop up 
 Delete by clicking the delete button. There should be an "Are you sure" message.
 
 4. Permissions [Automation Testing]
-Users should be able to see appointments accross all sites, but should only be able to edit and delete a candidate that belongs to their site. 
+Users should be able to see appointments across all sites, but should only be able to edit and delete appointments of candidates that belong to their site. 
 
 5. Appointment List [Automation Testing]
 Ensure pagination works.
