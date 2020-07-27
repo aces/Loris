@@ -35,11 +35,11 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     private $_loadingUI
         =  [
             'Data Dictionary'    => '#bc2 > a:nth-child(2) > div',
-            'Source From'        => '.col-xs-12:nth-child(2) .col-sm-3',
-            'Name'               => '.col-xs-12:nth-child(3) .col-sm-3',
-            'Source Field'       => '.col-xs-12:nth-child(4) .col-sm-3',
-            'Description'        => '.col-xs-12:nth-child(5) .col-sm-3',
-            'Description Status' => '.col-xs-12:nth-child(6) .col-sm-3',
+            'Source From'        => '.col-xs-12:nth-child(3) .col-sm-3',
+            'Name'               => '.col-xs-12:nth-child(4) .col-sm-3',
+            'Source Field'       => '.col-xs-12:nth-child(5) .col-sm-3',
+            'Description'        => '.col-xs-12:nth-child(6) .col-sm-3',
+            'Description Status' => '.col-xs-12:nth-child(7) .col-sm-3',
         ];
 
     /**
@@ -114,4 +114,3 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         }
     }
 }
-
