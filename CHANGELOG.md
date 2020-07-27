@@ -46,10 +46,6 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 database (PR #5260)
 - New documentation for file permissions has been added to the README.md file. (PR #5323)
 - Dashboard study progression section performance improvement (PR #5887)
-- Very old instruments relying on QuickForm may have issues due to code changes (PR #4928)
-- Unix user permissions have been updated which may affect access to files. New
-documentation for file permissions has been added to the README.md file (PR #5323)
-- Candidate's age can be retrieved from the Candidate class in days, months, and years (PR #5945)
 
 #### Bug Fixes
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)
