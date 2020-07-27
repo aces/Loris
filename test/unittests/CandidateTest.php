@@ -686,9 +686,9 @@ class CandidateTest extends TestCase
         $this->assertEquals(23, $this->_candidate->getAge($referenceDate)->d);
     }
     /**
-     * Test getAgeYears returns age as int years
+     * Test getAgeInYears returns age as int years
      *
-     * @covers Candidate::getAgeYears()
+     * @covers Candidate::getAgeInYears()
      * @return void
      */
     public function testGetAgeYearsReturnsIntYears()
@@ -696,7 +696,7 @@ class CandidateTest extends TestCase
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
-        $this->assertEquals($this->_candidate->getAge()->format('%y'), $this->_candidate->getAgeYears());
+        $this->assertEquals($this->_candidate->getAge()->format('%y'), $this->_candidate->getAgeInYears());
     }
     /**
      * Test getAgeInMonths returns age in months
