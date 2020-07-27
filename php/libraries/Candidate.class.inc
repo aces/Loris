@@ -713,7 +713,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *
      * @return int The candidate's age today as years
      */
-    public function getAgeYears(): int
+    public function getAgeInYears(): int
     {
         return (int)$this->getAge()->format('%y');
     }
@@ -726,7 +726,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     public function getAgeInMonths(): int
     {
         return (int)$this->getAge()->format('%m') +
-            12 * $this->getAgeYears();
+            12 * $this->getAgeInYears();
     }
 
     /**
