@@ -62,9 +62,9 @@ class Panel extends Component {
         onClick={this.toggleCollapsed}
         data-toggle="collapse"
         data-target={'#' + this.props.id}
-        style={{cursor: 'pointer', height: '3em'}}
+        style={{cursor: 'pointer', height: '3em', fontWeight: 'bold'}}
       >
-        <b>{this.props.title}</b>
+        {this.props.title}
         <span className={glyphClass}></span>
       </div>
     ) : '';
