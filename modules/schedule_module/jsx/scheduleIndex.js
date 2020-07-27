@@ -54,6 +54,7 @@ class ScheduleIndex extends Component {
     this.renderScheduleFormButton = this.renderScheduleFormButton.bind(this);
     this.deleteid = this.deleteid.bind(this);
     this.tabByid = this.tabByid.bind(this);
+    this.deleteConfirm = this.deleteConfirm.bind(this);
   }
 
   componentDidMount() {
@@ -172,13 +173,12 @@ class ScheduleIndex extends Component {
       if (resp.ok && resp.status === 200) {
         swal.fire('Success!', 'Schedule modified.', 'success').then((result) => {
           if (result.value) {
-            this.closeModal();
             this.fetchData();
           }
         });
       } else {
-        resp.text().then((message) => {
-          swal.fire('No changes was made!', message, 'error');
+        resp.json().then((message) => {
+          swal.fire('No changes was made!', message.error, 'error');
         });
       }
     })
@@ -194,6 +194,27 @@ class ScheduleIndex extends Component {
    *
    * @param {string} id - appointment id
    */
+
+ deleteConfirm(id) {
+   swal.fire({
+  title: 'Are you sure?',
+  text: 'You won\'t be able to revert this!',
+  type: 'warning',
+  showCancelButton: true,
+  confirmButtonText: 'Yes, delete it!',
+  cancelButtonText: 'No, cancel it!',
+}).then((result) => {
+  if (result.value) {
+    swal.fire(
+      'Deleted!',
+      'Your appointment has been deleted.',
+      'success',
+    );
+    this.deleteid(id);
+   }
+   });
+   }
+
  deleteid(id) {
     let deleteurl = loris.BaseURL + '/schedule_module/appointment/' + id;
     fetch(deleteurl, {
@@ -203,12 +224,7 @@ class ScheduleIndex extends Component {
     })
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
-        swal.fire('Success!', 'Schedule deleted.', 'success').then((result) => {
-          if (result.value) {
-            this.closeModal();
             this.fetchData();
-          }
-        });
       } else {
         resp.text().then((message) => {
           swal.fire('Error!', message, 'error');
@@ -270,7 +286,7 @@ class ScheduleIndex extends Component {
       result = <td><button className="btn btn-default" onClick={() => this.edit(row)}><span className="glyphicon glyphicon-edit"></span> Edit</button></td>;
       break;
     case 'Delete':
-      result = <td><button className="btn btn-default" onClick={() => this.deleteid(row['Delete'])}><span className="glyphicon glyphicon-trash"></span> Delete</button></td>;
+      result = <td><button className="btn btn-default" onClick={() => this.deleteConfirm(row['Delete'])}><span className="glyphicon glyphicon-trash"></span> Delete</button></td>;
       break;
     case 'Data Entry Status':
       let css='label label-default';
@@ -355,7 +371,7 @@ class ScheduleIndex extends Component {
           <SelectElement
             name="Session"
             options={this.state.formData.SessionFieldOptions}
-            label="Session"
+            label="Visit"
             value={this.state.formData.Session}
             required={true}
             onUserInput={this.setFormData}
@@ -465,7 +481,7 @@ class ScheduleIndex extends Component {
       },
     ];
     const actions = [
-      {name: 'addSchedule', label: 'Add Schedule', action: this.openModal},
+      {name: 'addSchedule', label: 'Add Appointment', action: this.openModal},
     ];
     let tabList = [
       {
