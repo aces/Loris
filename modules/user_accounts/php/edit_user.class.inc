@@ -653,8 +653,9 @@ class Edit_User extends \NDB_Form
 
         } else {
             // It is an existing user:
-            //     display user name
+            //     display user name and account request date
             $this->addScoreColumn('UserID', 'User name');
+            $this->addScoreColumn('account_request_date', 'Account Request Date');
         }
 
         // password
@@ -1303,19 +1304,17 @@ class Edit_User extends \NDB_Form
      *
      * @param int $permID permission ID.
      *
-     * @return string the description.
+     * @return ?string the description.
      */
-    function getDescriptionUsingPermID($permID): string
+    function getDescriptionUsingPermID($permID): ?string
     {
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        $description = $db->pselectOne(
+        return $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             ['pID' => $permID]
         );
-
-        return $description;
     }
 
     /**

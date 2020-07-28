@@ -34,7 +34,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     /**
      * Create a new CandidatesRow.
      *
-     * @param array $row An array of candidate's propeties
+     * @param array $row An array of candidate's properties
      */
     public function __construct(array $row)
     {
@@ -51,9 +51,9 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
         $obj = [
             'CandID'  => $this->_candid,
@@ -65,7 +65,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
             'Sex'     => $this->_sex,
         ];
 
-        return json_encode($obj);
+        return $obj;
     }
 
     /**

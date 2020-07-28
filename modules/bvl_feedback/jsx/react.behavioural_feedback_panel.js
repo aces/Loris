@@ -548,9 +548,11 @@ class FeedbackSummaryPanel extends Component {
           <tr key={key}>
             <td>{row.QC_Class}</td>
             <td>
-              <a href={loris.BaseURL + '/instruments/' + row.Instrument + '/?candID=' +
-                row.CandID + '&sessionID=' + row.SessionID + '&commentID=' +
-                row.CommentID}
+              <a href={loris.BaseURL
+                      + '/instruments/' + row.Instrument
+                      + '/?candID=' + row.CandID
+                      + '&sessionID=' + row.SessionID
+                      + '&commentID=' + row.CommentID}
               >
                 {row.Instrument}
               </a>

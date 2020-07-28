@@ -65,7 +65,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
      */
     function testBehaviouralQCPermission()
     {
-         $this->setupPermissions(["quality_control"]);
+         $this->setupPermissions(["behavioural_quality_control_view"]);
          $this->safeGet($this->url . "/behavioural_qc/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

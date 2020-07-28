@@ -1,7 +1,7 @@
 <img src="./htdocs/images/LORIS_logo.svg" width="35%">
 
-[![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris)
-[![Minimum PHP Version](https://img.shields.io/travis/php-v/aces/loris/master?color=787CB5)](https://php.net/)
+[![Build Status](https://travis-ci.org/aces/Loris.svg?branch=main)](https://travis-ci.org/aces/Loris)
+[![Minimum PHP Version](https://img.shields.io/travis/php-v/aces/loris/main?color=787CB5)](https://php.net/)
 [![Documentation Status](https://readthedocs.org/projects/acesloris/badge/?version=latest)](https://acesloris.readthedocs.io/en/latest/?badge=latest)
 
 # LORIS Neuroimaging Platform
@@ -22,7 +22,7 @@ You can try LORIS on Heroku before installing it on your system. The project man
 
 Deploy and log in with username *admin* and the password that's set up during deployment via ClearDB.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/master)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/main)
 <br>
 
 ## Installation

@@ -1,10 +1,12 @@
-sudo: required
-
 language: php
 
 php: 
   - 7.3
   - 7.4
+    
+# Testing Ubuntu 18.04
+os: linux
+dist: bionic
 
 matrix:
     fast_finish: true
@@ -21,7 +23,7 @@ install:
 - sudo apt-get update
 - sudo apt-get install -y libapparmor1
 - pecl install -f ast-1.0.3
-- sudo apt-get install npm
+- sudo apt-get install nodejs-dev node-gyp libssl1.0-dev npm
 - make dev
 
 script: "npm run tests:$TEST_SUITE"

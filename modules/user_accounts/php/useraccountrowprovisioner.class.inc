@@ -24,7 +24,8 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
                     u.Real_name as real_name,
                     u.Email as email,
                     u.Active as active,
-                    u.Pending_approval as pending
+                    u.Pending_approval as pending,
+                    u.account_request_date as account_request_date
              FROM users u
              LEFT JOIN user_psc_rel upsr ON (upsr.UserID=u.ID)
              LEFT JOIN user_project_rel uprr ON (uprr.UserID=u.ID)

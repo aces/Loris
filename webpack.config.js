@@ -178,10 +178,17 @@ const config = [
   },
   // Modules
   lorisModule('media', ['CandidateMediaWidget', 'mediaIndex']),
-  lorisModule('issue_tracker', ['issueTrackerIndex', 'index', 'CandidateIssuesWidget']),
+  lorisModule('issue_tracker', [
+    'issueTrackerIndex',
+    'index',
+    'CandidateIssuesWidget',
+  ]),
   lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
   lorisModule('document_repository', ['docIndex', 'editFormIndex']),
-  lorisModule('candidate_parameters', ['CandidateParameters', 'ConsentWidget']),
+  lorisModule('candidate_parameters', [
+    'CandidateParameters',
+    'ConsentWidget',
+  ]),
   lorisModule('configuration', ['SubprojectRelations']),
   lorisModule('conflict_resolver', [
     'CandidateConflictsWidget',
@@ -215,7 +222,11 @@ const config = [
     'electrophysiologySessionView',
   ]),
   lorisModule('genomic_browser', ['profileColumnFormatter']),
-  lorisModule('imaging_browser', ['ImagePanel', 'imagingBrowserIndex', 'CandidateScanQCSummaryWidget']),
+  lorisModule('imaging_browser', [
+    'ImagePanel',
+    'imagingBrowserIndex',
+    'CandidateScanQCSummaryWidget',
+  ]),
   lorisModule('instrument_builder', [
     'react.instrument_builder',
     'react.questions',

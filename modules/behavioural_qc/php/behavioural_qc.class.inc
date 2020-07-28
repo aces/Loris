@@ -18,7 +18,7 @@ class Behavioural_QC extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('quality_control');
+        return $user->hasPermission('behavioural_quality_control_view');
     }
 
     /**
@@ -741,14 +741,14 @@ class Behavioural_QC extends \NDB_Form
      * @param string|null $full_name    the value of full name
      * @param string|null $subprojectID the value of subproject ID
      *
-     * @return string
+     * @return ?string
      * @throws \DatabaseException
      */
-    function getTestNameusingMappedName($full_name, $subprojectID = null): string
+    function getTestNameusingMappedName($full_name, $subprojectID = null): ?string
     {
         $DB        = \NDB_Factory::singleton()->database();
         $test_name = '';
-        if ((!(is_null($full_name)))) {
+        if (!is_null($full_name)) {
             if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
                 $sqlSelectOne = "SELECT Test_name".
                     " FROM test_battery".

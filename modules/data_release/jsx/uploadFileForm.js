@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
+import swal from 'sweetalert2';
 
 
 /**
@@ -129,10 +130,12 @@ class UploadFileForm extends Component {
     let fileSize = formData.file ? Math.round((formData.file.size/1024)) : null;
     const maxSizeAllowed = this.state.data.maxUploadSize;
     if (parseInt(fileSize, 10) > parseInt(maxSizeAllowed, 10)*1024) {
-      let msg = 'File size exceeds the maximum allowed (' + maxSizeAllowed + ')';
+      let msg = 'File size exceeds the maximum allowed ('
+                + maxSizeAllowed
+                + ')';
       errorMessage['Filesize'] = msg;
       hasError['Filesize'] = true;
-      swal({
+      swal.fire({
         title: 'Error',
         text: msg,
         type: 'error',
@@ -173,14 +176,17 @@ class UploadFileForm extends Component {
           errorMessage: msg,
           uploadProgress: -1,
         });
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
         console.error(msg);
       } else {
         const responseUrl = new URL(response.url);
         if (responseUrl.searchParams.has('duplicate')) {
-          swal({
+          swal.fire({
             title: 'Are you sure?',
-            text: 'A file with this name already exists!\n Would you like to overwrite existing file?\n Note that the version associated with the file will also be overwritten.',
+            text: 'A file with this name already exists!\n '
+                  + 'Would you like to overwrite existing file?\n '
+                  + 'Note that the version associated with '
+                  + 'the file will also be overwritten.',
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Yes, I am sure!',
@@ -202,7 +208,7 @@ class UploadFileForm extends Component {
             formData: {}, // reset form data after successful file upload
             uploadProgress: -1,
           });
-          swal({
+          swal.fire({
             text: 'Upload Successful!',
             title: '',
             type: 'success',
@@ -218,7 +224,7 @@ class UploadFileForm extends Component {
         errorMessage: msg,
         uploadProgress: -1,
       });
-      swal(msg, '', 'error');
+      swal.fire(msg, '', 'error');
       console.error(error);
     });
   }

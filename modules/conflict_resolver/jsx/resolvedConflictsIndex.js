@@ -278,7 +278,8 @@ window.addEventListener('load', () => {
         base: loris.BaseURL,
         data: {
           unresolved: loris.BaseURL + '/conflict_resolver/?format=json',
-          resolved: loris.BaseURL + '/conflict_resolver/resolved_conflicts/?format=json',
+          resolved: loris.BaseURL
+                    + '/conflict_resolver/resolved_conflicts/?format=json',
         },
       }}
     />,

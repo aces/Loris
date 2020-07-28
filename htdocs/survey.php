@@ -224,9 +224,9 @@ class DirectDataEntryMainPage
     /**
      * Get the CommentID associated with the current page's key
      *
-     * @return string a valid CommentID for this page
+     * @return ?string a valid CommentID for this page
      */
-    function getCommentID()
+    function getCommentID(): ?string
     {
         $DB = Database::singleton();
         return $DB->pselectOne(

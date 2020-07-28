@@ -1,7 +1,7 @@
 # Document Repository Test Plan
 
-1. User has access to document repository if they have the "View and upload files in Document Repository” or "Delete files in Document Repository" permission.
-   [Manual Testing]
+1. User has access to document repository if they have one of the `document_repository_*` permissions or `superuser`.
+   [Automation Testing]
 2. Create a category and a sub category.
    [Automation Testing]
 3. Check that the comments for a category are displayed properly as a tooltip.

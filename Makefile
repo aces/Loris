@@ -26,8 +26,8 @@ clean:
 # Perform static analysis checks
 checkstatic: phpdev
 	npm run lint:php
-	npm run lint:javascript
 	vendor/bin/phan
+	npm run lint:javascript
 
 # The 'alex' tool scans documentation for condescending language.
 # Arguments:

@@ -73,10 +73,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * String to separate the group elements
-     *
-     * @access public
      */
-    public $GUIDelimiter = "</td>\n<td>";
+    var $_GUIDelimiter = "</td>\n<td>";
 
     /**
      * Commonly used level of indentation
@@ -1036,9 +1034,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Return the full, human readable name for the
      * current instrument.
      *
-     * @return string the full name of the instrument
+     * @return ?string the full name of the instrument
      */
-    abstract public function getFullName(): string;
+    abstract public function getFullName(): ?string;
 
     /**
      * Gets the current object instance CommentID
@@ -1429,21 +1427,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * Get a the value of $field from the instrument table.
-     * Used specifically by electronic instruments to check if file
-     * is already uploaded.
      *
      * @param string $field The field to get from this instrument
      *
-     * @return string|false The value of the field, or false if it's empty.
+     * @return string The value of the field, or false if it's empty.
      */
     function getFieldValue(string $field)
     {
         $allValues = self::loadInstanceData($this);
 
-        if (!empty($allValues[$field])) {
-            return $allValues[$field];
+        if (!array_key_exists($field, $allValues)) {
+            throw new \OutOfBoundsException("Invalid field for instrument");
         }
-        return false;
+        return $allValues[$field];
     }
 
 
@@ -1455,17 +1451,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getSessionID(): int
     {
         $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $fieldValue = \Database::singleton()->pselectOne(
+        $fieldValue = \Database::singleton()->pselectOneInt(
             $query,
             [
                 'CID' => $this->getCommentID(),
             ]
         );
 
-        if (!empty($fieldValue)) {
-            return $fieldValue;
-        }
-        return -1;
+        return is_int($fieldValue) ? $fieldValue : -1;
     }
 
     /**
@@ -2188,9 +2181,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Get the candidates DOB.
      *
-     * @return string The candidate's DOB.
+     * @return ?string The candidate's DOB.
      */
-    function getDoB()
+    function getDoB(): ?string
     {
         $db        = \Database::singleton();
         $CommentID = $this->getCommentID();

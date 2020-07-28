@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 namespace LORIS\new_profile;
 
+use LORIS\StudyEntities\Candidate\Sex;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -73,7 +75,7 @@ class New_Profile extends \NDB_Form
             (int)$values['site'],
             $dob,
             $edc,
-            $values['sex'],
+            new Sex($values['sex']),
             $values['pscid'] ?? null,
             intval($values['project'])
         );
@@ -110,7 +112,7 @@ class New_Profile extends \NDB_Form
                 'candID' => $this->_candID,
                 'pscid'  => $this->_pscid
             ];
-            return (new \LORIS\Http\Response\JSON\Created(json_encode($result)))
+            return (new \LORIS\Http\Response\JSON\Created($result))
                 ->withHeader("Allow", "POST");
         }
 
@@ -128,7 +130,6 @@ class New_Profile extends \NDB_Form
     function setup(): void
     {
         $factory   = \NDB_Factory::singleton();
-        $DB        = $factory->database();
         $config    = $factory->config();
         $user      = $factory->user();
         $startYear = $config->getSetting('startYear');
@@ -151,15 +152,7 @@ class New_Profile extends \NDB_Form
         $num_sites          = count($user_list_of_sites);
         $psc_labelOptions   = [];
         if ($num_sites > 1) {
-            foreach ($user_list_of_sites as $siteID) {
-                $center = $DB->pselectRow(
-                    "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                    ['cid' => $siteID]
-                );
-                if (!is_null($center)) {
-                    $psc_labelOptions[$siteID] = $center['Name'];
-                }
-            }
+            $psc_labelOptions = \Utility::getSiteNameListByIDs($user_list_of_sites);
         }
         $site = $psc_labelOptions;
 

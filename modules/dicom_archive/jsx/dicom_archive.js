@@ -16,8 +16,12 @@ import FilterableDataTable from 'FilterableDataTable';
  * @author LORIS Team
  * @version 1.0.0
  *
- * */
+ */
 class DicomArchive extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -31,6 +35,9 @@ class DicomArchive extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -86,8 +93,9 @@ class DicomArchive extends Component {
         if (row.SessionID === null || row.SessionID === '') {
           result = <td>&nbsp;</td>;
         } else {
-          let mrlURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
-            row.SessionID;
+          let mrlURL = loris.BaseURL
+                       + '/imaging_browser/viewSession/?sessionID='
+                       + row.SessionID;
           result = <td><a href={mrlURL}>{cell}</a></td>;
         }
       break;
@@ -100,6 +108,11 @@ class DicomArchive extends Component {
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.

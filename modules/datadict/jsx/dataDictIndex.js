@@ -15,8 +15,12 @@ import FilterableDataTable from 'FilterableDataTable';
  * @author Liza Levitis
  * @version 1.0.0
  *
- * */
+ */
 class DataDictIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -30,6 +34,9 @@ class DataDictIndex extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then( () => this.setState({isLoaded: true}));
@@ -85,6 +92,11 @@ class DataDictIndex extends Component {
     return <td>{cell}</td>;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (this.state.error) {
         return <h3>An error occured while loading the page.</h3>;

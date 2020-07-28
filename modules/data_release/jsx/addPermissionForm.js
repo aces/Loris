@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
+import swal from 'sweetalert2';
 
 /**
  * Add Permission Form
@@ -33,7 +34,12 @@ class AddPermissionForm extends Component {
   fetchData() {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data: data.Data, fieldOptions: data.fieldOptions}))
+      .then(
+        (data) => this.setState({
+          data: data.Data,
+          fieldOptions: data.fieldOptions,
+        })
+      )
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -156,7 +162,7 @@ class AddPermissionForm extends Component {
       body: formObj,
     }).then( (response) => {
       if (response.ok) {
-        swal({
+        swal.fire({
           text: 'Permission Update Success!',
           title: '',
           type: 'success',
@@ -165,8 +171,10 @@ class AddPermissionForm extends Component {
         });
         this.props.fetchData();
       } else {
-        let msg = response.statusText ? response.statusText : 'Submission Error!';
-        swal(msg, '', 'error');
+        let msg = response.statusText ?
+          response.statusText :
+          'Submission Error!';
+        swal.fire(msg, '', 'error');
         console.error(msg);
       }
     });

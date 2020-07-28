@@ -144,7 +144,7 @@ class Stats_Behavioural extends \NDB_Form
 
         $this->tpl_data['Visits'] = $Visits ?? '';
 
-        //---- BEHAVIORAL STATS -----
+        //---- BEHAVIOURAL STATS -----
         $result = $DB->pselect(
             "SELECT s.CenterID,
                     f.Data_Entry as Data_Entry,

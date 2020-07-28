@@ -67,7 +67,7 @@ class NDB_ConfigTest extends TestCase
 
     /**
      * Maps config names to values
-     * Used to set behavior of NDB_Config test double
+     * Used to set behaviour of NDB_Config test double
      *
      * @var array config name => value
      */

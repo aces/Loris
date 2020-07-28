@@ -329,7 +329,7 @@ class NDB_Factory
             || empty($password)
         ) {
             // check if only some parameters given but not all AND does not
-            // enter any of the above IF statements. this behavior was never
+            // enter any of the above IF statements. this behaviour was never
             // supported and should be an error.
             throw new ConfigurationException(
                 "NDB_Factory::CouchDB() requires all parameters to be supplied."

@@ -400,7 +400,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 // if the current stage is dynamic AND the Timepoint
                 //is not sent to DCC (all PSC users can press buttons)
                 // OR if the stage is dynamic (Approval),
-                //the Timepoint IS submitted and the user can QC behavioral data
+                //the Timepoint IS submitted and the user can QC behavioural data
 
                 if ($option == 'In Progress') {
                     $this->tpl_data['status'][$i]['showlink'] = true;

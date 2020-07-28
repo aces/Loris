@@ -90,19 +90,9 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
-    {
-        return json_encode($this->_toArray());
-    }
-
-    /**
-     * Provide an array representation of this instrument row.
-     *
-     * @return array
-     */
-    private function _toArray() : array
+    public function jsonSerialize() : array
     {
         return [
             'shortname' => $this->_shortname,
