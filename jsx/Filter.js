@@ -53,7 +53,14 @@ function Filter(props) {
       (type === 'checkbox' && value === false)) {
       props.removeFilter(name);
     } else {
-      props.addFilter(name, value, exactMatch);
+      let obj = this.props.fields.find((obj)=>obj['filter']['name'] == name);
+      let comparison = null;
+      if (obj['filter']['comparison'] !== null) {
+        comparison = obj['filter']['comparison'];
+        filter[name] = {value, exactMatch, comparison};
+      } else {
+	      props.addFilter(name, value, exactMatch);
+      }
     }
   };
 
