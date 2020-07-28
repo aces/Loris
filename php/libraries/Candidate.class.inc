@@ -689,6 +689,57 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     }
 
     /**
+     * Returns DateInterval between candidate's date of birth and a given date,
+     * or today if no date given.
+     *
+     * @param ?DateTime $refDate The reference date from which to calculate the age,
+     *                           or null if not provided
+     *
+     * @return DateInterval Between DoB and $refDate
+     */
+    public function getAge(?DateTime $refDate = null): DateInterval
+    {
+        if (!$refDate) {
+            $refDate = new DateTime();
+        }
+
+        $dob = new DateTime($this->candidateInfo["DoB"]);
+
+        return $dob->diff($refDate);
+    }
+
+    /**
+     * Returns the candidate's calculated age today in int years
+     *
+     * @return int The candidate's age today as years
+     */
+    public function getAgeInYears(): int
+    {
+        return (int)$this->getAge()->format('%y');
+    }
+
+    /**
+     * Returns the candidate's calculated age today in total number of months
+     *
+     * @return int The candidate's age today in months
+     */
+    public function getAgeInMonths(): int
+    {
+        return (int)$this->getAge()->format('%m') +
+            12 * $this->getAgeInYears();
+    }
+
+    /**
+     * Returns the candidate's calculated age today in total number of days
+     *
+     * @return int The candidate's age today in days
+     */
+    public function getAgeInDays(): int
+    {
+        return (int)$this->getAge()->days;
+    }
+
+    /**
      * Returns list of consents and their respective statuses for this candidate
      *
      * @return array List of consents and their associated values for this candidate

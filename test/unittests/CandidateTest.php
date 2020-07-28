@@ -670,6 +670,62 @@ class CandidateTest extends TestCase
         $this->assertEquals(1, $this->_candidate->getNextVisitNo());
     }
     /**
+     * Test getAge returns correct DateTime Interval $y, $m, $d properties
+     *
+     * @covers Candidate::getAge()
+     * @return void
+     */
+    public function testGetAgeReturnsCorrectDateTimeInterval()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $referenceDate = new DateTime('2020-02-25');
+        $this->assertEquals(12, $this->_candidate->getAge($referenceDate)->y);
+        $this->assertEquals(11, $this->_candidate->getAge($referenceDate)->m);
+        $this->assertEquals(23, $this->_candidate->getAge($referenceDate)->d);
+    }
+    /**
+     * Test getAgeInYears returns age as int years
+     *
+     * @covers Candidate::getAgeInYears()
+     * @return void
+     */
+    public function testGetAgeInYearsReturnsIntYears()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals($this->_candidate->getAge()->format('%y'), $this->_candidate->getAgeInYears());
+    }
+    /**
+     * Test getAgeInMonths returns age in months
+     *
+     * @covers Candidate::getAgeInMonths()
+     * @return void
+     */
+    public function testGetAgeInMonthsReturnsMonths()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $expectedAge = intval($this->_candidate->getAge()->format('%m')) + 12 * intval($this->_candidate->getAge()->format('%y'));
+        $this->assertEquals($expectedAge, $this->_candidate->getAgeInMonths());
+    }
+    /**
+     * Test getAgeInDays returns age in days
+     *
+     * @covers Candidate::getAgeInDays()
+     * @return void
+     */
+    public function testGetAgeInDaysReturnsDays()
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals($this->_candidate->getAge()->days, $this->_candidate->getAgeInDays());
+    }
+    /**
      * Test getSessionID returns session ID for a given existing visit
      *
      * @covers Candidate::getSessionID
