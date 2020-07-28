@@ -1239,8 +1239,10 @@ class DateElement extends Component {
     const currentDate = new Date();
     // The added '0' is needed because getmonth and getdate return
     // values needed to be padded before saving.
-    const currentDay = ('0' + currentDate.getDate()).slice(-2);
-    const currentMonth = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+    // padStart adds as many possible zeros while keeping the string
+    // at a length of 2 for the following code.
+    const currentDay = `${currentDate.getDate()}`.padStart(2, '0');
+    const currentMonth = `${currentDate.getMonth() + 1}`.padStart(2, '0');
 
     // Handle date format
     let format = this.props.dateFormat;
