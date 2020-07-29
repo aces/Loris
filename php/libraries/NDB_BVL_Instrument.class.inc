@@ -848,8 +848,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $dataToUpdate = [];
 
-        if(key_exists('Data_entry_completion_status', $newData)) {
-            $dataToUpdate['Data_entry_completion_status'] = $newData['Data_entry_completion_status'];
+        if (key_exists('Data_entry_completion_status', $newData)) {
+            $dataToUpdate['Data_entry_completion_status']
+                = $newData['Data_entry_completion_status'];
             unset($newData['Data_entry_completion_status']);
         }
         $dataToUpdate['Data'] = json_encode($newData);
