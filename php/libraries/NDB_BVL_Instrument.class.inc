@@ -846,13 +846,21 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
         $newData = array_merge($oldData ?? [], $values);
 
+        $dataToUpdate = [];
+
+        if(key_exists('Data_entry_completion_status', $newData)) {
+            $dataToUpdate['Data_entry_completion_status'] = $newData['Data_entry_completion_status'];
+            unset($newData['Data_entry_completion_status']);
+        }
+        $dataToUpdate['Data'] = json_encode($newData);
+
         // Save the JSON to the flag.Data column.
         //
         // json_encode ensures that this is safe. If we use the safe wrapper,
         // HTML encoding the quotation marks will make it invalid JSON.
         $db->unsafeUpdate(
             "flag",
-            ["Data" => json_encode($newData)],
+            $dataToUpdate,
             ['CommentID' => $this->getCommentID()]
         );
         $this->instanceData = $newData;
@@ -1584,8 +1592,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDataEntryCompletionStatus(): string
     {
-        $data = $this->getInstanceData();
-        return $data["Data_entry_completion_status"];
+        $db = \Database::singleton();
+        // If JSON instrument, get Data_entry_completion_status
+        // from flag table column
+        return $db->pselectOne(
+            "SELECT Data_entry_completion_status FROM flag WHERE CommentID=:CID",
+            ['CID' => $this->getCommentID()]
+        );
     }
 
 
@@ -2186,6 +2199,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $db = \Database::singleton();
 
         if ($instrumentInstance->jsonData) {
+
             $jsondata = $db->pselectOne(
                 "SELECT Data FROM flag WHERE CommentID=:CID",
                 ['CID' => $instrumentInstance->getCommentID()]
