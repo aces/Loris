@@ -1123,7 +1123,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $defaults,
             [
-                'ID' => '1000000',
+                'ID' => '1000',
                 'SessionID' => '123',
                 'Test_name' => 'Test_name1',
                 'CommentID' => 'commentID1',
@@ -1617,6 +1617,94 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
+     * Test that clearInstrument clears all relevant instrument data and removes
+     * instrument data from the conflicts_unresolved table
+     *
+     * @covers NDB_BVL_Instrument::clearInstrument
+     * @return void
+     */
+    function testClearInstrument()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $conflicts_data = [
+            [
+                'ConflictID' => '123',
+                'TableName' => '',
+                'ExtraKeyColumn' => null,
+                'ExtraKey1' => '',
+                'ExtraKey2' => '',
+                'FieldName' => '',
+                'CommentId1' => 'commentID1',
+                'Value1' => null,
+                'CommentId2' => '',
+                'Value2' => null
+            ]
+        ];
+        $this->_DB->setFakeTableData(
+            "conflicts_unresolved",
+            $conflicts_data
+        );
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $conflictsBefore = $this->_DB->pselect(
+            "SELECT * FROM conflicts_unresolved", []
+        );
+        $this->_instrument->clearInstrument();
+        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $conflictsAfter = $this->_DB->pselect(
+            "SELECT * FROM conflicts_unresolved", []
+        );
+        $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS conflicts_unresolved");
+        $this->assertEquals(null, $data['Examiner']);
+        $this->assertEquals('Incomplete', $data['Data_entry_completion_status']);
+        $this->assertEquals(
+            $conflicts_data,
+            $conflictsBefore
+        );
+        $this->assertEquals([], $conflictsAfter);
+    }
+
+    /**
+     * Test that determineDataEntryAllowed returns true if the Data_entry is anything
+     * but 'Complete' and returns false if Data_entry is 'Complete. Test that
+     * validate simply calls determineDataEntryAllowed and has the same output.
+     *
+     * @covers NDB_BVL_Instrument::determineDataEntryAllowed
+     * @covers NDB_BVL_Instrument::validate
+     * @return void
+     */
+    function testDetermineDataEntryAllowed()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->table = 'medical_history';
+        $this->assertTrue($this->_instrument->determineDataEntryAllowed());
+        $this->assertTrue($this->_instrument->validate(['value1']));
+        $this->_instrument->commentID = 'commentID2';
+        $this->assertFalse($this->_instrument->determineDataEntryAllowed());
+        $this->assertFalse($this->_instrument->validate(['value1']));
+    }
+
+    /**
+     * Test that getFlags returns an \InstrumentFlags object
+     *
+     * @covers NDB_BVL_Instrument::getFlags
+     * @return void
+     */
+    function testGetFlags()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->assertEquals(
+            new \InstrumentFlags(null, null, null),
+            $this->_instrument->getFlags()
+        );
+    }
+
+    /**
      * Private function to set fake table data to be tested
      *
      * @return void
@@ -1628,20 +1716,29 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS candidate");
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS medical_history");
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS test_battery");
+        $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS parameter_type");
         $this->_DB->setFakeTableData(
             "flag",
             [
                 [
+                    'ID' => '1000',
                     'SessionID' => '123',
                     'CommentID' => 'commentID1',
                     'Test_name' => 'Test_name1',
-                    'UserID'    => '456'
+                    'UserID'    => '456',
+                    'Data_entry' => 'Incomplete',
+                    'Administration' => 'admin1',
+                    'Validity' => 'valid1'
                 ],
                 [
+                    'ID' => '2000',
                     'SessionID' => '234',
                     'CommentID' => 'commentID2',
                     'Test_name' => 'Test_name2',
-                    'UserID'    => '457'
+                    'UserID'    => '457',
+                    'Data_entry' => 'Complete',
+                    'Administration' => 'admin2',
+                    'Validity' => 'valid2'
                 ],
             ]
         );
@@ -1705,6 +1802,21 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'SubprojectID' => '12',
                     'AgeMinDays' => 0,
                     'AgeMaxDays' => 100
+                ]
+            ]
+        );
+        $this->_DB->setFakeTableData(
+            "parameter_type",
+            [
+                [
+                    'Description' => 'description 1',
+                    'SourceField' => 'Not validity',
+                    'SourceFrom' => 'Testname1'
+                ],
+                [
+                    'Description' => 'description 2',
+                    'SourceField' => 'Validity',
+                    'SourceFrom' => 'Testname1'
                 ]
             ]
         );
