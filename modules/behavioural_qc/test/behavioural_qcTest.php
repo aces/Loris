@@ -41,16 +41,14 @@ class Behavioural_QCTest extends LorisIntegrationTest
       */
     function testBehaviouralQCWithoutPermission()
     {
-         $this->setupPermissions([]);
-         $this->safeGet($this->url . "/behavioural_qc/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains(
-            "You do not have access to this page.",
-            $bodyText
+        $this->setupPermissions([]);
+        $this->safeGet($this->url . "/behavioural_qc/");
+        $this->checkPagePermissions(
+            '/behavioural_qc/',
+            [],
+            "Behavioural Quality Control",
+            "You do not have access to this page."
         );
-         $this->resetPermissions();
     }
     /**
      * Tests that help editor loads with the permission
@@ -63,14 +61,9 @@ class Behavioural_QCTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["behavioural_quality_control_view"]);
         $this->safeGet($this->url . "/behavioural_qc/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
         $this->checkPagePermissions(
             '/behavioural_qc/',
-            array(
-                'behavioural_quality_control_view',
-            ),
+            ['behavioural_quality_control_view'],
             "Behavioural Quality Control"
         );
     }

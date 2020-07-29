@@ -1,8 +1,11 @@
 <?php declare(strict_types=1);
+
+ require_once __DIR__
+    . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * ImagingQCIntegrationTest automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -10,11 +13,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-use Facebook\WebDriver\WebDriverBy;
-
- require_once __DIR__
-    . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-
 class ImagingQCIntegrationTest extends LorisIntegrationTest
 {
     /**
@@ -27,9 +25,7 @@ class ImagingQCIntegrationTest extends LorisIntegrationTest
     {
         $this->checkPagePermissions(
             '/imaging_qc/',
-            array(
-                'imaging_quality_control_view',
-            ),
+            ['imaging_quality_control_view'],
             "Imaging Quality Control"
         );
     }
