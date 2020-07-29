@@ -37,7 +37,7 @@ class DataQueryApp extends Component {
       alertLoaded: false,
       alertSaved: false,
       alertConflict: {
-        show: false
+        show: false,
       },
       ActiveTab: 'Info',
       rowData: {},
@@ -46,10 +46,10 @@ class DataQueryApp extends Component {
         activeOperator: 0,
         children: [
           {
-            type: 'rule'
-          }
+            type: 'rule',
+          },
         ],
-        session: this.props.AllSessions
+        session: this.props.AllSessions,
       },
       selectedFields: {},
       downloadableFields: {},
@@ -62,7 +62,7 @@ class DataQueryApp extends Component {
           next: false,
         },
         index: 0,
-      }
+      },
     };
     this.saveFilterRule = this.saveFilterRule.bind(this);
     this.saveFilterGroup = this.saveFilterGroup.bind(this);
@@ -115,30 +115,36 @@ class DataQueryApp extends Component {
     // Load the save queries' details
     let promises = [];
     for (let key in this.state.queryIDs) {
-      for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
-        let curRequest;
-        curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
-            data: {
-              DocID: this.state.queryIDs[key][i]
-            },
-            dataType: 'json'
-          }).then((value) => {
-          let queries = this.state.savedQueries;
+      if (this.state.queryIDs.hasOwnProperty(key)) {
+        for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
+          let curRequest;
+          curRequest = Promise.resolve(
+            $.ajax(
+              loris.BaseURL
+              + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
+              + encodeURIComponent(this.state.queryIDs[key][i])
+            ), {
+              data: {
+                DocID: this.state.queryIDs[key][i],
+              },
+              dataType: 'json',
+            }).then((value) => {
+            let queries = this.state.savedQueries;
 
-          queries[value._id] = value;
-          this.setState({savedQueries: queries});
-        });
-        promises.push(curRequest);
+            queries[value._id] = value;
+            this.setState({savedQueries: queries});
+          });
+          promises.push(curRequest);
+        }
       }
     }
 
-    let allDone = Promise.all(promises).then((value) => {
+    Promise.all(promises).then((value) => {
       this.setState({'queriesLoaded': true});
     });
     $('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
       this.setState({
-        ActiveTab: e.target.getAttribute('href').substr(1)
+        ActiveTab: e.target.getAttribute('href').substr(1),
       });
     });
   }
@@ -150,7 +156,7 @@ class DataQueryApp extends Component {
       operator: rule.operator,
       value: rule.value,
       instrument: rule.instrument,
-      visit: rule.visit
+      visit: rule.visit,
     };
   }
 
@@ -159,7 +165,7 @@ class DataQueryApp extends Component {
 
     let savedFilter = {
       activeOperator: group.activeOperator,
-      children: []
+      children: [],
     };
     // Recursively build the filter groups children
     for (let i = 0; i < group.children.length; i++) {
@@ -182,11 +188,11 @@ class DataQueryApp extends Component {
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,
-      OverwriteQuery: override
+      OverwriteQuery: override,
     }, (data) => {
       // Once saved, add the query to the list of saved queries
-      let id = JSON.parse(data).id,
-        queryIDs = this.state.queryIDs;
+      let id = JSON.parse(data).id;
+        let queryIDs = this.state.queryIDs;
       if (!override) {
         if (shared === true) {
           queryIDs.Shared.push(id);
@@ -194,7 +200,9 @@ class DataQueryApp extends Component {
           queryIDs.User.push(id);
         }
       }
-      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID=' + id,
+      $.get(loris.BaseURL
+            + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
+            + id,
         (value) => {
           let queries = this.state.savedQueries;
 
@@ -205,8 +213,8 @@ class DataQueryApp extends Component {
             alertLoaded: false,
             alertSaved: true,
             alertConflict: {
-              show: false
-            }
+              show: false,
+            },
           });
         });
     }).fail((data) => {
@@ -215,9 +223,9 @@ class DataQueryApp extends Component {
           alertConflict: {
             show: true,
             QueryName: name,
-            SharedQuery: shared
-          }
-        })
+            SharedQuery: shared,
+          },
+        });
       }
     });
   }
@@ -227,7 +235,7 @@ class DataQueryApp extends Component {
       this.state.alertConflict.QueryName,
       this.state.alertConflict.SharedQuery,
       true
-    )
+    );
   }
 
   loadFilterRule(rule) {
@@ -235,19 +243,20 @@ class DataQueryApp extends Component {
 
     let script;
     if (!rule.type) {
-      rule.type = 'rule'
+      rule.type = 'rule';
     }
 
     // Get given fields of the instrument for the rule.
     // This call is made synchronously
     $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
+      url: loris.BaseURL
+           + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
       success: (data) => {
         rule.fields = data;
       },
       async: false,
       data: {category: rule.instrument},
-      dataType: 'json'
+      dataType: 'json',
     });
 
     // Find the rules selected field's data type
@@ -287,9 +296,9 @@ class DataQueryApp extends Component {
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script,
       success: (data) => {
-        let i,
-          allSessions = {},
-          allCandiates = {};
+        let i;
+          let allSessions = {};
+          let allCandiates = {};
         // Loop through data and divide into individual visits with unique PSCIDs
         // storing a master list of unique PSCIDs
         for (i = 0; i < data.length; i++) {
@@ -298,13 +307,13 @@ class DataQueryApp extends Component {
           }
           allSessions[data[i][1]].push(data[i][0]);
           if (!allCandiates[data[i][0]]) {
-            allCandiates[data[i][0]] = []
+            allCandiates[data[i][0]] = [];
           }
           allCandiates[data[i][0]].push(data[i][1]);
         }
         rule.candidates = {
           allCandiates: allCandiates,
-          allSessions: allSessions
+          allSessions: allSessions,
         };
         if (rule.visit === 'All') {
           rule.session = Object.keys(allCandiates);
@@ -320,9 +329,9 @@ class DataQueryApp extends Component {
       data: {
         category: rule.instrument,
         field: rule.field,
-        value: rule.value
+        value: rule.value,
       },
-      dataType: 'json'
+      dataType: 'json',
     });
 
     return rule;
@@ -335,7 +344,7 @@ class DataQueryApp extends Component {
     for (let i = 0; i < group.children.length; i++) {
       if (group.children[i].activeOperator) {
         if (!group.children[i].type) {
-          group.children[i].type = 'group'
+          group.children[i].type = 'group';
         }
         group.children[i] = this.loadFilterGroup(group.children[i]);
       } else {
@@ -349,9 +358,9 @@ class DataQueryApp extends Component {
   loadSavedQuery(fields, criteria) {
     // Used to load a saved query
 
-    let filterState = {},
-      selectedFields = {},
-      fieldsList = [];
+    let filterState = {};
+      let selectedFields = {};
+      let fieldsList = [];
     this.setState({loading: true});
     if (Array.isArray(criteria)) {
       // This is used to load a query that is saved in the old format
@@ -361,7 +370,7 @@ class DataQueryApp extends Component {
       filterState = {
         type: 'group',
         activeOperator: 0,
-        children: []
+        children: [],
       };
       filterState.children = criteria.map((item) => {
         let fieldInfo = item.Field.split(',');
@@ -370,7 +379,7 @@ class DataQueryApp extends Component {
           field: fieldInfo[1],
           value: item.Value,
           type: 'rule',
-          visit: 'All'
+          visit: 'All',
         };
         switch (item.Operator) {
           case '=':
@@ -401,14 +410,18 @@ class DataQueryApp extends Component {
           selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
           selectedFields[fieldSplit[0]].allVisits = {};
           for (let key in this.props.Visits) {
-            selectedFields[fieldSplit[0]].allVisits[key] = 1;
-            selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+            if (this.props.Visits.hasOwnProperty(key)) {
+              selectedFields[fieldSplit[0]].allVisits[key] = 1;
+              selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+            }
           }
         } else {
           selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
           for (let key in this.props.Visits) {
-            selectedFields[fieldSplit[0]].allVisits[key]++;
-            selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+            if (this.props.Visits.hasOwnProperty(key)) {
+              selectedFields[fieldSplit[0]].allVisits[key]++;
+              selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+            }
           }
         }
       }
@@ -417,9 +430,13 @@ class DataQueryApp extends Component {
       filterState = criteria;
       selectedFields = fields ? fields : {};
       for (let instrument in fields) {
-        for (let field in fields[instrument]) {
-          if (field !== 'allVisits') {
-            fieldsList.push(instrument + ',' + field);
+        if (fields.hasOwnProperty(instrument)) {
+          for (let field in fields[instrument]) {
+            if (fields[instrument].hasOwnProperty(field)) {
+              if (field !== 'allVisits') {
+                fieldsList.push(instrument + ',' + field);
+              }
+            }
           }
         }
       }
@@ -429,8 +446,8 @@ class DataQueryApp extends Component {
     } else {
       filterState.children = [
         {
-          type: 'rule'
-        }
+          type: 'rule',
+        },
       ];
       filterState.session = this.props.AllSessions;
     }
@@ -452,11 +469,11 @@ class DataQueryApp extends Component {
             downloadable[key] = true;
             this.setState({
               downloadableFields: downloadable,
-            })
+            });
           }
         },
         data: {key: fieldsList[i]},
-        dataType: 'json'
+        dataType: 'json',
       });
     }
   }
@@ -494,13 +511,15 @@ class DataQueryApp extends Component {
     // Used to add and remove fields from the current query being built
 
     this.setState((state) => {
-      let selectedFields = state.selectedFields,
-        fields = state.fields.slice(0);
+      let selectedFields = state.selectedFields;
+        let fields = state.fields.slice(0);
       if (!selectedFields[category]) {
         // The given category has no selected fields, add the category to the selectedFields
         selectedFields[category] = {};
         // Add all visits to the given field for the given category
-        selectedFields[category][fieldName] = JSON.parse(JSON.stringify(this.props.Visits));
+        selectedFields[category][fieldName] = JSON.parse(
+          JSON.stringify(this.props.Visits)
+        );
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
         for (let key in this.props.Visits) {
@@ -568,7 +587,7 @@ class DataQueryApp extends Component {
       }
       return {
         selectedFields: selectedFields,
-        fields: fields
+        fields: fields,
       };
     });
   }
@@ -588,16 +607,16 @@ class DataQueryApp extends Component {
   runQuery(fields, sessions) {
     // Run the current query
 
-    let DocTypes = [],
-      semaphore = 0,
-      sectionedSessions,
-      ajaxComplete = () => {
+    let DocTypes = [];
+      let semaphore = 0;
+      let sectionedSessions;
+      let ajaxComplete = () => {
         // Wait until all ajax calls have completed before computing the rowdata
         if (semaphore == 0) {
           let rowdata = this.getRowData(this.state.grouplevel);
           this.setState({
             rowData: rowdata,
-            loading: false
+            loading: false,
           });
         }
       };
@@ -606,13 +625,13 @@ class DataQueryApp extends Component {
     this.setState({
       rowData: {},
       sessiondata: {},
-      loading: true
+      loading: true,
     });
 
     // Get list of DocTypes to be retrieved
     for (let i = 0; i < fields.length; i += 1) {
-      let field_split = fields[i].split(',');
-      let category = field_split[0];
+      let fieldSplit = fields[i].split(',');
+      let category = fieldSplit[0];
 
       // Check if the current category has already been queried, if so skip
       if (DocTypes.indexOf(category) === -1) {
@@ -621,17 +640,23 @@ class DataQueryApp extends Component {
         // Build the session data to be queried for the given category
         for (let j = 0; j < this.state.filter.session.length; j++) {
           if (Array.isArray(this.state.filter.session[j])) {
-            if (this.state.selectedFields[category].allVisits[this.state.filter.session[j][1]]) {
+            if (this.state.selectedFields[category]
+                  .allVisits[this.state.filter.session[j][1]]
+            ) {
               sessionInfo.push(this.state.filter.session[j]);
             }
           } else {
             for (let key in this.state.selectedFields[category].allVisits) {
-              let temp = [];
+              if (this.state.selectedFields[category]
+                  .allVisits.hasOwnProperty(key)
+              ) {
+                let temp = [];
 
-              temp.push(this.state.filter.session[j]);
-              // Add the visit to the temp variable then add to the sessions to be queried
-              temp.push(key);
-              sessionInfo.push(temp);
+                temp.push(this.state.filter.session[j]);
+                // Add the visit to the temp variable then add to the sessions to be queried
+                temp.push(key);
+                sessionInfo.push(temp);
+              }
             }
           }
         }
@@ -642,16 +667,17 @@ class DataQueryApp extends Component {
         sectionedSessions = JSON.stringify(sessionInfo);
         $.ajax({
           type: 'POST',
-          url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=retrieveCategoryDocs.php',
+          url: loris.BaseURL
+               + '/AjaxHelper.php?Module=dqt&script=retrieveCategoryDocs.php',
           data: {
             DocType: category,
-            Sessions: sectionedSessions
+            Sessions: sectionedSessions,
           },
           dataType: 'text',
           success: (data) => {
             if (data) {
-              let i, row, rows, identifier,
-                sessiondata = this.state.sessiondata;
+              let i; let row; let rows; let identifier;
+                let sessiondata = this.state.sessiondata;
               data = JSON.parse(data);
               rows = data.rows;
               for (i = 0; i < rows.length; i += 1) {
@@ -669,17 +695,16 @@ class DataQueryApp extends Component {
                 row = rows[i];
                 identifier = row.value;
                 if (!sessiondata.hasOwnProperty(identifier)) {
-                  sessiondata[identifier] = {}
+                  sessiondata[identifier] = {};
                 }
 
                 sessiondata[identifier][row.key[0]] = row.doc;
-
               }
               this.setState({'sessiondata': sessiondata});
             }
             semaphore--;
             ajaxComplete();
-          }
+          },
         });
       }
     }
@@ -689,10 +714,9 @@ class DataQueryApp extends Component {
     // Build the queried data to be displayed in the data table
 
     let sessiondata = this.state.sessiondata;
-    let sessions = this.getSessions();
     let fields = this.state.fields.sort();
     let downloadableFields = this.state.downloadableFields;
-    let i, j;
+    let i;
     let rowdata = [];
     let currow = [];
     let Identifiers = [];
@@ -710,44 +734,67 @@ class DataQueryApp extends Component {
 
       // Build the table rows, using the session data as the row identifier
       for (let session in sessiondata) {
-        currow = [];
-        for (i = 0; fields && i < fields.length; i += 1) {
-          let fieldSplit = fields[i].split(',');
-          currow[i] = '.';
-          let sd = sessiondata[session];
-          if (sd[fieldSplit[0]] && sd[fieldSplit[0]].data[fieldSplit[1]] && downloadableFields[fields[i]]) {
-            // If the current field has data and is downloadable, create a download link
-            href = loris.BaseURL + '/mri/jiv/get_file.php?file=' + sd[fieldSplit[0]].data[fieldSplit[1]];
-            currow[i] = (
-              <a href={href}>
+        if (sessiondata.hasOwnProperty(session)) {
+          currow = [];
+          for (i = 0; fields && i < fields.length; i += 1) {
+            let fieldSplit = fields[i].split(',');
+            currow[i] = '.';
+            let sd = sessiondata[session];
+            if (sd[fieldSplit[0]]
+              && sd[fieldSplit[0]].data[fieldSplit[1]]
+              && downloadableFields[fields[i]]
+            ) {
+              // If the current field has data and is downloadable, create a download link
+              href = loris.BaseURL
+                + '/mri/jiv/get_file.php?file='
+                + sd[fieldSplit[0]].data[fieldSplit[1]];
+
+              currow[i] = (
+                <a href = {href}>
                 {sd[fieldSplit[0]].data[fieldSplit[1]]}
-              </a>
-            );
-            fileData.push('file/' + sd[fieldSplit[0]]._id + '/' + encodeURIComponent(sd[fieldSplit[0]].data[fieldSplit[1]]));
-          } else if (sd[fieldSplit[0]]) {
-            // else if field is not null add data and string
-            currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
+                </a>
+              );
+
+              fileData.push(
+                'file/'
+                + sd[fieldSplit[0]]._id
+                + '/' + encodeURIComponent(
+                  sd[fieldSplit[0]].data[fieldSplit[1]]
+                )
+              );
+            } else if (sd[fieldSplit[0]]) {
+              // else if field is not null add data and string
+              currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
+            }
           }
+          rowdata.push(currow);
+          Identifiers.push(session);
         }
-        rowdata.push(currow);
-        Identifiers.push(session);
       }
     } else {
       // Displaying the data in the longitudinal way
 
-      let Visits = {},
-        visit, identifier, temp, colHeader, index, instrument, fieldSplit;
+      let Visits = {};
+      let visit;
+      let identifier;
+      let temp;
+      let colHeader;
+      let index;
+      let instrument;
+      let fieldSplit;
 
       // Loop trough session data building the row identifiers and desired visits
       for (let session in sessiondata) {
-        temp = session.split(',');
-        visit = temp[1];
-        if (!Visits[visit]) {
-          Visits[visit] = true;
-        }
-        identifier = temp[0];
-        if (Identifiers.indexOf(identifier) === -1) {
-          Identifiers.push(identifier);
+        if (sessiondata.hasOwnProperty(session)) {
+          temp = session.split(',');
+          visit = temp[1];
+          if (!Visits[visit]) {
+            Visits[visit] = true;
+          }
+          identifier = temp[0];
+          if (Identifiers.indexOf(identifier) === -1) {
+            Identifiers.push(identifier);
+          }
         }
       }
 
@@ -755,10 +802,14 @@ class DataQueryApp extends Component {
       // has been selected in the build phase
       for (i = 0; fields && i < fields.length; i += 1) {
         for (visit in Visits) {
-          temp = fields[i].split(',');
-          instrument = this.state.selectedFields[temp[0]]
-          if (instrument && instrument[temp[1]] && instrument[temp[1]][visit]) {
-            RowHeaders.push(visit + ' ' + fields[i])
+          if (Visits.hasOwnProperty(visit)) {
+            temp = fields[i].split(',');
+            instrument = this.state.selectedFields[temp[0]];
+            if (instrument && instrument[temp[1]]
+                && instrument[temp[1]][visit]
+            ) {
+              RowHeaders.push(visit + ' ' + fields[i]);
+            }
           }
         }
       }
@@ -768,36 +819,52 @@ class DataQueryApp extends Component {
         if (Identifiers.hasOwnProperty(identifier)) {
           currow = [];
           for (colHeader in RowHeaders) {
-            temp = Identifiers[identifier] + ',' + RowHeaders[colHeader].split(' ')[0];
-            index = sessiondata[temp];
-            if (!index) {
-              currow.push('.');
-            } else {
-              temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
-              fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
-              if (temp) {
-                if (temp.data[RowHeaders[colHeader].split(',')[1]] && downloadableFields[fieldSplit[0] + ',' + fieldSplit[1]]) {
-                  // Add a downloadable link if the field is set and downloadable
-                  href = loris.BaseURL + '/mri/jiv/get_file.php?file=' + temp.data[RowHeaders[colHeader].split(',')[1]];
-                  temp = (
-                    <a href={href}>
-                      {temp.data[RowHeaders[colHeader].split(',')[1]]}
-                    </a>
-                  );
-                } else {
-                  temp = temp.data[RowHeaders[colHeader].split(',')[1]];
-                }
+            if (RowHeaders.hasOwnProperty(colHeader)) {
+              temp = Identifiers[identifier]
+                + ','
+                + RowHeaders[colHeader].split(' ')[0];
+              index = sessiondata[temp];
+              if (!index) {
+                currow.push('.');
               } else {
-                temp = '.';
+                temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
+                fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
+                if (temp) {
+                  if (
+                    temp.data[RowHeaders[colHeader].split(',')[1]]
+                    && downloadableFields[fieldSplit[0] + ',' + fieldSplit[1]]
+                  ) {
+                    // Add a downloadable link if the field is set and downloadable
+                    href = loris.BaseURL
+                      + '/mri/jiv/get_file.php?file='
+                      + temp.data[RowHeaders[colHeader].split(',')[1]];
+                    temp = (
+                      < a
+                    href = {href} >
+                      {temp.data[RowHeaders[colHeader].split(',')[1]]}
+                      < /a>
+                  )
+                    ;
+                  } else {
+                    temp = temp.data[RowHeaders[colHeader].split(',')[1]];
+                  }
+                } else {
+                  temp = '.';
+                }
+                currow.push(temp);
               }
-              currow.push(temp);
             }
           }
           rowdata.push(currow);
         }
       }
     }
-    return {rowdata: rowdata, Identifiers: Identifiers, RowHeaders: RowHeaders, fileData: fileData};
+    return {
+      rowdata: rowdata,
+      Identifiers: Identifiers,
+      RowHeaders: RowHeaders,
+      fileData: fileData,
+    };
   }
 
   dismissAlert() {
@@ -806,8 +873,8 @@ class DataQueryApp extends Component {
       alertLoaded: false,
       alertSaved: false,
       alertConflict: {
-        show: false
-      }
+        show: false,
+      },
     });
   }
 
@@ -816,7 +883,7 @@ class DataQueryApp extends Component {
     this.setState({
       fields: [],
       criteria: {},
-      selectedFields: {}
+      selectedFields: {},
     });
   }
 
@@ -825,14 +892,14 @@ class DataQueryApp extends Component {
     let rowdata = this.getRowData(displayID);
     this.setState({
       grouplevel: displayID,
-      ...(rowdata.rowdata.length > 0 ? {rowData: rowdata} : {rowData: {}})
+      ...(rowdata.rowdata.length > 0 ? {rowData: rowdata} : {rowData: {}}),
     });
   }
 
   updateFilter(filter) {
     // Update the filter
     if (filter.children.length === 0) {
-      filter.session = this.props.AllSessions
+      filter.session = this.props.AllSessions;
     }
     this.setState({filter});
   }
@@ -840,7 +907,13 @@ class DataQueryApp extends Component {
   navigationClicked(command) {
     let state = Object.assign({}, this.state);
     let step = state.ActiveTab;
-    const steps = ['Info', 'DefineFields', 'DefineFilters', 'ViewData', 'Statistics'];
+    const steps = [
+      'Info',
+      'DefineFields',
+      'DefineFilters',
+      'ViewData',
+      'Statistics',
+    ];
     let index = steps.indexOf(step);
     switch (command) {
       case 'previous':
@@ -896,7 +969,7 @@ class DataQueryApp extends Component {
           }});
         break;
     }
-    this.setState({ActiveTab: step})
+    this.setState({ActiveTab: step});
   }
 
   getSideBarVisibleStatus() {
@@ -921,7 +994,7 @@ class DataQueryApp extends Component {
             <h1 style={{
               color: '#0a3572',
               textAlign: 'center',
-              padding: '30px 0 0 0'
+              padding: '30px 0 0 0',
             }}>
               Welcome to the Data Query Tool
             </h1>
@@ -934,9 +1007,25 @@ class DataQueryApp extends Component {
                   title: 'Instructions on how to create a query',
                   content: (
                     <>
-                      <p>To start a new query, use the above navigation and or click on <i style={{color:'#596978'}}>"Define Fields"</i> to begin building the fields for the query.</p>
-                      <p>You may choose to then click the navigation again for the <i style={{color:'#596978'}}>"Define Filters (Optional)"</i> and define how you will filter the query data.</p>
-                      <p>Lastly, navigate to the <i style={{color:'#596978'}}>"Run Query"</i> and run the query you built. 🙂</p>
+                      <p>
+                        To start a new query, use the above navigation
+                        and or click on
+                        <i style={{color: '#596978'}}>"Define Fields"</i>
+                        to begin building the fields for the query.
+                      </p>
+                      <p>
+                        You may choose to then click the navigation
+                        again for the
+                        <i style={{color: '#596978'}}>
+                          "Define Filters (Optional)"
+                        </i>
+                        and define how you will filter the query data.
+                      </p>
+                      <p>
+                        Lastly, navigate to the
+                        <i style={{color: '#596978'}}>"Run Query"</i>
+                        and run the query you built. 🙂
+                      </p>
                     </>
                   ),
                   alwaysOpen: true,
@@ -967,7 +1056,7 @@ class DataQueryApp extends Component {
                       />
                     </>
                   ),
-                }
+                },
               ]}
             />
           </>

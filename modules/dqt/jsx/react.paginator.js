@@ -1,11 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 const PaginationLinks = (props) => {
-
-  const [RowsPerPage, setRowsPerPage] = useState(10);
-  const [Active, setActive] = useState(1);
-
   const changePage = (i) => {
     return (evt) => {
       // Don't jump to the top of the page
@@ -32,7 +28,7 @@ const PaginationLinks = (props) => {
     lastShownPage = startPage + 6;
     if (lastShownPage > lastPage) {
       lastShownPage = lastPage;
-      startPage = lastPage - 6
+      startPage = lastPage - 6;
     }
   }
 

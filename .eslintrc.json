@@ -56,7 +56,8 @@
         "modules/instrument_manager/**",
         "modules/issue_tracker/**",
         "modules/media/**",
-        "modules/publication/**"
+        "modules/publication/**",
+        "modules/dqt/**"
       ],
       "rules": {
         "require-jsdoc": "warn"
