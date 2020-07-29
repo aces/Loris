@@ -22,13 +22,16 @@ $dataToUpdate = array();
 foreach($flagData as $cmid => $data) {
     $dataArray = json_decode($data['Data'], true);
 
-    if(key_exists('Data_entry_completion_status', $dataArray)) {
-        unset($dataArray['Data_entry_completion_status']);
-        $dataToUpdate['Data'] = $dataArray;
+    if(isset($dataArray['Data_entry_completion_status'])) {
+        print_r($dataArray);
 
         if($dataArray['Data_entry_completion_status'] === 'Complete') {
             $dataToUpdate['Data_entry_completion_status'] = 'Complete';
         }
+
+        unset($dataArray['Data_entry_completion_status']);
+        $dataToUpdate['Data'] = $dataArray;
+
 
         $db->update(
             'flag',
