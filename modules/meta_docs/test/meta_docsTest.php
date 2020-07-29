@@ -33,7 +33,7 @@ class MetaDocsTestIntegrationTest extends \LorisIntegrationTest
         $this->setupPermissions([]);
         $this->safeGet($this->url . "/meta_docs");
         $selectOptions = $this->webDriver->findElement(
-            WebDriverBy::Id("select")
+            WebDriverBy::cssSelector("select")
         );
         $this->assertNotEmpty($selectOptions);
     }
