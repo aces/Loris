@@ -172,14 +172,15 @@ class ScheduleIndex extends Component {
     })
     .then((resp) => {
       if (resp.ok && resp.status === 200) {
-        swal.fire('Success!', 'Schedule modified.', 'success').then((result) => {
+        const msg = this.state.editModal ? 'Appointment modified.' : 'Appointment added.';
+        swal.fire('Success!', msg, 'success').then((result) => {
           if (result.value) {
             this.fetchData();
           }
         });
       } else {
         resp.json().then((message) => {
-          swal.fire('No changes was made!', message.error, 'error');
+          swal.fire('No changes were made!', message.error, 'error');
         });
       }
     })
@@ -321,11 +322,7 @@ console.log(row);
    if (this.state.editModal) {
      return (<ButtonElement
             name="edit"
-            label={
-              <div>
-                Edit Appointment
-              </div>
-            }
+            label="Edit Appointment"
             type="submit"
             buttonClass="btn btn-sm btn-success"
            />
@@ -333,11 +330,7 @@ console.log(row);
     } else {
         return (<ButtonElement
             name="create"
-            label={
-              <div>
-                Create Appointment
-              </div>
-            }
+            label="Create Appointment"
             type="submit"
             buttonClass="btn btn-sm btn-success"
            />
