@@ -14,23 +14,35 @@ import PropTypes from 'prop-types';
 import SearchableDropdown from './components/searchabledropdown';
 import SelectDropdown from './components/selectdropdown';
 
-/*
- *  The following component is used for displaying individual categories in the
- *  categories list
+/**
+ * CategoryItem Component
+ * @description The following component is used for displaying
+ *  individual categories in the categories list
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class CategoryItem extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    let classList = 'list-group-item',
-      badge = '';
+    let classList = 'list-group-item';
+    let badge = '';
     if (this.props.selected) {
       classList += ' active';
     }
     if (this.props.count >= 0) {
-      badge = <span className='badge'>{this.props.count}</span>
+      badge = <span className='badge'>{this.props.count}</span>;
     }
     return (
       <a href='#' className={classList} onClick={this.props.onClick}>
@@ -41,35 +53,51 @@ class CategoryItem extends Component {
   }
 }
 
-/*
- *  The following component is used for displaying the list of availible categories
+/**
+ * CategoryList Component
+ * @description The following component is used
+ *  for displaying the list of available categories
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class CategoryList extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
-      selectedCategory: ''
+      selectedCategory: '',
     };
     this.selectCategoryHandler = this.selectCategoryHandler.bind(this);
   }
 
+  /**
+   * select category handler
+   * @param {object} category
+   * @return {function}
+   */
   selectCategoryHandler(category) {
     return ((evt) => {
       if (this.props.onCategorySelect) {
         this.props.onCategorySelect(category);
       }
       this.setState({
-        selectedCategory: category
+        selectedCategory: category,
       });
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    let items = [],
-      selectClosure = (name) => {
-        return this.selectCategory(name);
-      };
-    for (i = 0; i < this.props.items.length; i += 1) {
+    let items = [];
+    this.selectCategory(name);
+    for (let i = 0; i < this.props.items.length; i += 1) {
       let selected = false;
       if (this.props.items[i].category == this.state.selectedCategory) {
         selected = true;
@@ -87,16 +115,27 @@ class CategoryList extends Component {
   }
 }
 
-/*
- *  The following component is used for displaying individual fields
+/**
+ * FieldItem Component
+ * The following component is used for displaying individual fields
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class FieldItem extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {};
     this.visitSelect = this.visitSelect.bind(this);
   }
 
+  /**
+   * visit select
+   * @param {event} evt
+   */
   visitSelect(evt) {
     // Selects and deselects visits
     let field = {
@@ -110,9 +149,12 @@ class FieldItem extends Component {
     }
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    // Renders the html for the component
-
     let classList = 'list-group-item row';
     let downloadIcon = '';
     let criteria;
@@ -153,12 +195,17 @@ class FieldItem extends Component {
     let displayName = this.props.FieldName;
 
     return (
-      <div className={classList} onClick={this.props.onClick} style={{cursor: 'pointer'}}>
+      <div className={classList}
+           onClick={this.props.onClick}
+           style={{cursor: 'pointer'}}>
         <div className='col-xs-8'>
-          <h4 className='list-group-item-heading col-xs-12'>{displayName}{criteria}{downloadIcon}</h4>
+          <h4 className='list-group-item-heading col-xs-12'>
+            {displayName}{criteria}{downloadIcon}
+          </h4>
           <span className='col-xs-12'>{this.props.Description}</span>
         </div>
-        <div className='col-xs-4 fieldVisitsRow' onClick={(e) => e.stopPropagation()}>
+        <div className='col-xs-4 fieldVisitsRow'
+             onClick={(e) => e.stopPropagation()}>
           {multiselect}
         </div>
       </div>
@@ -166,27 +213,47 @@ class FieldItem extends Component {
   }
 }
 
-/*
- *  The following component is used for displaying the list of availible fields for
+/**
+ * FieldList Component
+ *  The following component is used for displaying the list of available fields for
  *  the selected category
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class FieldList extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {};
     this.onFieldClick = this.onFieldClick.bind(this);
   }
 
+  /**
+   * field clicked
+   * @param {string} fieldName
+   * @param {boolean} downloadable
+   */
   onFieldClick(fieldName, downloadable) {
     // Wrapper function used to update field
     this.props.onFieldSelect(fieldName, this.props.category, downloadable);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    // Renders the html for the component
     let fields = [];
     let items = this.props.items || [];
-    let fieldName, desc, isFile, type, selected;
+    let fieldName;
+    let desc;
+    let isFile;
+    let type;
+    let selected;
     let rowsPerPage = this.props.FieldsPerPage || 8;
 
     let start = (this.props.PageNumber - 1) * rowsPerPage;
@@ -253,10 +320,17 @@ class FieldList extends Component {
   }
 }
 
-/*
+/**
+ * FieldSelector Component
  *  The following component is the base component for the field select tan
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class FieldSelector extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     let instruments = {};
@@ -268,7 +342,7 @@ class FieldSelector extends Component {
       selectedCategory: '',
       categoryFields: {},
       instruments: instruments,
-      PageNumber: 1
+      PageNumber: 1,
     };
     this.onFieldSelect = this.onFieldSelect.bind(this);
     this.onCategorySelect = this.onCategorySelect.bind(this);
@@ -279,21 +353,32 @@ class FieldSelector extends Component {
     this.changePage = this.changePage.bind(this);
   }
 
+  /**
+   * Wrapper function for field changes
+   * @param {string} fieldName
+   * @param {string} category
+   * @param {boolean} downloadable
+   */
   onFieldSelect(fieldName, category, downloadable) {
-    // Wrapper function for field changes
     this.props.onFieldChange(fieldName, category, downloadable);
   }
 
+  /**
+   * Use the cached version if it exists
+   * @param {string} elementName
+   * @param {string} category
+   */
   onCategorySelect(elementName, category) {
-    // Use the cached version if it exists
     if (this.state.categoryFields[category]) {
     } else {
       // Retrieve the data dictionary
-      $.get(loris.BaseURL + "/AjaxHelper.php?Module=dqt&script=datadictionary.php", {category: category}, (data) => {
+      $.get(loris.BaseURL
+        + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
+        {category: category}, (data) => {
         let cf = this.state.categoryFields;
         cf[category] = data;
         this.setState({
-          categoryFields: cf
+          categoryFields: cf,
         });
       }, 'json');
     }
@@ -303,81 +388,161 @@ class FieldSelector extends Component {
     });
   }
 
+  /**
+   * filter change event.
+   * @param {event} evt
+   */
   filterChange(evt) {
     this.setState({
-      filter: evt.currentTarget.value
+      filter: evt.currentTarget.value,
     });
   }
 
+  /**
+   * Adds all fields the currently selected category
+   */
   addAll() {
-    // Adds all fields the currently selected category
-    let i, isFile, fieldName, category;
+    let i;
+    let isFile;
+    let fieldName;
+    let category;
     for (i in this.state.categoryFields[this.state.selectedCategory]) {
-      fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
-      category = this.state.categoryFields[this.state.selectedCategory][i].key[0];
-      if (this.props.selectedFields[category] && this.props.selectedFields[category][fieldName]) {
-        // Do nothing, already added
-      } else {
-        isFile = (this.state.categoryFields[category][i].value.isFile) ? true : false;
-        this.props.onFieldChange(fieldName, category, isFile);
+      if (this.state.categoryFields[
+        this.state.selectedCategory
+        ].hasOwnProperty(i)) {
+        fieldName = this.state.categoryFields[
+          this.state.selectedCategory
+          ][i].key[1];
+        category = this.state.categoryFields[
+          this.state.selectedCategory
+          ][i].key[0];
+        if (this.props.selectedFields[category]
+          && this.props.selectedFields[category][fieldName]
+        ) {
+          // Do nothing, already added
+        } else {
+          isFile = (this.state.categoryFields[
+            category
+            ][i].value.isFile)
+            ? true
+            : false;
+          this.props.onFieldChange(fieldName, category, isFile);
+        }
       }
     }
   }
 
+  /**
+   * Deletes all fields the currently selected category
+   */
   deleteAll() {
-    // Deletes all fields the currently selected category
-    let i, index, fieldName, category, isFile;
+    let i;
+    let fieldName;
+    let category;
+    let isFile;
     for (i in this.state.categoryFields[this.state.selectedCategory]) {
-      fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
-      category = this.state.categoryFields[this.state.selectedCategory][i].key[0];
-      if (this.props.selectedFields[category] && this.props.selectedFields[category][fieldName]) {
-        isFile = (this.state.categoryFields[category][i].value.isFile) ? true : false;
-        this.props.onFieldChange(fieldName, category, isFile);
+      if (this.state.categoryFields[
+        this.state.selectedCategory
+        ].hasOwnProperty(i)) {
+        fieldName = this.state.categoryFields[
+          this.state.selectedCategory
+          ][i].key[1];
+        category = this.state.categoryFields[
+          this.state.selectedCategory
+          ][i].key[0];
+        if (this.props.selectedFields[category]
+          && this.props.selectedFields[category][fieldName]) {
+          isFile = (this.state.categoryFields[category][i].value.isFile)
+            ? true
+            : false;
+          this.props.onFieldChange(fieldName, category, isFile);
+        }
       }
     }
   }
 
+  /**
+   * modify category field visits.
+   * @param {string} visit
+   * @param {string} action
+   */
   modifyCategoryFieldVists(visit, action) {
-    if (this.state.selectedCategory && this.props.selectedFields[this.state.selectedCategory]) {
-      for (let field in this.props.selectedFields[this.state.selectedCategory]) {
-        if (field === 'allVisits') {
-          continue;
-        }
-        if (action === 'check' && !this.props.selectedFields[this.state.selectedCategory][field][visit]) {
-          this.props.fieldVisitSelect(
-            action,
-            visit,
-            {instrument: this.state.selectedCategory, field: field}
-          );
-        } else if (action === 'uncheck' && this.props.selectedFields[this.state.selectedCategory][field][visit]) {
-          this.props.fieldVisitSelect(
-            action,
-            visit,
-            {instrument: this.state.selectedCategory, field: field}
-          );
+    if (this.state.selectedCategory
+      && this.props.selectedFields[this.state.selectedCategory]
+    ) {
+      for (let field in this.props.selectedFields[
+        this.state.selectedCategory
+        ]) {
+        if (this.props.selectedFields[
+          this.state.selectedCategory
+          ].hasOwnProperty(field)
+        ) {
+          if (this.props.selectedFields[
+            this.state.selectedCategory
+            ].hasOwnProperty(field)
+          ) {
+            if (field === 'allVisits') {
+              continue;
+            }
+            if (action === 'check'
+              && !this.props.selectedFields[
+                this.state.selectedCategory
+                ][field][visit]
+            ) {
+              this.props.fieldVisitSelect(
+                action,
+                visit,
+                {instrument: this.state.selectedCategory, field: field}
+              );
+            } else if (action === 'uncheck'
+              && this.props.selectedFields[
+                this.state.selectedCategory
+                ][field][visit]
+            ) {
+              this.props.fieldVisitSelect(
+                action,
+                visit,
+                {instrument: this.state.selectedCategory, field: field}
+              );
+            }
+          }
         }
       }
     }
   }
 
+  /**
+   * change page
+   * @param {number} i
+   */
   changePage(i) {
     this.setState({
-      PageNumber: i
+      PageNumber: i,
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    // Renders the html for the component
-    let categoryVisits = {},
-      selectedFieldsCount;
+    let categoryVisits = {};
+    let selectedFieldsCount;
     if (this.state.selectedCategory != '') {
       if (this.props.selectedFields[this.state.selectedCategory]) {
-        selectedFieldsCount = Object.keys(this.props.selectedFields[this.state.selectedCategory]).length - 1;
+        selectedFieldsCount = Object.keys(
+          this.props.selectedFields[this.state.selectedCategory]
+        ).length - 1;
       }
       for (let key in this.props.Visits) {
         if (this.props.selectedFields[this.state.selectedCategory]
-          && this.props.selectedFields[this.state.selectedCategory].allVisits[key]
-          && this.props.selectedFields[this.state.selectedCategory].allVisits[key] == selectedFieldsCount) {
+          && this.props.selectedFields[
+            this.state.selectedCategory
+            ].allVisits[key]
+          && this.props.selectedFields[
+            this.state.selectedCategory
+            ].allVisits[key] == selectedFieldsCount) {
           categoryVisits[key] = true;
         } else {
           categoryVisits[key] = false;
@@ -404,7 +569,7 @@ class FieldSelector extends Component {
              style={{
                visibility: this.state.selectedCategory ? 'visible' : 'hidden',
                margin: '0 auto',
-               maxWidth: '800px'
+               maxWidth: '800px',
              }}>
           <div className='form-group has-feedback'>
             <div className='input-group'>
@@ -434,7 +599,9 @@ class FieldSelector extends Component {
           </div>
         </div>
         <div className='row form-group' style={{
-          visibility: this.state.selectedCategory ? 'visible' : 'hidden'
+          visibility: this.state.selectedCategory
+            ? 'visible'
+            : 'hidden',
         }}>
           <div className='col-md-8 col-sm-8'>
             <div style={{position: 'absolute', right: '0'}}>
@@ -479,7 +646,7 @@ class FieldSelector extends Component {
 }
 
 FieldSelector.propTypes = {
-  selectedFields: PropTypes.object
+  selectedFields: PropTypes.object,
 };
 
 window.CategoryItem = CategoryItem;
@@ -493,5 +660,5 @@ export default {
   CategoryList,
   FieldItem,
   FieldList,
-  FieldSelector
+  FieldSelector,
 };

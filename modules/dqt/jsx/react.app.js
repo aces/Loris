@@ -1068,7 +1068,6 @@ class DataQueryApp extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    // Renders the html for the component
     let tabs = [];
 
     // Create or Load tab.
