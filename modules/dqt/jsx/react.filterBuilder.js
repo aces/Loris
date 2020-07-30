@@ -9,47 +9,72 @@
 
 import React, {Component} from 'react';
 
-/*
+/**
+ * LogicOperator Component
  *  The following component is used for displaying operator for the group component
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class LogicOperator extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.changeOperator = this.changeOperator.bind(this);
   }
 
+  /**
+   * Wrapper function updating operator
+   * @param {object} op
+   */
   changeOperator(op) {
     // Wrapper function updating operator
     this.props.updateGroupOperator(op);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    // Renders the html for the component
-
-    let andClass = 'btn',
-      orClass = 'btn';
+    let andClass = 'btn';
+    let orClass = 'btn';
 
     // Set operator to OR if logicOperator is 1, AND otherwise
     if (this.props.logicOperator === 1) {
       orClass += ' btn-primary';
-      andClass += ' switch'
+      andClass += ' switch';
     } else {
       andClass += ' btn-primary';
-      orClass += ' switch'
+      orClass += ' switch';
     }
     return (
       <div className='btn-group' role='group'>
-        <button type='button' className={andClass} onClick={this.changeOperator.bind(this, 0)}>And</button>
-        <button type='button' className={orClass} onClick={this.changeOperator.bind(this, 1)}>Or</button>
+        <button type='button'
+                className={andClass}
+                onClick={this.changeOperator.bind(this, 0)}>And</button>
+        <button type='button'
+                className={orClass}
+                onClick={this.changeOperator.bind(this, 1)}>Or</button>
       </div>
     );
   }
 }
 
-/*
+/**
+ * FilterRule Component
  *  The following component is used for displaying a filter rule
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class FilterRule extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -61,7 +86,7 @@ class FilterRule extends Component {
         startsWith: 'startsWith',
         contains: 'contains',
         isNull: 'isNull',
-        isNotNull: 'isNotNull'
+        isNotNull: 'isNotNull',
       },
       value: '',
     };
@@ -73,24 +98,35 @@ class FilterRule extends Component {
     this.updateVisit = this.updateVisit.bind(this);
   }
 
+  /**
+   * Component will mount
+   */
   componentWillMount() {
     this.valueSet = loris.debounce(this.valueSet, 1000);
   }
 
+  /**
+   * Update the rules instrument, getting the instruments available fields
+   * @param {event} event
+   */
   selectInstrument(event) {
-    // Update the rules instrument, getting the instruments avalible fields
     let rule = this.props.rule;
     if (event.target.value) {
       rule.instrument = event.target.value;
-      $.get(loris.BaseURL + '/dqt/ajax/datadictionary.php', {category: rule.instrument}, (data) => {
+      $.get(loris.BaseURL
+        + '/dqt/ajax/datadictionary.php',
+        {category: rule.instrument}, (data) => {
         rule.fields = data;
         this.props.updateRule(this.props.index, rule);
       }, 'json');
     }
   }
 
+  /**
+   * Update the rules desired field, setting the rules field and field type
+   * @param {event} event
+   */
   fieldSelect(event) {
-    // Update the rules desired field, setting the rules field and field type
     let rule = JSON.parse(JSON.stringify(this.props.rule));
     delete rule.field;
     delete rule.fieldType;
@@ -105,6 +141,10 @@ class FilterRule extends Component {
     this.props.updateRule(this.props.index, rule);
   }
 
+  /**
+   * Update the desired rule operation for the selected field
+   * @param {event} event
+   */
   operatorSelect(event) {
     // Update the desired rule operation for the selected field
     let rule = JSON.parse(JSON.stringify(this.props.rule));
@@ -118,12 +158,16 @@ class FilterRule extends Component {
     this.props.updateRule(this.props.index, rule);
     if (rule.operator === 'isNull' || rule.operator === 'isNotNull') {
       this.setState({
-        value: 'null'
+        value: 'null',
       });
       this.valueSet();
     }
   }
 
+  /**
+   * value changed event
+   * @param {event} event
+   */
   valueChange(event) {
     let rule = JSON.parse(JSON.stringify(this.props.rule));
     delete rule.visit;
@@ -132,14 +176,16 @@ class FilterRule extends Component {
     rule.value = event.target.value;
 
     this.setState({
-      value: event.target.value
+      value: event.target.value,
     });
     this.valueSet();
     this.props.updateRule(this.props.index, rule);
   }
 
+  /**
+   * Update the value to filter for, and runs the query for the rules parameters
+   */
   valueSet() {
-    // Update the value to filter for, and runs the query for the rules parameters
     let rule = JSON.parse(JSON.stringify(this.props.rule));
     if (this.state.value) {
       let responseHandler = (data) => {
@@ -204,8 +250,11 @@ class FilterRule extends Component {
     }
   }
 
+  /**
+   * Update rule to filter for specified visit
+   * @param {event} event
+   */
   updateVisit(event) {
-    // Update rule to filter for specified visit
     let rule = JSON.parse(JSON.stringify(this.props.rule));
     rule.visit = event.target.value;
 
@@ -219,9 +268,12 @@ class FilterRule extends Component {
     this.props.updateSessions(this.props.index, rule);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    // Renders the html for the component
-
     let rule;
     let fieldIndex;
     let forVisits;
@@ -260,7 +312,9 @@ class FilterRule extends Component {
         }
         value = (this.props.rule.operator) ? this.props.rule.operator : '';
         operatorSelect = (
-          <select className='input-sm col-xs-3 ' onChange={this.operatorSelect} value={value}>
+          <select className='input-sm col-xs-3 '
+                  onChange={this.operatorSelect}
+                  value={value}>
             <option value=''/>
             {operators}
           </select>
@@ -283,7 +337,9 @@ class FilterRule extends Component {
               });
               value = (this.props.rule.value) ? this.props.rule.value : '';
               input = (
-                <select className='input-sm col-xs-3' onChange={this.valueChange} value={value}>
+                <select className='input-sm col-xs-3'
+                        onChange={this.valueChange}
+                        value={value}>
                   <option value=''/>
                   {options}
                 </select>
@@ -311,7 +367,9 @@ class FilterRule extends Component {
             );
           });
           forVisits = (
-            <select className='input-sm col-xs-3' onChange={this.updateVisit} value={this.props.rule.visit}>
+            <select className='input-sm col-xs-3'
+                    onChange={this.updateVisit}
+                    value={this.props.rule.visit}>
               <option value='all'>All Visits</option>
               {visits}
             </select>
@@ -321,10 +379,14 @@ class FilterRule extends Component {
       rule = (
         <div>
           <div className='col-xs-12'>
-            <label className='instrumentLabel'>{this.props.rule.instrument}</label>
+            <label className='instrumentLabel'>
+              {this.props.rule.instrument}
+            </label>
           </div>
           <div className='col-xs-10'>
-            <select className='input-sm col-xs-3' onChange={this.fieldSelect} value={fieldIndex}>
+            <select className='input-sm col-xs-3'
+                    onChange={this.fieldSelect}
+                    value={fieldIndex}>
               <option value=''/>
               {fields}
             </select>
@@ -346,7 +408,7 @@ class FilterRule extends Component {
           <option value=''/>
           {options}
         </select>
-      )
+      );
     }
     return (
       <div className='panel panel-default'>
@@ -365,10 +427,17 @@ class FilterRule extends Component {
   }
 }
 
-/*
+/**
+ * FilterGroup Component
  *  The following component is used for displaying a filter group
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class FilterGroup extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {};
@@ -379,9 +448,12 @@ class FilterGroup extends Component {
     this.deleteChild = this.deleteChild.bind(this);
   }
 
+  /**
+   * Update a specified child in the groups children
+   * @param {number} index
+   * @param {string} child
+   */
   updateChild(index, child) {
-    // Update a specified child in the groups children
-
     let group = this.props.group;
     group.children[index] = child;
 
@@ -394,8 +466,11 @@ class FilterGroup extends Component {
     }
   }
 
+  /**
+   * Update the group's operator
+   * @param {object} operator
+   */
   updateGroupOperator(operator) {
-    // Update the group's operator
     let group = this.props.group;
     group.activeOperator = operator;
 
@@ -411,11 +486,14 @@ class FilterGroup extends Component {
     }
   }
 
+  /**
+   * Computes the desired sessions of the current group
+   * @param {number} index
+   * @param {string} child
+   */
   updateSessions(index, child) {
     // Computes the desired sessions of the current group
-    let group = this.props.group,
-      sessions = [],
-      session = [];
+    let group = this.props.group;
     group.children[index] = child;
 
     // Update the groups sessions by calling the arrayintersect.js functions
@@ -425,51 +503,35 @@ class FilterGroup extends Component {
       this.props.updateSessions(this.props.index, group);
     } else {
       // Else base filter group, update the filter in the data query component
-      this.props.updateFilter(group)
+      this.props.updateFilter(group);
     }
   }
 
+  /**
+   * Add a child to the group
+   * @param {string} type
+   */
   addChild(type) {
-    // Add a child to the group
-    let child,
-      group = this.props.group;
+    let child;
+    let group = this.props.group;
 
-    // Define the child's base data structure depending on specifed type
+    // Define the child's base data structure depending on specified type
     if (type === 'rule') {
       child = {
-        type: 'rule'
-      }
+        type: 'rule',
+      };
     } else {
       child = {
         type: 'group',
         activeOperator: 0,
         children: [
           {
-            type: 'rule'
-          }
-        ]
-      }
+            type: 'rule',
+          },
+        ],
+      };
     }
     group.children.push(child);
-
-    if (this.props.index) {
-      // If not base filter group, recursively call update child
-      this.props.updateGroup(this.props.index, group);
-    } else {
-      // Else base filter group, update the filter in the data query component
-      this.props.updateFilter(group)
-    }
-  }
-
-  deleteChild(index) {
-    // Delete a child
-
-    let group = this.props.group;
-    group.children.splice(index, 1);
-
-    // Update the groups sessions by calling the arrayintersect.js functions
-    group.session = getSessions(group);
-
 
     if (this.props.index) {
       // If not base filter group, recursively call update child
@@ -480,8 +542,32 @@ class FilterGroup extends Component {
     }
   }
 
+  /**
+   * Delete a child
+   * @param {number} index
+   */
+  deleteChild(index) {
+    let group = this.props.group;
+    group.children.splice(index, 1);
+
+    // Update the groups sessions by calling the arrayintersect.js functions
+    group.session = getSessions(group);
+
+    if (this.props.index) {
+      // If not base filter group, recursively call update child
+      this.props.updateGroup(this.props.index, group);
+    } else {
+      // Else base filter group, update the filter in the data query component
+      this.props.updateFilter(group);
+    }
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    // Renders the html for the component
     let logicOperator = (
       <LogicOperator
         logicOperator={this.props.group.activeOperator}
@@ -565,23 +651,37 @@ class FilterGroup extends Component {
   }
 }
 
-/*
+/**
+ * FilterBuilder Component
  *  The following component is the base componenet for the filter builder
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class FilterBuilder extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {};
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div>
         <div className='row'>
-          <h1 className='col-xs-6' style={{color: '#0A3572'}}>The Query's Filter</h1>
-          {/*<button className='import-csv'>*/}
-          {/*  Import Population from CSV&nbsp;&nbsp;<span className='glyphicon glyphicon-file'/>*/}
-          {/*</button>*/}
+          <h1 className='col-xs-6'
+              style={{color: '#0A3572'}}>The Query's Filter</h1>
+          {/* <button className='import-csv'> */}
+          {/* Import Population from CSV&nbsp;
+          &nbsp;<span className='glyphicon glyphicon-file'/>*/}
+          {/* </button> */}
         </div>
         <div className='row'>
           <div className='col-xs-12'>
@@ -608,5 +708,5 @@ export default {
   LogicOperator,
   FilterRule,
   FilterGroup,
-  FilterBuilder
+  FilterBuilder,
 };
