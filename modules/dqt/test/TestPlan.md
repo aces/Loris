@@ -44,22 +44,21 @@
    - change the data view from "Cross-sectional" to "Longitudinal", ensure that the 
      data is now displayed longitudinal on the X axis with column header names changed
      to "VisitLabel,InstrumentName" separated with a comma
-6. Go to the "Statistical Analysis" tab:
+6. Click on the "Visualized Data" button:
    - ensure that a table with "Basic Statistics" (Min, Max, Standard Deviation, Mean,
      Mean Deviation, Mean Squared Error, First Quartile, Second Quartile, Third 
      Quartile) is shown and filled
    - ensure that the "Scatterplot" is working when selecting data for column X and Y
-7. Go to the "Manage Saved Queries" tab:
-   - ensure the 'Save Current Query' button opens to a modal window with a text box 
+7. Ensure the 'Save' button opens to a modal window with a text box 
      to write the name of the query to be saved, a checkbox to publicly share the 
      query and 2 buttons at the bottom ('Close' and 'Save Changes') 
      entering a name for that query and clicking on 'Save Changes' in the modal 
      window
    - save one query (`query1`) that would not be shared publicly
    - save another query (`query2`) that will be shared publicly
-8. Go to the "Load Saved Query" tab:
+8. Go back to the 'Create or Load' page and click on the 'Load Existing Query' button:
    - ensure that `query1` saved in item '7.' of the test plan is displayed under the
-     user 'User Saved Queries' section
+     'User Saved Queries' section
    - ensure that `query2` saved in item '7.' of the test plan is displayed under the 
      'Shared Saved Queries' section
    - ensure both queries saved in item '7.' of the test plan load properly in the
