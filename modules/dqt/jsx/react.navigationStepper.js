@@ -6,15 +6,15 @@ import {Stepper} from './components/stepper';
 const NavigationStepper = (props) => {
   const mySteps = ['Info', 'DefineFields', 'DefineFilters', 'ViewData'];
 
-  const [, setCurrentStep] = useState(mySteps.indexOf(props.setIndex));
-  const steps = useState([
+  const [currentStep, setCurrentStep] = useState(mySteps.indexOf(props.setIndex));
+  const [steps, setSteps] = useState([
     {
       title: 'Create or Load',
       onClick: (e) => {
         e.preventDefault();
         onClickStep(0);
         props.stepperClicked('Info', 0);
-      },
+      }
     },
     {
       title: 'Define Fields',
@@ -22,7 +22,7 @@ const NavigationStepper = (props) => {
         e.preventDefault();
         onClickStep(1);
         props.stepperClicked('DefineFields', 1);
-      },
+      }
     },
     {
       title: 'Define Filters (Optional)',
@@ -30,7 +30,7 @@ const NavigationStepper = (props) => {
         e.preventDefault();
         onClickStep(2);
         props.stepperClicked('DefineFilters', 2);
-      },
+      }
     },
     {
       title: 'Run Query',
@@ -38,14 +38,12 @@ const NavigationStepper = (props) => {
         e.preventDefault();
         onClickStep(3);
         props.stepperClicked('ViewData', 3);
-      },
-    },
+      }
+    }
   ]);
-
   const onClickStep = (step) => {
     setCurrentStep(step);
   };
-
   return (
     <Stepper
       steps={steps}
@@ -56,6 +54,14 @@ const NavigationStepper = (props) => {
 };
 
 const NavigationWithSave = (props) => {
+
+  const myStepsDetails = [
+    {prev: '', next: 'Define Fields'},
+    {prev: 'Create or Load', next: 'Define Filters'},
+    {prev: 'Define Fields', next: 'Run Query'},
+    {prev: 'Define Filters', next: ''},
+  ];
+
   const getTextDescriptionPrevious = (index) => {
     switch (index) {
       case 0:
@@ -112,13 +118,10 @@ const NavigationWithSave = (props) => {
         position: 'relative',
       }}>
         <button onClick={() => props.onClickHandler('previous')}
-                className={props.disable.previous ?
-                  'navigation-button disabled' :
-                  'navigation-button'
-                }
+                className={props.disable.previous ? 'navigation-button disabled' : 'navigation-button'}
                 style={{
                   display: 'inline-block',
-                  marginRight: '10px',
+                  marginRight: '10px'
                 }}
                 disabled={props.disable.previous}>
           <span className='glyphicon glyphicon-chevron-left'/>
@@ -128,16 +131,13 @@ const NavigationWithSave = (props) => {
                 className={'save-button'}
                 style={{
                   display: 'inline-block',
-                  marginRight: '10px',
+                  marginRight: '10px'
                 }}
                 disabled={props.disable.save}>
           Save
         </button>
         <button onClick={() => props.onClickHandler('next')}
-                className={props.disable.next ?
-                  'navigation-button disabled' :
-                  'navigation-button'
-                }
+                className={props.disable.next ? 'navigation-button disabled' : 'navigation-button'}
                 style={{display: 'inline-block'}}
                 disabled={props.disable.next}>
           {getTextDescriptionNext(props.index)}
@@ -145,17 +145,15 @@ const NavigationWithSave = (props) => {
         </button>
       </div>
     </div>
-  );
+  )
 };
-
 NavigationWithSave.defaultProps = {
   disable: {
     previous: false,
     save: false,
-    next: false,
+    next: false
   },
 };
-
 NavigationWithSave.propTypes = {
   onClickHandler: PropTypes.func,
   disable: PropTypes.object,
@@ -163,5 +161,5 @@ NavigationWithSave.propTypes = {
 
 export {
   NavigationStepper,
-  NavigationWithSave,
+  NavigationWithSave
 };

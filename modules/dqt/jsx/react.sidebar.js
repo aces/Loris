@@ -5,7 +5,7 @@ class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hidden: false,
+      hidden: false
     };
     this.toggleHidden = this.toggleHidden.bind(this);
     this.hide = this.hide.bind(this);
@@ -41,6 +41,7 @@ class FieldsSidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+
   }
 
   render() {
@@ -50,15 +51,14 @@ class FieldsSidebar extends Component {
       return <div/>;
     }
 
+    let fieldDiv = '';
     let fieldList = [];
     if (this.props.Fields) {
       for (let i = this.props.Fields.length - 1; i >= 0; i--) {
         let fieldInfo = this.props.Fields[i].split(',');
         fieldList.push(
           <div className='list-group-item row' key={this.props.Fields[i]}>
-            <h4 className='list-group-item-heading col-xs-12'>
-              {fieldInfo[0]}
-            </h4>
+            <h4 className='list-group-item-heading col-xs-12'>{fieldInfo[0]}</h4>
             <span className='col-xs-12'>{fieldInfo[1]}</span>
           </div>
         );
@@ -67,12 +67,7 @@ class FieldsSidebar extends Component {
     return (
       <Sidebar Name='Fields'>
         <div className='form-group'>
-          <button
-            className='btn btn-primary'
-            onClick={this.props.resetQuery}
-          >
-            Clear Query
-          </button>
+          <button className='btn btn-primary' onClick={this.props.resetQuery}>Clear Query</button>
         </div>
         {fieldList}
       </Sidebar>);
@@ -85,7 +80,7 @@ FieldsSidebar.propTypes = {
 
 FieldsSidebar.defaultProps = {
   Fields: [],
-  Criteria: {},
+  Criteria: {}
 };
 
 window.Sidebar = Sidebar;
@@ -93,5 +88,5 @@ window.FieldsSidebar = FieldsSidebar;
 
 export default {
   Sidebar,
-  FieldsSidebar,
+  FieldsSidebar
 };

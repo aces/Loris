@@ -1,8 +1,13 @@
 import React, {useState} from 'react';
 
 const SelectDropdown = (props) => {
+
   const [filter, setFilter] = useState('');
   const [open, setOpen] = useState(false);
+  const [options, setOptions] = useState({
+    V01: 'false',
+    V02: 'true'
+  });
 
   const toggleDropdown = () => {
     setOpen((open) => !open);

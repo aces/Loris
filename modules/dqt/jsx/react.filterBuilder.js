@@ -4,7 +4,7 @@
  *  @author   Jordan Stirling <jstirling91@gmail.com>
 *   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/aces/Loris
+ *  @link     https://github.com/mohadesz/Loris-Trunk
  */
 
 import React, {Component} from 'react';
@@ -26,29 +26,21 @@ class LogicOperator extends Component {
   render() {
     // Renders the html for the component
 
-    let andClass = 'btn';
-    let orClass = 'btn';
+    let andClass = 'btn',
+      orClass = 'btn';
 
     // Set operator to OR if logicOperator is 1, AND otherwise
     if (this.props.logicOperator === 1) {
       orClass += ' btn-primary';
-      andClass += ' switch';
+      andClass += ' switch'
     } else {
       andClass += ' btn-primary';
-      orClass += ' switch';
+      orClass += ' switch'
     }
     return (
       <div className='btn-group' role='group'>
-        <button
-          type='button'
-          className={andClass}
-          onClick={this.changeOperator.bind(this, 0)}
-        >And</button>
-        <button
-          type='button'
-          className={orClass}
-          onClick={this.changeOperator.bind(this, 1)}
-        >Or</button>
+        <button type='button' className={andClass} onClick={this.changeOperator.bind(this, 0)}>And</button>
+        <button type='button' className={orClass} onClick={this.changeOperator.bind(this, 1)}>Or</button>
       </div>
     );
   }
@@ -69,7 +61,7 @@ class FilterRule extends Component {
         startsWith: 'startsWith',
         contains: 'contains',
         isNull: 'isNull',
-        isNotNull: 'isNotNull',
+        isNotNull: 'isNotNull'
       },
       value: '',
     };
@@ -90,15 +82,10 @@ class FilterRule extends Component {
     let rule = this.props.rule;
     if (event.target.value) {
       rule.instrument = event.target.value;
-      $.get(
-        loris.BaseURL + '/dqt/ajax/datadictionary.php',
-        {category: rule.instrument},
-        (data) => {
-          rule.fields = data;
-          this.props.updateRule(this.props.index, rule);
-        },
-        'json'
-      );
+      $.get(loris.BaseURL + '/dqt/ajax/datadictionary.php', {category: rule.instrument}, (data) => {
+        rule.fields = data;
+        this.props.updateRule(this.props.index, rule);
+      }, 'json');
     }
   }
 
@@ -131,7 +118,7 @@ class FilterRule extends Component {
     this.props.updateRule(this.props.index, rule);
     if (rule.operator === 'isNull' || rule.operator === 'isNotNull') {
       this.setState({
-        value: 'null',
+        value: 'null'
       });
       this.valueSet();
     }
@@ -145,7 +132,7 @@ class FilterRule extends Component {
     rule.value = event.target.value;
 
     this.setState({
-      value: event.target.value,
+      value: event.target.value
     });
     this.valueSet();
     this.props.updateRule(this.props.index, rule);
@@ -273,11 +260,7 @@ class FilterRule extends Component {
         }
         value = (this.props.rule.operator) ? this.props.rule.operator : '';
         operatorSelect = (
-          <select
-            className='input-sm col-xs-3 '
-            onChange={this.operatorSelect}
-            value={value}
-          >
+          <select className='input-sm col-xs-3 ' onChange={this.operatorSelect} value={value}>
             <option value=''/>
             {operators}
           </select>
@@ -300,11 +283,7 @@ class FilterRule extends Component {
               });
               value = (this.props.rule.value) ? this.props.rule.value : '';
               input = (
-                <select
-                  className='input-sm col-xs-3'
-                  onChange={this.valueChange}
-                  value={value}
-                >
+                <select className='input-sm col-xs-3' onChange={this.valueChange} value={value}>
                   <option value=''/>
                   {options}
                 </select>
@@ -332,11 +311,7 @@ class FilterRule extends Component {
             );
           });
           forVisits = (
-            <select
-              className='input-sm col-xs-3'
-              onChange={this.updateVisit}
-              value={this.props.rule.visit}
-            >
+            <select className='input-sm col-xs-3' onChange={this.updateVisit} value={this.props.rule.visit}>
               <option value='all'>All Visits</option>
               {visits}
             </select>
@@ -346,15 +321,10 @@ class FilterRule extends Component {
       rule = (
         <div>
           <div className='col-xs-12'>
-            <label className='instrumentLabel'>
-              {this.props.rule.instrument}
-            </label>
+            <label className='instrumentLabel'>{this.props.rule.instrument}</label>
           </div>
           <div className='col-xs-10'>
-            <select
-              className='input-sm col-xs-3'
-              onChange={this.fieldSelect} value={fieldIndex}
-            >
+            <select className='input-sm col-xs-3' onChange={this.fieldSelect} value={fieldIndex}>
               <option value=''/>
               {fields}
             </select>
@@ -376,7 +346,7 @@ class FilterRule extends Component {
           <option value=''/>
           {options}
         </select>
-      );
+      )
     }
     return (
       <div className='panel panel-default'>
@@ -443,7 +413,9 @@ class FilterGroup extends Component {
 
   updateSessions(index, child) {
     // Computes the desired sessions of the current group
-    let group = this.props.group;
+    let group = this.props.group,
+      sessions = [],
+      session = [];
     group.children[index] = child;
 
     // Update the groups sessions by calling the arrayintersect.js functions
@@ -453,30 +425,30 @@ class FilterGroup extends Component {
       this.props.updateSessions(this.props.index, group);
     } else {
       // Else base filter group, update the filter in the data query component
-      this.props.updateFilter(group);
+      this.props.updateFilter(group)
     }
   }
 
   addChild(type) {
     // Add a child to the group
-    let child;
-      let group = this.props.group;
+    let child,
+      group = this.props.group;
 
     // Define the child's base data structure depending on specifed type
     if (type === 'rule') {
       child = {
-        type: 'rule',
-      };
+        type: 'rule'
+      }
     } else {
       child = {
         type: 'group',
         activeOperator: 0,
         children: [
           {
-            type: 'rule',
-          },
-        ],
-      };
+            type: 'rule'
+          }
+        ]
+      }
     }
     group.children.push(child);
 
@@ -485,7 +457,7 @@ class FilterGroup extends Component {
       this.props.updateGroup(this.props.index, group);
     } else {
       // Else base filter group, update the filter in the data query component
-      this.props.updateFilter(group);
+      this.props.updateFilter(group)
     }
   }
 
@@ -606,12 +578,9 @@ class FilterBuilder extends Component {
     return (
       <div>
         <div className='row'>
-          <h1 className='col-xs-6' style={{color: '#0A3572'}}>
-            The Query's Filter
-          </h1>
+          <h1 className='col-xs-6' style={{color: '#0A3572'}}>The Query's Filter</h1>
           <button className='import-csv'>
-            Import Population from CSV&nbsp;&nbsp;
-            <span className='glyphicon glyphicon-file'/>
+            Import Population from CSV&nbsp;&nbsp;<span className='glyphicon glyphicon-file'/>
           </button>
         </div>
         <div className='row'>
@@ -639,5 +608,5 @@ export default {
   LogicOperator,
   FilterRule,
   FilterGroup,
-  FilterBuilder,
+  FilterBuilder
 };

@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
-/*
+/**
  * Search Component
  * React wrapper for a searchable dropdown
  */
 const SearchableDropdown = (props) => {
+
   const [currentInput, setCurrentInput] = useState();
 
   const getKeyFromValue = (value) => {
@@ -39,22 +40,45 @@ const SearchableDropdown = (props) => {
     }
   };
 
+  useEffect(() => {
+
+  });
+
+  // componentDidUpdate(prevProps) {
+  //   // need to clear out currentInput for when props.value gets wiped
+  //   // if the previous value prop contained data and the current one doesn't
+  //   // clear currentInput
+  //   if (prevProps.value && !this.props.value) {
+  //     this.setState({currentInput: ''});
+  //   }
+  // }
+
   let required = props.required ? 'required' : null;
   let disabled = props.disabled ? 'disabled' : null;
   let sortByValue = props.sortByValue;
   let options = props.options;
   let strictMessage = 'Entry must be included in provided list of options.';
   let errorMessage = null;
+  let requiredHTML = null;
+  let elementClass = 'row form-group';
+
+  // Add required asterix
+  if (required) {
+    requiredHTML = <span className='text-danger'>*</span>;
+  }
 
   // Add error message
   if (props.errorMessage) {
     errorMessage = <span>{props.errorMessage}</span>;
+    elementClass = 'row form-group has-error';
   } else if (props.required && props.value === '') {
     let msg = 'This field is required!';
     msg += (props.strictSearch ? ' ' + strictMessage : '');
     errorMessage = <span>{msg}</span>;
+    elementClass = 'row form-group has-error';
   } else if (props.strictSearch && props.value === '') {
     errorMessage = <span>{strictMessage}</span>;
+    elementClass = 'row form-group has-error';
   }
 
   // determine value to place into text input

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 
 const Panel = (props) => {
+
   const [active, setActive] = useState(props.alwaysOpen);
 
   const styles = {
@@ -21,8 +22,8 @@ const Panel = (props) => {
       active: {
         color: '#fff',
         textAlign: 'left',
-        backgroundColor: '#246EB6',
-      },
+        backgroundColor: '#246EB6'
+      }
     },
     panel: {
       default: {
@@ -30,13 +31,13 @@ const Panel = (props) => {
         padding: '20px 18px',
         backgroundColor: '#fff',
         border: '1px solid #246EB6',
-        overflow: 'hidden',
+        overflow: 'hidden'
       },
       active: {
         display: 'block',
-        margin: '0 0 10px 0',
-      },
-    },
+        margin: '0 0 10px 0'
+      }
+    }
   };
 
   const handleExpansionClick = () => {
@@ -46,12 +47,12 @@ const Panel = (props) => {
 
   const styleAccordion = {
     ...styles.accordion.default,
-    ...(active ? styles.accordion.active : {}),
+    ...(active ? styles.accordion.active : {})
   };
 
   const stylePanel = {
     ...styles.panel.default,
-    ...(active ? styles.panel.active : {}),
+    ...(active ? styles.panel.active : {})
   };
 
   return (
@@ -64,10 +65,11 @@ const Panel = (props) => {
         {props.content}
       </div>
     </>
-  );
+  )
 };
 
 const ExpansionPanels = (props) => {
+
   return (
     <div className={'container-fluid'}
          style={{margin: '0 auto', maxWidth: '900px'}}>
@@ -81,7 +83,7 @@ const ExpansionPanels = (props) => {
         />
       ))}
     </div>
-  );
+  )
 };
 ExpansionPanels.defaultProps = {
   alwaysOpen: false,
