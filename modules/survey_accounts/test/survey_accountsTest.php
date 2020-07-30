@@ -11,6 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -202,17 +203,24 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     * Tests that, when add a survey without visit tag
-     * it should appear the error message
+     * Tests that errors are correctly displayed when the user enters incorrect
+     * or invalid values.
+     * The error messages used in this function come from the file
+     * modules/survey_accounts/php/addsurvey.class.inc
      *
      * @return void
      */
     function testSurveyAccountsAddSurvey()
     {
-        //Visit does not exist for given candidate.
+        $visitLabel = 'V1';
+        $instrument = 'bmi';
+
+        // Ensure that an instrument must be supplied.
         $this->safeGet($this->url . "/survey_accounts/");
         $btn = self::$add;
-        $this->safeClick(WebDriverBy::cssSelector($btn));
+        $this->webDriver->executescript(
+            "document.querySelector('$btn').click()"
+        );
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
@@ -220,13 +228,47 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("PSCID")
         )->sendKeys("8889");
         $this->safeFindElement(
+            WebDriverBy::Name("VL")
+        )->sendKeys($visitLabel);
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
         $bodyText =  $this->safeFindElement(
             WebDriverBy::cssSelector(".error")
         )->getText();
         $this->assertContains(
-            "Visit V1 does not exist for given candidate",
+            "Please choose an instrument.",
+            $bodyText
+        );
+
+        // Ensure visit label exists for a candidate.
+        $this->safeGet($this->url . "/survey_accounts/");
+        $btn = self::$add;
+        $this->webDriver->executescript(
+            "document.querySelector('$btn').click()"
+        );
+        $this->safeFindElement(
+            WebDriverBy::Name("CandID")
+        )->sendKeys("999999");
+        $this->safeFindElement(
+            WebDriverBy::Name("PSCID")
+        )->sendKeys("8889");
+        $visitField  = $this->safeFindElement(
+            WebDriverBy::Name("VL")
+        );
+        $visitOption = new WebDriverSelect($visitField);
+        $visitOption->selectByValue($visitLabel);
+        $this->safeFindElement(
+            WebDriverBy::Name("Test_name")
+        )->sendKeys($instrument);
+        $this->safeFindElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+        $bodyText =  $this->safeFindElement(
+            WebDriverBy::cssSelector(".error")
+        )->getText();
+        $this->assertContains(
+            "Visit $visitLabel does not exist for given candidate",
             $bodyText
         );
 
@@ -238,13 +280,16 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("PSCID")
         )->sendKeys("8889");
         $this->safeFindElement(
+            WebDriverBy::Name("Test_name")
+        )->sendKeys($instrument);
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
         $bodyText =  $this->safeFindElement(
             WebDriverBy::cssSelector(".error")
         )->getText();
         $this->assertContains(
-            "PSCID and DCC ID do not match or candidate does not exist",
+            "PSCID and CandID do not match or candidate does not exist",
             $bodyText
         );
     }
