@@ -11,9 +11,8 @@ import React, {Component} from 'react';
 
 /**
  * LogicOperator Component
- *  The following component is used for displaying operator for the group component
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is used for displaying operator for the group component
  */
 class LogicOperator extends Component {
   /**
@@ -66,9 +65,8 @@ class LogicOperator extends Component {
 
 /**
  * FilterRule Component
- *  The following component is used for displaying a filter rule
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is used for displaying a filter rule
  */
 class FilterRule extends Component {
   /**
@@ -107,7 +105,7 @@ class FilterRule extends Component {
 
   /**
    * Update the rules instrument, getting the instruments available fields
-   * @param {event} event
+   * @param {object} event
    */
   selectInstrument(event) {
     let rule = this.props.rule;
@@ -124,7 +122,7 @@ class FilterRule extends Component {
 
   /**
    * Update the rules desired field, setting the rules field and field type
-   * @param {event} event
+   * @param {object} event
    */
   fieldSelect(event) {
     let rule = JSON.parse(JSON.stringify(this.props.rule));
@@ -143,7 +141,7 @@ class FilterRule extends Component {
 
   /**
    * Update the desired rule operation for the selected field
-   * @param {event} event
+   * @param {object} event
    */
   operatorSelect(event) {
     // Update the desired rule operation for the selected field
@@ -166,7 +164,7 @@ class FilterRule extends Component {
 
   /**
    * value changed event
-   * @param {event} event
+   * @param {object} event
    */
   valueChange(event) {
     let rule = JSON.parse(JSON.stringify(this.props.rule));
@@ -252,7 +250,7 @@ class FilterRule extends Component {
 
   /**
    * Update rule to filter for specified visit
-   * @param {event} event
+   * @param {object} event
    */
   updateVisit(event) {
     let rule = JSON.parse(JSON.stringify(this.props.rule));
@@ -429,9 +427,7 @@ class FilterRule extends Component {
 
 /**
  * FilterGroup Component
- *  The following component is used for displaying a filter group
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ * The following component is used for displaying a filter group
  */
 class FilterGroup extends Component {
   /**
@@ -653,9 +649,8 @@ class FilterGroup extends Component {
 
 /**
  * FilterBuilder Component
- *  The following component is the base componenet for the filter builder
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is the base componenet for the filter builder
  */
 class FilterBuilder extends Component {
   /**

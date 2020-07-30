@@ -70,13 +70,13 @@ curl -H 'Content-Type: application/json' -X POST http://$YOURCOUCHDBADMIN:$YOURC
 
 ###### Import the LORIS instrument data
 
-This step is optional and not required if only the MRI portion of LORIS is used:
+This step is optional and is required only if instruments are used: 
 
 `php CouchDB_Import_Instruments.php`
 
 ###### Import the LORIS MRI data
 
-This step is optional and not required if the MRI portion of LORIS isn't installed:
+This step is optional and is required only if the MRI portion of LORIS is installed: 
 
 `php CouchDB_Import_MRI.php`
 

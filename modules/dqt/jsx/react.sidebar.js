@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 
 /**
  * Sidebar Component
+ *
  * React wrapper for a sidebar
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
  */
 class Sidebar extends Component {
   /**
@@ -63,9 +62,8 @@ class Sidebar extends Component {
 
 /**
  * FieldsSidebar Component
+ *
  * React wrapper for a FieldsSidebar
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
  */
 class FieldsSidebar extends Component {
   /**
@@ -113,6 +111,7 @@ class FieldsSidebar extends Component {
       </Sidebar>);
   }
 }
+
 FieldsSidebar.propTypes = {
   Fields: PropTypes.array,
   Criteria: PropTypes.object,

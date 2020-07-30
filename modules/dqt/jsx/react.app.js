@@ -20,11 +20,9 @@ import NoticeMessage from './react.notice';
 /**
  * DataQueryApp component
  *
- * @description The following component is the data queries base element. It controls which tab is currently
- *  shown, along with keeping the state of the current query being built and running the query.
+ * The following component is the data queries base element. It controls which tab is currently
+ * shown, along with keeping the state of the current query being built and running the query.
  *
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
  */
 class DataQueryApp extends Component {
   /**
@@ -399,8 +397,11 @@ class DataQueryApp extends Component {
 
   /**
    * Used to load a saved query
-   * @param {object} fields
-   * @param {object} criteria
+   * Query can be saved in 2 formats:
+   * params can be arrays or objects
+   *
+   * @param {string[]|object} fields
+   * @param {object[]|object} criteria
    */
   loadSavedQuery(fields, criteria) {
     let filterState = {};
@@ -523,8 +524,9 @@ class DataQueryApp extends Component {
 
   /**
    * Used to select visits for a given field
-   * @param {object} action
-   * @param {object} visit
+   *
+   * @param {string} action
+   * @param {string} visit
    * @param {object} field
    */
   fieldVisitSelect(action, visit, field) {
@@ -649,7 +651,7 @@ class DataQueryApp extends Component {
 
   /**
    * Get the sessions to be selected
-   * @return {object}
+   * @return {[]}
    */
   getSessions() {
     if (this.state.filter.children.length > 0) {
@@ -663,10 +665,9 @@ class DataQueryApp extends Component {
 
   /**
    * Run the current query
-   * @param {object} fields
-   * @param {object} sessions
+   * @param {string[]} fields
    */
-  runQuery(fields, sessions) {
+  runQuery(fields) {
     let DocTypes = [];
     let semaphore = 0;
     let sectionedSessions;
@@ -774,7 +775,7 @@ class DataQueryApp extends Component {
 
   /**
    * Build the queried data to be displayed in the data table
-   * @param {object} displayID
+   * @param {number} displayID
    * @return {object}
    */
   getRowData(displayID) {
@@ -951,7 +952,7 @@ class DataQueryApp extends Component {
 
   /**
    * Change the display format of the data table
-   * @param {string} displayID
+   * @param {number} displayID
    */
   changeDataDisplay(displayID) {
     let rowdata = this.getRowData(displayID);
@@ -1011,7 +1012,7 @@ class DataQueryApp extends Component {
   /**
    * stepper clicked
    * @param {string} step
-   * @param {string} index
+   * @param {number} index
    */
   stepperClicked(step, index) {
     switch (step) {
@@ -1288,10 +1289,12 @@ class DataQueryApp extends Component {
     );
   }
 }
+
 DataQueryApp.propTypes = {
   SavedQueries: PropTypes.object,
   AllSessions: PropTypes.array,
 };
+
 DataQueryApp.defaultProps = {
   SavedQueries: {},
   AllSessions: [],

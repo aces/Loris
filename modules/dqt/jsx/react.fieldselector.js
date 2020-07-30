@@ -16,10 +16,9 @@ import SelectDropdown from './components/selectdropdown';
 
 /**
  * CategoryItem Component
- * @description The following component is used for displaying
- *  individual categories in the categories list
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is used for displaying
+ * individual categories in the categories list
  */
 class CategoryItem extends Component {
   /**
@@ -55,10 +54,9 @@ class CategoryItem extends Component {
 
 /**
  * CategoryList Component
- * @description The following component is used
- *  for displaying the list of available categories
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is used
+ * for displaying the list of available categories
  */
 class CategoryList extends Component {
   /**
@@ -75,8 +73,8 @@ class CategoryList extends Component {
 
   /**
    * select category handler
-   * @param {object} category
-   * @return {function}
+   * @param {string} category
+   * @return {function} - A callback executed when the event is triggered
    */
   selectCategoryHandler(category) {
     return ((evt) => {
@@ -117,9 +115,8 @@ class CategoryList extends Component {
 
 /**
  * FieldItem Component
+ *
  * The following component is used for displaying individual fields
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
  */
 class FieldItem extends Component {
   /**
@@ -134,7 +131,7 @@ class FieldItem extends Component {
 
   /**
    * visit select
-   * @param {event} evt
+   * @param {object} evt - An event
    */
   visitSelect(evt) {
     // Selects and deselects visits
@@ -215,10 +212,9 @@ class FieldItem extends Component {
 
 /**
  * FieldList Component
- *  The following component is used for displaying the list of available fields for
- *  the selected category
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is used for displaying the list of available fields for
+ * the selected category
  */
 class FieldList extends Component {
   /**
@@ -322,9 +318,8 @@ class FieldList extends Component {
 
 /**
  * FieldSelector Component
- *  The following component is the base component for the field select tan
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is the base component for the field select tan
  */
 class FieldSelector extends Component {
   /**
@@ -390,7 +385,7 @@ class FieldSelector extends Component {
 
   /**
    * filter change event.
-   * @param {event} evt
+   * @param {object} evt - An event
    */
   filterChange(evt) {
     this.setState({
@@ -462,7 +457,7 @@ class FieldSelector extends Component {
   }
 
   /**
-   * modify category field visits.
+   * Modify category field visits.
    * @param {string} visit
    * @param {string} action
    */
@@ -512,7 +507,7 @@ class FieldSelector extends Component {
   }
 
   /**
-   * change page
+   * Change page
    * @param {number} i
    */
   changePage(i) {

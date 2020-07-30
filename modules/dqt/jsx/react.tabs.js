@@ -13,8 +13,10 @@ import PropTypes from 'prop-types';
 
 /**
  * Loading Component
- *  The following component is used to indicate to users
- *  that their data is currently loading.
+ *
+ * The following component is used to indicate to users
+ * that their data is currently loading.
+ *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -38,7 +40,8 @@ let Loading = (props) => {
 
 /**
  * TabPane component
- *  The following component is the base component for displaying the tab's content
+ * The following component is the base component for displaying the tab's content
+ *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -64,7 +67,8 @@ const TabPane = (props) => {
 
 /**
  * InfoTabPane Component
- *  The following component is used for displaying the info tab content
+ * The following component is used for displaying the info tab content
+ *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -101,7 +105,8 @@ let InfoTabPane = (props) => {
 
 /**
  * FieldSelectTabPane Component
- *  The following component is used for displaying the field select tab content
+ * The following component is used for displaying the field select tab content
+ *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -126,7 +131,8 @@ let FieldSelectTabPane = (props) => {
 
 /**
  * FilterSelectTabPane Component
- *  The following component is used for displaying the filter builder tab content
+ * The following component is used for displaying the filter builder tab content
+ *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -145,7 +151,8 @@ let FilterSelectTabPane = (props) => {
 
 /**
  * ViewDataTabPane Component
- *  The following component is used for displaying the view data tab content
+ * The following component is used for displaying the view data tab content
+ *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -172,7 +179,8 @@ class ViewDataTabPane extends Component {
   }
 
   /**
-   * handle data display
+   * Handle data display
+   *
    * @param {object} formElement
    * @param {string} value
    */
@@ -193,7 +201,7 @@ class ViewDataTabPane extends Component {
   }
 
   /**
-   * run query clicked
+   * Run query clicked
    */
   runQuery() {
     this.setState({
@@ -204,7 +212,8 @@ class ViewDataTabPane extends Component {
 
   /**
    * Wrapper function to change the data display type
-   * @param {string} displayID
+   *
+   * @param {number} displayID
    */
   changeDataDisplay(displayID) {
     this.props.changeDataDisplay(displayID);
@@ -212,7 +221,8 @@ class ViewDataTabPane extends Component {
 
   /**
    * Helper function to display the progress of downloading the downloadable
-   *  fields into a ZIP folder
+   * fields into a ZIP folder
+   *
    * @param {string} id
    * @return {object}
    */
@@ -236,7 +246,8 @@ class ViewDataTabPane extends Component {
 
   /**
    * Helper function to create and click a downloadable link to download the
-   *  downloadable fields into a ZIP folder
+   * downloadable fields into a ZIP folder
+   *
    * @param {string} fileName
    * @param {string} type
    * @return {object}
@@ -515,17 +526,17 @@ class ViewDataTabPane extends Component {
     );
   }
 }
+
 ViewDataTabPane.propTypes = {
   runQuery: PropTypes.func.isRequired,
 };
 
 /**
  * ScatterplotGraph Component
- *  The following component is used for displaying the scatterplot graph
- *  in the stats tab using flot. The following code is a modification of
- *  code used in the couchApp implementation of the DQT
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is used for displaying the scatterplot graph
+ * in the stats tab using flot. The following code is a modification of
+ * code used in the couchApp implementation of the DQT
  */
 class ScatterplotGraph extends Component {
   /**
@@ -542,8 +553,8 @@ class ScatterplotGraph extends Component {
 
   /**
    * lsFit statistics
-   * @param {object} data
-   * @return {array}
+   * @param {[]} data
+   * @return {number[]}
    */
   lsFit(data) {
     let i = 0;
@@ -570,8 +581,8 @@ class ScatterplotGraph extends Component {
 
   /**
    * minmaxx statistics
-   * @param {array} arr
-   * @return {array}
+   * @param {[]} arr
+   * @return {number[]}
    */
   minmaxx(arr) {
     let i; let min; let max;
@@ -761,9 +772,8 @@ class ScatterplotGraph extends Component {
 
 /**
  * StatsVisualizationTabPane Component
- *  The following component is used for displaying the stats tab content
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is used for displaying the stats tab content
  */
 class StatsVisualizationTabPane extends Component {
   /**
@@ -865,17 +875,20 @@ class StatsVisualizationTabPane extends Component {
     );
   }
 }
+
 StatsVisualizationTabPane.defaultProps = {
   Data: [],
 };
+
 StatsVisualizationTabPane.propTypes = {
   Data: PropTypes.array,
 };
 
 /**
  * SaveQueryDialog Component
- *  The following component is used for displaying a popout dialog for saving the current
- *  query
+ * The following component is used for displaying a popout dialog for saving the current
+ * query
+ *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -960,10 +973,9 @@ let SaveQueryDialog = (props) => {
 
 /**
  * ManageSavedQueryFilter Component
- *  The following component is used for displaying the filter of a individual query in a tree
- *  like structure
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is used for displaying the filter of a individual query in a tree
+ * like structure
  */
 class ManageSavedQueryFilter extends Component {
   /**
@@ -1039,10 +1051,9 @@ class ManageSavedQueryFilter extends Component {
 
 /**
  * ManageSavedQueryRow Component
- *  The following component is used for displaying the individual saved queries in the
- *  manage saved queries tab
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
+ *
+ * The following component is used for displaying the individual saved queries in the
+ * manage saved queries tab
  */
 class ManageSavedQueryRow extends Component {
   /**
@@ -1147,10 +1158,12 @@ class ManageSavedQueryRow extends Component {
     );
   }
 }
+
 ManageSavedQueryRow.propTypes = {
   Name: PropTypes.object,
   Query: PropTypes.object,
 };
+
 ManageSavedQueryRow.defaultProps = {
   Name: null,
   Query: {
@@ -1160,7 +1173,8 @@ ManageSavedQueryRow.defaultProps = {
 
 /**
  * ManageSavedQueriesTabPane Component
- *  The following component is used for displaying the manage saved queries tab content
+ * The following component is used for displaying the manage saved queries tab content
+ *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -1227,12 +1241,14 @@ let ManageSavedQueriesTabPane = (props) => {
     </TabPane>
   );
 };
+
 ManageSavedQueriesTabPane.defaultProps = {
   userQueries: [],
   globalQueries: [],
   queriesLoaded: false,
   queryDetails: {},
 };
+
 ManageSavedQueriesTabPane.propTypes = {
   userQueries: PropTypes.array,
   globalQueries: PropTypes.array,

@@ -6,7 +6,7 @@
 this.j$ = this.jStat = (function( Math, undefined ) {
 
 	// for quick reference
-var slice = Array.prototype.slice,
+	var slice = Array.prototype.slice,
 	toString = Object.prototype.toString,
 
 	// calculate correction for IEEE error
