@@ -813,6 +813,7 @@ class StatsVisualizationTabPane extends Component {
 
       for (let i = 0; i < this.props.Fields.length; i += 1) {
         rows.push(<tr key={'fields_' + i}>
+          <td>{this.props.Fields[i]}</td>
           <td>{min && min[i] ? min[i].toString() : ''}</td>
           <td>{max && max[i] ? max[i].toString() : ''}</td>
           <td>{stddev && stddev[i] ? stddev[i].toString() : ''}</td>
