@@ -11,11 +11,14 @@
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 
-/*
+/**
+ * Loading Component
  *  The following component is used to indicate to users
  *  that their data is currently loading.
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
-const Loading = (props) => {
+let Loading = (props) => {
   return (
     <div className='row' style={{padding: '60px 0 0 0'}}>
       <h2 className='text-center loading-header'>
@@ -33,13 +36,16 @@ const Loading = (props) => {
   );
 };
 
-/*
- *  The following component is the base component for displaying the tab's contnet
+/**
+ * TabPane component
+ *  The following component is the base component for displaying the tab's content
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 const TabPane = (props) => {
   let classList = 'tab-pane';
   if (props.Active) {
-    classList += ' active'
+    classList += ' active';
   }
   if (props.Loading) {
     return (
@@ -56,10 +62,13 @@ const TabPane = (props) => {
   );
 };
 
-/*
+/**
+ * InfoTabPane Component
  *  The following component is used for displaying the info tab content
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
-const InfoTabPane = (props) => {
+let InfoTabPane = (props) => {
   return (
     <TabPane
       Title='Welcome to the Data Query Tool'
@@ -77,20 +86,26 @@ const InfoTabPane = (props) => {
         <dt>View Data</dt>
         <dd>See the results of your query.</dd>
         <dt>Statistical Analysis</dt>
-        <dd>Visualize or see basic statistical measures from your query here.</dd>
+        <dd>Visualize or see basic statistical
+          &nbsp;measures from your query here.</dd>
         <dt>Load Saved Query</dt>
-        <dd>Load a previously saved query (by name) by selecting from this menu.</dd>
+        <dd>Load a previously saved query (by name)
+          &nbsp;by selecting from this menu.</dd>
         <dt>Manage Saved Queries</dt>
-        <dd>Either save your current query or see the criteria of previously saved quer ies here.</dd>
+        <dd>Either save your current query or see the
+          &nbsp;criteria of previously saved quer ies here.</dd>
       </dl>
     </TabPane>
   );
 };
 
-/*
+/**
+ * FieldSelectTabPane Component
  *  The following component is used for displaying the field select tab content
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
-const FieldSelectTabPane = (props) => {
+let FieldSelectTabPane = (props) => {
   return (
     <TabPane
       TabId={props.TabId}
@@ -109,10 +124,13 @@ const FieldSelectTabPane = (props) => {
   );
 };
 
-/*
+/**
+ * FilterSelectTabPane Component
  *  The following component is used for displaying the filter builder tab content
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
-const FilterSelectTabPane = (props) => {
+let FilterSelectTabPane = (props) => {
   return (
     <TabPane TabId={props.TabId} Loading={props.Loading}>
       <FilterBuilder items={props.categories}
@@ -125,10 +143,17 @@ const FilterSelectTabPane = (props) => {
   );
 };
 
-/*
+/**
+ * ViewDataTabPane Component
  *  The following component is used for displaying the view data tab content
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class ViewDataTabPane extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -138,13 +163,19 @@ class ViewDataTabPane extends Component {
     };
     this.runQuery = this.runQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
-    this.getOrCreateProgressElement = this.getOrCreateProgressElement.bind(this);
+    this.getOrCreateProgressElement
+      = this.getOrCreateProgressElement.bind(this);
     this.getOrCreateDownloadLink = this.getOrCreateDownloadLink.bind(this);
     this.downloadData = this.downloadData.bind(this);
     this.handleDataDisplay = this.handleDataDisplay.bind(this);
     this.downloadDataCSV = this.downloadDataCSV.bind(this);
   }
 
+  /**
+   * handle data display
+   * @param {object} formElement
+   * @param {string} value
+   */
   handleDataDisplay(formElement, value) {
     const state = Object.assign({}, this.state);
     state.dataDisplay = value;
@@ -161,23 +192,35 @@ class ViewDataTabPane extends Component {
     }
   }
 
+  /**
+   * run query clicked
+   */
   runQuery() {
     this.setState({
-      runQueryClicked: true
+      runQueryClicked: true,
     });
     this.props.runQuery(this.props.Fields, this.props.Sessions);
   }
 
+  /**
+   * Wrapper function to change the data display type
+   * @param {string} displayID
+   */
   changeDataDisplay(displayID) {
-    // Wrapper function to change the data display type
     this.props.changeDataDisplay(displayID);
   }
 
+  /**
+   * Helper function to display the progress of downloading the downloadable
+   *  fields into a ZIP folder
+   * @param {string} id
+   * @return {object}
+   */
   getOrCreateProgressElement(id) {
     // Helper function to display the progress of downloading the downloadable
     // fields into a ZIP folder
-    let element = document.getElementById(id),
-      progress;
+    let element = document.getElementById(id);
+    let progress;
 
     if (element) {
       return element;
@@ -191,12 +234,19 @@ class ViewDataTabPane extends Component {
     return element;
   }
 
+  /**
+   * Helper function to create and click a downloadable link to download the
+   *  downloadable fields into a ZIP folder
+   * @param {string} fileName
+   * @param {string} type
+   * @return {object}
+   */
   getOrCreateDownloadLink(fileName, type) {
     // Helper function to create and click a downloadable link to download the
     // downloadable fields into a ZIP folder
-    let element = document.getElementById('DownloadLink' + fileName),
-      parentEl,
-      el2;
+    let element = document.getElementById('DownloadLink' + fileName);
+    let parentEl;
+    let el2;
 
     if (element) {
       return element;
@@ -216,32 +266,26 @@ class ViewDataTabPane extends Component {
     return element;
   }
 
+  /**
+   * Download the downloadable fields into a ZIP folder
+   * Makes use of a web worker to format and download the data
+   */
   downloadData() {
     // Download the downloadable fields into a ZIP folder
     // Makes use of a web worker to format and download the data
-    let zip = new JSZip(),
-      i = 0,
-      FileList = this.props.FileData,
-      CompleteMask = new Array(FileList.length),
-      saveworker,
-      dataURLs = [],
-      multiLinkHandler = (buffer) => {
-        return ((ce) => {
-          let downloadLink = document.getElementById('DownloadLink'),
-            dv = new DataView(buffer),
-            blb;
+    let FileList = this.props.FileData;
+    let saveworker;
+    let dataURLs = [];
+    let downloadLink = document.getElementById('DownloadLink');
+    let dv = new DataView(buffer);
+    let blb = new Blob([dv], {type: 'application/zip'});
 
-          ce.preventDefault();
-          blb = new Blob([dv], {type: 'application/zip'});
+    downloadLink.href = window.URL.createObjectURL(blb);
+    downloadLink.download = this.download;
+    downloadLink.type = 'application/zip';
+    downloadLink.click();
 
-          downloadLink.href = window.URL.createObjectURL(blb);
-          downloadLink.download = this.download;
-          downloadLink.type = 'application/zip';
-          downloadLink.click();
-
-          window.URL.revokeObjectURL(downloadLink.href);
-        });
-      };
+    window.URL.revokeObjectURL(downloadLink.href);
 
     // Does this work if we hold a global reference instead of a closure
     // to the object URL?
@@ -251,34 +295,46 @@ class ViewDataTabPane extends Component {
       alert('No Imaging Files to download');
     }
 
-    if (FileList.length < 100 || confirm('You are trying to download more than 100 files. This may be slow or crash your web browser.\n\nYou may want to consider splitting your query into more, smaller queries by defining more restrictive filters.\n\nPress OK to continue with attempting to download current files or cancel to abort.')) {
+    if (FileList.length < 100
+      || confirm('You are trying to download more than 100 files. ' +
+        'This may be slow or crash your web browser.\n\n' +
+        'You may want to consider splitting your query into more, ' +
+        'smaller queries by defining more restrictive filters.\n\n' +
+        'Press OK to continue with attempting to download current ' +
+        'files or cancel to abort.')) {
       saveworker = new Worker(loris.BaseURL + '/dqt/js/workers/savezip.js');
       saveworker.addEventListener('message', (e) => {
-        let link,
-          progress,
-          FileName,
-          NewFileName,
-          downloadLinks,
-          i;
+        let link;
+        let progress;
+        let FileName;
+        let NewFileName;
+        let downloadLinks;
+        let i;
         if (e.data.cmd === 'SaveFile') {
           progress = this.getOrCreateProgressElement('download_progress');
-          //progress.textContent = "Downloaded files";
-          //hold a reference to the blob so that chrome doesn't release it. This shouldn't
-          //be required.
-          window.dataBlobs[e.data.FileNo - 1] = new Blob([e.data.buffer], {type: 'application/zip'});
-          ;
-          dataURLs[e.data.FileNo - 1] = window.URL.createObjectURL(window.dataBlobs[e.data.FileNo - 1]);
-
-          link = this.getOrCreateDownloadLink(e.data.Filename, 'application/zip');
+          // progress.textContent = "Downloaded files";
+          // hold a reference to the blob so that chrome doesn't release it. This shouldn't
+          // be required.
+          window.dataBlobs[e.data.FileNo - 1]
+            = new Blob([e.data.buffer], {type: 'application/zip'});
+          dataURLs[e.data.FileNo - 1]
+            = window.URL.createObjectURL(window.dataBlobs[e.data.FileNo - 1]);
+          link
+            = this.getOrCreateDownloadLink(e.data.Filename, 'application/zip');
           link.href = dataURLs[e.data.FileNo - 1];
-          //link.onclick = multiLinkHandler(e.data.buffer);
-          //link.href = "#";
+          // link.onclick = multiLinkHandler(e.data.buffer);
+          // link.href = "#";
           progress = this.getOrCreateProgressElement('zip_progress');
           progress.textContent = '';
-
         } else if (e.data.cmd === 'Progress') {
           progress = this.getOrCreateProgressElement('download_progress');
-          progress.innerHTML = 'Downloading files: <progress value="' + e.data.Complete + '" max="' + e.data.Total + '">' + e.data.Complete + ' out of ' + e.data.Total + '</progress>';
+          progress.innerHTML = 'Downloading files: <progress value="'
+            + e.data.Complete + '" max="'
+            + e.data.Total + '">'
+            + e.data.Complete
+            + ' out of '
+            + e.data.Total
+            + '</progress>';
         } else if (e.data.cmd === 'Finished') {
           if (dataURLs.length === 1) {
             $('#downloadlinksUL li a')[0].click();
@@ -290,8 +346,10 @@ class ViewDataTabPane extends Component {
 
             downloadLinks = $('#downloadlinksUL li a');
             for (i = 0; i < dataURLs.length; i += 1) {
-              FileName = downloadLinks[i].id.slice('DownloadLinkFiles-'.length, -4);
-              NewFileName = 'files-' + FileName + 'of' + e.data.NumFiles + '.zip';
+              FileName
+                = downloadLinks[i].id.slice('DownloadLinkFiles-'.length, -4);
+              NewFileName
+                = 'files-' + FileName + 'of' + e.data.NumFiles + '.zip';
               downloadLinks[i].download = NewFileName;
               downloadLinks[i].href = dataURLs[i];
               downloadLinks[i].textContent = 'Zip file: ' + NewFileName;
@@ -299,25 +357,31 @@ class ViewDataTabPane extends Component {
           }
           progress = this.getOrCreateProgressElement('download_progress');
           progress.textContent = 'Finished generating zip files';
-          //this.terminate();
-
+          // this.terminate();
         } else if (e.data.cmd === 'CreatingZip') {
           progress = this.getOrCreateProgressElement('zip_progress');
-          progress.textContent = 'Creating a zip file with current batch of downloaded files. Process may be slow before proceeding.';
+          progress.textContent = 'Creating a zip file with current batch ' +
+            'of downloaded files. Process may be slow before proceeding.';
         }
-
       });
 
       saveworker.postMessage({Files: FileList, BaseURL: loris.BaseURL});
     }
   }
 
+  /**
+   * Download table data as csv.
+   */
   downloadDataCSV() {
     document.querySelector('.downloadCSV').click();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-
     let otherButtons = this.state.runQueryClicked ? (
       <>
         <div className='flex-row-item'>
@@ -340,18 +404,20 @@ class ViewDataTabPane extends Component {
                     style={{minWidth: '200px',
                       minHeight: '30px',
                       alignSelf: 'center',
-                      margin: '10px 0 10px 0'
+                      margin: '10px 0 10px 0',
                     }}>
-              Download Table as CSV <span className='glyphicon glyphicon-download-alt'/>
+              Download Table as CSV
+              &nbsp;<span className='glyphicon glyphicon-download-alt'/>
             </button>
             <button className='btn btn-primary'
                     style={{
                       minWidth: '200px',
                       minHeight: '30px',
-                      alignSelf: 'center'
+                      alignSelf: 'center',
                     }}
                     onClick={this.downloadData}>
-              Download Imaging Files <span className='glyphicon glyphicon-download-alt'/>
+              Download Imaging Files
+              &nbsp;<span className='glyphicon glyphicon-download-alt'/>
             </button>
           </div>
         </div>
@@ -364,7 +430,8 @@ class ViewDataTabPane extends Component {
           <div className='flex-row-item'>
             <button className='run-query'
                     onClick={this.runQuery}
-                    disabled={(this.props.Fields === undefined || this.props.Fields.length === 0) ?? true}
+                    disabled={(this.props.Fields === undefined
+                      || this.props.Fields.length === 0) ?? true}
             >
               <span className='glyphicon glyphicon-play'/>
               &nbsp;&nbsp;Run Query
@@ -430,13 +497,13 @@ class ViewDataTabPane extends Component {
           <div style={{
             maxWidth: '500px',
             border: '1px solid #b7ccd2',
-            boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.05)'
+            boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.05)',
           }}>
             <RadioElement
               name='dataDisplayRadioElement'
               options={{
                 'Cross-sectional': 'Cross-sectional',
-                'Longitudinal': 'Longitudinal'
+                'Longitudinal': 'Longitudinal',
               }}
               checked={this.state.dataDisplay}
               onUserInput={this.handleDataDisplay}
@@ -452,12 +519,19 @@ ViewDataTabPane.propTypes = {
   runQuery: PropTypes.func.isRequired,
 };
 
-/*
+/**
+ * ScatterplotGraph Component
  *  The following component is used for displaying the scatterplot graph
  *  in the stats tab using flot. The following code is a modification of
  *  code used in the couchApp implementation of the DQT
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class ScatterplotGraph extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {};
@@ -466,17 +540,21 @@ class ScatterplotGraph extends Component {
     this.updateScatterplot = this.updateScatterplot.bind(this);
   }
 
+  /**
+   * lsFit statistics
+   * @param {object} data
+   * @return {array}
+   */
   lsFit(data) {
-    let i = 0,
-      means = jStat(data).mean(),
-      xmean = means[0],
-      ymean = means[1],
-      interim = 0,
-      numerator = 0,
-      denominator = 0,
-      slope,
-      xi,
-      yi;
+    let i = 0;
+      let means = jStat(data).mean();
+      let xmean = means[0];
+      let ymean = means[1];
+      let numerator = 0;
+      let denominator = 0;
+      let slope;
+      let xi;
+      let yi;
 
     for (i = 0; i < data.length; i += 1) {
       xi = data[i][0];
@@ -490,8 +568,13 @@ class ScatterplotGraph extends Component {
     return [(ymean - slope * xmean), slope];
   }
 
+  /**
+   * minmaxx statistics
+   * @param {array} arr
+   * @return {array}
+   */
   minmaxx(arr) {
-    let i, min, max;
+    let i; let min; let max;
 
     for (i = 0; i < arr.length; i += 1) {
       if (arr[i][0] < min || min === undefined) {
@@ -508,40 +591,42 @@ class ScatterplotGraph extends Component {
     return [min, max];
   }
 
+  /**
+   * updateScatterplot graph data
+   */
   updateScatterplot() {
-    let xaxis = document.getElementById('scatter-xaxis').value,
-      yaxis = document.getElementById('scatter-yaxis').value,
-      grouping = document.getElementById('scatter-group').value,
-      data = this.props.Data,
-      points = [],
-      min,
-      max,
-      field1 = [],
-      field2 = [],
-      grouped_points = {},
-      i = 0,
-      group_label,
-      minmax,
-      LS,
-      slope,
-      start,
-      plots = [],
-      label,
-      plotY = (x) => {
+    let xaxis = document.getElementById('scatter-xaxis').value;
+      let yaxis = document.getElementById('scatter-yaxis').value;
+      let grouping = document.getElementById('scatter-group').value;
+      let data = this.props.Data;
+      let points = [];
+      let min;
+      let max;
+      let field1 = [];
+      let field2 = [];
+      let groupedPoints = {};
+      let i = 0;
+      let groupLabel;
+      let minmax;
+      let LS;
+      let slope;
+      let start;
+      let plots = [];
+      let plotY = (x) => {
         return [x, start + (slope * x)];
-      },
-      dataset;
+      };
+      let dataset;
 
     for (i = 0; i < data.length; i += 1) {
       points.push([data[i][xaxis], data[i][yaxis]]);
       field1.push(data[i][xaxis]);
       field2.push(data[i][yaxis]);
       if (grouping) {
-        group_label = data[i][grouping];
-        if (!(grouped_points[group_label] instanceof Array)) {
-          grouped_points[group_label] = [];
+        groupLabel = data[i][grouping];
+        if (!(groupedPoints[groupLabel] instanceof Array)) {
+          groupedPoints[groupLabel] = [];
         }
-        grouped_points[group_label].push([data[i][xaxis], data[i][yaxis]]);
+        groupedPoints[groupLabel].push([data[i][xaxis], data[i][yaxis]]);
       }
     }
 
@@ -557,12 +642,12 @@ class ScatterplotGraph extends Component {
 
         label: 'Data Points',
         data: points,
-        points: {show: true}
+        points: {show: true},
       }, // Least Squares Fit
         {
           label: 'Least Squares Fit',
           data: jStat.seq(min, max, 3, plotY),
-          lines: {show: true}
+          lines: {show: true},
         }], {});
     } else {
       minmax = this.minmaxx(points);
@@ -570,24 +655,27 @@ class ScatterplotGraph extends Component {
       max = minmax[1];
       i = 0;
 
-      for (dataset in grouped_points) {
-        if (grouped_points.hasOwnProperty(dataset)) {
-          label = document.getElementById("scatter-group").selectedOptions.item(0).textContent + " = " + dataset;
+      for (dataset in groupedPoints) {
+        if (groupedPoints.hasOwnProperty(dataset)) {
+          // let label = document.getElementById(
+          //   'scatter-group'
+          // ).selectedOptions.item(0).textContent
+          //   + ' = ' + dataset;
           plots.push({
             color: i,
             label: dataset,
-            data: grouped_points[dataset],
-            points: {show: true}
+            data: groupedPoints[dataset],
+            points: {show: true},
           });
-          LS = this.lsFit(grouped_points[dataset]);
-          //LS = lsFit(grouped_points[dataset].convertNumbers());
+          LS = this.lsFit(groupedPoints[dataset]);
+          // LS = lsFit(groupedPoints[dataset].convertNumbers());
           slope = LS[1];
           start = LS[0];
           plots.push({
             color: i,
             // label: "LS Fit for " + dataset,
             data: jStat.seq(min, max, 3, plotY),
-            lines: {show: true}
+            lines: {show: true},
           });
           i += 1;
         }
@@ -597,10 +685,16 @@ class ScatterplotGraph extends Component {
 
     $('#correlationtbl tbody').children().remove();
     $('#correlationtbl tbody').append(
-      '<tr><td>' + jStat.covariance(field1, field2) + '</td><td>' + jStat.corrcoeff(field1, field2) + '</td></tr>'
+      '<tr><td>' + jStat.covariance(field1, field2)
+      + '</td><td>' + jStat.corrcoeff(field1, field2) + '</td></tr>'
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let options = this.props.Fields.map((element, key) => {
         return (
@@ -609,10 +703,10 @@ class ScatterplotGraph extends Component {
             {element}
           </option>
         );
-      }),
-      scatterStyle = {
+      });
+      let scatterStyle = {
         width: '500px',
-        height: '500px'
+        height: '500px',
       };
     return (
       <div>
@@ -665,17 +759,29 @@ class ScatterplotGraph extends Component {
   }
 }
 
-/*
+/**
+ * StatsVisualizationTabPane Component
  *  The following component is used for displaying the stats tab content
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class StatsVisualizationTabPane extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
-      displayed: false
+      displayed: false,
     };
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let content;
     if (this.props.Data.length === 0) {
@@ -685,15 +791,15 @@ class StatsVisualizationTabPane extends Component {
         </h1>
       );
     } else {
-      let stats = jStat(this.props.Data),
-        min = stats.min(),
-        max = stats.max(),
-        stddev = stats.stdev(),
-        mean = stats.mean(),
-        meandev = stats.meandev(),
-        meansqerr = stats.meansqerr(),
-        quartiles = stats.quartiles(),
-        rows = [];
+      let stats = jStat(this.props.Data);
+        let min = stats.min();
+        let max = stats.max();
+        let stddev = stats.stdev();
+        let mean = stats.mean();
+        let meandev = stats.meandev();
+        let meansqerr = stats.meansqerr();
+        let quartiles = stats.quartiles();
+        let rows = [];
 
       for (let i = 0; i < this.props.Fields.length; i += 1) {
         rows.push(<tr key={'fields_' + i}>
@@ -703,14 +809,21 @@ class StatsVisualizationTabPane extends Component {
           <td>{mean && mean[i] ? mean[i].toString() : ''}</td>
           <td>{meandev && meandev[i] ? meandev[i].toString() : ''}</td>
           <td>{meansqerr && meansqerr[i] ? meansqerr[i].toString() : ''}</td>
-          <td>{quartiles && quartiles[i] && quartiles[i][0] ? quartiles[i][0].toString() : ''}</td>
-          <td>{quartiles && quartiles[i] && quartiles[i][1] ? quartiles[i][1].toString() : ''}</td>
-          <td>{quartiles && quartiles[i] && quartiles[i][2] ? quartiles[i][2].toString() : ''}</td>
+          <td>{quartiles && quartiles[i] && quartiles[i][0]
+            ? quartiles[i][0].toString()
+            : ''}</td>
+          <td>{quartiles && quartiles[i] && quartiles[i][1]
+            ? quartiles[i][1].toString()
+            : ''}</td>
+          <td>{quartiles && quartiles[i] && quartiles[i][2]
+            ? quartiles[i][2].toString()
+            : ''}</td>
         </tr>);
       }
 
       let statsTable = (
-        <table className='table table-hover table-primary table-bordered colm-freeze'>
+        <table className='table table-hover table-primary
+         table-bordered colm-freeze'>
           <thead>
           <tr className='info'>
             <th>Measure</th>
@@ -744,25 +857,29 @@ class StatsVisualizationTabPane extends Component {
       );
     }
     return (
-      <TabPane TabId={this.props.TabId} Loading={this.props.Loading} Active={this.props.Active}>
+      <TabPane TabId={this.props.TabId}
+               Loading={this.props.Loading}
+               Active={this.props.Active}>
         {content}
       </TabPane>
     );
   }
 }
 StatsVisualizationTabPane.defaultProps = {
-  Data: []
+  Data: [],
 };
 StatsVisualizationTabPane.propTypes = {
   Data: PropTypes.array,
 };
 
-/*
+/**
+ * SaveQueryDialog Component
  *  The following component is used for displaying a popout dialog for saving the current
  *  query
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
-const SaveQueryDialog = (props) => {
-
+let SaveQueryDialog = (props) => {
   const [queryName, setQueryName] = useState('');
   const [shared, setShared] = useState(false);
 
@@ -802,7 +919,7 @@ const SaveQueryDialog = (props) => {
             </button>
             <h4 className='modal-title'
                 id='myModalLabel'
-                style={{color:'#fff'}}>
+                style={{color: '#fff'}}>
               Save Current Query
             </h4>
           </div>
@@ -841,24 +958,36 @@ const SaveQueryDialog = (props) => {
   );
 };
 
-/*
+/**
+ * ManageSavedQueryFilter Component
  *  The following component is used for displaying the filter of a individual query in a tree
  *  like structure
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class ManageSavedQueryFilter extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {};
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    let filterItem,
-      filter = this.props.filterItem;
+    let filterItem;
+    let filter = this.props.filterItem;
     if (filter.activeOperator) {
       let children = filter.children.map((element, key) => {
         return <ManageSavedQueryFilter
           filterItem={element}
-        />
+        />;
       });
       let logicOp = filter.activeOperator === 1
         ? 'OR'
@@ -870,7 +999,7 @@ class ManageSavedQueryFilter extends Component {
             {children}
           </ul>
         </li>
-      )
+      );
     } else {
       filter = this.props.filterItem;
       if (filter.instrument) {
@@ -893,12 +1022,13 @@ class ManageSavedQueryFilter extends Component {
             break;
         }
         filterItem = (
-          <span>{filter.instrument},{filter.field} {operator} {filter.value}</span>
-        )
+          <span>{filter.instrument},
+            {filter.field} {operator} {filter.value}</span>
+        );
       } else {
         filterItem = (
           <span>{filter.Field} {filter.Operator} {filter.Value}</span>
-        )
+        );
       }
     }
     return (
@@ -907,16 +1037,28 @@ class ManageSavedQueryFilter extends Component {
   }
 }
 
-/*
+/**
+ * ManageSavedQueryRow Component
  *  The following component is used for displaying the individual saved queries in the
  *  manage saved queries tab
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
 class ManageSavedQueryRow extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {};
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let fields = [];
     let filters;
@@ -943,14 +1085,14 @@ class ManageSavedQueryRow extends Component {
     }
 
     if (this.props.Query.Conditions) {
-      let operator,
-        filter;
+      let operator;
+        let filter;
       if (this.props.Query.Conditions.activeOperator) {
         if (this.props.Query.Conditions.children) {
           if (this.props.Query.Conditions.activeOperator === 0) {
-            operator = (<span>AND</span>)
+            operator = (<span>AND</span>);
           } else {
-            operator = (<span>OR</span>)
+            operator = (<span>OR</span>);
           }
           filter = this.props.Query.Conditions.children.map((element, key) => {
             return (
@@ -1012,15 +1154,17 @@ ManageSavedQueryRow.propTypes = {
 ManageSavedQueryRow.defaultProps = {
   Name: null,
   Query: {
-    Fields: []
+    Fields: [],
   },
 };
 
-/*
+/**
+ * ManageSavedQueriesTabPane Component
  *  The following component is used for displaying the manage saved queries tab content
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
-const ManageSavedQueriesTabPane = (props) => {
-
+let ManageSavedQueriesTabPane = (props) => {
   const loadQuery = (queryName) => {
     // Loads in the selected query
     props.onSelectQuery(
@@ -1059,9 +1203,10 @@ const ManageSavedQueriesTabPane = (props) => {
       <h2 style={{
         color: 'rgb(10, 53, 114)',
         textAlign: 'center',
-        paddingTop: '0'
+        paddingTop: '0',
       }}>User Saved Queries</h2>
-      <table className='table table-hover table-primary table-bordered colm-freeze'>
+      <table className='table table-hover table-primary
+       table-bordered colm-freeze'>
         <thead>
         <tr key='info' className='info'>
           <th>Query Name</th>
@@ -1086,7 +1231,7 @@ ManageSavedQueriesTabPane.defaultProps = {
   userQueries: [],
   globalQueries: [],
   queriesLoaded: false,
-  queryDetails: {}
+  queryDetails: {},
 };
 ManageSavedQueriesTabPane.propTypes = {
   userQueries: PropTypes.array,
@@ -1120,5 +1265,5 @@ export default {
   SaveQueryDialog,
   ManageSavedQueryFilter,
   ManageSavedQueryRow,
-  ManageSavedQueriesTabPane
+  ManageSavedQueriesTabPane,
 };

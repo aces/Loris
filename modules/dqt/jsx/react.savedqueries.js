@@ -6,7 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const SavedQueriesList = (props) => {
-
   const loadQuery = (queryName) => {
     // Loads in the selected query
     props.onSelectQuery(
@@ -21,7 +20,8 @@ const SavedQueriesList = (props) => {
 
   // Renders the html for the component
   let globalSaved = [];
-  let queryName, curQuery;
+  let queryName;
+  let curQuery;
 
   // Build the list for the global queries
   for (let i = 0; i < props.globalQueries.length; i += 1) {
@@ -43,7 +43,7 @@ const SavedQueriesList = (props) => {
       <h2 style={{
         color: 'rgb(10, 53, 114)',
         textAlign: 'center',
-        paddingTop: '0'
+        paddingTop: '0',
       }}>Shared Saved Queries</h2>
       {globalSaved}
     </div>
