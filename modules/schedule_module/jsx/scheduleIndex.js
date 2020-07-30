@@ -176,6 +176,7 @@ class ScheduleIndex extends Component {
         swal.fire('Success!', msg, 'success').then((result) => {
           if (result.value) {
             this.fetchData();
+            this.closeModal();
           }
         });
       } else {

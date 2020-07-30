@@ -1,7 +1,8 @@
 # Schedule Module Test Plan
 
 1. Create an Appointment [Automation Testing]
-Ensure that create does NOT work if one or more of the required fields are empty. 
+Ensure that create does NOT work if one or more of the required fields are empty.
+The Appointment Time field is not required, the default time is 12:00.
 Ensure that the available sessions are correct for the candidate. 
 After successfully making an appointment, ensure the appointment has been added properly (table is properly populated)
 

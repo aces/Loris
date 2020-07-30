@@ -67,7 +67,7 @@ class ModuleRow implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the instance data.
+     * @return array the instance data.
      */
     public function jsonSerialize() : array
     {

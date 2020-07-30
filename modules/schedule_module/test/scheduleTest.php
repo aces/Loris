@@ -30,7 +30,7 @@ class ScheduleTest extends LorisIntegrationTest
     static $edit    = "#all tr:nth-child(2) > td:nth-child(10) > .btn";
     static $delete  = "#all tr:nth-child(1) > td:nth-child(11) > .btn";
     static $msg     = "#swal2-content";
-    static $create  = ".btn-sm > div";
+    static $create  = ".btn-sm";
     /**
      * Insert an appointment
      *
