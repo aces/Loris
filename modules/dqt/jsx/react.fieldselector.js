@@ -153,12 +153,12 @@ class FieldItem extends Component {
     let displayName = this.props.FieldName;
 
     return (
-      <div className={classList}>
-        <div className='col-xs-8' onClick={this.props.onClick}>
+      <div className={classList} onClick={this.props.onClick} style={{cursor: 'pointer'}}>
+        <div className='col-xs-12'>
           <h4 className='list-group-item-heading col-xs-12'>{displayName}{criteria}{downloadIcon}</h4>
           <span className='col-xs-12'>{this.props.Description}</span>
         </div>
-        <div className='col-xs-4'>
+        <div className='col-xs-4 fieldVisitsRow' onClick={(e) => e.stopPropagation()}>
           {multiselect}
         </div>
       </div>

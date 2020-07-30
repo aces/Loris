@@ -142,7 +142,7 @@ h4 {
 }
 
 .list-group-item.active, .list-group-item.active:hover {
-  background-color: #246EB6
+  background-color: #4c8ad5;
 }
 
 .save-button {
@@ -365,4 +365,9 @@ h4 {
  */
 .downloadCSV {
     display: none;
+}
+.fieldVisitsRow {
+  cursor: default;
+  background: white;
+  border-radius: 10px;
 }
