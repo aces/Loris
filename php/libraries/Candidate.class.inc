@@ -298,7 +298,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         // Generate a new CandID and insert it into the database.
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
-        $invalidID = false;
+        $invalidID    = false;
+        $attemptcount = 0;
         do {
             // Reset on each iteration
             $invalidID = false;
@@ -312,6 +313,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
                 // with the same value has been inserted into the DB before this
                 // one.
                 $invalidID = true;
+                $attemptcount++;
+                if ($attemptcount > 2) {
+                    throw $e;
+                }
             }
         } while ($invalidID);
 
