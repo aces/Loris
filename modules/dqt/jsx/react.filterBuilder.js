@@ -579,9 +579,9 @@ class FilterBuilder extends Component {
       <div>
         <div className='row'>
           <h1 className='col-xs-6' style={{color: '#0A3572'}}>The Query's Filter</h1>
-          <button className='import-csv'>
-            Import Population from CSV&nbsp;&nbsp;<span className='glyphicon glyphicon-file'/>
-          </button>
+          {/*<button className='import-csv'>*/}
+          {/*  Import Population from CSV&nbsp;&nbsp;<span className='glyphicon glyphicon-file'/>*/}
+          {/*</button>*/}
         </div>
         <div className='row'>
           <div className='col-xs-12'>
