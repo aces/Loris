@@ -196,7 +196,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         );
         $this->assertSame(
             gettype($candidatesCandidArray['Meta']['Sex']),
-            'string'
+            'array'
         );
         $this->assertSame(
             gettype($candidatesCandidArray['Visits']),
