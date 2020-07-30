@@ -154,7 +154,7 @@ class FieldItem extends Component {
 
     return (
       <div className={classList} onClick={this.props.onClick} style={{cursor: 'pointer'}}>
-        <div className='col-xs-12'>
+        <div className='col-xs-8'>
           <h4 className='list-group-item-heading col-xs-12'>{displayName}{criteria}{downloadIcon}</h4>
           <span className='col-xs-12'>{this.props.Description}</span>
         </div>
