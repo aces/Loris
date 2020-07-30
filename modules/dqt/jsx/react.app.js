@@ -1098,13 +1098,13 @@ class DataQueryApp extends Component {
                         To start a new query, use the above navigation
                         and or click on <i style={{color: '#596978'}}>
                         "Define Fields"</i>
-                        to begin building the fields for the query.
+                        &nbsp;to begin building the fields for the query.
                       </p>
                       <p>
                         You may choose to then click the navigation
                         again for the <i style={{color: '#596978'}}>
                         "Define Filters (Optional)"</i>
-                        and define how you will filter the query data.
+                        &nbsp;and define how you will filter the query data.
                       </p>
                       <p>Lastly, navigate to the <i style={{color: '#596978'}}>
                         "Run Query"</i> and run the query you built. 🙂</p>
