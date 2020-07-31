@@ -105,16 +105,21 @@ class Charts extends \NDB_Page
      */
     private function _handleSitePieData()
     {
-        $DB          = \NDB_Factory::singleton()->database();
-        $currentUser = \NDB_Factory::singleton()->user();
+        $DB   = \NDB_Factory::singleton()->database();
+        $user = \NDB_Factory::singleton()->user();
+        $recruitmentBySiteData = [];
+        $user_sitesIDs         = $user->getCenterIDs();
 
-        $recruitmentBySiteData = array();
-
-        if ($currentUser->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList(true, false);
-        } else {
-            $list_of_sites = $currentUser->getSiteList(true, false);
+        // exclude DCC
+        // DCC site = 1 by LORIS convention
+        if (!$user->hasPermission('access_all_profiles')) {
+            if (array_search(1, $user_sitesIDs, true) !== false) {
+                unset(
+                    $user_sitesIDs[array_search(1, $user_sitesIDs, true)]
+                );
+            }
         }
+        $list_of_sites = \Utility::getSiteNameListByIDs($user_sitesIDs);
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $totalRecruitment = $DB->pselectOne(
@@ -124,13 +129,13 @@ class Charts extends \NDB_Page
                 c.RegistrationCenterID=:Site AND
                 c.Active='Y' AND
                 c.Entity_type='Human'",
-                array('Site' => $siteID)
+                ['Site' => $siteID]
             );
 
-            $recruitmentBySiteData[] = array(
+            $recruitmentBySiteData[] = [
                 "label" => $siteName,
                 "total" => $totalRecruitment,
-            );
+            ];
         }
         return new \LORIS\Http\Response\JsonResponse($recruitmentBySiteData);
     }
@@ -142,16 +147,21 @@ class Charts extends \NDB_Page
      */
     private function _handleSiteSexBreakdown()
     {
-        $DB          = \NDB_Factory::singleton()->database();
-        $currentUser = \NDB_Factory::singleton()->user();
+        $DB            = \NDB_Factory::singleton()->database();
+        $user          = \NDB_Factory::singleton()->user();
+        $sexData       = [];
+        $user_sitesIDs = $user->getCenterIDs();
 
-        $sexData = array();
-
-        if ($currentUser->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList(true, false);
-        } else {
-            $list_of_sites = $currentUser->getSiteList(true, false);
+        // exclude DCC
+        // DCC site = 1 by LORIS convention
+        if (!$user->hasPermission('access_all_profiles')) {
+            if (array_search(1, $user_sitesIDs, true) !== false) {
+                unset(
+                    $user_sitesIDs[array_search(1, $user_sitesIDs, true)]
+                );
+            }
         }
+        $list_of_sites = \Utility::getSiteNameListByIDs($user_sitesIDs);
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
@@ -161,14 +171,14 @@ class Charts extends \NDB_Page
                 WHERE c.RegistrationCenterID=:Site
                     AND c.Sex='female' AND c.Active='Y'
                     AND c.Entity_type='Human'",
-                array('Site' => $siteID)
+                ['Site' => $siteID]
             );
             $sexData['datasets']['male'][]   = $DB->pselectOne(
                 "SELECT COUNT(c.CandID)
                 FROM candidate c
                 WHERE c.RegistrationCenterID=:Site AND c.Sex='male' AND c.Active='Y'
                 AND c.Entity_type='Human'",
-                array('Site' => $siteID)
+                ['Site' => $siteID]
             );
         }
         return (new \LORIS\Http\Response\JsonResponse($sexData));
@@ -183,7 +193,7 @@ class Charts extends \NDB_Page
     {
         $DB = \NDB_Factory::singleton()->database();
 
-        $scanData = array();
+        $scanData = [];
         // Run a query to get all the data. Order matters to ensure that the
         // labels are calculated in the correct order.
         $data = $DB->pselect(
@@ -197,7 +207,7 @@ class Charts extends \NDB_Page
             WHERE pt.Name='acquisition_date'
             GROUP BY MONTH(pf.Value), YEAR(pf.Value), s.CenterID
             ORDER BY YEAR(pf.Value), MONTH(pf.Value), s.CenterID",
-            array()
+            []
         );
 
         // Create the labels.
@@ -215,24 +225,30 @@ class Charts extends \NDB_Page
         }
         $scanData['labels'] = array_keys($labels);
 
-        $currentUser = \NDB_Factory::singleton()->user();
+        $user          = \NDB_Factory::singleton()->user();
+        $user_sitesIDs = $user->getCenterIDs();
 
-        if ($currentUser->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList(true, false);
-        } else {
-            $list_of_sites = $currentUser->getSiteList(true, false);
+        // exclude DCC
+        // DCC site = 1 by LORIS convention
+        if (!$user->hasPermission('access_all_profiles')) {
+            if (array_search(1, $user_sitesIDs, true) !== false) {
+                unset(
+                    $user_sitesIDs[array_search(1, $user_sitesIDs, true)]
+                );
+            }
         }
+        $list_of_sites = \Utility::getSiteNameListByIDs($user_sitesIDs);
 
         // Massage the data into the appropriate format per site.
         foreach ($list_of_sites as $siteID => $siteName) {
-            $scanData['datasets'][] = array(
+            $scanData['datasets'][] = [
                 "name" => $siteName,
                 "data" => $this->_getScansPerMonthData(
                     $data,
                     $siteID,
                     $scanData['labels']
                 )
-            );
+            ];
         }
         return (new \LORIS\Http\Response\JsonResponse($scanData));
     }
@@ -277,36 +293,50 @@ class Charts extends \NDB_Page
      */
     private function _handleSiteLineData()
     {
-        $DB          = \NDB_Factory::singleton()->database();
-        $currentUser = \NDB_Factory::singleton()->user();
+        $DB            = \NDB_Factory::singleton()->database();
+        $user          = \NDB_Factory::singleton()->user();
+        $params        = [];
+        $centerIDs     = [];
+        $user_sitesIDs = $user->getCenterIDs();
+        $query_criteria = '';
+        $query_vars     = [];
 
-        if ($currentUser->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList(true, false);
-        } else {
-            $list_of_sites = $currentUser->getSiteList(true, false);
+        // exclude DCC
+        // DCC site = 1 by LORIS convention
+        if (!$user->hasPermission('access_all_profiles')) {
+            if (array_search(1, $user_sitesIDs, true) !== false) {
+                unset(
+                    $user_sitesIDs[array_search(1, $user_sitesIDs, true)]
+                );
+            }
+        }
+        $list_of_sites = \Utility::getSiteNameListByIDs($user_sitesIDs);
+
+        if (!empty($user_sitesIDs)) {
+
+            foreach ($user_sitesIDs as $key => $siteID) {
+                $params[]            = ":id$key";
+                $centerIDs["id$key"] = $siteID;
+            }
+            $query_criteria =  " WHERE RegistrationCenterID IN
+                (" . implode(',', $params) . ")";
+            $query_vars    += $centerIDs;
         }
 
-        $params            = array();
-        $centerIDs         = array();
-        $list_of_sites_ids = array_keys($list_of_sites);
-        foreach ($list_of_sites_ids as $key => $siteID) {
-            $params[]            = ":id$key";
-            $centerIDs["id$key"] = $siteID;
-        }
         $recruitmentStartDate = $DB->pselectOne(
             "SELECT MIN(Date_registered)
              FROM candidate
-             WHERE RegistrationCenterID IN (" . implode(',', $params) . ")",
-            $centerIDs
+             $query_criteria",
+            $query_vars
         );
         $recruitmentEndDate   = $DB->pselectOne(
             "SELECT MAX(Date_registered)
              FROM candidate
-             WHERE RegistrationCenterID IN (" . implode(',', $params) . ")",
-            $centerIDs
+             $query_criteria",
+            $query_vars
         );
 
-        $recruitmentData = array();
+        $recruitmentData = [];
         if ($recruitmentStartDate !== null
             && $recruitmentEndDate !== null
         ) {
@@ -317,13 +347,13 @@ class Charts extends \NDB_Page
         }
 
         foreach ($list_of_sites as $siteID => $siteName) {
-            $recruitmentData['datasets'][] = array(
+            $recruitmentData['datasets'][] = [
                 "name" => $siteName,
                 "data" => $this->_getSiteLineRecruitmentData(
                     $siteID,
                     $recruitmentData['labels']
                 ),
-            );
+            ];
         }
         return new \LORIS\Http\Response\JsonResponse($recruitmentData);
     }
@@ -367,7 +397,7 @@ class Charts extends \NDB_Page
     private function _getSiteLineRecruitmentData($siteID, $labels)
     {
         $DB   = \NDB_Factory::singleton()->database();
-        $data = array();
+        $data = [];
 
         foreach ($labels as $label) {
             $month  = (strlen($label) == 6)
@@ -380,11 +410,11 @@ class Charts extends \NDB_Page
                 AND MONTH(c.Date_registered)=:Month
                 AND YEAR(c.Date_registered)=:Year
                 AND c.Entity_type='Human'",
-                array(
+                [
                     'Site'  => $siteID,
                     'Month' => $month,
                     'Year'  => $year,
-                )
+                ]
             );
         }
         return $data;
