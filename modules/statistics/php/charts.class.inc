@@ -264,7 +264,7 @@ class Charts extends \NDB_Page
      *                      case this function must include a "0" to maintain
      *                      order.)
      *
-     * @return int An indexed array of data for site in the order of $labels
+     * @return array An indexed array of data for site in the order of $labels
      */
     private function _getScansPerMonthData(array $data, int $siteID, array $labels)
     {
