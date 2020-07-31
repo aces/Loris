@@ -61,7 +61,7 @@ class Statistics_Site extends \NDB_Menu
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
 
-        if (!empty($centerID)) {
+        if (!empty($centerID) && $user->hasCenter($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
@@ -92,7 +92,7 @@ class Statistics_Site extends \NDB_Menu
 
         // PROJECTS
 
-        if (!empty($projectID)) {
+        if (!empty($projectID) && $user->hasProject($projectID)) {
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         } else {
