@@ -1705,6 +1705,171 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
+     * Test that _toJSONParseSmarty returns an array with the
+     * correct information for a date type element.
+     *
+     * @covers NDB_BVL_Instrument::_toJSONParseSmarty
+     * @return void
+     */
+    function testToJsonParseSmartyDateType()
+    {
+        $el = ['type' => 'date'];
+        $result = ['type' => 'date',
+                   'options' => ['mindate' => "1990-01-01",
+                                 'maxdate' => "2000-12-31",
+                                 'RequireResponse' => false],
+                   'NoResponse' => true
+        ];
+        $this->assertEquals($result, $this->_instrument->_toJSONParseSmarty($el));
+    }
+
+    /**
+     * Test that _toJSONParseSmarty returns an array with the
+     * correct information for a date type element when the form
+     * is not a LorisForm.
+     *
+     * @covers NDB_BVL_Instrument::_toJSONParseSmarty
+     * @return void
+     */
+    function testToJsonParseSmartyDateTypeNotLorisForm()
+    {
+        $date = ['options' => ['minYear' => '1990',
+                               'maxYear' => '2000'],
+                 'type' => 'select'
+
+        ];
+        $dateHTML = $this->_instrument->form->renderElement($date);
+        $el = ['type' => 'date',
+               'html' => $dateHTML];
+        $result = ['type' => 'date',
+                   'html' => $dateHTML,
+                   'options' => ['mindate' => "1990-01-01",
+                                 'maxdate' => "2000-12-31"],
+                   'NoResponse' => true
+        ];
+        $this->_instrument->form = new \Candidate();
+        $this->assertEquals($result, $this->_instrument->_toJSONParseSmarty($el));
+    }
+
+    /**
+     * Test that _toJSONParseSmarty returns an array with the
+     * correct information
+     *
+     * @covers NDB_BVL_Instrument::_toJSONParseSmarty
+     * @return void
+     */
+    function toJsonParseSmartySelectType()
+    {
+        $select = ['type' => 'select',
+                   'multiple' => 'multiple',
+                   'option' => ['value' => 'not_answered']
+        ];
+        $html = $this->_instrument->form->renderElement($select);
+        $el = ['type' => 'select', 'html' => $html];
+        $this->assertEquals($el, $this->_instrument->_toJSONParseSmarty($select));
+    }
+
+    /**
+     * Test that getBreadcrumbs returns a BreadcrumbTrail object with the correct
+     * Breadcrumb data
+     *
+     * @covers NDB_BVL_Instrument::getBreadcrumbs
+     * @return void
+     */
+    function testGetBreadcrumbs()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID1';
+        $this->_instrument->testName = 'testname';
+        $breadcrumb = new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Access Profile',
+                '/candidate_list'
+            ),
+            new \LORIS\Breadcrumb(
+                "Candidate Profile 300123 / 345",
+                "/300123"
+            ),
+            new \LORIS\Breadcrumb(
+                "TimePoint V1 Details",
+                "/instrument_list/?candID=300123&sessionID=123"
+            ),
+            new \LORIS\Breadcrumb(
+                "Test Instrument",
+                "/instruments/testname/".
+                "?commentID=commentID1&sessionID=123&candID=300123"
+            )
+        );
+        $this->assertEquals(
+            $breadcrumb,
+            $this->_instrument->getBreadcrumbs()
+        );
+    }
+
+    /**
+     * Test that usesJSONData returns false
+     *
+     * @covers NDB_BVL_Instrument::usesJSONData
+     * @return void
+     */
+    function testUsesJSONData()
+    {
+        $this->assertFalse($this->_instrument->usesJSONData());
+    }
+
+    /**
+     * Test that display returns an html with an expected hidden element. The HTML
+     * value returned is too long to be compared.
+     *
+     * @covers NDB_BVL_Instrument::display
+     * @return void
+     */
+    function testDisplay()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->setup("commentID1", "page");
+        $this->_instrument->table = 'medical_history';
+        $this->assertContains(
+            "<input  name=\"candID\" value=\"\" type=\"hidden\">\n",
+            $this->_instrument->display()
+        );
+    }
+
+    /**
+     * Test that save returns false if the instrument cannot be validated
+     * and saved
+     *
+     * @covers NDB_BVL_Instrument::save
+     * @return void
+     */
+    function testSaveFalse()
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->commentID = 'commentID2';
+        $this->_instrument->table = 'medical_history';
+        $this->_instrument->form = $this->getMockBuilder("\LorisForm")->getMock();
+        $this->_instrument->form
+            ->method('getSubmitValues')->willReturn(['1', '2']);
+        $this->assertFalse($this->_instrument->save());
+    }
+
+    /**
+     * Test that XINRunRuleFunction throws a LorisException if the operator
+     * is unsupported (not == or !=)
+     *
+     * @covers NDB_BVL_Instrument::XINRunRuleFunction
+     * @return void
+     */
+    function testXINRunRuleFunctionThrowsException()
+    {
+        $this->expectException('\LorisException');
+        $this->_instrument->XINRunRuleFunction("controller", ["1"], "&&");
+    }
+
+    /**
      * Private function to set fake table data to be tested
      *
      * @return void
