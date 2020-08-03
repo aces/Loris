@@ -40,53 +40,9 @@ class Statistics_Site extends \NDB_Menu
      */
     function _hasAccess(\User $user) : bool
     {
-        //TODO: Create a permission specific to statistics
-        $hasAccessToAllProfiles = $user->hasAllPermissions(
-            array(
-                'access_all_profiles',
-                'data_entry',
-            )
-        );
-
-        $hasCenterPermission = false;
-
-        // TODO: There are no means of set permissions per site
-        // for a given user right now: (e.g.) The user X can have
-        // the permission data_entry on site Y but not on site Z.
-        // Currently, hasCenterPermission() function is only checking
-        // if the user have a given center AND a given permission
-        // not if it have the permission for this specific center.
-        // This logic will be implemented in hasCenterPermission()
-        // in near versions when the permission framework allow it.
-
-        // If a CenterID is passed in the request, check if the user has the
-        // data_entry permission at the site/center specified by CenterID.
-        if (!empty($_REQUEST['CenterID'])) {
-            $hasCenterPermission = $user->hasCenterPermission(
-                'data_entry',
-                intval($_REQUEST['CenterID'])
-            );
-        } else {
-
-            // For the short term the user we'll be granted access
-            // if at least have permission AND one of the centers
-            // The filter _checkCriteria() (please see bellow)
-            // takes care of restricting access to sites the user belongs to.
-            // When logic reimplemented on hasCenterPermission(),
-            // _checkCriteria() will take care of retriving information
-            // only for those centers the user has the specific permission.
-            // (please see notes about hasCenterPermission() above)
-
-            foreach ($user->getCenterIDs() as $centerID) {
-                if ($user->hasCenterPermission('data_entry', intval($centerID))) {
-                    $hasCenterPermission = true;
-                    break;
-                }
-            }
-        }
-
-        return $hasAccessToAllProfiles || $hasCenterPermission;
-
+        //TODO: To create a permission specific to statistics
+        return(   $user->hasPermission('access_all_profiles')
+               || $user->hasPermission('data_entry'));
     }
 
     /**
@@ -99,57 +55,63 @@ class Statistics_Site extends \NDB_Menu
      */
     function _checkCriteria($centerID, $projectID)
     {
-        // TODO: There are no means of set permissions per site
-        // for a given user right now: (e.g.) The user X can have
-        // the permission data_entry on site Y but not on site Z.
-        // Currently, hasCenterPermission() function is only checking
-        // if the user have a given center AND a given permission
-        // not if it have the permission for this specific center.
-        // This logic will be implemented in hasCenterPermission()
-        // in near versions when the permission framework allow it
 
-        // The filter _checkCriteria() takes care of restricting
-        // the user access only to the sites it belongs to.
-        // When logic reimplemented on hasCenterPermission(),
-        // _checkCriteria() will take care of retriving information
-        // only for those centers the user has the specific permission.
+        //SITES
 
-        if (!empty($centerID)) {
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+
+        if (!empty($centerID) && $user->hasCenter($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
-            $list_of_permitted_sites = (array) null;
-            $currentUser = \User::singleton();
+            $list_of_permitted_sites = array();
 
-            if ($currentUser->hasPermission('access_all_profiles')) {
+            if ($user->hasPermission('access_all_profiles')) {
                 $list_of_permitted_sites = array_keys(\Utility::getSiteList());
             } else {
-                foreach ($currentUser->getCenterIDs() as $centerID) {
-                    if ($currentUser->hasCenterPermission(
-                        'data_entry',
-                        intval($centerID)
-                    )
-                    ) {
-                        array_push($list_of_permitted_sites, $centerID);
-                    }
+                $list_of_permitted_sites = array_keys($user->getStudySites());
+            }
+
+            if (!empty($list_of_permitted_sites)) {
+                $paramCenters = array();
+                $centerIDs    = array();
+                foreach ($list_of_permitted_sites as $key => $siteID) {
+                    $paramCenters[] = ":paramSiteID$key";
+                    $centerIDs["paramSiteID$key"] = $siteID;
                 }
+                $this->query_criteria .= "AND (s.CenterID IS NULL
+                                          OR s.CenterID IN
+                                              (" . implode(',', $paramCenters) . ")
+                                          )";
+                $this->query_vars     += $centerIDs;
+            } else {
+                $this->query_criteria .= "AND (s.CenterID IS NULL)";
             }
-
-            $params    = array();
-            $centerIDs = array();
-            foreach ($list_of_permitted_sites as $key => $siteID) {
-                $params[]            = ":id$key";
-                $centerIDs["id$key"] = $siteID;
-            }
-
-            $this->query_criteria .=
-                " AND s.CenterID IN (" . implode(',', $params) . ")";
-            $this->query_vars     += $centerIDs;
         }
 
-        if (!empty($projectID)) {
+        // PROJECTS
+
+        if (!empty($projectID) && $user->hasProject($projectID)) {
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
+        } else {
+            $userProjectsIDs = $user->getData('ProjectIDs');
+            if (!empty($userProjectsIDs)) {
+                $paramProjects = array();
+                $projectsIDs   = array();
+                foreach ($userProjectsIDs as $key => $projectID) {
+                    $paramProjects[] = ":paramProjectID$key";
+                    $projectsIDs["paramProjectID$key"] = $projectID;
+                }
+                $this->query_criteria .= "AND (s.ProjectID IS NULL
+                                          OR s.ProjectID IN
+                                              (" . implode(',', $paramProjects) . ")
+                                          )";
+                $this->query_vars     += $projectsIDs;
+            } else {
+                $this->query_criteria .= "AND (s.ProjectID IS NULL)";
+            }
         }
     }
 
