@@ -115,6 +115,7 @@ class Statistics_Site extends \NDB_Menu
             if (!empty($list_of_permitted_sites)) {
                 $paramCenters = [];
                 $centerIDs    = [];
+
                 foreach ($list_of_permitted_sites as $key => $siteID) {
                     $paramCenters[] = ":paramSiteID$key";
                     $centerIDs["paramSiteID$key"] = $siteID;
