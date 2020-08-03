@@ -84,10 +84,6 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
                 [
                     'module'        => $module->getName(),
                     'category'     => $cat->getName(),
-                    /*
-                    'fieldname'               => $name,
-                    'source_field'       => $item->getName(),
-                     */
                     'field'              => $item->getName(),
                     'description'        => $desc,
                     'description_status' => $status,
@@ -110,6 +106,10 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      */
     public function getInstance(\LORIS\Data\Dictionary\DictionaryItem $item, array $row) : \LORIS\Data\DataInstance
     {
+        $itype = $item->getDataType();
+        if ($itype instanceof \LORIS\Data\Types\Enumeration) {
+            $row['options'] = $itype->getOptions();
+        }
         return new DataDictRow($item, $row);
     }
 }
