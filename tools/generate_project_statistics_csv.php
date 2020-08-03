@@ -5,8 +5,9 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
+
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
-require_once __DIR__ . '/../php/libraries/OutputWrapper.class.inc';
 
 $helper      = new OutputWrapper();
 $output_file = sprintf("project_statistics_%s.csv", date('Y-m-d'));
