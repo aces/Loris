@@ -57,4 +57,50 @@ class Module extends \Module
     {
         return "Data Dictionary";
     }
+
+    /**
+     * Return a list of modules and categories that this user
+     * has access to.
+     *
+     * This should not be used outside of this module, it's only
+     * to store shared code between different endpoints
+     *
+     * @return array
+     */
+    public function getUserModuleCategories(\User $user, \LORIS\LorisInstance $loris) : array
+    {
+        $modules = $loris->getActiveModules();
+        $usermodules = [];
+        $dict = [];
+        $categories = [];
+
+        $categoryitems = [];
+        foreach ($modules as $module) {
+            if(!$module->hasAccess($user)) {
+                continue;
+            }
+
+            $mdict = $module->getDataDictionary($this->lorisinstance);
+            $mname = $module->getName();
+
+            if(count($mdict) > 0) {
+                $usermodules[] = $module;
+                $categories[$mname] = [];
+
+
+                foreach($mdict as $cat) {
+                    $categories[$mname][$cat->getName()] = $cat->getDescription();
+                    $categoryitems[] = [
+                        'Module' => $module,
+                        'Category' => $cat,
+                    ];
+                }
+            }
+        }
+        return [
+            'Modules' => $usermodules,
+            'Categories' => $categories,
+            'CategoryItems' => $categoryitems,
+        ];
+    }
 }

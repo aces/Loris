@@ -155,35 +155,13 @@ class Datadict extends \DataFrameworkMenu
         \User $user, ServerRequestInterface $request
     ) : void {
         $this->lorisinstance = $request->getAttribute("loris");
-        $modules = $this->lorisinstance->getActiveModules();
-        $usermodules = [];
-        $dict = [];
-        $categories = [];
+        $modulesandcats = $this->Module->getUserModuleCategories(
+            $user,
+            $this->lorisinstance,
+        );
 
-        $this->categoryitems = [];
-        foreach ($modules as $module) {
-            if(!$module->hasAccess($user)) {
-                continue;
-            }
-
-            $mdict = $module->getDataDictionary($this->lorisinstance);
-            $mname = $module->getName();
-
-            if(count($mdict) > 0) {
-                $usermodules[] = $module;
-                $categories[$mname] = [];
-
-
-                foreach($mdict as $cat) {
-                    $categories[$mname][$cat->getName()] = $cat->getDescription();
-                    $this->categoryitems[] = [
-                        'Module' => $module,
-                        'Category' => $cat,
-                    ];
-                }
-            }
-        }
-        $this->modules = $usermodules;
-        $this->categories = $categories;
+        $this->categoryitems = $modulesandcats['CategoryItems'];
+        $this->modules = $modulesandcats['Modules'];
+        $this->categories = $modulesandcats['Categories'];
     }
 }
