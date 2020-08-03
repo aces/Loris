@@ -54,11 +54,11 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
-        $obj = array(
+        $obj = [
             'Candidate'  => $this->_candid,
             'PSCID'      => $this->_pscid,
             'Visit'      => $this->_visitlabel,
@@ -67,7 +67,7 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
             'File'       => $this->_filename,
             'Modality'   => $this->_modality,
             'InsertTime' => $this->_inserttime,
-        );
+        ];
 
         $filename = basename($obj['File']);
         $candid   = $obj['Candidate'];
@@ -77,7 +77,7 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
 
         $obj['InsertTime'] = date('c', (int) $obj['InsertTime']);
 
-        return json_encode($obj);
+        return $obj;
     }
 
     /**

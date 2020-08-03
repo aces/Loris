@@ -24,7 +24,7 @@ if (!$user->hasPermission('media_write')) {
 
 // Make sure that the user isn't trying to break out of the $path
 // by using a relative filename.
-$file     = basename($_GET['File']);
+$file     = html_entity_decode(basename($_GET['File']));
 $config   =& NDB_Config::singleton();
 $path     = $config->getSetting('mediaPath');
 $filePath = $path . $file;
@@ -32,7 +32,7 @@ $filePath = $path . $file;
 $downloadNotifier = new NDB_Notifier(
     "media",
     "download",
-    array("file" => $file)
+    ["file" => $file]
 );
 
 if (!file_exists($filePath)) {

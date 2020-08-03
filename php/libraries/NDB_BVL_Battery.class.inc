@@ -8,7 +8,7 @@
  * identifier.  Thus, we use the session table's ID column to identify
  * any battery.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural
@@ -33,6 +33,7 @@ class NDB_BVL_Battery
      * same as identifying a battery
      *
      * @access private
+     * @var    SessionID
      */
     public $sessionID = null;
 
@@ -48,11 +49,11 @@ class NDB_BVL_Battery
     /**
      * Selects a specific visit/battery
      *
-     * @param integer $sessionID the ID of the session/visit (session.ID)
+     * @param SessionID $sessionID the ID of the session/visit (session.ID)
      *
      * @return void
      */
-    function selectBattery($sessionID)
+    function selectBattery(SessionID $sessionID)
     {
         $timepoint =TimePoint::singleton($sessionID);
 
@@ -182,7 +183,7 @@ class NDB_BVL_Battery
 
         // get SessionID, UserID
         $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
-        $rows  = $DB->pselect($query, array('SID' => $this->sessionID));
+        $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
         if (count($rows)==0) {
             throw new Exception(
                 "Failed to get SessionID, and UserID when trying to add $testName"
@@ -197,34 +198,34 @@ class NDB_BVL_Battery
         $obj = NDB_BVL_Instrument::factory($testName, '', '');
 
         // insert into the test table
-        $DB->insert($obj->table, array('CommentID' => $commentID));
+        $DB->insert($obj->table, ['CommentID' => $commentID]);
 
         // insert into the flag table
         $DB->insert(
             'flag',
-            array(
+            [
                 'SessionID' => $sessionData['SessionID'],
                 'Test_name' => $testName,
                 'CommentID' => $commentID,
                 'UserID'    => $sessionData['UserID'],
-            )
+            ]
         );
 
         // generate the double data entry commentid
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
-        $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
+        $DB->insert($obj->table, ['CommentID' => $ddeCommentID]);
 
         // insert the dde into the flag table
         $DB->insert(
             'flag',
-            array(
+            [
                 'SessionID' => $sessionData['SessionID'],
                 'Test_name' => $testName,
                 'CommentID' => $ddeCommentID,
                 'UserID'    => $sessionData['UserID'],
-            )
+            ]
         );
 
         return $commentID ?? '';
@@ -274,11 +275,11 @@ class NDB_BVL_Battery
             JOIN candidate c ON (c.CandID=s.CandID)
             WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
                AND f.CommentID NOT LIKE 'DDE%'";
-        $qparams = array('SID' => $this->sessionID);
+        $qparams = ['SID' => $this->sessionID];
         $rows    = $DB->pselect($query, $qparams);
 
         // repackage the array
-        $tests = array();
+        $tests = [];
         foreach ($rows AS $row) {
             $tests[] = $row['Test_name'];
         }
@@ -319,7 +320,7 @@ class NDB_BVL_Battery
         $query  .= " FROM flag f
             	JOIN test_names t ON (f.Test_name=t.Test_name)
             	JOIN test_subgroups ts ON (ts.ID = t.Sub_group) ";
-        $qparams = array('SID' => $this->sessionID);
+        $qparams = ['SID' => $this->sessionID];
 
         if (!is_null($stage)) {
             $query .= "
@@ -379,14 +380,14 @@ class NDB_BVL_Battery
      * @param string $commentId The CommentID for which we'd like to know
      *                          the test name
      *
-     * @return string A test name
+     * @return ?string A test name
      */
-    public static function getInstrumentNameForCommentId($commentId)
+    public static function getInstrumentNameForCommentId($commentId): ?string
     {
         return \NDB_Factory::singleton()->database()
             ->pselectOne(
                 "SELECT Test_name FROM flag WHERE CommentID=:CID",
-                array('CID' => $commentId)
+                ['CID' => $commentId]
             );
     }
 
@@ -430,10 +431,10 @@ class NDB_BVL_Battery
         if (empty($this->age)) {
             $this->age = $age;
         }
-        $qparams = array(
+        $qparams = [
             'vAge'      => $this->age,
             'SubprojID' => $SubprojectID,
-        );
+        ];
         // The query to lookup the battery uses the min/max age ranges
         // if they are not 0
         $query = "
@@ -454,10 +455,10 @@ class NDB_BVL_Battery
                 "SELECT COUNT(*)
                     FROM test_battery
                     WHERE Visit_label =:VL AND SubprojectID=:SubID",
-                array(
+                [
                     'VL'    => $visit_label,
                     'SubID' => $SubprojectID,
-                )
+                ]
             );
             if ($VisitBatteryExists > 0) {
                 $query        .= " AND b.Visit_label=:VL";
@@ -486,7 +487,7 @@ class NDB_BVL_Battery
         }
 
         // get the list of instruments
-        $tests = array();
+        $tests = [];
         $rows  = $DB->pselect($query, $qparams);
 
         // repackage the array
@@ -499,10 +500,10 @@ class NDB_BVL_Battery
                 SELECT DISTINCT Test_name
                 FROM test_battery
                 WHERE firstVisit=:FV AND SubprojectID=:subID";
-            $where            = array(
+            $where            = [
                 'FV'    => 'Y',
                 'subID' => $SubprojectID,
-            );
+            ];
             $rows_firstVisit  = $DB->pselect($query_firstVisit, $where);
 
             foreach ($rows_firstVisit as $row) {
@@ -515,10 +516,10 @@ class NDB_BVL_Battery
                 SELECT DISTINCT Test_name
                 FROM test_battery
                 WHERE firstVisit=:FV AND SubprojectID=:subID";
-            $where = array(
+            $where = [
                 'FV'    => 'N',
                 'subID' => $SubprojectID,
-            );
+            ];
 
             $rows_notfirstVisit = $DB->pselect($query_notfirstVisit, $where);
             foreach ($rows_notfirstVisit as $row) {
@@ -568,14 +569,14 @@ class NDB_BVL_Battery
 
         $TestID = $DB->pselectOne(
             "SELECT ID FROM test_names WHERE Test_name=:TN",
-            array('TN' => $Test_name)
+            ['TN' => $Test_name]
         );
 
         $OtherInfo = $DB->pselectRow(
             "SELECT CandID, c.PSCID, s.SubprojectID FROM session s
                     JOIN candidate c USING (CandID)
                 WHERE c.Active='Y' AND s.Active='Y' AND s.ID=:SID",
-            array('SID' => $SessionID)
+            ['SID' => $SessionID]
         );
 
         if (empty($TestID) || empty($OtherInfo)) {
@@ -617,7 +618,7 @@ class NDB_BVL_Battery
     {
         $DB    = Database::singleton();
         $query = "SELECT COUNT(*) AS counter FROM test_names WHERE Test_name=:TN";
-        $row   = $DB->pselectRow($query, array('TN' => $testName));
+        $row   = $DB->pselectRow($query, ['TN' => $testName]);
 
         return ($row['counter'] ?? 0) >= 1;
     } // end _assertValidInstrument()

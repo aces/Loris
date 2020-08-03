@@ -58,9 +58,9 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
-        return array(
+        return [
             'sourceFrom' => \Utility::getAllInstruments(),
-        );
+        ];
     }
 
     /**
@@ -86,9 +86,9 @@ class Datadict extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/datadict/js/dataDictIndex.js",
-            )
+            ]
         );
     }
 

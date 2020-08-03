@@ -81,7 +81,7 @@ class Sessions extends \NDB_Page
         $session_id = intval($matches[1]);
         try {
             $this->timepoint = \NDB_Factory::singleton()->timepoint(
-                $session_id
+                new \SessionID(strval($session_id))
             );
             $this->sessionID = $session_id;
         } catch(\LorisException $e) {
@@ -111,7 +111,7 @@ class Sessions extends \NDB_Page
 
         if ($request->getMethod() != 'GET') {
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                array('GET')
+                ['GET']
             ));
         }
 
@@ -143,22 +143,22 @@ class Sessions extends \NDB_Page
     {
         $db = \NDB_Factory::singleton()->database();
 
-        $query = 'SELECT 
-                DISTINCT(pf.SessionID) 
-              FROM physiological_file pf 
-                LEFT JOIN session s ON (s.ID=pf.SessionID) 
+        $query = 'SELECT
+                DISTINCT(pf.SessionID)
+              FROM physiological_file pf
+                LEFT JOIN session s ON (s.ID=pf.SessionID)
                 LEFT JOIN candidate c USING (CandID)
-                LEFT JOIN psc ON (s.CenterID=psc.CenterID) 
-                LEFT JOIN physiological_output_type pot 
-                  USING (PhysiologicalOutputTypeID) 
-              WHERE 
-                s.Active = "Y" 
-                AND pf.FileType IN ("bdf", "cnt", "edf", "set", "vhdr", "vsm") 
+                LEFT JOIN psc ON (s.CenterID=psc.CenterID)
+                LEFT JOIN physiological_output_type pot
+                  USING (PhysiologicalOutputTypeID)
+              WHERE
+                s.Active = "Y"
+                AND pf.FileType IN ("bdf", "cnt", "edf", "set", "vhdr", "vsm")
               ORDER BY pf.SessionID';
 
-        $response = array();
+        $response = [];
 
-        $sessions            = $db->pselect($query, array());
+        $sessions            = $db->pselect($query, []);
         $sessions            = array_column($sessions, 'SessionID');
         $response['patient'] = $this->getSubjectData($outputType);
         $response['database']    = array_values(
@@ -182,7 +182,7 @@ class Sessions extends \NDB_Page
      */
     function getSubjectData($outputType)
     {
-        $subjectData = array();
+        $subjectData = [];
         $candidate   = \NDB_Factory::singleton()->candidate(
             $this->timepoint->getCandID()
         );
@@ -213,13 +213,13 @@ class Sessions extends \NDB_Page
     {
         $db = \NDB_Factory::singleton()->database();
 
-        $fileCollection = array();
-        $params         = array();
+        $fileCollection = [];
+        $params         = [];
         $params['SID']  = $this->sessionID;
-        $query          = 'SELECT 
-                         pf.PhysiologicalFileID, 
-                         pf.FilePath 
-                       FROM 
+        $query          = 'SELECT
+                         pf.PhysiologicalFileID,
+                         pf.FilePath
+                       FROM
                          physiological_file pf ';
 
         if ($outputType != 'all_types') {
@@ -236,7 +236,7 @@ class Sessions extends \NDB_Page
         $physiologicalFiles = $db->pselect($query, $params);
 
         foreach ($physiologicalFiles as $file) {
-            $fileSummary         = array();
+            $fileSummary         = [];
             $physiologicalFileID = $file['PhysiologicalFileID'];
             $physiologicalFile   = $file['FilePath'];
             $physioFileObj       = new ElectrophysioFile(
@@ -269,22 +269,22 @@ class Sessions extends \NDB_Page
             $ecgChannelCount = $physioFileObj->getParameter('ECGChannelCount');
             $emgChannelCount = $physioFileObj->getParameter('EMGChannelCount');
 
-            $fileSummary['task']['channel'][] = array(
+            $fileSummary['task']['channel'][] = [
                 'name'  => 'EEG Channel Count',
                 'value' => $eegChannelCount,
-            );
-            $fileSummary['task']['channel'][] = array(
+            ];
+            $fileSummary['task']['channel'][] = [
                 'name'  => 'EOG Channel Count',
                 'value' => $eogChannelCount,
-            );
-            $fileSummary['task']['channel'][] = array(
+            ];
+            $fileSummary['task']['channel'][] = [
                 'name'  => 'ECG Channel Count',
                 'value' => $ecgChannelCount,
-            );
-            $fileSummary['task']['channel'][] = array(
+            ];
+            $fileSummary['task']['channel'][] = [
                 'name'  => 'EMG Channel Count',
                 'value' => $emgChannelCount,
-            );
+            ];
 
             // get the task reference
 
@@ -377,13 +377,13 @@ class Sessions extends \NDB_Page
     {
         $db = \NDB_Factory::singleton()->database();
 
-        $params          = array();
+        $params          = [];
         $params['PFID']  = $physioFileID;
-        $downloadLinks   = array();
-        $downloadLinks[] = array(
+        $downloadLinks   = [];
+        $downloadLinks[] = [
             'type' => 'physiological_file',
             'file' => $physioFile,
-        );
+        ];
 
         $queries = [
             'physiological_electrode'  => 'physiological_electrode_file',
@@ -393,46 +393,46 @@ class Sessions extends \NDB_Page
         ];
 
         foreach ($queries as $query_key => $query_value) {
-            $query_statement = "SELECT 
+            $query_statement = "SELECT
                               DISTINCT(FilePath), '$query_value' AS FileType
-                            FROM 
-                              $query_key 
-                            WHERE 
+                            FROM
+                              $query_key
+                            WHERE
                               PhysiologicalFileID=:PFID";
             $query_statement = $db->pselectRow($query_statement, $params);
             if (isset($query_statement['FileType'])) {
-                $downloadLinks[] = array(
+                $downloadLinks[] = [
                     'type' => $query_statement['FileType'],
                     'file' => $query_statement['FilePath'],
-                );
+                ];
             } else {
-                $downloadLinks[] = array(
+                $downloadLinks[] = [
                     'type' => $query_value,
                     'file' => '',
-                );
+                ];
             }
         }
 
-        $queryFDT = "SELECT 
-                   Value AS FilePath, 
-                   'physiological_fdt_file' AS FileType 
-                 FROM 
-                   physiological_parameter_file 
-                   JOIN parameter_type AS pt USING (ParameterTypeID) 
-                 WHERE 
-                   pt.Name='fdt_file' 
+        $queryFDT = "SELECT
+                   Value AS FilePath,
+                   'physiological_fdt_file' AS FileType
+                 FROM
+                   physiological_parameter_file
+                   JOIN parameter_type AS pt USING (ParameterTypeID)
+                 WHERE
+                   pt.Name='fdt_file'
                    AND PhysiologicalFileID=:PFID";
         $queryFDT = $db->pselectRow($queryFDT, $params);
         if (isset($queryFDT['FileType'])) {
-            $downloadLinks[] = array(
+            $downloadLinks[] = [
                 'type' => $queryFDT['FileType'],
                 'file' => $queryFDT['FilePath'],
-            );
+            ];
         } else {
-            $downloadLinks[] = array(
+            $downloadLinks[] = [
                 'type' => 'physiological_fdt_file',
                 'file' => '',
-            );
+            ];
         }
 
         return $downloadLinks;
@@ -450,10 +450,10 @@ class Sessions extends \NDB_Page
         $baseurl = $factory->settings()->getBaseURL();
         $depends = array_merge(
             $depends,
-            array(
+            [
                 $baseurl
                 . '/electrophysiology_browser/js/electrophysiologySessionView.js',
-            )
+            ]
         );
         return $depends;
     }

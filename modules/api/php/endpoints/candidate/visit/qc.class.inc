@@ -58,10 +58,10 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array(
+        return [
             'GET',
             'PUT',
-        );
+        ];
     }
 
     /**
@@ -72,10 +72,10 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             'v0.0.2',
             'v0.0.3',
-        );
+        ];
     }
 
     /**
@@ -112,11 +112,9 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Create an array representation of this endpoint's reponse body
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;
@@ -143,11 +141,11 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $data = json_decode((string) $request->getBody(), true);
 
-        $requiredfields = array(
+        $requiredfields = [
             'Meta',
             'SessionQC',
             'Pending',
-        );
+        ];
         $diff           = array_diff($requiredfields, array_keys($data));
         if (!empty($diff)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
@@ -180,7 +178,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $ispending = $data['Pending'] ? 'Y' : 'N';
 
         try {
-            $this->_visit->setData(array('MRIQCStatus' => $qcstatus));
+            $this->_visit->setData(['MRIQCStatus' => $qcstatus]);
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'MRIQCStatus value not acceptable'
@@ -188,7 +186,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $this->_visit->setData(array('MRIQCPending' => $ispending));
+            $this->_visit->setData(['MRIQCPending' => $ispending]);
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'MRIQCPending value not acceptable'

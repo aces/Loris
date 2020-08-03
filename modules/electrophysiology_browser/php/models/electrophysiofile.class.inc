@@ -24,8 +24,8 @@ namespace LORIS\electrophysiology_browser\Models;
  */
 class ElectrophysioFile implements \LORIS\Data\DataInstance
 {
-    private $_fileData   = array();
-    private $_parameters = array();
+    private $_fileData   = [];
+    private $_parameters = [];
 
     /**
      * Construct a BIDSFile
@@ -49,7 +49,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                        FilePath  
                      FROM physiological_file 
                      WHERE PhysiologicalFileID=:PFID";
-        $params   = array('PFID' => $physiologicalFileID);
+        $params   = ['PFID' => $physiologicalFileID];
         $fileData = $db->pselectRow($query, $params);
 
         foreach ($fileData AS $key=>$value) {
@@ -86,9 +86,9 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface
      *
-     * @return string
+     * @return string which can be serialized by json_encode()
      */
-    public function toJSON(): string
+    public function jsonSerialize() : string
     {
         return '';
     }

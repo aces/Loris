@@ -169,7 +169,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $this->tpl_data['candID']    = $this->candidate->getCandID();
         $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
 
-        // get behavioral battery for this visit (time point)
+        // get behavioural battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
         $battery->selectBattery($this->timePoint->getSessionID());
 
@@ -293,8 +293,8 @@ class Instrument_List extends \NDB_Menu_Filter
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
      *
-     * @param string $candID    the value of candID
-     * @param string $sessionID the value of sessionID
+     * @param string      $candID    the value of candID
+     * @param ?\SessionID $sessionID the value of sessionID
      *
      * @return string
      */
@@ -341,14 +341,14 @@ class Instrument_List extends \NDB_Menu_Filter
             	JOIN test_names t ON (f.Test_name=t.Test_name)
             	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
             	LEFT JOIN session s ON (s.ID=f.SessionID) ";
-        $qparams = array('SID' => $this->timePoint->getSessionID());
+        $qparams = ['SID' => $this->timePoint->getSessionID()];
 
         if (!is_null($stage)) {
             $query .= "
-            	LEFT JOIN test_battery b 
-       	        ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL) 
-      	        AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID IS NULL) 
-       	        AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL) 
+            	LEFT JOIN test_battery b
+       	        ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL)
+      	        AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID IS NULL)
+       	        AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL)
        	        AND (s.CenterID=b.CenterID OR b.CenterID IS NULL)) ";
         }
         $query .= " WHERE f.SessionID=:SID
@@ -385,9 +385,9 @@ class Instrument_List extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/instrument_list/js/instrument_list_helper.js",
-            )
+            ]
         );
     }
 

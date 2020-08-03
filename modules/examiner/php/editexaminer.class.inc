@@ -52,9 +52,9 @@ class EditExaminer extends \NDB_Form
                  FROM examiners e
                   LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
                  WHERE e.examinerID=:EID",
-                array('EID' => $this->identifier)
+                ['EID' => $this->identifier]
             );
-            $centerIDs =array();
+            $centerIDs =[];
             foreach ($cids as $row) {
                 $centerIDs[] = $row['centerID'];
             }
@@ -87,11 +87,11 @@ class EditExaminer extends \NDB_Form
             "SELECT testID, pass, date_cert, comment
              FROM certification
              WHERE examinerID=:EID",
-            array('EID' => $this->identifier)
+            ['EID' => $this->identifier]
         );
 
         // set the form defaults for the page
-        $defaults = array();
+        $defaults = [];
         foreach ($result as $row) {
             $defaults['date_cert[' . $row['testID'] . ']']       = $row['date_cert'];
             $defaults['certStatus['      . $row['testID'] . ']'] = $row['pass'];
@@ -124,10 +124,10 @@ class EditExaminer extends \NDB_Form
                 "SELECT certID
                  FROM certification
                  WHERE examinerID=:EID AND testID=:TID",
-                array(
+                [
                     'EID' => $examinerID,
                     'TID' => $testID,
-                )
+                ]
             );
             // FIXME $visit_label should be set properly. This declaration
             // was only added to appease phan.
@@ -136,12 +136,12 @@ class EditExaminer extends \NDB_Form
              // if certification for new instrument for the examiner
             if (empty($certID) && !empty($certStatus)) {
                 // insert a new certification entry
-                $data = array(
+                $data = [
                     'examinerID' => $examinerID,
                     'testID'     => $testID,
                     'pass'       => $certStatus,
                     'comment'    => $comment,
-                );
+                ];
                 if ($date_cert != "") {
                     $data['date_cert'] = $date_cert;
                 }
@@ -154,13 +154,13 @@ class EditExaminer extends \NDB_Form
                     "SELECT certID
                      FROM certification
                      WHERE examinerID =:EID and testID=:TID",
-                    array(
+                    [
                         'EID' => $examinerID,
                         'TID' => $testID,
-                    )
+                    ]
                 );
                 // Add a new entry to the certification history table
-                $data = array(
+                $data = [
                     'col'         => 'pass',
                     'new'         => $certStatus,
                     'primaryVals' => $certID,
@@ -169,7 +169,7 @@ class EditExaminer extends \NDB_Form
                     'changeDate'  => date("Y-m-d H:i:s"),
                     'userID'      => $_SESSION['State']->getUsername(),
                     'type'        => 'I',
-                );
+                ];
                 if ($date_cert != "") {
                     $data['new_date'] = $date_cert;
                 }
@@ -187,29 +187,29 @@ class EditExaminer extends \NDB_Form
                      LEFT JOIN certification c ON (c.certID=ch.primaryVals)
                      WHERE c.examinerID=:EID AND ch.testID=:TID
                      ORDER BY changeDate DESC LIMIT 1",
-                    array(
+                    [
                         'EID' => $examinerID,
                         'TID' => $testID,
-                    )
+                    ]
                 );
-                if (empty($oldVals)) {
-                    throw new \LorisException(
-                        'Certification data could not be found'
-                    );
+
+                $oldVal  = null;
+                $oldDate = null;
+                if (!empty($oldVals)) {
+                    // since there is an ORDER BY in pselect
+                    // $oldVals[0] corresponds to the latest date
+                    $oldVal  = $oldVals[0]['new'] ?? null;
+                    $oldDate = $oldVals[0]['new_date'] ?? null;
                 }
-                // since there is an ORDER BY in pselect
-                // $oldVals[0] corresponds to the latest date
-                $oldVal  = $oldVals[0]['new'] ?? null;
-                $oldDate = $oldVals[0]['new_date'] ?? null;
 
                 $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
                      FROM certification
                      WHERE examinerID=:EID AND testID=:TID",
-                    array(
+                    [
                         'EID' => $examinerID,
                         'TID' => $testID,
-                    )
+                    ]
                 );
 
                 if (!empty($oldCertification)) {
@@ -220,25 +220,25 @@ class EditExaminer extends \NDB_Form
                         || $oldCertification['date_cert'] != $date_cert
                     ) {
                         // Update the certification entry
-                        $data = array(
+                        $data = [
                             'pass'    => $certStatus,
                             'comment' => $comment,
-                        );
+                        ];
                         if ($date_cert != "") {
                             $data['date_cert'] = $date_cert;
                         }
                         $DB->update(
                             'certification',
                             $data,
-                            array(
+                            [
                                 'examinerID' => $examinerID,
                                 'testID'     => $testID,
-                            )
+                            ]
                         );
 
                         // Add a new entry to the certification history table
                         if ($oldDate != $date_cert || $oldVal != $certStatus) {
-                            $data = array(
+                            $data = [
                                 'col'         => 'pass',
                                 'old'         => $oldVal,
                                 'new'         => $certStatus,
@@ -248,7 +248,7 @@ class EditExaminer extends \NDB_Form
                                 'changeDate'  => date("Y-m-d H:i:s"),
                                 'userID'      => $_SESSION['State']->getUsername(),
                                 'type'        => 'U',
-                            );
+                            ];
                             if ($oldDate != "") {
                                 $data['old_date'] = $oldDate;
                             }
@@ -264,11 +264,7 @@ class EditExaminer extends \NDB_Form
                 }
             }
         }
-
-        $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
-        $url     = "{$baseurl}/examiner/editExaminer/?identifier="
-               . $examinerID;
-        header("Location: " . $url, true, 303);
+        header("Refresh:0");
     }
 
     /**
@@ -292,33 +288,33 @@ class EditExaminer extends \NDB_Form
              LEFT JOIN certification c ON (c.certID=ch.primaryVals)
              WHERE c.examinerID=:EID
              ORDER BY changeDate DESC",
-            array('EID' => $this->identifier)
+            ['EID' => $this->identifier]
         );
 
         $this->tpl_data['certification_history'] = $certification_history;
 
         $config = \NDB_Config::singleton();
 
-        $dateOptions   = array(
+        $dateOptions   = [
             'language'       => 'en',
             'format'         => 'YMd',
             'addEmptyOption' => true,
             'minYear'        => $config->getSetting('startYear'),
             'maxYear'        => $config->getSetting('endYear'),
-        );
-        $statusOptions = array(
+        ];
+        $statusOptions = [
             null            => 'N/A',
             'not_certified' => 'Not Certified',
             'in_training'   => 'In Training',
             'certified'     => 'Certified',
-        );
+        ];
 
         // Get the list of certification instruments
         $instruments = $this->getCertificationInstruments();
         $this->tpl_data['instruments'] = $instruments;
 
         // Create the form elements for each certification instrument
-        $group = array();
+        $group = [];
         foreach ($instruments as $key => $value) {
             $group[] = $this->createSelect(
                 'certStatus['.$key.']',
@@ -339,10 +335,10 @@ class EditExaminer extends \NDB_Form
                 $value,
                 $value,
                 '',
-                array(
+                [
                     'prefix_wrapper'  => '<div class="col-md-3">',
                     'postfix_wrapper' => '</div>',
-                )
+                ]
             );
             unset($group);
         }
@@ -355,7 +351,7 @@ class EditExaminer extends \NDB_Form
             "SELECT e.full_name
               FROM examiners e
               WHERE e.examinerID=:EID",
-            array('EID' => $this->identifier)
+            ['EID' => $this->identifier]
         );
         if (is_null($row)) {
             throw new \LorisException(
@@ -368,7 +364,7 @@ class EditExaminer extends \NDB_Form
 
         $this->tpl_data['examiner_name'] = $row['full_name'];
 
-        $this->form->addFormRule(array(&$this, '_validateEditExaminer'));
+        $this->form->addFormRule([&$this, '_validateEditExaminer']);
     }
 
 
@@ -382,19 +378,15 @@ class EditExaminer extends \NDB_Form
     function _validateEditExaminer($values)
     {
         $DB     = \Database::singleton();
-        $errors = array();
+        $errors = [];
 
         // check that there is both a status and a date (neither can be null)
         foreach ($values['certStatus'] as $instrumentID => $certificationStatus) {
-            if (empty($certificationStatus)
-                || empty($values['date_cert'][$instrumentID])
+            if (($certificationStatus == "certified")
+                && empty($values['date_cert'][$instrumentID])
             ) {
-                if (($certificationStatus == "certified")
-                    && empty($values['date_cert'][$instrumentID])
-                ) {
-                    $errors['certStatus[' . $instrumentID .']'] = 'Both certification
-                        status and date must be filled out';
-                }
+                  $errors['certStatus[' . $instrumentID .']'] = 'Both certification
+                  status and date must be filled out';
             }
         }
 
@@ -404,7 +396,7 @@ class EditExaminer extends \NDB_Form
             "SELECT c.testID
               FROM certification c
               WHERE c.examinerID=:EID",
-            array('EID' => $this->identifier)
+            ['EID' => $this->identifier]
         );
         foreach ($rows as $row) {
             if ($values['certStatus'][$row['testID']] == "") {
@@ -421,7 +413,7 @@ class EditExaminer extends \NDB_Form
      *
      * @return array of instruments requiring certification
      */
-    function getCertificationInstruments()
+    function getCertificationInstruments(): array
     {
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
@@ -431,11 +423,11 @@ class EditExaminer extends \NDB_Form
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
 
         if (!isset($certificationInstruments['test'])) {
-            return array();
+            return [];
         }
         $certificationInstruments['test']
             = \Utility::associativeToNumericArray($certificationInstruments['test']);
-        $instruments = array();
+        $instruments = [];
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
             $testName = $certificationInstrument['@']['value'];
@@ -443,9 +435,11 @@ class EditExaminer extends \NDB_Form
                 "SELECT ID
                  FROM test_names
                  WHERE Test_name =:testName",
-                array('testName' => $testName)
+                ['testName' => $testName]
             );
-            $instruments[$testID] = $certificationInstrument['#'];
+            if (!is_null($testID)) {
+                $instruments[$testID] = $certificationInstrument['#'];
+            }
         }
 
         return $instruments;

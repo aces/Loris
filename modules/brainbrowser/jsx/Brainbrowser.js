@@ -1,5 +1,7 @@
 /* exported RBrainBrowser */
 
+import React, {Component} from 'react';
+
 /**
  * Brainbrowser Page.
  *
@@ -8,11 +10,12 @@
  * @author Alex Ilea
  * @version 1.0.0
  *
- * */
-
-import React, {Component} from 'react';
-
+ */
 class BrainBrowser extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +24,9 @@ class BrainBrowser extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     // Retrieve module preferences
     let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
@@ -41,6 +47,11 @@ class BrainBrowser extends Component {
     this.modulePrefs = modulePrefs;
   }
 
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
   handleChange(e) {
     const panelSize = e.target.value || this.state.defaultPanelSize;
 
@@ -51,6 +62,11 @@ class BrainBrowser extends Component {
     this.setState({panelSize});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let options = {
       100: '100 Pixels',

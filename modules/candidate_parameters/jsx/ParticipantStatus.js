@@ -123,7 +123,9 @@ class ParticipantStatus extends Component {
             if (this.state.Data.history.hasOwnProperty(statusKey)) {
                 let line = '';
                 for (let field in this.state.Data.history[statusKey]) {
-                    if (this.state.Data.history[statusKey].hasOwnProperty(field)) {
+                    if (this.state.Data.history[statusKey]
+                      .hasOwnProperty(field)
+                    ) {
                         let current = this.state.Data.history[statusKey][field];
                         if (current !== null) {
                             switch (field) {
@@ -169,7 +171,9 @@ class ParticipantStatus extends Component {
             } else if (this.state.updateResult === 'error') {
                 let errorMessage = this.state.errorMessage;
                 alertClass = 'alert alert-danger text-center';
-                alertMessage = errorMessage ? errorMessage : 'Failed to update!';
+                alertMessage = errorMessage ?
+                  errorMessage :
+                  'Failed to update!';
             }
         }
 

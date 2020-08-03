@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * Instrument_builder automated integration tests
  *
@@ -12,7 +13,6 @@
  */
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
-require_once __DIR__ . "/../../test/integrationtests/LorisIntegrationTest.class.inc";
 class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 {
     /**
@@ -37,7 +37,8 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'RegistrationProjectID' => 1,
             'Active'                => 'Y',
             'UserID'                => 1,
-            'Entity_type'           => 'Human'
+            'Entity_type'           => 'Human',
+            'Sex'                   => 'Female'
         ));
         $this->DB->insert('session', array(
             'ID'             => '999999',

@@ -93,19 +93,19 @@ class Genomic_Browser extends \NDB_Menu_Filter
             where candid = candidate.candid
           ) THEN 'Y' ELSE 'N' END
         ";
-        $this->columns = array(
+        $this->columns = [
             'psc.Name AS PSC',
             'LPAD(candidate.CandID, 6, "0") AS DCCID',
             'candidate.PSCID',
             'candidate.Sex',
-            'cohort.SubprojectID as Subproject',
+            'subproj.title as Subproject',
             'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
             'candidate.ExternalID as externalID',
             "$file_subquery as File",
             "$snp_subquery as SNP",
             "$cnv_subquery as CNV",
             "$cpg_subquery as CPG",
-        );
+        ];
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -114,12 +114,12 @@ class Genomic_Browser extends \NDB_Menu_Filter
                 function ($header) {
                         return ucwords(str_replace('_', ' ', $header));
                 },
-                array(
+                [
                     'PSC',
                     'DCCID',
                     'externalID',
                     'DoB',
-                )
+                ]
             )
         );
 
@@ -127,6 +127,8 @@ class Genomic_Browser extends \NDB_Menu_Filter
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
                 from session s GROUP BY s.CandID) AS cohort
                 ON (cohort.CandID=candidate.CandID)
+            LEFT JOIN subproject AS subproj
+                ON (cohort.SubprojectID = subproj.SubprojectID)
             LEFT JOIN psc ON (psc.CenterID= candidate.RegistrationCenterID)
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
@@ -142,7 +144,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
 
         $this->order_by = 'psc.Name, candidate.CandID DESC';
 
-        $this->validFilters = array(
+        $this->validFilters = [
             'candidate.RegistrationCenterID',
             'candidate.CandID',
             'candidate.PSCID',
@@ -155,16 +157,16 @@ class Genomic_Browser extends \NDB_Menu_Filter
             'CNV',
             'SNP',
             'CPG',
-        );
+        ];
 
-        $this->validHavingFilters = array(
+        $this->validHavingFilters = [
             'File',
             'CNV',
             'SNP',
             'CPG',
-        );
+        ];
 
-        $ftf = array(
+        $ftf = [
             'centerID'           => 'candidate.RegistrationCenterID',
             'DCCID'              => 'candidate.CandID',
             'PSCID'              => 'candidate.PSCID',
@@ -176,7 +178,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
             'SNP'                => 'SNP',
             'CNV'                => 'CNV',
             'CPG'                => 'CPG',
-        );
+        ];
 
         $this->formToFilter = $ftf;
 
@@ -202,11 +204,11 @@ class Genomic_Browser extends \NDB_Menu_Filter
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = \Utility::getSiteList();
             if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'Any') + $list_of_sites;
+                $list_of_sites = ['' => 'Any'] + $list_of_sites;
             }
         } else {
             $list_of_sites = $user->getStudySites();
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+            $list_of_sites = ['' => 'All User Sites'] + $list_of_sites;
         }
 
         // SubprojectID
@@ -220,34 +222,34 @@ class Genomic_Browser extends \NDB_Menu_Filter
         $this->addSelect(
             'sex',
             'Sex:',
-            array(
+            [
                 ''       => 'All',
                 'Male'   => 'Male',
                 'Female' => 'Female',
                 'Other'  => 'Other'
-            )
+            ]
         );
         $this->addSelect(
             'SubprojectID',
             'Subproject:',
-            array('' => 'Any') + $list_of_subprojects
+            ['' => 'Any'] + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth:', [], array('maxlength' => 10));
+        $this->addBasicText('dob', 'Date of Birth:', [], ['maxlength' => 10]);
 
-        $any_options = array(
+        $any_options = [
             ''  => null,
             'Y' => 'Yes',
             'N' => 'No',
-        );
+        ];
         $this->addSelect('File', 'Files:', $any_options);
         $this->addSelect('SNP', 'SNPs found:', $any_options);
         $this->addSelect('CNV', 'CNVs found:', $any_options);
         $this->addSelect('CPG', 'CPGs found:', $any_options);
 
-        $show_results_options = array(
+        $show_results_options = [
             'brief' => 'Summary fields',
             'full'  => 'All fields',
-        );
+        ];
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
     }
 
@@ -304,10 +306,10 @@ class Genomic_Browser extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/genomic_browser/js/genomic_browser.js",
                 $baseURL . "/genomic_browser/js/profileColumnFormatter.js",
-            )
+            ]
         );
     }
 }

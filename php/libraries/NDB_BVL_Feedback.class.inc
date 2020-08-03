@@ -46,12 +46,12 @@ class NDB_BVL_Feedback
     var $_feedbackCandidateProfileInfo = [];
 
     // set of status options
-    var $_feedbackStatusOptions = array(
+    var $_feedbackStatusOptions = [
         'opened',
         'answered',
         'closed',
         'comment',
-    );
+    ];
 
     var $_username ='';
 
@@ -63,17 +63,17 @@ class NDB_BVL_Feedback
      * can be passed but not necessarily all of them, depending on which
      * page is receiving feedback.
      *
-     * @param string   $username  The currently logged in user (why?)
-     * @param ?CandID  $candID    The 6 digit CandID
-     * @param ?integer $sessionID The session ID with feedback
-     * @param ?string  $commentID The commentID receiving feedback.
+     * @param string     $username  The currently logged in user (why?)
+     * @param ?CandID    $candID    The 6 digit CandID
+     * @param ?SessionID $sessionID The session ID with feedback
+     * @param ?string    $commentID The commentID receiving feedback.
      *
      * @return NDB_BVL_Feedback object
      */
     static function &singleton(
         $username,
         ?CandID $candID=null,
-        $sessionID=null,
+        ?SessionID $sessionID=null,
         $commentID=null
     ) {
         // at least one of the args have to be passed
@@ -84,7 +84,7 @@ class NDB_BVL_Feedback
             );
         }
 
-        static $feedbackList = array();
+        static $feedbackList = [];
 
         $objectName = md5(
             sprintf(
@@ -120,18 +120,18 @@ class NDB_BVL_Feedback
     /**
      * Sets up a newly instantiated feedback thread object
      *
-     * @param string  $username  The name of the currently logged in user.
-     *                           (why is this here?)
-     * @param ?CandID $candID    The CandID we're getting a feedback thread for.
-     * @param ?string $sessionID The sessionID we're getting a feedback thread for.
-     * @param ?string $commentID The commentID we're getting a feedback thread for.
+     * @param string     $username  The name of the currently logged in user.
+     *                              FIXME (why is this here?)
+     * @param ?CandID    $candID    The CandID for this feedback thread.
+     * @param ?SessionID $sessionID The sessionID for this feedback thread.
+     * @param ?string    $commentID The commentID for this feedback thread.
      *
      * @return void
      */
     function setup(
         string $username,
         ?CandID $candID=null,
-        ?string $sessionID=null,
+        ?SessionID $sessionID=null,
         $commentID=null
     ) {
 
@@ -164,10 +164,10 @@ class NDB_BVL_Feedback
      *
      * @return void
      */
-    function _setCandidateProfileInfo()
+    function _setCandidateProfileInfo(): void
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = NDB_Factory::singleton()->database();
 
         // SELECT section
         $query = "SELECT c.CandID";
@@ -176,7 +176,7 @@ class NDB_BVL_Feedback
         }
 
         $query  .= " FROM candidate as c";
-        $qparams = array();
+        $qparams = [];
 
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
             $query .= " JOIN session as s
@@ -196,7 +196,7 @@ class NDB_BVL_Feedback
             $query          .= " WHERE c.CandID = :CaID";
             $qparams['CaID'] = (string) $this->_feedbackObjectInfo['CandID'];
         } else {
-            throw new Exception(
+            throw new InvalidArgumentException(
                 "You need to pass at least one of the following to setup "
                 . "the Feedback Object: CandID, SessionID, or CommentID"
             );
@@ -205,7 +205,7 @@ class NDB_BVL_Feedback
 
         $result = $db->pselect($query, $qparams);
         if (!is_array($result) || count($result) == 0) {
-            throw new Exception(
+            throw new LorisException(
                 "Error, unable to select data for the feedback object"
             );
         }
@@ -224,7 +224,7 @@ class NDB_BVL_Feedback
      *
      * @return string feedback_level (either profile, visit, or instrument)
      */
-    function getFeedbackLevel()
+    function getFeedbackLevel(): string
     {
         return $this->_feedbackLevel;
     }
@@ -234,22 +234,22 @@ class NDB_BVL_Feedback
      *
      * @return array
      */
-    static public function getFeedbackTypes()
+    static public function getFeedbackTypes(): array
     {
-        // new DB Object
 
         $query = "SELECT Feedback_type as Type, Name, Description
             FROM feedback_bvl_type";
 
-        $result = \Database::singleton()->pselect($query, array());
+        $result = NDB_Factory::singleton()->database()
+            ->pselect($query, []);
 
-        $list = array();
+        $list = [];
         foreach ($result as $record) {
-            $list[$record['Type']] = array(
+            $list[$record['Type']] = [
                 'Type'  => $record['Type'],
                 'Name'  => $record['Name'],
                 'Label' => $record['Description'],
-            );
+            ];
         }
         return $list;
     }
@@ -260,47 +260,51 @@ class NDB_BVL_Feedback
      *
      * @param string $name feedback type name
      *
-     * @return int feedback type id, empty array if none found
+     * @return ?int feedback type id
      */
-    public function getFeedbackTypeIdByName($name)
+    public function getFeedbackTypeIdByName($name): ?int
     {
         $factory = NDB_Factory::singleton();
-        $db      = $factory->Database();
+        $db      = $factory->database();
 
         $query = "SELECT  `Feedback_type`
                     FROM  `feedback_bvl_type`
                     WHERE  `Name` =  :name ";
 
-        return $db->pselectOne($query, array(':name' => $name));
+        return $db->pselectOneInt($query, [':name' => $name]);
     }
 
     /**
      * Create new feedback type
      *
-     * @param string $name        feedback type name
-     * @param string $description feedback type description
+     * @param string  $name        feedback type name
+     * @param ?string $description feedback type description
      *
      * @return int feedback type id
      * @throws DatabaseException
      * @throws LorisException
      */
-    public function createFeedbackType($name, $description = null)
-    {
-        if (empty($name) || strlen($name)>100 ) {
-            throw new LorisException("Invalid feedback type name");
+    public function createFeedbackType(
+        string $name,
+        ?string $description = null
+    ): int {
+        if (empty($name) || strlen($name) > 100 ) {
+            throw new InvalidArgumentException(
+                "Invalid feedback type name: name must not be empty and must "
+                . "not exceed 100 characters"
+            );
         }
 
         if (empty($description)) {
             $description = null;
         }
 
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->Database();
+        $db = NDB_Factory::singleton()->database();
 
-        $values = array(
+        $values = [
             'Name'        => $name,
             'Description' => $description,
-        );
+        ];
         $db->insert("feedback_bvl_type", $values);
         return intval($db->getLastInsertId());
     }
@@ -310,21 +314,20 @@ class NDB_BVL_Feedback
      *
      * @param integer $feedbackID ID of the thread whose type we want to get
      *
-     * @return string feedback type of the thread
-     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     * @return ?string feedback type of the thread
      */
-    function getThreadType($feedbackID)
+    function getThreadType($feedbackID): ?string
     {
+
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $query = "SELECT Name FROM feedback_bvl_thread
                   JOIN feedback_bvl_type ON
                   feedback_bvl_type.Feedback_type = feedback_bvl_thread.Feedback_type
                   WHERE feedback_bvl_thread.FeedbackID = :FID";
 
-        $result = $db->pselectOne($query, array('FID' => $feedbackID));
-        return $result;
+        return $db->pselectOne($query, ['FID' => $feedbackID]);
     }
 
     /**
@@ -351,17 +354,15 @@ class NDB_BVL_Feedback
      *
      * @param integer $feedbackID The feedback thread ID to get the status of
      *
-     * @return string The current status.
+     * @return ?string The current status.
      */
-    function getThreadStatus($feedbackID)
+    function getThreadStatus($feedbackID): ?string
     {
-        // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $query = "SELECT Status FROM feedback_bvl_thread WHERE FeedbackID = :FID";
 
-        $result = $db->pselectOne($query, array('FID' => $feedbackID));
-        return $result;
+        return $db->pselectOne($query, ['FID' => $feedbackID]);
     }
 
     /**
@@ -380,7 +381,7 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         $query   = "SELECT MAX(Status) FROM feedback_bvl_thread WHERE";
-        $qparams = array();
+        $qparams = [];
         if (!empty($this->_feedbackObjectInfo['CandID'])) {
             $query         .= " CandID = :CID";
             $qparams['CID'] = $this->_feedbackObjectInfo['CandID'];
@@ -409,17 +410,14 @@ class NDB_BVL_Feedback
     /**
      * Returns the thread count for candidate/timepoint/instrument
      *
-     * @return string thread count
+     * @return int thread count
      */
-    function getThreadCount()
+    function getThreadCount(): int
     {
-        // new DB Object
-        $db =& Database::singleton();
-
         $query   = "SELECT COUNT(*)
             FROM feedback_bvl_thread
             WHERE Active ='Y' AND Public = 'Y' AND Status <> 'closed'";
-        $qparams = array();
+        $qparams = [];
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
             $query           .= " AND CommentID = :ComID";
             $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
@@ -441,8 +439,9 @@ class NDB_BVL_Feedback
         }
         $query .= " GROUP BY $queryBy";
 
-        $success = $db->pselectOne($query, $qparams);
-        return $success;
+        return \NDB_Factory::singleton()
+            ->database()
+            ->pselectOneInt($query, $qparams) ?? 0;
     }
 
     /**
@@ -473,7 +472,7 @@ class NDB_BVL_Feedback
         $query  .= " FROM candidate as c
                         JOIN feedback_bvl_thread as ft ON (c.CandID=ft.CandID)
                         LEFT JOIN session as s ON (s.ID = ft.SessionID)";
-        $qparams = array();
+        $qparams = [];
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)";
         }
@@ -523,7 +522,7 @@ class NDB_BVL_Feedback
         $hasReadPermission = $user->hasPermission('access_all_profiles');
 
         $query   = "SELECT c.CandID as CandID, c.PSCID as PSCID";
-        $qparams = array();
+        $qparams = [];
         if (!empty($this->_feedbackObjectInfo['SessionID'])
             || !empty($this->_feedbackObjectInfo['CommentID'])
         ) {
@@ -591,7 +590,7 @@ class NDB_BVL_Feedback
             )";
             $qparams['Username'] = $this->_username;
         } else {
-            $query            .= " AND ft.Active ='Y' 
+            $query            .= " AND ft.Active ='Y'
                                    AND FIND_IN_SET(s.CenterID, :CentID)";
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
@@ -634,7 +633,7 @@ class NDB_BVL_Feedback
                    AND ft.Feedback_type = ftp.Feedback_type
              ORDER BY ft.FeedbackID, fe.Testdate DESC";
 
-        $result = $db->pselect($query, array('FID' => $feedbackID));
+        $result = $db->pselect($query, ['FID' => $feedbackID]);
 
         return $result;
     }
@@ -677,7 +676,7 @@ class NDB_BVL_Feedback
         $active = 'Y';
 
         // create SET array for the INSERT into the feedback_bvl_thread table
-        $setArray = array(
+        $setArray = [
             'FeedbackID'    => null,
             'Feedback_type' => $type,
             'Public'        => $public,
@@ -685,38 +684,38 @@ class NDB_BVL_Feedback
             'Active'        => $active,
             'Date_taken'    => $today,
             'UserID'        => $this->_username,
-        );
+        ];
         if ($level == 'instrument' || $this->_feedbackLevel=='instrument') {
             $feedbackInfo =& $this->_feedbackCandidateProfileInfo;
 
             $setArray = array_merge(
                 $setArray,
-                array(
+                [
                     "CommentID"      => $this->_feedbackObjectInfo['CommentID'],
                     "SessionID"      => $feedbackInfo['SessionID'],
                     "CandID"         => $feedbackInfo['CandID'],
                     "Feedback_level" => "instrument",
                     "FieldName"      => $fieldname,
-                )
+                ]
             );
 
         } elseif ($level == 'visit' || $this->_feedbackLevel=='visit') {
             $candID   = $this->_feedbackCandidateProfileInfo['CandID'];
             $setArray = array_merge(
                 $setArray,
-                array(
+                [
                     "SessionID"      => $this->_feedbackObjectInfo['SessionID'],
                     "CandID"         => $candID,
                     "Feedback_level" => "visit",
-                )
+                ]
             );
         } elseif ($level == 'profile' || $this->_feedbackLevel=='profile') {
             $setArray = array_merge(
                 $setArray,
-                array(
+                [
                     "CandID"         => $this->_feedbackObjectInfo['CandID'],
                     "Feedback_level" => "profile",
-                )
+                ]
             );
         } else {
             throw new Exception(
@@ -732,7 +731,7 @@ class NDB_BVL_Feedback
         // INSERT entry for the the thread into the feedback_bvl_thread
         $this->createEntry($feedbackID, $comment, $this->_username);
 
-        $newEntryValues = array();
+        $newEntryValues = [];
         $newEntryValues["feedbackID"] = $feedbackID;
         $newEntryValues["comment"]    = $comment;
         if ($fieldname != null) {
@@ -765,11 +764,11 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         // create SET array for the INSERT
-        $setArray = array(
+        $setArray = [
             'FeedbackID' => $feedbackID,
             'Comment'    => $comment,
             'UserID'     => $username,
-        );
+        ];
 
         $db->insert('feedback_bvl_entry', $setArray);
 
@@ -818,23 +817,23 @@ class NDB_BVL_Feedback
             }
         }
         // needed to avoid php complaints
-        $setArray = array();
+        $setArray = [];
         if (!empty($status)) {
-            $setArray = array_merge($setArray, array("Status" => $status));
+            $setArray = array_merge($setArray, ["Status" => $status]);
         }
         if (!empty($type)) {
-            $setArray = array_merge($setArray, array("Feedback_type" => $type));
+            $setArray = array_merge($setArray, ["Feedback_type" => $type]);
         }
         if (!empty($public)) {
-            $setArray = array_merge($setArray, array("Public" => $public));
+            $setArray = array_merge($setArray, ["Public" => $public]);
         }
         if (!empty($fieldname)) {
-            $setArray = array_merge($setArray, array("FieldName" => $fieldname));
+            $setArray = array_merge($setArray, ["FieldName" => $fieldname]);
         }
 
         // needed to avoid php complaints
-        $whereArray = array();
-        $whereArray = array_merge($whereArray, array("FeedbackID" => $feedbackID));
+        $whereArray = [];
+        $whereArray = array_merge($whereArray, ["FeedbackID" => $feedbackID]);
 
         if (is_array($setArray) && count($setArray)>0) {
             // update the thread only if the form data was changed
@@ -858,13 +857,13 @@ class NDB_BVL_Feedback
         // DELETE the thread's entries
         $db->delete(
             'feedback_bvl_entry',
-            array("FeedbackID" => $feedbackID)
+            ["FeedbackID" => $feedbackID]
         );
 
         // DELETE the thread
         $db->delete(
             'feedback_bvl_thread',
-            array("FeedbackID" => '$feedbackID')
+            ["FeedbackID" => '$feedbackID']
         );
 
     }
@@ -882,7 +881,7 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         // DELETE the thread entries
-        $db->delete('feedback_bvl_entry', array("ID" => $entryID));
+        $db->delete('feedback_bvl_entry', ["ID" => $entryID]);
     }
 
     /**
@@ -897,36 +896,36 @@ class NDB_BVL_Feedback
         // new DB Object
         $db =& Database::singleton();
 
-        $setArray = array(
+        $setArray = [
             "Active"   => 'Y',
             "Testdate" => "NULL",
-        );
+        ];
 
         // only inactive threads can be activated
-        $whereArray = array("Active" => 'N');
+        $whereArray = ["Active" => 'N'];
         if (!empty($feedbackID)) {
             // only one thread to be activated
             $whereArray = array_merge(
                 $whereArray,
-                array("FeedbackID" => $feedbackID)
+                ["FeedbackID" => $feedbackID]
             );
         } elseif (!empty($this->_feedbackObjectInfo['CommentID'])) {
             // activate all thread for the instruments
             $whereArray = array_merge(
                 $whereArray,
-                array("CommentID" => $this->_feedbackObjectInfo['CommentID'])
+                ["CommentID" => $this->_feedbackObjectInfo['CommentID']]
             );
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
             // activate all thread for the timepoint
             $whereArray = array_merge(
                 $whereArray,
-                array("SessionID" => $this->_feedbackObjectInfo['SessionID'])
+                ["SessionID" => $this->_feedbackObjectInfo['SessionID']]
             );
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
             // activate all thread for the candidate
             $whereArray = array_merge(
                 $whereArray,
-                array("CandID" => $this->_feedbackObjectInfo['CandID'])
+                ["CandID" => $this->_feedbackObjectInfo['CandID']]
             );
         } else {
             // at least one of the above has to be true
@@ -952,25 +951,25 @@ class NDB_BVL_Feedback
         if (!empty($feedbackID)) {
             // only one thread to be closed
             $whereStr .= 'AND FeedbackID = :v_feedbackid ';
-            $params    = array('v_feedbackid' => $feedbackID);
+            $params    = ['v_feedbackid' => $feedbackID];
 
         } elseif (!empty($this->_feedbackObjectInfo['CommentID'])) {
             // close all threads for the instruments
             $commentid = $this->_feedbackObjectInfo['CommentID'];
             $whereStr .= 'AND CommentID = :v_commentid ';
-            $params    = array('v_commentid' => $commentid);
+            $params    = ['v_commentid' => $commentid];
 
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
             // close all threads for the timepoint
             $sessionid = $this->_feedbackObjectInfo['SessionID'];
             $whereStr .= 'AND SessionID = :v_sessionid ';
-            $params    = array('v_sessionid' => $sessionid);
+            $params    = ['v_sessionid' => $sessionid];
 
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
             // close all threads for the candidate
             $candid    = $this->_feedbackObjectInfo['CandID'];
             $whereStr .= 'AND CandID = :v_candid ';
-            $params    = array('v_candid' => $candid);
+            $params    = ['v_candid' => $candid];
 
         } else {
             // at least one of the above has to be true
@@ -985,7 +984,7 @@ class NDB_BVL_Feedback
             SET Status = \'closed\', UserID = \'' . $this->_username . '\'
             WHERE ' . $whereStr
         );
-        $db->execute($stmt, $params, array('nofetch' => true));
+        $db->execute($stmt, $params, ['nofetch' => true]);
         return $stmt->rowCount();
     }
 
@@ -1006,7 +1005,7 @@ class NDB_BVL_Feedback
 
         $whereStr .= 'AND FeedbackID = :v_feedbackid ';
 
-        $params = array('v_feedbackid' => $feedbackID);
+        $params = ['v_feedbackid' => $feedbackID];
 
         $stmt = $db->prepare(
             '
@@ -1014,7 +1013,7 @@ class NDB_BVL_Feedback
             SET Status = \'opened\', UserID = \'' . $this->_username . '\'
             WHERE ' . $whereStr
         );
-        $db->execute($stmt, $params, array('nofetch' => true));
+        $db->execute($stmt, $params, ['nofetch' => true]);
         return $stmt->rowCount();
 
     }
@@ -1027,9 +1026,9 @@ class NDB_BVL_Feedback
      * @param integer $statusID a numerical index of the enum elements
      *                          of the feedback_bvl_thread.Status field
      *
-     * @return string name of the status
+     * @return ?string name of the status
      */
-    static function getFeedbackStatusVerbose($statusID)
+    static function getFeedbackStatusVerbose($statusID): ?string
     {
         if (empty($statusID)) {
             throw new Exception(
@@ -1040,12 +1039,12 @@ class NDB_BVL_Feedback
         // new DB Object
         $db = Database::singleton();
 
-        $record =array();
+        $record =[];
         // StatusID is passed in as an integer, but the field in the database
         // is an enum, so we need to do WHERE Status+0= .. to convert it to
         // an int (of the index into the enum) so that this query works.
         $query  = "SELECT Status FROM feedback_bvl_thread WHERE Status+0=:StatID";
-        $param  = array('StatID' => $statusID);
+        $param  = ['StatID' => $statusID];
         $record = $db->pselectOne($query, $param);
         return $record;
     }

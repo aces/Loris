@@ -64,37 +64,39 @@ class Imaging_Session_ControlPanel
     {
         $DB        = \Database::singleton();
         $config    = \NDB_Config::singleton();
-        $timePoint = \TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint = \TimePoint::singleton(
+            new \SessionID(strval($_REQUEST['sessionID']))
+        );
 
-        $subjectData = array(
+        $subjectData = [
             'sessionID' => $_REQUEST['sessionID'],
             'candid'    => $timePoint->getCandID(),
-        );
+        ];
 
         $linkedInstruments
             = $config->getSetting('ImagingBrowserLinkedInstruments');
         if (!is_array($linkedInstruments)) {
-            $linkedInstruments = array();
+            $linkedInstruments = [];
         }
 
-        $links = array();
+        $links = [];
         foreach ($linkedInstruments as $v) {
             $qresult = $DB->pselectRow(
                 "SELECT f.CommentID, tn.Full_name FROM flag f
             JOIN test_names tn ON f.Test_name = tn.Test_name
             WHERE f.Test_name = :tname AND f.SessionID = :v_sessions_id
             AND f.CommentID NOT LIKE 'DDE_%'",
-                array(
+                [
                     'tname'         => $v,
                     'v_sessions_id' => $this->sessionID,
-                )
+                ]
             );
             if (!is_null($qresult)) {
-                $links[] = array(
+                $links[] = [
                     "FEName"    => $qresult['Full_name'],
                     "BEName"    => $v,
                     "CommentID" => $qresult['CommentID'],
-                );
+                ];
             }
             // else 'Could not find linked instruments';
         }
@@ -107,7 +109,7 @@ class Imaging_Session_ControlPanel
         * therefore it should NEVER consist of data that can be supplied in
         * any way by any user.
          */
-        $params     = array();
+        $params     = [];
         $ID         = 'NULL';
         $EntityType = $candidate->getData('Entity_type');
         if ($EntityType == 'Scanner') {
@@ -128,7 +130,7 @@ class Imaging_Session_ControlPanel
             $params
         );
 
-        $tarIDToTarLoc = array();
+        $tarIDToTarLoc = [];
         foreach ($qresult as $v) {
             $tarchiveID = $v['TarchiveID'];
             $tarIDToTarLoc[$tarchiveID]['ArchiveLocation'] = $v['ArchiveLocation'];
@@ -150,19 +152,19 @@ class Imaging_Session_ControlPanel
         $subjectData['issue_tracker_url']    = $issue_tracker_url;
 
         $subjectData['has_permission']  = $this->_hasAccess();
-        $subjectData['status_options']  = array(
+        $subjectData['status_options']  = [
             'Unrated' => '',
             'Pass'    => 'Pass',
             'Fail'    => 'Fail',
-        );
-        $subjectData['pending_options'] = array(
+        ];
+        $subjectData['pending_options'] = [
             'Y' => 'Yes',
             'N' => 'No',
-        );
-        $subjectData['caveat_options']  = array(
+        ];
+        $subjectData['caveat_options']  = [
             'true'  => 'True',
             'false' => 'False',
-        );
+        ];
 
         $qcstatus = $timePoint->getImagingQC();
 

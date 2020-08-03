@@ -65,5 +65,7 @@ INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,61);
 INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,62);
 INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,63);
 INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,64);
+INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,65);
+INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,66);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

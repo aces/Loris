@@ -65,7 +65,7 @@ class HelpFile
             "SELECT helpID, parentID, hash, topic,
              content,
              created, updated FROM help WHERE helpID = :HID",
-            array('HID' => $helpID)
+            ['HID' => $helpID]
         );
         // set the help file
         $obj->data = $result;
@@ -104,7 +104,7 @@ class HelpFile
     {
         // update the help file
         \NDB_Factory::singleton()->database()
-            ->update('help', $set, array('helpID' => $this->helpID));
+            ->update('help', $set, ['helpID' => $this->helpID]);
 
         return true;
     }
@@ -121,7 +121,7 @@ class HelpFile
 
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM help WHERE parentID = :HID",
-            array('HID' => $this->helpID)
+            ['HID' => $this->helpID]
         );
         return ($result > 0);
     }
@@ -143,13 +143,13 @@ class HelpFile
         // see if it has a child
         $hasChild = $this->hasChild();
 
-        $childIDs = array();
+        $childIDs = [];
 
         // get its children
         if ($hasChild) {
             $result = $DB->pselect(
                 "SELECT helpID FROM help WHERE parentID = :HID",
-                array('HID' => $this->helpID)
+                ['HID' => $this->helpID]
             );
             // add the children to the array
             $childIDs = $result;
@@ -189,7 +189,7 @@ class HelpFile
         // see if it has a child
         $hasChild = $this->hasChild();
 
-        $childData = array();
+        $childData = [];
 
         // get its children
         if ($hasChild) {
@@ -197,7 +197,7 @@ class HelpFile
                 "SELECT helpID, topic, $level as level
                 FROM help
                 WHERE parentID = :HID",
-                array('HID' => $this->helpID)
+                ['HID' => $this->helpID]
             );
 
             // add the children to the array
@@ -232,7 +232,7 @@ class HelpFile
      */
     function parentIDs($stopat = 1, $level = 1)
     {
-        $parentIDs = array();
+        $parentIDs = [];
 
         if ($this->data['parentID'] > 0) {
             // add the parent to the array
@@ -267,14 +267,14 @@ class HelpFile
         // create DB object
         $DB = \Database::singleton();
 
-        $parentData = array();
+        $parentData = [];
 
         if ($this->data['parentID'] > 0) {
             $parentData = $DB->pselectRow(
                 "SELECT helpID, topic, $level as level
                  FROM help
                  WHERE helpID = :HID",
-                array('HID' => $this->data['parentID'])
+                ['HID' => $this->data['parentID']]
             );
 
             // check if we're done recursing
@@ -289,7 +289,7 @@ class HelpFile
             }
         }
 
-        return $parentData ?? array();
+        return $parentData ?? [];
     }
 
     /**
@@ -315,16 +315,15 @@ class HelpFile
      *
      * @return integer of HelpID
      */
-    static function hashToID($hash)
+    static function hashToID($hash): int
     {
-        // create DB object
-        $DB =& \Database::singleton();
-
-        $helpID = $DB->pselectOne(
+        $id = \NDB_Factory::singleton()->database()->pselectOneInt(
             "SELECT helpID FROM help WHERE hash = :HID",
-            array('HID' => $hash)
+            ['HID' => $hash]
         );
-
-        return $helpID;
+        if (is_null($id)) {
+            throw new \NotFound();
+        }
+        return $id;
     }
 }

@@ -24,17 +24,17 @@ fi
 # Create logs directory, if needed.
 mkdir -p logs
 
-START=`date "+%Y-%m-%dT%H:%M:%S"`
+START=$(date "+%Y-%m-%dT%H:%M:%S")
 LOGDIR="logs"
 LOGFILE="logs/install-$START.log"
 LOGPIPE=/tmp/pipe.$$
 mkfifo -m 700 $LOGPIPE
-trap "rm -f $LOGPIPE" EXIT
-tee -a <$LOGPIPE $LOGFILE &
+trap 'rm -f $LOGPIPE' EXIT
+tee -a <$LOGPIPE "$LOGFILE" &
 exec 1>$LOGPIPE 2>&1
 
-CWD=`pwd`
-RootDir=`dirname $CWD`
+CWD=$(pwd)
+RootDir=$(dirname "$CWD")
 
 if [ $UID == "0" ]; then
     echo "install.sh must not be run as root (but should be run as a user with sudo access.)"
@@ -47,8 +47,8 @@ if [ ! -w $LOGDIR ] ; then
         echo "The logs directory is not writable. You will not have an automatically generated report of your installation."
         echo "We recommend you verify your user permissions and then re-run this script."
         while true; do
-                read -p "Do you still want to continue? [yn] " yn
-		echo $yn | tee -a $LOGFILE > /dev/null
+                read -rp "Do you still want to continue? [yn] " yn
+		echo "$yn" | tee -a "$LOGFILE" > /dev/null
                 case $yn in
                         [Yy]* )
                                 break;;
@@ -77,7 +77,7 @@ if [ -f ../project/config.xml ]; then
 fi
 
 # Check that bash is being used
-if ! [ $BASH ] ; then
+if ! [ "$BASH" ] ; then
     echo "Please switch to a bash shell. Then re-run this script using the command: ./install.sh"
     exit 2
 fi
@@ -96,8 +96,8 @@ echo "More information on the complete installation and setup process is availab
 echo ""
 
 while true; do
-        read -p "Ready to continue? [yn] " yn
-	echo $yn | tee -a $LOGFILE > /dev/null
+        read -rp "Ready to continue? [yn] " yn
+	echo "$yn" | tee -a "$LOGFILE" > /dev/null
         case $yn in
             [Yy]* )
                 break;;
@@ -115,7 +115,7 @@ echo ""
 
 mkdir -p ../smarty/templates_c
 # Setting 770 permissions for templates_c
-chmod 770 ../smarty/templates_c
+sudo chmod 770 ../smarty/templates_c
 
 # Detecting distribution
 if ! os_distro=$(hostnamectl 2>/dev/null)
@@ -167,33 +167,33 @@ echo "Ubuntu distribution detected."
     # for CentOS, the log directory is called httpd
     logdirectory=/var/log/apache2
     while true; do
-        read -p "Would you like to automatically set up your apache configuration files? [yn] " yn
-        echo $yn | tee -a $LOGFILE > /dev/null
+        read -rp "Would you like to automatically set up your apache configuration files? [yn] " yn
+        echo "$yn" | tee -a "$LOGFILE" > /dev/null
         case $yn in
             [Yy]* )
                 while [ "$projectname" == "" ]; do
-                        read -p "Please enter your Project name (if unsure, use LORIS) : " projectname
-                        echo $projectname | tee -a $LOGFILE > /dev/null
+                        read -rp "Please enter your Project name (if unsure, use LORIS) : " projectname
+                        echo "$projectname" | tee -a "$LOGFILE" > /dev/null
                         case $projectname in
                                 "" )
-                                       read -p "Enter project name: " projectname
+                                       read -rp "Enter project name: " projectname
                                        continue;;
                                  * )
                                        break;;
                         esac
                 done;
-                if [ -f /etc/apache2/sites-available/$projectname ]; then
-                    echo "Apache appears to already be configured for $projectname. Aborting\n"
+                if [ -f /etc/apache2/sites-available/"$projectname" ]; then
+                    printf "Apache appears to already be configured for %s. Aborting\n" "$projectname"
                     exit 1
                 fi;
                 # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
                 sed -e "s#%LORISROOT%#$RootDir#g" \
                     -e "s#%PROJECTNAME%#$projectname#g" \
       	            -e "s#%LOGDIRECTORY%#$logdirectory#g" \
-                    < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
-                sudo ln -s /etc/apache2/sites-available/$projectname.conf /etc/apache2/sites-enabled/$projectname.conf
+                    < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/"$projectname".conf > /dev/null
+                sudo ln -s /etc/apache2/sites-available/"$projectname".conf /etc/apache2/sites-enabled/"$projectname".conf
                 sudo a2dissite 000-default
-                sudo a2ensite $projectname.conf
+                sudo a2ensite "$projectname".conf
                 sudo a2enmod rewrite
                 sudo a2enmod headers
                 break;;
@@ -208,23 +208,23 @@ echo "CentOS distribution detected."
 # for CentOS, the log directory is called httpd
 logdirectory=/var/log/httpd
 while true; do
-    read -p "Would you like to automatically set up your apache configuration files? (In development for CentOS) [yn] " yn
-    echo $yn | tee -a $LOGFILE > /dev/null
+    read -rp "Would you like to automatically set up your apache configuration files? (In development for CentOS) [yn] " yn
+    echo "$yn" | tee -a "$LOGFILE" > /dev/null
     case $yn in
         [Yy]* )
             while [ "$projectname" == "" ]; do
-                      read -p "Please enter your Project name (if unsure, use LORIS) : " projectname
-                      echo $projectname | tee -a $LOGFILE > /dev/null
+                      read -rp "Please enter your Project name (if unsure, use LORIS) : " projectname
+                      echo "$projectname" | tee -a "$LOGFILE" > /dev/null
                       case $projectname in
                               "" )
-                                     read -p "Enter project name: " projectname
+                                     read -rp "Enter project name: " projectname
                                      continue;;
                                * )
                                      break;;
                       esac
             done;
-            if [ -f /etc/httpd/conf.d/$projectname ]; then
-                echo "Apache appears to already be configured for $projectname. Aborting\n"
+            if [ -f /etc/httpd/conf.d/"$projectname" ]; then
+                printf "Apache appears to already be configured for %s. Aborting\n" "$projectname"
                 exit 1
             fi;
 
@@ -232,7 +232,7 @@ while true; do
             sed -e "s#%LORISROOT%#$RootDir#g" \
                 -e "s#%PROJECTNAME%#$projectname#g" \
                 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
-                < ../docs/config/apache2-site | sudo tee /etc/httpd/conf.d/$projectname.conf > /dev/null
+                < ../docs/config/apache2-site | sudo tee /etc/httpd/conf.d/"$projectname".conf > /dev/null
 
             sudo service httpd restart
             echo "You may need to manually uncomment the load rewrite module line of your apache configuration."

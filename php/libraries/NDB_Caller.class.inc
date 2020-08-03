@@ -141,7 +141,11 @@ class NDB_Caller
             );
 
             $this->instrument = $instrument;
-            header("Location: $redirectToOnSuccess");
+
+            if ($redirectToOnSuccess) {
+                header("Location: $redirectToOnSuccess");
+            }
+
             return "";
         }
 

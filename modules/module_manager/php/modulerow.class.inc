@@ -50,17 +50,15 @@ class ModuleRow implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the instance data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON(): string
+    public function jsonSerialize() : array
     {
-        return json_encode(
-            [
-                'Name'     => $this->Module->getName(),
-                'LongName' => $this->Module->getLongName(),
-                'Active'   => $this->Active,
-            ]
-        );
+        return [
+            'Name'     => $this->Module->getName(),
+            'LongName' => $this->Module->getLongName(),
+            'Active'   => $this->Active,
+        ];
     }
 
 }

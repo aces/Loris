@@ -23,7 +23,7 @@
  */
 class Project implements \JsonSerializable
 {
-    private static $_instances = array();
+    private static $_instances = [];
 
     /**
      * The id of the project in database.
@@ -71,7 +71,7 @@ class Project implements \JsonSerializable
                       Project
                     WHERE name = :v_project_name
                     ",
-                array('v_project_name' => $projectName)
+                ['v_project_name' => $projectName]
             );
 
             if (empty($projectData)) {
@@ -113,7 +113,7 @@ class Project implements \JsonSerializable
                       Project
                     WHERE ProjectID = :pid
                     ",
-            array('pid' => $projectID)
+            ['pid' => $projectID]
         );
 
         if (empty($projectName)) {
@@ -160,7 +160,7 @@ class Project implements \JsonSerializable
             WHERE
               name = :v_project_name
             ",
-            array('v_project_name' => $projectName)
+            ['v_project_name' => $projectName]
         );
         if (!empty($projectId)) {
             throw new \LorisException("The project $projectName already exists");
@@ -168,11 +168,11 @@ class Project implements \JsonSerializable
 
         $factory->database()->insert(
             'Project',
-            array(
+            [
                 'Name'              => $projectName,
                 'Alias'             => $projectAlias,
                 'recruitmentTarget' => $recruitmentTarget,
-            )
+            ]
         );
 
         $project = $factory->project($projectName);
@@ -348,8 +348,8 @@ class Project implements \JsonSerializable
         \NDB_Factory::singleton()->database()
             ->update(
                 "Project",
-                array($field => (string) $value),
-                array("ProjectID" => $this->_projectId)
+                [$field => (string) $value],
+                ["ProjectID" => $this->_projectId]
             );
     }
 
@@ -376,18 +376,18 @@ class Project implements \JsonSerializable
             WHERE
               psr.projectId = :v_project_id
             ",
-            array('v_project_id' => $this->_projectId)
+            ['v_project_id' => $this->_projectId]
         );
 
         return array_map(
             function ($row) {
-                return (object) array(
+                return (object) [
                     'subprojectId'      => (int) $row['subprojectId'],
                     'title'             => $row['title'],
                     'useEDC'            => $row['useEDC'],
                     'windowDifference'  => $row['windowDifference'],
                     'recruitmentTarget' => $row['recruitmentTarget'],
-                );
+                ];
             },
             $subProjectData
         );
@@ -402,7 +402,7 @@ class Project implements \JsonSerializable
     {
         $factory = \NDB_Factory::singleton();
 
-        $p = array($this->_projectId);
+        $p = [$this->_projectId];
         $candidatesData = $factory->database()->pselect(
             "
             SELECT
@@ -413,7 +413,7 @@ class Project implements \JsonSerializable
               active = 'Y' AND
               FIND_IN_SET(IFNULL(RegistrationProjectID, '-1'), :v_project_id)
             ",
-            array('v_project_id' => implode(',', $p))
+            ['v_project_id' => implode(',', $p)]
         );
         return array_map(
             function ($row) {
@@ -437,10 +437,10 @@ class Project implements \JsonSerializable
         foreach ($ids as $id) {
             $db->insertIgnore(
                 'project_subproject_rel',
-                array(
+                [
                     'ProjectID'    => $this->_projectId,
                     'SubprojectID' => $id,
-                )
+                ]
             );
         }
     }
@@ -460,10 +460,10 @@ class Project implements \JsonSerializable
         foreach ($ids as $id) {
             $db->delete(
                 'project_subproject_rel',
-                array(
+                [
                     'ProjectID'    => $this->_projectId,
                     'SubprojectID' => $id,
-                )
+                ]
             );
         }
     }

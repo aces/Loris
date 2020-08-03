@@ -61,10 +61,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array(
+        return [
             'GET',
             'PUT',
-        );
+        ];
     }
 
     /**
@@ -76,7 +76,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         // Removed 0.0.2 since session requires a project.
-        return array('v0.0.3');
+        return ['v0.0.3'];
     }
 
     /**
@@ -92,7 +92,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
-                return $this->_handleGET($request);
+                return $this->_handleGET();
 
             case 'PUT':
                 return $this->_handlePUT($request);
@@ -147,11 +147,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Generates a response fitting the API specification for this endpoint.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if ($this->_visit === null) {
             return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
@@ -180,15 +178,15 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $user      = $request->getAttribute('user');
         $data      = json_decode((string) $request->getBody(), true);
-        $visitinfo = $data ?? array();
+        $visitinfo = $data ?? [];
 
-        $requiredfields = array(
+        $requiredfields = [
             'CandID',
             'Visit',
             'Site',
             'Battery',
             'Project',
-        );
+        ];
         $diff           = array_diff($requiredfields, array_keys($visitinfo));
         if (!empty($diff)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
@@ -230,7 +228,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($sessionid !== false) {
             // If the visit label already exists for that candidate
-            $timepoint = \NDB_Factory::singleton()->timepoint($sessionid);
+            $timepoint = \NDB_Factory::singleton()->timepoint(
+                new \SessionID(strval($sessionid))
+            );
             if ($timepoint->getCurrentStage() !== 'Not Started') {
                 return new \LORIS\Http\Response\JSON\Conflict(
                     'This visit is already started'
@@ -241,7 +241,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $today    = date("Y-m-d");
 
             $timepoint->setData(
-                array(
+                [
                     'CenterID'        => $centerid,
                     'Visit_label'     => $visitinfo['Visit'],
                     'SubprojectID'    => $subprojectid,
@@ -252,7 +252,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     'Date_registered' => $today,
                     'Testdate'        => $today,
                     'ProjectID'       => $project->getId(),
-                )
+                ]
             );
 
             $link = '/' . $request->getUri()->getPath();

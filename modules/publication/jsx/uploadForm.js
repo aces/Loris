@@ -1,5 +1,6 @@
 import React from 'react';
 import ProjectFormFields from './projectFields';
+import swal from 'sweetalert2';
 
 class PublicationUploadForm extends React.Component {
   constructor(props) {
@@ -94,7 +95,7 @@ class PublicationUploadForm extends React.Component {
     e.preventDefault();
 
     if (Object.keys(this.state.formErrors).length > 0) {
-      swal(
+      swal.fire(
         'Please fix any remaining form errors before submission',
         '',
         'error'
@@ -129,7 +130,7 @@ class PublicationUploadForm extends React.Component {
           formData: {},
           numFiles: 0,
         });
-        swal(
+        swal.fire(
           {
             title: 'Submission Successful!',
             type: 'success',
@@ -147,7 +148,7 @@ class PublicationUploadForm extends React.Component {
         } catch (e) {
           console.error(e);
         }
-        swal('Something went wrong!', resp, 'error');
+        swal.fire('Something went wrong!', resp, 'error');
       },
     });
   }

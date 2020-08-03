@@ -63,9 +63,12 @@ class Dashboard extends \NDB_Form
         // javascript are available for getCSSDependencies and getJSDependencies,
         // otherwise setup() only gets called by handle() of NDB_Page while
         // calculating the body.
-        $DB   = \NDB_Factory::singleton()->database();
-        $user = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $user    = $factory->user();
 
+        // FIXME: This should use \LORIS\LorisInstance->getActiveModules(), but there
+        // is no access to a LORISInstance object at this point in the code.
         $this->modules = \Module::getActiveModules($DB);
 
         $this->smallwidgets = [];
@@ -157,9 +160,9 @@ class Dashboard extends \NDB_Form
 
         return array_merge(
             $baseDeps,
-            array(
+            [
                 $baseurl . '/dashboard/js/dashboard-helper.js',
-            ),
+            ],
             $this->widgetjs,
         );
     }

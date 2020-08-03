@@ -31,9 +31,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      * UI elements and locations
      * breadcrumb - 'MRI Violated Scans'
      */
-    private $_loadingUI = array(
+    private $_loadingUI = [
         'MRI Violated Scans' => '#bc2 > a:nth-child(2) > div'
-    );
+    ];
     /**
      * Insert testing data
      *
@@ -44,50 +44,50 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         parent::setUp();
         $this->DB->insert(
             "Project",
-            array(
+            [
                 'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
-            )
+            ]
         );
         $this->DB->insert(
             "psc",
-            array(
+            [
                 'CenterID'  => '55',
                 'Name'      => 'TESTinPSC',
                 'Alias'     => 'ttt',
                 'MRI_alias' => 'test',
-            )
+            ]
         );
         $this->DB->insert(
             "subproject",
-            array(
+            [
                 'SubprojectID' => '55',
                 'title'        => 'TESTinSubproject',
-            )
+            ]
         );
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => '999888',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '1',
                 'PSCID'                 => '8888',
                 'RegistrationProjectID' => '7777',
-            )
+            ]
         );
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => '999777',
                 'RegistrationCenterID'  => '55',
                 'UserID'                => '2',
                 'PSCID'                 => '6666',
                 'RegistrationProjectID' => '7777',
-            )
+            ]
         );
         $this->DB->insert(
             "session",
-            array(
+            [
                 'ID'           => '9888',
                 'CandID'       => '999888',
                 'CenterID'     => '55',
@@ -96,11 +96,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
                 'Visit_label'  => 'Test1',
-            )
+            ]
         );
         $this->DB->insert(
             "session",
-            array(
+            [
                 'ID'           => '9777',
                 'CandID'       => '999777',
                 'CenterID'     => '55',
@@ -109,13 +109,13 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'MRIQCStatus'  => 'Pass',
                 'SubprojectID' => '55',
                 'Visit_label'  => 'Test2',
-            )
+            ]
         );
 
         // create the tarchive entries
         $this->DB->insert(
             'tarchive',
-            array(
+            [
                 'TarchiveID'             => '263',
                 'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
               '100912542610900000004',
@@ -136,11 +136,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'AcquisitionMetadata'    => 'metadata',
                 'SessionID'              => '9888',
                 'PendingTransfer'        => '1',
-            )
+            ]
         );
         $this->DB->insert(
             'tarchive',
-            array(
+            [
                 'TarchiveID'             => '264',
                 'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
                '100912542610900000004',
@@ -161,20 +161,20 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'AcquisitionMetadata'    => 'metadata',
                 'SessionID'              => '9777',
                 'PendingTransfer'        => '1',
-            )
+            ]
         );
 
         $this->DB->insert(
             "mri_protocol_group",
-            array(
+            [
                 'MriProtocolGroupID' => 11,
                 'Name'               => 'test',
-            )
+            ]
         );
 
         $this->DB->insert(
             "mri_protocol_violated_scans",
-            array(
+            [
                 'ID'                 => '1001',
                 'CandID'             => '999888',
                 'PatientName'        => '[Test]PatientName_Test1',
@@ -184,11 +184,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'SeriesUID'          => '5555',
                 'TarchiveID'         => '263',
                 'MriProtocolGroupID' => 11,
-            )
+            ]
         );
         $this->DB->insert(
             "mri_protocol_violated_scans",
-            array(
+            [
                 'ID'                 => '1002',
                 'CandID'             => '999777',
                 'PatientName'        => '[name]test_Test2',
@@ -198,25 +198,25 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'SeriesUID'          => '5556',
                 'TarchiveID'         => '264',
                 'MriProtocolGroupID' => 11,
-            )
+            ]
         );
         $this->DB->insert(
             "violations_resolved",
-            array(
+            [
                 'ExtID'     => '1001',
                 'hash'      => '123456',
                 'TypeTable' => 'mri_protocol_violated_scans',
                 'Resolved'  => 'other',
-            )
+            ]
         );
         $this->DB->insert(
             "MRICandidateErrors",
-            array(
+            [
                 'ID'          => '1002',
                 'PatientName' => '[Test]PatientName',
                 'MincFile'    => 'assembly/test2/test2/mri/test2/test3.mnc',
                 'SeriesUID'   => '5558',
-            )
+            ]
         );
     }
     /**
@@ -228,84 +228,84 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->DB->delete(
             "MRICandidateErrors",
-            array('ID' => '1002')
+            ['ID' => '1002']
         );
         $this->DB->delete(
             "mri_protocol_violated_scans",
-            array('ID' => '1001')
+            ['ID' => '1001']
         );
         $this->DB->delete(
             "mri_protocol_violated_scans",
-            array('ID' => '1002')
+            ['ID' => '1002']
         );
         $this->DB->delete(
             "tarchive",
-            array('TarchiveID' => '263')
+            ['TarchiveID' => '263']
         );
         $this->DB->delete(
             "tarchive",
-            array('TarchiveID' => '264')
+            ['TarchiveID' => '264']
         );
         $this->DB->delete(
             "session",
-            array(
+            [
                 'CandID'   => '999888',
                 'CenterID' => '55',
-            )
+            ]
         );
         $this->DB->delete(
             "session",
-            array(
+            [
                 'CandID'   => '999777',
                 'CenterID' => '55',
-            )
+            ]
         );
         $this->DB->delete(
             "candidate",
-            array(
+            [
                 'CandID'               => '999888',
                 'RegistrationCenterID' => '55',
-            )
+            ]
         );
         $this->DB->delete(
             "candidate",
-            array(
+            [
                 'CandID'               => '999777',
                 'RegistrationCenterID' => '55',
-            )
+            ]
         );
         $this->DB->delete(
             "violations_resolved",
-            array(
+            [
                 'ExtID'     => '1001',
                 'TypeTable' => 'mri_protocol_violated_scans',
-            )
+            ]
         );
         $this->DB->delete(
             "violations_resolved",
-            array('ExtID' => '1002')
+            ['ExtID' => '1002']
         );
         $this->DB->delete(
             "subproject",
-            array('SubprojectID' => '55')
+            ['SubprojectID' => '55']
         );
         $this->DB->delete(
             "psc",
-            array(
+            [
                 'CenterID' => '55',
                 'Name'     => 'TESTinPSC',
-            )
+            ]
         );
         $this->DB->delete(
             "Project",
-            array(
+            [
                 'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
-            )
+            ]
         );
         $this->DB->delete(
             "mri_protocol_group",
-            array('Name' => 'test')
+            ['Name' => 'test']
         );
         parent::tearDown();
     }
@@ -359,7 +359,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testModuleLoadsWithAllSitesPermission()
     {
-        $this->setupPermissions(array("violated_scans_view_allsites"));
+        $this->setupPermissions(["violated_scans_view_allsites"]);
         $this->safeGet($this->url . "/mri_violations/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -379,7 +379,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testModuleLoadsWithOwnSitePermission()
     {
-        $this->setupPermissions(array("violated_scans_view_ownsite"));
+        $this->setupPermissions(["violated_scans_view_ownsite"]);
         $this->safeGet($this->url . "/mri_violations/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -398,7 +398,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testModuleDoesNotLoadWithoutPermission()
     {
-         $this->setupPermissions(array(""));
+         $this->setupPermissions([""]);
          $this->safeGet($this->url . "/mri_violations/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -605,17 +605,17 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     public function testDashboardWidgetAllSites()
     {
         $this->setupPermissions(
-            array(
+            [
                 'violated_scans_view_allsites'
-            )
+            ]
         );
         $this->safeGet($this->url . '/dashboard/');
-        // Raisin bread has 206 unresolved violated scans. We are adding three
+        // Raisin bread has 173 unresolved violated scans. We are adding three
         // in setup(): one resolved, and two unresolved. The total
-        // number of unresolved violations is thus 208
+        // number of unresolved violations is thus 175
         $this->_testMytaskPanelAndLink(
             ".mri_violations",
-            "208",
+            "175",
             "- MRI Violated Scans"
         );
         $this->resetPermissions();
@@ -633,21 +633,21 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
 
         $this->setupPermissions(
-            array(
+            [
                 'violated_scans_view_ownsite'
-            )
+            ]
         );
         $this->safeGet($this->url . '/dashboard/');
         // Raisin bread has 164 unresolved violated scans that are not assigned
-        // to any site and 18 unresolved violations assigned to DCC. We are
+        // to any site and 3 unresolved violations assigned to DCC. We are
         // adding three in setup(): one resolved, another unresolved assigned to
         // center ID 55 and another not assigned to any site. The total number of
         // unresolved violations that are either assigned to DCC or not assigned to
-        // any site is thus: 164+18+1 = 184.
+        // any site is thus: 164+3+1 = 168.
         // Note that the test user is only assigned to sites DCC
         $this->_testMytaskPanelAndLink(
             ".mri_violations",
-            "183",
+            "168",
             "- MRI Violated Scans"
         );
         $this->resetPermissions();

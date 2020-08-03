@@ -38,10 +38,10 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'violated_scans_view_allsites',
                 'violated_scans_view_ownsite'
-            )
+            ]
         );
     }
     /**
@@ -63,7 +63,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             $row  = $DB->pselectRow(
                 "SELECT * FROM violations_resolved
                     WHERE hash = :hash",
-                array('hash' => $hash)
+                ['hash' => $hash]
             );
 
             //if row is found it means that resolve status was previously assigned,
@@ -77,11 +77,11 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                             break;
                         } else {
                             // user input doesn't match DB, so we update the DB
-                            $setArray   = array(
+                            $setArray   = [
                                 'Resolved'   => (string)$val,
                                 'ChangeDate' => date("Y-m-d H:i:s"),
-                            );
-                            $whereArray = array('hash' => $hash);
+                            ];
+                            $whereArray = ['hash' => $hash];
                             $DB->update(
                                 'violations_resolved',
                                 $setArray,
@@ -97,7 +97,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 if ($val=='unresolved') {
                     continue;
                 }
-                $newlyResolved         = array();
+                $newlyResolved         = [];
                 $newlyResolved['hash'] = $key;
                 $newlyResolved['Resolved']   = (string)$val;
                 $newlyResolved['User']       = $user->getUsername();
@@ -111,7 +111,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                               ':',minc_location,PatientName,SeriesUID,time_run)
                                    )
                     )",
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
                 if (!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
@@ -125,7 +125,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                                     ':',MincFile,PatientName,SeriesUID,TimeRun)
                                    )
                     )",
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
 
                 if (!empty($ID_mri_violations_log)) {
@@ -141,7 +141,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                                     ':',MincFile,PatientName,SeriesUID,TimeRun)
                                    )
                     )",
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
 
                 if (!empty($ID_MRICandidateErrors)) {
@@ -163,7 +163,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
             'v.PatientName',
             'pjct.Name as Project',
             'subpjct.title as Subproject',
@@ -179,9 +179,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'v.TarchiveID',
             'v.CandID',
             'v.PSCID'
-        );
+        ];
 
-        $this->headers = array(
+        $this->headers = [
             'PatientName',
             'Project',
             'Subproject',
@@ -197,7 +197,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'TarchiveID',
             'CandID',
             'PSCID'
-        );
+        ];
 
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
@@ -214,7 +214,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
 
         $this->order_by = 'v.TimeRun DESC';
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'PatientName' => 'v.PatientName',
             'Project'     => 'v.Project',
             'Subproject'  => 'v.Subproject',
@@ -224,9 +224,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'Description' => 'v.Series_Description',
             'SeriesUID'   => 'v.SeriesUID',
             'Site'        => 'v.Site',
-        );
+        ];
 
-        $this->validFilters = array(
+        $this->validFilters = [
             'v.PatientName',
             'v.Project',
             'v.Subproject',
@@ -236,7 +236,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'v.Series_Description',
             'v.SeriesUID',
             'v.Site',
-        );
+        ];
 
         $this->EqualityFilters[] = 'v.Site';
     }
@@ -306,13 +306,13 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
         $maxYear = $config->getSetting('endYear');
 
-        $dateOptions = array(
+        $dateOptions = [
             'language'       => 'en',
             'format'         => 'YMd',
             'addEmptyOption' => true,
             'minYear'        => $minYear,
             'maxYear'        => $maxYear,
-        );
+        ];
 
         $problemOptions = ['' => 'Any'];
 
@@ -324,7 +324,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             FROM mri_protocol_violated_scans
             UNION
             SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
-            array()
+            []
         );
 
         // Searches for reasons containing newlines will fail so we strip
@@ -341,7 +341,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->addSelect("ProblemType", "Type of problem", $problemOptions);
 
         // project
-        $list_of_projects = array('' => 'Any') + \Utility::getProjectList();
+        $list_of_projects = ['' => 'Any'] + \Utility::getProjectList();
         $this->addSelect(
             'Project',
             'Project',
@@ -349,7 +349,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         );
 
         // Subproject
-        $list_of_subprojects = array('' => 'Any') +
+        $list_of_subprojects = ['' => 'Any'] +
             \Utility::getSubprojectList();
         $this->addSelect(
             'Subproject',
@@ -360,19 +360,19 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites  = array(
+            $sites  = [
                 ''         => 'All (including unknown)',
                 'AllKnown' => 'All (excluding unknown)',
                 'Unknown'  => 'Unknown'
-            );
+            ];
             $sites += \Utility::getSiteList();
         } else {
             // allow only to view own site data
-            $sites  = array(
+            $sites  = [
                 ''         => 'All user sites (including unknown)',
                 'AllKnown' => 'All user sites (excluding unknown)',
                 'Unknown'  => 'Unknown'
-            );
+            ];
             $sites +=  $user->getStudySites();
         }
         $this->addSelect('Site', 'Site', $sites);
@@ -390,9 +390,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
-            )
+            ]
         );
     }
 
@@ -408,7 +408,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/mri_violations/css/mri_violations.css")
+            [$baseURL . "/mri_violations/css/mri_violations.css"]
         );
     }
 }

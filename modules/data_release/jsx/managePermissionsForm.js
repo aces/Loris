@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
+import swal from 'sweetalert2';
 import Modal from 'Modal';
 
 /**
@@ -130,7 +131,7 @@ class ManagePermissionsForm extends Component {
     })
     .then((response) => {
       if (response.ok) {
-        swal({
+        swal.fire({
           text: 'Permission Update Success!',
           title: '',
           type: 'success',
@@ -140,7 +141,7 @@ class ManagePermissionsForm extends Component {
       } else {
         let msg = response.statusText ?
           response.statusText : 'Submission Error!';
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
         console.error(msg);
         return Promise.reject();
       }

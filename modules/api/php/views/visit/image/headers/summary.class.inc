@@ -58,13 +58,13 @@ class Summary
      */
     public function toArray(): array
     {
-        return  array(
+        return  [
             'Meta'        => $this->_formatMeta(),
             'Physical'    => $this->_formatPhysical(),
             'Description' => $this->_formatDescription(),
             'Dimensions'  => $this->_formatDimensions(),
             'ScannerInfo' => $this->_formatScannerInfo(),
-        );
+        ];
     }
 
     /**
@@ -74,15 +74,15 @@ class Summary
      */
     private function _formatMeta(): array
     {
-        $candid     = (string) $this->_visit->getCandID();
+        $candid     = $this->_visit->getCandID();
         $visitlabel = $this->_visit->getVisitLabel();
         $filename   = $this->_image->getFileInfo()->getFilename();
 
-        return array(
+        return [
             'CandID' => $candid,
             'Visit'  => $visitlabel,
             'File'   => $filename,
-        );
+        ];
     }
 
     /**
@@ -97,12 +97,12 @@ class Summary
         $ti = $this->_image->getHeader('acquisition:inversion_time');
         $st = $this->_image->getHeader('acquisition:slice_thickness');
 
-        return array(
+        return [
             'TE'             => $te,
             'TR'             => $tr,
             'TI'             => $ti,
             'SliceThickness' => $st,
-        );
+        ];
     }
 
     /**
@@ -115,10 +115,10 @@ class Summary
         $sn = $this->_image->getHeader('acquisition:protocol');
         $sd = $this->_image->getHeader('acquisition:series_description');
 
-        return array(
+        return [
             'SeriesName'        => $sn,
             'SeriesDescription' => $sd,
-        );
+        ];
     }
 
     /**
@@ -129,11 +129,11 @@ class Summary
     private function _formatDimensions(): array
     {
 
-        $dimensions = array(
+        $dimensions = [
             'XSpace' => $this->_getDimension('xspace'),
             'YSpace' => $this->_getDimension('yspace'),
             'ZSpace' => $this->_getDimension('zspace'),
-        );
+        ];
 
         $order = $this->_image->getHeader("image:dimorder");
         if (count(explode(',', $order)) == 4) {
@@ -152,10 +152,10 @@ class Summary
      */
     private function _getDimension(string $dim): array
     {
-        return array(
+        return [
             'Length'   => $this->_image->getHeader("$dim:length"),
             'StepSize' => $this->_image->getHeader("$dim:step"),
-        );
+        ];
     }
 
     /**
@@ -171,13 +171,13 @@ class Summary
         $serialnumber    = $this->_image->getHeader('study:serial_no');
         $fieldstrength   = $this->_image->getHeader('study:field_value');
 
-        return array(
+        return [
             'Manufacturer'    => $manufacturer,
             'Model'           => $model,
             'SoftwareVersion' => $softwareversion,
             'SerialNumber'    => $serialnumber,
             'FieldStrength'   => $fieldstrength,
-        );
+        ];
     }
 }
 

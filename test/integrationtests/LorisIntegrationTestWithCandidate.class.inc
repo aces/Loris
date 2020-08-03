@@ -30,27 +30,28 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
 
         $this->DB->insert(
             "candidate",
-            array(
+            [
                 'CandID'                => '900000',
                 'PSCID'                 => 'TST0001',
                 'RegistrationCenterID'  => 1,
                 'RegistrationProjectID' => 1,
                 'Active'                => 'Y',
                 'UserID'                => 1,
-                'Entity_type'           => 'Human'
-            )
+                'Entity_type'           => 'Human',
+                'Sex'                   => 'Female'
+            ]
         );
 
         $this->DB->insert(
             'session',
-            array(
+            [
                 'ID'            => '999999',
                 'CandID'        => '900000',
                 'Visit_label'   => 'Test',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
                 'Current_stage' => 'Not Started',
-            )
+            ]
         );
         // Set up database wrapper and config
     }
@@ -62,8 +63,8 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
      */
     public function tearDown(): void
     {
-        $this->DB->delete("session", array('CandID' => '900000'));
-        $this->DB->delete("candidate", array('CandID' => '900000'));
+        $this->DB->delete("session", ['CandID' => '900000']);
+        $this->DB->delete("candidate", ['CandID' => '900000']);
         parent::tearDown();
     }
 }

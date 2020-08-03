@@ -38,15 +38,16 @@ class Issue extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $user    =& \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
         $issueID = $this->issueID;
         if ((empty($issueID)
             || !isset($issueID))
             && !$user->hasAnyPermission(
-                array(
+                [
                     'issue_tracker_reporter',
                     'issue_tracker_developer',
-                )
+                ]
             )
         ) {
             header("HTTP/1.1 403 Forbidden");
@@ -101,9 +102,9 @@ class Issue extends \NDB_Form
         if (!$issueID) {
             return true;
         }
-        $issueData = \Database::singleton()->pselectRow(
+        $issueData = \NDB_Factory::singleton()->database()->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
-            array('issueID' => $issueID)
+            ['issueID' => $issueID]
         );
         return (is_null($issueData)
             || in_array($issueData['centerID'], $user->getData('CenterIDs'))
@@ -126,7 +127,7 @@ class Issue extends \NDB_Form
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $results = array();
+        $results = [];
         preg_match(
             '#/issue/([0-9]+|new)$#',
             $request->getURI()->getPath(),

@@ -17,7 +17,7 @@ some of the factors we'll consider when reviewing your code.
 
 ## Development branches
 
-For the most part, changes to the codebase should be sent to the `master`
+For the most part, changes to the codebase should be sent to the `main`
 branch, which is the default.
 
 Small bug fixes for a given version of LORIS should be sent to the branch named
@@ -62,16 +62,12 @@ issues and/or Redmine tickets (if applicable).
     4. For SQL patches that are _optional_ (e.g. those that perform some 
             cleanup), place them in `SQL/Cleanup_patches/`.
     5. The files for our test database (Raisinbread) must be updated if they were modified.
-        Detailed instructions for this step can be found [here](./raisinbread#exporting-rb).
+        Detailed instructions for this step can be found in the Raisin Bread [README.md](./raisinbread/README.md#exporting-rb).
 * Include a test for any new module in the `modules/MODULENAME/test/`
   directory. You can look at other modules for examples of how to
   write tests.
-* Add your new automated tests to TravisCI in the `.travis.yml`.
 * Before sending any pull request, make sure you run our static analysis tools 
-using the command `make checkstatic` and fix any resulting errors. Otherwise,
-  your pull request will fail our automatic testing and we will not be able
-  to merge it. If you run the command `git config core.hooksPath .githooks`, git will automatically
-  run `make checkstatic` when you do a git push.
+locally. More information can be found in the [testing guide](./docs/wiki/99%20-%20Developers/Automated%20Testing.md). 
 * Try and make all changes backwards-compatible with existing installations.  
 * If you must change something in a non-backwards-compatible way - or if it 
 would affect the data or custom code of a study - document this in your pull 
@@ -83,6 +79,14 @@ you've contributed contains language that is friendly and accessible.
 
 If you're unsure about any of the above, feel free to ask us for
 clarification via the mailing list.
+
+## Git Best Practices
+- Any changes should be done on a branch based on the current development branch and contain only the changes which are applicable for that branch. (ie don't merge the `main` branch back into your branch, and don't include commits that are unrelated) so that if someone merges the branch into their repository, they only get that branch's changes.
+- Commits should be atomic (self contained) and contain only the changes described by the commit message. The commit message should be a sentence that describes the goal of the change as a whole.
+- Avoid changing unrelated code in the same commit, even if it is an improvement.
+We prefer that you create two separate pull requests A and B rather than add a
+'quick bonus fix' to pull request A.
+- ALWAYS do a diff before committing (after doing "git add file1 file2" when you're planning on doing `git commit`, you can use `git diff --staged` to see a diff of what will be committed). Ensure that nothing unexpected is included.
 
 ## Getting Started
 

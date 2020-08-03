@@ -6,6 +6,7 @@ import ChildTree from './childTree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
+import swal from 'sweetalert2';
 
 class DocIndex extends React.Component {
   constructor(props) {
@@ -126,17 +127,28 @@ class DocIndex extends React.Component {
     let result = <td>{cell}</td>;
     switch (column) {
       case 'File Name':
-        let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(row['File Name']);
-        result = <td><a href={downloadURL} target="_blank" download={row['File Name']}>{cell}</a></td>;
+        let downloadURL = loris.BaseURL
+                          + '/document_repository/Files/'
+                          + encodeURIComponent(row['File Name']);
+        result = <td>
+          <a
+            href={downloadURL}
+            target="_blank"
+            download={row['File Name']}
+          >
+            {cell}
+          </a>
+        </td>;
         break;
       case 'Edit':
-        let editURL = loris.BaseURL + '/document_repository/edit/' + row['Edit'];
+        let editURL = loris.BaseURL
+                      + '/document_repository/edit/' + row['Edit'];
         result = <td><a href={editURL}>Edit</a></td>;
         break;
       case 'Delete File':
         let id = row['Edit'];
         function click() {
-          swal({
+          swal.fire({
             title: 'Are you sure?',
             text: 'Your will not be able to recover this file!',
             type: 'warning',
@@ -154,12 +166,14 @@ class DocIndex extends React.Component {
               }).then((resp) => resp.json())
                 .then(()=>{
                   location.reload();
-                  swal('delete Successful!', '', 'success');
+                  swal.fire('delete Successful!', '', 'success');
                 });
           }
           );
         }
-        result = <td><a style={{cursor: 'pointer'}} onClick={click}>Delete</a></td>;
+        result = <td>
+          <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
+        </td>;
         break;
     }
     return result;
@@ -207,7 +221,11 @@ class DocIndex extends React.Component {
       }},
       {label: 'Date Uploaded', show: true},
       {label: 'Edit', show: true},
-      {label: 'Delete File', show: this.props.hasPermission('superUser') || this.props.hasPermission('document_repository_delete')},
+      {
+        label: 'Delete File',
+        show: this.props.hasPermission('superUser')
+          || this.props.hasPermission('document_repository_delete'),
+      },
       {label: 'File Category', show: false},
       {label: 'Category', show: false},
       {label: 'Data Dir', show: false},
@@ -215,9 +233,46 @@ class DocIndex extends React.Component {
 
     let tabList = [
       {id: 'browse', label: 'Browse'},
-      {id: 'upload', label: 'Upload'},
-      {id: 'category', label: 'Category'},
     ];
+    let uploadDoc;
+    let uploadCategory;
+    if (loris.userHasPermission('document_repository_view')) {
+      tabList.push(
+        {
+          id: 'upload',
+          label: 'Upload',
+        },
+      );
+      tabList.push(
+        {
+          id: 'category',
+          label: 'Category',
+        },
+      );
+
+      uploadDoc = (
+        <TabPane TabId={tabList[1].id}>
+          <DocUploadForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/Files`}
+            maxUploadSize={this.state.data.maxUploadSize}
+            refreshPage={this.fetchData}
+            category={this.state.newCategory}
+          />
+        </TabPane>
+      );
+
+      uploadCategory = (
+        <TabPane TabId={tabList[2].id}>
+          <DocCategoryForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/UploadCategory`}
+            refreshPage={this.fetchData}
+            newCategoryState={this.newCategoryState}
+          />
+        </TabPane>
+      );
+    }
     const parentTree = this.state.global ? null : (
       <div>
         <ParentTree
@@ -226,8 +281,10 @@ class DocIndex extends React.Component {
         />
       </div>
     );
-    const treeTable = (Object.keys(this.state.tableData.length).length === 0
-                        && Object.keys(this.state.childrenNode).length === 0) ? (
+    const treeTable = (
+      Object.keys(this.state.tableData.length).length === 0
+      && Object.keys(this.state.childrenNode).length === 0
+    ) ? (
       <NullFilterableDataTable>
         <div>
           <CheckboxElement
@@ -286,23 +343,8 @@ class DocIndex extends React.Component {
         <TabPane TabId={tabList[0].id}>
           {treeTable}
         </TabPane>
-        <TabPane TabId={tabList[1].id}>
-          <DocUploadForm
-            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/Files`}
-            maxUploadSize={this.state.data.maxUploadSize}
-            refreshPage={this.fetchData}
-            category={this.state.newCategory}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[2].id}>
-          <DocCategoryForm
-            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-            action={`${loris.BaseURL}/document_repository/UploadCategory`}
-            refreshPage={this.fetchData}
-            newCategoryState={this.newCategoryState}
-          />
-        </TabPane>
+        {uploadDoc}
+        {uploadCategory}
       </Tabs>
     );
   }

@@ -138,7 +138,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
             function ($row) {
                 return array_values($row);
             },
-            json_decode($table->toJSON(\User::singleton()), true)
+            json_decode($table->toJSON(\NDB_Factory::singleton()->user()), true)
         );
 
         return json_encode(

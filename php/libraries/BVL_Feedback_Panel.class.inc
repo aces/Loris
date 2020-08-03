@@ -49,12 +49,12 @@ class BVL_Feedback_Panel
      * sessionID and commentID.
      *
      * @param CandID      $candID    The candidate ID.
-     * @param int|null    $sessionID The session ID for a given visit.
+     * @param ?SessionID  $sessionID The session ID for a given visit.
      * @param string|null $commentID The comment ID for a given instrument.
      */
     function __construct(
         CandID $candID,
-        ?int $sessionID=null,
+        ?SessionID $sessionID=null,
         ?string $commentID=null
     ) {
 
@@ -100,7 +100,7 @@ class BVL_Feedback_Panel
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
 
         $field_names = Utility::getSourcefields($_REQUEST['test_name'] ?? '');
-        $fields      = array();
+        $fields      = [];
         $fields['Across All Fields'] = 'Across All Fields';
         foreach ($field_names as $field_name) {
             $fields[$field_name['SourceField']] = $field_name['SourceField'];

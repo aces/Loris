@@ -4,7 +4,7 @@
  * template for the current instrument. It is used in the survey_accounts
  * page via AJAX to update the email template with the current page
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Survey
  * @package  Loris
@@ -13,8 +13,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-$user =& User::singleton();
-if (!$user->hasPermission('user_accounts')) {
+$user = \User::singleton();
+if (!$user->hasPermission('survey_accounts_view')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
@@ -34,7 +34,7 @@ $DB = Database::singleton();
 
 $result = $DB->pselectOne(
     "SELECT DefaultEmail FROM participant_emails WHERE Test_name=:TN",
-    array('TN' => $_REQUEST['test_name'])
+    ['TN' => $_REQUEST['test_name']]
 );
 if (empty($result)) {
     print "";

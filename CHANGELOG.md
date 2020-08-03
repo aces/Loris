@@ -8,7 +8,30 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 23.0 (Release Date: ??)
+##LORIS 24.0 (Release Date: ??)
+### Core
+#### Features
+- *Add item here*
+#### Updates and Improvements
+- Module-specific permissions added for Survey Accounts, Imaging Behavioural
+Quality Control, and Behavioural Quality Control. (PR #6041)
+- Addition of a new `account_request_date` in `users` table that will be used when
+requesting a new account and will be displayed in the User Accounts module (PR #6191)
+- Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
+#### Bug Fixes
+- *Add item here*
+### Modules
+#### Issue Tracker
+- Readability of comments and history was improved. (PR #6138)
+### Clean Up
+- *Add item here*
+### Notes For Existing Projects
+- *Add item here*
+### Notes For Developers
+- *Add item here*
+
+
+## LORIS 23.0.0 (Release Date: 2020-06-12)
 
 ### Core
 #### Features
@@ -27,6 +50,7 @@ database (PR #5260)
 #### Bug Fixes
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)
 - Fix bug where examiner form field was incorrectly hidden (PR #6085)
+- Fix special character double escaping in instruments (PR #6223)
 
 ### Modules 
 #### Candidate Profile
@@ -57,7 +81,10 @@ death for candidates. (PR #4929)
 - Add language parameter when creating a new timepoint for multilingual studies. (PR #4976)
  
 #### Data Release
-- Added filters to data release module. (PR #5224)
+- Add filters to data release module. (PR #5224)
+
+#### MRI Violations
+- Add support for multiple MRI protocols (PR #4321)
 
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database
@@ -81,10 +108,10 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 - New tool for automatically adding modules to the modules table. This tool should 
 be used by projects having custom modules not in LORIS. (PR #5913)
 - Duplicate filenames in the data release module will cause an error when downloading. Make sure to remove all filename duplications before upgrading to this version. (PR #6461)
+- New tool for detecting and reporting the presence of double escaped special characters in the database instruments (PR #6477)
 
 ### Notes For Developers
 - The tool `phpstan` has been added to our automated test suite. (PR #4928)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
-
