@@ -290,8 +290,6 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
         $this->markTestSkipped('Missing data in docker image');
     }
 
-    // NOT WORKING : error (blank poge) ##############################
-
     /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/images/filename/format/raw

@@ -315,30 +315,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             gettype($projectsImagesArray['Images']['0']['ScanType']),
             'string'
         );
-        $qc_status = $projectsImagesArray['Images']['0']['QC_status'];
-        if ($qc_status === 'string') {
-            $this->assertSame(
-                gettype($qc_status),
-                'string'
-            );
-        } else {
-            $this->assertSame(
-                gettype($qc_status),
-                'NULL'
-            );
-        }
-        $selected = $projectsImagesArray['Images']['0']['QC_status'];
-        if ($selected === 'string') {
-            $this->assertSame(
-                gettype($selected),
-                'string'
-            );
-        } else {
-            $this->assertSame(
-                gettype($selected),
-                'NULL'
-            );
-        }
         $this->assertSame(
             gettype($projectsImagesArray['Images']['0']['Selected']),
             'string'
