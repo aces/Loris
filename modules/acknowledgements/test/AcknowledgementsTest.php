@@ -32,7 +32,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     static $endDate      = 'input[name="endDate"]';
     static $present      = 'select[name="present"]';
     static $display      = '.table-header > .row > div > div:nth-child(1)';
-    static $clearFilter  = 'button[type="reset"]';
+    static $clearFilter  = 'a[name="reset"]';
 
     // Initial array data
 
