@@ -82,8 +82,8 @@ class AddSurvey extends \NDB_Form
         }
 
         $numCandidates = $db->pselectOne(
-            "SELECT COUNT(*) FROM candidate 
-            WHERE PSCID=:v_PSCID 
+            "SELECT COUNT(*) FROM candidate
+            WHERE PSCID=:v_PSCID
             AND CandID=:v_CandID AND Active='Y'",
             [
                 'v_PSCID'  => $values['PSCID'],
@@ -102,9 +102,9 @@ class AddSurvey extends \NDB_Form
         }
 
         $numSessions = $db->pselectOne(
-            "SELECT COUNT(*) FROM session 
-            WHERE CandID=:v_CandID 
-            AND UPPER(Visit_label)=UPPER(:v_VL) 
+            "SELECT COUNT(*) FROM session
+            WHERE CandID=:v_CandID
+            AND UPPER(Visit_label)=UPPER(:v_VL)
             AND Active='Y'",
             [
                 'v_CandID' => $values['CandID'],
@@ -138,8 +138,8 @@ class AddSurvey extends \NDB_Form
         $instrument_list = $db->pselect(
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             WHERE s.CandID=:v_CandID
+             AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",
             [
                 'v_CandID' => $values['CandID'],
@@ -207,7 +207,9 @@ class AddSurvey extends \NDB_Form
             return;
         }
         $battery = new \NDB_BVL_Battery();
-        $battery->selectBattery($SessionID);
+        $battery->selectBattery(
+            strval(new \SessionID($SessionID))
+        );
 
         $commentID = $battery->addInstrument($values['Test_name']);
 

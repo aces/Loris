@@ -78,7 +78,7 @@ class Module extends \Module
             if ($attribute === null) {
                 $request = $request->withAttribute(
                     "timePoint",
-                    \TimePoint::singleton(intval($gets['sessionID']))
+                    \TimePoint::singleton(new \SessionID($gets['sessionID']))
                 );
             }
 
