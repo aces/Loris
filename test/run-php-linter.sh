@@ -18,6 +18,7 @@ find docs modules htdocs php src tools \
 declare -a tools_list=(
     'assign_missing_instruments.php'
     'configuration_check.php'
+    'config_to_db.php'
     'data_integrity_check.php'
     'delete_candidate.php'
     'delete_ignored_conflicts.php'
