@@ -368,7 +368,7 @@ class FieldSelector extends Component {
     } else {
       // Retrieve the data dictionary
       $.get(loris.BaseURL
-        + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
+        + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
         {category: category}, (data) => {
         let cf = this.state.categoryFields;
         cf[category] = data;

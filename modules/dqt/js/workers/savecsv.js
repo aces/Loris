@@ -2,8 +2,6 @@
 self.addEventListener('message', function (e) {
     "use strict";
     let i = 0;
-    console.log(1);
-    console.log(e);
     let data = e.data.data; // $("#data").dataTable().fnGetData()
     let headers = e.data.headers; // $("#data thead th")
     let identifiers = e.data.identifiers;
@@ -16,7 +14,6 @@ self.addEventListener('message', function (e) {
         }
         return val;
     };
-    console.log(2);
     // var fs;
     let contentBlob;
 
@@ -28,11 +25,7 @@ self.addEventListener('message', function (e) {
         }
         return val;
     });
-    console.log(3);
-    console.log('row is');
-    console.log(row);
     content += '"' + row.join('","') + '"\r\n';
-    console.log(content);
     for (i = 0; i < data.length; i += 1) {
         row = (identifiers) ? [identifiers[i]] : [];
         row = row.concat(
