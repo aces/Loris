@@ -516,7 +516,9 @@ class SelectElement extends Component {
     // Add empty option
     // If only one option exists and element is required, don't add empty option so that the only available
     // option is selected by default
-    if (this.props.emptyOption && !(Object.keys(this.props.options).length == 1 && this.props.required)) {
+    if (this.props.emptyOption &&
+      !(Object.keys(options).length == 1 && this.props.required)
+    ) {
       emptyOptionHTML = <option></option>;
     }
 
