@@ -147,12 +147,7 @@ class New_Profile extends \NDB_Form
 
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
-        $num_sites          = count($user_list_of_sites);
-        $psc_labelOptions   = [];
-        if ($num_sites > 1) {
-            $psc_labelOptions = \Utility::getSiteNameListByIDs($user_list_of_sites);
-        }
-        $site = $psc_labelOptions;
+        $site               = \Utility::getSiteNameListByIDs($user_list_of_sites);
 
         // Get projects for the select dropdown
         $projList = [];

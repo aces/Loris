@@ -47,7 +47,15 @@ class NewProfileIndex extends React.Component {
     return fetch(this.props.dataURL,
       {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({configData: data.fieldOptions}))
+      .then((data) => {
+        if (Object.keys(data.fieldOptions.site).length == 1) {
+          const site = {
+            site: Object.keys(data.fieldOptions.site)[0],
+          };
+          this.setState({formData: site});
+        }
+        this.setState({configData: data.fieldOptions});
+      })
       .catch((error) => {
         this.setState({error: true});
       });
