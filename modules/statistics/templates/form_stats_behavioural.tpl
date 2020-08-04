@@ -55,7 +55,7 @@
 
 
 
-    <b><a href='{$baseurl}/statistics/statistics_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Per Instrument Stats - All Sites</a></b>
+    <b><a href='{$baseurl}/statistics/statistics_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Per Instrument Data Entry Stats - All Sites</a></b>
     <br><br>
     <h2 class="statsH2">Double Data Entry Statistics:</h2>
 
@@ -97,7 +97,7 @@
             {/foreach}
         </tr>
         <tr>
-            <td class=" pis">Per Instrument Stats</td>
+            <td class=" pis">Per Instrument Data Entry Stats</td>
             {foreach from=$Centers item=center key=centername}
                 <td id='{$center.ID}DDPIS' class="pis" colspan="2">
                     <a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}' target="_blank">View Details</a>
