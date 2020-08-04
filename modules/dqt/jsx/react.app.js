@@ -210,7 +210,8 @@ class DataQueryApp extends Component {
 
     let filter = this.saveFilterGroup(this.state.filter);
 
-    $.post(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
+    $.post(loris.BaseURL
+      + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
       Fields: this.state.selectedFields,
       Filters: filter,
       QueryName: name,
@@ -729,7 +730,8 @@ class DataQueryApp extends Component {
         $.ajax({
           type: 'POST',
           url: loris.BaseURL
-            + '/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php',
+            + '/AjaxHelper.php?Module=dataquery&script='
+            + 'retrieveCategoryDocs.php',
           data: {
             DocType: category,
             Sessions: sectionedSessions,
