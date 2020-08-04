@@ -208,7 +208,9 @@ class New_Profile extends \NDB_Form
         }
         // Validate DOB fields
         try {
-            if ((new \DateTime($values['dobDate'])) > new \DateTime('now')) {
+            if (isset($values['dobDate'])
+                && (new \DateTime($values['dobDate'])) > new \DateTime('now')
+            ) {
                 $errors['dobDate'] = 'Date of Birth cannot be set in the future.';
             }
         } catch (\Exception $e) {
@@ -238,7 +240,7 @@ class New_Profile extends \NDB_Form
                     . 'valid date.';
             }
         } else if (empty($values['dobDate'])) {
-            $errors['dobDate'] = "Date of Birth cannot be empty 
+            $errors['dobDate'] = "Date of Birth cannot be empty
             if Expected Date isn't configured.";
         }
 
