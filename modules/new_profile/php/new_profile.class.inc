@@ -147,7 +147,7 @@ class New_Profile extends \NDB_Form
 
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
-        $site               = \Utility::getSiteNameListByIDs($user_list_of_sites);
+        $site = \Utility::getSiteNameListByIDs($user_list_of_sites);
 
         // Get projects for the select dropdown
         $projList = [];
