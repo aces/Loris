@@ -8,13 +8,14 @@ class Categories extends \NDB_Page {
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $queryparams = $request->getQueryParams();
+        $user = $request->getAttribute("user");
         if (isset($queryparams['module'])) {
-            return $this->moduleDictionary($request, $queryparams['module']);
+            return $this->moduleDictionary($request, $user, $queryparams['module']);
         }
 
         $modulesandcats = $this->Module->getUserModuleCategories(
-            $request->getAttribute("user"),
-            $request->getAttribute("loris")
+            $user,
+            $request->getAttribute("loris"),
         );
 
         $modulesassoc = [];
@@ -29,10 +30,10 @@ class Categories extends \NDB_Page {
         ]);
     }
 
-    public function moduleDictionary(ServerRequestInterface $request, string $modulename) : ResponseInterface
+    public function moduleDictionary(ServerRequestInterface $request, \User $user, string $modulename) : ResponseInterface
     {
+
         $loris = $this->lorisinstance;
-        $module = null;
         foreach ($loris->getActiveModules() as $m) {
             if ($m->getName() == $modulename) {
                 $module = $m;
@@ -43,36 +44,26 @@ class Categories extends \NDB_Page {
         if($module === null) {
             return new \LORIS\Http\Response\JSON\NotFound('module not found');
         }
-        $mdict = $module->getDataDictionary($loris);
-        $dict  = [];
-        /*
-        [
-            'module'        => $module->getName(),
-            'category'     => $cat->getName(),
-            'field'              => $item->getName(),
-            'description'        => $desc,
-            'description_status' => $status,
-            'datascope' => $item->getScope(),
-            'type' => $item->getDataType(),
-            'cardinality' => $item->getCardinality(),
-        ]
-            );
-    }
-         */
 
-    foreach ($mdict as $cat) {
-        $catdict = [];
+        $data = $this->Module->getUserModuleCategories($user, $loris, $modulename);
+        $prov = (new DataDictRowProvisioner($loris, $data['CategoryItems']))
+            ->filter(new \LORIS\Data\Filters\AccessibleResourceFilter());
 
-        foreach($cat->getItems() as $item) {
-            $catdict[$item->getName()] = [
-                'description' => $item->getDescription(),
-                'scope' => $item->getScope(),
-                'type' => $item->getDataType(),
-                'cardinality' => $item->getCardinality(),
-            ];
+
+        $organized = [];
+        foreach ($prov->execute($user) as $row) {
+            $cat = $row->getCategory();
+            if (!isset($organized[$cat])) {
+                $organized[$cat] = [];
+            }
+            $fieldname = $row->getFieldName();
+            $organized[$cat][$fieldname] = [
+                        'description' => $row->getDescription(),
+                        'scope' => $row->getScope(),
+                        'type' => $row->getDataType(),
+                        'cardinality' => $row->getCardinality(),
+                ];
         }
-        $dict[$cat->getName()] = $catdict;
+        return new \LORIS\Http\Response\JSON\OK($organized);
     }
-    return new \LORIS\Http\Response\JSON\OK($dict);
-}
 }

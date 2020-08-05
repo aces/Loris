@@ -67,7 +67,7 @@ class Module extends \Module
      *
      * @return array
      */
-    public function getUserModuleCategories(\User $user, \LORIS\LorisInstance $loris) : array
+    public function getUserModuleCategories(\User $user, \LORIS\LorisInstance $loris, ?string $formodule=null) : array
     {
         $modules = $loris->getActiveModules();
         $usermodules = [];
@@ -76,6 +76,9 @@ class Module extends \Module
 
         $categoryitems = [];
         foreach ($modules as $module) {
+            if ($formodule !== null && $module->getName() !== $formodule) {
+                continue;
+            }
             if(!$module->hasAccess($user)) {
                 continue;
             }

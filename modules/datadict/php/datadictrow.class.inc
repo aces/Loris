@@ -54,4 +54,25 @@ class DataDictRow implements \LORIS\Data\DataInstance, \LORIS\StudyEntities\Acce
     public function isAccessibleBy(\User $user) : bool {
         return $this->item->isAccessibleBy($user);
     }
+
+    public function getCategory() : string {
+        return $this->DBRow['category'];
+    }
+
+    public function getFieldName() : string {
+        return $this->DBRow['field'];
+    }
+    public function getDescription() : string {
+        return $this->DBRow['description'];
+    }
+    public function getScope() : \LORIS\Data\Scope {
+        return $this->DBRow['datascope'];
+    }
+    public function getDataType() :  \LORIS\Data\Type{
+        return $this->DBRow['type'];
+    }
+    public function getCardinality() : \LORIS\Data\Cardinality {
+        return $this->DBRow['cardinality'];
+    }
+
 }
