@@ -178,7 +178,7 @@ class ScheduleTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("$ms")
         )->getText();
-        $this->assertContains("Schedule added", $bodyText);
+        $this->assertContains("Appointment modified.", $bodyText);
 
     }
     /**
@@ -200,7 +200,7 @@ class ScheduleTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("$ms")
         )->getText();
-        $this->assertContains("Schedule deleted.", $bodyText);
+        $this->assertContains("You won't be able to revert this!", $bodyText);
     }
     /**
      * Helper function to set up and load a page with a given permisison code.
