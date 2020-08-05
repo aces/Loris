@@ -727,12 +727,19 @@ class AddElement extends Component {
           {} :
           this.props.element.Options
         ),
-        Description: Instrument.clone(this.props.element.Description),
+        Description: Instrument.clone(
+          this.props.element.Description === undefined ?
+          {} :
+          this.props.element.Description
+        ),
         Name: Instrument.clone(this.props.element.Name === undefined ?
           '' :
           this.props.element.Name
         ),
-        selected: Instrument.clone(this.props.element.selected),
+        selected: Instrument.clone(this.props.element.selected === undefined ?
+          {} :
+          this.props.element.selected
+        ),
       };
     } else {
       this.state = {
@@ -898,8 +905,9 @@ class AddElement extends Component {
 
     // Setup the desired element to be added
     switch (selected) {
-      case 'header':
       case 'line':
+        break;
+      case 'header':
       case 'label':
         questionName = '';
         break;
@@ -981,8 +989,9 @@ class AddElement extends Component {
     let buttons;
         // Set the inputs to display based on the desired element type
     switch (this.state.selected.id) {
-      case 'header':
       case 'line':
+        break;
+      case 'header':
       case 'label':
         questionInput = <QuestionText
           updateState={this.updateState}
