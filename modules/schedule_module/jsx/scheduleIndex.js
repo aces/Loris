@@ -284,7 +284,6 @@ class ScheduleIndex extends Component {
    */
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
-console.log(row);
     switch (column) {
     case 'PSCID':
       let url = loris.BaseURL + '/' + row['CandID'] + '/';
@@ -583,4 +582,3 @@ window.addEventListener('load', () => {
   );
 });
 /* eslint-enable */
-
