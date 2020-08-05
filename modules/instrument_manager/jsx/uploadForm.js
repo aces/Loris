@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import swal from 'sweetalert2';
 
 class InstrumentUploadForm extends Component {
   constructor(props) {
@@ -31,7 +32,7 @@ class InstrumentUploadForm extends Component {
     })
     .then((resp) => {
       if (resp.status == 201) {
-        swal({
+        swal.fire({
           title: 'Installation Successful!',
           type: 'success',
         }, function() {
@@ -42,7 +43,7 @@ class InstrumentUploadForm extends Component {
     })
     .then((data) => {
       if (data.message) {
-         swal({
+         swal.fire({
           title: 'Upload Successful!',
           type: 'success',
           text: data.message,
@@ -51,8 +52,8 @@ class InstrumentUploadForm extends Component {
         });
       }
       if (data.error) {
-         swal({
-          title: 'An error occured',
+         swal.fire({
+          title: 'An error occurred',
           type: 'error',
           text: data.error,
         });
@@ -79,7 +80,13 @@ class InstrumentUploadForm extends Component {
                   onUserInput={this.fileSelected}
                   value={this.state.selectedFile}
                 />
-                <button className="btn btn-default" onClick={this.upload} disabled={disabled()}>Install</button>
+                <button
+                  className="btn btn-default"
+                  onClick={this.upload}
+                  disabled={disabled()}
+                >
+                  Install
+                </button>
               </div>
             </div>
           </div>

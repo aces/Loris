@@ -6,6 +6,7 @@ import ChildTree from './childTree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
+import swal from 'sweetalert2';
 
 class DocIndex extends React.Component {
   constructor(props) {
@@ -126,17 +127,28 @@ class DocIndex extends React.Component {
     let result = <td>{cell}</td>;
     switch (column) {
       case 'File Name':
-        let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(row['File Name']);
-        result = <td><a href={downloadURL} target="_blank" download={row['File Name']}>{cell}</a></td>;
+        let downloadURL = loris.BaseURL
+                          + '/document_repository/Files/'
+                          + encodeURIComponent(row['File Name']);
+        result = <td>
+          <a
+            href={downloadURL}
+            target="_blank"
+            download={row['File Name']}
+          >
+            {cell}
+          </a>
+        </td>;
         break;
       case 'Edit':
-        let editURL = loris.BaseURL + '/document_repository/edit/' + row['Edit'];
+        let editURL = loris.BaseURL
+                      + '/document_repository/edit/' + row['Edit'];
         result = <td><a href={editURL}>Edit</a></td>;
         break;
       case 'Delete File':
         let id = row['Edit'];
         function click() {
-          swal({
+          swal.fire({
             title: 'Are you sure?',
             text: 'Your will not be able to recover this file!',
             type: 'warning',
@@ -154,12 +166,14 @@ class DocIndex extends React.Component {
               }).then((resp) => resp.json())
                 .then(()=>{
                   location.reload();
-                  swal('delete Successful!', '', 'success');
+                  swal.fire('delete Successful!', '', 'success');
                 });
           }
           );
         }
-        result = <td><a style={{cursor: 'pointer'}} onClick={click}>Delete</a></td>;
+        result = <td>
+          <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
+        </td>;
         break;
     }
     return result;
@@ -207,7 +221,11 @@ class DocIndex extends React.Component {
       }},
       {label: 'Date Uploaded', show: true},
       {label: 'Edit', show: true},
-      {label: 'Delete File', show: this.props.hasPermission('superUser') || this.props.hasPermission('document_repository_delete')},
+      {
+        label: 'Delete File',
+        show: this.props.hasPermission('superUser')
+          || this.props.hasPermission('document_repository_delete'),
+      },
       {label: 'File Category', show: false},
       {label: 'Category', show: false},
       {label: 'Data Dir', show: false},
@@ -263,8 +281,10 @@ class DocIndex extends React.Component {
         />
       </div>
     );
-    const treeTable = (Object.keys(this.state.tableData.length).length === 0
-                        && Object.keys(this.state.childrenNode).length === 0) ? (
+    const treeTable = (
+      Object.keys(this.state.tableData.length).length === 0
+      && Object.keys(this.state.childrenNode).length === 0
+    ) ? (
       <NullFilterableDataTable>
         <div>
           <CheckboxElement

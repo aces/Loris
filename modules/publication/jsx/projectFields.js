@@ -1,4 +1,5 @@
 import React from 'react';
+import swal from 'sweetalert2';
 
 class EmailElement extends React.Component {
   constructor() {
@@ -101,7 +102,7 @@ class ProjectFormFields extends React.Component {
 
   deleteUpload(uploadID) {
     let self = this;
-    swal({
+    swal.fire({
       title: 'Are you sure?',
       text: 'Are you sure you want to delete this file?',
       type: 'warning',
@@ -111,7 +112,9 @@ class ProjectFormFields extends React.Component {
     },
       function(willDelete) {
         if (willDelete) {
-          let url = loris.BaseURL + '/publication/ajax/FileDelete.php?uploadID=' + uploadID;
+          let url = loris.BaseURL
+                    + '/publication/ajax/FileDelete.php?uploadID='
+                    + uploadID;
           $.ajax(
             url,
             {
@@ -129,7 +132,9 @@ class ProjectFormFields extends React.Component {
     // Create download link & edit fields for existing files
     if (this.props.files) {
       this.props.files.forEach(function(f) {
-        let downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + encodeURIComponent(f.Filename);
+        let downloadURL = loris.BaseURL
+                          + '/publication/ajax/FileDownload.php?File='
+                          + encodeURIComponent(f.Filename);
         let link = (
           <span>
             <a href={downloadURL}>{f.Filename}</a>
@@ -142,9 +147,15 @@ class ProjectFormFields extends React.Component {
           </span>
         );
         let existFileFlag = 'existingUpload_';
-        let pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
-        let pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
-        let pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
+        let pubType = existFileFlag
+                      + 'publicationType_'
+                      + f.PublicationUploadID;
+        let pubCit = existFileFlag
+                     + 'publicationCitation_'
+                     + f.PublicationUploadID;
+        let pubVer = existFileFlag
+                     + 'publicationVersion_'
+                     + f.PublicationUploadID;
         let pubTypeStr = this.props.uploadTypes[this.props.formData[pubType]];
         fileFields.push(
           <div>
@@ -225,7 +236,9 @@ class ProjectFormFields extends React.Component {
           collabEmails.push(
             <EmailElement
               name={name}
-              label={c.name + (c.name.slice(-1) === 's' ? '\'' : '\'s') + ' Email'}
+              label={c.name + (c.name.slice(-1) === 's' ?
+                '\'' :
+                '\'s') + ' Email'}
               onUserInput={this.setCollaboratorEmail}
               toggleEmailNotify={this.toggleEmailNotify}
               errorMessage={this.props.formErrors[name]}
@@ -297,7 +310,7 @@ class ProjectFormFields extends React.Component {
 
     let voiTypeOptions = {
       All: 'All',
-      Behavioral: 'Behavioral',
+      Behavioural: 'Behavioural',
       Imaging: 'Imaging',
     };
 
@@ -307,8 +320,8 @@ class ProjectFormFields extends React.Component {
     if (type && type !== 'All') {
       voiOptions = this.props.allVOIs[type];
     } else {
-      // maintain behavioral VoIs by creating an object copy
-      const bvlCopy = Object.assign({}, allVOIs.Behavioral);
+      // maintain behavioural VoIs by creating an object copy
+      const bvlCopy = Object.assign({}, allVOIs.Behavioural);
       voiOptions = Object.assign(bvlCopy, allVOIs.Imaging);
     }
 
@@ -412,7 +425,9 @@ class ProjectFormFields extends React.Component {
           text={voiHelp}
         />
         {fileFields}
-        <ButtonElement label={this.props.editMode ? 'Submit' : 'Propose Project'}
+        <ButtonElement label={this.props.editMode ?
+          'Submit' :
+          'Propose Project'}
         />
       </div>
     );

@@ -140,9 +140,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
         ) {
+            $sessionID = null;
+            if (isset($get['sessionID'])) {
+                $sessionID = new \SessionID($get['sessionID']);
+            }
+
             $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
                 $candID,
-                $get['sessionID'] ?? null
+                $sessionID
             );
 
             $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(

@@ -34,9 +34,8 @@ import PropTypes from 'prop-types';
  */
 class Tabs extends Component {
   /**
-   * Construct a Tabs react component
-   *
-   * @param {array} props - The React props
+   * @constructor
+   * @param {object} props - React Component properties
    */
   constructor(props) {
     super(props);

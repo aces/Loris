@@ -449,7 +449,15 @@ class BehaviouralQCGraphics extends Component {
       <div className='col-sm-12 col-md-5'>
         <div className='panel panel-primary'>
           <div className='panel-heading'>
-            At A Glance: {pscidStatus} - {visitStatus} - {instrumentStatus} - {siteStatus} -{projectStatus}
+            {'At A Glance: ' +
+              [
+                pscidStatus,
+                visitStatus,
+                instrumentStatus,
+                siteStatus,
+                projectStatus,
+              ].join(' - ')
+            }
           </div>
           <div className='panel-body'>
             <div id='completedChart'/>

@@ -26,14 +26,6 @@ namespace LORIS\Data;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-interface DataInstance
+interface DataInstance extends \JsonSerializable
 {
-    /**
-     * DataInstances must be serializable to JSON.
-     *
-     * ToJSON must serialize this resource instance to a string of valid JSON.
-     *
-     * @return string of data in JSON format.
-     */
-    public function toJSON() : string;
 }

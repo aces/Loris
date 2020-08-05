@@ -1,9 +1,9 @@
 ### Mac is no longer supported as of 15.10.
 Nothing in this document is an official recommendation for LORIS but is only intended to be helpful!
 
-## Important Notes: 
-- We recommend installing LORIS on Ubuntu or CentOS as macOS is no longer supported for "production" as of v15.10
-- These instructions were last tested on LORIS version v20.*
+## Important Notes:
+ - We recommend installing LORIS on Ubuntu or CentOS as macOS is no longer supported for "production" as of v15.10
+ - These instructions were last tested on LORIS version v23.*
 
 # How to install a developer instance of LORIS on macOS
 
@@ -18,8 +18,8 @@ The following list provides foresight into the proceeding sections and versions 
  * XCode Command Line Tools
  * Homebrew
  * Apache (a.k.a httpd)
- * PHP (tested on v7.2.14)
- * PHP extension: ast-0.1.5
+ * PHP (tested on v7.4.7)
+ * PHP extension: ast-1.0.5
  * pkg-config
  * Composer
  * Node.js (npm)
@@ -135,9 +135,9 @@ sudo apachectl -k restart
 
 Type these commands into your terminal and hit enter:
 ```
-brew install php72
-brew link php72
-brew services start php72
+brew install php@7.4
+brew link php@7.4
+brew services start php@7.4
 brew install pkg-config
 ```
 
@@ -193,10 +193,10 @@ b. Create the file `ext-xdebug.ini` with this command:
 sudo touch /usr/local/etc/php/<your_php_version>/conf.d/ext-xdebug.ini
 ```
 
-c. Type the following into the `ext-xdebug.ini` file you created (Note: replace the `zend_extension` path with the correct one on your machine):
+c. Type the following into the `ext-xdebug.ini` file you just created (Note: replace the `zend_extension` path with the correct one on your machine):
 ```
 [xdebug]
-zend_extension="/usr/local/Cellar/php@7.2/7.2.14/pecl/20170718/xdebug.so"
+zend_extension="/usr/local/Cellar/php@<your_php_version>/<your_php_version>/pecl/20170718/xdebug.so"
 xdebug.remote_enable=on
 xdebug.remote_host=localhost
 xdebug.remote_port=9000
@@ -253,10 +253,10 @@ Type into your terminal and hit enter:
 brew install composer
 ```
 
-## 2.0 Install PHP extension: ext-ast ^0.1.5 for phan/phan
+## 2.0 Install PHP extension: ext-ast ^1.0.5 for phan/phan
 Type into your terminal and hit enter:
 ```
-pecl install ast-0.1.5;
+pecl install ast-1.0.5;
 ```
 
 ## 2.1 Install Node.js

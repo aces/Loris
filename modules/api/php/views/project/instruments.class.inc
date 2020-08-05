@@ -69,7 +69,10 @@ class Instruments
                 'Subgroup'               => $instrument->getSubgroupname(),
                 'DoubleDataEntryEnabled' => $instrument->isDDE(),
             ];
-            $instruments[$shortname] = $item;
+
+            if (!is_null($shortname)) {
+                $instruments[$shortname] = $item;
+            }
         }
 
         return [

@@ -30,6 +30,8 @@ nav:
         - 'Coding Standards': 'CodingStandards.md'
         - 'SQL Dictionary': 'wiki/99_Developers/SQL_Dictionary.md'
         - 'Automated Testing': 'wiki/99_Developers/Automated_Testing.md'
-        - 'Style Guide (for help text)': 'HelpStyleGuide.md'
+        - 'Style Guide (for help text)': 'wiki/99_Developers/Help_Style_Guide.md'
+        - 'Creating a Module': 'wiki/99_Developers/Creating_Module.md'
+        - 'ReactJS Guidelines': 'wiki/99_Developers/ReactJS_Guidelines.md'
         - 'Code Review Guide': 'wiki/99\ -\ Developers/Code\ Review\ Checklist.md docs/wiki/99\ -\ Developers/Code\ Review\ Guide.md'
 theme: readthedocs

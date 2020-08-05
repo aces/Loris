@@ -25,15 +25,14 @@ require_once __DIR__
 class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     //filter location
-    static $PSCID          = ".col-xs-12:nth-child(2) > .row .form-control";
-    static $DCCID          = ".col-xs-12:nth-child(3) > .row .form-control";
+    static $PSCID          = 'input[name="pscid"]';
+    static $DCCID          = 'input[name="dccid"]';
     static $visitLabel     = 'select[name="visitLabel"]';
     static $site           = 'select[name="site"]';
     static $entityType     = 'select[name="entityType"]';
     static $sex            = 'select[name="sex"]';
     static $project        = 'select[name="project"]';
-    static $advancedFilter = ".table-header > div > div > div:nth-child(2) >".
-                             " button:nth-child(1)";
+    static $advancedFilter = "div:nth-child(2) > .btn:nth-child(1)";
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
     static $Participant = 'select[name="participantStatus"]';
@@ -48,9 +47,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
 
 
-    static $openProfile = ".table-header > div > div > div:nth-child(2) >".
-                             " button:nth-child(2)";
-    static $clearFilter = ".col-sm-9 > .btn";
+    static $openProfile = "div:nth-child(2) > .btn:nth-child(2)";
+    static $clearFilter = ".nav-tabs a";
     static $display     = ".table-header > div > div > div:nth-child(1)";
     static $pscidLink   = "tr:nth-child(1) a";
 
@@ -243,7 +241,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$display,
             self::$clearFilter,
             "Female",
-            '225'
+            '226'
         );
         $this->_filterTest(
             self::$sex,

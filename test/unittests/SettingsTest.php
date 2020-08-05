@@ -228,7 +228,7 @@ class SettingsTest extends TestCase
     }
 
     /**
-     * Set up test doubles behavior for NDB_Config::getSetting() method
+     * Set up test doubles behaviour for NDB_Config::getSetting() method
      * when called with 'database' param
      *
      * @return void

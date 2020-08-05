@@ -93,8 +93,7 @@ abstract class LorisIntegrationTest extends TestCase
                 'PSCPI'            => 'N',
                 'Active'           => 'Y',
                 'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
-                'Pending_approval' => 'N',
+                'Pending_approval' => 'N'
             ]
         );
 

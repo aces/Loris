@@ -413,7 +413,7 @@ class EditExaminer extends \NDB_Form
      *
      * @return array of instruments requiring certification
      */
-    function getCertificationInstruments()
+    function getCertificationInstruments(): array
     {
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
@@ -437,7 +437,9 @@ class EditExaminer extends \NDB_Form
                  WHERE Test_name =:testName",
                 ['testName' => $testName]
             );
-            $instruments[$testID] = $certificationInstrument['#'];
+            if (!is_null($testID)) {
+                $instruments[$testID] = $certificationInstrument['#'];
+            }
         }
 
         return $instruments;

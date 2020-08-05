@@ -482,37 +482,29 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
      * database.
      *
      * @param \Password $password The plain text password to be hashed and saved.
-     * @param ?DateTime $expiry   When the password will expire. Can be set to a
-     *                            date in the past in order to create a one-time
-     *                            password.
+     * @param bool      $expired  Whether the password is expired. If so, a reset
+     *                            will be triggered on the user's next login.
      *
      * @return void
      */
     function updatePassword(
         \Password $password,
-        ?\DateTime $expiry = null
+        bool $expired = false
     ): void {
         if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(
                 'Password cannot be set to email'
             );
         }
-        // Set default expiry date value to 6 months in the future.
-        $expiry = $expiry ?? new \DateTime(
-            date('Y-m-d', strtotime('+6 months'))
-        );
 
         $this->update(
             [
-                'Password_hash'   => $password,
-                'Password_expiry' => $expiry->format(self::MYSQL_DATE_FORMAT),
+                'Password_hash'          => $password,
+                'PasswordChangeRequired' => $expired ? 1 : 0
             ]
         );
-        // XXX This class should use DateTime objects instead of strings so
-        // that formatting doens't need to be specified and so that Date math
-        // is simpler and safer.
-        $this->userInfo['Password_hash']   = (string) $password;
-        $this->userInfo['Password_expiry'] = $expiry->format('Y-m-d');
+        $this->userInfo['Password_hash']          = (string) $password;
+        $this->userInfo['PasswordChangeRequired'] = $expired;
     }
 
     /**
