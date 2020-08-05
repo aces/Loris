@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Test Documentation</title>
+        <style>
+            body {
+                text-rendering: optimizeLegibility;
+                font-variant-ligatures: common-ligatures;
+                font-kerning: normal;
+                margin-left: 2em;
+            }
+
+            body > ul > li {
+                font-family: Source Serif Pro, PT Sans, Trebuchet MS, Helvetica, Arial;
+                font-size: 2em;
+            }
+
+            h2 {
+                font-family: Tahoma, Helvetica, Arial;
+                font-size: 3em;
+            }
+
+            ul {
+                list-style: none;
+                margin-bottom: 1em;
+            }
+        </style>
+    </head>
+    <body>
+        <h2 id="AnonymousUserTest">AnonymousUser</h2>
+        <ul>
+            <li style="color: #555753;">✓ Get site names</li>
+        </ul>
+        <h2 id="BreadcrumbTest">Breadcrumb</h2>
+        <ul>
+            <li style="color: #ef2929;">❌ To string</li>
+        </ul>
+        <h2 id="BreadcrumbTrailTest">BreadcrumbTrail</h2>
+        <ul>
+            <li style="color: #ef2929;">❌ To string </li>
+            <li style="color: #ef2929;">❌ To string </li>
+        </ul>
+        <h2 id="CandidateTest">Candidate</h2>
+        <ul>
+            <li style="color: #555753;">✓ Select retrieves candidate info</li>
+            <li style="color: #555753;">✓ S select fails when invalid candidate id passed</li>
+            <li style="color: #555753;">✓ Set data with array succeeds</li>
+            <li style="color: #555753;">✓ Set data throws loris exception</li>
+            <li style="color: #555753;">✓ Get data returns all information if given null</li>
+            <li style="color: #555753;">✓ Get project i d</li>
+            <li style="color: #555753;">✓ Get project title</li>
+            <li style="color: #555753;">✓ Get cand i d</li>
+            <li style="color: #555753;">✓ Get p s c i d</li>
+            <li style="color: #555753;">✓ Get candidate site</li>
+            <li style="color: #555753;">✓ Get center i d</li>
+            <li style="color: #555753;">✓ Get candidate do b</li>
+            <li style="color: #555753;">✓ Get candidate e d c</li>
+            <li style="color: #555753;">✓ Get candidate sex</li>
+            <li style="color: #ef2929;">❌ Get candidate ethnicity</li>
+            <li style="color: #555753;">✓ Is active</li>
+            <li style="color: #555753;">✓ Registered by</li>
+            <li style="color: #555753;">✓ Last record change by</li>
+            <li style="color: #555753;">✓ Get list of visit labels</li>
+            <li style="color: #555753;">✓ Get valid subprojects returns a list of subprojects</li>
+            <li style="color: #555753;">✓ Get valid subprojects returns empty array</li>
+            <li style="color: #555753;">✓ Get first visit returns first visit label</li>
+            <li style="color: #555753;">✓ Get first visit returns empty string</li>
+            <li style="color: #555753;">✓ Get next visit no returns next visit number</li>
+            <li style="color: #555753;">✓ Get next visit no returns one when next visit does not exist</li>
+            <li style="color: #555753;">✓ Get age returns correct date time interval</li>
+            <li style="color: #555753;">✓ Get age in years returns int years</li>
+            <li style="color: #555753;">✓ Get age in months returns months</li>
+            <li style="color: #555753;">✓ Get age in days returns days</li>
+            <li style="color: #555753;">✓ Get session i d for existing visit</li>
+            <li style="color: #555753;">✓ Get session i d returns null for none existing visit</li>
+            <li style="color: #555753;">✓ Candidate exists returns true when candidate exists</li>
+            <li style="color: #555753;">✓ Candidate exists returns false when candidate does not exists</li>
+            <li style="color: #555753;">✓ Validate site p s c i d</li>
+            <li style="color: #555753;">✓ Validate project p s c i d</li>
+            <li style="color: #555753;">✓ Get consents</li>
+            <li style="color: #555753;">✓ Get participant status options</li>
+            <li style="color: #555753;">✓ Get participant status sub options</li>
+            <li style="color: #555753;">✓ Participant status description</li>
+            <li style="color: #555753;">✓ Is accessible by</li>
+            <li style="color: #555753;">✓ Is accessible by no project</li>
+            <li style="color: #555753;">✓ Is accessible by no center</li>
+            <li style="color: #555753;">✓ Structure to p c r e</li>
+            <li style="color: #555753;">✓ Structure to p c r e with abbreviations</li>
+            <li style="color: #ef2929;">❌ Create new</li>
+        </ul>
+        <h2 id="Database_Test">Database_</h2>
+        <ul>
+            <li style="color: #555753;">✓ Set fake data</li>
+            <li style="color: #555753;">✓ Update escapes h t m l</li>
+            <li style="color: #555753;">✓ Unsafe update doesnt escape h t m l</li>
+            <li style="color: #555753;">✓ Insert escapes h t m l</li>
+            <li style="color: #555753;">✓ Unsafe insert doesnt escape h t m l</li>
+            <li style="color: #555753;">✓ Delete with is null</li>
+            <li style="color: #555753;">✓ Delete</li>
+            <li style="color: #555753;">✓ Update with is null</li>
+            <li style="color: #555753;">✓ Update</li>
+            <li style="color: #555753;">✓ Insert with is null</li>
+            <li style="color: #555753;">✓ Insert</li>
+            <li style="color: #555753;">✓ Replace with is null</li>
+            <li style="color: #555753;">✓ Replace</li>
+            <li style="color: #555753;">✓ Insert on duplicate update</li>
+            <li style="color: #555753;">✓ Insert on duplicate update escapes h t m l</li>
+            <li style="color: #555753;">✓ Unsafe insert on duplicate update doesnt escape h t m l</li>
+            <li style="color: #555753;">✓ Get last insert id</li>
+            <li style="color: #555753;">✓ Run</li>
+            <li style="color: #555753;">✓ Prepare</li>
+            <li style="color: #555753;">✓ Execute no options</li>
+            <li style="color: #555753;">✓ Execute with options</li>
+            <li style="color: #555753;">✓ Pselect calls functions</li>
+            <li style="color: #555753;">✓ Pselect returns correct array</li>
+            <li style="color: #555753;">✓ Pselect row calls prepare</li>
+            <li style="color: #555753;">✓ Pselect row returns data</li>
+            <li style="color: #555753;">✓ Pselect row throws exception</li>
+            <li style="color: #555753;">✓ Pselect col returns data</li>
+            <li style="color: #555753;">✓ Pselect col throws exception</li>
+            <li style="color: #555753;">✓ Pselect one</li>
+            <li style="color: #555753;">✓ Table exists</li>
+            <li style="color: #555753;">✓ Table does not exist</li>
+            <li style="color: #555753;">✓ Column exists</li>
+            <li style="color: #555753;">✓ Column does not exist</li>
+            <li style="color: #ef2929;">❌ Insert ignore</li>
+            <li style="color: #555753;">✓ Pselect with index key</li>
+            <li style="color: #555753;">✓ Pselect with index key throws loris exception</li>
+            <li style="color: #555753;">✓ Pselect with index key throws db exception</li>
+            <li style="color: #555753;">✓ Pselect col with index key</li>
+            <li style="color: #555753;">✓ Pselect col with index key throws loris exception</li>
+            <li style="color: #555753;">✓ Pselect col with index key throws db exception one</li>
+            <li style="color: #555753;">✓ Pselect col with index key throws db exception two</li>
+            <li style="color: #555753;">✓ Quote</li>
+            <li style="color: #555753;">✓ Escape</li>
+            <li style="color: #555753;">✓ In transaction</li>
+            <li style="color: #555753;">✓ Begin transaction</li>
+            <li style="color: #555753;">✓ Begin transaction throws exception</li>
+            <li style="color: #555753;">✓ Rollback</li>
+            <li style="color: #555753;">✓ Rollback throws exception</li>
+            <li style="color: #555753;">✓ Commit</li>
+            <li style="color: #555753;">✓ Commit throws exception</li>
+            <li style="color: #555753;">✓ Is connected no p d o</li>
+            <li style="color: #555753;">✓ Is connected with p d o</li>
+        </ul>
+        <h2 id="LorisForms_Test">LorisForms_</h2>
+        <ul>
+            <li style="color: #555753;">✓ Add select</li>
+            <li style="color: #555753;">✓ Add multi select</li>
+            <li style="color: #555753;">✓ Add static</li>
+            <li style="color: #555753;">✓ Add text</li>
+            <li style="color: #555753;">✓ Add date</li>
+            <li style="color: #555753;">✓ Add file</li>
+            <li style="color: #555753;">✓ Add password</li>
+            <li style="color: #555753;">✓ Add hidden</li>
+            <li style="color: #555753;">✓ Add text area</li>
+            <li style="color: #555753;">✓ Add text area with rows or cols</li>
+            <li style="color: #555753;">✓ Add checkbox</li>
+            <li style="color: #555753;">✓ Add header</li>
+            <li style="color: #555753;">✓ Add link</li>
+            <li style="color: #555753;">✓ Add radio</li>
+            <li style="color: #555753;">✓ Add group</li>
+            <li style="color: #555753;">✓ Add page break</li>
+            <li style="color: #555753;">✓ Add element select</li>
+            <li style="color: #555753;">✓ Add element date</li>
+            <li style="color: #555753;">✓ Add element text</li>
+            <li style="color: #555753;">✓ Add element file</li>
+            <li style="color: #555753;">✓ Add element password</li>
+            <li style="color: #555753;">✓ Add element static</li>
+            <li style="color: #555753;">✓ Add element text area</li>
+            <li style="color: #555753;">✓ Add element header</li>
+            <li style="color: #555753;">✓ Add element radio</li>
+            <li style="color: #555753;">✓ Add element hidden</li>
+            <li style="color: #555753;">✓ Add element link</li>
+            <li style="color: #555753;">✓ Add element adv checkbox with states and text</li>
+            <li style="color: #555753;">✓ Add element adv checkbox without extra</li>
+            <li style="color: #555753;">✓ Create element text</li>
+            <li style="color: #555753;">✓ Create element select</li>
+            <li style="color: #555753;">✓ Create element submit</li>
+            <li style="color: #555753;">✓ Create element static</li>
+            <li style="color: #555753;">✓ Create element adv checkbox with states and text</li>
+            <li style="color: #555753;">✓ Create element adv checkbox without extra</li>
+            <li style="color: #555753;">✓ Create element date</li>
+            <li style="color: #555753;">✓ Create element radio</li>
+            <li style="color: #555753;">✓ Create element password</li>
+            <li style="color: #555753;">✓ Create element throws exception</li>
+            <li style="color: #555753;">✓ Get value returns null with no default set</li>
+            <li style="color: #555753;">✓ Get value</li>
+            <li style="color: #555753;">✓ Get group values returns null with no defaults</li>
+            <li style="color: #555753;">✓ Get group values</li>
+            <li style="color: #555753;">✓ Get group values with group element</li>
+            <li style="color: #555753;">✓ Static h t m l returns null with no default</li>
+            <li style="color: #555753;">✓ Static h t m l returns default value</li>
+            <li style="color: #555753;">✓ Date h t m l with no options</li>
+            <li style="color: #555753;">✓ Date h t m l with format not set to y</li>
+            <li style="color: #555753;">✓ Date h t m l with format set to y</li>
+            <li style="color: #555753;">✓ Group h t m l</li>
+            <li style="color: #555753;">✓ Text h t m l with no options</li>
+            <li style="color: #555753;">✓ Text h t m l with options set</li>
+            <li style="color: #555753;">✓ Submit h t m l with no options</li>
+            <li style="color: #555753;">✓ Submit h t m l with options set</li>
+            <li style="color: #555753;">✓ Submit h t m l with different type specified</li>
+            <li style="color: #555753;">✓ Hidden h t m l with no attributes</li>
+            <li style="color: #555753;">✓ Hidden h t m l with attributes set</li>
+            <li style="color: #555753;">✓ Link h t m l</li>
+            <li style="color: #555753;">✓ File h t m l with no attributes</li>
+            <li style="color: #555753;">✓ File h t m l with attributes set</li>
+            <li style="color: #555753;">✓ Text area h t m l with no attributes</li>
+            <li style="color: #555753;">✓ Text area h t m l with attributes set</li>
+            <li style="color: #555753;">✓ Checkbox h t m l with no attributes</li>
+            <li style="color: #555753;">✓ Checkbox h t m l with attributes set</li>
+            <li style="color: #555753;">✓ Checkbox h t m l calls adv checkbox h t m l</li>
+            <li style="color: #555753;">✓ Radio h t m l with no attributes</li>
+            <li style="color: #555753;">✓ Radio h t m l with attributes set</li>
+            <li style="color: #555753;">✓ Header h t m l</li>
+            <li style="color: #555753;">✓ Adv checkbox h t m l</li>
+            <li style="color: #555753;">✓ Create text</li>
+            <li style="color: #555753;">✓ Create submit</li>
+            <li style="color: #555753;">✓ Create text area</li>
+            <li style="color: #555753;">✓ Create select</li>
+            <li style="color: #555753;">✓ Create multi select</li>
+            <li style="color: #555753;">✓ Is submitted with post array set</li>
+            <li style="color: #555753;">✓ Is submitted with files array set</li>
+            <li style="color: #555753;">✓ To array</li>
+            <li style="color: #555753;">✓ To element array</li>
+            <li style="color: #555753;">✓ Add rule if incorrect type</li>
+            <li style="color: #555753;">✓ Add rule if compare type</li>
+            <li style="color: #555753;">✓ Add rule if required if type</li>
+            <li style="color: #555753;">✓ Add rule if element name not string</li>
+            <li style="color: #555753;">✓ Add rule if element not set</li>
+            <li style="color: #555753;">✓ Add rule for required type</li>
+            <li style="color: #555753;">✓ Add rule for numeric type</li>
+            <li style="color: #555753;">✓ Add rule for regex type</li>
+            <li style="color: #555753;">✓ Add rule for email type</li>
+            <li style="color: #555753;">✓ Add rule for max length type</li>
+            <li style="color: #555753;">✓ Add form rule</li>
+            <li style="color: #555753;">✓ Get element</li>
+            <li style="color: #555753;">✓ Get element file</li>
+            <li style="color: #555753;">✓ Set element error</li>
+            <li style="color: #555753;">✓ Get element error</li>
+            <li style="color: #555753;">✓ Get element error returns null</li>
+            <li style="color: #555753;">✓ Update attributes</li>
+            <li style="color: #555753;">✓ Update attributes throws exception</li>
+            <li style="color: #555753;">✓ Apply filter trim already set</li>
+            <li style="color: #555753;">✓ Freeze</li>
+            <li style="color: #555753;">✓ Is frozen</li>
+            <li style="color: #555753;">✓ Render element date</li>
+            <li style="color: #555753;">✓ Render element select</li>
+            <li style="color: #555753;">✓ Render element static</li>
+            <li style="color: #555753;">✓ Render element text area</li>
+            <li style="color: #555753;">✓ Render element file</li>
+            <li style="color: #555753;">✓ Render element password</li>
+            <li style="color: #555753;">✓ Render element text</li>
+            <li style="color: #555753;">✓ Render element checkbox</li>
+            <li style="color: #555753;">✓ Render element radio</li>
+            <li style="color: #555753;">✓ Render element group</li>
+            <li style="color: #555753;">✓ Render element header</li>
+            <li style="color: #555753;">✓ Render element submit</li>
+            <li style="color: #555753;">✓ Render element hidden</li>
+            <li style="color: #555753;">✓ Render element time</li>
+            <li style="color: #555753;">✓ Render element link</li>
+            <li style="color: #555753;">✓ Add group rule</li>
+            <li style="color: #555753;">✓ Add group rule with one element</li>
+            <li style="color: #555753;">✓ Add group rule invalid type</li>
+            <li style="color: #555753;">✓ Add group rule invalid argument</li>
+        </ul>
+        <h2 id="NDB_BVL_FeedbackTest">NDB_BVL_Feedback</h2>
+        <ul>
+            <li style="color: #ef2929;">❌ Create feedback type with invalid name</li>
+            <li style="color: #ef2929;">❌ Create new feedback type</li>
+            <li style="color: #ef2929;">❌ Get feedback type id by name for existing value</li>
+            <li style="color: #ef2929;">❌ Get feedback type id by name for none existing value</li>
+        </ul>
+        <h2 id="Loris\Tests\NDB_BVL_Instrument_LINST_ToJSON_Test">Loris\Tests\NDB_BVL_Instrument_LINST_ToJSON_</h2>
+        <ul>
+            <li style="color: #555753;">✓ Meta data</li>
+            <li style="color: #555753;">✓ All elements</li>
+            <li style="color: #555753;">✓ Page element</li>
+        </ul>
+        <h2 id="Loris\Tests\NDB_BVL_Instrument_ToJSON_Test">Loris\Tests\NDB_BVL_Instrument_ToJSON_</h2>
+        <ul>
+            <li style="color: #555753;">✓ Meta data</li>
+            <li style="color: #555753;">✓ Select element</li>
+            <li style="color: #555753;">✓ Text element</li>
+            <li style="color: #555753;">✓ Date element</li>
+            <li style="color: #555753;">✓ Numeric element</li>
+            <li style="color: #555753;">✓ Score element</li>
+            <li style="color: #555753;">✓ Header element</li>
+            <li style="color: #555753;">✓ Label element</li>
+            <li style="color: #555753;">✓ Page group</li>
+        </ul>
+        <h2 id="NDB_ConfigTest">NDB_Config</h2>
+        <ul>
+            <li style="color: #555753;">✓ Config file path</li>
+            <li style="color: #555753;">✓ Xmlto array</li>
+            <li style="color: #555753;">✓ Is numeric array</li>
+            <li style="color: #555753;">✓ Get setting from d b</li>
+            <li style="color: #555753;">✓ Get setting from x m l</li>
+            <li style="color: #555753;">✓ Get setting</li>
+            <li style="color: #555753;">✓ Setting enabled when true</li>
+            <li style="color: #555753;">✓ Setting enabled when false</li>
+            <li style="color: #555753;">✓ Get project settings</li>
+            <li style="color: #555753;">✓ Get subproject settings</li>
+            <li style="color: #555753;">✓ Get subproject settings with fake i d</li>
+            <li style="color: #555753;">✓ Get external links</li>
+        </ul>
+        <h2 id="NDB_Menu_Filter_Test">NDB_Menu_Filter_</h2>
+        <ul>
+            <li style="color: #555753;">✓ Reset filters</li>
+            <li style="color: #555753;">✓ Set search keyword</li>
+            <li style="color: #555753;">✓ Set filters</li>
+            <li style="color: #555753;">✓ Set filter sort order</li>
+        </ul>
+        <h2 id="NDB_PageTest">NDB_Page</h2>
+        <ul>
+            <li style="color: #555753;">✓ Construct</li>
+            <li style="color: #555753;">✓ Set and get template var</li>
+            <li style="color: #555753;">✓ Add file</li>
+            <li style="color: #555753;">✓ Add header</li>
+            <li style="color: #555753;">✓ Add select</li>
+            <li style="color: #555753;">✓ Add label</li>
+            <li style="color: #555753;">✓ Add score column</li>
+            <li style="color: #555753;">✓ Add basic text</li>
+            <li style="color: #555753;">✓ Add basic text area</li>
+            <li style="color: #555753;">✓ Add basic date with no date options</li>
+            <li style="color: #555753;">✓ Add basic date with date options set</li>
+            <li style="color: #555753;">✓ Add checkbox</li>
+            <li style="color: #555753;">✓ Add radio</li>
+            <li style="color: #555753;">✓ Add hidden</li>
+            <li style="color: #555753;">✓ Add text area group</li>
+            <li style="color: #555753;">✓ Add password</li>
+            <li style="color: #555753;">✓ Add rule</li>
+            <li style="color: #555753;">✓ Add group</li>
+            <li style="color: #555753;">✓ Add group rule</li>
+            <li style="color: #555753;">✓ Create select</li>
+            <li style="color: #ef2929;">❌ Create label</li>
+            <li style="color: #555753;">✓ Create text</li>
+            <li style="color: #555753;">✓ Create text area</li>
+            <li style="color: #555753;">✓ Create date</li>
+            <li style="color: #555753;">✓ Create checkbox</li>
+            <li style="color: #555753;">✓ Create radio</li>
+            <li style="color: #555753;">✓ Create password</li>
+            <li style="color: #555753;">✓ Display with skip template true</li>
+            <li style="color: #ef2929;">❌ Display with form frozen</li>
+        </ul>
+        <h2 id="PasswordTest">Password</h2>
+        <ul>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Well formed password</li>
+            <li style="color: #555753;">✓ To string</li>
+        </ul>
+        <h2 id="SettingsTest">Settings</h2>
+        <ul>
+            <li style="color: #555753;">✓ Is sandbox returns true </li>
+            <li style="color: #555753;">✓ Is sandbox returns true </li>
+            <li style="color: #555753;">✓ Is sandbox returns true </li>
+            <li style="color: #555753;">✓ Is sandbox returns true </li>
+            <li style="color: #555753;">✓ Is sandbox returns true </li>
+            <li style="color: #555753;">✓ Is sandbox returns false </li>
+            <li style="color: #555753;">✓ Is sandbox returns false </li>
+            <li style="color: #555753;">✓ Is sandbox returns false </li>
+            <li style="color: #555753;">✓ Is sandbox returns false </li>
+            <li style="color: #555753;">✓ Is sandbox returns false </li>
+            <li style="color: #555753;">✓ Is sandbox returns false </li>
+            <li style="color: #555753;">✓ Db name return correct name</li>
+            <li style="color: #555753;">✓ Db host return correct host</li>
+            <li style="color: #555753;">✓ Db user name return correct user name</li>
+            <li style="color: #555753;">✓ Db password return correct password</li>
+            <li style="color: #555753;">✓ Exception thrown when no password in config</li>
+        </ul>
+        <h2 id="SinglePointLoginTest">SinglePointLogin</h2>
+        <ul>
+            <li style="color: #555753;">✓ J w t authenticate returns true for valid token</li>
+            <li style="color: #555753;">✓ J w t authenticate fails with invalid signature</li>
+            <li style="color: #555753;">✓ J w t authenticate fails with algorithm none</li>
+            <li style="color: #555753;">✓ J w t authenticate fails with expired token</li>
+        </ul>
+        <h2 id="UserTest">User</h2>
+        <ul>
+            <li style="color: #555753;">✓ Factory retrieves user info</li>
+            <li style="color: #555753;">✓ Get data for language preferences</li>
+            <li style="color: #555753;">✓ Get fullname</li>
+            <li style="color: #555753;">✓ Get id</li>
+            <li style="color: #555753;">✓ Get username</li>
+            <li style="color: #555753;">✓ Site names</li>
+            <li style="color: #555753;">✓ Get center i ds</li>
+            <li style="color: #555753;">✓ Get project i ds</li>
+            <li style="color: #555753;">✓ Get language preference</li>
+            <li style="color: #555753;">✓ Get examiner sites</li>
+            <li style="color: #555753;">✓ Get study sites</li>
+            <li style="color: #555753;">✓ Has study sites</li>
+            <li style="color: #555753;">✓ Is email valid</li>
+            <li style="color: #555753;">✓ Is email valid when invalid</li>
+            <li style="color: #555753;">✓ Has center when true</li>
+            <li style="color: #555753;">✓ Has center when false</li>
+            <li style="color: #555753;">✓ Has project when true</li>
+            <li style="color: #555753;">✓ Has project when false</li>
+            <li style="color: #555753;">✓ Is user d c c</li>
+            <li style="color: #555753;">✓ Insert</li>
+            <li style="color: #555753;">✓ Update</li>
+            <li style="color: #555753;">✓ Update password with expiration</li>
+            <li style="color: #555753;">✓ Update password without expiry</li>
+            <li style="color: #555753;">✓ Has logged in when true</li>
+            <li style="color: #555753;">✓ Has logged in when false</li>
+            <li style="color: #555753;">✓ Password changed returns true</li>
+            <li style="color: #555753;">✓ Password changed returns false</li>
+            <li style="color: #555753;">✓ Get last login when not empty</li>
+            <li style="color: #555753;">✓ Get last login when empty</li>
+            <li style="color: #555753;">✓ Is accessible by true</li>
+            <li style="color: #555753;">✓ Is accessible by false</li>
+            <li style="color: #555753;">✓ User permissions select false</li>
+            <li style="color: #555753;">✓ User permissions select true</li>
+            <li style="color: #555753;">✓ Has all permissions throws exception</li>
+            <li style="color: #555753;">✓ Has all permissions returns true</li>
+            <li style="color: #555753;">✓ Has all permissions returns false</li>
+            <li style="color: #555753;">✓ Has any permission throws exception</li>
+            <li style="color: #555753;">✓ Has any permission returns true</li>
+            <li style="color: #555753;">✓ Get permissions</li>
+            <li style="color: #555753;">✓ Add permissions</li>
+            <li style="color: #555753;">✓ Remove all permissions</li>
+            <li style="color: #555753;">✓ Remove permissions</li>
+            <li style="color: #555753;">✓ Get permission i ds</li>
+            <li style="color: #555753;">✓ Get permissions verbose</li>
+            <li style="color: #555753;">✓ Has center permission true with superuser</li>
+            <li style="color: #555753;">✓ Has center permission true without superuser</li>
+            <li style="color: #555753;">✓ Has center permission incorrect permission</li>
+            <li style="color: #555753;">✓ Has center permission incorrect center</li>
+        </ul>
+        <h2 id="UtilityTest">Utility</h2>
+        <ul>
+            <li style="color: #555753;">✓ Calculate age</li>
+            <li style="color: #555753;">✓ Calculate age format </li>
+            <li style="color: #555753;">✓ Calculate age format </li>
+            <li style="color: #555753;">✓ Calculate age format </li>
+            <li style="color: #555753;">✓ Calculate age format </li>
+            <li style="color: #555753;">✓ Get consent list</li>
+            <li style="color: #555753;">✓ Get project list</li>
+            <li style="color: #555753;">✓ Get subproject list</li>
+            <li style="color: #555753;">✓ Get subproject list with project i d</li>
+            <li style="color: #555753;">✓ Get subprojects for project</li>
+            <li style="color: #555753;">✓ Get subprojects for project without i d</li>
+            <li style="color: #555753;">✓ Get instruments</li>
+            <li style="color: #555753;">✓ Get all d d e instruments</li>
+            <li style="color: #555753;">✓ Get direct instruments</li>
+            <li style="color: #555753;">✓ Get site list</li>
+            <li style="color: #555753;">✓ Get stage using cand i d</li>
+            <li style="color: #555753;">✓ Get subproject i d using cand i d</li>
+            <li style="color: #555753;">✓ Get visit list</li>
+            <li style="color: #555753;">✓ Get visit list with project i d</li>
+            <li style="color: #555753;">✓ Get language list</li>
+            <li style="color: #555753;">✓ Get visit instruments</li>
+            <li style="color: #555753;">✓ Get visit instruments without test name display</li>
+            <li style="color: #555753;">✓ Lookup battery</li>
+            <li style="color: #555753;">✓ Lookup battery with stage</li>
+            <li style="color: #555753;">✓ Associative to numeric array</li>
+            <li style="color: #555753;">✓ Associative to numeric array with numeric array</li>
+            <li style="color: #555753;">✓ As array</li>
+            <li style="color: #555753;">✓ Nullify empty</li>
+            <li style="color: #555753;">✓ As array with array given</li>
+            <li style="color: #555753;">✓ Get sourcefields returns nothing with no parameters</li>
+            <li style="color: #555753;">✓ Get sourcefields with instrument specified</li>
+            <li style="color: #555753;">✓ Get sourcefields with comment i d specified</li>
+            <li style="color: #555753;">✓ Get sourcefields with name specified</li>
+            <li style="color: #555753;">✓ Get sourcefields with all three parameters</li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns false </li>
+            <li style="color: #555753;">✓ Value is positive integer returns true </li>
+            <li style="color: #555753;">✓ Value is positive integer returns true </li>
+            <li style="color: #555753;">✓ Value is positive integer returns true </li>
+            <li style="color: #555753;">✓ Path join</li>
+            <li style="color: #555753;">✓ Columns has null true</li>
+            <li style="color: #555753;">✓ Columns has null false</li>
+            <li style="color: #555753;">✓ Resolve path</li>
+            <li style="color: #555753;">✓ Get max upload size</li>
+            <li style="color: #555753;">✓ Return bytes</li>
+            <li style="color: #555753;">✓ Random string</li>
+            <li style="color: #555753;">✓ To date display format</li>
+            <li style="color: #555753;">✓ To date display format throws exception</li>
+            <li style="color: #555753;">✓ Get scan type list</li>
+            <li style="color: #555753;">✓ Append forward slash</li>
+        </ul>
+        <h2 id="VisitTest">Visit</h2>
+        <ul>
+            <li style="color: #ef2929;">❌ Visit</li>
+            <li style="color: #ef2929;">❌ All visit</li>
+            <li style="color: #ef2929;">❌ Visits projects</li>
+            <li style="color: #ef2929;">❌ Get visits by name</li>
+        </ul>
+        <h2 id="LORIS\StudyEntitites\Candidate\Test\CandID_Test">LORIS\StudyEntitites\Candidate\Test\CandID_</h2>
+        <ul>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Contructor invalid values </li>
+            <li style="color: #555753;">✓ Get type</li>
+            <li style="color: #555753;">✓ To string</li>
+        </ul>
+    </body>
+</html>
