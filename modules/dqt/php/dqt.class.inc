@@ -177,7 +177,7 @@ class Dqt extends \NDB_Form
                 $baseURL . "/dqt/js/react.tabs.js",
                 $baseURL . "/dqt/js/react.sidebar.js",
                 $baseURL . "/dqt/js/react.app.js",
-                $baseURL . "/dqt/js/jstat.js",
+                $baseURL . "/dataquery/js/jstat.js",
                 $baseURL . "/js/components/StaticDataTable.js",
                 $baseURL . "/js/flot/jquery.flot.min.js",
                 $baseURL . '/js/components/PaginationLinks.js',
