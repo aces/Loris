@@ -240,8 +240,7 @@ class New_Profile extends \NDB_Form
                     . 'valid date.';
             }
         } else if (empty($values['dobDate'])) {
-            $errors['dobDate'] = "Date of Birth cannot be empty
-            if Expected Date isn't configured.";
+            $errors['dobDate'] = "Date of Birth cannot be empty.";
         }
 
         // Validate sex fields
