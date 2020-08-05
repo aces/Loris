@@ -124,10 +124,10 @@ class Files extends \NDB_Page
             );
             $factory  = \NDB_Factory::singleton();
             $baseURL  = $factory->settings()->getBaseURL();
-            $msg_data = array(
+            $msg_data = [
                 'updatedDocument' => $baseURL. "/document_repository/",
                 'document'        => $fileName,
-            );
+            ];
             $Notifier->notify($msg_data);
             return (new \LORIS\Http\Response\JSON\OK(
                 ['message' => 'File updated.']
