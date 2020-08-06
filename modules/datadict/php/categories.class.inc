@@ -57,12 +57,16 @@ class Categories extends \NDB_Page {
                 $organized[$cat] = [];
             }
             $fieldname = $row->getFieldName();
+            $datatype = $row->getDataType();
             $organized[$cat][$fieldname] = [
                         'description' => $row->getDescription(),
                         'scope' => $row->getScope(),
                         'type' => $row->getDataType(),
                         'cardinality' => $row->getCardinality(),
                 ];
+            if ($datatype instanceof \LORIS\Data\Types\Enumeration) {
+                $organized[$cat][$fieldname]['options'] = $datatype->getOptions();
+            }
         }
         return new \LORIS\Http\Response\JSON\OK($organized);
     }
