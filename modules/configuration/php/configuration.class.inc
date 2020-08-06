@@ -63,8 +63,8 @@ class Configuration extends \NDB_Form
 
         $date_format = [
             ''    => '',
-            'Ymd' => 'Ymd',
-            'Ym'  => 'Ym'
+            'Ymd' => 'Ymd (EX: 2015-12-28)',
+            'Ym'  => 'Ym (EX: 2015-12)'
         ];
 
         $instruments     = \Utility::getAllInstruments();
