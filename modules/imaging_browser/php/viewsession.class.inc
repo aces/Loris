@@ -51,7 +51,8 @@ class ViewSession extends \NDB_Form
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
          */
-        $candid    = \TimePoint::singleton($_REQUEST['sessionID'])->getCandID();
+        $session   = \TimePoint::singleton($_REQUEST['sessionID']);
+        $candid    = $session->getCandID();
         $candidate = \Candidate::singleton($candid);
 
         if ($candidate->getData('Entity_type') == 'Scanner') {
@@ -60,14 +61,14 @@ class ViewSession extends \NDB_Form
                     'imaging_browser_phantom_ownsite',
                     \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
                 ))
-                && ($user->hasProject($candidate->getProjectID()));
+                && ($user->hasProject($session->getProject()->getId()));
         } elseif ($candidate->getData('Entity_type') == 'Human') {
             return ($user->hasPermission('imaging_browser_view_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_view_site',
                     \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
                 ))
-                && $user->hasProject($candidate->getProjectID());
+                && $user->hasProject($session->getProject()->getId());
         }
 
         return false;
