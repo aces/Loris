@@ -121,9 +121,18 @@ var Instrument = {
                         // Add dropdown and special naming when no date format is set
                         // (i.e when addDateElement() is used)
                         if (!element.Options.dateFormat) {
+                          if (elName === '' || !elName.includes('_date')) {
                             elName = elName + "_date";
-                            dropdown = "select{@}" + elName + "_status" +
+                          }
+                          console.log(element.Description);
+                          if (!element.Description) {
+                            element.Description = '';
+                          }
+                          dropdown = "select{@}" + elName + "_status" +
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+                        }
+                        if (!element.Options.dateFormat) {
+                          element.Options.dateFormat = 'Date';
                         }
 
                         content += 'date{@}';
