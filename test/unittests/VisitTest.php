@@ -16,7 +16,6 @@ require_once __DIR__ . '/../../php/libraries/VisitController.class.inc';
 require_once __DIR__ . '/../../php/libraries/Visit.class.inc';
 
 use \LORIS\Visit;
-use \LORIS\VisitController;
 use \PHPUnit\Framework\TestCase;
 
 /**
