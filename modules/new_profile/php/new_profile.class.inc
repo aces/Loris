@@ -64,9 +64,10 @@ class New_Profile extends \NDB_Form
         /* Create the candidate and retrieve its ID.
          * Use form values when present, otherwise default to null.
          */
-        $dob = isset($values['dobDate'])
-            ? (new \DateTime($values['dobDate']))->format('Y-m-d')
-            : null;
+         $dob = null;
+         if (isset($values['dobDate'])) {
+             $dob = (new \DateTime($values['dobDate']))->format('Y-m-d')
+         }
         $edc = $values['edcDate'] ?? null;
         if (!is_null($edc)) {
             $edc = (new \DateTime($edc))->format('Y-m-d');
