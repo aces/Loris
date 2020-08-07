@@ -1,4 +1,4 @@
-/* exported PasswordVisibility */
+/* exported passwordVisibility */
 
 /**
  * @author Laetitia Fesselier
@@ -14,16 +14,11 @@
  * Collect all input[type='password'] in the DOM
  * and instantiate PwdInput
  */
-class PasswordVisibility {
-  /**
-   * @constructor
-   */
-  constructor() {
-    const inputs = document.getElementsByTagName('input');
-    for (let i = 0; i < inputs.length; i++) {
-      if (inputs[i].type.toLowerCase() === 'password') {
-        new PwdInput(inputs[i]);
-      }
+function passwordVisibility() {
+  const inputs = document.getElementsByTagName('input');
+  for (let i = 0; i < inputs.length; i++) {
+    if (inputs[i].type.toLowerCase() === 'password') {
+      new PwdInput(inputs[i]);
     }
   }
 }

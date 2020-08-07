@@ -661,19 +661,15 @@ class Edit_User extends \NDB_Form
         }
 
         // password
-        $this->addPassword('Password_hash', 'Password');
-        $this->addCheckbox('NA_Password', 'Generate new password', []);
-        
         if ($this->isCreatingNewUser()) {
             $pwd_attribs = ['required' => true];
         } else {
             $pwd_attribs = [];
         }
-        $this->addPassword(
-            '__Confirm',
-            'Confirm Password',
-            $pwd_attribs
-        );
+
+        $this->addPassword('Password_hash', 'Password', $pwd_attribs);
+        $this->addCheckbox('NA_Password', 'Generate new password', []);
+        $this->addPassword('__Confirm', 'Confirm Password', $pwd_attribs);
 
         // The supplied pattern is:
         //   - must have at least one non-whitespace characters

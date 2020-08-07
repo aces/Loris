@@ -106,5 +106,7 @@
 </form>
 
 <script>
-    new PasswordVisibility();
+  document.addEventListener('DOMContentLoaded', function(event) {
+    passwordVisibility();
+  })
 </script>

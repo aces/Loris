@@ -19,6 +19,8 @@
     }
 
     $(document).ready(function() {
+        passwordVisibility();
+
         $('[name="NA_UserID"]').change(function() {
             $('.userid-star').toggleClass('hide', this.checked);
             $('[name="UserID"]').prop('disabled', this.checked).val('');
@@ -130,7 +132,7 @@
             {$form.Password_hash.label}
             <span class="pwd-star password {if isset($form.Password_hash.required) && $form.Password_hash.required} required{/if}" style="color: red">*</span>
           </label>
-          <div class="col-sm-4">
+          <div class="col-sm-2">
               <input type="password" name="{$form.Password_hash.name}" />
           </div>
           <div class="col-sm-4">{$form.NA_Password.html}</div>
@@ -467,9 +469,9 @@
 
 	{if $form.errors.active_timeWindows}
 	    <div class="alert alert-danger" role="alert">
-		    {$form.errors.active_timeWindows}
+	        {$form.errors.active_timeWindows}
 	    </div>
-    {/if}
+	{/if}
 
 	{if $form.errors.active_timeWindows}
 		<div class="row form-group form-inline form-inline has-error">
@@ -567,7 +569,3 @@
     {/if}
 </div>
 </form>
-
-<script>
-    new PasswordVisibility();
-</script>
