@@ -29,6 +29,7 @@
 require_once "Email.class.inc";
 
 use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
+use \LORIS\issue_tracker\Issue_Tracker;
 
 //TODO: or split it into two files... :P
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
@@ -96,6 +97,7 @@ function editIssue()
     if (array_key_exists('sessionID', $validatedInput)) {
         $issueValues['sessionID'] = $validatedInput['sessionID'];
     }
+
     if (array_key_exists('candID', $validatedInput)) {
         $issueValues['candID'] = $validatedInput['candID'];
     }
@@ -321,7 +323,10 @@ function getChangedValues($issueValues, $issueID)
     $changedValues = [];
     foreach ($issueValues as $key => $value) {
         // Only include fields that have changed
-        if ($issueValues[$key] != ($issueData[$key] ?? '') && !empty($value)) {
+        // centerID is allowed to be NULL
+        if ($issueValues[$key] != ($issueData[$key] ?? '')
+            && (!empty($value) || $key === 'centerID')
+        ) {
             $changedValues[$key] = $value;
         }
     }
@@ -345,9 +350,10 @@ function updateHistory($values, $issueID)
     $db      = $factory->database();
 
     foreach ($values as $key => $value) {
-        if (!empty($value)) {
+        // centerID is allowed to be NULL
+        if (!empty($value) || $key === 'centerID') {
             $changedValues = [
-                'newValue'     => $value,
+                'newValue'     => $value ?? '',
                 'fieldChanged' => $key,
                 'issueID'      => $issueID,
                 'addedBy'      => $user->getData('UserID'),
@@ -435,6 +441,26 @@ function getWatching($issueID)
 }
 
 /**
+ * Returns the site name in the database corresponding to the centerID
+ *
+ * @param int $centerID - must match one from the psc table or 0
+ *
+ * @return ?string
+ */
+function getSiteName($centerID): ?string
+{
+    if ($centerID == null) {
+        return "All Sites";
+    }
+
+    $db =& Database::singleton();
+    return $db->pselectOne(
+        "SELECT Name FROM psc WHERE CenterID=:centerID",
+        ['centerID' => $centerID]
+    );
+}
+
+/**
  * Gets the changes to values, and the comments relevant to the given issue
  *
  * @param int $issueID the issueID
@@ -465,11 +491,7 @@ function getComments($issueID)
             $comment['newValue'] = $modules[$mid]->getLongName();
             continue;
         } else if ($comment['fieldChanged'] === 'centerID') {
-            $site = $db->pselectOne(
-                "SELECT Name FROM psc WHERE CenterID=:centerID",
-                ['centerID' => $comment['newValue']]
-            );
-            $comment['newValue']     = $site;
+            $comment['newValue']     = getSiteName($comment['newValue']);
             $comment['fieldChanged'] = 'site';
             continue;
         } else if ($comment['fieldChanged'] === 'candID') {
@@ -582,14 +604,8 @@ function getIssueFields()
     $user    = $factory->user();
     $sites   = [];
 
-    //get field options
-    if ($user->hasPermission('access_all_profiles')) {
-        // get the list of study sites - to be replaced by the Site object
-        $sites = Utility::getSiteList(false, true);
-    } else {
-        // allow only to view own site data
-        $sites = $user->getStudySites();
-    }
+    // get field options
+    $sites = Issue_Tracker::getSites(false, true);
 
     //not yet ideal permissions
     $assignees = [];
@@ -607,7 +623,7 @@ function getIssueFields()
         $assignee_expanded = $db->pselect(
             "SELECT DISTINCT u.Real_name, u.UserID FROM users u
              LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
+             WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
             [
                 'CenterID' => $CenterID,
                 'DCC'      => $DCCID,
@@ -687,8 +703,8 @@ WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
 
         $desc = $db->pselect(
             "SELECT issueComment
-FROM issues_comments WHERE issueID=:i
-ORDER BY dateAdded LIMIT 1",
+            FROM issues_comments WHERE issueID=:i
+            ORDER BY dateAdded LIMIT 1",
             ['i' => $issueID]
         );
 
@@ -719,8 +735,11 @@ ORDER BY dateAdded LIMIT 1",
         // We need to unescape the string here:
         // React is escaping the string in the template
         // This fixes an issue with multiple escaping (#6643)
-        $comment           = $desc[0]['issueComment'];
-        $issueData['desc'] = html_entity_decode($comment) ?? '';
+        $issueData['desc'] = '';
+        if (count($desc) > 0) {
+            $comment           = $desc[0]['issueComment'];
+            $issueData['desc'] = html_entity_decode($comment);
+        }
     }
     $issueData['comment'] = null;
 

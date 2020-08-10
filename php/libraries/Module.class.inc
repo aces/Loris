@@ -347,7 +347,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             } else {
                 $_REQUEST['subtest'] = $pagename;
             }
-
+            $page->loadResources($user, $request);
             if ($page->_hasAccess($user) !== true) {
                 return (new \LORIS\Middleware\PageDecorationMiddleware(
                     $user
