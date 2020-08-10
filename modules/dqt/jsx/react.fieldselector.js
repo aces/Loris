@@ -12,7 +12,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import SearchableDropdown from './components/searchabledropdown';
-import SelectDropdown from './components/selectdropdown';
 
 /**
  * CategoryItem Component

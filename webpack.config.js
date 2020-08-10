@@ -218,7 +218,6 @@ const config = [
   lorisModule('dqt', [
     'components/expansionpanels',
     'components/searchabledropdown',
-    'components/selectdropdown',
     'components/stepper',
     'react.app',
     'react.fieldselector',
