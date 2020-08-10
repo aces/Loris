@@ -224,7 +224,6 @@ const config = [
     'react.filterBuilder',
     'react.navigationStepper',
     'react.notice',
-    'react.paginator',
     'react.savedqueries',
     'react.sidebar',
     'react.tabs',
