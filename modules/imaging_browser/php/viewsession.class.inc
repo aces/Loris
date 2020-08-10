@@ -51,7 +51,7 @@ class ViewSession extends \NDB_Form
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
          */
-        $session   = \TimePoint::singleton($_REQUEST['sessionID']);
+        $session   = \TimePoint::singleton(new \SessionID(strval($_REQUEST['sessionID'])));
         $candid    = $session->getCandID();
         $candidate = \Candidate::singleton($candid);
 
@@ -974,4 +974,3 @@ class ViewSession extends \NDB_Form
     }
 
 }
-
