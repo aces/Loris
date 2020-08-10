@@ -1,22 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import {Stepper} from './components/stepper';
 
 const NavigationStepper = (props) => {
   const mySteps = ['Info', 'DefineFields', 'DefineFilters', 'ViewData'];
-
-  const [
-    // eslint-disable-next-line no-unused-vars
-    currentStep,
-    setCurrentStep] = useState(mySteps.indexOf(props.setIndex));
-  // eslint-disable-next-line no-unused-vars
-  const [steps, setSteps] = useState([
+  const steps = [
     {
       title: 'Create or Load',
       onClick: (e) => {
         e.preventDefault();
-        onClickStep(0);
         props.stepperClicked('Info', 0);
       },
     },
@@ -24,7 +17,6 @@ const NavigationStepper = (props) => {
       title: 'Define Fields',
       onClick: (e) => {
         e.preventDefault();
-        onClickStep(1);
         props.stepperClicked('DefineFields', 1);
       },
     },
@@ -32,7 +24,6 @@ const NavigationStepper = (props) => {
       title: 'Define Filters (Optional)',
       onClick: (e) => {
         e.preventDefault();
-        onClickStep(2);
         props.stepperClicked('DefineFilters', 2);
       },
     },
@@ -40,14 +31,10 @@ const NavigationStepper = (props) => {
       title: 'Run Query',
       onClick: (e) => {
         e.preventDefault();
-        onClickStep(3);
         props.stepperClicked('ViewData', 3);
       },
     },
-  ]);
-  const onClickStep = (step) => {
-    setCurrentStep(step);
-  };
+  ];
   return (
     <Stepper
       steps={steps}
