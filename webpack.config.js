@@ -216,7 +216,6 @@ const config = [
     'react.tabs',
   ]),
   lorisModule('dqt', [
-    'components/button',
     'components/expansionpanels',
     'components/searchabledropdown',
     'components/selectdropdown',
