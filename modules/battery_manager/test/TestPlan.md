@@ -41,7 +41,7 @@ Test Battery.
      `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Subproject`, `Visit Label`, `Site`, `First Visit`,
      and `Instrument Order`.
 
-### Add Button
+### New Test Button
 
 **Testing add functionality**
   1. Check that you cannot add an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
