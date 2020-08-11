@@ -108,6 +108,7 @@ class OutputWrapper
         $handle = STDOUT
     ): void {
         $output = $line;
+
         // If a valid colour is supplied and the output is going to a TTY,
         // colourize the output.
         if (!empty($colour) && stream_isatty($handle)) {

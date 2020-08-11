@@ -24,6 +24,7 @@ declare -a tools_list=(
     'delete_ignored_conflicts.php'
     'delete_timepoint.php'
     'detect_duplicated_commentids.php'
+    'generate_project_statistics_csv.php'
     'generic_includes.php'
     'importers/CandidateImporter.php'
     'importers/DataImporter.class.inc'
