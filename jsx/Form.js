@@ -1238,15 +1238,23 @@ class DateElement extends Component {
       maxYear = '9999';
     }
 
+    const currentDate = new Date();
+    // The added '0' is needed because getmonth and getdate return
+    // values needed to be padded before saving.
+    // padStart adds as many possible zeros while keeping the string
+    // at a length of 2 for the following code.
+    const currentDay = `${currentDate.getDate()}`.padStart(2, '0');
+    const currentMonth = `${currentDate.getMonth() + 1}`.padStart(2, '0');
+
     // Handle date format
     let format = this.props.dateFormat;
     let inputType = 'date';
     let minFullDate = minYear + '-01-01';
-    let maxFullDate = maxYear + '-12-31';
+    let maxFullDate = maxYear + '-' + currentMonth + '-' + currentDay;
     if (!format.match(/d/i)) {
       inputType = 'month';
       minFullDate = minYear + '-01';
-      maxFullDate = maxYear + '-12';
+      maxFullDate = maxYear + '-' + currentMonth;
     }
 
     return (
