@@ -39,7 +39,7 @@
             <directory>../modules/issue_tracker/test/</directory>
             <directory>../modules/media/test/</directory>
             <directory>../modules/module_manager/test/</directory>
-            <directory>../modules/meta_docs/test/</directory>
+            <directory>../modules/api_docs/test/</directory>
             <directory>../modules/mri_upload/test/</directory>
             <directory>../modules/mri_violations/test/</directory>
             <directory>../modules/new_profile/test/</directory>

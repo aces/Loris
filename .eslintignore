@@ -7,7 +7,7 @@ htdocs/js/components/*
 
 # Ignore until ESLint is run
 modules/dataquery/
-modules/meta_docs/
+modules/api_docs/
 
 # Ignore external libs
 htdocs/js/flot/*
