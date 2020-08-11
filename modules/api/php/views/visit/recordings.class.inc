@@ -56,6 +56,7 @@ class Recordings
                 return [
                     'OutputType'          => $recording->getOutputType(),
                     'Filename'            => $recording->getFilename(),
+                    'Path'                => $recording->getFilelocation(),
                     'AcquisitionModality' => $recording->getAcquisitionmodality(),
                 ];
             },
