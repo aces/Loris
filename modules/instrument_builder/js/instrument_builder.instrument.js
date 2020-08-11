@@ -121,9 +121,6 @@ var Instrument = {
                         // Add dropdown and special naming when no date format is set
                         // (i.e when addDateElement() is used)
                         if (!element.Options.dateFormat) {
-                          if (elName === '' || !elName.includes('_date')) {
-                            elName = elName + "_date";
-                          }
                           if (!element.Description) {
                             // Prevents undefined being added to linst file.
                             element.Description = '';
