@@ -183,12 +183,13 @@ class RequestAccount extends \NDB_Form
         $fullname = $name." ".$lastname;
 
         $vals = [
-            'UserID'           => $from,
-            'Real_name'        => $fullname,
-            'First_name'       => $name,
-            'Last_name'        => $lastname,
-            'Pending_approval' => 'Y',
-            'Email'            => $from,
+            'UserID'               => $from,
+            'Real_name'            => $fullname,
+            'First_name'           => $name,
+            'Last_name'            => $lastname,
+            'Pending_approval'     => 'Y',
+            'Email'                => $from,
+            'account_request_date' => date('Y-m-d'),
         ];
 
         // check email address' uniqueness
@@ -245,7 +246,7 @@ class RequestAccount extends \NDB_Form
                     ["fn" => $fullname]
                 );
 
-                // If examiner not in table add him
+                // Add new account to the examiner tables
                 if (empty($examinerID)) {
                     $DB->insert(
                         'examiners',
@@ -271,5 +272,52 @@ class RequestAccount extends \NDB_Form
 
         // Show success message even if email already exists for security reasons
         $this->tpl_data['success'] = true;
+
+        // Don't send out emails if this is a sandbox VM.
+        if ($factory->config()->settingEnabled('sandbox')) {
+            return;
+        }
+
+        // Send an email to all users meeting the following criteria:
+        //     - Associated with the Site
+        //     - Associated with the Project
+        //     - Have the User Management permission
+        $query  = "
+        SELECT DISTINCT u.Email,u.userID
+        FROM users u
+            JOIN user_psc_rel upr
+                ON u.ID = upr.UserID
+            JOIN user_project_rel uprojr
+                ON u.ID = uprojr.UserID
+        WHERE upr.CenterID=:center
+            AND uprojr.ProjectID=:project";
+        $result = $DB->pselect(
+            $query,
+            ['center' => $site, 'project' => $project]
+        );
+        foreach ($result as $row) {
+            $hasPermission = \User::factory($row['userID'])
+                ->hasAnyPermission(
+                    ['user_accounts', 'user_accounts_multisite']
+                );
+            if ($hasPermission === false) {
+                continue;
+            }
+
+            // Send email to users with User Management permissions.
+            $config    = \NDB_Factory::singleton()->config();
+            $studyName = $config->getSetting('title');
+
+            \Email::send(
+                $row['Email'],
+                'request_account.tpl',
+                [
+                    'Study'     => $studyName,
+                    'UserID'    => $from,
+                    'Real_name' => $fullname,
+                    'Email'     => $from,
+                ]
+            );
+        }
     }
 }

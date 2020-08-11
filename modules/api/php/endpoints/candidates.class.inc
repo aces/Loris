@@ -12,6 +12,7 @@
  */
 namespace LORIS\api\Endpoints;
 
+use LORIS\StudyEntities\Candidate\Sex;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
@@ -203,12 +204,14 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $pscid = $data['Candidate']['PSCID'] ?? null;
 
+        $sex = new Sex($data['Candidate']['Sex']);
+
         try {
             $candid = \Candidate::createNew(
                 $centerid,
                 $data['Candidate']['DoB'],
                 $data['Candidate']['EDC'],
-                $data['Candidate']['Sex'],
+                $sex,
                 $pscid,
                 $project->getId()
             );

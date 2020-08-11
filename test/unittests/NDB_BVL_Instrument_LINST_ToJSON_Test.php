@@ -35,6 +35,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $factory->setDatabase($mockdb);
         $factory->setConfig($mockconfig);
+        $mockdb->expects($this->any())
+               ->method('pselectOne')
+               ->willReturn('999');
 
         $this->QuickForm = new \LorisForm(); //$this->getMock("HTML_Quickform");
         $this->Client = new \NDB_Client;
@@ -46,7 +49,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                         ->setMethods(array('getFullName', 'getSessionID'))
                         ->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
-        $this->i->method('getSessionID')->willReturn(123456);
+        $this->i->method('getSessionID')->willReturn(new \SessionID(strval("123456")));
         $this->i->form = $this->QuickForm;
         $this->i->testName = "Test";
     }
@@ -64,7 +67,12 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
     function testMetaData() {
         $instrument = "table{@}Test\ntitle{@}Test Instrument";
         $base64 = "data://text/plain;base64," . base64_encode($instrument);
-        $this->i->loadInstrumentFile($base64, true);
+        try {
+            $this->i->loadInstrumentFile($base64, true);
+        } catch (\NotFound $e) {
+            // This can occur when no SessionID exists. It's not important
+            // for this test.
+        }
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $ExpectedMeta = [
@@ -98,7 +106,12 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $instrument .= "select{@}numeric_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'";
 
         $base64 = "data://text/plain;base64," . base64_encode($instrument);
-        $this->i->loadInstrumentFile($base64, true);
+        try {
+            $this->i->loadInstrumentFile($base64, true);
+        } catch (\NotFound $e) {
+            // This can occur when no SessionID exists. It's not important
+            // for this test.
+        }
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $instrumentJSON = array(
@@ -222,7 +235,12 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $instrument .= "header{@}{@}Page 2";
 
         $base64 = "data://text/plain;base64," . base64_encode($instrument);
-        $this->i->loadInstrumentFile($base64, true);
+        try {
+            $this->i->loadInstrumentFile($base64, true);
+        } catch (\NotFound $e) {
+            // This can occur when no SessionID exists. It's not important
+            // for this test.
+        }
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $ExpectedMeta = $instrumentJSON = array(

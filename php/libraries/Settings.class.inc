@@ -164,5 +164,17 @@ class Settings
         return false;
     }
 
+    /**
+     * Determines whether the useConsent configuration setting is
+     * enabled
+     *
+     * @return bool True if the useConsent setting is enabled
+     */
+    function consentEnabled(): bool
+    {
+        return \NDB_Factory::singleton()->config()->settingEnabled(
+            'useConsent'
+        );
+    }
 
 }

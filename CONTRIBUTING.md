@@ -17,7 +17,7 @@ some of the factors we'll consider when reviewing your code.
 
 ## Development branches
 
-For the most part, changes to the codebase should be sent to the `master`
+For the most part, changes to the codebase should be sent to the `main`
 branch, which is the default.
 
 Small bug fixes for a given version of LORIS should be sent to the branch named
@@ -67,7 +67,7 @@ issues and/or Redmine tickets (if applicable).
   directory. You can look at other modules for examples of how to
   write tests.
 * Before sending any pull request, make sure you run our static analysis tools 
-locally. More information can be found in the [testing guide](./docs/wiki/99%20-%20Developers/Automated%20Testing.md). 
+locally. More information can be found in the [testing guide](./docs/wiki/99_Developers/Automated_Testing.md). 
 * Try and make all changes backwards-compatible with existing installations.  
 * If you must change something in a non-backwards-compatible way - or if it 
 would affect the data or custom code of a study - document this in your pull 
@@ -81,7 +81,7 @@ If you're unsure about any of the above, feel free to ask us for
 clarification via the mailing list.
 
 ## Git Best Practices
-- Any changes should be done on a branch based on the current development branch and contain only the changes which are applicable for that branch. (ie don't merge master back into your branch, and don't include commits that are unrelated) so that if someone merges the branch into their repository, they only get that branch's changes.
+- Any changes should be done on a branch based on the current development branch and contain only the changes which are applicable for that branch. (ie don't merge the `main` branch back into your branch, and don't include commits that are unrelated) so that if someone merges the branch into their repository, they only get that branch's changes.
 - Commits should be atomic (self contained) and contain only the changes described by the commit message. The commit message should be a sentence that describes the goal of the change as a whole.
 - Avoid changing unrelated code in the same commit, even if it is an improvement.
 We prefer that you create two separate pull requests A and B rather than add a

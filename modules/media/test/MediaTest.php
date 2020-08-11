@@ -28,24 +28,17 @@ require_once __DIR__ .
 class MediaTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
-    static $FileName    = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(2) > div > div > input";
-    static $PSCID       = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(3) > div > div > input";
-    static $VisitLabel  = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(4) > div > div > select";
-    static $Language    = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(5) > div > div > select";
-    static $Instrument  = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(6) > div > div > select";
-    static $Site        = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(7) > div > div > select";
-    static $clearFilter = ".col-sm-4 .btn";
+    static $FileName    = 'input[name="fileName"]';
+    static $PSCID       = 'input[name="pscid"]';
+    static $VisitLabel  = 'select[name="visitLabel"]';
+    static $Instrument  = 'select[name="instrument"]';
+    static $Language    = 'select[name="language"]';
+    static $Site        = 'select[name="site"]';
+    static $clearFilter = ".navbar-right:nth-child(1) a";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
-    static $display = "#browse > div > div > div > div:nth-child(2) >".
-                      " div:nth-child(1) > div > div > div:nth-child(1)";
+    static $display = ".table-header > .row > div > div:nth-child(1)";
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -141,7 +134,7 @@ class MediaTest extends LorisIntegrationTest
     {
         // get element from the page
         $this->safeFindElement(WebDriverBy::cssSelector($element));
-        if (strpos($element, "select") == false) {
+        if (strpos($element, "select") === false) {
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  lastValue = input.value;

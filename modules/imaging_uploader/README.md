@@ -78,7 +78,7 @@ for more information.
 ### Install Configurations
 
 To enable the Imaging Uploader to handle large files, please follow the
-instructons for [Handling Large File Uploads](../../docs/wiki/00 - SERVER INSTALL AND CONFIGURATION/02 - Website Configuration/Handling Large File Uploads.md).
+instructons for [Handling Large File Uploads](../../docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/Handling_Large_File_Uploads.md).
 
 #### <a name="database_config_link"></a> Database Configurations
 

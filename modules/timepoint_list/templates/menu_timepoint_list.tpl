@@ -51,15 +51,7 @@
 </table>
 
 <div class="col-xs-12 row">
-    <!-- <div class="col-xs-1"> -->
-        <h3>Actions:&nbsp&nbsp</h3> 
-    <!-- </div> -->
-    <!-- <div class="col-xs-4"> -->
-        {$actions}
-           <a class="btn btn-default" role="button" href="{$baseurl}/imaging_browser/?DCCID={$candID}">
-              View Imaging datasets</a>
-
-    <!-- </div> -->
+    {$actions}
 </div>
 <br>
 <br>
@@ -129,7 +121,7 @@
                 <img alt="Data Missing" src="{$baseurl}/images/help2.gif" border=0>
             {/if}
             </td>
-   
+
             <td bgColor="{$timePoints[timepoint].feedbackColor}">
             {if $timePoints[timepoint].feedbackCount}
                 {$timePoints[timepoint].feedbackStatus}

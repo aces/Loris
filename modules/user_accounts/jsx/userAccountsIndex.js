@@ -171,6 +171,11 @@ class UserAccountsIndex extends Component {
         type: 'select',
         options: options.pendingApprovals,
       }},
+      {label: 'Account Request Date', show: true, filter: {
+        name: 'accountRequestDate',
+        type: 'date',
+        hide: true,
+      }},
     ];
     const actions = [
       {label: 'Add User', action: this.addUser},

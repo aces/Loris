@@ -506,7 +506,7 @@ class SelectElement extends Component {
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
 
     // Add required asterisk
     if (required) {
@@ -523,7 +523,7 @@ class SelectElement extends Component {
        || (this.props.required && this.props.value === '')
     ) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = elementClass + ' has-error';
     }
 
     let newOptions = {};
@@ -557,7 +557,7 @@ class SelectElement extends Component {
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
     let label = null;
-    let inputClass = 'col-sm-12';
+    let inputClass = this.props.noMargins ? '' : 'col-sm-12';
     if (this.props.label && this.props.label != '') {
       label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -608,6 +608,7 @@ SelectElement.propTypes = {
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+  noMargins: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
@@ -625,6 +626,7 @@ SelectElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  noMargins: false,
 };
 
 /**
@@ -1236,15 +1238,23 @@ class DateElement extends Component {
       maxYear = '9999';
     }
 
+    const currentDate = new Date();
+    // The added '0' is needed because getmonth and getdate return
+    // values needed to be padded before saving.
+    // padStart adds as many possible zeros while keeping the string
+    // at a length of 2 for the following code.
+    const currentDay = `${currentDate.getDate()}`.padStart(2, '0');
+    const currentMonth = `${currentDate.getMonth() + 1}`.padStart(2, '0');
+
     // Handle date format
     let format = this.props.dateFormat;
     let inputType = 'date';
     let minFullDate = minYear + '-01-01';
-    let maxFullDate = maxYear + '-12-31';
+    let maxFullDate = maxYear + '-' + currentMonth + '-' + currentDay;
     if (!format.match(/d/i)) {
       inputType = 'month';
       minFullDate = minYear + '-01';
-      maxFullDate = maxYear + '-12';
+      maxFullDate = maxYear + '-' + currentMonth;
     }
 
     return (

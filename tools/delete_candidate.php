@@ -16,15 +16,19 @@
  * @package  Loris
  * @author   Various <example@example.com>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
+
 set_include_path(
     get_include_path().":".
     __DIR__."/../project/tools:".
     __DIR__."/../php/tools:"
 );
+
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
+
+use LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * This script deletes the specified candidate information.
@@ -39,7 +43,7 @@ require_once "generic_includes.php";
  * @package  Loris
  * @author   Various <example@example.com>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 const MIN_NUMBER_OF_ARGS = 4;
 
@@ -56,7 +60,7 @@ if (count($argv) < MIN_NUMBER_OF_ARGS
 
 // set default arguments
 $action  = $argv[1];
-$CandID  = $argv[2];
+$CandID  = new CandID($argv[2]);
 $PSCID   = $argv[3];
 $confirm = false;
 
@@ -86,8 +90,8 @@ $DB =& Database::singleton();
  */
 
 $candExists = $DB->pselectOne(
-    "SELECT COUNT(*) 
-      FROM candidate 
+    "SELECT COUNT(*)
+      FROM candidate
       WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
     [
         'cid' => $CandID,
@@ -100,8 +104,8 @@ if ($candExists == 0) {
     die();
 }
 $entityType = $DB->pselectOne(
-    "SELECT Entity_type 
-      FROM candidate 
+    "SELECT Entity_type
+      FROM candidate
       WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
     [
         'cid' => $CandID,
@@ -138,7 +142,7 @@ Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm
 Example: php delete_candidate.php delete_candidate 965327 dcc0007 tosql
 
 When the 'tosql' function is used, the SQL file exported will be located
-under the following path: 
+under the following path:
     loris_root/project/tables_sql/DELETE_candidate_CandID.sql
 USAGE;
     die;
@@ -150,7 +154,7 @@ USAGE;
  * (second-level relations) should have actions on delete specified in the
  * database schema
  *
- * @param string   $CandID     Identifying the candidate
+ * @param CandID   $CandID     Identifying the candidate
  * @param string   $PSCID      Identifying the candidate
  * @param string   $confirm    Whether to execute the script
  * @param string   $printToSQL Whether to print the results

@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-
 # Run PHP -l on everything to ensure there's no syntax
 # errors.
 find docs modules htdocs php src tools \
     -name '*.class.inc' \
     -print0 -o -name '*.php' -print0 \
     |xargs -0 -n1 php -l \
-    >/dev/null  
+    >/dev/null
 
 # Run PHPCS on all .php and .inc files in folders:
 # php/
@@ -19,6 +18,7 @@ find docs modules htdocs php src tools \
 declare -a tools_list=(
     'assign_missing_instruments.php'
     'configuration_check.php'
+    'config_to_db.php'
     'data_integrity_check.php'
     'delete_candidate.php'
     'delete_ignored_conflicts.php'
@@ -36,12 +36,21 @@ declare -a tools_list=(
     'raisinbread_refresh.php'
     'recreate_conflicts.php'
     'resetpassword.php'
+    'detect_conflicts.php'
     'setconfig.php'
     'single_use/Cleanup_multiple_firstVisits.php'
     'single_use/Convert_LorisMenuID_to_ModuleID.php'
     'generate_tables_sql.php'
     'lorisform_parser.php'
     'populate_visit_windows.php'
+    'manage_modules.php'
+    'DB_date_zeros_removal.php'
+    'CouchDB_Import_MRI.php'
+)
+
+# And on all PHP files in this array
+declare -a test_list=(
+    'unittests/Database_Test.php'
 )
 
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
@@ -50,6 +59,7 @@ vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
     modules/ \
     "test/integrationtests/" \
     "${tools_list[@]/#/tools/}" \
+    "${test_list[@]/#/test/}" \
     || exit $?;
 
 # Ensure strict typing is used in these files

@@ -92,7 +92,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
-                return $this->_handleGET($request);
+                return $this->_handleGET();
 
             case 'PUT':
                 return $this->_handlePUT($request);
@@ -228,7 +228,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($sessionid !== false) {
             // If the visit label already exists for that candidate
-            $timepoint = \NDB_Factory::singleton()->timepoint($sessionid);
+            $timepoint = \NDB_Factory::singleton()->timepoint(
+                new \SessionID(strval($sessionid))
+            );
             if ($timepoint->getCurrentStage() !== 'Not Started') {
                 return new \LORIS\Http\Response\JSON\Conflict(
                     'This visit is already started'

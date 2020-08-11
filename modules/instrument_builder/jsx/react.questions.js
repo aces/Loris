@@ -37,6 +37,9 @@ class LorisElement extends Component {
       case 'label':
         elementHtml = <p>{element.Description}</p>;
         break;
+      case 'line':
+        elementHtml = <div></div>;
+        break;
       case 'score':
         elementHtml = <StaticElement text={0} label={element.Description} />;
 
@@ -520,6 +523,11 @@ class ListElements extends Component {
     let textSize = 'small';
     // Set the options for the desired type
     switch (newId) {
+      case 'line':
+        newState.Options = {};
+        newState.Name = '';
+        newState.Description = '';
+        break;
       case 'textarea':
         textSize = 'large';
         // falls through
@@ -719,12 +727,19 @@ class AddElement extends Component {
           {} :
           this.props.element.Options
         ),
-        Description: Instrument.clone(this.props.element.Description),
+        Description: Instrument.clone(
+          this.props.element.Description === undefined ?
+          {} :
+          this.props.element.Description
+        ),
         Name: Instrument.clone(this.props.element.Name === undefined ?
           '' :
           this.props.element.Name
         ),
-        selected: Instrument.clone(this.props.element.selected),
+        selected: Instrument.clone(this.props.element.selected === undefined ?
+          {} :
+          this.props.element.selected
+        ),
       };
     } else {
       this.state = {
@@ -890,6 +905,8 @@ class AddElement extends Component {
 
     // Setup the desired element to be added
     switch (selected) {
+      case 'line':
+        break;
       case 'header':
       case 'label':
         questionName = '';
@@ -972,6 +989,8 @@ class AddElement extends Component {
     let buttons;
         // Set the inputs to display based on the desired element type
     switch (this.state.selected.id) {
+      case 'line':
+        break;
       case 'header':
       case 'label':
         questionInput = <QuestionText

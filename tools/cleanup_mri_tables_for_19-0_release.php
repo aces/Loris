@@ -123,7 +123,7 @@ function createSelect($table1, $table2, $FK1, $FK2, $select_fields)
 {
     // create the select query
     $select_query = "
-      SELECT $table1.$select_fields 
+      SELECT $table1.$select_fields
       FROM $table1 LEFT JOIN $table2 ON ($table1.$FK1=$table2.$FK2)
       WHERE $table2.$FK2 IS NULL AND $table1.$FK1 IS  NOT NULL
     ";
@@ -184,7 +184,7 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
         $select_ID_query,
         $delete_answer
     );
-    
+
 }
 
 /**
@@ -232,7 +232,7 @@ function askToDelete($table_name, $FK_field)
 {
     // create question to be printed in the terminal
     $message = "\nDo you want to delete the orphan entries from $table_name?
-      'Y' to delete from database and keep a copy in a .sql file 
+      'Y' to delete from database and keep a copy in a .sql file
       'N' to keep the entry but set $FK_field to NULL \n";
     print $message;
 
@@ -330,8 +330,8 @@ function cleanTable($table_name, $FK_field, $selectID, $delete_answer)
         // update foreign key $FK_field from table $table_name to NULL where
         // the foreign key $FK_field is in the list of IDs identified by the
         // select above
-        $query = "UPDATE $table_name 
-                  SET $FK_field=NULL 
+        $query = "UPDATE $table_name
+                  SET $FK_field=NULL
                   WHERE $FK_field IN ($IDs)";
     }
 

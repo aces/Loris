@@ -44,7 +44,6 @@ class Filter extends Component {
    * @param {string} type - type of the form element
    */
   onFieldUpdate(name, value, id, type) {
-    const searchParams = new URLSearchParams(location.search);
     const filter = JSON.parse(JSON.stringify(this.props.filter));
     const exactMatch = (!(type === 'textbox' || type === 'date'));
     if (
@@ -53,18 +52,10 @@ class Filter extends Component {
       || (value.constructor === Array && value.length === 0)
     ) {
       delete filter[name];
-      searchParams.delete(name);
     } else {
-      if (value.constructor === Array) {
-        searchParams.delete(name);
-        value.forEach((v) => searchParams.append(name, v));
-      } else {
-        searchParams.set(name, value);
-      }
       filter[name] = {value, exactMatch};
     }
     this.props.updateFilter(filter);
-    history.replaceState(filter, '', `?${searchParams.toString()}`);
   }
 
   /**
@@ -138,6 +129,40 @@ class Filter extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const filterPresets = () => {
+      if (this.props.filterPresets) {
+        const presets = this.props.filterPresets.map((preset) => {
+          const handleClick = () => this.props.updateFilter(preset.filter);
+          return <li><a onClick={handleClick}>{preset.label}</a></li>;
+        });
+        return (
+          <li className='dropdown'>
+            <a
+              className='dropdown-toggle'
+              data-toggle='dropdown'
+              role='button'
+            >
+              Load Filter Preset <span className='caret'/>
+            </a>
+            <ul className='dropdown-menu' role='menu'>
+              {presets}
+            </ul>
+          </li>
+        );
+      };
+    };
+
+    const filterActions = (
+      <ul className='nav nav-tabs navbar-right' style={{borderBottom: 'none'}}>
+        {filterPresets()}
+        <li>
+          <a role='button' name='reset' onClick={this.props.clearFilter}>
+            Clear Filter
+          </a>
+        </li>
+      </ul>
+    );
+
     return (
       <FormElement
         id={this.props.id}
@@ -147,12 +172,8 @@ class Filter extends Component {
           columns={this.props.columns}
           legend={this.props.title}
         >
+          {filterActions}
           {this.renderFilterFields()}
-          <ButtonElement
-            label="Clear Filters"
-            type="reset"
-            onUserInput={this.props.clearFilter}
-          />
         </FieldsetElement>
       </FormElement>
     );

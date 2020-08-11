@@ -1,0 +1,373 @@
+dt:after {
+    content: ':';
+    font-weight: bold;
+}
+
+dd {
+    margin-left: 2em;
+}
+
+select, option, input {
+    color: black;
+}
+
+h4 {
+    color: black;
+    background: inherit; /*#064785; */
+}
+
+.search {
+    padding-top: 20px;
+}
+
+/*
+ *	CSS for the filter builder
+ */
+.tree li {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 5px 0 5px;
+    position: relative
+}
+
+.tree li::before, .tree li::after {
+    content: '';
+    left: -20px;
+    position: absolute;
+    right: auto
+}
+
+.tree li::before {
+    border-left: 1px solid #999;
+    bottom: 50px;
+    height: 100%;
+    top: 0;
+    width: 1px
+}
+
+.tree li::after {
+    border-top: 1px solid #999;
+    height: 20px;
+    top: 25px;
+    width: 25px;
+}
+
+.tree > ul > li::before, .tree > ul > li::after {
+    border: 0;
+}
+
+.tree li:last-child::before {
+    height: 30px;
+}
+
+.firstUL {
+    padding-left: 0;
+}
+
+.instrumentLabel {
+    word-break: break-all;
+}
+
+.switch {
+    background: white;
+    border-color: #064785;
+}
+
+/*
+ *  CSS for managed saved query filters
+ */
+.savedQueryTree {
+    margin-left: 0;
+}
+
+/*
+ *  CSS for Field List
+ */
+.fieldItem {
+    z-index: initial !important;
+}
+
+/*
+ *  CSS for the loading spinner
+ */
+.spinner {
+    margin: 100px auto 0;
+    width: 70px;
+    text-align: center;
+}
+
+.spinner > div {
+    width: 18px;
+    height: 18px;
+    background-color: #064785;
+
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+    0%, 80%, 100% {
+        -webkit-transform: scale(0);
+    }
+    40% {
+        -webkit-transform: scale(1.0);
+    }
+}
+
+@keyframes sk-bouncedelay {
+    0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+    }
+}
+
+.loading-header {
+    color: #064785;
+}
+
+.list-group-item.active, .list-group-item.active:hover {
+  background-color: #4c8ad5;
+}
+
+.save-button {
+  margin: 0;
+  border: 0;
+  color: #fff;
+  width: 90px;
+  height: 45px;
+  display: flex;
+  cursor: pointer;
+  font-size: 15pt;
+  user-select: none;
+  border-radius: 30px;
+  align-items: center;
+  vertical-align: top;
+  text-decoration: none;
+  justify-content: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #96398C;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+              0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.save-button:focus {
+  outline: 0;
+}
+
+.navigation-button {
+  margin: 0;
+  border: 0;
+  color: #fff;
+  width: 120px;
+  height: 45px;
+  display: flex;
+  cursor: pointer;
+  font-size: 10pt;
+  user-select: none;
+  border-radius: 30px;
+  align-items: center;
+  vertical-align: top;
+  text-decoration: none;
+  justify-content: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #3f79d6;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2),
+  0 2px 10px 0 rgba(0, 0, 0, 0.19);
+}
+.navigation-button:focus {
+  outline: 0;
+}
+.navigation-button .glyphicon {
+  top: 0;
+}
+.navigation-button.disabled {
+  cursor: not-allowed;
+  background-color: #dddddd;
+}
+
+.action-button .glyphicon {
+  top: 0;
+  font-size: 20px;
+}
+.action-button {
+  margin: 0;
+  border: 0;
+  color: #fff;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  cursor: pointer;
+  font-size: 30px;
+  user-select: none;
+  border-radius: 50%;
+  align-items: center;
+  text-decoration: none;
+  justify-content: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.action-button:focus {
+  outline: 0;
+}
+.action-button.disabled {
+  background-color: #dddddd;
+}
+.action-button.disabled {
+  cursor: not-allowed;
+  background-color: #DDDDDD;
+  pointer-events: all !important;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2),
+              0 2px 10px 0 rgba(0, 0, 0, 0.19);
+}
+.action-button.add:hover, .pool:hover{
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2),
+              0 8px 22px 0 rgba(0, 0, 0, 0.19);
+}
+.action-button.update, .action-button.delete {
+  color: #DDDDDD;
+  background-color: #FFFFFF;
+  border: 2px solid #DDDDDD;
+}
+.action-button.update:hover {
+  border: none;
+  color: #FFFFFF;
+  background-color: #093782;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+              0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.action-button.delete:hover {
+  border: none;
+  color: #FFFFFF;
+  background-color: #BC1616;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+              0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.import-csv {
+  border: 0;
+  right: 20px;
+  color: #fff;
+  width: 250px;
+  height: 45px;
+  display: flex;
+  cursor: pointer;
+  font-size: 12pt;
+  user-select: none;
+  position: absolute;
+  margin: 20px auto 0;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+  background-color: #9e0e4b;
+}
+.import-csv:focus {
+  outline: 0;
+}
+
+.run-query {
+  border: 0;
+  color: #fff;
+  width: 180px;
+  height: 55px;
+  display: flex;
+  cursor: pointer;
+  font-size: 15pt;
+  user-select: none;
+  margin: 20px auto 0;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  background-color: #0f9d58;
+}
+.run-query:focus {
+  outline: 0;
+}
+.run-query:disabled {
+  cursor: not-allowed;
+  background-color: #d5d5d5;
+  pointer-events: all !important;
+}
+
+.visualized-data {
+  border: 0;
+  color: #fff;
+  width: 190px;
+  height: 55px;
+  display: flex;
+  cursor: pointer;
+  font-size: 15pt;
+  min-width: 190px;
+  user-select: none;
+  margin: 20px auto 0;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff9a24;
+}
+.visualized-data:focus {
+  outline: 0;
+}
+
+.center-items {
+  margin: 0 auto 0;
+}
+
+.flex-row-container {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 250px;
+  margin: 0 5% 0 5%;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #b7ccd2;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+}
+.flex-row-container > .flex-row-item {
+  flex: 1 1 30%;
+  height: 100px;
+  min-width: 250px;
+}
+.flex-row-item {
+  margin: 0 auto 0;
+  min-width: 250px;
+  background-color: #ecf0f7;
+}
+
+.flex-row-container-second {
+  display: flex;
+  min-width: 250px;
+  align-items: center;
+  margin: 0 5% 10px 5%;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+
+/*
+ * Hide (default) Download Table as CSV
+ * from StaticDataTable.
+ */
+.downloadCSV {
+    display: none;
+}
+.fieldVisitsRow {
+  cursor: default;
+  background: white;
+  border-radius: 10px;
+}
