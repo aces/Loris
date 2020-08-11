@@ -111,12 +111,24 @@ class Files extends \NDB_Page
             'visitLabel' => $req['visitLabel'] ?? null,
             'pscid'      => $req['pscid'] ?? null,
         ];
+        $fileName     = $req['fileName'];
+        $Notifier     = new \NDB_Notifier(
+            "document_repository",
+            "edit"
+        );
         try {
             $db->update(
                 'document_repository',
                 $updateValues,
                 ['record_id' => $req['id']]
             );
+            $factory  = \NDB_Factory::singleton();
+            $baseURL  = $factory->settings()->getBaseURL();
+            $msg_data = [
+                'updatedDocument' => $baseURL . "/document_repository/",
+                'document'        => $fileName,
+            ];
+            $Notifier->notify($msg_data);
             return (new \LORIS\Http\Response\JSON\OK(
                 ['message' => 'File updated.']
             ));
