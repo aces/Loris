@@ -25,8 +25,6 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (23,'imaging_browser_view_site','View own-site Imaging Browser pages',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (24,'imaging_browser_view_allsites','View all-sites Imaging Browser pages',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (25,'dicom_archive_view_allsites','Across all sites view Dicom Archive module and pages',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (26,'reliability_edit_all','Access and Edit all Reliability profiles',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (27,'reliability_swap_candidates','Swap Reliability candidates across all sites',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (28,'instrument_builder','Instrument Builder: Create and Edit instrument forms',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (29,'data_dict_edit','Edit Data Dictionary',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (30,'quality_control','Quality Control access',2);
