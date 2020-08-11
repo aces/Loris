@@ -45,6 +45,7 @@ declare -a tools_list=(
     'populate_visit_windows.php'
     'manage_modules.php'
     'DB_date_zeros_removal.php'
+    'CouchDB_Import_MRI.php'
 )
 
 # And on all PHP files in this array
