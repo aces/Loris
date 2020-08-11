@@ -1,4 +1,4 @@
-# Meta documentation module
+# API documentation module
 
 This module use [Swagger-UI](https://swagger.io/tools/swagger-ui/) to present this LORIS instance modules API endpoints. By selecting a module name in the *Select  a spec* dropdown, it will provide a description of each of the selected module endpoints.
 

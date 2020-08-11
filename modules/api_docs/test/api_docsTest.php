@@ -12,7 +12,7 @@ use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
- * Automated integration tests for the meta_docs module.
+ * Automated integration tests for the api_docs module.
  *
  * @category Test
  * @package  Loris
@@ -20,10 +20,10 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class MetaDocsTestIntegrationTest extends \LorisIntegrationTest
+class APIDocsTestIntegrationTest extends \LorisIntegrationTest
 {
     /**
-     * Tests that, when loading the meta_docs module, the is available specs
+     * Tests that, when loading the api_docs module, the is available specs
      * in swagger-ui.
      *
      * @return void
@@ -31,7 +31,7 @@ class MetaDocsTestIntegrationTest extends \LorisIntegrationTest
     function testAnonymousUserDoesPageLoad()
     {
         $this->setupPermissions([]);
-        $this->safeGet($this->url . "/meta_docs");
+        $this->safeGet($this->url . "/api_docs");
         $selectOptions = $this->webDriver->findElement(
             WebDriverBy::cssSelector("select")
         );

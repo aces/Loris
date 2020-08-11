@@ -8,7 +8,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-namespace LORIS\meta_docs;
+namespace LORIS\api_docs;
 
 /**
  * Class module implements the basic LORIS module functionality
@@ -45,7 +45,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Meta documentation";
+        return "API documentation";
     }
 
     /**

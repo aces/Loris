@@ -8,7 +8,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-namespace LORIS\meta_docs;
+namespace LORIS\api_docs;
 
 /**
  * This class list the schema files of this LORIS instance modules
@@ -22,7 +22,7 @@ namespace LORIS\meta_docs;
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-class Meta_Docs extends \NDB_Page
+class API_Docs extends \NDB_Page
 {
     /**
      * Determine whether the user has permission to view this page
