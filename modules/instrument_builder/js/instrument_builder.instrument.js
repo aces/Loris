@@ -124,14 +124,13 @@ var Instrument = {
                           if (elName === '' || !elName.includes('_date')) {
                             elName = elName + "_date";
                           }
-                          console.log(element.Description);
                           if (!element.Description) {
+                            // Prevents undefined being added to linst file.
                             element.Description = '';
                           }
                           dropdown = "select{@}" + elName + "_status" +
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
-                        }
-                        if (!element.Options.dateFormat) {
+                          // Makes the date be the default 'Date' if undefined.
                           element.Options.dateFormat = 'Date';
                         }
 
