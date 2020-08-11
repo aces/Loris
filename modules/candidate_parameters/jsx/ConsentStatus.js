@@ -395,34 +395,36 @@ class ConsentStatus extends Component {
         const tabList = [];
         const tabPanes = Object.keys(this.state.Data.consentGroups).map(
           (consentID) => {
-            tabList.push({
-                id: consentID,
-                label: this.state.Data.consentGroups[consentID].Label,
-            });
-            return (
-                <TabPane key={consentID} TabId={consentID}>
-                    <FormElement
-                        name="consentStatus"
-                        onSubmit={this.handleSubmit}
-                        class="col-md-9"
-                    >
-                        <StaticElement
-                          label="PSCID"
-                          text={this.state.Data.pscid}
-                        />
-                        <StaticElement
-                          label="DCCID"
-                          text={this.state.Data.candID}
-                        />
-                        {this.state.Data.consentGroups[consentID].Children.map(
-                          (consentName) => {
-                            return this.renderConsent(consentName);
-                          }
-                        )}
-                        {updateButton}
-                    </FormElement>
-                </TabPane>
-            );
+            if (this.state.Data.consentGroups[consentID].Children) {
+              tabList.push({
+                  id: consentID,
+                  label: this.state.Data.consentGroups[consentID].Label,
+              });
+              return (
+                  <TabPane key={consentID} TabId={consentID}>
+                      <FormElement
+                          name="consentStatus"
+                          onSubmit={this.handleSubmit}
+                          class="col-md-9"
+                      >
+                          <StaticElement
+                            label="PSCID"
+                            text={this.state.Data.pscid}
+                          />
+                          <StaticElement
+                            label="DCCID"
+                            text={this.state.Data.candID}
+                          />
+                          {this.state.Data.consentGroups[consentID].Children
+                            .map((consentName) => {
+                              return this.renderConsent(consentName);
+                            }
+                          )}
+                          {updateButton}
+                      </FormElement>
+                  </TabPane>
+              );
+            }
           }
         );
         return (
