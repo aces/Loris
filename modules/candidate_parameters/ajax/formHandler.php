@@ -422,12 +422,15 @@ function editConsentStatusFields(\Database $db)
 
         // Process posted data
         // Empty strings and type null are not passed (null is passed as a string)
-        $status     = ($_POST[$consentName] !== 'null') ?
-                        $_POST[$consentName] : null;
-        $date       = ($_POST[$consentName . '_date'] !== 'null') ?
-                        $_POST[$consentName . '_date'] : null;
-        $withdrawal = ($_POST[$consentName . '_withdrawal'] !== 'null') ?
-                        $_POST[$consentName . '_withdrawal'] : null;
+        $status     = (isset($_POST[$consentName]) &&
+                          $_POST[$consentName] !== 'null') ?
+                          $_POST[$consentName] : null;
+        $date       = (isset($_POST[$consentName . '_date']) &&
+                          $_POST[$consentName . '_date'] !== 'null') ?
+                          $_POST[$consentName . '_date'] : null;
+        $withdrawal = (isset($_POST[$consentName . '_withdrawal']) &&
+                          $_POST[$consentName . '_withdrawal'] !== 'null') ?
+                          $_POST[$consentName . '_withdrawal'] : null;
 
         $updateStatus  = [
             'CandidateID'   => $candID,
