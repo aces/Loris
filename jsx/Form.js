@@ -470,8 +470,6 @@ class SelectElement extends Component {
   }
 
   /**
-   * @componentDidMount
-   *
    * Call onUserInput on component rendered to select only option
    * if autoSelect prop is set to true
    */
@@ -483,12 +481,11 @@ class SelectElement extends Component {
   }
 
   /**
-   * @componentDidUpdate
-   * @param {object} prevProps - component props before component update
-   *
    * On component update, if number of options dynamically
    * changes to 1, call onUserInput to select only option
    * if autoSelect prop is set to true
+   *
+   * @param {object} prevProps - component props before component update
    */
   componentDidUpdate(prevProps) {
     const options = Object.keys(this.props.options);
