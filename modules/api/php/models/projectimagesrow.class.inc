@@ -49,7 +49,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
         $this->_visitdate  = $row['Visit_date'] ?? null;
         $this->_centerid   = $row['CenterID'] ?? null;
         $this->_centername = $row['Site'] ?? null;
-        $this->_filename   = $row['File'] ?? null;
+        $this->_path       = $row['Path'] ?? null;
         $this->_inserttime = $row['InsertTime'] ?? null;
         $this->_scantype   = $row['ScanType'] ?? null;
         $this->_qcstatus   = $row['QC_status'] ?? null;
@@ -73,6 +73,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
             'ScanType'   => $this->_scantype,
             'QC_status'  => $this->_qcstatus,
             'Selected'   => $this->_selected,
+            'Path'       => $this->_path,
         ];
         $filename = basename($this->_filename);
         $candid   = $obj['Candidate'];
@@ -80,6 +81,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
 
         $obj['Link']       = "/candidates/$candid/$visit/images/$filename";
         $obj['InsertTime'] = date('c', (int) $obj['InsertTime']);
+        $obj['File']       = $filename;
 
         return $obj;
     }

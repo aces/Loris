@@ -57,6 +57,7 @@ class Images
                 return [
                     'OutputType'      => $image->getOutputType(),
                     'Filename'        => $image->getFilename(),
+                    'Path'            => $image->getFilelocation(),
                     'AcquisitionType' => $image->getAcquisitionprotocol(),
                 ];
             },

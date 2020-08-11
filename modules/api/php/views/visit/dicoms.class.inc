@@ -53,6 +53,7 @@ class Dicoms
     {
         return [
             'Tarname'    => $dicom->getTarname(),
+            'Path'       => $dicom->getArchiveLocation(),
             'SeriesInfo' => array_map(
                 [
                     'self',
