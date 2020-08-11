@@ -61,6 +61,12 @@ class Configuration extends \NDB_Form
             $scan_types[$val] = $val;
         }
 
+        $date_format = [
+            ''    => '',
+            'Ymd' => 'Ymd (EX: 2015-12-28)',
+            'Ym'  => 'Ym (EX: 2015-12)'
+        ];
+
         $instruments     = \Utility::getAllInstruments();
         $instruments[''] = '';
 
@@ -69,6 +75,7 @@ class Configuration extends \NDB_Form
         $this->tpl_data['instruments']     = $instruments;
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
+        $this->tpl_data['date_format']     = $date_format;
         $this->tpl_data['lookup_center']   = [
             ''            => '',
             'PatientID'   => 'PatientID',

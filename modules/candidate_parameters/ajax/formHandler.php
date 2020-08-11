@@ -547,7 +547,7 @@ function editCandidateDOB(\Database $db): void
     if (!empty($dob)) {
         $config    = \NDB_Config::singleton();
         $dobFormat = $config->getSetting('dobFormat');
-        if ($dobFormat === 'YM') {
+        if ($dobFormat === 'Ym') {
             $strippedDate = date("Y-m", strtotime($dob))."-01";
         }
         $db->update(
@@ -581,7 +581,7 @@ function editCandidateDOD(\Database $db): void
     if (!empty($dod)) {
         $config    = \NDB_Config::singleton();
         $dodFormat = $config->getSetting('dodFormat');
-        if ($dodFormat === 'YM') {
+        if ($dodFormat === 'Ym') {
             $strippedDate = $dod->format('Y-m-01');
         } else {
             $dodString = $dod->format('Y-m-d');
