@@ -65,6 +65,15 @@ Class TimePoint_List_ControlPanel extends \Candidate
         $this->tpl_data['isDataEntryPerson']
             = $user->hasCenterPermission("data_entry", $cand_CenterID);
 
+        $this->tpl_data['isImagingPerson'] = $user->hasAnyPermission(
+            [
+                'imaging_browser_view_site',
+                'imaging_browser_view_allsites',
+                'imaging_browser_phantom_allsites',
+                'imaging_browser_phantom_ownsite'
+            ]
+        );
+
         //set the baseurl of the tpl_data
         $factory  = \NDB_Factory::singleton();
         $settings = $factory->settings();
