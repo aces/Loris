@@ -58,7 +58,11 @@ class Images
                     'OutputType'      => $image->getOutputType(),
                     'Filename'        => $image->getFilename(),
                     'AcquisitionType' => $image->getAcquisitionprotocol(),
+<<<<<<< 172ccae6b3fe3e3bc99f174c5b11afd019107de8
                     'IsPhantom'       => $image->isPhantom(),
+=======
+                    'IsPHantom'       => $image->isPhantom(),
+>>>>>>> [API] Added isPhantom to images attributes
                 ];
             },
             $this->_images
