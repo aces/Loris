@@ -17,6 +17,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
+require_once 'SessionID.php';
 /**
  * Unit test for NDB_BVL_Instrument class
  *
@@ -983,14 +984,21 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testGetSessionID()
     {
-        $this->_setUpMockDB();
-        $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->assertEquals("123", $this->_instrument->getSessionID());
+        $this->_mockDB->expects($this->once())->method('pselectOne')
+            ->with(
+                "SELECT SessionID FROM flag WHERE CommentID = :CID",
+                ['CID' => 'commentID1']
+            )
+            ->willReturn('123');
+        $this->assertEquals(
+            new \SessionID('123'),
+            $this->_instrument->getSessionID()
+        );
     }
 
     /**
-     * Test that getSessionID returns -1 if nothing was found in the
+     * Test that getSessionID throws a NotFound exception if nothing was found in the
      * database for the given commentID
      *
      * @covers NDB_BVL_Instrument::getSessionID
@@ -1001,7 +1009,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID3';
-        $this->assertEquals(-1, $this->_instrument->getSessionID());
+        $this->expectException('NotFound');
+        $this->_instrument->getSessionID();
     }
 
     /**
@@ -1013,26 +1022,18 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testGetVisitLabel()
     {
-        $this->_setUpMockDB();
-        $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->assertEquals("123", $this->_instrument->getSessionID());
+        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+            ->with(
+                "SELECT SessionID FROM flag WHERE CommentID = :CID",
+                ['CID' => 'commentID1']
+            )
+            ->willReturn('123');
+        $this->_mockDB->expects($this->any())->method('pselectRow')
+            ->willReturn(
+                ['SubprojectID' => 2, 'Visit_label' => 'V1', 'CandID' => '300123']
+            );
         $this->assertEquals("V1", $this->_instrument->getVisitLabel());
-    }
-
-    /**
-     * Test that getVistiLabel returns an empty string
-     * if nothing was found in the database
-     *
-     * @covers NDB_BVL_Instrument::getVisitLabel
-     * @return void
-     */
-    function testGetVisitLabelReturnsEmpty()
-    {
-        $this->_setUpMockDB();
-        $this->_setTableData();
-        $this->_instrument->commentID = 'commentID3';
-        $this->assertEquals("", $this->_instrument->getVisitLabel());
     }
 
     /**
@@ -1044,24 +1045,16 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testGetSubprojectID()
     {
-        $this->_setUpMockDB();
-        $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
+        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+            ->with(
+                "SELECT SessionID FROM flag WHERE CommentID = :CID",
+                ['CID' => 'commentID1']
+            )
+            ->willReturn('123');
+        $this->_mockDB->expects($this->any())->method('pselectRow')
+            ->willReturn(['SubprojectID' => 2]);
         $this->assertEquals(2, $this->_instrument->getSubprojectID());
-    }
-
-    /**
-     * Test that getSubprojectID returns null if nothing was found
-     *
-     * @covers NDB_BVL_Instrument::getSubprojectID
-     * @return void
-     */
-    function testGetSubprojectIDReturnsNull()
-    {
-        $this->_setUpMockDB();
-        $this->_setTableData();
-        $this->_instrument->commentID = 'commentID3';
-        $this->assertEquals(null, $this->_instrument->getSubprojectID());
     }
 
     /**
@@ -1767,44 +1760,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $html = $this->_instrument->form->renderElement($select);
         $el = ['type' => 'select', 'html' => $html];
         $this->assertEquals($el, $this->_instrument->_toJSONParseSmarty($select));
-    }
-
-    /**
-     * Test that getBreadcrumbs returns a BreadcrumbTrail object with the correct
-     * Breadcrumb data
-     *
-     * @covers NDB_BVL_Instrument::getBreadcrumbs
-     * @return void
-     */
-    function testGetBreadcrumbs()
-    {
-        $this->_setUpMockDB();
-        $this->_setTableData();
-        $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->testName = 'testname';
-        $breadcrumb = new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb(
-                'Access Profile',
-                '/candidate_list'
-            ),
-            new \LORIS\Breadcrumb(
-                "Candidate Profile 300123 / 345",
-                "/300123"
-            ),
-            new \LORIS\Breadcrumb(
-                "TimePoint V1 Details",
-                "/instrument_list/?candID=300123&sessionID=123"
-            ),
-            new \LORIS\Breadcrumb(
-                "Test Instrument",
-                "/instruments/testname/".
-                "?commentID=commentID1&sessionID=123&candID=300123"
-            )
-        );
-        $this->assertEquals(
-            $breadcrumb,
-            $this->_instrument->getBreadcrumbs()
-        );
     }
 
     /**
