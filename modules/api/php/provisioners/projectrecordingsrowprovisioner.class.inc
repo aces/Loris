@@ -46,7 +46,7 @@ class ProjectRecordingsRowProvisioner extends DBRowProvisioner
                s.Date_visit as Visit_date,
                s.CenterID as CenterID,
                p.Name as Site,
-               f.FilePath as Path,
+               f.FilePath as FilePath,
                pm.PhysiologicalModality as Modality,
                f.InsertTime as InsertTime
              FROM
