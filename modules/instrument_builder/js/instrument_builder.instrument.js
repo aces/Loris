@@ -121,9 +121,9 @@ var Instrument = {
                         // Add dropdown and special naming when no date format is set
                         // (i.e when addDateElement() is used)
                         if (!element.Options.dateFormat) {
-                          if (!element.Description) {
-                            // Prevents undefined being added to linst file.
-                            element.Description = '';
+                          if (!elName.includes('_date')) {
+                            // prevents double _date if load & save linst file.
+                            elName = elName + "_date";
                           }
                           dropdown = "select{@}" + elName + "_status" +
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
