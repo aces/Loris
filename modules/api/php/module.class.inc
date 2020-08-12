@@ -55,7 +55,7 @@ class Module extends \Module
     {
         if ($this->hasPrefix('/static/', $request->getURI())) {
             /*
-             * Bypass for staticaly served files. If the request url
+             * Bypass for statically served files. If the request url
              * is /api/static/... this will call the handle  function
              * of the superclass \Module.
              *
@@ -67,7 +67,7 @@ class Module extends \Module
             return  parent::handle($request);
         }
 
-        // Requests sent to this module must statrt with /api/$version
+        // Requests sent to this module must start with /api/$version
         $url    = $request->getURI()->getPath();
         $pieces = [];
         if (preg_match(
