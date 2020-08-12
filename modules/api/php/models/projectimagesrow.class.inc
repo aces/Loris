@@ -73,7 +73,6 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
             'ScanType'   => $this->_scantype,
             'QC_status'  => $this->_qcstatus,
             'Selected'   => $this->_selected,
-            'Path'       => $this->_path,
         ];
         $filename = basename($this->_path);
         $candid   = $obj['Candidate'];

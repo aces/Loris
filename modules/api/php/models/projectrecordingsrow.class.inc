@@ -66,7 +66,6 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
             'Site'       => $this->_centername,
             'Modality'   => $this->_modality,
             'InsertTime' => $this->_inserttime,
-            'Path'       => $this->_path,
         ];
 
         $filename = basename($obj['Path']);
