@@ -29,7 +29,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
     private $_visitdate;
     private $_centerid;
     private $_centername;
-    private $_filename;
+    private $_path;
     private $_inserttime;
     private $_scantype;
     private $_qcstatus;
@@ -75,7 +75,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
             'Selected'   => $this->_selected,
             'Path'       => $this->_path,
         ];
-        $filename = basename($this->_filename);
+        $filename = basename($this->_path);
         $candid   = $obj['Candidate'];
         $visit    = $obj['Visit'];
 
