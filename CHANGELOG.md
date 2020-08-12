@@ -23,6 +23,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 ### Modules
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
+#### Candidate Parameters
+- Consent grouping added to SQL schema and Consent Status tab UI (PR #6042, PR #6044)
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
