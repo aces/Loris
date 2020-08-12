@@ -58,7 +58,7 @@ class Images
                     'OutputType'      => $image->getOutputType(),
                     'Filename'        => $image->getFilename(),
                     'AcquisitionType' => $image->getAcquisitionprotocol(),
-                    'IsPHantom'       => $image->isPhantom(),
+                    'IsPhantom'       => $image->isPhantom(),
                 ];
             },
             $this->_images
