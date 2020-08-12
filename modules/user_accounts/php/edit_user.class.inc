@@ -27,12 +27,12 @@ class Edit_User extends \NDB_Form
 {
     private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
     private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be ' .
-    'your user name.';
+                                        'your user name.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
-    'identical: please choose another one';
+                                        'identical: please choose another one';
     private const EMAIL_NOT_UNIQUE         = 'This email address is already ' .
-    'in use';
+                                                'in use';
 
     /**
      * Determines whether this form is in edit or create mode.
@@ -362,9 +362,9 @@ class Edit_User extends \NDB_Form
                 );
             } elseif (!empty($examinerID)
                 && ((!empty($ex_radiologist)
-                        && !empty($ex_pending)
-                        && !empty($ex_curr_sites))
-                    || empty($ex_curr_sites))
+                && !empty($ex_pending)
+                && !empty($ex_curr_sites))
+                || empty($ex_curr_sites))
             ) {
                 // If examiner already exists in the examiner table AND
                 // radiologist, pending and current sites fields all set or
@@ -1115,9 +1115,9 @@ class Edit_User extends \NDB_Form
         //          already handled in email/password check
         // case 3 - Edit user
         if ((isset($values['UserID']) && !isset($values['NA_UserID'])
-                && $values['UserID'] === $values['Password_hash'])
+            && $values['UserID'] === $values['Password_hash'])
             || (!empty($this->identifier)
-                && $this->identifier === $values['Password_hash'])
+            && $this->identifier === $values['Password_hash'])
         ) {
             $errors['Password'] = self::PASSWORD_ERROR_IS_USER;
         }
@@ -1252,7 +1252,7 @@ class Edit_User extends \NDB_Form
             }
             if (!$matched
                 && ($values['examiner_radiologist'] !== ''
-                    || $values['examiner_pending'] ?? '' !== '')
+                || $values['examiner_pending'] ?? '' !== '')
             ) {
                 $errors['examiner_sites'] = "Please select at least one examiner
                 site or clear the 'Examiner status' fields below (i.e.
