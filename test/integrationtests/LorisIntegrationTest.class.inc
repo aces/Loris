@@ -349,6 +349,38 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
+     * Helper function to change the users Project
+     *
+     * @return void
+     */
+    function changeProject()
+    {
+        $this->DB->insert("Project", ["ProjectID" => 99, "Alias" => "BBQ"]);
+        $this->DB->update(
+            "user_project_rel",
+            ["ProjectID" => 99],
+            ["UserID" => 999990]
+        );
+    }
+
+    /**
+     * Helper function to reset the users Project
+     *
+     * @return void
+     */
+    function resetProject()
+    {
+        $this->DB->run('SET foreign_key_checks =0');
+        $this->DB->update(
+            "user_project_rel",
+            ["ProjectID" => 1],
+            ["UserID" => 999990]
+        );
+        $this->DB->delete("Project", ["ProjectID" => 99]);
+        $this->DB->run('SET foreign_key_checks =1');
+    }
+
+    /**
      * Helper function to create a subproject
      *
      * @param string $SubprojectID Name of the subproject

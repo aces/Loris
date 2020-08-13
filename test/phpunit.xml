@@ -19,6 +19,7 @@
             <directory>../modules/bvl_feedback/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
+            <directory>../modules/candidate_profile/test/</directory>
             <directory>../modules/configuration/test/</directory>
             <directory>../modules/conflict_resolver/test/</directory>
             <directory>../modules/create_timepoint/test/</directory>
