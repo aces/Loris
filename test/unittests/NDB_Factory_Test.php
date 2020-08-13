@@ -204,9 +204,9 @@ class NDB_Factory_Test extends TestCase
      */
     function testSettings()
     {
-        $this->_factory->setBaseURL("/test/");
+        $this->_factory->setBaseURL("");
         $this->assertEquals(
-            new Settings($this->_config, "/test/"),
+            new Settings($this->_config, ""),
             $this->_factory->settings("/config.xml")
         );
     }
