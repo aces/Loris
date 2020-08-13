@@ -70,13 +70,13 @@ before any git push can be done. To do this, run
     Or 
     cp .githooks/pre-push .git/hooks/pre-push 
 
-in the LORIS directory, to configure the project. Make sure `.git/hooks/pre-push` is executable.
+in the LORIS directory to configure the project. Make sure `.git/hooks/pre-push` is executable.
 
 **Notes:** Hooks can be skipped with the flag `--no-verify: git push fork --no-verify`.  
 Setting up an ssh key can also be useful to avoid the headache of entering your user/pass on each push. 
 
 See also: [How to win the love of Travis](https://docs.google.com/presentation/d/1FDYOiyv-2m_nf2JIhJs8YjUCoHjELNyMNrHuqErD6O0/edit#slide=id.p). 
-(2019 presentation by John Saigle) Read this on a rainy day when you’re trying to optimize your PRs and coding. 
+(2019 presentation by John Saigle).
 
 ## 2. Rebasing
 Rebasing is used when there are conflicts between your branch and the branch your PR is based off of (alternative to merging). 
@@ -122,11 +122,11 @@ Use git cherry-pick. This command allows you to pick specific commits to apply t
         
 ## 3. Making a Pull Request
 Once you have created a new branch and pushed an initial commit to it, you will see the option to make a pull request on GitHub. 
-Make sure that the branch you are merging into is the branch that you checked-out when you first started making changes! (e.g. 23.0-release vs. main) 
+Make sure that the branch you are merging into is the branch that you checked-out when you first started making changes, such as main or a release-specific branch!
 
-PRs must be reviewed according to this [checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist), and must be approved by two reviewers before it is merged.  Don’t forget to think about documentation updates like the  TestPlan, changelog, and developer guide updates -- these must accompany your PR.
+PRs must be reviewed according to this [checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist), and must be approved by two reviewers before it is merged. Don’t forget to think about documentation updates like the TestPlan, changelog, and developer guide updates -- these must accompany your PR.
 
-Make sure to note special rules for SQL patches.  Note that changes to Raisinbread data do not need patches, because Rida manages it (his comment here)
+Make sure to note special rules for SQL patches. Note that changes to Raisinbread data do not need patches, because Rida manages it.
 
 **Do not** review or approve your own PR. Your PR must be reviewed and approved by two other developers before it can be merged. 
 
@@ -156,7 +156,7 @@ Be sure to consult the Contributing and Code Review guidelines. For example, 2 r
 
 **Travis:** The Travis build status and results are linked near the bottom of your PR in GitHub. 
 You can restart Travis if it gives error messages that seem inappropriate, or if the build stalls (for >1h).
-if you are pushing a last typo fix on a PR, it's ok to add `[skip ci]` in the commit message. It is not ok to do this if it's the first commit or you arere fixing more than documentation typos.
+if you are pushing a last typo fix on a PR, it's ok to add `[skip ci]` in the commit message. It is not ok to do this if it's the first commit or if you are fixing more than documentation typos.
 
 **Documentation PRs:** If working specifically on markdowns files or other documentation, be sure to check the actual look of the document once you have pushed your PR and fix any formatting errors. You can do this by going to “Files Changed” and Viewing how your markdown file will actually appear in GitHub. Don’t forget to click all links. 
 
@@ -172,32 +172,31 @@ Be sure to observe and follow conventions for how Issues should be named and des
  
 Generally we don’t assign issues.  If someone seems like an obvious candidate to take on an issue, bring their attention to it via slack, and they will self-assign if they feel appropriate.  
 
-Don’t just follow the template blindly - e.g. remove “Brief summary of issue” header and put your summary of the issue there.   
+Don’t just follow the template blindly. For example, remove the “Brief summary of issue” header and put your summary of the issue there.   
 Don’t leave obvious template words like “(if applicable)” in your issue!
 
-## 5. Code Review (section in progress!!!)
+## 5. Code Review
 
 ### Testing or Contributing to someone's PR
 First, make a remote of their fork:
 
-          git remote add "remote-name" "their-fork-url"
-          Ex: git remote add alex https://github.com/AlexandraLivadas/Loris
+    git remote add "remote-name" "their-fork-url"
           
 Then, fetch their remote fork and checkout the branch related to their PR:
 
-          git fetch alex
-          git checkout alex/2020-05-06-something
+    git fetch alex
+    git checkout alex/2020-05-06-something
 
 Alternatively, to avoid being under the detached HEAD state, checkout and create a local branch with 
 
-          git checkout -b branch remote/branch
+    git checkout -b branch remote/branch
 
 Follow the provided testing instructions to test their code on your sandbox. 
 
 If you made changes (with their permission), commit and push them to that branch:
 
-          git commit -m "Changes made"
-          git push alex 2020-05-06-something
+    git commit -m "Changes made"
+    git push alex 2020-05-06-something
 
 Don’t forget to consult the Links (see above) for coding review standards and guidelines and the code review checklist.
 
@@ -207,6 +206,8 @@ The `Passed Manual Tests` label can be added to a PR if you have tested the code
 The `Needs Rebase` label can be added if a PR has merge conflicts with the branch it is based off of.
 
 The `Needs Work` label can be added if a PR is not yet ready for review and requires more work before it can be approved.
+
+Other Labels can also be added by reviewers at their discretion. 
 
 ### Code Review Etiquette
 The most important thing to remember during code review is to be respectful and positive in all correspondence with other developers. It is also good practice
