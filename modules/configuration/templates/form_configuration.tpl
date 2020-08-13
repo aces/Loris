@@ -28,6 +28,14 @@
     </select>
 {/function}
 
+{function name=createDateFormat}
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        {foreach from=$date_format key=name item=label}
+            <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
+        {/foreach}
+    </select>
+{/function}
+
 {function name=createLookUpCenterNameUsing}
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
         {foreach from=$lookup_center key=name item=label}
@@ -80,6 +88,8 @@
             {call createInstrument k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'scan_type'}
             {call createScanType k=$k v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'date_format'}
+            {call createDateFormat k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
             {call createEmail k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}
@@ -106,6 +116,8 @@
             {call createInstrument k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'scan_type'}
             {call createScanType k=$id d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'date_format'}
+            {call createDateFormat k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
             {call createEmail k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}

@@ -64,7 +64,9 @@ class Imaging_Session_ControlPanel
     {
         $DB        = \Database::singleton();
         $config    = \NDB_Config::singleton();
-        $timePoint = \TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint = \TimePoint::singleton(
+            new \SessionID(strval($_REQUEST['sessionID']))
+        );
 
         $subjectData = [
             'sessionID' => $_REQUEST['sessionID'],

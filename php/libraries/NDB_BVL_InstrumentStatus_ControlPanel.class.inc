@@ -33,17 +33,17 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Construct a controller for the instrument status control panel
      *
-     * @param string  $testname  The instrument name being managed
-     * @param string  $commentid The commentID being loaded
-     * @param CandID  $candid    The candidate who this instrument belongs to
-     * @param int     $sessionid The session at which the instrument took place
-     * @param ?string $subtest   The page of the instrument being accessed
+     * @param string    $testname  The instrument name being managed
+     * @param string    $commentid The commentID being loaded
+     * @param CandID    $candid    The candidate who this instrument belongs to
+     * @param SessionID $sessionid The session at which the instrument took place
+     * @param ?string   $subtest   The page of the instrument being accessed
      */
     function __construct(
         string $testname,
         string $commentid,
         CandID $candid,
-        int $sessionid,
+        SessionID $sessionid,
         ?string $subtest
     ) {
         $this->candID     = $candid;

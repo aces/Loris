@@ -100,15 +100,16 @@ class Utility
     /**
      * Returns list of consents in the database
      *
-     * @return array An associative array of consents, with their names and labels.
-     *               The keys of the arrays are the IDs of the consents
+     * @return array An associative array of consents, with their names,
+     *               labels, and group ID. The keys of the arrays are the
+     *               IDs of the consents.
      */
     static function getConsentList(): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $query = "SELECT ConsentID, Name, Label FROM consent";
+        $query = "SELECT ConsentID, Name, Label, ConsentGroupID FROM consent";
         $key   = "ConsentID";
 
         $result = $DB->pselectWithIndexKey($query, [], $key);

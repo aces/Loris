@@ -298,7 +298,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         // Generate a new CandID and insert it into the database.
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
-        $invalidID = false;
+        $invalidID    = false;
+        $attemptcount = 0;
         do {
             // Reset on each iteration
             $invalidID = false;
@@ -312,6 +313,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
                 // with the same value has been inserted into the DB before this
                 // one.
                 $invalidID = true;
+                $attemptcount++;
+                if ($attemptcount > 2) {
+                    throw $e;
+                }
             }
         } while ($invalidID);
 
@@ -620,8 +625,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $subprojList = [];
 
         $projID  = $this->getProjectID();
-        $query   = "SELECT SubprojectID 
-                    FROM project_subproject_rel 
+        $query   = "SELECT SubprojectID
+                    FROM project_subproject_rel
                     WHERE ProjectID = :prj";
         $params  = ['prj' => $projID];
         $subproj = \NDB_Factory::singleton()
@@ -649,7 +654,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        $query  = "SELECT Visit_label FROM session 
+        $query  = "SELECT Visit_label FROM session
           LEFT JOIN candidate USING (CandID)
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
@@ -686,6 +691,57 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             return 1;
         }
         return intval($result);
+    }
+
+    /**
+     * Returns DateInterval between candidate's date of birth and a given date,
+     * or today if no date given.
+     *
+     * @param ?DateTime $refDate The reference date from which to calculate the age,
+     *                           or null if not provided
+     *
+     * @return DateInterval Between DoB and $refDate
+     */
+    public function getAge(?DateTime $refDate = null): DateInterval
+    {
+        if (!$refDate) {
+            $refDate = new DateTime();
+        }
+
+        $dob = new DateTime($this->candidateInfo["DoB"]);
+
+        return $dob->diff($refDate);
+    }
+
+    /**
+     * Returns the candidate's calculated age today in int years
+     *
+     * @return int The candidate's age today as years
+     */
+    public function getAgeInYears(): int
+    {
+        return (int)$this->getAge()->format('%y');
+    }
+
+    /**
+     * Returns the candidate's calculated age today in total number of months
+     *
+     * @return int The candidate's age today in months
+     */
+    public function getAgeInMonths(): int
+    {
+        return (int)$this->getAge()->format('%m') +
+            12 * $this->getAgeInYears();
+    }
+
+    /**
+     * Returns the candidate's calculated age today in total number of days
+     *
+     * @return int The candidate's age today in days
+     */
+    public function getAgeInDays(): int
+    {
+        return (int)$this->getAge()->days;
     }
 
     /**
@@ -780,8 +836,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
+            "SELECT ID,Description
+            FROM participant_status_options
             WHERE parentID=:pid",
             ['pid' => $parentID]
         );
@@ -813,7 +869,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             // the candidate.
             $timepoints = $this->getListOfTimePoints();
             foreach ($timepoints as $sessionID) {
-                $timepoint = \TimePoint::singleton($sessionID);
+                $timepoint = \TimePoint::singleton(
+                    new \SessionID(strval($sessionID))
+                );
                 if (in_array($timepoint->getCenterID(), $centers, true)) {
                     $centerMatch = true;
                     break;

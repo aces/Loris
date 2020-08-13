@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Behavioural_QC automated integration tests
  *
@@ -16,13 +16,7 @@ require_once __DIR__ .
 /**
  * Behavioural_QC automated integration tests
  *
- * PHP Version 5
- *
- * @category Test
- * @package  Loris
- * @author   Wang Shen <wangshen.mcin@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Behavioural_QCTest extends LorisIntegrationTest
 {
@@ -47,33 +41,30 @@ class Behavioural_QCTest extends LorisIntegrationTest
       */
     function testBehaviouralQCWithoutPermission()
     {
-         $this->setupPermissions([]);
-         $this->safeGet($this->url . "/behavioural_qc/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains(
-            "You do not have access to this page.",
-            $bodyText
+        $this->setupPermissions([]);
+        $this->safeGet($this->url . "/behavioural_qc/");
+        $this->checkPagePermissions(
+            '/behavioural_qc/',
+            [],
+            "Behavioural Quality Control",
+            "You do not have access to this page."
         );
-         $this->resetPermissions();
     }
     /**
      * Tests that help editor loads with the permission
+     * Ensures that the module loads if and only if the user has one of the
+     * module permissions codes.
      *
      * @return void
      */
-    function testBehaviouralQCPermission()
+    public function testPermissions(): void
     {
-         $this->setupPermissions(["behavioural_quality_control_view"]);
-         $this->safeGet($this->url . "/behavioural_qc/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertNotContains(
-            "You do not have access to this page.",
-            $bodyText
+        $this->setupPermissions(["behavioural_quality_control_view"]);
+        $this->safeGet($this->url . "/behavioural_qc/");
+        $this->checkPagePermissions(
+            '/behavioural_qc/',
+            ['behavioural_quality_control_view'],
+            "Behavioural Quality Control"
         );
-          $this->resetPermissions();
     }
 }

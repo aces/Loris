@@ -120,6 +120,7 @@ class Edit_User extends \NDB_Form
                 }
             }
 
+            $defaults['examiner'] = $defaults['examiner'] ?? [];
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
                 if ($cid=='pending') {
@@ -141,8 +142,9 @@ class Edit_User extends \NDB_Form
 
             // Notification defaults
             // "notif_".$module."_".$operation."_".$service
+            $user_id  = $user->getData("ID") ?? -1;
             $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-                $user->getData("ID")
+                $user_id
             );
             foreach ($curr_sub as $module=>$operations) {
                 foreach ($operations as $operation => $services) {
@@ -647,7 +649,7 @@ class Edit_User extends \NDB_Form
                 'UserID_Group',
                 'User name',
                 $this->_GUIDelimiter,
-                false
+                ['required' => true]
             );
             unset($group);
 
@@ -662,14 +664,23 @@ class Edit_User extends \NDB_Form
         $group   = [];
         $group[] = $this->createPassword('Password_hash');
         $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
+        if ($this->isCreatingNewUser()) {
+            $pwd_attribs = ['required' => true];
+        } else {
+            $pwd_attribs = [];
+        }
         $this->addGroup(
             $group,
             'Password_Group',
             'New Password',
             $this->_GUIDelimiter,
-            false
+            $pwd_attribs
         );
-        $this->addPassword('__Confirm', 'Confirm Password');
+        $this->addPassword(
+            '__Confirm',
+            'Confirm Password',
+            $pwd_attribs
+        );
         unset($group);
 
         // The supplied pattern is:
@@ -735,14 +746,19 @@ class Edit_User extends \NDB_Form
             'Email_Group',
             'Email address',
             $this->_GUIDelimiter,
-            false
+            ['required' => true]
         );
         unset($group);
 
         // Add a confirm email text field only if creating a new user
         // (to make sure that account creation email goes through)
         if ($this->isCreatingNewUser()) {
-            $this->addBasicText('__ConfirmEmail', 'Confirm Email');
+            $this->addBasicText(
+                '__ConfirmEmail',
+                'Confirm Email',
+                [],
+                ['required' => true]
+            );
         }
 
         //------------------------------------------------------------
@@ -770,7 +786,10 @@ class Edit_User extends \NDB_Form
             'CenterIDs',
             'Sites',
             $siteOptions,
-            ['multiple' => 'multiple']
+            [
+                'multiple' => 'multiple',
+                'required' => true,
+            ]
         );
 
         // START PROJECT SECTION
@@ -785,7 +804,10 @@ class Edit_User extends \NDB_Form
             'ProjectIDs',
             'Projects',
             $projectOptions,
-            ['multiple' => 'multiple']
+            [
+                'multiple' => 'multiple',
+                'required' => true,
+            ]
         );
         // END PROJECT SECTION
 
@@ -1100,7 +1122,11 @@ class Edit_User extends \NDB_Form
         }
 
         // Make sure the user is not using their username as their password.
-        if ((isset($values['UserID'])
+        // case 1 - New user and Make user name match email address not checked
+        // case 2 - New user and Make user name match email address checked
+        //          already handled in email/password check
+        // case 3 - Edit user
+        if ((isset($values['UserID']) && !isset($values['NA_UserID'])
             && $values['UserID'] === $values['Password_hash'])
             || (!empty($this->identifier)
             && $this->identifier === $values['Password_hash'])
@@ -1115,8 +1141,8 @@ class Edit_User extends \NDB_Form
                 ['UID' => $this->identifier]
             );
 
-            //case of new user the password column will be null
-            //so either password should be set or
+            // case of new user the password column will be null
+            // so either password should be set or
             // password should be generated
             if (is_null($pass)
                 && empty($values['Password_hash'])

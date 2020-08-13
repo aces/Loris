@@ -62,7 +62,7 @@ class Panel extends Component {
         onClick={this.toggleCollapsed}
         data-toggle="collapse"
         data-target={'#' + this.props.id}
-        style={{cursor: 'pointer', height: '3em'}}
+        style={{cursor: 'pointer', height: '3em', fontWeight: 'bold'}}
       >
         {this.props.title}
         <span className={glyphClass}></span>
@@ -92,6 +92,7 @@ class Panel extends Component {
 }
 
 Panel.propTypes = {
+  initCollapsed: PropTypes.bool,
   id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
@@ -100,6 +101,7 @@ Panel.defaultProps = {
   initCollapsed: false,
   id: 'default-panel',
   height: '100%',
+  title: '',
 };
 
 export default Panel;

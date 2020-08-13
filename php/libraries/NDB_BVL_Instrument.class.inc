@@ -967,8 +967,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $centerID = null;
         }
 
-        //get examiner certifications for profiles part of IBIS2
-        $candID    = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $candID    = $_REQUEST['candID'] ?? '';
         $sessionID = $this->getSessionID();
 
         $project = $db->pselectOne(
@@ -1446,40 +1445,38 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
-     * @return int The sessionID if found, or -1 if not found
+     * @return SessionID The sessionID
      */
-    function getSessionID(): int
+    function getSessionID(): SessionID
     {
-        $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $fieldValue = \Database::singleton()->pselectOneInt(
+        $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
+        $result = \NDB_Factory::singleton()->database()->pselectOne(
             $query,
             [
                 'CID' => $this->getCommentID(),
             ]
         );
+        if (empty($result)) {
+            throw new NotFound(
+                "No SessionID exists for CommentID: `{$this->getCommentID()}`"
+            );
+        }
 
-        return is_int($fieldValue) ? $fieldValue : -1;
+        return (new SessionID($result));
     }
 
     /**
-     * Gets the VisitLabel for the timepoint to which this instrument pertains
+     * Gets the VisitLabel for the timepoint for this instrument.
      *
-     * @return String for the VisitLabel
+     * @return string The visit label
      */
     function getVisitLabel(): string
     {
-        $sessionID = $this->getSessionID();
-
-        if ($sessionID !== -1) {
-            $timepoint  = \TimePoint::singleton($sessionID);
-            $visitLabel = $timepoint->getVisitLabel();
-            return $visitLabel;
-        }
-        return '';
+        return \TimePoint::singleton($this->getSessionID())->getVisitLabel();
     }
 
     /**
-     * Gets the subprojectID for the timepoint to which this instrument pertains
+     * Gets the subprojectID for the timepoint for this instrument.
      *
      * @return int|null The subprojectID
      */
@@ -1582,7 +1579,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _setDataEntryCompletionStatus(string $status): void
     {
         if (!in_array($status, ['Complete', 'Incomplete'])) {
-            throw new Exception(
+            throw new InvalidArgumentException(
                 "Invalid status passed to _setDataEntryCompletionStatus - "
                 . "'$status' should have been either "
                 . "'Complete' or 'Incomplete'<br>\n"
@@ -2366,12 +2363,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Function that displays the html the fetch feedback panel.
      *
-     * @param CandID $candID    The candidate ID for the panel.
-     * @param int    $sessionID The session ID for the panel.
+     * @param CandID    $candID    The candidate ID for the panel.
+     * @param SessionID $sessionID The session ID for the panel.
      *
      * @return string
      */
-    function getFeedbackPanel(CandID $candID, int $sessionID): string
+    function getFeedbackPanel(CandID $candID, SessionID $sessionID): string
     {
 
         $commentID = $this->getCommentID();
@@ -2398,7 +2395,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getReview(): string
     {
-        $DB = Database::singleton();
+        $DB = NDB_Factory::singleton()->database();
 
         $smarty   = new Smarty_NeuroDB();
         $tpl_data = [];
@@ -2423,8 +2420,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         $smarty->assign($tpl_data);
-        $html = $smarty->fetch("directentry_review.tpl");
-        return $html;
+        return $smarty->fetch("directentry_review.tpl");
     }
 
 
