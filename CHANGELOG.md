@@ -23,6 +23,11 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 ### Modules
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
+
+### Dashboard
+- Access to statistics was per site restricted. Users are now allowed to consult statistics only
+for the sites they have access to. (PR #6878)
+
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
