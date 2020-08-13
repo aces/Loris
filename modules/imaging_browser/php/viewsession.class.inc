@@ -220,10 +220,7 @@ class ViewSession extends \NDB_Form
             $AcquisitionProtocol = $FileObj->getAcquisitionProtocol();
             $CoordinateSpace     = $FileObj->getParameter('CoordinateSpace');
             $Algorithm           = $FileObj->getParameter('Algorithm');
-            $AcquisitionDate     = $this->_getDate(
-                $FileObj,
-                'acquisition_date'
-            );
+            $AcquisitionDate     = $FileObj->getParameter('AcquisitionDate');
             $ProcDate            = $this->_getDate(
                 $FileObj,
                 'processing:processing_date'
