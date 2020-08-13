@@ -846,13 +846,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
         $newData = array_merge($oldData ?? [], $values);
 
-        $dataToUpdate = [];
-
-        if (key_exists('Data_entry_completion_status', $newData)) {
-            $dataToUpdate['Data_entry_completion_status']
-                = $newData['Data_entry_completion_status'];
-            unset($newData['Data_entry_completion_status']);
-        }
         $dataToUpdate['Data'] = json_encode($newData);
 
         // Save the JSON to the flag.Data column.
@@ -1594,11 +1587,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getDataEntryCompletionStatus(): string
     {
         $db = \Database::singleton();
-        // If JSON instrument, get Data_entry_completion_status
-        // from flag table column
         return $db->pselectOne(
-            "SELECT Data_entry_completion_status FROM flag WHERE CommentID=:CID",
-            ['CID' => $this->getCommentID()]
+                "SELECT Data_entry_completion_status FROM flag WHERE CommentID=:CID",
+                ['CID' => $this->getCommentID()]
         );
     }
 
@@ -1620,6 +1611,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . "'Complete' or 'Incomplete'<br>\n"
             );
         }
+
 
         $this->_save(["Data_entry_completion_status" => $status]);
     }
@@ -2200,7 +2192,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $db = \Database::singleton();
 
         if ($instrumentInstance->jsonData) {
-
             $jsondata = $db->pselectOne(
                 "SELECT Data FROM flag WHERE CommentID=:CID",
                 ['CID' => $instrumentInstance->getCommentID()]
