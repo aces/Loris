@@ -189,6 +189,8 @@ database (PR #5260)
 - Fix to prevent help boxes to float over the page content when scrolling (PR #6721)
 
 ### Modules 
+- The dataquery module has a new feature of importing a CSV file (containing either PSCID or DCCID) and for filtering the population by the demographic field.
+
 #### Candidate Profile
 - New module created to provide dashboard of a single candidate's data across all modules. (Various PRs)
 

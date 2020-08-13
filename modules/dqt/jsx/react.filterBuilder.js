@@ -8,6 +8,7 @@
  */
 
 import React, {Component} from 'react';
+import ModalImportCSV from './react.importCSV';
 
 /**
  * LogicOperator Component
@@ -669,7 +670,73 @@ class FilterBuilder extends Component {
    */
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showModalCSV: false,
+    };
+    this.openModalCSV = this.openModalCSV.bind(this);
+    this.closeModalCSV = this.closeModalCSV.bind(this);
+    this.defineCSVCandidates = this.defineCSVCandidates.bind(this);
+  }
+
+  /**
+   * Open the CSV "import data" Modal.
+   * @param {object} e
+   */
+  openModalCSV(e) {
+    e.preventDefault();
+    this.setState({showModalCSV: true});
+  }
+
+  /**
+   * Close the CSV "import data" Modal.
+   */
+  closeModalCSV() {
+    this.setState({showModalCSV: false});
+  }
+
+  /**
+   * Define the Candidates from CSV.
+   * @param {string} type
+   * @param {object} data
+   */
+  defineCSVCandidates(type, data) {
+    let session = [];
+    let children = [];
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const value = data[key][0];
+        children.push({
+          field: type,
+          fieldType: 'varchar(255)',
+          instrument: 'demographics',
+          operator: 'equal',
+          session: [value],
+          type: 'rule',
+          value: value,
+          visit: 'All',
+        });
+        session.push(value);
+      }
+    }
+    const results = {
+      session: session,
+      children: children,
+    };
+    fetch(
+      window.location.origin
+      + '/dqt/View/csv',
+      {
+        credentials: 'same-origin',
+        method: 'PUT',
+        body: JSON.stringify(results),
+      }
+    ).then((resp) => resp.json()
+    ).then((data) => {
+      this.props.importCSV(data);
+      this.closeModalCSV();
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   /**
@@ -680,13 +747,19 @@ class FilterBuilder extends Component {
   render() {
     return (
       <div>
+        <ModalImportCSV
+          showModalCSV={this.state.showModalCSV}
+          closeModalCSV={this.closeModalCSV}
+          defineCSVCandidates={this.defineCSVCandidates}
+        />
         <div className='row'>
           <h1 className='col-xs-6'
               style={{color: '#0A3572'}}>The Query's Filter</h1>
-          {/* <button className='import-csv'> */}
-          {/* Import Population from CSV&nbsp;
-          &nbsp;<span className='glyphicon glyphicon-file'/>*/}
-          {/* </button> */}
+          <button className='import-csv'
+                  onClick={this.openModalCSV}>
+            Import Population from CSV&nbsp;&nbsp;
+            <span className='glyphicon glyphicon-file'/>
+          </button>
         </div>
         <div className='row'>
           <div className='col-xs-12'>
