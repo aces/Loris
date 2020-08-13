@@ -25,6 +25,7 @@ $flagData = $db->pselectWithIndexKey(
 );
 
 foreach($flagData as $cmid => $data) {
+    print_r($cmid."\n");
 
     $instrument = NDB_BVL_Instrument::factory(
         $data['Test_name'],
@@ -36,7 +37,7 @@ foreach($flagData as $cmid => $data) {
 
     $dataToUpdate = [];
 
-    if ($instrument->jsonData === true) {
+    if ($instrument->usesJSONData() === true) {
 
         // If json instrument, take value from flag data
         if(isset($dataArray['Data_entry_completion_status'])) {
@@ -47,8 +48,10 @@ foreach($flagData as $cmid => $data) {
 
         // Otherwise, take value from instrument table
         $instrData = NDB_BVL_Instrument::loadInstanceData($instrument);
-        $dataToUpdate['Data_entry_completion_status']
-            = $instrData['Data_entry_completion_status'];
+        if (isset($dataToUpdate['Data_entry_completion_status'])) {
+            $dataToUpdate['Data_entry_completion_status']
+                = $instrData['Data_entry_completion_status'];
+        }
     }
 
     if(isset($dataArray['Data_entry_completion_status'])) {
