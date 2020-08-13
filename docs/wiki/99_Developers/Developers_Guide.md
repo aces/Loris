@@ -2,16 +2,16 @@
 This document covers topics like making PRs, issues, and how to go through a normal LORIS workflow.
 
 ## Links to know, read, and follow
-* All markdowns in the Loris GitHub under docs/  
+* All markdowns in the Loris GitHub under [docs/](../..) 
 * [Contributing.md](../../../CONTRIBUTING.md) - How to contribute to Loris!
 * [Coding Standards](../../CodingStandards.md)
 * [Pull Request Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) and [Code Review guidelines](Code_Review_Guide.md)
 
 ## 1. Working off your fork
 During installation, you should have already made your own fork of LORIS. Then, you should add two remote options so that you can switch between your fork and “aces”.
-             
-             git remote rename origin aces
-             git remote add myFork <fork-url>
+
+    git remote rename origin aces
+    git remote add myFork <fork-url>
              
 Your fork url will usually have the format:  
     `https://github.com/github-username/LORIS`  
@@ -22,14 +22,14 @@ You will make a different branch for each PR/change that you are making.
 
 Here is a basic workflow, if you are trying to make a PR off of the main branch:
 
-             git fetch aces
-             git checkout aces/main 
-             git checkout -b "2020-05-06-fixCandidateTestPlan"
-             vi filename
-             git add filename 
-             git status 
-             git commit -m "initial commit"
-             git push myFork 2020-05-06-fixCandidateTestPlan
+    git fetch aces
+    git checkout aces/main 
+    git checkout -b "2020-05-06-fixCandidateTestPlan"
+    vi filename
+    git add filename 
+    git status 
+    git commit -m "initial commit"
+    git push myFork 2020-05-06-fixCandidateTestPlan
 
 There is usually no need to fully update your fork to the newest aces/LORIS version, since you can work off whichever branch you just fetched and checked-out!
 
@@ -41,37 +41,35 @@ Don’t forget to make your branch names short and informative, like your commit
 
 ### Helpful commands to run before pushing new code:
 These commands catch small formatting erros that will cause Travis to fail.
-```
- make checkstatic  # includes these 3 commands: 
-                   # npm run lint:php, npm run lint:javascript, vendor/bin/phan
 
- phpcs  modules/candidate_list/php/candidate_list.class.inc
-                   # phpcs allows you to specifically check the formatting of one file 
+    make checkstatic  # includes these 3 commands: 
+                      # npm run lint:php, npm run lint:javascript, vendor/bin/phan
 
- vendor/bin/phpcbf --standard=test/LorisCS.xml      
- modules/candidate_list/php/candidate_list.class.inc
-                   # phpcbf allows you to automatically fix the errors 
-                   # found by phpcs marked with a check.
-```
+    phpcs  modules/candidate_list/php/candidate_list.class.inc
+                      # phpcs allows you to specifically check the formatting of one file 
+
+    vendor/bin/phpcbf --standard=test/LorisCS.xml modules/candidate_list/php/candidate_list.class.inc
+                      # phpcbf allows you to automatically fix the errors 
+                      # found by phpcs marked with a check.
 
 To run unit or integration tests (useful if making significant changes to any module). More details [here](../../../test/README.md):
          
-         npm run tests:unit
-         # The commands below allow you to run unit tests for a specific 
-         # module or a specific test in a module
-         npm run tests:unit -- --filter CandidateTest
-         npm run tests:unit --  --filter CandidateTest::someTest
-         npm run tests:integration
+    npm run tests:unit
+    # The commands below allow you to run unit tests for a specific 
+    # module or a specific test in a module
+    npm run tests:unit -- --filter CandidateTest
+    npm run tests:unit --  --filter CandidateTest::someTest
+    npm run tests:integration
          
 ### Good practice for Travis
 Travis is our continuous integration which runs on every PR in GitHub. As you get more comfortable with commits and PRs, 
 to save time and Travis errors, you can configure your setup so that `make checkstatic` must complete successfully 
 before any git push can be done. To do this, run 
-```
-git config core.hooksPath .githooks (git v2.9 or up)
-Or 
-cp .githooks/pre-push .git/hooks/pre-push 
-```
+
+    git config core.hooksPath .githooks (git v2.9 or up)
+    Or 
+    cp .githooks/pre-push .git/hooks/pre-push 
+
 in the LORIS directory, to configure the project. Make sure `.git/hooks/pre-push` is executable.
 
 **Notes:** Hooks can be skipped with the flag `--no-verify: git push fork --no-verify`.  
@@ -84,55 +82,59 @@ See also: [How to win the love of Travis](https://docs.google.com/presentation/d
 Rebasing is used when there are conflicts between your branch and the branch your PR is based off of (alternative to merging). 
 Here is a general workflow:
 
-        cd /var/www/loris
-        git checkout another_new_branch_name
-        git fetch aces
-        git rebase aces/master
-       (#) while (conflicts)  { 
-          // fix any conflicts!
-          git add  filename
-          git rebase --continue
-        # } loop back to (#) - fix any remaining conflicts.... until no  
-          more conflicts
-       git push --force origin another_new_branch_name
-       # --force is often needed here :\
+    cd /var/www/loris
+    git checkout another_new_branch_name
+    git fetch aces
+    git rebase aces/master
+    (#) while (conflicts)  { 
+        // fix any conflicts!
+        git add  filename
+        git rebase --continue
+    # } loop back to (#) - fix any remaining conflicts.... until no more conflicts
+    git push --force origin another_new_branch_name
+    # --force is often needed here :\
        
 This is a specific case. For more information on rebasing, look at this [(2014) Git for LORIS cheat document](https://docs.google.com/document/d/1yPx72Z7kJtV3WAcyrwtrMOAtQztzJecVQyaLCJ4jdHg/edit#)!
 
 ### Tips for fixing a rebase
 1. The most basic way of “fixing” a rebase is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. For example:
+    
+       git reset --hard <commit_hash>
+       git push -f origin branch-name
 
-        git reset --hard <commit_hash>
-        git push -f origin branch-name
-
-
-2. If you rebase the wrong branch or your PR is displaying all the commits from the branch you rebased and displays multiple commits or changed files that are not part of your PR:
-   	Use git cherry-pick. This command allows you to pick specific commits to apply to a 
-   branch. Here is an example workflow:
-   
-        git checkout "your-branch"       #The branch that got messed up :(
-        git branch -m "temp-branch-name" # Change the branch name locally:
-                                         # This is a failsafe since you will 
-                                         # be changing the history of the 
-                                         # branch remotely
-        git fetch aces
-        git checkout aces/master         # Checkout the branch that your PR is      
-                                         # based off of 
-        git checkout -b "your-branch"    # Create a “new” branch with the same
-                                         # name as the original branch
-        git cherry-pick <commit-hash>    # Cherry
-        git push -f origin "your-branch"
+2. If you rebase the wrong branch or your PR is displaying all the commits from the branch you rebased and displays multiple commits or changed files 
+that are not part of your PR:   
+Use git cherry-pick. This command allows you to pick specific commits to apply to a branch. Here is an example workflow:  
+    ```
+    git checkout "your-branch"       #The branch that got messed up :(
+    git branch -m "temp-branch-name" # Change the branch name locally:
+                                     # This is a failsafe since you will 
+                                     # be changing the history of the 
+                                     # branch remotely
+    git fetch aces
+    git checkout aces/master         # Checkout the branch that your PR is      
+                                     # based off of 
+    git checkout -b "your-branch"    # Create a “new” branch with the same
+                                     # name as the original branch
+    git cherry-pick <commit-hash>    # Cherry-pick the commits that you would like to keep
+    git push -f origin "your-branch"
+    ```
         
 ## 3. Making a Pull Request
 Once you have created a new branch and pushed an initial commit to it, you will see the option to make a pull request on GitHub. 
 Make sure that the branch you are merging into is the branch that you checked-out when you first started making changes! (e.g. 23.0-release vs. main) 
 
 PRs must be reviewed according to this [checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist), and must be approved by two reviewers before it is merged.  Don’t forget to think about documentation updates like the  TestPlan, changelog, and developer guide updates -- these must accompany your PR.
-Make sure to note special rules for SQL patches.  Note that changes to Raisinbread data do not need patches, because Rida manages it (his comment here)
-Important: Do not merge your own PR or any other PR. After a PR has been reviewed and approved (by 2 ppl), the code is merged by Dave, the repo maintainer. It will be merged eventually.  If your PR is on a release branch and has been ready to merge for a few days, you can add a comment that it is ready to merge. 
 
-It’s your responsibility to be on top of your PRs, and any Issues that need follow-up.  This includes answering questions/ comments, acknowledging/making change requests, and requesting re-review after you’ve addressed someone’s change requests. 
-This is important for the Team’s productivity -- it prevents PRs from lagging, prevents confusion as to why a PR has stalled or if you’ve seen someone’s comments, and most importantly -- it doesn’t waste the core team’s time on Friday when it goes over lagging PRs and Issues.
+Make sure to note special rules for SQL patches.  Note that changes to Raisinbread data do not need patches, because Rida manages it (his comment here)
+
+**Do not** review or approve your own PR. Your PR must be reviewed and approved by two other developers before it can be merged. 
+
+**Important:** Do not merge your own PR or any other PR. After a PR has been reviewed and approved, the code is merged by Dave, the repository maintainer. It will be merged eventually. If your PR is on a release branch and has been ready to merge for a few days, you can add a comment that it is ready to merge. 
+
+It’s your responsibility to be on top of your PRs, and any Issues that need follow-up.  This includes answering questions and comments, acknowledging and making change requests, and requesting re-review after you’ve addressed someone’s change requests. 
+
+This is important for the Team’s productivity -- it prevents PRs from lagging and prevents confusion as to why a PR has stalled or if you’ve seen someone’s comments.
 When issuing a PR, you can request a specific reviewer (this is not the same as assigning a PR to someone).  There is usually an obvious reviewer for a PR.  
 This is especially important in Release-Test/Fix cycles when we want PRs to be reviewed and resolved quickly.
 
@@ -199,13 +201,40 @@ If you made changes (with their permission), commit and push them to that branch
 
 Don’t forget to consult the Links (see above) for coding review standards and guidelines and the code review checklist.
 
-## 6. Opening a Redmine ticket
-Loris uses [Redmine](https://redmine.cbrain.mcgill.ca/) to manage requests that need to escalate to the IT team. It is advised to search for similar issues in the archives (search bar in the header) to find answers given to similar issues before opening a ticket. You can login through redmine with your ACELab access.
+### Labels
+The `Passed Manual Tests` label can be added to a PR if you have tested the code on your own VM and determined that it performs as intended.
 
-To open a new issue, click on the `New issue` tab and fill a detailed  description of your issue. To receive update notifications, select the watch option on the top corner.
+The `Needs Rebase` label can be added if a PR has merge conflicts with the branch it is based off of.
 
-## 7. Accessing a Database
-Loris database credentials are usually provided in each VM in a file called `database.txt` in the home directory. To access the database, use the following command:  
+The `Needs Work` label can be added if a PR is not yet ready for review and requires more work before it can be approved.
+
+### Code Review Etiquette
+The most important thing to remember during code review is to be respectful and positive in all correspondence with other developers. It is also good practice
+to be on top of all comments or requests and to respond to every comment.
+
+#### When to ask for or remind someone to do a review
+You may ask for someone to review your PR at your discretion. However, do not assign someone to your PR.
+
+In general, if someone has previously reviewed your PR and requested changes, it is good practice to re-request their review once you have implemented those changes.
+
+If you have requested review on a PR and have not received feedback for a number of days, it is okay to either re-request their review or leave a comment
+on the PR pinging them with a short message. For example, "Hey @developer, could you please review this PR and let me know what you think!"
+
+#### Implementing suggestions or requested changes
+It is good practice to implement any requested changes as soon as possible and then re-request review from the developer who requested them. It is also recommended
+that you acknowledge a reviewer's suggestion or request, either by responding to it with a short "I'm on it!"-type message or by leaving an emoji.
+
+If you feel that the suggested or requested change is not necessary, feel free to respond in the comment section with a clear explanation of why you don't think it is necessary.
+Make sure to stay positive and respectful in all review or comment threads!
+
+#### When to resolve a review or comment thread
+If you have implemented a requested change from a review-comment thread, it is good practice to let the developer who requested the change
+resolve the thread. However, if a comment thread is simple or straightforward and has been resolved, feel free to resolve it.
+
+If there is context discussed in a review-comment thread that people may want to consult later, don't resolve the comment thread. You can simply put an emoji and add a comment saying "Thanks" or "Change made" to signal that the review has been addressed.
+
+## 6. Accessing a Database
+To access the database, use the following command, using the credentials given to you:  
 ```
 mysql -u user -h host database -p
 ```
