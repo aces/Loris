@@ -3,7 +3,7 @@ This document covers topics including making PRs, issues, and how to go through 
 
 ## Links to know, read, and follow
 * All markdowns in the Loris GitHub under [docs/](../..) 
-* [Contributing.md](../../../CONTRIBUTING.md) - How to contribute to Loris!
+* [Contributing.md](../../../CONTRIBUTING.md) - How to contribute to Loris
 * [Coding Standards](../../CodingStandards.md)
 * [Pull Request Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) and [Code Review guidelines](Code_Review_Guide.md)
 
@@ -11,7 +11,7 @@ This document covers topics including making PRs, issues, and how to go through 
 During installation, you made your own fork of LORIS. Then, you can add two remote options in order to switch between your fork and “aces”.
 
     git remote rename origin aces
-    git remote add myFork <fork-url>
+    git remote add my_fork <fork_url>
              
 Your fork url will usually have the format:  
     `https://github.com/github-username/LORIS`  
@@ -25,19 +25,19 @@ Here is a basic workflow if you are trying to make a PR off of the _main_ branch
 
     git fetch aces
     git checkout aces/main 
-    git checkout -b "2020-05-06-fixCandidateTestPlan"
+    git checkout -b "branch_name"
     vi filename
     git add filename 
     git status 
-    git commit -m "initial commit"
-    git push myFork 2020-05-06-fixCandidateTestPlan
+    git commit -m "Initial commit"
+    git push my_fork branch_name
 
 There is usually no need to fully update your fork to the newest aces/LORIS version, since you can work off whichever branch you just fetched and checked-out!
 
  **Never** push to aces/Loris. Your branch will be deleted. Always push to your fork, and then create the PR from GitHub.
 
 #### Branch Naming
-Follow the convention most devevelopers use: “date-title...”.   
+Follow the convention most developers use: “date-title...”.   
 Starting with the date allows branches to sort and display in order, and also helps sort out any conflicts faster in the main Loris repository.
 Don’t forget to make your branch names short and informative, like your commit messages, since they’re read by others on GitHub. 
 
@@ -77,54 +77,24 @@ in the LORIS directory to configure the project. Make sure `.git/hooks/pre-push`
 **Notes:** Hooks can be skipped with the flag `--no-verify: git push fork --no-verify`.  
 Setting up an ssh key can also be useful to avoid the headache of entering your username and password on each push. 
 
-See also: [How to win the love of Travis](https://docs.google.com/presentation/d/1FDYOiyv-2m_nf2JIhJs8YjUCoHjELNyMNrHuqErD6O0/edit#slide=id.p). 
-(a 2019 presentation by John Saigle).
+## 2. Issues
+Issues are used to bring the team's attention to any bugs or feature requests that you come across. When you make an issue, there are 4 options: bug fix, feature request, security 
+vulnerability, or a blank format. You will probably either be making a bug fix or feature 
+request. In these cases, there will be a template to fill out.
 
-## 2. Rebasing
-Rebasing is used when there are conflicts between your branch and the branch your PR is based off of (an alternative to merging). 
-Here is a general workflow:
+Every PR should have a related issue that it is fixing. If you are going to be making a 
+change, make an issue for it and assign yourself to be the one to fix it.
 
-    cd /var/www/loris
-    git checkout your_branch
-    git fetch aces
-    git rebase aces/main
-    (#) while (conflicts)  { 
-        // fix any conflicts!
-        git add  filename
-        git rebase --continue
-    # } loop back to (#) - fix any remaining conflicts.... until no more conflicts
-    git push --force your_fork your_branch
-    # --force is often needed here :\
-       
-This is a specific case. For more information on rebasing, look at this [(2014) Git for LORIS cheat document](https://docs.google.com/document/d/1yPx72Z7kJtV3WAcyrwtrMOAtQztzJecVQyaLCJ4jdHg/edit#)!
+Be sure to observe and follow conventions for how Issues should be named and described and how to ping other people for input.
+ 
+Our team tends to self-assign issues. If you would like to take on a non-trivial issue, please ask us for input early and often.
 
-### Tips for fixing a rebase
-1. The most basic way of “fixing” a rebase is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. 
-For example:
-    
-       git reset --hard <commit_hash>
-       git push -f origin branch-name
-
-2. If you rebase the wrong branch or your PR is displaying all the commits from the branch you rebased and displays multiple commits or changed files that are not part of your PR,
-use git cherry-pick. This command allows you to pick specific commits to apply to a branch. Here is an example workflow:  
-    ```
-    git checkout "your-branch"        # The branch that got messed up :(
-    git branch -m "temp-branch-name"  # Change the branch name locally:
-                                      # This is a failsafe since you will 
-                                      # be changing the history of the 
-                                      # branch remotely
-    git fetch aces
-    git checkout aces/main            # Checkout the branch that your PR is      
-                                      # based off of 
-    git checkout -b "your-branch"     # Create a “new” branch with the same
-                                      # name as the original branch
-    git cherry-pick <commit-hash>     # Cherry-pick the commits that you would like to keep
-    git push -f origin "your-branch"
-    ```
+Don’t just follow the template blindly. For example, remove the “Brief summary of issue” header and put your summary of the issue there.
+Don’t leave obvious template words like “(if applicable)” in your issue.
         
-## 3. Making a Pull Request
+## 3. Pull Requests
 Once you have created a new branch and pushed an initial commit to it, you will see the option to make a pull request on GitHub. 
-Make sure that the branch you are merging into is the branch that you checked-out when you first started making changes, such as main or a release-specific branch!
+Make sure that the branch you are merging into is the branch that you checked-out when you first started making changes, such as main or a release-specific branch.
 
 PRs must be reviewed according to this [checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist), and must be approved by two reviewers before they are merged. Don’t forget to think about documentation updates like the TestPlan, changelog, and developer guide updates -- these must accompany your PR.
 
@@ -147,7 +117,7 @@ Be sure to observe and follow team conventions for how PRs should be named and d
 
 **[Contents](../../../.github/PULL_REQUEST_TEMPLATE.md) of the initial comment:** Include a brief summary of the changes and rationale, links to related issues or PRs, and testing instructions if there are any. 
 
-**Linking issues:** Use GitHub keywords like `Fixes` or `Resolves` so that related issues are closed automatically when the PR is merged. Do not use these key words if you are only addressing one point raised in an issue. This will close the entire issue and leave unresolved bugs.
+**Linking issues:** Use GitHub keywords like `Fixes` or `Resolves` so that related issues are closed automatically when the PR is merged. Do not use these keywords if you are only addressing one point raised in an issue. This will close the entire issue and leave unresolved bugs in the codebase.
 **Note** that automatic issue-linking and issue-closing only works on the default branch.  If the PR is not on the default branch, you will need to manually close the issue after the PR is merged. 
 
 **Labels:** On the right side of the browser, you will see the option to add labels. Please add any that are related to the PR. 
@@ -162,43 +132,28 @@ if you are pushing a last typo fix on a PR, it is okay to add `[skip ci]` in the
 
 **Documentation PRs:** If working specifically on markdown files or other documentation, be sure to check the actual look of the document once you have pushed your PR and fix any formatting errors. You can do this by going to “Files Changed” and viewing how your markdown file will actually appear in GitHub. Don’t forget to click all links. 
 
-## 4. Issues
-Every PR should have a related issue that it is fixing. If you are going to be making a 
-change, make an issue for it and assign yourself to be the one to fix it!
-
-When you make an issue, there are 4 options: bug fix, feature request, security 
-vulnerability, or a blank format. You will probably either be making a bug fix or feature 
-request. In these cases, there will be a format to follow.
-
-Be sure to observe and follow conventions for how Issues should be named and described and how to ping other people for input.
- 
-Generally we do not assign issues. If someone seems like an obvious candidate to take on an issue, bring their attention to it via slack, and they will self-assign if they feel appropriate.  
-
-Don’t just follow the template blindly. For example, remove the “Brief summary of issue” header and put your summary of the issue there.   
-Don’t leave obvious template words like “(if applicable)” in your issue!
-
-## 5. Code Review
+## 4. Code Review
 
 ### Testing or Contributing to someone's PR
 First, make a remote of their fork:
 
-    git remote add "remote-name" "their-fork-url"
+    git remote add "their_fork" <their_fork_url>
           
 Then, fetch their remote fork and checkout the branch related to their PR:
 
-    git fetch remote_name
-    git checkout remote_name/branch
+    git fetch their_fork
+    git checkout their_fork/branch_name
 
 Alternatively, to avoid being under the detached HEAD state, checkout and create a local branch with the command
 
-    git checkout -b branch remote/branch
+    git checkout -b branch their_fork/branch_name
 
 Follow the provided testing instructions to test their code on your VM. 
 
 If you made changes (with their permission), commit and push them to that branch:
 
     git commit -m "Changes made"
-    git push remote_name branch
+    git push their_fork branch_name
 
 Don’t forget to consult the Links (see above) for coding review standards and guidelines and the code review checklist.
 
@@ -221,20 +176,60 @@ You may ask for someone to review your PR at your discretion. However, do not as
 In general, if someone has previously reviewed your PR and requested changes, it is good practice to re-request their review once you have implemented those changes.
 
 If you have requested review on a PR and have not received feedback for a number of days, it is okay to either re-request their review or leave a comment
-on the PR pinging the developer with a short message. For example, "Hey @developer, could you please review this PR and let me know what you think!"
+on the PR pinging the developer with a short message. For example, "Hey @developer, could you please review this PR and let me know what you think."
 
 #### Implementing suggestions or requested changes
-It is good practice to implement any requested changes as soon as possible and then re-request review from the developer. It is also recommended
-that you acknowledge a reviewer's suggestion or request, either by responding to it with a short "I'm on it!"-type message or by leaving an emoji.
+It is good practice to implement any requested changes as soon as possible and then re-request review from the developer. It also helps the team if you acknowledge each comment or request with a few words or just an emoji, so that anyone reading will know that you've seen it.
 
 If you feel that the suggested or requested change is not necessary, feel free to respond in the comment section with a clear explanation of why you don't think it is necessary.
-Make sure to stay positive and respectful in all review or comment threads!
+Make sure to stay positive and respectful in all review or comment threads.
 
 #### When to resolve a review or comment thread
 If you have implemented a requested change from a review-comment thread, it is good practice to let the developer who requested the change
 resolve the thread. However, if a comment thread is simple or straightforward and has been resolved, feel free to resolve it.
 
 If there is context discussed in a review-comment thread that people may want to consult later, don't resolve the comment thread. You can simply put an emoji and add a comment saying "Thanks" or "Change made" to signal that the review has been addressed.
+
+## 5. Rebasing
+Rebasing is used when there are conflicts between your branch and the branch your PR is based off of (an alternative to merging). 
+Here is a general workflow:
+
+    cd /var/www/loris
+    git checkout branch_name
+    git fetch aces
+    git rebase aces/main
+    (#) while (conflicts)  { 
+        // fix any conflicts
+        git add  filename
+        git rebase --continue
+    # } loop back to (#) - fix any remaining conflicts.... until no more conflicts
+    git push --force my_fork branch_name
+    # --force is often needed here :\
+       
+This is a specific case. For more information on rebasing, look at this [(2014) Git for LORIS cheat document](https://docs.google.com/document/d/1yPx72Z7kJtV3WAcyrwtrMOAtQztzJecVQyaLCJ4jdHg/edit#).
+
+### Tips for fixing a rebase
+1. The most basic way of “fixing” a rebase is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. 
+For example:
+    
+       git reset --hard <commit_hash>
+       git push -f my_fork branch_name
+
+2. A more complicated tool that can be used to solve bigger rebasing errors is the command [`git cherry-pick`](https://git-scm.com/docs/git-cherry-pick). The command allows you to pick specific commits to apply to a branch. For example, if you rebase the wrong branch or your PR is incorrectly displaying all the commits or files from the branch you rebased, this tool will come in handy. Here is an example workflow:  
+    ```
+    git checkout branch_name          # The branch that got messed up :(
+    git branch -m "temp_branch_name"  # Change the branch name locally:
+                                      # This is a failsafe since you will 
+                                      # be changing the history of the 
+                                      # branch remotely
+    git fetch aces
+    git checkout aces/main            # Checkout the branch that your PR is      
+                                      # based off of 
+    git checkout -b "branch_name"     # Create a “new” branch with the same
+                                      # name as the original branch
+    git cherry-pick <commit-hash>     # Cherry-pick the commits that you would like to keep
+    git push -f my_fork "branch_name"
+    ```
 
 ## 6. Accessing a Database
 To access the database, use the following command, using the credentials given to you:  
@@ -243,4 +238,4 @@ mysql -u user -h host database -p
 ```
 and provide the password on prompt.
 
-To preview very large tables, use `\G` instead of `;` at the end of a query. This formats the query output nicely, so that you can read through it easier. 
+If you are new to the MySQL commandline, try using `\G` instead of `;` at the end of a query - this will print one column value per line, which makes the query output easier to read.
