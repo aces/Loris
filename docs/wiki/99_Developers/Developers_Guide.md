@@ -36,7 +36,8 @@ There is usually no need to fully update your fork to the newest aces/LORIS vers
 
  **Never** push to aces/Loris. Your branch will be deleted. Always push to your fork, and then create the PR from GitHub.
 
-**About Branch naming:** Follow the convention most devevelopers use: “date-title...”.   
+#### Branch Naming
+Follow the convention most devevelopers use: “date-title...”.   
 Starting with the date allows branches to sort and display in order, and also helps sort out any conflicts faster in the main Loris repository.
 Don’t forget to make your branch names short and informative, like your commit messages, since they’re read by others on GitHub. 
 
@@ -107,7 +108,7 @@ For example:
 2. If you rebase the wrong branch or your PR is displaying all the commits from the branch you rebased and displays multiple commits or changed files that are not part of your PR,
 use git cherry-pick. This command allows you to pick specific commits to apply to a branch. Here is an example workflow:  
     ```
-    git checkout "your-branch"        #The branch that got messed up :(
+    git checkout "your-branch"        # The branch that got messed up :(
     git branch -m "temp-branch-name"  # Change the branch name locally:
                                       # This is a failsafe since you will 
                                       # be changing the history of the 
