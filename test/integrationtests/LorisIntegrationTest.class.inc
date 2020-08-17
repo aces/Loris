@@ -61,6 +61,19 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp()
     {
+        // generating a random JWTkey
+        $new_id = bin2hex(random_bytes(30));
+        $this->factory->database()->update(
+            "
+            UPDATE
+                Config
+            SET
+                Value=$new_id
+            WHERE
+                ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='JWTKey')
+                "
+        );
+
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -198,6 +211,18 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function tearDown()
     {
+        // Reset the JWTKey to default
+        $this->factory->database()->update(
+            "
+            UPDATE
+                Config
+            SET
+                Value='S3cret'
+            WHERE
+                ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='JWTKey')
+                "
+        );
+
         if (extension_loaded('xdebug')) {
             $data = xdebug_get_code_coverage();
             xdebug_stop_code_coverage(false);
@@ -479,7 +504,7 @@ abstract class LorisIntegrationTest extends TestCase
                 "
             )
         );
-            // Load the new page
+        // Load the new page
         $newWebDriver = $this->webDriver->get($url);
         $wait         = new WebDriverWait($newWebDriver, $waitPeriod);
         $wait->until(
@@ -672,13 +697,13 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
-            $bodyText = $this->safeFindElement(
-                WebDriverBy::cssSelector("$row")
-            )->getText();
-            // 4 means there are 4 records under this site.
-            $this->assertContains($expect_records, $bodyText);
-            //test clear filter
-            $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$row")
+        )->getText();
+        // 4 means there are 4 records under this site.
+        $this->assertContains($expect_records, $bodyText);
+        //test clear filter
+        $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
     }
 
     /**

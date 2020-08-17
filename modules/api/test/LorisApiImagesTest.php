@@ -3,9 +3,9 @@
 require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
 /**
- * PHPUnit class for API test suite. This script sends HTTP request to every enpoints
- * of the api module and look at the response content, status code and headers where
- * it applies. All endpoints are accessible at <host>/api/<version>/
+ * PHPUnit class for API test suite. This script sends HTTP request to every
+ * endpoints of the api module and look at the response content, status code and
+ * headers where it applies. All endpoints are accessible at <host>/api/<version>/
  * (e.g. the endpoint of the version 0.0.3 ofd the API "/projects" URI for the host
  * "example.loris.ca" would be https://example.loris.ca/api/v0.0.3/projects)
  *
@@ -22,25 +22,6 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
     protected $visitTest     = "V4";
     protected $imagefileTest = "demo_676061_V4_t1_001.mnc";
 
-    /**
-     * Call to LorisApiAuthenticationTest::setUp()
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
-    /**
-     * Call to LorisApiAuthenticationTest::tearDown()
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        parent::tearDown();
-    }
     /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/images
