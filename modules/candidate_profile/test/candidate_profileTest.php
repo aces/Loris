@@ -33,9 +33,9 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/900000/");
         $bodyText
-            = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("Candidate Profile", $bodyText);
+        $this->assertContains("Candidate Profile 900000", $bodyText);
     }
 
     /**
@@ -51,7 +51,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->setupPermissions(["data_entry"]);
         $this->safeGet($this->url . "/900000/");
         $bodyText
-            = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertContains("Permission Denied", $bodyText);
         $this->resetPermissions();
@@ -72,7 +72,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->setupPermissions(["data_entry"]);
         $this->safeGet($this->url . "/900000/");
         $bodyText
-            = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertContains("Permission Denied", $bodyText);
         $this->resetPermissions();
