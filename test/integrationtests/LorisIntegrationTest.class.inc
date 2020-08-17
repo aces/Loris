@@ -353,7 +353,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function changeProject()
+    function changeUserProject()
     {
         $this->DB->insert("Project", ["ProjectID" => 99, "Alias" => "BBQ"]);
         $this->DB->update(
@@ -368,7 +368,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function resetProject()
+    function resetUserProject()
     {
         $this->DB->run('SET foreign_key_checks =0');
         $this->DB->update(

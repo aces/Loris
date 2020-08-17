@@ -6,7 +6,7 @@
  *
  * @category Test
  * @package  Loris
- * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
+ * @author   Alexandra Livadas <alexandra.livadas@mail.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -18,34 +18,12 @@ require_once __DIR__
  *
  * @category Test
  * @package  Loris
- * @author   Alexandra Livadas <alexandra.livadas@mcin.ca>
+ * @author   Alexandra Livadas <alexandra.livadas@mail.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
 {
-    /**
-     * Setup the tests and database data
-     *
-     * @return void
-     */
-    function setUp()
-    {
-        parent::setUp();
-        $this->setupConfigSetting("useEDC", "true");
-    }
-
-    /**
-     * Tear down the tests and delete database data
-     *
-     * @return void
-     */
-    function tearDown(): void
-    {
-        parent::tearDown();
-        $this->restoreConfigSetting("useEDC");
-    }
-
     /**
      * Tests that the page loads
      *
@@ -89,8 +67,8 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testCandidateProfileWithoutProjectPermissions()
     {
-        $this->resetProject();
-        $this->changeProject();
+        $this->resetUserProject();
+        $this->changeUserProject();
         $this->setupPermissions(["data_entry"]);
         $this->safeGet($this->url . "/900000/");
         $bodyText
@@ -99,6 +77,6 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertContains("Permission Denied", $bodyText);
         $this->resetPermissions();
 
-        $this->resetProject();
+        $this->resetUserProject();
     }
 }
