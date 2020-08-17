@@ -33,7 +33,7 @@ See specification for the expected response format.
 
 
 #### Candidate creation - POST /candidates
-Candidate creation is done by sending a POST request to /candidates with the required data. Note the usage of the Authorization header. For a candidate to be created, the candidate's information must also be included. The following command contains the minimal information necessary for the request to create a new candidate (see [docs](../../../docs/API/LorisRESTAPI_v0.0.3.md#30-candidate-api) for format instructions):
+Candidate creation is done by sending a POST request to /candidates with the required data. Note the usage of the Authorization header. For a candidate to be created, the candidate's information must also be included. The following command contains the minimal information necessary for the request to create a new candidate (see [docs](../../../docs/wiki/99_Developers/LORIS-REST-API-0.0.3-dev.md#30-candidate-api) for format instructions):
 
 ```bash
 ~$ curl -H "Authorization: Bearer $token" https://<your-hostname>/api/v0.0.3/candidates -d '{"Candidate":{"Project":"Rye","Site":"Montreal","DoB":"2019-01-31", "Sex":"Female"}}' 

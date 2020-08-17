@@ -644,4 +644,140 @@ class NDB_PageTest extends TestCase
         $this->_page->form->freeze();
         $this->assertEquals("fetch was called!", $this->_page->display());
     }
+
+    /**
+     * Test that the _setDefaults method correctly sets the default value
+     * and returns the default array and that _getDefaults returns the
+     * correct information.
+     *
+     * @covers NDB_Page::_setDefaults
+     * @covers NDB_Page::_getDefaults
+     * @return void
+     */
+    public function testGetSetDefaults()
+    {
+        $defaults = $this->_page->_setDefaults([1, 2, 3]);
+        $this->assertEquals($defaults, $this->_page->_getDefaults());
+    }
+
+    /**
+     * Test that toJSON returns the correctly formatted information
+     *
+     * @covers NDB_Page::toJSON
+     * @return void
+     */
+    public function testToJSON()
+    {
+        $this->assertEquals('{"error":"Not implemented"}', $this->_page->toJSON());
+    }
+
+    /**
+     * Test that _hasAccess returns true
+     *
+     * @covers NDB_Page::_hasAccess
+     * @return void
+     */
+    public function testHasAccess()
+    {
+        $user = $this->getMockBuilder('\User')->getMock();
+        $this->assertTrue($this->_page->_hasAccess($user));
+    }
+
+    /**
+     * Test that getBreadcrumbs returns a BreadcrumbTrail object with the
+     * correct values, given that the name and page of the NDB_Page object
+     * are not the same.
+     *
+     * @covers NDB_Page::getBreadcrumbs
+     * @return void
+     */
+    public function testGetBreadcrumbs()
+    {
+        $name = $this->_page->name;
+        $page = $this->_page->page;
+        $sublabel = ucwords(str_replace('_', ' ', $page));
+        $this->assertEquals(
+            new \LORIS\BreadcrumbTrail(
+                new \LORIS\Breadcrumb($this->_page->Module->getLongName(), "/$name"),
+                new \LORIS\Breadcrumb($sublabel, "/$name/$page")
+            ),
+            $this->_page->getBreadcrumbs()
+        );
+    }
+
+    /**
+     * Test that getBreadcrumbs returns the correct BreadcrumbTrail object
+     * given that the page and name have the same value.
+     *
+     * @covers NDB_Page::getBreadcrumbs
+     * @return void
+     */
+    public function testGetBreadcrumbsWithSamePageAndName()
+    {
+        $this->_page->name = "page_name";
+        $this->_page->page = "page_name";
+        $name = $this->_page->name;
+        $page = $this->_page->page;
+        $this->assertEquals(
+            new \LORIS\BreadcrumbTrail(
+                new \LORIS\Breadcrumb($this->_page->Module->getLongName(), "/$name")
+            ),
+            $this->_page->getBreadcrumbs()
+        );
+    }
+
+    /**
+     * Test that getJSDependencies returns the correct array of dependencies
+     *
+     * @covers NDB_Page::getJSDependencies
+     * @return void
+     */
+    public function testGetJSDependencies()
+    {
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $factory = NDB_Factory::singleton();
+        $factory->setConfig($configMock);
+        $this->assertEquals(
+            [
+                '/js/jquery/jquery-1.11.0.min.js',
+                '/js/helpHandler.js',
+                '/js/modernizr/modernizr.min.js',
+                '/js/polyfills.js',
+                '/vendor/js/react/react.production.min.js',
+                '/vendor/js/react/react-dom.production.min.js',
+                '/js/jquery/jquery-ui-1.10.4.custom.min.js',
+                '/js/jquery.dynamictable.js',
+                '/js/jquery.fileupload.js',
+                '/bootstrap/js/bootstrap.min.js',
+                '/js/components/Breadcrumbs.js',
+                '/vendor/sweetalert/sweetalert.min.js',
+                '/js/util/queryString.js',
+                '/js/components/Form.js',
+                '/js/components/Markdown.js'
+            ],
+            $this->_page->getJSDependencies()
+        );
+    }
+
+    /**
+     * Test that getCSSDependencies returns the correct array of dependencies
+     *
+     * @covers NDB_Page::getCSSDependencies
+     * @return void
+     */
+    public function testGetCSSDependencies()
+    {
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $factory = NDB_Factory::singleton();
+        $factory->setConfig($configMock);
+        $this->assertEquals(
+            [
+                '/bootstrap/css/bootstrap.min.css',
+                '/bootstrap/css/custom-css.css',
+                '/js/jquery/datepicker/datepicker.css',
+                '/vendor/sweetalert/sweetalert.css'
+            ],
+            $this->_page->getCSSDependencies()
+        );
+    }
 }

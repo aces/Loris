@@ -2,30 +2,55 @@
 <script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
 {literal}
 <script>
-
-    $(document).ready(function() {
-        function toggleGroup(group) {
-            if(group) {
+    function toggleGroup(group) {
+        if(group) {
             // id is the header that was clicked
             id = group.target.id;
 
             // chop off header_ to get section name
             section = id.substring(7);
-            
+
             // hide (or show) the appropriate div for that section
             section_el = $("#perms_" + section);
             section_el.toggle();
         }
     }
-    // define event handler for all the header sections
-    $(".perm_header").click(toggleGroup);
-    // Get rid of the extra <br /> tag that Quickform element adds at the top of each <div>
-    $(".perm_header").each(function(idx, el) {
-        id = el.id;
-        section = id.substring(7);
-        section_el = $("#perms_" + section + " br:nth-child(1)").hide();
+
+    $(document).ready(function() {
+        $('[name="NA_UserID"]').change(function() {
+            $('.userid-star').toggleClass('hide', this.checked);
+            $('[name="UserID"]').prop('disabled', this.checked).val('');
+        }).change();
+
+        $('[name="NA_Password"]').change(function() {
+            $('.pwd-star').toggleClass('hide', this.checked);
+            $('[name="SendEmail"]').prop('checked', this.checked);
+            $('[name="Password_hash"], [name="__Confirm"]').prop('disabled', this.checked).val('');
+	    }).change();
+
+        $('[name="Password_hash"], [name="__Confirm"]').change(function() {
+            $('.pwd-star.password').toggleClass('hide',
+                !($('.pwd-star.password').hasClass('required')
+                 || ($('[name="__Confirm"]').val().length !== 0
+                     && $('[name="Password_hash"]').val().length === 0))
+                );
+
+            $('.pwd-star.confirm-password').toggleClass('hide',
+                !($('.pwd-star.confirm-password').hasClass('required')
+                 || ($('[name="Password_hash"]').val().length !== 0
+                     && $('[name="__Confirm"]').val().length === 0))
+                );
+        }).change();
+
+        // define event handler for all the header sections
+        $(".perm_header").click(toggleGroup);
+        // Get rid of the extra <br /> tag that Quickform element adds at the top of each <div>
+        $(".perm_header").each(function(idx, el) {
+            id = el.id;
+            section = id.substring(7);
+            section_el = $("#perms_" + section + " br:nth-child(1)").hide();
+        });
     });
-});
 </script>
 {/literal}
 <form method="post" name="edit_user" autocomplete="off">
@@ -66,7 +91,10 @@
                 {/if}
                 {if $form.UserID_Group != null}
                 <label class="col-sm-12 col-sm-2 form-label">
-                 {$form.UserID_Group.label}
+                    {$form.UserID_Group.label}
+                    {if $form.UserID_Group.options.required}
+                        <span class="userid-star" style="color: red">*</span>
+                    {/if}
              </label>
              <div class="col-sm-10">
                  {$form.UserID_Group.html}
@@ -78,8 +106,11 @@
             {/if}
             {else}
             <label class="col-sm-12 col-sm-2 form-label">
-             {$form.UserID.label}
-         </label>
+                {$form.UserID.label}
+                {if $form.UserID.options.required}
+                    <span style="color: red">*</span>
+                {/if}
+            </label>
          <div class="col-sm-10">
              {$form.UserID.html}
          </div>
@@ -94,7 +125,8 @@
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2">
-              {$form.Password_Group.label}
+                {$form.Password_Group.label}
+                <span class="pwd-star password {if isset($form.Password_Group.options.required)} required{/if}" style="color: red">*</span>
           </label>
           <div class="col-sm-10">
               {$form.Password_Group.html}
@@ -106,20 +138,21 @@
         {/if}
     </div>
     <div class="row form-group form-inline">
-    	<label class="col-sm-2">
-    		{$form.__Confirm.label}
-    	</label>
-    	<div class="col-sm-10">
-    		{$form.__Confirm.html}
-    	</div>
+        <label class="col-sm-2">
+            {$form.__Confirm.label}
+            <span class="pwd-star confirm-password {if $form.__Confirm.required} required{/if}" style="color: red">*</span>
+        </label>
+        <div class="col-sm-10">
+            {$form.__Confirm.html}
+        </div>
     </div>
     <!-- <div class="row form-group form-inline">
-    	<label class="col-sm-2">
-    		{$form.Real_name.label}
-    	</label>
-    	<div class="col-sm-10">
-    		{$form.Real_name.html}
-    	</div>
+        <label class="col-sm-2">
+            {$form.Real_name.label}
+        </label>
+        <div class="col-sm-10">
+            {$form.Real_name.html}
+        </div>
     </div> -->
     {if $form.errors.First_name}
     <div class="row form-group form-inline form-inline has-error">
@@ -127,7 +160,10 @@
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2 form-label">
-              {$form.First_name.label}
+                {$form.First_name.label}
+                {if $form.First_name.required}
+                    <span style="color: red">*</span>
+                {/if}
           </label>
           <div class="col-sm-10">
               {$form.First_name.html}
@@ -144,7 +180,10 @@
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2 form-label">
-              {$form.Last_name.label}
+                {$form.Last_name.label}
+                {if $form.Last_name.required}
+                    <span style="color: red">*</span>
+                {/if}
           </label>
           <div class="col-sm-10">
               {$form.Last_name.html}
@@ -158,100 +197,130 @@
     {if $form.Degree}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Degree.label}
+            {$form.Degree.label}
+            {if $form.Degree.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Degree.html}
+            {$form.Degree.html}
     	</div>
     </div>
     {/if}
     {if $form.Position_title}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Position_title.label}
+            {$form.Position_title.label}
+            {if $form.Position_title.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Position_title.html}
+            {$form.Position_title.html}
     	</div>
     </div>
     {/if}
     {if $form.Institution}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Institution.label}
+            {$form.Institution.label}
+            {if $form.Institution.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Institution.html}
+            {$form.Institution.html}
     	</div>
     </div>
     {/if}
     {if $form.Department}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Department.label}
+            {$form.Department.label}
+            {if $form.Department.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Department.html}
+            {$form.Department.html}
     	</div>
     </div>
     {/if}
     {if $form.Address}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Address.label}
+            {$form.Address.label}
+            {if $form.Address.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Address.html}
+            {$form.Address.html}
     	</div>
     </div>
     {/if}
     {if $form.City}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.City.label}
+            {$form.City.label}
+            {if $form.City.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.City.html}
+            {$form.City.html}
     	</div>
     </div>
     {/if}
     {if $form.State}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.State.label}
+            {$form.State.label}
+            {if $form.State.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.State.html}
+            {$form.State.html}
     	</div>
     </div>
     {/if}
     {if $form.ZipCode}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Zip_code.label}
+            {$form.Zip_code.label}
+            {if $form.Zip_code.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Zip_code.html}
+            {$form.Zip_code.html}
     	</div>
     </div>
     {/if}
     {if $form.Country}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Country.label}
+            {$form.Country.label}
+            {if $form.Country.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Country.html}
+            {$form.Country.html}
     	</div>
     </div>
     {/if}
     {if $form.Fax}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Fax.label}
+            {$form.Fax.label}
+            {if $form.Fax.required}
+                <span style="color: red">*</span>
+            {/if}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Fax.html}
+            {$form.Fax.html}
     	</div>
     </div>
     {/if}
@@ -261,7 +330,10 @@
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2 form-label">
-              {$form.Email_Group.label}
+                {$form.Email_Group.label}
+                {if $form.Email_Group.options.required}
+                    <span style="color: red">*</span>
+                {/if}
           </label>
           <div class="col-sm-10">
               {$form.Email_Group.html}
@@ -279,7 +351,10 @@
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2">
-              {$form.__ConfirmEmail.label}
+                {$form.__ConfirmEmail.label}
+                {if $form.__ConfirmEmail.required}
+                    <span style="color: red">*</span>
+                {/if}
           </label>
           <div class="col-sm-10">
               {$form.__ConfirmEmail.html}
@@ -298,6 +373,9 @@
     {/if}
         <label class="col-sm-2">
             {$form.CenterIDs.label}
+            {if $form.CenterIDs.required}
+                <span style="color: red">*</span>
+            {/if}
         </label>
         <div class="col-sm-10">
             {$form.CenterIDs.html}
@@ -315,6 +393,9 @@
                 {/if}
                 <label class="col-sm-2">
                     {$form.ProjectIDs.label}
+                    {if $form.ProjectIDs.required}
+                        <span style="color: red">*</span>
+                    {/if}
                 </label>
                 <div class="col-sm-10">
                     {$form.ProjectIDs.html}
@@ -333,6 +414,9 @@
             {/if}
             <label class="col-sm-2">
                 {$form.examiner_sites.label}
+                {if $form.examiner_sites.required}
+                    <span style="color: red">*</span>
+                {/if}
             </label>
             <div class="col-sm-10">
                 {$form.examiner_sites.html}
@@ -352,6 +436,9 @@
             {/if}
             <label class="col-sm-2">
                 {$form.examiner_group.label}
+                {if $form.examiner_group.required}
+                    <span style="color: red">*</span>
+                {/if}
             </label>
             <div class="col-sm-10">
                 <b>{$form.examiner_group.html}</b>
@@ -365,7 +452,10 @@
       {/if}
       <div class="row form-group form-inline">
            <label class="col-sm-2">
-              {$form.Active.label}
+               {$form.Active.label}
+               {if $form.Active.required}
+                   <span style="color: red">*</span>
+               {/if}
           </label>
           <div class="col-sm-10">
               {$form.Active.html}
@@ -380,7 +470,7 @@
     	{/if}
 
 
-	
+
 	{if $form.errors.active_timeWindows}
 		<div class="row form-group form-inline form-inline has-error">
 	{else}
@@ -388,6 +478,9 @@
 	{/if}
 		<label class="col-sm-2">
 			{$form.active_from.label}
+            {if $form.active_from.required}
+                <span style="color: red">*</span>
+            {/if}
 		 </label>
 		 <div class="col-sm-10">
 			{$form.active_from.html}
@@ -400,6 +493,9 @@
 	{/if}
 		<label class="col-sm-2">
 			{$form.active_to.label}
+            {if $form.active_to.required}
+                <span style="color: red">*</span>
+            {/if}
 		 </label>
 		 <div class="col-sm-10">
 			{$form.active_to.html}
@@ -417,7 +513,10 @@
 
       <div class="row form-group form-inline">
        <label class="col-sm-2">
-          {$form.Pending_approval.label}
+           {$form.Pending_approval.label}
+           {if $form.Pending_approval.required}
+               <span style="color: red">*</span>
+           {/if}
       </label>
       <div class="col-sm-10">
           {$form.Pending_approval.html}
@@ -425,7 +524,10 @@
   </div>
   <div class="row form-group form-inline">
    <label class="col-sm-2">
-      {$form.PermID_Group.label}
+       {$form.PermID_Group.label}
+       {if $form.PermID_Group.required}
+           <span style="color: red">*</span>
+       {/if}
   </label>
   <div class="col-sm-10 col-xs-12">
       <div>
@@ -435,7 +537,10 @@
 </div>
 <div class="row form-group form-inline">
     <label class="col-sm-2">
-      {$form.Supervisors_Group.label}
+        {$form.Supervisors_Group.label}
+        {if $form.Supervisors_Group.required}
+            <span style="color: red">*</span>
+        {/if}
   </label>
   <div class="col-sm-10 col-xs-12">
       <div>

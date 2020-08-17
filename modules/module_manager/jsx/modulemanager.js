@@ -104,9 +104,8 @@ class ModuleManagerIndex extends Component {
         if (success === true) {
           swal.fire({
             title: 'Success!',
-            text: 'Updated ' + id + ' status! '
-                  + 'To apply changes the interface must be reloaded. '
-                  + 'Proceed ?',
+            text: 'Updated ' + id + ' status! ' +
+                  'To apply changes the interface must be reloaded. Proceed?',
             type: 'success',
             showCancelButton: true,
             confirmButtonText: 'Reload the page',
@@ -165,15 +164,16 @@ class ModuleManagerIndex extends Component {
    */
   formatColumn(column, cell, row) {
     if (column == 'Active' && this.props.hasEditPermission) {
-      return <td><SelectElement
-        name='active'
-        id={row.Name}
-        label=''
-        emptyOption={false}
-        options={{'Y': 'Yes', 'N': 'No'}}
-        value={cell}
-        onUserInput={this.toggleActive}
-      /></td>;
+        return <td><SelectElement
+              name='active'
+              id={row.Name}
+              label=''
+              emptyOption={false}
+              options={{'Y': 'Yes', 'N': 'No'}}
+              value={cell}
+              onUserInput={this.toggleActive}
+              noMargins={true}
+            /></td>;
     }
     cell = this.mapColumn(column, cell);
     return <td>{cell}</td>;
@@ -221,7 +221,6 @@ class ModuleManagerIndex extends Component {
         fields={fields}
         getFormattedCell={this.formatColumn}
       />
-
     );
   }
 }

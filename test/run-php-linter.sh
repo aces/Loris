@@ -7,7 +7,7 @@ find docs modules htdocs php src tools \
     -name '*.class.inc' \
     -print0 -o -name '*.php' -print0 \
     |xargs -0 -n1 php -l \
-    >/dev/null  
+    >/dev/null
 
 # Run PHPCS on all .php and .inc files in folders:
 # php/
@@ -24,6 +24,7 @@ declare -a tools_list=(
     'delete_ignored_conflicts.php'
     'delete_timepoint.php'
     'detect_duplicated_commentids.php'
+    'generate_project_statistics_csv.php'
     'generic_includes.php'
     'importers/CandidateImporter.php'
     'importers/DataImporter.class.inc'
@@ -45,12 +46,11 @@ declare -a tools_list=(
     'populate_visit_windows.php'
     'manage_modules.php'
     'DB_date_zeros_removal.php'
+    'CouchDB_Import_MRI.php'
 )
 
 # And on all PHP files in this array
 declare -a test_list=(
-    'integrationtests/LorisIntegrationTest.class.inc'
-    'integrationtests/LorisIntegrationTestWithCandidate.class.inc'
     'unittests/Database_Test.php'
 )
 
@@ -60,6 +60,7 @@ vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
     modules/ \
     "test/integrationtests/" \
     "${tools_list[@]/#/tools/}" \
+    "${test_list[@]/#/test/}" \
     || exit $?;
 
 # Ensure strict typing is used in these files

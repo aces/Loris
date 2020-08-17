@@ -4,7 +4,13 @@
  * auto-complete to retrieve candidates for a given
  * instrument and/or visit.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * PHP Version 7
+ *
+ * @category Behavioural
+ * @package  Loris
+ * @author   Evan McIlroy <evanmcilroy@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 header("content-type:application/json");
 ini_set('default_charset', 'utf-8');
