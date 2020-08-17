@@ -1,5 +1,5 @@
 # LORIS Developers Guide
-This document covers topics including making PRs, issues, and how to go through a normal LORIS workflow.
+This document covers topics including making PRs, issues, and how to go through a normal LORIS workflow, when contributing to the LORIS repository. Many notes in this guide are also relevant to contributing code on a fork or instance of LORIS.  
 
 ## Links to know, read, and follow
 * All markdowns in the Loris GitHub under [docs/](../..) 
