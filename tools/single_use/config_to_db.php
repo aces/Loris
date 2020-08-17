@@ -9,14 +9,14 @@
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
  * @license  Loris License
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once 'generic_includes.php';
+require_once __DIR__ . "/../../vendor/autoload.php";
+require_once __DIR__ . '/../generic_includes.php';
 require_once 'Database.class.inc';
 
-$xml_file = "../project/config.xml";
+$xml_file = __DIR__ . "/../../project/config.xml";
 $iterator = new SimpleXmlIterator($xml_file, null, true);
 
 iterate($iterator, null);

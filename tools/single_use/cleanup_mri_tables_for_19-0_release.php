@@ -30,7 +30,7 @@
  *
  */
 
-require_once 'generic_includes.php';
+require_once __DIR__ . '/../generic_includes.php';
 require_once 'Database.class.inc';
 
 $table_array = array(
