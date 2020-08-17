@@ -1,4 +1,5 @@
 # NEW
+2020-03-09-SQL_patch_for_HRRT_PET_images_insertion.sql
 
 # CLEAN-UP
 2020-08-11-removeReliabilityPermissions.sql
