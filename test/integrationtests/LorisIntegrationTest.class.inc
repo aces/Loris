@@ -68,7 +68,7 @@ abstract class LorisIntegrationTest extends TestCase
         $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
-        $database = $this->config->getSetting('database');
+        $database     = $this->config->getSetting('database');
 
         $this->DB  = Database::singleton(
             $database['database'],
@@ -147,7 +147,7 @@ abstract class LorisIntegrationTest extends TestCase
         ];
 
         $this->factory->database()->update('Config', $set, $where);
- 
+
         if (extension_loaded('xdebug')
             && function_exists("xdebug_start_code_coverage")
         ) {
