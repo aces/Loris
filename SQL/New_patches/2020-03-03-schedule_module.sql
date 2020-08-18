@@ -1,5 +1,9 @@
 INSERT INTO modules (Name, Active) VALUES ('schedule_module', 'Y');
 INSERT INTO permissions (code, description, categoryID) VALUES ('schedule_module', 'Schedule Module: edit and delete the appointment', 2);
+INSERT INTO user_perm_rel(UserID,PermID) VALUES (
+    (SELECT ID FROM users WHERE UserID='admin'),
+    (SELECT permID FROM permissions WHERE code='schedule_module')
+);
 -- Create appointment_type table
 CREATE TABLE `appointment_type` (
   `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
