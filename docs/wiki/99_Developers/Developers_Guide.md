@@ -1,5 +1,5 @@
 # LORIS Developers Guide
-This document covers topics including making PRs, issues, and how to go through a normal LORIS workflow, when contributing to the LORIS repository. Many notes in this guide are also relevant to contributing code on a fork or instance of LORIS.
+This document covers topics including making PRs, issues, and how to go through a normal LORIS workflow when contributing to the LORIS repository. Many notes in this guide are also relevant to contributing code on a fork or instance of LORIS.
 
 ## Links to know, read, and follow
 * All markdowns in the Loris GitHub under [docs/](../..) 
@@ -8,7 +8,7 @@ This document covers topics including making PRs, issues, and how to go through 
 * [Pull Request Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) and [Code Review guidelines](Code_Review_Guide.md)
 
 ## 1. Working off your fork
-During installation, you made your own fork of LORIS. Then, you can add two remote options in order to switch between your fork and “aces”.
+During installation, you made your own fork of LORIS. Now you can add two remote options in order to switch between your fork and “aces”.
 
     git remote rename origin aces
     git remote add my_fork <fork_url>
@@ -32,7 +32,7 @@ Here is a basic workflow if you are trying to make a PR off of the _main_ branch
     git commit -m "Initial commit"
     git push my_fork branch_name
 
-There is usually no need to fully update your fork to the newest aces/LORIS version, since you can work off whichever branch you just fetched and checked-out!
+There is usually no need to fully update your fork to the newest aces/LORIS version, since you can work off whichever branch you just fetched and checked-out.
 
  **Never** push to aces/Loris. Your branch will be deleted. Always push to your fork, and then create the PR from GitHub.
 
@@ -65,7 +65,7 @@ Running unit or integration tests (useful if making significant changes to any m
 
 ### Good practice for Travis
 Travis is our continuous integration which runs on every PR in GitHub. As you get more comfortable with commits and PRs, 
-to save time and Travis errors, you can configure your setup so that `make checkstatic` must complete successfully 
+to save time and Travis errors you can configure your setup so that `make checkstatic` must complete successfully 
 before any git push can be done. To do this, run 
 
     git config core.hooksPath .githooks (git v2.9 or up)
@@ -158,7 +158,7 @@ If you made changes (with their permission), commit and push them to that branch
 Don’t forget to consult the Links (see above) for coding review standards and guidelines and the code review checklist.
 
 ### Labels
-The `Passed Manual Tests` label can be added to a PR if you have tested the code on your own VM and determined that it performs as intended.
+The `Passed Manual Tests` label can be added to a PR if a reviewer has tested the code on their own VM and determined that it performs as intended.
 
 The `Needs Rebase` label can be added if a PR has merge conflicts with the branch it is based off of.
 
@@ -215,7 +215,7 @@ For example:
        git reset --hard <commit_hash>
        git push -f my_fork branch_name
 
-2. A more complicated tool that can be used to solve bigger rebasing errors is the command [`git cherry-pick`](https://git-scm.com/docs/git-cherry-pick). The command allows you to pick specific commits to apply to a branch. For example, if you rebase the wrong branch or your PR is incorrectly displaying all the commits or files from the branch you rebased, this tool will come in handy. Here is an example workflow:  
+2. A more complicated tool that can be used to solve bigger rebasing errors is the command [`git cherry-pick`](https://git-scm.com/docs/git-cherry-pick). This command allows you to pick specific commits to apply to a branch. For example, if you rebase the wrong branch or your PR is incorrectly displaying all the commits or files from the branch you rebased, this tool will come in handy. Here is an example workflow:  
     ```
     git checkout branch_name          # The branch that got messed up :(
     git branch -m "temp_branch_name"  # Change the branch name locally:
