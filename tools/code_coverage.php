@@ -1,4 +1,19 @@
 <?php
+/*
+ * This tool is designed to generate code coverage reports for the unit testing suite of LORIS.
+ *
+ * Please run this command from the base directory -- var/www/loris
+ *
+ * First, this tool will run all the unit tests on the particular branch. This will automatically
+ * generate HTML reports (configured in the phpunit.xml file). Then, the generated files will be
+ * moved to the directory "htdocs/log/codeCoverage/<date>", where the date value is the current date. Finally,
+ * all the HTML reports are edited to include the date they were generated at the top of the page.
+ *
+ * To view the generated HTML reports, go to https://<your-loris-url>/log/codeCoverage/<date>/index.html.
+ * This will take you to the main coverage page. From here, you may navigate to the dashboard or
+ * to the pages for the individual classes under the php/libraries directory.
+ *
+ */
 //Running unit test suite and generating HTML reports
 exec("docker-compose run -T --rm unit-tests vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisUnitTests", $output, $status);
 if ($status != 0) {
@@ -55,5 +70,10 @@ rename("htdocs/log/codeCoverage/.fonts", "htdocs/log/codeCoverage/$date/.fonts")
 rename("htdocs/log/codeCoverage/.js", "htdocs/log/codeCoverage/$date/.js");
 
 echo "done\n";
+
+echo "******************************************************************
+  To view the generated reports, navigate to:
+  <loris-url>/log/codeCoverage/$date/index.html
+******************************************************************";
 ?>
 
