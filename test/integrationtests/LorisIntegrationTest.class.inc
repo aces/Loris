@@ -61,18 +61,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp()
     {
-        // generating a random JWTkey
-        $new_id = bin2hex(random_bytes(30));
-        $this->factory->database()->update(
-            "
-            UPDATE
-                Config
-            SET
-                Value=$new_id
-            WHERE
-                ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='JWTKey')
-                "
-        );
 
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
@@ -156,6 +144,15 @@ abstract class LorisIntegrationTest extends TestCase
         ) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
+        // generating a random JWTkey
+        $new_id = bin2hex(random_bytes(30));
+        $set = [
+            'Value' => $new_id
+        ];
+        $where = [
+            'ConfigID' => ("SELECT ID FROM ConfigSettings WHERE Name='JWTKey'")
+        ];
+        $this->factory->database()->update('Config', $set, $where);
 
     }
 
