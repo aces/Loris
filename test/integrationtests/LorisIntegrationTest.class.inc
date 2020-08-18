@@ -146,10 +146,10 @@ abstract class LorisIntegrationTest extends TestCase
         }
         // generating a random JWTkey
         $new_id = bin2hex(random_bytes(30));
-        $set = [
+        $set    = [
             'Value' => $new_id
         ];
-        $where = [
+        $where  = [
             'ConfigID' => ("SELECT ID FROM ConfigSettings WHERE Name='JWTKey'")
         ];
         $this->factory->database()->update('Config', $set, $where);
@@ -209,17 +209,6 @@ abstract class LorisIntegrationTest extends TestCase
     public function tearDown()
     {
         // Reset the JWTKey to default
-        $this->factory->database()->update(
-            "
-            UPDATE
-                Config
-            SET
-                Value='S3cret'
-            WHERE
-                ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='JWTKey')
-                "
-        );
-
         if (extension_loaded('xdebug')) {
             $data = xdebug_get_code_coverage();
             xdebug_stop_code_coverage(false);
