@@ -113,6 +113,3 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertContains("Electrophysiology Browser", $bodyText);
     }
 }
-
-?>
-
