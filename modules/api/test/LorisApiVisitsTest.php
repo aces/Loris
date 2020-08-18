@@ -6,7 +6,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * PHPUnit class for API test suite. This script sends HTTP requests to every
  * endpoints of the api module and look at the response content, status code and
  * headers where it applies. All endpoints are accessible at <host>/api/<version>/
- * (e.g. the endpoint of the version 0.0.3 ofd the API "/projects" URI for the host
+ * (e.g. the endpoint of the version 0.0.3 of the API "/projects" URI for the host
  * "example.loris.ca" would be https://example.loris.ca/api/v0.0.3/projects)
  *
  * @category   API
