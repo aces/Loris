@@ -71,7 +71,6 @@ abstract class LorisIntegrationTest extends TestCase
         // generating a random JWTkey
         $new_id = 'This is not a S3cret anymore1!?';
         $this->factory->database()->update('Config', $set, $where);
-        var_dump($new_id);
         $set    = [
             'Value' => $new_id
         ];
