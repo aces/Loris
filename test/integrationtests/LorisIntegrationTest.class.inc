@@ -79,6 +79,16 @@ abstract class LorisIntegrationTest extends TestCase
         );
         $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
+        // generating a random JWTkey
+        $new_id = bin2hex(random_bytes(30)) . 'A1!';
+        $set    = [
+            'Value' => $new_id
+        ];
+        $where  = [
+            'ConfigID' => "66"
+        ];
+
+        $this->DB->update('Config', $set, $where);
 
         $this->DB->insert(
             "users",
@@ -137,17 +147,6 @@ abstract class LorisIntegrationTest extends TestCase
         );
 
         $this->login("UnitTester", $this->validPassword);
-        // generating a random JWTkey
-        $new_id = 'This is not a S3cret anymore1!?';
-        $set    = [
-            'Value' => $new_id
-        ];
-        $where  = [
-            'ConfigID' => ("SELECT ID FROM ConfigSettings WHERE Name='JWTKey'")
-        ];
-
-        $this->factory->database()->update('Config', $set, $where);
-
         if (extension_loaded('xdebug')
             && function_exists("xdebug_start_code_coverage")
         ) {
