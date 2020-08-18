@@ -70,7 +70,6 @@ abstract class LorisIntegrationTest extends TestCase
         $this->config = $this->factory->Config(CONFIG_XML);
         // generating a random JWTkey
         $new_id = 'This is not a S3cret anymore1!?';
-        $this->factory->database()->update('Config', $set, $where);
         $set    = [
             'Value' => $new_id
         ];
@@ -78,6 +77,7 @@ abstract class LorisIntegrationTest extends TestCase
             'ConfigID' => ("SELECT ID FROM ConfigSettings WHERE Name='JWTKey'")
         ];
 
+        $this->factory->database()->update('Config', $set, $where);
         $database = $this->config->getSetting('database');
 
         $this->DB  = Database::singleton(
