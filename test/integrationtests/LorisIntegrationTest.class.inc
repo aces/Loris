@@ -68,16 +68,6 @@ abstract class LorisIntegrationTest extends TestCase
         $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
-        // generating a random JWTkey
-        $new_id = 'This is not a S3cret anymore1!?';
-        $set    = [
-            'Value' => $new_id
-        ];
-        $where  = [
-            'ConfigID' => ("SELECT ID FROM ConfigSettings WHERE Name='JWTKey'")
-        ];
-
-        $this->factory->database()->update('Config', $set, $where);
         $database = $this->config->getSetting('database');
 
         $this->DB  = Database::singleton(
@@ -147,7 +137,17 @@ abstract class LorisIntegrationTest extends TestCase
         );
 
         $this->login("UnitTester", $this->validPassword);
+        // generating a random JWTkey
+        $new_id = 'This is not a S3cret anymore1!?';
+        $set    = [
+            'Value' => $new_id
+        ];
+        $where  = [
+            'ConfigID' => ("SELECT ID FROM ConfigSettings WHERE Name='JWTKey'")
+        ];
 
+        $this->factory->database()->update('Config', $set, $where);
+ 
         if (extension_loaded('xdebug')
             && function_exists("xdebug_start_code_coverage")
         ) {
