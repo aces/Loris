@@ -145,7 +145,7 @@ abstract class LorisIntegrationTest extends TestCase
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
         // generating a random JWTkey
-        $new_id = bin2hex(random_bytes(30)) + 'A1!';
+        $new_id = bin2hex(random_bytes(30)) . 'A1!';
         $set    = [
             'Value' => $new_id
         ];
