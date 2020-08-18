@@ -31,7 +31,6 @@ ignored_files="
     tools/deprecated/create_candidates.php,\
     tools/deprecated/excelDump.php,\
     tools/data_integrity/score_instrument.php,\
-    tools/exporters/data_dictionary_builder.php,\
     tools/generate_tables_sql_and_testNames.php,\
     tools/fix_timepoint_date_problems.php,\
     tools/CouchDB_MRI_Importer.php,\
