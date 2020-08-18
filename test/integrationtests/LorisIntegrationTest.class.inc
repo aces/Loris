@@ -68,6 +68,16 @@ abstract class LorisIntegrationTest extends TestCase
         $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
+        // generating a random JWTkey
+        $new_id = 'This is not a S3cret anymore1!?';
+        $this->factory->database()->update('Config', $set, $where);
+        var_dump($new_id);
+        $set    = [
+            'Value' => $new_id
+        ];
+        $where  = [
+            'ConfigID' => ("SELECT ID FROM ConfigSettings WHERE Name='JWTKey'")
+        ];
 
         $database = $this->config->getSetting('database');
 
@@ -144,16 +154,6 @@ abstract class LorisIntegrationTest extends TestCase
         ) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
-        // generating a random JWTkey
-        $new_id = bin2hex(random_bytes(30)) . 'A1!';
-        $set    = [
-            'Value' => $new_id
-        ];
-        $where  = [
-            'ConfigID' => ("SELECT ID FROM ConfigSettings WHERE Name='JWTKey'")
-        ];
-        $this->factory->database()->update('Config', $set, $where);
-
     }
 
     /**
