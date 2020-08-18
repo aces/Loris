@@ -24,6 +24,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
 - Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
+- Data_entry_completion_status given its own column in flag (PR #6876)
 #### Bug Fixes
 - *Add item here*
 ### Modules
@@ -62,7 +63,6 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 database (PR #5260)
 - New documentation for file permissions has been added to the README.md file. (PR #5323)
 - Dashboard study progression section performance improvement (PR #5887)
-- Data_entry_completion_status given its own column in flag (PR #6876)
 
 #### Bug Fixes
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)

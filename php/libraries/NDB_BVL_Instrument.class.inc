@@ -1588,8 +1588,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $db = \Database::singleton();
         return $db->pselectOne(
-                "SELECT Data_entry_completion_status FROM flag WHERE CommentID=:CID",
-                ['CID' => $this->getCommentID()]
+            "SELECT Data_entry_completion_status FROM flag WHERE CommentID=:CID",
+            ['CID' => $this->getCommentID()]
         );
     }
 
@@ -1611,7 +1611,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . "'Complete' or 'Incomplete'<br>\n"
             );
         }
-
 
         $this->_save(["Data_entry_completion_status" => $status]);
     }
