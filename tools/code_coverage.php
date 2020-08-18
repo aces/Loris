@@ -56,3 +56,4 @@ rename("../htdocs/log/codeCoverage/.js", "../htdocs/log/codeCoverage/$date/.js")
 
 echo "done\n";
 ?>
+
