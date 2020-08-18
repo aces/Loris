@@ -29,7 +29,7 @@ install:
 
 script:
   - "npm run tests:$TEST_SUITE"
-  - tools/code_coverage.php
+  - php tools/code_coverage.php
 
 # This should improve build time by caching composer files.
 cache:

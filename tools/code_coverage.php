@@ -10,7 +10,7 @@ else {
 echo end($output) . PHP_EOL;
 
 //Changing the read/write permissions for the code coverage reports
-exec("sudo chmod -R 777 ../htdocs/log/codeCoverage", $output, $status);
+exec("sudo chmod -R 777 htdocs/log/codeCoverage", $output, $status);
 if ($status != 0) {
     echo "The read/write permissions of the code coverage reports were not properly changed" . PHP_EOL;
 }
@@ -21,13 +21,13 @@ else {
 //Adding date to the html reports
 echo "Editing html files....";
 $date = date("Y-m-d");
-exec("sudo mkdir ../htdocs/log/codeCoverage/$date");
-exec ("sudo chmod -R 777 ../htdocs/log/codeCoverage/$date");
-$files = glob('../htdocs/log/codeCoverage/*.{html}', GLOB_BRACE);
+exec("sudo mkdir htdocs/log/codeCoverage/$date");
+exec ("sudo chmod -R 777 htdocs/log/codeCoverage/$date");
+$files = glob('htdocs/log/codeCoverage/*.{html}', GLOB_BRACE);
 foreach ($files as $filename) {
     $file = fopen($filename, "r+");
     $basename = basename($filename);
-    $newfile = fopen("../htdocs/log/codeCoverage/$date/$basename", "w");
+    $newfile = fopen("htdocs/log/codeCoverage/$date/$basename", "w");
     if (strpos($filename, "dashboard.html") !== false){
         while (!feof($file)) {
             $line = fgets($file);
@@ -50,9 +50,9 @@ foreach ($files as $filename) {
     fclose($newfile);
     unlink($filename);
 }
-rename("../htdocs/log/codeCoverage/.css", "../htdocs/log/codeCoverage/$date/.css");
-rename("../htdocs/log/codeCoverage/.fonts", "../htdocs/log/codeCoverage/$date/.fonts");
-rename("../htdocs/log/codeCoverage/.js", "../htdocs/log/codeCoverage/$date/.js");
+rename("htdocs/log/codeCoverage/.css", "htdocs/log/codeCoverage/$date/.css");
+rename("htdocs/log/codeCoverage/.fonts", "htdocs/log/codeCoverage/$date/.fonts");
+rename("htdocs/log/codeCoverage/.js", "htdocs/log/codeCoverage/$date/.js");
 
 echo "done\n";
 ?>
