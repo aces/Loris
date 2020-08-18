@@ -29,6 +29,7 @@
             <directory>../modules/dicom_archive/test/</directory>
             <directory>../modules/document_repository/test/</directory>
             <directory>../modules/examiner/test/</directory>
+            <directory>../modules/electrophysiology_browser/test/</directory>
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
             <directory>../modules/imaging_browser/test/</directory>
