@@ -45,6 +45,7 @@ abstract class LorisIntegrationTest extends TestCase
     protected $DB;
     protected $url;
     protected $factory;
+    protected $originalJwtKey;
     /**
      * A valid password to use for login tests.
      */
@@ -79,13 +80,25 @@ abstract class LorisIntegrationTest extends TestCase
         );
         $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
+        // store the original JWT key for restoring it later
+        $this->originalJwtKey = $this->DB->pselect(
+            '
+            SELECT
+              Value
+            FROM
+              Config
+            WHERE
+              ConfigID=
+            (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")',
+            []
+        )[0]['Value'];
         // generating a random JWTkey
         $new_id = bin2hex(random_bytes(30)) . 'A1!';
         $set    = [
             'Value' => $new_id
         ];
         $where  = [
-            'ConfigID' => "66"
+            'ConfigID' => "(SELECT ID FROM ConfigSettings WHERE Name='JWTKey')"
         ];
 
         $this->DB->update('Config', $set, $where);
@@ -219,7 +232,14 @@ abstract class LorisIntegrationTest extends TestCase
         if ($this->webDriver) {
             $this->webDriver->quit();
         }
-
+        $new_id = bin2hex(random_bytes(30)) . 'A1!';
+        $set    = [
+            'Value' => $this->originalJwtKey
+        ];
+        $where  = [
+            'ConfigID' => "(SELECT ID FROM ConfigSettings WHERE Name='JWTKey')"
+        ];
+        $this->DB->update('Config', $set, $where);
         $this->factory->reset();
     }
 
