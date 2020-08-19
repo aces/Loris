@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+import fetchDataStream from 'jslib/fetchDataStream';
+
 /**
  * Data Dictionary Page.
  *
@@ -56,78 +58,15 @@ class DataDictIndex extends Component {
 
   /**
    * Retrive data from the provided URL and save it in state
-   *
-   * @return {object}
    */
     fetchData() {
-        const processLines = async (data) => {
-            const utf8Decoder = new TextDecoder('utf-8');
-            let row = [];
-            let colStart = -1;
-            let rowStart = 0;
-            for (let i = 0; i < data.length; i++) {
-                switch (data[i]) {
-                    case 0x1e: // end of column
-                        const rowdata = data.slice(colStart+1, i);
-                        const encoded = utf8Decoder.decode(rowdata);
-                        colStart = i;
-                        row.push(encoded);
-                        continue;
-                    case 0x1f: // end of row
-                        const rowdata2 = data.slice(colStart+1, i);
-                        const encoded2 = utf8Decoder.decode(rowdata2);
-                        row.push(encoded2);
-                        this.state.data.push(row);
-                        rowStart = i+1;
-                        colStart = i;
-                        row = [];
-                        continue;
-                    case 0x04: // end of stream
-                        // Force re-render
-                        this.state.data.push(row);
-                        return {remainder: [], eos: true};
-                }
-            }
-            return {remainder: data.slice(rowStart), eos: false};
-        };
-
-        return (async () => {
-            const response = await fetch(
-                this.props.dataURL,
-                {credentials: 'same-origin'},
-            );
-            const reader = response.body.getReader();
-
-            let remainder = [];
-            let doneLoop = false;
-            while (!doneLoop) {
-                await reader.read().then(({done, value}) => {
-                        let combined;
-                        if (remainder.length == 0) {
-                            combined = value;
-                        } else {
-                            combined = new Uint8Array(
-                                value.length + remainder.length
-                            );
-                            for (let i = 0; i < remainder.length; i++) {
-                                combined[i] = remainder[i];
-                            }
-                            for (let i = 0; i < value.length; i++) {
-                                combined[i+remainder.length] = value[i];
-                            }
-                        }
-                        return processLines(combined);
-                    }).then(({remainder: rem, eos}) => {
-                        this.setState({isLoading: !eos, data: this.state.data});
-                        doneLoop = eos;
-                        remainder = rem;
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                        doneLoop = true;
-                    });
-            };
-    })();
+        fetchDataStream(this.props.dataURL,
+            (row) => this.state.data.push(row),
+            (end) => {
+                this.setState({isLoading: !end, data: this.state.data});
+            },
+            () => {},
+        );
   }
 
   /**
