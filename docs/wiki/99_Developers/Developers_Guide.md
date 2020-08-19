@@ -1,8 +1,8 @@
 # LORIS Developers Guide
-This document covers topics including making PRs, issues, and how to go through a normal LORIS workflow when contributing to the LORIS repository. Many notes in this guide are also relevant to contributing code on a fork or instance of LORIS.
+This document covers topics including making PRs, issues, and how to go through a normal LORIS workflow when contributing to the LORIS repository. Many notes in this guide are also relevant to contributing code on a fork or instance of LORIS, and many practices described here will be familiar to experienced developers.
 
-## Links to know, read, and follow
-* All markdowns in the Loris GitHub under [docs/](../..) 
+## Key Links
+Important standards and practices documented in our repo include:
 * [Contributing.md](../../../CONTRIBUTING.md) - How to contribute to Loris
 * [Coding Standards](../../CodingStandards.md)
 * [Pull Request Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) and [Code Review guidelines](Code_Review_Guide.md)
@@ -20,6 +20,8 @@ Any development should be done on your fork of LORIS, and **not** on aces/LORIS.
 Before starting any PR, be mindful of which branch you want to base off of (main vs release-specific branch).   
 
 You will make a different branch for each PR or change that you are making.  
+
+In general, smaller pull requests or changes are easier to work with in our team review context and will flow more smoothly through the review process.  
 
 Here is a basic workflow if you are trying to make a PR off of the _main_ branch:
 
@@ -39,10 +41,10 @@ There is usually no need to fully update your fork to the newest aces/LORIS vers
 #### Branch Naming
 Follow the convention most developers use: “date-title...”.   
 Starting with the date allows branches to sort and display in order, and also helps sort out any conflicts faster in the main Loris repository.
-Don’t forget to make your branch names short and informative, like your commit messages, since they’re read by others on GitHub. 
+Please make your branch names short and informative, like your commit messages, since they’re read by others on GitHub. 
 
 ### Helpful commands to run before pushing new code:
-These commands catch small formatting errors that will cause Travis to fail.
+Travis is our continuous integration which runs on every PR in GitHub. These commands can catch small formatting errors that will cause the Travis build to fail.
 
     make checkstatic  # includes these 3 commands: 
                       # npm run lint:php, npm run lint:javascript, vendor/bin/phan
@@ -63,9 +65,8 @@ Running unit or integration tests (useful if making significant changes to any m
     npm run tests:unit -- --filter CandidateTest::someTest
     npm run tests:integration
 
-### Good practice for Travis
-Travis is our continuous integration which runs on every PR in GitHub. As you get more comfortable with commits and PRs, 
-to save time and Travis errors you can configure your setup so that `make checkstatic` must complete successfully 
+### Good practice for Travis CI
+As you get more comfortable with commits and PRs, to save time and Travis errors you can configure your setup so that `make checkstatic` must complete successfully 
 before any git push can be done. To do this, run 
 
     git config core.hooksPath .githooks (git v2.9 or up)
@@ -130,7 +131,7 @@ Be sure to consult the Contributing and Code Review guidelines. For example, 2 r
 You can restart Travis if it gives error messages that seem inappropriate, or if the build stalls (for longer than 1h).
 if you are pushing a last typo fix on a PR, it is okay to add `[skip ci]` in the commit message. It is not okay to do this if it's the first commit or if you are fixing more than documentation typos.
 
-**Documentation PRs:** If working specifically on markdown files or other documentation, be sure to check the actual look of the document once you have pushed your PR and fix any formatting errors. You can do this by going to “Files Changed” and viewing how your markdown file will actually appear in GitHub. Don’t forget to click all links. 
+**Documentation PRs:** If working specifically on markdown files or other documentation, be sure to check the actual look of the document once you have pushed your PR and fix any formatting errors. You can do this by going to “Files Changed” and viewing how your markdown file will actually appear in GitHub. Don’t forget to click all links to make sure they won't be broken when the document is rendered. 
 
 ## 4. Code Review
 
@@ -166,27 +167,11 @@ The `Needs Work` label can be added if a PR is not yet ready for review and requ
 
 Other Labels can also be added by reviewers at their discretion. 
 
-### Code Review Etiquette
-The most important thing to remember during code review is to be respectful and positive in all correspondence with other developers. It is also good practice
-to be on top of all comments or requests and to respond to every comment.
-
-#### When to ask for or remind someone to do a review
-You may ask for someone to review your PR at your discretion. However, do not assign someone to your PR.
-
-In general, if someone has previously reviewed your PR and requested changes, it is good practice to re-request their review once you have implemented those changes.
-
-If you have requested review on a PR and have not received feedback for a number of days, it is okay to either re-request their review or leave a comment
-on the PR pinging the developer with a short message. For example, "Hey @developer, could you please review this PR and let me know what you think."
-
-#### Implementing suggestions or requested changes
-It is good practice to implement any requested changes as soon as possible and then re-request review from the developer. It also helps the team if you acknowledge each comment or request with a few words or just an emoji, so that anyone reading will know that you've seen it.
-
-If you feel that the suggested or requested change is not necessary, feel free to respond in the comment section with a clear explanation of why you don't think it is necessary.
-Make sure to stay positive and respectful in all review or comment threads.
+### LORIS Code Review Etiquette
 
 #### When to resolve a review or comment thread
 If you have implemented a requested change from a review-comment thread, it is good practice to let the developer who requested the change
-resolve the thread. However, if a comment thread is simple or straightforward and has been resolved, feel free to resolve it.
+resolve the thread, so that they get the chance to check your change met their expectations. However, if a comment thread is simple or straightforward (e.g. a typo), feel free to resolve it.
 
 If there is context discussed in a review-comment thread that people may want to consult later, don't resolve the comment thread. You can simply put an emoji and add a comment saying "Thanks" or "Change made" to signal that the review has been addressed.
 
@@ -205,8 +190,6 @@ Here is a general workflow:
     # } loop back to (#) - fix any remaining conflicts.... until no more conflicts
     git push --force my_fork branch_name
     # --force is often needed here :\
-       
-This is a specific case. For more information on rebasing, look at this [(2014) Git for LORIS cheat document](https://docs.google.com/document/d/1yPx72Z7kJtV3WAcyrwtrMOAtQztzJecVQyaLCJ4jdHg/edit#).
 
 ### Tips for fixing a rebase
 1. The most basic way of “fixing” a rebase is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. 
