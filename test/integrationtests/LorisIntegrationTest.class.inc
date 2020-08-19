@@ -89,7 +89,7 @@ abstract class LorisIntegrationTest extends TestCase
               Config
             WHERE
               ConfigID=
-            (SELECT ConfigID FROM ConfigSettings WHERE Name="JWTKey")',
+            (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")',
             []
         )[0]['Value'];
         // generating a random JWTkey
@@ -98,10 +98,9 @@ abstract class LorisIntegrationTest extends TestCase
             'Value' => $new_id
         ];
         $where  = [
-            'ConfigID' => 'SELECT Value FROM Config WHERE ConfigID=
+            'ConfigID' => 'SELECT ConfigID FROM Config WHERE ConfigID=
             (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")'
         ];
-
         $this->DB->update('Config', $set, $where);
 
         $this->DB->insert(
@@ -233,12 +232,11 @@ abstract class LorisIntegrationTest extends TestCase
         if ($this->webDriver) {
             $this->webDriver->quit();
         }
-        $new_id = bin2hex(random_bytes(30)) . 'A1!';
-        $set    = [
+        $set   = [
             'Value' => $this->originalJwtKey
         ];
-        $where  = [
-            'ConfigID' => 'SELECT Value FROM Config WHERE ConfigID=
+        $where = [
+            'ConfigID' => 'SELECT ConfigID FROM Config WHERE ConfigID=
             (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")'
         ];
 
