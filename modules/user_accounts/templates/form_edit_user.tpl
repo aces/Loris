@@ -1,4 +1,6 @@
 <br />
+<script type="text/javascript" src="{$baseurl}/js/passwordVisibility.js"></script>
+<link rel="stylesheet" href="/css/password.css" type="text/css" />
 <script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
 {literal}
 <script>
@@ -17,6 +19,8 @@
     }
 
     $(document).ready(function() {
+        passwordVisibility();
+
         $('[name="NA_UserID"]').change(function() {
             $('.userid-star').toggleClass('hide', this.checked);
             $('[name="UserID"]').prop('disabled', this.checked).val('');
@@ -119,31 +123,32 @@
      </div>
      <!-- </div> -->
      <br>
-     {if $form.errors.Password_Group}
-     <div class="row form-group form-inline form-inline has-error">
-        {else}
-        <div class="row form-group form-inline form-inline">
-            {/if}
-            <label class="col-sm-2">
-                {$form.Password_Group.label}
-                <span class="pwd-star password {if isset($form.Password_Group.options.required)} required{/if}" style="color: red">*</span>
+     {if $form.errors.Password}
+        <div class="row form-group form-inline has-error">
+     {else}
+        <div class="row form-group form-inline">
+     {/if}
+          <label class="col-sm-2">
+            {$form.Password_hash.label}
+            <span class="pwd-star password {if isset($form.Password_hash.required) && $form.Password_hash.required} required{/if}" style="color: red">*</span>
           </label>
-          <div class="col-sm-10">
-              {$form.Password_Group.html}
+          <div class="col-sm-2">
+              <input type="password" name="{$form.Password_hash.name}" />
           </div>
-          {if $form.errors.Password_Group}
+          <div class="col-sm-4">{$form.NA_Password.html}</div>
+          {if $form.errors.Password}
           <div class="col-sm-offset-2 col-xs-12">
-            <font class="form-error">{$form.errors.Password_Group}</font>
+            <font class="form-error">{$form.errors.Password}</font>
         </div>
         {/if}
     </div>
     <div class="row form-group form-inline">
         <label class="col-sm-2">
             {$form.__Confirm.label}
-            <span class="pwd-star confirm-password {if $form.__Confirm.required} required{/if}" style="color: red">*</span>
+            <span class="pwd-star confirm-password {if isset($form.__Confirm.required) && $form.__Confirm.required} required{/if}" style="color: red">*</span>
         </label>
-        <div class="col-sm-10">
-            {$form.__Confirm.html}
+        <div class="col-sm-4">
+            <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
     <!-- <div class="row form-group form-inline">
@@ -462,14 +467,11 @@
           </div>
       </div>
 
-
 	{if $form.errors.active_timeWindows}
 	    <div class="alert alert-danger" role="alert">
-		{$form.errors.active_timeWindows}
+	        {$form.errors.active_timeWindows}
 	    </div>
-    	{/if}
-
-
+	{/if}
 
 	{if $form.errors.active_timeWindows}
 		<div class="row form-group form-inline form-inline has-error">
