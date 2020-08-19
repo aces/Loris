@@ -18,6 +18,7 @@ Quality Control, and Behavioural Quality Control. (PR #6041)
 - Addition of a new `account_request_date` in `users` table that will be used when
 requesting a new account and will be displayed in the User Accounts module (PR #6191)
 - Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
+- Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 #### Bug Fixes
 - *Add item here*
