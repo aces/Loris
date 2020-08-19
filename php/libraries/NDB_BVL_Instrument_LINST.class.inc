@@ -559,13 +559,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->LinstQuestions[$pieces[1]] = ['type' => 'textarea'];
                     break;
                 case 'date':
-                    if (strpos($pieces[1], "_date") !== false) {
-                        $pieces[1] = substr(
-                            $pieces[1],
-                            0,
-                            strpos($pieces[1], "_date")
-                        );
-                    }
                     if ($addElements) {
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
                             $dateOptions = null;
@@ -600,6 +593,20 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 );
                             }
                         } else {
+                            // addDateElement appends '_date' to the field name so
+                            // remove it first here
+                            if (strpos($pieces[1], "_date") !== false) {
+                                $pieces[1] = substr(
+                                    $pieces[1],
+                                    0,
+                                    strpos($pieces[1], "_date")
+                                );
+                            } else {
+                                throw new \LorisException(
+                                    "Standard Date format field $pieces[1] must end"
+                                      . " with '_date'."
+                                );
+                            }
                             // Shows standard date
                             $this->addDateElement(
                                 $pieces[1],
