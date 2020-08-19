@@ -206,7 +206,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function tearDown()
     {
-        // Reset the JWTKey to default
         if (extension_loaded('xdebug')) {
             $data = xdebug_get_code_coverage();
             xdebug_stop_code_coverage(false);
