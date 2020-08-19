@@ -49,6 +49,7 @@ declare -a tools_list=(
     'DB_date_zeros_removal.php'
     'CouchDB_Import_MRI.php'
     'CouchDB_Import_Demographics.php'
+    'CouchDB_Import_Instruments.php'
 )
 
 # And on all PHP files in this array
