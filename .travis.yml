@@ -27,9 +27,7 @@ install:
 - composer self-update 1.10.17
 - make dev
 
-script:
-  - "npm run tests:$TEST_SUITE"
-  - php tools/code_coverage.php
+script: "npm run tests:$TEST_SUITE"
 
 # This should improve build time by caching composer files.
 cache:
