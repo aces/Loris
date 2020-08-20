@@ -92,7 +92,7 @@ abstract class LorisIntegrationTest extends TestCase
             (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")',
             []
         )[0]['Value'];
-        $this->configIdJwt = $this->DB->pselect(
+        $this->configIdJwt    = $this->DB->pselect(
             '
             SELECT
               ConfigID
