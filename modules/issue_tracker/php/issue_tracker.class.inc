@@ -69,6 +69,31 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     }
 
     /**
+     * Returns a list of sites in the database with an additional All Sites option
+     *
+     * @param boolean $study_site if true only return study sites from psc
+     *                            table
+     * @param boolean $DCC        Whether the DCC should be included or not
+     *
+     * @return array an associative array("center ID" => "site name")
+     */
+    static function getSites(
+        bool $study_site = true,
+        bool $DCC = true
+    ): array {
+        $user  = \User::singleton();
+        $sites = [];
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $sites = \Utility::getSiteList($study_site, $DCC);
+        } else {
+            // allow only to view own site data
+            $sites = $user->getStudySites();
+        }
+        return $sites;
+    }
+
+    /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
@@ -183,6 +208,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             [
                 'data'         => $arr,
                 'fieldOptions' => $fieldOptions,
+                'centerIDs'    => \Utility::getSiteList()
             ]
         );
     }

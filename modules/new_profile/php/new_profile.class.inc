@@ -64,7 +64,10 @@ class New_Profile extends \NDB_Form
         /* Create the candidate and retrieve its ID.
          * Use form values when present, otherwise default to null.
          */
-        $dob = (new \DateTime($values['dobDate']))->format('Y-m-d');
+        $dob = null;
+        if (isset($values['dobDate'])) {
+            $dob = (new \DateTime($values['dobDate']))->format('Y-m-d');
+        }
         $edc = $values['edcDate'] ?? null;
         if (!is_null($edc)) {
             $edc = (new \DateTime($edc))->format('Y-m-d');
@@ -147,12 +150,7 @@ class New_Profile extends \NDB_Form
 
         // Get sites for the select dropdown
         $user_list_of_sites = $user->getData('CenterIDs');
-        $num_sites          = count($user_list_of_sites);
-        $psc_labelOptions   = [];
-        if ($num_sites > 1) {
-            $psc_labelOptions = \Utility::getSiteNameListByIDs($user_list_of_sites);
-        }
-        $site = $psc_labelOptions;
+        $site = \Utility::getSiteNameListByIDs($user_list_of_sites);
 
         // Get projects for the select dropdown
         $projList = [];
@@ -198,18 +196,17 @@ class New_Profile extends \NDB_Form
         $user         = $factory->user();
         $db           = $factory->database();
 
-        if (empty($values['dobDate'])) {
-            $errors['dobDate'] = 'Date of Birth field is required.';
-        }
-        if (empty($values['dobDateConfirm'])) {
-            $errors['dobDateConfirm'] = 'Confirm Date of Birth field is required.';
-        }
-        if ($values['dobDate'] != $values['dobDateConfirm']) {
+        // Validate DOB fields
+        if (isset($values['dobDate'], $values['dobDateConfirm'])
+            && $values['dobDate'] != $values['dobDateConfirm']
+        ) {
             $errors['dobDate'] = 'Date of Birth fields must match.';
         }
         // Validate DOB fields
         try {
-            if ((new \DateTime($values['dobDate'])) > new \DateTime('now')) {
+            if (isset($values['dobDate'])
+                && (new \DateTime($values['dobDate'])) > new \DateTime('now')
+            ) {
                 $errors['dobDate'] = 'Date of Birth cannot be set in the future.';
             }
         } catch (\Exception $e) {
@@ -238,6 +235,8 @@ class New_Profile extends \NDB_Form
                 $errors['edcDate'] = 'Expected Date of Confinement is not a '
                     . 'valid date.';
             }
+        } else if (empty($values['dobDate'])) {
+            $errors['dobDate'] = "Date of Birth cannot be empty.";
         }
 
         // Validate sex fields

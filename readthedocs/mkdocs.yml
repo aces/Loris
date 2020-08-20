@@ -1,0 +1,53 @@
+site_name: LORIS
+repo_url: https://github.com/aces/Loris
+# Solve the broken 404 page issue
+site_url: https://acesloris.readthedocs.io/en/latest/
+
+nav:
+    - Home: 'README.md'
+    - Server Install and Configuration:
+        - 'Prerequisities and Assumptions': 'docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/00_Prerequisites_And_Assumptions/README.md'
+        - 'Database Configuration': 'docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/00_Prerequisites_And_Assumptions/Database_Configuration.md'
+        - Installation:
+            - 'Ubuntu Install': 'docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.md'
+            - 'CentOS Install': 'docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.md'
+        - Website Configuration:
+            - 'Website Configuration': 'docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/README.md'
+            - 'Handling Large File Uploads': 'docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/Handling_Large_File_Uploads.md'
+            - 'Enabling reCAPTCHA': 'docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/02_Website_Configuration/reCAPTCHA.md'
+    - Study Parameters Setup:
+        - Study Variables:
+            - Introduction: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/00_Introduction_to_Study_Variables.md'
+            - Projects: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/02_Projects.md'
+            - Sites: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/03_Sites.md'
+            - Subprojects: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/04_Subprojects.md'
+            - Timepoints: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/05_Timepoints.md'
+        - Clinical Instruments: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/README.md'
+        - Modules: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/03_Loris_Modules/README.md'
+    - Getting Started: 'docs/wiki/02_GETTING_STARTED/README.md'
+    - Help and Troubleshooting: 'docs/wiki/03_HELP_AND_TROUBLESHOOTING/README.md'
+    - REST API:
+        - 'Stable' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.2.md'
+        - 'Dev' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.3-dev.md'
+    - Developers:
+        - Overview: 'docs/wiki/99_Developers/README.md'
+        - 'Coding Standards': 'docs/CodingStandards.md'
+        - 'SQL Dictionary': 'docs/wiki/99_Developers/SQL_Dictionary.md'
+        - 'Automated Testing': 'docs/wiki/99_Developers/Automated_Testing.md'
+        - 'Style Guide (for help text)': 'docs/wiki/99_Developers/Help_Style_Guide.md'
+        - 'Creating a Module': 'docs/wiki/99_Developers/Creating_Module.md'
+        - 'ReactJS Guidelines': 'docs/wiki/99_Developers/ReactJS_Guidelines.md'
+        - 'Code Review Guide': 'docs/wiki/99_Developers/Code_Review_Guide.md'
+
+use_directory_urls: False
+
+theme:
+    name: readthedocs
+    custom_dir: 'themes/loris_theme/'
+    navigation_depth: 4
+
+plugins:
+    - search
+    - root:
+        ignore_folders: ['node_modules', 'vendor', 'deprecated_wiki', '_DELETED', '_ARCHIVE']
+        ignore_hidden: True

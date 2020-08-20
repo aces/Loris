@@ -61,26 +61,50 @@ class AddSurvey extends \NDB_Form
     {
         $db = \Database::singleton();
 
+        // Check that all required fields are present.
+        if (!empty($values['Email']) ) {
+            if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
+                return ['Email' => 'The email address is not valid.'];
+            }
+        }
+        if (!empty($values['Email']) && !empty($values['Email2'])) {
+            if ($values['Email'] != $values['Email2']) {
+                return ['Email2' => 'The email addresses do not match.'];
+            }
+        }
+
+        if (!empty($values['Email']) && empty($values['Email2'])) {
+            return ['Email2' => 'Please confirm the email address.'];
+        }
+
+        if (empty($values['Test_name'])) {
+            return ['Test_name' => 'Please choose an instrument.'];
+        }
+
         $numCandidates = $db->pselectOne(
-            "SELECT COUNT(*) FROM candidate 
-            WHERE PSCID=:v_PSCID 
+            "SELECT COUNT(*) FROM candidate
+            WHERE PSCID=:v_PSCID
             AND CandID=:v_CandID AND Active='Y'",
             [
                 'v_PSCID'  => $values['PSCID'],
                 'v_CandID' => $values['CandID'],
             ]
         );
-        $error         = "PSCID and DCC ID do not match "
+        $error         = "PSCID and CandID do not match "
                 ."or candidate does not exist.";
         if ($numCandidates != 1) {
             return
               ['CandID' => $error];
         }
 
+        if (! in_array($values['VL'], \Utility::getVisitList(), true)) {
+            return ['VL' => "You must specify a valid Visit Label."];
+        }
+
         $numSessions = $db->pselectOne(
-            "SELECT COUNT(*) FROM session 
-            WHERE CandID=:v_CandID 
-            AND UPPER(Visit_label)=UPPER(:v_VL) 
+            "SELECT COUNT(*) FROM session
+            WHERE CandID=:v_CandID
+            AND UPPER(Visit_label)=UPPER(:v_VL)
             AND Active='Y'",
             [
                 'v_CandID' => $values['CandID'],
@@ -114,8 +138,8 @@ class AddSurvey extends \NDB_Form
         $instrument_list = $db->pselect(
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             WHERE s.CandID=:v_CandID
+             AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",
             [
                 'v_CandID' => $values['CandID'],
@@ -136,24 +160,6 @@ class AddSurvey extends \NDB_Form
             }
         }
 
-        if (!empty($values['Email']) ) {
-            if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
-                return ['Email' => 'The email address is not valid.'];
-            }
-        }
-        if (!empty($values['Email']) && !empty($values['Email2'])) {
-            if ($values['Email'] != $values['Email2']) {
-                return ['Email2' => 'The email addresses do not match.'];
-            }
-        }
-
-        if (!empty($values['Email']) && empty($values['Email2'])) {
-            return ['Email2' => 'Please confirm the email address.'];
-        }
-
-        if (empty($values['Test_name'])) {
-            return ['Test_name' => 'Please choose an instrument.'];
-        }
         if ($_REQUEST['fire_away'] !== 'Create survey') {
             if (!filter_var(
                 $values['Email'],
@@ -201,7 +207,9 @@ class AddSurvey extends \NDB_Form
             return;
         }
         $battery = new \NDB_BVL_Battery();
-        $battery->selectBattery($SessionID);
+        $battery->selectBattery(
+            strval(new \SessionID($SessionID))
+        );
 
         $commentID = $battery->addInstrument($values['Test_name']);
 

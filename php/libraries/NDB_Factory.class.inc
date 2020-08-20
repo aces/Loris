@@ -451,22 +451,26 @@ class NDB_Factory
     /**
      * Retrieve a TimePoint object representing this session
      *
-     * @param integer $sessionID The sessionID of the timepoint
-     *                           to retrieve
+     * @param SessionID $sessionID The sessionID of the timepoint
+     *                             to retrieve
      *
      * @return TimePoint object for $sessionID
      */
-    function timepoint(int $sessionID): \TimePoint
+    function timepoint(SessionID $sessionID): \TimePoint
     {
-        if (isset(self::$_timepoints[$sessionID])) {
-            return self::$_timepoints[$sessionID];
+        if (isset(self::$_timepoints[(string) $sessionID])) {
+            return self::$_timepoints[(string) $sessionID];
         }
         if ($this->Testing) {
-            self::$_timepoints[$sessionID] = new MockTimepoint($sessionID);
+            self::$_timepoints[(string) $sessionID] = new MockTimepoint(
+                $sessionID
+            );
         } else {
-            self::$_timepoints[$sessionID] = \TimePoint::singleton($sessionID);
+            self::$_timepoints[(string) $sessionID] = \TimePoint::singleton(
+                $sessionID
+            );
         }
-        return self::$_timepoints[$sessionID];
+        return self::$_timepoints[(string) $sessionID];
     }
 }
 

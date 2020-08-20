@@ -298,7 +298,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         // Generate a new CandID and insert it into the database.
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
-        $invalidID = false;
+        $invalidID    = false;
+        $attemptcount = 0;
         do {
             // Reset on each iteration
             $invalidID = false;
@@ -312,6 +313,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
                 // with the same value has been inserted into the DB before this
                 // one.
                 $invalidID = true;
+                $attemptcount++;
+                if ($attemptcount > 2) {
+                    throw $e;
+                }
             }
         } while ($invalidID);
 
@@ -620,8 +625,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $subprojList = [];
 
         $projID  = $this->getProjectID();
-        $query   = "SELECT SubprojectID 
-                    FROM project_subproject_rel 
+        $query   = "SELECT SubprojectID
+                    FROM project_subproject_rel
                     WHERE ProjectID = :prj";
         $params  = ['prj' => $projID];
         $subproj = \NDB_Factory::singleton()
@@ -649,7 +654,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        $query  = "SELECT Visit_label FROM session 
+        $query  = "SELECT Visit_label FROM session
           LEFT JOIN candidate USING (CandID)
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
@@ -831,8 +836,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
+            "SELECT ID,Description
+            FROM participant_status_options
             WHERE parentID=:pid",
             ['pid' => $parentID]
         );
@@ -864,7 +869,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             // the candidate.
             $timepoints = $this->getListOfTimePoints();
             foreach ($timepoints as $sessionID) {
-                $timepoint = \TimePoint::singleton($sessionID);
+                $timepoint = \TimePoint::singleton(
+                    new \SessionID(strval($sessionID))
+                );
                 if (in_array($timepoint->getCenterID(), $centers, true)) {
                     $centerMatch = true;
                     break;

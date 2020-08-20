@@ -39,10 +39,10 @@ const resolve = {
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
+    Password: path.resolve(__dirname, './jsx/Password'),
   },
   extensions: ['*', '.js', '.jsx', '.json'],
 };
-
 const mod = {
   rules: [
     {
@@ -130,6 +130,7 @@ const config = [
       Form: './jsx/Form.js',
       Markdown: './jsx/Markdown.js',
       CSSGrid: './jsx/CSSGrid.js',
+      Password: './jsx/Password.js',
     },
     output: {
       path: __dirname + '/htdocs/js/components/',
@@ -212,6 +213,19 @@ const config = [
     'react.fieldselector',
     'react.filterBuilder',
     'react.paginator',
+    'react.sidebar',
+    'react.tabs',
+  ]),
+  lorisModule('dqt', [
+    'components/expansionpanels',
+    'components/searchabledropdown',
+    'components/stepper',
+    'react.app',
+    'react.fieldselector',
+    'react.filterBuilder',
+    'react.navigationStepper',
+    'react.notice',
+    'react.savedqueries',
     'react.sidebar',
     'react.tabs',
   ]),

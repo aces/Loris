@@ -422,12 +422,15 @@ function editConsentStatusFields(\Database $db)
 
         // Process posted data
         // Empty strings and type null are not passed (null is passed as a string)
-        $status     = ($_POST[$consentName] !== 'null') ?
-                        $_POST[$consentName] : null;
-        $date       = ($_POST[$consentName . '_date'] !== 'null') ?
-                        $_POST[$consentName . '_date'] : null;
-        $withdrawal = ($_POST[$consentName . '_withdrawal'] !== 'null') ?
-                        $_POST[$consentName . '_withdrawal'] : null;
+        $status     = (isset($_POST[$consentName]) &&
+                          $_POST[$consentName] !== 'null') ?
+                          $_POST[$consentName] : null;
+        $date       = (isset($_POST[$consentName . '_date']) &&
+                          $_POST[$consentName . '_date'] !== 'null') ?
+                          $_POST[$consentName . '_date'] : null;
+        $withdrawal = (isset($_POST[$consentName . '_withdrawal']) &&
+                          $_POST[$consentName . '_withdrawal'] !== 'null') ?
+                          $_POST[$consentName . '_withdrawal'] : null;
 
         $updateStatus  = [
             'CandidateID'   => $candID,
@@ -544,7 +547,7 @@ function editCandidateDOB(\Database $db): void
     if (!empty($dob)) {
         $config    = \NDB_Config::singleton();
         $dobFormat = $config->getSetting('dobFormat');
-        if ($dobFormat === 'YM') {
+        if ($dobFormat === 'Ym') {
             $strippedDate = date("Y-m", strtotime($dob))."-01";
         }
         $db->update(
@@ -578,7 +581,7 @@ function editCandidateDOD(\Database $db): void
     if (!empty($dod)) {
         $config    = \NDB_Config::singleton();
         $dodFormat = $config->getSetting('dodFormat');
-        if ($dodFormat === 'YM') {
+        if ($dodFormat === 'Ym') {
             $strippedDate = $dod->format('Y-m-01');
         } else {
             $dodString = $dod->format('Y-m-d');

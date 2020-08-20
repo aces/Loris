@@ -1,4 +1,4 @@
-# **Unit Testing 101: How to Write Tests for LORIS**
+# Unit Testing 101: How to Write Tests for LORIS
 
 This guide is for [LORIS](http://loris.ca/) developers or anyone working with LORIS who wants to contribute unit tests to the [LORIS codebase](https://github.com/aces/Loris) and learn best practices for setting up and writing unit tests. 
 

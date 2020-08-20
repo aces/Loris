@@ -25,6 +25,14 @@ use Facebook\WebDriver\WebDriverSelect;
  */
 class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 {
+    //filter location
+    static $fullname     = 'input[name="fullName"]';
+    static $citationName = 'input[name="citationName"]';
+    static $startDate    = 'input[name="startDate"]';
+    static $endDate      = 'input[name="endDate"]';
+    static $present      = 'select[name="present"]';
+    static $display      = '.table-header > .row > div > div:nth-child(1)';
+    static $clearFilter  = 'a[name="reset"]';
 
     // Initial array data
 
@@ -47,8 +55,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         'affiliations'  => 'McGill',
         'degrees'       => 'Bachelors',
         'roles'         => 'Investigators',
-        'start_date'    => '2015-11-11',
-        'end_date'      => '2016-11-11',
+        'start_date'    => '2016-11-11',
+        'end_date'      => '2017-11-11',
         'present'       => 'Yes',
     ];
     /**
@@ -98,55 +106,48 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that, after clicking the "filter" button, all of the
-     * advanced filters appear on the page.
+     * Tests filter and clearfilter function
      *
      * @return void
      */
-    function testFilterWithData()
-    {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better.'
-        );
-
-        $this->_testFilter("fullName", self::$testData['full_name']);
-        $this->_testFilter("citatioName", self::$testData['citation_name']);
-        $this->_testFilter("startDate", self::$testData['start_date']);
-        $this->_testFilter("endDate", self::$testData['end_date']);
-        $this->_testFilter("present", self::$testData['present']);
-
-    }
-    /**
-     * Test filter function
-     *
-     * @param string $element the test element
-     * @param string $value   the value
-     *
-     * @return void
-     */
-    private function _testFilter($element,$value)
+    function testFilters()
     {
         $this->safeGet($this->url . "/acknowledgements/");
-        if ($element == "startDate" || $element == "endDate") {
-            $this->webDriver->executescript(
-                "document.getElementsByName('$element')[0].value='$value'"
-            );
-        } elseif ($element == "present") {
-            $select  = $this->safeFindElement(WebDriverBy::Name($element));
-            $element = new WebDriverSelect($select);
-            $element->selectByVisibleText($value);
-        } else {
-            $this->webDriver->findElement(
-                WebDriverBy::Name($element)
-            )->sendKeys($value);
-        }
-        $this->webDriver->findElement(
-            WebDriverBy::ID("showdata_advanced_options")
-        )->click();
-        $this->safeGet($this->url . "/acknowledgements/?format=json");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains($value, $bodyText);
+        $this->_filterTest(
+            self::$fullname,
+            self::$display,
+            self::$clearFilter,
+            self::$testData['full_name'],
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$citationName,
+            self::$display,
+            self::$clearFilter,
+            self::$testData['citation_name'],
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$startDate,
+            self::$display,
+            self::$clearFilter,
+            self::$testData['start_date'],
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$endDate,
+            self::$display,
+            self::$clearFilter,
+            self::$testData['end_date'],
+            "1 row"
+        );
+        $this->_filterTest(
+            self::$present,
+            self::$display,
+            self::$clearFilter,
+            self::$testData['present'],
+            "31"
+        );
     }
     /**
      * Tests that, adding a new record, then this record appears on the page.
@@ -155,29 +156,37 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testAddNewRecord()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better.'
-        );
-
         $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeFindElement(
+            WebDriverBy::cssSelector("div:nth-child(2) > .btn:nth-child(1)")
+        )->click();
         //insert ordering
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("addOrdering")
         )->sendKeys(self::$newData['ordering']);
         //insert Full name
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("addFullName")
         )->sendKeys(self::$newData['full_name']);
         //insert Citation name
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("addCitationName")
         )->sendKeys(self::$newData['citation_name']);
+        $this->safeFindElement(
+            WebDriverBy::Name("addStartDate")
+        )->sendKeys(self::$newData['start_date']);
+        $el_dropdown = new WebDriverSelect(
+            $this->safeFindElement(WebDriverBy::Name("addPresent"))
+        );
+        $el_dropdown->selectByVisibleText("Yes");
         //expecting to find the value,after clicking save button
-        $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
+        $this->safeFindElement(
+            WebDriverBy::cssSelector('button[name="fire_away"]')
         )->click();
-        //test filter
-        $this->_testFilter("fullName", self::$newData['full_name']);
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title")
+        )->getText();
+        $this->assertContains("Success!", $bodyText);
     }
 }
 

@@ -1,3 +1,6 @@
+<script type="text/javascript" src="{$baseurl}/js/passwordVisibility.js"></script>
+<link rel="stylesheet" href="/css/password.css" type="text/css" />
+
 <br />
 <form method="post" name="my_preferences" id="my_preferences" autocomplete="off">
     <h3>Password Rules</h3>
@@ -51,16 +54,16 @@
         <label class="col-sm-2">
             {$form.Password_hash.label}
         </label>
-        <div class="col-sm-10">
-            {$form.Password_hash.html}
+        <div class="col-sm-4">
+            <input type="password" name="{$form.Password_hash.name}" />
         </div>
     </div>
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.__Confirm.label}
         </label>
-        <div class="col-sm-10">
-            {$form.__Confirm.html}
+        <div class="col-sm-4">
+            <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
     <div class="row form-group">
@@ -101,3 +104,9 @@
 
 {$form.hidden}
 </form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(event) {
+    passwordVisibility();
+  })
+</script>
