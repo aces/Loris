@@ -46,6 +46,7 @@ abstract class LorisIntegrationTest extends TestCase
     protected $url;
     protected $factory;
     protected $originalJwtKey;
+    protected $configIdJwt;
     /**
      * A valid password to use for login tests.
      */
