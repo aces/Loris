@@ -117,43 +117,20 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     }
 
     /**
-     * Test that the page does not load if the user doesn't have permissions
+     * Test that the page loads with the given permissions
      *
      * @return void
      */
-    function testEEGBrowserWithoutPermissions()
+    function testEEGBrowserPermissions()
     {
-        $this->setupPermissions([]);
-        $this->safeGet($this->url . "/electrophysiology_browser/?");
-        $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
-        $this->resetPermissions();
-    }
-
-    /**
-     * Test that the page loads if the user has the given permissions
-     *
-     * @return void
-     */
-    function testEEGBrowserWithPermissions()
-    {
-        $this->setupPermissions(['electrophysiology_browser_view_site']);
-        $this->safeGet($this->url . "/electrophysiology_browser/?");
-        $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
-        $this->resetPermissions();
-
-        $this->setupPermissions(['electrophysiology_browser_view_allsites']);
-        $this->safeGet($this->url . "/electrophysiology_browser/?");
-        $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
-        $this->resetPermissions();
+        $this->checkPagePermissions(
+            '/electrophysiology_browser/?',
+            [
+                'electrophysiology_browser_view_allsites',
+                'electrophysiology_browser_view_site'
+            ],
+            "Electrophysiology Browser"
+        );
     }
 
     /**
@@ -315,21 +292,14 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testSessionsWithPermissions()
     {
-        $this->setupPermissions(['electrophysiology_browser_view_site']);
-        $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
-        $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
-        $this->resetPermissions();
-
-        $this->setupPermissions(['electrophysiology_browser_view_allsites']);
-        $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
-        $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
-        $this->resetPermissions();
+        $this->checkPagePermissions(
+            '/electrophysiology_browser/sessions/999999',
+            [
+                'electrophysiology_browser_view_allsites',
+                'electrophysiology_browser_view_site'
+            ],
+            "Electrophysiology Browser"
+        );
     }
 
     /**
