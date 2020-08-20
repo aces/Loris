@@ -80,6 +80,7 @@ abstract class LorisIntegrationTest extends TestCase
         );
         $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
+
         // store the original JWT key for restoring it later
         $this->originalJwtKey = $this->DB->pselect(
             '
@@ -92,7 +93,8 @@ abstract class LorisIntegrationTest extends TestCase
             (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")',
             []
         )[0]['Value'];
-        $this->configIdJwt    = $this->DB->pselect(
+
+        $this->configIdJwt = $this->DB->pselect(
             '
             SELECT
               ConfigID
@@ -103,6 +105,7 @@ abstract class LorisIntegrationTest extends TestCase
             (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")',
             []
         )[0]['ConfigID'];
+
         // generating a random JWTkey
         $new_id = bin2hex(random_bytes(30)) . 'A1!';
         $set    = [
@@ -246,10 +249,8 @@ abstract class LorisIntegrationTest extends TestCase
             'Value' => $this->originalJwtKey
         ];
         $where = [
-            'ConfigID' => 'SELECT ConfigID FROM Config WHERE ConfigID=
-            (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")'
+            'ConfigID' => $this->configIdJwt
         ];
-
         $this->DB->update('Config', $set, $where);
         $this->factory->reset();
     }
