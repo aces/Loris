@@ -13,10 +13,20 @@
  * This will take you to the main coverage page. From here, you may navigate to the dashboard or
  * to the pages for the individual classes under the php/libraries directory.
  *
-
 */
-//Running unit test suite and generating HTML reports
-exec("docker-compose run -T --rm unit-tests vendor/bin/phpunit --configuration test/phpunit-coverage.xml --testsuite LorisUnitTests", $output, $status);
+
+/*
+ * Step 1: Running unit test suite and generating HTML reports
+ *
+ * The unit test suite is run with the --coverage-html tag,
+ * which is configured to generate the HTML reports
+ */
+error_reporting(E_ERROR);
+exec(
+    "docker-compose run -T --rm unit-tests vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisUnitTests --coverage-html htdocs/log/codeCoverage",
+    $output,
+    $status
+);
 if ($status != 0) {
     echo PHP_EOL . "The unit tests did not execute correctly" . PHP_EOL;
 }
@@ -25,7 +35,9 @@ else {
 }
 echo end($output) . PHP_EOL;
 
-//Changing the read/write permissions for the code coverage reports
+/*
+ * Step 2: Change the read/write permissions of the HTML files
+ */
 exec("sudo chmod -R 777 ../htdocs/log/codeCoverage", $output, $status);
 if ($status != 0) {
     echo "The read/write permissions of the code coverage reports were not properly changed" . PHP_EOL;
@@ -34,42 +46,104 @@ else {
     echo "The read/write permissions of the code coverage reports were properly changed" . PHP_EOL;
 }
 
-//Adding date to the html reports
+/*
+ * Step 3: Editing the HTML files and moving them to a new directory
+ *
+ * All HTML reports are edited to include the date they were generated at the top of the page.
+ * The index.html file and all other library-specific files are also edited to make the Total
+ * percentages bold at the top of the page.
+ */
+
+//The HTML XPath for the header elements that are being edited
+$headerPath = "/html/body/div/table/thead/tr[1]/td[2]/div";
+$dashboardPath = "/html/body/div/div[1]/div/h2";
+
+//Arrays of XPath values for all the values that are being bolded
+$toBoldIndexArray = [
+    "/html/body/div/table/tbody/tr[1]/td[3]/div",
+    "/html/body/div/table/tbody/tr[1]/td[4]/div",
+    "/html/body/div/table/tbody/tr[1]/td[6]/div",
+    "/html/body/div/table/tbody/tr[1]/td[7]/div",
+    "/html/body/div/table/tbody/tr[1]/td[9]/div",
+    "/html/body/div/table/tbody/tr[1]/td[10]/div"
+];
+$toBoldArray = [
+    "/html/body/div/table/tbody/tr[1]/td[3]/div",
+    "/html/body/div/table/tbody/tr[1]/td[4]/div",
+    "/html/body/div/table/tbody/tr[1]/td[6]/div",
+    "/html/body/div/table/tbody/tr[1]/td[7]/div",
+    "/html/body/div/table/tbody/tr[1]/td[10]/div",
+    "/html/body/div/table/tbody/tr[1]/td[11]/div"
+];
+
 echo "Editing html files....";
+
+//Getting the date and making a new directory
 $date = date("Y-m-d");
 exec("sudo mkdir ../htdocs/log/codeCoverage/$date");
 exec ("sudo chmod -R 777 ../htdocs/log/codeCoverage/$date");
+
+//Getting all the generated reports and looping through them
 $files = glob('../htdocs/log/codeCoverage/*.{html}', GLOB_BRACE);
 foreach ($files as $filename) {
-    $file = fopen($filename, "r+");
+    $dom = new DOMDocument();
+    $dom->loadHTMLFile($filename);
+    $xPath = new DOMXPath($dom);
     $basename = basename($filename);
     $newfile = fopen("../htdocs/log/codeCoverage/$date/$basename", "w");
+    //For the dashboard page: Adding the date to the header
     if (strpos($filename, "dashboard.html") !== false){
-        while (!feof($file)) {
-            $line = fgets($file);
-            if (strpos($line, "<h2>Classes</h2>") !== false) {
-                $line = "     <br><h2>Classes <p>Calculated on: <script>document.write(new Date(document.lastModified).toLocaleDateString());</script></p></h2></br>";
-            }
-            fwrite($newfile, $line);
-        }
+        $dashboardHtml = "<h2>Classes <p>Calculated on: <script>document.write(new Date(document.lastModified).toLocaleDateString());</script></p></h2>";
+        $header = $xPath->query($dashboardPath)->item(0);
+        $pHeader = $header->parentNode;
+
+        $newDom = new DOMDocument();
+        $newDom->loadHTML($dashboardHtml);
+        $newEl = $newDom->documentElement;
+        $importedNode = $dom->importNode($newEl, true);
+
+        $pHeader->insertBefore($importedNode, $header->nextSibling);
+        $header->nodeValue = "";
     }
+    //For all other pages: Adding the date to the header and bolding values at the top
     else {
-        while (!feof($file)) {
-            $line = fgets($file);
-            if (strpos($line, "<strong>Code Coverage</strong>") !== false) {
-                $line = "     <br><td colspan=\"10\"><div align=\"center\"><strong>Code Coverage <p>Calculated on: <script>document.write(new Date(document.lastModified).toLocaleDateString());</script></p></strong></div></td></br>";
+        $html = "<div align=\"center\"><strong>Code Coverage <p>Calculated on: <script>document.write(new Date(document.lastModified).toLocaleDateString());</script></p></strong></div>";
+        $header = $xPath->query($headerPath)->item(0);
+        $pHeader = $header->parentNode;
+
+        $tempDom = new DOMDocument();
+        $tempDom->loadHTML($html);
+        $newEl = $tempDom->documentElement;
+        $importedNode = $dom->importNode($newEl, true);
+
+        $pHeader->insertBefore($importedNode, $header->nextSibling);
+        $header->nodeValue = "";
+
+        if (strpos($filename, "index.html") !== false){
+            foreach ($toBoldIndexArray as $path) {
+                $element = $xPath->query($path)->item(0);
+                $text = trim($element->nodeValue);
+                $element->parentNode->insertBefore($dom->createElement('strong', $text), $element);
+                $element->nodeValue = "";
             }
-            fwrite($newfile, $line);
+        }
+        else {
+            foreach ($toBoldArray as $path) {
+                $element = $xPath->query($path)->item(0);
+                $text = trim($element->nodeValue);
+                $element->parentNode->insertBefore($dom->createElement('strong', $text), $element);
+                $element->nodeValue = "";
+            }
         }
     }
-    fclose($file);
+    //Saving the reports in the new directory and deleting the old files
+    $dom->saveHTMLFile("../htdocs/log/codeCoverage/$date/$basename");
     fclose($newfile);
     unlink($filename);
 }
 rename("../htdocs/log/codeCoverage/.css", "../htdocs/log/codeCoverage/$date/.css");
 rename("../htdocs/log/codeCoverage/.fonts", "../htdocs/log/codeCoverage/$date/.fonts");
 rename("../htdocs/log/codeCoverage/.js", "../htdocs/log/codeCoverage/$date/.js");
-
 echo "done\n";
 
 echo "******************************************************************
