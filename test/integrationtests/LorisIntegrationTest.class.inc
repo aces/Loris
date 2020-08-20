@@ -63,14 +63,14 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp()
     {
-
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
         $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
-        $database     = $this->config->getSetting('database');
+
+        $database = $this->config->getSetting('database');
 
         $this->DB  = Database::singleton(
             $database['database'],
@@ -83,38 +83,32 @@ abstract class LorisIntegrationTest extends TestCase
         $password  = new \Password($this->validPassword);
 
         // store the original JWT key for restoring it later
-        $this->originalJwtKey = $this->DB->pselect(
+        $JwtConfig = $this->DB->pselect(
             '
             SELECT
-              Value
+              Value, ConfigID
             FROM
               Config
             WHERE
               ConfigID=
             (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")',
             []
-        )[0]['Value'];
+        )[0];
 
-        $this->configIdJwt = $this->DB->pselect(
-            '
-            SELECT
-              ConfigID
-            FROM
-              Config
-            WHERE
-              ConfigID=
-            (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")',
-            []
-        )[0]['ConfigID'];
+        $this->originalJwtKey = $JwtConfig['Value'];
+        $this->configIdJwt    = $JwtConfig['ConfigID'];
 
         // generating a random JWTkey
         $new_id = bin2hex(random_bytes(30)) . 'A1!';
-        $set    = [
+
+        $set = [
             'Value' => $new_id
         ];
-        $where  = [
+
+        $where = [
             'ConfigID' => $this->configIdJwt
         ];
+
         $this->DB->update('Config', $set, $where);
 
         $this->DB->insert(
@@ -174,11 +168,13 @@ abstract class LorisIntegrationTest extends TestCase
         );
 
         $this->login("UnitTester", $this->validPassword);
+
         if (extension_loaded('xdebug')
             && function_exists("xdebug_start_code_coverage")
         ) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
+
     }
 
     /**
@@ -246,12 +242,15 @@ abstract class LorisIntegrationTest extends TestCase
         if ($this->webDriver) {
             $this->webDriver->quit();
         }
-        $set   = [
+
+        $set = [
             'Value' => $this->originalJwtKey
         ];
+
         $where = [
             'ConfigID' => $this->configIdJwt
         ];
+
         $this->DB->update('Config', $set, $where);
         $this->factory->reset();
     }
