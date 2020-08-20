@@ -112,7 +112,6 @@ abstract class LorisIntegrationTest extends TestCase
             'ConfigID' => $this->configIdJwt
         ];
         $this->DB->update('Config', $set, $where);
-	var_dump($this->configIdJwt);
 
         $this->DB->insert(
             "users",
