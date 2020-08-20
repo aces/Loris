@@ -27,7 +27,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Readability of comments and history was improved. (PR #6138)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
-### Dashboard
+#### Dashboard
 - Access to statistics was per site restricted. Users are now allowed to consult statistics only
 for the sites they have access to. (PR #6878)
 ### Clean Up
