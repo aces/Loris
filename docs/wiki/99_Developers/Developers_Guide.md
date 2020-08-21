@@ -39,9 +39,8 @@ There is usually no need to fully update your fork to the newest aces/LORIS vers
  **Never** push to aces/Loris. Your branch will be deleted. Always push to your fork, and then create the PR from GitHub.
 
 #### Branch Naming
-Follow the convention most developers use: “date-title...”.   
+Follow the convention most LORIS developers use: “date-title...”.   
 Starting with the date allows branches to sort and display in order, and also helps sort out any conflicts faster in the main Loris repository.
-Please make your branch names short and informative, like your commit messages, since they’re read by others on GitHub. 
 
 ### Helpful commands to run before pushing new code:
 Travis is our continuous integration which runs on every PR in GitHub. These commands can catch small formatting errors that will cause the Travis build to fail.
@@ -166,14 +165,6 @@ The `Needs Rebase` label can be added if a PR has merge conflicts with the branc
 The `Needs Work` label can be added if a PR is not yet ready for review and requires more work before it can be approved.
 
 Other Labels can also be added by reviewers at their discretion. 
-
-### LORIS Code Review Etiquette
-
-#### When to resolve a review or comment thread
-If you have implemented a requested change from a review-comment thread, it is good practice to let the developer who requested the change
-resolve the thread, so that they get the chance to check your change met their expectations. However, if a comment thread is simple or straightforward (e.g. a typo), feel free to resolve it.
-
-If there is context discussed in a review-comment thread that people may want to consult later, don't resolve the comment thread. You can simply put an emoji and add a comment saying "Thanks" or "Change made" to signal that the review has been addressed.
 
 ## 5. Rebasing
 Rebasing is used when there are conflicts between your branch and the branch your PR is based off of (an alternative to merging). 
