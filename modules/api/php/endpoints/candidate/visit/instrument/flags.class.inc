@@ -152,8 +152,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $this->_instrument->clearInstrument();
             $this->_instrument->table = 'flag';
+            $this->_instrument->clearInstrument();
             $this->_instrument->_save($data['Flags']);
         } catch (\Throwable $e) {
             error_log($e->getMessage());
