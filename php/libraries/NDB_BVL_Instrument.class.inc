@@ -2256,12 +2256,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'db'    => $dbconfig['database'],
             ]
         );
-
+        var_dump($this->table);
         $values = [];
         foreach ($columns as $row) {
             switch ($row['COLUMN_NAME']) {
-            case 'CommentID':
+	    case 'CommentID':
+            case 'ID':
+                continue 2;
+            case 'SessionID':
+                continue 2;
             case 'UserID':
+                continue 2;
+            case 'Test_name':
                 continue 2;
             case 'Data_entry_completion_status':
                 $values[$row['COLUMN_NAME']] = 'Incomplete';
@@ -2269,7 +2275,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             default:
                 $values[$row['COLUMN_NAME']] = null;
             }
-        }
+	}
+	var_dump($values);
         $db->update($this->table, $values, ['CommentID' => $this->commentID]);
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
