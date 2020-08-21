@@ -2256,10 +2256,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'db'    => $dbconfig['database'],
             ]
         );
+
         $values = [];
         foreach ($columns as $row) {
             switch ($row['COLUMN_NAME']) {
-	    case 'CommentID':
+            case 'CommentID':
             case 'ID':
                 continue 2;
             case 'SessionID':
@@ -2274,7 +2275,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             default:
                 $values[$row['COLUMN_NAME']] = null;
             }
-	}
+        }
         $db->update($this->table, $values, ['CommentID' => $this->commentID]);
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
