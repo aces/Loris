@@ -2252,7 +2252,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'db'    => $dbconfig['database'],
             ]
         );
-        var_dump($this->table);
         $values = [];
         foreach ($columns as $row) {
             switch ($row['COLUMN_NAME']) {
@@ -2272,7 +2271,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $values[$row['COLUMN_NAME']] = null;
             }
 	}
-	var_dump($values);
         $db->update($this->table, $values, ['CommentID' => $this->commentID]);
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
