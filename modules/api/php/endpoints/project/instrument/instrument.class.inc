@@ -38,15 +38,17 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * The requested instrument
      */
     private $_instrument;
+    private array $_commentIds;
 
     /**
      * Contructor
      *
      * @param \NDB_BVL_Instrument $instrument The requested instrument
      */
-    public function __construct(\NDB_BVL_Instrument $instrument)
+    public function __construct(\NDB_BVL_Instrument $instrument, array $commentIds)
     {
         $this->_instrument = $instrument;
+        $this->_commentIds = $commentIds;
     }
 
     /**
@@ -111,11 +113,11 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (isset($this->_cache)) {
             return $this->_cache;
         }
-
+        $this->_instrument->toJSON();
+        $this->_instrument->
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
             json_decode($this->_instrument->toJSON(), true)
         );
-
         return $this->_cache;
     }
 
