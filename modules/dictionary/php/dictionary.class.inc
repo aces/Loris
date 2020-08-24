@@ -53,11 +53,11 @@ class Dictionary extends \DataFrameworkMenu
     public function getFieldOptions() : array
     {
         $amodules = [];
-        foreach($this->modules as $module) {
+        foreach ($this->modules as $module) {
             $amodules[$module->getName()] = $module->getLongName();
         }
         return [
-            'modules' => $amodules,
+            'modules'    => $amodules,
             'categories' => $this->categories,
         ];
     }
@@ -69,7 +69,10 @@ class Dictionary extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new DataDictRowProvisioner($this->lorisinstance, $this->categoryitems);
+        return new DataDictRowProvisioner(
+            $this->lorisinstance,
+            $this->categoryitems
+        );
     }
 
     /**
@@ -113,23 +116,36 @@ class Dictionary extends \DataFrameworkMenu
         return false;
     }
 
-    // FIXME: This should be moved to the parent class
-    public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner {
-        $prov = parent::getDataProvisionerWithFilters();
-        return $prov->filter(new \LORIS\Data\Filters\AccessibleResourceFilter());
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
+    {
+        return parent::getDataProvisionerWithFilters()
+            ->filter(new \LORIS\Data\Filters\AccessibleResourceFilter());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User                  $user    The user this request is for
+     * @param ServerRequestInterface $request The PSR7 request
+     *
+     * @return void
+     */
     public function loadResources(
         \User $user, ServerRequestInterface $request
     ) : void {
         $this->lorisinstance = $request->getAttribute("loris");
-        $modulesandcats = $this->Module->getUserModuleCategories(
+        $modulesandcats      = $this->Module->getUserModuleCategories(
             $user,
             $this->lorisinstance,
         );
 
         $this->categoryitems = $modulesandcats['CategoryItems'];
-        $this->modules = $modulesandcats['Modules'];
-        $this->categories = $modulesandcats['Categories'];
+        $this->modules       = $modulesandcats['Modules'];
+        $this->categories    = $modulesandcats['Categories'];
     }
 }

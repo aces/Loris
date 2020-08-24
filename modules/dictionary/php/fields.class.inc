@@ -1,15 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * Datadict module
- *
- * PHP version 7
- *
- * @category Datadict
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
- */
 namespace LORIS\dictionary;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -17,13 +6,7 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * Datadict module
  *
- * PHP version 7
- *
- * @category Datadict
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 
 class Fields extends \NDB_Page
@@ -41,13 +24,13 @@ class Fields extends \NDB_Page
     }
 
         /**
-     * The modules class overrides the default behaviour to handle PATCH
-     * requests for module_manager/modules/$modulename.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
-     * @return ResponseInterface
-     */
+         * The modules class overrides the default behaviour to handle PATCH
+         * requests for module_manager/modules/$modulename.
+         *
+         * @param ServerRequestInterface $request The incoming PSR7 request
+         *
+         * @return ResponseInterface
+         */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $user = $request->getAttribute("user");
@@ -66,11 +49,14 @@ class Fields extends \NDB_Page
             // delegated to this class..
             throw new \LorisException("Invalid internal LORIS state");
         }
-        $name = substr($path, strpos($path,"fields/") + strlen("fields/"));
-        $origdesc = $this->getOriginalDescription($name);
+        $name     = substr($path, strpos($path, "fields/") + strlen("fields/"));
+        $origdesc = $this->_getOriginalDescription($name);
         switch ($request->getMethod()) {
         case 'PUT':
-            $status = $this->replaceDescription($name, $request->getBody()->__toString());
+            $status = $this->_replaceDescription(
+                $name,
+                $request->getBody()->__toString()
+            );
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withHeader("X-StatusDesc", $status)
@@ -85,16 +71,24 @@ class Fields extends \NDB_Page
         }
     }
 
-    private function getOriginalDescription(string $name) : string {
+    /**
+     * Get the original, non-overridden description for field named $name
+     *
+     * @param string $name The field name
+     *
+     * @return string
+     */
+    private function _getOriginalDescription(string $name) : string
+    {
         $modules = $this->lorisinstance->getActiveModules();
 
         // Brute force finding the name since we don't know what module
         // the dictionary item came from.
         foreach ($modules as $module) {
             $mdict = $module->getDataDictionary($this->lorisinstance);
-            foreach($mdict as $cat) {
-                foreach($cat->getItems() as $item) {
-                    $iname   = $cat->getName() . '_' . $item->getName();
+            foreach ($mdict as $cat) {
+                foreach ($cat->getItems() as $item) {
+                    $iname = $cat->getName() . '_' . $item->getName();
                     if ($name === $iname) {
                         return $item->getDescription();
                     }
@@ -104,9 +98,19 @@ class Fields extends \NDB_Page
         return '';
     }
 
-    private function replaceDescription(string $name, string $description) : string {
-        $DB      = $this->lorisinstance->getDatabaseConnection();
-        $origdesc = $this->getOriginalDescription($name);
+    /**
+     * Override the description for field named $name and save it in the
+     * database.
+     *
+     * @param string $name        The field being overridden
+     * @param string $description The new description
+     *
+     * @return string The status of the description after overriding
+     */
+    private function _replaceDescription(string $name, string $description) : string
+    {
+        $DB       = $this->lorisinstance->getDatabaseConnection();
+        $origdesc = $this->_getOriginalDescription($name);
 
         if ($description == $origdesc) {
             $DB->delete(

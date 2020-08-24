@@ -60,49 +60,61 @@ class Module extends \Module
 
     /**
      * Return a list of modules and categories that this user
-     * has access to.
+     * has access to, stripping out modules that have no dictionary
+     * items that the user can access.
      *
      * This should not be used outside of this module, it's only
-     * to store shared code between different endpoints
+     * to store common shared code between different endpoints and
+     * must be public as a result of being used by different
+     * classes.
+     *
+     * @param \User                $user      The user accessing the dictionary
+     * @param \LORIS\LorisInstance $loris     The LorisInstance which the dictionary
+     *                                        is being accessed for
+     * @param ?string              $formodule An optional module name to only
+     *                                        retrieve the dictionary for a single
+     *                                        module with the given name
      *
      * @return array
      */
-    public function getUserModuleCategories(\User $user, \LORIS\LorisInstance $loris, ?string $formodule=null) : array
-    {
-        $modules = $loris->getActiveModules();
+    public function getUserModuleCategories(
+        \User $user,
+        \LORIS\LorisInstance $loris,
+        ?string $formodule=null
+    ) : array {
+        $modules     = $loris->getActiveModules();
         $usermodules = [];
-        $dict = [];
-        $categories = [];
+        $dict        = [];
+        $categories  = [];
 
         $categoryitems = [];
         foreach ($modules as $module) {
             if ($formodule !== null && $module->getName() !== $formodule) {
                 continue;
             }
-            if(!$module->hasAccess($user)) {
+            if (!$module->hasAccess($user)) {
                 continue;
             }
 
             $mdict = $module->getDataDictionary($this->lorisinstance);
             $mname = $module->getName();
 
-            if(count($mdict) > 0) {
-                $usermodules[] = $module;
+            if (count($mdict) > 0) {
+                $usermodules[]      = $module;
                 $categories[$mname] = [];
 
-
-                foreach($mdict as $cat) {
+                foreach ($mdict as $cat) {
                     $categories[$mname][$cat->getName()] = $cat->getDescription();
                     $categoryitems[] = [
-                        'Module' => $module,
+                        'Module'   => $module,
                         'Category' => $cat,
                     ];
                 }
             }
         }
         return [
-            'Modules' => $usermodules,
-            'Categories' => $categories,
+            'Modules'       => $usermodules,
+            'Categories'    => $categories,
             'CategoryItems' => $categoryitems,
         ];
     }

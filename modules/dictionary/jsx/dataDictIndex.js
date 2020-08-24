@@ -12,10 +12,6 @@ import swal from 'sweetalert2';
  *
  * Renders Data Dictionary main page consisting of FilterTable and
  * DataTable components.
- *
- * @author Liza Levitis
- * @version 1.0.0
- *
  */
 class DataDictIndex extends Component {
   /**

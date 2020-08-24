@@ -125,13 +125,25 @@ class Module extends \Module
         }
         return [];
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\LorisInstance $loris The Loris instance from which the
+     *                                    data dictionary for this module
+     *                                    should be retrieved.
+     *
+     * @return iterable
+     */
     public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
     {
-        $scope = new Scope(Scope::Session);
+        $scope  = new Scope(Scope::Session);
+        $images = new \LORIS\Data\Dictionary\Category(
+            "Images",
+            "Image Acquisitions",
+        );
+        $items  = [];
 
-        $images = new \LORIS\Data\Dictionary\Category("Images", "Image Acquisitions");
-
-        $items = [];
         $scantypes = \Utility::getScanTypeList();
         foreach ($scantypes as $ScanType) {
             $items[] = new DictionaryItem(

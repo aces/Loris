@@ -1,37 +1,27 @@
 <?php declare(strict_types=1);
-/**
- * This class implements a data Instance which represents a single
- * row in the datadict menu table.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Behavioural
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\dictionary;
+use \LORIS\Data\Dictionary\Category;
+use \LORIS\Data\Dictionary\DictionaryItem;
 
 /**
- * A DataDictRow represents a row in the datadict menu table.
+ * A DataDictRow represents a row in the datadict menu table, which
+ * is a DictionaryItem with the category and overridden Description
+ * added.
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Behavioural
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class DataDictRow implements \LORIS\Data\DataInstance, \LORIS\StudyEntities\AccessibleResource
+class DataDictRow implements \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\AccessibleResource
 {
     /**
-     * Create a new DataDictRow
+     * Construct a DataDictRow
      *
-     * @param array $row The row (in the same format as \Database::pselectRow
-     *                   returns
+     * @param \Module        $itemmodule The module that the item is from
+     * @param Category       $cat        The way the module is categorized in the
+     *                                   item
+     * @param DictionaryItem $item       The DictionaryItem for this row
+     * @param string         $desc       The (possibly overridden) description
+     * @param string         $descstatus The status of the description override
      */
     public function __construct(
         \Module $itemmodule,
@@ -40,11 +30,11 @@ class DataDictRow implements \LORIS\Data\DataInstance, \LORIS\StudyEntities\Acce
         string $desc,
         string $descstatus
     ) {
-        $this->itemmodule = $itemmodule;
+        $this->itemmodule   = $itemmodule;
         $this->itemcategory = $cat;
-        $this->item = $item;
-        $this->desc = $desc;
-        $this->status = $descstatus;
+        $this->item         = $item;
+        $this->desc         = $desc;
+        $this->status       = $descstatus;
     }
 
     /**
@@ -55,14 +45,14 @@ class DataDictRow implements \LORIS\Data\DataInstance, \LORIS\StudyEntities\Acce
     public function jsonSerialize() : array
     {
         $val = [
-                    'module'        => $this->itemmodule->getName(),
-                    'category'     => $this->itemcategory->getName(),
-                    'field'              => $this->getFieldName(),
-                    'description'        => $this->desc,
-                    'description_status' => $this->status,
-                    'datascope' => $this->getScope(),
-                    'type' => $this->getScope(),
-                    'cardinality' => $this->getCardinality(),
+            'module'             => $this->itemmodule->getName(),
+            'category'           => $this->itemcategory->getName(),
+            'field'              => $this->getFieldName(),
+            'description'        => $this->desc,
+            'description_status' => $this->status,
+            'datascope'          => $this->getScope(),
+            'type'               => $this->getScope(),
+            'cardinality'        => $this->getCardinality(),
         ];
 
         $itype = $this->item->getDataType();
@@ -70,35 +60,80 @@ class DataDictRow implements \LORIS\Data\DataInstance, \LORIS\StudyEntities\Acce
             $val['options'] = $itype->getOptions();
         }
 
-
         return $val;
     }
 
-    public function isAccessibleBy(\User $user) : bool {
+    /**
+     * Implement the AccessibleResource interface by proxying to
+     * the underlying DictionaryItem.
+     *
+     * @param \User $user The user whose access should be checked
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user) : bool
+    {
         return $this->item->isAccessibleBy($user);
     }
 
-    public function getCategory() : string {
+    /**
+     * Return the module category to which the DictionaryItem belongs
+     *
+     * @return string
+     */
+    public function getCategory() : string
+    {
+        return $this->itemcategory;
+    }
+
+    /**
+     * Return the field name for this row
+     *
+     * @return string
+     */
+    public function getFieldName() : string
+    {
         return $this->item->getName();
     }
 
-    public function getFieldName() : string {
-        return $this->item->getName();
+    /**
+     * Return the (possibly overridden) description for this row
+     *
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return $this->desc;
     }
 
-    public function getDescription() : string {
-        return $this->DBRow['description'];
-    }
-    public function getScope() : \LORIS\Data\Scope {
+    /**
+     * Return the data Scope for this row.
+     *
+     * @return \LORIS\Data\Scope
+     */
+    public function getScope() : \LORIS\Data\Scope
+    {
         return $this->item->getScope();
     }
 
-    public function getDataType() :  \LORIS\Data\Type {
+    /**
+     * Return the data type for this DictionaryItem
+     *
+     * @return \LORIS\Data\Type
+     */
+    public function getDataType() : \LORIS\Data\Type
+    {
         return $this->item->getDataType();
 
     }
-    public function getCardinality() : \LORIS\Data\Cardinality {
+
+    /**
+     * Return the data Cardinality for this item
+     *
+     * @return \LORIS\Data\Cardinality
+     */
+    public function getCardinality() : \LORIS\Data\Cardinality
+    {
         return $this->item->getCardinality();
     }
-
 }
