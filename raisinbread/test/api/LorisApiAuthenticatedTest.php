@@ -33,6 +33,35 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
+        // store the original JWT key for restoring it later
+        $JwtConfig = $this->DB->pselect(
+            '
+            SELECT
+              Value, ConfigID
+            FROM
+              Config
+            WHERE
+              ConfigID=
+            (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")',
+            []
+        )[0];
+
+        $this->originalJwtKey = $JwtConfig['Value'];
+        $this->configIdJwt    = $JwtConfig['ConfigID'];
+
+        // generating a random JWTkey
+        $new_id = bin2hex(random_bytes(30)) . 'A1!';
+
+        $set = [
+            'Value' => $new_id
+        ];
+
+        $where = [
+            'ConfigID' => $this->configIdJwt
+        ];
+
+        $this->DB->update('Config', $set, $where);
+
         $this->login('UnitTester', $this->validPassword);
     }
 
@@ -82,5 +111,25 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         $this->assertArrayHasKey('Authorization', $this->headers);
         $this->assertArrayHasKey('Accept', $this->headers);
     }
+
+    /**
+     * Call to LorisApiAuthenticationTest::tearDown()
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        $set = [
+            'Value' => $this->originalJwtKey
+        ];
+
+        $where = [
+            'ConfigID' => $this->configIdJwt
+        ];
+
+        $this->DB->update('Config', $set, $where);
+        parent::tearDown();
+    }
+
 }
 
