@@ -65,33 +65,30 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
         foreach ($this->items as $row) {
            $module = $row['Module'];
            $cat = $row['Category'];
-           foreach ($cat->getItems() as $item) {
-            $name   = $item->getName();
-            $desc   = '';
-            $status = 'Unchanged';
-            if (isset($overrides[$name])) {
-                $desc   = $overrides[$name]['Description'];
-                $status = 'Modified';
-            } else {
-                $desc = $item->getDescription();
-            }
 
-            if ($desc == '') {
-                $status = 'Empty';
-            }
-            $dict[] = $this->getInstance(
-                $item,
-                [
-                    'module'        => $module->getName(),
-                    'category'     => $cat->getName(),
-                    'field'              => $item->getName(),
-                    'description'        => $desc,
-                    'description_status' => $status,
-                    'datascope' => $item->getScope(),
-                    'type' => $item->getDataType(),
-                    'cardinality' => $item->getCardinality(),
-                ]
-            );
+           error_log("Hello!!!");
+           foreach ($cat->getItems() as $item) {
+               $name   = $item->getName();
+               $desc   = '';
+               $status = 'Unchanged';
+               if (isset($overrides[$name])) {
+                   $desc   = $overrides[$name]['Description'];
+                   $status = 'Modified';
+               } else {
+                   $desc = $item->getDescription();
+               }
+
+               if ($desc == '') {
+                   $status = 'Empty';
+               }
+
+               $dict[] = $this->getInstance(
+                   $module,
+                   $cat,
+                   $item,
+                   $desc,
+                   $status,
+               );
            }
         }
         return new \ArrayIterator($dict);
@@ -104,12 +101,13 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
-    public function getInstance(\LORIS\Data\Dictionary\DictionaryItem $item, array $row) : \LORIS\Data\DataInstance
+    public function getInstance(
+        \Module $module,
+        \LORIS\Data\Dictionary\Category $cat,
+        \LORIS\Data\Dictionary\DictionaryItem $item,
+        string $desc,
+        string $descstatus) : \LORIS\Data\DataInstance
     {
-        $itype = $item->getDataType();
-        if ($itype instanceof \LORIS\Data\Types\Enumeration) {
-            $row['options'] = $itype->getOptions();
-        }
-        return new DataDictRow($item, $row);
+        return new DataDictRow($module, $cat, $item, $desc, $descstatus);
     }
 }

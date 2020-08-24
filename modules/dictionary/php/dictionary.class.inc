@@ -1,18 +1,10 @@
 <?php
-/**
- * Datadict module
- *
- * PHP version 7
- *
- * @category Datadict
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
- */
+declare(strict_types=1);
 
 namespace LORIS\dictionary;
+
 use \Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Datadict module
  *
@@ -94,7 +86,7 @@ class Dictionary extends \DataFrameworkMenu
         return array_merge(
             $deps,
             [
-                $baseURL . "/datadict/js/dataDictIndex.js",
+                $baseURL . "/dictionary/js/dataDictIndex.js",
             ]
         );
     }

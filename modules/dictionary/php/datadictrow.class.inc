@@ -27,18 +27,24 @@ namespace LORIS\dictionary;
  */
 class DataDictRow implements \LORIS\Data\DataInstance, \LORIS\StudyEntities\AccessibleResource
 {
-    protected $DBRow;
-
     /**
      * Create a new DataDictRow
      *
      * @param array $row The row (in the same format as \Database::pselectRow
      *                   returns
      */
-    public function __construct(\LORIS\Data\Dictionary\DictionaryItem $item, array $row)
-    {
+    public function __construct(
+        \Module $itemmodule,
+        \LORIS\Data\Dictionary\Category $cat,
+        \LORIS\Data\Dictionary\DictionaryItem $item,
+        string $desc,
+        string $descstatus
+    ) {
+        $this->itemmodule = $itemmodule;
+        $this->itemcategory = $cat;
         $this->item = $item;
-        $this->DBRow = $row;
+        $this->desc = $desc;
+        $this->status = $descstatus;
     }
 
     /**
@@ -48,7 +54,24 @@ class DataDictRow implements \LORIS\Data\DataInstance, \LORIS\StudyEntities\Acce
      */
     public function jsonSerialize() : array
     {
-        return $this->DBRow;
+        $val = [
+                    'module'        => $this->itemmodule->getName(),
+                    'category'     => $this->itemcategory->getName(),
+                    'field'              => $this->getFieldName(),
+                    'description'        => $this->desc,
+                    'description_status' => $this->status,
+                    'datascope' => $this->getScope(),
+                    'type' => $this->getScope(),
+                    'cardinality' => $this->getCardinality(),
+        ];
+
+        $itype = $this->item->getDataType();
+        if ($itype instanceof \LORIS\Data\Types\Enumeration) {
+            $val['options'] = $itype->getOptions();
+        }
+
+
+        return $val;
     }
 
     public function isAccessibleBy(\User $user) : bool {
@@ -56,23 +79,26 @@ class DataDictRow implements \LORIS\Data\DataInstance, \LORIS\StudyEntities\Acce
     }
 
     public function getCategory() : string {
-        return $this->DBRow['category'];
+        return $this->item->getName();
     }
 
     public function getFieldName() : string {
-        return $this->DBRow['field'];
+        return $this->item->getName();
     }
+
     public function getDescription() : string {
         return $this->DBRow['description'];
     }
     public function getScope() : \LORIS\Data\Scope {
-        return $this->DBRow['datascope'];
+        return $this->item->getScope();
     }
-    public function getDataType() :  \LORIS\Data\Type{
-        return $this->DBRow['type'];
+
+    public function getDataType() :  \LORIS\Data\Type {
+        return $this->item->getDataType();
+
     }
     public function getCardinality() : \LORIS\Data\Cardinality {
-        return $this->DBRow['cardinality'];
+        return $this->item->getCardinality();
     }
 
 }

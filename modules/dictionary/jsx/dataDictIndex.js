@@ -86,7 +86,7 @@ class DataDictIndex extends Component {
           }
 
           const url = this.props.BaseURL
-              + '/datadict/fields/'
+              + '/dictionary/fields/'
               + encodeURI(row['Field Name']);
 
           // The fetch happens asyncronously, which means that the
@@ -320,7 +320,7 @@ class DataDictIndex extends Component {
     ];
     return (
         <FilterableDataTable
-           name="datadict"
+           name="dictionary"
            data={this.state.data.Data}
            fields={fields}
            getFormattedCell={this.formatColumn}
@@ -337,7 +337,7 @@ DataDictIndex.propTypes = {
 window.addEventListener('load', () => {
   ReactDOM.render(
       <DataDictIndex
-        dataURL={`${loris.BaseURL}/datadict/?format=json`}
+        dataURL={`${loris.BaseURL}/dictionary/?format=json`}
         BaseURL={loris.BaseURL}
       />,
       document.getElementById('lorisworkspace')
