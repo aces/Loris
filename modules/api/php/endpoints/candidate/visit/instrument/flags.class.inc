@@ -51,7 +51,6 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $this->_visit            = $visit;
         $this->_instrument       = $instrument;
-	$this->_instrumentStatus = \NDB_BVL_InstrumentStatus;
     }
 
     /**
@@ -137,7 +136,9 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
         // TODO :: Check permissions. How??
-
+        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
+	$this->_instrumentStatus->select($this->_instrument->commentID);
+ 
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -153,9 +154,9 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $this->_instrumentStatus->setDataEntryStatus($data['Flags']['Data_entry']);
-            $this->_instrumentStatus->setAdministrationStatus($data['Flags']['Administration']);
-            $this->_instrumentStatus->setValidityStatus($data['Flags']['Validity']);
+            $this->_instrumentStatus->setDataEntryStatus($data['Flags']['Data_entry'] ?? null);
+            $this->_instrumentStatus->setAdministrationStatus($data['Flags']['Administration'] ?? null);
+            $this->_instrumentStatus->setValidityStatus($data['Flags']['Validity'] ?? null);
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError();
@@ -175,7 +176,9 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
         // TODO :: Check permissions. How??
-
+        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
+	$this->_instrumentStatus->select($this->_instrument->commentID);
+ 
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
