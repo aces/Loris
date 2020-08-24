@@ -62,7 +62,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
               ConfigID=
             (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")',
             []
-        )[0] ?? null;;
+            )[0] ?? null;
 
         if ($JwtConfig === null) {
             throw new \LorisException('There is no Config for "JWTKey"');
