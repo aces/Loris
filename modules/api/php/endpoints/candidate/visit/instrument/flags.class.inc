@@ -49,8 +49,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\Timepoint $visit, \NDB_BVL_instrument $instrument)
     {
-        $this->_visit            = $visit;
-        $this->_instrument       = $instrument;
+        $this->_visit      = $visit;
+        $this->_instrument = $instrument;
     }
 
     /**
@@ -137,8 +137,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         // TODO :: Check permissions. How??
         $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
-	$this->_instrumentStatus->select($this->_instrument->commentID);
- 
+        $this->_instrumentStatus->select($this->_instrument->commentID);
+
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -154,9 +154,15 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $this->_instrumentStatus->setDataEntryStatus($data['Flags']['Data_entry'] ?? null);
-            $this->_instrumentStatus->setAdministrationStatus($data['Flags']['Administration'] ?? null);
-            $this->_instrumentStatus->setValidityStatus($data['Flags']['Validity'] ?? null);
+            $this->_instrumentStatus->setDataEntryStatus(
+                $data['Flags']['Data_entry'] ?? null
+            );
+            $this->_instrumentStatus->setAdministrationStatus(
+                $data['Flags']['Administration'] ?? null
+            );
+            $this->_instrumentStatus->setValidityStatus(
+                $data['Flags']['Validity'] ?? null
+            );
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError();
@@ -177,8 +183,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         // TODO :: Check permissions. How??
         $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
-	$this->_instrumentStatus->select($this->_instrument->commentID);
- 
+        $this->_instrumentStatus->select($this->_instrument->commentID);
+
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -194,17 +200,20 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-	    if ($data['Flags']['Data_entry'] !== null)
-	    {
-                $this->_instrumentStatus->setDataEntryStatus($data['Flags']['Data_entry']);
-	    }
-	    if ($data['Flags']['Administration'] !== null)
-	    {
-		$this->_instrumentStatus->setAdministrationStatus($data['Flags']['Administration']);
-	    }
-	    if ($data['Flags']['Validity'] !== null)
-            {
-                $this->_instrumentStatus->setValidityStatus($data['Flags']['Validity']);
+            if ($data['Flags']['Data_entry'] !== null) {
+                $this->_instrumentStatus->setDataEntryStatus(
+                    $data['Flags']['Data_entry']
+                );
+            }
+            if ($data['Flags']['Administration'] !== null) {
+                $this->_instrumentStatus->setAdministrationStatus(
+                    $data['Flags']['Administration']
+                );
+            }
+            if ($data['Flags']['Validity'] !== null) {
+                $this->_instrumentStatus->setValidityStatus(
+                    $data['Flags']['Validity']
+                );
             }
         } catch (\Throwable $e) {
             error_log($e->getMessage());
