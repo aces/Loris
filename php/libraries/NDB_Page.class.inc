@@ -202,7 +202,7 @@ class NDB_Page implements RequestHandlerInterface
         string $name,
         string $label,
         array $options,
-        array $attribs=array()
+        array $attribs=[]
     ) {
         $attribs = array_merge(
             ['class' => 'form-control input-sm'],

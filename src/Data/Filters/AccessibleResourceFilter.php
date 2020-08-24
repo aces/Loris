@@ -28,4 +28,3 @@ class AccessibleResourceFilter implements \LORIS\Data\Filter
         return $resource->isAccessibleBy($user);
     }
 }
-

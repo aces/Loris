@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace LORIS\Data\Dictionary;
+
 use \LORIS\Data\Scope;
 use \LORIS\Data\Type;
 use \LORIS\Data\Cardinality;
@@ -123,11 +124,26 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
         return $this->scope;
     }
 
-    public function getDataType() : \LORIS\Data\Type {
+    /**
+     * Return the data type for the data which this DictionaryItem
+     * describes.
+     *
+     * @return \LORIS\Data\Type
+     */
+    public function getDataType() : \LORIS\Data\Type
+    {
         return $this->typ;
     }
 
-    public function getCardinality() : \LORIS\Data\Cardinality {
+    /**
+     * Return the data cardinality of this DictionaryItem. ie. for
+     * each entity of type Scope how many pieces of data should
+     * exist for this DictionaryItem.
+     *
+     * @return \LORIS\Data\Cardinality
+     */
+    public function getCardinality() : \LORIS\Data\Cardinality
+    {
         return $this->cardinality;
     }
 
@@ -144,7 +160,8 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
      *
      * @return bool
      */
-    public function isAccessibleBy(\User $user): bool {
+    public function isAccessibleBy(\User $user): bool
+    {
         return true;
     }
 }
