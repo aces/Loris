@@ -24,7 +24,9 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     protected $client;
     protected $headers;
     protected $base_uri;
-
+    protected $originalJwtKey;
+    protected $configIdJwt;
+ 
     /**
      * Call to LorisApiAuthenticationTest::setUp()
      *

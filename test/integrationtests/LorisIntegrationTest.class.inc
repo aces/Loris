@@ -45,8 +45,6 @@ abstract class LorisIntegrationTest extends TestCase
     protected $DB;
     protected $url;
     protected $factory;
-    protected $originalJwtKey;
-    protected $configIdJwt;
     /**
      * A valid password to use for login tests.
      */
@@ -214,15 +212,6 @@ abstract class LorisIntegrationTest extends TestCase
             $this->webDriver->quit();
         }
 
-        $set = [
-            'Value' => $this->originalJwtKey
-        ];
-
-        $where = [
-            'ConfigID' => $this->configIdJwt
-        ];
-
-        $this->DB->update('Config', $set, $where);
         $this->factory->reset();
     }
 
