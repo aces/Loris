@@ -28,74 +28,33 @@ namespace LORIS\datadict;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
+class DataDictRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
      * Create a DataDictRowProvisioner, which gets rows for
      * the datadict menu table.
-     *
-     * @param \LORIS\LorisInstance $loris The Loris instance whose
-     *                                    dictionary should be retrieved
      */
-    function __construct(\LORIS\LorisInstance $loris, array $items)
+    function __construct()
     {
-        $this->loris = $loris;
-        $this->items = $items;
-    }
-
-    /**
-     * Get all dictionary instances, honouring parameter_type_override
-     * if applicable
-     *
-     * @return \Traversable
-     */
-    public function getAllInstances() : \Traversable
-    {
-        $modules = $this->loris->getActiveModules();
-        $DB      = $this->loris->getDatabaseConnection();
-
-        $dict = [];
-
-        $overrides = $DB->pselectWithIndexKey(
-            "SELECT Name, Description FROM parameter_type_override",
-            [],
-            "Name"
+        parent::__construct(
+            "SELECT DISTINCT
+                pt.sourceFrom as source_from,
+                pt.name as name,
+                pt.sourceField as source_field,
+                coalesce(pto.description,pt.description) as description,
+                CASE
+                    WHEN COALESCE(pto.description,pt.description) = '' THEN 'Empty'
+                    WHEN pto.name IS NOT NULL THEN 'Modified'
+                    WHEN pto.name IS NULL THEN 'Unchanged'
+                END as description_status
+            FROM parameter_type pt
+            LEFT JOIN parameter_type_override pto USING (Name)
+            WHERE pt.Queryable=1
+            ",
+            []
         );
-
-        foreach ($this->items as $row) {
-           $module = $row['Module'];
-           $cat = $row['Category'];
-           foreach ($cat->getItems() as $item) {
-            $name   = $item->getName();
-            $desc   = '';
-            $status = 'Unchanged';
-            if (isset($overrides[$name])) {
-                $desc   = $overrides[$name]['Description'];
-                $status = 'Modified';
-            } else {
-                $desc = $item->getDescription();
-            }
-
-            if ($desc == '') {
-                $status = 'Empty';
-            }
-            $dict[] = $this->getInstance(
-                $item,
-                [
-                    'module'        => $module->getName(),
-                    'category'     => $cat->getName(),
-                    'field'              => $item->getName(),
-                    'description'        => $desc,
-                    'description_status' => $status,
-                    'datascope' => $item->getScope(),
-                    'type' => $item->getDataType(),
-                    'cardinality' => $item->getCardinality(),
-                ]
-            );
-           }
-        }
-        return new \ArrayIterator($dict);
     }
+
     /**
      * Returns an instance of a DataDict object for a given
      * table row.
@@ -104,12 +63,8 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
-    public function getInstance(\LORIS\Data\Dictionary\DictionaryItem $item, array $row) : \LORIS\Data\DataInstance
+    public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $itype = $item->getDataType();
-        if ($itype instanceof \LORIS\Data\Types\Enumeration) {
-            $row['options'] = $itype->getOptions();
-        }
-        return new DataDictRow($item, $row);
+        return new DataDictRow($row);
     }
 }
