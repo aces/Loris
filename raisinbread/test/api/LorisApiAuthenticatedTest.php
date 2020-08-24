@@ -34,25 +34,9 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      */
     public function setUp()
     {
-        // Set up database wrapper and config
-        $this->factory = NDB_Factory::singleton();
-        $this->factory->reset();
-        $this->factory->setTesting(false);
-
-        $this->config = $this->factory->Config(CONFIG_XML);
-
-        $database = $this->config->getSetting('database');
-
-        $this->DB  = Database::singleton(
-            $database['database'],
-            $database['username'],
-            $database['password'],
-            $database['host'],
-            1
-        );
-
+        parent::setUp();
         // store the original JWT key for restoring it later
-	    $JwtConfig = $this->DB->pselect(
+	    $jwtConfig = $this->DB->pselect(
             '
             SELECT
               Value, ConfigID
@@ -64,12 +48,12 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
             []
             )[0] ?? null;
 
-        if ($JwtConfig === null) {
+        if ($jwtConfig === null) {
             throw new \LorisException('There is no Config for "JWTKey"');
         }
 
-        $this->originalJwtKey = $JwtConfig['Value'];
-        $this->configIdJwt    = $JwtConfig['ConfigID'];
+        $this->originalJwtKey = $jwtConfig['Value'];
+        $this->configIdJwt    = $jwtConfig['ConfigID'];
 
         // generating a random JWTkey
         $new_id = bin2hex(random_bytes(30)) . 'A1!';
@@ -84,9 +68,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
 
         $this->DB->update('Config', $set, $where);
 
-        parent::setUp();
-
-        $this->login('UnitTester', $this->validPassword);
+        $this->apiLogin('UnitTester', $this->validPassword);
     }
 
     /**
@@ -97,7 +79,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function login($username, $password)
+    public function apiLogin($username, $password)
     {
         $this->base_uri = "$this->url/api/v0.0.3/";
         $this->client   = new Client(['base_uri' => $this->base_uri]);
