@@ -479,7 +479,7 @@ abstract class LorisIntegrationTest extends TestCase
                 "
             )
         );
-        // Load the new page
+            // Load the new page
         $newWebDriver = $this->webDriver->get($url);
         $wait         = new WebDriverWait($newWebDriver, $waitPeriod);
         $wait->until(
@@ -672,13 +672,13 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("$row")
-        )->getText();
-        // 4 means there are 4 records under this site.
-        $this->assertContains($expect_records, $bodyText);
-        //test clear filter
-        $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector("$row")
+            )->getText();
+            // 4 means there are 4 records under this site.
+            $this->assertContains($expect_records, $bodyText);
+            //test clear filter
+            $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
     }
 
     /**
