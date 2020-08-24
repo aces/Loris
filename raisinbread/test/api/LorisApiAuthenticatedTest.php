@@ -34,9 +34,25 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      */
     public function setUp()
     {
-        parent::setUp();
+        // Set up database wrapper and config
+        $this->factory = NDB_Factory::singleton();
+        $this->factory->reset();
+        $this->factory->setTesting(false);
+
+        $this->config = $this->factory->Config(CONFIG_XML);
+
+        $database = $this->config->getSetting('database');
+
+        $this->DB  = Database::singleton(
+            $database['database'],
+            $database['username'],
+            $database['password'],
+            $database['host'],
+            1
+        );
+
         // store the original JWT key for restoring it later
-        $JwtConfig = $this->DB->pselect(
+	$JwtConfig = $this->DB->pselect(
             '
             SELECT
               Value, ConfigID
@@ -63,6 +79,8 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         ];
 
         $this->DB->update('Config', $set, $where);
+
+        parent::setUp();
 
         $this->login('UnitTester', $this->validPassword);
     }
