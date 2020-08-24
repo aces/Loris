@@ -36,7 +36,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     {
         parent::setUp();
         // store the original JWT key for restoring it later
-	$jwtConfig = $this->DB->pselect(
+        $jwtConfig = $this->DB->pselect(
             '
             SELECT
               Value, ConfigID
