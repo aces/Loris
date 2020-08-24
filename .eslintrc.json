@@ -37,32 +37,6 @@
       "allow": ["info", "warn", "error"]
     }]
   },
-  "overrides": [
-    {
-      "files": [
-        "modules/behavioural_qc/**",
-        "modules/bvl_feedback/**",
-        "modules/candidate_list/**",
-        "modules/candidate_parameters/**",
-        "modules/conflict_resolver/**",
-        "modules/data_release/**",
-        "modules/document_repository/**",
-        "modules/electrophysiology_browser/**",
-        "modules/examiner/**",
-        "modules/genomic_browser/**",
-        "modules/imaging_browser/**",
-        "modules/imaging_uploader/**",
-        "modules/instrument_builder/**",
-        "modules/instrument_manager/**",
-        "modules/issue_tracker/**",
-        "modules/media/**",
-        "modules/publication/**"
-      ],
-      "rules": {
-        "require-jsdoc": "warn"
-      }
-    }
-  ],
   "globals": {
     "React": true,
     "ReactDOM": true,

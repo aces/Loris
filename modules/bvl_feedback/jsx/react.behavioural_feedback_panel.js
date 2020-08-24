@@ -3,10 +3,23 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Slider panel component
+ */
 class SliderPanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className='panel-group' id='bvl_feedback_menu'>
@@ -25,7 +38,15 @@ SliderPanel.propTypes = {
   children: PropTypes.array,
 };
 
+
+/**
+ * Feedback panel content component
+ */
 class FeedbackPanelContent extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -36,6 +57,10 @@ class FeedbackPanelContent extends Component {
     this.closeThread = this.closeThread.bind(this);
   }
 
+  /**
+   * Mark comment toggle
+   * @param {Number} index
+   */
   markCommentToggle(index) {
     if (index === this.state.currentEntryToggled) {
       this.setState({
@@ -48,10 +73,18 @@ class FeedbackPanelContent extends Component {
     }
   }
 
+  /**
+   * Open thread
+   * @param {Number} index
+   */
   openThread(index) {
     this.props.open_thread(index);
   }
 
+  /**
+   * Close thread
+   * @param {Number} index
+   */
   closeThread(index) {
     this.props.close_thread(index);
     this.setState({
@@ -59,6 +92,11 @@ class FeedbackPanelContent extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let headers = ['Type', 'Author', 'Status'];
 
@@ -134,7 +172,15 @@ FeedbackPanelContent.propTypes = {
   sessionID: PropTypes.string,
 };
 
+
+/**
+ * Feedback panel row component
+ */
 class FeedbackPanelRow extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -146,10 +192,16 @@ class FeedbackPanelRow extends Component {
     this.newThreadEntry = this.newThreadEntry.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.loadServerState();
   }
 
+  /**
+   * Load server state
+   */
   loadServerState() {
     let that = this;
     $.ajax({
@@ -167,6 +219,10 @@ class FeedbackPanelRow extends Component {
     });
   }
 
+  /**
+   * Toggle entries
+   * @param {boolean} newComment
+   */
   toggleEntries(newComment) {
     let toggle = false;
     if (newComment) {
@@ -177,6 +233,10 @@ class FeedbackPanelRow extends Component {
     this.setState({threadEntriesToggled: toggle});
   }
 
+  /**
+   * New thread entry
+   * @param {string} comment
+   */
   newThreadEntry(comment) {
     let feedbackID = this.props.feedbackID;
     let candID = this.props.candID;
@@ -200,6 +260,11 @@ class FeedbackPanelRow extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let arrow = 'glyphicon glyphicon-chevron-right glyphs';
     let threadEntries = [];
@@ -280,7 +345,15 @@ FeedbackPanelRow.propTypes = {
   onClickOpen: PropTypes.string,
 };
 
+
+/**
+ * Comment entry form component
+ */
 class CommentEntryForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -290,6 +363,9 @@ class CommentEntryForm extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  /**
+   * Send comment
+   */
   sendComment() {
     this.props.onCommentSend(this.state.value);
     this.setState({
@@ -298,10 +374,19 @@ class CommentEntryForm extends Component {
     this.props.toggleThisThread();
   }
 
+  /**
+   * Handle change
+   * @param {object} event
+   */
   handleChange(event) {
     this.setState({value: event.target.value});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <tr>
@@ -332,7 +417,15 @@ CommentEntryForm.propTypes = {
   toggleThisThread: PropTypes.func,
 };
 
+
+/**
+ * Accordion panel component
+ */
 class AccordionPanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -341,12 +434,20 @@ class AccordionPanel extends Component {
     this.toggleChange = this.toggleChange.bind(this);
   }
 
+  /**
+   * Toggle change
+   */
   toggleChange() {
     this.setState({
       toggled: !(this.state.toggled),
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let panelBodyClass = 'panel-collapse collapse in';
     let arrowClass;
@@ -379,7 +480,15 @@ AccordionPanel.propTypes = {
   children: PropTypes.object,
 };
 
+
+/**
+ * New thread panel component
+ */
 class NewThreadPanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -393,18 +502,33 @@ class NewThreadPanel extends Component {
     this.createNewThread = this.createNewThread.bind(this);
   }
 
+  /**
+   * Handle select change
+   * @param {object} event
+   */
   handleSelectChange(event) {
     this.setState({selectValue: event.target.value});
   }
 
+  /**
+   * Handle text change
+   * @param {object} event
+   */
   handleTextChange(event) {
     this.setState({textValue: event.target.value});
   }
 
+  /**
+   * Handle input change
+   * @param {object} event
+   */
   handleInputChange(event) {
     this.setState({inputValue: event.target.value});
   }
 
+  /**
+   * Create new thread
+   */
   createNewThread() {
     if (this.state.textValue.length) {
       $.ajax({
@@ -433,6 +557,11 @@ class NewThreadPanel extends Component {
     }
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let fieldnameSelect;
     let options = [];
@@ -531,7 +660,15 @@ NewThreadPanel.propTypes = {
   user: PropTypes.string,
 };
 
+
+/**
+ * Feedback summary panel component
+ */
 class FeedbackSummaryPanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -539,6 +676,11 @@ class FeedbackSummaryPanel extends Component {
     };
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let summaryRows = [];
 
@@ -602,7 +744,15 @@ FeedbackSummaryPanel.propTypes = {
   summary_data: PropTypes.array,
 };
 
+
+/**
+ * Feedback panel component
+ */
 class FeedbackPanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -616,10 +766,16 @@ class FeedbackPanel extends Component {
     this.markThreadOpened = this.markThreadOpened.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.loadThreadServerState();
   }
 
+  /**
+   * Load summary server data
+   */
   loadSummaryServerData() {
     $.ajax({
       type: 'POST',
@@ -640,6 +796,9 @@ class FeedbackPanel extends Component {
     });
   }
 
+  /**
+   * Load thread server state
+   */
   loadThreadServerState() {
     $.ajax({
       type: 'POST',
@@ -662,10 +821,18 @@ class FeedbackPanel extends Component {
     });
   }
 
+  /**
+   * Add thread
+   * @param {*} data - Unused
+   */
   addThread(data) {
     this.loadThreadServerState();
   }
 
+  /**
+   * Mark thread closed
+   * @param {Number} index
+   */
   markThreadClosed(index) {
     let threads = this.state.threads;
     let entry = this.state.threads[index];
@@ -694,6 +861,10 @@ class FeedbackPanel extends Component {
     });
   }
 
+  /**
+   * Mark thread opened
+   * @param {Number} index
+   */
   markThreadOpened(index) {
     let threads = this.state.threads;
     let entry = this.state.threads[index];
@@ -722,6 +893,11 @@ class FeedbackPanel extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let title = 'New ' + this.props.feedbackLevel + ' level feedback';
     return (

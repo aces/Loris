@@ -12,7 +12,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-/*
+/**
  * Note: This is a wrapper for Form.js (Only used in instrument builder)
  *
  * This is the React class for a LORIS element. It takes
@@ -20,13 +20,20 @@ import PropTypes from 'prop-types';
  *
  */
 class LorisElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
+    this.state = {};
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let element = this.props.element;
     let elementHtml = '';
@@ -86,10 +93,14 @@ class LorisElement extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the question text input
  */
 class QuestionText extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -97,11 +108,21 @@ class QuestionText extends Component {
     };
     this.onChange = this.onChange.bind(this);
   }
-    // Keep track of the current input
+
+  /**
+   * On change
+   * Keep track of the current input
+   * @param {object} e - Event object
+   */
   onChange(e) {
     this.props.updateState({Description: e.target.value});
   }
-    // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let errorMessage = '';
     let errorClass = 'form-group';
@@ -139,10 +160,14 @@ QuestionText.defaultProps = {
   inputLabel: 'Question Text',
 };
 
-/*
+/**
  * This is the React class for the question name input
  */
 class BasicOptions extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -150,13 +175,23 @@ class BasicOptions extends Component {
     };
     this.onChange = this.onChange.bind(this);
   }
-  // Keep track of the current input
+
+  /**
+   * On change
+   * Keep track of the current input
+   * @param {object} e - Event object
+   */
   onChange(e) {
     // replace whitespaces with underscores
     let questionName = (e.target.value).trim().split(' ').join('_');
     this.props.updateState({Name: questionName});
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let errorMessage = '';
     let errorClass = 'form-group';
@@ -191,10 +226,14 @@ class BasicOptions extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the Dropdown options
  */
 class DropdownOptions extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -204,12 +243,21 @@ class DropdownOptions extends Component {
     this.addOption = this.addOption.bind(this);
     this.resetOptions = this.resetOptions.bind(this);
   }
+
+  /**
+   * On change
+   * Keep track of the current input
+   * @param {object} e - Event object
+   */
   onChange(e) {
     this.setState({
       option: e.target.value,
     });
   }
-  // Add an option to the element
+
+  /**
+   * Add an option to the element
+   */
   addOption() {
     let option = this.state.option.trim();
 
@@ -241,13 +289,21 @@ class DropdownOptions extends Component {
     // clear input field
     this.state.option = '';
   }
-  // Reset the dropdown options
+
+  /**
+   * Reset the dropdown options
+   */
   resetOptions() {
     let temp = Instrument.clone(this.props.element.Options);
     temp.Values = {};
     this.props.updateState({Options: temp});
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let multi = '';
     let options = Instrument.clone(this.props.element.Options.Values);
@@ -318,10 +374,14 @@ class DropdownOptions extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the date options
  */
 class DateOptions extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -334,10 +394,18 @@ class DateOptions extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.props.element.Options.dateFormat = '';
   }
-    // Keep track of the inputed years
+
+  /**
+   * On change
+   * Keep track of the inputed years
+   * @param {object} e - Event object
+   */
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
     if (e.target.id === 'datemin') {
@@ -349,7 +417,12 @@ class DateOptions extends Component {
     }
     this.props.updateState({Options: options});
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let minYear = this.props.element.Options.MinDate;
     let maxYear = this.props.element.Options.MaxDate;
@@ -424,10 +497,14 @@ class DateOptions extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the numeric options
  */
 class NumericOptions extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -436,8 +513,12 @@ class NumericOptions extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  // Keep track of the inputed numbers, casting them to
-  // interger values.
+  /**
+   * On change
+   * Keep track of the inputed numbers, casting them to
+   * integer values.
+   * @param {object} e - Event object
+   */
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
 
@@ -448,7 +529,12 @@ class NumericOptions extends Component {
     }
     this.props.updateState({Options: options});
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let errorMessage = '';
     let optionsClass = 'options form-group';
@@ -499,11 +585,15 @@ class NumericOptions extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the dropdown for the
  *  different question types.
  */
 class ListElements extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -511,7 +601,12 @@ class ListElements extends Component {
     };
     this.selectType = this.selectType.bind(this);
   }
-    // Set the desired question type
+
+  /**
+   * Set the desired question type
+   * @param {*} newId
+   * @param {*} newValue
+   */
   selectType(newId, newValue) {
     let newState = {
       selected: {
@@ -562,7 +657,12 @@ class ListElements extends Component {
     }
     this.props.updateState(newState);
   }
-    // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
         <div className="form-group">
@@ -713,11 +813,15 @@ class ListElements extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for adding a new element or
  * editing an existing one
  */
 class AddElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     if (this.props !== undefined && this.props.element) {
@@ -758,11 +862,17 @@ class AddElement extends Component {
     this.resetOptions = this.resetOptions.bind(this);
   }
 
-  // Update element state
+  /**
+   * Update element state
+   * @param {object} newState
+   */
   updateState(newState) {
     this.setState(newState);
   }
-  // Add a question to the buildPane
+
+  /**
+   * Add a question to the buildPane
+   */
   addQuestion() {
     let selected = this.state.selected.id;
     let questionText = this.state.Description;
@@ -960,7 +1070,11 @@ class AddElement extends Component {
       });
     }
   }
-    // Add an option to the options array
+
+  /**
+   * Add an option to the options array
+   * @param {boolean} multi
+   */
   addOption(multi) {
     // Use a function to update the state to enqueue an atomic
     // update that consults the previous value of state before
@@ -976,13 +1090,21 @@ class AddElement extends Component {
       };
     });
   }
-    // Reset the options array
+
+  /**
+   * Reset the options array
+   */
   resetOptions() {
     this.setState({
       options: [],
     });
   }
-    // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let questionInput;
     let header = '';

@@ -2,7 +2,14 @@ import React from 'react';
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
 
+/**
+ * Publication upload form component
+ */
 class PublicationUploadForm extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -26,6 +33,9 @@ class PublicationUploadForm extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
     let self = this;
     $.ajax(this.props.DataURL, {
@@ -45,10 +55,18 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Set file data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
     if (!this.state.formData[formElement]) {
@@ -58,6 +76,11 @@ class PublicationUploadForm extends React.Component {
     this.setFormData(formElement, value);
   }
 
+  /**
+   * Set form data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -66,6 +89,12 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
+  /**
+   * Add list item
+   * @param {string} formElement
+   * @param {*} value
+   * @param {string} pendingValKey
+   */
   addListItem(formElement, value, pendingValKey) {
     let formData = this.state.formData;
     let listItems = formData[formElement] || [];
@@ -77,6 +106,11 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
+  /**
+   * Remove list item
+   * @param {string} formElement
+   * @param {*} value
+   */
   removeListItem(formElement, value) {
     let formData = this.state.formData;
     let listItems = formData[formElement];
@@ -91,6 +125,10 @@ class PublicationUploadForm extends React.Component {
     }
   }
 
+  /**
+   * Handle submit
+   * @param {object} e - Event object
+   */
   handleSubmit(e) {
     e.preventDefault();
 
@@ -153,6 +191,11 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.loadError !== undefined) {

@@ -15,6 +15,10 @@ import swal from 'sweetalert2';
  *
  * */
 class MediaUploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -36,6 +40,9 @@ class MediaUploadForm extends Component {
     this.uploadFile = this.uploadFile.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     let self = this;
     $.ajax(this.props.DataURL, {
@@ -55,6 +62,11 @@ class MediaUploadForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error !== undefined) {
@@ -261,7 +273,7 @@ class MediaUploadForm extends Component {
     }
   }
 
-  /*
+  /**
    * Uploads the file to the server
    */
   uploadFile() {

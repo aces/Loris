@@ -1,21 +1,41 @@
 import React from 'react';
 import swal from 'sweetalert2';
 
+/**
+ * Email element component
+ */
 class EmailElement extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
   }
 
+  /**
+   * Handle change
+   * @param {object} e - Event object
+   */
   handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
   }
 
+  /**
+   * Handle blur
+   * @param {object} e - Event object
+   */
   handleBlur(e) {
     this.props.onUserBlur(this.props.name, e.target.value);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
@@ -86,9 +106,16 @@ EmailElement.defaultProps = {
   },
 };
 
-// This class combines the common form elements between
-// Edit mode and initial Project Proposal/Creation mode
+/**
+ * Project form fields component
+ * This class combines the common form elements between
+ * Edit mode and initial Project Proposal/Creation mode
+ */
 class ProjectFormFields extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor() {
     super();
     this.createCollabEmailFields = this.createCollabEmailFields.bind(this);
@@ -100,6 +127,10 @@ class ProjectFormFields extends React.Component {
     this.toggleEmailNotify = this.toggleEmailNotify.bind(this);
   }
 
+  /**
+   * Delete upload
+   * @param {Number} uploadID
+   */
   deleteUpload(uploadID) {
     let self = this;
     swal.fire({
@@ -109,8 +140,7 @@ class ProjectFormFields extends React.Component {
       showCancelButton: true,
       confirmButtonText: 'Yes, I am sure!',
       cancelButtonText: 'No, cancel it!',
-    },
-      function(willDelete) {
+    }, function(willDelete) {
         if (willDelete) {
           let url = loris.BaseURL
                     + '/publication/ajax/FileDelete.php?uploadID='
@@ -127,6 +157,10 @@ class ProjectFormFields extends React.Component {
       });
   }
 
+  /**
+   * Create file fields
+   * @return {JSX[]} - Array of React markup for the component
+   */
   createFileFields() {
     let fileFields = [];
     // Create download link & edit fields for existing files
@@ -227,6 +261,10 @@ class ProjectFormFields extends React.Component {
     return fileFields;
   }
 
+  /**
+   * Create collab email fields
+   * @return {JSX} - React markup for the component
+   */
   createCollabEmailFields() {
     let collabEmails = [];
     if (this.props.formData.collaborators) {
@@ -252,6 +290,12 @@ class ProjectFormFields extends React.Component {
     return collabEmails;
   }
 
+  /**
+   * Add collaborator
+   * @param {*} formElement
+   * @param {string} value
+   * @param {*} pendingValKey
+   */
   addCollaborator(formElement, value, pendingValKey) {
     let collaborators = this.props.formData.collaborators || [];
     collaborators.push(
@@ -266,12 +310,22 @@ class ProjectFormFields extends React.Component {
     this.props.setFormData(pendingValKey, null);
   }
 
+  /**
+   * Remove collaborator
+   * @param {*} formElement
+   * @param {*} value
+   */
   removeCollaborator(formElement, value) {
     let collaborators = this.props.formData.collaborators || [];
     collaborators = collaborators.filter((c) => c.name !== value);
     this.props.setFormData('collaborators', collaborators);
   }
 
+  /**
+   * Set collaborator email
+   * @param {string} formElement
+   * @param {string} value
+   */
   setCollaboratorEmail(formElement, value) {
     let collabName = formElement.split('_')[1];
     let collaborators = this.props.formData.collaborators;
@@ -280,6 +334,10 @@ class ProjectFormFields extends React.Component {
     this.props.setFormData('collaborators', collaborators);
   }
 
+  /**
+   * Toggle email notify
+   * @param {object} e - Event object
+   */
   toggleEmailNotify(e) {
     if (e.target.name.indexOf('collabEmail') > -1) {
       let collaborators = this.props.formData.collaborators;
@@ -293,6 +351,11 @@ class ProjectFormFields extends React.Component {
     }
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let collabEmails = this.createCollabEmailFields();
     let fileFields = this.createFileFields();
