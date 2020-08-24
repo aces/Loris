@@ -20,7 +20,6 @@ INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,16);
 INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,17);
 INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,18);
 INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,19);
-INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,20);
 INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,21);
 INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,22);
 INSERT INTO `user_perm_rel` (`userID`, `permID`) VALUES (1,23);
