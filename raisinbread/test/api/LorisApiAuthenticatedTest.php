@@ -28,8 +28,8 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     protected $configIdJwt;
  
     /**
-     * Stores the current JWT key and replace it for an acceptable one and 
-     * call to LorisApiAuthenticationTest::setUp()
+     * Overrides LorisIntegrationTest::setUp() to store the current JWT key
+     * and replaces it for an acceptable one.
      *
      * @return void
      */
@@ -121,8 +121,8 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     }
 
     /**
-     * Restores the original JWT key and 
-     * call to LorisApiAuthenticationTest::tearDown()
+     * Overrides LorisIntegrationTest::tearDown() to store the current JWT key
+     * and replaces it for an acceptable one.
      *
      * @return void
      */
