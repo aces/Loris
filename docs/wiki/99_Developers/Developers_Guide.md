@@ -74,13 +74,14 @@ before any git push can be done. To do this, run
 
 in the LORIS directory to configure the project. Make sure `.git/hooks/pre-push` is executable.
 
-**Notes:** Hooks can be skipped with the flag `--no-verify: git push fork --no-verify`.  
+**Notes:** 
+1. Hooks can be skipped with the flag `--no-verify: git push fork --no-verify`.  
 Setting up an ssh key can also be useful to avoid the headache of entering your username and password on each push. 
+2. if you are pushing a last typo fix on a PR, it is okay to add `[skip ci]` in the commit message. This will make the commit skip the Travis build. Do not do this if 
+it is the first commit or if there are any changes to the actual code. 
 
 ## 2. Issues
-Issues are used to bring the team's attention to any bugs or feature requests that you come across. When you make an issue, there are 4 options: bug fix, feature request, security 
-vulnerability, or a blank format. You will probably either be making a bug fix or feature 
-request. In these cases, there will be a template to fill out.
+Issues are used to bring the team's attention to any bugs or feature requests that you come across. When you make an issue, there are 4 options: bug fix, feature request, security vulnerability, or a blank format. You will probably either be making a bug fix or feature request. In these cases, there will be a template to fill out.
 
 Every PR should have a related issue that it is fixing. If you are going to be making a 
 change, make an issue for it and assign yourself to be the one to fix it.
@@ -128,7 +129,7 @@ Be sure to consult the Contributing and Code Review guidelines. For example, 2 r
 
 **Travis:** The Travis build status and results are linked near the bottom of your PR in GitHub. 
 You can restart Travis if it gives error messages that seem inappropriate, or if the build stalls (for longer than 1h).
-if you are pushing a last typo fix on a PR, it is okay to add `[skip ci]` in the commit message. It is not okay to do this if it's the first commit or if you are fixing more than documentation typos.
+As mentioned above, if you are pushing a last typo fix on a PR, it is okay to add `[skip ci]` in the commit message. It is not okay to do this if it's the first commit or if you are fixing more than documentation typos.
 
 **Documentation PRs:** If working specifically on markdown files or other documentation, be sure to check the actual look of the document once you have pushed your PR and fix any formatting errors. You can do this by going to “Files Changed” and viewing how your markdown file will actually appear in GitHub. Don’t forget to click all links to make sure they won't be broken when the document is rendered. 
 
@@ -150,7 +151,8 @@ Alternatively, to avoid being under the detached HEAD state, checkout and create
 
 Follow the provided testing instructions to test their code on your VM. 
 
-If you made changes (with their permission), commit and push them to that branch:
+If you made changes (with their permission), you can commit and push them to that branch. Note that you will most likely need to be given permission on GitHub by 
+the developer to push changes to their branch.
 
     git commit -m "Changes made"
     git push their_fork branch_name
@@ -175,15 +177,17 @@ Here is a general workflow:
     git fetch aces
     git rebase aces/main
     (#) while (conflicts)  { 
-        // fix any conflicts
+        // fix any conflicts and add any files
         git add  filename
         git rebase --continue
+        // OR you can "skip" specific changes
+        git rebase --skip
     # } loop back to (#) - fix any remaining conflicts.... until no more conflicts
     git push --force my_fork branch_name
     # --force is often needed here :\
 
-### Tips for fixing a rebase
-1. The most basic way of “fixing” a rebase is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. 
+### Fixing a rebase gone wrong
+1. The most basic way of “fixing” a rebase gone wrong is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. **Note** that this is a potentially destructive command, so be very cautious when using it. It is also recommended that you make a backup of your branch before performing these commands so that you don't lose any changes. 
 For example:
     
        git reset --hard <commit_hash>
