@@ -44,6 +44,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
+- After script `Set_Data_entry_completion_status_flag.php` is run, projects will need to go through existing instruments 
+and delete the `Data_entry_completion_status` column.
 ### Notes For Developers
 - *Add item here*
 

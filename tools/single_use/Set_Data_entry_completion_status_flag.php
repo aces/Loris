@@ -1,4 +1,3 @@
-
 <?php
 /**
  * This script is written for a one time use only to migrate the
@@ -38,17 +37,16 @@ foreach($flagData as $cmid => $data) {
     $dataToUpdate = [];
 
     if ($instrument->usesJSONData() === true) {
-
         // If json instrument, take value from flag data
         if(isset($dataArray['Data_entry_completion_status'])) {
             $dataToUpdate['Data_entry_completion_status']
                 = $dataArray['Data_entry_completion_status'];
         }
     } else {
-
         // Otherwise, take value from instrument table
         $instrData = NDB_BVL_Instrument::loadInstanceData($instrument);
-        if (isset($dataToUpdate['Data_entry_completion_status'])) {
+
+        if (isset($instrData['Data_entry_completion_status'])) {
             $dataToUpdate['Data_entry_completion_status']
                 = $instrData['Data_entry_completion_status'];
         }
