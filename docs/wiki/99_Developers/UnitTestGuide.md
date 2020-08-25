@@ -117,6 +117,19 @@ So, the script runs the contents of [test/dockerized-unit-tests.sh](https://gith
 
 The list of tests to run is defined in [test/phpunit.xml](https://github.com/aces/Loris/blob/main/test/phpunit.xml) under the “LorisUnitTests” testsuite section. If you look at this testsuite block, you can see that it refers to every file in the `test/unittests/` directory!
 
+### **Code Coverage**
+In order to view the code coverage metrics for the unit tests, you can either view the metrics in the command-line output when you run the tests yourself, or there is a
+tool available in the `tools/` directory that will generate HTML reports with greater detail. When you run the unit tests on the command-line, or when Travis runs the tests
+as part of a build, PHPUnit is configured to output code coverage data. It will display the number of lines and methods covered across all libraries and will also list data
+about code coverage for the list of core libraries only. 
+
+To get more detailed information, you can run the `code_coverage.php` tool on your local VM. This tool will generate HTML files
+with detailed coverage information for each class. These files can then be viewed on your browser. To run this tool, simply navigate
+to the tools directory:
+```
+cd /var/www/loris/tools
+php code_coverage.php 
+```
 
 ### **Troubleshooting**
 **General Errors:**
