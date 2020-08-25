@@ -121,8 +121,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     }
 
     /**
-     * Overrides LorisIntegrationTest::tearDown() to store the current JWT key
-     * and replaces it for an acceptable one.
+     * Overrides LorisIntegrationTest::tearDown() to restore the original JWT key
      *
      * @return void
      */
