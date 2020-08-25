@@ -45,7 +45,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
               Config
             WHERE
               ConfigID=
-	    (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")
+            (SELECT ID FROM ConfigSettings WHERE Name="JWTKey")
             ',
             []
         )[0] ?? null;
@@ -121,7 +121,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     }
 
     /**
-     * Overrides LorisIntegrationTest::tearDown() to restore the original JWT key
+     * Overrides LorisIntegrationTest::tearDown() to set the original key back.
      *
      * @return void
      */
