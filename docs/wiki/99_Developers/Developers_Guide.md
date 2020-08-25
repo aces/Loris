@@ -77,7 +77,7 @@ in the LORIS directory to configure the project. Make sure `.git/hooks/pre-push`
 **Notes:** 
 1. Hooks can be skipped with the flag `--no-verify: git push fork --no-verify`.  
 Setting up an ssh key can also be useful to avoid the headache of entering your username and password on each push. 
-2. if you are pushing a last typo fix on a PR, it is okay to add `[skip ci]` in the commit message. This will make the commit skip the Travis build. Do not do this if 
+2. If you are pushing a last typo fix on a PR, it is okay to add `[skip ci]` in the commit message. This will make the commit skip the Travis build. Do not do this if 
 it is the first commit or if there are any changes to the actual code. 
 
 ## 2. Issues
