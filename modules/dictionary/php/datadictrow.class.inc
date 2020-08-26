@@ -79,9 +79,9 @@ class DataDictRow implements \LORIS\Data\DataInstance,
     /**
      * Return the module category to which the DictionaryItem belongs
      *
-     * @return string
+     * @return Category
      */
-    public function getCategory() : string
+    public function getCategory() : Category
     {
         return $this->itemcategory;
     }

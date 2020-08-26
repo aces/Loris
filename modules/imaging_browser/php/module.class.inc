@@ -133,11 +133,11 @@ class Module extends \Module
      *                                    data dictionary for this module
      *                                    should be retrieved.
      *
-     * @return iterable
+     * @return \LORIS\Data\Dictionary\Category[]
      */
     public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
     {
-        $scope  = new Scope(Scope::Session);
+        $scope  = new Scope(Scope::SESSION);
         $images = new \LORIS\Data\Dictionary\Category(
             "Images",
             "Image Acquisitions",
@@ -151,7 +151,7 @@ class Module extends \Module
                 "$ScanType acquisition location",
                 $scope,
                 new \LORIS\Data\Types\URI(),
-                new Cardinality(Cardinality::Many),
+                new Cardinality(Cardinality::MANY),
             );
             // TODO: Investigate adding a file scope instead of having this apply
             // on a session scope with a Many cardinality.
@@ -160,7 +160,7 @@ class Module extends \Module
                 "Quality Control status for $ScanType acquisition",
                 $scope,
                 new \LORIS\Data\Types\Enumeration("Pass", "Fail"),
-                new Cardinality(Cardinality::Many),
+                new Cardinality(Cardinality::MANY),
             );
         }
         $images = $images->withItems($items);

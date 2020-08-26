@@ -64,7 +64,9 @@ class Categories extends \NDB_Page
         \User $user,
         string $modulename
     ) : ResponseInterface {
-        $loris = $this->lorisinstance;
+        $loris  = $this->lorisinstance;
+        $module = null;
+
         foreach ($loris->getActiveModules() as $m) {
             if ($m->getName() == $modulename) {
                 $module = $m;
