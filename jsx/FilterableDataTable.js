@@ -96,34 +96,6 @@ class FilterableDataTable extends Component {
   }
 
   /**
-   * Returns filters which aren't in an invalid
-   * state
-   *
-   * @return {object}
-   */
-  validFilters() {
-      let filters = {};
-      this.props.fields.forEach((field) => {
-        const filtername = field.filter.name;
-        const filterval = this.state.filter[filtername];
-        if (!this.state.filter[filtername]) {
-            return;
-        }
-
-        if (field.filter.type !== 'select') {
-            filters[filtername] = filterval;
-            return;
-        }
-
-        if (!(filterval.value in field.filter.options)) {
-            return;
-        }
-        filters[filtername] = filterval;
-      });
-      return filters;
-  }
-
-  /**
    * Returns the filter state, with filters that are
    * set to an invalid option removed from the returned
    * filters
