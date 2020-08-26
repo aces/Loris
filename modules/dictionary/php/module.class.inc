@@ -117,4 +117,16 @@ class Module extends \Module
             'CategoryItems' => $categoryitems,
         ];
     }
+
+    /**
+     * Overload loadPage to delegate 'module' to 'moduledict' in order to
+     * handle the URL `dictionary/module/$name`, since the Module class name
+     * is already used for the module descriptor.
+     */
+    public function loadPage(string $page) {
+        if ($page === 'module') {
+            return $this->loadPage('moduledict');
+        }
+        return parent::loadPage($page);
+    }
 }
