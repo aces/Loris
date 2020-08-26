@@ -39,8 +39,8 @@ There is usually no need to fully update your fork to the newest aces/LORIS vers
  **Never** push to aces/Loris. Your branch will be deleted. Always push to your fork, and then create the PR from GitHub.
 
 #### Branch Naming
-Follow the convention most LORIS developers use: “date-title...”.   
-Starting with the date allows branches to sort and display in order, and also helps sort out any conflicts faster in the main Loris repository.
+Many LORIS developers follow the convention: “date-title...”.   
+Starting with the date allows branches to sort and display in order, and also helps sort out any conflicts faster in the main Loris repository. Please keep branch names short and informative.
 
 ### Helpful commands to run before pushing new code:
 Travis is our continuous integration which runs on every PR in GitHub. These commands can catch small formatting errors that will cause the Travis build to fail.
@@ -48,7 +48,7 @@ Travis is our continuous integration which runs on every PR in GitHub. These com
     make checkstatic  # includes these 3 commands: 
                       # npm run lint:php, npm run lint:javascript, vendor/bin/phan
 
-    phpcs  modules/candidate_list/php/candidate_list.class.inc
+    vendor/bin/phpcs --standard=test/LorisCS.xml modules/candidate_list/php/candidate_list.class.inc
                       # phpcs allows you to specifically check the formatting of one file 
 
     vendor/bin/phpcbf --standard=test/LorisCS.xml modules/candidate_list/php/candidate_list.class.inc
@@ -74,11 +74,8 @@ before any git push can be done. To do this, run
 
 in the LORIS directory to configure the project. Make sure `.git/hooks/pre-push` is executable.
 
-**Notes:** 
-1. Hooks can be skipped with the flag `--no-verify: git push fork --no-verify`.  
+**Note:** Hooks can be skipped with the flag `--no-verify`. ie. `git push fork --no-verify`.  
 Setting up an ssh key can also be useful to avoid the headache of entering your username and password on each push. 
-2. If you are pushing a last typo fix on a PR, it is okay to add `[skip ci]` in the commit message. This will make the commit skip the Travis build. Do not do this if 
-it is the first commit or if there are any changes to the actual code. 
 
 ## 2. Issues
 Issues are used to bring the team's attention to any bugs or feature requests that you come across. When you make an issue, there are 4 options: bug fix, feature request, security vulnerability, or a blank format. You will probably either be making a bug fix or feature request. In these cases, there will be a template to fill out.
@@ -99,16 +96,13 @@ Make sure that the branch you are merging into is the branch that you checked-ou
 
 PRs must be reviewed according to this [checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist), and must be approved by two reviewers before they are merged. Don’t forget to think about documentation updates like the TestPlan, changelog, and developer guide updates -- these must accompany your PR.
 
-Make sure to note special rules for SQL patches. Note that changes to Raisinbread data do not need patches, because Rida manages it.
+Make sure to note special rules for SQL patches. Note that changes to Raisinbread data do not need patches, because RaisinBread is maintained by sourcing the project patches.
 
-**Do not** review or approve your own PR. Your PR must be reviewed and approved by two other developers before it can be merged. 
-
-**Important:** Do not merge your own PR or any other PR. After a PR has been reviewed and approved, the code is merged by Dave, the repository maintainer. It will be merged eventually. If your PR is on a release branch and has been ready to merge for a few days, you can add a comment that it is ready to merge. 
+**Important:** Do not merge your own PR or any other PR. After a PR has been reviewed and approved by a senior member of the LORIS team, it will be merged eventually. If your PR is on a release branch and has been ready to merge for a few days, you can add a comment that it is ready to merge. 
 
 It is your responsibility to be on top of your PRs and any Issues that need follow-up.  This includes answering questions and comments, acknowledging and making change requests, and requesting re-review after you’ve addressed someone’s change requests. 
-
-This is important for the Team’s productivity -- it prevents PRs from lagging and prevents confusion as to why a PR has stalled or if you’ve seen someone’s comments.
-When issuing a PR, you can request a specific reviewer (this is not the same as assigning a PR to someone).  There is usually an obvious reviewer for a PR.  
+This is important for the developer team’s productivity -- it prevents PRs from lagging and prevents confusion as to why a PR has stalled or if you’ve seen someone’s comments.
+When issuing a PR, you can request a specific reviewer (this is not the same as assigning a PR to someone) if you know you would like someone in particular to review a PR. 
 This is especially important in Release-Test/Fix cycles when we want PRs to be reviewed and resolved quickly.
 
 ### PR Formatting
@@ -119,7 +113,7 @@ Be sure to observe and follow team conventions for how PRs should be named and d
 **[Contents](../../../.github/PULL_REQUEST_TEMPLATE.md) of the initial comment:** Include a brief summary of the changes and rationale, links to related issues or PRs, and testing instructions if there are any. 
 
 **Linking issues:** Use GitHub keywords like `Fixes` or `Resolves` so that related issues are closed automatically when the PR is merged. Do not use these keywords if you are only addressing one point raised in an issue. This will close the entire issue and leave unresolved bugs in the codebase.
-**Note** that automatic issue-linking and issue-closing only works on the default branch.  If the PR is not on the default branch, you will need to manually close the issue after the PR is merged. 
+**Note** that automatic issue-linking and issue-closing only works on the default (main) branch.  If the PR is not on the default branch, you will need to manually close the issue after the PR is merged. 
 
 **Labels:** On the right side of the browser, you will see the option to add labels. Please add any that are related to the PR. 
 **If** you are working on release testing, make sure to include the label (ex. 23.0.0-testing) to the PR.
@@ -129,7 +123,6 @@ Be sure to consult the Contributing and Code Review guidelines. For example, 2 r
 
 **Travis:** The Travis build status and results are linked near the bottom of your PR in GitHub. 
 You can restart Travis if it gives error messages that seem inappropriate, or if the build stalls (for longer than 1h).
-As mentioned above, if you are pushing a last typo fix on a PR, it is okay to add `[skip ci]` in the commit message. It is not okay to do this if it's the first commit or if you are fixing more than documentation typos.
 
 **Documentation PRs:** If working specifically on markdown files or other documentation, be sure to check the actual look of the document once you have pushed your PR and fix any formatting errors. You can do this by going to “Files Changed” and viewing how your markdown file will actually appear in GitHub. Don’t forget to click all links to make sure they won't be broken when the document is rendered. 
 
@@ -147,6 +140,7 @@ Then, fetch their remote fork and checkout the branch related to their PR:
 
 Alternatively, to avoid being under the detached HEAD state, checkout and create a local branch with the command
 
+    git fetch their_fork
     git checkout -b branch their_fork/branch_name
 
 Follow the provided testing instructions to test their code on your VM. 
@@ -183,15 +177,14 @@ Here is a general workflow:
         // OR you can "skip" specific changes
         git rebase --skip
     # } loop back to (#) - fix any remaining conflicts.... until no more conflicts
-    git push --force my_fork branch_name
-    # --force is often needed here :\
+    git push --force-with-lease my_fork branch_name
 
 ### Fixing a rebase gone wrong
 1. The most basic way of “fixing” a rebase gone wrong is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. **Note** that this is a potentially destructive command, so be very cautious when using it. It is also recommended that you make a backup of your branch before performing these commands so that you don't lose any changes. 
 For example:
     
        git reset --hard <commit_hash>
-       git push -f my_fork branch_name
+       git push --force-with-lease my_fork branch_name
 
 2. A more complicated tool that can be used to solve bigger rebasing errors is the command [`git cherry-pick`](https://git-scm.com/docs/git-cherry-pick). This command allows you to pick specific commits to apply to a branch. For example, if you rebase the wrong branch or your PR is incorrectly displaying all the commits or files from the branch you rebased, this tool will come in handy. Here is an example workflow:  
     ```
@@ -206,7 +199,7 @@ For example:
     git checkout -b "branch_name"     # Create a “new” branch with the same
                                       # name as the original branch
     git cherry-pick <commit-hash>     # Cherry-pick the commits that you would like to keep
-    git push -f my_fork "branch_name"
+    git push --force-with-lease my_fork "branch_name"
     ```
 
 ## 6. Accessing a Database
