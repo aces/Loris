@@ -33,12 +33,13 @@ class DictionaryTestIntegrationTest extends LorisIntegrationTest
      * Table headers
      */
     protected $loadingUI = [
-        'Data Dictionary'    => '#bc2 > a:nth-child(2) > div',
-        'Source From'        => '#dynamictable > thead > tr > th:nth-child(2)',
-        'Name'               => '#dynamictable > thead > tr > th:nth-child(3)',
-        'Source Field'       => '#dynamictable > thead > tr > th:nth-child(4)',
-        'Description'        => '#dynamictable > thead > tr > th:nth-child(5)',
-        'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)',
+        'Data Dictionary'  => '#bc2 > a:nth-child(2) > div',
+        'Module '          => '#dynamictable > thead > tr > th:nth-child(2)',
+        'Field Name'       => '#dynamictable > thead > tr > th:nth-child(3)',
+        'Description'      => '#dynamictable > thead > tr > th:nth-child(4)',
+        'Data Scope'       => '#dynamictable > thead > tr > th:nth-child(5)',
+        'Data Type'        => '#dynamictable > thead > tr > th:nth-child(6)',
+        'Data Cardinality' => '#dynamictable > thead > tr > th:nth-child(7)',
     ];
 
     /**
@@ -105,7 +106,7 @@ class DictionaryTestIntegrationTest extends LorisIntegrationTest
     function testPageUIs()
     {
         $this->safeGet($this->url . "/dictionary/");
-        foreach ($this->_loadingUI as $key => $value) {
+        foreach ($this->loadingUI as $key => $value) {
             $text = $this->safeFindElement(
                 WebDriverBy::cssSelector($value)
             )->getText();
