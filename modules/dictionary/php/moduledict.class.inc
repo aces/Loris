@@ -4,9 +4,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * Categories page returns a list of valid module and their categories
- * which both have a valid data dictionary and the user accessing the
- * page has access to.
+ * The ModuleDict page returns the dictionary for a single module.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
@@ -15,8 +13,7 @@ class ModuleDict extends \NDB_Page
     protected $module;
 
     /**
-     * Override the hndle to return a list of valid modules and categories
-     * that the user has access to.
+     * Override the hndle to return a dictionary for a given module
      *
      * @param ServerRequestInterface $request the incoming PSR7 request
      *
@@ -36,7 +33,7 @@ class ModuleDict extends \NDB_Page
 
         $path = $request->getURI()->getPath();
         if (strpos($path, "module/") === false) {
-            // if the path doesn't contain "fields" we shouldn't have
+            // if the path doesn't contain "module" we shouldn't have
             // delegated to this class..
             throw new \LorisException("Invalid internal LORIS state");
         }

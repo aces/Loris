@@ -6,22 +6,15 @@ namespace LORIS\dictionary;
 use \Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Datadict module
+ * Handle the main index page of the dictionary module
  *
- * PHP version 7
- *
- * @category Datadict
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 
 class Dictionary extends \DataFrameworkMenu
 {
     /**
-     * Overloading this method to allow access to site users (their own site
-     * only) and users w/ multisite privs
+     * {@inheritDoc}
      *
      * @param \User $user The user whose access is being checked
      *

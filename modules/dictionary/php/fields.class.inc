@@ -4,7 +4,8 @@ namespace LORIS\dictionary;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 /**
- * Datadict module
+ * The dictionary/fields endpoint handles requests to update a specific
+ * field description
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
@@ -23,14 +24,14 @@ class Fields extends \NDB_Page
         return $user->hasPermission('data_dict_edit');
     }
 
-        /**
-         * The modules class overrides the default behaviour to handle PATCH
-         * requests for module_manager/modules/$modulename.
-         *
-         * @param ServerRequestInterface $request The incoming PSR7 request
-         *
-         * @return ResponseInterface
-         */
+    /**
+     * The modules class overrides the default behaviour to handle PUT
+     * requests for the fields endpoint.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
+     */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $user = $request->getAttribute("user");
