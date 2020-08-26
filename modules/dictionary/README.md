@@ -2,21 +2,18 @@
 
 ## Purpose
 
-The data dictionary module is used for viewing and modifying the
-LORIS data dictionary descriptions.
+The dictionary module is used for viewing and modifying the
+LORIS data dictionary for installed and active modules.
 
 ## Scope
 
-The module displays and manages the data dictionary for fields
-already stored in the LORIS `parameter_type` table. This table is
-generally autopopulated and provides a dictionary for imaging headers
-(populated by the imaging pipeline) and behavioural instrument
-(populated by the `lorisform_parser.php` script).
+The module displays and manages the data dictionary for modules
+which provide a dictionary, and allows users to override the
+descriptions provided.
 
 It does not provide a way to enter new fields into the data dictionary,
-or describe the data dictionary for arbitrary SQL fields which are
-not stored in the `parameter_type` table, such as instrument flags
-or candidate/session data.
+doing so requires updating or creating a new module which provides
+a dictionary.
 
 ## Permission
 
@@ -28,24 +25,29 @@ modify the description of, rows in the data dictionary.
 
 ## Configuration
 
-The `parameter_type` table must be populated to use this module.
-The data comes from two sources:
+None
 
-1. The LORIS imaging pipeline scripts, which must be setup separately
-2. The `tools/data_dictionary_builder.php` script, which loads the
-   behavioural data dictionary based on the `ip_output.txt` file created
-   by `tools/lorisform_parser.php`
+## Notes
+
+The field names should be unique (see interactions below).
+
+Instruments must implement the getDataDictionary method. The
+`LorisFormDictionaryImpl` trait can be used to implement the
+dictionary in the same way that the `data_dictionary_builder`
+script populates the `parameter_type` table for the `data_dict`
+module. However, this is done on a heuristic best-effort basis.
+Data can be described more accurately described by implementing
+the function manually.
 
 ## Interactions with LORIS
 
-The content for the data dictionary module comes from the
-`parameter_type` table.
+The `dictionary` module uses the same override descriptions as
+the `data_dict` module so that users do not need to modify the
+description twice as the dictionary is migrated to being managed
+by modules. This means that the name of fields should be unique
+across LORIS until the `data_dict` module is retired.
 
-Modified entries are saved in the separate `parameter_type_override`
-table, and the "data dictionary" used by LORIS is the coalesce of
-the two tables, with `parameter_type_override` taking priority.
-This allows the `parameter_type` table itself to be regenerated
-when instruments change without losing the user modified values.
-
-The data query module uses the customized data dictionary descriptions
-from this module.
+Modules such as the data query module may use this module as
+an API to get a list of fields to be displayed and determine
+their scope, cardinality, and (possibly overriddens) description for
+context sensitive display purposes.
