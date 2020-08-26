@@ -84,7 +84,6 @@ class Module extends \Module
     ) : array {
         $modules     = $loris->getActiveModules();
         $usermodules = [];
-        $dict        = [];
         $categories  = [];
 
         $categoryitems = [];

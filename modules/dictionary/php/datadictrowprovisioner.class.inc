@@ -35,8 +35,7 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      */
     public function getAllInstances() : \Traversable
     {
-        $modules = $this->loris->getActiveModules();
-        $DB      = $this->loris->getDatabaseConnection();
+        $DB = $this->loris->getDatabaseConnection();
 
         $dict = [];
 

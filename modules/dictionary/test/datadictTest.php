@@ -25,22 +25,21 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class DatadictTestIntegrationTest extends LorisIntegrationTest
+class DictionaryTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * UI elements and locations
      * breadcrumb - 'Access Profile'
      * Table headers
      */
-    private $_loadingUI
-        =  [
-            'Data Dictionary'    => '#bc2 > a:nth-child(2) > div',
-            'Source From'        => '#dynamictable > thead > tr > th:nth-child(2)',
-            'Name'               => '#dynamictable > thead > tr > th:nth-child(3)',
-            'Source Field'       => '#dynamictable > thead > tr > th:nth-child(4)',
-            'Description'        => '#dynamictable > thead > tr > th:nth-child(5)',
-            'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)',
-        ];
+    protected $loadingUI = [
+        'Data Dictionary'    => '#bc2 > a:nth-child(2) > div',
+        'Source From'        => '#dynamictable > thead > tr > th:nth-child(2)',
+        'Name'               => '#dynamictable > thead > tr > th:nth-child(3)',
+        'Source Field'       => '#dynamictable > thead > tr > th:nth-child(4)',
+        'Description'        => '#dynamictable > thead > tr > th:nth-child(5)',
+        'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)',
+    ];
 
     /**
      * Inserting testing data
@@ -83,9 +82,9 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDatadictDoespageLoad()
+    function testDictionaryDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/datadict/");
+        $this->webDriver->get($this->url . "/dictionary/");
 
                 $this->webDriver->wait(120, 1000)->until(
                     WebDriverExpectedCondition::presenceOfElementLocated(
@@ -105,7 +104,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testPageUIs()
     {
-        $this->safeGet($this->url . "/datadict/");
+        $this->safeGet($this->url . "/dictionary/");
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->safeFindElement(
                 WebDriverBy::cssSelector($value)

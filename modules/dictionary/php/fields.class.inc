@@ -49,8 +49,7 @@ class Fields extends \NDB_Page
             // delegated to this class..
             throw new \LorisException("Invalid internal LORIS state");
         }
-        $name     = substr($path, strpos($path, "fields/") + strlen("fields/"));
-        $origdesc = $this->_getOriginalDescription($name);
+        $name = substr($path, strpos($path, "fields/") + strlen("fields/"));
         switch ($request->getMethod()) {
         case 'PUT':
             $status = $this->_replaceDescription(
