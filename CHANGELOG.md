@@ -10,6 +10,7 @@ changes in the following format: PR #1234***
 
 ##LORIS 24.0 (Release Date: ??)
 ### Core
+- New classes to describe a data dictionary (PR #6938)
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
   until all data has loaded. (PR #6853)
