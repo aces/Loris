@@ -129,4 +129,9 @@ class Module extends \Module
     {
         return "API";
     }
+
+    public function hasAPISpecification() : bool
+    {
+        return true;
+    }
 }

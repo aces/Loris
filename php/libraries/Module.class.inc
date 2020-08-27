@@ -527,4 +527,9 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         $renderer->assign($tpl_data);
         return $renderer->fetch($template);
     }
+
+    public function hasAPISpecification(): ?bool
+    {
+        return false;
+    }
 }
