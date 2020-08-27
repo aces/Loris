@@ -2,9 +2,11 @@
 This document covers topics including making PRs, issues, and how to go through a normal LORIS workflow when contributing to the LORIS repository. Many notes in this guide are also relevant to contributing code on a fork or instance of LORIS, and many practices described here will be familiar to experienced developers.
 
 ## Key Links
-Important standards and practices documented in our repo include:
-* [Contributing.md](../../../CONTRIBUTING.md) - How to contribute to Loris
-* [Coding Standards](../../CodingStandards.md)
+Important standards and practices documented in our repo include:  
+* [Contributing.md](../../../CONTRIBUTING.md) - How to contribute to Loris  
+
+* [Coding Standards](../../CodingStandards.md)  
+
 * [Pull Request Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) and [Code Review guidelines](Code_Review_Guide.md)
 
 ## 1. Working off your fork
@@ -183,10 +185,13 @@ Here is a general workflow:
 1. The most basic way of “fixing” a rebase gone wrong is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. **Note** that this is a potentially destructive command, so be very cautious when using it. It is also recommended that you make a backup of your branch before performing these commands so that you don't lose any changes. 
 For example:
 
+    ```
     git reset --hard <commit_hash>  
-    git push --force-with-lease my_fork branch_name  
-
+    git push --force-with-lease my_fork branch_name
+    ```
+    
 2. A more complicated tool that can be used to solve bigger rebasing errors is the command [`git cherry-pick`](https://git-scm.com/docs/git-cherry-pick). This command allows you to pick specific commits to apply to a branch. For example, if you rebase the wrong branch or your PR is incorrectly displaying all the commits or files from the branch you rebased, this tool will come in handy. Here is an example workflow:
+
     ```
     git checkout branch_name          # The branch that got messed up :(  
     git branch -m "temp_branch_name"  # Change the branch name locally:    
