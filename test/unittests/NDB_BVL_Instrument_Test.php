@@ -998,7 +998,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that getSessionID throws a NotFound exception if nothing was found in the
+     * Test that getSessionID will return null if nothing was found in the
      * database for the given commentID
      *
      * @covers NDB_BVL_Instrument::getSessionID
@@ -1009,8 +1009,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID3';
-        $this->expectException('NotFound');
-        $this->_instrument->getSessionID();
+        $this->assertNull($this->_instrument->getSessionID());
     }
 
     /**

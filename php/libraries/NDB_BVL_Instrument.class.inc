@@ -1459,7 +1459,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
 
         if (empty($result)) {
-           return null;
+            return null;
         }
 
         return (new SessionID($result));
