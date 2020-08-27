@@ -45,6 +45,19 @@ There is usually no need to fully update your fork to the newest aces/LORIS vers
 Many LORIS developers follow the convention: “date-title...”.   
 Starting with the date allows branches to sort and display in order, and also helps sort out any conflicts faster in the main Loris repository. Please keep branch names short and informative.
 
+#### Development Mode
+To activate the development mode, turn sandbox to 1 in the `project/config.xml` file:
+```
+<dev>
+    <sandbox>1</sandbox>
+</dev>
+```
+And then re-compile:
+```
+npm run compile
+```
+This will change several configurations in your LORIS project to allow for more verbose error reporting, which is useful for debugging.
+
 ### Helpful commands to run before pushing new code:
 Travis is our continuous integration which runs on every PR in GitHub. These commands can catch small formatting errors that will cause the Travis build to fail.
 
