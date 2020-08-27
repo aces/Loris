@@ -22,8 +22,13 @@
  * which is configured to generate the HTML reports
  */
 error_reporting(E_ERROR);
+//exec(
+//    "docker-compose run -T --rm unit-tests vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisUnitTests --coverage-html htdocs/log/codeCoverage",
+//    $output,
+//    $status
+//);
 exec(
-    "docker-compose run -T --rm unit-tests vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisUnitTests --coverage-html htdocs/log/codeCoverage",
+    "npm run tests:unit -- --coverage-html htdocs/log/codeCoverage",
     $output,
     $status
 );
@@ -80,8 +85,11 @@ echo "Editing html files....";
 
 //Getting the date and making a new directory
 $date = date("Y-m-d");
-exec("sudo mkdir ../htdocs/log/codeCoverage/$date");
-exec ("sudo chmod -R 777 ../htdocs/log/codeCoverage/$date");
+$mkdirStatus = mkdir("../htdocs/log/codeCoverage/$date");
+//$chmodStatus = chmod("../htdocs/log/codeCoverage/$date", 0777);
+if ($mkdirStatus == 0){
+    echo "The ../htdocs/log/codeCoverage/$date directory was not properly created" . PHP_EOL;
+}
 
 //Getting all the generated reports and looping through them
 $files = glob('../htdocs/log/codeCoverage/*.{html}', GLOB_BRACE);
@@ -143,7 +151,8 @@ foreach ($files as $filename) {
 }
 rename("../htdocs/log/codeCoverage/.css", "../htdocs/log/codeCoverage/$date/.css");
 rename("../htdocs/log/codeCoverage/.fonts", "../htdocs/log/codeCoverage/$date/.fonts");
-rename("../htdocs/log/codeCoverage/.js", "../htdocs/log/codeCoverage/$date/.js");
+$status3 = rename("../htdocs/log/codeCoverage/.js", "../htdocs/log/codeCoverage/$date/.js");
+if ($status3 == 0) { echo "rename didn't work".PHP_EOL;}
 echo "done\n";
 
 echo "******************************************************************
