@@ -126,7 +126,7 @@ Be sure to observe and follow team conventions for how PRs should be named and d
 
 **Title:** [module_name] Quick description   
 
-**[Contents](../../../.github/PULL_REQUEST_TEMPLATE.md) of the initial comment:** Include a brief summary of the changes and rationale, links to related issues or PRs, and testing instructions if there are any. 
+**[Contents](https://github.com/aces/Loris/blob/main/.github/PULL_REQUEST_TEMPLATE.md) of the initial comment:** Include a brief summary of the changes and rationale, links to related issues or PRs, and testing instructions if there are any. 
 
 **Linking issues:** Use GitHub keywords like `Fixes` or `Resolves` so that related issues are closed automatically when the PR is merged. Do not use these keywords if you are only addressing one point raised in an issue. This will close the entire issue and leave unresolved bugs in the codebase.
 **Note** that automatic issue-linking and issue-closing only works on the default (main) branch.  If the PR is not on the default branch, you will need to manually close the issue after the PR is merged. 
@@ -198,12 +198,10 @@ Here is a general workflow:
 ### Fixing a rebase gone wrong
 1. The most basic way of “fixing” a rebase gone wrong is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. **Note** that this is a potentially destructive command, so be very cautious when using it. It is also recommended that you make a backup of your branch before performing these commands so that you don't lose any changes. 
 For example:
-
 ```
 git reset --hard <commit_hash>
 git push --force-with-lease my_fork branch_name
 ```
-    
 2. A more complicated tool that can be used to solve bigger rebasing errors is the command [`git cherry-pick`](https://git-scm.com/docs/git-cherry-pick). This command allows you to pick specific commits to apply to a branch. For example, if you rebase the wrong branch or your PR is incorrectly displaying all the commits or files from the branch you rebased, this tool will come in handy. Here is an example workflow:
 
 ```
