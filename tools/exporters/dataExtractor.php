@@ -277,7 +277,7 @@ function writeToCsv(SplFileInfo $file, array $headers, array $data): void
     } catch (RuntimeException $e) {
         throw new InvalidArgumentException(
             'Could not open ' . $file->getRealPath() . ' for writing.' .
-            $e-getMessage()
+            $e->getMessage()
         );
     }
     // Write CSV headers

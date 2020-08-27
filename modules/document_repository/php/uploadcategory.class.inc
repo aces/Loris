@@ -89,5 +89,16 @@ class UploadCategory extends \NDB_Page
                 "comments"      => $comments,
             ]
         );
+        $Notifier = new \NDB_Notifier(
+            "document_repository",
+            "new_category"
+        );
+        $factory  = \NDB_Factory::singleton();
+        $baseURL  = $factory->settings()->getBaseURL();
+        $msg_data = [
+            'newCategory' => $baseURL . "/document_repository/",
+            'category'    => $category_name,
+        ];
+        $Notifier->notify($msg_data);
     }
 }

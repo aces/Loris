@@ -405,8 +405,9 @@ class NDB_Page implements RequestHandlerInterface
     function addPassword(
         $field,
         $label=null,
-        $attribs=['class' => 'form-control input-sm']
+        $attribs=[]
     ) {
+        $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
         $this->form->addElement('password', $field, $label, [], $attribs);
     }
 

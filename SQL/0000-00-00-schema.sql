@@ -562,6 +562,7 @@ CREATE TABLE `files` (
   `HrrtArchiveID` int(11) default NULL,
   `ScannerID` int(10) unsigned default NULL,
   `AcqOrderPerModality` int(11) default NULL,
+  `AcquisitionDate` date default NULL,
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
@@ -2059,13 +2060,26 @@ CREATE TABLE `feedback_mri_comments` (
 -- Consent tables
 -- ********************************
 
+CREATE TABLE `consent_group` (
+  `ConsentGroupID` integer unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_consent_group` PRIMARY KEY (`ConsentGroupID`),
+  CONSTRAINT `UK_consent_group_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `UK_consent_group_Label` UNIQUE KEY `Label` (`Label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `consent_group` (`ConsentGroupID`, `Name`, `Label`) VALUES ('1', 'main_consent', 'Main consent');
+
 CREATE TABLE `consent` (
   `ConsentID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
   `Label` varchar(255) NOT NULL,
+  `ConsentGroupID` integer unsigned NOT NULL DEFAULT 1,
   CONSTRAINT `PK_consent` PRIMARY KEY (`ConsentID`),
   CONSTRAINT `UK_consent_Name` UNIQUE KEY `Name` (`Name`),
-  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
+  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`),
+  CONSTRAINT `FK_consent_ConsentGroupID` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_rel` (
@@ -2224,4 +2238,3 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
-

@@ -98,17 +98,37 @@ class Utility
         return $age;
     }
     /**
+     * Returns list of consent groups in the database
+     *
+     * @return array An associative array of consent grouping,
+     *               with their names and labels. The keys of
+     *               the arrays are the IDs of the groups.
+     */
+    static function getConsentGroups(): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $query = "SELECT ConsentGroupID, Name, Label FROM consent_group";
+        $key   = "ConsentGroupID";
+
+        $result = $DB->pselectWithIndexKey($query, [], $key);
+
+        return $result;
+    }
+    /**
      * Returns list of consents in the database
      *
-     * @return array An associative array of consents, with their names and labels.
-     *               The keys of the arrays are the IDs of the consents
+     * @return array An associative array of consents, with their names,
+     *               labels, and group ID. The keys of the arrays are the
+     *               IDs of the consents.
      */
     static function getConsentList(): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $query = "SELECT ConsentID, Name, Label FROM consent";
+        $query = "SELECT ConsentID, Name, Label, ConsentGroupID FROM consent";
         $key   = "ConsentID";
 
         $result = $DB->pselectWithIndexKey($query, [], $key);
