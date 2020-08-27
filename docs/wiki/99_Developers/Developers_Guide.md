@@ -186,8 +186,8 @@ For example:
        git reset --hard <commit_hash>  
        git push --force-with-lease my_fork branch_name  
 
-2. A more complicated tool that can be used to solve bigger rebasing errors is the command [`git cherry-pick`](https://git-scm.com/docs/git-cherry-pick). This command allows you to pick specific commits to apply to a branch. For example, if you rebase the wrong branch or your PR is incorrectly displaying all the commits or files from the branch you rebased, this tool will come in handy. Here is an example workflow:  
-    ```bash
+2. A more complicated tool that can be used to solve bigger rebasing errors is the command [`git cherry-pick`](https://git-scm.com/docs/git-cherry-pick). This command allows you to pick specific commits to apply to a branch. For example, if you rebase the wrong branch or your PR is incorrectly displaying all the commits or files from the branch you rebased, this tool will come in handy. Here is an example workflow:
+    ```
     git checkout branch_name          # The branch that got messed up :(  
     git branch -m "temp_branch_name"  # Change the branch name locally:    
                                       # This is a failsafe since you will  
