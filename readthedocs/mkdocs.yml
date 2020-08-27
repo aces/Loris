@@ -32,6 +32,7 @@ nav:
         - 'Dev' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.3-dev.md'
     - Developers:
         - Overview: 'docs/wiki/99_Developers/README.md'
+        - 'Developers Guide' : 'docs/wiki/99_Developers/Developers_Guide.md'
         - 'Coding Standards': 'docs/CodingStandards.md'
         - 'SQL Dictionary': 'docs/wiki/99_Developers/SQL_Dictionary.md'
         - 'Automated Testing': 'docs/wiki/99_Developers/Automated_Testing.md'
