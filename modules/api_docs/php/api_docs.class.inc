@@ -58,7 +58,7 @@ class API_Docs extends \NDB_Page
         $loris   = $request->getAttribute('loris');
         $user    = $request->getAttribute('user');
         $baseurl = $request->getAttribute('baseurl');
-        
+
         // Instanciate all modules that the user has access to.
         $activemodules = array_filter(
             $loris->getActiveModules(),
@@ -69,18 +69,22 @@ class API_Docs extends \NDB_Page
 
         // Build a spec object from each remaining modules
         $api_specs = array_map(
-            function($module) use ($baseurl) {
-                $url = implode('/', [$baseurl,$module->getName(),'static/schema.yml']);
+            function ($module) use ($baseurl) {
+                $chunks = [
+                    $baseurl,
+                    $module->getName(),
+                    'static/schema.yml'
+                ];
 
                 $tmp_array = [
-                    'url'  => $url,
+                    'url'  => implode('/', $chunks),
                     'name' => $module->getLongName(),
                 ];
 
                 return (object) $tmp_array;
             },
             $activemodules
-        );  
+        );
 
         $this->tpl_data['schema_urls'] = json_encode($api_specs);
 

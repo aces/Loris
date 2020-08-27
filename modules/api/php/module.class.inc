@@ -130,6 +130,11 @@ class Module extends \Module
         return "API";
     }
 
+    /**
+     * This module have a specification
+     *
+     * @return bool Always true
+     */
     public function hasAPISpecification() : bool
     {
         return true;

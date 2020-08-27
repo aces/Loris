@@ -27,6 +27,10 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Readability of comments and history was improved. (PR #6138)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
+#### API Documentation (**New Module**)
+- Mostly ment for developers, this module provides a user interface to inspect and try LORIS's API.
+- The *superuser* permission is required to access this module.
+- Additionnaly, any module can now provide a specification for its own API by writing a openapi specification in a schema.yml file under its static directory. ex: modules/api/static/schema.yml
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects

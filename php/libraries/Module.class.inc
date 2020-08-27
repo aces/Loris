@@ -528,6 +528,12 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         return $renderer->fetch($template);
     }
 
+    /**
+     * Returns true if a schema.yml file exists under the satic directory of that
+     * module.
+     *
+     * @return bool
+     */
     public function hasAPISpecification(): ?bool
     {
         return false;
