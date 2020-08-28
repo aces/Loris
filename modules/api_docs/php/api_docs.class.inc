@@ -68,6 +68,9 @@ class API_Docs extends \NDB_Page
         );
 
         // Build a spec object from each remaining modules
+        // Using array_values to get rid of the array keys. json_encode default to
+        // an object when the array keys do not start at zero or are not
+        // consecutives.
         $api_specs = array_map(
             function ($module) use ($baseurl) {
                 $chunks = [
@@ -83,7 +86,7 @@ class API_Docs extends \NDB_Page
 
                 return (object) $tmp_array;
             },
-            $activemodules
+            array_values($activemodules)
         );
 
         $this->tpl_data['schema_urls'] = json_encode($api_specs);
