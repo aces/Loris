@@ -32,9 +32,16 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
     {
         $this->setupPermissions([]);
         $this->safeGet($this->url . "/api_docs");
-        $selectOptions = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("select")
-        );
+        try {
+            $selectOptions = $this->webDriver->findElement(
+                WebDriverBy::cssSelector("select")
+            );
+        } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
+            $content = $this->webDriver->findElement(
+                WebDriverBy::byId("lorisworkspace");
+            );
+            $this->fail('Can`t find select element. Found: ' . $content);
+        }
         $this->assertNotEmpty($selectOptions);
     }
 }
