@@ -1445,7 +1445,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
-     * @return SessionID The sessionID
+     * @return ?SessionID The sessionID
      */
     function getSessionID(): ?SessionID
     {
