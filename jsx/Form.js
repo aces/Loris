@@ -470,6 +470,35 @@ class SelectElement extends Component {
   }
 
   /**
+   * Call onUserInput on component rendered to select only option
+   * if autoSelect prop is set to true
+   */
+  componentDidMount() {
+    const optionsArray = Object.keys(this.props.options);
+    if (this.props.autoSelect && optionsArray.length === 1) {
+      this.props.onUserInput(this.props.name, optionsArray[0]);
+    }
+  }
+
+  /**
+   * On component update, if number of options dynamically
+   * changes to 1, call onUserInput to select only option
+   * if autoSelect prop is set to true
+   *
+   * @param {object} prevProps - component props before component update
+   */
+  componentDidUpdate(prevProps) {
+    const options = Object.keys(this.props.options);
+    const prevOptions = Object.keys(prevProps.options);
+    if (options.length !== prevOptions.length ||
+        !options.every((v, i) => v === prevOptions[i])) {
+      if (this.props.autoSelect && options.length === 1) {
+        this.props.onUserInput(this.props.name, options[0]);
+      }
+    }
+  }
+
+  /**
    * Handle change
    *
    * @param {object} e - Event
@@ -605,6 +634,7 @@ SelectElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   emptyOption: PropTypes.bool,
+  autoSelect: PropTypes.bool,
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
@@ -621,6 +651,7 @@ SelectElement.defaultProps = {
   required: false,
   sortByValue: true,
   emptyOption: true,
+  autoSelect: true,
   hasError: false,
   errorMessage: 'The field is required!',
   onUserInput: function() {

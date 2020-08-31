@@ -5,7 +5,6 @@ site_url: https://acesloris.readthedocs.io/en/latest/
 
 nav:
     - Home: 'README.md'
-    - Wiki: 'docs/wiki/index.md'
     - Server Install and Configuration:
         - 'Prerequisities and Assumptions': 'docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/00_Prerequisites_And_Assumptions/README.md'
         - 'Database Configuration': 'docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/00_Prerequisites_And_Assumptions/Database_Configuration.md'
