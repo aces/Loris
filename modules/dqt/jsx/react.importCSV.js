@@ -111,7 +111,7 @@ class ModalImportCSV extends Component {
             ref='file'
             label='CSV file'
             required={true}
-            value={this.state.csv}
+            value={this.state.file}
           />
           <div style={{paddingBottom: '10px'}}>
             <b>Note:</b>&nbsp;The CSV format should be one column of either
