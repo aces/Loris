@@ -5,7 +5,7 @@ class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hidden: false
+      hidden: false,
     };
     this.toggleHidden = this.toggleHidden.bind(this);
     this.hide = this.hide.bind(this);
@@ -41,7 +41,6 @@ class FieldsSidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-
   }
 
   render() {
@@ -80,7 +79,7 @@ FieldsSidebar.propTypes = {
 
 FieldsSidebar.defaultProps = {
   Fields: [],
-  Criteria: {}
+  Criteria: {},
 };
 
 window.Sidebar = Sidebar;
@@ -88,5 +87,5 @@ window.FieldsSidebar = FieldsSidebar;
 
 export default {
   Sidebar,
-  FieldsSidebar
+  FieldsSidebar,
 };

@@ -5,9 +5,6 @@ modules/*/js/*
 modules/*/js/*/*
 htdocs/js/components/*
 
-# Ignore until ESLint is run
-modules/dataquery/
-
 # Ignore external libs
 htdocs/js/flot/*
 htdocs/js/jquery/*
