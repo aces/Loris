@@ -534,7 +534,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      *
      * @return bool
      */
-    public function hasAPISpecification(): ?bool
+    public function hasAPISpecification(): bool
     {
         return false;
     }
