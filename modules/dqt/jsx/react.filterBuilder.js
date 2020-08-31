@@ -730,11 +730,19 @@ class FilterBuilder extends Component {
         method: 'POST',
         body: JSON.stringify(results),
       }
-    ).then((resp) => resp.json()
-    ).then((data) => {
-      this.props.importCSV(data);
-      this.closeModalCSV();
-    }).catch((error) => {
+    ).then((response) => {
+      if (response.ok) {
+        response.json().then((data) => {
+          this.props.importCSV(data);
+          this.closeModalCSV();
+        });
+      } else {
+        response.json().then((data) => {
+          console.error(data);
+        });
+      }
+    }
+    ).catch((error) => {
       console.error(error);
     });
   }
