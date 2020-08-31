@@ -38,7 +38,7 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
             );
         } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
             $content = $this->webDriver->findElement(
-                WebDriverBy::byId("lorisworkspace");
+                WebDriverBy::byId("lorisworkspace")
             );
             $this->fail('Can`t find select element. Found: ' . $content);
         }
