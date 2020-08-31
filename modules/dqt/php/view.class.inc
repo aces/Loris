@@ -37,11 +37,11 @@ class View extends \NDB_Page
     {
         // Ensure allowed request.
         switch ($request->getMethod()) {
-        case 'PUT':
-            return $this->_handlePUT($request);
+        case 'POST':
+            return $this->_handlePOST($request);
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                ['PUT']
+                ['POST']
             );
         }
     }
@@ -53,7 +53,7 @@ class View extends \NDB_Page
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
+    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse PUT request body.
         $values = json_decode((string) $request->getBody(), true);
@@ -152,7 +152,7 @@ class View extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('dataquery_view'));
+        return $user->hasPermission('dataquery_view');
     }
 
 }
