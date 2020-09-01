@@ -79,6 +79,17 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool always true
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
+
+    /**
      * Handles a request starts with /candidates
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
@@ -154,6 +165,12 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner())
             ->filter($filter)
             ->filter(new \LORIS\Data\Filters\UserProjectMatch());
+
+        if ($this->useProjectFilter()) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserProjectMatch()
+            );
+        }
 
         $candidates = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
