@@ -106,7 +106,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 // Table 1: mri_protocol_violated_scans
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     "SELECT ID
-                    FROM mri_protocol_violated_scans
+                    FROM mri_protocol_violated_scans 
                     WHERE (:hash = md5(concat_WS(
                               ':',minc_location,PatientName,SeriesUID,time_run)
                                    )
@@ -300,8 +300,6 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        // create user object
-        $user    =& \User::singleton();
         $config  =& \NDB_Config::singleton();
         $db      =& \Database::singleton();
         $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
@@ -320,8 +318,8 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // Build a list of existing problem types based on data in db
         $problemTypes = $db->pselect(
             "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
-            UNION
-            SELECT DISTINCT 'Could not identify scan type'
+            UNION 
+            SELECT DISTINCT 'Could not identify scan type' 
             FROM mri_protocol_violated_scans
             UNION
             SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
@@ -340,58 +338,26 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->addBasicText('Filename', 'MincFile');
         $this->addBasicText('SeriesUID', 'Series UID');
         $this->addSelect("ProblemType", "Type of problem", $problemOptions);
-
-        // get list of projects
-        $list_of_projects = ['' => 'Any'];
-        $userProjectsIDs  = $user->getProjectIDs();
-        foreach ($userProjectsIDs as $projectID) {
-            $projectName = \Project::getProjectFromID($projectID)->getName();
-            $list_of_projects[$projectID] = $projectName;
-        }
-
         $this->addSelect(
             'Project',
             'Project',
-            $list_of_projects
+            ['' => 'All'] + $this->getProjectOptions()
         );
-
-        // Subproject
-        $list_of_subprojects = ['' => 'Any'];
-        foreach ($userProjectsIDs as $projectID) {
-            $subprojects = \Project::getProjectFromID($projectID)->getSubprojects();
-            foreach ($subprojects as $subproject) {
-                $subprojectId = $subproject->subprojectId;
-                if (!isset($list_of_subprojects[$subprojectId])) {
-                    $subprojectName = $subproject->title;
-                    $list_of_subprojects[$subprojectId] = $subprojectName;
-                }
-            }
-        }
         $this->addSelect(
             'Subproject',
             'Subproject',
-            $list_of_subprojects
+            ['' => 'All'] + $this->getSubprojectOptions()
         );
 
-        // Get sites
-        if ($user->hasPermission('access_all_profiles')) {
-            // get the list of study sites - to be replaced by the Site object
-            $sites  = [
+        $this->addSelect(
+            'Site',
+            'Site',
+            [
                 ''         => 'All (including unknown)',
                 'AllKnown' => 'All (excluding unknown)',
                 'Unknown'  => 'Unknown'
-            ];
-            $sites += \Utility::getSiteList();
-        } else {
-            // allow only to view own site data
-            $sites  = [
-                ''         => 'All user sites (including unknown)',
-                'AllKnown' => 'All user sites (excluding unknown)',
-                'Unknown'  => 'Unknown'
-            ];
-            $sites +=  $user->getStudySites();
-        }
-        $this->addSelect('Site', 'Site', $sites);
+            ] + $this->getSiteOptions(),
+        );
     }
 
     /**

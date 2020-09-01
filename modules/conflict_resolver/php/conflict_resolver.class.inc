@@ -254,8 +254,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        // Create user object
-        $user = \NDB_Factory::singleton()->user();
 
         // Get instruments
         $instruments = \Utility::getAllInstruments();
@@ -264,34 +262,17 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $visits = \Utility::getVisitList();
         $visits = array_merge(['' => 'All'], $visits);
 
-        // Get sites
-        if ($user->hasPermission('access_all_profiles')) {
-            // get the list of study sites - to be replaced by the Site object
-            $sites = \Utility::getSiteList();
-            foreach ($sites as $key => $site) {
-                unset($sites[$key]);
-                $sites[$site] = $site;
-            }
-            if (is_array($sites)) {
-                $sites = ['' => 'All'] + $sites;
-            }
-        } else {
-            // allow only to view own site data
-            $sites = $user->getStudySites();
-            foreach ($sites as $key => $site) {
-                unset($sites[$key]);
-                $sites[$site] = $site;
-            }
-            $sites = ['' => 'All User Sites'] + $sites;
-        }
-
         $labelOptions = [
             'addEmptyOption'   => true,
             'emptyOptionValue' => '',
         ];
 
         // Add form elements
-        $this->addSelect('site', 'For Site:', $sites);
+        $this->addSelect(
+            'site',
+            'For Site:',
+            ['' => 'All'] + $this->getSiteOptions(false)
+        );
         $this->addSelect('instrument', 'Instrument:', $instruments, $labelOptions);
         $this->addSelect('visitLabel', 'Visit label:', $visits);
         $this->addBasicText(
@@ -313,15 +294,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             ]
         );
         $this->addBasicText('question', 'Question:');
-
-        // get list of projects
-        $list_of_projects = [];
-        $userProjectsIDs  = $user->getProjectIDs();
-        foreach ($userProjectsIDs as $projectID) {
-            $projectName = \Project::getProjectFromID($projectID)->getName();
-            $list_of_projects[$projectName] = $projectName;
-        }
-        $this->addSelect('project', 'Project: ', $list_of_projects);
+        $this->addSelect('project', 'Project: ', $this->getProjectOptions(false));
     }
 
     /**

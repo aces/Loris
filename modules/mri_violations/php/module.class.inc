@@ -112,7 +112,7 @@ class Module extends \Module
             FROM mri_violations_log AS mrl
             LEFT JOIN mri_scan_type ON (mri_scan_type.ID=mrl.Scan_type)
             LEFT JOIN violations_resolved ON (
-                  violations_resolved.ExtID=mrl.LogID
+                  violations_resolved.ExtID=mrl.LogID 
               AND violations_resolved.TypeTable='mri_violations_log'
             )
             LEFT JOIN candidate c ON (mrl.CandID=c.CandID)
@@ -156,8 +156,8 @@ class Module extends \Module
               $mriViolationsLogSubquery
               UNION
               $mriCandidateErrorsSubquery
-            ) AS v
-            LEFT JOIN psc site ON (site.CenterID = v.Site)
+            ) AS v 
+            LEFT JOIN psc site ON (site.CenterID = v.Site) 
             LEFT JOIN Project AS pjct ON (v.Project = pjct.ProjectID)
             LEFT JOIN subproject AS subpjct ON (v.Subproject = subpjct.SubprojectID)
             WHERE $siteClause AND $projectClause";

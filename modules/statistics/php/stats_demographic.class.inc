@@ -219,14 +219,9 @@ class Stats_Demographic extends \NDB_Form
 
         // PROJECTS
         $allProjectList = \Utility::getProjectList();
-        $projects       = ['' => 'All Projects'];
+        $projects       = ['' => 'All Projects'] + $this->getProjectOptions();
 
-        $userProjectsIDs = $user->getProjectIDs();
-        foreach ($userProjectsIDs as $projectID) {
-            $projectName          = \Project::getProjectFromID($projectID)
-                                    ->getName();
-            $projects[$projectID] = $projectName;
-        }
+        $userProjectsIDs            = $user->getProjectIDs();
         $this->tpl_data['Projects'] = $projects;
 
         if ($user->hasPermission('access_all_profiles')) {
@@ -240,11 +235,10 @@ class Stats_Demographic extends \NDB_Form
 
         if (!empty($demographicProject)) {
             $demographicProject = htmlspecialchars($demographicProject);
-            $this->tpl_data['CurrentProject']
-                = [
-                    'ID'   => $demographicProject,
-                    'Name' => $projects[$demographicProject] ?? '',
-                ];
+            $this->tpl_data['CurrentProject'] = [
+                'ID'   => $demographicProject,
+                'Name' => $projects[$demographicProject] ?? '',
+            ];
             $paramProject        ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
         }
@@ -257,7 +251,7 @@ class Stats_Demographic extends \NDB_Form
             $subprojects = \Utility::getSubprojectsForProject($demographicProject);
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {
-                $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";
+                $subprojectQuery = "AND s.SubprojectID IN ($subprojList)";
             }
         }
 
@@ -275,12 +269,8 @@ class Stats_Demographic extends \NDB_Form
         $user    = $factory->user();
 
         //SITES
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-        $sitesString = implode(",", array_keys($list_of_sites));
+        $list_of_sites = $this->getSiteOptions();
+        $sitesString   = implode(",", array_keys($list_of_sites));
 
         $centers = $db->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
@@ -295,7 +285,7 @@ class Stats_Demographic extends \NDB_Form
         );
 
         $sites     = [];
-        $sites[''] ='All sites';
+        $sites[''] = 'All sites';
 
         if (!empty($centers)) {
             foreach ($centers as $row) {

@@ -918,6 +918,107 @@ class NDB_Page implements RequestHandlerInterface
     }
 
     /**
+     * Get the list of projects for which the current user has permission
+     * To populate the module projects filter options
+     *
+     * @param bool $numeric_keys If the returned projects keys
+     *                           should be numeric (ProjectID)
+     *                           or strings (project name)
+     *
+     * @return array - an associative array of the form (ID => name)
+     */
+    public function getProjectOptions(
+        bool $numeric_keys = true
+    ): array {
+        $projectsOptions = [];
+        $userProjectsIDs = \NDB_Factory::singleton()->user()->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $projectsOptions[$projectID] = \Project::getProjectFromID($projectID)
+                                           ->getName();
+        }
+
+        if (!$numeric_keys) {
+            foreach ($projectsOptions as $name) {
+                $projectsOptions[$name] = $name;
+            }
+        }
+
+        return $projectsOptions;
+    }
+
+    /**
+     * Get the list of subprojects for which the current user has permission
+     * To populate the module subprojects filter options
+     *
+     * @param bool $numeric_keys If the returned subprojects keys
+     *                           should be numeric (SubprojectID)
+     *                           or strings (subproject name)
+     *
+     * @return array - an associative array of the form (ID => name)
+     */
+    public function getSubprojectOptions(
+        bool $numeric_keys = true
+    ): array {
+        $subprojectsOptions = [];
+        $userProjectsIDs    = \NDB_Factory::singleton()->user()->getProjectIDs();
+        foreach ($userProjectsIDs as $projectID) {
+            $subprojects = \Project::getProjectFromID($projectID)->getSubprojects();
+            foreach ($subprojects as $subproject) {
+                $subprojectId = $subproject->subprojectId;
+                if (!isset($subprojectsOptions[$subprojectId])) {
+                    $subprojectsOptions[$subprojectId] = $subproject->title;
+                }
+            }
+        }
+
+        if (!$numeric_keys) {
+            foreach ($subprojectsOptions as $name) {
+                $subprojectsOptions[$name] = $name;
+            }
+        }
+
+        return $subprojectsOptions;
+    }
+
+    /**
+     * Get the list of sites for which the current user has permission
+     * To populate the module sites filter options
+     *
+     * @param bool  $numeric_keys       If the returned sites keys
+     *                                  should be numeric (CenterID)
+     *                                  or strings (site name)
+     * @param array $allsitesPermission A list of permission
+     *                                  which gives access to all sites
+     * @param bool  $study_site         If the returned sites
+     *                                  should be study sites only
+     *
+     * @return array An associative array of the form (ID => name)
+     */
+    public function getSiteOptions(
+        bool $numeric_keys = true,
+        array $allsitesPermission = ['access_all_profiles'],
+        bool $study_site = true
+    ): array {
+        $user         = \NDB_Factory::singleton()->user();
+        $site_options = $user->getStudySites();
+
+        foreach ($allsitesPermission as $permission) {
+            if ($user->hasPermission($permission)) {
+                $site_options = \Utility::getSiteList($study_site);
+                break;
+            }
+        }
+
+        if (!$numeric_keys) {
+            foreach ($site_options as $name) {
+                $site_options[$name] = $name;
+            }
+        }
+
+        return $site_options;
+    }
+
+    /**
      * Converts the results of this form to a JSON format to be retrieved
      * with ?format=json
      *

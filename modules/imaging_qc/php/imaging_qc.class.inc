@@ -181,51 +181,9 @@ class Imaging_QC extends \NDB_Menu_Filter
     {
 
         $this->skipTemplate = true;
-        $user      = \User::singleton();
-        $db        = \Database::singleton();
-        $siteList  = [];
-        $visitList = \Utility::getVisitList();
-        // allow to view all sites data through filter
-        if ($user->hasPermission('imaging_browser_qc')) {
-            $siteList = \Utility::getSiteList();
-            // Index sites using their names (used to filter react tables)
-            foreach ($siteList as $key => $site) {
-                unset($siteList[$key]);
-                $siteList[$site] = $site;
-            }
-        } else {
-            // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
-            foreach ($siteIDs as $val) {
-                $site = \Site::singleton($val);
-                if ($site->isStudySite()) {
-                    $siteList[$site->getCenterName()] = $site->getCenterName();
-                }
-            }
-        }
-
+        $db         = \Database::singleton();
+        $visitList  = \Utility::getVisitList();
         $scan_types = $this->_getScanTypes();
-
-        // get list of projects
-        $list_of_projects = [];
-        $userProjectsIDs  = $user->getProjectIDs();
-        foreach ($userProjectsIDs as $projectID) {
-            $projectName = \Project::getProjectFromID($projectID)->getName();
-            $list_of_projects[$projectName] = $projectName;
-        }
-
-        // Subproject
-        $list_of_subprojects = [];
-        foreach ($userProjectsIDs as $projectID) {
-            $subprojects = \Project::getProjectFromID($projectID)->getSubprojects();
-            foreach ($subprojects as $subproject) {
-                $subprojectId = $subproject->subprojectId;
-                if (!isset($list_of_subprojects[$subprojectId])) {
-                    $subprojectName = $subproject->title;
-                    $list_of_subprojects[$subprojectName] = $subprojectName;
-                }
-            }
-        }
 
         $uploaderList = [];
         $uploaders    = $db -> pselect(
@@ -242,36 +200,39 @@ class Imaging_QC extends \NDB_Menu_Filter
             "Missing"               => "Missing",
         ];
 
-        $this->fieldOptions
-            = [
-                'site'             => $siteList,
-                'project'          => $list_of_projects,
-                'subproject'       => $list_of_subprojects,
-                'scanType'         => $scan_types,
-                'mRIParameterForm' => [
-                    "Incomplete" => "Incomplete",
-                    "Complete"   => "Complete",
-                ],
-                'scanDoneInMRIPF'  => [
-                    "Yes" => "Yes",
-                    "No"  => "No",
-                ],
-                'tarchive'         => [
-                    "In DICOM" => "In DICOM Archives",
-                    "Missing"  => "Missing",
-                ],
-                'scanLocation'     => $scan_location,
-                'qCStatus'         => [
-                    "Pass" => "Pass",
-                    "Fail" => "Fail",
-                ],
-                'uploadedBy'       => $uploaderList,
-                'selected'         => [
-                    "True"  => "True",
-                    "False" => "False",
-                ],
-                'visitLabel'       => $visitList,
-            ];
+        $this->fieldOptions = [
+
+            'site'             => $this->getSiteOptions(
+                false,
+                ['imaging_browser_qc']
+            ),
+            'project'          => $this->getProjectOptions(false),
+            'subproject'       => $this->getSubprojectOptions(false),
+            'scanType'         => $scan_types,
+            'mRIParameterForm' => [
+                "Incomplete" => "Incomplete",
+                "Complete"   => "Complete",
+            ],
+            'scanDoneInMRIPF'  => [
+                "Yes" => "Yes",
+                "No"  => "No",
+            ],
+            'tarchive'         => [
+                "In DICOM" => "In DICOM Archives",
+                "Missing"  => "Missing",
+            ],
+            'scanLocation'     => $scan_location,
+            'qCStatus'         => [
+                "Pass" => "Pass",
+                "Fail" => "Fail",
+            ],
+            'uploadedBy'       => $uploaderList,
+            'selected'         => [
+                "True"  => "True",
+                "False" => "False",
+            ],
+            'visitLabel'       => $visitList,
+        ];
 
         $scan_types = $this->_getScanTypes();
         $scans_done = [];

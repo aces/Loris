@@ -75,57 +75,24 @@ class Candidate_List extends \DataFrameworkMenu
 
         // create user object
         $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
         $config  = $factory->config();
 
         // get the list of visit labels
         $visit_label_options = \Utility::getVisitList();
 
-        // get the list of sites available for the user
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-        $site_options = [];
-        foreach ($list_of_sites as $id => $name) {
-            $site_options[$name] = $name;
-        }
-
-        // get list of projects
-        $project_options = [];
-        $userProjectsIDs = $user->getProjectIDs();
-        foreach ($userProjectsIDs as $projectID) {
-            $projectName = \Project::getProjectFromID($projectID)->getName();
-            $project_options[$projectName] = $projectName;
-        }
-
-        // get the list of subprojects
-        $subproject_options = [];
-        foreach ($userProjectsIDs as $projectID) {
-            $subprojects = \Project::getProjectFromID($projectID)->getSubprojects();
-            foreach ($subprojects as $subproject) {
-                $subprojectId = $subproject->subprojectId;
-                if (!isset($subproject_options[$subprojectId])) {
-                    $subprojectName = $subproject->title;
-                    $subproject_options[$subprojectName] = $subprojectName;
-                }
-            }
-        }
-
         // get the list participant status options
         $list_of_participant_status
             = \Candidate::getParticipantStatusOptions();
         $participant_status_options = [];
-        foreach ($list_of_participant_status as $id => $name) {
+        foreach ($list_of_participant_status as $name) {
             $participant_status_options[$name] = $name;
         }
 
         return [
             'visitlabel'        => $visit_label_options,
-            'site'              => $site_options,
-            'project'           => $project_options,
-            'subproject'        => $subproject_options,
+            'site'              => $this->getSiteOptions(false),
+            'project'           => $this->getProjectOptions(false),
+            'subproject'        => $this->getSubprojectOptions(false),
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
         ];

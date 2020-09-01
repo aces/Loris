@@ -74,12 +74,8 @@ class Stats_Behavioural extends \NDB_Form
         $user    = $factory->user();
 
         // SITES
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-        $sitesString = implode(",", array_keys($list_of_sites));
+        $list_of_sites = $this->getSiteOptions();
+        $sitesString   = implode(",", array_keys($list_of_sites));
 
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
@@ -108,17 +104,10 @@ class Stats_Behavioural extends \NDB_Form
 
         }
 
-        // PROJECTS
-        $projects        = ['' => 'All Projects'];
-        $userProjectsIDs = $user->getProjectIDs();
-        $Param_Project   = '';
-
-        foreach ($userProjectsIDs as $projectID) {
-            $projectName          = \Project::getProjectFromID($projectID)
-                                    ->getName();
-            $projects[$projectID] = $projectName;
-        }
+        $projects = ['' => 'All Projects'] + $this->getProjectOptions();
         $this->tpl_data['Projects'] = $projects;
+        $userProjectsIDs            = $user->getProjectIDs();
+        $Param_Project = '';
 
         if ($_REQUEST['BehaviouralProject'] ?? '') {
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
@@ -165,14 +154,7 @@ class Stats_Behavioural extends \NDB_Form
         $this->tpl_data['Visits'] = $Visits ?? '';
 
         //SITES
-
         $Param_Centers = '';
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-
         if (!empty($list_of_sites)) {
             $paramCenters      = [];
             $list_of_sites_ids = array_keys($list_of_sites);
@@ -223,7 +205,7 @@ class Stats_Behavioural extends \NDB_Form
                     COUNT(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                WHERE
+                WHERE 
                     s.Active='Y' AND c.Active='Y'
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
