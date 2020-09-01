@@ -122,6 +122,7 @@ function lorisModule(mname, entries, override=false) {
 const config = [
   // Core components
   {
+    mode: 'production',
     entry: {
       DynamicDataTable: './jsx/DynamicDataTable.js',
       PaginationLinks: './jsx/PaginationLinks.js',

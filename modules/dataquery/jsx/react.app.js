@@ -5,17 +5,23 @@
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @link     https://github.com/aces/Loris
  */
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-/*
- *  The following component is for saved queries dropdown which appears in the
- *  tab bar of the base component.
+/**
+ * Saved Queries List component
+ *
+ * The following component is for saved queries dropdown which appears in the
+ * tab bar of the base component.
  */
 class SavedQueriesList extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {};
@@ -23,22 +29,23 @@ class SavedQueriesList extends Component {
     this.loadQuery = this.loadQuery.bind(this);
   }
 
-  componentDidMount() {
-
-  }
-
+  /**
+   * Loads in the selected query
+   * @param {string} queryName
+   */
   loadQuery(queryName) {
-    // Loads in the selected query
-
     this.props.onSelectQuery(
       this.props.queryDetails[queryName].Fields,
       this.props.queryDetails[queryName].Conditions
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    // Renders the html for the component
-
     let userSaved = [];
     let globalSaved = [];
     let queryName; let curQuery;
@@ -54,7 +61,16 @@ class SavedQueriesList extends Component {
       } else {
         queryName = this.props.userQueries[i];
       }
-      userSaved.push(<li key={this.props.userQueries[i]}><a href='#' onClick={this.loadQuery.bind(this, this.props.userQueries[i])}>{queryName}</a></li>);
+      userSaved.push(
+        <li key={this.props.userQueries[i]}>
+          <a
+            href='#'
+            onClick={this.loadQuery.bind(this, this.props.userQueries[i])}
+          >
+            {queryName}
+          </a>
+        </li>
+      );
     }
     // Build the list for the global queries
     for (let i = 0; i < this.props.globalQueries.length; i += 1) {
@@ -64,20 +80,43 @@ class SavedQueriesList extends Component {
       } else {
         queryName = this.props.globalQueries[i];
       }
-      globalSaved.push(<li key={this.props.globalQueries[i]}><a href='#' onClick={this.loadQuery.bind(this, this.props.globalQueries[i])}>{queryName}</a></li>);
+      globalSaved.push(
+        <li key={this.props.globalQueries[i]}>
+          <a
+            href='#'
+            onClick={this.loadQuery.bind(this, this.props.globalQueries[i])}
+          >
+            {queryName}
+          </a>
+        </li>
+      );
     }
     return (
       <ul className='nav nav-tabs navbar-right'>
         <li className='dropdown'>
-          <a href='#' className='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>Load Saved Query <span className='caret'></span></a>
+          <a
+            href='#'
+            className='dropdown-toggle'
+            data-toggle='dropdown'
+            role='button'
+            aria-expanded='false'
+          >
+            Load Saved Query <span className='caret'></span>
+          </a>
           <ul className='dropdown-menu' role='menu'>
-            <li role='presentation' className='dropdown-header'>User Saved Queries</li>
+            <li role='presentation' className='dropdown-header'>
+              User Saved Queries
+            </li>
             {userSaved}
-            <li role='presentation' className='dropdown-header'>Shared Saved Queries</li>
+            <li role='presentation' className='dropdown-header'>
+              Shared Saved Queries
+            </li>
             {globalSaved}
           </ul>
         </li>
-        <li role='presentation' id='presentationMSQ'><a href='#SavedQueriesTab' data-toggle='tab'>Manage Saved Queries</a></li>
+        <li role='presentation' id='presentationMSQ'>
+          <a href='#SavedQueriesTab' data-toggle='tab'>Manage Saved Queries</a>
+        </li>
       </ul>
     );
   }
@@ -92,11 +131,17 @@ SavedQueriesList.defaultProps = {
   queriesLoaded: false,
 };
 
-/*
- *  The following component is the data queries base element. It controls which tab is currently
- *  shown, along with keeping the state of the current query being built and running the query.
+/**
+ * DataQuery App component
+ *
+ * The following component is the data queries base element. It controls which tab is currently
+ * shown, along with keeping the state of the current query being built and running the query.
  */
 class DataQueryApp extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -148,6 +193,10 @@ class DataQueryApp extends Component {
     this.updateFilter = this.updateFilter.bind(this);
   }
 
+  /**
+   * On Tab Change Handler
+   * @param {object} e = Event
+   */
   onTabChangeHandler(e) {
     if (e.target.innerHTML !== 'Manage Saved Queries') {
       document.getElementById(
@@ -156,6 +205,9 @@ class DataQueryApp extends Component {
     }
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     // Before the dataquery is loaded into the window, this function is called to gather
     // any data that was not passed in the initial load.
@@ -178,27 +230,36 @@ class DataQueryApp extends Component {
     // Load the save queries' details
     let promises = [];
     for (let key in this.state.queryIDs) {
-      for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
-        let curRequest;
-        curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
-            data: {
-              DocID: this.state.queryIDs[key][i],
-            },
-            dataType: 'json',
-          }).then((value) => {
-          let queries = this.state.savedQueries;
+      if (this.state.queryIDs.hasOwnProperty(key)) {
+        for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
+          let curRequest;
+          curRequest = Promise.resolve(
+            $.ajax(
+              loris.BaseURL
+              + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID='
+              + encodeURIComponent(this.state.queryIDs[key][i])
+            ),
+            {
+              data: {
+                DocID: this.state.queryIDs[key][i],
+              },
+              dataType: 'json',
+            }
+          ).then((value) => {
+            let queries = this.state.savedQueries;
 
-          queries[value._id] = value;
-          this.setState({savedQueries: queries});
-        });
-        promises.push(curRequest);
+            queries[value._id] = value;
+            this.setState({savedQueries: queries});
+          });
+          promises.push(curRequest);
+        }
       }
     }
 
-    let allDone = Promise.all(promises).then((value) => {
+    Promise.all(promises).then((value) => {
       this.setState({'queriesLoaded': true});
     });
+
     $('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
       this.setState({
         ActiveTab: e.target.getAttribute('href').substr(1),
@@ -206,9 +267,13 @@ class DataQueryApp extends Component {
     });
   }
 
+  /**
+   * Save filter rule
+   * @param {object} rule - sets the filter rule
+   * @return {object}
+   */
   saveFilterRule(rule) {
     // Used to build a filter rule for saving query
-
     let savedRule = {
       field: rule.field,
       operator: rule.operator,
@@ -219,9 +284,13 @@ class DataQueryApp extends Component {
     return savedRule;
   }
 
+  /**
+   * Save filter group
+   * @param {object} group - sets the filter group for saving query.
+   * @return {object}
+   */
   saveFilterGroup(group) {
     // Used to build a filter group for saving query
-
     let savedFilter = {
       activeOperator: group.activeOperator,
       children: [],
@@ -237,44 +306,59 @@ class DataQueryApp extends Component {
     return savedFilter;
   }
 
+  /**
+   * Save current query
+   * @param {string} name
+   * @param {string} shared
+   * @param {boolean} override
+   */
   saveCurrentQuery(name, shared, override) {
     // Used to save the current query
-
     let filter = this.saveFilterGroup(this.state.filter);
 
-    $.post(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
-      Fields: this.state.selectedFields,
-      Filters: filter,
-      QueryName: name,
-      SharedQuery: shared,
-      OverwriteQuery: override,
-    }, (data) => {
-      // Once saved, add the query to the list of saved queries
-      let id = JSON.parse(data).id;
+    $.post(
+      loris.BaseURL
+      + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php',
+      {
+        Fields: this.state.selectedFields,
+        Filters: filter,
+        QueryName: name,
+        SharedQuery: shared,
+        OverwriteQuery: override,
+      },
+      (data) => {
+        // Once saved, add the query to the list of saved queries
+        let id = JSON.parse(data).id;
         let queryIDs = this.state.queryIDs;
-      if (!override) {
-        if (shared === true) {
-          queryIDs.Shared.push(id);
-        } else {
-          queryIDs.User.push(id);
+        if (!override) {
+          if (shared === true) {
+            queryIDs.Shared.push(id);
+          } else {
+            queryIDs.User.push(id);
+          }
         }
-      }
-      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + id,
-        (value) => {
-          let queries = this.state.savedQueries;
 
-          queries[value._id] = value;
-          this.setState({
-            savedQueries: queries,
-            queryIDs: queryIDs,
-            alertLoaded: false,
-            alertSaved: true,
-            alertConflict: {
-              show: false,
-            },
-          });
-        });
-    }).fail((data) => {
+        $.get(
+          loris.BaseURL
+            + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID='
+            + id,
+          (value) => {
+            let queries = this.state.savedQueries;
+
+            queries[value._id] = value;
+            this.setState({
+              savedQueries: queries,
+              queryIDs: queryIDs,
+              alertLoaded: false,
+              alertSaved: true,
+              alertConflict: {
+                show: false,
+              },
+            });
+          }
+        );
+      }
+    ).fail((data) => {
       if (data.status === 409) {
         this.setState({
           alertConflict: {
@@ -287,6 +371,9 @@ class DataQueryApp extends Component {
     });
   }
 
+  /**
+   * override query
+   */
   overrideQuery() {
     this.saveCurrentQuery(
       this.state.alertConflict.QueryName,
@@ -295,9 +382,12 @@ class DataQueryApp extends Component {
     );
   }
 
+  /**
+   * Used to load in a filter rule
+   * @param {object} rule
+   * @return {object} rule
+   */
   loadFilterRule(rule) {
-    // Used to load in a filter rule
-
     let script;
     if (!rule.type) {
       rule.type = 'rule';
@@ -306,7 +396,9 @@ class DataQueryApp extends Component {
     // Get given fields of the instrument for the rule.
     // This call is made synchronously
     $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
+      url: loris.BaseURL
+           + '/AjaxHelper.php'
+           + '?Module=dataquery&script=datadictionary.php',
       success: (data) => {
         rule.fields = data;
       },
@@ -393,9 +485,12 @@ class DataQueryApp extends Component {
     return rule;
   }
 
+  /**
+   * Used to load in a filter group
+   * @param {object} group
+   * @return {object} group
+   */
   loadFilterGroup(group) {
-    // Used to load in a filter group
-
     // Recursively load the children on the group
     for (let i = 0; i < group.children.length; i++) {
       if (group.children[i].activeOperator) {
@@ -411,9 +506,15 @@ class DataQueryApp extends Component {
     return group;
   }
 
+  /**
+   * Used to load a saved query
+   * Query can be saved in 2 formats:
+   * params can be arrays or objects
+   *
+   * @param {string[]|object} fields
+   * @param {object[]|object} criteria
+   */
   loadSavedQuery(fields, criteria) {
-    // Used to load a saved query
-
     let filterState = {};
       let selectedFields = {};
       let fieldsList = [];
@@ -466,14 +567,18 @@ class DataQueryApp extends Component {
           selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
           selectedFields[fieldSplit[0]].allVisits = {};
           for (let key in this.props.Visits) {
-            selectedFields[fieldSplit[0]].allVisits[key] = 1;
-            selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+            if (this.props.Visits.hasOwnProperty(key)) {
+              selectedFields[fieldSplit[0]].allVisits[key] = 1;
+              selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+            }
           }
         } else {
           selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
           for (let key in this.props.Visits) {
-            selectedFields[fieldSplit[0]].allVisits[key]++;
-            selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+            if (this.props.Visits.hasOwnProperty(key)) {
+              selectedFields[fieldSplit[0]].allVisits[key]++;
+              selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+            }
           }
         }
       }
@@ -482,9 +587,11 @@ class DataQueryApp extends Component {
       filterState = criteria;
       selectedFields = fields ? fields : {};
       for (let instrument in fields) {
-        for (let field in fields[instrument]) {
-          if (field !== 'allVisits') {
-            fieldsList.push(instrument + ',' + field);
+        if (fields.hasOwnProperty(instrument)) {
+          for (let field in fields[instrument]) {
+            if (field !== 'allVisits') {
+              fieldsList.push(instrument + ',' + field);
+            }
           }
         }
       }
@@ -526,6 +633,13 @@ class DataQueryApp extends Component {
     }
   }
 
+  /**
+   * Used to select visits for a given field
+   *
+   * @param {string} action
+   * @param {string} visit
+   * @param {object} field
+   */
   fieldVisitSelect(action, visit, field) {
     // Used to select visits for a given field
     this.setState((state) => {
@@ -555,9 +669,13 @@ class DataQueryApp extends Component {
     });
   }
 
+  /**
+   * Used to add and remove fields from the current query being built
+   * @param {object} fieldName
+   * @param {object} category
+   * @param {object} downloadable
+   */
   fieldChange(fieldName, category, downloadable) {
-    // Used to add and remove fields from the current query being built
-
     this.setState((state) => {
       let selectedFields = state.selectedFields;
         let fields = state.fields.slice(0);
@@ -565,11 +683,15 @@ class DataQueryApp extends Component {
         // The given category has no selected fields, add the category to the selectedFields
         selectedFields[category] = {};
         // Add all visits to the given field for the given category
-        selectedFields[category][fieldName] = JSON.parse(JSON.stringify(this.props.Visits));
+        selectedFields[category][fieldName] = JSON.parse(
+          JSON.stringify(this.props.Visits)
+        );
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
         for (let key in this.props.Visits) {
-          selectedFields[category].allVisits[key] = 1;
+          if (this.props.Visits.hasOwnProperty(key)) {
+            selectedFields[category].allVisits[key] = 1;
+          }
         }
 
         // Add field to the field list
@@ -632,9 +754,11 @@ class DataQueryApp extends Component {
     });
   }
 
+  /**
+   * Get the sessions to be selected
+   * @return {[]}
+   */
   getSessions() {
-    // Get the sessions to be selected
-
     if (this.state.filter.children.length > 0) {
       // If filter exists return filter sessions
       return this.state.filter.session;
@@ -644,22 +768,24 @@ class DataQueryApp extends Component {
     }
   }
 
-  runQuery(fields, sessions) {
-    // Run the current query
-
+  /**
+   * Run the current query
+   * @param {string[]} fields
+   */
+  runQuery(fields) {
     let DocTypes = [];
-      let semaphore = 0;
-      let sectionedSessions;
-      let ajaxComplete = () => {
-        // Wait until all ajax calls have completed before computing the rowdata
-        if (semaphore == 0) {
-          let rowdata = this.getRowData(this.state.grouplevel);
-          this.setState({
-            rowData: rowdata,
-            loading: false,
-          });
-        }
-      };
+    let semaphore = 0;
+    let sectionedSessions;
+    let ajaxComplete = () => {
+      // Wait until all ajax calls have completed before computing the rowdata
+      if (semaphore == 0) {
+        let rowdata = this.getRowData(this.state.grouplevel);
+        this.setState({
+          rowData: rowdata,
+          loading: false,
+        });
+      }
+    };
 
     // Reset the rowData and sessiondata
     this.setState({
@@ -670,8 +796,8 @@ class DataQueryApp extends Component {
 
     // Get list of DocTypes to be retrieved
     for (let i = 0; i < fields.length; i += 1) {
-      let field_split = fields[i].split(',');
-      let category = field_split[0];
+      let fieldSplit = fields[i].split(',');
+      let category = fieldSplit[0];
 
       // Check if the current category has already been queried, if so skip
       if (DocTypes.indexOf(category) === -1) {
@@ -680,17 +806,23 @@ class DataQueryApp extends Component {
         // Build the session data to be queried for the given category
         for (let j = 0; j < this.state.filter.session.length; j++) {
           if (Array.isArray(this.state.filter.session[j])) {
-            if (this.state.selectedFields[category].allVisits[this.state.filter.session[j][1]]) {
+            if (this.state.selectedFields[category].allVisits[
+              this.state.filter.session[j][1]
+            ]) {
               sessionInfo.push(this.state.filter.session[j]);
             }
           } else {
             for (let key in this.state.selectedFields[category].allVisits) {
-              let temp = [];
-
-              temp.push(this.state.filter.session[j]);
-              // Add the visit to the temp variable then add to the sessions to be queried
-              temp.push(key);
-              sessionInfo.push(temp);
+              if (this.state.selectedFields[
+                category
+                ].allVisits.hasOwnProperty(key)
+              ) {
+                let temp = [];
+                temp.push(this.state.filter.session[j]);
+                // Add the visit to the temp variable then add to the sessions to be queried
+                temp.push(key);
+                sessionInfo.push(temp);
+              }
             }
           }
         }
@@ -701,7 +833,9 @@ class DataQueryApp extends Component {
         sectionedSessions = JSON.stringify(sessionInfo);
         $.ajax({
           type: 'POST',
-          url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php',
+          url: loris.BaseURL
+               + '/AjaxHelper.php'
+               + '?Module=dataquery&script=retrieveCategoryDocs.php',
           data: {
             DocType: category,
             Sessions: sectionedSessions,
@@ -743,14 +877,16 @@ class DataQueryApp extends Component {
     }
   }
 
+  /**
+   * Build the queried data to be displayed in the data table
+   * @param {number} displayID
+   * @return {object}
+   */
   getRowData(displayID) {
-    // Build the queried data to be displayed in the data table
-
     let sessiondata = this.state.sessiondata;
-    let sessions = this.getSessions();
     let fields = this.state.fields.sort();
     let downloadableFields = this.state.downloadableFields;
-    let i; let j;
+    let i;
     let rowdata = [];
     let currow = [];
     let Identifiers = [];
@@ -768,44 +904,64 @@ class DataQueryApp extends Component {
 
       // Build the table rows, using the session data as the row identifier
       for (let session in sessiondata) {
-        currow = [];
-        for (i = 0; fields && i < fields.length; i += 1) {
-          let fieldSplit = fields[i].split(',');
-          currow[i] = '.';
-          let sd = sessiondata[session];
-          if (sd[fieldSplit[0]] && sd[fieldSplit[0]].data[fieldSplit[1]] && downloadableFields[fields[i]]) {
-            // If the current field has data and is downloadable, create a download link
-            href = loris.BaseURL + '/mri/jiv/get_file.php?file=' + sd[fieldSplit[0]].data[fieldSplit[1]];
-            currow[i] = (
-              <a href={href}>
-                {sd[fieldSplit[0]].data[fieldSplit[1]]}
-              </a>
-            );
-            fileData.push('file/' + sd[fieldSplit[0]]._id + '/' + encodeURIComponent(sd[fieldSplit[0]].data[fieldSplit[1]]));
-          } else if (sd[fieldSplit[0]]) {
-            // else if field is not null add data and string
-            currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
+        if (sessiondata.hasOwnProperty(session)) {
+          currow = [];
+          for (i = 0; fields && i < fields.length; i += 1) {
+            let fieldSplit = fields[i].split(',');
+            currow[i] = '.';
+            let sd = sessiondata[session];
+            if (sd[fieldSplit[0]]
+                && sd[fieldSplit[0]].data[fieldSplit[1]]
+                && downloadableFields[fields[i]]
+            ) {
+              // If the current field has data and is downloadable, create a download link
+              href = loris.BaseURL
+                    + '/mri/jiv/get_file.php?file='
+                    + sd[fieldSplit[0]].data[fieldSplit[1]];
+              currow[i] = (
+                <a href={href}>
+                  {sd[fieldSplit[0]].data[fieldSplit[1]]}
+                </a>
+              );
+              fileData.push(
+                'file/'
+                + sd[fieldSplit[0]]._id
+                + '/' + encodeURIComponent(
+                  sd[fieldSplit[0]].data[fieldSplit[1]])
+                );
+            } else if (sd[fieldSplit[0]]) {
+              // else if field is not null add data and string
+              currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
+            }
           }
+          rowdata.push(currow);
+          Identifiers.push(session);
         }
-        rowdata.push(currow);
-        Identifiers.push(session);
       }
     } else {
       // Displaying the data in the longitudinal way
 
       let Visits = {};
-        let visit; let identifier; let temp; let colHeader; let index; let instrument; let fieldSplit;
+      let visit;
+      let identifier;
+      let temp;
+      let colHeader;
+      let index;
+      let instrument;
+      let fieldSplit;
 
       // Loop trough session data building the row identifiers and desired visits
       for (let session in sessiondata) {
-        temp = session.split(',');
-        visit = temp[1];
-        if (!Visits[visit]) {
-          Visits[visit] = true;
-        }
-        identifier = temp[0];
-        if (Identifiers.indexOf(identifier) === -1) {
-          Identifiers.push(identifier);
+        if (sessiondata.hasOwnProperty(session)) {
+          temp = session.split(',');
+          visit = temp[1];
+          if (!Visits[visit]) {
+            Visits[visit] = true;
+          }
+          identifier = temp[0];
+          if (Identifiers.indexOf(identifier) === -1) {
+            Identifiers.push(identifier);
+          }
         }
       }
 
@@ -813,51 +969,73 @@ class DataQueryApp extends Component {
       // has been selected in the build phase
       for (i = 0; fields && i < fields.length; i += 1) {
         for (visit in Visits) {
-          temp = fields[i].split(',');
-          instrument = this.state.selectedFields[temp[0]];
-          if (instrument && instrument[temp[1]] && instrument[temp[1]][visit]) {
-            RowHeaders.push(visit + ' ' + fields[i]);
+          if (Visits.hasOwnProperty(visit)) {
+            temp = fields[i].split(',');
+            instrument = this.state.selectedFields[temp[0]];
+            if (instrument
+                && instrument[temp[1]]
+                && instrument[temp[1]][visit]
+            ) {
+              RowHeaders.push(visit + ' ' + fields[i]);
+            }
           }
         }
       }
 
       // Build the row data for the giving identifiers and headers
       for (identifier in Identifiers) {
-        currow = [];
-        for (colHeader in RowHeaders) {
-          temp = Identifiers[identifier] + ',' + RowHeaders[colHeader].split(' ')[0];
-          index = sessiondata[temp];
-          if (!index) {
-            currow.push('.');
-          } else {
-            temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
-            fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
-            if (temp) {
-              if (temp.data[RowHeaders[colHeader].split(',')[1]] && downloadableFields[fieldSplit[0] + ',' + fieldSplit[1]]) {
-                // Add a downloadable link if the field is set and downloadable
-                href = loris.BaseURL + '/mri/jiv/get_file.php?file=' + temp.data[RowHeaders[colHeader].split(',')[1]];
-                temp = (
-                  <a href={href}>
-                    {temp.data[RowHeaders[colHeader].split(',')[1]]}
-                  </a>
-                );
+        if (Identifiers.hasOwnProperty(identifier)) {
+          currow = [];
+          for (colHeader in RowHeaders) {
+            if (RowHeaders.hasOwnProperty(colHeader)) {
+              temp = Identifiers[identifier]
+                    + ','
+                    + RowHeaders[colHeader].split(' ')[0];
+              index = sessiondata[temp];
+              if (!index) {
+                currow.push('.');
               } else {
-                temp = temp.data[RowHeaders[colHeader].split(',')[1]];
+                temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
+                fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
+                if (temp) {
+                  if (temp.data[RowHeaders[colHeader].split(',')[1]]
+                      && downloadableFields[fieldSplit[0] + ',' + fieldSplit[1]]
+                  ) {
+                    // Add a downloadable link if the field is set and downloadable
+                    href = loris.BaseURL
+                          + '/mri/jiv/get_file.php?file='
+                          + temp.data[RowHeaders[colHeader].split(',')[1]];
+                    temp = (
+                      <a href={href}>
+                        {temp.data[RowHeaders[colHeader].split(',')[1]]}
+                      </a>
+                    );
+                  } else {
+                    temp = temp.data[RowHeaders[colHeader].split(',')[1]];
+                  }
+                } else {
+                  temp = '.';
+                }
+                currow.push(temp);
               }
-            } else {
-              temp = '.';
             }
-            currow.push(temp);
           }
+          rowdata.push(currow);
         }
-        rowdata.push(currow);
       }
     }
-    return {rowdata: rowdata, Identifiers: Identifiers, RowHeaders: RowHeaders, fileData: fileData};
+    return {
+      rowdata: rowdata,
+      Identifiers: Identifiers,
+      RowHeaders: RowHeaders,
+      fileData: fileData,
+    };
   }
 
+  /**
+   * Used to dismiss alerts
+   */
   dismissAlert() {
-    // Used to dismiss alerts
     this.setState({
       alertLoaded: false,
       alertSaved: false,
@@ -867,8 +1045,10 @@ class DataQueryApp extends Component {
     });
   }
 
+  /**
+   * Used to reset the current query
+   */
   resetQuery() {
-    // Used to reset the current query
     this.setState({
       fields: [],
       criteria: {},
@@ -876,8 +1056,11 @@ class DataQueryApp extends Component {
     });
   }
 
+  /**
+   * Change the display format of the data table
+   * @param {number} displayID
+   */
   changeDataDisplay(displayID) {
-    // Change the display format of the data table
     let rowdata = this.getRowData(displayID);
     this.setState({
       grouplevel: displayID,
@@ -885,19 +1068,24 @@ class DataQueryApp extends Component {
     });
   }
 
+  /**
+   * Update the filter
+   * @param {object} filter
+   */
   updateFilter(filter) {
-    // Update the filter
     if (filter.children.length === 0) {
       filter.session = this.props.AllSessions;
     }
     this.setState({filter});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    // Renders the html for the component
-
     let tabs = [];
-    let tabsNav = [];
     let alert = <div/>;
 
     // Add the info tab
@@ -936,7 +1124,9 @@ class DataQueryApp extends Component {
     );
 
     // Define the data displayed type and add the view data tab
-    let displayType = (this.state.grouplevel === 0) ? 'Cross-sectional' : 'Longitudinal';
+    let displayType = (this.state.grouplevel === 0) ?
+      'Cross-sectional' :
+      'Longitudinal';
     tabs.push(<ViewDataTabPane
       key='ViewData'
       TabId='ViewData'
@@ -981,7 +1171,12 @@ class DataQueryApp extends Component {
     if (this.state.alertLoaded) {
       alert = (
         <div className='alert alert-success' role='alert'>
-          <button type='button' className='close' aria-label='Close' onClick={this.dismissAlert}>
+          <button
+            type='button'
+            className='close'
+            aria-label='Close'
+            onClick={this.dismissAlert}
+          >
             <span aria-hidden='true'>&times;</span>
           </button>
           <strong>Success</strong> Query Loaded.
@@ -993,7 +1188,12 @@ class DataQueryApp extends Component {
     if (this.state.alertSaved) {
       alert = (
         <div className='alert alert-success' role='alert'>
-          <button type='button' className='close' aria-label='Close' onClick={this.dismissAlert}>
+          <button
+            type='button'
+            className='close'
+            aria-label='Close'
+            onClick={this.dismissAlert}
+          >
             <span aria-hidden='true'>&times;</span>
           </button>
           <strong>Success</strong> Query Saved.
@@ -1005,14 +1205,26 @@ class DataQueryApp extends Component {
     if (this.state.alertConflict.show) {
       alert = (
         <div className='alert alert-warning' role='alert'>
-          <button type='button' className='close' aria-label='Close' onClick={this.dismissAlert}>
+          <button
+            type='button'
+            className='close'
+            aria-label='Close'
+            onClick={this.dismissAlert}
+          >
             <span aria-hidden='true'>&times;</span>
           </button>
-          <button type='button' className='close' aria-label='Close' onClick={this.dismissAlert}>
+          <button
+            type='button'
+            className='close'
+            aria-label='Close'
+            onClick={this.dismissAlert}
+          >
             <span aria-hidden='true'>Override</span>
           </button>
           <strong>Error</strong> Query with the same name already exists.
-          <a href='#' class='alert-link' onClick={this.overrideQuery}>Click here to override</a>
+          <a href='#' class='alert-link' onClick={this.overrideQuery}>
+            Click here to override
+          </a>
         </div>
       );
     }
@@ -1040,11 +1252,24 @@ class DataQueryApp extends Component {
       <div className={widthClass}>
         <nav className='nav nav-tabs'>
           <ul className='nav nav-tabs navbar-left' data-tabs='tabs'>
-            <li role='presentation' onClick={this.onTabChangeHandler} className='active'><a href='#Info' data-toggle='tab'>Info</a></li>
-            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#DefineFields' data-toggle='tab'>Define Fields</a></li>
-            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#DefineFilters' data-toggle='tab'>Define Filters</a></li>
-            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#ViewData' data-toggle='tab'>View Data</a></li>
-            <li role='presentation' onClick={this.onTabChangeHandler}><a href='#Statistics' data-toggle='tab'>Statistical Analysis</a></li>
+            <li role='presentation'
+              onClick={this.onTabChangeHandler}
+              className='active'
+            >
+              <a href='#Info' data-toggle='tab'>Info</a>
+            </li>
+            <li role='presentation' onClick={this.onTabChangeHandler}>
+              <a href='#DefineFields' data-toggle='tab'>Define Fields</a>
+            </li>
+            <li role='presentation' onClick={this.onTabChangeHandler}>
+              <a href='#DefineFilters' data-toggle='tab'>Define Filters</a>
+            </li>
+            <li role='presentation' onClick={this.onTabChangeHandler}>
+              <a href='#ViewData' data-toggle='tab'>View Data</a>
+            </li>
+            <li role='presentation' onClick={this.onTabChangeHandler}>
+              <a href='#Statistics' data-toggle='tab'>Statistical Analysis</a>
+            </li>
           </ul>
           <SavedQueriesList
             userQueries={this.state.queryIDs.User}
