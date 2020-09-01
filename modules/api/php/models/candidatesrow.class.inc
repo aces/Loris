@@ -81,4 +81,18 @@ class CandidatesRow implements \LORIS\Data\DataInstance
         }
         return intval($this->_centerid);
     }
+
+    /**
+     * Returns the ProjectID for this row, for filters such as
+     * \LORIS\Data\Filters\UserProjectMatch to match against.
+     *
+     * @return string ProjectID
+     */
+    public function getProjectID(): int
+    {
+        if ($this->_projectname === null) {
+            throw new \Exception('ProjectID is null');
+        }
+        return intval($this->_projectname);
+    }
 }
