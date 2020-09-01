@@ -58,16 +58,10 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $values['identifier'] = isset($values['identifier']) ?
             intval($values['identifier']) : null;
         // User permission verification.
-        $values = $this->_verifyPermissions($request, $values);
-        if (isset($values['error'])) {
-            switch ($values['error']) {
-            case 'Forbidden':
-                return new \LORIS\Http\Response\JSON\Forbidden(
-                    'Forbidden'
-                );
-            default:
-                break;
-            }
+        if (!$this->_verifyCreatePermissions($request, $values)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Forbidden'
+            );
         }
 
         // Setup variables
@@ -170,8 +164,10 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $values = $this->_validate($values);
 
         // User permission verification.
-        $values = $this->_verifyPermissions($request, $values);
-        if (isset($values['error'])) {
+        if (!$this->_verifyCreatePermissions($request, $values)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Forbidden'
+            );
             switch ($values['error']) {
             case 'BadRequest':
                 return new \LORIS\Http\Response\JSON\BadRequest(
@@ -301,23 +297,22 @@ class Timepoint extends \NDB_Page implements ETagCalculator
      * @param ServerRequestInterface $request The incoming PSR7 request.
      * @param array                  $values  The form values.
      *
-     * @return array
+     * @return bool
      */
-    private function _verifyPermissions(
+    private function _verifyCreatePermissions(
         ServerRequestInterface $request,
         array $values
-    ) : array {
+    ) : bool {
         $user      = $request->getAttribute('user');
         $candidate = \Candidate::singleton(
             new CandID($values['candID'])
         );
         if (!$user->hasPermission('data_entry')
-            && !$user->hasCenter($candidate->getCenterID())
+            || !$user->hasCenter($candidate->getCenterID())
         ) {
-            $values['error'] = 'Forbidden';
-            return $values;
+            return false;
         }
-        return $values;
+        return true;
     }
     /**
      * Returns true if the user has permission to access
@@ -330,9 +325,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     function _hasAccess(\User $user) : bool
     {
         // check user permissions
-        return (
-        $user->hasPermission('data_entry')
-        );
+        return $user->hasPermission('data_entry');
     }
     /**
      * An ETagCalculator provides the ability to calculate an ETag for
