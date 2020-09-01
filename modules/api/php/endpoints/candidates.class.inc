@@ -156,10 +156,6 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->filter($filter)
             ->filter(new \LORIS\Data\Filters\UserProjectMatch());
 
-        $provisioner = $provisioner->filter(
-            new \LORIS\Data\Filters\UserProjectMatch()
-        );
-
         $candidates = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->toArray($request->getAttribute('user'));

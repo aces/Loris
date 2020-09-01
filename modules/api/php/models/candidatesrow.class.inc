@@ -24,7 +24,6 @@ class CandidatesRow implements \LORIS\Data\DataInstance
 {
     private $_candid;
     private $_projectname;
-    private $_projectid;
     private $_pscid;
     private $_sitename;
     private $_edc;
@@ -41,7 +40,6 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     {
         $this->_candid      = $row['CandID'] ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
-        $this->_projectid   = $row['ProjectID'] ?? null;
         $this->_pscid       = $row['PSCID'] ?? null;
         $this->_sitename    = $row['SiteName'] ?? null;
         $this->_edc         = $row['EDC'] ?? null;
@@ -60,7 +58,6 @@ class CandidatesRow implements \LORIS\Data\DataInstance
         $obj = [
             'CandID'    => $this->_candid,
             'Project'   => $this->_projectname,
-            'ProjectID' => $this->_projectid,
             'PSCID'     => $this->_pscid,
             'Site'      => $this->_sitename,
             'EDC'       => $this->_edc,
@@ -84,6 +81,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
         }
         return intval($this->_centerid);
     }
+<<<<<<< 72ee8e88da77ef65873b9011dad6834213389155
 
     /**
      * Returns the ProjectID for this row, for filters such as
@@ -117,4 +115,6 @@ class CandidatesRow implements \LORIS\Data\DataInstance
         return intval($this->_projectid);
 >>>>>>> [API] Candidates are now filtered by allowed project ids
     }
+=======
+>>>>>>> [API] changes version in new spec document and removes other errors
 }
