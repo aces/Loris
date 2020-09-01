@@ -198,11 +198,13 @@ Here is a general workflow:
 ### Fixing a rebase gone wrong
 1. The most basic way of “fixing” a rebase gone wrong is to go back to the commit right before the rebase. The easiest way to do this is to either reset or revert to a previous commit. **Note** that this is a potentially destructive command, so be very cautious when using it. It is also recommended that you make a backup of your branch before performing these commands so that you don't lose any changes. 
 For example:  
+
     ```
     git reset --hard <commit_hash>
     git push --force-with-lease my_fork branch_name
     ```
 2. A more complicated tool that can be used to solve bigger rebasing errors is the command [`git cherry-pick`](https://git-scm.com/docs/git-cherry-pick). This command allows you to pick specific commits to apply to a branch. For example, if you rebase the wrong branch or your PR is incorrectly displaying all the commits or files from the branch you rebased, this tool will come in handy. Here is an example workflow:  
+
     ```
     git checkout branch_name          # The branch that got messed up :(
     git branch -m "temp_branch_name"  # Change the branch name locally:
