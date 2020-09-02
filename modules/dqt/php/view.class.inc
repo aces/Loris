@@ -91,7 +91,7 @@ class View extends \NDB_Page
             if (!is_numeric($value) && $value !== "null") {
                 $value = "\"$value\"";
             }
-            $results        = $cdb->queryView(
+            $resultsExtra   = $cdb->queryView(
                 "DQG-2.0",
                 "search",
                 [
@@ -103,19 +103,23 @@ class View extends \NDB_Page
                 function ($element) {
                     return $element['value'];
                 },
-                $results
+                $resultsExtra
             );
 
             // Populates rule.candidates and rule.session
             $visits   = [];
             $sessions = [];
-            for ($k=0; $k<count($sessionResults); $k++) {
-                $session = $sessionResults[$k];
-                array_push($visits, $session[1]);
-                $session_keys          = [$session[0], $session[0]];
-                $sessions[$session[1]] = $session_keys;
+            if (!empty($sessionResults)) {
+                for ($k=0; $k<count($sessionResults); $k++) {
+                    $session = $sessionResults[$k];
+                    array_push($visits, $session[1]);
+                    $session_keys          = [$session[0], $session[0]];
+                    $sessions[$session[1]] = $session_keys;
+                }
             }
-            $candidates = [$sessionResults[0][0] => $visits];
+            $candidates = empty($sessionResults)
+                ? []
+                : [$sessionResults[0][0] => $visits];
 
             $candidatesResult['allCandidates'] = $candidates;
             $candidatesResult['allSessions']   = $sessions;
