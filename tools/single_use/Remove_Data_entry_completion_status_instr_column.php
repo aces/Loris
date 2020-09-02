@@ -33,9 +33,6 @@ $dropColumnPatch = "";
 foreach ($instruments as $instrument) {
     print_r("Generating patch for $instrument\n");
 
-//    $instr = NDB_BVL_Instrument::factory($instrument);
-//    $instrumentTable = $instr->table;
-
     $dropColumnPatch = $dropColumnPatch . "-- Drop Data_entry_completion_status for $instrument\n".
         "ALTER TABLE $instrument \n".
         "\tDROP COLUMN Data_entry_completion_status;\n\n";
@@ -47,5 +44,5 @@ $fp       = fopen($filename, "w");
 fwrite($fp, $dropColumnPatch);
 fclose($fp);
 
-print_r("\nComplete. See /../../SQL/Cleanup_patches/Remove_Data_entry_completion_status.sql for patch.\n");
+print_r("\nComplete. See ". __DIR__ ."../../SQL/Cleanup_patches/Remove_Data_entry_completion_status.sql for patch.\n");
 

@@ -1503,7 +1503,7 @@ class NDB_BVL_Instrument_Test extends TestCase
 
     /**
      * Test that _setDataEntryCompletionStatus correctly sets the
-     * 'Data_entry_completion_status value in the instrument table
+     * 'Data_entry_completion_status value
      *
      * @covers NDB_BVL_Instrument::_setDataEntryCompletionStatus
      * @return void
@@ -1515,8 +1515,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->_instrument->_setDataEntryCompletionStatus('Complete');
-        $data = $this->_instrument->getInstanceData();
-        $this->assertEquals('Complete', $data['Data_entry_completion_status']);
+        $status = $this->_instrument->getDataEntryCompletionStatus();
+        $this->assertEquals('Complete', $status);
     }
 
     /**
@@ -1637,7 +1637,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS conflicts_unresolved");
         $this->assertEquals(null, $data['Examiner']);
-        $this->assertEquals('Incomplete', $data['Data_entry_completion_status']);
+        $status = $this->_instrument->getDataEntryCompletionStatus();
+        $this->assertEquals('Incomplete', $status);
         $this->assertEquals(
             $conflicts_data,
             $conflictsBefore
@@ -1866,6 +1867,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             "medical_history",
             [
                 [
+<<<<<<< HEAD
                     'CommentID'                    => 'commentID1',
                     'UserID'                       => '456',
                     'Examiner'                     => 'Test Examiner1',
@@ -1878,6 +1880,18 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'Examiner'                     => 'Test Examiner2',
                     'Date_taken'                   => '2010-05-05 00:00:01',
                     'Data_entry_completion_status' => 'Incomplete'
+=======
+                    'CommentID' => 'commentID1',
+                    'UserID' => '456',
+                    'Examiner' => 'Test Examiner1',
+                    'Date_taken' => '2010-05-05 00:00:01',
+                ],
+                [
+                    'CommentID' => 'commentID2',
+                    'UserID' => '457',
+                    'Examiner' => 'Test Examiner2',
+                    'Date_taken' => '2010-05-05 00:00:01',
+>>>>>>> dec5d9b... Test + imaging_qc query
                 ],
             ]
         );
