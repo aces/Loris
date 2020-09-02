@@ -168,18 +168,6 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Forbidden'
             );
-            switch ($values['error']) {
-            case 'BadRequest':
-                return new \LORIS\Http\Response\JSON\BadRequest(
-                    'Failed to retrieve data for create timepoint.'
-                );
-            case 'Forbidden':
-                return new \LORIS\Http\Response\JSON\Forbidden(
-                    'Forbidden'
-                );
-            default:
-                break;
-            }
         }
 
         // convert site entered to a \Site object
