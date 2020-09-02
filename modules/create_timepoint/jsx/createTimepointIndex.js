@@ -14,9 +14,12 @@ import swal from 'sweetalert2';
  *
  */
 class CreateTimepoint extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
-
     this.state = {
       data: {
         pscid: '',
