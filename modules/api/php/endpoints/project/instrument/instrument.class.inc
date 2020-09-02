@@ -115,7 +115,10 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if (isset($this->_cache)) {
             return $this->_cache;
         }
-        $commentIDs = $this->_project->getCandidateCommentIds();
+        $commentIDs = $this->_project->getCandidateCommentIds(
+            $this->_instrumentname
+        );
+        # var_dump($this->_instrumentname);
         $instrument = \NDB_BVL_Instrument::factory(
             $this->_instrumentname,
             $commentIDs[1],

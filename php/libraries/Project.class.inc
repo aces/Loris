@@ -424,6 +424,45 @@ class Project implements \JsonSerializable
     }
 
     /**
+     * Get that project's participants
+     *
+     * @return array A list of object representation of a basic candidates
+     */
+    public function getCandidateCommentIds(string $instrument): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $p = [$this->_projectId];
+        $candidatesData = $factory->database()->pselect(
+            "
+            SELECT
+              f.CommentID,
+              c.RegistrationProjectID
+            FROM
+              flag as f
+            LEFT JOIN participant_accounts as ps
+              ON f.CommentID = ps.CommentID
+            LEFT JOIN session as s
+              ON ps.SessionID = s.ID
+            LEFT JOIN candidate as c
+              ON s.CandID = c.CandID
+            WHERE
+              FIND_IN_SET(IFNULL(c.RegistrationProjectID, '-1'), :v_project_id) AND
+              f.Test_name = :v_instrument   
+             ",
+            [
+                'v_project_id' => implode(',', $p),
+                'v_instrument' => $instrument,
+            ]
+        );
+        return array_map(
+            function ($row) {
+                return $row['CommentID'];
+            },
+            $candidatesData
+        );
+    }
+
+    /**
      * Inserts new subproject IDs into the database, creating a relationship
      * between them and this project.
      *
