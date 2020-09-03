@@ -435,24 +435,17 @@ class Project implements \JsonSerializable
         $candidatesData = $factory->database()->pselect(
             "
             SELECT
-              f.CommentID,
-              c.RegistrationProjectID
+              i.CommentID
             FROM
-              flag as f
+              $instrument as i
             LEFT JOIN participant_accounts as ps
-              ON f.CommentID = ps.CommentID
+              ON i.CommentID = ps.CommentID
             LEFT JOIN session as s
               ON ps.SessionID = s.ID
             LEFT JOIN candidate as c
               ON s.CandID = c.CandID
-            WHERE
-              FIND_IN_SET(IFNULL(c.RegistrationProjectID, '-1'), :v_project_id) AND
-              f.Test_name = :v_instrument   
              ",
-            [
-                'v_project_id' => implode(',', $p),
-                'v_instrument' => $instrument,
-            ]
+            []
         );
         return array_map(
             function ($row) {
