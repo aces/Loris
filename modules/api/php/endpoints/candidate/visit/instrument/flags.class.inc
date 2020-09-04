@@ -93,6 +93,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         switch ($request->getMethod()) {
         case 'GET':
             return $this->_handleGET($request);
+
         case 'PUT':
             return $this->_handlePUT($request);
         case 'PATCH':
@@ -136,9 +137,9 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
         // TODO :: Check permissions. How??
-        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
-        $this->_instrumentStatus->select($this->_instrument->commentID);
-
+        $this->_instrumentStatus = (new \NDB_BVL_InstrumentStatus())->select(
+            $this->_instrument->commentID
+        );
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -182,8 +183,9 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
         // TODO :: Check permissions. How??
-        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
-        $this->_instrumentStatus->select($this->_instrument->commentID);
+        $this->_instrumentStatus = (new \NDB_BVL_InstrumentStatus())->select(
+            $this->_instrument->commentID
+        );
 
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -200,17 +202,17 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            if ($data['Flags']['Data_entry'] !== null) {
+            if (array_key_exists('Data_entry', $data['Flags'])) {
                 $this->_instrumentStatus->setDataEntryStatus(
                     $data['Flags']['Data_entry']
                 );
             }
-            if ($data['Flags']['Administration'] !== null) {
+            if (array_key_exists('Administration', $data['Flags'])) {
                 $this->_instrumentStatus->setAdministrationStatus(
                     $data['Flags']['Administration']
                 );
             }
-            if ($data['Flags']['Validity'] !== null) {
+            if (array_key_exists('Validity', $data['Flags'])) {
                 $this->_instrumentStatus->setValidityStatus(
                     $data['Flags']['Validity']
                 );
