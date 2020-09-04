@@ -426,12 +426,14 @@ class Project implements \JsonSerializable
     /**
      * Get that project's participants
      *
+     * @param string $instrument The name of the instrument for
+     *                           which to get a list of candidates CommentIDs.
+     *
      * @return array A list of object representation of a basic candidates
      */
     public function getCandidateCommentIds(string $instrument): array
     {
-        $factory = \NDB_Factory::singleton();
-        $p = [$this->_projectId];
+        $factory        = \NDB_Factory::singleton();
         $candidatesData = $factory->database()->pselect(
             "
             SELECT

@@ -43,8 +43,8 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param string  $instrumentname The name of the requested instrument
-     * @param Project $project        Object \Project
+     * @param string   $instrumentname The name of the requested instrument
+     * @param \Project $project        Object \Project
      */
     public function __construct(string $instrumentname, \Project $project)
     {
