@@ -75,6 +75,18 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
         );
         $this->assertSame(
             gettype(
+                $dicomArray['DicomTars']['0']['Tarname']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $dicomArray['DicomTars']['0']['Patientname']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
                 $dicomArray['DicomTars']['0']['SeriesInfo']['0']
             ),
             'array'
@@ -148,6 +160,10 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
         );
         $this->assertArrayHasKey(
             'Tarname',
+            $dicomArray['DicomTars']['0']
+        );
+        $this->assertArrayHasKey(
+            'Patientname',
             $dicomArray['DicomTars']['0']
         );
 
