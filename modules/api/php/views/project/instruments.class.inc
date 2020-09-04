@@ -69,9 +69,6 @@ class Instruments
                 'Shortname'              => $instrument->getShortname(),
                 'Subgroup'               => $instrument->getSubgroupname(),
                 'DoubleDataEntryEnabled' => $instrument->isDDE(),
-                'Candidates'             => $this->_project->getCandidateCommentIds(
-                    $instrument->getShortname()
-                ),
             ];
 
             if (!is_null($shortname)) {
