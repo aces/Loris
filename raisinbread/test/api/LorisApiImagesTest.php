@@ -67,6 +67,10 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             gettype($imagesArray['Files']['0']['AcquisitionType']),
             'string'
         );
+        $this->assertSame(
+            gettype($imagesArray['Files']['0']['IsPhantom']),
+            'boolean'
+        );
 
         $this->assertArrayHasKey('Meta', $imagesArray);
         $this->assertArrayHasKey('CandID', $imagesArray['Meta']);
@@ -75,6 +79,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
         $this->assertArrayHasKey('OutputType', $imagesArray['Files']['0']);
         $this->assertArrayHasKey('Filename', $imagesArray['Files']['0']);
         $this->assertArrayHasKey('AcquisitionType', $imagesArray['Files']['0']);
+        $this->assertArrayHasKey('IsPhantom', $imagesArray['Files']['0']);
     }
 
     /**
