@@ -19,6 +19,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
     protected $projectName = "Pumpernickel";
+    protected $instrument  = "bmi";
 
     /**
      * Tests the HTTP GET request for the endpoint /projects
@@ -519,6 +520,130 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
      */
     public function testGetProjectsProjectInstrumentsInstrument(): void
     {
-        $this->markTestSkipped('Missing data in docker image');
+        $response = $this->client->request(
+            'GET',
+            "projects/$this->projectName/instruments/$this->_instrument",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $projectsInstrInstrArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+
+        $this->assertSame(
+            gettype($projectsInstrInstrArray['Meta']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsInstrInstrArray['Meta']['InstrumentVersion']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrInstrArray['Meta']['InstrumentFormatVersion']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrInstrArray['Meta']['ShortName']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrInstrArray['Meta']['LongName']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrInstrArray['Meta']['IncludeMetaDataFields']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsInstrInstrArray['Elements']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsInstrInstrArray['Instruments']['0']),
+            'array'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsInstrInstrArray['Instruments']['0']['Type']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsInstrInstrArray['Instruments']['0']['Name']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsInstrInstrArray['Instruments']['0']['Description']
+            ),
+            'string'
+        );
+        $this->assertSame(
+            gettype(
+                $projectsInstrInstrArray['Instruments']['0']['Options']
+            ),
+            'array'
+        );
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $projectsInstrInstrArray
+        );
+        $this->assertArrayHasKey(
+            'InstrumentVersion',
+            $projectsInstrInstrArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'InstrumentFormatVersion',
+            $projectsInstrInstrArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'ShortName',
+            $projectsInstrInstrArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'LongName',
+            $projectsInstrInstrArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'IncludeMetaDataFields',
+            $projectsInstrInstrArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Elements',
+            $projectsInstrInstrArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $projectsInstrInstrArray['Elements']
+        );
+        $this->assertArrayHasKey(
+            'Type',
+            $projectsInstrInstrArray['Elements']['0']
+        );
+        $this->assertArrayHasKey(
+            'Name',
+            $projectsInstrInstrArray['Elements']['0']
+        );
+        $this->assertArrayHasKey(
+            'Description',
+            $projectsInstrInstrArray['Elements']['0']
+        );
+        $this->assertArrayHasKey(
+            'Options',
+            $projectsInstrInstrArray['Elements']['0']
+        );
     }
 }
