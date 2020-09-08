@@ -57,12 +57,6 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         // Verify identifier from GET query.
         $values['identifier'] = isset($values['identifier']) ?
             intval($values['identifier']) : null;
-        // User permission verification.
-        if (!$this->_verifyCreatePermissions($request, $values)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Forbidden'
-            );
-        }
 
         // Setup variables
         $conflict       = []; // conflict messages.
@@ -163,13 +157,6 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         // Validate POST data.
         $values = $this->_validate($values);
 
-        // User permission verification.
-        if (!$this->_verifyCreatePermissions($request, $values)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Forbidden'
-            );
-        }
-
         // convert site entered to a \Site object
         $user = \User::singleton();
 
@@ -186,7 +173,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $project = null;
         $user_list_of_projects = $user->getProjectIDs();
         if (count($user_list_of_projects) == 1) {
-            //if there is only one project, autoselect first project from array of 1
+            // if there is only one project, autoselect first project from array of 1
             $project = \Project::getProjectFromID(array_pop($user_list_of_projects));
         } else if (count($user_list_of_projects) > 1) {
             $project_id = intval($values['psc']);
@@ -279,29 +266,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
         return $values;
     }
-    /**
-     * Permission verification.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     * @param array                  $values  The form values.
-     *
-     * @return bool
-     */
-    private function _verifyCreatePermissions(
-        ServerRequestInterface $request,
-        array $values
-    ) : bool {
-        $user      = $request->getAttribute('user');
-        $candidate = \Candidate::singleton(
-            new CandID($values['candID'])
-        );
-        if (!$user->hasPermission('data_entry')
-            || !$user->hasCenter($candidate->getCenterID())
-        ) {
-            return false;
-        }
-        return true;
-    }
+
     /**
      * Returns true if the user has permission to access
      * the Create Timepoint module
@@ -313,7 +278,15 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     function _hasAccess(\User $user) : bool
     {
         // check user permissions
-        return $user->hasPermission('data_entry');
+        $candidate = \Candidate::singleton(new CandID($this->identifier));
+        return (
+            $user->hasPermission('data_entry') &&
+            (in_array(
+                $candidate->getData('RegistrationCenterID'),
+                $user->getData('CenterIDs')
+            )
+            )
+        );
     }
     /**
      * An ETagCalculator provides the ability to calculate an ETag for
