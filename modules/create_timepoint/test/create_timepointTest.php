@@ -76,15 +76,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better.'
         );
-        // $this->_createTimepoint('900000', 'Stale', 'V1');
-        // $bodyText = $this->webDriver->findElement(
-        // WebDriverBy::cssSelector("body")
-        // )->getText();
-        // $this->assertContains(
-        //    "New time point successfully registered",
-        //    $bodyText
-        // );
-
     }
 
     /**

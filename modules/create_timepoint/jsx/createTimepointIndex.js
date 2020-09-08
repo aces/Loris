@@ -92,7 +92,7 @@ class CreateTimepoint extends React.Component {
    */
   collectParams() {
     const url = new URL(window.location.href);
-    const state = Object.assign({}, this.state);
+    const state = JSON.parse(JSON.stringify(this.state));
     state.url.params = {
       candID: url.searchParams.get('candID'),
       identifier: url.searchParams.get('identifier'),
