@@ -92,13 +92,15 @@ class CreateTimepoint extends React.Component {
    */
   collectParams() {
     const url = new URL(window.location.href);
-    const state = JSON.parse(JSON.stringify(this.state));
+    // const state = JSON.parse(JSON.stringify(this.state));
+    const state = Object.assign({}, this.state);
     state.url.params = {
       candID: url.searchParams.get('candID'),
       identifier: url.searchParams.get('identifier'),
     };
     state.data.dccid = state.url.params.candID;
     this.setState(state);
+    console.log(state);
   }
 
   /**
@@ -107,7 +109,8 @@ class CreateTimepoint extends React.Component {
    * @return {object}
    */
   fetchInitializerData() {
-    const state = Object.assign({}, this.state);
+    const state = JSON.parse(JSON.stringify(this.state));
+    console.log(state);
     return fetch(
       this.props.baseURL +
       '/create_timepoint/Timepoint?candID=' + state.url.params.candID +
@@ -115,50 +118,55 @@ class CreateTimepoint extends React.Component {
       {
         credentials: 'same-origin',
       }
-    ).then((response) => response.json())
-      .then((data) => {
-        const state = Object.assign({}, this.state);
-        // Populate the form conflicts.
-        if (data.conflict) {
-          state.messages = data.conflict;
-        }
-        // Populate the select options for subproject.
-        if (data.hasOwnProperty('subproject')) {
-          state.form.options.subproject = data.subproject;
-          state.form.value.subproject = null;
-          state.form.display.subproject = true;
-        }
-        // Populate the select options for psc.
-        if (data.psc) {
-          state.form.options.psc = data.psc;
-          state.form.value.psc = null;
-          state.form.display.psc = true;
-        }
-        // Populate the select options for project.
-        if (data.project) {
-          state.form.options.project = data.project;
-          state.form.value.project = null;
-          state.form.display.project = true;
-        }
-        // Populate the select options for visit.
-        if (data.visit) {
-          // Store the (complete) visit selection information.
-          state.storage.visit = data.visit;
-          // Handle visit selection.
-          this.handleVisitLabel();
-        }
-        // Populate the select options for languages.
-        if (data.languages) {
-          state.form.options.languages = data.languages;
-          state.form.value.languages = null;
-          state.form.display.languages = true;
-        }
-        this.setState(state);
-      }).catch((error) => {
-        const state = Object.assign({}, this.state);
-        state.messages = [{message: error}];
-        this.setState(state);
-      });
+    ).then((response) => {
+      if (response.ok) {
+        response.json().then((data) => {
+          const state = Object.assign({}, this.state);
+          // Populate the form conflicts.
+          if (data.conflict) {
+            state.messages = data.conflict;
+          }
+          // Populate the select options for subproject.
+          if (data.hasOwnProperty('subproject')) {
+            state.form.options.subproject = data.subproject;
+            state.form.value.subproject = null;
+            state.form.display.subproject = true;
+          }
+          // Populate the select options for psc.
+          if (data.psc) {
+            state.form.options.psc = data.psc;
+            state.form.value.psc = null;
+            state.form.display.psc = true;
+          }
+          // Populate the select options for project.
+          if (data.project) {
+            state.form.options.project = data.project;
+            state.form.value.project = null;
+            state.form.display.project = true;
+          }
+          // Populate the select options for visit.
+          if (data.visit) {
+            // Store the (complete) visit selection information.
+            state.storage.visit = data.visit;
+            // Handle visit selection.
+            this.handleVisitLabel();
+          }
+          // Populate the select options for languages.
+          if (data.languages) {
+            state.form.options.languages = data.languages;
+            state.form.value.languages = null;
+            state.form.display.languages = true;
+          }
+          this.setState(state);
+        });
+      } else {
+        console.error(response.statusText);
+      }
+    }).catch((error) => {
+      const state = Object.assign({}, this.state);
+      state.messages = [{message: error}];
+      this.setState(state);
+    });
   }
 
   /**

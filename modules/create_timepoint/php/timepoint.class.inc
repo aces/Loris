@@ -42,6 +42,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             );
         }
     }
+
     /**
      * Initialize setup, the extra values for the
      * create timepoint form. (psc & errors)
@@ -54,9 +55,13 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     {
         // Parse GET query params.
         $values = $request->getQueryParams();
+
         // Verify identifier from GET query.
-        $values['identifier'] = isset($values['identifier']) ?
-            intval($values['identifier']) : null;
+        if (!$this->_verifyCreatePermissions($request, $values['identifier'])) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Forbidden'
+             );
+        }
 
         // Setup variables
         $conflict       = []; // conflict messages.
@@ -142,6 +147,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $values
         );
     }
+
     /**
      * Processes the values & saves to database and return a json response.
      *
@@ -153,6 +159,12 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     {
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
+
+        if (!$this->_verifyCreatePermissions($request, $values['identifier'])) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Forbidden'
+             );
+        }
 
         // Validate POST data.
         $values = $this->_validate($values);
@@ -195,6 +207,31 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         );
         return new \LORIS\Http\Response\JSON\Created(['success']);
     }
+
+    /**
+     * Permission verification.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     * @param string                 $identifier  The identifier.
+     *
+     * @return bool
+     */
+    private function _verifyCreatePermissions(
+        ServerRequestInterface $request,
+         string $identifier
+    ) : bool {
+        $user      = $request->getAttribute('user');
+        $candidate = \Candidate::singleton(new CandID($identifier));
+        return (
+            $user->hasPermission('data_entry') &&
+            (in_array(
+                $candidate->getData('RegistrationCenterID'),
+                $user->getData('CenterIDs')
+            )
+            )
+        );
+    }
+
     /**
      * Validate the post data,
      * from the create timepoint form.
@@ -277,16 +314,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        // check user permissions
-        $candidate = \Candidate::singleton(new CandID($this->identifier));
-        return (
-            $user->hasPermission('data_entry') &&
-            (in_array(
-                $candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
-        );
+        return $user->hasPermission('data_entry');
     }
     /**
      * An ETagCalculator provides the ability to calculate an ETag for
