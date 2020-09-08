@@ -4,7 +4,7 @@
  * @param {object} event
  */
 function swalFunction(event) {
-  swal({
+  swal.fire({
     title: 'Please confirm deletion',
     text: 'The instrument data will be deleted',
     type: 'warning',
