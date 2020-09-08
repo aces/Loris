@@ -8,8 +8,8 @@
    [Automation Testing]
 4. Ensure that you get an error if any field is missing.
    [Manual Testing]
-5. Ensure that when the logged-in user has only 1 site affiliation, no site dropdown
-shows on the page.
+5. Ensure that when the logged-in user has only 1 site affiliation, the site
+dropdown shows only one site and it is already selected.
    [Manual Testing]
 6. Ensure that when the logged-in user has more than 1 site affiliation, a list of
 sites is displayed and that list only contains sites the logged-in user
