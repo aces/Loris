@@ -56,13 +56,9 @@ class Edit_Help_Content extends \NDB_Form
 
         $defaults = [];
 
-        $helpID   = '';
-        $parentID = '';
+        $helpID = '';
         if (isset($_REQUEST['helpID'])) {
             $helpID = htmlspecialchars($_REQUEST['helpID']);
-        }
-        if (isset($_GET['parentID'])) {
-            $parentID = htmlspecialchars($_GET['parentID']);
         }
         if (!empty($_REQUEST['section'])) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
@@ -70,13 +66,11 @@ class Edit_Help_Content extends \NDB_Form
         if (!empty($_REQUEST['section'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
-            $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
-            $parentID = HelpFile::hashToID(md5($_GET['section']));
+            $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
         }
         $this->tpl_data['section']    = $safeSection;
         $this->tpl_data['subsection'] = $safeSubsection;
         $this->tpl_data['helpID']     = $helpID ? $helpID : '';
-        $this->tpl_data['parentID']   = $parentID ? $parentID : '';
 
         if (!empty($helpID)) {
             $help_file = HelpFile::factory($helpID);

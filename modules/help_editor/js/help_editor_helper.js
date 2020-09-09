@@ -51,7 +51,6 @@ $("#save-help").click(function(e) {
         content = $('textarea[name="content"]').val(),
         section = $("#section").val(),
         subsection = $("#subsection").val(),
-        parentID = $("#parentID").val(),
         helpID = $("#helpID").val(),
         returnString = $("#return").val();
 
@@ -63,7 +62,6 @@ $("#save-help").click(function(e) {
             content: content ? content : '',
             section: section ? section : '',
             subsection: subsection ? subsection : '',
-            parentID: parentID ? parentID : '',
             helpID: helpID ? helpID : '',
         },
         success: function() {
