@@ -82,25 +82,25 @@ class CreateTimepoint extends React.Component {
    * Executes after component mounts.
    */
   componentDidMount() {
-    this.collectParams();
-    this.fetchInitializerData()
-      .then(() => this.setState({isLoaded: true}));
+    this.collectParams().then(() => {
+      this.fetchInitializerData().then(() => {
+        this.setState({isLoaded: true});
+      });
+    });
   }
 
   /**
    * Retrieve params from the browser URL and save it in state.
    */
-  collectParams() {
+  async collectParams() {
     const url = new URL(window.location.href);
-    // const state = JSON.parse(JSON.stringify(this.state));
-    const state = Object.assign({}, this.state);
+    const state = JSON.parse(JSON.stringify(this.state));
     state.url.params = {
       candID: url.searchParams.get('candID'),
       identifier: url.searchParams.get('identifier'),
     };
     state.data.dccid = state.url.params.candID;
-    this.setState(state);
-    console.log(state);
+    await this.setState(state);
   }
 
   /**
@@ -110,7 +110,6 @@ class CreateTimepoint extends React.Component {
    */
   fetchInitializerData() {
     const state = JSON.parse(JSON.stringify(this.state));
-    console.log(state);
     return fetch(
       this.props.baseURL +
       '/create_timepoint/Timepoint?candID=' + state.url.params.candID +
