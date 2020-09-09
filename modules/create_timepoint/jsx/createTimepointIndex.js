@@ -115,7 +115,11 @@ class CreateTimepoint extends React.Component {
       '/create_timepoint/Timepoint?candID=' + state.url.params.candID +
       '&identifier=' + state.url.params.identifier,
       {
+        method: 'GET',
         credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
     ).then((response) => {
       if (response.ok) {
@@ -221,26 +225,26 @@ class CreateTimepoint extends React.Component {
           'Content-Type': 'application/json',
         },
         body: send,
-      }).then((response) => {
-        if (response.ok) {
-          swal.fire('Success!', 'Time Point created.', 'success')
-            .then(() => {
-              window.location.replace(
-                `${this.props.baseURL}/${this.state.url.params.candID}`
-              );
-            });
-        } else {
-          response.json().then((data) => {
-            if (data.error) {
-              // display conflicts on form.
-              this.setState({messages: JSON.parse(data.error)});
-            }
+      }
+    ).then((response) => {
+      if (response.ok) {
+        swal.fire('Success!', 'Time Point created.', 'success')
+          .then(() => {
+            window.location.replace(
+              `${this.props.baseURL}/${this.state.url.params.candID}`
+            );
           });
-        }
-      })
-      .catch((error) => {
-        console.error('Error! ' + error);
-      });
+      } else {
+        response.json().then((data) => {
+          if (data.error) {
+            // display conflicts on form.
+            this.setState({messages: JSON.parse(data.error)});
+          }
+        });
+      }
+    }).catch((error) => {
+      console.error('Error! ' + error);
+    });
   }
 
   /**
