@@ -137,7 +137,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
 
         if (!empty($conflict)) {
-            $values['conflict'] = $conflict;
+            return new \LORIS\Http\Response\JSON\Conflict(
+                $conflict['subprojectID']
+             );
         }
         if (empty($values['psc'])) {
             unset($values['psc']);

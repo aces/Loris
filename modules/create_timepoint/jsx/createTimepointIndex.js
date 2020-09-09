@@ -159,6 +159,12 @@ class CreateTimepoint extends React.Component {
           this.setState(state);
         });
       } else {
+        response.json().then((data) => {
+          if (data.error) {
+            // display conflicts on form.
+            this.setState({messages: [data.error]});
+          }
+        });
         console.error(response.statusText);
       }
     }).catch((error) => {
