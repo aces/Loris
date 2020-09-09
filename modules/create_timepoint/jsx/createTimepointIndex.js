@@ -125,10 +125,6 @@ class CreateTimepoint extends React.Component {
       if (response.ok) {
         response.json().then((data) => {
           const state = Object.assign({}, this.state);
-          // Populate the form conflicts.
-          if (data.conflict) {
-            state.messages = data.conflict;
-          }
           // Populate the select options for subproject.
           if (data.hasOwnProperty('subproject')) {
             state.form.options.subproject = data.subproject;
