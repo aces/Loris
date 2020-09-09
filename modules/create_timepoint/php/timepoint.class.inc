@@ -60,7 +60,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         if (!$this->_verifyCreatePermissions($request, $values['identifier'])) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Forbidden'
-             );
+            );
         }
 
         // Setup variables
@@ -139,7 +139,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         if (!empty($conflict)) {
             return new \LORIS\Http\Response\JSON\Conflict(
                 $conflict['subprojectID']
-             );
+            );
         }
         if (empty($values['psc'])) {
             unset($values['psc']);
@@ -165,7 +165,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         if (!$this->_verifyCreatePermissions($request, $values['identifier'])) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Forbidden'
-             );
+            );
         }
 
         // Validate POST data.
@@ -213,14 +213,14 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     /**
      * Permission verification.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     * @param string                 $identifier  The identifier.
+     * @param ServerRequestInterface $request    The incoming PSR7 request.
+     * @param string                 $identifier The identifier.
      *
      * @return bool
      */
     private function _verifyCreatePermissions(
         ServerRequestInterface $request,
-         string $identifier
+        string $identifier
     ) : bool {
         $user      = $request->getAttribute('user');
         $candidate = \Candidate::singleton(new CandID($identifier));
