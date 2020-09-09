@@ -1,7 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Candiate info component
+ */
 class CandidateInfo extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +29,9 @@ class CandidateInfo extends Component {
     this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     let that = this;
     $.ajax(
@@ -53,6 +63,11 @@ class CandidateInfo extends Component {
     );
   }
 
+  /**
+   * Set form data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
@@ -74,10 +89,19 @@ class CandidateInfo extends Component {
     });
   }
 
+  /**
+   * On Submit
+   * @param {object} e - event object
+   */
   onSubmit(e) {
     e.preventDefault();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {

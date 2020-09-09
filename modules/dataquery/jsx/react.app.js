@@ -41,7 +41,7 @@ class SavedQueriesList extends Component {
 
     let userSaved = [];
     let globalSaved = [];
-    let queryName, curQuery;
+    let queryName; let curQuery;
 
     if (this.props.queriesLoaded === false) {
       return <div/>;
@@ -112,7 +112,7 @@ class DataQueryApp extends Component {
       alertLoaded: false,
       alertSaved: false,
       alertConflict: {
-        show: false
+        show: false,
       },
       ActiveTab: 'Info',
       rowData: {},
@@ -121,14 +121,14 @@ class DataQueryApp extends Component {
         activeOperator: 0,
         children: [
           {
-            type: 'rule'
-          }
+            type: 'rule',
+          },
         ],
-        session: this.props.AllSessions
+        session: this.props.AllSessions,
       },
       selectedFields: {},
       downloadableFields: {},
-      loading: false
+      loading: false,
     };
     this.saveFilterRule = this.saveFilterRule.bind(this);
     this.saveFilterGroup = this.saveFilterGroup.bind(this);
@@ -183,9 +183,9 @@ class DataQueryApp extends Component {
         curRequest = Promise.resolve(
           $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
             data: {
-              DocID: this.state.queryIDs[key][i]
+              DocID: this.state.queryIDs[key][i],
             },
-            dataType: 'json'
+            dataType: 'json',
           }).then((value) => {
           let queries = this.state.savedQueries;
 
@@ -201,7 +201,7 @@ class DataQueryApp extends Component {
     });
     $('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
       this.setState({
-        ActiveTab: e.target.getAttribute('href').substr(1)
+        ActiveTab: e.target.getAttribute('href').substr(1),
       });
     });
   }
@@ -214,7 +214,7 @@ class DataQueryApp extends Component {
       operator: rule.operator,
       value: rule.value,
       instrument: rule.instrument,
-      visit: rule.visit
+      visit: rule.visit,
     };
     return savedRule;
   }
@@ -224,7 +224,7 @@ class DataQueryApp extends Component {
 
     let savedFilter = {
       activeOperator: group.activeOperator,
-      children: []
+      children: [],
     };
     // Recursively build the filter groups children
     for (let i = 0; i < group.children.length; i++) {
@@ -247,11 +247,11 @@ class DataQueryApp extends Component {
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,
-      OverwriteQuery: override
+      OverwriteQuery: override,
     }, (data) => {
       // Once saved, add the query to the list of saved queries
-      let id = JSON.parse(data).id,
-        queryIDs = this.state.queryIDs;
+      let id = JSON.parse(data).id;
+        let queryIDs = this.state.queryIDs;
       if (!override) {
         if (shared === true) {
           queryIDs.Shared.push(id);
@@ -270,8 +270,8 @@ class DataQueryApp extends Component {
             alertLoaded: false,
             alertSaved: true,
             alertConflict: {
-              show: false
-            }
+              show: false,
+            },
           });
         });
     }).fail((data) => {
@@ -280,9 +280,9 @@ class DataQueryApp extends Component {
           alertConflict: {
             show: true,
             QueryName: name,
-            SharedQuery: shared
-          }
-        })
+            SharedQuery: shared,
+          },
+        });
       }
     });
   }
@@ -292,7 +292,7 @@ class DataQueryApp extends Component {
       this.state.alertConflict.QueryName,
       this.state.alertConflict.SharedQuery,
       true
-    )
+    );
   }
 
   loadFilterRule(rule) {
@@ -300,7 +300,7 @@ class DataQueryApp extends Component {
 
     let script;
     if (!rule.type) {
-      rule.type = 'rule'
+      rule.type = 'rule';
     }
 
     // Get given fields of the instrument for the rule.
@@ -312,7 +312,7 @@ class DataQueryApp extends Component {
       },
       async: false,
       data: {category: rule.instrument},
-      dataType: 'json'
+      dataType: 'json',
     });
 
     // Find the rules selected field's data type
@@ -352,9 +352,9 @@ class DataQueryApp extends Component {
     $.ajax({
       url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
       success: (data) => {
-        let i,
-          allSessions = {},
-          allCandiates = {};
+        let i;
+          let allSessions = {};
+          let allCandiates = {};
         // Loop through data and divide into individual visits with unique PSCIDs
         // storing a master list of unique PSCIDs
         for (i = 0; i < data.length; i++) {
@@ -363,13 +363,13 @@ class DataQueryApp extends Component {
           }
           allSessions[data[i][1]].push(data[i][0]);
           if (!allCandiates[data[i][0]]) {
-            allCandiates[data[i][0]] = []
+            allCandiates[data[i][0]] = [];
           }
           allCandiates[data[i][0]].push(data[i][1]);
         }
         rule.candidates = {
           allCandiates: allCandiates,
-          allSessions: allSessions
+          allSessions: allSessions,
         };
         if (rule.visit === 'All') {
           rule.session = Object.keys(allCandiates);
@@ -385,9 +385,9 @@ class DataQueryApp extends Component {
       data: {
         category: rule.instrument,
         field: rule.field,
-        value: rule.value
+        value: rule.value,
       },
-      dataType: 'json'
+      dataType: 'json',
     });
 
     return rule;
@@ -400,7 +400,7 @@ class DataQueryApp extends Component {
     for (let i = 0; i < group.children.length; i++) {
       if (group.children[i].activeOperator) {
         if (!group.children[i].type) {
-          group.children[i].type = 'group'
+          group.children[i].type = 'group';
         }
         group.children[i] = this.loadFilterGroup(group.children[i]);
       } else {
@@ -414,9 +414,9 @@ class DataQueryApp extends Component {
   loadSavedQuery(fields, criteria) {
     // Used to load a saved query
 
-    let filterState = {},
-      selectedFields = {},
-      fieldsList = [];
+    let filterState = {};
+      let selectedFields = {};
+      let fieldsList = [];
     this.setState({loading: true});
     if (Array.isArray(criteria)) {
       // This is used to load a query that is saved in the old format
@@ -426,7 +426,7 @@ class DataQueryApp extends Component {
       filterState = {
         type: 'group',
         activeOperator: 0,
-        children: []
+        children: [],
       };
       filterState.children = criteria.map((item) => {
         let fieldInfo = item.Field.split(',');
@@ -435,7 +435,7 @@ class DataQueryApp extends Component {
           field: fieldInfo[1],
           value: item.Value,
           type: 'rule',
-          visit: 'All'
+          visit: 'All',
         };
         switch (item.Operator) {
           case '=':
@@ -494,8 +494,8 @@ class DataQueryApp extends Component {
     } else {
       filterState.children = [
         {
-          type: 'rule'
-        }
+          type: 'rule',
+        },
       ];
       filterState.session = this.props.AllSessions;
     }
@@ -517,11 +517,11 @@ class DataQueryApp extends Component {
             downloadable[key] = true;
             this.setState({
               downloadableFields: downloadable,
-            })
+            });
           }
         },
         data: {key: fieldsList[i]},
-        dataType: 'json'
+        dataType: 'json',
       });
     }
   }
@@ -559,8 +559,8 @@ class DataQueryApp extends Component {
     // Used to add and remove fields from the current query being built
 
     this.setState((state) => {
-      let selectedFields = state.selectedFields,
-        fields = state.fields.slice(0);
+      let selectedFields = state.selectedFields;
+        let fields = state.fields.slice(0);
       if (!selectedFields[category]) {
         // The given category has no selected fields, add the category to the selectedFields
         selectedFields[category] = {};
@@ -627,7 +627,7 @@ class DataQueryApp extends Component {
       }
       return {
         selectedFields: selectedFields,
-        fields: fields
+        fields: fields,
       };
     });
   }
@@ -647,16 +647,16 @@ class DataQueryApp extends Component {
   runQuery(fields, sessions) {
     // Run the current query
 
-    let DocTypes = [],
-      semaphore = 0,
-      sectionedSessions,
-      ajaxComplete = () => {
+    let DocTypes = [];
+      let semaphore = 0;
+      let sectionedSessions;
+      let ajaxComplete = () => {
         // Wait until all ajax calls have completed before computing the rowdata
         if (semaphore == 0) {
           let rowdata = this.getRowData(this.state.grouplevel);
           this.setState({
             rowData: rowdata,
-            loading: false
+            loading: false,
           });
         }
       };
@@ -665,7 +665,7 @@ class DataQueryApp extends Component {
     this.setState({
       rowData: {},
       sessiondata: {},
-      loading: true
+      loading: true,
     });
 
     // Get list of DocTypes to be retrieved
@@ -704,13 +704,13 @@ class DataQueryApp extends Component {
           url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php',
           data: {
             DocType: category,
-            Sessions: sectionedSessions
+            Sessions: sectionedSessions,
           },
           dataType: 'text',
           success: (data) => {
             if (data) {
-              let i, row, rows, identifier,
-                sessiondata = this.state.sessiondata;
+              let i; let row; let rows; let identifier;
+                let sessiondata = this.state.sessiondata;
               data = JSON.parse(data);
               rows = data.rows;
               for (i = 0; i < rows.length; i += 1) {
@@ -728,17 +728,16 @@ class DataQueryApp extends Component {
                 row = rows[i];
                 identifier = row.value;
                 if (!sessiondata.hasOwnProperty(identifier)) {
-                  sessiondata[identifier] = {}
+                  sessiondata[identifier] = {};
                 }
 
                 sessiondata[identifier][row.key[0]] = row.doc;
-
               }
               this.setState({'sessiondata': sessiondata});
             }
             semaphore--;
             ajaxComplete();
-          }
+          },
         });
       }
     }
@@ -751,7 +750,7 @@ class DataQueryApp extends Component {
     let sessions = this.getSessions();
     let fields = this.state.fields.sort();
     let downloadableFields = this.state.downloadableFields;
-    let i, j;
+    let i; let j;
     let rowdata = [];
     let currow = [];
     let Identifiers = [];
@@ -794,8 +793,8 @@ class DataQueryApp extends Component {
     } else {
       // Displaying the data in the longitudinal way
 
-      let Visits = {},
-        visit, identifier, temp, colHeader, index, instrument, fieldSplit;
+      let Visits = {};
+        let visit; let identifier; let temp; let colHeader; let index; let instrument; let fieldSplit;
 
       // Loop trough session data building the row identifiers and desired visits
       for (let session in sessiondata) {
@@ -815,9 +814,9 @@ class DataQueryApp extends Component {
       for (i = 0; fields && i < fields.length; i += 1) {
         for (visit in Visits) {
           temp = fields[i].split(',');
-          instrument = this.state.selectedFields[temp[0]]
+          instrument = this.state.selectedFields[temp[0]];
           if (instrument && instrument[temp[1]] && instrument[temp[1]][visit]) {
-            RowHeaders.push(visit + ' ' + fields[i])
+            RowHeaders.push(visit + ' ' + fields[i]);
           }
         }
       }
@@ -863,8 +862,8 @@ class DataQueryApp extends Component {
       alertLoaded: false,
       alertSaved: false,
       alertConflict: {
-        show: false
-      }
+        show: false,
+      },
     });
   }
 
@@ -873,7 +872,7 @@ class DataQueryApp extends Component {
     this.setState({
       fields: [],
       criteria: {},
-      selectedFields: {}
+      selectedFields: {},
     });
   }
 
@@ -882,14 +881,14 @@ class DataQueryApp extends Component {
     let rowdata = this.getRowData(displayID);
     this.setState({
       grouplevel: displayID,
-      rowData: rowdata
+      rowData: rowdata,
     });
   }
 
   updateFilter(filter) {
     // Update the filter
     if (filter.children.length === 0) {
-      filter.session = this.props.AllSessions
+      filter.session = this.props.AllSessions;
     }
     this.setState({filter});
   }
@@ -937,7 +936,7 @@ class DataQueryApp extends Component {
     );
 
     // Define the data displayed type and add the view data tab
-    let displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudinal";
+    let displayType = (this.state.grouplevel === 0) ? 'Cross-sectional' : 'Longitudinal';
     tabs.push(<ViewDataTabPane
       key='ViewData'
       TabId='ViewData'
@@ -987,7 +986,7 @@ class DataQueryApp extends Component {
           </button>
           <strong>Success</strong> Query Loaded.
         </div>
-      )
+      );
     }
 
     // Display save alert if alert is present
@@ -999,7 +998,7 @@ class DataQueryApp extends Component {
           </button>
           <strong>Success</strong> Query Saved.
         </div>
-      )
+      );
     }
 
     // Display Conflict Query alert
@@ -1015,7 +1014,7 @@ class DataQueryApp extends Component {
           <strong>Error</strong> Query with the same name already exists.
           <a href='#' class='alert-link' onClick={this.overrideQuery}>Click here to override</a>
         </div>
-      )
+      );
     }
 
     let widthClass = 'col-md-12';

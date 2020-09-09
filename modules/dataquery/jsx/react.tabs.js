@@ -18,7 +18,6 @@ class Loading extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-
   }
 
   render() {
@@ -49,7 +48,7 @@ class TabPane extends Component {
   render() {
     let classList = 'tab-pane';
     if (this.props.Active) {
-      classList += ' active'
+      classList += ' active';
     }
     if (this.props.Loading) {
       return (
@@ -164,7 +163,7 @@ class ViewDataTabPane extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sessions: []
+      sessions: [],
     };
     this.runQuery = this.runQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
@@ -185,8 +184,8 @@ class ViewDataTabPane extends Component {
   getOrCreateProgressElement(id) {
     // Helper function to display the progress of downloading the downloadable
     // fields into a ZIP folder
-    let element = document.getElementById(id),
-      progress;
+    let element = document.getElementById(id);
+      let progress;
 
     if (element) {
       return element;
@@ -203,9 +202,9 @@ class ViewDataTabPane extends Component {
   getOrCreateDownloadLink(fileName, type) {
     // Helper function to create and click a downloadable link to download the
     // downloadable fields into a ZIP folder
-    let element = document.getElementById('DownloadLink' + fileName),
-      parentEl,
-      el2;
+    let element = document.getElementById('DownloadLink' + fileName);
+      let parentEl;
+      let el2;
 
     if (element) {
       return element;
@@ -228,17 +227,17 @@ class ViewDataTabPane extends Component {
   downloadData() {
     // Download the downloadable fields into a ZIP folder
     // Makes use of a web worker to format and download the data
-    let zip = new JSZip(),
-      i = 0,
-      FileList = this.props.FileData,
-      CompleteMask = new Array(FileList.length),
-      saveworker,
-      dataURLs = [],
-      multiLinkHandler = (buffer) => {
+    let zip = new JSZip();
+      let i = 0;
+      let FileList = this.props.FileData;
+      let CompleteMask = new Array(FileList.length);
+      let saveworker;
+      let dataURLs = [];
+      let multiLinkHandler = (buffer) => {
         return ((ce) => {
-          let downloadLink = document.getElementById('DownloadLink'),
-            dv = new DataView(buffer),
-            blb;
+          let downloadLink = document.getElementById('DownloadLink');
+            let dv = new DataView(buffer);
+            let blb;
 
           ce.preventDefault();
           blb = new Blob([dv], {type: 'application/zip'});
@@ -259,28 +258,27 @@ class ViewDataTabPane extends Component {
     if (FileList.length < 100 || confirm('You are trying to download more than 100 files. This may be slow or crash your web browser.\n\nYou may want to consider splitting your query into more, smaller queries by defining more restrictive filters.\n\nPress OK to continue with attempting to download current files or cancel to abort.')) {
       saveworker = new Worker(loris.BaseURL + '/dataquery/js/workers/savezip.js');
       saveworker.addEventListener('message', (e) => {
-        let link,
-          progress,
-          FileName,
-          NewFileName,
-          downloadLinks,
-          i;
+        let link;
+          let progress;
+          let FileName;
+          let NewFileName;
+          let downloadLinks;
+          let i;
         if (e.data.cmd === 'SaveFile') {
           progress = this.getOrCreateProgressElement('download_progress');
-          //progress.textContent = "Downloaded files";
-          //hold a reference to the blob so that chrome doesn't release it. This shouldn't
-          //be required.
+          // progress.textContent = "Downloaded files";
+          // hold a reference to the blob so that chrome doesn't release it. This shouldn't
+          // be required.
           window.dataBlobs[e.data.FileNo - 1] = new Blob([e.data.buffer], {type: 'application/zip'});
           ;
           dataURLs[e.data.FileNo - 1] = window.URL.createObjectURL(window.dataBlobs[e.data.FileNo - 1]);
 
           link = this.getOrCreateDownloadLink(e.data.Filename, 'application/zip');
           link.href = dataURLs[e.data.FileNo - 1];
-          //link.onclick = multiLinkHandler(e.data.buffer);
-          //link.href = "#";
+          // link.onclick = multiLinkHandler(e.data.buffer);
+          // link.href = "#";
           progress = this.getOrCreateProgressElement('zip_progress');
           progress.textContent = '';
-
         } else if (e.data.cmd === 'Progress') {
           progress = this.getOrCreateProgressElement('download_progress');
           progress.innerHTML = 'Downloading files: <progress value="' + e.data.Complete + '" max="' + e.data.Total + '">' + e.data.Complete + ' out of ' + e.data.Total + '</progress>';
@@ -304,13 +302,11 @@ class ViewDataTabPane extends Component {
           }
           progress = this.getOrCreateProgressElement('download_progress');
           progress.textContent = 'Finished generating zip files';
-          //this.terminate();
-
+          // this.terminate();
         } else if (e.data.cmd === 'CreatingZip') {
           progress = this.getOrCreateProgressElement('zip_progress');
           progress.textContent = 'Creating a zip file with current batch of downloaded files. Process may be slow before proceeding.';
         }
-
       });
 
       saveworker.postMessage({Files: FileList, BaseURL: loris.BaseURL});
@@ -332,7 +328,7 @@ class ViewDataTabPane extends Component {
       </div>
     );
     let criteria = [];
-    for (let el in  this.props.Criteria) {
+    for (let el in this.props.Criteria) {
       if (!this.props.Criteria.hasOwnProperty(el)) {
         continue;
       }
@@ -352,7 +348,6 @@ class ViewDataTabPane extends Component {
           </div>
         );
       }
-
     }
     return (
       <TabPane
@@ -415,16 +410,16 @@ class ScatterplotGraph extends Component {
   }
 
   lsFit(data) {
-    let i = 0,
-      means = jStat(data).mean(),
-      xmean = means[0],
-      ymean = means[1],
-      interim = 0,
-      numerator = 0,
-      denominator = 0,
-      slope,
-      xi,
-      yi;
+    let i = 0;
+      let means = jStat(data).mean();
+      let xmean = means[0];
+      let ymean = means[1];
+      let interim = 0;
+      let numerator = 0;
+      let denominator = 0;
+      let slope;
+      let xi;
+      let yi;
 
     for (i = 0; i < data.length; i += 1) {
       xi = data[i][0];
@@ -439,7 +434,7 @@ class ScatterplotGraph extends Component {
   }
 
   minmaxx(arr) {
-    let i, min, max;
+    let i; let min; let max;
 
     for (i = 0; i < arr.length; i += 1) {
       if (arr[i][0] < min || min === undefined) {
@@ -457,28 +452,28 @@ class ScatterplotGraph extends Component {
   }
 
   updateScatterplot() {
-    let xaxis = document.getElementById('scatter-xaxis').value,
-      yaxis = document.getElementById('scatter-yaxis').value,
-      grouping = document.getElementById('scatter-group').value,
-      data = this.props.Data,
-      points = [],
-      min,
-      max,
-      field1 = [],
-      field2 = [],
-      grouped_points = {},
-      i = 0,
-      group_label,
-      minmax,
-      LS,
-      slope,
-      start,
-      plots = [],
-      label,
-      plotY = (x) => {
+    let xaxis = document.getElementById('scatter-xaxis').value;
+      let yaxis = document.getElementById('scatter-yaxis').value;
+      let grouping = document.getElementById('scatter-group').value;
+      let data = this.props.Data;
+      let points = [];
+      let min;
+      let max;
+      let field1 = [];
+      let field2 = [];
+      let grouped_points = {};
+      let i = 0;
+      let group_label;
+      let minmax;
+      let LS;
+      let slope;
+      let start;
+      let plots = [];
+      let label;
+      let plotY = (x) => {
         return [x, start + (slope * x)];
-      },
-      dataset;
+      };
+      let dataset;
 
     for (i = 0; i < data.length; i += 1) {
       points.push([data[i][xaxis], data[i][yaxis]]);
@@ -505,12 +500,12 @@ class ScatterplotGraph extends Component {
 
         label: 'Data Points',
         data: points,
-        points: {show: true}
+        points: {show: true},
       }, // Least Squares Fit
         {
           label: 'Least Squares Fit',
           data: jStat.seq(min, max, 3, plotY),
-          lines: {show: true}
+          lines: {show: true},
         }], {});
     } else {
       minmax = this.minmaxx(points);
@@ -520,22 +515,22 @@ class ScatterplotGraph extends Component {
 
       for (dataset in grouped_points) {
         if (grouped_points.hasOwnProperty(dataset)) {
-          label = document.getElementById("scatter-group").selectedOptions.item(0).textContent + " = " + dataset;
+          label = document.getElementById('scatter-group').selectedOptions.item(0).textContent + ' = ' + dataset;
           plots.push({
             color: i,
             label: dataset,
             data: grouped_points[dataset],
-            points: {show: true}
+            points: {show: true},
           });
           LS = this.lsFit(grouped_points[dataset]);
-          //LS = lsFit(grouped_points[dataset].convertNumbers());
+          // LS = lsFit(grouped_points[dataset].convertNumbers());
           slope = LS[1];
           start = LS[0];
           plots.push({
             color: i,
             // label: "LS Fit for " + dataset,
             data: jStat.seq(min, max, 3, plotY),
-            lines: {show: true}
+            lines: {show: true},
           });
           i += 1;
         }
@@ -555,10 +550,10 @@ class ScatterplotGraph extends Component {
             {element}
           </option>
         );
-      }),
-      scatterStyle = {
+      });
+      let scatterStyle = {
         width: '500px',
-        height: '500px'
+        height: '500px',
       };
     return (
       <div>
@@ -618,7 +613,7 @@ class StatsVisualizationTabPane extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayed: false
+      displayed: false,
     };
   }
 
@@ -634,15 +629,15 @@ class StatsVisualizationTabPane extends Component {
       let content = <div>Could not calculate stats, query not run</div>;
       // return <TabPane content={content} TabId={this.props.TabId} />;
     } else {
-      let stats = jStat(this.props.Data),
-        min = stats.min(),
-        max = stats.max(),
-        stddev = stats.stdev(),
-        mean = stats.mean(),
-        meandev = stats.meandev(),
-        meansqerr = stats.meansqerr(),
-        quartiles = stats.quartiles(),
-        rows = [];
+      let stats = jStat(this.props.Data);
+        let min = stats.min();
+        let max = stats.max();
+        let stddev = stats.stdev();
+        let mean = stats.mean();
+        let meandev = stats.meandev();
+        let meansqerr = stats.meansqerr();
+        let quartiles = stats.quartiles();
+        let rows = [];
 
       for (let i = 0; i < this.props.Fields.length; i += 1) {
         rows.push(<tr key={'fields_' + i}>
@@ -704,7 +699,7 @@ StatsVisualizationTabPane.propTypes = {
   Data: PropTypes.array,
 };
 StatsVisualizationTabPane.defaultProps = {
-  Data: []
+  Data: [],
 };
 
 /*
@@ -716,7 +711,7 @@ class SaveQueryDialog extends Component {
     super(props);
     this.state = {
       queryName: '',
-      shared: false
+      shared: false,
     };
     this.editName = this.editName.bind(this);
     this.editPublic = this.editPublic.bind(this);
@@ -785,17 +780,17 @@ class ManageSavedQueryFilter extends Component {
   }
 
   render() {
-    let filterItem,
-      filter = this.props.filterItem;
+    let filterItem;
+      let filter = this.props.filterItem;
     if (filter.activeOperator) {
-      let logicOp = 'AND',
-        children = filter.children.map((element, key) => {
+      let logicOp = 'AND';
+        let children = filter.children.map((element, key) => {
           return <ManageSavedQueryFilter
             filterItem={element}
-          />
+          />;
         });
       if (filter.activeOperator === 1) {
-        logicOp = 'OR'
+        logicOp = 'OR';
       }
       return (
         <li>
@@ -804,7 +799,7 @@ class ManageSavedQueryFilter extends Component {
             {children}
           </ul>
         </li>
-      )
+      );
     } else {
       filter = this.props.filterItem;
       if (filter.instrument) {
@@ -828,11 +823,11 @@ class ManageSavedQueryFilter extends Component {
         }
         filterItem = (
           <span>{filter.instrument},{filter.field} {operator} {filter.value}</span>
-        )
+        );
       } else {
         filterItem = (
           <span>{filter.Field} {filter.Operator} {filter.Value}</span>
-        )
+        );
       }
     }
     return (
@@ -861,7 +856,7 @@ class ManageSavedQueryRow extends Component {
     } else if (this.props.Query.Fields) {
       for (let instrument in this.props.Query.Fields) {
         for (let field in this.props.Query.Fields[instrument]) {
-          if (field === "allVisits") {
+          if (field === 'allVisits') {
             continue;
           } else {
             fields.push(<li>{instrument},{field}</li>);
@@ -875,14 +870,14 @@ class ManageSavedQueryRow extends Component {
     }
 
     if (this.props.Query.Conditions) {
-      let operator,
-        filter;
+      let operator;
+        let filter;
       if (this.props.Query.Conditions.activeOperator) {
         if (this.props.Query.Conditions.children) {
           if (this.props.Query.Conditions.activeOperator === 0) {
-            operator = (<span>AND</span>)
+            operator = (<span>AND</span>);
           } else {
-            operator = (<span>OR</span>)
+            operator = (<span>OR</span>);
           }
           filter = this.props.Query.Conditions.children.map((element, key) => {
             return (
@@ -944,7 +939,7 @@ ManageSavedQueryRow.propTypes = {
 ManageSavedQueryRow.defaultProps = {
   Name: 'Unknown',
   Query: {
-    Fields: []
+    Fields: [],
   },
 };
 
@@ -957,7 +952,7 @@ class ManageSavedQueriesTabPane extends Component {
     this.state = {
       savePrompt: false,
       queriesLoaded: false,
-      queries: {}
+      queries: {},
     };
     this.dismissDialog = this.dismissDialog.bind(this);
     this.saveQuery = this.saveQuery.bind(this);
@@ -1003,7 +998,6 @@ class ManageSavedQueriesTabPane extends Component {
     let savePrompt = '';
     if (this.state.savePrompt) {
       savePrompt = <SaveQueryDialog onDismissClicked={this.dismissDialog} onSaveClicked={this.savedQuery}/>;
-
     }
     let content = (
       <div>
@@ -1041,7 +1035,7 @@ ManageSavedQueriesTabPane.defaultProps = {
   userQueries: [],
   globalQueries: [],
   queriesLoaded: false,
-  queryDetails: {}
+  queryDetails: {},
 };
 
 window.Loading = Loading;
@@ -1069,5 +1063,5 @@ export default {
   SaveQueryDialog,
   ManageSavedQueryFilter,
   ManageSavedQueryRow,
-  ManageSavedQueriesTabPane
+  ManageSavedQueriesTabPane,
 };

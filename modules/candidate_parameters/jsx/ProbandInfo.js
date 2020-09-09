@@ -1,12 +1,17 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
+
 /**
  * Proband Info Component.
  *
  * Renders the contents of the ProbandInfo tab, consisting of the FormElement component
  */
 class ProbandInfo extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -33,6 +38,9 @@ class ProbandInfo extends Component {
     this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
@@ -171,6 +179,11 @@ class ProbandInfo extends Component {
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return <Loader />;

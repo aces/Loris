@@ -1,7 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Participant status component
+ */
 class ParticipantStatus extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -19,10 +26,16 @@ class ParticipantStatus extends Component {
     this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
     let that = this;
     $.ajax(
@@ -68,6 +81,11 @@ class ParticipantStatus extends Component {
     );
   }
 
+  /**
+   * Set form data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     let required = this.state.Data.required;
@@ -82,10 +100,19 @@ class ParticipantStatus extends Component {
     );
   }
 
+  /**
+   * On submit
+   * @param {object} e - Event object
+   */
   onSubmit(e) {
     e.preventDefault();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {

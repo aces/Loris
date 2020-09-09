@@ -14,6 +14,10 @@ import Panel from 'Panel';
  *
  */
 class LogPanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -28,10 +32,16 @@ class LogPanel extends Component {
     this.monitorProgress = this.monitorProgress.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.initHelper();
   }
 
+  /**
+   * Init helper
+   */
   initHelper() {
     const uploadProgress = new UploadProgress();
     this.uploadProgress = uploadProgress;
@@ -145,12 +155,22 @@ class LogPanel extends Component {
     }
   }
 
+  /**
+   * On log type change
+   * @param {string} name
+   * @param {*} value
+   */
   onLogTypeChange(name, value) {
     // Update log box
     this.monitorProgress(value);
     this.setState({logType: value});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const logTypes = {
       summary: 'Summary',
