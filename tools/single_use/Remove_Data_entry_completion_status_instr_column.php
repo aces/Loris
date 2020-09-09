@@ -44,5 +44,5 @@ $fp       = fopen($filename, "w");
 fwrite($fp, $dropColumnPatch);
 fclose($fp);
 
-print_r("\nComplete. See ". __DIR__ ."../../SQL/Cleanup_patches/Remove_Data_entry_completion_status.sql for patch.\n");
+print_r("\nComplete. See ". __DIR__ ."/../../SQL/Cleanup_patches/Remove_Data_entry_completion_status.sql for patch.\n");
 

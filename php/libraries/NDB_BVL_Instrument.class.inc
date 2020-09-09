@@ -844,9 +844,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         } else {
             $oldData = [];
         }
+
         $newData = array_merge($oldData ?? [], $values);
 
-        $dataToUpdate['Data'] = json_encode($newData);
+        $flagDataToUpdate['Data'] = empty($newData) ? null : json_encode($newData);
 
         // Save the JSON to the flag.Data column.
         //
@@ -854,7 +855,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // HTML encoding the quotation marks will make it invalid JSON.
         $db->unsafeUpdate(
             "flag",
-            $dataToUpdate,
+            $flagDataToUpdate,
             ['CommentID' => $this->getCommentID()]
         );
         $this->instanceData = $newData;
@@ -2394,14 +2395,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             case 'CommentID':
             case 'UserID':
                 continue 2;
-            case 'Data_entry_completion_status':
-                $values[$row['COLUMN_NAME']] = 'Incomplete';
-                break;
             default:
                 $values[$row['COLUMN_NAME']] = null;
             }
         }
         $db->update($this->table, $values, ['CommentID' => $this->commentID]);
+        $this->_setDataEntryCompletionStatus('Incomplete');
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
              WHERE (CommentId1=:CID OR CommentId2=:CID)"

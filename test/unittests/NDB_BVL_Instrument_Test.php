@@ -1817,7 +1817,8 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'UserID'         => '456',
                     'Data_entry'     => 'Incomplete',
                     'Administration' => 'admin1',
-                    'Validity'       => 'valid1'
+                    'Validity' => 'valid1',
+                    'Data_entry_completion_status' => 'Incomplete'
                 ],
                 [
                     'ID'             => '2000',
@@ -1827,7 +1828,8 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'UserID'         => '457',
                     'Data_entry'     => 'Complete',
                     'Administration' => 'admin2',
-                    'Validity'       => 'valid2'
+                    'Validity' => 'valid2',
+                    'Data_entry_completion_status' => 'Incomplete'
                 ],
             ]
         );
@@ -1867,20 +1869,6 @@ class NDB_BVL_Instrument_Test extends TestCase
             "medical_history",
             [
                 [
-<<<<<<< HEAD
-                    'CommentID'                    => 'commentID1',
-                    'UserID'                       => '456',
-                    'Examiner'                     => 'Test Examiner1',
-                    'Date_taken'                   => '2010-05-05 00:00:01',
-                    'Data_entry_completion_status' => 'Incomplete'
-                ],
-                [
-                    'CommentID'                    => 'commentID2',
-                    'UserID'                       => '457',
-                    'Examiner'                     => 'Test Examiner2',
-                    'Date_taken'                   => '2010-05-05 00:00:01',
-                    'Data_entry_completion_status' => 'Incomplete'
-=======
                     'CommentID' => 'commentID1',
                     'UserID' => '456',
                     'Examiner' => 'Test Examiner1',
@@ -1891,7 +1879,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'UserID' => '457',
                     'Examiner' => 'Test Examiner2',
                     'Date_taken' => '2010-05-05 00:00:01',
->>>>>>> dec5d9b... Test + imaging_qc query
                 ],
             ]
         );
