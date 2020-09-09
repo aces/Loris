@@ -1,16 +1,27 @@
 #!/usr/bin/env php
 <?php
+/**
+ * Wrapper around CouchDB MRI functions
+ *
+ * PHP Version 7
+ *
+ * @category CouchDB_Import_Script
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 
 /**
  * Wrapper around CouchDB MRI functions
  *
- *  @category CouchDB_Import_Script
- *  @package  Main
- *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category CouchDB_Import_Script
+ * @package  Main
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class CouchDBMRIImporter
 {
@@ -20,7 +31,7 @@ class CouchDBMRIImporter
 
     // this is just in an instance variable to make
     // the code a little more readable.
-    private $Dictionary = array();
+    private $_Dictionary = [];
     var $feedback_Comments; //reference to list of MRI feedback types;
     var $feedback_PreDefinedComments; //reference to list of MRI feedback types;
     var $mri_header_fields;// reference to list of mri header fields
@@ -57,10 +68,17 @@ class CouchDBMRIImporter
     }
 
 
+    /**
+     * Accessor for dictionary array
+     *
+     * @param array $types The scan types
+     *
+     * @return array
+     */
     public function getDataDictionary($types)
     {
         $this->_buildDataDictionary($types);
-        return $this->Dictionary;
+        return $this->_Dictionary;
     }
 
     /**
@@ -74,10 +92,12 @@ class CouchDBMRIImporter
     {
         $this->CouchDB->replaceDoc(
             "DataDictionary:mri_data",
-            array(
-                'Meta'           => array('DataDict' => true),
-                'DataDictionary' => array('mri_data' => $this->getDataDictionary($types))
-            )
+            [
+                'Meta'           => ['DataDict' => true],
+                'DataDictionary' => [
+                    'mri_data' => $this->getDataDictionary($types)
+                ]
+            ]
         );
     }
 
@@ -91,13 +111,13 @@ class CouchDBMRIImporter
     function _generateCandidatesQuery($ScanTypes)
     {
 
-       $s = $ScanTypes;
+        $s     = $ScanTypes;
         $Query = "SELECT c.PSCID, s.Visit_label, s.ID as SessionID, fmric.Comment
           as QCComment";
 
-        foreach($s as $scan){
-            $scantype=$scan['ScanType'];
-            $Query .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
+        foreach ($s as $scan) {
+            $scantype =$scan['ScanType'];
+            $Query   .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
               ON (msc.ID= f.AcquisitionProtocolID)
               WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
                     as `Selected_$scantype`, (SELECT fqc.QCStatus
@@ -126,7 +146,7 @@ class CouchDBMRIImporter
      */
     function _addMRIHeaderInfo($FileObj, $scan_type)
     {
-        $header    = array();
+        $header    = [];
         $type      = $scan_type;
         $coord     = 'CoordinateSpace';
         $ser_desc  = 'series_description';
@@ -135,7 +155,9 @@ class CouchDBMRIImporter
         $inter_rej = 'IntergradientRejected_'.$type;
         $pipeline  = 'processing:pipeline';
 
-        $header['ScannerID_'.$type]           = $this->_getScannerID((int)$FileObj->getParameter('FileID'));
+        $header['ScannerID_'.$type]           = $this->_getScannerID(
+            (int)$FileObj->getParameter('FileID')
+        );
         $header['Pipeline_'.$type]            = $FileObj->getParameter('Pipeline');
         $header['OutputType_'.$type]          = $FileObj->getParameter('OutputType');
         $header['AcquisitionProtocol_'.$type] = $FileObj->getAcquisitionProtocol();
@@ -202,7 +224,8 @@ class CouchDBMRIImporter
             "/(\d{4})-?(\d{2})-?(\d{2})/",
             $file->getParameter($type),
             $array
-        )) {
+        )
+        ) {
             return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
         } else {
             return "";
@@ -212,20 +235,22 @@ class CouchDBMRIImporter
     /**
      * Gets the scannerID
      *
-     * @param MRIFile $file  file object
+     * @param MRIFile $FileID file object
      *
      * @return scannerID
      */
-     function _getScannerID($FileID){
+    function _getScannerID($FileID)
+    {
 
-         $scannerID = $this->SQLDB->pselectOne("SELECT ScannerID FROM files ".
-             "WHERE FileID =:FileID",
-             array(
-                 'FileID' => $FileID
-             )
-         );
-         return $scannerID;
-     }
+        $scannerID = $this->SQLDB->pselectOne(
+            "SELECT ScannerID FROM files ".
+            "WHERE FileID =:FileID",
+            [
+                'FileID' => $FileID
+            ]
+        );
+        return $scannerID;
+    }
 
     /**
      * Gets a rejected parameter according to its type
@@ -243,7 +268,8 @@ class CouchDBMRIImporter
             "/(Directions)([^\(]+)(\(\d+\))/",
             $file->getParameter($parameter),
             $array
-        )) {
+        )
+        ) {
             $dirList = preg_split('/\,/', $array[2]);
             if (count($dirList) > 1) {
                 sort($dirList);
@@ -268,7 +294,7 @@ class CouchDBMRIImporter
      */
     function _addMRIFeedback($current_feedback, $scan_type, $mri_feedback)
     {
-        $CandidateData = array();
+        $CandidateData = [];
         //setting default values for mri feedback
         foreach ($this->feedback_Comments as $CommentTypeID=>$field) {
             $CandidateData[$field."_".$scan_type]
@@ -311,10 +337,10 @@ class CouchDBMRIImporter
     {
         foreach ($data as $row) {
             $doc        = $row;
-            $identifier = array(
+            $identifier = [
                 $row['PSCID'],
                 $row['Visit_label'],
-            );
+            ];
             $docid      = 'MRI_Files:' . join($identifier, '_');
             unset($doc['PSCID']);
             unset($doc['Visit_label']);
@@ -322,13 +348,13 @@ class CouchDBMRIImporter
 
             $success = $this->CouchDB->replaceDoc(
                 $docid,
-                array(
-                    'Meta' => array(
+                [
+                    'Meta' => [
                         'DocType'    => 'mri_data',
                         'identifier' => $identifier,
-                    ),
+                    ],
                     'data' => $doc,
-                )
+                ]
             );
             print $docid . ": " . $success . "\n";
 
@@ -345,11 +371,12 @@ class CouchDBMRIImporter
     {
 
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID from mri_scan_type msc
+            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID 
+            from mri_scan_type msc
             JOIN files f ON msc.ID= f.AcquisitionProtocolID
             JOIN files_qcstatus fqc ON f.FileID=fqc.FileID
             ORDER BY f.AcquisitionProtocolID",
-            array()
+            []
         );
 
         return $ScanTypes;
@@ -366,26 +393,28 @@ class CouchDBMRIImporter
     {
         $query = $this->_generateCandidatesQuery($ScanTypes);
 
-        $CandidateData = $this->SQLDB->pselect($query, array());
+        $CandidateData = $this->SQLDB->pselect($query, []);
         foreach ($CandidateData as &$row) {
             foreach ($ScanTypes as $scanType) {
                 $scan_type = $scanType['ScanType'];
                 if (!empty($row['Selected_' . $scan_type])) {
-                    $fileID             = $this->SQLDB->pselectOne(
+                    $fileID  = $this->SQLDB->pselectOne(
                         "SELECT FileID FROM files WHERE File=:fname",
-                        array('fname' => $row['Selected_' . $scan_type])
+                        ['fname' => $row['Selected_' . $scan_type]]
                     );
-                    $FileObj            = new MRIFile($fileID);
+                    $FileObj = new MRIFile($fileID);
                     $mri_header_results = $this->_addMRIHeaderInfo(
                         $FileObj,
                         $scan_type
                     );
                     $row = array_merge(
-                        $row, $mri_header_results
+                        $row,
+                        $mri_header_results
                     );
                     // instantiate feedback mri object
                     $mri_feedback     = new FeedbackMRI(
-                        $fileID, $row['SessionID']
+                        $fileID,
+                        $row['SessionID']
                     );
                     $current_feedback = $mri_feedback->getComments();
                     $mri_qc_results   = $this->_addMRIFeedback(
@@ -411,12 +440,12 @@ class CouchDBMRIImporter
     private function _buildDataDictionary($types)
     {
 
-        $this->Dictionary = array(
-            'QCComment' => array(
+        $this->_Dictionary = [
+            'QCComment' => [
                 'Type'        => 'varchar(255)',
                 'Description' => 'QC Comment for Session',
-            )
-        );
+            ]
+        ];
         /* creating dummy mri feedback object so all the mri feedback
                 *  types can be added to the dictionary */
         $mri_feedback = new FeedbackMRI(1, "");
@@ -424,78 +453,71 @@ class CouchDBMRIImporter
         foreach ($types as $type) {
             $ScanType = $type['ScanType'];
 
-            $SelectedArray = array(
+            $SelectedArray = [
                 'Type'        => 'varchar(255)',
                 'Description' => "Selected $ScanType file for session",
                 'IsFile'      => true,
-            );
-            $QCStatusArray = array(
+            ];
+            $QCStatusArray = [
                 'Type'        => "enum('Pass', 'Fail')",
                 'Description' => "QC Status for $ScanType file",
-            );
+            ];
 
-            $this->Dictionary["Selected_$ScanType"]    = $SelectedArray;
-            $this->Dictionary[$ScanType . "_QCStatus"] = $QCStatusArray;
+            $this->_Dictionary["Selected_$ScanType"]    = $SelectedArray;
+            $this->_Dictionary[$ScanType . "_QCStatus"] = $QCStatusArray;
 
-            $feedback_types
-                                                       = $mri_feedback->getAllCommentTypes(
-            );
+            $feedback_types = $mri_feedback->getAllCommentTypes();
             foreach ($feedback_types as $CommentTypeID => $comments) {
                 if (!empty($comments['field'])) {
                     $fieldName = $comments['field'];
-                    $type
-                               =
-                        "enum ('" . implode("','", $comments['values']) . "')";
+                    $type      = "enum ('"
+                        . implode("','", $comments['values'])
+                        . "')";
 
                     $cmt_field = "Comment_" . $fieldName . "_$ScanType";
                     $scanfield = "$fieldName $ScanType";
-                    $cmt_Array = array(
+                    $cmt_Array = [
                         'Type'        => 'varchar(255)',
                         'Description' => "Overall Comment for $scanfield",
-                    );
+                    ];
 
-                    $this->Dictionary[$cmt_field] = $cmt_Array;
+                    $this->_Dictionary[$cmt_field] = $cmt_Array;
                 } else {
                     $fieldName = $comments['name'];
                     $type      = 'varchar(255)';
                 }
                 $this->feedback_Comments[$CommentTypeID] = $fieldName;
 
-                $cmt_scanArray = array(
+                $cmt_scanArray = [
                     'Type'        => $type,
                     'Description' => $comments['name'] . " $ScanType",
-                );
+                ];
 
-                $this->Dictionary[$fieldName . "_$ScanType"] = $cmt_scanArray;
-                $preDefinedComments
-                                                                   = $mri_feedback->getAllPredefinedComments(
+                $this->_Dictionary[$fieldName . "_$ScanType"] = $cmt_scanArray;
+                $preDefinedComments = $mri_feedback->getAllPredefinedComments(
                     $CommentTypeID
                 );
 
-                $this->feedback_PreDefinedComments[$CommentTypeID] = array();
+                $this->feedback_PreDefinedComments[$CommentTypeID] = [];
 
-                $pre                                               = array();
+                $pre = [];
                 foreach (
                     $preDefinedComments as
                     $preDefinedCommentTypeID => $preDefinedComment
                 ) {
-                    $preDef_field
-                                                     =
-                        $preDefinedComment['field'] . "_$ScanType";
-                    $preDef_cmt
-                                                     = $preDefinedComment['Comment'];
-                    $preDef_Array                    = array(
+                    $preDef_field = $preDefinedComment['field'] . "_$ScanType";
+                    $preDef_cmt   = $preDefinedComment['Comment'];
+                    $preDef_Array = [
                         'Type'        => "enum('Yes', 'No')",
                         'Description' => "$preDef_cmt $ScanType",
-                    );
-                    $this->Dictionary[$preDef_field] = $preDef_Array;
-                    $pre[$preDefinedCommentTypeID]
-                                                     = $preDefinedComment['field'];
+                    ];
+                    $this->_Dictionary[$preDef_field] = $preDef_Array;
+                    $pre[$preDefinedCommentTypeID]    = $preDefinedComment['field'];
                 }
                 $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
 
             }
-            $mri_array               = array(
+            $mri_array = [
                 'ScannerID'           => 'Scanner ID',
                 'Pipeline'            => 'Pipeline',
                 'OutputType'          => 'Output Type',
@@ -517,21 +539,21 @@ class CouchDBMRIImporter
                 'TotalRejected'       => 'No. of rejected directions',
                 'Caveat'              => 'Caveat',
                 'ProcessingPipeline'  => 'Processing Pipleline',
-            );
+            ];
             $this->mri_header_fields = $mri_array;
             foreach ($this->mri_header_fields as $field => $desc) {
-                $mri_field                    = $field . "_$ScanType";
-                $this->Dictionary[$mri_field] = array(
+                $mri_field = $field . "_$ScanType";
+                $this->_Dictionary[$mri_field] = [
                     'Type'        => "varchar(255)",
                     'Description' => $desc . " $ScanType",
-                );
+                ];
             }
         }
     }
 }
 
 // Don't run if we're doing the unit tests; the unit test will call run.
-if(!class_exists('UnitTestCase')) {
+if (!class_exists('UnitTestCase')) {
     $Runner = new CouchDBMRIImporter();
     $Runner->run();
 }
