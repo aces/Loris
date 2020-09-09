@@ -128,19 +128,16 @@ class CreateTimepoint extends React.Component {
           // Populate the select options for subproject.
           if (data.hasOwnProperty('subproject')) {
             state.form.options.subproject = data.subproject;
-            state.form.value.subproject = null;
             state.form.display.subproject = true;
           }
           // Populate the select options for psc.
           if (data.psc) {
             state.form.options.psc = data.psc;
-            state.form.value.psc = null;
             state.form.display.psc = true;
           }
           // Populate the select options for project.
           if (data.project) {
             state.form.options.project = data.project;
-            state.form.value.project = null;
             state.form.display.project = true;
           }
           // Populate the select options for visit.
@@ -153,7 +150,6 @@ class CreateTimepoint extends React.Component {
           // Populate the select options for languages.
           if (data.languages) {
             state.form.options.languages = data.languages;
-            state.form.value.languages = null;
             state.form.display.languages = true;
           }
           this.setState(state);
