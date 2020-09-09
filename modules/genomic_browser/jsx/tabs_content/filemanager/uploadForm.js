@@ -14,6 +14,10 @@ import Loader from 'jsx/Loader';
  *
  * */
 class GenomicUploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -64,6 +68,11 @@ class GenomicUploadForm extends Component {
     this.setState(state);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -146,6 +155,7 @@ class GenomicUploadForm extends Component {
       </div>
     );
   }
+
   /**
    * Handle form submission
    * @param {object} e - Form submission event
@@ -154,7 +164,8 @@ class GenomicUploadForm extends Component {
     e.preventDefault();
     this.uploadFile();
   }
-  /*
+
+  /**
    * Uploads the file to the server
    */
   uploadFile() {

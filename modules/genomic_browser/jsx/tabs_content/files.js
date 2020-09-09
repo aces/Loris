@@ -96,10 +96,16 @@ class Files extends Component {
     this.setState(state);
   }
 
+  /**
+   * Open File Upload modal.
+   */
   openFileUploadModal() {
     this.setState({showFileUploadModal: true});
   }
 
+  /**
+   * Close File Upload modal.
+   */
   closeFileUploadModal() {
     this.setState({
       upload: {
@@ -112,6 +118,11 @@ class Files extends Component {
     });
   }
 
+  /**
+   * Render File Upload Form
+   *
+   * @return {JSX} react upload form modal
+   */
   renderFileUploadForm() {
     return (
       <Modal
