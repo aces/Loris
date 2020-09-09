@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+import fetchDataStream from 'jslib/fetchDataStream';
+
 /**
  * Data Dictionary Page.
  *
@@ -25,9 +27,11 @@ class DataDictIndex extends Component {
     super(props);
 
     this.state = {
-      data: {},
+      data: [],
       error: false,
       isLoaded: false,
+      isLoading: false,
+      fieldOptions: {'sourceFrom': {}},
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -38,23 +42,31 @@ class DataDictIndex extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    this.fetchData()
-      .then( () => this.setState({isLoaded: true}));
-  }
-
-  /**
-   * Retrive data from the provided URL and save it in state
-   *
-   * @return {object}
-   */
-  fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
-        .then((resp) => resp.json())
-        .then((data) => this.setState({data}))
+      // Load the field options. This comes from a separate request than the
+      // table data stream. Once the fieldOptions are loaded, we set isLoaded
+      // to true so that the page is displayed with the data that's been
+      // retrieved.
+      fetch(this.props.fieldsURL, {credentials: 'same-origin'})
+          .then((resp) => resp.json())
+          .then((data) => this.setState({fieldOptions: data, isLoaded: true}))
         .catch((error) => {
             this.setState({error: true});
             console.error(error);
         });
+    this.fetchData();
+  }
+
+  /**
+   * Retrive data from the provided URL and save it in state
+   */
+    fetchData() {
+        fetchDataStream(this.props.dataURL,
+            (row) => this.state.data.push(row),
+            (end) => {
+                this.setState({isLoading: !end, data: this.state.data});
+            },
+            () => {},
+        );
   }
 
   /**
@@ -107,7 +119,7 @@ class DataDictIndex extends Component {
       return <Loader/>;
     }
 
-    let options = this.state.data.fieldOptions;
+    const options = this.state.fieldOptions;
     let fields = [
         {
             label: 'Source From',
@@ -159,8 +171,9 @@ class DataDictIndex extends Component {
     return (
         <FilterableDataTable
            name="datadict"
-           data={this.state.data.Data}
+           data={this.state.data}
            fields={fields}
+           loading={this.state.isLoading}
            getFormattedCell={this.formatColumn}
         />
     );
@@ -174,7 +187,8 @@ DataDictIndex.propTypes = {
 window.addEventListener('load', () => {
   ReactDOM.render(
       <DataDictIndex
-        dataURL={`${loris.BaseURL}/datadict/?format=json`}
+        dataURL={`${loris.BaseURL}/datadict/?format=binary`}
+        fieldsURL={`${loris.BaseURL}/datadict/fields`}
       />,
       document.getElementById('lorisworkspace')
   );
