@@ -30,6 +30,7 @@ class MediaIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.mapColumn = this.mapColumn.bind(this);
+    this.refreshData = this.refreshData.bind(this);
   }
 
   /**
@@ -53,6 +54,22 @@ class MediaIndex extends Component {
       .then((data) => this.setState({
         data: data.Data,
         fieldOptions: data.fieldOptions,
+      }))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
+  }
+
+  /**
+   * Refresh table data after successful file upload
+   * and display recent data.
+   */
+  refreshData() {
+    fetch(this.props.dataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({
+        data: data.Data,
       }))
       .catch((error) => {
         this.setState({error: true});
@@ -239,6 +256,7 @@ class MediaIndex extends Component {
               action={loris.BaseURL
                      + '/media/ajax/FileUpload.php?action=upload'}
               maxUploadSize={options.maxUploadSize}
+              refreshData={this.refreshData}
             />
           </TabPane>
         );
