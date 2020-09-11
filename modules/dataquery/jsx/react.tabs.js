@@ -655,10 +655,6 @@ class ScatterplotGraph extends Component {
 
       for (dataset in groupedPoints) {
         if (groupedPoints.hasOwnProperty(dataset)) {
-          label = document.getElementById('scatter-group')
-                    .selectedOptions.item(0).textContent
-                  + ' = '
-                  + dataset;
           plots.push({
             color: i,
             label: dataset,
@@ -1106,9 +1102,10 @@ class ManageSavedQueryRow extends Component {
   render() {
     let fields = [];
     let filters;
+    let index = 0;
     if (this.props.Query.Fields && Array.isArray(this.props.Query.Fields)) {
       for (let i = 0; i < this.props.Query.Fields.length; i += 1) {
-        fields.push(<li>{this.props.Query.Fields[i]}</li>);
+        fields.push(<li key={index++}>{this.props.Query.Fields[i]}</li>);
       }
     } else if (this.props.Query.Fields) {
       for (let instrument in this.props.Query.Fields) {
@@ -1117,7 +1114,7 @@ class ManageSavedQueryRow extends Component {
             if (this.props.Query.Fields[instrument].hasOwnProperty(field)
               && field !== 'allVisits'
             ) {
-              fields.push(<li>{instrument},{field}</li>);
+              fields.push(<li key={index++}>{instrument},{field}</li>);
             }
           }
         }
@@ -1125,7 +1122,7 @@ class ManageSavedQueryRow extends Component {
     }
 
     if (fields.length === 0) {
-      fields.push(<li>No fields defined</li>);
+      fields.push(<li key={index++}>No fields defined</li>);
     }
 
     if (this.props.Query.Conditions) {
@@ -1265,7 +1262,7 @@ class ManageSavedQueriesTabPane extends Component {
           name = query.Meta.name;
         }
         queryRows.push(
-          <ManageSavedQueryRow Name={name} Query={query}/>
+          <ManageSavedQueryRow key={i} Name={name} Query={query}/>
         );
       }
     } else {

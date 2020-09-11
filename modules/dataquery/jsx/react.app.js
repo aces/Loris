@@ -123,11 +123,11 @@ class SavedQueriesList extends Component {
 }
 
 SavedQueriesList.propTypes = {
-  queryDetails: PropTypes.array,
+  queryDetails: PropTypes.object,
   queriesLoaded: PropTypes.bool,
 };
 SavedQueriesList.defaultProps = {
-  queryDetails: [],
+  queryDetails: {},
   queriesLoaded: false,
 };
 
@@ -1291,12 +1291,12 @@ class DataQueryApp extends Component {
 }
 
 DataQueryApp.propTypes = {
-  SavedQueries: PropTypes.array,
+  SavedQueries: PropTypes.object,
   AllSessions: PropTypes.array,
 };
 
 DataQueryApp.defaultProps = {
-  SavedQueries: [],
+  SavedQueries: {},
   AllSessions: [],
 };
 
