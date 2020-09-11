@@ -18,6 +18,10 @@ import ManagePermissionsForm from './managePermissionsForm';
  * @author Cécile Madjar
  */
 class DataReleaseIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -36,18 +40,31 @@ class DataReleaseIndex extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Show
+   *
+   * @param {string} state
+   */
   show(state) {
     let show = this.state.show;
     show[state] = true;
     this.setState({show});
   }
 
+  /**
+   * Hide
+   *
+   * @param {string} state
+   */
   hide(state) {
     let show = this.state.show;
     show[state] = false;
     this.setState({show});
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -110,6 +127,11 @@ class DataReleaseIndex extends Component {
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.

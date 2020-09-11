@@ -50,6 +50,7 @@ declare -a tools_list=(
     'CouchDB_Import_MRI.php'
     'CouchDB_Import_Demographics.php'
     'CouchDB_Import_Instruments.php'
+    'CouchDB_MRI_Importer.php'
 )
 
 # And on all PHP files in this array

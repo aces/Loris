@@ -1,11 +1,19 @@
 /* exported  GenomicFileUploadModal, RGenomicFileUploadModal, UploadForm,
-FileTypeSelect, FileInput, TextAreaInput, CheckboxInput, ProgressBar
+             FileTypeSelect, FileInput, TextAreaInput,
+             CheckboxInput, ProgressBar
 */
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Genomic file upload modal component
+ */
 class GenomicFileUploadModal extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -18,12 +26,23 @@ class GenomicFileUploadModal extends Component {
     this.handleUploadSubmit = this.handleUploadSubmit.bind(this);
   }
 
+  /**
+   * Is invoked by React before rendering when new props or state are being received.
+   * This method is not called for the initial render or when forceUpdate() is used.
+   * @param {object} nextProps
+   * @param {object} nextState
+   * @return {boolean} - If true, re-render the component
+   */
   shouldComponentUpdate(nextProps, nextState) {
     return nextState.readyForUpload !== this.state.readyForUpload ||
                nextState.submited !== this.state.submited ||
                nextProps.id !== this.props.id;
   }
 
+  /**
+   * Validate form
+   * @param {array} requiredInputs
+   */
   validateForm(requiredInputs) {
     // this is always returning true... for now
     requiredInputs = requiredInputs || [];
@@ -35,11 +54,18 @@ class GenomicFileUploadModal extends Component {
     });
   }
 
+  /**
+   * Reload page
+   */
   reloadPage() {
     $('#modalContainer').modal('hide');
     $('#showdata').click();
   }
 
+  /**
+   * Handle upload submit
+   * @param {object} event
+   */
   handleUploadSubmit(event) {
     event.preventDefault();
     let self = this;
@@ -93,6 +119,11 @@ class GenomicFileUploadModal extends Component {
     xhr.send(formData);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let footerButtons = [];
 
@@ -177,7 +208,15 @@ GenomicFileUploadModal.propTypes = {
 
 let RGenomicFileUploadModal = React.createFactory(GenomicFileUploadModal);
 
+
+/**
+ * Upload form component
+ */
 class UploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -189,21 +228,39 @@ class UploadForm extends Component {
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
   }
 
+  /**
+   * Handle file type change
+   * @param {*} event
+   */
   handleFileTypeChange(event) {
     event.preventDefault();
     this.setState({fileType: event.target.value});
   }
 
+  /**
+   * Handle checkbox change
+   * @param {*} event
+   */
   handleCheckboxChange(event) {
     if (event.target.name === 'pscidColumn') {
       this.setState({useColumnHeaders: !this.state.useColumnHeaders});
     }
   }
 
+  /**
+   * Called by React every time a re-render is required
+   * @param {*} prevProps
+   * @param {*} prevState
+   */
   componentWillUpdate(prevProps, prevState) {
     this.props.validate();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let instructions = [];
     let inputs = [];
@@ -297,7 +354,15 @@ UploadForm.propTypes = {
   validate: PropTypes.func,
 };
 
+
+/**
+ * File type select component
+ */
 class FileTypeSelect extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -306,10 +371,16 @@ class FileTypeSelect extends Component {
     this.getGenomicFileType = this.getGenomicFileType.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.getGenomicFileType();
   }
 
+  /**
+   * Get genomic file type
+   */
   getGenomicFileType() {
     let self = this;
     let xhr = new XMLHttpRequest();
@@ -347,6 +418,11 @@ class FileTypeSelect extends Component {
     xhr.send();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let options = this.state.availableFileType.map(function(e) {
       return (
@@ -389,14 +465,25 @@ FileTypeSelect.defaultProps = {
   getFileType: null,
 };
 
+
+/**
+ * File input component
+ */
 class FileInput extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
+    this.state = {};
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className="col-xs-12 form-group">
@@ -421,13 +508,27 @@ FileInput.propTypes = {
   label: PropTypes.string,
 };
 
+
+/**
+ * Text area input component
+ */
 class TextAreaInput extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
 
     };
   }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className="col-xs-12 form-group">
@@ -454,7 +555,15 @@ TextAreaInput.propTypes = {
   label: PropTypes.string,
 };
 
+
+/**
+ * Checkbox input component
+ */
 class CheckboxInput extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -462,6 +571,11 @@ class CheckboxInput extends Component {
     };
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
         // Add onClick={this.props.handleChange}  and checked={this.state.checked} when we support Mapping files
     return (
@@ -487,14 +601,25 @@ CheckboxInput.propTypes = {
   name: PropTypes.string,
 };
 
+
+/**
+ * ProgressBar component
+ */
 class ProgressBar extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
+    this.state = {};
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className="col-xs-12 form-group">

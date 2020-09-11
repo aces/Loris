@@ -7,6 +7,10 @@ import React, {Component} from 'react';
  *
  */
 class OpenProfileForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -23,12 +27,21 @@ class OpenProfileForm extends Component {
     this.validateAndSubmit = this.validateAndSubmit.bind(this);
   }
 
+  /**
+   * Update Form Element
+   *
+   * @param {string} formElement
+   * @param {*} value
+   */
   updateFormElement(formElement, value) {
     let state = this.state;
     state[formElement] = value;
     this.setState(state);
   }
 
+  /**
+   * Validate and Submit
+   */
   validateAndSubmit() {
     let state = this.state;
     if (this.state.CandID === '') {
@@ -87,6 +100,11 @@ class OpenProfileForm extends Component {
         }.bind(this));
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let warning;
 

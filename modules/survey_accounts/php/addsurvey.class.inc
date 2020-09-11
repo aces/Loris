@@ -208,7 +208,7 @@ class AddSurvey extends \NDB_Form
         }
         $battery = new \NDB_BVL_Battery();
         $battery->selectBattery(
-            (new \SessionID($SessionID))
+            new \SessionID($SessionID)
         );
 
         $commentID = $battery->addInstrument($values['Test_name']);

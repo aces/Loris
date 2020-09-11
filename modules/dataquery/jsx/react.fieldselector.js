@@ -20,13 +20,13 @@ class CategoryItem extends Component {
   }
 
   render() {
-    let classList = 'list-group-item',
-      badge = '';
+    let classList = 'list-group-item';
+      let badge = '';
     if (this.props.selected) {
       classList += ' active';
     }
     if (this.props.count >= 0) {
-      badge = <span className='badge'>{this.props.count}</span>
+      badge = <span className='badge'>{this.props.count}</span>;
     }
     return (
       <a href='#' className={classList} onClick={this.props.onClick}>
@@ -44,7 +44,7 @@ class CategoryList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedCategory: ''
+      selectedCategory: '',
     };
     this.selectCategoryHandler = this.selectCategoryHandler.bind(this);
   }
@@ -55,14 +55,14 @@ class CategoryList extends Component {
         this.props.onCategorySelect(category);
       }
       this.setState({
-        selectedCategory: category
+        selectedCategory: category,
       });
     });
   }
 
   render() {
-    let items = [],
-      selectClosure = (name) => {
+    let items = [];
+      let selectClosure = (name) => {
         return this.selectCategory(name);
       };
     for (i = 0; i < this.props.items.length; i += 1) {
@@ -140,7 +140,7 @@ class FieldItem extends Component {
 
     if (this.props.downloadable) {
       // Add download icon if field is downloadable
-      downloadIcon = <span className='glyphicon glyphicon-download-alt pull-right' title='Downloadable File'></span>
+      downloadIcon = <span className='glyphicon glyphicon-download-alt pull-right' title='Downloadable File'></span>;
     }
     // Don't display the category in the field selector
     let displayName = this.props.FieldName;
@@ -179,7 +179,7 @@ class FieldList extends Component {
     // Renders the html for the component
     let fields = [];
     let items = this.props.items || [];
-    let fieldName, desc, isFile, type, selected;
+    let fieldName; let desc; let isFile; let type; let selected;
     let rowsPerPage = this.props.FieldsPerPage || 20;
 
     let start = (this.props.PageNumber - 1) * rowsPerPage;
@@ -215,9 +215,9 @@ class FieldList extends Component {
 
       // Get the fields selected visits, set to empty object if none
       if (this.props.selected && this.props.selected[fieldName]) {
-        selectedFields = this.props.selected[fieldName]
+        selectedFields = this.props.selected[fieldName];
       } else {
-        selectedFields = {}
+        selectedFields = {};
       }
 
       fields.push(<FieldItem key={fieldName}
@@ -261,7 +261,7 @@ class FieldSelector extends Component {
       selectedCategory: '',
       categoryFields: {},
       instruments: instruments,
-      PageNumber: 1
+      PageNumber: 1,
     };
     this.onFieldSelect = this.onFieldSelect.bind(this);
     this.onCategorySelect = this.onCategorySelect.bind(this);
@@ -282,11 +282,11 @@ class FieldSelector extends Component {
     if (this.state.categoryFields[category]) {
     } else {
       // Retrieve the data dictionary
-      $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", {category: category}, (data) => {
+      $.get(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php', {category: category}, (data) => {
         let cf = this.state.categoryFields;
         cf[category] = data;
         this.setState({
-          categoryFields: cf
+          categoryFields: cf,
         });
       }, 'json');
     }
@@ -298,13 +298,13 @@ class FieldSelector extends Component {
 
   filterChange(evt) {
     this.setState({
-      filter: evt.currentTarget.value
+      filter: evt.currentTarget.value,
     });
   }
 
   addAll() {
     // Adds all fields the currently selected category
-    let i, isFile, fieldName, category;
+    let i; let isFile; let fieldName; let category;
     for (i in this.state.categoryFields[this.state.selectedCategory]) {
       fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
       category = this.state.categoryFields[this.state.selectedCategory][i].key[0];
@@ -319,7 +319,7 @@ class FieldSelector extends Component {
 
   deleteAll() {
     // Deletes all fields the currently selected category
-    let i, index, fieldName, category, isFile;
+    let i; let index; let fieldName; let category; let isFile;
     for (i in this.state.categoryFields[this.state.selectedCategory]) {
       fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
       category = this.state.categoryFields[this.state.selectedCategory][i].key[0];
@@ -355,14 +355,14 @@ class FieldSelector extends Component {
 
   changePage(i) {
     this.setState({
-      PageNumber: i
+      PageNumber: i,
     });
   }
 
   render() {
     // Renders the html for the component
-    let categoryVisits = {},
-      selectedFieldsCount;
+    let categoryVisits = {};
+      let selectedFieldsCount;
     if (this.state.selectedCategory != '') {
       if (this.props.selectedFields[this.state.selectedCategory]) {
         selectedFieldsCount = Object.keys(this.props.selectedFields[this.state.selectedCategory]).length - 1;
@@ -439,7 +439,7 @@ class FieldSelector extends Component {
 }
 
 FieldSelector.propTypes = {
-  selectedFields: PropTypes.array
+  selectedFields: PropTypes.array,
 };
 
 window.CategoryItem = CategoryItem;
@@ -453,5 +453,5 @@ export default {
   CategoryList,
   FieldItem,
   FieldList,
-  FieldSelector
+  FieldSelector,
 };

@@ -25,16 +25,16 @@ class LogicOperator extends Component {
   render() {
     // Renders the html for the component
 
-    let andClass = 'btn',
-      orClass = 'btn';
+    let andClass = 'btn';
+      let orClass = 'btn';
 
     // Set operator to OR if logicOperator is 1, AND otherwise
     if (this.props.logicOperator === 1) {
       orClass += ' btn-primary';
-      andClass += ' switch'
+      andClass += ' switch';
     } else {
       andClass += ' btn-primary';
-      orClass += ' switch'
+      orClass += ' switch';
     }
     return (
       <div className='btn-group' role='group'>
@@ -60,7 +60,7 @@ class FilterRule extends Component {
         startsWith: 'startsWith',
         contains: 'contains',
         isNull: 'isNull',
-        isNotNull: 'isNotNull'
+        isNotNull: 'isNotNull',
       },
       value: '',
     };
@@ -117,7 +117,7 @@ class FilterRule extends Component {
     this.props.updateRule(this.props.index, rule);
     if (rule.operator === 'isNull' || rule.operator === 'isNotNull') {
       this.setState({
-        value: 'null'
+        value: 'null',
       });
       this.valueSet();
     }
@@ -131,7 +131,7 @@ class FilterRule extends Component {
     rule.value = event.target.value;
 
     this.setState({
-      value: event.target.value
+      value: event.target.value,
     });
     this.valueSet();
     this.props.updateRule(this.props.index, rule);
@@ -246,8 +246,8 @@ class FilterRule extends Component {
 
       if (this.props.rule.fieldType) {
         // Only display operators if field is selected
-        inputType = this.props.rule.fieldType.split("(");
-        operatorKey = inputType[0]
+        inputType = this.props.rule.fieldType.split('(');
+        operatorKey = inputType[0];
         for (let key in this.state.operators) {
           operators.push(
             <option value={key} onChange={this.operatorSelect}>
@@ -255,7 +255,7 @@ class FilterRule extends Component {
             </option>
           );
         }
-        value = (this.props.rule.operator) ? this.props.rule.operator : "";
+        value = (this.props.rule.operator) ? this.props.rule.operator : '';
         operatorSelect = (
           <select className="input-sm col-xs-3 " onChange={this.operatorSelect} value={value}>
             <option value=""></option>
@@ -343,7 +343,7 @@ class FilterRule extends Component {
           <option value=''></option>
           {options}
         </select>
-      )
+      );
     }
     return (
       <div className='panel panel-default'>
@@ -410,9 +410,9 @@ class FilterGroup extends Component {
 
   updateSessions(index, child) {
     // Computes the desired sessions of the current group
-    let group = this.props.group,
-      sessions = [],
-      session = [];
+    let group = this.props.group;
+      let sessions = [];
+      let session = [];
     group.children[index] = child;
 
     // Update the groups sessions by calling the arrayintersect.js functions
@@ -422,30 +422,30 @@ class FilterGroup extends Component {
       this.props.updateSessions(this.props.index, group);
     } else {
       // Else base filter group, update the filter in the data query component
-      this.props.updateFilter(group)
+      this.props.updateFilter(group);
     }
   }
 
   addChild(type) {
     // Add a child to the group
-    let child,
-      group = this.props.group;
+    let child;
+      let group = this.props.group;
 
     // Define the child's base data structure depending on specifed type
     if (type === 'rule') {
       child = {
-        type: 'rule'
-      }
+        type: 'rule',
+      };
     } else {
       child = {
         type: 'group',
         activeOperator: 0,
         children: [
           {
-            type: 'rule'
-          }
-        ]
-      }
+            type: 'rule',
+          },
+        ],
+      };
     }
     group.children.push(child);
 
@@ -454,7 +454,7 @@ class FilterGroup extends Component {
       this.props.updateGroup(this.props.index, group);
     } else {
       // Else base filter group, update the filter in the data query component
-      this.props.updateFilter(group)
+      this.props.updateFilter(group);
     }
   }
 
@@ -598,5 +598,5 @@ export default {
   LogicOperator,
   FilterRule,
   FilterGroup,
-  FilterBuilder
+  FilterBuilder,
 };

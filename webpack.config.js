@@ -21,6 +21,7 @@ const resolve = {
   alias: {
     util: path.resolve(__dirname, './htdocs/js/util'),
     jsx: path.resolve(__dirname, './jsx'),
+    jslib: path.resolve(__dirname, './jslib'),
     Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
     DataTable: path.resolve(__dirname, './jsx/DataTable'),
     DynamicDataTable: path.resolve(__dirname, './jsx/DynamicDataTable'),

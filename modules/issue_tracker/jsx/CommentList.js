@@ -1,10 +1,14 @@
+import React, {Component} from 'react';
+
 /**
  * React component used to display a button and a collapsible list
  * with comments.
  */
-import React, {Component} from 'react';
-
 class CommentList extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -14,10 +18,18 @@ class CommentList extends Component {
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
   }
 
+  /**
+   * Toggle Collapsed
+   */
   toggleCollapsed() {
     this.setState({collapsed: !this.state.collapsed});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const changes = this.props.commentHistory.reduce(function(carry, item) {
       let label = item.dateAdded.concat(' - ', item.addedBy);

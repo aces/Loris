@@ -5,6 +5,9 @@ import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Issue add/edit form
  *
@@ -13,11 +16,12 @@ import swal from 'sweetalert2';
  * and editing an existing issue.
  *
  * @author Caitrin Armstrong
- * */
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-
+ */
 class IssueForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -43,14 +47,26 @@ class IssueForm extends Component {
     this.openAttachmentUploadModal = this.openAttachmentUploadModal.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.getFormData();
   }
 
+  /**
+   * Open 'Attachment Upload' Modal
+   *
+   * @param {object} e - Event object
+   */
   openAttachmentUploadModal(e) {
     e.preventDefault();
     this.setState({showAttachmentUploadModal: true});
   }
+
+  /**
+   * Close 'Attachment Upload' Modal
+   */
   closeAttachmentUploadModal() {
     this.setState({
       upload: {
@@ -63,6 +79,11 @@ class IssueForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.

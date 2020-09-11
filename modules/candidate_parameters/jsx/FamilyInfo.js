@@ -1,7 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Family info component
+ */
 class FamilyInfo extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +28,9 @@ class FamilyInfo extends Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
     $.ajax(
       this.props.dataURL,
@@ -53,10 +63,18 @@ class FamilyInfo extends Component {
     );
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Set form data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -65,10 +83,19 @@ class FamilyInfo extends Component {
     });
   }
 
+  /**
+   * On submit
+   * @param {object} e - Event object
+   */
   onSubmit(e) {
     e.preventDefault();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
@@ -296,6 +323,12 @@ class FamilyInfo extends Component {
       });
   }
 
+  /**
+   * Delete family member
+   * @param {*} candID
+   * @param {*} key
+   * @param {*} candidateList
+   */
   deleteFamilyMember(candID, key, candidateList) {
     let familyMembers = this.state.familyMembers;
     delete familyMembers[key];
