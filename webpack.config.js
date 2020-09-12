@@ -2,8 +2,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
-const xml2js = require('xml2js');
-const parser = new xml2js.Parser();
 
 const optimization = {
   minimizer: [
@@ -123,10 +121,10 @@ function lorisModule(mname, entries, override=false) {
 
 let mode = 'production';
 try {
-  const configxml = fs.readFileSync('project/config.xml', 'latin1');
-  parser.parseString(configxml, function(err, xml) {
-    if (xml.config.dev[0].sandbox[0] == '1') mode = 'development';
-  });
+  const configFile = fs.readFileSync('project/config.xml', 'latin1');
+  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
+              .exec(configFile);
+  if (res && parseInt(res[1]) == 1) mode = 'development';
 } catch (error) {
   console.error(
     'Error - Can\'t read config.xml file. '
