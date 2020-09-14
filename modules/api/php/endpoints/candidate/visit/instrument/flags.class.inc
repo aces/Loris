@@ -149,6 +149,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             'DDE',
             'Instrument',
         ];
+
         $diff = array_diff($requiredfields, array_keys($data['Meta']));
         if (!empty($diff)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
@@ -163,6 +164,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 'Administration',
                 'Validity',
             ];
+
             $diff = array_diff($requiredfields, array_keys($data['Flags']));
             if (!empty($diff)) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
@@ -170,15 +172,14 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 );
             }
             $this->_instrumentStatus->setDataEntryStatus(
-                $data['Flags']['Data_entry']
+                $data['Flags']['Data_entry'] 
             );
             $this->_instrumentStatus->setAdministrationStatus(
-                $data['Flags']['Administration']
+                $data['Flags']['Administration'] 
             );
             $this->_instrumentStatus->setValidityStatus(
                 $data['Flags']['Validity']
             );
-
 
         } catch (\Throwable $e) {
             error_log($e->getMessage());
