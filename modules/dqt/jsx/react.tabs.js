@@ -1085,7 +1085,9 @@ class ManageSavedQueryRow extends Component {
             if (this.props.Query.Fields[instrument].hasOwnProperty(field)
               && field !== 'allVisits'
             ) {
-              fields.push(<li key={instrument}>{instrument},{field}</li>);
+              fields.push(
+                <li key={instrument + field}>{instrument},{field}</li>
+              );
             }
           }
         }
