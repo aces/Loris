@@ -47,7 +47,7 @@ class DataQueryApp extends Component {
         show: false,
       },
       ActiveTab: 'Info',
-      rowData: {},
+      rowData: [],
       filter: {
         type: 'group',
         activeOperator: 0,
@@ -685,7 +685,7 @@ class DataQueryApp extends Component {
 
     // Reset the rowData and sessiondata
     this.setState({
-      rowData: {},
+      rowData: [],
       sessiondata: {},
       loading: true,
     });
@@ -962,7 +962,7 @@ class DataQueryApp extends Component {
       grouplevel: displayID,
       ...(rowdata.rowdata.length > 0
         ? {rowData: rowdata}
-        : {rowData: {}}),
+        : {rowData: []}),
     });
   }
 
