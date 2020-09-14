@@ -531,6 +531,9 @@ ViewDataTabPane.propTypes = {
   Data: PropTypes.array,
   runQuery: PropTypes.func.isRequired,
 };
+ViewDataTabPane.defaultProps = {
+  Data: [],
+};
 
 /**
  * ScatterplotGraph Component
