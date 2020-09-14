@@ -140,30 +140,46 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_instrumentStatus = (new \NDB_BVL_InstrumentStatus())->select(
             $this->_instrument->commentID
         );
-        if (!$this->_instrument->determineDataEntryAllowed()) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments that are flagged as complete.'
-            );
-        }
 
         $data = json_decode((string) $request->getBody(), true);
 
-        if (!$this->_instrument->validate($data)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+        $requiredfields = [
+            'Candidate',
+            'Visit',
+            'DDE',
+            'Instrument',
+        ];
+        $diff = array_diff($requiredfields, array_keys($data['Meta']));
+        if (!empty($diff)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Field(s) missing in Meta: ' . implode(', ', $diff)
             );
         }
 
         try {
+
+            $requiredfields = [
+                'Data_entry',
+                'Administration',
+                'Validity',
+            ];
+            $diff = array_diff($requiredfields, array_keys($data['Flags']));
+            if (!empty($diff)) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Field(s) missing in Flags: ' . implode(', ', $diff)
+                );
+            }
             $this->_instrumentStatus->setDataEntryStatus(
-                $data['Flags']['Data_entry'] ?? null
+                $data['Flags']['Data_entry']
             );
             $this->_instrumentStatus->setAdministrationStatus(
-                $data['Flags']['Administration'] ?? null
+                $data['Flags']['Administration']
             );
             $this->_instrumentStatus->setValidityStatus(
-                $data['Flags']['Validity'] ?? null
+                $data['Flags']['Validity']
             );
+
+
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError();
