@@ -100,7 +100,7 @@ class CreateTimepoint extends React.Component {
       identifier: url.searchParams.get('identifier'),
     };
     state.data.dccid = state.url.params.candID;
-    await this.setState(state);
+    await new Promise((resolve) => this.setState(state, resolve));
   }
 
   /**
