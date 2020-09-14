@@ -2233,7 +2233,7 @@ class RadioElement extends React.Component {
 }
 RadioElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   options: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
