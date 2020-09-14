@@ -33,7 +33,7 @@ try {
 
     if (!empty($moduleName)) {
         try {
-            $helpID = \LORIS\help_editor\HelpFile::hashToID(
+            $helpID          = \LORIS\help_editor\HelpFile::hashToID(
                 md5($subpageName ?? $moduleName)
             );
             $help_file       = \LORIS\help_editor\HelpFile::factory($helpID);
