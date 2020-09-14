@@ -98,7 +98,7 @@ class Candidate_List extends \NDB_Menu_Filter
         }
 
         //'COALESCE(pso.ID,1) AS Participant_Status',
-        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Sex';
+        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Sex, d.Name';
         $this->order_by = 'c.PSCID ASC';
     }
 
