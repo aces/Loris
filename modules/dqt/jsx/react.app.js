@@ -961,7 +961,7 @@ class DataQueryApp extends Component {
     this.setState({
       grouplevel: displayID,
       ...(rowdata.rowdata.length > 0
-        ? {rowData: rowdata}
+        ? {rowData: rowdata.rowdata}
         : {rowData: []}),
     });
   }
