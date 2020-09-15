@@ -96,16 +96,16 @@ class NDB_Page implements RequestHandlerInterface
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be an empty string)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
+     * @param Module  $module     The test name being accessed
+     * @param string  $page       The subtest being accessed (may be an empty string)
+     * @param ?string $identifier The identifier for the data to load on this page
+     * @param ?string $commentID  The CommentID to load the data for
      */
     function __construct(
         \Module $module,
         string $page,
-        string $identifier,
-        string $commentID
+        ?string $identifier,
+        ?string $commentID
     ) {
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.

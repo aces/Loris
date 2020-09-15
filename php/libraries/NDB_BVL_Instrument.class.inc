@@ -177,7 +177,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * instrument.
      *
      * @param string  $instrument       The name of the instrument to use
-     * @param string  $commentID        The CommentID identifying the data to load
+     * @param ?string $commentID        The CommentID identifying the data to load
      *                                  load
      * @param string  $page             If a multipage form, the page to show
      * @param boolean $guarantee_exists If true the factory will throw an
@@ -192,7 +192,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public static function factory(
         string $instrument,
-        string $commentID = '',
+        ?string $commentID = '',
         string $page = '',
         bool $guarantee_exists = true
     ) {
@@ -866,8 +866,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'Window Difference (+/- Days)'
             );
         }
-        $examiners = $this->_getExaminerNames();
-        $this->addSelect('Examiner', 'Examiner', $examiners);
+
+        if (isset($this->commentID)) {
+            $examiners = $this->_getExaminerNames();
+            $this->addSelect('Examiner', 'Examiner', $examiners);
+            $this->addRule('Examiner', 'Examiner is required', 'required');
+        }
 
         $this->addRule(
             'Date_taken',
@@ -875,7 +879,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             'required'
         );
 
-        $this->addRule('Examiner', 'Examiner is required', 'required');
     }
 
     /**

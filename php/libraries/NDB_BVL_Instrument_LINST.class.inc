@@ -93,8 +93,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 'Window Difference (+/- Days)'
             );
         }
-        $examiners = $this->_getExaminerNames();
-        $this->addSelect('Examiner', 'Examiner', $examiners);
+
+        if (isset($this->commentID)) {
+            $examiners = $this->_getExaminerNames();
+            $this->addSelect('Examiner', 'Examiner', $examiners);
+            $this->addRule('Examiner', 'Examiner is required', 'required');
+        }
 
         $this->addRule(
             'Date_taken',
@@ -102,7 +106,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             'required'
         );
 
-        $this->addRule('Examiner', 'Examiner is required', 'required');
     }
 
     /**
