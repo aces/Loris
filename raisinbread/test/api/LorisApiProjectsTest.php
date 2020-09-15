@@ -19,7 +19,6 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
     protected $projectName = "Pumpernickel";
-    protected $instrument  = "bmi";
 
     /**
      * Tests the HTTP GET request for the endpoint /projects
