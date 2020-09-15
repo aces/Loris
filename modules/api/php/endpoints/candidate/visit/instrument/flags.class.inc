@@ -172,10 +172,10 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 );
             }
             $this->_instrumentStatus->setDataEntryStatus(
-                $data['Flags']['Data_entry'] 
+                $data['Flags']['Data_entry']
             );
             $this->_instrumentStatus->setAdministrationStatus(
-                $data['Flags']['Administration'] 
+                $data['Flags']['Administration']
             );
             $this->_instrumentStatus->setValidityStatus(
                 $data['Flags']['Validity']
