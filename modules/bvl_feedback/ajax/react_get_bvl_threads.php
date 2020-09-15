@@ -36,7 +36,7 @@ if (isset($_POST['candID']) && !(isset($_POST['sessionID']))) {
         \NDB_BVL_Feedback::Singleton(
             $username,
             $candID,
-            $_POST['sessionID']
+            new \SessionID($_POST['sessionID'])
         );
 } elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
     && isset($_POST['commentID'])
@@ -46,7 +46,7 @@ if (isset($_POST['candID']) && !(isset($_POST['sessionID']))) {
         \NDB_BVL_Feedback::Singleton(
             $username,
             $candID,
-            $_POST['sessionID'],
+            new \SessionID($_POST['sessionID']),
             $_POST['commentID']
         );
 }
