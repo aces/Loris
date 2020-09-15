@@ -156,7 +156,7 @@ class Media extends \DataFrameworkMenu
     {
         $provisioner = parent::getDataProvisionerWithFilters();
         $user        = \NDB_Factory::singleton()->user();
-        if ($user->hasPermission('superuser',)) {
+        if ($user->hasPermission('superuser')) {
             // We don't filter out hidden files.
             return $provisioner;
         }
