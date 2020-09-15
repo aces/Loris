@@ -155,8 +155,7 @@ class Media extends \DataFrameworkMenu
     public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
     {
         $provisioner = parent::getDataProvisionerWithFilters();
-        $factory     = \NDB_Factory::singleton();
-        $user        = $factory->user();
+        $user        = \NDB_Factory::singleton()->user();
         if ($user->hasPermission('superuser',)) {
             // We don't filter out hidden files.
             return $provisioner;
