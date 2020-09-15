@@ -66,7 +66,6 @@ class Instruments
             $shortname = $instrument->getShortname();
             $item      = [
                 'Fullname'               => $instrument->getFullname(),
-                'Shortname'              => $instrument->getShortname(),
                 'Subgroup'               => $instrument->getSubgroupname(),
                 'DoubleDataEntryEnabled' => $instrument->isDDE(),
             ];
