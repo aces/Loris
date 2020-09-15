@@ -99,16 +99,22 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to instrument specific endpoint.
         $instrumentname = array_shift($pathparts);
+
         $commentIDs = $this->_project->getCandidateCommentIds(
             $instrumentname
         );
 
-        $instrument = \NDB_BVL_Instrument::factory(
-            $instrumentname,
-            $commentIDs[0],
-            '',
-            true,
-        );
+        try {
+            $instrument = \NDB_BVL_Instrument::factory(
+                $instrumentname,
+                $commentIDs[0],
+                '',
+                true,
+            );
+        } catch (\Exception $e) {
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
+
         $endpoint = new Instrument\Instrument($instrument);
         $request  = $request->withAttribute('pathparts', $pathparts);
 
