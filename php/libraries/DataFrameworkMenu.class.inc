@@ -14,6 +14,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 /**
  * A DataFrameworkMenu is a type of menu (filterable data table)
  * where the data comes from the LORIS data framework, and the
@@ -147,6 +150,38 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
                 'fieldOptions' => $this->getFieldOptions(),
             ]
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        if (($request->getQueryParams()['format'] ?? '') === 'binary') {
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "application/octet-stream")
+                ->withBody($this->toBinaryStream());
+        }
+        return parent::handle($request);
+    }
+
+    /**
+     * Return a PSR7 StreamInterface which streams the data for this table
+     * as a binary stream
+     *
+     * @return StreamInterface Stream of the table data
+     */
+    public function toBinaryStream(): StreamInterface
+    {
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisionerWithFilters());
+        $rows  = $table->getRows(\NDB_Factory::singleton()->user());
+        return new \LORIS\Http\DataIteratorBinaryStream($rows);
+
     }
 }
 

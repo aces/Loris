@@ -10,6 +10,10 @@ import swal from 'sweetalert2';
  * Module component rendering the upload file form modal window
  */
 class UploadFileForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -28,6 +32,9 @@ class UploadFileForm extends Component {
     this.uploadFile = this.uploadFile.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     let self = this;
     fetch(this.props.DataURL, {credentials: 'same-origin'})
@@ -39,6 +46,11 @@ class UploadFileForm extends Component {
       });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error !== undefined) {
