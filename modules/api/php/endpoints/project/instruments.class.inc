@@ -109,7 +109,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $instrumentname,
                 $commentIDs[0],
                 '',
-                true,
+                true
             );
         } catch (\Exception $e) {
             return new \LORIS\Http\Response\JSON\NotFound();
