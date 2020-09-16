@@ -214,7 +214,7 @@ class DataQueryApp extends Component {
 
     $.post(loris.BaseURL
       + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
-      Fields: fields, // <--- problem
+      Fields: fields,
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,
@@ -507,16 +507,11 @@ class DataQueryApp extends Component {
       loading: false,
     });
     $.ajax({
-        url: loris.BaseURL + '/dqt/ajax/datadictionaryBeta.php',
+        url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
         success: (data) => {
-          // console.log('data is:');
-          // console.log(data);
           for (let i = 0; i < fieldsList.length; i++) {
-            // console.log('inside is ' + i);
             if (data[i].value.IsFile) {
               let key = data[i].key[0] + ',' + data[i].key[1];
-              // console.log('key is:');
-              // console.log(key);
               let downloadable = this.state.downloadableFields;
               downloadable[key] = true;
               this.setState({
