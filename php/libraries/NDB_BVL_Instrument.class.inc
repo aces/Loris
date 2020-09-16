@@ -177,7 +177,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * instrument.
      *
      * @param string  $instrument       The name of the instrument to use
-     * @param string $commentID        The CommentID identifying the data to load
+     * @param string  $commentID        The CommentID identifying the data to load
      *                                  load
      * @param string  $page             If a multipage form, the page to show
      * @param boolean $guarantee_exists If true the factory will throw an
@@ -876,7 +876,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
 
         $this->addRule('Examiner', 'Examiner is required', 'required');
-
     }
 
     /**
@@ -957,6 +956,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames(): array
     {
+        if (empty($this->getCommentID())) {
+            return [];
+        }
+
         $db = \Database::singleton();
 
         $centerID = $db->pselectOne(
@@ -969,10 +972,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         $candID    = $_REQUEST['candID'] ?? '';
-
-        if (empty($candID)) {
-            return [];
-        }
 
         $sessionID = $this->getSessionID();
 
