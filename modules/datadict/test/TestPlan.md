@@ -17,10 +17,8 @@ these permissions:
 4. Check that selecting multiple instruments returns all relevant results.
 5. Check that the table can be sorted according to any column (ascending and descending).
   [Automation Testing]
-6. Check that pushing the Clear button sets the Description search field to 'All', 
-the Instruments search field to 'All instruments', clears the search keyword text 
-field and performs a search with these criteria. Validate the results.
-  [Automation Testing]
+6. Ensure that 'Clear Filters' button works. 
+  [Manual Testing]
 7. Check that if (and only if) you have the 'data_dict_edit' permission you can edit 
 the Description field. Edit a description, access the Candidate Profile page and 
 access the Data Dictionary page again. Make sure the edit was saved.
