@@ -506,23 +506,28 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    for (let i = 0; i < fieldsList.length; i++) {
-      $.ajax({
-        url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
+    $.ajax({
+        url: loris.BaseURL + '/dqt/ajax/datadictionaryBeta.php',
         success: (data) => {
-          if (data[0].value.IsFile) {
-            let key = data[0].key[0] + ',' + data[0].key[1];
-            let downloadable = this.state.downloadableFields;
-            downloadable[key] = true;
-            this.setState({
-              downloadableFields: downloadable,
-            });
+          // console.log('data is:');
+          // console.log(data);
+          for (let i = 0; i < fieldsList.length; i++) {
+            // console.log('inside is ' + i);
+            if (data[i].value.IsFile) {
+              let key = data[i].key[0] + ',' + data[i].key[1];
+              // console.log('key is:');
+              // console.log(key);
+              let downloadable = this.state.downloadableFields;
+              downloadable[key] = true;
+              this.setState({
+                downloadableFields: downloadable,
+              });
+            }
           }
         },
-        data: {key: fieldsList[i]},
+        data: {keys: JSON.stringify(fieldsList)},
         dataType: 'json',
       });
-    }
   }
 
   /**
