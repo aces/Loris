@@ -101,7 +101,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             'Date of Administration is required',
             'required'
         );
-        
         $this->addRule('Examiner', 'Examiner is required', 'required');
     }
 

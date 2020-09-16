@@ -972,7 +972,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         $candID    = $_REQUEST['candID'] ?? '';
-
         $sessionID = $this->getSessionID();
 
         $project = $db->pselectOne(
