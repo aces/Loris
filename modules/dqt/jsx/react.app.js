@@ -210,9 +210,11 @@ class DataQueryApp extends Component {
 
     let filter = this.saveFilterGroup(this.state.filter);
 
+    const fields = JSON.stringify(this.state.selectedFields);
+
     $.post(loris.BaseURL
-      + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
-      Fields: this.state.selectedFields,
+      + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
+      Fields: fields, // <--- problem
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,
@@ -229,7 +231,7 @@ class DataQueryApp extends Component {
         }
       }
       $.get(loris.BaseURL
-        + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID='
+        + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
         + id,
         (value) => {
           let queries = this.state.savedQueries;
