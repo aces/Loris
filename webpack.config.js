@@ -17,6 +17,7 @@ const optimization = {
     }),
   ],
 };
+
 const resolve = {
   alias: {
     util: path.resolve(__dirname, './htdocs/js/util'),
@@ -44,6 +45,7 @@ const resolve = {
   },
   extensions: ['*', '.js', '.jsx', '.json'],
 };
+
 const mod = {
   rules: [
     {
@@ -52,12 +54,6 @@ const mod = {
       use: [
         {
           loader: 'babel-loader?cacheDirectory',
-        },
-        {
-          loader: 'eslint-loader',
-          options: {
-            cache: true,
-          },
         },
       ],
       enforce: 'pre',
@@ -277,4 +273,22 @@ if (fs.existsSync('./project/webpack-project.config.js')) {
   }
 }
 
-module.exports = config;
+module.exports = (env, options) => {
+  if (options.mode == 'production') {
+    config[0].module.rules.push({
+      test: /\.(js|jsx)$/,
+      exclude: /node_modules/,
+      use: [
+        {
+          loader: 'eslint-loader',
+          options: {
+            cache: true,
+          },
+        },
+      ],
+      enforce: 'pre',
+    });
+  }
+
+  return config;
+};

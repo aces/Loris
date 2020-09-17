@@ -50,8 +50,9 @@
     "tests:unit:debug": "DEBUG=true ./test/dockerized-unit-tests.sh",
     "tests:integration": "./test/dockerized-integration-tests.sh",
     "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
-    "compile": "webpack",
-    "watch": "webpack --watch"
+    "compile": "webpack --mode=development",
+    "compile-production": "webpack --mode=production",
+    "watch": "webpack --watch --mode=development"
   },
   "repository": {
     "type": "git",
