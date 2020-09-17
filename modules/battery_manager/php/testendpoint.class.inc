@@ -257,8 +257,17 @@ class TestEndpoint implements RequestHandlerInterface
         if (!isset($test->row['ageMinDays'])) {
             $errors[] = 'Minimum age is a required field.';
         }
+        if (isset($test->row['ageMinDays']) && $test->row['ageMinDays'] < 0) {
+            $errors[] = 'Minimum age must be greater than 0.';
+        }
         if (!isset($test->row['ageMaxDays'])) {
             $errors[] = 'Maximum age is a required field.';
+        }
+        if (isset($test->row['ageMaxDays']) && $test->row['ageMaxDays'] < 0) {
+            $errors[] = 'Maximum age must be greater than 0.';
+        }
+        if ($test->row['ageMaxDays'] < $test->row['ageMinDays']) {
+            $errors[] = 'Maximum age must be greater than minimum age.';
         }
         if (!isset($test->row['stage'])) {
             $errors[] = 'Stage is a required field.';

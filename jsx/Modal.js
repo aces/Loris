@@ -132,11 +132,13 @@ class Modal extends Component {
 
     const submitButton = () => {
       if (onSubmit) {
+        const submit = () => onSubmit().then(() => this.props.onClose())
+        .catch(() => {});
         return (
           <div style={submitStyle}>
             <ButtonElement
               label="Submit"
-              onUserInput={() => onSubmit().then(() => this.props.onClose())}
+              onUserInput={submit}
             />
           </div>
         );
