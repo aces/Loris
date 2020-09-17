@@ -1,3 +1,7 @@
+
+<script type="text/javascript" src="{$baseurl}/js/passwordVisibility.js"></script>
+<link rel="stylesheet" href="/css/password.css" type="text/css" />
+
 <div class="container">
   <div class="panel panel-default panel-center">
     <div class="panel-heading">
@@ -36,3 +40,9 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(event) {
+    passwordVisibility();
+  })
+</script>
