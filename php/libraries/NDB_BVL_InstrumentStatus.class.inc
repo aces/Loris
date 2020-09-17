@@ -311,4 +311,3 @@ class NDB_BVL_InstrumentStatus
     }
 
 } // end of class
-
