@@ -137,9 +137,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
         // TODO :: Check permissions. How??
-        $this->_instrumentStatus = (new \NDB_BVL_InstrumentStatus())->select(
-            $this->_instrument->commentID
-        );
+        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
+        $this->_instrumentStatus->select($this->_instrument->commentID);
 
         $data = json_decode((string) $request->getBody(), true);
 
@@ -200,9 +199,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
         // TODO :: Check permissions. How??
-        $this->_instrumentStatus = (new \NDB_BVL_InstrumentStatus())->select(
-            $this->_instrument->commentID
-        );
+        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
+        $this->_instrumentStatus->select($this->_instrument->commentID);
 
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
