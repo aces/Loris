@@ -82,7 +82,7 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
     - _Note: only a person with direct database access could revert the hide file action._
 
 **Test filters** [Automation Testing]
-  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields: File Name, Language, Project, File Visibility, PSCID, Instrument, Uploaded By, Visit Label, and File type.
+  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields: File Name, Language, Project, File Visibility, PSCID, Instrument, Uploaded By, Visit Label, Site and File type.
     - PSCID, File name and Uploaded by are text fields, whereas other fields are dropdowns with options pre-filled based on the current project.
     - Default option of dropdown should be blank.
   2. Type text in the PSCID input and verify that the table gets filtered as you type.
