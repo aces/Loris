@@ -128,7 +128,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a PUT request
+     * Handles a PUT request.
+     * Creates or updates all statuses for a given instrument with new values. 
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -176,7 +177,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
     /**
      * Handles a PATCH request.
-     * Same as handlePatch but the instrument is not cleared before save
+     * Creates or updates some or all statuses for a given instrument. If all
+     * statuses are requested to be changed, this method is equivalent to handlePUT.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
