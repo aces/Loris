@@ -8,7 +8,7 @@
 5. Verify "Return to Loris login page" link on Thank you page works
 	
 ### Approving new User Account Request:
-6. Log in as another user who has permission: user_accounts (User Management) and does not have permission:user_accounts_multisite (Across all sites create and edit users). Verify that new account request notification is counted in Dashboard (count has incremented).
+6. Log in as another user who has permission: `user_accounts` (User Management) and does not have permission: `user_accounts_multisite` (Across all sites create and edit users). Verify that new account request notification is counted in Dashboard (count has incremented).
 7. Verify that Dashboard "Accounts pending approval" link will load the User Accounts module filtered for all accounts where Pending(=1/Yes) and Site is not yet assigned
 8. Approve a new user account request (set Pending=No, set Site, check "Notify" and "Generate new password" boxes, set various permissions).  
 9. Verify that new user is notified by email when account is approved.
