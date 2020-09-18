@@ -73,3 +73,4 @@ class CandidatesProvisioner extends DBRowProvisioner
         return new CandidatesRow($row);
     }
 }
+
