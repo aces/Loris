@@ -279,6 +279,7 @@ class MediaUploadForm extends Component {
   uploadFile() {
     // Set form data and upload the media file
     let formData = this.state.formData;
+    console.log(formData);
     let formObj = new FormData();
     for (let key in formData) {
       if (formData.hasOwnProperty(key)) {
@@ -304,7 +305,9 @@ class MediaUploadForm extends Component {
         }.bind(this), false);
         return xhr;
       }.bind(this),
-      success: function() {
+      success: function(data) {
+        console.log('data is:');
+        console.log(data);
         this.props.refreshData();
         // Add git pfile to the list of exiting files
         let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));

@@ -263,6 +263,8 @@ class MediaIndex extends Component {
       }
     };
 
+    console.log(this.state.data);
+
     return (
       <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabs[0].id}>
