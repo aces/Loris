@@ -171,7 +171,7 @@ class Modal extends Component {
 
 Modal.propTypes = {
   title: PropTypes.string,
-  onSubmit: PropTypes.object,
+  onSubmit: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
   throwWarning: PropTypes.bool,

@@ -254,7 +254,7 @@ class BatteryManagerIndex extends Component {
       this.checkDuplicate(test)
       .then((test) => this.validateTest(test))
       .then((test) => this.postData(
-          this.props.testEndpoint+test.id,
+          this.props.testEndpoint+(test.id || ''),
           test,
           request
       ))
