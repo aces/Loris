@@ -27,6 +27,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 ### Modules
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
+#### API
+- API is now at version 0.0.4 (v0.0.4) (PR #6944)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 ### Clean Up
