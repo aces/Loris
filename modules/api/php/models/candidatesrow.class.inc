@@ -24,6 +24,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
 {
     private $_candid;
     private $_projectname;
+    private $_projectid;
     private $_pscid;
     private $_sitename;
     private $_edc;
@@ -40,6 +41,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     {
         $this->_candid      = $row['CandID'] ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
+        $this->_projectid   = $row['ProjectID'] ?? null;
         $this->_pscid       = $row['PSCID'] ?? null;
         $this->_sitename    = $row['SiteName'] ?? null;
         $this->_edc         = $row['EDC'] ?? null;
@@ -56,13 +58,14 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     public function jsonSerialize() : array
     {
         $obj = [
-            'CandID'  => $this->_candid,
-            'Project' => $this->_projectname,
-            'PSCID'   => $this->_pscid,
-            'Site'    => $this->_sitename,
-            'EDC'     => $this->_edc,
-            'DoB'     => $this->_dob,
-            'Sex'     => $this->_sex,
+            'CandID'    => $this->_candid,
+            'Project'   => $this->_projectname,
+            'ProjectID' => $this->_projectid,
+            'PSCID'     => $this->_pscid,
+            'Site'      => $this->_sitename,
+            'EDC'       => $this->_edc,
+            'DoB'       => $this->_dob,
+            'Sex'       => $this->_sex,
         ];
 
         return $obj;
@@ -81,14 +84,11 @@ class CandidatesRow implements \LORIS\Data\DataInstance
         }
         return intval($this->_centerid);
     }
-<<<<<<< 72ee8e88da77ef65873b9011dad6834213389155
 
     /**
      * Returns the ProjectID for this row, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match against.
      *
-<<<<<<< ee86f359947ac42635fc9bb4b0ca8ef09176c66c
-<<<<<<< 1f2dc92a69f7659a17ff2046ce5d518f24fde75c
      * @return integer ProjectID
      */
     public function getProjectID(): int
@@ -97,24 +97,5 @@ class CandidatesRow implements \LORIS\Data\DataInstance
             throw new \Exception('ProjectID is null');
         }
         return intval($this->_projectid);
-=======
-     * @return string ProjectID
-=======
-     * @return integer ProjectID
->>>>>>> [API] Candidates are now filtered by allowed project ids
-     */
-    public function getProjectID(): int
-    {
-        if ($this->_projectid === null) {
-            throw new \Exception('ProjectID is null');
-        }
-<<<<<<< ee86f359947ac42635fc9bb4b0ca8ef09176c66c
-        return intval($this->_projectname);
->>>>>>> [API] Add getProjectID to candidatesrow model
-=======
-        return intval($this->_projectid);
->>>>>>> [API] Candidates are now filtered by allowed project ids
     }
-=======
->>>>>>> [API] changes version in new spec document and removes other errors
 }
