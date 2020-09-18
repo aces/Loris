@@ -67,7 +67,7 @@ class MediaIndex extends Component {
    * @param {object} data - row to add to table
    */
   insertRow(data) {
-    let tableData = this.state.data;
+    let tableData = JSON.parse(JSON.stringify(this.state.data));
     tableData.push(Object.values(data));
     this.setState({
       data: tableData,
