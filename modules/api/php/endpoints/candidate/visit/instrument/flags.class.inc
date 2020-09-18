@@ -142,20 +142,6 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $data = json_decode((string) $request->getBody(), true);
 
-        $requiredfields = [
-            'Candidate',
-            'Visit',
-            'DDE',
-            'Instrument',
-        ];
-
-        $diff = array_diff($requiredfields, array_keys($data['Meta']));
-        if (!empty($diff)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Field(s) missing in Meta: ' . implode(', ', $diff)
-            );
-        }
-
         try {
 
             $requiredfields = [
