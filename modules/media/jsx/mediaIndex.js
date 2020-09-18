@@ -62,19 +62,16 @@ class MediaIndex extends Component {
   }
 
   /**
-   * Refresh table data after successful file upload
-   * and display recent data.
+   * Refresh table data with new row after successful
+   * file upload and display recent data.
+   * @param {object} data - row to add to table
    */
-  refreshData() {
-    fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({
-        data: data.Data,
-      }))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+  refreshData(data) {
+    let tableData = this.state.data;
+    tableData.push(Object.values(data));
+    this.setState({
+      data: tableData,
+    });
   }
 
   /**
@@ -262,8 +259,6 @@ class MediaIndex extends Component {
         );
       }
     };
-
-    console.log(this.state.data);
 
     return (
       <Tabs tabs={tabs} defaultTab="browse" updateURL={true}>

@@ -306,9 +306,8 @@ class MediaUploadForm extends Component {
         return xhr;
       }.bind(this),
       success: function(data) {
-        console.log('data is:');
-        console.log(data);
-        this.props.refreshData();
+        // Update data "row" into table
+        this.props.refreshData(JSON.parse(data));
         // Add git pfile to the list of exiting files
         let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
         mediaFiles.push(formData.file.name);
