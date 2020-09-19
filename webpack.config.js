@@ -46,9 +46,9 @@ const resolve = {
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
-     fs: false,
-     path: false,
-   },
+    fs: false,
+    path: false,
+  },
 };
 
 const mod = {
@@ -100,7 +100,7 @@ let mode = 'production';
 try {
   const configFile = fs.readFileSync('project/config.xml', 'latin1');
   const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
-              .exec(configFile);
+    .exec(configFile);
   if (res && parseInt(res[1]) == 1) mode = 'development';
 } catch (error) {
   console.error(
