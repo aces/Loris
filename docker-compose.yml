@@ -3,7 +3,7 @@ services:
   db:
     build:
       context: ../../..
-      dockerfile: var/www/loris/Dockerfile.test.db
+      dockerfile: /var/www/loris/Dockerfile.test.db
       args:
         BASE_DIR: /app/
     volumes:
