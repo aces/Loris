@@ -226,11 +226,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $candidate = \Candidate::singleton(new CandID($identifier));
         return (
             $user->hasPermission('data_entry') &&
-            (in_array(
-                $candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
+            $candidate->getData('RegistrationCenterID')
         );
     }
 
