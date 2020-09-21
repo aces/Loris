@@ -35,8 +35,8 @@ visit which the candidate already has. Ensure that an error appears stating that
 visit label already exists for the candidate.
   [Manual Testing]
 7. Choose visit label to be created and click "Create Time Point".
-Ensure that you get a page saying creation was successful.
-Click on "Click here to continue" link and ensure that it brings you back
+Ensure that you get an alert saying: Success! Time Point Created.
+Click on "Ok" button and ensure that it brings you back
 to timepoint list page for that candidate (with new timepoint created)
   [Manual Testing]
 8. Check that page is inaccessible if either the user does not have data_entry
