@@ -16,10 +16,10 @@ subproject selected and also a list of visitlabels if <labelSet> is set in the c
    under the `<labelSet>` tag) should be displayed.
    - Ensure that if the `config.xml` file does not contain a matching `<visitLabel>` entry, an 
    error message should be displayed to the user. 
-   - Ensure that if the logged in user has only 1 site affiliation, the site dropdown
-   is not displayed on the page and the form can be submitted without any errors.
-   - Ensure that if the logged in user has only 1 project affiliation, the project 
-   dropdown is not displayed on the page and the form can be submitted without any 
+   - Ensure that if the logged in user has only 1 site affiliation, that site is
+   auto-selected in the site dropdown and the form can be submitted without any errors.
+   - Ensure that if the logged in user has only 1 project affiliation, that project 
+   is auto-selected in the project dropdown and the form can be submitted without any 
    errors.
    - Ensure that if the logged in user has multiple site affiliations, the site 
    dropdown appears on the page and only displays the sites with which the user is 
