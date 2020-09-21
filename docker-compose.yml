@@ -2,8 +2,8 @@ version: '2'
 services:
   db:
     build:
-      context: ../../..
-      dockerfile: /var/www/loris/Dockerfile.test.db
+      context: .
+      dockerfile: Dockerfile.test.db
       args:
         BASE_DIR: /app/
     volumes:
