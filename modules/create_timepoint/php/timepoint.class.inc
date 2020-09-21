@@ -127,14 +127,12 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         // List projects
         $user = \User::singleton();
         $user_list_of_projects = $user->getProjectIDs();
-        if (count($user_list_of_projects) > 1) {
-            $projectOptions = [];
-            foreach ($user_list_of_projects as $projectID) {
-                $project = \Project::getProjectFromID($projectID);
-                $projectOptions[$projectID] = $project->getName();
-            }
-            $values['project'] = $projectOptions;
+        $projectOptions        = [];
+        foreach ($user_list_of_projects as $projectID) {
+            $project = \Project::getProjectFromID($projectID);
+            $projectOptions[$projectID] = $project->getName();
         }
+        $values['project'] = $projectOptions;
 
         if (!empty($conflict)) {
             return new \LORIS\Http\Response\JSON\Conflict(
