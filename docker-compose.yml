@@ -3,12 +3,12 @@ services:
   db:
     build:
       context: ../../..
-      dockerfile: /var/www/loris/Dockerfile.test.db
+      dockerfile: Dockerfile.test.db
       args:
         BASE_DIR: /app/
     volumes:
-      - /data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc:/data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc
-      - /var/www/loris/test/mysql-config:/etc/mysql/conf.d
+      - ../../../data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc:/data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc
+      - ./test/mysql-config:/etc/mysql/conf.d
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
