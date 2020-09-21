@@ -226,7 +226,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $candidate = \Candidate::singleton(new CandID($identifier));
         return (
             $user->hasPermission('data_entry') &&
-            $candidate->getData('RegistrationCenterID')
+            $candidate->isAccessibleBy($user)
         );
     }
 
