@@ -18,9 +18,9 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  */
 class LorisApiImagesTest extends LorisApiAuthenticatedTest
 {
-    protected $candidTest    = "676061";
-    protected $visitTest     = "V4";
-    protected $imagefileTest = "demo_676061_V4_t1_001.mnc";
+    protected $candidTest    = "300181";
+    protected $visitTest     = "V2";
+    protected $imagefileTest = "demo_300181_V2_t1_001.mnc";
 
     /**
      * Tests the HTTP GET request for the
@@ -288,10 +288,55 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
      *
      * @return void
      */
-    public function testGetCandidatesCandidVisitImagesFilenameFormatThumbnail():
-    void
+    public function testGetCandidatesCandidVisitImagesFilename(): void
     {
-        $this->markTestSkipped('Missing data in docker image');
+        $resource = fopen($this->imagefileTest, 'w');
+        $stream   = GuzzleHttp\Psr7\stream_for($resource);
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/images/" .
+            "$this->imagefileTest",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'save_to'     => $stream
+            ]
+        );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/images/" .
+                "$this->imagefileTest"
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->imagefileTest);
+
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/images/" .
+            "$this->imagefileTest",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $imagesArray = json_decode(
+            (string)utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+        $this->assertEquals(null, $imagesArray);
     }
 
     /**
