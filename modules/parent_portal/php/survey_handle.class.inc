@@ -1,14 +1,14 @@
 <?php
 
 /**
- * IBIS module.
+ * Survey_Handle
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category   Module
  * @package    Main
  * @subpackage Parent Portal
- * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
+ * @author     Shen Wang <shen.wang2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
@@ -20,7 +20,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @category   Module
  * @package    Main
  * @subpackage Parent Portal
- * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
+ * @author     Shen Wang <shen.wang2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */

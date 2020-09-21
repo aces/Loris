@@ -1,7 +1,7 @@
 import StaticDataTable from 'StaticDataTable';
 
 /**
- * New Profile Form
+ * ViewSurveysIndex
  *
  * Create a parent portal form
  *

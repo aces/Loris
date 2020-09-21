@@ -1,7 +1,7 @@
 import ViewSurveysIndex from './ViewSurveysIndex';
 
 /**
- * New Profile Form
+ * ParentPortalIndex
  *
  * Create a parent portal form
  *
