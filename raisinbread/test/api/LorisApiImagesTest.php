@@ -18,9 +18,9 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  */
 class LorisApiImagesTest extends LorisApiAuthenticatedTest
 {
-    protected $candidTest    = "300181";
-    protected $visitTest     = "V2";
-    protected $imagefileTest = "demo_300181_V2_t1_001.mnc";
+    protected $candidTest    = "676061";
+    protected $visitTest     = "V4";
+    protected $imagefileTest = "demo_676061_V4_t1_001.mnc";
 
     /**
      * Tests the HTTP GET request for the
@@ -76,6 +76,64 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
         $this->assertArrayHasKey('Filename', $imagesArray['Files']['0']);
         $this->assertArrayHasKey('AcquisitionType', $imagesArray['Files']['0']);
     }
+
+    /**
+     * Tests the HTTP GET request for the
+     * endpoint /candidates/{candid}/{visit}/images/filename/format/thumbnail
+     *
+     * @return void
+     */
+    public function testGetCandidatesCandidVisitImagesFilename(): void
+    {
+        $resource = fopen($this->imagefileTest, 'w');
+        $stream   = GuzzleHttp\Psr7\stream_for($resource);
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/images/" .
+            "$this->imagefileTest",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'save_to'     => $stream
+            ]
+        );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/images/" .
+                "$this->imagefileTest"
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->imagefileTest);
+
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/images/" .
+            "$this->imagefileTest",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $imagesArray = json_decode(
+            (string)utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+        $this->assertEquals(null, $imagesArray);
+    }
+
 
     /**
      * Tests the HTTP GET request for the
@@ -251,58 +309,28 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
 
     /**
      * Tests the HTTP GET request for the
-     * endpoint /candidates/{candid}/{visit}/images/filename/format/raw
+     * endpoint /candidates/{candid}/{visit}/images/filename/format/brainbrowser
      *
      * @return void
      */
-    public function testGetCandidatesCandidVisitImagesFilenameFormatRaw(): void
+    public function testGetCandidatesCandidVisitImagesFilenameFormatBbrowser(): void
     {
-        $this->markTestSkipped('Missing data in docker image');
-    }
-
-    /**
-     * Tests the HTTP GET request for the
-     * endpoint /candidates/{candid}/{visit}/images/filename/format/thumbnail
-     *
-     * @return void
-     */
-    public function testGetCandidatesCandidVisitImagesFilename(): void
-    {
-        $resource = fopen($this->imagefileTest, 'w');
-        $stream   = GuzzleHttp\Psr7\stream_for($resource);
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/" .
-            "$this->imagefileTest",
+            "$this->imagefileTest/format/brainbrowser",
             [
                 'headers'     => $this->headers,
                 'http_errors' => false,
-                'save_to'     => $stream
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
+            $this->markTestSkipped(
                 "Endpoint not found: " .
                 "candidates/$this->candidTest/$this->visitTest/images/" .
-                "$this->imagefileTest"
+                "$this->imagefileTest/format/brainbrowser"
             );
         }
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        $this->assertFileIsReadable($this->imagefileTest);
-
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/images/" .
-            "$this->imagefileTest",
-            [
-                'headers'     => $this->headers,
-                'http_errors' => false,
-            ]
-        );
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -314,7 +342,128 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             ),
             true
         );
-        $this->assertEquals(null, $imagesArray);
+
+        $this->assertSame(gettype($imagesArray), 'array');
+        $this->assertSame(gettype($imagesArray['xspace']), 'array');
+        $this->assertSame(
+            gettype($imagesArray['xspace']['space_length']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($imagesArray['xspace']['start']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($imagesArray['xspace']['step']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($imagesArray['yspace']['space_length']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($imagesArray['yspace']['start']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($imagesArray['yspace']['step']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($imagesArray['zspace']['space_length']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($imagesArray['zspace']['start']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($imagesArray['zspace']['step']),
+            'string'
+        );
+
+        $this->assertArrayHasKey('order', $imagesArray);
+        $this->assertArrayHasKey('xspace', $imagesArray);
+        $this->assertArrayHasKey('space_length', $imagesArray['xspace']);
+        $this->assertArrayHasKey('start', $imagesArray['xspace']);
+        $this->assertArrayHasKey('step', $imagesArray['xspace']);
+
+        $this->assertArrayHasKey('yspace', $imagesArray);
+        $this->assertArrayHasKey('space_length', $imagesArray['yspace']);
+        $this->assertArrayHasKey('start', $imagesArray['yspace']);
+        $this->assertArrayHasKey('step', $imagesArray['yspace']);
+
+        $this->assertArrayHasKey('zspace', $imagesArray);
+        $this->assertArrayHasKey('space_length', $imagesArray['zspace']);
+        $this->assertArrayHasKey('start', $imagesArray['zspace']);
+        $this->assertArrayHasKey('step', $imagesArray['zspace']);
+    }
+
+    /**
+     * Tests the HTTP GET request for the
+     * endpoint /candidates/{candid}/{visit}/images/filename/format/raw
+     *
+     * @return void
+     */
+    public function testGetCandidatesCandidVisitImagesFilenameFormatRaw(): void
+    {
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/images/" .
+            "$this->imagefileTest/format/raw",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+            ]
+        );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestSkipped(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/images/" .
+                "$this->imagefileTest/format/raw"
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+    }
+
+    /**
+     * Tests the HTTP GET request for the
+     * endpoint /candidates/{candid}/{visit}/images/filename/format/thumbnail
+     *
+     * @return void
+     */
+    public function testGetCandidatesCandidVisitImagesFilenameFormatThumbnail():
+    void
+    {
+        $resource        = fopen($this->imagefileTest, 'w');
+        $stream          = GuzzleHttp\Psr7\stream_for($resource);
+        $response_stream = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/images/" .
+            "$this->imagefileTest/format/thumbnail",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'save_to'     => $stream
+            ]
+        );
+        if ($response_stream->getStatusCode() === 404) {
+            $this->markTestSkipped(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/images/" .
+                "$this->imagefileTest/format/thumbnail"
+            );
+        }
+        $this->assertEquals(200, $response_stream->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_stream->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->imagefileTest);
     }
 
     /**

@@ -8,7 +8,8 @@ services:
         BASE_DIR: /app/
     volumes:
       - ./test/mysql-config:/etc/mysql/conf.d
-      - /data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc:/data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc
+      - /data-raisinbread/assembly/676061/V4/mri/native/demo_676061_V4_t1_001.mnc:/app/data-raisinbread/assembly/676061/V4/mri/native/demo_676061_V4_t1_001.mnc
+      - /data-raisinbread/bids_imports/Face13_BIDSVersion_1.1.0/sub-OTT174/ses-V1/eeg/:/app/data-raisinbread/bids_imports/Face13_BIDSVersion_1.1.0/sub-OTT174/ses-V1/eeg/
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
