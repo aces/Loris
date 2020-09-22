@@ -2,7 +2,7 @@ version: '2'
 services:
   db:
     build:
-      context: ../../../
+      context: .
       dockerfile: Dockerfile.test.db
       args:
         BASE_DIR: /app/
