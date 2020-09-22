@@ -18,6 +18,8 @@ services:
     image: selenium/standalone-firefox-debug:3.8.1-aluminum
     volumes:
       - /dev/shm:/dev/shm
+      - /data-raisinbread/:/app/data-raisinbread
+ 
     ports:
       - "5900:5900"
     environment:
