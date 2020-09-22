@@ -79,17 +79,6 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
 
     /**
      * Tests the HTTP GET request for the
-     * endpoint /candidates/{candid}/{visit}/images/filename
-     *
-     * @return void
-     */
-    public function testGetCandidatesCandidVisitImagesFilename(): void
-    {
-        $this->markTestSkipped('Missing data in docker image');
-    }
-
-    /**
-     * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/images/qc
      *
      * @return void
