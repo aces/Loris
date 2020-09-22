@@ -1588,7 +1588,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getDataEntryCompletionStatus(): string
     {
         $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
+        $db = $factory->database();
         return $db->pselectOne(
             "SELECT Data_entry_completion_status FROM flag WHERE CommentID=:CID",
             ['CID' => $this->getCommentID()]
