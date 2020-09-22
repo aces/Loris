@@ -8,6 +8,7 @@ services:
         BASE_DIR: /app/
     volumes:
       - ./test/mysql-config:/etc/mysql/conf.d
+      - /data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc:/data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
@@ -53,7 +54,6 @@ services:
       dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
-      - /data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc:/data-raisinbread/assembly/300181/V2/mri/native/demo_300181_V2_t1_001.mnc
     working_dir: /app
     environment:
       - LORIS_DB_CONFIG=test/config.xml
