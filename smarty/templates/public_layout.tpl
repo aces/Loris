@@ -12,6 +12,18 @@
   <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
+  {*
+    START OF QPN OVERRIDE - add loris baseurl without adding entire loris object
+  *}
+    <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
+    <script language="javascript" type="text/javascript">
+    let loris = {
+      BaseURL: "{$baseurl}"
+    };
+    </script>
+  {*
+    END OF QPN OVERRIDE
+  *}
   {section name=jsfile loop=$jsfiles}
     <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
   {/section}
