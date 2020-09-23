@@ -62,9 +62,7 @@ class Files extends \NDB_Page
         case "POST":
             return $this->uploadDocFile($request);
         case "PUT":
-            $tmp = $request->getBody();
-            $arr = (array)json_decode($tmp);
-            return $this->editDocFile($arr);
+            return $this->editDocFile($request);
         case "DELETE":
             $id = basename($request->getUri()->getPath());
             $this->deleteFile($id);
@@ -72,7 +70,17 @@ class Files extends \NDB_Page
                 ['message' => 'File deleted.']
             ));
         case "GET":
-            $filename   = urldecode(basename($request->getUri()->getPath()));
+            $filename = urldecode(basename($request->getUri()->getPath()));
+            if (is_numeric($filename)) {
+                return (new \LORIS\Http\Response())
+                    ->withHeader("Content-Type", "text/plain")
+                    ->withStatus(200)
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode($this->getUploadDocFields($filename))
+                        )
+                    );
+            }
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo(
                     $downloadpath . $request->getAttribute('user')->getUsername()
@@ -90,11 +98,11 @@ class Files extends \NDB_Page
     /**
      * Handles the document editing process
      *
-     * @param array $req the request
+     * @param ServerRequestInterface $req The incoming PSR7 request
      *
      * @return ResponseInterface
      */
-    function editDocFile(array $req): ResponseInterface
+    function editDocFile(ServerRequestInterface $req): ResponseInterface
     {
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
@@ -104,6 +112,7 @@ class Files extends \NDB_Page
                 self::FORBIDDEN
             );
         }
+        $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'instrument' => $req['instrument'] ?? null,
             'comments'   => $req['comments'] ?? null,
