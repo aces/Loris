@@ -455,5 +455,44 @@ class My_Preferences extends \NDB_Form
 
         return null;
     }
+
+    /**
+     * Add dependency for password visibility
+     *
+     * @return array of javascript files to be sourced
+     */
+    function getJSDependencies()
+    {
+        $factory  = \NDB_Factory::singleton();
+        $baseurl  = $factory->settings()->getBaseURL();
+        $baseDeps = parent::getJSDependencies();
+
+        return array_merge(
+            $baseDeps,
+            [
+                $baseurl . '/js/passwordVisibility.js',
+                $baseurl . '/my_preferences/js/my_preferences_helper.js',
+            ]
+        );
+    }
+
+    /**
+     * Include additional CSS files:
+     *  1. configuration
+     *
+     * @return array of CSS to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/css/password.css",
+            ]
+        );
+    }
 }
 
