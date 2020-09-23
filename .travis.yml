@@ -32,3 +32,4 @@ script: "npm run tests:$TEST_SUITE"
 cache:
   directories:
     - $HOME/.composer/cache/files
+    - /data-raisinbread
