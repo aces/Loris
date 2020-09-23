@@ -123,7 +123,9 @@ class CandidateInfo extends Component {
     }
     let reasonDisabled = true;
     let reasonRequired = false;
-    if (this.state.formData.flaggedCaveatemptor === 'true') {
+    if (this.state.formData.flaggedCaveatemptor === 'true'
+      && loris.userHasPermission('candidate_parameter_edit')
+    ) {
       reasonDisabled = false;
       reasonRequired = true;
     }
@@ -141,7 +143,9 @@ class CandidateInfo extends Component {
       }
     }
 
-    if (this.state.formData.flaggedReason === reasonKey) {
+    if (this.state.formData.flaggedReason === reasonKey
+      && loris.userHasPermission('candidate_parameter_edit')
+    ) {
       otherRequired = true;
       otherDisabled = false;
     }
