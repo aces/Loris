@@ -102,7 +102,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         foreach ($row as $key=>$value) {
             switch ($key){
             case 'Sex':
-                $this->candidateInfo[$key] = new Sex($value);
+                $this->candidateInfo[$key] = empty($value) ? null : new Sex($value);
                 break;
             case 'EntityType':
                 $this->candidateInfo[$key] = new EntityType($value);
