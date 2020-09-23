@@ -64,5 +64,26 @@ class Login extends \NDB_Page
         }
 
     }
+
+    /**
+     * Add dependency for password visibility
+     *
+     * @return array of javascript files to be sourced
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+
+        $baseDeps = parent::getJSDependencies();
+
+        return array_merge(
+            $baseDeps,
+            [
+                $baseurl . '/js/passwordVisibility.js',
+            ]
+        );
+    }
+
 }
 
