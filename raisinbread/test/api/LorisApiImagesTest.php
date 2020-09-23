@@ -407,27 +407,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitImagesFilenameFormatRaw(): void
     {
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/images/" .
-            "$this->imagefileTest/format/raw",
-            [
-                'headers'     => $this->headers,
-                'http_errors' => false,
-            ]
-        );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: " .
-                "candidates/$this->candidTest/$this->visitTest/images/" .
-                "$this->imagefileTest/format/raw"
-            );
-        }
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
+        $this->markTestSkipped('minctoraw not installed');
     }
 
     /**

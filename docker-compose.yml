@@ -8,8 +8,7 @@ services:
         BASE_DIR: /app/
     volumes:
       - ./test/mysql-config:/etc/mysql/conf.d
-      - /data-raisinbread/assembly/676061/V4/mri/native/demo_676061_V4_t1_001.mnc:/app/data-raisinbread/assembly/676061/V4/mri/native/demo_676061_V4_t1_001.mnc
-      - /data-raisinbread/bids_imports/Face13_BIDSVersion_1.1.0/sub-OTT174/ses-V1/eeg/:/app/data-raisinbread/bids_imports/Face13_BIDSVersion_1.1.0/sub-OTT174/ses-V1/eeg/
+      - /data-raisinbread/:/data-raisinbread
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
@@ -18,7 +17,7 @@ services:
     image: selenium/standalone-firefox-debug:3.8.1-aluminum
     volumes:
       - /dev/shm:/dev/shm
-      - /data-raisinbread/:/app/data-raisinbread
+      - /data-raisinbread/:/data-raisinbread
  
     ports:
       - "5900:5900"
@@ -32,6 +31,7 @@ services:
     volumes:
       - ./:/app
       - ./test/test_instrument:/app/project/instruments
+      - /data-raisinbread/:/data-raisinbread
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
@@ -57,6 +57,7 @@ services:
       dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
+      - /data-raisinbread/:/data-raisinbread
     working_dir: /app
     environment:
       - LORIS_DB_CONFIG=test/config.xml
