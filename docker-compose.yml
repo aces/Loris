@@ -30,7 +30,6 @@ services:
       dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
-      - ./test/test_instrument:/app/project/instruments
       - /data-raisinbread/:/data-raisinbread
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
