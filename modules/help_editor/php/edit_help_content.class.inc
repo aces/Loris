@@ -49,9 +49,9 @@ class Edit_Help_Content extends \NDB_Form
         $defaults = [];
 
         // Sanitize user input
-        $safeSection    = $_REQUEST['section'] ?
+        $safeSection    = isset($_REQUEST['section']) ?
             htmlspecialchars($_REQUEST['section']) : '';
-        $safeSubsection = $_REQUEST['subsection'] ?
+        $safeSubsection = isset($_REQUEST['subsection']) ?
             htmlspecialchars($_REQUEST['subsection']) : '';
 
         $defaults = [];
@@ -60,10 +60,11 @@ class Edit_Help_Content extends \NDB_Form
         if (isset($_REQUEST['helpID'])) {
             $helpID = htmlspecialchars($_REQUEST['helpID']);
         }
-        if (!empty($_REQUEST['section'])) {
+        if (isset($_REQUEST['section']) && !empty($_REQUEST['section'])) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
         }
-        if (!empty($_REQUEST['section'])
+        if (isset($_REQUEST['section']) && !empty($_REQUEST['section'])
+            && isset($_REQUEST['subsection'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
