@@ -174,7 +174,7 @@ class Timepoint_List extends \NDB_Menu
 
                 // get the outcome data
                 $outcomeStage
-                    = $this->_determinePreviousStage($timePoint);
+                    = $this->_determinePreviousStage($sessionID);
 
                 $getStatusMethod = 'get'.$outcomeStage.'Status';
 

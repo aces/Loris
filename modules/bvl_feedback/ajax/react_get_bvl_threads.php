@@ -25,7 +25,9 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 $username = \User::singleton()->getUsername();
 
 
-if (isset($_POST['candID']) && !(isset($_POST['sessionID']))) {
+if (isset($_POST['candID'])
+    && (!isset($_POST['sessionID']) || empty($_POST['sessionID']))
+) {
     $candID         = new CandID($_POST['candID']);
     $feedbackThread =& \NDB_BVL_Feedback::Singleton($username, $candID);
 } elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
