@@ -113,25 +113,16 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             }
         );
 
-        if (empty($entry)) {
-            // The instrument must exists in the flag table. (start next stage)
-            return new \LORIS\Http\Response\JSON\NotFound('Instrument not found');
-        }
-
         $dde       = array_search('dde', $pathparts) !== false;
         $arraykey  = $dde ? 'DDECommentID' : 'CommentID';
         $commentid = array_pop($entry)[$arraykey] ?? null;
 
-        try {
-            $instrument = \NDB_BVL_Instrument::factory(
-                $instrumentname,
-                $commentid,
-                '',
-                true
-            );
-        } catch (\Exception $e) {
-            return new \LORIS\Http\Response\JSON\NotFound();
-        }
+        $instrument = \NDB_BVL_Instrument::factory(
+            $instrumentname,
+            $commentid,
+            '',
+            true
+        );
 
         $endpoint = new Instrument\Instrument($this->_visit, $instrument);
         $request  = $request->withAttribute('pathparts', $pathparts);
