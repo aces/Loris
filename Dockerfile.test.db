@@ -16,7 +16,6 @@ COPY raisinbread/instruments/instrument_sql/radiology_review.sql  /radiology_rev
 COPY test/test_instrument/testtest.sql /test_instrument.sql
 COPY raisinbread/RB_files/*.sql /RB_files/
 COPY test/test_instrument/NDB_BVL_Instrument_testtest.class.inc /project/instruments/NDB_BVL_Instrument_testtest.class.inc
-COPY raisinbread/instruments/* /project/instruments/
 
 RUN echo "Use LorisTest;" | cat - \
     0000-00-00-schema.sql \
