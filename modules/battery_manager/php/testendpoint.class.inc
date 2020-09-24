@@ -272,9 +272,9 @@ class TestEndpoint implements RequestHandlerInterface
         if (!isset($test->row['stage'])) {
             $errors[] = 'Stage is a required field.';
         }
-        if (isset($test->row['instrumentOrder']) &&
-            ($test->row['instrumentOrder'] > 127 ||
-            $test->row['instrumentOrder'] < -127)
+        if (isset($test->row['instrumentOrder'])
+            && ($test->row['instrumentOrder'] > 127
+            || $test->row['instrumentOrder'] < -127)
         ) {
             $errors[] = 'Instrument order must be between -127 and 127';
         }
