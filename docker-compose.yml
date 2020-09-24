@@ -9,7 +9,6 @@ services:
     volumes:
       - ./test/mysql-config:/etc/mysql/conf.d
       - /data-raisinbread/:/data-raisinbread
-      - ./raisinbread/instruments/:/project/instruments
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
@@ -19,7 +18,6 @@ services:
     volumes:
       - /dev/shm:/dev/shm
       - /data-raisinbread/:/data-raisinbread
-      - ./raisinbread/instruments/:/project/instruments
  
     ports:
       - "5900:5900"
@@ -33,7 +31,7 @@ services:
     volumes:
       - ./:/app
       - /data-raisinbread/:/data-raisinbread
-      - ./raisinbread/instruments/:/app/project/instruments
+      - ./test/test_instrument:/app/project/instruments
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
@@ -60,7 +58,6 @@ services:
     volumes:
       - ./:/app
       - /data-raisinbread/:/data-raisinbread
-      - ./raisinbread/instruments/:/app/project/instruments
     working_dir: /app
     environment:
       - LORIS_DB_CONFIG=test/config.xml
