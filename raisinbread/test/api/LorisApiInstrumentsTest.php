@@ -18,8 +18,8 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  */
 class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
 {
-    protected $instrumentTest = "testtest";
-    protected $candidTest     = "900000";
+    protected $instrumentTest = "aosi";
+    protected $candidTest     = "300001";
     protected $visitTest      = "V1";
 
 
