@@ -81,6 +81,8 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
       $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
       $this->form->addGroup($group, "consent_group", "Test selecting 'Yes' from the dropdown menu.", null, false);
       unset($group);
+      // automatically adds examiner & date of administration
+      $this->_addMetadataFields();
     }
 
     /**
