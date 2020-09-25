@@ -98,7 +98,9 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $json       = [];
+        $json       = [
+            $this->instrumentTest => ['consent', 'yes']
+        ];
         $response = $this->client->request(
             'PATCH',
             "candidates/$this->candid/$this->visit/instruments/$this->instrumentTest",
@@ -122,7 +124,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
         $json       = [
-            $this->instrumentTest => []
+            $this->instrumentTest => ['consent', 'yes']
         ];
         $response   = $this->client->request(
             'PUT',
