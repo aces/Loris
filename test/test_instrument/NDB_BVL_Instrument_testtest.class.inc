@@ -60,7 +60,7 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
         }
 
         //Defines the call back function for LorisForm to use when validating the form.
-        //$this->form->addFormRule(array(&$this, 'XINValidate'));
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**
