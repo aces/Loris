@@ -191,7 +191,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         #    );
         #}
 
-        $data = json_decode((string) $request->getBody(), true);
+        #$data = json_decode((string) $request->getBody(), true);
 
         #if (!$this->_instrument->validate($data)) {
         #    return new \LORIS\Http\Response\JSON\Forbidden(
