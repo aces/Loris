@@ -776,18 +776,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return void
      */
-    function _save(array $values): void
+    function _save(?array $values): void
     {
         $db = Database::singleton();
 
         // clear any fields starting with __
+        if ($values !== null) {
         foreach (array_keys($values) AS $key) {
             if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
-
         if ($this->jsonData !== true) {
             // If the instrument is saving as JSON into the Data column, the
             // table may not exist, so don't try and update it.
@@ -797,7 +797,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['CommentID' => $this->getCommentID()]
             );
         }
-
+        
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
         $oldData = $db->pselectOne(
@@ -822,7 +822,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ["Data" => json_encode($newData)],
             ['CommentID' => $this->getCommentID()]
         );
-
+	}
     }
 
 
@@ -2687,7 +2687,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return boolean true if values are valid
      */
-    function validate(array $values): bool
+    function validate(?array $values): bool
     {
         return $this->determineDataEntryAllowed();
     }

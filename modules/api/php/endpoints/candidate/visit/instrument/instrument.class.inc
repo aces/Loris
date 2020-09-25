@@ -209,7 +209,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_instrument->_save($data[$instrumentname]);
         } catch (\Throwable $e) {
             error_log($e->getMessage());
-            return new \LORIS\Http\Response\JSON\InternalServerError();
+            return new \LORIS\Http\Response\JSON\InternalServerError($data);
         }
         return (new \LORIS\Http\Response())
             ->withStatus(204);
