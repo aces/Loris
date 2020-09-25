@@ -189,13 +189,13 @@ class DocIndex extends React.Component {
         function click() {
           swal.fire({
             title: 'Are you sure?',
-            text: 'Your will not be able to recover this file!',
-            type: 'warning',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonClass: 'btn-danger',
-            confirmButtonText: 'Yes, delete it!',
-            closeOnConfirm: false,
-          }, function() {
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
             let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
               fetch(deleteurl, {
               method: 'DELETE',
