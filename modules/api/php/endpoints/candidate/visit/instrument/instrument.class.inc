@@ -166,14 +166,9 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        try {
-            $instrumentname = $this->_instrument->testName;
-            $this->_instrument->clearInstrument();
-            $this->_instrument->_save($data[$instrumentname]);
-        } catch (\Throwable $e) {
-            error_log($e->getMessage());
-            return new \LORIS\Http\Response\JSON\InternalServerError();
-        }
+        $instrumentname = $this->_instrument->testName;
+        $this->_instrument->clearInstrument();
+        $this->_instrument->_save($data[$instrumentname]);
         return (new \LORIS\Http\Response())
             ->withStatus(204);
     }
@@ -204,13 +199,8 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        try {
-            $instrumentname = $this->_instrument->testName;
-            $this->_instrument->_save($data[$instrumentname]);
-        } catch (\Throwable $e) {
-            error_log($e->getMessage());
-            return new \LORIS\Http\Response\JSON\InternalServerError($data);
-        }
+        $instrumentname = $this->_instrument->testName;
+        $this->_instrument->_save($data[$instrumentname]);
         return (new \LORIS\Http\Response())
             ->withStatus(204);
     }
