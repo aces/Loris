@@ -956,6 +956,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames(): array
     {
+        if (empty($this->getCommentID())) {
+            return [];
+        }
+
         $db = \Database::singleton();
 
         $centerID = $db->pselectOne(

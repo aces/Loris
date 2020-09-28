@@ -103,7 +103,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response = $this->client->request(
             'PATCH',
-            "candidates/$this->candid/$this->visit/instruments/$this->instrumentTest",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -124,11 +124,11 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
         $json       = [
-            $this->instrumentTest => []
+            $this->instrumentTest => null
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$this->candid/$this->visit/instruments/$this->instrumentTest",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -185,12 +185,14 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'Instrument' => $this->instrumentTest
             ],
             'Flags' => [
-                'Data_entry' => "2"
+                'Data_entry'     => 'In Progress',
+                'Administration' => 'All',
+                'Validity'       => 'Valid' 
             ]
         ];
         $response   = $this->client->request(
             'PATCH',
-            "candidates/$this->candid/$this->visit/instruments/$this->instrumentTest/flags",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/flags",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -218,12 +220,14 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'Instrument' => $this->instrumentTest
             ],
             'Flags' => [
-                'Validity' => "2"
+                'Data_entry'     => 'In Progress',
+                'Administration' => 'All',
+                'Validity'       => 'Valid' 
             ]
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$this->candid/$this->visit/instruments/$this->instrumentTest/flags",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/flags",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -285,7 +289,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response   = $this->client->request(
             'PATCH',
-            "candidates/$this->candid/$this->visit/instruments/$this->instrumentTest/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -318,7 +322,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$this->candid/$this->visit/instruments/$this->instrumentTest/flags/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/flags/dde",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -382,7 +386,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response   = $this->client->request(
             'PATCH',
-            "candidates/$this->candid/$this->visit/instruments/$this->instrumentTest/dde/flags",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde/flags",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -415,7 +419,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$this->candid/$this->visit/instruments/$this->instrumentTest/flags/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/flags/dde",
             [
                 'headers' => $this->headers,
                 'json'    => $json

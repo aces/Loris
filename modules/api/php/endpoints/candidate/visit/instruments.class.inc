@@ -115,7 +115,6 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $dde       = array_search('dde', $pathparts) !== false;
         $arraykey  = $dde ? 'DDECommentID' : 'CommentID';
-        $commentid = array_pop($entry)[$arraykey] ?? null;
 
         $instrument = \NDB_BVL_Instrument::factory(
             $instrumentname,
