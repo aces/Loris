@@ -95,7 +95,30 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdffile(): void
     {
-        $this->markTestSkipped('Missing data in docker image');
+        $resource = fopen($this->frecordTest, 'w');
+        $stream   = GuzzleHttp\Psr7\stream_for($resource);
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/recordings/" .
+            "$this->frecordTest",
+            [
+                'headers' => $this->headers,
+                'save_to' => $stream
+            ]
+        );
+        if ($response->getStatusCode() === 404) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/" .
+                "$this->frecordTest"
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->frecordTest);
     }
 
     /**
