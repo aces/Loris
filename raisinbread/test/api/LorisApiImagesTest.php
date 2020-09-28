@@ -324,7 +324,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
+            $this->markTestIncomplete(
                 "Endpoint not found: " .
                 "candidates/$this->candidTest/$this->visitTest/images/" .
                 "$this->imagefileTest/format/brainbrowser"
@@ -431,7 +431,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             ]
         );
         if ($response_stream->getStatusCode() === 404) {
-            $this->markTestSkipped(
+            $this->markTestIncomplete(
                 "Endpoint not found: " .
                 "candidates/$this->candidTest/$this->visitTest/images/" .
                 "$this->imagefileTest/format/thumbnail"
