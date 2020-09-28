@@ -31,8 +31,12 @@ For each of these fields:
    - try clicking the "Add field" button to see that this adds a new field to enter 
    data. Enter data and press save at the bottom of the page. Refresh the page, check
    that the data saved
-   - try deleting a field with the 'X' button. Press save at the bottom of the page. 
+   - try deleting a field with the 'X' button. A dialog box should ask for confirmation.
+   Try canceling and accepting the delete action.
    Refresh the page and check that the field was in fact deleted
+   Check that if the field is not saved yet, the dialog is not displayed:
+   for this click in the "Add field" button as in step 1 and before saving the new field
+   click in the corresponding 'X' button.
   [Manual Test]
 7. Check that by setting 'Sandbox' in the config.xml to 1, the config tag names 
 appear in grey below their labels.
