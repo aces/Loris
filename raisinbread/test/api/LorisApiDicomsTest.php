@@ -205,27 +205,6 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitDicomsTarname(): void
     {
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/" .
-            "dicoms/$this->tarfileTest",
-            [
-                'headers' => $this->headers
-            ]
-        );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestIncomplete(
-                "Endpoint not found: " .
-                 "candidates/$this->candidTest/$this->visitTest/dicoms/" .
-                 "$this->tarfileTest"
-            );
-        }
- 
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
         $resource        = fopen($this->tarfileTest, 'w');
         $stream          = GuzzleHttp\Psr7\stream_for($resource);
         $response_stream = $this->client->request(
