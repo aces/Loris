@@ -98,8 +98,10 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $json       = [
-            $this->instrumentTest => null
+        $json = [
+            $this->instrumentTest => [
+                'UserID' => "2"
+            ]
         ];
         $response = $this->client->request(
             'PATCH',
@@ -123,8 +125,10 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
-        $json       = [
-            $this->instrumentTest => null
+        $json = [
+            $this->instrumentTest => [
+                'UserID' => "2"
+            ]
         ];
         $response   = $this->client->request(
             'PUT',
@@ -249,8 +253,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/instruments/
-                 $this->instrumentTest/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+                 "$this->instrumentTest/dde",
             [
                 'headers' => $this->headers
             ]
@@ -317,19 +321,12 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'Instrument' => $this->instrumentTest
             ],
             $this->instrumentTest => [
-            'PSCID'                 => 'TST0001',
-              'RegistrationCenterID'  => 1,
-              'RegistrationProjectID' => 1,
-              'Active'                => 'Y',
-              'UserID'                => 1,
-              'Entity_type'           => 'Human',
-              'Sex'                   => 'Female',
                 'UserID' => "2"
             ]
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/flags/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -353,8 +350,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/instruments/
-            $this->instrumentTest/dde/flags",
+            "candidates/$this->candidTest/$this->visitTest/instruments/" .
+            "$this->instrumentTest/dde/flags",
             [
                 'headers' => $this->headers
             ]
