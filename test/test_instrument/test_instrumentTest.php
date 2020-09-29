@@ -22,7 +22,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     /**
-     *
+     * 
      * Inserting testing data.
      *
      * @return void
@@ -48,8 +48,8 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'ProjectID'      => 1,
             'Current_stage'  => 'Not Started',
         ));
-        $this->DB->insert('test_names', array(
-            'ID' => '999999',
+$this->DB->insert('test_names', array(
+       'ID' => '999999',
             'Test_name' => 'testtest',
             'Full_name' => 'Test Test',
             'Sub_group' => 1,
@@ -69,6 +69,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         // Set up database wrapper and config
     }
     /**
+     *
      * Deleting testing data.
      *
      * @return void
@@ -91,7 +92,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     {
       $this->_landing();
       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
-            ->getText();
+                   ->getText();
       $this->assertContains($content, $bodyText);
     }
     /**
@@ -118,47 +119,47 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         // $this->_testContent("instrument element");
     }
 
-     /**
-      * Testing instrument element appears in the body.
-      * After editing NDB_instrument php file, modify $instrument_element
-      * 
-      * @return void
-      */
+   /**
+    * Testing instrument element appears in the body.
+    * After editing NDB_instrument php file, modify $instrument_element
+    * 
+    * @return void
+    */
 //    function testInstrumentWithLorisForm()
 //    {
 
 //         $this->_testContent("$instrument_element");
 
 //    }
-    function testTextElement()
-    {
+   function testTextElement()
+   {
       $this->_landing();
       $textElement = $this->webDriver->findElement(
-          WebDriverBy::Name("testText")
+             WebDriverBy::Name("testText")
       )->sendKeys("Test Text successful"); 
       $this->webDriver->findElement(
-          WebDriverBy::Name("fire_away")
+             WebDriverBy::Name("fire_away")
       )->click();
       $data =  $this->DB->pselectOne(
-          'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
+            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
       );
-      $this->assertContains('Test Text successful', $data); 
+      $this->assertContains('Test Text successful',$data); 
     } 
 
 
-    function testCheckBoxElement()
-    {
+     function testCheckBoxElement()
+     {
       $this->_landing();
       $textElement = $this->webDriver->findElement(
-          WebDriverBy::Name("testCheckbox")
+             WebDriverBy::Name("testCheckbox")
       )->click();
       $this->webDriver->findElement(
-          WebDriverBy::Name("fire_away")
+             WebDriverBy::Name("fire_away")
       )->click();
       $data =  $this->DB->pselectOne(
-          'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
+             'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
       );
-      $this->assertContains('"testCheckbox":"1"', $data);
+      $this->assertContains('"testCheckbox":"1"',$data);
     }
 
    function testSelectOptionElement()
@@ -170,11 +171,11 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
       $element->selectByVisibleText("Yes");
 
       $this->webDriver->findElement(
-          WebDriverBy::Name("fire_away")
+             WebDriverBy::Name("fire_away")
       )->click();
 
       $data =  $this->DB->pselectOne(
-          'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
+             'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
       );
       $this->assertContains('"consent":"yes"', $data);
 
@@ -185,20 +186,20 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
       $element->selectByVisibleText("No");
       
       $this->webDriver->findElement(
-          WebDriverBy::Name("fire_away")
+             WebDriverBy::Name("fire_away")
       )->click();
 
       $data =  $this->DB->pselectOne(
-          'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
+             'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
       );
-      $this->assertContains('"consent":"no"', $data);
+      $this->assertContains('"consent":"no"',$data);
 
     }
 
     private function _landing(){
-        $this->safeGet($this->url .
-            "/instruments/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
-        );
+      $this->safeGet($this->url .
+         "/instruments/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
+      );
     } 
 }
 ?>
