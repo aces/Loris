@@ -166,9 +166,14 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $instrumentname = $this->_instrument->testName;
-        $this->_instrument->clearInstrument();
-        $this->_instrument->_save($data[$instrumentname]);
+        try {
+            $instrumentname = $this->_instrument->testName;
+            $this->_instrument->clearInstrument();
+            $this->_instrument->_save($data[$instrumentname]);
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError();
+        }
         return (new \LORIS\Http\Response())
             ->withStatus(204);
     }
@@ -185,22 +190,27 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         // TODO :: Check permissions. How??
 
-        #if (!$this->_instrument->determineDataEntryAllowed()) {
-        #    return new \LORIS\Http\Response\JSON\Forbidden(
-        #        'Can not update instruments that are flagged as complete.'
-        #    );
-        #}
+        if (!$this->_instrument->determineDataEntryAllowed()) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Can not update instruments that are flagged as complete.'
+            );
+        }
 
-        #$data = json_decode((string) $request->getBody(), true);
+        $data = json_decode((string) $request->getBody(), true);
 
-        #if (!$this->_instrument->validate($data)) {
-        #    return new \LORIS\Http\Response\JSON\Forbidden(
-        #        'Could not update.'
-        #    );
-        #}
+        if (!$this->_instrument->validate($data)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Could not update.'
+            );
+        }
 
-        #$instrumentname = $this->_instrument->testName;
-        # $this->_instrument->_save($data[$instrumentname]);
+        try {
+            $instrumentname = $this->_instrument->testName;
+               $this->_instrument->_save($data[$instrumentname]);
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError();
+        }
         return (new \LORIS\Http\Response())
             ->withStatus(204);
     }

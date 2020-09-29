@@ -317,6 +317,13 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'Instrument' => $this->instrumentTest
             ],
             $this->instrumentTest => [
+            'PSCID'                 => 'TST0001',
+              'RegistrationCenterID'  => 1,
+              'RegistrationProjectID' => 1,
+              'Active'                => 'Y',
+              'UserID'                => 1,
+              'Entity_type'           => 'Human',
+              'Sex'                   => 'Female',
                 'UserID' => "2"
             ]
         ];
@@ -374,14 +381,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     public function testPatchCandidVisitInstrumentsInstrumentDdeFlags(): void
     {
         $json       = [
-            'Meta'      => [
-                'CandID'     => $this->candidTest,
+            'Meta'  => [
+                'Candidate'  => $this->candidTest,
                 'Visit'      => $this->visitTest,
                 'DDE'        => false,
                 'Instrument' => $this->instrumentTest
             ],
-            $this->instrumentTest => [
-                'UserID' => "2"
+            'Flags' => [
+                'Data_entry'     => 'In Progress',
+                'Administration' => 'All',
+                'Validity'       => 'Valid' 
             ]
         ];
         $response   = $this->client->request(
@@ -407,14 +416,16 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     public function testPutCandidVisitInstrumentsInstrumentDdeFlags(): void
     {
         $json       = [
-            'Meta'      => [
-                'CandID'     => $this->candidTest,
+            'Meta'  => [
+                'Candidate'  => $this->candidTest,
                 'Visit'      => $this->visitTest,
                 'DDE'        => false,
                 'Instrument' => $this->instrumentTest
             ],
-            $this->instrumentTest => [
-                'UserID' => "2"
+            'Flags' => [
+                'Data_entry'     => 'In Progress',
+                'Administration' => 'All',
+                'Validity'       => 'Valid' 
             ]
         ];
         $response   = $this->client->request(

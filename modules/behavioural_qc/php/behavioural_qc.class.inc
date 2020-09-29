@@ -34,14 +34,9 @@ class Behavioural_QC extends \NDB_Form
         $user     =& \User::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
-        $instr = null;
-        if (isset($sanitize['instrument'])
-            && $sanitize['instrument'] != 'All Instruments'
-        ) {
-            $instr = $sanitize['instrument'];
-        }
-        $instrument = $this->getTestNameusingMappedName($instr);
-
+        $instrument   = $this->getTestNameusingMappedName( 
+            $sanitize['instrument'] ?? null 
+        );
         $site_default = $this->getDefaultSite();
         //construct the instrument drop down..
         $this->tpl_data['visit_label'] = $sanitize['visit_label'] ?? null;
@@ -56,8 +51,7 @@ class Behavioural_QC extends \NDB_Form
         } else {
             $this->tpl_data['candidate'] = null;
         }
-        $this->tpl_data['test_name']    = $instrument;
-        $this->tpl_data['test_name_id'] = $sanitize['instrument'];
+        $this->tpl_data['test_name'] = $instrument; 
 
         $candID = null;
         if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])
@@ -238,12 +232,12 @@ class Behavioural_QC extends \NDB_Form
             }
         }
 
-        if (($project !=null)&&($project != 'All Projects')) {
+        if (($project !=null)&&($project!= 'All Projects')) {
             $where         .= " AND psr.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
-        if (isset($test_name) && $test_name != 'All Instruments'
+        if (isset($test_name) && $test_name !='All Instruments'
             && $test_name!=null
         ) {
 

@@ -343,7 +343,7 @@ FeedbackPanelRow.propTypes = {
   date: PropTypes.string,
   feedbackID: PropTypes.string,
   candID: PropTypes.string,
-  onClickOpen: PropTypes.func,
+  onClickOpen: PropTypes.string,
 };
 
 

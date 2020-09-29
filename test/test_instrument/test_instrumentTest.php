@@ -22,7 +22,6 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     /**
-     * 
      * Inserting testing data.
      *
      * @return void
@@ -30,7 +29,8 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->DB->insert("candidate", array(
+        $this->DB->insert(
+            "candidate", array(
             'CandID'                => '900000',
             'PSCID'                 => 'TST0001',
             'RegistrationCenterID'  => 1,
@@ -39,36 +39,51 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'UserID'                => 1,
             'Entity_type'           => 'Human',
             'Sex'                   => 'Female'
-        ));
-        $this->DB->insert('session', array(
+            )
+        );
+        $this->DB->insert(
+            'session', array(
             'ID'             => '999999',
             'CandID'         => '900000',
             'Visit_label'    => 'V1',
             'CenterID'       => 1,
             'ProjectID'      => 1,
             'Current_stage'  => 'Not Started',
-        ));
-	$this->DB->insert('test_names', array(
-	    'ID' => '999999',
+            )
+        );
+        $this->DB->insert(
+            'test_names', array(
+            'ID' => '999999',
             'Test_name' => 'testtest',
             'Full_name' => 'Test Test',
             'Sub_group' => 1,
-        ));
-        $this->DB->insert('flag', array(
+            )
+        );
+        $this->DB->insert(
+            'flag', array(
             'ID' => '999999',
             'SessionID' => '999999',
             'Test_name' => 'testtest',
             'CommentID' => '11111111111111111',
-        ));
+            )
+        );
+        $this->DB->insert(
+            'flag', array(
+            'ID' => '999999',
+            'SessionID' => '999999',
+            'Test_name' => 'testtest',
+            'CommentID' => 'DDE_11111111111111111',
+            )
+        );
         // Set up database wrapper and config
     }
     /**
-     * 
      * Deleting testing data.
      *
      * @return void
      */
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->DB->delete("session", array('CandID' => '900000'));
         $this->DB->delete("candidate", array('CandID' => '900000'));
         $this->DB->delete("flag", array('ID' => '999999'));
@@ -76,19 +91,18 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
     }
     /**
-     * 
      * Testing $content appears in the body.
      *
-     * @param string  $content      testing content
+     * @param string $content testing content
      *
      * @return void
      */
     private function _testContent($content)
     {
-      $this->_landing();
-      $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
-                   ->getText();
-      $this->assertContains($content, $bodyText);
+        $this->_landing();
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+            ->getText();
+        $this->assertContains($content, $bodyText);
     }
     /**
      * Testing instrument element appears in the body.
@@ -98,103 +112,105 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testAddElementsWithLorisForm()
     {
 
-       // $this->form->addElement('header', 'instrument_title', "Test Instrument Title");
+        // $this->form->addElement('header', 'instrument_title', "Test Instrument Title");
         $this->_testContent("Test Instrument Title");
 
-       // $this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1', array('value' => '1'));
+        // $this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1', array('value' => '1'));
         $this->_testContent("Check this checkbox default value is 1");
 
-       // $this->form->addElement("text", 'testText', "text_input", array("class" => "encrypt required"));
+        // $this->form->addElement("text", 'testText', "text_input", array("class" => "encrypt required"));
         $this->_testContent("text_input");
 
-       //$this->form->createElement("select","consent", "", $yesNo);
+        //$this->form->createElement("select","consent", "", $yesNo);
         $this->_testContent("Test selecting 'Yes' from the dropdown menu.");
 
         //add more test case 
         // $this->_testContent("instrument element");
     }
 
-   /**
-    * Testing instrument element appears in the body.
-    * After editing NDB_instrument php file, modify $instrument_element
-    * 
-    * @return void
-    */
-//    function testInstrumentWithLorisForm()
-//    {
+    /**
+     * Testing instrument element appears in the body.
+     * After editing NDB_instrument php file, modify $instrument_element
+     * 
+     * @return void
+     */
+    //    function testInstrumentWithLorisForm()
+    //    {
 
-//         $this->_testContent("$instrument_element");
+    //         $this->_testContent("$instrument_element");
 
-//    }
-   function testTextElement()
-   {
-      $this->_landing();
-      $textElement = $this->webDriver->findElement(
-             WebDriverBy::Name("testText")
-      )->sendKeys("Test Text successful"); 
-      $this->webDriver->findElement(
-             WebDriverBy::Name("fire_away")
-      )->click();
-      $data =  $this->DB->pselectOne(
-        'SELECT Data FROM flag where SessionID = 999999',array()
+    //    }
+    function testTextElement()
+    {
+        $this->_landing();
+        $textElement = $this->webDriver->findElement(
+            WebDriverBy::Name("testText")
+        )->sendKeys("Test Text successful"); 
+        $this->webDriver->findElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+        $data =  $this->DB->pselectOne(
+            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
         );
-      $this->assertContains('Test Text successful',$data); 
+        $this->assertContains('Test Text successful', $data); 
     } 
 
 
-   function testCheckBoxElement()
-   {
-      $this->_landing();
-      $textElement = $this->webDriver->findElement(
-             WebDriverBy::Name("testCheckbox")
-      )->click();
-      $this->webDriver->findElement(
-             WebDriverBy::Name("fire_away")
-      )->click();
-      $data =  $this->DB->pselectOne(
-        'SELECT Data FROM flag where SessionID = 999999',array()
+    function testCheckBoxElement()
+    {
+        $this->_landing();
+        $textElement = $this->webDriver->findElement(
+            WebDriverBy::Name("testCheckbox")
+        )->click();
+        $this->webDriver->findElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+        $data =  $this->DB->pselectOne(
+            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
         );
-      $this->assertContains('"testCheckbox":"1"',$data);
+        $this->assertContains('"testCheckbox":"1"', $data);
     }
 
-   function testSelectOptionElement()
-   {
-      // select 'Yes' option and check it.
-      $this->_landing();
-      $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
-      $element = new WebDriverSelect($select);
-      $element->selectByVisibleText("Yes");
+    function testSelectOptionElement()
+    {
+        // select 'Yes' option and check it.
+        $this->_landing();
+        $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
+        $element = new WebDriverSelect($select);
+        $element->selectByVisibleText("Yes");
 
-      $this->webDriver->findElement(
-             WebDriverBy::Name("fire_away")
-      )->click();
+        $this->webDriver->findElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
 
-      $data =  $this->DB->pselectOne(
-        'SELECT Data FROM flag where SessionID = 999999',array()
+        $data =  $this->DB->pselectOne(
+            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
         );
-      $this->assertContains('"consent":"yes"',$data);
+        $this->assertContains('"consent":"yes"', $data);
 
-      // select 'No' option and check it.
-      $this->_landing();
-      $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
-      $element = new WebDriverSelect($select);
-      $element->selectByVisibleText("No");
+        // select 'No' option and check it.
+        $this->_landing();
+        $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
+        $element = new WebDriverSelect($select);
+        $element->selectByVisibleText("No");
       
-      $this->webDriver->findElement(
-             WebDriverBy::Name("fire_away")
-      )->click();
+        $this->webDriver->findElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
 
-      $data =  $this->DB->pselectOne(
-        'SELECT Data FROM flag where SessionID = 999999',array()
+        $data =  $this->DB->pselectOne(
+            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
         );
-      $this->assertContains('"consent":"no"',$data);
+        $this->assertContains('"consent":"no"', $data);
 
     }
 
-    private function _landing(){
-      $this->safeGet($this->url .
-        "/instruments/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
-      );
+    private function _landing()
+    {
+        $this->safeGet(
+            $this->url .
+            "/instruments/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
+        );
     } 
 }
 ?>
