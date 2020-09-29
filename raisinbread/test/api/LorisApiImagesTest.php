@@ -79,7 +79,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
 
     /**
      * Tests the HTTP GET request for the
-     * endpoint /candidates/{candid}/{visit}/images/filename/format/thumbnail
+     * endpoint /candidates/{candid}/{visit}/images/filename
      *
      * @return void
      */
@@ -133,7 +133,6 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
         );
         $this->assertEquals(null, $imagesArray);
     }
-
 
     /**
      * Tests the HTTP GET request for the

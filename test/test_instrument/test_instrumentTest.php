@@ -132,73 +132,71 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 //    }
     function testTextElement()
     {
-        $this->_landing();
-        $textElement = $this->webDriver->findElement(
-            WebDriverBy::Name("testText")
-        )->sendKeys("Test Text successful"); 
-        $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
-        )->click();
-        $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
-        );
-        $this->assertContains('Test Text successful', $data); 
+      $this->_landing();
+      $textElement = $this->webDriver->findElement(
+          WebDriverBy::Name("testText")
+      )->sendKeys("Test Text successful"); 
+      $this->webDriver->findElement(
+          WebDriverBy::Name("fire_away")
+      )->click();
+      $data =  $this->DB->pselectOne(
+          'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
+      );
+      $this->assertContains('Test Text successful', $data); 
     } 
 
 
     function testCheckBoxElement()
     {
-        $this->_landing();
-        $textElement = $this->webDriver->findElement(
-            WebDriverBy::Name("testCheckbox")
-        )->click();
-        $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
-        )->click();
-        $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
-        );
-        $this->assertContains('"testCheckbox":"1"', $data);
+      $this->_landing();
+      $textElement = $this->webDriver->findElement(
+          WebDriverBy::Name("testCheckbox")
+      )->click();
+      $this->webDriver->findElement(
+          WebDriverBy::Name("fire_away")
+      )->click();
+      $data =  $this->DB->pselectOne(
+          'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
+      );
+      $this->assertContains('"testCheckbox":"1"', $data);
     }
 
-    function testSelectOptionElement()
-    {
-        // select 'Yes' option and check it.
-        $this->_landing();
-        $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText("Yes");
+   function testSelectOptionElement()
+   {
+      // select 'Yes' option and check it.
+      $this->_landing();
+      $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
+      $element = new WebDriverSelect($select);
+      $element->selectByVisibleText("Yes");
 
-        $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
-        )->click();
+      $this->webDriver->findElement(
+          WebDriverBy::Name("fire_away")
+      )->click();
 
-        $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
-        );
-        $this->assertContains('"consent":"yes"', $data);
+      $data =  $this->DB->pselectOne(
+          'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
+      );
+      $this->assertContains('"consent":"yes"', $data);
 
-        // select 'No' option and check it.
-        $this->_landing();
-        $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText("No");
+      // select 'No' option and check it.
+      $this->_landing();
+      $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
+      $element = new WebDriverSelect($select);
+      $element->selectByVisibleText("No");
       
-        $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
-        )->click();
+      $this->webDriver->findElement(
+          WebDriverBy::Name("fire_away")
+      )->click();
 
-        $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
-        );
-        $this->assertContains('"consent":"no"', $data);
+      $data =  $this->DB->pselectOne(
+          'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
+      );
+      $this->assertContains('"consent":"no"', $data);
 
     }
 
-    private function _landing()
-    {
-        $this->safeGet(
-            $this->url .
+    private function _landing(){
+        $this->safeGet($this->url .
             "/instruments/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
         );
     } 
