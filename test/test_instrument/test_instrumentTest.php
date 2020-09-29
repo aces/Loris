@@ -48,8 +48,8 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'ProjectID'      => 1,
             'Current_stage'  => 'Not Started',
         ));
-$this->DB->insert('test_names', array(
-       'ID' => '999999',
+	$this->DB->insert('test_names', array(
+	    'ID' => '999999',
             'Test_name' => 'testtest',
             'Full_name' => 'Test Test',
             'Sub_group' => 1,
@@ -69,7 +69,7 @@ $this->DB->insert('test_names', array(
         // Set up database wrapper and config
     }
     /**
-     *
+     * 
      * Deleting testing data.
      *
      * @return void
@@ -82,6 +82,7 @@ $this->DB->insert('test_names', array(
         parent::tearDown();
     }
     /**
+     * 
      * Testing $content appears in the body.
      *
      * @param string  $content      testing content
@@ -141,14 +142,14 @@ $this->DB->insert('test_names', array(
              WebDriverBy::Name("fire_away")
       )->click();
       $data =  $this->DB->pselectOne(
-            'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
-      );
+        'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111',array()
+        );
       $this->assertContains('Test Text successful',$data); 
     } 
 
 
-     function testCheckBoxElement()
-     {
+   function testCheckBoxElement()
+   {
       $this->_landing();
       $textElement = $this->webDriver->findElement(
              WebDriverBy::Name("testCheckbox")
@@ -157,8 +158,8 @@ $this->DB->insert('test_names', array(
              WebDriverBy::Name("fire_away")
       )->click();
       $data =  $this->DB->pselectOne(
-             'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
-      );
+        'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111',array()
+        );
       $this->assertContains('"testCheckbox":"1"',$data);
     }
 
@@ -175,9 +176,9 @@ $this->DB->insert('test_names', array(
       )->click();
 
       $data =  $this->DB->pselectOne(
-             'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
-      );
-      $this->assertContains('"consent":"yes"', $data);
+        'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111',array()
+        );
+      $this->assertContains('"consent":"yes"',$data);
 
       // select 'No' option and check it.
       $this->_landing();
@@ -190,16 +191,17 @@ $this->DB->insert('test_names', array(
       )->click();
 
       $data =  $this->DB->pselectOne(
-             'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111', array()
-      );
+        'SELECT Data FROM flag where SessionID = 999999 AND CommentID = 11111111111111111',array()
+        );
       $this->assertContains('"consent":"no"',$data);
 
     }
 
     private function _landing(){
       $this->safeGet($this->url .
-         "/instruments/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
+        "/instruments/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
       );
     } 
 }
 ?>
+>
