@@ -155,6 +155,7 @@ class Media extends \DataFrameworkMenu
     public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
     {
         $provisioner = parent::getDataProvisionerWithFilters();
+
         return $provisioner->filter(new HideFileFilter());
     }
 

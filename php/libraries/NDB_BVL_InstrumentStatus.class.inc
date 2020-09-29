@@ -161,7 +161,7 @@ class NDB_BVL_InstrumentStatus
      * Sets the current data entry status of the instrument
      *
      * @param ?string $status the new status from the set (NULL,
-     *                        'In Progress','Not Complete','Complete')
+     *                       'In Progress','Not Complete','Complete')
      *
      * @return void
      */
@@ -237,7 +237,7 @@ class NDB_BVL_InstrumentStatus
      * Sets the current administration status of the instrument
      *
      * @param ?string $status the new status from the set
-     *                        (NULL, 'None','Partial','All')
+     *                       (NULL, 'None','Partial','All')
      *
      * @return void
      */
@@ -263,7 +263,7 @@ class NDB_BVL_InstrumentStatus
      * Sets the current validity status of the instrument
      *
      * @param ?string $status the new status from the set
-     *                        (NULL, 'Questionable', 'Invalid', 'Valid')
+     *                       (NULL, 'Questionable', 'Invalid', 'Valid')
      *
      * @return void
      */

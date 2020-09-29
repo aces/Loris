@@ -787,6 +787,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
+
         if ($this->jsonData !== true) {
             // If the instrument is saving as JSON into the Data column, the
             // table may not exist, so don't try and update it.
@@ -796,6 +797,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['CommentID' => $this->getCommentID()]
             );
         }
+
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
         $oldData = $db->pselectOne(
@@ -820,6 +822,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ["Data" => json_encode($newData)],
             ['CommentID' => $this->getCommentID()]
         );
+
     }
 
 

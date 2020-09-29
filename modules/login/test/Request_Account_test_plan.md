@@ -19,3 +19,4 @@
 12. Create a new user account using an email address you can access. Give it either the `user_accounts` or `user_accounts_multisite` permission.
 permission and has
 12. Issue a new user account request specifying the same site and project as the user you created in the previous step. Verify that an email is sent to your email address.
+
