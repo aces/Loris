@@ -129,9 +129,9 @@ class Imaging_QC extends \NDB_Menu_Filter
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE
-              WHEN m.".$scan_done." IS NULL THEN ''
-              WHEN (m.".$scan_done." = 'Complete'
-              OR m.".$scan_done." = 'Partial') THEN 'Yes'
+              WHEN m.`".$scan_done."` IS NULL THEN ''
+              WHEN (m.`".$scan_done."` = 'Complete'
+              OR m.`".$scan_done."` = 'Partial') THEN 'Yes'
               ELSE 'No'
            END as scan_done,
            CASE
