@@ -43,7 +43,6 @@ class Behavioural_QC extends \NDB_Form
         $this->tpl_data['FieldName']   = $sanitize['FieldName'] ?? null;
         $this->tpl_data['project']     = $sanitize['project'] ?? null;
         $this->tpl_data['site']        = $sanitize['site'] ?? null;
-
         if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
             $this->tpl_data['PSCID'] = $sanitize['PSCID'];
         } elseif (isset($sanitize['candidate']) && !empty($sanitize['candidate'])) {
@@ -232,7 +231,7 @@ class Behavioural_QC extends \NDB_Form
             }
         }
 
-        if (($project !=null)&&($project!= 'All Projects')) {
+        if (($project !=null)&&($project!='All Projects')) {
             $where         .= " AND psr.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
@@ -361,13 +360,13 @@ class Behavioural_QC extends \NDB_Form
         }
 
         //filter for testname
-        if (($test_name !=null)&&($test_name !='All Instruments')) {
+        if (($test_name !=null)&&($test_name!='All Instruments')) {
             $where        .= " AND TableName LIKE CONCAT(:TN, '%')";
             $qparams['TN'] = $test_name;
         }
 
         //filter for visit
-        if (($visit_label !=null)&&($visit_label != 'All Visits')) {
+        if (($visit_label !=null)&&($visit_label!='All Visits')) {
             $where        .= " AND s.visit_label = :VL";
             $qparams['VL'] = $visit_label;
         }
