@@ -335,7 +335,6 @@ class FeedbackPanelRow extends Component {
     );
   }
 }
-
 FeedbackPanelRow.propTypes = {
   fieldname: PropTypes.string,
   type: PropTypes.string,

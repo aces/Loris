@@ -34,10 +34,10 @@ class Behavioural_QC extends \NDB_Form
         $user     =& \User::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
-        $instrument   = $this->getTestNameusingMappedName( 
-            $sanitize['instrument'] ?? null 
+        $instrument   = $this->getTestNameusingMappedName(
+            $sanitize['instrument'] ?? null
         );
-        $site_default = $this->getDefaultSite();
+        $site_default =$this->getDefaultSite();
         //construct the instrument drop down..
         $this->tpl_data['visit_label'] = $sanitize['visit_label'] ?? null;
         $this->tpl_data['FieldName']   = $sanitize['FieldName'] ?? null;
@@ -51,7 +51,7 @@ class Behavioural_QC extends \NDB_Form
         } else {
             $this->tpl_data['candidate'] = null;
         }
-        $this->tpl_data['test_name'] = $instrument; 
+        $this->tpl_data['test_name'] = $instrument;
 
         $candID = null;
         if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])
@@ -285,11 +285,11 @@ class Behavioural_QC extends \NDB_Form
     {
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
         if (!empty($sanitize[$Filter])
-            && $sanitize[$Filter] !== 'All Fields'
-            && (strtolower($sanitize[$Filter]) !== 'any')
-            && ($sanitize[$Filter] !== 'All Visits')
-            && $sanitize[$Filter] !== 'all_flags'
-            && ($sanitize[$Filter] !== 'All Instruments')
+            && $sanitize[$Filter] !=='All Fields'
+            && (strtolower($sanitize[$Filter]) !=='any')
+            && ($sanitize[$Filter] !=='All Visits')
+            && $sanitize[$Filter] !=='all_flags'
+            && ($sanitize[$Filter] !=='All Instruments')
         ) {
             global $DB;
             if ($Filter == 'instrument') {
@@ -361,7 +361,7 @@ class Behavioural_QC extends \NDB_Form
         }
 
         //filter for testname
-        if (($test_name !=null)&&($test_name != 'All Instruments')) {
+        if (($test_name !=null)&&($test_name !='All Instruments')) {
             $where        .= " AND TableName LIKE CONCAT(:TN, '%')";
             $qparams['TN'] = $test_name;
         }
@@ -506,13 +506,13 @@ class Behavioural_QC extends \NDB_Form
         $qparams = [];
 
         //filter for testname
-        if (($test_name !=null)&&($test_name != 'All Instruments')) {
+        if (($test_name !=null)&&($test_name!='All Instruments')) {
             $where        .= " AND f.test_name = :TN";
             $qparams['TN'] = $test_name;
         }
 
         //filter for visit
-        if (($visit_label !=null)&&($visit_label != 'All Visits')) {
+        if (($visit_label !=null)&&($visit_label!='All Visits')) {
             $where        .= " AND s.visit_label = :VL";
             $qparams['VL'] = $visit_label;
         }
