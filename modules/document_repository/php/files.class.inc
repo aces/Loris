@@ -115,9 +115,14 @@ class Files extends \NDB_Page
                 );
           break;
         case "GET":
-            $name   = \User::singleton()->getUsername();
             $record = urldecode(basename($request->getUri()->getPath()));
             if (!is_numeric($record)) {
+            $DB     = \Database::singleton();
+            $name   =  $DB->pselectOne(
+            "SELECT uploaded_by FROM document_repository
+             WHERE File_Name=:name",
+             array('name' => $record)
+             );
                 $file = __DIR__ . "/../user_uploads/$name/$record";
                 return (new \LORIS\Http\Response())
                   ->withHeader('Content-Type', 'application/octet-stream')
