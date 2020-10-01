@@ -190,12 +190,13 @@ class DocIndex extends React.Component {
           swal.fire({
             title: 'Are you sure?',
             text: 'You won\'t be able to revert this!',
-            icon: 'warning',
+            type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!',
-          }).then((result) => {
+           }).then((result) => {
+           if (result.value) {
             let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
               fetch(deleteurl, {
               method: 'DELETE',
@@ -206,6 +207,7 @@ class DocIndex extends React.Component {
                   location.reload();
                   swal.fire('delete Successful!', '', 'success');
                 });
+           }
           });
         }
 
