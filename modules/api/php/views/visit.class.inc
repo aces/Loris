@@ -36,7 +36,7 @@ class Visit
         $this->_timepoint = $timepoint;
         $this->_version   = $version;
     }
-  
+
     /**
      * Creates an serializable array of this object's data
      *
@@ -62,7 +62,7 @@ class Visit
                 'Date'   => $this->_timepoint->getDateOfScreening(),
                 'Status' => $this->_timepoint->getScreeningStatus(),
             ];
-  
+
             $stages['Screening'] = $screening;
         }
 
@@ -71,7 +71,7 @@ class Visit
                 'Date'   => $this->_timepoint->getDateOfVisit(),
                 'Status' => $this->_timepoint->getVisitStatus(),
             ];
-  
+
             $stages['Visit'] = $visit;
         }
 
@@ -80,7 +80,7 @@ class Visit
                 'Date'   => $this->_timepoint->getDateOfapproval(),
                 'Status' => $this->_timepoint->getApprovalStatus(),
             ];
-  
+
             $stages['Screening'] = $approval;
         }
 
