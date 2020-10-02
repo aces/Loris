@@ -120,7 +120,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         switch($subendpoint) {
         case 'instruments':
             $version = $request->getAttribute('LORIS-API-Version');
-            $handler = new Instruments($this->_visit);
+            $handler = new Instruments($this->_visit, $version);
             break;
         case 'images':
             $handler = new Images($this->_visit);
