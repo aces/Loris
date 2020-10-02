@@ -75,8 +75,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        // Removed 0.0.2 since session requires a project.
-        return ['v0.0.3'];
+        return [
+            'v0.0.2',
+            'v0.0.3'
+        ];
     }
 
     /**
@@ -117,6 +119,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $subendpoint = array_shift($pathparts);
         switch($subendpoint) {
         case 'instruments':
+            $version = $request->getAttribute('LORIS-API-Version');
             $handler = new Instruments($this->_visit);
             break;
         case 'images':
