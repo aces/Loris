@@ -4,7 +4,7 @@ Web configuration.
 
 The installation script adds admin user/password, associated with a dummy email address which should be changed. Additional users and permissions are added in the User Accounts page. For clarity and uniqueness, it is recommended to use an email address as username.  
 
-> * To set/reset a user password, use the script [tools/resetpassword.php](https://github.com/aces/Loris/blob/master/tools/resetpassword.php)  
+* To set/reset a user password, use the script [tools/resetpassword.php](https://github.com/aces/Loris/blob/master/tools/resetpassword.php)  
 
 
 ## Create back-end accounts  
@@ -27,8 +27,8 @@ Populate additional sites using the following MySQL command-line :
 ``` SQL
 INSERT INTO psc (Name, Alias, MRI_alias, Study_site) VALUES ('Montreal','MTL','MTL','Y');
 ```
-> * The first study site will have its CenterID = 2  
-> * There cannot be more than one site with the same name  
+* The first study site will have its CenterID = 2  
+* There cannot be more than one site with the same name  
 
 ## Configure study Variables  
 
@@ -55,7 +55,7 @@ If subjects are pre-natal, use the Estimated Date of Confinement (EDC) features 
 INSERT INTO `project_rel` VALUES (1,1),(1,2),(2,3);
 ```  
 
-### iii. Visit labels
+### iii. Visit labels  
 Visit labels or timepoints are defined in the file project/config.xml:  
 
 ```
@@ -70,6 +70,7 @@ Visit labels or timepoints are defined in the file project/config.xml:
       </labelSet>
    </visitLabel>
 ```  
+
 **Note:** <generation> can be set to either 'sequence' to show a drop-down select box of visit labels in the front end, or 'user' for manual entry into a text box. However, it is recommended to use 'sequence', and populate <labelSet> with one <item> per visit label, replacing %value% with {V1, V2, etc} per example above.  
 
 ### iv. Visit Windows
@@ -83,8 +84,8 @@ If age is a not critical factor in study visit scheduling, define Min value as 0
 ### v. Customizable Participant Identifiers  
 By default LORIS provides 2 different identifiers for each participant or subject:  
 
-> * CandID also known as the DCCID : is a unique randomized 6-digit numeric ID (e.g. '436792'). It is completely anonymous, and is assigned automatically by Loris upon participant registration.
-> * PSCID (Project Study Centre ID) is configurable, can be manually entered when registering a participant, and may contain the site abbreviation, followed by sequential or randomized digits (e.g. 'MTL0006')
+* CandID also known as the DCCID : is a unique randomized 6-digit numeric ID (e.g. '436792'). It is completely anonymous, and is assigned automatically by Loris upon participant registration.
+* PSCID (Project Study Centre ID) is configurable, can be manually entered when registering a participant, and may contain the site abbreviation, followed by sequential or randomized digits (e.g. 'MTL0006')
 The format of the PSCID must be configured in project/config.xml Also configure how PSCIDs are created for new subjects, in one of 3 ways: manually entered, sequentially generated, or randomly generated
 
 1: (default) sequential to generate PSCID sequentially for each new participant registered  

@@ -10,8 +10,8 @@ Instruments commonly rate the severity of the symptoms they test through scoring
 ## 1) Instrument Builder  
 The Instrument Builder (Tools menu) enables admin-level users to create simple instrument forms through the LORIS front-end. If your instrument contains one of the following, please follow the [Developer's Instrument Guide](https://github.com/aces/Loris/wiki/Developer%27s-Instrument-Guide) for complex forms:  
 
-> * Dependencies or rules between fields  
-> * Norm tables (to look up scaled values/scores)  
+* Dependencies or rules between fields  
+* Norm tables (to look up scaled values/scores)  
 
 Please note the Instrument Builder works best with Chrome or Firefox. (Safari and Explorer not recommended.)  
 
@@ -201,19 +201,19 @@ Toggling the following setting in config.xml can help in troubleshooting MySQL s
 
 This feature does not work in all modules and may interfere with JavaScript running in the page, and should never be used in production instances.  
 
-## 7) Double Data Entry
+## 7) Double Data Entry  
 Double Data Entry (DDE) is the practice of requiring users to manually input the same dataset twice in order to reduce the risk of error in data entry. For DDE-designated instruments, a participant's instrument data collection at a given visit cannot be finalized in LORIS unless both the first data entry form and second (double) data entry form are completed.  
 
 To enable an instrument for double data entry, in the Configuration module inside the Study panel, use the "Double data entry instruments" section to add instrument names. Be very careful when removing an instrument name from this list, regarding the impact on the integrity of the entire dataset.  
 
 Note: by default, all forms will have a Double Data Entry (DDE) duplicate form created in the back end (flag table and instrument table) when the instrument is populated for a session. However, the DDE form link does not appear in the front end and Double Data Entry completion is not enforced unless the instrument is specified as a Double Data Entry instrument via the Configuration module.  
 
-Data entry conflicts detected through between the first and second (double) data entry forms are resolved through the [Conflict Resolver](https://github.com/aces/Loris/wiki/LORIS-Modules#double-data-entry-dde-and-conflict-resolver-module)
+Data entry conflicts detected through between the first and second (double) data entry forms are resolved through the [Conflict Resolver](https://github.com/aces/Loris/wiki/LORIS-Modules#double-data-entry-dde-and-conflict-resolver-module)  
 
-## 8) Excluding Instruments
+## 8) Excluding Instruments  
 To exclude instruments from the Data Dictionary and Data Query Tool, go to the Configuration module under the "Study" section under "Excluded instruments" and add/select a valid Test Name (e.g. MRI Parameter Form).  
 
-## 9) Instrument Permissions
+## 9) Instrument Permissions  
 Access to specific instruments can be controlled by custom permissions, via the back-end file project/config.xml  
 
 ```
@@ -239,12 +239,12 @@ Access to specific instruments can be controlled by custom permissions, via the 
  </instrumentPermissions>
 ```
 
-## 10) Instrument Manager
+## 10) Instrument Manager  
 The Instrument Manager module is designed allow the Loris database Admin superuser to upload and install instrument forms (*.linst files), and to monitor instrument status in LORIS.  
 
 To enable upload and installation of *.linst instrument files created using the Instrument Builder:  
 
-i. Create a separate MySQL user account with CREATE, SELECT, INSERT, UPDATE and DELETE privileges on the database. This credential should be stored in project/config.xml within the `<database>` tag section as `<quatUser>` and `<quatPassword>` :
+i. Create a separate MySQL user account with CREATE, SELECT, INSERT, UPDATE and DELETE privileges on the database. This credential should be stored in project/config.xml within the `<database>` tag section as `<quatUser>` and `<quatPassword>` :  
 
 ```
 <database>
@@ -254,4 +254,4 @@ i. Create a separate MySQL user account with CREATE, SELECT, INSERT, UPDATE and 
      ...
  </database>
  ```
-ii. Ensure that the project-specific directories are Apache-writeable: `project/instruments/` and `project/tables_sql/`
+ii. Ensure that the project-specific directories are Apache-writeable: `project/instruments/` and `project/tables_sql/`  

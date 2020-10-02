@@ -33,6 +33,6 @@ UPDATE Config SET Value='$yourHostName' WHERE ConfigID=(SELECT ID FROM ConfigSet
 ## Troubleshooting user login
 For any user to be able to log in to LORIS, their account record in the users table must contain:  
 
-> * Active = 'Y'
-> * Pending_approval = 'N'
-> * Password_expiry column value is later than today's date  
+* Active = 'Y'
+* Pending_approval = 'N'
+* Password_expiry column value is later than today's date  

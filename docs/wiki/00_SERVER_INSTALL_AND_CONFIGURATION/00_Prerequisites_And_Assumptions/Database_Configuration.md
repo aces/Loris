@@ -31,8 +31,8 @@ within the `adminUser` and `adminPassword` tags.
 
 Tips:
 
-> * ConfigSetting host value should not terminate in a slash. E.g. "http://localhost" not "http://localhost/". To fix, run: (for http) UPDATE Config SET Value='http://localhost' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');  
-> * If you get an error after clicking "Submit" or "Save data" on a form, check that url Config setting is set for your host. (Previous iterations of LORIS recommended setting this to the empty string) Run: UPDATE Config SET Value='_$yourhost_' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url');
-> * If your dashboard loads but no other modules load, ensure that your apache config file (e.. centos: /var/apache2/apache2.conf) is set to AllowOverride All in the section <Directory /var/www/> to enable re-write rules (based on htdocs/.htaccess)
-> * ensure your smarty/templates_c directory is writable by apache
-> * run composer update to ensure your dependencies (including smarty) are up-to-date
+* ConfigSetting host value should not terminate in a slash. E.g. "http://localhost" not "http://localhost/". To fix, run: (for http) UPDATE Config SET Value='http://localhost' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');  
+* If you get an error after clicking "Submit" or "Save data" on a form, check that url Config setting is set for your host. (Previous iterations of LORIS recommended setting this to the empty string) Run: UPDATE Config SET Value='_$yourhost_' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url');
+* If your dashboard loads but no other modules load, ensure that your apache config file (e.. centos: /var/apache2/apache2.conf) is set to AllowOverride All in the section <Directory /var/www/> to enable re-write rules (based on htdocs/.htaccess)
+* ensure your smarty/templates_c directory is writable by apache
+* run composer update to ensure your dependencies (including smarty) are up-to-date
