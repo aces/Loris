@@ -68,6 +68,12 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             gettype($candidatesVisitArray['Meta']['Battery']),
             'string'
         );
+        if ($this->_version != 'v0.0.2') {
+            $this->assertSame(
+                gettype($candidatesVisitArray['Meta']['Project']),
+                'string'
+            );
+        }
         $this->assertSame(
             gettype($candidatesVisitArray['Stages']),
             'array'
@@ -87,10 +93,11 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
 
         $this->assertArrayHasKey('Meta', $candidatesVisitArray);
         $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
+        if ($this->_version != 'v0.0.2') {
+            $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
+        }
         $this->assertArrayHasKey('Site', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Battery', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Stages', $candidatesVisitArray);
         $this->assertArrayHasKey(
             'Visit',
