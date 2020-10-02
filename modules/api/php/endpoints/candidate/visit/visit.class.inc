@@ -91,10 +91,11 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
+        $version   = $request->getAttribute('LORIS-API-Version');
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
-                return $this->_handleGET();
+                return $this->_handleGET($version);
 
             case 'PUT':
                 return $this->_handlePUT($request);
@@ -119,8 +120,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $subendpoint = array_shift($pathparts);
         switch($subendpoint) {
         case 'instruments':
-            $version = $request->getAttribute('LORIS-API-Version');
-            $handler = new Instruments($this->_visit, $version);
+            $handler = new Instruments($this->_visit);
             break;
         case 'images':
             $handler = new Images($this->_visit);
@@ -150,16 +150,18 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Generates a response fitting the API specification for this endpoint.
      *
+     * @param string $version The version of the API
+     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(): ResponseInterface
+    private function _handleGET(string $version): ResponseInterface
     {
         if ($this->_visit === null) {
             return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
         }
 
         return new \LORIS\Http\Response\JsonResponse(
-            (new \LORIS\api\Views\Visit($this->_visit))
+            (new \LORIS\api\Views\Visit($this->_visit, $version))
                 ->toArray()
         );
     }
