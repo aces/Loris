@@ -26,7 +26,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - *Add item here*
 ### Modules
 #### Help Editor
-- parentID was removed. (PR #7025)
+- Cleaned up the deprecated column `Parent Topic` (PR #7025)
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
 #### Candidate Parameters
