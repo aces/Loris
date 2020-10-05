@@ -1,4 +1,4 @@
-General help with modules, instruments, install... resources, contacts, FAQ ...
+# Help and Troubleshooting
 
 ## Troubleshooting Configuration settings  
 
@@ -10,7 +10,7 @@ To view all configuration settings from the back-end, the following query can be
 SELECT c.ConfigID, cs.Name, cs.Label, c.Value, cs.Description FROM Config c LEFT JOIN ConfigSettings cs ON (cs.ID=c.ConfigID);
 ```
 
-> For setup troubleshooting, ConfigSettings under the Paths and WWW sections are important
+For setup troubleshooting, ConfigSettings under the Paths and WWW sections are important
 
 View path settings (subset of configuration settings), the following query can be run in the MySQL command line:  
 

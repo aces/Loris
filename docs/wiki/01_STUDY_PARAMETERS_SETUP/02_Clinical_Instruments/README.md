@@ -1,4 +1,4 @@
-# Introduction to Instruments  
+# Clinical Instruments   
 The Behavioural Database is the part of LORIS that implements the battery of tests and questionnaires which are administered and used to collect data on participants in a given study. These behavioural, psychological, and clinical tests are known as **instruments** or instrument forms.  
 
 Instrument forms fall into three categories: basic forms, forms with scoring algorithms, and forms populated by uploading data.  

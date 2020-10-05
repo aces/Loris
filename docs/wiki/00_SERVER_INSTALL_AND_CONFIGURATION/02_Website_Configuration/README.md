@@ -1,4 +1,4 @@
-Web configuration.
+# Web configuration
 
 ## Create front-end Users  
 
@@ -30,92 +30,6 @@ INSERT INTO psc (Name, Alias, MRI_alias, Study_site) VALUES ('Montreal','MTL','M
 * The first study site will have its CenterID = 2  
 * There cannot be more than one site with the same name  
 
-## Configure study Variables  
-
-### i. Subprojects or cohorts  
-
-A project's subprojects or cohorts are defined in the Configuration module, which can be found in LORIS under the Admin menu. Click on "To configure study subprojects click here."  
-
-You then click on "New SubprojectID", fill in the fields on the right, click save. Immediately refresh the page to view your new subproject. Clicking save more than once will register a duplicate subproject ID. If you create an extra ID, you will have to delete it from the database manually with an sql command. The process for adding a new project is identical.  
-
-Note that [Visit labels](https://github.com/aces/Loris/wiki/Project-Customization#iii-visit-labels) must be defined separately for each subproject in the file project/config.xml  
-
-> Do Not use underscore in any Visit label - the Imaging insertion pipeline will not be able to process your scans.  
-
-If subjects are pre-natal, use the Estimated Date of Confinement (EDC) features (i.e. due date) instead of Date of Birth. This should enabled within the Configuration module in two places: first under the Study variables section set "Use EDC" to true for the entire Loris database, and second, "Use EDC" should be enabled in the subproject settings for each applicable subproject.  
-
-### ii. If multiple Projects are involved in a study  
-
-1. Enable multi-project support: In the Configuration module under the "Study variables" section, set the field "Use Projects" to true. After changing this setting, be sure to refresh the Configuration module page.  
-
-2. To define Project labels and recruitment targets, within the Configuration module click on the link at the top of the page indicating "To configure study projects click here." For each project, enter the Project label and (optional) recruitment target, and click Save. Note that if your current page is titled "New Project", you cannot edit an existing project's settings, as you will instead be creating a new project. Deleting a defined project can be done through the project table in the MySQL back end.  
-
-3. Define all projectID-subprojectID relationships by populating the project_rel table, e.g.  
-```
-INSERT INTO `project_rel` VALUES (1,1),(1,2),(2,3);
-```  
-
-### iii. Visit labels  
-Visit labels or timepoints are defined in the file project/config.xml:  
-
-```
-  <visitLabel subprojectID="1">
-      <generation>sequence</generation> 
-      <regex>/^[A-Z0-9]{2}$/i</regex>
-      <length>2</length>
-      <suggest>V%value%</suggest>       <!--  %value% will be substituted for the next unique number  -->
-      <labelSet>
-          <item value="V1">V1 label description</item>   
-          <item value="V2">V2 label description</tem>   
-      </labelSet>
-   </visitLabel>
-```  
-
-**Note:** <generation> can be set to either 'sequence' to show a drop-down select box of visit labels in the front end, or 'user' for manual entry into a text box. However, it is recommended to use 'sequence', and populate <labelSet> with one <item> per visit label, replacing %value% with {V1, V2, etc} per example above.  
-
-### iv. Visit Windows
-This table must be populated with visit labels - the Imaging Pipeline critically depends on this. To populate with visit labels, run tools/populate_visit_windows.php - or manually insert study-specific information:  
-
-```SQL
-  INSERT INTO Visit_Windows (Visit_label,  WindowMinDays, WindowMaxDays, OptimumMinDays, OptimumMaxDays, WindowMidpointDays) VALUES ('V1', '0', '100', '40', '60', '50');
-```
-If age is a not critical factor in study visit scheduling, define Min value as 0, and Max value as 2147483647 (this is the maximum integer size).  
-
-### v. Customizable Participant Identifiers  
-By default LORIS provides 2 different identifiers for each participant or subject:  
-
-* CandID also known as the DCCID : is a unique randomized 6-digit numeric ID (e.g. '436792'). It is completely anonymous, and is assigned automatically by Loris upon participant registration.
-* PSCID (Project Study Centre ID) is configurable, can be manually entered when registering a participant, and may contain the site abbreviation, followed by sequential or randomized digits (e.g. 'MTL0006')
-The format of the PSCID must be configured in project/config.xml Also configure how PSCIDs are created for new subjects, in one of 3 ways: manually entered, sequentially generated, or randomly generated
-
-1: (default) sequential to generate PSCID sequentially for each new participant registered  
-```
-  <PSCID> <!-- Ex 1: generation type is sequential-->
-      <generation>sequential</generation> 
-      <structure>
-          <seq type="siteAbbrev"/><!-- will draw from Alias field, in psc table-->
-          <seq type="numeric" minLength="4"/> <!-- Ex: AAA1111 note (siteAbbrev concatenated with a sequentially generated number) -->
-      </structure>
-  </PSCID>
-```
-2: To enable manual entry of the PSCID when registering a new participant, set the tag can be set to user:  
-```
-  <PSCID> <!-- Ex 2: generation type is user-defined -->
-      <generation>user</generation> 
-      <structure>
-          <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
-      </structure>
-  </PSCID>
-```
-Example 3: random to generate PSCID with random numerical for each new participant registered  
-
-  <PSCID> <!-- Ex 3: generation type is random-->
-      <generation>random</generation> 
-      <structure>
-          <seq type="siteAbbrev"/>
-          <seq type="numeric" minLength="4"/> <!-- Ex: AAA7623 -->
-      </structure>
-  </PSCID>
 ## Useful Apache configuration options  
 Session timeout, file upload maximum size, and other parameters can be configured in Apache by adding the following lines to your php.ini file:  
 
