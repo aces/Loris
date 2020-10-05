@@ -172,6 +172,32 @@ function uploadFile()
             // Insert or override db record if file_name already exists
             $db->insertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $fileName]);
+            $qparam = ['ID' => $sessionID];
+            $result = $db->pselect(
+                'SELECT ID, CandID, CenterID, ProjectID, Visit_label
+                            from session 
+                        where ID=:ID',
+                $qparam
+            )[0];
+            echo json_encode(
+                [
+                    'full_name'      => $fileName,
+                    'pscid'          => $pscid,
+                    'visit_label'    => $result['ProjectID'],
+                    'language'       => $language,
+                    'instrument'     => $instrument,
+                    'site'           => $result['CenterID'],
+                    'project'        => $result['ProjectID'],
+                    'uploaded_by'    => $userID,
+                    'date_taken'     => $dateTaken,
+                    'comments'       => $comments,
+                    'last_modified'  => date("Y-m-d H:i:s"),
+                    'file_type'      => $fileType,
+                    'CandID'         => $result['CandID'],
+                    'SessionID'      => $sessionID,
+                    'fileVisibility' => 0,
+                ]
+            );
         } catch (DatabaseException $e) {
             showMediaError("Could not upload the file. Please try again!", 500);
         }
