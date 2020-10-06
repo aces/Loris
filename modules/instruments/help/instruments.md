@@ -1,6 +1,5 @@
 # Instrument
 
-**Help for specific instruments can be found in the subsections below.**
 
 Inside the instrument form, general information is shown at the top including date of birth, sex, visit label, and subproject(cohort).
 
