@@ -3,9 +3,8 @@
 Inside the instrument form, general information is shown at the top including date of birth, sex, visit label, and subproject(cohort).
 
 In the left sidebar panel (on tablets, click the list icon) - you can set status flags for this instrument form.  The Data Entry flag can only be set to Complete after the Administration and Validity flags have been set. 
-If a form has multiple pages, enter and save data on each subpage before returning to the Top page to set the status flags. 
-
-In the sidebar, the Data Entry status can be set to either `Complete` or `In Progress`. The status cannot be set to `Complete` if the Administration option is not set. If the Data Entry status is `In Progress`, the sidebar will display the option to delete all the instrument data. The sidebar also allows the user to specify the Administration status of the instrument. 
+The Data Entry flag can only be set to Complete after the Administration and Validity flags have been set.
+While the Data Entry status is `In Progress`, you may see in the sidebar the option to delete all the instrument data which will clear all data in the form. 
 
 Under the general information about the candidate at the top of the screen, the user can perform data entry for the instrument. Required values are specified with a red asterisk. If these values are not completed, an error message will appear when a user attempts to save the data. 
 
