@@ -4,7 +4,8 @@
 
 Inside the instrument form, general information is shown at the top including date of birth, sex, visit label, and subproject(cohort).
 
-The blue sidebar panel contains key flags to mark instrument administration and data entry status. It also allows the user to navigate to different pages if the instrument has multiple pages. It may also contain specific flags depending on the instrument. On mobile devices or in narrow browser windows, this sidebar panel is hidden but can be accessed by clicking the list icon in the top left-hand corner.
+In the left sidebar panel (on tablets, click the list icon) - you can set status flags for this instrument form.  The Data Entry flag can only be set to Complete after the Administration and Validity flags have been set. 
+If a form has multiple pages, enter and save data on each subpage before returning to the Top page to set the status flags. 
 
 In the sidebar, the Data Entry status can be set to either `Complete` or `In Progress`. The status cannot be set to `Complete` if the Administration option is not set. If the Data Entry status is `In Progress`, the sidebar will display the option to delete all the instrument data. The sidebar also allows the user to specify the Administration status of the instrument. 
 
