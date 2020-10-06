@@ -2,7 +2,7 @@
 
 **Help for specific instruments can be found in the subsections below.**
 
-Once inside a time-point, users will see some general information about the candidate across the top of the screen, such as date of birth, sex, visit label, and subproject(cohort).
+Inside the instrument form, general information is shown at the top including date of birth, sex, visit label, and subproject(cohort).
 
 The blue sidebar panel contains key flags to mark instrument administration and data entry status. It also allows the user to navigate to different pages if the instrument has multiple pages. It may also contain specific flags depending on the instrument. On mobile devices or in narrow browser windows, this sidebar panel is hidden but can be accessed by clicking the list icon in the top left-hand corner.
 
