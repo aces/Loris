@@ -264,17 +264,17 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withHeader('Content-Location', $link);
         }
 
-        try {
-            \TimePoint::isValidVisitLabel(
-                new CandID($visitinfo['CandID']),
-                $subprojectid,
-                $visitinfo['Visit']
-            );
-        } catch (\LorisException $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
-            );
-        }
+        #try {
+        #    \TimePoint::isValidVisitLabel(
+        #        new CandID($visitinfo['CandID']),
+        #        $subprojectid,
+        #        $visitinfo['Visit']
+        #    );
+        #} catch (\LorisException $e) {
+        #    return new \LORIS\Http\Response\JSON\BadRequest(
+        #        $e->getMessage()
+        #    );
+        #}
 
         \TimePoint::createNew(
             $this->_candidate,
