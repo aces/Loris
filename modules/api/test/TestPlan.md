@@ -3,7 +3,7 @@
 The API should be tested by following the API specs and making sure every command works.
 This document is a preliminary test plan that should be superseded by a proper automated test suite.
 
-## Using curl:
+# Using curl:
 ### Login
 This is done sending a POST request to /login
 ```bash
@@ -42,3 +42,7 @@ Candidate creation is done by sending a POST request to /candidates with the req
 If the candidate is successfully created, the candidate's data is returned. For example, the previous example returns: `{"CandID":"872451","Project":"Rye","PSCID":"MTL185","Site":"Montreal","EDC":null,"DoB":"2019-01-31","Sex":"Female"}`
 
 Otherwise, an error message is returned. For example, the command `curl -H "Authorization: Bearer $token" https://<your-hostname>/api/v0.0.3/candidates -d ''` returns `{"error":"You are not affiliated with the candidate's site"}`
+
+## Using jupyter
+As a faster alternative to using curl, all of the API's endpoints can be tested manually using the notebook `docs/notebooks/LORIS_API_Part2_Python-script.ipynb`. Note that you need to change the host to use your own virtual machine.
+
