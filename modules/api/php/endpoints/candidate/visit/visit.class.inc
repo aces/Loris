@@ -266,9 +266,30 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withStatus(204)
                 ->withHeader('Content-Location', $link);
         }
-        return new \LORIS\Http\Response\JSON\NotFound(
-            'This visit does not exist for that candidate'
+        try {
+            \TimePoint::isValidVisitLabel(
+                new CandID($visitinfo['CandID']),
+                $subprojectid,
+                $visitinfo['Visit']
+            );
+        } catch (\LorisException $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $e->getMessage()
+            );
+        }
+
+        \TimePoint::createNew(
+            $this->_candidate,
+            $subprojectid,
+            $visitinfo['Visit'],
+            \Site::singleton($centerid),
+            $project
         );
+
+        $link = '/' . $request->getUri()->getPath();
+        return (new \LORIS\Http\Response())
+            ->withStatus(201)
+            ->withHeader('Content-Location', $link);
     }
 
     /**
