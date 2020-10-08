@@ -223,7 +223,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!in_array($centerid, $user->getCenterIDs())) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'You can`t create candidates visit for that site'
+                'You can`t create candidates visit for that site ' . $centerid . ' ' . $user->getCenterIDs()
             );
         }
 
@@ -265,17 +265,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return (new \LORIS\Http\Response())
                 ->withStatus(204)
                 ->withHeader('Content-Location', $link);
-        }
-        try {
-            \TimePoint::isValidVisitLabel(
-                new CandID($visitinfo['CandID']),
-                $subprojectid,
-                $visitinfo['Visit']
-            );
-        } catch (\LorisException $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
-            );
         }
 
         \TimePoint::createNew(

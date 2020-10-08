@@ -134,14 +134,14 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $json     = ['candid'  => $this->candidTest,
-            'visit'   => $this->visitTest,
-            'site'    => "data coordinating center",
-            'battery' => "stale",
-            'project' => "pumpernickel",
+        $json     = ['CandID'  => $this->candidTest,
+            'Visit'   => $this->visitTest,
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel",
         ];
         $response = $this->client->request(
-            'put',
+            'PUT',
             "candidates/$this->candidTest/$this->visitTest",
             [
                 'headers'     => $this->headers,
@@ -155,26 +155,25 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getbody();
         $this->assertnotempty($body);
  
-        $json     = ['candid'  => $this->candidTest,
-            'visit'   => "V3",
-            'site'    => "data coordinating center",
-            'battery' => "stale",
-            'project' => "pumpernickel",
+        $json     = ['CandID'  => '115788',
+            'Visit'   => "V1",
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel",
         ];
         $response = $this->client->request(
-            'put',
-            "candidates/$this->candidTest/$this->visitTest",
+            'PUT',
+            "candidates/115788/V1",
             [
-                'headers'     => $this->headers,
-                'json'        => $json,
-                'http_errors' => false
+                'headers' => $this->headers,
+                'json'    => $json
             ]
         );
-        // verify the status code
-        $this->assertequals(400, $response->getstatuscode());
-        // verify the endpoint has a body
-        $body = $response->getbody();
-        $this->assertnotempty($body);
+        // Verify the status code
+        $this->assertEquals(204, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
