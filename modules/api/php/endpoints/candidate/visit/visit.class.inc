@@ -15,7 +15,6 @@ namespace LORIS\api\Endpoints\Candidate\Visit;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
-use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * A class for handling the /candidates/$candidate/$visit_label endpoint.

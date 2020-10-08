@@ -155,7 +155,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getbody();
         $this->assertnotempty($body);
  
-        $json     = ['CandID'  => '115788',
+        $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
             'Site'    => "Data Coordinating Center",
             'Battery' => "Low Yeast",
@@ -163,7 +163,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         ];
         $response = $this->client->request(
             'PUT',
-            "candidates/115788/V1",
+            "candidates/900000/V1",
             [
                 'headers' => $this->headers,
                 'json'    => $json
