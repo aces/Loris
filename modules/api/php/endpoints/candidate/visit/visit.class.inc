@@ -178,10 +178,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request): ResponseInterface
     {
-        if ($this->_visit === null) {
-            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
-        }
-
         $user      = $request->getAttribute('user');
         $data      = json_decode((string) $request->getBody(), true);
         $visitinfo = $data ?? [];
@@ -223,7 +219,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!in_array($centerid, $user->getCenterIDs())) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'You can`t create candidates visit for that site ' . $centerid . ' ' . $user->getCenterIDs()
+                'You can`t create candidates visit for that site'
             );
         }
 
