@@ -119,8 +119,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'Site'    => "Data Coordinating Center",
             'Battery' => "Stale",
             'Project' => "Pumpernickel",
-            'Status'  => null, 
-            'Stage'   => 'Not Started'
         ];
         $response = $this->client->request(
             'PUT',
@@ -141,8 +139,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'Site'    => "Data Coordinating Center",
             'Battery' => "Stale",
             'Project' => "Pumpernickel",
-            'Status'  => null, 
-            'Stage'   => 'Not Started'
         ];
         $response = $this->client->request(
             'PUT',

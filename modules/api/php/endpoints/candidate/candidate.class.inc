@@ -112,7 +112,6 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $visit = null;
         }
 
-
         $handler = new Visit\Visit(
             $this->_candidate,
             $visit

@@ -192,8 +192,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             'Site',
             'Battery',
             'Project',
-            'Status',
-            'Stage'
         ];
         $diff           = array_diff($requiredfields, array_keys($visitinfo));
         if (!empty($diff)) {
@@ -260,9 +258,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     'Date_registered' => $today,
                     'Testdate'        => $today,
                     'ProjectID'       => $project->getId(),
-                    'Visit'           => $visitinfo['Status'],
-                    'Date_visit'      => $today,
-                    'Current_stage'   => $visitinfo['Stage']
                 ]
             );
 
