@@ -104,13 +104,9 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_candidate->getListOfVisitLabels()
         );
 
-        try {
-            $visit = \NDB_Factory::singleton()->timepoint(
-                new \SessionID(strval($sessionid))
-            );
-        } catch (\LorisException | \TypeError $e) {
-            $visit = null;
-        }
+        $visit = \NDB_Factory::singleton()->timepoint(
+            new \SessionID(strval($sessionid))
+        );
 
         $handler = new Visit\Visit(
             $this->_candidate,

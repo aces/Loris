@@ -114,15 +114,17 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
-        $json     = ['CandID'  => $this->candidTest,
-            'Visit'   => $this->visitTest,
+        $json     = ['CandID'  => '400266',
+            'Visit'   => "V3",
             'Site'    => "Data Coordinating Center",
             'Battery' => "Stale",
-            'Project' => "Pumpernickel"
+            'Project' => "Pumpernickel",
+            'Status'  => null, 
+            'Stage'   => 'Not Started'
         ];
         $response = $this->client->request(
             'PUT',
-            "candidates/$this->candidTest/$this->visitTest",
+            "candidates/400266/V3",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -130,6 +132,29 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         );
         // Verify the status code
         $this->assertEquals(204, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $json     = ['CandID'  => $this->candidTest,
+            'Visit'   => $this->visitTest,
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel",
+            'Status'  => null, 
+            'Stage'   => 'Not Started'
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/$this->candidTest/$this->visitTest",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(409, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);

@@ -178,6 +178,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request): ResponseInterface
     {
+        if ($this->_visit === null) {
+            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
+        }
+
         $user      = $request->getAttribute('user');
         $data      = json_decode((string) $request->getBody(), true);
         $visitinfo = $data ?? [];
@@ -188,6 +192,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             'Site',
             'Battery',
             'Project',
+            'Status',
+            'Stage'
         ];
         $diff           = array_diff($requiredfields, array_keys($visitinfo));
         if (!empty($diff)) {
@@ -233,6 +239,11 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $timepoint = \NDB_Factory::singleton()->timepoint(
                 new \SessionID(strval($sessionid))
             );
+            if ($timepoint->getCurrentStage() !== 'Not Started') {
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    'This visit is already started'
+                );
+            }
 
             $username = $user->getUsername();
             $today    = date("Y-m-d");
@@ -250,7 +261,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     'Testdate'        => $today,
                     'ProjectID'       => $project->getId(),
                     'Visit'           => $visitinfo['Status'],
-                    'Date_visit'      => $today
+                    'Date_visit'      => $today,
+                    'Current_stage'   => $visitinfo['Stage']
                 ]
             );
 
@@ -258,11 +270,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return (new \LORIS\Http\Response())
                 ->withStatus(204)
                 ->withHeader('Content-Location', $link);
-        } else {
-            return new \LORIS\Http\Response\JSON\NotFound(
-                'This visit does not exist for that candidate'
-            );
-        } 
+        }
+        return new \LORIS\Http\Response\JSON\NotFound(
+            'This visit does not exist for that candidate'
+        );
     }
 
     /**
