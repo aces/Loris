@@ -233,11 +233,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $timepoint = \NDB_Factory::singleton()->timepoint(
                 new \SessionID(strval($sessionid))
             );
-            if ($timepoint->getCurrentStage() !== 'Not Started') {
-                return new \LORIS\Http\Response\JSON\Conflict(
-                    'This visit is already started'
-                );
-            }
 
             $username = $user->getUsername();
             $today    = date("Y-m-d");
@@ -261,32 +256,11 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return (new \LORIS\Http\Response())
                 ->withStatus(204)
                 ->withHeader('Content-Location', $link);
-        }
-
-        try {
-            \TimePoint::isValidVisitLabel(
-                new CandID($visitinfo['CandID']),
-                $subprojectid,
-                $visitinfo['Visit']
+        } else {
+            return new \LORIS\Http\Response\JSON\NotFound(
+                'This visit does not exist for that candidate'
             );
-        } catch (\LorisException $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
-            );
-        }
-
-        \TimePoint::createNew(
-            $this->_candidate,
-            $subprojectid,
-            $visitinfo['Visit'],
-            \Site::singleton($centerid),
-            $project
-        );
-
-        $link = '/' . $request->getUri()->getPath();
-        return (new \LORIS\Http\Response())
-            ->withStatus(201)
-            ->withHeader('Content-Location', $link);
+        } 
     }
 
     /**

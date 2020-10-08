@@ -114,7 +114,25 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
-        $this->markTestSkipped('No access to create visits for any site');
+        $json     = ['CandID'  => $this->candidTest,
+            'Visit'   => $this->visitTest,
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel"
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/$this->candidTest/$this->visitTest",
+            [
+                'headers' => $this->headers,
+                'json'    => $json
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(204, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
     }
 
     /**
