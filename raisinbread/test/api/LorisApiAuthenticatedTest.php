@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ .
-     "/../../../test/test_instrument/test_instrumentTest.php";
+    "/../../../test/test_instrument/test_instrumentTest.php";
 use GuzzleHttp\Client;
 
 /**
