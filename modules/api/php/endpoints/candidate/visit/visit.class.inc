@@ -249,6 +249,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     'Date_registered' => $today,
                     'Testdate'        => $today,
                     'ProjectID'       => $project->getId(),
+                    'Visit'           => $visitinfo['Status'],
+                    'Date_visit'      => $today
                 ]
             );
 
