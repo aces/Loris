@@ -172,10 +172,11 @@ class PublicationUploadForm extends React.Component {
           {
             title: 'Submission Successful!',
             type: 'success',
+            preConfirm: function() {
+                window.location.replace(loris.BaseURL + '/publication/');
+            },
           },
-          function() {
-            window.location.replace(loris.BaseURL + '/publication/');
-          }
+
         );
       }.bind(this),
       error: function(jqXHR) {
