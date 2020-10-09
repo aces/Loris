@@ -134,6 +134,28 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        // Test changing the Project & Battery
+        // TODO is changing the project supposed to be possible?
+        $json     = ['CandID'  => '400266',
+            'Visit'   => "V3",
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Low Yeast",
+            'Project' => "Challah",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/400266/V3",
+            [
+                'headers' => $this->headers,
+                'json'    => $json
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(204, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $this->visitTest,
             'Site'    => "Data Coordinating Center",
@@ -154,6 +176,28 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // verify the endpoint has a body
         $body = $response->getbody();
         $this->assertnotempty($body);
+
+        // Test assigning site with no affiliation
+        $json     = ['CandID'  => '400266',
+            'Visit'   => "V3",
+            'Site'    => "Montreal",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/400266/V3",
+            [
+                'headers' => $this->headers,
+                'json'    => $json,
+                'http_errors' => false
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(403, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
  
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
@@ -174,6 +218,72 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
+
+        // Test what happen when a field is missing (here, Battery)
+        $json     = ['CandID'  => $this->candidTest,
+            'Visit'   => $this->visitTest,
+            'Site'    => "Data Coordinating Center",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/$this->candidTest/$this->visitTest",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // verify the status code
+        $this->assertequals(400, $response->getstatuscode());
+        // verify the endpoint has a body
+        $body = $response->getbody();
+        $this->assertnotempty($body);
+
+        // Test what happen when all field required are there, plus one invalid
+        $json     = ['CandID'  => $this->candidTest,
+            'Visit'   => $this->visitTest,
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Low Yeast",
+            'Project' => "Pumpernickel",
+            'Test'    => "Test"
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/$this->candidTest/$this->visitTest",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // verify the status code
+        $this->assertequals(400, $response->getstatuscode());
+        // verify the endpoint has a body
+        $body = $response->getbody();
+        $this->assertnotempty($body);
+
+        // Test CandID in URL should match CandID in the request fields
+        $json     = ['CandID'  => $this->candidTest,
+            'Visit'   => $this->visitTest,
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Low Yeast",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/300001/$this->visitTest",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // verify the status code
+        $this->assertequals(400, $response->getstatuscode());
+        // verify the endpoint has a body
+        $body = $response->getbody();
+        $this->assertnotempty($body);
     }
 
     /**
