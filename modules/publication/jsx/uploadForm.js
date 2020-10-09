@@ -176,7 +176,6 @@ class PublicationUploadForm extends React.Component {
                 window.location.replace(loris.BaseURL + '/publication/');
             },
           },
-
         );
       }.bind(this),
       error: function(jqXHR) {
