@@ -23,7 +23,7 @@ use \LORIS\Installer\Database as Database;
  */
 class FakeConfig extends NDB_Config
 {
-    /** 
+    /**
      * Fake NDB_Config method to construct a fake config object
      *
      * @return void
@@ -71,7 +71,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @var array config name => value
      */
-    private $_configMap = array();
+    private $_configMap = [];
 
     /**
      * Test double for User object
@@ -135,7 +135,7 @@ class NDB_ConfigTest extends TestCase
     {
         $xml  = new SimpleXMLElement("<test><unit>test</unit></test>");
         $text = $this->_config::convertToArray($xml);
-        $this->assertEquals(array('unit' => 'test'), $text);
+        $this->assertEquals(['unit' => 'test'], $text);
     }
 
     /**
@@ -147,10 +147,10 @@ class NDB_ConfigTest extends TestCase
      */
     public function testIsNumericArray()
     {
-        $arrayTest = array(
-                      '0' => 'zero',
-                      '1' => 'one',
-                     );
+        $arrayTest = [
+            '0' => 'zero',
+            '1' => 'one',
+        ];
         $text      = $this->_config::isNumericArray($arrayTest);
         $this->assertEquals(true, $text);
     }
@@ -174,7 +174,7 @@ class NDB_ConfigTest extends TestCase
             ->willReturn('true');
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn(array(array('AllowMultiple' => '0', 'ParentID' => 'test')));
+            ->willReturn([['AllowMultiple' => '0', 'ParentID' => 'test']]);
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
             ->willReturn('test');
@@ -190,7 +190,7 @@ class NDB_ConfigTest extends TestCase
      */
     public function testGetSettingFromXML()
     {
-        $this->_config->_settings = array('aaa' => array("bbb" => "test"));
+        $this->_config->_settings = ['aaa' => ["bbb" => "test"]];
         $this->assertEquals("test", $this->_config->getSettingFromXML("bbb"));
     }
     /**
@@ -201,7 +201,7 @@ class NDB_ConfigTest extends TestCase
      */
     public function testGetSetting()
     {
-        $this->_config->_settings = array('aaa' => array("bbb" => "unittest"));
+        $this->_config->_settings = ['aaa' => ["bbb" => "unittest"]];
         $this->assertEquals("unittest", $this->_config->getSetting("bbb"));
 
     }
@@ -215,8 +215,10 @@ class NDB_ConfigTest extends TestCase
      */
     public function testSettingEnabledWhenTrue()
     {
-        $this->_config->_settings = array('aaa' => array("bbb" => "true",
-                                                         "ccc" => '1'));
+        $this->_config->_settings = ['aaa' => ["bbb" => "true",
+            "ccc" => '1'
+        ]
+        ];
         $this->assertTrue($this->_config->settingEnabled("bbb"));
         $this->assertTrue($this->_config->settingEnabled("ccc"));
     }
@@ -230,7 +232,7 @@ class NDB_ConfigTest extends TestCase
      */
     public function testSettingEnabledWhenFalse()
     {
-        $this->_config->_settings = array('aaa' => array("bbb" => "false"));
+        $this->_config->_settings = ['aaa' => ["bbb" => "false"]];
         $this->assertFalse($this->_config->settingEnabled("bbb"));
     }
 
@@ -243,18 +245,18 @@ class NDB_ConfigTest extends TestCase
      */
     public function testGetProjectSettings()
     {
-        $info   = array(
-                   'ProjectID'         => '999',
-                   'Name'              => 'test',
-                   'Alias'             => 'TST',
-                   'recruitmentTarget' => '100',
-                  );
-        $result =  array(
-                    'id'                => '999',
-                    'Name'              => 'test',
-                    'Alias'             => 'TST',
-                    'recruitmentTarget' => '100',
-                   );
+        $info   = [
+            'ProjectID'         => '999',
+            'Name'              => 'test',
+            'Alias'             => 'TST',
+            'recruitmentTarget' => '100',
+        ];
+        $result =  [
+            'id'                => '999',
+            'Name'              => 'test',
+            'Alias'             => 'TST',
+            'recruitmentTarget' => '100',
+        ];
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($info);
@@ -270,22 +272,22 @@ class NDB_ConfigTest extends TestCase
      */
     public function testGetSubprojectSettings()
     {
-        $info1  = array(
-                   'SubprojectID'      => '999',
-                   'title'             => 'test',
-                   'useEDC'            => 'true',
-                   'WindowDifference'  => 'optimal',
-                   'RecruitmentTarget' => '100',
-                  );
-        $result =  array(
-                    'id'                => '999',
-                    'title'             => 'test',
-                    'options'           => array(
-                                            'useEDC'           => 'true',
-                                            'WindowDifference' => 'optimal',
-                                           ),
-                    'RecruitmentTarget' => '100',
-                   );
+        $info1  = [
+            'SubprojectID'      => '999',
+            'title'             => 'test',
+            'useEDC'            => 'true',
+            'WindowDifference'  => 'optimal',
+            'RecruitmentTarget' => '100',
+        ];
+        $result =  [
+            'id'                => '999',
+            'title'             => 'test',
+            'options'           => [
+                'useEDC'           => 'true',
+                'WindowDifference' => 'optimal',
+            ],
+            'RecruitmentTarget' => '100',
+        ];
 
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
@@ -307,7 +309,7 @@ class NDB_ConfigTest extends TestCase
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn(null);
-        $this->assertEquals(array(), $this->_config->getSubprojectSettings(111));
+        $this->assertEquals([], $this->_config->getSubprojectSettings(111));
     }
 
     /**
@@ -322,11 +324,12 @@ class NDB_ConfigTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                array(
-                    array('LinkURL' => 'github/Loris', 'LinkText' => 'GitHub'))
+                [
+                    ['LinkURL' => 'github/Loris', 'LinkText' => 'GitHub']
+                ]
             );
         $this->assertEquals(
-            array('GitHub' => 'github/Loris'), 
+            ['GitHub' => 'github/Loris'],
             $this->_config->getExternalLinks('GitHub')
         );
     }

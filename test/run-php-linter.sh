@@ -53,18 +53,12 @@ declare -a tools_list=(
     'CouchDB_MRI_Importer.php'
 )
 
-# And on all PHP files in this array
-declare -a test_list=(
-    'unittests/Database_Test.php'
-)
-
 vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
     php/ \
     htdocs/ \
     modules/ \
-    "test/integrationtests/" \
+    test/ \
     "${tools_list[@]/#/tools/}" \
-    "${test_list[@]/#/test/}" \
     || exit $?;
 
 # Ensure strict typing is used in these files

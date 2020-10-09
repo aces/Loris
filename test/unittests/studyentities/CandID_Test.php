@@ -30,38 +30,56 @@ use \LORIS\StudyEntities\Candidate\CandID;
  */
 class CandID_Test extends TestCase
 {
-    /*
-     * dataProviders for constructor invalid values
+    /**
+     * DataProviders for constructor invalid values
+     *
+     * @return []
      */
     public function invalidValues(): array
     {
-        return array(
-                ['A'],
-                [1],
-                [000000],
-                ['11111a'],
-                [' 11111'],
-                ['111111a'],
-                ['a111111'],
-                ['1111111']
-               );
+        return [
+            ['A'],
+            [1],
+            [000000],
+            ['11111a'],
+            [' 11111'],
+            ['111111a'],
+            ['a111111'],
+            ['1111111']
+        ];
     }
 
     /**
+     * Test the CandID constructor with invalid values
+     *
+     * @param string $invalidValue An invalid value
+     *
      * @dataProvider invalidValues
+     *
      * @expectedException \DomainException
+     * @return            void
      */
     public function testContructorInvalidValues($invalidValue): void
     {
         $candid = new CandID($invalidValue);
     }
 
+    /**
+     * Test CandID::getType()
+     *
+     * @return void
+     */
     public function testGetType(): void
     {
         $candid = new CandID(123456);
         $this->assertEquals('CandID', $candid->getType());
     }
 
+    /**
+     * Test __toString()
+     *
+     * @return void
+     */
     public function testToString(): void
     {
         $candid = new CandID(123456);
