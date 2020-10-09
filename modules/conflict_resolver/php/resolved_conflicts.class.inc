@@ -80,6 +80,9 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             $this->query .= ' AND session.CenterID IN (' . $site_arr . ')';
         }
 
+        $proj_arr     = implode(",", $user->getProjectIDs());
+        $this->query .= " AND session.ProjectID IN ($proj_arr)";
+
         $this->group_by = '';
         $this->order_by = 'conflicts_resolved.TableName, session.Visit_label';
 

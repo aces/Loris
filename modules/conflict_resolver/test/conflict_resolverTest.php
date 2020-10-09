@@ -12,7 +12,7 @@
   */
 use Facebook\WebDriver\WebDriverSelect;
 use Facebook\WebDriver\WebDriverBy;
- require_once __DIR__
+require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
  /**
   * Implements tests for conflict resolver
@@ -52,7 +52,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function setUp(): void
     {
         parent::setUp();
-        $this->setUpConfigSetting("useProjects", "true");
     }
      /**
       * Delete testing data from database
@@ -63,7 +62,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function tearDown(): void
     {
         parent::tearDown();
-        $this->restoreConfigSetting("useProjects");
         // if data not exist then insert the origin test data
         $CommentId1 = $this->DB->pselectOne(
             'SELECT CommentId1 FROM conflicts_unresolved
@@ -120,6 +118,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testFiltersForUnresolvedConflicts()
     {
         $this->safeGet($this->url . "/conflict_resolver/");
+
         //testing data
         $this->_filterTest(
             self::$ForSite,
@@ -133,7 +132,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'V1',
-            "displayed of 576"
+            "displayed of 573"
         );
         $this->_filterTest(
             self::$CandID,
@@ -154,7 +153,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'height_inches',
-            "displayed of 181"
+            "displayed of 180"
         );
         $this->_filterTest(
             self::$Project,
@@ -185,7 +184,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             "V1",
-            "displayed of 33"
+            "displayed of 32"
         );
         $this->_filterTest(
             self::$CandID,
@@ -206,7 +205,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'date_taken',
-            "9 rows"
+            "8 rows"
         );
         $this->_filterTest(
             self::$Timestamp,
@@ -230,9 +229,9 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/conflict_resolver/?candidateID=475906&instrument=radiology_review"
         );
-         $element    = "tr:nth-child(1) .form-control";
-         $btn        = self::$saveBtn;
-         $row        = self::$display;
+        $element     = "tr:nth-child(1) .form-control";
+        $btn         = self::$saveBtn;
+        $row         = self::$display;
         $el_dropdown = new WebDriverSelect(
             $this->safeFindElement(WebDriverBy::cssSelector("$element"))
         );
@@ -243,6 +242,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector($row)
         )->getText();
          // 4 means there are 4 records under this site.
-        $this->assertStringContainsString("of 575", $bodyText);
+        $this->assertStringContainsString("of 572", $bodyText);
     }
 }

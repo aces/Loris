@@ -482,6 +482,9 @@ class NDB_BVL_Feedback
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
 
+        $query            .= " AND FIND_IN_SET(s.ProjectID, :ProjID)";
+        $qparams['ProjID'] = implode(',', $user->getProjectIDs());
+
         $query .= " AND Public = 'Y' AND Status <> 'closed'";
         if (!empty($this->_feedbackObjectInfo['CandID'])) {
             $query          .= " AND ft.CandID = :CaID";
@@ -594,6 +597,9 @@ class NDB_BVL_Feedback
                                    AND FIND_IN_SET(s.CenterID, :CentID)";
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
+
+        $query            .= " AND FIND_IN_SET(s.ProjectID, :ProjID)";
+        $qparams['ProjID'] = implode(',', $user->getProjectIDs());
 
         $query .= " ORDER BY ft.CandID,
                              ft.Feedback_level,

@@ -234,7 +234,7 @@ function getUploadFields()
     $user   = \User::singleton();
     $config = \NDB_Config::singleton();
 
-    // Select only candidates that have had visit at user's sites
+    // Select only candidates that have had visit at user's sites and projects
     $qparam       = [];
     $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
                       FROM candidate c
@@ -242,11 +242,17 @@ function getUploadFields()
                       LEFT JOIN flag f ON (s.ID=f.SessionID)";
 
     if (!$user->hasPermission('access_all_profiles')) {
-        $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
+        $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid)";
         $qparam['cid'] = implode(",", $user->getCenterIDs());
-    } else {
-        $sessionQuery .= " ORDER BY c.PSCID ASC";
     }
+
+    $sessionQuery .= " AND FIND_IN_SET(s.ProjectID, :pid)";
+    $qparam['pid'] = implode(",", $user->getProjectIDs());
+
+    $sessionQuery .= " ORDER BY c.PSCID ASC";
+
+    error_log($sessionQuery);
+
     $sessionRecords = $db->pselect(
         $sessionQuery,
         $qparam

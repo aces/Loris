@@ -229,6 +229,9 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             $this->query .= ' AND session.CenterID IN (' . $site_arr . ')';
         }
 
+        $proj_arr     = implode(",", $user->getProjectIDs());
+        $this->query .= " AND session.ProjectID IN ($proj_arr)";
+
         $this->group_by = '';
         $this->order_by = 'conflicts_unresolved.TableName, session.Visit_label';
         $this->headers  = [
