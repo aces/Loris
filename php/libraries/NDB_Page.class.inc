@@ -938,7 +938,8 @@ class NDB_Page implements RequestHandlerInterface
         }
 
         if (!$numeric_keys) {
-            foreach ($projectsOptions as $name) {
+            foreach ($projectsOptions as $id => $name) {
+                unset($projectsOptions[$id]);
                 $projectsOptions[$name] = $name;
             }
         }
@@ -972,7 +973,8 @@ class NDB_Page implements RequestHandlerInterface
         }
 
         if (!$numeric_keys) {
-            foreach ($subprojectsOptions as $name) {
+            foreach ($subprojectsOptions as $id => $name) {
+                unset($subprojectsOptions[$id]);
                 $subprojectsOptions[$name] = $name;
             }
         }
@@ -1010,7 +1012,8 @@ class NDB_Page implements RequestHandlerInterface
         }
 
         if (!$numeric_keys) {
-            foreach ($site_options as $name) {
+            foreach ($site_options as $id => $name) {
+                unset($site_options[$id]);
                 $site_options[$name] = $name;
             }
         }

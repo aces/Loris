@@ -85,8 +85,6 @@ class Imaging_QC extends \NDB_Menu_Filter
         return $scan_types;
     }
 
-
-
     /**
      * Builds query for given modality. Works with t1w, t2w, dti.
      *
@@ -202,10 +200,7 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $this->fieldOptions = [
 
-            'site'             => $this->getSiteOptions(
-                false,
-                ['imaging_browser_qc']
-            ),
+            'site'             => $this->getSiteOptions(false, []),
             'project'          => $this->getProjectOptions(false),
             'subproject'       => $this->getSubprojectOptions(false),
             'scanType'         => $scan_types,
@@ -271,6 +266,11 @@ class Imaging_QC extends \NDB_Menu_Filter
         );
 
         $this->query = " FROM ( " . $query . " ) as tmp";
+
+        $user = \User::singleton();
+        // allow only to view own site data
+        $site_arr     = "'" . implode("', '", $user->getStudySites()) . "'";
+        $this->query .= " WHERE site IN ($site_arr) ";
 
         $this->columns = [
             'PSCID',

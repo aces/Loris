@@ -61,8 +61,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $progressSelectPart = "IF(ISNULL(Inserting), 'Not Started',"
             . "IF(Inserting=1, 'In Progress...', "
             . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
+
         // set the class variables
-        $this->columns      = [
+        $this->columns = [
             'UploadID AS Upload_ID',
             $progressSelectPart,
             's.CandID',
@@ -77,18 +78,26 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             'ta.PatientName',
             's.ID AS SessionID',
         ];
+
         $this->validFilters = [
             's.CandID',
             'c.PSCID',
             's.Visit_label',
             'mu.IsPhantom',
         ];
-        $this->query        = " FROM mri_upload mu LEFT JOIN session".
+
+        $this->query = " FROM mri_upload mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
                               " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
                               " LEFT JOIN tarchive ta ON".
                               " (mu.TarchiveID = ta.TarchiveID)".
                               " WHERE 1=1 ";
+
+        $user = \User::singleton();
+        // allow only to view own site data
+        $site_arr     = implode(",", array_keys($user->getStudySites()));
+        $this->query .= "AND s.CenterID IN ($site_arr) ";
+
         $this->formToFilter = [
             'CandID'      => 's.CandID',
             'PSCID'       => 'c.PSCID',
