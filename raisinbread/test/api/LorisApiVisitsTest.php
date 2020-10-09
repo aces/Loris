@@ -114,73 +114,10 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
+        // Test changing from a site with no affiliation to a site with affiliation
         $json     = ['CandID'  => '400266',
             'Visit'   => "V3",
             'Site'    => "Data Coordinating Center",
-            'Battery' => "Stale",
-            'Project' => "Pumpernickel",
-        ];
-        $response = $this->client->request(
-            'PUT',
-            "candidates/400266/V3",
-            [
-                'headers' => $this->headers,
-                'json'    => $json
-            ]
-        );
-        // Verify the status code
-        $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        // Test changing the Project & Battery
-        // TODO is changing the project supposed to be possible?
-        $json     = ['CandID'  => '400266',
-            'Visit'   => "V3",
-            'Site'    => "Data Coordinating Center",
-            'Battery' => "Low Yeast",
-            'Project' => "Challah",
-        ];
-        $response = $this->client->request(
-            'PUT',
-            "candidates/400266/V3",
-            [
-                'headers' => $this->headers,
-                'json'    => $json
-            ]
-        );
-        // Verify the status code
-        $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        $json     = ['CandID'  => $this->candidTest,
-            'Visit'   => $this->visitTest,
-            'Site'    => "Data Coordinating Center",
-            'Battery' => "Stale",
-            'Project' => "Pumpernickel",
-        ];
-        $response = $this->client->request(
-            'PUT',
-            "candidates/$this->candidTest/$this->visitTest",
-            [
-                'headers'     => $this->headers,
-                'json'        => $json,
-                'http_errors' => false
-            ]
-        );
-        // verify the status code
-        $this->assertequals(409, $response->getstatuscode());
-        // verify the endpoint has a body
-        $body = $response->getbody();
-        $this->assertnotempty($body);
-
-        // Test assigning site with no affiliation
-        $json     = ['CandID'  => '400266',
-            'Visit'   => "V3",
-            'Site'    => "Montreal",
             'Battery' => "Stale",
             'Project' => "Pumpernickel",
         ];
@@ -198,12 +135,14 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
- 
+
+        // Test changing the Project & Battery
+        // TODO is changing the project supposed to be possible?
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
             'Site'    => "Data Coordinating Center",
-            'Battery' => "Low Yeast",
-            'Project' => "Pumpernickel",
+            'Battery' => "High Yeast",
+            'Project' => "Rye",
         ];
         $response = $this->client->request(
             'PUT',
@@ -219,6 +158,49 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        $json     = ['CandID'  => "115788",
+            'Visit'   => "V3",
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/115788/V3",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // verify the status code
+        $this->assertequals(409, $response->getstatuscode());
+        // verify the endpoint has a body
+        $body = $response->getbody();
+        $this->assertnotempty($body);
+
+        // Test assigning site with no affiliation
+        $json     = ['CandID'  => '900000',
+            'Visit'   => "V1",
+            'Site'    => "Montreal",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/900000/V1",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(403, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+ 
         // Test what happen when a field is missing (here, Battery)
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $this->visitTest,
