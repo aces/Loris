@@ -327,7 +327,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     public function ETag(ServerRequestInterface $request): string
     {
         if ($request->getMethod() === 'POST') {
-            return 'Etag not calculated on POST request';
+            return '';
         }
         return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
