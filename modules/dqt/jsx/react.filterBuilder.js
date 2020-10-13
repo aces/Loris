@@ -454,7 +454,6 @@ class FilterGroup extends Component {
     group.children[index] = child;
 
     if (this.props.index) {
-      // If not base filter group, recursively call update child
       this.props.updateGroup(this.props.index, group);
     } else {
       // Else base filter group, update the filter in the data query component
@@ -592,6 +591,7 @@ class FilterGroup extends Component {
             <FilterGroup group={child}
                          items={this.props.items}
                          index={index}
+                         updateFilter={this.updateChild}
                          updateGroup={this.updateChild}
                          updateSessions={this.updateSessions}
                          deleteGroup={this.deleteChild}
@@ -626,12 +626,12 @@ class FilterGroup extends Component {
               <div className='col-xs-10'>
                 {deleteButton}
                 <button className='btn btn-primary btn-sm pull-right'
-                        onClick={this.addChild.bind(this, 'group')}
+                        onClick={() => this.addChild('group')}
                 >
                   <span className='glyphicon glyphicon-add'></span> Add Group
                 </button>
                 <button className='btn btn-primary btn-sm pull-right'
-                        onClick={this.addChild.bind(this, 'rule')}
+                        onClick={() => this.addChild('rule')}
                 >
                   <span className='glyphicon glyphicon-add'></span> Add Rule
                 </button>
@@ -684,6 +684,7 @@ class FilterBuilder extends Component {
               <FilterGroup group={this.props.filter}
                            items={this.props.items}
                            updateFilter={this.props.updateFilter}
+                           updateGroup={this.updateChild}
                            Visits={this.props.Visits}
               />
             </div>
