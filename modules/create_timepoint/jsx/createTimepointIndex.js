@@ -250,7 +250,9 @@ class CreateTimepoint extends React.Component {
   }
 
   /**
-   * @return {DOMRect}
+   * Renders the React component.
+   *
+   * @return {JSX} - React create timepoint component
    */
   render() {
     // Waiting for async data to load.
