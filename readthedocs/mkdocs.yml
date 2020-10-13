@@ -25,6 +25,7 @@ nav:
             - Timepoints: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/05_Timepoints.md'
         - Clinical Instruments: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/README.md'
         - Modules: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/03_Loris_Modules/README.md'
+        - Data Querying Tool: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/04_Data_Querying_Tool/README.md'
     - Getting Started: 'docs/wiki/02_GETTING_STARTED/README.md'
     - Help and Troubleshooting: 'docs/wiki/03_HELP_AND_TROUBLESHOOTING/README.md'
     - REST API:
