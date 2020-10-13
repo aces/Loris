@@ -685,7 +685,6 @@ class FilterBuilder extends Component {
               <FilterGroup group={this.props.filter}
                            items={this.props.items}
                            updateFilter={this.props.updateFilter}
-                           updateGroup={this.updateChild}
                            Visits={this.props.Visits}
               />
             </div>
