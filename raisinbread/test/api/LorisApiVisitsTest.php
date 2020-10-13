@@ -28,90 +28,92 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisit(): void
     {
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-        $candidatesVisitArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-
-        $this->assertSame(gettype($candidatesVisitArray), 'array');
-        $this->assertSame(
-            gettype($candidatesVisitArray['Meta']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Meta']['CandID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Meta']['Visit']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Meta']['Site']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Meta']['Battery']),
-            'string'
-        );
-        if ($this->_version != 'v0.0.2') {
+        foreach ($this->versions as $version) {
+            $this->apiLogin('UnitTester', $this->validPassword, $version);
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest",
+                [
+                    'http_errors' => false,
+                    'headers'     => $this->headers
+                ]
+            );
+            $this->assertEquals(200, $response->getStatusCode());
+            // Verify the endpoint has a body
+            $body = $response->getBody();
+            $this->assertNotEmpty($body);
+            $candidatesVisitArray = json_decode(
+                (string) utf8_encode(
+                    $response->getBody()->getContents()
+                ),
+                true
+            );
+    
+            $this->assertSame(gettype($candidatesVisitArray), 'array');
             $this->assertSame(
-                gettype($candidatesVisitArray['Meta']['Project']),
+                gettype($candidatesVisitArray['Meta']),
+                'array'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Meta']['CandID']),
                 'string'
             );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Meta']['Visit']),
+                'string'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Meta']['Site']),
+                'string'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Meta']['Battery']),
+                'string'
+            );
+            if ($this->_version != 'v0.0.2') {
+                $this->assertSame(
+                    gettype($candidatesVisitArray['Meta']['Project']),
+                    'string'
+                );
+            }
+            $this->assertSame(
+                gettype($candidatesVisitArray['Stages']),
+                'array'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Stages']['Visit']),
+                'array'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Stages']['Visit']['Date']),
+                'string'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Stages']['Visit']['Status']),
+                'string'
+            );
+    
+            $this->assertArrayHasKey('Meta', $candidatesVisitArray);
+            $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
+            if ($this->_version != 'v0.0.2') {
+                $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
+            }
+            $this->assertArrayHasKey('Site', $candidatesVisitArray['Meta']);
+            $this->assertArrayHasKey('Battery', $candidatesVisitArray['Meta']);
+            $this->assertArrayHasKey('Stages', $candidatesVisitArray);
+            $this->assertArrayHasKey(
+                'Visit',
+                $candidatesVisitArray['Stages']
+            );
+            $this->assertArrayHasKey(
+                'Date',
+                $candidatesVisitArray['Stages']['Visit']
+            );
+            $this->assertArrayHasKey(
+                'Status',
+                $candidatesVisitArray['Stages']['Visit']
+            );
         }
-        $this->assertSame(
-            gettype($candidatesVisitArray['Stages']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Stages']['Visit']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Stages']['Visit']['Date']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Stages']['Visit']['Status']),
-            'string'
-        );
-
-        $this->assertArrayHasKey('Meta', $candidatesVisitArray);
-        $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
-        if ($this->_version != 'v0.0.2') {
-            $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
-        }
-        $this->assertArrayHasKey('Site', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Battery', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Stages', $candidatesVisitArray);
-        $this->assertArrayHasKey(
-            'Visit',
-            $candidatesVisitArray['Stages']
-        );
-        $this->assertArrayHasKey(
-            'Date',
-            $candidatesVisitArray['Stages']['Visit']
-        );
-        $this->assertArrayHasKey(
-            'Status',
-            $candidatesVisitArray['Stages']['Visit']
-        );
-
     }
 
     /**
@@ -132,52 +134,55 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitQcImaging(): void
     {
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/qc/imaging",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-        $candidatesVisitArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-
-        $this->assertSame(gettype($candidatesVisitArray), 'array');
-        $this->assertSame(
-            gettype($candidatesVisitArray['Meta']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Meta']['CandID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Meta']['Visit']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['SessionQC']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesVisitArray['Pending']),
-            'boolean'
-        );
-
-        $this->assertArrayHasKey('Meta', $candidatesVisitArray);
-        $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Visit', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('SessionQC', $candidatesVisitArray);
-        $this->assertArrayHasKey('Pending', $candidatesVisitArray);
+        foreach ($this->versions as $version) {
+            $this->apiLogin('UnitTester', $this->validPassword, $version);
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/qc/imaging",
+                [
+                    'http_errors' => false,
+                    'headers'     => $this->headers
+                ]
+            );
+            $this->assertEquals(200, $response->getStatusCode());
+            // Verify the endpoint has a body
+            $body = $response->getBody();
+            $this->assertNotEmpty($body);
+            $candidatesVisitArray = json_decode(
+                (string) utf8_encode(
+                    $response->getBody()->getContents()
+                ),
+                true
+            );
+    
+            $this->assertSame(gettype($candidatesVisitArray), 'array');
+            $this->assertSame(
+                gettype($candidatesVisitArray['Meta']),
+                'array'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Meta']['CandID']),
+                'string'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Meta']['Visit']),
+                'string'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['SessionQC']),
+                'string'
+            );
+            $this->assertSame(
+                gettype($candidatesVisitArray['Pending']),
+                'boolean'
+            );
+    
+            $this->assertArrayHasKey('Meta', $candidatesVisitArray);
+            $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
+            $this->assertArrayHasKey('Visit', $candidatesVisitArray['Meta']);
+            $this->assertArrayHasKey('SessionQC', $candidatesVisitArray);
+            $this->assertArrayHasKey('Pending', $candidatesVisitArray);
+        }
     }
 
     /**
@@ -188,29 +193,32 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitQcImaging(): void
     {
-        $candid   = '400162';
-        $visit    = 'V6';
-        $json     = [
+        foreach ($this->versions as $version) {
+            $this->apiLogin('UnitTester', $this->validPassword, $version);
+            $candid   = '400162';
+            $visit    = 'V6';
+            $json     = [
             "Meta"      => [
-                'CandID' => $candid,
-                'Visit'  => $visit
+               'CandID' => $candid,
+               'Visit'  => $visit
             ],
             'SessionQC' => "",
             'Pending'   => true
-        ];
-        $response = $this->client->request(
-            'PUT',
-            "candidates/$candid/$visit/qc/imaging",
-            [
+            ];
+            $response = $this->client->request(
+                'PUT',
+                "candidates/$candid/$visit/qc/imaging",
+                [
                 'http_errors' => false,
                 'headers'     => $this->headers,
                 'json'        => $json
-            ]
-        );
-        // Verify the status code
-        $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+                ]
+            );
+            // Verify the status code
+            $this->assertEquals(204, $response->getStatusCode());
+            // Verify the endpoint has a body
+            $body = $response->getBody();
+            $this->assertNotEmpty($body);
+        }   
     }
 }
