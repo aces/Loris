@@ -464,7 +464,7 @@ class CouchDBMRIImporter
      *   are the numerous checkboxes that you find on the feedback panel. For
      *   example, for comments of type 'Dominant Direction Artifact (DWI ONLY)', you
      *   have predefined comments 'red artifact', 'green artifact' and
-     *   'blue artifact'. These are either turned on of off via a checkbox to
+     *   'blue artifact'. These are either turned on or off via a checkbox to
      *   indicate whether that predefined comment applies to that comment type.
      *
      * @param array $types list of scan types
