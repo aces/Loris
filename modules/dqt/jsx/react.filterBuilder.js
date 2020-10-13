@@ -454,6 +454,7 @@ class FilterGroup extends Component {
     group.children[index] = child;
 
     if (this.props.index) {
+      // If not base filter group, recursively call update child
       this.props.updateGroup(this.props.index, group);
     } else {
       // Else base filter group, update the filter in the data query component
