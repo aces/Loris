@@ -155,15 +155,23 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        $version   = $request->getAttribute('LORIS-API-Version');
         if ($this->_visit === null) {
             return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
         }
 
-        return new \LORIS\Http\Response\JsonResponse(
-            (new \LORIS\api\Views\Visit($this->_visit, $version))
-                ->toArray()
-        );
+        $version   = $request->getAttribute('LORIS-API-Version');
+        switch($version) {
+        case 'v0.0.2':
+            return new \LORIS\Http\Response\JsonResponse(
+                (new \LORIS\api\Views\Visit_0_0_2($this->_visit))
+                    ->toArray()
+            );
+        case 'v0.0.3':
+            return new \LORIS\Http\Response\JsonResponse(
+                (new \LORIS\api\Views\Visit($this->_visit))
+                    ->toArray()
+            );
+        }
     }
 
     /**

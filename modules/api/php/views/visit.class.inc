@@ -29,7 +29,6 @@ class Visit
      * Constructor which sets the instance variables based on the provided timepoint
      *
      * @param \Timepoint $timepoint The timepoint to represent
-     * @param string     $version   Version of the API
      */
     public function __construct(\Timepoint $timepoint)
     {
