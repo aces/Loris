@@ -27,8 +27,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidates(): void
     {
-         foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
         $response = $this->client->request(
             'GET',
             "candidates",
@@ -114,7 +112,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $this->assertArrayHasKey(
             'Sex',
             $candidatesArray['Candidates']['0']
-	 }       );
+        );
     }
 
     /**
@@ -124,8 +122,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandid(): void
     {
-              foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
    $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest",
@@ -202,7 +198,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             '0',
             $candidatesCandidArray['Visits']
         );
-	      }
     }
 
     /**
@@ -213,8 +208,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
     public function testPostCandidatesCandid(): void
     {
         // First, create a valid new candidate
-         foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
         $json_new     = [
             'Candidate' =>
                 [
@@ -264,5 +257,5 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         // Verify the endpoint has a body
         $body = $response_invalid->getBody();
         $this->assertNotEmpty($body);
-	 }   }
+    }
 }

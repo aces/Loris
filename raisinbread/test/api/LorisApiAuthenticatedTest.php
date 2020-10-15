@@ -39,7 +39,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         parent::setUp();
         // store the original JWT key for restoring it later
 
-        $this->versions = ['v0.0.3'];
+        $this->version = 'v0.0.3';
 
         $jwtConfig = $this->DB->pselect(
             '
@@ -73,6 +73,8 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         ];
 
         $this->DB->update('Config', $set, $where);
+
+        $this->apiLogin('UnitTester', $this->validPassword);
     }
 
     /**
@@ -84,9 +86,9 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function apiLogin($username, $password, $version)
+    public function apiLogin($username, $password)
     {
-        $this->base_uri = "$this->url/api/$version/";
+        $this->base_uri = "$this->url/api/$this->version/";
         $this->client   = new Client(['base_uri' => $this->base_uri]);
         $response       = $this->client->request(
             'POST',

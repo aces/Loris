@@ -32,8 +32,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordings(): void
     {
-         foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings",
@@ -87,7 +85,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             'AcquisitionModality',
             $recordingsArray['Files']['0']
         );
-	 }   }
+    }   
 
     /**
      * Tests the HTTP GET request for the
@@ -108,8 +106,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdffileChannels(): void
     {
-         foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/" .
@@ -282,7 +278,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             'ChannelFilePath',
             $recChannelsArray['Channels']['0']
         );
-	 }   }
+    }
 
     /**
      * Tests the HTTP GET request for the
@@ -293,8 +289,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
     public function testGetCandidatesCandidVisitRecordingsEdffileChannelsMeta():
     void
     {
-         foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -467,7 +461,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             'ChannelFilePath',
             $recChannelsMetaArray['Channels']['0']
         );
-	 }   }
+    }
 
     /**
      * Tests the HTTP GET request for the
@@ -477,8 +471,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodes(): void
     {
-         foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -609,7 +601,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             'ElectrodeFilePath',
             $recChannelsArray['Electrodes']['0']
         );
-	 }  }
+   }
 
     /**
      * Tests the HTTP GET request for the
@@ -620,8 +612,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
     public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodesMeta():
     void
     {
-         foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -752,7 +742,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             'ElectrodeFilePath',
             $recChannelsMetaArray['Electrodes']['0']
         );
-	 }   }
+    }
 
     /**
      * Tests the HTTP GET request for the
@@ -762,8 +752,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileEvents(): void
     {
-         foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -894,7 +882,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             'EventFilePath',
             $recordingsEventsArray['TaskEvents']['0']
         );
-	 }   }
+    }
 
     /**
      * Tests the HTTP GET request for the
@@ -904,8 +892,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileEventsMeta(): void
     {
-         foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/" .
@@ -1036,5 +1022,5 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             'EventFilePath',
             $recordingsEventsMetaArray['TaskEvents']['0']
         );
-	 }   }
+    }
 }

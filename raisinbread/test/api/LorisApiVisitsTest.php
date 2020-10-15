@@ -28,8 +28,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisit(): void
     {
-        foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
             $response = $this->client->request(
                 'GET',
                 "candidates/$this->candidTest/$this->visitTest",
@@ -70,12 +68,12 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
                 gettype($candidatesVisitArray['Meta']['Battery']),
                 'string'
             );
-            if ($this->_version != 'v0.0.2') {
-                $this->assertSame(
-                    gettype($candidatesVisitArray['Meta']['Project']),
-                    'string'
-                );
-            }
+        if ($this->_version != 'v0.0.2') {
+            $this->assertSame(
+                gettype($candidatesVisitArray['Meta']['Project']),
+                'string'
+            );
+        }
             $this->assertSame(
                 gettype($candidatesVisitArray['Stages']),
                 'array'
@@ -95,9 +93,9 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
     
             $this->assertArrayHasKey('Meta', $candidatesVisitArray);
             $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
-            if ($this->_version != 'v0.0.2') {
-                $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
-            }
+        if ($this->_version != 'v0.0.2') {
+            $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
+        }
             $this->assertArrayHasKey('Site', $candidatesVisitArray['Meta']);
             $this->assertArrayHasKey('Battery', $candidatesVisitArray['Meta']);
             $this->assertArrayHasKey('Stages', $candidatesVisitArray);
@@ -113,7 +111,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
                 'Status',
                 $candidatesVisitArray['Stages']['Visit']
             );
-        }
     }
 
     /**
@@ -134,8 +131,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitQcImaging(): void
     {
-        foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
             $response = $this->client->request(
                 'GET',
                 "candidates/$this->candidTest/$this->visitTest/qc/imaging",
@@ -182,7 +177,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             $this->assertArrayHasKey('Visit', $candidatesVisitArray['Meta']);
             $this->assertArrayHasKey('SessionQC', $candidatesVisitArray);
             $this->assertArrayHasKey('Pending', $candidatesVisitArray);
-        }
     }
 
     /**
@@ -193,8 +187,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisitQcImaging(): void
     {
-        foreach ($this->versions as $version) {
-            $this->apiLogin('UnitTester', $this->validPassword, $version);
             $candid   = '400162';
             $visit    = 'V6';
             $json     = [
@@ -219,6 +211,5 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             // Verify the endpoint has a body
             $body = $response->getBody();
             $this->assertNotEmpty($body);
-        }   
     }
 }
