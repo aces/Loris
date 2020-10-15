@@ -111,6 +111,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'Status',
             $candidatesVisitArray['Stages']['Visit']
         );
+
     }
 
     /**
@@ -190,20 +191,20 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $candid   = '400162';
         $visit    = 'V6';
         $json     = [
-        "Meta"      => [
-           'CandID' => $candid,
-           'Visit'  => $visit
-        ],
-        'SessionQC' => "",
-        'Pending'   => true
+            "Meta"      => [
+               'CandID' => $candid,
+               'Visit'  => $visit
+            ],
+            'SessionQC' => "",
+            'Pending'   => true
         ];
         $response = $this->client->request(
             'PUT',
             "candidates/$candid/$visit/qc/imaging",
             [
-            'http_errors' => false,
-            'headers'     => $this->headers,
-            'json'        => $json
+                'http_errors' => false,
+                'headers'     => $this->headers,
+                'json'        => $json
             ]
         );
         // Verify the status code
