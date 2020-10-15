@@ -166,7 +166,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 (new \LORIS\api\Views\Visit_0_0_2($this->_visit))
                     ->toArray()
             );
-        case 'v0.0.3':
+        default:
             return new \LORIS\Http\Response\JsonResponse(
                 (new \LORIS\api\Views\Visit($this->_visit))
                     ->toArray()
