@@ -192,8 +192,8 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $visit    = 'V6';
         $json     = [
             "Meta"      => [
-               'CandID' => $candid,
-               'Visit'  => $visit
+                'CandID' => $candid,
+                'Visit'  => $visit
             ],
             'SessionQC' => "",
             'Pending'   => true
