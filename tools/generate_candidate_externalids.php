@@ -5,6 +5,19 @@
  * where external ID is NULL.
  * Config useExternalID property must be set.
  *
+ * Take an optional argument to reset all the externalID to NULL
+ * before running the algorithm
+ *
+ * Ways to use this script:
+ * -- display a help screen
+ * generate_candidate_externalids.php help
+ *
+ * -- to fix missing external IDS on candidates
+ * generate_candidate_externalids.php
+ *
+ * -- to reset all candidates external IDs and regenerate them
+ * generate_candidate_externalids.php reset
+ *
  * PHP Version 7
  *
  * @category Main
@@ -13,24 +26,36 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris/
  */
-set_include_path(
-    get_include_path().":".__DIR__."/../project/libraries:"
-    .":".__DIR__."/../../php/libraries:"
-);
-require_once __DIR__ . "/../vendor/autoload.php";
+
+require_once __DIR__ . "/../tools/generic_includes.php";
+
+$reset = false;
+if ((isset($argv[1]) && $argv[1] === "reset")) {
+    $reset = true;
+}
+
+/**
+ * HELP SCREEN
+ * display and stop processing if action=help
+ */
+if ((isset($argv[1]) && $argv[1] == 'help')) {
+    fwrite(STDERR, "Usage: \n\n");
+    fwrite(STDERR, "Display a help screen:\n");
+    fwrite(STDERR, "generate_candidate_externalids.php help\n\n");
+
+    fwrite(STDERR, "To fix missing external IDS on candidates:\n");
+    fwrite(STDERR, "generate_candidate_externalids.php\n\n");
+
+    fwrite(STDERR, "To reset all candidates external IDs and regenerate them:\n");
+    fwrite(STDERR, "generate_candidate_externalids.php reset\n\n");
+
+    return;
+}
 
 echo "\n---------------------------------------------------------------\n\n".
     "  This script will generate an externalID for each candidate \n".
     "  with misssing external ID.\n".
     "\n---------------------------------------------------------------\n\n";
-
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize(__DIR__."/../project/config.xml");
-
-$factory = \NDB_Factory::singleton();
-$config  = $factory->config();
-$db      = $factory->database();
 
 if ($config->getSetting('useExternalID') !== 'true') {
     echo "ERROR: useExternalID is deactivated in your config. \n"
@@ -39,16 +64,20 @@ if ($config->getSetting('useExternalID') !== 'true') {
 }
 
 // Get all Candidate with a NULL externalID
-$cands = $db->pselect(
-    "SELECT CandID, RegistrationCenterID as site, RegistrationProjectID as project
-    FROM candidate
-    WHERE ExternalID IS NULL",
+$cands = $DB->pselect(
+    "SELECT CandID, ExternalID, RegistrationCenterID as site,
+    RegistrationProjectID as project
+    FROM candidate",
     []
 );
-echo "Found " . count($cands) . " candidate(s) with missing external ID \n\n";
 
+$i = 0;
 // Update all candidates with an external ID
 foreach ($cands as $cand) {
+    if (!$reset && $cand['ExternalID'] != null) {
+        continue;
+    }
+
     $site    = \Site::singleton($cand['site']);
     $project = \Project::getProjectFromID($cand['project']);
 
@@ -57,10 +86,16 @@ foreach ($cands as $cand) {
         $project->getAlias()
     ))->generate();
 
-    echo "Candidate ". $cand['CandID'] ." external ID set to ". $externalID ."\n";
+    echo "Candidate " . $cand['CandID'] ." external ID changed from "
+         . ($cand['ExternalID'] ?? "NULL") . " to " . $externalID . "\n";
 
     $setArray   = ['ExternalID' => $externalID];
     $whereArray = ['CandID' => $cand['CandID']];
 
-    $db->update('candidate', $setArray, $whereArray);
+    $DB->update('candidate', $setArray, $whereArray);
+    $i++;
 }
+
+echo "\nUpdated " . $i . " candidate external ID(s). \n\n";
+
+
