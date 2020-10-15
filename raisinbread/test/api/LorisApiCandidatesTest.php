@@ -122,7 +122,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandid(): void
     {
-   $response = $this->client->request(
+        $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest",
             [
@@ -198,6 +198,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             '0',
             $candidatesCandidArray['Visits']
         );
+
     }
 
     /**

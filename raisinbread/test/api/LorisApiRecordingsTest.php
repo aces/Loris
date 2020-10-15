@@ -85,7 +85,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             'AcquisitionModality',
             $recordingsArray['Files']['0']
         );
-    }   
+    }
 
     /**
      * Tests the HTTP GET request for the
@@ -601,7 +601,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             'ElectrodeFilePath',
             $recChannelsArray['Electrodes']['0']
         );
-   }
+    }
 
     /**
      * Tests the HTTP GET request for the
