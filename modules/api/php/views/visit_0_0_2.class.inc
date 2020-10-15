@@ -14,6 +14,8 @@ namespace LORIS\api\Views;
 /**
  * Creates a representation of a project visit following the api response
  * specifications.
+ * 
+ * This class exists because there was no project in v0.0.2
  *
  * @category ApiViews
  * @package  Loris
@@ -29,7 +31,6 @@ class Visit
      * Constructor which sets the instance variables based on the provided timepoint
      *
      * @param \Timepoint $timepoint The timepoint to represent
-     * @param string     $version   Version of the API
      */
     public function __construct(\Timepoint $timepoint)
     {
@@ -48,7 +49,6 @@ class Visit
             'Visit'   => $this->_timepoint->getVisitLabel(),
             'Site'    => $this->_timepoint->getPSC(),
             'Battery' => $this->_timepoint->getData('SubprojectTitle'),
-            'Project' => $this->_timepoint->getProject(),
         ];
 
         $stages = [];
