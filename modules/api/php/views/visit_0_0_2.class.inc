@@ -14,7 +14,7 @@ namespace LORIS\api\Views;
 /**
  * Creates a representation of a project visit following the api response
  * specifications.
- * 
+ *
  * This class exists because there was no project in v0.0.2
  *
  * @category ApiViews
@@ -24,9 +24,8 @@ namespace LORIS\api\Views;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class Visit
+class Visit_0_0_2
 {
-    private $_timepoint;
     /**
      * Constructor which sets the instance variables based on the provided timepoint
      *

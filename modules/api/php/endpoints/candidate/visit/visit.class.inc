@@ -159,7 +159,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
         }
 
-        $version   = $request->getAttribute('LORIS-API-Version');
+        $version = $request->getAttribute('LORIS-API-Version');
         switch($version) {
         case 'v0.0.2':
             return new \LORIS\Http\Response\JsonResponse(
