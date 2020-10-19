@@ -287,9 +287,10 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
 
-        // Create a valid new candidate, but to a site where the user has no
-        // affiliation
-        $json_unaffiliated     = [
+        // Second, try to create a valid new candidate in a site that the
+        // user is not affiliated with. The test user is only afficilated to
+        // Data Coordinating Center
+        $json_new     = [
             'Candidate' =>
                 [
                     'Project' => "Rye",
@@ -309,12 +310,43 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         );
         // Verify the status code
         $this->assertEquals(201, $response_new->getStatusCode());
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_new
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(403, $response_new->getStatusCode());
         // Verify the endpoint has a body
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
 
-        // Try to cre9te a new candidate with an invalid input 
-        // (missing the 'Project' field)
+        $json_new     = [
+            'Candidate' =>
+                [
+                    'Project' => "",
+                    'Site'    => "Data Coordinating Center",
+                    'EDC'     => "2020-01-03",
+                    'DoB'     => "2020-01-03",
+                    'Sex'     => "Male"
+                ]
+        ];
+        $response_new = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_new
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(400, $response_new->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_new->getBody();
+        $this->assertNotEmpty($body);
+
+        // Finally, try to create a new candidate with an invalid input
         $json_invalid = [
             'Candidate' =>
                 [
@@ -338,34 +370,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $this->assertEquals(400, $response_invalid->getStatusCode());
         // Verify the endpoint has a body
         $body = $response_invalid->getBody();
-
-        // Try to cre9te a new candidate with an invalid input
-        // (should be 'Candidate' and not 'Candidates')
-        $json_invalid = [
-            'Candidates' =>
-                [
-                    'Project' => "Rye",
-                    'Site'    => "Data Coordinating Center",
-                    'EDC'     => "2020-01-03",
-                    'DoB'     => "2020-01-03",
-                    'Sex'     => "Male"
-                ]
-        ];
-
-        $response_invalid = $this->client->request(
-            'POST',
-            "candidates",
-            [
-                'headers'     => $this->headers,
-                'http_errors' => false,
-                'json'        => $json_invalid
-            ],
-        );
-        // Verify the status code
-        $this->assertEquals(400, $response_invalid->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response_invalid->getBody();
-        $this->assertNotEmpty($body);
         $this->assertNotEmpty($body);
     }
 }
+
