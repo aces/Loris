@@ -137,10 +137,10 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $version = $request->getAttribute('LORIS-API-Version');
         switch($version) {
         case 'v0.0.2':
-            $array = (new \LORIS\api\Views\Candidate($this->_candidate))
+            $array = (new \LORIS\api\Views\Candidate_0_0_2($this->_candidate))
                 ->toArray();
         default:
-            $array = (new \LORIS\api\Views\Candidate_0_0_2($this->_candidate))
+            $array = (new \LORIS\api\Views\Candidate($this->_candidate))
                 ->toArray();
         }
         return new \LORIS\Http\Response\JsonResponse($array);
