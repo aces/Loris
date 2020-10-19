@@ -233,7 +233,35 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
 
-        // Finally, try to create a new candidate with an invalid input
+        // Create a valid new candidate, but to a site where the user has no
+        // affiliation
+        $json_unaffiliated     = [
+            'Candidate' =>
+                [
+                    'Project' => "Rye",
+                    'Site'    => "Montreal",
+                    'EDC'     => "2020-01-03",
+                    'DoB'     => "2020-01-03",
+                    'Sex'     => "Male"
+                ]
+        ];
+        $response_unaffiliated = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_unaffiliated
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(403, $response_unaffiliated->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_new->getBody();
+        $this->assertNotEmpty($body);
+
+        // Try to cre9te a new candidate with an invalid input 
+        // (missing the 'Project' field)
         $json_invalid = [
             'Candidate' =>
                 [
@@ -257,6 +285,34 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $this->assertEquals(400, $response_invalid->getStatusCode());
         // Verify the endpoint has a body
         $body = $response_invalid->getBody();
+
+        // Try to cre9te a new candidate with an invalid input
+        // (should be 'Candidate' and not 'Candidates')
+        $json_invalid = [
+            'Candidates' =>
+                [
+                    'Project' => "Rye",
+                    'Site'    => "Data Coordinating Center",
+                    'EDC'     => "2020-01-03",
+                    'DoB'     => "2020-01-03",
+                    'Sex'     => "Male"
+                ]
+        ];
+
+        $response_invalid = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_invalid
+            ],
+        );
+        // Verify the status code
+        $this->assertEquals(400, $response_invalid->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_invalid->getBody();
+        $this->assertNotEmpty($body);
         $this->assertNotEmpty($body);
     }
 }
