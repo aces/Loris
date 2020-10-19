@@ -42,7 +42,7 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
 **Testing with write-permission** [Automation Testing]
   1. Add write permission
   2. Media module should now have **two** tabs (Browse) and (Upload)
-  3. Clicking on Upload tab should hide the data table and display a form with the following fields: PSCID, Visit Label, Instrument, Data of Administration, Comments, File to Upload
+  3. Clicking on Upload tab should hide the data table and display a form with the following fields: PSCID, Visit Label, Instrument, Date of Administration, Comments, File to Upload
 
 **Testing file upload**
   1. Click on the 👉 **Upload File** button
