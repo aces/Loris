@@ -19,7 +19,7 @@ namespace LORIS\parent_portal;
  *
  * @category   Module
  * @package    Main
- * @subpackage Parent Portal
+ * @subpackage Parent_Portal
  * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/

@@ -3,7 +3,7 @@
 /**
  * IBIS module.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category   Module
  * @package    Main
@@ -16,10 +16,11 @@ namespace LORIS\parent_portal;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 /**
+ * PHP Version 7
  *
  * @category   Module
  * @package    Main
- * @subpackage Parent Portal
+ * @subpackage Parent_Portal
  * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
@@ -43,4 +44,4 @@ class Parent_Portal extends \NDB_Form
         );
     }
 }
-?>
+
