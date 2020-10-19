@@ -219,16 +219,17 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
                     'Sex'     => "Male"
                 ]
         ];
-        $response_new = $this->client->request(
+        $response_unaffiliated = $this->client->request(
             'POST',
             "candidates",
             [
-                'headers' => $this->headers,
-                'json'    => $json_new
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_unaffiliated
             ]
         );
         // Verify the status code
-        $this->assertEquals(201, $response_new->getStatusCode());
+        $this->assertEquals(403, $response_unaffiliated->getStatusCode());
         // Verify the endpoint has a body
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
@@ -288,7 +289,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
 
         // Create a valid new candidate, but to a site where the user has no
         // affiliation
-        $json_new     = [
+        $json_unaffiliated     = [
             'Candidate' =>
                 [
                     'Project' => "Rye",
@@ -334,7 +335,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             ],
         );
         // Verify the status code
-        $this->assertEquals(409, $response_invalid->getStatusCode());
+        $this->assertEquals(400, $response_invalid->getStatusCode());
         // Verify the endpoint has a body
         $body = $response_invalid->getBody();
 
