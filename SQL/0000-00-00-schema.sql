@@ -170,7 +170,7 @@ CREATE TABLE `candidate` (
   PRIMARY KEY (`CandID`),
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `ExternalID` (`ExternalID`),
-  UNIQUE KEY `ParentID_UNIQUE` (`ParentID`),
+  UNIQUE KEY `UK_candidate_ParentID` (`ParentID`),
   KEY `FK_candidate_1` (`RegistrationCenterID`),
   KEY `CandidateActive` (`Active`),
   KEY `FK_candidate_2_idx` (`flagged_reason`),
