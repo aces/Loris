@@ -71,7 +71,7 @@ class Survey_Handle extends \NDB_Form
      */
     function _validate($values): mixed
     {
-            $db = \Database::singleton();
+            $db = \NDB_Factory::singleton()->database();
 
             $surveys = $db->pselect(
                 "SELECT Visit_label, Test_name, Status, OneTimePassword 
