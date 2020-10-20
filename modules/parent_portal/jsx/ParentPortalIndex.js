@@ -66,7 +66,9 @@ class ParentPortalIndex extends React.Component {
           this.setState({view_surveys: true});
         });
       } else {
-        this.setState({errorMsg: 'No Surveys Found With The Above Information.'});
+        this.setState(
+          {errorMsg: 'No Surveys Found With The Above Information.'}
+        );
       }
     }).catch((error) => {
       console.error(error);
