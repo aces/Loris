@@ -117,7 +117,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $candid   = '115788';
         $visit    = 'V2';
         $json     = ['CandID'  => $candid,
-            'Visit'   => 'V1',
+            'Visit'   => 'V2',
             'Site'    => "Data Coordinating Center",
             'Battery' => "Low Yeast",
             'Project' => "Pumpernickel"
