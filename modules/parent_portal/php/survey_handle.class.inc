@@ -87,8 +87,7 @@ class Survey_Handle extends \NDB_Form
         if (empty($surveys)) {
             return false;
         }
-            return $surveys;
+        return $surveys;
 
     }
 }
-
