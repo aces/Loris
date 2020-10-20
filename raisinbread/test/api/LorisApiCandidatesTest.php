@@ -373,4 +373,3 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $this->assertNotEmpty($body);
     }
 }
-
