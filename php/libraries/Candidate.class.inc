@@ -328,7 +328,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Generate a ParentID for a candidate
      *
-     * @param string $IDtype  likes Parent
+     * @param string $IDtype  a string that describes the ID to be generated, and is prepended to 'ID' i.e. "Parent" to generate a ParentID
      *
      * @return string $randid the randomly generated ID with $IDtype prefix i.e. Parent23456
      * @throws DatabaseException
