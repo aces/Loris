@@ -330,7 +330,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *
      * @param string $IDtype  likes Parent
      *
-     * @return string $randid likes Parent23456
+     * @return string $randid the randomly generated ID with $IDtype prefix i.e. Parent23456
      * @throws DatabaseException
      */
     function _generateID(string $IDtype): string {
