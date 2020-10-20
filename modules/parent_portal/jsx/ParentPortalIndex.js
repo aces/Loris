@@ -61,16 +61,16 @@ class ParentPortalIndex extends React.Component {
     })
     .then((resp) => {
       if (resp.ok) {
-            resp.json().then((data) => {
-            this.setState({survey_data: data});
-            this.setState({view_surveys: true});
-          });
-      } else {
-      this.setState({errorMsg: 'No Surveys Found With The Above Information.'});
-      }
-        }).catch((error) => {
-          console.error(error);
+        resp.json().then((data) => {
+          this.setState({survey_data: data});
+          this.setState({view_surveys: true});
         });
+      } else {
+        this.setState({errorMsg: 'No Surveys Found With The Above Information.'});
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
   }
   /**
    * Set the form data based on state values of child elements/components
