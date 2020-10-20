@@ -15,6 +15,7 @@ namespace LORIS\api\Endpoints\Candidate\Visit;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
+use \LORIS\StudyEntities\Candidate\CandID; 
 
 /**
  * A class for handling the /candidates/$candidate/$visit_label endpoint.
@@ -260,6 +261,18 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return (new \LORIS\Http\Response())
                 ->withStatus(204)
                 ->withHeader('Content-Location', $link);
+        }
+
+        try {
+            \TimePoint::isValidVisitLabel(
+                new CandID($visitinfo['CandID']),
+                $subprojectid,
+                $visitinfo['Visit']
+            );
+        } catch (\LorisException $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $e->getMessage()
+            );
         }
 
         \TimePoint::createNew(
