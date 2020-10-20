@@ -74,7 +74,7 @@ class Survey_Handle extends \NDB_Form
             $db = \Database::singleton();
 
             $surveys = $db->pselect(
-                "SELECT Visit_label,Test_name, Status, OneTimePassword 
+                "SELECT Visit_label, Test_name, Status, OneTimePassword 
                  FROM participant_accounts p
                  JOIN session s ON (p.SessionID=s.ID)
                  JOIN candidate c ON (c.CandID=s.CandID)
