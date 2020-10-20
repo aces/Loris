@@ -308,7 +308,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
             $parentIDgenerator = new ParentIDGenerator\ParentIDGenerator();
-
             $parentID = $parentIDgenerator->generateParentID();
             $setArray['ParentID'] = $parentID;
             try {
@@ -327,23 +326,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         // Return the new CandID
         return $candID;
-    }
-    /**
-     * Generate an ID for a candidate with given type
-     *
-     * @param string $IDtype  a string that describes the ID to be generated, and is prepended to 'ID' i.e. "Parent" to generate a ParentID
-     *
-     * @return string $randid the randomly generated ID with $IDtype prefix i.e. Parent23456
-     * @throws DatabaseException
-     */
-    function _generateID(string $IDtype): string {
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
-        do {
-            $randid = $IDtype . rand(1, 999999);
-            $nid = $IDtype . "ID";
-        } while($db->pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=:randomIDQ", array('randomIDQ' => $randid)) > 0);
-        return $randid;
     }
     /**
      * Checks if candidate exist given a candidate ID and PSCID
