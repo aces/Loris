@@ -227,7 +227,13 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $visitinfo['Battery'],
             \Utility::getSubprojectList()
         );
-
+        /**
+         * I don't think it is possible for $sessionid to be false. It can only be
+         * false if \SessionID takes an invalid value of $visitinfo['Visit'].
+         * A request with an invalid visitlabel can never reach this endpointr.
+         * This is because in the parent endpoint's handle, $visit can never be
+         * null.
+         */
         if ($sessionid !== false) {
             // If the visit label already exists for that candidate
             $timepoint = \NDB_Factory::singleton()->timepoint(
@@ -263,30 +269,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withHeader('Content-Location', $link);
         }
 
-        try {
-            \TimePoint::isValidVisitLabel(
-                new CandID($visitinfo['CandID']),
-                $subprojectid,
-                $visitinfo['Visit']
-            );
-        } catch (\LorisException $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
-            );
-        }
-
-        \TimePoint::createNew(
-            $this->_candidate,
-            $subprojectid,
-            $visitinfo['Visit'],
-            \Site::singleton($centerid),
-            $project
+        return new \LORIS\Http\Response\JSON\BadRequest(
+            $e->getMessage()
         );
-
-        $link = '/' . $request->getUri()->getPath();
-        return (new \LORIS\Http\Response())
-            ->withStatus(201)
-            ->withHeader('Content-Location', $link);
     }
 
     /**

@@ -114,38 +114,27 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
-        $candid   = '115788';
-        $visit    = 'V2';
-        $json     = ['CandID'  => $candid,
-            'Visit'   => 'V2',
+        // Test changing the Project & Battery
+        $json     = ['CandID'  => '900000',
+            'Visit'   => "V1",
             'Site'    => "Data Coordinating Center",
-            'Battery' => "Low Yeast",
-            'Project' => "Pumpernickel"
+            'Battery' => "High Yeast",
+            'Project' => "Rye",
         ];
         $response = $this->client->request(
             'PUT',
-            "candidates/$candid/$visit",
+            "candidates/900000/V1",
             [
                 'headers' => $this->headers,
                 'json'    => $json
             ]
         );
         // Verify the status code
-        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
-        $response = $this->client->request(
-            'PUT',
-            "candidates/$candid/$visit",
-            [
-                'headers' => $this->headers,
-                'json'    => $json
-            ]
-        );
-        // Verify the status code; should be 204 because it was just created,
-        // so it already exists
-        $this->assertEquals(204, $response->getStatusCode());
+
         // Test changing from a site with no affiliation to a site with affiliation
         $json     = ['CandID'  => '400266',
             'Visit'   => "V3",
@@ -164,28 +153,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         );
         // Verify the status code
         $this->assertEquals(403, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        // Test changing the Project & Battery
-        // TODO is changing the project supposed to be possible?
-        $json     = ['CandID'  => '900000',
-            'Visit'   => "V1",
-            'Site'    => "Data Coordinating Center",
-            'Battery' => "High Yeast",
-            'Project' => "Rye",
-        ];
-        $response = $this->client->request(
-            'PUT',
-            "candidates/900000/V1",
-            [
-                'headers' => $this->headers,
-                'json'    => $json
-            ]
-        );
-        // Verify the status code
-        $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
