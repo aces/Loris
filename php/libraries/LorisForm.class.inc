@@ -37,6 +37,8 @@ class LorisForm
     var $errors        = [];
     var $filters       = [];
     var $frozen        = false;
+    var $directEntry   = false;
+    var $directValues  = [];
     var $enctype       = '';
     var $groupMapping  = [];
     var $action        = '';
@@ -552,6 +554,11 @@ class LorisForm
      */
     function getValue($name)
     {
+        // For the survey module, values are passed via JSON so using the
+        // global _REQUEST variable doesn't work
+        if ($this->directEntry) {
+            return $this->_getFilteredValue($name, $this->directValues[$name]);
+        }
         // Not all elements of the form go into $_REQUEST, thus the isset test
         if (isset($_REQUEST[$name])) {
             // If submitted value in $_REQUEST is an array return the array
@@ -1182,7 +1189,7 @@ class LorisForm
      */
     function isSubmitted()
     {
-        return (!empty($_FILES) || !empty($_POST));
+        return (!empty($_FILES) || !empty($_POST) || $this->directEntry);
     }
     /**
      * Reimplements the HTML_QuickForm validate API.
@@ -1194,7 +1201,11 @@ class LorisForm
         if (!$this->isSubmitted()) {
             return false;
         }
-        $values = $this->getSubmitValues();
+        if ($this->directEntry) {
+            $values = $this->directValues;
+        } else {
+            $values = $this->getSubmitValues();
+        }
         $errors = [];
         foreach ($this->form as $elName => $el) {
             if ($el['type'] === 'group') {
@@ -1227,6 +1238,10 @@ class LorisForm
                     }
                 }
             } else {
+                if ($el['type'] === 'static' && $this->directEntry) {
+                    unset($values[$el['name']]);
+                    continue;
+                }
                 if ($el['type'] === 'file') {
                     $value = $_FILES[$el['name']]['name'];
                 } elseif (isset($el['name'])) {

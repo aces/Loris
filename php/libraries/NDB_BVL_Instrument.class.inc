@@ -1217,7 +1217,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             //If the answer is empty (or its a group and one of answers in the
             //group is empty) then run the rules
-            if ($elvalue==="" || $flag==false) {
+            if ($elvalue==="" || $flag==false || is_null($elvalue)) {
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
@@ -2421,6 +2421,179 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $smarty->assign($tpl_data);
         return $smarty->fetch("directentry_review.tpl");
+    }
+    /**
+     * Return the HTML for the review section of the survey module
+     * By default, this will show every question from the parameter_type
+     * table for this instrument, but it can be overridden/customized by
+     * a instrument if that isn't the desired behaviour.
+     *
+     * @return string The HTML to be inserted into the review section of
+     *                the final page of the survey module for this instrument.
+     */
+    function getReactReview()
+    {
+        $DB = Database::singleton();
+
+        $tpl_data = array();
+
+        $tpl_data['questions'] = $DB->pselect(
+            "SELECT Description as question,
+            SourceField FROM parameter_type
+            WHERE SourceFrom=:TN AND
+            SourceField NOT IN ('Validity', 'Administration')",
+            array('TN' => $this->testName)
+        );
+
+        $Responses = $DB->pselectRow(
+            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
+            array('CID' => $this->getCommentID())
+        );
+
+        foreach ($tpl_data['questions'] as &$row) {
+            if (isset($Responses[$row['SourceField']])) {
+                $row['response'] = $Responses[$row['SourceField']];
+            }
+        }
+
+        return json_encode($tpl_data);
+    }
+    /**
+     * Returns a JSON representation of the currently instantiated
+     * instrument capatible with the survey module
+     *
+     * @return string containing valid JSON
+     */
+    function toDirectJSON()
+    {
+        $instrumentJSON = array(
+                           "form"     => array(),
+                           "testname" => $this->testName,
+                           "fullname" => $this->getFullName(),
+                          );
+
+        $tempForm = array();
+        $tempPage = array(
+                     "Description" => "Top Page",
+                     "Elements"    => array(),
+                     "GroupType"   => "Page",
+                     "Type"        => "ElementGroup",
+                    );
+
+        foreach ($this->form->form as $key => $value) {
+            $tempForm[] = PageElementsFormatter::formatElement($value, $key);
+        }
+        $tempPage["Elements"] = $tempForm;
+
+        $this->form->form = array();
+        $tempForm         = array();
+        $instrumentJSON['form'][] = $tempPage;
+
+        $subtests = $this->getSubtestList();
+        foreach ($subtests as $subtest) {
+            $this->page = $subtest['Name'];
+            $this->_setupForm();
+
+            $tempPage = array(
+                         "Description" => $subtest['Description'],
+                         "Elements"    => array(),
+                         "GroupType"   => "Page",
+                         "Type"        => "ElementGroup",
+                         "Subtest"     => $this->page,
+                        );
+            foreach ($this->form->form as $key => $value) {
+                $tempForm[] = PageElementsFormatter::formatElement($value, $key);
+            }
+            $tempPage["Elements"] = $tempForm;
+            $this->form->form     = array();
+            $tempForm = array();
+            $instrumentJSON['form'][] = $tempPage;
+        }
+
+        $instrument = array(
+                       "Meta"     => array(),
+                       "Elements" => $instrumentJSON["form"],
+                      );
+        return json_encode($instrument);
+    }
+
+    /**
+     * This runs form validation for the survey module
+     *
+     * @return associative array of errors (fieldname => errormessage) or true
+     *         if no errors.
+     */
+    function directEntryValidation()
+    {
+        $allErrors = array();
+        $this->form->directEntry = true;
+        $temp   = json_decode($this->getReactReview());
+        $values = array();
+
+        foreach ($temp->questions as $value) {
+            // $this->form->directValues[$value->SourceField] = $value->response;
+            $values[$value->SourceField] = $value->response;
+        }
+
+        $this->_setupForm();
+        $this->form->directValues = $this->getPageValues($this->form->form, $values);
+        if (!$this->form->validate()) {
+            $allErrors = array_merge($allErrors, $this->form->errors);
+        }
+
+        $this->form->form   = array();
+        $this->form->errors = array();
+        $this->XINRules     = array();
+
+        $subtests = $this->getSubtestList();
+        foreach ($subtests as $subtest) {
+            $this->page = $subtest['Name'];
+            $this->_setupForm();
+            $this->form->directValues = $this->getPageValues(
+                $this->form->form,
+                $values
+            );
+
+            if (!$this->form->validate()) {
+                $allErrors = array_merge($allErrors, $this->form->errors);
+            }
+
+            $this->form->form   = array();
+            $this->form->errors = array();
+            $this->XINRules     = array();
+        }
+
+        if (empty($allErrors)) {
+            return true;
+        }
+
+        return $allErrors;
+
+    }
+
+    /**
+     * This gets form values for the survey module. It uses recurtion to
+     * obtain value of elements of type group
+     *
+     * @param array $form       the form in which to retrieve elements values
+     * @param array $fullValues an array of values submitted
+     *
+     * @return associative array of values (fieldname => value)
+     */
+    function getPageValues($form, $fullValues)
+    {
+        $values = array();
+        foreach ($form as $value) {
+            if ($value['type'] === 'group') {
+                $values = array_merge(
+                    $values,
+                    $this->getPageValues($value['elements'], $fullValues)
+                );
+            } else if (!in_array($value['type'], array('header', 'static'))) {
+                $values[$value['name']] = $fullValues[$value['name']];
+            }
+        }
+        return $values;
     }
 
 
