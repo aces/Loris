@@ -1,3 +1,3 @@
-# MRI Resolved Violations  
+# MRI Resolved Violations
 
-This page displays scans that have been resolved from MRI Violation. Use the Selection Filter section to narrow down your search in the data results table below.  
+This page displays all violated scans that have been updated to any resolution status other than **Unresolved**. Use the Selection Filter section to narrow down your search in the data results table below.
