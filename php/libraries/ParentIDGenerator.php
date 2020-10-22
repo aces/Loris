@@ -13,7 +13,7 @@
 namespace LORIS\StudyEntities\Candidate\ParentIDGenerator;
 /**
  * This class defines functions used to generate valid ParentID identifiers in
- * LORIS. 
+ * LORIS.
  *
  * PHP Version 7
  *
@@ -24,15 +24,19 @@ namespace LORIS\StudyEntities\Candidate\ParentIDGenerator;
  * @link     https://www.github.com/aces/Loris/
  */
 class ParentIDGenerator extends \CandIDGenerator
-{ 
+{
+
     /**
      * ParentIDs should always come from CandID generator with a prefix string.
      */
+
     protected $prefix ;
 
     /**
      * Creates a new ParentIDs generator by initializing properties based on class
      * constants defined above.
+     *
+     * @param string $prefix the prefix string
      */
     public function __construct(string $prefix="Parent")
     {
@@ -41,14 +45,14 @@ class ParentIDGenerator extends \CandIDGenerator
     }
 
     /**
-     * Creates a new ParentID. 
+     * Creates a new ParentID.
      *
      * @return string The new identifier.
      */
     public function generateParentID(): string
     {
-      //  $generator = new \CandIDGenerator();
-        $candID  = parent::generate();
+        //  $generator = new \CandIDGenerator();
+        $candID = parent::generate();
         return $this->prefix.(string)$candID;
     }
 
