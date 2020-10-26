@@ -3,7 +3,7 @@
 The API should be tested by following the API specs and making sure every command works.
 This document is a preliminary test plan that should be superseded by a proper automated test suite.
 
-# Using curl:
+## Using curl:
 ### Login
 This is done sending a POST request to /login
 ```bash
