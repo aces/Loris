@@ -1,29 +1,29 @@
-# Clinical Instruments   
-The Behavioural Database is the part of LORIS that implements the battery of tests and questionnaires which are administered and used to collect data on participants in a given study. These behavioural, psychological, and clinical tests are known as **instruments** or instrument forms.  
+# Clinical Instruments
+The Behavioural Database is the part of LORIS that implements the battery of tests and questionnaires which are administered and used to collect data on participants in a given study. These behavioural, psychological, and clinical tests are known as **instruments** or instrument forms.
 
-Instrument forms fall into three categories: basic forms, forms with scoring algorithms, and forms populated by uploading data.  
+Instrument forms fall into three categories: basic forms, forms with scoring algorithms, and forms populated by uploading data.
 
-The **battery** is a list of which instruments are to be administered on each cohort of participants, and typically varies per timepoint and per study site. For example, the battery of instruments administered at a participant's first visit (e.g. timepoint V01) may depend on which cohort and study site they belong to. A participant may be tested on a certain set of instruments if they are in cohort A and from site X, but would be tested on different instruments if they are registered in cohort B at site Y.  
+The **battery** is a list of which instruments are to be administered on each cohort of participants, and typically varies per timepoint and per study site. For example, the battery of instruments administered at a participant's first visit (e.g. timepoint V01) may depend on which cohort and study site they belong to. A participant may be tested on a certain set of instruments if they are in cohort A and from site X, but would be tested on different instruments if they are registered in cohort B at site Y.
 
 Instruments commonly rate the severity of the symptoms they test through scoring functions.
 
-## 1) Instrument Builder  
-The Instrument Builder (Tools menu) enables admin-level users to create simple instrument forms through the LORIS front-end. If your instrument contains one of the following, please follow the [Developer's Instrument Guide](https://github.com/aces/Loris/wiki/Developer%27s-Instrument-Guide) for complex forms:  
+## 1) Instrument Builder
+The Instrument Builder (Tools menu) enables admin-level users to create simple instrument forms through the LORIS front-end. If your instrument contains one of the following, please follow the [Developer's Instrument Guide](https://github.com/aces/Loris/wiki/Developer%27s-Instrument-Guide) for complex forms:
 
-* Dependencies or rules between fields  
-* Norm tables (to look up scaled values/scores)  
+* Dependencies or rules between fields
+* Norm tables (to look up scaled values/scores)
 
-Please note the Instrument Builder works best with Chrome or Firefox. (Safari and Explorer not recommended.)  
+Please note the Instrument Builder works best with Chrome or Firefox. (Safari and Explorer not recommended.)
 
 ### i. Create the instrument file (*.linst format)
 To start a new form, navigate to the Instrument Builder module and click the Build tab.  
 
-To load an existing form for editing, click the Load tab and select a *.linst file on your computer.  
+To load an existing form for editing, click the Load tab and select a *.linst file on your computer.
 
-Each question requires the following fields:  
+Each question requires the following fields:
 
-Question Name (e.g. handedness_q01_writing) : this will be the MySQL database fieldname. Please read important notes below.
-Question Text (e.g "Which hand is used for writing?") ...and may require other elements as required.  
+1. Question Name (e.g. handedness_q01_writing) : this will be the MySQL database fieldname. Please read important notes below.
+2. Question Text (e.g "Which hand is used for writing?") ...and may require other elements as required.  
 
 #### Notes for using the Instrument Builder  
 * Do not use apostrophes (') or quotation marks in any field.  
@@ -35,9 +35,9 @@ Question Text (e.g "Which hand is used for writing?") ...and may require other e
 
 * **Question** Text describes the item for data entry purposes, and often reflects the source questionnaire directly (e.g. "What is the child’s primary language?")
 
-#### Data types in the Instrument Builder  
-| Data Type |	Description |
-|----------|:-------------:|
+#### Data types in the Instrument Builder
+| Data Type | Description |
+|-----------| :---------: |
 |Header | Specifies page title or section header. Text appears boldface at page centre. Note: Instrument Name automatically becomes the header at the top of form.|
 |Label|	A formatting option to introduce a subset of questions.|
 |Score Field| Specifies data entry fields. Scored field type must be indicated in "data entry" section.|
@@ -50,19 +50,19 @@ Question Text (e.g "Which hand is used for writing?") ...and may require other e
 |Blank Line|"Question Name" and "Question Text" can be left blank to separate page sections.|
 |Page Break|Used to add a new page. The value entered for "Question Text" will be the name of the new page.|  
 
-Click the Add Row button once all field information has been completed. In the preview panel underneath, click to edit any Question Name (in column Database Name (DB)).  
+Click the Add Row button once all field information has been completed. In the preview panel underneath, click to edit any Question Name (in column Database Name (DB)).
 
-#### Name and Download the instrument  
-Click on the Save tab -- provide a short name (Filename) for your instrument, and the full title of the instrument (Instrument Name).  
+#### Name and Download the instrument
+Click on the Save tab -- provide a short name (Filename) for your instrument, and the full title of the instrument (Instrument Name).
 
-Important: The Filename (aka `$TESTNAME`) should not contain hyphens, apostrophes, spaces, accents or special characters.  
+Important: The Filename (aka `$TESTNAME`) should not contain hyphens, apostrophes, spaces, accents or special characters.
 
-Finally, click the `Save` button to download the `$TESTNAME.linst` file to your computer.  
+Finally, click the `Save` button to download the `$TESTNAME.linst` file to your computer.
 
 ### ii. Create and add Instrument tables to database
-Note: scripts may generate PHP Notice messages, which is normal and should not affect output.  
+Note: scripts may generate PHP Notice messages, which is normal and should not affect output.
 
-Copy the downloaded `$TESTNAME.linst` file from your local computer into `/var/www/loris/project/instruments/` on the LORIS server, and ensure the file is apache-readable (e.g. `chmod a+r`).  
+Copy the downloaded `$TESTNAME.linst` file from your local computer into `/var/www/loris/project/instruments/` on the LORIS server, and ensure the file is apache-readable (e.g. `chmod a+r`).
 
 Then generate its MySQL table schema file ($TESTNAME.sql):
 ```SQL
@@ -80,20 +80,20 @@ If you get the error message `CREATE command denied`, ensure you have admin priv
 
 NOTE: Instrument files (`*.linst`, `*sql`) should be committed to a [project-specific git repository](https://github.com/aces/Loris/wiki/Code-Customization#the-project-directory).
 
-#### Survey Questionnaires  
-If your instrument is designed for direct data entry by a participant in your study, identify it as a Survey by setting the isDirectEntry field to true within the test_names table via the MySQL back-end. Study coordinators will then be able to use the front-end Survey module will then be able to create a unique survey key and email the survey to a participant. This instrument will also appear shaded green in a candidate's Instrument list within each timepoint.  
+#### Survey Questionnaires
+If your instrument is designed for direct data entry by a participant in your study, identify it as a Survey by setting the isDirectEntry field to true within the test_names table via the MySQL back-end. Study coordinators will then be able to use the front-end Survey module will then be able to create a unique survey key and email the survey to a participant. This instrument will also appear shaded green in a candidate's Instrument list within each timepoint.
 
-### iii. Updating or modifying Instruments - Caveat  
-In case of any changes to instrument field types, number of fields (add or delete), or field names, repeat steps above, keeping a safe copy of the original *.sql file, then run tools/generate_tables_sql.php.  
+### iii. Updating or modifying Instruments - Caveat
+In case of any changes to instrument field types, number of fields (add or delete), or field names, repeat steps above, keeping a safe copy of the original *.sql file, then run tools/generate_tables_sql.php.
 
-Caveat: sourcing the *.sql file output by this script will delete all previously entered data for this instrument. To avoid losing data, diff the original *.sql file against the new file and use ALTER table statements to implement the desired changes.  
+Caveat: sourcing the *.sql file output by this script will delete all previously entered data for this instrument. To avoid losing data, diff the original *.sql file against the new file and use ALTER table statements to implement the desired changes.
 
-If your instrument battery has been modified, please also see Re-populating instrument forms after battery changes
+If your instrument battery has been modified, please also see Re-populating instrument forms after battery changes.
 
 ## 2) Scoring algorithms
-If an instrument form should include a scoring algorithm, a scoring script can be coded manually to accompany the form. This scoring script will be executed by Loris automatically when a user saves data entered in the instrument form via their browser. The script should be stored as an executable file in the `project/instruments/` directory, and the filename must be called `$INSTRUMENT_NAME.score`.  
+If an instrument form should include a scoring algorithm, a scoring script can be coded manually to accompany the form. This scoring script will be executed by Loris automatically when a user saves data entered in the instrument form via their browser. The script should be stored as an executable file in the `project/instruments/` directory, and the filename must be called `$INSTRUMENT_NAME.score`.
 
-It can be coded in any scripting language but we suggest using our PHP example below. CommentID is passed as the first argument, after which it selects from Instrument_table, performs calculations and updates using the CommentID. To test your scoring script, run it from the tools directory and provide CommentID. Below is a sample scoring script for BMI calculation - this file can be copied from the docs/instruments/ directory:  
+It can be coded in any scripting language but we suggest using our PHP example below. CommentID is passed as the first argument, after which it selects from Instrument_table, performs calculations and updates using the CommentID. To test your scoring script, run it from the tools directory and provide CommentID. Below is a sample scoring script for BMI calculation - this file can be copied from the docs/instruments/ directory:
 
 ```
 #!/usr/bin/php
@@ -138,7 +138,7 @@ $result = $db->update('test_name', $scores, $WhereCriteria);
 ```
 
 ## 3) Populate test_names and test_subgroups tables
-All instruments must appear in the test_names and test_subgroups tables. For all *.linst instruments created via the Instrument Builder, sourcing the *.sql file takes care of insertion to the test_names table.  
+All instruments must appear in the test_names and test_subgroups tables. For all *.linst instruments created via the Instrument Builder, sourcing the *.sql file takes care of insertion to the test_names table.
 
 Test subgroups are used to group/categorize instruments within a timepoint's list of instruments. To add a test subgroup and specify its display order:
 
@@ -148,7 +148,7 @@ INSERT INTO test_subgroups (Subgroup_name, group_order) VALUES ('Communication',
 INSERT INTO test_subgroups (Subgroup_name, group_order) VALUES ('Medical', '3');
 ```
 
-Next, associate each instrument to a subgroup via the test_names table, Sub_group field. E.g. for the Vineland  
+Next, associate each instrument to a subgroup via the test_names table, Sub_group field. E.g. for the Vineland
 
 ```SQL
 UPDATE test_names SET Sub_group = 
@@ -174,8 +174,8 @@ VALUES ('$test', '1', '99999', 'Y', 'Visit', '1', 'V1', NULL, NULL, 1);
 
 #### Re-populating instrument forms after battery changes
 
-If you are modifying your test battery or an instrument form, you may wish to populate this instrument for timepoints for which data entry is already in progress. To add an instrument form to a timepoint whose visit stage has already been started, run either [assign_missing_instruments.php or fix_timepoint_date.php](https://github.com/aces/Loris/wiki/LORIS-scripts-in-the-tools--directory) -- located in the tools/ directory.  
-Depending on the use case, either of these scripts will add the instrument to any relevant timepoints according to the contents of the test_battery table.  
+If you are modifying your test battery or an instrument form, you may wish to populate this instrument for timepoints for which data entry is already in progress. To add an instrument form to a timepoint whose visit stage has already been started, run either [assign_missing_instruments.php or fix_timepoint_date.php](https://github.com/aces/Loris/wiki/LORIS-scripts-in-the-tools--directory) -- located in the tools/ directory.
+Depending on the use case, either of these scripts will add the instrument to any relevant timepoints according to the contents of the test_battery table.
 
 ## 5) Populate Examiners
 Add examiners via the Examiners module, to specify all personnel likely to administer any questionnaires or tests for each study site. Edit each examiner to add certifications to administer specific instruments. This is a pre-requisite to beginning instrument data entry, as instrument data forms will not save without selecting a valid examiner.
@@ -183,10 +183,10 @@ Add examiners via the Examiners module, to specify all personnel likely to admin
 ## 6) Testing and Troubleshooting Instruments
 Follow these steps to test an instrument:
 
-1. Register a DCC candidate  
-2. Create a timepoint for this candidate  
-3. Start its visit stage (date must be within test_battery-defined age range)  
-4. Enter sample data, testing each field's type and logic constraints.  
+1. Register a DCC candidate
+2. Create a timepoint for this candidate
+3. Start its visit stage (date must be within test_battery-defined age range)
+4. Enter sample data, testing each field's type and logic constraints.
 
 A front-end user can only create candidates and visits for the site they belong to. Superusers can change a user's site (including their own) under the User Accounts module.
 
@@ -199,22 +199,22 @@ Toggling the following setting in config.xml can help in troubleshooting MySQL s
 </gui>
 ```
 
-This feature does not work in all modules and may interfere with JavaScript running in the page, and should never be used in production instances.  
+This feature does not work in all modules and may interfere with JavaScript running in the page, and should never be used in production instances.
 
 ## 7) Double Data Entry  
-Double Data Entry (DDE) is the practice of requiring users to manually input the same dataset twice in order to reduce the risk of error in data entry. For DDE-designated instruments, a participant's instrument data collection at a given visit cannot be finalized in LORIS unless both the first data entry form and second (double) data entry form are completed.  
+Double Data Entry (DDE) is the practice of requiring users to manually input the same dataset twice in order to reduce the risk of error in data entry. For DDE-designated instruments, a participant's instrument data collection at a given visit cannot be finalized in LORIS unless both the first data entry form and second (double) data entry form are completed.
 
-To enable an instrument for double data entry, in the Configuration module inside the Study panel, use the "Double data entry instruments" section to add instrument names. Be very careful when removing an instrument name from this list, regarding the impact on the integrity of the entire dataset.  
+To enable an instrument for double data entry, in the Configuration module inside the Study panel, use the "Double data entry instruments" section to add instrument names. Be very careful when removing an instrument name from this list, regarding the impact on the integrity of the entire dataset.
 
-Note: by default, all forms will have a Double Data Entry (DDE) duplicate form created in the back end (flag table and instrument table) when the instrument is populated for a session. However, the DDE form link does not appear in the front end and Double Data Entry completion is not enforced unless the instrument is specified as a Double Data Entry instrument via the Configuration module.  
+Note: by default, all forms will have a Double Data Entry (DDE) duplicate form created in the back end (flag table and instrument table) when the instrument is populated for a session. However, the DDE form link does not appear in the front end and Double Data Entry completion is not enforced unless the instrument is specified as a Double Data Entry instrument via the Configuration module.
 
-Data entry conflicts detected through between the first and second (double) data entry forms are resolved through the [Conflict Resolver](https://github.com/aces/Loris/wiki/LORIS-Modules#double-data-entry-dde-and-conflict-resolver-module)  
+Data entry conflicts detected through between the first and second (double) data entry forms are resolved through the [Conflict Resolver](https://acesloris.readthedocs.io/en/latest/modules/conflict_resolver/help/conflict_resolver.html)
 
-## 8) Excluding Instruments  
-To exclude instruments from the Data Dictionary and Data Query Tool, go to the Configuration module under the "Study" section under "Excluded instruments" and add/select a valid Test Name (e.g. MRI Parameter Form).  
+## 8) Excluding Instruments
+To exclude instruments from the Data Dictionary and Data Query Tool, go to the Configuration module under the "Study" section under "Excluded instruments" and add/select a valid Test Name (e.g. MRI Parameter Form).
 
-## 9) Instrument Permissions  
-Access to specific instruments can be controlled by custom permissions, via the back-end file project/config.xml  
+## 9) Instrument Permissions
+Access to specific instruments can be controlled by custom permissions, via the back-end file project/config.xml
 
 ```
 <instrumentPermissions>
@@ -239,19 +239,20 @@ Access to specific instruments can be controlled by custom permissions, via the 
  </instrumentPermissions>
 ```
 
-## 10) Instrument Manager  
-The Instrument Manager module is designed allow the Loris database Admin superuser to upload and install instrument forms (*.linst files), and to monitor instrument status in LORIS.  
+## 10) Instrument Manager
+The Instrument Manager module is designed allow the Loris database Admin superuser to upload and install instrument forms (*.linst files), and to monitor instrument status in LORIS.
 
-To enable upload and installation of *.linst instrument files created using the Instrument Builder:  
+To enable upload and installation of *.linst instrument files created using the Instrument Builder:
 
-i. Create a separate MySQL user account with CREATE, SELECT, INSERT, UPDATE and DELETE privileges on the database. This credential should be stored in project/config.xml within the `<database>` tag section as `<quatUser>` and `<quatPassword>` :  
+i. Create a separate MySQL user account with CREATE, SELECT, INSERT, UPDATE and DELETE privileges on the database. This credential should be stored in project/config.xml within the `<database>` tag section as `<quatUser>` and `<quatPassword>` :
 
 ```
 <database>
-     ...
-     <quatUser>%USERNAME%</quatUser>
-     <quatPassword>%PASSWORD%</quatPassword>
-     ...
- </database>
- ```
-ii. Ensure that the project-specific directories are Apache-writeable: `project/instruments/` and `project/tables_sql/`  
+    ...
+    <quatUser>%USERNAME%</quatUser>
+    <quatPassword>%PASSWORD%</quatPassword>
+    ...
+</database>
+```
+
+ii. Ensure that the project-specific directories are Apache-writeable: `project/instruments/` and `project/tables_sql/`
