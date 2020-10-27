@@ -58,3 +58,4 @@ Candidate creation is done by sending a POST request to /candidates with the req
 If the candidate is successfully created, the candidate's data is returned. For example, the previous example returns: `{"CandID":"872451","Project":"Rye","PSCID":"MTL185","Site":"Montreal","EDC":null,"DoB":"2019-01-31","Sex":"Female"}`
 
 Otherwise, an error message is returned. For example, the command `curl -H "Authorization: Bearer $token" https://<your-hostname>/api/v0.0.3/candidates -d ''` returns `{"error":"You are not affiliated with the candidate's site"}`
+
