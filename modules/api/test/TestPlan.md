@@ -45,4 +45,3 @@ Otherwise, an error message is returned. For example, the command `curl -H "Auth
 
 ## Using jupyter
 As a faster alternative to using curl, all of the API's endpoints can be tested manually using the notebook `docs/notebooks/LORIS_API_Part2_Python-script.ipynb`. Note that you need to change the host to use your own virtual machine.
-
