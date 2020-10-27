@@ -12,7 +12,7 @@ The API should be tested by following the API specs and making sure every comman
 This document is a preliminary test plan that should be superseded by a proper automated test suite.
 
 ## Using the integration tests
-The API's integration test suite can be used to test all endpoints automatically. These tests are passed at every Travis checks, but the endpoints that require the raisinbread data cannot be run because Travis doesn't have the data. These tests can only be run from a virtual machine with the raisinbread dataset.
+The API's integration test suite can be used to test all endpoints automatically. These tests are passed at every Travis checks.
 
 ### Using dockerized tests
 To run the dockerized tests:
