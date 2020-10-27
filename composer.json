@@ -13,8 +13,8 @@
         "laminas/laminas-diactoros" : "~1.8.4",
         "ext-json": "*",
         "bjeavons/zxcvbn-php": "^0.4",
-        "facebook/webdriver": "^1.7",
-        "composer-plugin-api": "^1.0.0",
+        "php-webdriver/webdriver": "^1.8",
+        "composer-plugin-api": "1.1.0",
         "ocramius/package-versions": "^1.2.0"
     },
     "require-dev" : {
