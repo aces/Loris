@@ -34,7 +34,7 @@
 							<label class="col-sm-12 col-md-4">Instruments:</label>
 							<div class="col-sm-12 col-md-8">
 								<select name="instrument" id="instrument" class="form-control input-sm">
-									<option value="{$instrumentvalue}" selected="selected">{$instrumentvalue}></option>
+									<option value="{$test_name_id}" selected="selected">{$test_name_id}</option>
 								</select>
 							</div>
 						</div>

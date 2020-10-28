@@ -71,14 +71,10 @@ class HelpEditor extends React.Component {
     let result = <td>{cell}</td>;
     switch (column) {
     case 'Topic':
-      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
-             row['Help ID'] + '&parentID=' + row['Parent ID'];
+      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID='
+            + row['Help ID'];
       result = <td><a href ={url}>{cell}</a></td>;
       break;
-    case 'Parent Topic':
-      url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
-             row['Parent ID'] + '&parentID=' + row['Parent Topic ID'];
-      result = <td><a href ={url}>{cell}</a></td>;
     }
 
     return result;
@@ -112,9 +108,6 @@ class HelpEditor extends React.Component {
         name: 'topic',
         type: 'text',
       }},
-      {label: 'Parent ID', show: false},
-      {label: 'Parent Topic ID', show: false},
-      {label: 'Parent Topic', show: true},
       {label: 'Content', show: true, filter: {
         name: 'content',
         type: 'text',

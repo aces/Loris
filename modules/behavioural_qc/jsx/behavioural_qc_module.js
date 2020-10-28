@@ -402,7 +402,7 @@ class DefaultPanel extends Component {
 }
 DefaultPanel.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.string,
+  children: PropTypes.object,
 };
 
 /**
@@ -620,7 +620,7 @@ class BehaviouralQCGraphics extends Component {
   }
 }
 BehaviouralQCGraphics.propTypes = {
-  percentCompleted: PropTypes.string,
+  percentCompleted: PropTypes.number,
   pscid: PropTypes.string,
   visit: PropTypes.string,
   instrument: PropTypes.string,

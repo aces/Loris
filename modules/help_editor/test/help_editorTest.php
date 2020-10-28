@@ -38,12 +38,11 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "help",
             [
-                'helpID'   => '999999',
-                'parentID' => '-1',
-                'hash'     => $md5String,
-                'topic'    => 'Test Topic',
-                'content'  => 'This is a test content.',
-                'created'  => '2013-04-05 00:00:00',
+                'helpID'  => '999999',
+                'hash'    => $md5String,
+                'topic'   => 'Test Topic',
+                'content' => 'This is a test content.',
+                'created' => '2013-04-05 00:00:00',
             ]
         );
     }
