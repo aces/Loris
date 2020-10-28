@@ -14,7 +14,7 @@
         "ext-json": "*",
         "bjeavons/zxcvbn-php": "^0.4",
         "php-webdriver/webdriver": "^1.8",
-        "composer-plugin-api": "1.1.0",
+        "composer-plugin-api": "2.0.0",
         "ocramius/package-versions": "^1.2.0"
     },
     "require-dev" : {
