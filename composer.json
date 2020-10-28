@@ -21,7 +21,6 @@
         "phpmd/phpmd": "~2.8",
         "phpstan/phpstan": "0.12.17",
         "slevomat/coding-standard": "^6.0",
-        "php-webdriver/webdriver" : "dev-main"
 
     },
     "scripts": {
