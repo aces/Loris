@@ -1014,8 +1014,10 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_mockDB->expects($this->once())->method('pselectOne')
             ->with(
+                [
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
+                ]
             )
             ->willReturn('123');
         $this->assertEquals(
@@ -1051,8 +1053,10 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_mockDB->expects($this->any(0))->method('pselectOne')
             ->with(
+                [
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
+                ]
             )
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
@@ -1074,8 +1078,10 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_mockDB->expects($this->any(0))->method('pselectOne')
             ->with(
+                [
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
+                ]
             )
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')

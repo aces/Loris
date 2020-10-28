@@ -36,9 +36,9 @@ class BreadcrumbTrail
     /**
      * The constructor
      *
-     * @param Breadcrumb ...$crumbs A list of breadcrumbs
+     * @param ...$crumbs A list of breadcrumbs
      */
-    public function __construct(Breadcrumb ...$crumbs)
+    public function __construct(...$crumbs)
     {
         $this->breadcrumbs = $crumbs ?? [];
     }

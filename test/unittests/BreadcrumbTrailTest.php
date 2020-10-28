@@ -45,10 +45,13 @@ class BreadcrumbTrailTest extends TestCase
      * Test __toString() returns correct string
      * TODO: Add potential edge cases (such as white space)
      *
+<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
      * @param []     $data1 A label/link pair
      * @param []     $data2 A label/link pair
      * @param string $c     The value to compare
      *
+=======
+>>>>>>> start of change to php7.4
      * @dataProvider toStringProvider
      * @covers       Breadcrumb::__toString
      * @return       void
@@ -56,7 +59,11 @@ class BreadcrumbTrailTest extends TestCase
     public function testToString($data1, $data2, $c)
     {
         $this->breadcrumbTrail = new BreadcrumbTrail(
+<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
             new Breadcrumb($data1[0], $data1[1]),
+=======
+            new Breadcrumb($data1[0], $data1[1]), 
+>>>>>>> start of change to php7.4
             new Breadcrumb($data2[0], $data2[1])
         );
         $this->assertEquals($c, $this->breadcrumbTrail);
@@ -68,7 +75,11 @@ class BreadcrumbTrailTest extends TestCase
      * @return []
      */
     public function toStringProvider()
+<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
     {
+=======
+    {    
+>>>>>>> start of change to php7.4
         return [
             [
                 ["testLabel", "testLink"],
