@@ -45,18 +45,22 @@ class BreadcrumbTrailTest extends TestCase
      * Test __toString() returns correct string
      *
      * TODO: Add potential edge cases (such as white space)
+     *
      * @dataProvider toStringProvider
-     * @covers Breadcrumb::__toString
-     * @return void
+     * @covers       Breadcrumb::__toString
+     * @return       void
      */
     public function testToString($data1, $data2, $c)
     {
-	$this->breadcrumbTrail = new BreadcrumbTrail(new Breadcrumb($data1[0], $data1[1]), new Breadcrumb($data2[0], $data2[1]));
+        $this->breadcrumbTrail = new BreadcrumbTrail(
+            new Breadcrumb($data1[0], $data1[1]), 
+            new Breadcrumb($data2[0], $data2[1])
+        );
         $this->assertEquals($c, $this->breadcrumbTrail);
     }
 
     public function toStringProvider()
-    {	
+    {    
         return [
             [["testLabel", "testLink"], ["testLabel2", "testLink2"], '{"text":"testLabel","query":"testLink"},{"text":"testLabel2","query":"testLink2"}'],
             [["aLabel", "aLink"], ["anotherLabel", "anotherLink"], '{"text":"aLabel","query":"aLink"},{"text":"anotherLabel","query":"anotherLink"}']          

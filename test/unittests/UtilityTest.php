@@ -314,9 +314,11 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
+                [
                 $this->stringContains(
                     "JOIN project_subproject_rel USING (SubprojectID)"
                 )
+                ]
             )
             ->willReturn(
                 [
@@ -344,9 +346,11 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
+                [
                 $this->stringContains(
                     "JOIN project_subproject_rel USING (SubprojectID)"
                 )
+                ]
             )
             ->willReturn(
                 [
@@ -569,9 +573,11 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
+                [
                 $this->stringContains(
                     "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
                 )
+                ]
             )
             ->willReturn(
                 [
@@ -708,7 +714,7 @@ class UtilityTest extends TestCase
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->with($this->stringContains(" AND b.Stage=:BatStage"))
+            ->with([$this->stringContains(" AND b.Stage=:BatStage")])
             ->willReturn(
                 [
                     ['Test_name' => 'test1',
@@ -827,7 +833,7 @@ class UtilityTest extends TestCase
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
-            ->with($this->stringContains("AND sourcefrom = :sf"))
+            ->with([$this->stringContains("AND sourcefrom = :sf")])
             ->willReturn(
                 [
                     ['SourceField' => 'instrument_field',
@@ -912,7 +918,7 @@ class UtilityTest extends TestCase
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselect')
-            ->with($this->stringContains("AND sourcefrom = :sf"))
+            ->with([$this->stringContains("AND sourcefrom = :sf")])
             ->willReturn(
                 [
                     ['SourceField' => 'instrument_field',
@@ -1188,9 +1194,11 @@ class UtilityTest extends TestCase
     {
         $this->_dbMock->expects($this->once())->method('pselect')
             ->with(
+                [
                 $this->stringContains(
                     "JOIN files f ON (f.AcquisitionProtocolID=mri.ID)"
                 )
+                ]
             )
             ->willReturn(
                 [0 => ['ID' => 123,

@@ -330,7 +330,7 @@ class NDB_PageTest extends TestCase
      */
     public function testAddHidden()
     {
-        $this->_page->addHidden("test_name", "test_value");
+        $this->_page->addHidden("test_name", ["test_value"]);
         $this->assertEquals(
             array('name'    => 'test_name',
                   'label'   => null,

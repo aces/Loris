@@ -226,9 +226,11 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->once())
             ->method('update')
             ->with(
-                'candidate',
-                $data,
-                array('CandID' => $this->_candidateInfo['CandID'])
+                [
+                    'candidate',
+                    $data,
+                    array('CandID' => $this->_candidateInfo['CandID'])
+                ]
             );
 
         $this->assertTrue($this->_candidate->setData($data));
@@ -514,8 +516,10 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->with(
-                $this->stringStartsWith('SELECT ID, Visit_label FROM session'),
-                $this->arrayHasKey('Candidate')
+                [
+                    $this->stringStartsWith('SELECT ID, Visit_label FROM session'),
+                    $this->arrayHasKey('Candidate')
+                ]
             )
             ->willReturn($selectReturns);
 
@@ -547,11 +551,13 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->at(3))
             ->method('pselect')
             ->with(
-                $this->stringContains(
-                    "SELECT SubprojectID
-                    FROM project_subproject_rel
-                    WHERE ProjectID = :prj"
-                )
+                [
+                    $this->stringContains(
+                        "SELECT SubprojectID
+                        FROM project_subproject_rel
+                        WHERE ProjectID = :prj"
+                    )
+                ]
             )
             ->willReturn(
                 $subprojects
@@ -605,7 +611,7 @@ class CandidateTest extends TestCase
 
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
-            ->with($this->stringContains("AND VisitNo = 1"))
+            ->with([$this->stringContains("AND VisitNo = 1")])
             ->willReturn('V01');
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -624,7 +630,7 @@ class CandidateTest extends TestCase
 
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
-            ->with($this->stringContains("AND VisitNo = 1"))
+            ->with([$this->stringContains("AND VisitNo = 1")])
             ->willReturn('');
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -643,7 +649,7 @@ class CandidateTest extends TestCase
 
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
-            ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
+            ->with([$this->stringContains("SELECT MAX(s.VisitNo)+1")])
             ->willReturn(2);
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -662,7 +668,7 @@ class CandidateTest extends TestCase
 
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
-            ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
+            ->with([$this->stringContains("SELECT MAX(s.VisitNo)+1")])
             ->willReturn(null);
 
 
@@ -914,9 +920,11 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->once())
             ->method('pselectWithIndexKey')
             ->with(
+                [
                 $this->stringContains(
                     "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn"
                 )
+                ]
             )
             ->willReturn($result);
 
@@ -1169,6 +1177,7 @@ class CandidateTest extends TestCase
 
     /**
      * Set up test doubles behavior for Candidate::select() method
+     *
      * @return void
      */
     private function _setUpTestDoublesForSelectCandidate()

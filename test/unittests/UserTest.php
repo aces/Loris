@@ -680,7 +680,9 @@ class UserTest extends TestCase
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
+                [
                 $this->stringContains("FROM user_login_history")
+                ]
             )
             ->willReturn($count);
 
@@ -701,7 +703,9 @@ class UserTest extends TestCase
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
+                [
                 $this->stringContains("FROM user_login_history")
+                ]
             )
             ->willReturn($count);
         $this->assertFalse($this->_user->hasLoggedIn());
@@ -763,7 +767,9 @@ class UserTest extends TestCase
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
+                [
                 $this->stringContains("WHERE Login_timestamp <")
+                ]
             )
             ->willReturn($timestamp);
 
@@ -786,7 +792,9 @@ class UserTest extends TestCase
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
+                [
                 $this->stringContains("WHERE Login_timestamp <")
+                ]
             )
             ->willReturn($timestamp);
 

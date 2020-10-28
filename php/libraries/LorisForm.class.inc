@@ -348,10 +348,10 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addLink" API
      *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
-     * @param array  $url   The url label to set as href attrib
-     * @param array  $link  The value to display as the link
+     * @param string       $name  The element name.
+     * @param string       $label The label to attach to this element.
+     * @param array|string $url   The url label to set as href attrib
+     * @param array|string $link  The value to display as the link
      *
      * @return &array
      */
@@ -386,18 +386,18 @@ class LorisForm
      * calls the appropriate $this->addX wrapper based on the "type"
      * passed to the function call.
      *
-     * @param string $type    The type of element to add.
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other options that should
-     *                        be added. This generalls maps to the
-     *                        third option of the addX wrapper.
-     * @param array  $attribs Other attributes to be added. This is
-     *                        mostly only used for the "select" type,
-     *                        where "options" has a different meaning
-     *                        and attribs takes the place of what "options"
-     *                        is for other types.
-     * @param array  $customs Only used in a certain mode of advcheckbox
+     * @param string  $type    The type of element to add.
+     * @param ?string $name    The element name.
+     * @param string  $label   The label to attach to this element.
+     * @param array   $options An array of other options that should
+     *                         be added. This generalls maps to the
+     *                         third option of the addX wrapper.
+     * @param array   $attribs Other attributes to be added. This is
+     *                         mostly only used for the "select" type,
+     *                         where "options" has a different meaning
+     *                         and attribs takes the place of what "options"
+     *                         is for other types.
+     * @param array   $customs Only used in a certain mode of advcheckbox
      *
      * @return void (but modifies this->form as a side-effect)
      */
@@ -1737,11 +1737,11 @@ class LorisForm
      * Only 'require', 'compare' and 'numeric' will be implemented
      * since those are the only ones we used.
      *
-     * @param string $element The element name to add the rule to.
-     *                        If this is a 'compare' rule, it will
-     *                        be an array of 2 element names.
-     * @param string $message The message to display if the rule is violated
-     * @param string $type    The rule type. 'compare', 'required' or 'numeric'
+     * @param string|array $element The element name to add the rule to.
+     *                              If this is a 'compare' rule, it will
+     *                              be an array of 2 element names.
+     * @param string       $message The message to display if the rule is violated
+     * @param string       $type    The rule type. 'compare', 'required' or 'numeric'
      *
      * @return void
      */
@@ -1881,14 +1881,14 @@ class LorisForm
      *
      * Adds an element group to the form.
      *
-     * @param array  $array     An array of elements created by $this->create*
-     *                          to be in the group.
-     * @param string $name      The name of the group
-     * @param string $label     The label to attach to the group
-     * @param string $delimiter The delimiter to use to separate group elements
-     * @param array  $options   An optional array to include prefix_wrapper and
-     *                          postfix_wrapper strings - html that will be
-     *                          placed before and after the group html
+     * @param array   $array     An array of elements created by $this->create*
+     *                           to be in the group.
+     * @param string  $name      The name of the group
+     * @param ?string $label     The label to attach to the group
+     * @param string  $delimiter The delimiter to use to separate group elements
+     * @param array   $options   An optional array to include prefix_wrapper and
+     *                           postfix_wrapper strings - html that will be
+     *                           placed before and after the group html
      *
      * @return void
      */
@@ -2022,12 +2022,12 @@ class LorisForm
     /**
      * Creates a select element but does not add it to the page.
      *
-     * @param string $name    The name of the element to be added
-     * @param string $label   The label to attach to the element
-     * @param array  $options Array of options to add to the select
-     *                        dropdown.
-     * @param array  $attribs An array of extra HTML attributes to
-     *                        add to the element.
+     * @param string  $name    The name of the element to be added
+     * @param ?string $label   The label to attach to the element
+     * @param array   $options Array of options to add to the select
+     *                         dropdown.
+     * @param array   $attribs An array of extra HTML attributes to
+     *                         add to the element.
      *
      * @return array of the form supported by $this->form
      */

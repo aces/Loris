@@ -65,9 +65,9 @@ class LorisForms_Test extends TestCase
      * Custom assertion to assert that the label of an element
      * is correct
      *
-     * @param string $el    The element name
-     * @param string $label The expected type of this element
-     *                      (ie select, checkbox, etc)
+     * @param string  $el    The element name
+     * @param ?string $label The expected type of this element
+     *                       (ie select, checkbox, etc)
      *
      * @return void but makes assertions
      */
@@ -88,10 +88,10 @@ class LorisForms_Test extends TestCase
      * Custom assertion to assert that some attribute of an element
      * is correct
      *
-     * @param string $el          The element name
-     * @param string $attribute   The attribute name to assert
-     *                            (ie class, id, value, etc)
-     * @param string $attribValue The expected content of the attribute
+     * @param string       $el          The element name
+     * @param string       $attribute   The attribute name to assert
+     *                                  (ie class, id, value, etc)
+     * @param string|array $attribValue The expected content of the attribute
      *
      * @return void but makes assertions
      */
@@ -382,7 +382,7 @@ class LorisForms_Test extends TestCase
      */
     function testAddPageBreak()
     {
-        $this->form->addPageBreak("abc", "Hello", array());
+        $this->form->addPageBreak("abc", "Hello", "");
         $this->assertType("abc", "page");
         $this->assertLabel("abc", "Hello");
     }
@@ -587,7 +587,7 @@ class LorisForms_Test extends TestCase
         $testCheckStates = array('on' => 'default_off',
                                  'off' => 'default_on');
         $this->form->addElement(
-            "advcheckbox", "abc", "Hello", "text", $testAttributes, $testCheckStates
+            "advcheckbox", "abc", "Hello", ["text"], $testAttributes, $testCheckStates
         );
         $this->assertType("abc", "advcheckbox");
         $this->assertEquals(
@@ -689,7 +689,7 @@ class LorisForms_Test extends TestCase
         $testCheckStates = array('on' => 'default_on',
                                  'off' => 'default_off');
         $testAdv = $this->form->createElement(
-            "advcheckbox", "abc", "Hello", "text", $testAttributes, $testCheckStates
+            "advcheckbox", "abc", "Hello", ["text"], $testAttributes, $testCheckStates
         );
         $this->assertEquals("advcheckbox", $testAdv['type']);
         $this->assertEquals($testCheckStates, $testAdv['checkStates']);
@@ -1269,7 +1269,7 @@ class LorisForms_Test extends TestCase
         $this->form->expects($this->once())
             ->method('advCheckboxHTML');
         $this->form->addElement(
-            'advcheckbox', "abc", "Hello", "text", $testAttributes, $testCheckStates
+            'advcheckbox', "abc", "Hello", ["text"], $testAttributes, $testCheckStates
         );
         $this->form->setDefaults(array('abc' => 'default_on'));
         $this->assertEquals(
@@ -1340,7 +1340,7 @@ class LorisForms_Test extends TestCase
         $testAttributes = array('disabled' => 'yes');
         $testCheckStates = array('default_off', 'default_on');
         $this->form->addElement(
-            'advcheckbox', "abc", "Hello", "text", $testAttributes, $testCheckStates
+            'advcheckbox', "abc", "Hello", ["text"], $testAttributes, $testCheckStates
         );
         $this->form->setDefaults(array('abc' => 'default_on'));
         $this->assertEquals(
@@ -1604,7 +1604,7 @@ class LorisForms_Test extends TestCase
         $this->form->addText("abc", "Hello", array());
         $this->form->addText("xyz", "Bye", array());
         $this->form->addRule(
-            array("abc", "xyz"), "Required if!", "requiredIf", "format"
+            array("abc", "xyz"), "Required if!", "requiredIf",
         );
 
         $this->assertEquals(
@@ -2257,7 +2257,7 @@ class LorisForms_Test extends TestCase
             array($textEl, $textareaEl), "abc_group", "Hello", ", ", array()
         );
         
-        $this->form->addGroupRule("abc_group", "Message!", "numeric");
+        $this->form->addGroupRule("abc_group", ["Message!", "numeric"]);
     }
 }
 ?>
