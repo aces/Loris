@@ -1,4 +1,4 @@
-# LORIS API - v0.0.3
+# LORIS API - v0.0.4-dev
 ## 1.0 Overview
 
 This document specifies the Loris REST API.
@@ -8,7 +8,7 @@ or no data. The Loris API uses standard HTTP error codes and the body of any res
 either be empty or contain only a JSON object for any request.
 
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.3 and it
+document. This document specifies $APIVERSION v0.0.4-dev and it
 MUST be included before the request in all requests.
 
 HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
