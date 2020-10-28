@@ -1247,3 +1247,7 @@ class UtilityTest extends TestCase
         );
     }
 }
+<<<<<<< 3083ab4f2d80787173f7e37558ba007b49160916
+=======
+
+>>>>>>> restore test/unittests/UtilityTest.php was removed by mistake
