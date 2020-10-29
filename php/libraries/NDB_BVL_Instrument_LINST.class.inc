@@ -197,8 +197,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 }
                 $rules_array = [];
                 foreach ($registered_rules as $registered) {
-                    $key_rules = array_search('rules', array_keys($registered));
-                    $rules     = $registered[$key_rules];
+                    $rules = $registered['rules'];
 
                     foreach ($rules as $rule) {
                         //If this is an OR rule using two different controllers
@@ -219,19 +218,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     $registered
                                 );
                                 if ($result == false) {
-                                    $key_groups = array_search(
-                                        'groups',
-                                        array_keys($registered)
-                                    );
-                                    $el         = $registered[$key_groups] != ""
-                                        ? $registered[$key_groups]
+                                    $el = $registered['group'] != ""
+                                        ? $registered['group']
                                         : $elname;
 
-                                    $key_message = array_search(
-                                        'message',
-                                        array_keys($registered)
-                                    );
-                                    $errors[$el] = $registered[$key_message];
+                                    $errors[$el] = $registered['message'];
                                 }
                             }
                         }

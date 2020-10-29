@@ -350,9 +350,9 @@ class NDB_Page implements RequestHandlerInterface
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
-     * @param string       $name    The name of the hidden element to add
-     * @param array|string $value   The value of the hidden element to add
-     * @param array        $attribs Additional html attributes for element
+     * @param string $name    The name of the hidden element to add
+     * @param array  $value   The value of the hidden element to add
+     * @param array  $attribs Additional html attributes for element
      *
      * @return void
      */
@@ -414,10 +414,10 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Adds a QuickForm rule to an element on the page.
      *
-     * @param string|array $element The name of the element to have the rule
-     * @param string       $message The message to show on failure
-     * @param string       $type    The type of rule to add
-     * @param string       $format  See QuickForm documentation.
+     * @param string $element The name of the element to have the rule
+     * @param string $message The message to show on failure
+     * @param string $type    The type of rule to add
+     * @param string $format  See QuickForm documentation.
      *
      * @return void
      *
@@ -452,13 +452,13 @@ class NDB_Page implements RequestHandlerInterface
      * Adds a group (array of elements created by $this->create*
      * wrappers) to the current page.
      *
-     * @param array         $elements  The group of elements to add to the page
-     * @param ?string       $name      The name to give this group
-     * @param ?string       $label     A label to attach to the group
-     * @param ?string       $delimiter The separator to use between group elements
-     * @param ?string|array $options   An optional array to include prefix_wrapper
-     *                                 and postfix_wrapper strings - html that will
-     *                                 be placed before and after the group html
+     * @param array  $elements  The group of elements to add to the page
+     * @param string $name      The name to give this group
+     * @param string $label     A label to attach to the group
+     * @param string $delimiter The separator to use between group elements
+     * @param string $options   An optional array to include prefix_wrapper and
+     *                          postfix_wrapper strings - html that will be
+     *                          placed before and after the group html
      *
      * @return void
      *
@@ -474,10 +474,10 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates a QuickForm Select dropdown but does not add it to the page
      *
-     * @param string  $field   The field name for this select
-     * @param ?string $label   The label to attach to the element
-     * @param ?array  $options Extra options to pass to QuickForm
-     * @param ?array  $attribs Extra HTML attributes to add to the element
+     * @param string $field   The field name for this select
+     * @param string $label   The label to attach to the element
+     * @param array  $options Extra options to pass to QuickForm
+     * @param array  $attribs Extra HTML attributes to add to the element
      *
      * @return array representing select element
      */
@@ -499,7 +499,7 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Create a QuickForm label element but does not add it to the form
      *
-     * @param ?string $labelString The label to attach to the element
+     * @param string $labelString The label to attach to the element
      *
      * @return array representing label element
      */
@@ -514,9 +514,9 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates a QuickForm text element but does not add it to the form
      *
-     * @param string  $field   The field name for this text element
-     * @param ?string $label   The label to attach to the element
-     * @param ?array  $attribs Extra HTML attributes to add to the element
+     * @param string $field   The field name for this text element
+     * @param string $label   The label to attach to the element
+     * @param array  $attribs Extra HTML attributes to add to the element
      *
      * @return array representing text element
      */
@@ -532,8 +532,8 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates a QuickForm TextArea element but does not add it to the form.
      *
-     * @param string  $field The field name for the TextArea
-     * @param ?string $label The label to attach to this TextArea
+     * @param string $field The field name for the TextArea
+     * @param string $label The label to attach to this TextArea
      *
      * @return array representing textarea element
      */
@@ -551,11 +551,11 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates a QuickForm date element but does not add it to the form.
      *
-     * @param string  $field       The fieldname for this date field
-     * @param ?string $label       The label to attach to this date
-     * @param array   $dateOptions List of options to pass to QuickForm
-     * @param array   $attribs     List of HTML attributes to add to the date
-     *                             group.
+     * @param string $field       The fieldname for this date field
+     * @param string $label       The label to attach to this date
+     * @param array  $dateOptions List of options to pass to QuickForm
+     * @param array  $attribs     List of HTML attributes to add to the date
+     *                            group.
      *
      * @return array representing date element
      *
@@ -583,9 +583,9 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates an HTML checkbox but does not add it to the form.
      *
-     * @param string  $field   The fieldname for this checkbox
-     * @param ?string $label   The label to attach to this checkbox
-     * @param ?string $attribs Attributes to pass to HTML_QuickForm
+     * @param string $field   The fieldname for this checkbox
+     * @param string $label   The label to attach to this checkbox
+     * @param string $attribs Attributes to pass to HTML_QuickForm
      *
      * @return array representing checkbox
      */
@@ -603,11 +603,11 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates an HTML radio button but does not add it to the form.
      *
-     * @param string  $field   The fieldname for this radio button
-     * @param ?string $label   The label to attach to this radio button
-     * @param ?string $options Options to pass to LorisForm
-     * @param array   $attribs An array of extra HTML attributes to
-     *                         add to the element.
+     * @param string $field   The fieldname for this radio button
+     * @param string $label   The label to attach to this radio button
+     * @param string $options Options to pass to LorisForm
+     * @param array  $attribs An array of extra HTML attributes to
+     *                        add to the element.
      *
      * @return array representing radio button
      */
@@ -625,9 +625,9 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates a password form element but does not add it to the page
      *
-     * @param string  $field   The fieldname for the password box
-     * @param ?string $label   The label to attach to the form element
-     * @param array   $attribs List of HTML attributes to add to the element
+     * @param string $field   The fieldname for the password box
+     * @param string $label   The label to attach to the form element
+     * @param array  $attribs List of HTML attributes to add to the element
      *
      * @return array representing form element
      */

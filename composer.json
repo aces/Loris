@@ -12,8 +12,7 @@
         "psr/http-server-middleware" : "*",
         "laminas/laminas-diactoros" : "~1.8.4",
         "ext-json": "*",
-        "bjeavons/zxcvbn-php": "^0.4",
-        "composer/package-versions-deprecated": "^1.11"
+        "bjeavons/zxcvbn-php": "^0.4"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "3.5.3",

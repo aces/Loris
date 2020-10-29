@@ -180,9 +180,7 @@ class Database_Test extends TestCase
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            [
-                $this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-            ]
+            $this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;'])
         );
 
         $stub->_PDO->expects($this->once())
@@ -208,9 +206,7 @@ class Database_Test extends TestCase
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            [
-                $this->equalTo(['set_field' => '<b>Hello</b>'])
-            ]
+            $this->equalTo(['set_field' => '<b>Hello</b>'])
         );
 
         $stub->_PDO->expects($this->once())
@@ -235,9 +231,7 @@ class Database_Test extends TestCase
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            [
-                $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-            ]
+            $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
         );
 
         $stub->_PDO->expects($this->once())
@@ -263,9 +257,7 @@ class Database_Test extends TestCase
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            [
-                $this->equalTo(['field' => '<b>Hello</b>'])
-            ]
+            $this->equalTo(['field' => '<b>Hello</b>'])
         );
 
         $stub->_PDO->expects($this->once())->method("prepare")
@@ -798,9 +790,7 @@ class Database_Test extends TestCase
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            [
-                $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-            ]
+            $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
         );
 
         $stub->_PDO->expects($this->once())
@@ -831,9 +821,7 @@ class Database_Test extends TestCase
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
-            [
-                $this->equalTo(['field' => '<b>Hello</b>'])
-            ]
+            $this->equalTo(['field' => '<b>Hello</b>'])
         );
 
         $stub->_PDO->expects($this->once())
@@ -894,7 +882,7 @@ class Database_Test extends TestCase
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stub->_PDO->expects($this->once())
-            ->method("exec")->with([$this->equalTo("SHOW TABLES")]);
+            ->method("exec")->with($this->equalTo("SHOW TABLES"));
         $stub->run("SHOW TABLES");
     }
 
@@ -915,7 +903,7 @@ class Database_Test extends TestCase
 
         $stub->_PDO->expects($this->once())
             ->method("prepare")
-            ->with([$this->equalTo("SHOW TABLES")])
+            ->with($this->equalTo("SHOW TABLES"))
             ->willReturn(new PDOStatement());
         $stub->prepare("SHOW TABLES");
     }
@@ -1031,9 +1019,9 @@ class Database_Test extends TestCase
         $params = ['test' => 'test'];
 
         $stub->expects($this->once())
-            ->method("prepare")->with([$this->equalTo("SHOW TABLES")]);
+            ->method("prepare")->with($this->equalTo("SHOW TABLES"));
         $stub->expects($this->once())->method("execute")
-            ->with([$this->equalTo($stmt), $this->equalTo($params), []]);
+            ->with($this->equalTo($stmt), $this->equalTo($params), []);
         $stub->pselect("SHOW TABLES", $params);
     }
 
@@ -1087,10 +1075,8 @@ class Database_Test extends TestCase
         $params = ['test' => 'test'];
         $stub->expects($this->once())->method("pselect")
             ->with(
-                [
-                    $this->equalTo($query . " LIMIT 2"),
-                    $params
-                ]
+                $this->equalTo($query . " LIMIT 2"),
+                $params
             );
         $stub->pselectRow(
             $query,
@@ -1335,11 +1321,7 @@ class Database_Test extends TestCase
         $set   = ['ID' => 99991];
 
         $stub->expects($this->once())
-            ->method("_realinsert")->with(
-                [
-                    $this->equalTo($table), $set, true, true
-                ]
-            );
+            ->method("_realinsert")->with($this->equalTo($table), $set, true, true);
         $stub->insertIgnore($table, $set);
     }
 
