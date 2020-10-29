@@ -75,7 +75,7 @@ class LoginTest extends TestCase
     {
         $this->_authenticator->expects($this->once())
             ->method('passwordAuthenticate')
-            ->with('test_username', 'test_password')
+            ->with(['test_username', 'test_password'])
             ->willReturn(true);
 
         $handler = $this->getMockBuilder('\LORIS\api\Endpoints\Login')
