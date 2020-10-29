@@ -220,7 +220,7 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
         } catch (Exception $e) {
             $this->markTestIncomplete(
                 "Endpoint not found: " .
-                "candidates/$this->candidTest/$this->visitTest/recordings/" .
+                "candidates/$this->candidTest/$this->visitTest/dicoms/" .
                 "$this->frecordTest"
             );
         }

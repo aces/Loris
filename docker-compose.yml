@@ -8,7 +8,10 @@ services:
         BASE_DIR: /app/
     volumes:
       - ./test/mysql-config:/etc/mysql/conf.d
+<<<<<<< 0cdf21d69dc451a3a31171565c2e02e4e5cdc5b6
       - /data-raisinbread/:/data-raisinbread
+=======
+>>>>>>> Remove unnnecessary lines
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
@@ -17,7 +20,10 @@ services:
     image: selenium/standalone-firefox-debug:3.8.1-aluminum
     volumes:
       - /dev/shm:/dev/shm
+<<<<<<< 0cdf21d69dc451a3a31171565c2e02e4e5cdc5b6
       - /data-raisinbread/:/data-raisinbread
+=======
+>>>>>>> Remove unnnecessary lines
     ports:
       - "5900:5900"
     environment:
@@ -56,7 +62,10 @@ services:
       dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
+<<<<<<< 0cdf21d69dc451a3a31171565c2e02e4e5cdc5b6
       - /data-raisinbread/:/data-raisinbread
+=======
+>>>>>>> Remove unnnecessary lines
     working_dir: /app
     environment:
       - LORIS_DB_CONFIG=test/config.xml
