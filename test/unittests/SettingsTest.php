@@ -94,7 +94,7 @@ class SettingsTest extends TestCase
      *  - string '5'
      *
      * @param mixed $sandboxVal sandbox config value to be returned
-     *              by getSetting() mock
+     *                          by getSetting() mock
      *
      * @dataProvider getTrueValue
      *

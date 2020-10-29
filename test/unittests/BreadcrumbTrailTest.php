@@ -44,35 +44,21 @@ class BreadcrumbTrailTest extends TestCase
     /**
      * Test __toString() returns correct string
      * TODO: Add potential edge cases (such as white space)
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
      *
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
      * @param []     $data1 A label/link pair
      * @param []     $data2 A label/link pair
      * @param string $c     The value to compare
      *
-=======
->>>>>>> start of change to php7.4
-=======
->>>>>>> reverting to b1b8e053b21
      * @dataProvider toStringProvider
-     * @covers Breadcrumb::__toString
-     * @return void
+     * @covers       Breadcrumb::__toString
+     * @return       void
      */
     public function testToString($data1, $data2, $c)
     {
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
         $this->breadcrumbTrail = new BreadcrumbTrail(
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
             new Breadcrumb($data1[0], $data1[1]),
-=======
-            new Breadcrumb($data1[0], $data1[1]), 
->>>>>>> start of change to php7.4
             new Breadcrumb($data2[0], $data2[1])
         );
-=======
-	$this->breadcrumbTrail = new BreadcrumbTrail(new Breadcrumb($data1[0], $data1[1]), new Breadcrumb($data2[0], $data2[1]));
->>>>>>> reverting to b1b8e053b21
         $this->assertEquals($c, $this->breadcrumbTrail);
     }
 
@@ -82,15 +68,7 @@ class BreadcrumbTrailTest extends TestCase
      * @return []
      */
     public function toStringProvider()
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
     {
-=======
-    {    
->>>>>>> start of change to php7.4
-=======
-    {	
->>>>>>> reverting to b1b8e053b21
         return [
             [
                 ["testLabel", "testLink"],

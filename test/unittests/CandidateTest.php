@@ -228,23 +228,9 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->once())
             ->method('update')
             ->with(
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
                 'candidate',
                 $data,
                 ['CandID' => $this->_candidateInfo['CandID']]
-=======
-                [
-                    'candidate',
-                    $data,
-                    array('CandID' => $this->_candidateInfo['CandID'])
-                ]
->>>>>>> start of change to php7.4
-=======
-                'candidate',
-                $data,
-                array('CandID' => $this->_candidateInfo['CandID'])
->>>>>>> reverting to b1b8e053b21
             );
 
         $this->assertTrue($this->_candidate->setData($data));

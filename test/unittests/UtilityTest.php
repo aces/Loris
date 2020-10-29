@@ -27,82 +27,93 @@ class UtilityTest extends TestCase
     /**
      * Consent information
      *
-     * @var array contains consent information retrieved 
+     * @var array contains consent information retrieved
      *      by the getConsentList method
      */
-    private $_consentInfo = array(
-        array('ConsentID' => '1',
-              'Name' => 'Bob', 
-              'Label' => '2'),
-        array('ConsentID' => '2',
-              'Name' => 'Anne',
-              'Label' => '3'),
-        array('ConsentID' => '3',
-              'Name' => 'Luke',
-              'Label' => '4')
-        ); 
+    private $_consentInfo = [
+        ['ConsentID' => '1',
+            'Name'      => 'Bob',
+            'Label'     => '2'
+        ],
+        ['ConsentID' => '2',
+            'Name'      => 'Anne',
+            'Label'     => '3'
+        ],
+        ['ConsentID' => '3',
+            'Name'      => 'Luke',
+            'Label'     => '4'
+        ]
+    ];
     /**
      * Project information
-     * 
+     *
      * @var array contains project information retrieved by getProjectList method
      */
-    private $_projectInfo = array(
+    private $_projectInfo = [
         '12' => 'project1',
         '23' => 'project2'
-    );
+    ];
 
     /**
      * Test_name table information
-     * 
-     * @var array contains test_name information 
+     *
+     * @var array contains test_name information
      *      retrieved by getAllInstruments method
      */
-    private $_testNameInfo = array(
-        array('ID' => '1',
-              'Test_name' => 'test1',
-              'Full_name' => 'description1',
-              'IsDirectEntry' => 1),
-        array('ID' => '2',
-              'Test_name' => 'test2',
-              'Full_name' => 'description2',
-              'IsDirectEntry' => 0)
-        );
+    private $_testNameInfo = [
+        ['ID' => '1',
+            'Test_name'     => 'test1',
+            'Full_name'     => 'description1',
+            'IsDirectEntry' => 1
+        ],
+        ['ID' => '2',
+            'Test_name'     => 'test2',
+            'Full_name'     => 'description2',
+            'IsDirectEntry' => 0
+        ]
+    ];
     /**
      * Psc table information
-     * 
+     *
      * @var array contains psc information retrieved by getSiteList method
      */
-    private $_siteInfo = array(
-        array('CenterID' => '1',
-              'Name' => 'site1'),
-        array('CenterID' => '2',
-              'Name' => 'site2')
-        );
+    private $_siteInfo = [
+        ['CenterID' => '1',
+            'Name'     => 'site1'
+        ],
+        ['CenterID' => '2',
+            'Name'     => 'site2'
+        ]
+    ];
     /**
      * Session table information
-     * 
-     * @var array contains session information retrieved 
+     *
+     * @var array contains session information retrieved
      *      by getStageUsingCandID method
      */
-    private $_sessionInfo = array(
-        array('CandID' => '1',
-              'SubprojectID' => '2',
-              'Current_stage' => 'Not Started'),
-        array('CandID' => '3',
-              'SubprojectID' => '4',
-              'Current_stage' => 'Approval')
-        );
+    private $_sessionInfo = [
+        ['CandID' => '1',
+            'SubprojectID'  => '2',
+            'Current_stage' => 'Not Started'
+        ],
+        ['CandID' => '3',
+            'SubprojectID'  => '4',
+            'Current_stage' => 'Approval'
+        ]
+    ];
     /**
      * Language table information
-     * 
+     *
      * @var array contains language information retrieved by getLanguageList method
      */
-    private $_languageInfo = array(
-        array('language_id' => '1',
-              'language_label' => 'LA1'),
-        array('language_id' => '2',
-              'language_label' => 'LA2')
-        );
+    private $_languageInfo = [
+        ['language_id' => '1',
+            'language_label' => 'LA1'
+        ],
+        ['language_id' => '2',
+            'language_label' => 'LA2'
+        ]
+    ];
     /**
      * NDB_Factory used in tests.
      * Test doubles are injected to the factory object.
@@ -165,7 +176,7 @@ class UtilityTest extends TestCase
         $this->_factory->setDatabase($this->_dbMock);
     }
 
-    /** 
+    /**
      * Tears down the fixture, for example, close a network connection
      * This method is called after a test is executed
      *
@@ -174,9 +185,9 @@ class UtilityTest extends TestCase
     protected function tearDown()
     {
         parent::tearDown();
-        $this->_factory->reset();   
+        $this->_factory->reset();
     }
-    
+
     /**
      * Test that calculateAge returns the proper age
      *
@@ -192,12 +203,12 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that the calculateAge() method fails 
+     * Test that the calculateAge() method fails
      * when the dates have the incorrect format
-     * 
+     *
      * @param string $first  string with the badly formatted date of birth
      * @param string $second string with the badly formatted current date
-     * 
+     *
      * @dataProvider ageIncorrectFormatProvider
      * @covers       Utility::calculateAge
      *
@@ -211,17 +222,17 @@ class UtilityTest extends TestCase
 
     /**
      * Data provider for testCalculateAgeFormat
-     * 
+     *
      * @return array
      */
     public function ageIncorrectFormatProvider()
     {
-        return array(
-            array("1990\\07\\05", "2018\\05\\23"),
-            array("1990", "2018"),
-            array("1990_07_05", "2019_09_65"),
-            array(" ", " "),
-        );
+        return [
+            ["1990\\07\\05", "2018\\05\\23"],
+            ["1990", "2018"],
+            ["1990_07_05", "2019_09_65"],
+            [" ", " "],
+        ];
     }
 
     /**
@@ -251,9 +262,10 @@ class UtilityTest extends TestCase
             ->willReturn($this->_projectInfo);
         $this->assertEquals(
             Utility::getProjectList(),
-            array(
+            [
                 '12' => 'project1',
-                '23' => 'project2')
+                '23' => 'project2'
+            ]
         );
     }
 
@@ -268,23 +280,26 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                array(
-                    array('SubprojectID' => '1',
-                          'title' => 'subproject1'),
-                    array('SubprojectID' => '2',
-                          'title' => 'subproject2')
-                )
+                [
+                    ['SubprojectID' => '1',
+                        'title'        => 'subproject1'
+                    ],
+                    ['SubprojectID' => '2',
+                        'title'        => 'subproject2'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array('1' => 'subproject1',
-                  '2' => 'subproject2'),
+            ['1' => 'subproject1',
+                '2' => 'subproject2'
+            ],
             Utility::getSubprojectList()
         );
     }
 
     /**
-     * Test that getSubprojectList() returns the correct subproject 
+     * Test that getSubprojectList() returns the correct subproject
      * when a ProjectID is specified
      *
      * @covers Utility::getSubprojectList
@@ -304,14 +319,15 @@ class UtilityTest extends TestCase
                 )
             )
             ->willReturn(
-                array(
-                    array('SubprojectID' => '123',
-                          'title' => 'DemoProject')
-                )
+                [
+                    ['SubprojectID' => '123',
+                        'title'        => 'DemoProject'
+                    ]
+                ]
             );
-   
+
         $this->assertEquals(
-            array('123' => 'DemoProject'),
+            ['123' => 'DemoProject'],
             Utility::getSubprojectList(123)
         );
     }
@@ -333,14 +349,15 @@ class UtilityTest extends TestCase
                 )
             )
             ->willReturn(
-                array(
-                    array('SubprojectID' => '123',
-                        'title' => 'DemoProject')
-                )
+                [
+                    ['SubprojectID' => '123',
+                        'title'        => 'DemoProject'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array('123' => 'DemoProject'),
+            ['123' => 'DemoProject'],
             Utility::getSubprojectsForProject(123)
         );
     }
@@ -355,14 +372,14 @@ class UtilityTest extends TestCase
     public function testGetSubprojectsForProjectWithoutID()
     {
         $this->assertEquals(
-            array(),
+            [],
             Utility::getSubprojectsForProject()
         );
     }
 
     /**
      * Test that getAllInstruments() returns the proper information
-     * 
+     *
      * @covers Utility::getAllInstruments
      * @return void
      */
@@ -373,9 +390,10 @@ class UtilityTest extends TestCase
             ->willReturn($this->_testNameInfo);
 
         $this->assertEquals(
-            array(
+            [
                 'test1' => 'description1',
-                'test2' => 'description2'),
+                'test2' => 'description2'
+            ],
             Utility::getAllInstruments()
         );
     }
@@ -388,13 +406,15 @@ class UtilityTest extends TestCase
      */
     public function testGetAllDDEInstruments()
     {
-        $test_names = array(
-                          array('Test_name' => 'test_name1',
-                                'Full_name' => 'full_name1'),
-                          array('Test_name' => 'test_name2',
-                                'Full_name' => 'full_name2')
-                      );
-        $doubleDataEntryInstruments = array('test_name2');
+        $test_names = [
+            ['Test_name' => 'test_name1',
+                'Full_name' => 'full_name1'
+            ],
+            ['Test_name' => 'test_name2',
+                'Full_name' => 'full_name2'
+            ]
+        ];
+        $doubleDataEntryInstruments = ['test_name2'];
 
         $this->_dbMock->expects($this->any())
             ->method('pselect')
@@ -404,7 +424,7 @@ class UtilityTest extends TestCase
             ->willReturn($doubleDataEntryInstruments);
 
         $this->assertEquals(
-            array('test_name2' => 'full_name2'),
+            ['test_name2' => 'full_name2'],
             Utility::getAllDDEInstruments()
         );
     }
@@ -420,23 +440,25 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                array(
-                    array('Test_name' => 'test1',
-                          'Full_name' => 'description1',
-                          'isDirectEntry' => 1))
+                [
+                    ['Test_name' => 'test1',
+                        'Full_name'     => 'description1',
+                        'isDirectEntry' => 1
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array('test1' => 'description1'),
+            ['test1' => 'description1'],
             Utility::getDirectInstruments()
         );
     }
 
     /**
      * Test that getSiteList() returns the correct list from the database
-     * 
-     * @note I am testing both methods in the same test because 
-     *       unless the study_site or DCC parameters are specified 
+     *
+     * @note I am testing both methods in the same test because
+     *       unless the study_site or DCC parameters are specified
      *       they have the same fuctionality
      * TODO Potential edge cases: test with the study_site and DCC booleans as false
      *
@@ -444,24 +466,24 @@ class UtilityTest extends TestCase
      * @return void
      */
     public function testGetSiteList()
-    {       
+    {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn($this->_siteInfo);
 
-
         $this->assertEquals(
-            array(
+            [
                 '1' => 'site1',
-                '2' => 'site2'),
+                '2' => 'site2'
+            ],
             Utility::getSiteList()
         );
     }
 
     /**
-     * Test that getStageUsingCandID returns the proper 
+     * Test that getStageUsingCandID returns the proper
      * current stage for the given CandID
-     * 
+     *
      * @covers Utility::getStageUsingCandID
      * @return void
      */
@@ -472,26 +494,26 @@ class UtilityTest extends TestCase
             ->willReturn($this->_sessionInfo);
 
         $this->assertEquals(
-            'Not Started', 
+            'Not Started',
             Utility::getStageUsingCandID('1')
         );
     }
 
     /**
-     * Test that getSubprojectIDUsingCandID() returns 
+     * Test that getSubprojectIDUsingCandID() returns
      * the correct SubprojectID given the CandID
-     * 
+     *
      * @covers Utility::getSubprojectIDUsingCandID
      * @return void
      */
     public function testGetSubprojectIDUsingCandID()
-    { 
+    {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn($this->_sessionInfo);
 
         $this->assertEquals(
-            '2', 
+            '2',
             Utility::getSubprojectIDUsingCandID('1')
         );
     }
@@ -509,26 +531,30 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                array(
-                    array('Visit_label' => 'VL1',
-                          'CandID' => '1',
-                          'CenterID' => '2',
-                          'Active' => 'Y'),
-                    array('Visit_label' => 'VL2',
-                          'CandID' => '3',
-                          'CenterID' => '4',
-                          'Active' => 'Y'))
+                [
+                    ['Visit_label' => 'VL1',
+                        'CandID'      => '1',
+                        'CenterID'    => '2',
+                        'Active'      => 'Y'
+                    ],
+                    ['Visit_label' => 'VL2',
+                        'CandID'      => '3',
+                        'CenterID'    => '4',
+                        'Active'      => 'Y'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array('VL1' => 'VL1',
-                  'VL2' => 'VL2'),
+            ['VL1' => 'VL1',
+                'VL2' => 'VL2'
+            ],
             Utility::getVisitList()
         );
     }
 
     /**
-     * Test that getVisitList returns only 
+     * Test that getVisitList returns only
      * visit labels related to the given project ID
      *
      * @covers Utility::getVisitList
@@ -546,23 +572,25 @@ class UtilityTest extends TestCase
                 $this->stringContains(
                     "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
                 )
-            )  
+            )
             ->willReturn(
-                array(
-                    array('Visit_label' => 'VL1',
-                          'CandID' => '123456',
-                          'CenterID' => '1234567890',
-                          'Active' => 'Y'))
+                [
+                    ['Visit_label' => 'VL1',
+                        'CandID'      => '123456',
+                        'CenterID'    => '1234567890',
+                        'Active'      => 'Y'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array('VL1' => 'VL1'),
+            ['VL1' => 'VL1'],
             Utility::getVisitList(1)
         );
     }
 
     /**
-     * Test that getLanguageList returns the proper information 
+     * Test that getLanguageList returns the proper information
      * from the language table
      *
      * @covers Utility::getLanguageList
@@ -575,14 +603,15 @@ class UtilityTest extends TestCase
             ->willReturn($this->_languageInfo);
 
         $this->assertEquals(
-            array('1' => 'LA1',
-                  '2' => 'LA2'),
+            ['1' => 'LA1',
+                '2' => 'LA2'
+            ],
             Utility::getLanguageList()
         );
     }
 
     /**
-     * Test that getVisitInstruments() returns the correct 
+     * Test that getVisitInstruments() returns the correct
      * information for the given visit label
      *
      * @covers Utility::getVisitInstruments
@@ -594,22 +623,26 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                array(
-                    array('Test_name_display' => 'display1',
-                          'TestName' => 'name1',
-                          'Visit_label' => 'V1'))
+                [
+                    ['Test_name_display' => 'display1',
+                        'TestName'          => 'name1',
+                        'Visit_label'       => 'V1'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array(0 => array('Test_name_display' => 'display1',
-                             'TestName' => 'name1',
-                             'Visit_label' => 'V1')),
+            [0 => ['Test_name_display' => 'display1',
+                'TestName'          => 'name1',
+                'Visit_label'       => 'V1'
+            ]
+            ],
             Utility::getVisitInstruments('V1')
         );
     }
-    
+
     /**
-     * Test an edge case of getVisitInstruments() where there is no 
+     * Test an edge case of getVisitInstruments() where there is no
      * 'Test_name_display' column in the given table
      *
      * @covers Utility::getVisitInstruments
@@ -621,24 +654,28 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                array(
-                    array('Full_name' => 'display1',
-                          'TestName' => 'name1',
-                          'Visit_label' => 'V1'))
+                [
+                    ['Full_name' => 'display1',
+                        'TestName'    => 'name1',
+                        'Visit_label' => 'V1'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array(0 => array('Full_name' => 'display1',
-                             'TestName' => 'name1',
-                             'Visit_label' => 'V1')),
+            [0 => ['Full_name' => 'display1',
+                'TestName'    => 'name1',
+                'Visit_label' => 'V1'
+            ]
+            ],
             Utility::getVisitInstruments('V1')
         );
     }
 
     /**
-     * Test that lookupBattery returns the correct information 
+     * Test that lookupBattery returns the correct information
      * without the stage specified
-     * 
+     *
      * @covers Utility::lookupBattery
      * @return void
      */
@@ -647,20 +684,21 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                array(
-                    array('Test_name' => 'test1'),
-                    array('Test_name' => 'test2'))
+                [
+                    ['Test_name' => 'test1'],
+                    ['Test_name' => 'test2']
+                ]
             );
 
         $this->assertEquals(
-            array('test1', 'test2'),
+            ['test1', 'test2'],
             Utility::lookupBattery(25)
         );
-                                   
+
     }
 
     /**
-     * Test that lookupBattery returns the correct information 
+     * Test that lookupBattery returns the correct information
      * with the stage specified
      *
      * @covers Utility::lookupBattery
@@ -672,13 +710,15 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with($this->stringContains(" AND b.Stage=:BatStage"))
             ->willReturn(
-                array(
-                    array('Test_name' => 'test1',
-                          'Stage' => 'stage1'))
+                [
+                    ['Test_name' => 'test1',
+                        'Stage'     => 'stage1'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array('test1'),
+            ['test1'],
             Utility::lookupBattery(25, 'stage1')
         );
 
@@ -693,10 +733,11 @@ class UtilityTest extends TestCase
      */
     public function testAssociativeToNumericArray()
     {
-        $associative = array('Test_name' => 'test1',
-                             'Stage' => 'stage1');
+        $associative = ['Test_name' => 'test1',
+            'Stage'     => 'stage1'
+        ];
         $this->assertEquals(
-            array(0 => $associative),
+            [0 => $associative],
             Utility::associativeToNumericArray($associative)
         );
     }
@@ -710,8 +751,10 @@ class UtilityTest extends TestCase
      */
     public function testAssociativeToNumericArrayWithNumericArray()
     {
-        $associative = array(0 => array('Test_name' => 'test1',
-            'Stage' => 'stage1'));
+        $associative = [0 => ['Test_name' => 'test1',
+            'Stage'     => 'stage1'
+        ]
+        ];
         $this->assertEquals(
             $associative,
             Utility::associativeToNumericArray($associative)
@@ -727,7 +770,7 @@ class UtilityTest extends TestCase
     public function testAsArray()
     {
         $var = "Test";
-        $this->assertEquals(array($var), Utility::asArray($var));
+        $this->assertEquals([$var], Utility::asArray($var));
     }
 
     /**
@@ -738,9 +781,9 @@ class UtilityTest extends TestCase
      */
     public function testNullifyEmpty()
     {
-        $var = array('ID' => '123', 'Name' => '');
+        $var = ['ID' => '123', 'Name' => ''];
         $this->assertEquals(
-            array('ID' => '123', 'Name' => null),
+            ['ID' => '123', 'Name' => null],
             Utility::nullifyEmpty($var, "Name")
         );
     }
@@ -754,12 +797,12 @@ class UtilityTest extends TestCase
      */
     public function testAsArrayWithArrayGiven()
     {
-        $var = array("Test");
+        $var = ["Test"];
         $this->assertEquals($var, Utility::asArray($var));
     }
 
     /**
-     * Tests that getSourcefields will return an empty array 
+     * Tests that getSourcefields will return an empty array
      * if no parameters are specified
      *
      * @covers Utility::getSourcefields
@@ -768,13 +811,13 @@ class UtilityTest extends TestCase
     public function testGetSourcefieldsReturnsNothingWithNoParameters()
     {
         $this->assertEquals(
-            array(), 
+            [],
             Utility::getSourcefields()
         );
     }
 
     /**
-     * Test that getSourcefields returns the correct information 
+     * Test that getSourcefields returns the correct information
      * and uses the correct query when the instrument parameter is specified
      *
      * @covers Utility::getSourcefields
@@ -786,20 +829,24 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn(
-                array(
-                    array('SourceField' => 'instrument_field',
-                          'Name' => 'instrument_name'))
+                [
+                    ['SourceField' => 'instrument_field',
+                        'Name'        => 'instrument_name'
+                    ]
+                ]
             );
-        
+
         $this->assertEquals(
-            array(0 => array('SourceField' => 'instrument_field',
-                             'Name' => 'instrument_name')),
+            [0 => ['SourceField' => 'instrument_field',
+                'Name'        => 'instrument_name'
+            ]
+            ],
             Utility::getSourcefields('instrument1', null, null)
         );
     }
 
     /**
-     * Test that getSourcefields returns the correct information 
+     * Test that getSourcefields returns the correct information
      * and uses the correct query when the commentID parameter is specified
      *
      * @covers Utility::getSourcefields
@@ -810,20 +857,24 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                array(
-                    array('SourceField' => 'commentID_field',
-                          'Name' => 'commentID_name'))
+                [
+                    ['SourceField' => 'commentID_field',
+                        'Name'        => 'commentID_name'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array(0 => array('SourceField' => 'commentID_field',
-                             'Name' => 'commentID_name')),
+            [0 => ['SourceField' => 'commentID_field',
+                'Name'        => 'commentID_name'
+            ]
+            ],
             Utility::getSourcefields(null, '1', null)
         );
     }
 
     /**
-     * Test that getSourcefields returns the correct information 
+     * Test that getSourcefields returns the correct information
      * and uses the correct query when the name parameter is specified
      *
      * @covers Utility::getSourcefields
@@ -834,14 +885,18 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->at(0))
             ->method('pselectRow')
             ->willReturn(
-                array(
-                    array('SourceField' => 'name_field',
-                          'Name' => 'name_name'))
+                [
+                    ['SourceField' => 'name_field',
+                        'Name'        => 'name_name'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array(0 => array('SourceField' => 'name_field',
-                             'Name' => 'name_name')),
+            [0 => ['SourceField' => 'name_field',
+                'Name'        => 'name_name'
+            ]
+            ],
             Utility::getSourcefields(null, null, 'name_name')
         );
     }
@@ -859,14 +914,18 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn(
-                array(
-                    array('SourceField' => 'instrument_field',
-                          'Name' => 'instrument_name'))
+                [
+                    ['SourceField' => 'instrument_field',
+                        'Name'        => 'instrument_name'
+                    ]
+                ]
             );
 
         $this->assertEquals(
-            array(0 => array('SourceField' => 'instrument_field',
-                             'Name' => 'instrument_name')),
+            [0 => ['SourceField' => 'instrument_field',
+                'Name'        => 'instrument_name'
+            ]
+            ],
             Utility::getSourcefields('instrument1', '1', 'name')
         );
     }
@@ -878,19 +937,19 @@ class UtilityTest extends TestCase
      */
     public function notPositiveIntegerValues(): array
     {
-        return array(
-                [-1],
-                [0],
-                [3.14],
-                ['abcdefg'],
-                ['-1'],
-                ['-98.6'],
-                ['0'],
-                [array()],
-                [array(1)],
-                [null],
-                [new stdClass()]
-               );
+        return [
+            [-1],
+            [0],
+            [3.14],
+            ['abcdefg'],
+            ['-1'],
+            ['-98.6'],
+            ['0'],
+            [[]],
+            [[1]],
+            [null],
+            [new stdClass()]
+        ];
     }
 
     /**
@@ -900,11 +959,11 @@ class UtilityTest extends TestCase
      */
     public function positiveIntegerValues(): array
     {
-        return array(
-                [1],
-                [100],
-                ['1000'],
-               );
+        return [
+            [1],
+            [100],
+            ['1000'],
+        ];
     }
 
     /**
@@ -988,15 +1047,17 @@ class UtilityTest extends TestCase
     {
         $this->_setMockDB();
         $this->_mockDB->run("DROP TEMPORARY TABLE IF EXISTS users");
-        $tableData = array(0 => array('ID' => 1,
-                                      'UserID' => '11111',
-                                      'Real_name' => 'Some Name',
-                                      'Email' => 'email1'),
-                           1 => array('ID' => 2,
-                                      'UserID' => '22222',
-                                      'Real_name' => null,
-                                      'Email' => 'email2')
-                     );
+        $tableData = [0 => ['ID' => 1,
+            'UserID'    => '11111',
+            'Real_name' => 'Some Name',
+            'Email'     => 'email1'
+        ],
+            1 => ['ID' => 2,
+                'UserID'    => '22222',
+                'Real_name' => null,
+                'Email'     => 'email2'
+            ]
+        ];
         $this->_mockDB->setFakeTableData("users", $tableData);
         $this->assertTrue(Utility::columnsHasNull("users", "Real_name"));
     }
@@ -1012,15 +1073,17 @@ class UtilityTest extends TestCase
     {
         $this->_setMockDB();
         $this->_mockDB->run("DROP TEMPORARY TABLE IF EXISTS users");
-        $tableData = array(0 => array('ID' => 1,
-                                      'UserID' => '11111',
-                                      'Real_name' => 'Some Name',
-                                      'Email' => 'email1'),
-                           1 => array('ID' => 2,
-                                      'UserID' => '22222',
-                                      'Real_name' => 'Other Name',
-                                      'Email' => 'email2')
-                     );
+        $tableData = [0 => ['ID' => 1,
+            'UserID'    => '11111',
+            'Real_name' => 'Some Name',
+            'Email'     => 'email1'
+        ],
+            1 => ['ID' => 2,
+                'UserID'    => '22222',
+                'Real_name' => 'Other Name',
+                'Email'     => 'email2'
+            ]
+        ];
         $this->_mockDB->setFakeTableData("users", $tableData);
         $this->assertFalse(Utility::columnsHasNull("users", "Real_name"));
     }
@@ -1034,7 +1097,7 @@ class UtilityTest extends TestCase
      */
     public function testResolvePath()
     {
-        $path = "..//..//php/libraries/Utility.class.inc";
+        $path     = "..//..//php/libraries/Utility.class.inc";
         $expected = "php/libraries/Utility.class.inc";
         $this->assertEquals($expected, Utility::resolvePath($path));
     }
@@ -1130,13 +1193,15 @@ class UtilityTest extends TestCase
                 )
             )
             ->willReturn(
-                array(0 => array('ID' => 123,
-                                          'Scan_type' => 'scan 1'),
-                               1 => array('ID' => 234,
-                                          'Scan_type' => 'scan 2')
-                )
+                [0 => ['ID' => 123,
+                    'Scan_type' => 'scan 1'
+                ],
+                    1 => ['ID' => 234,
+                        'Scan_type' => 'scan 2'
+                    ]
+                ]
             );
-        $expected = array(123 => 'scan 1', 234 => 'scan 2');
+        $expected = [123 => 'scan 1', 234 => 'scan 2'];
         $this->assertEquals($expected, Utility::getScanTypeList());
     }
 
@@ -1149,7 +1214,7 @@ class UtilityTest extends TestCase
      */
     public function testAppendForwardSlash()
     {
-        $path = "/php/libraries";
+        $path          = "/php/libraries";
         $pathWithSlash = "/php/libraries/";
         $this->assertEquals(
             $pathWithSlash,
@@ -1182,10 +1247,3 @@ class UtilityTest extends TestCase
         );
     }
 }
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-<<<<<<< 3083ab4f2d80787173f7e37558ba007b49160916
-=======
-
->>>>>>> restore test/unittests/UtilityTest.php was removed by mistake
-=======
->>>>>>> reverting to b1b8e053b21

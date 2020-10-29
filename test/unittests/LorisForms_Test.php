@@ -390,15 +390,7 @@ class LorisForms_Test extends TestCase
      */
     function testAddPageBreak()
     {
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
         $this->form->addPageBreak("abc", "Hello", []);
-=======
-        $this->form->addPageBreak("abc", "Hello", "");
->>>>>>> start of change to php7.4
-=======
-        $this->form->addPageBreak("abc", "Hello", array());
->>>>>>> reverting to b1b8e053b21
         $this->assertType("abc", "page");
         $this->assertLabel("abc", "Hello");
     }
@@ -604,20 +596,12 @@ class LorisForms_Test extends TestCase
             'off' => 'default_on'
         ];
         $this->form->addElement(
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
             "advcheckbox",
             "abc",
             "Hello",
             "text",
             $testAttributes,
             $testCheckStates
-=======
-            "advcheckbox", "abc", "Hello", ["text"], $testAttributes, $testCheckStates
->>>>>>> start of change to php7.4
-=======
-            "advcheckbox", "abc", "Hello", "text", $testAttributes, $testCheckStates
->>>>>>> reverting to b1b8e053b21
         );
         $this->assertType("abc", "advcheckbox");
         $this->assertEquals(
@@ -716,7 +700,6 @@ class LorisForms_Test extends TestCase
      */
     function testCreateElementAdvCheckboxWithStatesAndText()
     {
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
         $testAttributes  = ['disabled' => 'yes'];
         $testCheckStates = ['on' => 'default_on',
             'off' => 'default_off'
@@ -728,17 +711,6 @@ class LorisForms_Test extends TestCase
             "text",
             $testAttributes,
             $testCheckStates
-=======
-        $testAttributes = array('disabled' => 'yes');
-        $testCheckStates = array('on' => 'default_on',
-                                 'off' => 'default_off');
-        $testAdv = $this->form->createElement(
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-            "advcheckbox", "abc", "Hello", ["text"], $testAttributes, $testCheckStates
->>>>>>> start of change to php7.4
-=======
-            "advcheckbox", "abc", "Hello", "text", $testAttributes, $testCheckStates
->>>>>>> reverting to b1b8e053b21
         );
         $this->assertEquals("advcheckbox", $testAdv['type']);
         $this->assertEquals($testCheckStates, $testAdv['checkStates']);
@@ -1351,8 +1323,6 @@ class LorisForms_Test extends TestCase
         $this->form->expects($this->once())
             ->method('advCheckboxHTML');
         $this->form->addElement(
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
             'advcheckbox',
             "abc",
             "Hello",
@@ -1361,14 +1331,6 @@ class LorisForms_Test extends TestCase
             $testCheckStates
         );
         $this->form->setDefaults(['abc' => 'default_on']);
-=======
-            'advcheckbox', "abc", "Hello", ["text"], $testAttributes, $testCheckStates
-=======
-            'advcheckbox', "abc", "Hello", "text", $testAttributes, $testCheckStates
->>>>>>> reverting to b1b8e053b21
-        );
-        $this->form->setDefaults(array('abc' => 'default_on'));
->>>>>>> start of change to php7.4
         $this->assertEquals(
             null,
             $this->form->checkboxHTML($this->form->form['abc'])
@@ -1439,8 +1401,6 @@ class LorisForms_Test extends TestCase
         $testAttributes  = ['disabled' => 'yes'];
         $testCheckStates = ['default_off', 'default_on'];
         $this->form->addElement(
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
             'advcheckbox',
             "abc",
             "Hello",
@@ -1449,14 +1409,6 @@ class LorisForms_Test extends TestCase
             $testCheckStates
         );
         $this->form->setDefaults(['abc' => 'default_on']);
-=======
-            'advcheckbox', "abc", "Hello", ["text"], $testAttributes, $testCheckStates
-=======
-            'advcheckbox', "abc", "Hello", "text", $testAttributes, $testCheckStates
->>>>>>> reverting to b1b8e053b21
-        );
-        $this->form->setDefaults(array('abc' => 'default_on'));
->>>>>>> start of change to php7.4
         $this->assertEquals(
             "<input name=\"abc\" type=\"hidden\" value=\"default_off\"".
                 "><input name=\"abc\" type=\"checkbox\" checked=\"checked\"".
@@ -1734,18 +1686,10 @@ class LorisForms_Test extends TestCase
         $this->form->addText("abc", "Hello", []);
         $this->form->addText("xyz", "Bye", []);
         $this->form->addRule(
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
             ["abc", "xyz"],
             "Required if!",
             "requiredIf",
             "format"
-=======
-            array("abc", "xyz"), "Required if!", "requiredIf",
->>>>>>> start of change to php7.4
-=======
-            array("abc", "xyz"), "Required if!", "requiredIf", "format"
->>>>>>> reverting to b1b8e053b21
         );
 
         $this->assertEquals(
@@ -2430,17 +2374,8 @@ class LorisForms_Test extends TestCase
             ", ",
             []
         );
-<<<<<<< e609003289431fdc2d56c2ef27b0ac2ea93811aa
 
         $this->form->addGroupRule("abc_group", "Message!", "numeric");
-=======
-        
-<<<<<<< 334ece634082b9b39992f74814a5fb21fa9ecf51
-        $this->form->addGroupRule("abc_group", ["Message!", "numeric"]);
->>>>>>> start of change to php7.4
-=======
-        $this->form->addGroupRule("abc_group", "Message!", "numeric");
->>>>>>> reverting to b1b8e053b21
     }
 }
 
