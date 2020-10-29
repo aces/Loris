@@ -63,20 +63,20 @@ class Stats_Demographic extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string  $sectionHeader    the value of sectionHeader
-     * @param string  $tableHeader      the value of tableHeader
-     * @param array   $subcats          the value of subcats
-     * @param ?array  $visits           the value of visits
-     * @param string  $dropdownName     the value of dropdownName
-     * @param string  $dropdownOpt      the value of dropdownOpt
-     * @param string  $dropdownSelected the value of dropdownSelected
-     * @param array   $centers          the value of centers
-     * @param array   $data             the value of data
-     * @param string  $subsection       the value of subsection=''
-     * @param string  $disclamer        the value of disclamer=''
-     * @param ?string $projectID        the value of projectID is null
-     * @param bool    $renderTable      whether to render the table or display a
-     *                                  default error message
+     * @param string        $sectionHeader    the value of sectionHeader
+     * @param string        $tableHeader      the value of tableHeader
+     * @param array         $subcats          the value of subcats
+     * @param ?array        $visits           the value of visits
+     * @param string        $dropdownName     the value of dropdownName
+     * @param ?array|string $dropdownOpt      the value of dropdownOpt
+     * @param string        $dropdownSelected the value of dropdownSelected
+     * @param array         $centers          the value of centers
+     * @param array         $data             the value of data
+     * @param string        $subsection       the value of subsection=''
+     * @param string        $disclamer        the value of disclamer=''
+     * @param ?string       $projectID        the value of projectID is null
+     * @param bool          $renderTable      whether to render the table or display
+     *                                        a default error message
      *
      * @return string
      */
