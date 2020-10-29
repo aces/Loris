@@ -215,11 +215,19 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_candidate->getListOfVisitLabels()
         );
 
+        if (!in_array($this->_candidate->getCenterID(), $user->getCenterIDs())) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'You can`t create or modify candidates visit for the site ' .
+                $this->_candidate->getCenterID() 
+            );
+        }
+
         $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
 
         if (!in_array($centerid, $user->getCenterIDs())) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'You can`t create candidates visit for that site'
+                'You can`t create  or modify candidates visit for the site ' .
+                $centerid
             );
         }
 

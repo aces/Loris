@@ -135,7 +135,12 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        // Test changing from a site with no affiliation to a site with affiliation
+        /**
+        * Test changing from a site with no affiliation to a site with affiliation
+        * Candidate 400266 is from site Rome. The test user only has access to
+        * Data Coordinating Center. He should not be able to modify a visit 
+        * for a candidate from a site he has no access to.
+        */
         $json     = ['CandID'  => '400266',
             'Visit'   => "V3",
             'Site'    => "Data Coordinating Center",
