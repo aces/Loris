@@ -4,14 +4,6 @@ The API should be tested by following the API specs and making sure every comman
 This document is a preliminary test plan that should be superseded by a proper automated test suite.
 
 ## Using the integration tests
-The API's integration test suite can be used to test all endpoints automatically
-
-# API module testplan
- 
-The API should be tested by following the API specs and making sure every command works.
-This document is a preliminary test plan that should be superseded by a proper automated test suite.
-
-## Using the integration tests
 The API's integration test suite can be used to test all endpoints automatically. These tests are passed at every Travis checks.
 
 ### Using dockerized tests
