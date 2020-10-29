@@ -104,7 +104,6 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_candidate->getListOfVisitLabels()
         );
 
-        // This try .. catch block seem useless, the Exception cannot be reached.
         try {
             $visit = \NDB_Factory::singleton()->timepoint(
                 new \SessionID(strval($sessionid))

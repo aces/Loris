@@ -199,7 +199,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
- 
+
         // Test what happen when a field is missing (here, Battery)
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $this->visitTest,
