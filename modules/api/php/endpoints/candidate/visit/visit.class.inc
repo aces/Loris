@@ -262,6 +262,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 ->withStatus(204)
                 ->withHeader('Content-Location', $link);
         }
+
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($visitinfo['CandID']),
