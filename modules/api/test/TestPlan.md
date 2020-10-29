@@ -40,6 +40,7 @@ This is done by sending a GET request to /candidates.
 
 See specification for the expected response format.
 
+
 #### Candidate creation - POST /candidates
 Candidate creation is done by sending a POST request to /candidates with the required data. Note the usage of the Authorization header. For a candidate to be created, the candidate's information must also be included. The following command contains the minimal information necessary for the request to create a new candidate (see [docs](../../../docs/wiki/99_Developers/LORIS-REST-API-0.0.3-dev.md#30-candidate-api) for format instructions):
 
