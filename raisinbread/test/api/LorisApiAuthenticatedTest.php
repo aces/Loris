@@ -90,7 +90,6 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         $this->base_uri = "$this->url/api/$this->_version/";
         $this->client   = new Client(['base_uri' => $this->base_uri]);
         $response       = $this->client->request(
-
             'POST',
             "login",
             [
