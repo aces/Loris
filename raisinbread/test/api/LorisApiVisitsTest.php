@@ -162,6 +162,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        // Test changing the Battery from a visit that is already initiated.
         $json     = ['CandID'  => "115788",
             'Visit'   => "V3",
             'Site'    => "Data Coordinating Center",
@@ -183,7 +184,9 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getbody();
         $this->assertnotempty($body);
 
-        // Test assigning site with no affiliation
+        // Test assigning site with no affiliation. It changes the site from
+        // Data Coordinating Center, which the test user has its only affiliation,
+        // to Montreal, where he has no affiliation.
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
             'Site'    => "Montreal",
