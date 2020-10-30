@@ -96,6 +96,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         case 'PUT':
             return $this->_handlePUT($request);
+
         case 'PATCH':
             return $this->_handlePATCH($request);
 
