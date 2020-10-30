@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This implements the Electrophysiology page class under Project
+ * This implements the visit's electrophysiology endpoint class.
  *
  * PHP Version 7
  *
@@ -9,66 +9,50 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-namespace LORIS\api\Endpoints\Project;
+namespace LORIS\api\Endpoints\Candidate\Visit\Electrophysiology;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
-use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 
 /**
- * A class for handling the /projects/$projectname/electrophysiology endpoint.
+ * A class for handling request for a visit electrophysiology recording.class.
  *
  * @category API
  * @package  LORIS
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
-     * A cache of the results of the endpoint, so that
-     * it doesn't need to be recalculated for the ETag and handler
+     * The requested Visit
+     *
+     * @var \Timepoint
      */
-    private $_cache;
+    private $_visit;
 
     /**
-     * The requested project
-     */
-    private $_project;
-
-    /**
-     * Permission checks
+     * The requested electrophysiology recording.class filename
      *
-     * @param \User $user The requesting user
-     *
-     * @return boolean true if access is permitted
+     * @var string
      */
-    private function _hasAccess(\User $user)
-    {
-        return (
-            $user->hasPermission('electrophysiology_browser_view_allsites') ||
-            (
-                $user->hasStudySite()
-                && $user->hasPermission('electrophysiology_browser_view_site')
-            )
-        );
-    }
+    private $_filename;
 
     /**
      * Contructor
      *
-     * @param \Project $project The requested project
+     * @param \Timepoint $visit    The requested visit
+     * @param string     $filename The requested recording.class filename
      */
-    public function __construct(\Project $project)
+    public function __construct(\Timepoint $visit, string $filename)
     {
-        $this->_project = $project;
+        $this->_visit    = $visit;
+        $this->_filename = $filename;
     }
 
-
     /**
-     * Returns which methods are supported by this endpoint.
+     * Return which methods are supported by this endpoint.
      *
      * @return array supported HTTP methods
      */
@@ -85,13 +69,13 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            "v0.0.3",
-            "v0.0.4-dev"
+            'v0.0.3',
+            'v0.0.4-dev',
         ];
     }
 
     /**
-     * Handles a request that starts with /projects/$projectname/candidates
+     * Handles a request that starts with /candidates/$candid.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -99,35 +83,67 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $user = $request->getAttribute('user');
-        if ($user instanceof \LORIS\AnonymousUser) {
-            return new \LORIS\Http\Response\JSON\Unauthorized();
-        }
-
-        if (!$this->_hasAccess($user)) {
-            return new \LORIS\Http\Response\JSON\Forbidden();
-        }
-
         $pathparts = $request->getAttribute('pathparts');
-        if (count($pathparts) !== 0) {
+        if (count($pathparts) === 0) {
+            switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGET($request);
+
+            case 'OPTIONS':
+                return (new \LORIS\Http\Response())
+                    ->withHeader('Allow', $this->allowedMethods());
+
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    $this->allowedMethods()
+                );
+            }
+        }
+
+        // Delegate to sub-endpoints
+        // At this point, the recording must exist
+        $user = $request->getAttribute('user');
+        try {
+            $recording = $this->_visit->getRecordingByFilename(
+                $user,
+                $this->_filename
+            );
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
+        }
+
+        $subendpoint = array_shift($pathparts);
+        switch($subendpoint) {
+        case 'metadata':
+            $handler = new Metadata($this->_visit, $recording);
+            break;
+        case 'channels':
+            $handler = new Channels($this->_visit, $recording);
+            break;
+        case 'electrodes':
+            $handler = new Electrodes($this->_visit, $recording);
+            break;
+        case 'events':
+            $handler = new Events($this->_visit, $recording);
+            break;
+        case 'bidsfiles':
+            $handler = new BidsFile($recording);
+            break;
+        default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        switch ($request->getMethod()) {
-        case 'GET':
-            return $this->_handleGET($request);
-        case 'OPTIONS':
-            return (new \LORIS\Http\Response())
-                ->withHeader('Allow', $this->allowedMethods());
-        default:
-            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                $this->allowedMethods()
-            );
-        }
+        $newrequest = $request
+            ->withAttribute('pathparts', $pathparts);
+
+        return $handler->process(
+            $newrequest,
+            $handler
+        );
     }
 
     /**
-     * Creates an array representation of this endpoint's response body
+     * Create an array representation of this endpoint's response body.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -135,43 +151,45 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        if (isset($this->_cache)) {
-            return $this->_cache;
-        }
+        $user = $request->getAttribute('user');
 
         try {
-            $datestring = $request->getQueryParams()['since'] ?? '1970-01-01';
-            $since      = new \DateTime($datestring);
-        } catch (\Exception $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
+            $recording = $this->_visit->getRecordingByFilename(
+                $user,
+                $this->_filename
             );
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
 
-        $filter = new HasAnyPermissionOrUserSiteMatch(
-            ['electrophysiology_browser_view_allsites']
-        );
+        $mimetype = substr($recording->getMetadata('header'), 0, 4) === 'hdf5' ?
+            'application/x.minc2' : 'application/octet-stream';
 
-        $provisioner = new \LORIS\api\Provisioners\ProjectRecordingsRowProvisioner(
-            $this->_project,
-            $since
-        );
+        $info = $recording->getFileInfo();
 
-        $provisioner = $provisioner->filter($filter);
+        if (!$info->isFile()) {
+            error_log('file in database but not in file system');
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
 
-        $recordings = (new \LORIS\Data\Table())
-            ->withDataFrom($provisioner)
-            ->toArray($request->getAttribute('user'));
+        if (!$info->isReadable()) {
+            error_log('file exist but is not readable by webserver');
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
 
-        $this->_cache = new \LORIS\Http\Response\JsonResponse(
-            ['Recordings' => $recordings]
-        );
+        $body = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
 
-        return $this->_cache;
+        return (new \LORIS\Http\Response())
+            ->withHeader('Content-Type', $mimetype)
+            ->withHeader(
+                'Content-Disposition',
+                'attachment; filename=' . $this->_filename
+            )
+            ->withBody($body);
     }
 
     /**
-     * Implements the ETagCalculator interface
+     * Implements the ETagCalculator interface.
      *
      * @param ServerRequestInterface $request The PSR7 incoming request.
      *
@@ -179,6 +197,25 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET($request)->getBody()));
+        $user = $request->getAttribute('user');
+
+        try {
+            $recording = $this->_visit->getRecordingByFilename(
+                $user,
+                $this->_filename
+            );
+        } catch (\Throwable $e) {
+            return '';
+        }
+
+        $info = $recording->getFileInfo();
+
+        $signature = [
+            'filename' => $this->_filename,
+            'size'     => $info->getSize(),
+            'mtime'    => $info->getMTime(),
+        ];
+
+        return md5(json_encode($signature));
     }
 }
