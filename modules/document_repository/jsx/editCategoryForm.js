@@ -1,17 +1,16 @@
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
-import swal from 'sweetalert2';
-
 /**
- * Category Creation Form
+ * Document Edit Form
  *
  * Fetches data from Loris backend and displays a form allowing
- * to create a category
+ * to edit a category
  *
- * @author Shen Wang
+ * @author Pierre PAC SOO
  * @version 1.0.0
- */
-class DocCategoryForm extends React.Component {
+ *
+ * */
+class EditDocCategoryForm extends React.Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -29,7 +28,6 @@ class DocCategoryForm extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
-    this.uploadFile = this.uploadFile.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
 
@@ -42,8 +40,7 @@ class DocCategoryForm extends React.Component {
 
   /**
    * Fetch data
-   *
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
@@ -63,70 +60,90 @@ class DocCategoryForm extends React.Component {
   render() {
     // Data loading error
     if (this.state.error) {
-       return <h3>An error occured while loading the page.</h3>;
-     }
+      return <h3>An error occured while loading the page.</h3>;
+    }
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (<Loader/>);
+    }
+
+    let disabled = true;
+    let updateButton = null;
+    if (loris.userHasPermission('document_repository_categories')) {
+      disabled = false;
+      updateButton = <ButtonElement label="Edit Category"/>;
+    }
+
+    let errorSameParent = false;
+
+    if (
+      this.state.formData.categoryID==this.state.formData.newParentID
+      && this.state.formData.categoryID!=null
+      ) {
+      errorSameParent = true;
     }
 
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
           <FormElement
-            name="docUpload"
-            fileUpload={true}
+            name="categoryEdit"
             onSubmit={this.handleSubmit}
           >
-            <h3>Add a category</h3><br/>
-            <TextboxElement
-              name="categoryName"
-              label="Category Name"
-              onUserInput={this.setFormData}
-              required={true}
-              value={this.state.formData.categoryName}
-            />
+            <h3>Change Name of a category</h3><br/>
             <SelectElement
-              name="parentId"
-              label="Parent"
+              name="categoryID"
+              label="Category Name:"
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
+              required={true}
+              disabled={disabled}
               hasError={false}
-              value={this.state.formData.parentId}
+              value={this.state.formData.categoryID}
             />
-            <TextareaElement
-              name="comments"
-              label="Comments"
+            <TextboxElement
+              name="categoryNameChange"
+              label="New Name for Category"
               onUserInput={this.setFormData}
-              value={this.state.formData.comments}
+              required={true}
+              disabled={disabled}
+              value={this.state.formData.categoryNameChange}
             />
-            <ButtonElement label="Add Category"/>
+            <SelectElement
+              name="newParentID"
+              label="New Parent:"
+              options={this.state.data.fieldOptions.fileCategories}
+              onUserInput={this.setFormData}
+              required={false}
+              disabled={disabled}
+              hasError={errorSameParent}
+              errorMessage={'Cannot be equal to itself'}
+              value={this.state.formData.newParentID}
+            />
+            {updateButton}
           </FormElement>
         </div>
       </div>
     );
   }
 
-  /**
-   * *******************************************************************************
+  /** *******************************************************************************
    *                      ******     Helper methods     *******
-   ********************************************************************************
-   */
+   *********************************************************************************/
+
 
   /**
    * Handle form submission
-   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
     e.preventDefault();
-    this.uploadFile();
+    this.editCategory();
   }
-
   /**
    * Uploads the file to the server
    */
-  uploadFile() {
+  editCategory() {
     // Set form data and upload the media file
     let formData = this.state.formData;
     let formObj = new FormData();
@@ -135,38 +152,23 @@ class DocCategoryForm extends React.Component {
         formObj.append(key, formData[key]);
       }
     }
-
     fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
       credentials: 'same-origin',
       body: formObj,
     })
-    .then((resp) => {
-      if (resp.ok) {
+      .then((resp) => resp.json())
+      .then(()=>{
         this.props.refreshPage();
         this.fetchData();
         // refresh the upload page
-        this.props.newCategoryState();
         this.setState({
           formData: {}, // reset form data after successful file upload
         });
-        swal.fire('Category Successfully Added!', '', 'success');
-      } else {
-        resp.json().then((data) => {
-          swal.fire('Could not add category!', data.error, 'error');
-        }).catch((error) => {
-          console.error(error);
-          swal.fire(
-            'Unknown Error!',
-            'Please report the issue or contact your administrator.',
-            'error'
-          );
-        });
-      }
-    });
+        swal('Edit Successful!', '', 'success');
+      });
   }
-
   /**
    * Set the form data based on state values of child elements/componenets
    *
@@ -181,9 +183,9 @@ class DocCategoryForm extends React.Component {
   }
 }
 
-DocCategoryForm.propTypes = {
+EditDocCategoryForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
 };
 
-export default DocCategoryForm;
+export default EditDocCategoryForm;

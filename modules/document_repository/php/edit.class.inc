@@ -32,7 +32,7 @@ class Edit extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('document_repository_edit');
+        return $user->hasPermission('document_repository_upload_edit');
     }
 
     /**

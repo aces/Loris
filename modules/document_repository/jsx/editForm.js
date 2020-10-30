@@ -130,6 +130,18 @@ class DocEditForm extends React.Component {
               onUserInput={this.setFormData}
               value={this.state.docData.comments}
             />
+            {
+              loris.userHasPermission('document_repository_hidden') ?
+                (<SelectElement
+                  name="hiddenFile"
+                  label="Restrict access to the file?"
+                  options={this.state.data.hiddenFile}
+                  sortByValue={false}
+                  onUserInput={this.setFormData}
+                  value={this.state.docData.hiddenFile}
+                />) :
+                null
+            }
             <TextboxElement
               name="version"
               label="Version"

@@ -26,8 +26,9 @@ class Document_Repository extends \NDB_Menu_Filter_Form
 {
     private const PERMISSIONS = [
         'document_repository_view',
-        'document_repository_edit',
         'document_repository_delete',
+        'document_repository_categories',
+        'document_repository_upload_edit'
     ];
     public $AjaxModule        = true;
     public $skipTemplate      = true;
@@ -105,6 +106,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
+            'hiddenFile'    => ['yes' => "Yes", 'no' => "No"],
         ];
         return;
     }
@@ -150,31 +152,51 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function _setupVariables()
     {
         $user = \User::singleton();
-        // the base query
-        $query  = " FROM document_repository v";
-        $query .= " WHERE COALESCE(v.hide_video, false)=false";
-        // set the class variables
-        $this->columns =[
-            'v.File_name',
-            'v.version',
-            'v.File_type',
-            'v.Instrument',
-            'v.uploaded_by',
-            '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
-            'v.comments',
-            'v.Date_uploaded',
-            'v.record_id as Edit',
-            'v.record_id as Delete_File',
-            'v.File_category as category',
-            'v.Data_dir',
-        ];
-        $this->query   = $query;
-        if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND v.For_site IN (" . $site_arr . ")";
+        if ($user->hasPermission('document_repository_hidden')) {
+            // the base query
+            $query = " FROM document_repository v";
+            $query .= " WHERE COALESCE(v.hide_video, false)=false";
+            // set the class variables
+            $this->columns = [
+                'v.File_name',
+                'v.version',
+                'v.File_type',
+                'v.Instrument',
+                'v.uploaded_by',
+                '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
+                'v.comments',
+                'v.Date_uploaded',
+                'v.record_id as Edit',
+                'v.record_id as Delete_File',
+                'v.File_category as category',
+                'v.Data_dir',
+            ];
+            $this->query = $query;
+            $this->group_by = '';
+            $this->order_by = 'v.File_name';
+        } else {
+            // the base query
+            $query = " FROM document_repository v";
+            $query .= " WHERE COALESCE(v.hide_video, false)=false AND (hidden_file='false' OR hidden_file IS NULL)";
+            // set the class variables
+            $this->columns = [
+                'v.File_name',
+                'v.version',
+                'v.File_type',
+                'v.Instrument',
+                'v.uploaded_by',
+                '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
+                'v.comments',
+                'v.Date_uploaded',
+                'v.record_id as Edit',
+                'v.record_id as Delete_File',
+                'v.File_category as category',
+                'v.Data_dir',
+            ];
+            $this->query = $query;
+            $this->group_by = '';
+            $this->order_by = 'v.File_name';
         }
-        $this->group_by = '';
-        $this->order_by = 'v.File_name';
     }
 
     /**
