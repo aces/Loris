@@ -39,6 +39,7 @@ return [
         "PhanTypePossiblyInvalidDimOffset",
         "PhanUndeclaredMethod",
         "PhanTypeMismatchArgument",
+        "PhanTypeMismatchArgumentProbablyReal",
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
     ],
