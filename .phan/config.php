@@ -41,6 +41,8 @@ return [
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchArgumentProbablyReal",
         "PhanTypeMismatchProperty",
+        "PhanTypeMismatchPropertyProbablyReal",
+        "PhanPossiblyInfiniteLoop",
         "PhanTypeArraySuspiciousNullable",
     ],
     "analyzed_file_extensions" => ["php", "inc"],
