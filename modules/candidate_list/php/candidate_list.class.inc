@@ -59,7 +59,7 @@ class Candidate_List extends \NDB_Menu_Filter
                           'c.PSCID',
                           'c.CandID AS DCCID',
                           'GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel',
-                          'd.Name as Diagnosis',
+                          'GROUP_CONCAT(DISTINCT d.Name) as Diagnosis',
                           'psc.Name AS RegistrationSite',
                           'GROUP_CONCAT(DISTINCT sp.title) as Subproject',
                           'c.Entity_type AS EntityType',
@@ -98,7 +98,7 @@ class Candidate_List extends \NDB_Menu_Filter
         }
 
         //'COALESCE(pso.ID,1) AS Participant_Status',
-        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Sex, d.Name';
+        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Sex';
         $this->order_by = 'c.PSCID ASC';
     }
 

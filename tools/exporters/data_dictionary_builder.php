@@ -72,14 +72,14 @@ $DB->run(
 );
 
 $DB->delete("parameter_type_category", array("Type" => "Instrument"));
-   
+
 print "Cleared data from BVL instruments\n";
 
 print "Reading instruments\n";
 //Read the ip_output.txt staging file.
 $fp = fopen(__DIR__."/../ip_output.txt", "r");
 if (!$fp) {
-    print "There was an issue opening the ip_output file. Ensure the 
+    print "There was an issue opening the ip_output file. Ensure the
     file exists and the permissions are properly set.\n";
     die();
 }
@@ -114,7 +114,7 @@ foreach ($instruments AS $instrument) {
                 // Check if there's already an entry with the same name and reuse same ID
                 // insertIgnore does not work here since name is not a Unique key in the database
                 $catId = $DB->pselectOne(
-                    "SELECT ParameterTypeCategoryID 
+                    "SELECT ParameterTypeCategoryID
                        FROM parameter_type_category
                        WHERE Name=:name AND Type=:type",
                     array(
@@ -139,6 +139,7 @@ foreach ($instruments AS $instrument) {
                 break;
 
             case "header":
+            case "test":
                 break;
 
             //for HTML_QuickForm versions of standard HTML Form Elements...
