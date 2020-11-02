@@ -101,10 +101,7 @@ class SelectDropdown extends Component {
 
   overlayClickHandler() {
     if (this.state.open) {
-      console.log('open');
       this.toggleDropdown();
-    } else {
-      console.log('closed');
     }
   }
 
