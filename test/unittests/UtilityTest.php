@@ -573,9 +573,11 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
-                array($this->stringContains(
-                    "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
-                ))
+                [  
+                    ($this->stringContains(
+                        "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
+                    ))
+                ]
             )
             ->willReturn(
                 [
