@@ -223,15 +223,10 @@ class CandidateTest extends TestCase
 
         $data = array('Active' => 'N');
         //assert update method is called with correct parameters
+        $array = ['CandID' => $this->_candidateInfo['CandID']];
         $this->_dbMock->expects($this->once())
             ->method('update')
-            ->with(
-                [
-                    'candidate',
-                    $data,
-                    ['CandID' => $this->_candidateInfo['CandID']]
-                ]
-            );
+            ->with(['candidate', $data, $array]);
 
         $this->assertTrue($this->_candidate->setData($data));
         $this->assertEquals($data['Active'], $this->_candidate->getData('Active'));
