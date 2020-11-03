@@ -66,10 +66,9 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // =======================================================
 
         if (!empty($scan_id_types)) {
-            // it seems like a unused local variables by phan check
-            //            $acqpid       = "AND AcquisitionProtocolID IN ("
-            //                . implode(",", array_keys($scan_id_types))
-            //                . ")";
+                        $acqpid       = "AND AcquisitionProtocolID IN ("
+                            . implode(",", array_keys($scan_id_types))
+                            . ")";
             $isFirst      = true;
             $acqpif       = '';
             $newQueryCase = '';
@@ -90,7 +89,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             $acqpif       .= ",'new','')";
             $newQueryCase .= ")";
         } else {
-            //          $acqpid       = '';
+            $acqpid       = '';
             $acqpif       = "'new'";
             $newQueryCase ='';
         }
