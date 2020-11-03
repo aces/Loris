@@ -1827,11 +1827,11 @@ class LorisForm
      *
      * Adds a rule to a group.
      *
-     * @param string $group Form group name
-     * @param array  $arg1  Array for multiple elements or error
-     *                      message string for one element
-     * @param string $type  (optional)Rule type use getRegisteredRules()
-     *                      to get types
+     * @param string       $group Form group name
+     * @param array|string $arg1  Array for multiple elements or error
+     *                            message string for one element
+     * @param string       $type  (optional)Rule type use getRegisteredRules()
+     *                            to get types
      *
      * @return void
      */

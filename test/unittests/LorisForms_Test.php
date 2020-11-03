@@ -2265,7 +2265,7 @@ class LorisForms_Test extends TestCase
             array($textEl, $textareaEl), "abc_group", "Hello", ", ", array()
         );
         
-        $this->form->addGroupRule("abc_group", ["Message!", "numeric"]);
+        $this->form->addGroupRule("abc_group", "Message!", "numeric");
     }
 }
 ?>
