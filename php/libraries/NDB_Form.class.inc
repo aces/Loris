@@ -87,7 +87,7 @@ class NDB_Form extends NDB_Page
             $success       = $obj->$page();
             $obj->template = $page;
         } elseif (method_exists($obj, $name)) {
-            $success       = $obj->$page();
+            $success       = $obj->$name();
             $obj->template = $name;
         } else {
             throw new Exception("Form does not exist: $name $page", 404);
