@@ -1274,7 +1274,7 @@ class LorisForms_Test extends TestCase
         $this->form->expects($this->once())
             ->method('advCheckboxHTML');
         $this->form->addElement(
-            'advcheckbox', "abc", "Hello", ["text"], $testAttributes, $testCheckStates
+            'advcheckbox', "abc", "Hello", "text", $testAttributes, $testCheckStates
         );
         $this->form->setDefaults(array('abc' => 'default_on'));
         $this->assertEquals(
