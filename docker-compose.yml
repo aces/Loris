@@ -8,7 +8,6 @@ services:
         BASE_DIR: /app/
     volumes:
       - ./test/mysql-config:/etc/mysql/conf.d
-      - ./raisinbread/test/data-raisinbread/:/data-raisinbread
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
@@ -17,7 +16,6 @@ services:
     image: selenium/standalone-firefox-debug:3.8.1-aluminum
     volumes:
       - /dev/shm:/dev/shm
-      - ./raisinbread/test/data-raisinbread/:/data-raisinbread
     ports:
       - "5900:5900"
     environment:
@@ -30,7 +28,6 @@ services:
     volumes:
       - ./:/app
       - ./test/test_instrument:/app/project/instruments
-      - ./raisinbread/test/data-raisinbread/:/data-raisinbread
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
@@ -56,7 +53,6 @@ services:
       dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
-      - ./raisinbread/test/data-raisinbread/:/data-raisinbread
     working_dir: /app
     environment:
       - LORIS_DB_CONFIG=test/config.xml
@@ -122,4 +118,3 @@ services:
       - selenium-debug:selenium
       - web-debug:web
     entrypoint: /app/test/wait-for-services.sh
-
