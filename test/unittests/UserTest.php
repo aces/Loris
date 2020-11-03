@@ -35,37 +35,37 @@ class UserTest extends TestCase
      * @var array
      */
     private $_userInfo
-        = array('ID'                     => 1,
-                'UserID'                 => self::USERNAME,
-                'Password'               => 'sufficient length and complexity',
-                'Real_name'              => 'John Doe',
-                'First_name'             => 'John',
-                'Last_name'              => 'Doe',
-                'Degree'                 => 'Eng.D',
-                'Position_title'         => 'Doctor',
-                'Institution'            => 'MCIN',
-                'Department'             => 'Neuroscience',
-                'Address'                => '123 Main St',
-                'City'                   => 'Montreal',
-                'State'                  => 'Quebec',
-                'Zip_code'               => '123',
-                'Country'                => 'Canada',
-                'Phone'                  => '123-456-7890',
-                'Fax'                    => null,
-                'Email'                  => 'john.doe@mcgill.ca',
-                'Privilege'              => 1,
-                'PSCPI'                  => 'Y',
-                'DBAccess'               => '123',
-                'Active'                 => 'Y',
-                'Password_hash'          => null,
-                'PasswordChangeRequired'        => 0,
-                'Pending_approval'       => 'Y',
-                'Doc_Repo_Notifications' => 'Y',
-                'language_preference'    => 2,
-                'active_from'            => '2017-07-16',
-                'active_to'              => '2020-07-16',
-                'account_request_date'   => null
-          );
+        = ['ID'                     => 1,
+            'UserID'                 => self::USERNAME,
+            'Password'               => 'sufficient length and complexity',
+            'Real_name'              => 'John Doe',
+            'First_name'             => 'John',
+            'Last_name'              => 'Doe',
+            'Degree'                 => 'Eng.D',
+            'Position_title'         => 'Doctor',
+            'Institution'            => 'MCIN',
+            'Department'             => 'Neuroscience',
+            'Address'                => '123 Main St',
+            'City'                   => 'Montreal',
+            'State'                  => 'Quebec',
+            'Zip_code'               => '123',
+            'Country'                => 'Canada',
+            'Phone'                  => '123-456-7890',
+            'Fax'                    => null,
+            'Email'                  => 'john.doe@mcgill.ca',
+            'Privilege'              => 1,
+            'PSCPI'                  => 'Y',
+            'DBAccess'               => '123',
+            'Active'                 => 'Y',
+            'Password_hash'          => null,
+            'PasswordChangeRequired' => 0,
+            'Pending_approval'       => 'Y',
+            'Doc_Repo_Notifications' => 'Y',
+            'language_preference'    => 2,
+            'active_from'            => '2017-07-16',
+            'active_to'              => '2020-07-16',
+            'account_request_date'   => null
+        ];
     /**
      * The userInfo table that should result from calling the factory function
      *
@@ -78,21 +78,25 @@ class UserTest extends TestCase
      *
      * @var array
      */
-    private $_pscInfo = array(0 => array('CenterID' => '1',
-                                         'Name' => 'psc_test'),
-                              1 => array('CenterID' => '4',
-                                         'Name' => 'psc_test2')
-                        );
+    private $_pscInfo = [0 => ['CenterID' => '1',
+        'Name'     => 'psc_test'
+    ],
+        1 => ['CenterID' => '4',
+            'Name'     => 'psc_test2'
+        ]
+    ];
     /**
      * Project table information
      *
      * @var array
      */
-    private $_projectInfo = array(0 => array('ProjectID' => '1',
-                                             'Name' => 'project_test'),
-                                  1 => array('ProjectID' => '3',
-                                             'Name' => 'project_test2')
-                            );
+    private $_projectInfo = [0 => ['ProjectID' => '1',
+        'Name'      => 'project_test'
+    ],
+        1 => ['ProjectID' => '3',
+            'Name'      => 'project_test2'
+        ]
+    ];
 
 
     /**
@@ -100,77 +104,94 @@ class UserTest extends TestCase
      *
      * @var array
      */
-    private $_examinerInfo = array(0 => array('full_name' => 'John Doe',
-                                              'examinerID' => 1,
-                                              'radiologist' => 1)
-                             );
+    private $_examinerInfo = [0 => ['full_name' => 'John Doe',
+        'examinerID'  => 1,
+        'radiologist' => 1
+    ]
+    ];
     /**
      * User_psc_rel table information
      *
      * @var array
      */
-    private $_uprInfo = array(0 => array('UserID' => '1',
-                                         'CenterID' => '1'),
-                              1 => array('UserID' => '1',
-                                         'CenterID' => '4')
-                        );
+    private $_uprInfo = [0 => ['UserID' => '1',
+        'CenterID' => '1'
+    ],
+        1 => ['UserID' => '1',
+            'CenterID' => '4'
+        ]
+    ];
 
     /**
      * User_psc_rel table information
      *
      * @var array
      */
-    private $_uprojrInfo = array(0 => array('UserID' => '1',
-                                            'ProjectID' => '1'),
-                                 1 => array('UserID' => '1',
-                                            'ProjectID' => '3')
-                           );
+    private $_uprojrInfo = [0 => ['UserID' => '1',
+        'ProjectID' => '1'
+    ],
+        1 => ['UserID' => '1',
+            'ProjectID' => '3'
+        ]
+    ];
     /**
      * Examiners_psc_rel table information
      *
      * @var array
      */
-    private $_eprInfo = array(0 => array('centerID' => '1',
-                                         'examinerID' => 1,
-                                         'active' => 'Y',
-                                         'pending_approval' => 'N'),
-                              1 => array('centerID' => '4',
-                                         'examinerID' => 1,
-                                         'active' => 'Y',
-                                         'pending_approval' => 'N')
-                        );
+    private $_eprInfo = [0 => ['centerID' => '1',
+        'examinerID'       => 1,
+        'active'           => 'Y',
+        'pending_approval' => 'N'
+    ],
+        1 => ['centerID' => '4',
+            'examinerID'       => 1,
+            'active'           => 'Y',
+            'pending_approval' => 'N'
+        ]
+    ];
 
-    private $_permInfo = array(0 => array('permID' => 1,
-                                          'code' => "superuser",
-                                          'description' => "superuser description",
-                                          'categoryID' => 1),
-                               1 => array('permID' => 2,
-                                          'code' => "test_permission",
-                                          'description' => "description 1",
-                                          'categoryID' => 2),
-                               2 => array('permID' => 3,
-                                          'code' => "test_permission2",
-                                          'description' => "description 2",
-                                          'categoryID' => 3),
-                               3 => array('permID' => 4,
-                                          'code' => "test_permission3",
-                                          'description' => "description 3",
-                                          'categoryID' => 4)
-                         );
-    private $_userPermInfo = array(0 => array('permID' => 1,
-                                              'userID' => 1),
-                                   1 => array('permID' => 2,
-                                              'userID' => 1),
-                                   2 => array('permID' => 3,
-                                              'userID' => 1)
-                             );
-    private $_categoryInfo = array(0 => array('ID' => 1,
-                                              'Description' => "superuser category"),
-                                   1 => array('ID' => 2,
-                                              'Description' => "category 1"),
-                                   2 => array('ID' => 3,
-                                              'Description' => "category 2")
-                             );
+    private $_permInfo     = [0 => ['permID' => 1,
+        'code'        => "superuser",
+        'description' => "superuser description",
+        'categoryID'  => 1
+    ],
+        1 => ['permID' => 2,
+            'code'        => "test_permission",
+            'description' => "description 1",
+            'categoryID'  => 2
+        ],
+        2 => ['permID' => 3,
+            'code'        => "test_permission2",
+            'description' => "description 2",
+            'categoryID'  => 3
+        ],
+        3 => ['permID' => 4,
+            'code'        => "test_permission3",
+            'description' => "description 3",
+            'categoryID'  => 4
+        ]
+    ];
+    private $_userPermInfo = [0 => ['permID' => 1,
+        'userID' => 1
+    ],
+        1 => ['permID' => 2,
+            'userID' => 1
+        ],
+        2 => ['permID' => 3,
+            'userID' => 1
+        ]
+    ];
+    private $_categoryInfo = [0 => ['ID' => 1,
+        'Description' => "superuser category"
+    ],
+        1 => ['ID' => 2,
+            'Description' => "category 1"
+        ],
+        2 => ['ID' => 3,
+            'Description' => "category 2"
+        ]
+    ];
     /**
      * User object used for testing
      *
@@ -204,18 +225,18 @@ class UserTest extends TestCase
     private $_dbMock;
     /**
      * Test double for Database object for hasLoggedIn method
-     * 
+     *
      * @note This is needed for User::hasLoggedIn because it declares and uses
      *       the database differently than other methods in the User class.
-     *       This can be changed when the rest of the User class updates how it 
+     *       This can be changed when the rest of the User class updates how it
      *       declares its database. - Alexandra Livadas
-     * 
+     *
      * @var \Database | PHPUnit_Framework_MockObject_MockObject
      */
     private $_mockDB;
     /**
      * Test double for Database object for hasLoggedIn method
-     * 
+     *
      * @note This is needed for User::hasLoggedIn because it declares and uses
      *       the database differently than other methods in the User class.
      *       This can be changed when the rest of the User class updates how it
@@ -230,7 +251,7 @@ class UserTest extends TestCase
      *
      * @var array config name => value
      */
-    private $_configMap = array();
+    private $_configMap = [];
     /**
      * This method is called before each test is executed.
      *
@@ -252,31 +273,31 @@ class UserTest extends TestCase
             true
         );
 
-        $this->_mockConfig = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_mockDB = $this->getMockBuilder('Database')->getMock();
+        $this->_mockConfig  = $this->getMockBuilder('NDB_Config')->getMock();
+        $this->_mockDB      = $this->getMockBuilder('Database')->getMock();
         $this->_mockFactory = \NDB_Factory::singleton();
         $this->_mockFactory->setDatabase($this->_mockDB);
         $this->_factory->setConfig($this->_mockConfig);
 
-        $this->_userInfoComplete = $this->_userInfo;
+        $this->_userInfoComplete       = $this->_userInfo;
         $this->_userInfoComplete['ID'] = '1';
-        $this->_userInfoComplete['Privilege'] = '1';
+        $this->_userInfoComplete['Privilege']           = '1';
         $this->_userInfoComplete['language_preference'] = '2';
-        $this->_userInfoComplete['Sites'] = 'psc_test;psc_test2';
-        $this->_userInfoComplete['examiner'] = array('pending' => 'N',
-                                                     '1'       => array('Y',
-                                                                        1
-                                                                  ),
-                                                     '4'       => array('Y',
-                                                                        1
-                                                                  )
-                                               );
-        $this->_userInfoComplete['CenterIDs'] = array('1', '4');
-        $this->_userInfoComplete['ProjectIDs'] = array('1', '3');
+        $this->_userInfoComplete['Sites']      = 'psc_test;psc_test2';
+        $this->_userInfoComplete['examiner']   = ['pending' => 'N',
+            '1'       => ['Y',
+                1
+            ],
+            '4'       => ['Y',
+                1
+            ]
+        ];
+        $this->_userInfoComplete['CenterIDs']  = ['1', '4'];
+        $this->_userInfoComplete['ProjectIDs'] = ['1', '3'];
         $passwordHash = (new \Password(
             $this->_userInfo['Password']
         ))->__toString();
-        $this->_userInfo['Password_hash'] = $passwordHash;
+        $this->_userInfo['Password_hash']         = $passwordHash;
         $this->_userInfoComplete['Password_hash'] = $passwordHash;
 
         $this->_user = \User::factory(self::USERNAME);
@@ -313,7 +334,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that getData retrieves the correct information when given a 
+     * Test that getData retrieves the correct information when given a
      * specific attribute
      *
      * @return void
@@ -323,7 +344,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
-            $this->_userInfoComplete['language_preference'], 
+            $this->_userInfoComplete['language_preference'],
             $this->_user->getData('language_preference')
         );
     }
@@ -338,7 +359,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
-            $this->_userInfoComplete['Real_name'],        
+            $this->_userInfoComplete['Real_name'],
             $this->_user->getFullname()
         );
     }
@@ -383,7 +404,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
-            array('psc_test', 'psc_test2'),
+            ['psc_test', 'psc_test2'],
             $this->_user->getSiteNames()
         );
     }
@@ -443,8 +464,9 @@ class UserTest extends TestCase
     public function testGetExaminerSites()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $result = array('1' => array('Y', 1),
-                        '4' => array('Y', 1));
+        $result      = ['1' => ['Y', 1],
+            '4' => ['Y', 1]
+        ];
         $this->assertEquals(
             $result,
             $this->_user->getExaminerSites()
@@ -452,8 +474,8 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that getStudySites returns the correct array of sites 
-     * that are classified as study sites for the user 
+     * Test that getStudySites returns the correct array of sites
+     * that are classified as study sites for the user
      * and that the array is formatted correctly
      *
      * @return void
@@ -462,8 +484,9 @@ class UserTest extends TestCase
     public function testGetStudySites()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $result = array('1' => 'psc_test',
-                        '4' => 'psc_test2');
+        $result      = ['1' => 'psc_test',
+            '4' => 'psc_test2'
+        ];
         $this->assertEquals(
             $result,
             $this->_user->getStudySites()
@@ -481,7 +504,7 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->assertTrue($this->_user->hasStudySite());
     }
-    
+
     /**
      * Test that isEmailValid returns true when the email is valid
      *
@@ -494,7 +517,7 @@ class UserTest extends TestCase
         $this->assertTrue($this->_user->isEmailValid());
     }
 
-    /** 
+    /**
      * Test that isEmailValid returns false when the email has an invalid format
      *
      * @return void
@@ -503,16 +526,16 @@ class UserTest extends TestCase
     public function testIsEmailValidWhenInvalid()
     {
         $this->_dbMock->run("DROP TEMPORARY TABLE users");
-        $invalidEmailInfo = $this->_userInfo;
+        $invalidEmailInfo          = $this->_userInfo;
         $invalidEmailInfo['Email'] = 'invalidemail.ca';
         $this->_dbMock->setFakeTableData(
-            "users", 
-            array(0=> $invalidEmailInfo)
+            "users",
+            [0=> $invalidEmailInfo]
         );
         $this->_user = \User::factory(self::USERNAME);
         $this->assertFalse($this->_user->isEmailValid());
     }
- 
+
     /**
      * Test that hasCenter returns true when the user has this center ID
      *
@@ -575,17 +598,17 @@ class UserTest extends TestCase
 
     /**
      * Test that insert correctly adds a user to the users table
-     * 
+     *
      * @note   The factory method is used here to check that the information has
-     *         been added to the database and can then be correctly populated 
+     *         been added to the database and can then be correctly populated
      *         into a new user object.
      * @return void
      * @covers User::insert
      */
     public function testInsert()
     {
-        $newUserInfo = $this->_userInfo;
-        $newUserInfo['ID'] = 2;
+        $newUserInfo           = $this->_userInfo;
+        $newUserInfo['ID']     = 2;
         $newUserInfo['UserID'] = '968776';
         \User::insert($newUserInfo);
         $this->_otherUser = \User::factory('968776');
@@ -601,14 +624,15 @@ class UserTest extends TestCase
     public function testUpdate()
     {
         $this->_otherUser = \User::factory('968776');
-        $newInfo = array('ID' => '3');
+        $newInfo          = ['ID' => '3'];
         $this->_otherUser->update($newInfo);
         $this->_otherUser = \User::factory('968776');
         $this->assertEquals('3', $this->_otherUser->getData('ID'));
     }
 
     /**
-     * Test that updatePassword updates the 'Password_hash' and 'PasswordChangeRequired'
+     * Test that updatePassword updates
+     * the 'Password_hash' and 'PasswordChangeRequired'
      * fields when both the new password and expiration are specified
      *
      * @return void
@@ -616,8 +640,8 @@ class UserTest extends TestCase
      */
     public function testUpdatePasswordWithExpiration()
     {
-        $this->_user = \User::factory(self::USERNAME);
-        $oldHash = $this->_user->getData('Password_hash');
+        $this->_user     = \User::factory(self::USERNAME);
+        $oldHash         = $this->_user->getData('Password_hash');
         $passwordExpired = true;
 
         // Cause usePwnedPasswordsAPI config option to return false.
@@ -626,7 +650,7 @@ class UserTest extends TestCase
             ->willReturn(false);
 
         $this->_user->updatePassword(
-            new \Password(\Utility::randomString(16)), 
+            new \Password(\Utility::randomString(16)),
             $passwordExpired
         );
         //Re-populate the user object now that the password has been changed
@@ -667,7 +691,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that hasLoggedIn returns true when the user has succesfully logged in 
+     * Test that hasLoggedIn returns true when the user has succesfully logged in
      * once, which is specified in the 'user_login_history_table'
      *
      * @return void
@@ -676,7 +700,7 @@ class UserTest extends TestCase
     public function testHasLoggedInWhenTrue()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $count = 1;
+        $count       = 1;
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
@@ -690,7 +714,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that hasLoggedIn returns false when the user has never succesfully 
+     * Test that hasLoggedIn returns false when the user has never succesfully
      * logged in once, which is specified in the 'user_login_history_table'
      *
      * @return void
@@ -699,7 +723,7 @@ class UserTest extends TestCase
     public function testHasLoggedInWhenFalse()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $count = 0;
+        $count       = 0;
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
@@ -742,7 +766,7 @@ class UserTest extends TestCase
         // Update the password again to make sure another test hasn't
         // interfered.
         $this->_user = \User::factory(self::USERNAME);
-        $password = $this->_userInfo['Password'];
+        $password    = $this->_userInfo['Password'];
         $this->_user->updatePassword(
             new \Password($password)
         );
@@ -763,7 +787,7 @@ class UserTest extends TestCase
     public function testGetLastLoginWhenNotEmpty()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $timestamp = '2020-06-15 09:49:23';
+        $timestamp   = '2020-06-15 09:49:23';
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
@@ -788,7 +812,7 @@ class UserTest extends TestCase
     public function testGetLastLoginWhenEmpty()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $timestamp = '';
+        $timestamp   = '';
         $this->_mockDB->expects($this->any())
             ->method('pselectOne')
             ->with(
@@ -814,11 +838,11 @@ class UserTest extends TestCase
     public function testIsAccessibleByTrue()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $mockUser = $this->getMockBuilder('\User')->getMock();
+        $mockUser    = $this->getMockBuilder('\User')->getMock();
         $mockUser->expects($this->once())->method("getCenterIDs")
-            ->willReturn(array(1, 2));
+            ->willReturn([1, 2]);
         $mockUser->expects($this->once())->method("getProjectIDs")
-            ->willReturn(array(1, 3));
+            ->willReturn([1, 3]);
         $this->assertTrue($this->_user->isAccessibleBy($mockUser));
     }
 
@@ -832,11 +856,11 @@ class UserTest extends TestCase
     public function testIsAccessibleByFalse()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $mockUser = $this->getMockBuilder('\User')->getMock();
+        $mockUser    = $this->getMockBuilder('\User')->getMock();
         $mockUser->expects($this->once())->method("getCenterIDs")
-            ->willReturn(array(2, 2));
+            ->willReturn([2, 2]);
         $mockUser->expects($this->once())->method("getProjectIDs")
-            ->willReturn(array(4, 4));
+            ->willReturn([4, 4]);
         $this->assertFalse($this->_user->isAccessibleBy($mockUser));
     }
 
@@ -883,7 +907,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->expectException('LorisException');
-        $this->_user->hasAllPermissions(array());
+        $this->_user->hasAllPermissions([]);
     }
 
     /**
@@ -899,7 +923,7 @@ class UserTest extends TestCase
         $this->_setPermissions();
         $this->assertTrue(
             $this->_user->hasAllPermissions(
-                array("superuser", "test_permission", "test_permission2")
+                ["superuser", "test_permission", "test_permission2"]
             )
         );
     }
@@ -916,10 +940,10 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->_user->removePermissions(array(3));
+        $this->_user->removePermissions([3]);
         $this->assertFalse(
             $this->_user->hasAllPermissions(
-                array("superuser", "test_permission", "test_permission2")
+                ["superuser", "test_permission", "test_permission2"]
             )
         );
     }
@@ -936,7 +960,7 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
         $this->expectException('LorisException');
-        $this->_user->hasAnyPermission(array());
+        $this->_user->hasAnyPermission([]);
     }
 
     /**
@@ -951,7 +975,7 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
         $this->assertTrue(
-            $this->_user->hasAnyPermission(array("superuser", "test_permission2"))
+            $this->_user->hasAnyPermission(["superuser", "test_permission2"])
         );
     }
 
@@ -967,10 +991,11 @@ class UserTest extends TestCase
         $this->_setPermissions();
         $this->assertEquals(
             $this->_user->getPermissions(),
-            array('superuser' => true,
-                  'test_permission' => true,
-                  'test_permission2' => true,
-                  'test_permission3' => false)
+            ['superuser' => true,
+                'test_permission'  => true,
+                'test_permission2' => true,
+                'test_permission3' => false
+            ]
         );
     }
 
@@ -985,13 +1010,14 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->_user->addPermissions(array(4));
+        $this->_user->addPermissions([4]);
         $this->assertEquals(
             $this->_user->getPermissions(),
-            array('superuser' => true,
-                  'test_permission' => true,
-                  'test_permission2' => true,
-                  'test_permission3' => true)
+            ['superuser' => true,
+                'test_permission'  => true,
+                'test_permission2' => true,
+                'test_permission3' => true
+            ]
         );
     }
 
@@ -1009,10 +1035,11 @@ class UserTest extends TestCase
         $this->_user->removePermissions();
         $this->assertEquals(
             $this->_user->getPermissions(),
-            array('superuser' => false,
-                  'test_permission' => false,
-                  'test_permission2' => false,
-                  'test_permission3' => false)
+            ['superuser' => false,
+                'test_permission'  => false,
+                'test_permission2' => false,
+                'test_permission3' => false
+            ]
         );
     }
 
@@ -1027,13 +1054,14 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->_user->removePermissions(array(3, 4));
+        $this->_user->removePermissions([3, 4]);
         $this->assertEquals(
             $this->_user->getPermissions(),
-            array('superuser' => true,
-                'test_permission' => true,
+            ['superuser' => true,
+                'test_permission'  => true,
                 'test_permission2' => false,
-                'test_permission3' => false)
+                'test_permission3' => false
+            ]
         );
     }
 
@@ -1047,7 +1075,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->assertEquals($this->_user->getPermissionIDs(), array(1, 2, 3));
+        $this->assertEquals($this->_user->getPermissionIDs(), [1, 2, 3]);
     }
 
     /**
@@ -1067,19 +1095,22 @@ class UserTest extends TestCase
         );
         $this->assertEquals(
             $this->_user->getPermissionsVerbose(),
-            array(0 => array('permID' => '1',
-                             'code' => "superuser",
-                             'description' => "superuser description",
-                             'type' => "superuser category"),
-                  1 => array('permID' => '2',
-                             'code' => "test_permission",
-                             'description' => "description 1",
-                             'type' => "category 1"),
-                  2 => array('permID' => '3',
-                             'code' => "test_permission2",
-                             'description' => "description 2",
-                             'type' => "category 2")
-            )
+            [0 => ['permID' => '1',
+                'code'        => "superuser",
+                'description' => "superuser description",
+                'type'        => "superuser category"
+            ],
+                1 => ['permID' => '2',
+                    'code'        => "test_permission",
+                    'description' => "description 1",
+                    'type'        => "category 1"
+                ],
+                2 => ['permID' => '3',
+                    'code'        => "test_permission2",
+                    'description' => "description 2",
+                    'type'        => "category 2"
+                ]
+            ]
         );
     }
 
@@ -1109,7 +1140,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->_user->removePermissions(array(1));
+        $this->_user->removePermissions([1]);
         $this->assertTrue($this->_user->hasCenterPermission("test_permission", 1));
     }
 
@@ -1125,7 +1156,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->_user->removePermissions(array(1, 3));
+        $this->_user->removePermissions([1, 3]);
         $this->assertFalse($this->_user->hasCenterPermission("test_permission2", 1));
     }
 
@@ -1141,10 +1172,10 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->_user->removePermissions(array(1));
+        $this->_user->removePermissions([1]);
         $this->assertFalse($this->_user->hasCenterPermission("test_permission", 2));
     }
-    
+
     /**
      * Set up user permissions. Used to reset the permissions at the beginning of
      * every permissions-related unit test
@@ -1175,7 +1206,7 @@ class UserTest extends TestCase
     {
         $this->_dbMock->setFakeTableData(
             "users",
-            array(0 => $this->_userInfo)
+            [0 => $this->_userInfo]
         );
         $this->_dbMock->setFakeTableData(
             "psc",

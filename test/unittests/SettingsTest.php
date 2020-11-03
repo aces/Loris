@@ -43,7 +43,7 @@ class SettingsTest extends TestCase
      *
      * @var array database config values
      */
-    private $_databaseConfigValues = array();
+    private $_databaseConfigValues = [];
 
     /**
      * Sets up fixtures:
@@ -62,12 +62,12 @@ class SettingsTest extends TestCase
 
         $this->_settings = new Settings($this->_configMock);
 
-        $this->_databaseConfigValues = array(
-                                        'database' => 'LorisTestDB',
-                                        'username' => 'testUser',
-                                        'password' => 'APassWord',
-                                        'host'     => 'localhost',
-                                       );
+        $this->_databaseConfigValues = [
+            'database' => 'LorisTestDB',
+            'username' => 'testUser',
+            'password' => 'APassWord',
+            'host'     => 'localhost',
+        ];
     }
 
     /**
@@ -78,13 +78,13 @@ class SettingsTest extends TestCase
      */
     public function getTrueValue()
     {
-        return array(
-                array(true),
-                array('TRUE'),
-                array('1'),
-                array(1),
-                array('5'),
-               );
+        return [
+            [true],
+            ['TRUE'],
+            ['1'],
+            [1],
+            ['5'],
+        ];
     }
 
     /**
@@ -117,14 +117,14 @@ class SettingsTest extends TestCase
      */
     public function getFalseValue()
     {
-        return array(
-                array(false),
-                array('FAlse'),
-                array(0),
-                array('0'),
-                array(''),
-                array(null),
-               );
+        return [
+            [false],
+            ['FAlse'],
+            [0],
+            ['0'],
+            [''],
+            [null],
+        ];
     }
 
 

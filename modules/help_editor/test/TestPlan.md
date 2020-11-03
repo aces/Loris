@@ -22,7 +22,7 @@
     [Automation Testing]
 12. Test clear filter button.
     [Automation Testing]
-13. Test links to topics, both parent and subtopic.
+13. Test the topic link.
     [Manual Testing]
 14. Ensure permission for Edit Help is working properly.
     [Manual Testing]

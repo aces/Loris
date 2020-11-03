@@ -30,7 +30,7 @@ class BreadcrumbTrailTest extends TestCase
      * @var \LORIS\BreadcrumbTrail 
      */
     protected $breadcrumbTrail;
-    
+
     /**
      * This method is called before each test is executed.
      *
@@ -40,7 +40,7 @@ class BreadcrumbTrailTest extends TestCase
     {
         parent::setUp();
     }
-    
+
     /**
      * Test __toString() returns correct string
      * TODO: Add potential edge cases (such as white space)

@@ -956,6 +956,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames(): array
     {
+        if (empty($this->getCommentID())) {
+            return [];
+        }
+
         $db = \Database::singleton();
 
         $centerID = $db->pselectOne(
@@ -1445,10 +1449,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
-     * @return SessionID The sessionID
+     * @return ?SessionID The sessionID
      */
-    function getSessionID(): SessionID
+    function getSessionID(): ?SessionID
     {
+
         $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
         $result = \NDB_Factory::singleton()->database()->pselectOne(
             $query,
@@ -1456,10 +1461,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'CID' => $this->getCommentID(),
             ]
         );
+
         if (empty($result)) {
-            throw new NotFound(
-                "No SessionID exists for CommentID: `{$this->getCommentID()}`"
-            );
+            return null;
         }
 
         return (new SessionID($result));
