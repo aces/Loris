@@ -1345,7 +1345,7 @@ class LorisForms_Test extends TestCase
         $testAttributes = array('disabled' => 'yes');
         $testCheckStates = array('default_off', 'default_on');
         $this->form->addElement(
-            'advcheckbox', "abc", "Hello", ["text"], $testAttributes, $testCheckStates
+            'advcheckbox', "abc", "Hello", "text", $testAttributes, $testCheckStates
         );
         $this->form->setDefaults(array('abc' => 'default_on'));
         $this->assertEquals(
