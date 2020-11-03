@@ -66,6 +66,12 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // =======================================================
 
         if (!empty($scan_id_types)) {
+<<<<<<< 0286be42564bff033a2332200c923dcde02b220e
+=======
+            // $acqpid       = "AND AcquisitionProtocolID IN ("
+            //     . implode(",", array_keys($scan_id_types))
+            //     . ")";
+>>>>>>> modifs
             $isFirst      = true;
             $acqpif       = '';
             $newQueryCase = '';
@@ -86,6 +92,10 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             $acqpif       .= ",'new','')";
             $newQueryCase .= ")";
         } else {
+<<<<<<< 0286be42564bff033a2332200c923dcde02b220e
+=======
+            // $acqpid       = '';
+>>>>>>> modifs
             $acqpif       = "'new'";
             $newQueryCase ='';
         }

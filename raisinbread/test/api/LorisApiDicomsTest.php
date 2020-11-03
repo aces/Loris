@@ -205,6 +205,31 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitDicomsTarname(): void
     {
-        $this->markTestSkipped('Missing data in docker image');
+        $resource        = fopen($this->tarfileTest, 'w');
+        $stream          = GuzzleHttp\Psr7\stream_for($resource);
+        try {
+            $response_stream = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/dicoms/" .
+                "$this->tarfileTest",
+                [
+                'headers' => $this->headers,
+                'save_to' => $stream
+                ]
+            );
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/" .
+                "$this->frecordTest"
+            );
+        }
+ 
+        $this->assertEquals(200, $response_stream->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_stream->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->tarfileTest);
     }
 }

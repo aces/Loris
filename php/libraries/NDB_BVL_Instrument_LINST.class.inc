@@ -196,6 +196,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     echo "<p><b>$elname</b><br> ";
                 }
                 $rules_array = [];
+<<<<<<< 0286be42564bff033a2332200c923dcde02b220e
                 $rules       = [];
                 $registered  =[];
                 foreach ($registered_rules as $key => $value) {
@@ -208,6 +209,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($key = 'message') {
                         $registered['message'] = $value;
                     }
+=======
+                foreach ($registered_rules as $registered) {
+                    $key_rules = array_search('rules', array_keys($registered));
+                    $rules     = $registered[$key_rules];
+>>>>>>> modifs
 
                     foreach ($rules as $rule) {
                         //If this is an OR rule using two different controllers
@@ -228,11 +234,19 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     $registered
                                 );
                                 if ($result == false) {
-                                    $el = $registered['group'] != ""
-                                        ? $registered['group']
+                                    $key_groups = array_search(
+                                        'groups',
+                                        array_keys($registered)
+                                    );
+                                    $el         = $registered[$key_groups] != ""
+                                        ? $registered[$key_groups]
                                         : $elname;
 
-                                    $errors[$el] = $registered['message'];
+                                    $key_message = array_search(
+                                        'message',
+                                        array_keys($registered)
+                                    );
+                                    $errors[$el] = $registered[$key_message];
                                 }
                             }
                         }

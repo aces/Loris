@@ -51,7 +51,7 @@ abstract class NDB_Notifier_Abstract
     /**
      * Current logged in user issuing the notification.
      *
-     * @var \User
+     * @var \User|array
      */
     protected $notifier;
 
@@ -66,7 +66,7 @@ abstract class NDB_Notifier_Abstract
     /**
      * Admin user issuing the notification (if applicable).
      *
-     * @var string
+     * @var string|array
      */
     private $_adminNotifier;
 

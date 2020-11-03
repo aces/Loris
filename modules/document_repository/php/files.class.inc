@@ -250,11 +250,16 @@ class Files extends \NDB_Page
      */
     function parseCategory(array $value): array
     {
+        // $depth        = 0;
         $id           = $value['id'];
         $DB           = \Database::singleton();
         $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
+<<<<<<< 0286be42564bff033a2332200c923dcde02b220e
+=======
+                // $depth    += 1;
+>>>>>>> modifs
                 $parent_id = $value['parent_id'];
                 $query     = "SELECT * FROM document_repository_categories".
                             " WHERE id=:parent_id";
