@@ -574,9 +574,9 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with(
                 [  
-                    $this->stringContains(
+                    ($this->stringContains(
                         "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
-                    )
+                    ))
                 ]
             )
             ->willReturn(
