@@ -481,9 +481,13 @@ abstract class LorisIntegrationTest extends TestCase
         $remoteWebElement = null;
 
         $clickable->click();
+        $flag = false;
         try {
-            while (true) {
+            while ($flag) {
                 $remoteWebElement = $clickable->isDisplayed();
+                if ($remoteWebElement) {
+                    $flag = true;
+                }
             }
         } catch (StaleElementReferenceException $e) {
             return $remoteWebElement;

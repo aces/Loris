@@ -397,7 +397,7 @@ class NDB_Factory
      *
      * @return ?Settings setting object
      */
-    public function settings(string $configfile = "../project/config.xml"): \Settings
+    public function settings(string $configfile = "../project/config.xml"): ?Settings
     {
         if (self::$_settings !== null) {
             return self::$_settings;

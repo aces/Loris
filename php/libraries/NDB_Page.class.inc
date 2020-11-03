@@ -583,9 +583,9 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Creates an HTML checkbox but does not add it to the form.
      *
-     * @param string  $field   The fieldname for this checkbox
-     * @param ?string $label   The label to attach to this checkbox
-     * @param ?string $attribs Attributes to pass to HTML_QuickForm
+     * @param string        $field   The fieldname for this checkbox
+     * @param ?string       $label   The label to attach to this checkbox
+     * @param ?string|array $attribs Attributes to pass to HTML_QuickForm
      *
      * @return array representing checkbox
      */

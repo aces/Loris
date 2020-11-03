@@ -31,11 +31,11 @@ class DatabaseException extends LorisException
      * QUERY that generated the exception and bind parameters that
      * were used to try and execute it.
      *
-     * @param string      $msg        The error message to associate to this
-     *                                exception
-     * @param string      $query      The SQL query that generated this exception
-     * @param array|array $bindparams The prepared statement bindings used to try
-     *                                and execute this statement
+     * @param string       $msg        The error message to associate to this
+     *                                 exception
+     * @param string       $query      The SQL query that generated this exception
+     * @param string|array $bindparams The prepared statement bindings used to try
+     *                                 and execute this statement
      */
     function __construct($msg, $query = '', $bindparams = [])
     {

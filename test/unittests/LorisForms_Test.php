@@ -382,7 +382,7 @@ class LorisForms_Test extends TestCase
      */
     function testAddPageBreak()
     {
-        $this->form->addPageBreak("abc", "Hello", "");
+        $this->form->addPageBreak("abc", "Hello", []);
         $this->assertType("abc", "page");
         $this->assertLabel("abc", "Hello");
     }
