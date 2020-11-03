@@ -592,7 +592,7 @@ class LorisForms_Test extends TestCase
             "Hello",
             "text",
             $testAttributes,
-            $testCheckStates,
+            $testCheckStates
         );
         $this->assertType("abc", "advcheckbox");
         $this->assertEquals(
