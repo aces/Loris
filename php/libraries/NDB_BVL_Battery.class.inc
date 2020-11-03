@@ -238,8 +238,9 @@ class NDB_BVL_Battery
      * @param string $testName The test name to be removed from the current
      *                         battery
      *
-     * @return void
-     * @todo   make it do something
+     * @return                     void
+     * @SuppressWarnings("unused") for $error
+     * @todo                       make it do something
      */
     function removeInstrument($testName)
     {
@@ -538,9 +539,9 @@ class NDB_BVL_Battery
      * Creates a new unique commentID for the given instrument in the
      * current battery
      *
-     * @param string $testName The test name that we want a commentID for
-     *
-     * @return ?string the commentID generated
+     * @param                      string $testName The test name that we want a commentID for
+     * @SuppressWarnings("unused") for $error
+     * @return                     ?string the commentID generated
      */
     function _createCommentID($testName)
     {

@@ -50,11 +50,11 @@ class NDB_Form extends NDB_Page
     /**
      * Generates a new form instance and runs the appropriate method
      *
-     * @param string $name       Identifies the form
-     * @param string $page       Identifies the page to show
-     * @param string $identifier Variables passed to form
-     *
-     * @return \NDB_Form
+     * @param                      string $name       Identifies the form
+     * @param                      string $page       Identifies the page to show
+     * @param                      string $identifier Variables passed to form
+     * @SuppressWarnings("unused") for $success
+     * @return                     \NDB_Form
      */
     static function &factory($name, $page, $identifier)
     {
