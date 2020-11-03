@@ -62,11 +62,26 @@ class BreadcrumbTrailTest extends TestCase
         $this->assertEquals($c, $this->breadcrumbTrail);
     }
 
+    /**
+     * ToString Provider
+     *
+     * @return []
+     */
     public function toStringProvider()
-    {    
+    {
         return [
-            [["testLabel", "testLink"], ["testLabel2", "testLink2"], '{"text":"testLabel","query":"testLink"},{"text":"testLabel2","query":"testLink2"}'],
-            [["aLabel", "aLink"], ["anotherLabel", "anotherLink"], '{"text":"aLabel","query":"aLink"},{"text":"anotherLabel","query":"anotherLink"}']          
+            [
+                ["testLabel", "testLink"],
+                ["testLabel2", "testLink2"],
+                '{"text":"testLabel","query":"testLink"},'
+                . '{"text":"testLabel2","query":"testLink2"}'
+            ],
+            [
+                ["aLabel", "aLink"],
+                ["anotherLabel", "anotherLink"],
+                '{"text":"aLabel","query":"aLink"},'
+                . '{"text":"anotherLabel","query":"anotherLink"}'
+            ]
         ];
     }
 }
