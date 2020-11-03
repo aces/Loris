@@ -705,7 +705,7 @@ class UserTest extends TestCase
             ->method('pselectOne')
             ->with(
                 [
-                $this->stringContains("FROM user_login_history")
+                    $this->stringContains("FROM user_login_history")
                 ]
             )
             ->willReturn($count);
@@ -728,7 +728,7 @@ class UserTest extends TestCase
             ->method('pselectOne')
             ->with(
                 [
-                $this->stringContains("FROM user_login_history")
+                    $this->stringContains("FROM user_login_history")
                 ]
             )
             ->willReturn($count);
@@ -792,7 +792,7 @@ class UserTest extends TestCase
             ->method('pselectOne')
             ->with(
                 [
-                $this->stringContains("WHERE Login_timestamp <")
+                    $this->stringContains("WHERE Login_timestamp <")
                 ]
             )
             ->willReturn($timestamp);
@@ -817,7 +817,7 @@ class UserTest extends TestCase
             ->method('pselectOne')
             ->with(
                 [
-                $this->stringContains("WHERE Login_timestamp <")
+                    $this->stringContains("WHERE Login_timestamp <")
                 ]
             )
             ->willReturn($timestamp);

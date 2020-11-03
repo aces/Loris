@@ -225,7 +225,6 @@ class CandidateTest extends TestCase
 
         $data = ['Active' => 'N'];
         //assert update method is called with correct parameters
-        $array = ;
         $this->_dbMock->expects($this->once())
             ->method('update')
             ->with(
@@ -935,9 +934,9 @@ class CandidateTest extends TestCase
             ->method('pselectWithIndexKey')
             ->with(
                 [
-                $this->stringContains(
-                    "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn"
-                )
+                    $this->stringContains(
+                        "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn"
+                    )
                 ]
             )
             ->willReturn($result);

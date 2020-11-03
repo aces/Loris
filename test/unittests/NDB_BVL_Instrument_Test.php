@@ -1015,8 +1015,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_mockDB->expects($this->once())->method('pselectOne')
             ->with(
                 [
-                "SELECT SessionID FROM flag WHERE CommentID = :CID",
-                ['CID' => 'commentID1']
+                    "SELECT SessionID FROM flag WHERE CommentID = :CID",
+                    ['CID' => 'commentID1']
                 ]
             )
             ->willReturn('123');
@@ -1054,8 +1054,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_mockDB->expects($this->any(0))->method('pselectOne')
             ->with(
                 [
-                "SELECT SessionID FROM flag WHERE CommentID = :CID",
-                ['CID' => 'commentID1']
+                    "SELECT SessionID FROM flag WHERE CommentID = :CID",
+                    ['CID' => 'commentID1']
                 ]
             )
             ->willReturn('123');
@@ -1079,8 +1079,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_mockDB->expects($this->any(0))->method('pselectOne')
             ->with(
                 [
-                "SELECT SessionID FROM flag WHERE CommentID = :CID",
-                ['CID' => 'commentID1']
+                    "SELECT SessionID FROM flag WHERE CommentID = :CID",
+                    ['CID' => 'commentID1']
                 ]
             )
             ->willReturn('123');

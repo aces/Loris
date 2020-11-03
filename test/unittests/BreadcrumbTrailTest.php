@@ -27,7 +27,7 @@ class BreadcrumbTrailTest extends TestCase
     /**
      * Breadcrumb list used for testing
      *
-     * @var \LORIS\BreadcrumbTrail 
+     * @var \LORIS\BreadcrumbTrail
      */
     protected $breadcrumbTrail;
 

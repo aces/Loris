@@ -315,9 +315,9 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with(
                 [
-                $this->stringContains(
-                    "JOIN project_subproject_rel USING (SubprojectID)"
-                )
+                    $this->stringContains(
+                        "JOIN project_subproject_rel USING (SubprojectID)"
+                    )
                 ]
             )
             ->willReturn(
@@ -347,9 +347,9 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with(
                 [
-                $this->stringContains(
-                    "JOIN project_subproject_rel USING (SubprojectID)"
-                )
+                    $this->stringContains(
+                        "JOIN project_subproject_rel USING (SubprojectID)"
+                    )
                 ]
             )
             ->willReturn(
@@ -573,10 +573,10 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
-                [  
-                    ($this->stringContains(
+                [
+                    $this->stringContains(
                         "AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)"
-                    ))
+                    )
                 ]
             )
             ->willReturn(
@@ -1195,9 +1195,9 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->once())->method('pselect')
             ->with(
                 [
-                $this->stringContains(
-                    "JOIN files f ON (f.AcquisitionProtocolID=mri.ID)"
-                )
+                    $this->stringContains(
+                        "JOIN files f ON (f.AcquisitionProtocolID=mri.ID)"
+                    )
                 ]
             )
             ->willReturn(
