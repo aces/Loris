@@ -43,8 +43,11 @@ class BreadcrumbTrailTest extends TestCase
     
     /**
      * Test __toString() returns correct string
-     *
      * TODO: Add potential edge cases (such as white space)
+     *
+     * @param []     $data1 A label/link pair
+     * @param []     $data2 A label/link pair
+     * @param string $c     The value to compare
      *
      * @dataProvider toStringProvider
      * @covers       Breadcrumb::__toString
@@ -53,7 +56,7 @@ class BreadcrumbTrailTest extends TestCase
     public function testToString($data1, $data2, $c)
     {
         $this->breadcrumbTrail = new BreadcrumbTrail(
-            new Breadcrumb($data1[0], $data1[1]), 
+            new Breadcrumb($data1[0], $data1[1]),
             new Breadcrumb($data2[0], $data2[1])
         );
         $this->assertEquals($c, $this->breadcrumbTrail);
