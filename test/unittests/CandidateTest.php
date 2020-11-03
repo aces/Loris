@@ -229,7 +229,7 @@ class CandidateTest extends TestCase
                 [
                     'candidate',
                     $data,
-                    array('CandID' => $this->_candidateInfo['CandID'])
+                    ['CandID' => $this->_candidateInfo['CandID']]
                 ]
             );
 
