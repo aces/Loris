@@ -1609,7 +1609,7 @@ class LorisForms_Test extends TestCase
         $this->form->addText("abc", "Hello", array());
         $this->form->addText("xyz", "Bye", array());
         $this->form->addRule(
-            ["abc", "xyz"], "Required if!", "requiredIf",
+            ["abc", "xyz"], "Required if!", "requiredIf", "format"
         );
 
         $this->assertEquals(

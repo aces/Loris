@@ -1943,7 +1943,7 @@ class LorisForm
      * @param string        $type    The type of element to be created.
      * @param ?string       $elname  The name of the element to be added
      * @param ?string       $label   The label to attach to the element
-     * @param ?array        $options Element specific options to pass
+     * @param ?array|string $options Element specific options to pass
      *                               to create* wrappers
      * @param ?array|string $attribs An array of extra HTML attributes to
      *                               add to the element.
