@@ -196,6 +196,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     echo "<p><b>$elname</b><br> ";
                 }
                 $rules_array = [];
+                $rules       = [];
+                $registered  =[];
                 foreach ($registered_rules as $key => $value) {
                     if ($key = 'rules') {
                         $rules = $value;
