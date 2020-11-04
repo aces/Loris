@@ -29,12 +29,14 @@ class CouchDBMRIImporter
     // of using Database::singleton in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
 
+
     // this is just in an instance variable to make
     // the code a little more readable.
     private $_Dictionary = [];
-    var $feedback_Comments; //reference to list of MRI feedback types;
-    var $feedback_PreDefinedComments; //reference to list of MRI feedback types;
+    var $FeedbackMRICommentTypes;
+
     var $mri_header_fields;// reference to list of mri header fields
+
     /**
      * Constructor for CouchDBMRIImporter
      */
@@ -67,13 +69,12 @@ class CouchDBMRIImporter
         $this->updateCandidateDocs($CandidateData, $ScanTypes);
     }
 
-
     /**
-     * Accessor for dictionary array
+     * Builds and returns the data dictionary.
      *
-     * @param array $types The scan types
+     * @param $types list of scan types.
      *
-     * @return array
+     * @return the computed data dictionary.
      */
     public function getDataDictionary($types)
     {
@@ -116,12 +117,12 @@ class CouchDBMRIImporter
           as QCComment";
 
         foreach ($s as $scan) {
-            $scantype =$scan['ScanType'];
+            $scantype = $scan['ScanType'];
             $Query   .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
               ON (msc.ID= f.AcquisitionProtocolID)
               WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
                     as `Selected_$scantype`, (SELECT fqc.QCStatus
-                    FROM files f 
+                    FROM files f
                     LEFT JOIN files_qcstatus fqc USING(FileID)
                     LEFT JOIN mri_scan_type msc ON(msc.ID= f.AcquisitionProtocolID)
               WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
@@ -165,8 +166,7 @@ class CouchDBMRIImporter
         $header['Algorithm_'.$type]           = $FileObj->getParameter('Algorithm');
         $header['AcquisitionDate_'.$type]     = $this->_getDate(
             $FileObj,
-            'acquisition_date',
-            $acqDate
+            'acquisition_date'
         );
         $header['FileInsertDate_'.$type]      = $FileObj->getParameter('InsertTime');
         $header['SeriesDescription_'.$type]   = $FileObj->getParameter($ser_desc);
@@ -191,18 +191,15 @@ class CouchDBMRIImporter
         $header['TotalRejected_'.$type] = $FileObj->getParameter($tot_rej);
         $header['SlicewiseRejected_'.$type] = $this->_getRejected(
             $FileObj,
-            'slicewise',
-            $sliceRej
+            'slicewise'
         );
         $header['InterlaceRejected_'.$type] = $this->_getRejected(
             $FileObj,
-            'interlace',
-            $laceRej
+            'interlace'
         );
         $header[$inter_rej]      = $this->_getRejected(
             $FileObj,
-            'intergradient',
-            $interRej
+            'intergradient'
         );
         $header['Caveat_'.$type] = $FileObj->getParameter('Caveat');
         $header['ProcessingPipeline_'.$type] = $FileObj->getParameter($pipeline);
@@ -212,20 +209,15 @@ class CouchDBMRIImporter
     /**
      * Gets the date according to the type
      *
-     * @param MRIFile $file  file object
-     * @param string  $type  type of the date
-     * @param array   $array array containing the date
+     * @param MRIFile $file file object
+     * @param string  $type type of the date
      *
      * @return date if exists, if not an empty string
      */
-    function _getDate($file, $type, $array)
+    function _getDate($file, $type)
     {
-        if (preg_match(
-            "/(\d{4})-?(\d{2})-?(\d{2})/",
-            $file->getParameter($type),
-            $array
-        )
-        ) {
+        $date = $file->getParameter($type);
+        if (preg_match("/(\d{4})-?(\d{2})-?(\d{2})/", $date, $array)) {
             return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
         } else {
             return "";
@@ -233,50 +225,42 @@ class CouchDBMRIImporter
     }
 
     /**
-     * Gets the scannerID
+     * Gets the scannerID associated to a given scan
      *
-     * @param MRIFile $FileID file object
+     * @param $FileID ID of the file containing the scan.
      *
-     * @return scannerID
+     * @return scannerID.
      */
     function _getScannerID($FileID)
     {
-
         $scannerID = $this->SQLDB->pselectOne(
-            "SELECT ScannerID FROM files ".
-            "WHERE FileID =:FileID",
-            [
-                'FileID' => $FileID
-            ]
+            "SELECT ScannerID FROM files WHERE FileID =:FileID",
+            ['FileID' => $FileID]
         );
+
         return $scannerID;
     }
 
     /**
      * Gets a rejected parameter according to its type
      *
-     * @param MRIFile $file  file object
-     * @param string  $type  type of the rejected
-     * @param array   $array array containing rejected
+     * @param MRIFile $file file object
+     * @param string  $type type of the rejected
      *
      * @return parameter of the rejected
      */
-    function _getRejected($file, $type, $array)
+    function _getRejected($file, $type)
     {
-        $parameter = 'processing:' . $type . '_rejected';
-        if (preg_match(
-            "/(Directions)([^\(]+)(\(\d+\))/",
-            $file->getParameter($parameter),
-            $array
-        )
-        ) {
+        $parameterName = 'processing:' . $type . '_rejected';
+        $param         = $file->getParameter($parameterName);
+        if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $param, $array)) {
             $dirList = preg_split('/\,/', $array[2]);
             if (count($dirList) > 1) {
                 sort($dirList);
             }
             return "Directions " . join(", ", $dirList) . " " . $array[3];
         } else {
-            return $file->getParameter($parameter);
+            return $param;
         }
     }
 
@@ -295,33 +279,65 @@ class CouchDBMRIImporter
     function _addMRIFeedback($current_feedback, $scan_type, $mri_feedback)
     {
         $CandidateData = [];
+        $commentTypes  = $this->_getFeedbackMRICommentTypes();
         //setting default values for mri feedback
-        foreach ($this->feedback_Comments as $CommentTypeID=>$field) {
-            $CandidateData[$field."_".$scan_type]
-                = $mri_feedback->getMRIValue($field);
-            // overall comment field for each CommentTypeID
-            $CandidateData["Comment_".$field."_".$scan_type] = '';
-            // set deafault for all the predefined comments as well
-            $predefn = $this->feedback_PreDefinedComments[$CommentTypeID];
-            foreach ($predefn as $id=>$key) {
-                $CandidateData[$key."_".$scan_type] = 'No'; //no is default
+        foreach (array_keys($commentTypes) as $CommentTypeID) {
+            if ($this->_getFeedbackMRICommentTypesStatusField($CommentTypeID)) {
+                $dictionaryID = $this->_getDictionaryID(
+                    'COMMENT_STATUS_FIELD',
+                    $CommentTypeID,
+                    $scan_type
+                );
+                $CandidateData[$dictionaryID] = $mri_feedback->getMRIValue(
+                    $this->_getFeedbackMRICommentTypesStatusField($CommentTypeID)
+                );
+            }
+
+            // Overall comment field for each CommentTypeID
+            $dictionaryID = $this->_getDictionaryID(
+                'COMMENT',
+                $CommentTypeID,
+                $scan_type
+            );
+            $CandidateData[$dictionaryID] = '';
+
+            // Set default for all the predefined comments as well
+            $predefinedCommentIDs
+                = array_keys($this->_getPredefinedComments($CommentTypeID));
+            foreach ($predefinedCommentIDs as $predefinedCommentID) {
+                $dictionaryID = $this->_getDictionaryID(
+                    'PREDEFINED_COMMENT',
+                    $CommentTypeID,
+                    $scan_type,
+                    $predefinedCommentID
+                );
+                $CandidateData[$dictionaryID] = 'No'; //no is default
             }
         }
+
         foreach ($current_feedback as $CommentTypeID=>$comment) {
             if (array_key_exists("predefined", $comment)) {
                 $predefined = $comment['predefined'];
                 foreach ($predefined as $key=>$val) {
-                    $field_set
-                        = $this->feedback_PreDefinedComments[$CommentTypeID][$key];
-
-                    $CandidateData[$field_set."_".$scan_type] = 'Yes';
+                    $dictionaryID = $this->_getDictionaryID(
+                        'PREDEFINED_COMMENT',
+                        $CommentTypeID,
+                        $scan_type,
+                        $key
+                    );
+                    $CandidateData[$dictionaryID] = 'Yes';
                 }
             }
             if (array_key_exists("text", $comment)) {
-                $field_set = "Comment_".$this->feedback_Comments[$CommentTypeID];
-                $CandidateData[$field_set."_".$scan_type] = $comment['text'];
+                $dictionaryID = $this->_getDictionaryID(
+                    'COMMENT',
+                    $CommentTypeID,
+                    $scan_type
+                );
+                $CandidateData[$dictionaryID] = $comment['text'];
             }
         }
+
         return $CandidateData;
     }
 
@@ -371,11 +387,11 @@ class CouchDBMRIImporter
     {
 
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID 
-            from mri_scan_type msc
-            JOIN files f ON msc.ID= f.AcquisitionProtocolID
-            JOIN files_qcstatus fqc ON f.FileID=fqc.FileID
-            ORDER BY f.AcquisitionProtocolID",
+            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID
+             FROM mri_scan_type msc
+             JOIN files f ON msc.ID= f.AcquisitionProtocolID
+             JOIN files_qcstatus fqc ON f.FileID=fqc.FileID
+             ORDER BY f.AcquisitionProtocolID",
             []
         );
 
@@ -391,15 +407,14 @@ class CouchDBMRIImporter
      */
     public function getCandidateData($ScanTypes)
     {
-        $query = $this->_generateCandidatesQuery($ScanTypes);
-
+        $query         = $this->_generateCandidatesQuery($ScanTypes);
         $CandidateData = $this->SQLDB->pselect($query, []);
         foreach ($CandidateData as &$row) {
             foreach ($ScanTypes as $scanType) {
                 $scan_type = $scanType['ScanType'];
                 if (!empty($row['Selected_' . $scan_type])) {
                     $fileID  = $this->SQLDB->pselectOne(
-                        "SELECT FileID FROM files WHERE File=:fname",
+                        "SELECT FileID FROM files WHERE BINARY File=:fname",
                         ['fname' => $row['Selected_' . $scan_type]]
                     );
                     $FileObj = new MRIFile($fileID);
@@ -412,10 +427,7 @@ class CouchDBMRIImporter
                         $mri_header_results
                     );
                     // instantiate feedback mri object
-                    $mri_feedback     = new FeedbackMRI(
-                        $fileID,
-                        $row['SessionID']
-                    );
+                    $mri_feedback     = new FeedbackMRI($fileID, $row['SessionID']);
                     $current_feedback = $mri_feedback->getComments();
                     $mri_qc_results   = $this->_addMRIFeedback(
                         $current_feedback,
@@ -433,22 +445,40 @@ class CouchDBMRIImporter
     /**
      * Builds data dictionary for given scan types
      *
+     * Every kind of information that be entered via the MRI feedback panel has to go
+     * into the data dictionary. The MRI feedback panel allows a user to enter
+     * various types of comments for a given scan. For each of these comment types
+     * (listed in table feedback_mri_comment_types), we have:
+     *
+     * - A comment status field (column CommentStatusField in table
+     *   feedback_mri_comment_types) which can have a fixed set of values.
+     *   For example, for comments of types 'Dominant Direction Artifact (DWI ONLY)'
+     *   the status field is 'Color_Artifact' and can have values "Good", "Fair",
+     *   "Poor" or "Unacceptable"
+     * - A free form text comment that can be entered for that comment type
+     *   (these go into column Comment of table feedback_mri_comment). On the
+     *   feedback panel, you enter these in the various multi-line text fields, one
+     *   for each comment type.
+     * - Various predefined comments associated to that comment type
+     *   (these are defined in feedback_mri_predefined_comment_types). These
+     *   are the numerous checkboxes that you find on the feedback panel. For
+     *   example, for comments of type 'Dominant Direction Artifact (DWI ONLY)', you
+     *   have predefined comments 'red artifact', 'green artifact' and
+     *   'blue artifact'. These are either turned on or off via a checkbox to
+     *   indicate whether that predefined comment applies to that comment type.
+     *
      * @param array $types list of scan types
      *
      * @return void
      */
     private function _buildDataDictionary($types)
     {
-
         $this->_Dictionary = [
             'QCComment' => [
                 'Type'        => 'varchar(255)',
                 'Description' => 'QC Comment for Session',
             ]
         ];
-        /* creating dummy mri feedback object so all the mri feedback
-                *  types can be added to the dictionary */
-        $mri_feedback = new FeedbackMRI(1, "");
 
         foreach ($types as $type) {
             $ScanType = $type['ScanType'];
@@ -466,57 +496,69 @@ class CouchDBMRIImporter
             $this->_Dictionary["Selected_$ScanType"]    = $SelectedArray;
             $this->_Dictionary[$ScanType . "_QCStatus"] = $QCStatusArray;
 
-            $feedback_types = $mri_feedback->getAllCommentTypes();
-            foreach ($feedback_types as $CommentTypeID => $comments) {
-                if (!empty($comments['field'])) {
-                    $fieldName = $comments['field'];
-                    $type      = "enum ('"
-                        . implode("','", $comments['values'])
-                        . "')";
-
-                    $cmt_field = "Comment_" . $fieldName . "_$ScanType";
-                    $scanfield = "$fieldName $ScanType";
-                    $cmt_Array = [
-                        'Type'        => 'varchar(255)',
-                        'Description' => "Overall Comment for $scanfield",
+            foreach ($this->_getFeedbackMRICommentTypes() as
+                     $CommentTypeID => $comments
+            ) {
+                $commentStatusField
+                    = $this->_getFeedbackMRICommentTypesStatusField($CommentTypeID);
+                if ($commentStatusField) {
+                    $commentsValues       = !is_array($comments['values'])
+                        ? [$comments['values']] : $comments['values'];
+                    $dictionaryType       = sprintf(
+                        "enum ('%s')",
+                        implode("','", $commentsValues)
+                    );
+                    $dictionaryID         = $this->_getDictionaryID(
+                        'COMMENT_STATUS_FIELD',
+                        $CommentTypeID,
+                        $ScanType
+                    );
+                    $dictionaryProperties = [
+                        'Type'        => $dictionaryType,
+                        'Description' => "$commentStatusField $ScanType",
                     ];
 
-                    $this->_Dictionary[$cmt_field] = $cmt_Array;
-                } else {
-                    $fieldName = $comments['name'];
-                    $type      = 'varchar(255)';
+                    $this->_Dictionary[$dictionaryID] = $dictionaryProperties;
                 }
-                $this->feedback_Comments[$CommentTypeID] = $fieldName;
 
-                $cmt_scanArray = [
-                    'Type'        => $type,
-                    'Description' => $comments['name'] . " $ScanType",
-                ];
-
-                $this->_Dictionary[$fieldName . "_$ScanType"] = $cmt_scanArray;
-                $preDefinedComments = $mri_feedback->getAllPredefinedComments(
-                    $CommentTypeID
+                $dictionaryID         = $this->_getDictionaryID(
+                    'COMMENT',
+                    $CommentTypeID,
+                    $ScanType
                 );
+                $dictionaryProperties = [
+                    'Type'        => 'varchar(255)',
+                    'Description' => "Comment $commentStatusField $ScanType",
+                ];
+                $this->_Dictionary[$dictionaryID] = $dictionaryProperties;
 
-                $this->feedback_PreDefinedComments[$CommentTypeID] = [];
-
-                $pre = [];
+                $preDefinedComments = $this->_getPredefinedComments($CommentTypeID);
                 foreach (
                     $preDefinedComments as
                     $preDefinedCommentTypeID => $preDefinedComment
                 ) {
-                    $preDef_field = $preDefinedComment['field'] . "_$ScanType";
-                    $preDef_cmt   = $preDefinedComment['Comment'];
-                    $preDef_Array = [
-                        'Type'        => "enum('Yes', 'No')",
-                        'Description' => "$preDef_cmt $ScanType",
-                    ];
-                    $this->_Dictionary[$preDef_field] = $preDef_Array;
-                    $pre[$preDefinedCommentTypeID]    = $preDefinedComment['field'];
-                }
-                $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
+                    // This is the actual text associated with the predefined comment
+                    $preDefCmt = $preDefinedComment['Comment'];
 
+                    // ID in the dictionary for this predefined comment
+                    $dictionaryID = $this->_getDictionaryID(
+                        'PREDEFINED_COMMENT',
+                        $CommentTypeID,
+                        $ScanType,
+                        $preDefinedCommentTypeID
+                    );
+
+                    // Properties in the dictionary for this predefined comment
+                    $dictionaryProperties = [
+                        'Type'        => "enum('Yes', 'No')",
+                        'Description' => "$preDefCmt $ScanType",
+                    ];
+
+                    // Update the dictionary
+                    $this->_Dictionary[$dictionaryID] = $dictionaryProperties;
+                }
             }
+
             $mri_array = [
                 'ScannerID'           => 'Scanner ID',
                 'Pipeline'            => 'Pipeline',
@@ -540,6 +582,7 @@ class CouchDBMRIImporter
                 'Caveat'              => 'Caveat',
                 'ProcessingPipeline'  => 'Processing Pipleline',
             ];
+
             $this->mri_header_fields = $mri_array;
             foreach ($this->mri_header_fields as $field => $desc) {
                 $mri_field = $field . "_$ScanType";
@@ -549,6 +592,92 @@ class CouchDBMRIImporter
                 ];
             }
         }
+    }
+
+    /**
+     * Gets the ID in $this->_Dictionary for a database entity of a given type.
+     *
+     * @param $type                string one of 'COMMENT_STATUS_FIELD', 'COMMENT'
+     *                             or 'PREDEFINED_COMMENT'.
+     * @param $commentTypeID       int    the comment type ID associated
+     *                             to the entity.
+     * @param $scanType            string scan type associated to the dictionary
+     *                             object.
+     * @param $predefinedCommentID int    ID of the predefined comment type, if any.
+     *
+     * @return string the computed dictionary ID.
+     */
+    function _getDictionaryID(
+        string $type,
+        int $commentTypeID,
+        string $scanType,
+        int $predefinedCommentID = null
+    ) : string {
+        switch ($type) {
+        case 'COMMENT_STATUS_FIELD':
+            $statusField = $this-> _getFeedbackMRICommentTypesStatusField(
+                $commentTypeID
+            );
+            return "{$statusField}_$scanType";
+        case 'COMMENT':
+            $statusField = $this-> _getFeedbackMRICommentTypesStatusField(
+                $commentTypeID
+            );
+            return $statusField
+                ? "Comment_{$statusField}_$scanType" : "Comment_overall_$scanType";
+        case 'PREDEFINED_COMMENT':
+            $predefinedComments = $this->_getPredefinedComments($commentTypeID);
+            $predefinedComment  = $predefinedComments[$predefinedCommentID];
+            return "PredefinedComment_{$predefinedComment['Comment']}_$scanType";
+        }
+
+        // If we end up here, the type passed as argument is invalid
+        throw new LorisException(
+            "Cannot compute dictionary ID: Unknown entity type $type.\n"
+        );
+    }
+
+    /**
+     * Gets the status field for an entry in table feedback_mri_comment_type.
+     *
+     * @param $commentTypeID int ID of the comment type.
+     *
+     * @return string status field for the comment type passed in argument.
+     */
+    function _getFeedbackMRICommentTypesStatusField(int $commentTypeID) : string
+    {
+        $feedbackMRIComment = $this->_getFeedbackMRICommentTypes()[$commentTypeID];
+
+        return $feedbackMRIComment['name'] != 'Overall'
+            ? $feedbackMRIComment['field'] : '';
+    }
+
+    /**
+     * Gets all records in table feedback_mri_comment_type.
+     *
+     * @return array all comment types.
+     */
+    function _getFeedbackMRICommentTypes() : array
+    {
+        if (!$this->FeedbackMRICommentTypes) {
+            $feedbackMRI = new FeedbackMRI(1, "");
+            $this->FeedbackMRICommentTypes = $feedbackMRI->getAllCommentTypes();
+        }
+
+        return $this->FeedbackMRICommentTypes;
+    }
+
+    /**
+     * Gets all the predefined comments for a specific comment type.
+     *
+     * @param $commentTypeID int ID of the comment type.
+     *
+     * @return array all predefined comments for the comment ID.
+     */
+    function _getPredefinedComments(int $commentTypeID) : array
+    {
+        $feedbackMRI = new FeedbackMRI(1, "");
+        return $feedbackMRI->getAllPredefinedComments($commentTypeID);
     }
 }
 

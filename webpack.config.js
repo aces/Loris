@@ -232,12 +232,11 @@ const config = [
     'react.tabs',
   ]),
   lorisModule('dicom_archive', ['dicom_archive']),
-  lorisModule('genomic_browser', ['FileUploadModal']),
+  lorisModule('genomic_browser', ['genomicBrowserIndex']),
   lorisModule('electrophysiology_browser', [
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
   ]),
-  lorisModule('genomic_browser', ['profileColumnFormatter']),
   lorisModule('imaging_browser', [
     'ImagePanel',
     'imagingBrowserIndex',

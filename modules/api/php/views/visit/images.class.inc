@@ -58,19 +58,7 @@ class Images
                     'OutputType'      => $image->getOutputType(),
                     'Filename'        => $image->getFilename(),
                     'AcquisitionType' => $image->getAcquisitionprotocol(),
-<<<<<<< HEAD
                     'IsPhantom'       => $image->isPhantom(),
-=======
-<<<<<<< 2d52c2cf0c85e8e2f8ddd1028a46887d989c7e20
-<<<<<<< 172ccae6b3fe3e3bc99f174c5b11afd019107de8
-                    'IsPhantom'       => $image->isPhantom(),
-=======
-                    'IsPHantom'       => $image->isPhantom(),
->>>>>>> [API] Added isPhantom to images attributes
-=======
-                    'IsPhantom'       => $image->isPhantom(),
->>>>>>> [API] isPHantom typo corrected
->>>>>>> 9b743a36bf7501126f1eed30ed4e0e7ae0e15257
                 ];
             },
             $this->_images
