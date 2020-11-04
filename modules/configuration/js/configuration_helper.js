@@ -90,11 +90,6 @@ $(function () {
             }
         });
     });
-
-    // On form reset, to delete the elements added with the "Add field" button that were not submitted.
-    $('form').on('reset', function(e) {
-        $(".tab-pane.active").find("select[name^='add-']").parent().remove();
-    });
 });
 
 /*

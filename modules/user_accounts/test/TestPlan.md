@@ -11,7 +11,8 @@ User Account module - Test plan
     * full name, 
     * pending approval, 
     * email
-5. Ensure adding a new user with the same username as an existing user fails.
+5. The empty option in the site filter should display users from all sites, even if they are different from the active user.
+6. Ensure adding a new user with the same username as an existing user fails.
 
 When creating or editing a user: (subtest: edit_user)
 ========================================================

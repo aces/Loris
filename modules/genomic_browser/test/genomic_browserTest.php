@@ -28,24 +28,74 @@ require_once __DIR__
 class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
 {
     // expect UIs for Profiles Tab
-    // private $_loadingProfilesUI = array(
-    //     'Profiles' => '#tab-tabProfiles'
-    // );
+    private $_loadingProfilesUI = [
+        'Profiles'          => '#onLoad > strong',
+        'Candidate Filters' => '#lorisworkspace>div>'.
+                                           'div:nth-child(2)>div>div>form>div:nth'.
+                                           '-child(1)>div>div>div>div.panel-heading',
+        'Genomic Filters'   => '#lorisworkspace>div>'.
+                                           'div:nth-child(2)>div>div>form>'.
+                                           'div:nth-child(2)>div>'.
+                                           'div.form-group.col-sm-8>'.
+                                           'div>div.panel-heading',
+          // expected_headers
+        'No.'               => '#dynamictable > thead',
+        'PSCID'             => '#dynamictable > thead',
+        'Sex'               => '#dynamictable > thead',
+        'Subproject'        => '#dynamictable > thead',
+        'File'              => '#dynamictable > thead',
+        'SNP'               => '#dynamictable > thead',
+        'CNV'               => '#dynamictable > thead',
+        'CPG'               => '#dynamictable > thead',
+    ];
     // expect UIs for GWAS Tab
     private $_loadingGWASUI = [
-        'GWAS' => '#tab-tabGWAS',
+        'Gwas Browser' => '#bc2 > a:nth-child(3) > div',
+        'GWAS Filters' => '#lorisworkspace > div > '.
+                                           'div:nth-child(2) > div >div > form >'.
+                                           'div>div>div.form-group.col-sm-8>div> '.
+                                           'div.panel-heading',
     ];
     // expect UIs for SNP Tab
     private $_loadingSNPUI = [
-        'SNP'         => '#tab-tabSNP',
+        'SNP Filters'         => '#lorisworkspace > div >'.
+                                           'div:nth-child(2) > div > div'.
+                                           '> form > div > div:nth-child(2) >'.
+                                           'div.form-group.col-sm-8 >'.
+                                           ' div > div.panel-heading',
+          // expected_headers
+        'No.'                 => '#dynamictable > thead',
+        'PSCID'               => '#dynamictable > thead',
+        'Sex'                 => '#dynamictable > thead',
+        'RsID'                => '#dynamictable > thead',
+        'Allele A'            => '#dynamictable > thead',
+        'Allele B'            => '#dynamictable > thead',
+        'Reference Base'      => '#dynamictable > thead',
+        'Minor Allele'        => '#dynamictable > thead',
+        'Function Prediction' => '#dynamictable > thead',
+        'Damaging'            => '#dynamictable > thead',
+        'Exonic Function'     => '#dynamictable > thead',
     ];
     // expect UIs for Methylation Tab
     private $_MethylationUI = [
-        'Methylation'     => '#tab-tabMethylation',
+        'Candidate Filters'     => '#lorisworkspace > div >'.
+                                           ' div:nth-child(2) > div> div > form >'.
+                                           ' div>div:nth-child(1)>div.form-group.'.
+                                           'col-sm-7 > div > div.panel-heading',
+        'Genomic Range Filters' => '#lorisworkspace > div >'.
+                                           'div:nth-child(2)> div > div > form>div'.
+                                           '>div:nth-child(1)>div.form-group.col-sm'.
+                                           '-5 > div > div.panel-heading',
+        'CpG Filters'           => '#lorisworkspace > div >'.
+                                           ' div:nth-child(2) > div > div'.
+                                           ' > form > div > div:nth-child(2) >'.
+                                           ' div.form-group.col-sm-8 >'.
+                                           ' div > div.panel-heading',
     ];
     // expect UIs for Files Tab
     private $_FilesUI = [
-        'Files' => '#tab-tabFiles',
+        'Genomic File Filters' => '#genomic_upload > div >'.
+                             ' div.col-sm-10.col-md-8 > div > div.panel-heading',
     ];
     /**
      * Tests that, when loading the genomic_browser module, the
@@ -94,15 +144,12 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserEachTab()
     {
-        $this->safeGet($this->url . "/genomic_browser/");
-        $this->_testPageUIs("#tab-tabGWAS", $this->_loadingGWASUI);
-        $this->_testPageUIs("#tab-tabSNP", $this->_loadingSNPUI);
+        $this->_testPageUIs("/genomic_browser/", $this->_loadingProfilesUI);
+        $this->_testPageUIs("/genomic_browser/gwas_browser/", $this->_loadingGWASUI);
+        $this->_testPageUIs("/genomic_browser/snp_browser/", $this->_loadingSNPUI);
+        $this->_testPageUIs("/genomic_browser/cpg_browser/", $this->_MethylationUI);
         $this->_testPageUIs(
-            "#tab-tabMethylation",
-            $this->_MethylationUI
-        );
-        $this->_testPageUIs(
-            "#tab-tabFiles",
+            "/genomic_browser/genomic_file_uploader/",
             $this->_FilesUI
         );
     }
@@ -180,9 +227,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function _testPageUIs($url,$ui)
     {
-        $this->safeFindElement(
-            WebDriverBy::cssSelector($url)
-        )->click();
+        $this->safeGet($this->url . $url);
         foreach ($ui as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
@@ -223,18 +268,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testUploadFile()
     {
-        $this->safeGet($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/genomic_file_uploader/");
         $this->safeFindElement(
-            WebDriverBy::cssSelector("#tab-tabFiles")
+            WebDriverBy::Name("upload")
         )->click();
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "div.panel:nth-child(2) > div:nth-child(1)".
-                  " > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) >".
-                " div:nth-child(1) > div:nth-child(1) > button:nth-child(1)"
-            )
-        )->click();
-        $value    = "#tabFiles > div:nth-child(1) > div > div:nth-child(1)";
+        $value    = "#myModalLabel";
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
