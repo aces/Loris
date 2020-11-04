@@ -539,9 +539,11 @@ class NDB_BVL_Battery
      * Creates a new unique commentID for the given instrument in the
      * current battery
      *
-     * @param                      string $testName The test name that we want a commentID for
+     * @param string $testName The test name that we want a commentID for
+     *
      * @SuppressWarnings("unused") for $error
-     * @return                     ?string the commentID generated
+     *
+     * @return ?string the commentID generated
      */
     function _createCommentID($testName)
     {
