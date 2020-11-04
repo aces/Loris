@@ -300,10 +300,6 @@ function editFamilyInfoFields(\Database $db)
         $db->update('family', $updateValues, ['ID' => $siblingID]);
 
         $i++;
-
-        // Otherwise there is an error about a possible infinite loop
-        // How is siblingCandID updated to get updated to null eventually?
-        $siblingCandID = $siblingCandID;
     }
 }
 

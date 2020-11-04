@@ -51,7 +51,7 @@ class NDB_Factory
      * Settings object
      * A proxy to NDB_Config
      *
-     * @var ?Settings object
+     * @var Settings object
      */
     private static $_settings = null;
 
@@ -395,9 +395,9 @@ class NDB_Factory
      *
      * @param string $configfile Location of XML file to parse config from
      *
-     * @return ?Settings setting object
+     * @return \Settings setting object
      */
-    public function settings(string $configfile = "../project/config.xml"): ?Settings
+    public function settings(string $configfile = "../project/config.xml"): \Settings
     {
         if (self::$_settings !== null) {
             return self::$_settings;

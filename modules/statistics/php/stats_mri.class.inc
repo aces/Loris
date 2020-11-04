@@ -58,20 +58,20 @@ class Stats_MRI extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string       $sectionHeader     the value of sectionHeader
-     * @param string       $tableHeader       the value of tableHeader
-     * @param array        $subcats           the value of subcats
-     * @param array        $visits            the value of visits
-     * @param string       $dropdown_name     the value of dropdown_name
-     * @param string|array $dropdown_opt      the value of dropdown_opt
-     * @param string       $dropdown_selected the value of dropdown_selected
-     * @param array        $centers           the value of centers
-     * @param array        $data              the value of data
-     * @param string       $Subsection        the value of Subsection=''
-     * @param string       $disclamer         the value of disclamer=''
-     * @param ?string      $projectID         the value of projectID is null
-     * @param bool         $renderTable       whether to render the table or display
-     *                                        a default error message
+     * @param string  $sectionHeader     the value of sectionHeader
+     * @param string  $tableHeader       the value of tableHeader
+     * @param array   $subcats           the value of subcats
+     * @param array   $visits            the value of visits
+     * @param string  $dropdown_name     the value of dropdown_name
+     * @param string  $dropdown_opt      the value of dropdown_opt
+     * @param string  $dropdown_selected the value of dropdown_selected
+     * @param array   $centers           the value of centers
+     * @param array   $data              the value of data
+     * @param string  $Subsection        the value of Subsection=''
+     * @param string  $disclamer         the value of disclamer=''
+     * @param ?string $projectID         the value of projectID is null
+     * @param bool    $renderTable       whether to render the table or display
+     *                                   a default error message
      *
      * @return string
      */

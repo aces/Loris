@@ -123,10 +123,10 @@ class MediaTest extends LorisIntegrationTest
     /**
      * Testing filter funtion and clear button
      *
-     * @param string  $element The input element loaction
-     * @param string  $table   The first row location in the table
-     * @param ?string $records The records number in the table
-     * @param string  $value   The test value
+     * @param string $element The input element loaction
+     * @param string $table   The first row location in the table
+     * @param string $records The records number in the table
+     * @param string $value   The test value
      *
      * @return void
      */

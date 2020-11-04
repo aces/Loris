@@ -180,7 +180,7 @@ class Behavioural_QC extends \NDB_Form
      * all the feedback at all levels. In the case of just a candidate
      * set we return all feedbacks at every level for that candidate.
      *
-     * @param ?string    $test_name   the value of test name
+     * @param null       $test_name   the value of test name
      * @param null       $candID      the value of candidate ID
      * @param null       $visit_label the value of visit label
      * @param int|string $site        the id or default value of the site

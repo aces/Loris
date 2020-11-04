@@ -170,7 +170,7 @@ class NDB_Config
             foreach ($children as $child) {
                 $name      = $child->getName();
                 $tagExists = isset($retVal[$name]) && is_array($retVal[$name]);
-                if ($tagExists && !empty($retVal)) {
+                if ($tagExists) {
                     if (!self::isNumericArray($retVal[$name])) {
                         // The tag is duplicated in the XML, so it should
                         // be stored in an array. Create a new array and replace

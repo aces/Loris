@@ -371,9 +371,9 @@ function showMediaError($message, $code)
  * Utility function to convert data from database to a
  * (select) dropdown friendly format
  *
- * @param array   $options array of options
- * @param string  $item    key
- * @param ?string $item2   value
+ * @param array  $options array of options
+ * @param string $item    key
+ * @param string $item2   value
  *
  * @return array
  */

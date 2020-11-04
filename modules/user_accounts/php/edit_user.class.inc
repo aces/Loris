@@ -812,7 +812,7 @@ class Edit_User extends \NDB_Form
                 $groupA[] = $this->createCheckbox(
                     'ex_'.$row['CenterID'],
                     $row['Alias'],
-                    null
+                    []
                 );
             }
             $groupB[] = $this->createLabel(
@@ -925,15 +925,13 @@ class Edit_User extends \NDB_Form
                     'static',
                     null,
                     null,
-                    [
-                        '</div>',
-                        "<h3 id=\"header_$lastRole\"",
-                        "class=\"perm_header button\" ",
-                        "style=\"text-align: center; margin-top: 5px;\">",
-                        ucwords($row['type']),
-                        '</h3>',
-                        "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">",
-                    ]
+                    '</div>'
+                    . "<h3 id=\"header_$lastRole\" "
+                    . "class=\"perm_header button\" "
+                    .  "style=\"text-align: center; margin-top: 5px;\">"
+                    . ucwords($row['type'])
+                    . '</h3>'
+                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
                 );
             }
 
@@ -968,13 +966,11 @@ class Edit_User extends \NDB_Form
             'static',
             null,
             null,
-            [
-                '</div>',
-                "<h3 id=\"header_supervisors\" class=\"perm_header button\"",
-                "style=\"text-align: center; margin-top: 5px;\">",
-                "Data Supervisors to Email </h3>",
-                "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">"
-            ]
+            '</div>'
+            . "<h3 id=\"header_supervisors\" class=\"perm_header button\" "
+            . "style=\"text-align: center; margin-top: 5px;\"> "
+            . "Data Supervisors to Email </h3> "
+            . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">"
         );
 
         $attribs = $this->_isEditingOwnAccount() ? ['disabled' => true] : null;
