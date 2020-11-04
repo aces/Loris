@@ -70,8 +70,8 @@ class Stats_MRI extends \NDB_Form
      * @param string  $Subsection        the value of Subsection=''
      * @param string  $disclamer         the value of disclamer=''
      * @param ?string $projectID         the value of projectID is null
-     * @param bool    $renderTable       whether to render the table or display
-     *                                   a default error message
+     * @param bool    $renderTable       whether to render the table or display a
+     *                                   default error message
      *
      * @return string
      */

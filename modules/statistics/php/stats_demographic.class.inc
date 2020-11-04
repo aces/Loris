@@ -75,8 +75,8 @@ class Stats_Demographic extends \NDB_Form
      * @param string  $subsection       the value of subsection=''
      * @param string  $disclamer        the value of disclamer=''
      * @param ?string $projectID        the value of projectID is null
-     * @param bool    $renderTable      whether to render the table or display
-     *                                  a default error message
+     * @param bool    $renderTable      whether to render the table or display a
+     *                                  default error message
      *
      * @return string
      */

@@ -395,7 +395,7 @@ class NDB_Factory
      *
      * @param string $configfile Location of XML file to parse config from
      *
-     * @return \Settings setting object
+     * @return Settings setting object
      */
     public function settings(string $configfile = "../project/config.xml"): \Settings
     {

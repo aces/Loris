@@ -20,7 +20,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
 {
     protected $frecordTest     = "sub-OTT174_ses-V1_task-faceO_eeg.edf";
     protected $frecordTestFile = "bids_imports/Face13_BIDSVersion_1.1.0/" .
-    "sub-OTT174/ses-V1/eeg/sub-OTT174_ses-V1_task-faceO_eeg.edf"
+    "sub-OTT174/ses-V1/eeg/sub-OTT174_ses-V1_task-faceO_eeg.edf";
     protected $candidTest      = "300174";
     protected $visitTest       = "V1";
 

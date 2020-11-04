@@ -928,8 +928,8 @@ class Edit_User extends \NDB_Form
                     '</div>'
                     . "<h3 id=\"header_$lastRole\" "
                     . "class=\"perm_header button\" "
-                    .  "style=\"text-align: center; margin-top: 5px;\">"
-                    . ucwords($row['type'])
+                    . "style=\"text-align: center; margin-top: 5px;\">"
+                    .ucwords($row['type'])
                     . '</h3>'
                     . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
                 );

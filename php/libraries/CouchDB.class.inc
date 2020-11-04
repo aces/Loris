@@ -1,2367 +1,797 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This class represents an attempt to re-implement the API for
- * HTML_QuickForm (Version 1) in Loris since QuickForm1 isn't
- * maintained anymore, and QuickForm2 is a completely different API.
+ * This file contains a database wrapper around the CouchDB API for Loris.
  *
- * It only reimplements the minimal set required for Loris to work,
- * and doesn't do it in a particularly elegant way, but prevents
- * PHP warnings that QuickForm1 generates since QuickForm1 was written
- * for PHP4.
- *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 /**
- * Reimplementation of QuickForm API from scratch
+ * Wrapper around PHP IO functions (fopen/close/get/etc)
+ * so that a mock can be used for testing HTTP requests
  *
- * @category Main
- * @package  Main
+ * @category Testing
+ * @package  Test
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
-
-class LorisForm
+class SocketWrapper
 {
-
-    var $form          = [];
-    var $defaultValues = [];
-    var $formRules     = [];
-    var $errors        = [];
-    var $filters       = [];
-    var $frozen        = false;
-    var $enctype       = '';
-    var $groupMapping  = [];
-    var $action        = '';
-    var $allowedRules  = [
-        'compare',
-        'requiredIf',
-        'required',
-        'numeric',
-        'regex',
-        'email',
-        'maxlength',
-    ];
-    public $validOperators;
-    public $encrypt;
-
+    public $host;
+    public $port;
+    public $socket;
     /**
-     * Creates and returns an element that can be added
-     * to the $this->form array. This handles any options
-     * that are shared between every type of element,
-     * things specific to one type of element X should go in
-     * the createX function.
-     *
-     * @param string $name    The form name of the element being added
-     * @param string $label   The label to attach to the GUI in the form
-     * @param array  $attribs An array of extra HTML attributes to be
-     *                        added to this element.
-     *
-     * @return array describing the form element
+     * Constructor for SocketWrapper
      */
-    protected function &createBase($name, $label, $attribs=[])
+    function __construct()
     {
-        $el = ['label' => $label];
-
-        if (!empty($name)) {
-            $el['name'] = $name;
-        }
-
-        if (isset($attribs['class'])) {
-            $el['class'] = $attribs['class'];
-        }
-        if (isset($attribs['id'])) {
-            $el['id'] = $attribs['id'];
-        }
-        if (isset($attribs['onchange'])) {
-            $el['onchange'] = $attribs['onchange'];
-        }
-        if (isset($attribs['value'])) {
-            $el['value'] = $attribs['value'];
-        }
-        if (isset($attribs['oninvalid'])) {
-            $el['oninvalid'] = $attribs['oninvalid'];
-        }
-        if (isset($attribs['pattern'])) {
-            $el['pattern'] = $attribs['pattern'];
-        }
-        if (isset($attribs['disabled'])) {
-            $el['disabled'] = true;
-        }
-        if (isset($attribs['readonly'])) {
-            $el['readonly'] = true;
-        }
-        if (isset($attribs['required']) && $attribs['required'] === true) {
-            $el['required'] = true;
-        }
-        if (isset($attribs['align'])) {
-            $el['align'] = $attribs['align'];
-        }
-        if (isset($attribs['placeholder'])) {
-            $el['placeholder'] = $attribs['placeholder'];
-        }
-
-        return $el;
-    }
-    /**
-     * Adds an element to the $this->form array. Handles the creation
-     * of any shared attributes that are shared between different
-     * element types.
-     *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added, for example "class" attribute.
-     *
-     * @return &array A reference to the array that was added to $this->form
-     */
-    protected function &addBase($name, $label, $attribs = [])
-    {
-        $el   = $this->createBase($name, $label, $attribs);
-        $name = $this->_generateName($name);
-        $this->form[$name] =& $el;
-        return $el;
     }
 
     /**
-     * Reimplementation of HTML_QuickForm's "addSelect" API.
-     *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of the options (values) to add
-     *                        to this select dropdown.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added, for example "class" attribute.
-     *
-     * @return &array
+     * Destructor for SocketWrapper
      */
-    public function addSelect($name, $label, $options, $attribs = [])
+    function __destruct()
     {
-        $el            =& $this->addBase($name, $label, $attribs);
-        $el['type']    = 'select';
-        $el['options'] = $options;
-
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
-            $el['multiple'] = 'multiple';
-        }
-        return $el;
     }
 
     /**
-     * Creates a static element to be rendered on the page
+     * Set the host that the SocketWrapper is connecting to
      *
-     * Reimplementation of HTML_QuickForm's "addStatic" API.
+     * @param string $host The hostname
      *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
-     *
-     * @return &array
+     * @return void
      */
-    public function addStatic($name, $label)
+    function setHost(string $host): void
     {
-        $el         =& $this->addBase($name, $label, []);
-        $el['type'] = 'static';
-        return $el;
+        $this->host = $host;
     }
 
     /**
-     * Reimplementation of HTML_QuickForm's "addPassword" API.
+     * The port on the host that this SocketWrapper is connecting
+     * to
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added.
+     * @param integer $port The port number
      *
-     * @return &array
+     * @return void
      */
-    public function addPassword($name, $label, $attribs=[])
+    function setPort(int $port): void
     {
-        $el         =& $this->addBase($name, $label, $attribs);
-        $el['type'] = 'password';
-        return $el;
+        $this->port = $port;
     }
 
     /**
-     * Reimplementation of HTML_QuickForm's "addHidden" API.
+     * Opens the socket and stores a reference to the socket handler for other
+     * I/O functions. setHost and setPort must be called before this.
      *
-     * @param string $name    The element name.
-     * @param string $value   The element value.
-     * @param array  $attribs Additional html attributes for element
-     *
-     * @return &array
+     * @return void
      */
-    public function addHidden($name, $value, $attribs=[])
+    function open(): void
     {
-        $el         =& $this->addBase(
-            $name,
-            null,
-            array_merge(['value' => $value], $attribs)
-        );
-        $el['type'] = 'hidden';
-        return $el;
-    }
-
-    /**
-     * Reimplementation of HTML_QuickForm's "addText" API.
-     *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added.
-     *
-     * @return &array
-     */
-    public function addText($name, $label, $attribs=[])
-    {
-        $el         =& $this->addBase($name, $label, $attribs);
-        $el['type'] = 'text';
-        return $el;
-    }
-
-    /**
-     * Reimplementation of HTML_QuickForm's "addTextArea" API.
-     *
-     * @param string $elname  The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $attribs An array of other attributes that should get added,
-     *                        including "class", "rows", "cols" and "disabled", etc.
-     *
-     * @return &array
-     */
-    public function addTextArea($elname, $label, $attribs=[])
-    {
-        $el         =& $this->addBase($elname, $label, $attribs);
-        $el['type'] = 'textarea';
-        if (isset($attribs['cols'])) {
-            $el['cols'] = $attribs['cols'];
-        }
-        if (isset($attribs['rows'])) {
-            $el['rows'] = $attribs['rows'];
-        }
-        return $el;
-    }
-    /**
-     * Reimplementation of HTML_QuickForm's "addDate" API. The behaviour
-     * of this varies slightly from QuickForm in that this will use an
-     * HTML5 input type="date" element, while QuickForm added three dropdowns
-     * for year/month/day.
-     *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of options that should get added,
-     *                        such as the date format, min or max date etc.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added, for example "class" attribute.
-     *
-     * @return &array
-     */
-    public function addDate($name, $label, $options, $attribs = [])
-    {
-        $el            =& $this->addBase($name, $label, $attribs);
-        $el['type']    = 'date';
-        $el['options'] = $options;
-        return $el;
-    }
-
-    /**
-     * Adds a file to the current form.
-     *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added, for example "class" attribute.
-     *
-     * @return &array
-     */
-    function addFile($name, $label, $attribs)
-    {
-        $this->enctype = 'enctype="multipart/form-data"';
-
-        $el         =& $this->addBase($name, $label, $attribs);
-        $el['type'] = 'file';
-        return $el;
-    }
-
-    /**
-     * Adds a checkbox to the current form.
-     *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added, for example "value" attribute.
-     *
-     * @return &array
-     */
-    function &addCheckbox($name, $label, $attribs)
-    {
-        $el         =& $this->addBase($name, $label, $attribs);
-        $el['type'] = 'advcheckbox';
-        return $el;
-    }
-
-    /**
-     * Adds a radio button to the current form.
-     *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of options that should
-     *                        get added.
-     * @param array  $attribs An array of attributes that should
-     *                        get added. "value" should be set to compare
-     *                        the value stored in the database to
-     *                        the individual radio button representing
-     *                        that value.
-     *
-     * @return &array
-     */
-    function &addRadio($name, $label, $options, $attribs)
-    {
-        $el            =& $this->addBase($name, $label, $attribs);
-        $el['type']    = 'radio';
-        $el['options'] = $options;
-        return $el;
-    }
-
-    /**
-     * Adds a header element to this LorisForm.
-     *
-     * @param string $name    The name of the header element, may be null
-     * @param string $label   The description for the header
-     * @param array  $attribs Other attributes for this header element
-     *
-     * @return &array
-     */
-    function addHeader($name, $label, $attribs = [])
-    {
-        $el         =& $this->addBase($name, $label, $attribs);
-        $el['type'] = 'header';
-        return $el;
-    }
-
-    /**
-     * Reimplementation of HTML_QuickForm's "addLink" API
-     *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
-     * @param array  $url   The url label to set as href attrib
-     * @param array  $link  The value to display as the link
-     *
-     * @return &array
-     */
-    public function addLink($name, $label, $url, $link)
-    {
-        $el         =& $this->addBase($name, $label);
-        $el['type'] = 'link';
-        $el['url']  = $url;
-        $el['link'] = $link;
-        return $el;
-    }
-
-    /**
-     * Generates a unique element name for anonymous elements to use
-     * to differentiate things in the internal elements array.
-     *
-     * @param string $name The current element name
-     *
-     * @return string ($name if it exists, otherwise a unique new name.)
-     */
-    private function _generateName($name)
-    {
-        static $num = 1;
-        if (!empty($name)) {
-            return $name;
-        }
-        return 'anonymous' . ($num++);
-    }
-
-    /**
-     * An implementation of QuickForm's addElement function. This only
-     * calls the appropriate $this->addX wrapper based on the "type"
-     * passed to the function call.
-     *
-     * @param string $type    The type of element to add.
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other options that should
-     *                        be added. This generalls maps to the
-     *                        third option of the addX wrapper.
-     * @param array  $attribs Other attributes to be added. This is
-     *                        mostly only used for the "select" type,
-     *                        where "options" has a different meaning
-     *                        and attribs takes the place of what "options"
-     *                        is for other types.
-     * @param array  $customs Only used in a certain mode of advcheckbox
-     *
-     * @return void (but modifies this->form as a side-effect)
-     */
-    public function addElement(
-        $type,
-        $name,
-        $label='',
-        $options=[],
-        $attribs=[],
-        $customs=[]
-    ) {
-        $el = null;
-        switch($type)  {
-        case 'select':
-            $el = $this->addSelect($name, $label, $options, $attribs);
-            break;
-        case 'date':
-            $el = $this->addDate($name, $label, $options, $attribs);
-            break;
-        case 'file':
-            $el = $this->addFile($name, $label, $attribs);
-            break;
-        case 'static':
-            $el = $this->addStatic($name, $label);
-            break;
-        case 'textarea':
-            $el = $this->addTextArea($name, $label, $attribs);
-            break;
-        case 'password':
-            $el = $this->addPassword($name, $label, $attribs);
-            break;
-        case 'header':
-            $el = $this->addHeader($name, $label, $attribs);
-            break;
-        case 'advcheckbox':
-            $args = func_get_args();
-            if (count($args) === 6) {
-                /**
-                 * With quickform creating advcheckboxs too in 6 args
-                 * setting up a special case to handle this.
-                 * array (
-                 *     [0] => element type
-                 *     [1] => element name
-                 *     [2] => element label
-                 *     [3] => element text to append after checkbox
-                 *     [4] => attributes
-                 *     [5] => array (
-                 *                [0] => custom off option
-                 *                [1] => custom on option
-                 *            )
-                 * )
-                 */
-                $el =& $this->addCheckbox($args[1], $args[2], $args[4]);
-
-                $el['checkStates'] = $args[5];
-                $el['_text']       = $args[3];
-            } else {
-                $el = $this->addCheckbox($name, $label, $attribs);
-            }
-            break;
-        case 'radio':
-            $el = $this->addRadio($name, $label, $options, $attribs);
-            break;
-        case 'hidden':
-            $el = $this->addHidden($name, $label, $attribs);
-            break;
-        case 'link':
-            $el = $this->addLink($name, $label, $options, $attribs);
-            break;
-        case 'text':
-        default:
-            $el = $this->addText($name, $label, $attribs);
-            break;
+        $this->socket = fsockopen($this->host, $this->port);
+        if ($this->socket === false) {
+            throw new \LorisException(
+                "Could not connect to CouchDB server at $this->host:$this->port"
+            );
         }
     }
 
     /**
-     * Reimplementation of HTML_QuickForm's createText function.
+     * Closes the previously opened socket.
      *
-     * Creates a text element that can be added to the page but
-     * does not itself add the element.
-     *
-     * @param string $elname  The name of the element to be added to
-     *                        the form
-     * @param string $label   The name of the label to attach to the
-     *                        form
-     * @param array  $attribs An array of extra HTML attributes to be
-     *                        added to this element.
-     *
-     * @return array of the form that can be added to $this->form
+     * @return void
      */
-    function createText($elname, $label, $attribs = [])
+    function close(): void
     {
-        $el         =& $this->createBase($elname, $label, $attribs);
-        $el['type'] = 'text';
-        return $el;
+        $status = fclose($this->socket);
+        if ($status === false) {
+            throw new \LorisException("Could not close CouchDB network socket");
+        };
     }
 
     /**
-     * Reimplementation of HTML_QuickForm's createSubmit function.
+     * Check if EOF has been reached on the previously opened socket
      *
-     * Creates a text element that can be added to the page but
-     * does not itself add the element.
-     *
-     * @param string $elname  The name of the element to be added to
-     *                        the form
-     * @param string $value   The value of the element to be added to
-     *                        the form
-     * @param array  $attribs An array of extra HTML attributes to be
-     *                        added to this element.
-     *
-     * @return array of the form that can be added to $this->form
+     * @return boolean Directly pass return value of feof()
      */
-    function createSubmit($elname, $value, $attribs = [])
+    function eof(): bool
     {
-        $attribs['value'] = $value;
-        $el         =& $this->createBase($elname, null, $attribs);
-        $el['type'] = 'submit';
-        return $el;
+        if ($this->socket) {
+            return feof($this->socket);
+        }
     }
 
     /**
-     * Reimplementation of HTML_QuickForm's createTextArea function.
+     * Pass through to fgets on previously opened socket.
      *
-     * Creates a text element that can be added to the page but
-     * does not itself add the element.
-     *
-     * @param string $elname The name of the element to be added to
-     *                       the form
-     * @param string $label  The name of the label to attach to the
-     *                       form
-     *
-     * @return array of the form that can be added to $this->form
+     * @return mixed Directly passes return value of fgets
      */
-    function createTextArea($elname, $label)
+    function gets()
     {
-        $el         =& $this->createBase($elname, $label);
-        $el['type'] = 'textarea';
-        return $el;
-    }
-
-
-    /**
-     * Retrives the default value to populate for a form element.
-     * If it was POSTed by the user, use that value, otherwise use
-     * the form default.
-     *
-     * @param string $name The form element name to retrieve the value
-     *                     for.
-     *
-     * @return array|string|null The value to use for the form element.
-     */
-    function getValue($name)
-    {
-        // Not all elements of the form go into $_REQUEST, thus the isset test
-        if (isset($_REQUEST[$name])) {
-            // If submitted value in $_REQUEST is an array return the array
-            // of filtered values
-            if (is_array($_REQUEST[$name])) {
-                $filteredValues = [];
-                foreach (array_keys($_REQUEST[$name]) as $k) {
-                    // Checkbox values get converted from (on,off) to (1,0)
-                    if ($this->_isAdvCheckbox("{$name}[$k]")) {
-                        $rawValue = $_REQUEST[$name][$k] == 'on' ? 1 : 0;
-                    } else {
-                        $rawValue = $_REQUEST[$name][$k];
-                    }
-                    // This is more for consistency since it would be odd to apply a
-                    // filter to a checkbox value
-                    $filteredValues[$k]
-                        = $this->_getFilteredValue("{$name}[$k]", $rawValue);
+        if ($this->socket) {
+            $status = fgets($this->socket);
+            if ($status === false) {
+                if ($this->eof()) {
+                    return $status;
                 }
-
-                return $filteredValues;
-            } else {
-                // if submitted value is not an array, filter it
-                return $this->_getFilteredValue($name, $_REQUEST[$name]);
-            }
-        }
-
-        // Check to see if the element name is of the form name[idx]
-        // (if so there should be a 'name' array in $_REQUEST)
-        $bracketIdx = strpos($name, '[');
-        if ($bracketIdx !== false) {
-            $fieldName = strstr($name, '[', true);
-            $fieldIdx  = substr($name, $bracketIdx+1);
-            $fieldIdx  = strstr($fieldIdx, ']', true);
-            // This should always be true
-            if (isset($_REQUEST[$fieldName])) {
-                if ($this->_isAdvCheckbox($name)) {
-                    // Only the checkboxes turned on are put in $_REQUEST,
-                    // thus the isset check
-                    $value = isset($_REQUEST[$fieldName][$fieldIdx])
-                        ? $_REQUEST[$fieldName][$fieldIdx] : null;
-
-                    $rawValue = $value == 'on' ? 1 : 0;
-                    return $this->_getFilteredValue($name, $rawValue);
-                }
-
-                return $this->_getFilteredValue(
-                    $name,
-                    $_REQUEST[$fieldName][$fieldIdx]
+                throw new \LorisException(
+                    "Could not read from CouchDB server at $this->host:$this->port"
                 );
             }
+            return $status;
         }
-
-        if (isset($this->defaultValues[$name])) {
-            return $this->_getFilteredValue(
-                $name,
-                $this->defaultValues[$name]
-            );
-        }
-
-        return null;
     }
 
     /**
-     * Determines if a form element is of type 'advcheckbox'.
+     * Write to the previously opened socket.
      *
-     * @param string $elementName Name of a form element that exists in the $form.
-     *
-     * @return boolean true if the element is a checkbox, false otherwise.
-     */
-    private function _isAdvCheckbox($elementName)
-    {
-        // If the element is not in a group
-        if (isset($this->form[$elementName])) {
-            return $this->form[$elementName]['type'] == 'advcheckbox';
-        }
-
-        // Element is in a groug: check in each group
-        foreach ($this->form as $element) {
-            if (is_array($element) && $element['type'] == 'group') {
-                // Check all elements of the current group for the element
-                foreach ($element['elements'] as $groupElement) {
-                    // Check if name is right
-                    if (($groupElement['name'] ?? '') == $elementName) {
-                        return $groupElement['type'] == 'advcheckbox';
-                    }
-                }
-            }
-        }
-
-        // Should not happen
-        return false;
-    }
-
-    /**
-     * Gets the value of form element $name, after all filters have been
-     * applied. If there are no filters registered for element $name, then
-     * the original unmodified value is returned.
-     *
-     * @param string $name  name of the form element in the $form.
-     * @param string $value value of the form element in $_REQUEST or null if
-     *                      none was found.
-     *
-     * @return string value of the form element once all registered filters
-     *                (if any) have been applied.
-     */
-    private function _getFilteredValue($name, $value)
-    {
-        $newValue = $value;
-
-        // Apply field specific filters
-        if (isset($this->filters[$name])) {
-            if (in_array('trim', $this->filters[$name])) {
-                $newValue = trim($value);
-            }
-        }
-
-        // Apply filters that should be applied on all fields
-        $count = count($this->filters['__ALL__'] ?? []);
-        if (isset($this->filters['__ALL__'])) {
-            for ($i = 0; $i < $count; $i++) {
-                if (in_array('trim', $this->filters['__ALL__'] ?? [])) {
-                    // Value for the element is in array so filter all
-                    // elements in the array of values
-                    if (is_array($value)) {
-                        $newValue = [];
-                        foreach ($value as $k => $v) {
-                            $newValue[$k]
-                                = $this->_getFilteredValue("{$name}[$k]", $v);
-                        }
-                    } else {
-                        // Submitted value not an array: trim it
-                        $newValue = trim($value);
-                    }
-                }
-            }
-        }
-
-        return $newValue;
-    }
-
-    /**
-     * Generates the HTML to add to the page when rendered for a select
-     * element.
-     *
-     * @param array $el The element to render from $this->form
-     *
-     * @return string A string of the HTML markup to render
-     */
-    protected function selectHTML($el)
-    {
-        $strOptions    = '';
-        $options       = $el['options'] ?? [];
-        $cls           = '';
-        $changehandler = '';
-        $multiple      = '';
-        $id            = '';
-        $disabled      = '';
-        $name          = $el['name'] ?? '';
-
-        if (!(is_array($options) || $options instanceof Traversable)) {
-            // $options is not Traversable and will throw an error
-            // if used in a foreach loop.
-            error_log(
-                "Options for element '$name' are not an array or are not"
-                . ' traversable. Please validate the LorisForm syntax in '
-                .' the calling code.'
-            );
-            throw new InvalidArgumentException(
-                "Options for LorisForm HTML element $name not an array"
-            );
-        }
-        foreach ($options as $optionKey => $optionVal) {
-            $selected = '';
-
-            if (!is_null($optionKey)) {
-                $optionKey = (string) $optionKey;
-            }
-
-            $defaultValue = $this->getValue($el['name']);
-
-            if (isset($el['multiple'])) {
-                if (!empty($defaultValue)) {
-                    if (in_array($optionKey, $defaultValue)
-                        || $optionKey === $defaultValue
-                    ) {
-                        $selected = 'selected="selected"';
-                    }
-                }
-            } else {
-                if ($optionKey === $defaultValue) {
-                    $selected = 'selected="selected"';
-                } elseif (isset($el['selected'])
-                    && $optionKey === $el['selected']
-                    && $defaultValue === null
-                ) {
-                    $selected = 'selected="selected"';
-                }
-            }
-
-            $strOptions .= "<option value='$optionKey' $selected>"
-                .$optionVal
-                . "</option>";
-        }
-
-        if (isset($el['class'])) {
-            $cls = "class=\"$el[class]\"";
-        }
-        if (isset($el['id'])) {
-            $id = "id=\"$el[id]\"";
-        }
-        if (isset($el['disabled']) || $this->frozen) {
-            $disabled = 'disabled';
-        }
-        if (isset($el['onchange'])) {
-            $changehandler = "onchange=\"$el[onchange]\"";
-        }
-        if (isset($el['multiple'])) {
-            $name     = $name . '[]';
-            $multiple = "multiple=\"multiple\"";
-        }
-
-        $retVal = "<select name=\"$name\" $cls $id $changehandler $multiple "
-            . $disabled;
-
-        if (isset($el['required']) && $el['required']) {
-            $retVal .= ' required';
-            if (isset($el['requireMsg']) && $el['requireMsg']) {
-                $retVal .= ' onChange="this.setCustomValidity('
-                    . 'this.value === \'\' ? \''
-                    . $el['requireMsg']
-                    . "' : '')\"";
-            }
-        }
-        $retVal .= ">$strOptions</select>";
-
-        return $retVal;
-    }
-
-    /**
-     * Generates the HTML to add to the page when rendered for a static
-     * element.
-     *
-     * @param array $el The element to render from $this->form
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function staticHTML($el)
-    {
-        if (empty($el['name'])) {
-            return $el['label'];
-        }
-        $val = $this->getValue($el['name']);
-        return $val;
-    }
-    /**
-     * Generates the HTML to add to the page when rendered for a date
-     * element.
-     *
-     * @param array $el The element to render from $this->form
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function dateHTML($el)
-    {
-        if (array_key_exists('options', $el)
-            && (isset($el['options']['format'])
-            && strtolower($el['options']['format']) == 'y')
-        ) {
-            return $this->yearHTML($el);
-        }
-        $cls      = '';
-        $minYear  = '';
-        $maxYear  = '';
-        $disabled = '';
-        if (isset($el['class'])) {
-            $cls = "class=\"$el[class]\"";
-        }
-        if (isset($el['disabled']) || $this->frozen) {
-            $disabled = 'disabled';
-        }
-        if (isset($el['options']['minYear'])) {
-            $minYear = "min=\"" . $el['options']['minYear'] . "-01-01\"";
-        }
-        if (isset($el['options']['maxYear'])) {
-            $maxYear = "max=\"" . $el['options']['maxYear'] . "-12-31\"";
-        }
-        $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
-        $value    = $this->getValue($el['name']);
-        $format   = 'date';
-
-        if (array_key_exists('options', $el) && isset($el['options']['format'])) {
-            $elOptions = $el['options'];
-            $elFormat  = strtolower($elOptions['format']);
-
-            if ($elFormat == 'my' || $elFormat == 'ym') {
-                $format = 'month';
-                if ($value) {
-                    $value = explode("-", $value);
-                    $value = sprintf("%s-%s", $value[0], $value[1]);
-                }
-                if (isset($elOptions['minYear'])) {
-                    $minYear = "min=\"" . $elOptions['minYear'] . "-01\"";
-                }
-                if (isset($elOptions['maxYear'])) {
-                    $maxYear = "max=\"" . $elOptions['maxYear'] . "-12\"";
-                }
-            }
-        }
-
-        $elmnt = "<input name=\"$el[name]\" type=\"$format\" $cls "
-            . "$minYear $maxYear "
-            . "onChange=\"this.setCustomValidity($required)\" "
-            . (isset($el['required']) ? "required " : '')
-            . (!empty($disabled) ? "disabled " : '')
-            . (
-            !empty($value)
-                ? ' value="' . $value . '" '
-                : ''
-            )
-            . ">";
-
-        return $elmnt;
-    }
-
-    /**
-     * Generates the HTML to add to the page when rendered for a group
-     * element. This will render all subelements and return the HTML
-     * for the entire group.
-     *
-     * @param array $el The element to render from $this->form
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function groupHTML(&$el)
-    {
-        $retVal = '';
-        foreach ($el['elements'] as &$element) {
-            if (isset($el['options']['prefix_wrapper'])) {
-                $retVal .= $el['options']['prefix_wrapper'];
-            }
-
-            $element['html'] = $this->renderElement($element);
-            $retVal         .= $element['html'];
-
-            if (isset($el['options']['postfix_wrapper'])) {
-                $retVal .= $el['options']['postfix_wrapper'];
-            }
-            $retVal .= $el['delimiter'];
-        }
-        return $retVal;
-    }
-
-    /**
-     * Generates the HTML to add to the page when rendered for a text
-     * element.
-     *
-     * @param array  $el   The element to render from $this->form
-     * @param string $type The HTML input type to user for this input
-     *                     box
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function textHTML($el, $type='text')
-    {
-        $cls      = '';
-        $disabled = '';
-        $readonly = '';
-        if (isset($el['class'])) {
-            $cls = "class=\"$el[class]\"";
-        }
-        if (isset($el['disabled']) || $this->frozen) {
-            $disabled = 'disabled';
-        }
-        if (isset($el['readonly'])) {
-            $readonly = 'readonly';
-        }
-        $value = $this->getValue($el['name']);
-        return "<input name=\"$el[name]\" type=\"$type\" $cls"
-            . (
-                isset($el['onchange']) && $el['onchange']
-                ? " onchange=\"{$el['onchange']}\"" : ''
-              )
-            . (
-                isset($el['oninvalid']) && $el['oninvalid']
-                ? " oninvalid=\"{$el['oninvalid']}\"" : ''
-              )
-            . (
-                isset($el['pattern']) && $el['pattern']
-                ? " pattern=\"{$el['pattern']}\"" : ''
-              )
-            . (
-                isset($el['required']) && $el['required']
-                ? ' required' : ''
-              )
-            . (
-                isset($el['placeholder']) && $el['placeholder']
-                ? " placeholder=\"{$el['placeholder']}\"" : ''
-              )
-
-            . (
-                (!empty($value) || $value === '0')
-                ? ' value="' . $this->getValue($el['name']) . '"'
-                : ''
-              )
-            . $disabled
-            . ' '
-            . $readonly
-            .">";
-    }
-
-    /**
-     * Generates the HTML to add to the page when rendered for a submit
-     * element.
-     *
-     * @param array  $el   The element to render from $this->form
-     * @param string $type The HTML input type to user for this input
-     *                     box
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function submitHTML($el, $type='submit')
-    {
-        $cls = '';
-        if (isset($el['class'])) {
-            $cls = "class=\"$el[class]\"";
-        }
-        $value = '';
-        if (isset($el['value'])) {
-            $value = "value=\"$el[value]\"";
-        }
-        return "<input name=\"$el[name]\" type=\"$type\" $cls $value>";
-    }
-
-    /**
-     * Generates the HTML to add to the page when rendered for a hidden
-     * element.
-     *
-     * @param array  $el   The element to render from $this->form
-     * @param string $type The HTML input type to user for this input
-     *                     box
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function hiddenHTML($el, $type='hidden')
-    {
-        $attributes = '';
-        foreach ($el as $key=>$value) {
-            if ($key=='type') {
-                $value = $type;
-            }
-            if (isset($value)) {
-                $attributes .= " $key=\"$value\"";
-            }
-
-        }
-        return "<input $attributes>";
-    }
-
-    /**
-     * Generates the HTML to add to the page when rendered for a time
-     * element.
-     *
-     * @param array  $el   The element to render from $this->form
-     * @param string $type The HTML input type to user for this input
-     *                     box
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function timeHTML($el, $type='time')
-    {
-        $timeStamp = $this->getValue($el['name']);
-        $smarty    = new Smarty_NeuroDB;
-        $value     = [
-            'H' => null,
-            'i' => null,
-        ];
-        $bits      = [];
-
-        if (is_array($timeStamp)) {
-            $value = $timeStamp;
-        } else if (preg_match(
-            '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])($|:00$)/',
-            $timeStamp,
-            $bits
-        )
-        ) {
-            $value['H'] = $bits[1];
-            $value['i'] = $bits[2];
-        }
-
-        $disabled = '';
-        if (isset($el['disabled']) || $this->frozen) {
-            $disabled = 'disabled';
-        }
-
-        $smarty->assign('name', $el['name']);
-        $smarty->assign('disabled', $disabled);
-        $smarty->assign('value', $value);
-
-        $html = $smarty->fetch("time_element.tpl");
-
-        return $html;
-    }
-
-    /**
-     * Generates the HTML to add to the page when rendered for a date
-     * element with the year formate only
-     *
-     * @param array $el The element to render from $this->form
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function yearHTML($el)
-    {
-        $year   = $this->getValue($el['name']);
-        $smarty = new Smarty_NeuroDB;
-        $value  = explode('-', $year)[0];
-
-        $smarty->assign('name', $el['name']);
-        $smarty->assign('minYear', $el['options']['minYear']);
-        $smarty->assign('maxYear', $el['options']['maxYear']);
-        $smarty->assign('value', $value);
-
-        $html = $smarty->fetch("year_html.tpl");
-
-        return $html;
-    }
-
-    /**
-     * Generates the HTML to add to the page when rendered for a
-     * link element
-     *
-     * @param array $el The element to render from $this->form
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function linkHTML($el)
-    {
-        $html = "<a href=\""
-            . $el['url']
-            . "\">"
-            . $el['link']
-            . "</a>";
-
-        return $html;
-    }
-
-    /**
-     * Generates the HTML to add to the page when a file is
-     * added to the form.
-     *
-     * @param array $el The element to render from $this->form
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function fileHTML($el)
-    {
-        $cls      = empty($el['class']) ? "" : "class=\"$el[class]\"";
-        $disabled = '';
-        $val      = $this->getValue($el['name']);
-        if (isset($el['disabled']) || $this->frozen) {
-            $disabled = 'disabled';
-        }
-        return "<input name=\"$el[name]\" type=\"file\" $cls"
-            . (
-                !empty($val)
-                ? ' value="' . $val . '"'
-                : ''
-              )
-            . $disabled
-            .">";
-    }
-
-    /**
-     * Generates the HTML to add to the page when a textarea is
-     * added to the form.
-     *
-     * @param array $el The element to render from $this->form
-     *
-     * @return string A string of the HTML markup to render
-     */
-    function textareaHTML($el)
-    {
-        $cls      = '';
-        $dims     = '';
-        $disabled = '';
-        if (isset($el['class'])) {
-            $cls = "class=\"$el[class]\"";
-        }
-        if (isset($el['disabled']) || $this->frozen) {
-            $disabled = 'disabled';
-        }
-        if (isset($el['rows'])) {
-            $dims .= " rows=\"$el[rows]\"";
-        }
-        if (isset($el['cols'])) {
-            $dims .= " cols=\"$el[cols]\"";
-        }
-        $value = $this->getValue($el['name']);
-        return "<textarea name=\"$el[name]\" $cls $dims $disabled>"
-            . (
-                !empty($value)
-                ? $this->getValue($el['name']) : ''
-              )
-            ."</textarea>";
-    }
-
-
-
-    /**
-     * Reimplements the HTML_QuickForm setDefaults API.
-     *
-     * @param array $arr The array to use as the default values for the form
-     *                   elements
+     * @param string $str The string to write to the socket
      *
      * @return void
      */
-    function setDefaults($arr)
+    function write(string $str): void
     {
-        $this->defaultValues = $arr;
-    }
-
-    /**
-     * Reimplementation of HTML_QuickForm isSubmitted API.
-     *
-     * @return bool true if data was submitted by the user to the form.
-     */
-    function isSubmitted()
-    {
-        return (!empty($_FILES) || !empty($_POST));
-    }
-    /**
-     * Reimplements the HTML_QuickForm validate API.
-     *
-     * @return bool true if all registered rules passed
-     */
-    function validate()
-    {
-        if (!$this->isSubmitted()) {
-            return false;
-        }
-        $values = $this->getSubmitValues();
-        $errors = [];
-        foreach ($this->form as $elName => $el) {
-            if ($el['type'] === 'group') {
-                if (isset($el['required'])) {
-                    foreach ($el['required'] as $elementIndex) {
-                        $childEl  = $el['elements'][$elementIndex];
-                        $childVal = $this->getValue($childEl['name']);
-                        if ($childVal === null || $childVal === '') {
-                            $this->setElementError(
-                                $el['name'],
-                                "$childEl[requireMsg]"
-                            );
-                            $errors[$el['name']] = "require fail";
-                        }
-                    }
-                }
-
-                if (isset($el['numeric'])) {
-                    foreach ($el['numeric'] as $elementIndex) {
-                        $childEl = $el['elements'][$elementIndex];
-                        if (!is_numeric($this->getValue($childEl['name']))
-                            && !empty($this->getValue($childEl['name']))
-                        ) {
-                            $this->setElementError(
-                                $el['name'],
-                                "$childEl[numericMsg]"
-                            );
-                            $errors[$el['name']] = "numeric fail";
-                        }
-                    }
-                }
-            } else {
-                if ($el['type'] === 'file') {
-                    $value = $_FILES[$el['name']]['name'];
-                } elseif (isset($el['name'])) {
-                    $value = $this->getValue($el['name']);
-                } else { // If the form element is a static label
-                    $value = null;
-                }
-
-                if (isset($el['required'])
-                    && $el['required'] === true
-                    && $value === ""
-                ) {
-                    $errors[$el['name']] = "required fail";
-                }
-
-                if (isset($el['compare'])
-                    && $value != $this->getValue($el['compare'])
-                ) {
-                    // These don't seem to show up in the original, so just make
-                    // the validation fail by adding something to the errors array
-                    // but don't call setElementError..
-                    $errors[$el['name']] = "comparison fail";
-                }
-
-                if (isset($el['numeric'])
-                    && $el['numeric'] === true
-                    && !is_numeric($value)
-                    && !empty($value)
-                ) {
-                    $this->setElementError($el['name'], "$el[numericMsg]");
-
-                    $errors[$el['name']] = "numeric fail";
-                }
-
-                if (isset($el['regex'])) {
-                    foreach ($el['regex'] as $regex) {
-                        if (!empty($value)
-                            && !preg_match($regex['match'], $value)
-                        ) {
-                            $this->setElementError($el['name'], $regex["regexMsg"]);
-                            $errors[$el['name']] = "regex fail";
-                            break;
-                        }
-                    }
-                }
-
-                if (isset($el['email'])
-                    && $el['email'] === true
-                    && !filter_var($value, FILTER_VALIDATE_EMAIL)
-                    && !empty($value)
-                ) {
-                    $this->setElementError($el['name'], $el['emailMsg']);
-
-                    $errors[$el['name']] = "email fail";
-                }
-
-                if (isset($el['maxlength'])
-                    && strlen(strval($value)) > $el['maxlength']['maxlength']
-                ) {
-                    $this->setElementError(
-                        $el['name'],
-                        $el['maxlength']['message']
-                    );
-
-                    $errors[$el['name']] = "maxlength fail";
-                }
-
-                // Check if date fields have errors and add them to error list
-                if ($el['type'] === 'date') {
-                    $date = $values[$elName] ?? $this->getValue($el['name']);
-                    if (empty($date)) {
-                        continue;
-                    }
-                    $dt          = DateTime::createFromFormat('Y-m-d', $date);
-                    $isValidDate = $dt && $dt->format('Y-m-d') == $date;
-                    if (!$isValidDate) {
-                        $this->setElementError(
-                            $el['name'],
-                            "Please input a valid date in '" . $el['label'] . "'!"
-                        );
-                        $errors[$el['name']] = "date fail";
-                    }
-                }
-            }
-        }
-        foreach ($this->formRules as $rule) {
-            if (is_callable($rule)) {
-                $violations = call_user_func($rule, $values);
-                if (!empty($violations)) {
-                    foreach ($violations as $element => $msg) {
-                        $this->setElementError($element, $msg);
-                        $errors[$element] = "custom fail";
-                    }
-                }
-            } else if (isset($rule["requiredIf"])) {
-                if (!$this->validateRequireIf(
-                    $rule["requiredIf"]["elements"],
-                    $rule["requiredIf"]["format"]
-                )
-                ) {
-                    $this->setElementError(
-                        $rule["requiredIf"]["elements"][0],
-                        $rule["requiredIf"]["message"]
-                    );
-                    $errors[$rule["requiredIf"]["elements"][0]] = "requiredIf fail";
-                }
-            }
-        }
-        return empty($errors);
-    }
-
-    /**
-     * Performs the RequiredIf validation
-     * note that it will print() if you use it badly
-     *
-     * @param array $elements the two element array - [0] is the
-     *                        element, [1] is the controller
-     * @param array $format   the optional array containing elements
-     *                        'operator' and 'value'
-     *
-     * @return boolean
-     * @access public
-     */
-    function validateRequireIf($elements, $format)
-    {
-        // make sure $format is a properly structure array
-        if (!is_array($elements) || count($elements) != 2) {
-            throw new InvalidArgumentException(
-                "RequiredIf rule expects two elements\n"
-            );
-        }
-
-        // default operator and value to != ''
-        if (empty($format['operator'])) {
-            $format['operator'] = '!=';
-        }
-        if (!isset($format['value'])) {
-            $format['value'] = '';
-        }
-
-        $controlElement = $elements[1];
-        $ruleElement    = $elements[0];
-
-        switch ($format['operator']) {
-        case '==':
-            if ($this->getValue($controlElement) == $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '===':
-            if ($this->getValue($controlElement) === $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '<>': // Fallthrough, it's the same operator..
-        case '!=':
-            if ($this->getValue($controlElement) != $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '!==':
-            if ($this->getValue($controlElement) !== $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '<':
-            if ($this->getValue($controlElement) < $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '>':
-            if ($this->getValue($controlElement) > $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '<=':
-            if ($this->getValue($controlElement) <= $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '>=':
-            if ($this->getValue($controlElement) <= $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        default:
-            throw new LorisException(
-                "operator is not a valid operator from the set "
-                . join(', ', $this->validOperators)
-            );
-        }
-    }
-
-    /**
-     * Reimplements the HTML_Quickform API.
-     *
-     * @param callable $func The callback to use to process this form.
-     *
-     * @return void
-     */
-    function process($func)
-    {
-        call_user_func($func, $this->getSubmitValues());
-    }
-
-    /**
-     * Reimplements the HTML_QuickForm applyFilter API.
-     * Only trim operations are supported. Passing the special
-     * __ALL__ $elementName will apply the filter to every element
-     * in the form.
-     *
-     * @param string $elementName name of the element to which the filter
-     *                            should be applied.
-     * @param string $filterType  type of filter to apply.
-     *
-     * @return void
-     */
-    function applyFilter($elementName, $filterType)
-    {
-        if ($filterType == 'trim') {
-            if (!isset($this->filters[$elementName])) {
-                $this->filters[$elementName] = [];
-            }
-
-            $this->filters[$elementName][] = 'trim';
-        }
-
-        // Eventually, support for more filter types will be added here
-    }
-
-    /**
-     * Stub function so that API is compatible with HTML_QuickForm.
-     *
-     * Not currently supported.
-     *
-     * @return void
-     */
-    function freeze()
-    {
-        $this->frozen = true;
-    }
-
-    /**
-     * Reimplement the HTML_QuickForm isFrozen API.
-     * TODO: Implement this in *HTML functions.
-     *
-     * @return boolean true if the form should be frozen for input.
-     */
-    function isFrozen()
-    {
-        return $this->frozen;
-    }
-
-    /**
-     * Renders an element by calling the correct wrapper for the
-     * type, or throws an exception if given an unsupported element
-     * type.
-     *
-     * @param array $el An array of the form used by $this->form
-     *
-     * @return string the HTML for the given element.
-     */
-    function renderElement(&$el)
-    {
-        switch($el['type']) {
-        case 'date':
-            return $this->dateHTML($el);
-        case 'select':
-            return $this->selectHTML($el);
-        case 'static':
-            return $this->staticHTML($el);
-        case 'textarea':
-            return $this->textareaHTML($el);
-        case 'file':
-            return $this->fileHTML($el);
-        case 'password':
-            return $this->textHTML($el, 'password');
-        case 'text':
-            return $this->textHTML($el);
-        case 'advcheckbox':
-            return $this->checkboxHTML($el);
-        case 'radio':
-            return $this->radioHTML($el);
-        case 'group':
-            return $this->groupHTML($el);
-        case 'header':
-            return $this->headerHTML($el);
-        case 'page':
-            return '';
-        case 'submit':
-            return $this->submitHTML($el);
-        case 'hidden':
-            return $this->hiddenHTML($el);
-        case 'time':
-            return $this->timeHTML($el);
-        case 'link':
-            return $this->linkHTML($el);
-        }
-        throw new LorisException(
-            "Unsupported element type $el[type] in renderElement"
-        );
-    }
-
-    /**
-     * Generates the HTML for a header type element
-     *
-     * @param array $el An array of the form used by $this->form
-     *                  for a header
-     *
-     * @return string The HTML for the given header element
-     */
-    function headerHTML($el)
-    {
-        $cls   = '';
-        $align = '';
-
-        if (isset($el['class'])) {
-            $cls = "class=\"$el[class]\"";
-        }
-        if (isset($el['align'])) {
-            $align = "align=\"$el[align]\"";
-        }
-
-        return "<h2 $cls $align>$el[label]</h2>";
-    }
-
-    /**
-     * Generates the HTML for an advcheckbox type element
-     *
-     * @param array $el An array of the form used by $this->form
-     *                  for a checkbox
-     *
-     * @return string the HTML for the given checkbox element.
-     */
-    function checkboxHTML($el)
-    {
-        if (isset($el['checkStates'])) {
-            // Quickform advanced checkbox
-            return $this->advCheckboxHTML($el);
-        }
-        $val      = $this->getValue($el['name']);
-        $checked  = '';
-        $value    = '';
-        $disabled = '';
-        if (!empty($val)) {
-            $checked = 'checked="checked"';
-        }
-        if (isset($el['value'])) {
-            $value = "value=\"$el[value]\"";
-        }
-        if (isset($el['disabled']) || $this->frozen) {
-            $disabled = 'disabled';
-        }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value "
-            . "$disabled/>"
-            . " $el[label]";
-    }
-
-    /**
-     * Generates the HTML for an advcheckbox type element like quickform
-     *
-     * @param array $el An array of the form used by $this->form
-     *                  for a checkbox
-     *
-     * @return string the HTML for the given checkbox element.
-     */
-    function advCheckboxHTML($el)
-    {
-        $val      = $this->getValue($el['name']);
-        $checked  = '';
-        $value    = '';
-        $disabled = '';
-        $value    = $el["checkStates"];
-        if ($val === $value[1]) {
-            $checked = 'checked="checked"';
-        }
-        if (isset($el['disabled']) || $this->frozen) {
-            $disabled = 'disabled';
-        }
-        return "<input name=\"$el[name]\" type=\"hidden\" value=\"$value[0]\">"
-            . "<input name=\"$el[name]\" type=\"checkbox\" $checked "
-            . "value=\"$value[1]\" $disabled/>"
-            . " $el[_text]";
-    }
-
-    /**
-     * Generates the HTML for a radio type element
-     *
-     * @param array $el An array of the form used by $this->form
-     *                  for a radio button
-     *
-     * @return string the HTML for the given radio button element.
-     */
-    function radioHTML($el)
-    {
-        $val      = $this->getValue($el['name']);
-        $checked  = '';
-        $value    = '';
-        $disabled = '';
-        if (isset($el['value'])) {
-            $value = "value=\"$el[value]\"";
-        }
-        if ($val===$el['value']) {
-            $checked = 'checked="checked"';
-        }
-
-        if (isset($el['disabled']) || $this->frozen) {
-            $disabled = 'disabled';
-        }
-        return "<input name=\"$el[name]\" type=\"radio\" $checked $value "
-        . "$disabled/>"
-        . " $el[label]";
-    }
-
-    /**
-     * This is a slight difference from the HTML_QuickForm API.
-     * Whereas in HTML_QuickForm, you instantiated an array renderer,
-     * and the called toArray on it, in LorisForm you directly call
-     * toArray on the form. This returns an array in a format that
-     * can be bound to a smarty template for rendering.
-     *
-     * @return array An associative array of elements that can be
-     *               passed to Smarty. Each element will have an
-     *               'html' attribute populated that can be used
-     *               to display the HTML for that attribute.
-     */
-    function toArray()
-    {
-        foreach ($this->form as &$el) {
-            $el['html'] = $this->renderElement($el);
-        }
-
-        $retVal           = $this->form;
-        $retVal['errors'] = $this->errors;
-        return $retVal;
-    }
-
-    /**
-     * Returns the current form in a format where the elements go
-     * within an "elements" attribute, similarly to how the QuickForm
-     * renderer used by instruments is used. This is different from
-     * how the "toArray" works in that toArray generates an array
-     * in a format suitable to smarty, while this is suitable to
-     * instrument serialization.
-     *
-     * @return array where each form element is in an "elements" attribute
-     */
-    function toElementArray()
-    {
-
-        $curPage = [
-            'elements' => [],
-            'type'     => 'page',
-            'errors'   => $this->errors,
-        ];
-        $retVal  = $curPage;
-
-        // Hack to populate the HTML elements
-        $this->toArray();
-
-        foreach ($this->form as &$el) {
-            if ($el['type'] === 'page') {
-                if (!empty($curPage['Description'])) {
-                    $retVal['elements'][] = $curPage;
-                }
-
-                $curPage = [
-                    'elements'    => [],
-                    'Description' => $el['label'],
-                    'type'        => 'page',
-                ];
-            } else {
-                $curPage['elements'][] = $el;
-            }
-        }
-        if (empty($retVal['elements'])) {
-            $curPage['enctype'] = $this->enctype;
-            return $curPage;
-        }
-
-        $retVal['elements'][] = $curPage;
-        $retVal['enctype']    = $this->enctype;
-
-        return $retVal;
-    }
-
-    /**
-     * Renders the current form to a complete HTML
-     * based string.
-     *
-     * @return String the HTML string of the form
-     */
-    function toHTML()
-    {
-
-        $smarty    = new Smarty_NeuroDB;
-        $formArray = $this->toElementArray();
-
-        $smarty->assign('form', $formArray);
-        $html = $smarty->fetch("toHTML_form.tpl");
-
-        return $html;
-    }
-
-    /**
-     * Reimplement Smarty's addRule API.
-     *
-     * Only 'require', 'compare' and 'numeric' will be implemented
-     * since those are the only ones we used.
-     *
-     * @param string $element The element name to add the rule to.
-     *                        If this is a 'compare' rule, it will
-     *                        be an array of 2 element names.
-     * @param string $message The message to display if the rule is violated
-     * @param string $type    The rule type. 'compare', 'required' or 'numeric'
-     *
-     * @return void
-     */
-    function addRule($element, $message, $type)
-    {
-        if (!in_array($type, $this->allowedRules)) {
-            throw new LorisException(
-                "Rule of type $type is not supported"
-            );
-        }
-        if (is_array($element)) {
-            if ($type === 'compare') {
-                $this->form[$element[0]]['compare'] = $element[1];
-                $this->form[$element[1]]['compare'] = $element[0];
-            } else if ($type === 'requiredIf') {
-                $this->formRules[]['requiredIf'] = [
-                    "elements" => $element,
-                    "format"   => func_get_arg(3),
-                    "message"  => $message,
-                ];
-            }
-            return;
-        }
-        if (!is_string($element)) {
-            throw new \LorisException("Element name is not a string");
-        }
-        if (!isset($this->form[$element])) {
-            throw new \LorisException("Invalid Element $element");
-        }
-
-        if ($type === 'required') {
-            $this->form[$element]['required']   = true;
-            $this->form[$element]['requireMsg'] = $message;
-        }
-
-        if ($type === 'numeric') {
-            $this->form[$element]['numeric']    = true;
-            $this->form[$element]['numericMsg'] = $message;
-        }
-
-        if ($type === 'regex') {
-            $this->form[$element]['regex'][] = [
-                'regexMsg' => $message,
-                'match'    => func_get_arg(3),
-            ];
-        }
-
-        if ($type === 'email') {
-            $this->form[$element]['email']    = true;
-            $this->form[$element]['emailMsg'] = $message;
-        }
-
-        if ($type === 'maxlength') {
-            $this->form[$element]['maxlength'] = [
-                'message'   => $message,
-                'maxlength' => func_get_arg(3),
-            ];
-        }
-    }
-
-    /**
-     * Register a rule type to be added from the QuickForm API. This
-     * is unlikely to ever be implemented.
-     *
-     * @return void
-     */
-    function registerRule()
-    {
-        throw new \DeprecatedException(
-            "LorisForm RegisterRule is no longer supported"
-        );
-    }
-
-    /**
-     * Reimplementation of QuickForm API.
-     *
-     * Adds a rule to a group.
-     *
-     * @param string $group Form group name
-     * @param array  $arg1  Array for multiple elements or error
-     *                      message string for one element
-     * @param string $type  (optional)Rule type use getRegisteredRules()
-     *                      to get types
-     *
-     * @return void
-     */
-    function addGroupRule($group, $arg1, $type='')
-    {
-        if (is_array($arg1)) {
-            foreach ($arg1 as $elementIndex => $rules) {
-                $element =& $this->form[$group]['elements'][$elementIndex];
-                foreach ($rules as $rule) {
-                    $message  = $rule[0];
-                    $ruleType = $rule[1];
-
-                    if ($ruleType === 'required') {
-                        $element['required']   = true;
-                        $element['requireMsg'] = $message;
-
-                        $this->form[$group]['required'][] = $elementIndex;
-                    } else if ($ruleType === 'numeric') {
-                        $element['numeric']    = true;
-                        $element['numericMsg'] = $message;
-
-                        $this->form[$group]['numeric'][] = $elementIndex;
-                    } else {
-                        throw new \LorisException(
-                            "Group Rule Error: element rule type doesn't exist"
-                        );
-                    }
-                }
-            }
-        } else {
-            throw new InvalidArgumentException(
-                'Invalid argument passed to addGroupRule for group: '
-                . $group
-            );
-        }
-    }
-
-    /**
-     * Reimplementation of QuickForm API.
-     *
-     * Adds a PHP callback to use to enforce rules.
-     *
-     * @param callable $func The callback to use to validate this form.
-     *
-     * @return void
-     */
-    function addFormRule($func)
-    {
-        $this->formRules[] = $func;
-    }
-
-    /**
-     * Reimplementation of QuickForm API.
-     *
-     * Adds an element group to the form.
-     *
-     * @param array  $array     An array of elements created by $this->create*
-     *                          to be in the group.
-     * @param string $name      The name of the group
-     * @param string $label     The label to attach to the group
-     * @param string $delimiter The delimiter to use to separate group elements
-     * @param array  $options   An optional array to include prefix_wrapper and
-     *                          postfix_wrapper strings - html that will be
-     *                          placed before and after the group html
-     *
-     * @return void
-     */
-    function addGroup($array, $name, $label, $delimiter, $options = [])
-    {
-        $name = $this->_generateName($name);
-        foreach ($array as $key => $value) {
-             $group_key = $value['name'] ?? $this->_generateName('');
-             $this->groupMapping[$group_key] = [
-                 'groupName' => $name,
-                 'index'     => $key,
-             ];
-        }
-        $this->form[$name] = [
-            'type'      => 'group',
-            'name'      => $name,
-            'elements'  => $array,
-            'label'     => $label,
-            'delimiter' => empty($delimiter) ? ' ' : $delimiter,
-            'options'   => $options,
-        ];
-
-    }
-
-    /**
-     * Adds a page break, such that each element added after this
-     * page break goes on a new page.
-     *
-     * @param string $name    The name to use for the new page (in the URL)
-     * @param string $label   The label to show to the user for the new page
-     * @param string $attribs Extra attributes for this page.
-     *
-     * @return void
-     */
-    function addPageBreak($name, $label, $attribs)
-    {
-        $el         =& $this->addBase($name, $label, $attribs);
-        $el['type'] = 'page';
-    }
-    /**
-     * Reimplementation of QuickForm API.
-     *
-     * Creates an element without adding it to the form.
-     *
-     * @param string $type    The type of element to be created.
-     * @param string $elname  The name of the element to be added
-     * @param string $label   The label to attach to the element
-     * @param array  $options Element specific options to pass
-     *                        to create* wrappers
-     * @param array  $attribs An array of extra HTML attributes to
-     *                        add to the element.
-     * @param array  $customs Only used in a certain mode of advcheckbox
-     *
-     * @return array of the form supported by $this->form
-     */
-    function createElement(
-        $type,
-        $elname,
-        $label='',
-        $options=[],
-        $attribs=[],
-        $customs=[]
-    ) {
-        switch($type) {
-        case 'text':
-            return $this->createText($elname, $label, $attribs);
-        case 'select':
-            return $this->createSelect($elname, $label, $options, $attribs);
-        case 'submit':
-            return $this->createSubmit($elname, $label, $attribs);
-        case 'static':
-            /* the $options was passed to the 2nd parameter pre-v23.0 for some
-             reason, it is important not to impact the existing instruments. */
-            $el         = $this->createBase(
-                $elname,
-                is_string($options) ? $options : $label,
-                $attribs
-            );
-            $el['type'] = 'static';
-            break;
-        case 'advcheckbox':
-            $args = func_get_args();
-            if (count($args) === 6) {
-                /**
-                 * With quickform creating advcheckboxs too in 6 args
-                 * setting up a special case to handle this.
-                 * array (
-                 *     [0] => element type
-                 *     [1] => element name
-                 *     [2] => element label
-                 *     [3] => element text to append after checkbox
-                 *     [4] => attributes
-                 *     [5] => array (
-                 *                [0] => custom off option
-                 *                [1] => custom on option
-                 *            )
-                 * )
-                 */
-                $el = $this->createBase($args[1], $args[2], $args[4]);
-
-                $el['type']        = 'advcheckbox';
-                $el['checkStates'] = $args[5];
-                $el['_text']       = $args[3];
-            } else {
-                $el         = $this->createBase($elname, $label, $attribs);
-                $el['type'] = 'advcheckbox';
-            }
-            break;
-
-        case 'date':
-            $el            = $this->createBase($elname, $label, $attribs);
-            $el['type']    = 'date';
-            $el['options'] = $options;
-            break;
-        case 'radio':
-            $el         = $this->createBase($elname, $label, $attribs);
-            $el['type'] = 'radio';
-            break;
-        case 'time':
-        case 'textarea':
-        case 'password':
-            $el         = $this->createBase($elname, $label, $attribs);
-            $el['type'] = $type;
-            break;
-        default:
-            throw new LorisException("Unsupported QuickForm type $type");
-        }
-        return $el;
-    }
-
-    /**
-     * Creates a select element but does not add it to the page.
-     *
-     * @param string $name    The name of the element to be added
-     * @param string $label   The label to attach to the element
-     * @param array  $options Array of options to add to the select
-     *                        dropdown.
-     * @param array  $attribs An array of extra HTML attributes to
-     *                        add to the element.
-     *
-     * @return array of the form supported by $this->form
-     */
-    public function createSelect($name, $label, $options, $attribs = [])
-    {
-        $el            =& $this->createBase($name, $label, $attribs);
-        $el['type']    = 'select';
-        $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
-            $el['multiple'] = 'multiple';
-        }
-        return $el;
-
-    }
-
-    /**
-     * Iterates through an array of elements and populates the array
-     * passed as a reference with the values that come from the POST
-     * request.
-     *
-     * This may recursively call itself to also get the values out of
-     * groups, or be called directly by getSubmitValues() with the
-     * whole form as the "group".
-     *
-     * @param array $submitKeys The elements that need to have their
-     *                          values extracted.
-     * @param array $arr        A reference to an array to store the
-     *                          extracted values into.
-     *
-     * @return void (but will modify &$arr parameter passed as a side-effect)
-     */
-    function getGroupValues($submitKeys, &$arr)
-    {
-        foreach ($submitKeys as $key) {
-            if (!isset($this->form[$key])) {
-                $tp = $this->groupMapping[$key] ?? null;
-                $el = is_null($tp) ?
-                    null :
-                    $this->form[$tp['groupName']]['elements'][$tp['index']];
-                if (!$el) {
-                    $value = $_REQUEST[$key];
-                    // If the value is coming from a React DateElement with input
-                    // type='month' and is missing the dd part, convert month-year
-                    // format to a valid SQL format (i.e. yyyy-mm-dd)
-                    if (is_string($value)
-                        && strlen($value) === 7
-                        && strpos(strtolower($key), 'date')
-                    ) {
-                        $value = sprintf("%s-01", $value);
-                    }
-                    $arr[$key] = $value;
-                    continue;
-                }
-            } else {
-                $el = $this->form[$key];
-            }
-            // If it's a group, recursively go through the elements
-            // of that group.
-            if ($el['type'] === 'group') {
-                $this->getGroupValues(array_keys($el['elements']), $arr);
-                continue;
-            }
-
-            // If it was an element of the form $elemname[idx],
-            // which PHP converts to an array of $elemname, then
-            // we need to check for $elemname, not $elemname[idx]
-            $name       = $el['name'];
-            $bracketIdx = strpos($name, '[');
-            if ($bracketIdx !== false) {
-                $fieldName = substr($name, 0, $bracketIdx);
-                $fieldIdx  = substr($name, $bracketIdx+1);
-                $fieldIdx  = strstr($fieldIdx, ']', true);
-                if (!isset($arr[$fieldName])) {
-                    $arr[$fieldName] = $this->getValue($fieldName);
-                }
-                continue;
-            }
-
-            if ($el['type'] === 'file') {
-                $file       = $this->getElement($name);
-                $arr[$name] = $file->getValue();
-                continue;
-            }
-
-            if ($el['type'] === 'time') {
-                $value = $this->getValue($name);
-                if (($value['H'] || $value['H'] === '0')
-                    && ($value['i'] || $value['i'] === '0')
-                ) {
-                    $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
-                } else {
-                    $arr[$name] = null;
-                }
-                continue;
-            }
-
-            if ($el['type'] === 'date' && array_key_exists('options', $el)) {
-                $value = $this->getValue($name);
-                $date  = $value;
-
-                if (!$value) {
-                    $arr[$name] = '';
-                    continue;
-                }
-
-                // Convert year to a valid SQL format (i.e yyyy-mm-dd)
-                if (strtolower($el['options']['format']) === 'y') {
-                    $date = sprintf("%s-01-01", $value);
-                }
-                // Convert month-year to a valid SQL format (i.e yyyy-mm-dd)
-                if ((strtolower($el['options']['format']) === 'my')
-                    || (strtolower($el['options']['format']) === 'ym')
-                ) {
-                    $date = sprintf("%s-01", $value);
-                }
-
-                $arr[$name] = $date;
-
-                continue;
-            }
-
-            // Check to see it the element type is a header or is a static
-            // element without a request variable. If so do not add to the
-            // reference array
-            if (!($el['type'] === 'header'
-                || ($el['type'] === 'static' && empty($_REQUEST[$name])))
-            ) {
-                  $arr[$name] = $this->getValue($name);
-            }
-        }
-    }
-
-    /**
-     * Reimplementation of QuickForm API.
-     *
-     * Gets the values submitted by the user
-     *
-     * @return array
-     */
-    function getSubmitValues()
-    {
-        $retVal     = [];
-        $submitKeys = $_POST + $_FILES;
-
-        $this->getGroupValues(array_keys($submitKeys), $retVal);
-        return $retVal;
-    }
-
-    /**
-     * Reimplementation of HTML_QuickForm getElement
-     *
-     * Extracts the element from the page.
-     *
-     * @param string $name The name of the element to extract.
-     *
-     * @return \LorisFormElement useless object which has the same methods as
-     *         those used by QuickForm, so that the LorisForm
-     *         is API compatible.
-     */
-    function getElement($name)
-    {
-        if ($this->form[$name]['type'] === 'file') {
-            return new LorisFormFileElement($this->form[$name]);
-        }
-        return new LorisFormElement();
-    }
-
-    /**
-     * Sets an error for the given element to be displayed to the
-     * user
-     *
-     * @param string       $el    The name of the element which has an error.
-     * @param string|array $error The error to display with the element.
-     *                            string: the error message to show;
-     *                            array: an array of element to error message,
-     *                            multiple items in one section supported.
-     *
-     * @return void
-     */
-    function setElementError($el, $error)
-    {
-        if (is_array($error)) {
-            $items = $this->form[$el];
-            foreach ($items['elements'] as $idx => $itm) {
-                foreach ($error as $key => $message) {
-                    if ($itm['name'] == $key) {
-                        $this->errors[$key] = $message;
-                        $this->form[$el]['elements'][$idx]["error"] = $message;
-                        break;
-                    }
-                }
-            }
-        } else {
-            if (isset($this->form[$el]) && $this->form[$el]) {
-                $this->form[$el]["error"] = $error;
-            }
-            $this->errors[$el] = $error;
-        }
-    }
-
-    /**
-     * Extracts the current error associated with an element
-     *
-     * @param string $el The name of the element whose error we'd like
-     *                   to know.
-     *
-     * @return string the error message of the element
-     */
-    function getElementError($el): string
-    {
-        return $this->errors[$el] ?? '';
-    }
-
-    /**
-     * Update form attributes
-     *
-     * @param array $attribs List of form attributes to update
-     *
-     * @return void
-     */
-    function updateAttributes($attribs)
-    {
-        foreach ($attribs as $attrib => $value) {
-            if ($attrib === 'action') {
-                $this->action = "action='$value'";
-            } else if ($attrib === 'encrypt') {
-                $this->encrypt = "encrypt='$value'";
-            } else {
-                throw new LorisException("Form attribute $attrib is not supported");
-            }
+        $status = fwrite($this->socket, $str);
+        if ($status === false) {
+            throw new \LorisException("Could not write to CouchDB server");
         }
     }
 }
 
 /**
- * A stub class so that calls to getElement that try and do something
- * with that element do not crash.
+ * Implementation of a wrapper around CouchDB's APIs, so that Loris can access
+ * a CouchDB database programmatically.
  *
  * @category Main
  * @package  Main
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class LorisFormElement
+class CouchDB
 {
+
     /**
-     * Stub. Does nothing.
-     *
-     * @return void
+     * This array keep a reference for each instance of this class.
      */
-    function freeze()
-    {
+    private static $_instances = [];
+
+    /**
+     * Keep the database name
+     */
+    private $_database = '';
+
+    /**
+     * Keep the host name
+     */
+    private $_host = '';
+
+    /**
+     * Keep the port number
+     */
+    private $_port = '';
+
+    /**
+     * Keep the user name
+     */
+    private $_user = '';
+
+    /**
+     * Keep the password value
+     */
+    private $_password = '';
+
+    /**
+     * Boolean true if we are currently doing a bulk transaction.
+     */
+    public $bulk = false;
+
+    /**
+     * Array of documents to be commited when the current bulk transaction
+     * ends.
+     */
+    public $bulkDocuments = [];
+
+    /**
+     * An instance of SocketWrapper used in network interaction with a CouchDB
+     * database.
+     */
+    public $SocketHandler;
+
+    /**
+     * Private Constructor for CouchDB
+     *
+     * @param string $database The couchDB database name
+     * @param string $host     The couchDB host name
+     * @param int    $port     The couchDB port number
+     * @param string $user     The couchDB user name
+     * @param string $password The couchDB password
+     */
+    private function __construct(
+        string $database = '',
+        string $host = '',
+        int    $port = 5984,
+        string $user = '',
+        string $password = ''
+    ) {
+
+        $this->_database = $database;
+        $this->_host     = $host;
+        $this->_port     = $port;
+        $this->_user     = $user;
+        $this->_password = $password;
     }
 
     /**
-     * Stub. Does nothing. Child classes may return nearly any type
-     * as relevant for the value of their element type.
+     * Returns one and only one CouchDB database wrapper object for a given
+     * database name.
      *
-     * @return array|string|bool|null
+     * NOTE: You shouldn't call this directly, instead you should
+     *       probably use the NDB_Factory->couchDB() factory method
+     *       which calls this.
+     *
+     * @param string $database The couchDB database name
+     * @param string $host     The couchDB host name
+     * @param int    $port     The couchDB port number
+     * @param string $user     The couchDB user name
+     * @param string $password The couchDB password
+     *
+     * @throws ConfigurationException When not all parameters are passed and it
+     *                                is not a backwards support deprecated case
+     *
+     * @return CouchDB A Loris CouchDB wrapper object
      */
-    function getValue()
-    {
-        return null;
-    }
-};
+    static function &getInstance(
+        string $database = "",
+        string $host = "",
+        int    $port = 0,
+        string $user = "",
+        string $password = ""
+    ):  \CouchDB {
 
-/**
- * A stub class which adds file related functions to LorisFormElement.
- * (And implements them.)
- *
- * @category Main
- * @package  Main
- * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-class LorisFormFileElement extends LorisFormElement
-{
-    var $el;
-    var $file;
+        if (empty(self::$_instances[$database])) {
+            if (empty($database)
+                && empty($host)
+                && ($port === 0)
+                && empty($user)
+                && empty($password)
+            ) {
+                // check if no parameters are passed
+                // deprecated behaviour, backwards compatible until next major
+                // Default to DQT
+                $config      = \NDB_Config::singleton();
+                $couchConfig = $config->getSetting("CouchDB");
+
+                $database = $couchConfig['dbName'];
+                $host     = $couchConfig['hostname'];
+                $port     = intval($couchConfig['port']);
+                $user     = $couchConfig['admin'];
+                $password = $couchConfig['adminpass'];
+                error_log(
+                    "LORIS Deprecation Warning: CouchDB::getInstance() will no 
+                    longer auto-loading CouchDB credentials, make sure to specify 
+                    all necessary parameters in the function call."
+                );
+            } else if (!empty($database)
+                && empty($host)
+                && empty($port)
+                && empty($user)
+                && empty($password)
+            ) {
+                // check if only database name given (assume the rest same as dqt)
+                // deprecated behaviour, backwards compatible until next major
+                // Default to DQT
+                $config      = \NDB_Config::singleton();
+                $couchConfig = $config->getSetting("CouchDB");
+
+                $host     = $couchConfig['hostname'];
+                $port     = intval($couchConfig['port']);
+                $user     = $couchConfig['admin'];
+                $password = $couchConfig['adminpass'];
+                error_log(
+                    "LORIS Deprecation Warning: CouchDB::getInstance() will no 
+                    longer support accepting only a database name, make sure to 
+                    specify all necessary parameters in the function call."
+                );
+            } else if (empty($database)
+                || empty($host)
+                || empty($port)
+                || empty($user)
+                || empty($password)
+            ) {
+                // check if only some parameters given but not all AND does not
+                // enter any of the above IF statements. this behaviour was never
+                // supported and should be an error.
+                throw new ConfigurationException(
+                    "CouchDB::getInstance() requires all parameters to be supplied."
+                );
+            }
+
+            $db = new CouchDB($database, $host, $port, $user, $password);
+            $db->SocketHandler = new SocketWrapper();
+
+            self::$_instances[$database] = $db;
+        }
+        return self::$_instances[$database];
+    }
 
     /**
-     * Constructor.
+     * Helper function to construct an HTTP request relative to the CouchDB database
      *
-     * @param array $el The element from $this->form which
-     *                  we need an object wrapper around.
+     * @param string $op  The HTTP verb to use
+     * @param string $doc The URL that we want relative to the Database
+     *
+     * @return string The complete low level HTTP request to pass to CouchDB
      */
-    function __construct($el)
+    function _constructURL(string $op, string $doc): string
     {
-        $this->el   = $el;
-        $this->file = $_FILES[$this->el['name']];
+        return "$op /$this->_database/$doc";
     }
 
     /**
-     * Returns true if the file was uploaded by the user.
+     * Low level function to send a GET request to CouchDB, relative
+     * to the server (not relative to the database.)
      *
-     * @return bool true if the file was uploaded by the user.
+     * @param string $url     The URL to GET relative to CouchDB server (not DB)
+     * @param string $op      The HTTP verb to use for the request.
+     * @param array  $headers An array of extra HTTP headers to send
+     *
+     * @return string A string representation of the JSON returned by CouchDB
      */
-    function isUploadedFile()
+    function _getURL(
+        string $url,
+        string $op = 'GET',
+        array $headers = []
+    ): string {
+        $handler = $this->SocketHandler;
+        $handler->setHost($this->_host);
+        $handler->setPort($this->_port);
+
+        $handler->open();
+        $handler->write("$op $url HTTP/1.0\r\n");
+        foreach ($headers as $key => $value) {
+            $handler->write($key . ':' . $value . "\r\n");
+        }
+        $handler->write("\r\n");
+
+        $response = '';
+        while (!$handler->eof()) {
+            $response .= $handler->gets();
+        }
+        $handler->close();
+        $response_split = explode("\r\n\r\n", $response, 2);
+        return trim($response_split[1]);
+    }
+
+
+    /**
+     * Low level function to get a document from CouchDB, relative to the
+     * CouchDB database.
+     *
+     * @param string $url The URL to GET from the server relative to the DB
+     * @param string $op  The HTTP verb to use for the request
+     *
+     * @return string A string representation of the JSON returned by CouchDB
+     */
+    function _getRelativeURL(string $url, string $op = 'GET'): string
     {
-        return isset($_FILES[$this->el['name']]);
+        $this->validHostAndPort();
+
+        $handler = $this->SocketHandler;
+        $handler->setHost($this->_host);
+        $handler->setPort($this->_port);
+
+        $handler->open();
+        $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n");
+        $handler->write(
+            "Authorization: Basic "
+            . base64_encode(
+                $this->_user . ":" . $this->_password
+            )
+            . "\r\n"
+        );
+
+        $handler->write("\r\n");
+
+        $response        = '';
+        $finishedHeaders = false;
+        $lastLine        = '';
+        $curLine         = '';
+        while (!$handler->eof()) {
+            $curLine = $handler->gets();
+
+            if ($finishedHeaders === false) {
+                if ($curLine == "\r\n") {
+                    $finishedHeaders = true;
+                }
+            } else { // headers are finished
+                $response .= $curLine;
+            }
+
+            $lastLine = $curLine;
+        }
+        $handler->close();
+
+        return $response;
     }
 
     /**
-     * Moves the file to the destination directory after it's been uploaded
-     * by the user and processed by the script.
+     * Internal function to make a low level HTTP POST request to the CouchDB
+     * server, not relative to the CouchDB server (not database). This is useful
+     * for posting to other CouchDB databases on the same server (ie. the users
+     * database.)
      *
-     * @param string $destinationDir      The directory to move the file into
-     * @param string $destinationFileName The filename to use in that directory.
+     * @param string  $url        The URL relative to the server to make a POST
+     *                            request to.
+     * @param string  $data       String representing the response from the server
+     * @param array   $headers    The extra HTTP headers to send with the request
+     * @param boolean $printValue If true the return from CouchDB will be printed
+     *                            instead of returned. This avoids the overhead of
+     *                            having to parse it server-side if the request is
+     *                            expected to be directly interpreted by javascript.
      *
-     * @return bool
+     * @return string|null A string representation of the JSON return value
+     *                      from CouchDB
      */
-    function moveUploadedFile($destinationDir, $destinationFileName)
-    {
-        return move_uploaded_file(
-            $this->file['tmp_name'],
-            $destinationDir . $destinationFileName
+    function _postURL(
+        string $url,
+        string $data,
+        array  $headers = [],
+        bool   $printValue = false
+    ): ?string {
+        $handler = $this->SocketHandler;
+        $handler->setHost($this->_host);
+        $handler->setPort($this->_port);
+
+        $handler->open();
+        $handler->write($url . " HTTP/1.0\r\n");
+        $handler->write("Content-Length: " . strlen($data) . "\r\n");
+        $handler->write("Content-type: application/json\r\n");
+
+        $handler->write(
+            "Authorization: Basic "
+            . base64_encode(
+                $this->_user . ":" . $this->_password
+            )
+            . "\r\n"
+        );
+
+        foreach ($headers as $key => $value) {
+            $handler->write($key . ':' . $value . "\r\n");
+        }
+        $handler->write("\r\n");
+        $handler->write($data);
+        $response        = '';
+        $finishedHeaders = false;
+        while (!$handler->eof()) {
+            $line = $handler->gets();
+            if ($finishedHeaders === false) {
+                if ($line == "\r\n") {
+                    $finishedHeaders = true;
+                }
+            } else {
+                if ($printValue) {
+                    print $line;
+                } else {
+                    $response .= $line;
+                }
+            }
+        }
+        $handler->close();
+        if ($printValue) {
+            return null;
+        }
+        return $response;
+    }
+
+    /**
+     * Posts a URL relative to the CouchDB database URL.
+     *
+     * @param string  $url        The name of the document to be posted
+     * @param string  $data       The content to be written to the URL
+     *                            as the HTTP payload.
+     * @param string  $op         The HTTP operation to use. Default POST.
+     * @param boolean $printValue If true the return from CouchDB will be printed
+     *                            instead of returned. This avoids the overhead of
+     *                            having to parse it server-side if the request is
+     *                            expected to be directly interpreted by javascript.
+     *
+     * @return string|null The page content (Without headers) returned by the
+     *         CouchDB web server.
+     */
+    function _postRelativeURL(
+        string $url,
+        string $data,
+        string $op = 'POST',
+        bool $printValue = false
+    ): ?string {
+        return $this->_postURL(
+            $this->_constructURL($op, $url),
+            $data,
+            [],
+            $printValue
         );
     }
 
     /**
-     * Extracts the value of the file as represented in PHP $_FILES
-     * superglobal. This seems to be how QuickForm handled it.
+     * Returns a document from CouchDB database
      *
-     * @return array|false of the form used by $_FILES superglobal or false
-     *         on failure
+     * @param string $id      The document to retrieve
+     * @param array  $options HTTP options to add to the request
+     *
+     * @return array An associative array representing the document
      */
-    function getValue()
+    function getDoc(string $id, array $options = []): array
     {
-        if (!$this->isUploadedFile()) {
+        $json = $this->_getRelativeURL($id);
+
+        if (!empty($options)) {
+            if (strpos($id, "?") === false) {
+                $url = $id . "?" . http_build_query($options);
+            } else {
+                $url = $id . "&" . http_build_query($options);
+            }
+        } else {
+            $url = $id;
+        }
+        $json = $this->_getRelativeURL($url);
+        $data = json_decode($json, true);
+        if (is_null($data)) {
+            throw new \LorisException(
+                'Decoded JSON data returned null. Cannot continue.'
+            );
+        }
+
+        if (isset($data['error']) && $data['error'] === 'not_found') {
+            return [];
+        }
+
+        return $data;
+    }
+
+    /**
+     * Delete a named document from CouchDB database
+     *
+     * @param string $id The document name to delete
+     *
+     * @return boolean True if delete was successful
+     */
+    function deleteDoc(string $id): bool
+    {
+        $getjson = $this->_getRelativeURL($id);
+        $getdata = json_decode($getjson, true);
+
+        $json = $this->_getRelativeURL($id . "?rev=" . $getdata['_rev'], "DELETE");
+        $data = json_decode($json, true);
+
+        if (!isset($data['ok'])) {
             return false;
         }
-        return $_FILES[$this->el['name']];
+        return ($data['ok'] === true);
+
+    }
+
+    /**
+     * Makes a raw PUT request for the named document, without any error
+     * handling around CouchDB formatting or checking.
+     *
+     * If currently in a bulk transaction, this adds it to the bulk request
+     * that will be sent on commit.
+     *
+     * @param string $id  The document name to PUT
+     * @param array  $doc An array representing the JSON document
+     *
+     * @return string|null The JSON string returned by the CouchDB server, or
+     *                null if in bulk mode.
+     */
+    function putDoc(string $id, array $doc): ?string
+    {
+        $encoded = json_encode($doc);
+
+        if ($this->bulk) {
+            $doc['_id'] = $id;
+            array_push($this->bulkDocuments, $doc);
+            return null;
+        }
+
+        $json = $this->_postRelativeURL($id, $encoded, 'PUT');
+
+        return $json;
+    }
+
+    /**
+     * Makes a raw POST request to CouchDB server. This will create the
+     * document with a CouchDB generated id.
+     *
+     * @param array $doc A PHP array encoding the JSON document to be created
+     *
+     * @return ?string the JSON string returned by the CouchDB server
+     */
+    function postDoc(array $doc): ?string
+    {
+        return $this->_postRelativeURL("", json_encode($doc), 'POST');
+    }
+
+    /**
+     * Creates a new document in the CouchDB database with a server
+     * generated id.
+     *
+     * NOTE: If you know the id of the document you want to create,
+     *       use replaceDoc instead.
+     *
+     * @param array $doc An associative array representing the document
+     *                   to create.
+     *
+     * @return string|FALSE id of created document or FALSE if creation failed.
+     */
+    function createDoc(array $doc)
+    {
+        $json = $this->postDoc($doc);
+        $data = json_decode($json, true);
+        if (!isset($data['ok'])) {
+            return false;
+        }
+
+        if (isset($data['error'])) {
+            return false;
+        }
+        return $data["id"];
+
+    }
+
+    /**
+     * Replace a named CouchDB doc with the passed one, or create it
+     * if it doesn't exist.
+     *
+     * @param string $id  CouchDB doc name to replace
+     * @param array  $doc Associative array containing the document to be
+     *                    created/updated.
+     *
+     * @return string The status of how the document was modified.
+     */
+    function replaceDoc(string $id, array $doc): string
+    {
+        $original_doc = $this->getDoc($id);
+        if ($original_doc === [] ) {
+            $this->putDoc($id, $doc);
+            return "new";
+        }
+        $m_original = $original_doc;
+        unset($m_original['_id']);
+        unset($m_original['_rev']);
+        unset($m_original['_attachments']);
+        if ($m_original === $doc) {
+            return 'unchanged contents';
+        }
+
+        $doc['_rev'] = $original_doc['_rev'];
+        if (isset($original_doc['_attachments'])) {
+            // Preserve the attachments if there are any.
+            $doc['_attachments'] = $original_doc['_attachments'];
+        }
+        $this->putDoc($id, $doc);
+        return 'modified';
+    }
+
+    /**
+     * Function to query a CouchDB view and return an array of
+     * the results parsed into a PHP array.
+     *
+     * @param string  $designdoc Design Doc containing the view
+     * @param string  $viewname  View to be queried
+     * @param array   $params    Any additional parameters to be passed to the
+     *                           CouchDB view
+     * @param boolean $full_json If true will include the full json returned,
+     *                           and not just the parsed rows.
+     *
+     * @return array|string An array of the rows returned by the view, or a
+     *                          JSON string.
+     */
+    function queryView(
+        string $designdoc,
+        string $viewname,
+        array $params,
+        bool $full_json = false
+    ) {
+        $keys = null;
+        if (isset($params['keys'])) {
+
+            $keys = $params['keys'];
+            unset($params['keys']);
+
+            $url = "_design/" . $designdoc . "/_view/" . $viewname
+                . "?" . http_build_query($params);
+
+            $query = $this->_postRelativeURL(
+                $url,
+                json_encode(['keys' => $keys]),
+                'POST',
+                $full_json
+            );
+
+        } else {
+            $url   = "_design/" . $designdoc . "/_view/" . $viewname
+                     . "?" . http_build_query($params);
+            $query = $this->_getRelativeUrl($url);
+        }
+
+        if ($full_json) {
+            return $query ?? [];
+        }
+        $data = json_decode($query ?? '', true);
+        if (is_null($data)) {
+            throw new \LorisException(
+                'Decoded JSON data returned null. Cannot continue.'
+            );
+        }
+
+        if (isset($data['error']) && $data['error'] == 'not_found') {
+            return [];
+        }
+        return $data['rows'];
+    }
+
+    /**
+     * Signals that a large transaction is about to happen, and that the
+     * CouchDB wrapper should send a single bulk request for all the
+     * upcoming updates, instead of one request per update.
+     *
+     * This does not affect get requests, and functions like replaceDoc
+     * will still need to send multiple get requests to CouchDB to get the
+     * current revision, but the PUT requests will be queued until commited
+     * with commitBulkTransaction();
+     *
+     * @return void
+     */
+    function beginBulkTransaction(): void
+    {
+        $this->bulk = true;
+    }
+
+    /**
+     * Sends a POST request to update all the documents that have been queued
+     * since the BulkTransaction was started.
+     *
+     * @return ?string The string that was returned by CouchDB
+     */
+    function commitBulkTransaction(): ?string
+    {
+        if ($this->bulk !== true) {
+            return '';
+        }
+        $docs = json_encode(['docs' => $this->bulkDocuments]);
+
+        $this->bulk          = false;
+        $this->bulkDocuments = [];
+
+        return $this->_postRelativeURL('_bulk_docs', $docs);
+    }
+
+    /**
+     * Validation of CouchDB Host and Port.
+     * Throws LorisException if (Host or Port) invalid.
+     *
+     * @throws LorisException
+     *
+     * @return void
+     */
+    function validHostAndPort(): void
+    {
+        $config       = NDB_Config::singleton();
+        $couch_config = $config->getSetting('CouchDB');
+        if (!filter_var(gethostbyname($couch_config['hostname']), FILTER_VALIDATE_IP)
+            || !is_numeric($couch_config['port'])
+        ) {
+            throw new \LorisException(
+                'Could not connect to CouchDB server at '
+                .$couch_config['hostname'].':'.$couch_config['port']
+            );
+        }
     }
 }
 
