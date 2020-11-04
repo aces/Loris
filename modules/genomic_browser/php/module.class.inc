@@ -6,8 +6,8 @@
  * PHP Version 7
  *
  * @category LORIS_Module
- * @package  Genomic_Browser
- * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @package  Genomics
+ * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
@@ -17,8 +17,8 @@ namespace LORIS\genomic_browser;
  * Class module implements the basic LORIS module functionality
  *
  * @category LORIS_Module
- * @package  Genomic_Browser
- * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @package  Genomics
+ * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */

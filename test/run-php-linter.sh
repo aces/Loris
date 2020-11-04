@@ -30,6 +30,7 @@ ignored_files="
     tools/single_use/remove_logged_passwords.php,\
     tools/deprecated/create_candidates.php,\
     tools/deprecated/excelDump.php,\
+    tools/data_integrity/fix_candidate_age.php,\
     tools/data_integrity/score_instrument.php,\
     tools/exporters/data_dictionary_builder.php,\
     tools/exporters/DB_dump_table_data.php,\
