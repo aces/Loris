@@ -54,8 +54,6 @@ class NDB_Form extends NDB_Page
      * @param string $page       Identifies the page to show
      * @param string $identifier Variables passed to form
      *
-     * @SuppressWarnings("unused") for $success
-     *
      * @return \NDB_Form
      */
     static function &factory($name, $page, $identifier)

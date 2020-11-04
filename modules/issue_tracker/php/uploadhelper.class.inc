@@ -51,9 +51,9 @@ class UploadHelper
     /**
      * Setup uploading configurations.
      *
-     * @param \User $user   The user uploading.
-     * @param array $files  The $_FILES array content.
-     * @param array $values The post message array content.
+     * @param object $user   The user uploading.
+     * @param array  $files  The $_FILES array content.
+     * @param array  $values The post message array content.
      *
      * @return array (success|error) with a message for the frontend.
      */
