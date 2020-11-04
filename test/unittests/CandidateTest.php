@@ -1195,6 +1195,7 @@ class CandidateTest extends TestCase
 
     /**
      * Set up test doubles behavior for Candidate::select() method
+     *
      * @return void
      */
     private function _setUpTestDoublesForSelectCandidate()
