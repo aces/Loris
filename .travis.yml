@@ -24,19 +24,7 @@ install:
 - sudo apt-get install -y libapparmor1
 - pecl install -f ast-1.0.3
 - sudo apt-get install nodejs-dev node-gyp libssl1.0-dev npm
-<<<<<<< c76417d063b5b4c404ca227a9861b7915fd2db84
-<<<<<<< b5505a9a6b4b3f74c8cfac12c828b817630e5ba6
-<<<<<<< 8cf766c4c112759e41cfdee0b26e0bfdb52849a2
 - composer self-update 1.10.17
-=======
-- sudo composer self-update --rollback
->>>>>>> error in composer rollback
-=======
-- composer self-update --rollback
->>>>>>> error in composer rollback
-=======
-- composer self-update 1.10.17
->>>>>>> rebase
 - make dev
 
 script: "npm run tests:$TEST_SUITE"
