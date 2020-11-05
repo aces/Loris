@@ -23,7 +23,7 @@ use \LORIS\Data\Models\ImageDTO;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class Images
+class Images_0_0_4_Dev
 {
     private $_timepoint;
     private $_images;
@@ -58,6 +58,7 @@ class Images
                     'OutputType'      => $image->getOutputType(),
                     'Filename'        => $image->getFilename(),
                     'AcquisitionType' => $image->getAcquisitionprotocol(),
+                    'IsPhantom'       => $image->isPhantom(),
                 ];
             },
             $this->_images

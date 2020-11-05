@@ -553,7 +553,7 @@ the form:
         "OutputType" : "native",
         "Filename" : "abc.mnc",
         "AcquisitionType" : "t1w/t2w/etc",
-        "IsPhantom" : true/false,
+        "IsPhantom" : "true|false",
     }, /* More files */]
 }
 ```
