@@ -92,7 +92,9 @@ class FieldsSidebar extends Component {
       for (let i = this.props.Fields.length - 1; i >= 0; i--) {
         let fieldInfo = this.props.Fields[i].split(',');
         fieldList.push(
-          <div className='list-group-item row' key={this.props.Fields[i]}>
+          <div className='list-group-item row'
+               style={{overflowX: 'scroll'}}
+               key={this.props.Fields[i]}>
             <h4 className='list-group-item-heading col-xs-12'>
               {fieldInfo[0]}
             </h4>

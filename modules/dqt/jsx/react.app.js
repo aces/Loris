@@ -886,13 +886,21 @@ class DataQueryApp extends Component {
             if (RowHeaders.hasOwnProperty(colHeader)) {
               temp = Identifiers[identifier]
                 + ','
-                + RowHeaders[colHeader].split(' ')[0];
+                + RowHeaders[colHeader].substr(
+                  0,
+                  RowHeaders[colHeader].lastIndexOf(' ')
+                );
               index = sessiondata[temp];
               if (!index) {
                 currow.push('.');
               } else {
-                temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
-                fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
+                const instrument = RowHeaders[colHeader].substr(
+                  RowHeaders[colHeader].lastIndexOf(' ') + 1
+                ).split(',')[0];
+                temp = index[instrument];
+                fieldSplit = RowHeaders[colHeader].substr(
+                  RowHeaders[colHeader].lastIndexOf(' ')
+                ).split(',');
                 if (temp) {
                   if (temp.data[RowHeaders[colHeader].split(',')[1]]
                     && downloadableFields[fieldSplit[0]
