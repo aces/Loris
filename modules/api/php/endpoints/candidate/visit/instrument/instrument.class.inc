@@ -100,7 +100,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
- 
         if ($flags) {
             // Delegate to sub-endpoints
             $handler = new Flags($this->_visit, $this->_instrument);
