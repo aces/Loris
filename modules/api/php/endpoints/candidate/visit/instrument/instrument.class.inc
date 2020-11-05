@@ -96,7 +96,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($this->_instrument->_hasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments for user' . $user
+                'This user can not update this instrument'
             );
         }
 
