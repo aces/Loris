@@ -232,14 +232,14 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // Test what happen when all field required are there, plus one invalid
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $this->visitTest,
-            'Site'    => "Data Coordinating Center",
-            'Battery' => "Low Yeast",
+            'Site'    => "",
+            'Battery' => "Stale",
             'Project' => "Pumpernickel",
-            'Test'    => "Test"
+            'Testtest'    => "Test"
         ];
         $response = $this->client->request(
             'PUT',
-            "candidates/$this->candidTest/$this->visitTest",
+            "candidates/900000/V1",
             [
                 'headers'     => $this->headers,
                 'json'        => $json,
@@ -255,7 +255,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // Test CandID in URL should match CandID in the request fields
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $this->visitTest,
-            'Site'    => "Data Coordinating Center",
+            'Site'    => "Montreal",
             'Battery' => "Low Yeast",
             'Project' => "Pumpernickel",
         ];
