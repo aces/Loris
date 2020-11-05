@@ -1101,7 +1101,7 @@ class ManageSavedQueryRow extends Component {
         let filter;
       if (this.props.Query.Conditions.activeOperator) {
         if (this.props.Query.Conditions.children) {
-          if (this.props.Query.Conditions.activeOperator === 0) {
+          if (this.props.Query.Conditions.activeOperator === '0') {
             operator = (<span>AND</span>);
           } else {
             operator = (<span>OR</span>);
