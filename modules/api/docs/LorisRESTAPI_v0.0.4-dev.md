@@ -553,7 +553,6 @@ the form:
         "OutputType" : "native",
         "Filename" : "abc.mnc",
         "AcquisitionType" : "t1w/t2w/etc",
-        "IsPhantom" : true/false,
     }, /* More files */]
 }
 ```
@@ -811,7 +810,6 @@ object of the form:
     [
         {
             "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
-            "Patientname" : "DCM123_123456_V1",
             "SeriesInfo" :
                 [{
                     "SeriesDescription" : "MPRAGE_ipat2",
@@ -836,7 +834,6 @@ object of the form:
         },
         {
             "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
-            "Patientname" : "DCM456_654321_V1",
             "SeriesInfo" :
                 [{
                 "SeriesDescription" : "MPRAGE_ipat2",

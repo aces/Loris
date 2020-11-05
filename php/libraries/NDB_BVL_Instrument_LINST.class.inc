@@ -196,8 +196,18 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     echo "<p><b>$elname</b><br> ";
                 }
                 $rules_array = [];
-                foreach ($registered_rules as $registered) {
-                    $rules = $registered['rules'];
+                $rules       = [];
+                $registered  =[];
+                foreach ($registered_rules as $key => $value) {
+                    if ($key = 'rules') {
+                        $rules = $value;
+                    }
+                    if ($key = 'group') {
+                        $registered['group'] = $value;
+                    }
+                    if ($key = 'message') {
+                        $registered['message'] = $value;
+                    }
 
                     foreach ($rules as $rule) {
                         //If this is an OR rule using two different controllers

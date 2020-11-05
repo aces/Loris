@@ -52,9 +52,8 @@ class Dicoms
     private static function _formatDicomTars(DicomTarDTO $dicom): array
     {
         return [
-            'Tarname'     => $dicom->getTarname(),
-            'Patientname' => $dicom->getPatientname(),
-            'SeriesInfo'  => array_map(
+            'Tarname'    => $dicom->getTarname(),
+            'SeriesInfo' => array_map(
                 [
                     'self',
                     '_formatSeries'

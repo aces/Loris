@@ -4,7 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+    "content-hash": "632cce397dbefe6115f7603c941b038c",
+=======
+    "content-hash": "3037881362a40926d8b95983581d37f2",
+>>>>>>> trying to solve travis packages problem
+=======
     "content-hash": "f4fefa124e32b906f0a73a3670106d3b",
+>>>>>>> Remove changes to composer
     "packages": [
         {
             "name": "bjeavons/zxcvbn-php",
@@ -49,6 +57,10 @@
                 "password",
                 "zxcvbn"
             ],
+            "support": {
+                "issues": "https://github.com/bjeavons/zxcvbn-php/issues",
+                "source": "https://github.com/bjeavons/zxcvbn-php/tree/master"
+            },
             "time": "2018-07-23T05:05:36+00:00"
         },
         {
@@ -92,6 +104,10 @@
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
+            "support": {
+                "issues": "https://github.com/firebase/php-jwt/issues",
+                "source": "https://github.com/firebase/php-jwt/tree/v3.0.0"
+            },
             "time": "2015-07-22T18:31:08+00:00"
         },
         {
@@ -139,7 +155,19 @@
                 "recaptcha",
                 "spam"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "forum": "https://groups.google.com/forum/#!forum/recaptcha",
+                "issues": "https://github.com/google/recaptcha/issues",
+                "source": "https://github.com/google/recaptcha"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-03-31T17:50:54+00:00"
+=======
             "time": "2019-08-16T15:48:25+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -205,7 +233,18 @@
                 "rest",
                 "web service"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/guzzle/guzzle/issues",
+                "source": "https://github.com/guzzle/guzzle/tree/6.5"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-06-16T21:01:06+00:00"
+=======
             "time": "2019-10-23T15:58:00+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "guzzlehttp/promises",
@@ -256,7 +295,18 @@
             "keywords": [
                 "promise"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/guzzle/promises/issues",
+                "source": "https://github.com/guzzle/promises/tree/1.4.0"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-09-30T07:37:28+00:00"
+=======
             "time": "2016-12-20T10:07:11+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "guzzlehttp/psr7",
@@ -327,7 +377,18 @@
                 "uri",
                 "url"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/guzzle/psr7/issues",
+                "source": "https://github.com/guzzle/psr7/tree/1.7.0"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-09-30T07:37:11+00:00"
+=======
             "time": "2019-07-01T23:21:34+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "laminas/laminas-diactoros",
@@ -402,7 +463,22 @@
                 "psr",
                 "psr-7"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "chat": "https://laminas.dev/chat",
+                "docs": "https://docs.laminas.dev/laminas-diactoros/",
+                "forum": "https://discourse.laminas.dev",
+                "issues": "https://github.com/laminas/laminas-diactoros/issues",
+                "rss": "https://github.com/laminas/laminas-diactoros/releases.atom",
+                "source": "https://github.com/laminas/laminas-diactoros"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-03-23T15:28:28+00:00"
+=======
             "time": "2019-12-31T16:41:30+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
@@ -454,7 +530,26 @@
                 "laminas",
                 "zf"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "forum": "https://discourse.laminas.dev/",
+                "issues": "https://github.com/laminas/laminas-zendframework-bridge/issues",
+                "rss": "https://github.com/laminas/laminas-zendframework-bridge/releases.atom",
+                "source": "https://github.com/laminas/laminas-zendframework-bridge"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2020-09-14T14:23:00+00:00"
+=======
             "time": "2019-12-31T15:24:03+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "php-http/guzzle6-adapter",
@@ -517,6 +612,10 @@
                 "Guzzle",
                 "http"
             ],
+            "support": {
+                "issues": "https://github.com/php-http/guzzle6-adapter/issues",
+                "source": "https://github.com/php-http/guzzle6-adapter/tree/master"
+            },
             "time": "2018-12-16T14:44:03+00:00"
         },
         {
@@ -574,7 +673,18 @@
                 "client",
                 "http"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/php-http/httplug/issues",
+                "source": "https://github.com/php-http/httplug/tree/master"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-07-13T15:43:23+00:00"
+=======
             "time": "2018-10-31T09:14:44+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "php-http/promise",
@@ -624,7 +734,18 @@
             "keywords": [
                 "promise"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/php-http/promise/issues",
+                "source": "https://github.com/php-http/promise/tree/1.1.0"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-07-07T09:29:14+00:00"
+=======
             "time": "2016-01-26T13:27:02+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "psr/http-client",
@@ -673,7 +794,17 @@
                 "psr",
                 "psr-18"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/php-fig/http-client/tree/master"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-06-29T06:28:15+00:00"
+=======
             "time": "2018-10-30T23:29:13+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "psr/http-message",
@@ -723,6 +854,9 @@
                 "request",
                 "response"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/http-message/tree/master"
+            },
             "time": "2016-08-06T14:39:51+00:00"
         },
         {
@@ -776,6 +910,10 @@
                 "response",
                 "server"
             ],
+            "support": {
+                "issues": "https://github.com/php-fig/http-server-handler/issues",
+                "source": "https://github.com/php-fig/http-server-handler/tree/master"
+            },
             "time": "2018-10-30T16:46:14+00:00"
         },
         {
@@ -829,6 +967,10 @@
                 "request",
                 "response"
             ],
+            "support": {
+                "issues": "https://github.com/php-fig/http-server-middleware/issues",
+                "source": "https://github.com/php-fig/http-server-middleware/tree/master"
+            },
             "time": "2018-10-30T17:12:04+00:00"
         },
         {
@@ -869,6 +1011,10 @@
                 }
             ],
             "description": "A polyfill for getallheaders.",
+            "support": {
+                "issues": "https://github.com/ralouphie/getallheaders/issues",
+                "source": "https://github.com/ralouphie/getallheaders/tree/develop"
+            },
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
@@ -922,10 +1068,22 @@
             "keywords": [
                 "templating"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "forum": "http://www.smarty.net/forums/",
+                "irc": "irc://irc.freenode.org/smarty",
+                "issues": "https://github.com/smarty-php/smarty/issues",
+                "source": "https://github.com/smarty-php/smarty/tree/v3.1.36"
+            },
+            "time": "2020-04-14T14:44:26+00:00"
+        },
+=======
             "time": "2018-09-12T20:54:16+00:00"
         }
     ],
     "packages-dev": [
+>>>>>>> Remove changes to composer
         {
             "name": "composer/semver",
             "version": "1.5.0",
@@ -981,10 +1139,36 @@
             ],
             "description": "Semver library that offers utilities, version constraint parsing and validation.",
             "keywords": [
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                "compatibility",
+                "idn",
+                "intl",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-idn/tree/v1.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+=======
                 "semantic",
                 "semver",
                 "validation",
                 "versioning"
+>>>>>>> Remove changes to composer
             ],
             "time": "2019-03-19T17:25:45+00:00"
         },
@@ -1027,8 +1211,34 @@
             ],
             "description": "Restarts a process without xdebug.",
             "keywords": [
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                "compatibility",
+                "intl",
+                "normalizer",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+=======
                 "Xdebug",
                 "performance"
+>>>>>>> Remove changes to composer
             ],
             "time": "2019-05-27T17:52:04+00:00"
         },
@@ -1086,6 +1296,20 @@
                 "constructor",
                 "instantiate"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php72/tree/v1.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+=======
             "time": "2019-03-17T17:37:11+00:00"
         },
         {
@@ -1121,6 +1345,7 @@
                 "ISC"
             ],
             "authors": [
+>>>>>>> Remove changes to composer
                 {
                     "name": "Felix Becker",
                     "email": "felix.b@outlook.com"
@@ -1130,6 +1355,41 @@
             "time": "2019-09-12T22:41:08+00:00"
         },
         {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "name": "composer/semver",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/semver.git",
+                "reference": "0ec124f57c7e23925c006cbad0de853e3aec3ba2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/semver/zipball/0ec124f57c7e23925c006cbad0de853e3aec3ba2",
+                "reference": "0ec124f57c7e23925c006cbad0de853e3aec3ba2",
+=======
+            "time": "2020-04-14T14:44:26+00:00"
+        },
+        {
+            "name": "symfony/polyfill-intl-idn",
+            "version": "v1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-intl-idn.git",
+                "reference": "3b75acd829741c768bc8b1f84eb33265e7cc5117"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/3b75acd829741c768bc8b1f84eb33265e7cc5117",
+                "reference": "3b75acd829741c768bc8b1f84eb33265e7cc5117",
+>>>>>>> trying to solve travis packages problem
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "symfony/polyfill-intl-normalizer": "^1.10",
+                "symfony/polyfill-php72": "^1.10"
+=======
             "name": "jean85/pretty-package-versions",
             "version": "1.2",
             "source": {
@@ -1146,20 +1406,51 @@
             "require": {
                 "ocramius/package-versions": "^1.2.0",
                 "php": "^7.0"
+>>>>>>> Remove changes to composer
             },
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
             "require-dev": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                "phpstan/phpstan": "^0.12.19",
+                "phpunit/phpunit": "^4.5 || ^5.0.5 || ^7"
+=======
+            "suggest": {
+                "ext-intl": "For best performance"
+>>>>>>> trying to solve travis packages problem
+=======
                 "phpunit/phpunit": "^6.0"
+>>>>>>> Remove changes to composer
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+                    "dev-master": "2.x-dev"
+=======
+                    "dev-main": "1.20-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+>>>>>>> trying to solve travis packages problem
+=======
                     "dev-master": "1.x-dev"
+>>>>>>> Remove changes to composer
                 }
             },
             "autoload": {
                 "psr-4": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "Symfony\\Polyfill\\Intl\\Idn\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+=======
                     "Jean85\\": "src/"
                 }
+>>>>>>> Remove changes to composer
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1167,6 +1458,14 @@
             ],
             "authors": [
                 {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "name": "Laurent Bassin",
+                    "email": "laurent@bassin.info"
+                },
+                {
+                    "name": "Trevor Rowbotham",
+                    "email": "trevor.rowbotham@pm.me"
+=======
                     "name": "Alessandro Lai",
                     "email": "alessandro.lai85@gmail.com"
                 }
@@ -1250,6 +1549,7 @@
             "autoload": {
                 "psr-4": {
                     "DeepCopy\\": "src/DeepCopy/"
+>>>>>>> Remove changes to composer
                 },
                 "files": [
                     "src/DeepCopy/deep_copy.php"
@@ -1306,6 +1606,21 @@
             ],
             "authors": [
                 {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for intl's idn_to_ascii and idn_to_utf8 functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "idn",
+                "intl",
+                "polyfill",
+                "portable",
+                "shim"
+=======
                     "name": "Christian Weiske",
                     "email": "cweiske@cweiske.de",
                     "homepage": "http://github.com/cweiske/jsonmapper/",
@@ -1505,9 +1820,41 @@
                 "BSD-3-Clause",
                 "GPL-2.0",
                 "GPL-3.0"
+>>>>>>> Remove changes to composer
             ],
             "authors": [
                 {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "irc": "irc://irc.freenode.org/composer",
+                "issues": "https://github.com/composer/semver/issues",
+                "source": "https://github.com/composer/semver/tree/2.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-04-21T13:19:12+00:00"
+=======
                     "name": "David Grudl",
                     "homepage": "https://davidgrudl.com"
                 },
@@ -1586,6 +1933,7 @@
                 "yaml"
             ],
             "time": "2019-02-05T21:30:40+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "nette/php-generator",
@@ -1606,14 +1954,61 @@
                 "php": ">=7.1"
             },
             "require-dev": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || 6.5 - 8"
+=======
+            "time": "2020-10-23T14:02:19+00:00"
+        },
+        {
+            "name": "symfony/polyfill-intl-normalizer",
+            "version": "v1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
+                "reference": "727d1096295d807c309fb01a851577302394c897"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/727d1096295d807c309fb01a851577302394c897",
+                "reference": "727d1096295d807c309fb01a851577302394c897",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "suggest": {
+                "ext-intl": "For best performance"
+>>>>>>> trying to solve travis packages problem
+=======
                 "nette/tester": "^2.0",
                 "tracy/tracy": "^2.3"
+>>>>>>> Remove changes to composer
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "dev-main": "1.20-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ],
+                "classmap": [
+                    "Resources/stubs"
+                ]
+=======
                     "dev-master": "3.2-dev"
                 }
+>>>>>>> Remove changes to composer
             },
             "autoload": {
                 "classmap": [
@@ -1628,8 +2023,61 @@
             ],
             "authors": [
                 {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "description": "Restarts a process without Xdebug.",
+=======
+            "description": "Symfony polyfill for intl's Normalizer class and related functions",
+            "homepage": "https://symfony.com",
+>>>>>>> trying to solve travis packages problem
+            "keywords": [
+                "compatibility",
+                "intl",
+                "normalizer",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "irc": "irc://irc.freenode.org/composer",
+                "issues": "https://github.com/composer/xdebug-handler/issues",
+                "source": "https://github.com/composer/xdebug-handler/tree/1.4.4"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+=======
                     "name": "David Grudl",
                     "homepage": "https://davidgrudl.com"
+>>>>>>> Remove changes to composer
                 },
                 {
                     "name": "Nette Community",
@@ -1667,18 +2115,64 @@
                 "php": ">=7.1"
             },
             "require-dev": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                "doctrine/coding-standard": "^6.0",
+                "ext-pdo": "*",
+                "ext-phar": "*",
+                "phpbench/phpbench": "^0.13",
+                "phpstan/phpstan-phpunit": "^0.11",
+                "phpstan/phpstan-shim": "^0.11",
+                "phpunit/phpunit": "^7.0"
+=======
+            "time": "2020-10-23T14:02:19+00:00"
+        },
+        {
+            "name": "symfony/polyfill-php72",
+            "version": "v1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php72.git",
+                "reference": "cede45fcdfabdd6043b3592e83678e42ec69e930"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/cede45fcdfabdd6043b3592e83678e42ec69e930",
+                "reference": "cede45fcdfabdd6043b3592e83678e42ec69e930",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+>>>>>>> trying to solve travis packages problem
+=======
                 "nette/tester": "^2.0",
                 "tracy/tracy": "^2.3"
+>>>>>>> Remove changes to composer
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "dev-main": "1.20-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php72\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+=======
                     "dev-master": "3.2-dev"
                 }
             },
             "autoload": {
                 "classmap": [
                     "src/"
+>>>>>>> Remove changes to composer
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1689,8 +2183,38 @@
             ],
             "authors": [
                 {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 7.2+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+                "constructor",
+                "instantiate"
+            ],
+            "support": {
+                "issues": "https://github.com/doctrine/instantiator/issues",
+                "source": "https://github.com/doctrine/instantiator/tree/1.3.x"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+=======
                     "name": "David Grudl",
                     "homepage": "https://davidgrudl.com"
+>>>>>>> Remove changes to composer
                 },
                 {
                     "name": "Nette Community",
@@ -1743,12 +2267,56 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                "ISC"
+=======
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+>>>>>>> trying to solve travis packages problem
+=======
                 "BSD-3-Clause",
                 "GPL-2.0",
                 "GPL-3.0"
+>>>>>>> Remove changes to composer
             ],
-            "authors": [
+            "funding": [
                 {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "description": "A more advanced JSONRPC implementation",
+            "support": {
+                "issues": "https://github.com/felixfbecker/php-advanced-json-rpc/issues",
+                "source": "https://github.com/felixfbecker/php-advanced-json-rpc/tree/master"
+            },
+            "time": "2020-03-11T15:21:41+00:00"
+        },
+        {
+            "name": "microsoft/tolerant-php-parser",
+            "version": "v0.0.20",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/microsoft/tolerant-php-parser.git",
+                "reference": "c5e2bf5d8c9f4f27eef1370bd39ea2d1f374eeb4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/microsoft/tolerant-php-parser/zipball/c5e2bf5d8c9f4f27eef1370bd39ea2d1f374eeb4",
+                "reference": "c5e2bf5d8c9f4f27eef1370bd39ea2d1f374eeb4",
+=======
                     "name": "David Grudl",
                     "homepage": "https://davidgrudl.com"
                 },
@@ -1777,6 +2345,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/nette/utils/zipball/c133e18c922dcf3ad07673077d92d92cef25a148",
                 "reference": "c133e18c922dcf3ad07673077d92d92cef25a148",
+>>>>>>> Remove changes to composer
                 "shasum": ""
             },
             "require": {
@@ -1796,9 +2365,53 @@
                 "ext-xml": "to use Strings::length() etc. when mbstring is not available"
             },
             "type": "library",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "autoload": {
+                "psr-4": {
+                    "Microsoft\\PhpParser\\": [
+                        "src/"
+                    ]
+=======
+            "time": "2020-10-23T14:02:19+00:00"
+        }
+    ],
+    "packages-dev": [
+        {
+            "name": "composer/semver",
+            "version": "3.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/semver.git",
+                "reference": "4089fddb67bcf6bf860d91b979e95be303835002"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/semver/zipball/4089fddb67bcf6bf860d91b979e95be303835002",
+                "reference": "4089fddb67bcf6bf860d91b979e95be303835002",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.2 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12.19",
+                "symfony/phpunit-bridge": "^4.2 || ^5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Semver\\": "src"
+>>>>>>> trying to solve travis packages problem
+=======
             "extra": {
                 "branch-alias": {
                     "dev-master": "3.0-dev"
+>>>>>>> Remove changes to composer
                 }
             },
             "autoload": {
@@ -1814,12 +2427,319 @@
             ],
             "authors": [
                 {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+                    "name": "Rob Lourens",
+                    "email": "roblou@microsoft.com"
+                }
+            ],
+            "description": "Tolerant PHP-to-AST parser designed for IDE usage scenarios",
+            "support": {
+                "issues": "https://github.com/microsoft/tolerant-php-parser/issues",
+                "source": "https://github.com/microsoft/tolerant-php-parser/tree/master"
+            },
+            "time": "2020-02-18T02:57:19+00:00"
+        },
+        {
+            "name": "myclabs/deep-copy",
+            "version": "1.10.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/myclabs/DeepCopy.git",
+                "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
+                "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0"
+            },
+            "replace": {
+                "myclabs/deep-copy": "self.version"
+            },
+            "require-dev": {
+                "doctrine/collections": "^1.0",
+                "doctrine/common": "^2.6",
+                "phpunit/phpunit": "^7.1"
+=======
+                    "name": "Nils Adermann",
+                    "email": "naderman@naderman.de",
+                    "homepage": "http://www.naderman.de"
+                },
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                },
+                {
+                    "name": "Rob Bast",
+                    "email": "rob.bast@gmail.com",
+                    "homepage": "http://robbast.nl"
+                }
+            ],
+            "description": "Semver library that offers utilities, version constraint parsing and validation.",
+            "keywords": [
+                "semantic",
+                "semver",
+                "validation",
+                "versioning"
+            ],
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-14T08:51:15+00:00"
+        },
+        {
+            "name": "composer/xdebug-handler",
+            "version": "1.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/xdebug-handler.git",
+                "reference": "6e076a124f7ee146f2487554a94b6a19a74887ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/xdebug-handler/zipball/6e076a124f7ee146f2487554a94b6a19a74887ba",
+                "reference": "6e076a124f7ee146f2487554a94b6a19a74887ba",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.2 || ^7.0 || ^8.0",
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || 6.5 - 8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Composer\\XdebugHandler\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "John Stevenson",
+                    "email": "john-stevenson@blueyonder.co.uk"
+                }
+            ],
+            "description": "Restarts a process without Xdebug.",
+            "keywords": [
+                "Xdebug",
+                "performance"
+            ],
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-24T12:39:10+00:00"
+        },
+        {
+            "name": "doctrine/instantiator",
+            "version": "1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/instantiator.git",
+                "reference": "f350df0268e904597e3bd9c4685c53e0e333feea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/f350df0268e904597e3bd9c4685c53e0e333feea",
+                "reference": "f350df0268e904597e3bd9c4685c53e0e333feea",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^6.0",
+                "ext-pdo": "*",
+                "ext-phar": "*",
+                "phpbench/phpbench": "^0.13",
+                "phpstan/phpstan-phpunit": "^0.11",
+                "phpstan/phpstan-shim": "^0.11",
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marco Pivetta",
+                    "email": "ocramius@gmail.com",
+                    "homepage": "http://ocramius.github.com/"
+                }
+            ],
+            "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
+            "homepage": "https://www.doctrine-project.org/projects/instantiator.html",
+            "keywords": [
+                "constructor",
+                "instantiate"
+            ],
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finstantiator",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-05-29T17:27:14+00:00"
+        },
+        {
+            "name": "felixfbecker/advanced-json-rpc",
+            "version": "v3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/felixfbecker/php-advanced-json-rpc.git",
+                "reference": "0ed363f8de17d284d479ec813c9ad3f6834b5c40"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/felixfbecker/php-advanced-json-rpc/zipball/0ed363f8de17d284d479ec813c9ad3f6834b5c40",
+                "reference": "0ed363f8de17d284d479ec813c9ad3f6834b5c40",
+                "shasum": ""
+            },
+            "require": {
+                "netresearch/jsonmapper": "^1.0 || ^2.0",
+                "php": ">=7.0",
+                "phpdocumentor/reflection-docblock": "^4.0.0 || ^5.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AdvancedJsonRpc\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "Felix Becker",
+                    "email": "felix.b@outlook.com"
+                }
+            ],
+            "description": "A more advanced JSONRPC implementation",
+            "time": "2020-03-11T15:21:41+00:00"
+        },
+        {
+            "name": "microsoft/tolerant-php-parser",
+            "version": "v0.0.23",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/microsoft/tolerant-php-parser.git",
+                "reference": "1d76657e3271754515ace52501d3e427eca42ad0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/microsoft/tolerant-php-parser/zipball/1d76657e3271754515ace52501d3e427eca42ad0",
+                "reference": "1d76657e3271754515ace52501d3e427eca42ad0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.4"
+>>>>>>> trying to solve travis packages problem
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+                    "DeepCopy\\": "src/DeepCopy/"
+                },
+                "files": [
+                    "src/DeepCopy/deep_copy.php"
+                ]
+=======
+                    "Microsoft\\PhpParser\\": [
+                        "src/"
+                    ]
+                }
+>>>>>>> trying to solve travis packages problem
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            ],
+            "description": "Create deep copies (clones) of your objects",
+            "keywords": [
+                "clone",
+                "copy",
+                "duplicate",
+                "object",
+                "object graph"
+            ],
+            "support": {
+                "issues": "https://github.com/myclabs/DeepCopy/issues",
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.x"
+            },
+=======
+            ],
+            "authors": [
+                {
+                    "name": "Rob Lourens",
+                    "email": "roblou@microsoft.com"
+=======
                     "name": "David Grudl",
                     "homepage": "https://davidgrudl.com"
                 },
                 {
                     "name": "Nette Community",
                     "homepage": "https://nette.org/contributors"
+>>>>>>> Remove changes to composer
                 }
             ],
             "description": "🛠 Nette Utils: lightweight utilities for string & array manipulation, image handling, safe JSON encoding/decoding, validation, slug or strong password generating etc.",
@@ -1882,7 +2802,12 @@
             "license": [
                 "BSD-3-Clause"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+=======
             "authors": [
+>>>>>>> Remove changes to composer
                 {
                     "name": "Nikita Popov"
                 }
@@ -1942,8 +2867,21 @@
                     "email": "ocramius@gmail.com"
                 }
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "description": "Map nested JSON structures onto PHP classes",
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "email": "cweiske@cweiske.de",
+                "issues": "https://github.com/cweiske/jsonmapper/issues",
+                "source": "https://github.com/cweiske/jsonmapper/tree/master"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-04-16T18:48:43+00:00"
+=======
             "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
             "time": "2019-07-17T15:49:50+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "pdepend/pdepend",
@@ -1990,11 +2928,48 @@
                 "BSD-3-Clause"
             ],
             "description": "Official version of pdepend to be handled with Composer",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/pdepend/pdepend/issues",
+                "source": "https://github.com/pdepend/pdepend/tree/master"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/pdepend/pdepend",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-06-20T10:53:13+00:00"
+        },
+        {
+            "name": "phan/phan",
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phan/phan.git",
+                "reference": "a2eb629c09952383ae78315d240ce3770670c1a5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phan/phan/zipball/a2eb629c09952383ae78315d240ce3770670c1a5",
+                "reference": "a2eb629c09952383ae78315d240ce3770670c1a5",
+                "shasum": ""
+            },
+            "require": {
+                "composer/semver": "^1.4|^2.0",
+=======
+            "version": "3.2.3",
+=======
             "time": "2019-12-21T16:33:56+00:00"
         },
         {
             "name": "phan/phan",
             "version": "2.5.0",
+>>>>>>> Remove changes to composer
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
@@ -2007,17 +2982,45 @@
                 "shasum": ""
             },
             "require": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                "composer/semver": "^1.4|^2.0|^3.0",
+>>>>>>> trying to solve travis packages problem
+=======
                 "composer/semver": "^1.4",
+>>>>>>> Remove changes to composer
                 "composer/xdebug-handler": "^1.3.2",
                 "ext-filter": "*",
                 "ext-json": "*",
                 "ext-tokenizer": "*",
                 "felixfbecker/advanced-json-rpc": "^3.0.4",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+                "microsoft/tolerant-php-parser": "0.0.20",
+                "netresearch/jsonmapper": "^1.6.0|^2.0",
+                "php": "^7.2.0",
+                "sabre/event": "^5.0",
+                "symfony/console": "^2.3|^3.0|^4.0|^5.0",
+                "symfony/polyfill-mbstring": "^1.11.0"
+            },
+            "require-dev": {
+                "brianium/paratest": "^4.0.0",
+                "phpunit/phpunit": "^8.5.0"
+            },
+            "suggest": {
+                "ext-ast": "Needed for parsing ASTs (unless --use-fallback-parser is used). 1.0.1+ is needed, 1.0.6+ is recommended.",
+=======
+                "microsoft/tolerant-php-parser": "0.0.23",
+                "netresearch/jsonmapper": "^1.6.0|^2.0|^3.0",
+                "php": "^7.2.0|^8.0.0",
+                "sabre/event": "^5.0.3",
+                "symfony/console": "^3.2|^4.0|^5.0",
+=======
                 "microsoft/tolerant-php-parser": "0.0.18",
                 "netresearch/jsonmapper": "^1.6.0",
                 "php": "^7.1.0",
                 "sabre/event": "^5.0",
                 "symfony/console": "^2.3|^3.0|^4.0|^5.0",
+>>>>>>> Remove changes to composer
                 "symfony/polyfill-mbstring": "^1.11.0"
             },
             "require-dev": {
@@ -2025,7 +3028,12 @@
                 "phpunit/phpunit": "^7.5.0"
             },
             "suggest": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                "ext-ast": "Needed for parsing ASTs (unless --use-fallback-parser is used). 1.0.1+ is needed, 1.0.8+ is recommended.",
+>>>>>>> trying to solve travis packages problem
+=======
                 "ext-ast": "Needed for parsing ASTs (unless --use-fallback-parser is used). 1.0.1+ is needed.",
+>>>>>>> Remove changes to composer
                 "ext-iconv": "Either iconv or mbstring is needed to ensure issue messages are valid utf-8",
                 "ext-igbinary": "Improves performance of polyfill when ext-ast is unavailable",
                 "ext-mbstring": "Either iconv or mbstring is needed to ensure issue messages are valid utf-8",
@@ -2063,7 +3071,19 @@
                 "php",
                 "static"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/phan/phan/issues",
+                "source": "https://github.com/phan/phan/tree/v3"
+            },
+            "time": "2020-05-09T13:37:27+00:00"
+=======
+            "time": "2020-10-12T16:23:28+00:00"
+>>>>>>> trying to solve travis packages problem
+=======
             "time": "2020-02-20T14:53:46+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "phar-io/manifest",
@@ -2118,6 +3138,10 @@
                 }
             ],
             "description": "Component for reading phar.io manifest information from a PHP Archive (PHAR)",
+            "support": {
+                "issues": "https://github.com/phar-io/manifest/issues",
+                "source": "https://github.com/phar-io/manifest/tree/master"
+            },
             "time": "2017-03-05T18:14:27+00:00"
         },
         {
@@ -2165,9 +3189,27 @@
                 }
             ],
             "description": "Library for handling version information and constraints",
+            "support": {
+                "issues": "https://github.com/phar-io/version/issues",
+                "source": "https://github.com/phar-io/version/tree/master"
+            },
             "time": "2017-03-05T17:38:23+00:00"
         },
         {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "name": "php-webdriver/webdriver",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-webdriver/php-webdriver.git",
+                "reference": "c106a41a1a75e3e3e163f6a3f58aeec80e434b05"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/c106a41a1a75e3e3e163f6a3f58aeec80e434b05",
+                "reference": "c106a41a1a75e3e3e163f6a3f58aeec80e434b05",
+=======
             "name": "php-webdriver/webdriver",
             "version": "1.8.2",
             "source": {
@@ -2179,6 +3221,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/3308a70be084d6d7fd1ee5787b4c2e6eb4b70aab",
                 "reference": "3308a70be084d6d7fd1ee5787b4c2e6eb4b70aab",
+>>>>>>> Remove changes to composer
                 "shasum": ""
             },
             "require": {
@@ -2189,11 +3232,23 @@
                 "symfony/polyfill-mbstring": "^1.12",
                 "symfony/process": "^2.8 || ^3.1 || ^4.0 || ^5.0"
             },
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "replace": {
+                "facebook/webdriver": "*"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "ondram/ci-detector": "^2.1 || ^3.5",
+                "php-coveralls/php-coveralls": "^2.0",
+                "php-mock/php-mock-phpunit": "^1.1",
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+=======
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.0",
                 "jakub-onderka/php-parallel-lint": "^1.0",
                 "php-coveralls/php-coveralls": "^2.0",
                 "php-mock/php-mock-phpunit": "^1.1",
+>>>>>>> Remove changes to composer
                 "phpunit/phpunit": "^5.7",
                 "sebastian/environment": "^1.3.4 || ^2.0 || ^3.0",
                 "sminnee/phpunit-mock-objects": "^3.4",
@@ -2203,10 +3258,18 @@
             "suggest": {
                 "ext-SimpleXML": "For Firefox profile creation"
             },
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.8.x-dev"
+=======
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.8.x-dev"
+>>>>>>> Remove changes to composer
                 }
             },
             "autoload": {
@@ -2230,9 +3293,21 @@
                 "selenium",
                 "webdriver"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "support": {
+                "issues": "https://github.com/php-webdriver/php-webdriver/issues",
+                "source": "https://github.com/php-webdriver/php-webdriver/tree/main"
+            },
+            "time": "2020-10-06T21:13:58+00:00"
+        },
+        {
+=======
+>>>>>>> trying to solve travis packages problem
+=======
             "time": "2020-03-04T14:40:12+00:00"
         },
         {
+>>>>>>> Remove changes to composer
             "name": "phpdocumentor/reflection-common",
             "version": "2.0.0",
             "source": {
@@ -2282,7 +3357,18 @@
                 "reflection",
                 "static analysis"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/phpDocumentor/ReflectionCommon/issues",
+                "source": "https://github.com/phpDocumentor/ReflectionCommon/tree/2.x"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-06-27T09:03:43+00:00"
+=======
             "time": "2018-08-07T13:53:10+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -2333,7 +3419,18 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
+                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.1.0"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-02-22T12:28:44+00:00"
+=======
             "time": "2019-09-12T14:27:41+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -2380,7 +3477,18 @@
                 }
             ],
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.4.0"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-09-17T18:55:26+00:00"
+=======
             "time": "2019-08-22T18:11:29+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "phpmd/phpmd",
@@ -2450,7 +3558,25 @@
                 "phpmd",
                 "pmd"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "irc": "irc://irc.freenode.org/phpmd",
+                "issues": "https://github.com/phpmd/phpmd/issues",
+                "source": "https://github.com/phpmd/phpmd/tree/2.9.1"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/phpmd/phpmd",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-09-23T22:06:32+00:00"
+=======
             "time": "2019-12-27T11:09:06+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "phpspec/prophecy",
@@ -2513,7 +3639,18 @@
                 "spy",
                 "stub"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/phpspec/prophecy/issues",
+                "source": "https://github.com/phpspec/prophecy/tree/v1.10.3"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-03-05T15:02:03+00:00"
+=======
             "time": "2019-10-03T11:07:50+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -2560,7 +3697,18 @@
                 "MIT"
             ],
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/phpstan/phpdoc-parser/issues",
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/master"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2019-12-13T12:03:22+00:00"
+=======
             "time": "2019-06-07T19:13:52+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "phpstan/phpstan",
@@ -2599,6 +3747,30 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/phpstan/phpstan/issues",
+                "source": "https://github.com/phpstan/phpstan/tree/0.12.17"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://github.com/ondrejmirtes",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/phpstan",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
+                    "type": "tidelift"
+                }
+            ],
+=======
+>>>>>>> Remove changes to composer
             "time": "2020-03-17T15:39:11+00:00"
         },
         {
@@ -2662,6 +3834,10 @@
                 "testing",
                 "xunit"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/6.0.5"
+            },
             "time": "2018-05-28T11:49:20+00:00"
         },
         {
@@ -2709,6 +3885,11 @@
                 "filesystem",
                 "iterator"
             ],
+            "support": {
+                "irc": "irc://irc.freenode.net/phpunit",
+                "issues": "https://github.com/sebastianbergmann/php-file-iterator/issues",
+                "source": "https://github.com/sebastianbergmann/php-file-iterator/tree/1.4.5"
+            },
             "time": "2017-11-27T13:52:08+00:00"
         },
         {
@@ -2750,6 +3931,10 @@
             "keywords": [
                 "template"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/php-text-template/issues",
+                "source": "https://github.com/sebastianbergmann/php-text-template/tree/1.2.1"
+            },
             "time": "2015-06-21T13:50:34+00:00"
         },
         {
@@ -2799,6 +3984,10 @@
             "keywords": [
                 "timer"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/php-timer/issues",
+                "source": "https://github.com/sebastianbergmann/php-timer/tree/master"
+            },
             "time": "2019-06-07T04:22:29+00:00"
         },
         {
@@ -2848,6 +4037,17 @@
             "keywords": [
                 "tokenizer"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/php-token-stream/issues",
+                "source": "https://github.com/sebastianbergmann/php-token-stream/tree/3.1.1"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "abandoned": true,
+=======
+>>>>>>> Remove changes to composer
             "time": "2019-09-17T06:23:10+00:00"
         },
         {
@@ -2928,6 +4128,10 @@
                 "testing",
                 "xunit"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/phpunit/issues",
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/7.0.0"
+            },
             "time": "2018-02-02T05:04:08+00:00"
         },
         {
@@ -2984,6 +4188,10 @@
                 "mock",
                 "xunit"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/phpunit-mock-objects/issues",
+                "source": "https://github.com/sebastianbergmann/phpunit-mock-objects/tree/master"
+            },
             "abandoned": true,
             "time": "2018-05-29T13:54:20+00:00"
         },
@@ -3034,6 +4242,10 @@
                 "container-interop",
                 "psr"
             ],
+            "support": {
+                "issues": "https://github.com/php-fig/container/issues",
+                "source": "https://github.com/php-fig/container/tree/master"
+            },
             "time": "2017-02-14T16:28:37+00:00"
         },
         {
@@ -3081,7 +4293,17 @@
                 "psr",
                 "psr-3"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/1.1.3"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-03-23T09:12:05+00:00"
+=======
             "time": "2019-10-25T08:06:51+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "sabre/event",
@@ -3141,7 +4363,19 @@
                 "reactor",
                 "signal"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "forum": "https://groups.google.com/group/sabredav-discuss",
+                "issues": "https://github.com/sabre-io/event/issues",
+                "source": "https://github.com/fruux/sabre-event"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-10-03T11:02:22+00:00"
+=======
             "time": "2018-03-05T13:55:47+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -3186,6 +4420,10 @@
             ],
             "description": "Looks up which function or method a line of code belongs to",
             "homepage": "https://github.com/sebastianbergmann/code-unit-reverse-lookup/",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/code-unit-reverse-lookup/issues",
+                "source": "https://github.com/sebastianbergmann/code-unit-reverse-lookup/tree/master"
+            },
             "time": "2017-03-04T06:30:41+00:00"
         },
         {
@@ -3250,6 +4488,10 @@
                 "compare",
                 "equality"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/comparator/issues",
+                "source": "https://github.com/sebastianbergmann/comparator/tree/master"
+            },
             "time": "2018-02-01T13:46:46+00:00"
         },
         {
@@ -3306,6 +4548,10 @@
                 "unidiff",
                 "unified diff"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/diff/issues",
+                "source": "https://github.com/sebastianbergmann/diff/tree/master"
+            },
             "time": "2019-02-04T06:01:07+00:00"
         },
         {
@@ -3356,6 +4602,10 @@
                 "environment",
                 "hhvm"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/environment/issues",
+                "source": "https://github.com/sebastianbergmann/environment/tree/master"
+            },
             "time": "2017-07-01T08:51:00+00:00"
         },
         {
@@ -3423,6 +4673,10 @@
                 "export",
                 "exporter"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/exporter/issues",
+                "source": "https://github.com/sebastianbergmann/exporter/tree/master"
+            },
             "time": "2019-09-14T09:02:43+00:00"
         },
         {
@@ -3474,6 +4728,10 @@
             "keywords": [
                 "global state"
             ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/global-state/issues",
+                "source": "https://github.com/sebastianbergmann/global-state/tree/2.0.0"
+            },
             "time": "2017-04-27T15:39:26+00:00"
         },
         {
@@ -3521,6 +4779,10 @@
             ],
             "description": "Traverses array structures and object graphs to enumerate all referenced objects",
             "homepage": "https://github.com/sebastianbergmann/object-enumerator/",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/object-enumerator/issues",
+                "source": "https://github.com/sebastianbergmann/object-enumerator/tree/master"
+            },
             "time": "2017-08-03T12:35:26+00:00"
         },
         {
@@ -3566,6 +4828,10 @@
             ],
             "description": "Allows reflection of object attributes, including inherited and non-public ones",
             "homepage": "https://github.com/sebastianbergmann/object-reflector/",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/object-reflector/issues",
+                "source": "https://github.com/sebastianbergmann/object-reflector/tree/master"
+            },
             "time": "2017-03-29T09:07:27+00:00"
         },
         {
@@ -3619,6 +4885,10 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/recursion-context/issues",
+                "source": "https://github.com/sebastianbergmann/recursion-context/tree/master"
+            },
             "time": "2017-03-03T06:23:57+00:00"
         },
         {
@@ -3661,6 +4931,10 @@
             ],
             "description": "Provides a list of PHP built-in functions that operate on resources",
             "homepage": "https://www.github.com/sebastianbergmann/resource-operations",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/resource-operations/issues",
+                "source": "https://github.com/sebastianbergmann/resource-operations/tree/master"
+            },
             "time": "2015-07-28T20:34:47+00:00"
         },
         {
@@ -3704,6 +4978,10 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/version/issues",
+                "source": "https://github.com/sebastianbergmann/version/tree/master"
+            },
             "time": "2016-10-03T07:35:21+00:00"
         },
         {
@@ -3745,6 +5023,10 @@
                 "MIT"
             ],
             "description": "Slevomat Coding Standard for PHP_CodeSniffer complements Consistence Coding Standard by providing sniffs with additional checks.",
+            "support": {
+                "issues": "https://github.com/slevomat/coding-standard/issues",
+                "source": "https://github.com/slevomat/coding-standard/tree/master"
+            },
             "time": "2020-01-23T15:37:30+00:00"
         },
         {
@@ -3796,6 +5078,11 @@
                 "phpcs",
                 "standards"
             ],
+            "support": {
+                "issues": "https://github.com/squizlabs/PHP_CodeSniffer/issues",
+                "source": "https://github.com/squizlabs/PHP_CodeSniffer",
+                "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
+            },
             "time": "2019-12-04T04:46:47+00:00"
         },
         {
@@ -3821,21 +5108,40 @@
                 "symfony/finder": "<3.4"
             },
             "require-dev": {
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                "symfony/event-dispatcher": "^4.4|^5.0",
+                "symfony/finder": "^4.4|^5.0",
+                "symfony/messenger": "^4.4|^5.0",
+                "symfony/service-contracts": "^1.1|^2",
+                "symfony/yaml": "^4.4|^5.0"
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+=======
                 "symfony/dependency-injection": "~3.4|~4.0",
                 "symfony/event-dispatcher": "~3.4|~4.0",
                 "symfony/finder": "~3.4|~4.0",
                 "symfony/messenger": "~4.1",
                 "symfony/yaml": "~3.4|~4.0"
+>>>>>>> Remove changes to composer
             },
             "suggest": {
                 "symfony/yaml": "To use the yaml reference dumper"
             },
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+=======
+            },
+            "suggest": {
+                "symfony/yaml": "To use the yaml reference dumper"
+            },
+>>>>>>> trying to solve travis packages problem
+            "type": "library",
+=======
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "4.3-dev"
                 }
             },
+>>>>>>> Remove changes to composer
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Config\\": ""
@@ -3860,7 +5166,31 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/symfony/config/tree/v5.1.8"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-24T12:01:57+00:00"
+=======
             "time": "2019-09-19T15:51:53+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "symfony/console",
@@ -3935,7 +5265,31 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/symfony/console/tree/v5.1.8"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-24T12:01:57+00:00"
+=======
             "time": "2019-10-07T12:36:49+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "symfony/dependency-injection",
@@ -3979,11 +5333,15 @@
                 "symfony/yaml": ""
             },
             "type": "library",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+=======
             "extra": {
                 "branch-alias": {
                     "dev-master": "4.3-dev"
                 }
             },
+>>>>>>> Remove changes to composer
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\DependencyInjection\\": ""
@@ -4008,7 +5366,28 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "support": {
+                "source": "https://github.com/symfony/dependency-injection/tree/v5.1.8"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-27T10:11:13+00:00"
+=======
             "time": "2019-10-02T12:58:58+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "symfony/filesystem",
@@ -4034,6 +5413,8 @@
                     "dev-master": "4.3-dev"
                 }
             },
+=======
+>>>>>>> trying to solve travis packages problem
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Filesystem\\": ""
@@ -4058,7 +5439,32 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/symfony/deprecation-contracts/tree/master"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "time": "2020-09-07T11:33:47+00:00"
+=======
             "time": "2019-08-20T14:07:54+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "symfony/finder",
@@ -4078,6 +5484,32 @@
                 "php": "^7.1.3"
             },
             "type": "library",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+=======
+            "time": "2020-10-27T10:11:13+00:00"
+        },
+        {
+            "name": "symfony/deprecation-contracts",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/deprecation-contracts.git",
+                "reference": "5fa56b4074d1ae755beb55617ddafe6f5d78f665"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/5fa56b4074d1ae755beb55617ddafe6f5d78f665",
+                "reference": "5fa56b4074d1ae755beb55617ddafe6f5d78f665",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+=======
             "extra": {
                 "branch-alias": {
                     "dev-master": "4.3-dev"
@@ -4086,9 +5518,17 @@
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Finder\\": ""
+>>>>>>> Remove changes to composer
                 },
-                "exclude-from-classmap": [
-                    "/Tests/"
+                "thanks": {
+                    "name": "symfony/contracts",
+                    "url": "https://github.com/symfony/contracts"
+                }
+            },
+>>>>>>> trying to solve travis packages problem
+            "autoload": {
+                "files": [
+                    "function.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -4097,17 +5537,44 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
                 },
                 {
                     "name": "Symfony Community",
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "description": "A generic function and convention to trigger deprecation notices",
+            "homepage": "https://symfony.com",
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/symfony/filesystem/tree/v5.1.8"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "time": "2020-10-24T12:01:57+00:00"
+=======
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
             "time": "2019-09-16T11:29:48+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -4138,6 +5605,32 @@
             "autoload": {
                 "psr-4": {
                     "Symfony\\Polyfill\\Ctype\\": ""
+=======
+            "time": "2020-09-07T11:33:47+00:00"
+        },
+        {
+            "name": "symfony/filesystem",
+            "version": "v5.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/filesystem.git",
+                "reference": "df08650ea7aee2d925380069c131a66124d79177"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/df08650ea7aee2d925380069c131a66124d79177",
+                "reference": "df08650ea7aee2d925380069c131a66124d79177",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/polyfill-ctype": "~1.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Filesystem\\": ""
+>>>>>>> trying to solve travis packages problem
                 },
                 "files": [
                     "bootstrap.php"
@@ -4157,6 +5650,7 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
             "description": "Symfony polyfill for ctype functions",
             "homepage": "https://symfony.com",
             "keywords": [
@@ -4165,7 +5659,225 @@
                 "polyfill",
                 "portable"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+            "support": {
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.20.0"
+            },
+=======
+            "description": "Symfony Filesystem Component",
+            "homepage": "https://symfony.com",
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "time": "2020-10-23T14:02:19+00:00"
+        },
+        {
+            "name": "symfony/polyfill-intl-grapheme",
+            "version": "v1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
+                "reference": "c7cf3f858ec7d70b89559d6e6eb1f7c2517d479c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/c7cf3f858ec7d70b89559d6e6eb1f7c2517d479c",
+                "reference": "c7cf3f858ec7d70b89559d6e6eb1f7c2517d479c",
+=======
+            "time": "2020-10-24T12:01:57+00:00"
+        },
+        {
+            "name": "symfony/polyfill-ctype",
+            "version": "v1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-ctype.git",
+                "reference": "f4ba089a5b6366e453971d3aad5fe8e897b37f41"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/f4ba089a5b6366e453971d3aad5fe8e897b37f41",
+                "reference": "f4ba089a5b6366e453971d3aad5fe8e897b37f41",
+>>>>>>> trying to solve travis packages problem
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "suggest": {
+                "ext-intl": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.20-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Grapheme\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for intl's grapheme_* functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "grapheme",
+                "intl",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+=======
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-23T14:02:19+00:00"
+        },
+        {
+            "name": "symfony/polyfill-intl-grapheme",
+            "version": "v1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
+                "reference": "c7cf3f858ec7d70b89559d6e6eb1f7c2517d479c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/c7cf3f858ec7d70b89559d6e6eb1f7c2517d479c",
+                "reference": "c7cf3f858ec7d70b89559d6e6eb1f7c2517d479c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "suggest": {
+                "ext-intl": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.20-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Grapheme\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for intl's grapheme_* functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "grapheme",
+                "intl",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-10-23T14:02:19+00:00"
+=======
             "time": "2019-08-06T08:03:45+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -4224,7 +5936,31 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.20.0"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-23T14:02:19+00:00"
+=======
             "time": "2019-08-06T08:03:45+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "symfony/polyfill-php73",
@@ -4282,7 +6018,31 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php73/tree/v1.20.0"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-23T14:02:19+00:00"
+=======
             "time": "2019-08-06T08:03:45+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "symfony/process",
@@ -4304,9 +6064,95 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.0-dev"
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+                    "dev-main": "1.20-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
                 }
             },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php80\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ],
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ion Bazan",
+                    "email": "ion.bazan@gmail.com"
+                },
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+=======
+>>>>>>> trying to solve travis packages problem
+=======
+                    "dev-master": "5.0-dev"
+>>>>>>> Remove changes to composer
+                }
+            ],
+            "time": "2020-10-23T14:02:19+00:00"
+        },
+        {
+            "name": "symfony/process",
+            "version": "v5.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/process.git",
+                "reference": "f00872c3f6804150d6a0f73b4151daab96248101"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/process/zipball/f00872c3f6804150d6a0f73b4151daab96248101",
+                "reference": "f00872c3f6804150d6a0f73b4151daab96248101",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/polyfill-php80": "^1.15"
+            },
+            "type": "library",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Process\\": ""
@@ -4331,7 +6177,41 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/symfony/process/tree/v5.1.8"
+            },
+=======
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "time": "2020-10-24T12:01:57+00:00"
+=======
+            "time": "2020-10-23T14:02:19+00:00"
+>>>>>>> trying to solve travis packages problem
+=======
             "time": "2020-02-08T17:00:58+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "symfony/service-contracts",
@@ -4389,7 +6269,117 @@
                 "interoperability",
                 "standards"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/symfony/service-contracts/tree/master"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-09-07T11:33:47+00:00"
+        },
+        {
+            "name": "symfony/string",
+            "version": "v5.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/string.git",
+                "reference": "a97573e960303db71be0dd8fda9be3bca5e0feea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/string/zipball/a97573e960303db71be0dd8fda9be3bca5e0feea",
+                "reference": "a97573e960303db71be0dd8fda9be3bca5e0feea",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/polyfill-ctype": "~1.8",
+                "symfony/polyfill-intl-grapheme": "~1.0",
+                "symfony/polyfill-intl-normalizer": "~1.0",
+                "symfony/polyfill-mbstring": "~1.0",
+                "symfony/polyfill-php80": "~1.15"
+            },
+            "require-dev": {
+                "symfony/error-handler": "^4.4|^5.0",
+                "symfony/http-client": "^4.4|^5.0",
+                "symfony/translation-contracts": "^1.1|^2",
+                "symfony/var-exporter": "^4.4|^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\String\\": ""
+                },
+                "files": [
+                    "Resources/functions.php"
+                ],
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony String component",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "grapheme",
+                "i18n",
+                "string",
+                "unicode",
+                "utf-8",
+                "utf8"
+            ],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "source": "https://github.com/symfony/string/tree/v5.1.8"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-24T12:01:57+00:00"
+=======
             "time": "2019-09-17T11:12:18+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "theseer/tokenizer",
@@ -4429,7 +6419,24 @@
                 }
             ],
             "description": "A small library for converting tokenized PHP source code into XML and potentially other formats",
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/theseer/tokenizer/issues",
+                "source": "https://github.com/theseer/tokenizer/tree/master"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "funding": [
+                {
+                    "url": "https://github.com/theseer",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-07-12T23:59:07+00:00"
+=======
             "time": "2019-06-13T22:48:21+00:00"
+>>>>>>> Remove changes to composer
         },
         {
             "name": "webmozart/assert",
@@ -4479,16 +6486,38 @@
                 "check",
                 "validate"
             ],
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+            "support": {
+                "issues": "https://github.com/webmozart/assert/issues",
+                "source": "https://github.com/webmozart/assert/tree/master"
+            },
+=======
+>>>>>>> trying to solve travis packages problem
+            "time": "2020-04-18T12:12:48+00:00"
+=======
             "time": "2019-08-24T08:43:50+00:00"
+>>>>>>> Remove changes to composer
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "php-webdriver/webdriver": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "ext-json": "*"
     },
+<<<<<<< e1bb97583206887bad2b517f28df23691012e62a
+    "platform-dev": [],
+<<<<<<< a5f446f445db8a41ddde34b0608cae88c01e6aad
+    "plugin-api-version": "2.0.0"
+=======
+    "plugin-api-version": "1.1.0"
+>>>>>>> trying to solve travis packages problem
+=======
     "platform-dev": []
+>>>>>>> Remove changes to composer
 }
