@@ -400,6 +400,7 @@ class CouchDB
 
         $response        = '';
         $finishedHeaders = false;
+        $lastLine        = '';
         $curLine         = '';
         while (!$handler->eof()) {
             $curLine = $handler->gets();
@@ -412,6 +413,7 @@ class CouchDB
                 $response .= $curLine;
             }
 
+            $lastLine = $curLine;
         }
         $handler->close();
 

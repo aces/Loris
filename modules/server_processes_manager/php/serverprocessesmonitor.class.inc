@@ -179,6 +179,7 @@ class ServerProcessesMonitor
                 $progress = null;
                 $exitCode = null;
                 $endTime  = null;
+                $exitText = null;
             } elseif ($matchingProcess->isRunning()) {
                 // We found a matching process. If it is running, compute current
                 // progress
@@ -186,6 +187,7 @@ class ServerProcessesMonitor
                 $progress = $matchingProcess->getProgress();
                 $exitCode = null;
                 $endTime  = null;
+                $exitText = null;
             } else {
                 // Process is not running. Report this, along with exit code.
                 // If exit code is unknown, then process crashed unexpectedly.
