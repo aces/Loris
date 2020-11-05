@@ -229,29 +229,6 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getbody();
         $this->assertnotempty($body);
 
-        // Test what happen when all field required are there, plus one invalid
-        $json     = ['CandID'  => $this->candidTest,
-            'Visit'   => $this->visitTest,
-            'Site'    => "",
-            'Battery' => "Stale",
-            'Project' => "Pumpernickel",
-            'Testtest'    => "Test"
-        ];
-        $response = $this->client->request(
-            'PUT',
-            "candidates/900000/V1",
-            [
-                'headers'     => $this->headers,
-                'json'        => $json,
-                'http_errors' => false
-            ]
-        );
-        // verify the status code
-        $this->assertequals(400, $response->getstatuscode());
-        // verify the endpoint has a body
-        $body = $response->getbody();
-        $this->assertnotempty($body);
-
         // Test CandID in URL should match CandID in the request fields
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $this->visitTest,
