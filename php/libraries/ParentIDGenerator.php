@@ -28,7 +28,7 @@ class ParentIDGenerator extends \CandIDGenerator
 
     /**
      * ParentIDs should always come from CandID generator with a prefix string.
-     * 
+     *
      * @var $prefix string
      */
 
