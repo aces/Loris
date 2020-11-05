@@ -92,7 +92,15 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $pathparts = $request->getAttribute('pathparts');
         $flags     = array_search('flags', $pathparts) !== false;
+        $user      = $request->getAttribute('user');
 
+        if ($this->_instrument->_hasAccess($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Can not update instruments for user' . $user
+            );
+        }
+
+ 
         if ($flags) {
             // Delegate to sub-endpoints
             $handler = new Flags($this->_visit, $this->_instrument);
@@ -150,8 +158,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
-        // TODO :: Check permissions. How??
-
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -188,8 +194,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
-        // TODO :: Check permissions. How??
-
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
