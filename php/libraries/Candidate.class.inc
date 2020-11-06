@@ -850,7 +850,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
     /**
      * Implements the AccessibleResource interface. A candidate can
-     * be accessed by a user if it has a project and a site in common.
+     * be accessed by a user if it shares the same registration project
+     * and site or it has access to any of the timepoints.
      *
      * @param \User $user The user whose access should be validated.
      *
@@ -863,22 +864,27 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
         $centerMatch = in_array($this->getCenterID(), $centers, true);
 
-        if ($centerMatch === false) {
-            // getCenterID is just the RegistrationCenterID, if a visit
-            // has a center in common, we should still allow access to
-            // the candidate.
-            $timepoints = $this->getListOfTimePoints();
-            foreach ($timepoints as $sessionID) {
-                $timepoint = \TimePoint::singleton(
-                    new \SessionID(strval($sessionID))
-                );
-                if (in_array($timepoint->getCenterID(), $centers, true)) {
-                    $centerMatch = true;
-                    break;
-                }
+        // The candidate is accessible based on its registration
+        // project/center
+        if ($projMatch && $centerMatch) {
+            return true;
+        }
+
+        // If we can't access due the registration, check if we
+        // have access to any sites. If we have access to a site,
+        // we need to be able to access the candidate to get to it.
+        $timepoints = $this->getListOfTimePoints();
+        foreach ($timepoints as $sessionID) {
+            $timepoint = \TimePoint::singleton(
+                new \SessionID(strval($sessionID))
+            );
+            if ($timepoint->isAccessibleBy($user)) {
+                // There's at least one, we don't need to check
+                // any more.
+                return true;
             }
         }
-        return $projMatch && $centerMatch;
+        return false;
     }
 
     /**

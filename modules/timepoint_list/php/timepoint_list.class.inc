@@ -98,6 +98,9 @@ class Timepoint_List extends \NDB_Menu
             foreach ($listOfTimePoints as $currentTimePoint) {
                 $sessionID = new \SessionID($currentTimePoint);
                 $timePoint = \TimePoint::singleton($sessionID);
+                if(!$timePoint->isAccessibleBy($user) {
+                    continue;
+                }
 
                 // get the first date of visit in order to
                 // turn on the future time points bit if we have a date of visit
