@@ -98,7 +98,7 @@ class Timepoint_List extends \NDB_Menu
             foreach ($listOfTimePoints as $currentTimePoint) {
                 $sessionID = new \SessionID($currentTimePoint);
                 $timePoint = \TimePoint::singleton($sessionID);
-                if(!$timePoint->isAccessibleBy($user) {
+                if(!$timePoint->isAccessibleBy($user)) {
                     continue;
                 }
 
