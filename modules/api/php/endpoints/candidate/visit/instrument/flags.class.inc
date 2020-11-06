@@ -138,6 +138,13 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
+        $user = $request->getAttribute('user');
+        if (!$user->_hasPermission('data_entry')) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'This user does not have data_entry permission'
+            );
+        }
+
         $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
         $this->_instrumentStatus->select($this->_instrument->commentID);
 
@@ -186,6 +193,13 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
+        $user = $request->getAttribute('user');
+        if (!$this->_instrument->_hasAccess($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'This user can not update this instrument'
+            );
+        }
+
         $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
         $this->_instrumentStatus->select($this->_instrument->commentID);
 
