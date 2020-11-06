@@ -217,7 +217,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!$this->_candidate->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'You can`t create or modify that candidate'
+                "You can't create or modify that candidate"
             );
         }
 
@@ -225,7 +225,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!in_array($centerid, $user->getCenterIDs())) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'You can`t create  or modify candidates visit for the site ' .
+                "You can't create  or modify candidates visit for the site " .
                 $centerid
             );
         }
