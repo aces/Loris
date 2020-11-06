@@ -2261,10 +2261,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         foreach ($columns as $row) {
             switch ($row['COLUMN_NAME']) {
             case 'CommentID':
-            case 'ID':
-            case 'SessionID':
             case 'UserID':
-            case 'Test_name':
                 continue 2;
             case 'Data_entry_completion_status':
                 $values[$row['COLUMN_NAME']] = 'Incomplete';
