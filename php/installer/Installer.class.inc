@@ -591,12 +591,16 @@ class Installer
                 '%USERNAME%',
                 '%PASSWORD%',
                 '%DATABASE%',
+                '%ADMINUSERNAME%',
+                '%ADMINPASSWORD%',
             ],
             [
                 $escapedValues['dbhost'],
                 $escapedValues['lorismysqluser'],
                 $escapedValues['lorismysqlpassword'],
                 $escapedValues['dbname'],
+                $escapedValues['dbadminuser'],
+                $escapedValues['dbadminpassword'],
             ],
             $contents
         );
