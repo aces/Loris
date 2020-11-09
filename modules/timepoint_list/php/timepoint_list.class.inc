@@ -79,123 +79,133 @@ class Timepoint_List extends \NDB_Menu
         $numberOfVisits           = 0;
         $this->tpl_data['candID'] = $this->candID;
         $this->tpl_data['PSCID']  = $candidate->getPSCID();
-        $listOfTimePoints         = $candidate->getListOfTimePoints();
+        $listOfSessionIDs = $candidate->getListOfTimePoints();
         $this->tpl_data['candidate'] = $candidate->getData();
 
-        if (!empty($listOfTimePoints)) {
-            $user     = \User::singleton();
-            $username = $user->getData('UserID');
+        $user     = \User::singleton();
+        $username = $user->getData('UserID');
 
-            $feedback_select_inactive = null;
-            if ($user->hasPermission('bvl_feedback')) {
-                $feedback_select_inactive = 'Y';
+        $feedback_select_inactive = null;
+        if ($user->hasPermission('bvl_feedback')) {
+            $feedback_select_inactive = 'Y';
+        }
+
+        $listOfTimePoints = array_map(
+            function($sessionID) {
+                return \TimePoint::singleton(
+                    new \SessionID($sessionID),
+                );
+            },
+            $listOfSessionIDs,
+        );
+
+        $listOfTimePoints = array_filter(
+            $listOfTimePoints,
+            function($timePoint) use ($user) {
+                return $timePoint->isAccessibleBy($user);
+            }
+        );
+
+        /*
+         * List of visits
+         */
+        $x = 0;
+        foreach ($listOfTimePoints as $timePoint) {
+            $sessionID = $timePoint->getSessionID();
+
+            // get the first date of visit in order to
+            // turn on the future time points bit if we have a date of visit
+            $dateOfVisit = $timePoint->getDateOfVisit();
+            if (!empty($dateOfVisit)) {
+                if (empty($firstDateOfVisit)) {
+                    $firstDateOfVisit = $dateOfVisit;
+                }
+                $numberOfVisits++;
             }
 
-            /*
-             * List of visits
-             */
-            $x = 0;
-            foreach ($listOfTimePoints as $currentTimePoint) {
-                $sessionID = new \SessionID($currentTimePoint);
-                $timePoint = \TimePoint::singleton($sessionID);
-                if(!$timePoint->isAccessibleBy($user)) {
-                    continue;
-                }
+            // get timepoint data
+            $this->tpl_data['timePoints'][$x]
+                = $timePoint->getData();
 
-                // get the first date of visit in order to
-                // turn on the future time points bit if we have a date of visit
-                $dateOfVisit = $timePoint->getDateOfVisit();
-                if (!empty($dateOfVisit)) {
-                    if (empty($firstDateOfVisit)) {
-                        $firstDateOfVisit = $dateOfVisit;
-                    }
-                    $numberOfVisits++;
-                }
+            // get current status
+            $this->tpl_data['timePoints'][$x]['currentStatus']
+                = $timePoint->getCurrentStatus();
+            // get current date
+            $this->tpl_data['timePoints'][$x]['currentDate']
+                =   $timePoint->getCurrentDate();
 
-                // get timepoint data
-                $this->tpl_data['timePoints'][$x]
-                    = $timePoint->getData();
+            // create feedback object for the time point
+            $feedback = \NDB_BVL_Feedback::singleton(
+                $username,
+                null,
+                $sessionID
+            );
 
-                // get current status
-                $this->tpl_data['timePoints'][$x]['currentStatus']
-                    = $timePoint->getCurrentStatus();
-                // get current date
-                $this->tpl_data['timePoints'][$x]['currentDate']
-                    =   $timePoint->getCurrentDate();
+            $feedback_status = $feedback->getMaxThreadStatus(
+                $feedback_select_inactive
+            );
 
-                // create feedback object for the time point
-                $feedback = \NDB_BVL_Feedback::singleton(
-                    $username,
+            $feedback_count = $feedback->getThreadCount();
+
+            $this->tpl_data['timePoints'][$x]['feedbackCount']
+                = (empty($feedback_count))
+                ? $feedback_status
+                : $feedback_count;
+
+            $this->tpl_data['timePoints'][$x]['feedbackStatus']
+                = $feedback_status;
+
+            $this->tpl_data['timePoints'][$x]['feedbackColor']
+                = $feedback->getThreadColor($feedback_status);
+
+            if (!in_array(
+                $timePoint->getCurrentStage(),
+                [
                     null,
-                    $sessionID
-                );
+                    'Not Started',
+                    'Visit',
+                    'Screening',
+                ]
+            )
+            ) {
+                // for static stages, don't bother showing current status
+                $this->tpl_data['timePoints'][$x]['staticStage'] = true;
 
-                $feedback_status = $feedback->getMaxThreadStatus(
-                    $feedback_select_inactive
-                );
+                // get the outcome data
+                $outcomeStage
+                    = $this->_determinePreviousStage($currentTimePoint);
 
-                $feedback_count = $feedback->getThreadCount();
+                $getStatusMethod = 'get'.$outcomeStage.'Status';
 
-                $this->tpl_data['timePoints'][$x]['feedbackCount']
-                    = (empty($feedback_count))
-                       ? $feedback_status
-                       : $feedback_count;
+                $getDateMethod = 'getDateOf'.$outcomeStage;
 
-                $this->tpl_data['timePoints'][$x]['feedbackStatus']
-                    = $feedback_status;
+                // set the template data
+                $this->tpl_data['timePoints'][$x]['outcomeStage']
+                    = $outcomeStage;
 
-                $this->tpl_data['timePoints'][$x]['feedbackColor']
-                    = $feedback->getThreadColor($feedback_status);
-
-                if (!in_array(
-                    $timePoint->getCurrentStage(),
-                    [
-                        null,
-                        'Not Started',
-                        'Visit',
-                        'Screening',
-                    ]
-                )
-                ) {
-                    // for static stages, don't bother showing current status
-                    $this->tpl_data['timePoints'][$x]['staticStage'] = true;
-
-                    // get the outcome data
-                    $outcomeStage
-                        = $this->_determinePreviousStage($currentTimePoint);
-
-                    $getStatusMethod = 'get'.$outcomeStage.'Status';
-
-                    $getDateMethod = 'getDateOf'.$outcomeStage;
-
-                    // set the template data
-                    $this->tpl_data['timePoints'][$x]['outcomeStage']
-                        = $outcomeStage;
-
-                    if (method_exists($timePoint, $getStatusMethod)) {
-                          $this->tpl_data['timePoints'][$x]['outcomeStatus']
-                              = $timePoint->$getStatusMethod();
-                    }
-                    if (method_exists($timePoint, $getDateMethod)) {
-                        $this->tpl_data['timePoints'][$x]['outcomeDate']
-                            = $timePoint->$getDateMethod();
-                    }
+                if (method_exists($timePoint, $getStatusMethod)) {
+                    $this->tpl_data['timePoints'][$x]['outcomeStatus']
+                        = $timePoint->$getStatusMethod();
                 }
-                $x++;
-            } // end list
+                if (method_exists($timePoint, $getDateMethod)) {
+                    $this->tpl_data['timePoints'][$x]['outcomeDate']
+                        = $timePoint->$getDateMethod();
+                }
+            }
+            $x++;
+        } // end list
 
-            /*
-             * List of future visits
-             */
-            if (isset($firstDateOfVisit)) {
-                $timePoint = \TimePoint::singleton(
-                    new \SessionID($listOfTimePoints[0])
-                );
+        /*
+         * List of future visits
+         */
+        if (isset($firstDateOfVisit)) {
+            $timePoint = \TimePoint::singleton(
+                new \SessionID($listOfSessionIDs[0])
+            );
 
-                $this->tpl_data['SubprojectID'] = $timePoint->getSubprojectID();
+            $this->tpl_data['SubprojectID'] = $timePoint->getSubprojectID();
 
-            } // end list
-        }
+        } // end list
 
         $this->tpl_data['actions'] = $this->getActionButtons();
     }
