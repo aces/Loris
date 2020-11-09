@@ -79,8 +79,9 @@ class Timepoint_List extends \NDB_Menu
         $numberOfVisits           = 0;
         $this->tpl_data['candID'] = $this->candID;
         $this->tpl_data['PSCID']  = $candidate->getPSCID();
-        $listOfSessionIDs = $candidate->getListOfTimePoints();
         $this->tpl_data['candidate'] = $candidate->getData();
+
+        $listOfSessionIDs = $candidate->getListOfTimePoints();
 
         $user     = \User::singleton();
         $username = $user->getData('UserID');
@@ -91,7 +92,7 @@ class Timepoint_List extends \NDB_Menu
         }
 
         $listOfTimePoints = array_map(
-            function($sessionID) {
+            function ($sessionID) {
                 return \TimePoint::singleton(
                     new \SessionID($sessionID),
                 );
@@ -101,7 +102,7 @@ class Timepoint_List extends \NDB_Menu
 
         $listOfTimePoints = array_filter(
             $listOfTimePoints,
-            function($timePoint) use ($user) {
+            function ($timePoint) use ($user) {
                 return $timePoint->isAccessibleBy($user);
             }
         );

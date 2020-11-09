@@ -1191,7 +1191,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ProjectID for this TimePoint
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectID() : int
     {
