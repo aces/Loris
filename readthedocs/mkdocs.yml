@@ -32,12 +32,15 @@ nav:
     - Developers:
         - Overview: 'docs/wiki/99_Developers/README.md'
         - 'Coding Standards': 'docs/CodingStandards.md'
+        - 'SQL Modeling Standard': 'docs/SQLModelingStandard.md'
         - 'SQL Dictionary': 'docs/wiki/99_Developers/SQL_Dictionary.md'
+        - 'LORIS Glossary': 'docs/wiki/99_Developers/LORIS_Glossary.md'
         - 'Automated Testing': 'docs/wiki/99_Developers/Automated_Testing.md'
         - 'Style Guide (for help text)': 'docs/wiki/99_Developers/Help_Style_Guide.md'
         - 'Creating a Module': 'docs/wiki/99_Developers/Creating_Module.md'
         - 'ReactJS Guidelines': 'docs/wiki/99_Developers/ReactJS_Guidelines.md'
         - 'Code Review Guide': 'docs/wiki/99_Developers/Code_Review_Guide.md'
+        - 'Feedback and Issues': 'docs/wiki/99_Developers/Reporting_Issues.md'
 
 use_directory_urls: False
 
