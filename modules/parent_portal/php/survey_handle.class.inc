@@ -65,11 +65,11 @@ class Survey_Handle extends \NDB_Form
      * GET method gets a list of parent's categroies and
      * the children's categories.
      *
-     * @param String $values The values need to be validated
+     * @param Array $values The values need to be validated
      *
-     * @return mixed The outgoing PSR7 response
+     * @return mixed the outgoing response
      */
-    function _validate($values): mixed
+    function _validate($values)
     {
             $db = \NDB_Factory::singleton()->database();
 
@@ -85,7 +85,7 @@ class Survey_Handle extends \NDB_Form
                 ]
             );
         if (empty($surveys)) {
-            return false;
+            return null;
         }
         return $surveys;
 

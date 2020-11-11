@@ -13,8 +13,6 @@
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\parent_portal;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
 /**
  * PHP Version 7
  *
