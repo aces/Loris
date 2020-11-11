@@ -38,10 +38,10 @@ class UploadCategory extends \NDB_Page
     {
         return ($user->hasPermission('document_repository_categories')
             && $user->hasAnyPermission(
-                array(
+                [
                     'document_repository_upload_edit',
                     'document_repository_delete',
-                )
+                ]
             )
         );
     }

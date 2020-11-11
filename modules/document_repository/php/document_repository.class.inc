@@ -106,7 +106,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-            'hiddenFile'    => ['yes' => "Yes", 'no' => "No"],
+            'hiddenFile'     => ['yes' => "Yes", 'no' => "No"],
         ];
         return;
     }
@@ -154,10 +154,10 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $user = \User::singleton();
         if ($user->hasPermission('document_repository_hidden')) {
             // the base query
-            $query = " FROM document_repository v";
+            $query  = " FROM document_repository v";
             $query .= " WHERE COALESCE(v.hide_video, false)=false";
             // set the class variables
-            $this->columns = [
+            $this->columns  = [
                 'v.File_name',
                 'v.version',
                 'v.File_type',
@@ -171,15 +171,16 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 'v.File_category as category',
                 'v.Data_dir',
             ];
-            $this->query = $query;
+            $this->query    = $query;
             $this->group_by = '';
             $this->order_by = 'v.File_name';
         } else {
             // the base query
-            $query = " FROM document_repository v";
-            $query .= " WHERE COALESCE(v.hide_video, false)=false AND (hidden_file='false' OR hidden_file IS NULL)";
+            $query  = " FROM document_repository v";
+            $query .= " WHERE COALESCE(v.hide_video, false)=false";
+            $query .= " AND (hidden_file='false' OR hidden_file IS NULL)";
             // set the class variables
-            $this->columns = [
+            $this->columns  = [
                 'v.File_name',
                 'v.version',
                 'v.File_type',
@@ -193,7 +194,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
                 'v.File_category as category',
                 'v.Data_dir',
             ];
-            $this->query = $query;
+            $this->query    = $query;
             $this->group_by = '';
             $this->order_by = 'v.File_name';
         }

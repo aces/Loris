@@ -116,11 +116,11 @@ class Files extends \NDB_Page
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'hidden_file' => $req['hiddenFile'] ?? null,
-            'instrument' => $req['instrument'] ?? null,
-            'comments'   => $req['comments'] ?? null,
-            'version'    => $req['version'] ?? null,
-            'visitLabel' => $req['visitLabel'] ?? null,
-            'pscid'      => $req['pscid'] ?? null,
+            'instrument'  => $req['instrument'] ?? null,
+            'comments'    => $req['comments'] ?? null,
+            'version'     => $req['version'] ?? null,
+            'visitLabel'  => $req['visitLabel'] ?? null,
+            'pscid'       => $req['pscid'] ?? null,
         ];
         $fileName     = $req['fileName'] ?? null;
         $Notifier     = new \NDB_Notifier(

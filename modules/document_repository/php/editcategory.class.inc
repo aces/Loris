@@ -39,10 +39,10 @@ class EditCategory extends \NDB_Page
         // ******************** CCNA OVERRIDE START ************** //
         return ($user->hasPermission('document_repository_categories')
             && $user->hasAnyPermission(
-                array(
+                [
                     'document_repository_upload',
                     'document_repository_delete',
-                )
+                ]
             )
         );
         // ******************** CCNA OVERRIDE END ************** //
@@ -84,11 +84,11 @@ class EditCategory extends \NDB_Page
      */
     function editDocCategory($request): void
     {
-        $DB            = \Database::singleton();
-        $req           = $request->getParsedBody();
+        $DB          = \Database::singleton();
+        $req         = $request->getParsedBody();
         $category_id = $req['categoryID'];
-        $new_name = $req['categoryNameChange'];
-        $new_parent = isset($req['newParentID']) ? $req['newParentID'] : null;
+        $new_name    = $req['categoryNameChange'];
+        $new_parent  = isset($req['newParentID']) ? $req['newParentID'] : null;
 
         if ($new_parent != null) {
             $DB->run(
