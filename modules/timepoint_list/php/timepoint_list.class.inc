@@ -174,7 +174,7 @@ class Timepoint_List extends \NDB_Menu
 
                 // get the outcome data
                 $outcomeStage
-                    = $this->_determinePreviousStage($currentTimePoint);
+                    = $this->_determinePreviousStage($timePoint);
 
                 $getStatusMethod = 'get'.$outcomeStage.'Status';
 
