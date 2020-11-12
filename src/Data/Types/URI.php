@@ -36,6 +36,6 @@ class URI implements \LORIS\Data\Type
      */
     public function asSQLType() : string
     {
-        return "varchar(255)";
+        return "text";
     }
 }
