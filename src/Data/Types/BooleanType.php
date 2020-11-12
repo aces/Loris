@@ -6,10 +6,8 @@ namespace LORIS\Data\Types;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class StringType implements \LORIS\Data\Type
+class BooleanType implements \LORIS\Data\Type
 {
-    private $size;
-
     /**
      * Construct a BooleanType object
      */
