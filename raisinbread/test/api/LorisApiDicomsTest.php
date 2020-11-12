@@ -24,6 +24,57 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
     protected $processidTest = "";
 
     /**
+     * Override the setup to ensure the UnitTester user has access to
+     * the visit's project and site for the test DICOM
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setup();
+        $this->DB->insert(
+            "user_project_rel",
+            [
+                "ProjectID" => 2,
+                "UserID" => 999990,
+            ],
+        );
+        $this->DB->insert(
+            "user_psc_rel",
+            [
+                "CenterID" => 4,
+                "UserID" => 999990,
+            ],
+        );
+    }
+
+    /**
+     * Override the setup to ensure the UnitTester user has access to
+     * the visit's project and site for the test DICOM
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        $this->DB->delete(
+            "user_project_rel",
+            [
+                "ProjectID" => 2,
+                "UserID" => 999990,
+            ],
+        );
+        $this->DB->delete(
+            "user_psc_rel",
+            [
+                "CenterID" => 4,
+                "UserID" => 999990,
+            ],
+        );
+        parent::tearDown();
+    }
+
+
+    /**
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/dicoms
      *
