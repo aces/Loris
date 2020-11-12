@@ -255,7 +255,9 @@ class Stats_Demographic extends \NDB_Form
         $subprojects     = \Utility::getSubprojectList();
         // Only search for subprojects if $demographicProject is a positive int.
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
-            $subprojects = \Utility::getSubprojectsForProject($demographicProject);
+            $subprojects = \Utility::getSubprojectsForProject(
+                new \ProjectID($demographicProject)
+            );
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {
                 $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";

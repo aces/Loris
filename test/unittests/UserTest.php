@@ -570,7 +570,7 @@ class UserTest extends TestCase
     public function testHasProjectWhenTrue()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertTrue($this->_user->hasProject(3));
+        $this->assertTrue($this->_user->hasProject(new \ProjectID("3")));
     }
 
     /**
@@ -582,7 +582,7 @@ class UserTest extends TestCase
     public function testHasProjectWhenFalse()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertFalse($this->_user->hasProject(5));
+        $this->assertFalse($this->_user->hasProject(new \ProjectID("5")));
     }
 
     /**

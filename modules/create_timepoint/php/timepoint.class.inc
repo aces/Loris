@@ -130,7 +130,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $projectOptions        = [];
         foreach ($user_list_of_projects as $projectID) {
             $project = \Project::getProjectFromID($projectID);
-            $projectOptions[$projectID] = $project->getName();
+            $projectOptions["$projectID"] = $project->getName();
         }
         $values['project'] = $projectOptions;
 

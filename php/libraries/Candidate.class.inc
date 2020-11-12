@@ -193,13 +193,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *                                           candidate will belong
      * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
-     *                                           written as YYYY-MM-DD. Value should
-     *                                           be null unless the useEDC setting
-     *                                           is configured to be true.
+     *                                           written as YYYY-MM-DD. Value
+     *                                           should be null unless the
+     *                                           useEDC setting is configured
+     *                                           to be true.
      * @param Sex         $sex                   An instance of the Sex class.
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
-     * @param int|null    $registrationProjectID The project ID, if available
+     * @param ?ProjectID  $registrationProjectID The project ID, if available
      *
      * @return CandID   $candID      candidate id of the new candidate
      * @throws Exception
@@ -211,7 +212,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         ?string $edc,
         Sex $sex,
         ?string $PSCID = null,
-        int $registrationProjectID = null
+        ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
 
