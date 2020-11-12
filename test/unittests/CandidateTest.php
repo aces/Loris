@@ -1082,9 +1082,9 @@ class CandidateTest extends TestCase
         $this->_setUpMockDB();
 
         $user = $this->getMockBuilder('\User')->getMock();
-        $user->expects($this->once())->method("getCenterIDs")
+        $user->expects($this->atLeastOnce())->method("getCenterIDs")
             ->willReturn([1, 2]);
-        $user->expects($this->once())->method("getProjectIDs")
+        $user->expects($this->atLeastOnce())->method("getProjectIDs")
             ->willReturn([2, 3]);
 
         $result = $this->_candidate->isAccessibleBy($user);
@@ -1105,9 +1105,9 @@ class CandidateTest extends TestCase
         $this->_setUpMockDB();
 
         $user = $this->getMockBuilder('\User')->getMock();
-        $user->expects($this->once())->method("getCenterIDs")
+        $user->expects($this->atLeastOnce())->method("getCenterIDs")
             ->willReturn([1, 3]);
-        $user->expects($this->once())->method("getProjectIDs")
+        $user->expects($this->atLeastOnce())->method("getProjectIDs")
             ->willReturn([1, 3]);
 
         $result = $this->_candidate->isAccessibleBy($user);
