@@ -889,7 +889,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     {
         $centers = $user->getCenterIDs();
 
-        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = in_array($this->getCenterID(), $centers, true);
 
         // The candidate is accessible based on its registration

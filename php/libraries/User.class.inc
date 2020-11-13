@@ -431,8 +431,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     {
         return in_array(
             $projectID,
-            $this->getProjectIDs(),
-            true
+            $this->getProjectIDs()
         );
     }
 
