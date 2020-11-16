@@ -46,7 +46,12 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     {
         $cids = explode(',', $row['centerIds'] ?? '');
         $row['centerIds'] = $cids;
-        $pids = explode(',', $row['projectIds'] ?? '');
+        $pids = array_map(
+            function(string $pid) : \ProjectID {
+                return new \ProjectID($pid);
+            },
+            explode(',', $row['projectIds']),
+        );
         $row['projectIds'] = $pids;
         return new UserAccountRow($row, $cids, $pids);
     }

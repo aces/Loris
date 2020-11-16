@@ -40,7 +40,7 @@ class SurveyAccountsRow implements \LORIS\Data\DataInstance
      * @param integer $cid The centerID affiliated with this row.
      * @param integer $pid The projectID affiliated with this row.
      */
-    public function __construct(array $row, int $cid, int $pid)
+    public function __construct(array $row, int $cid, \ProjectID $pid)
     {
         $this->DBRow     = $row;
         $this->CenterID  = $cid;
@@ -70,9 +70,9 @@ class SurveyAccountsRow implements \LORIS\Data\DataInstance
     /**
      * Returns the ProjectID for this row
      *
-     * @return integer The ProjectID
+     * @return \ProjectID The ProjectID
      */
-    public function getProjectID(): int
+    public function getProjectID(): \ProjectID
     {
         return $this->ProjectID;
     }

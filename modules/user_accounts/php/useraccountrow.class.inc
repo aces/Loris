@@ -10,6 +10,7 @@ namespace LORIS\user_accounts;
 class UserAccountRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
+    protected $ProjectIDs;
 
     private array $_centerIDs;
     private array $_projectIDs;
@@ -42,7 +43,7 @@ class UserAccountRow implements \LORIS\Data\DataInstance
     /**
      * Returns the ProjectID for this row.
      *
-     * @return array The ProjectIds
+     * @return \ProjectID[] The ProjectIds
      */
     public function getProjectIDs() : array
     {
