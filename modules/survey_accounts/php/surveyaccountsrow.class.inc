@@ -35,10 +35,10 @@ class SurveyAccountsRow implements \LORIS\Data\DataInstance
     /**
      * Create a new SurveyAccountsRow
      *
-     * @param array   $row The row (in the same format as \Database::pselectRow
-     *                     returns
-     * @param integer $cid The centerID affiliated with this row.
-     * @param integer $pid The projectID affiliated with this row.
+     * @param array   $row    The row (in the same format as
+     *                        \Database::pselectRow returns.)
+     * @param integer $cid    The centerID affiliated with this row.
+     * @param \ProjectID $pid The projectID affiliated with this row.
      */
     public function __construct(array $row, int $cid, \ProjectID $pid)
     {
