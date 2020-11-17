@@ -250,6 +250,7 @@ class Stats_Demographic extends \NDB_Form
 
         //SUBPROJECTS
         $subprojectQuery = '';
+        $subprojects     = \Utility::getSubprojectList();
         // Only search for subprojects if $demographicProject is a positive int.
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
             $subprojects = \Utility::getSubprojectsForProject($demographicProject);
@@ -257,7 +258,6 @@ class Stats_Demographic extends \NDB_Form
             if (!empty($subprojList)) {
                 $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";
             }
-            $this->tpl_data['Subprojects'] = $subprojects;
         }
 
         //SITES
@@ -308,9 +308,10 @@ class Stats_Demographic extends \NDB_Form
             }
         }
 
-        $this->tpl_data['Sites']    = $sites;
-        $this->tpl_data['Projects'] = $projects;
-        $this->tpl_data['Visits']   = $visits;
+        $this->tpl_data['Sites']       = $sites;
+        $this->tpl_data['Projects']    = $projects;
+        $this->tpl_data['Visits']      = $visits;
+        $this->tpl_data['Subprojects'] = $subprojects;
 
         /**
          * REGISTERED CANDIDATES ROW
