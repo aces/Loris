@@ -350,6 +350,7 @@ class Stats_Demographic extends \NDB_Form
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -357,8 +358,8 @@ class Stats_Demographic extends \NDB_Form
 			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND (ps.participant_status=1
-                               OR ps.participant_status IS NULL)
+                          AND (pso.Description='Active'
+                               OR pso.Description IS NULL)
                           $paramProject
                           $paramSite
                       GROUP BY s.subprojectid",
@@ -381,6 +382,7 @@ class Stats_Demographic extends \NDB_Form
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -388,7 +390,7 @@ class Stats_Demographic extends \NDB_Form
 			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND ps.participant_status=5
+                          AND pso.Description='Inactive'
                           $paramProject
                           $paramSite
                       GROUP BY s.subprojectid",
