@@ -1,43 +1,17 @@
-name: PHP Composer
+name: CI
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push]
 
 jobs:
-  build:
-
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Validate composer.json and composer.lock
-      run: composer validate
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-
-    - name: Install dependencies     
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: sudo apt-get update
-
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
-    # - name: Run test suite
-           sudo apt-get update
-           sudo apt-get install -y libapparmor1
-           pecl install -f ast-1.0.3
-           sudo apt-get install nodejs-dev node-gyp libssl1.0-dev npm
-           composer self-update 1.10.17
-           make dev
-           npm run tests:integration
+      - uses: actions/checkout@v2
+      - uses: php-actions/composer@master
+      - name: PHPUnit Tests
+        uses: php-actions/phpunit@17-php-versions
+        with:
+          bootstrap: vendor/autoload.php
+          configuration: test/phpunit.xml
+          args: --coverage-text
