@@ -350,7 +350,8 @@ class Stats_Demographic extends \NDB_Form
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
+                          LEFT JOIN participant_status_options pso 
+                                    ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -382,7 +383,8 @@ class Stats_Demographic extends \NDB_Form
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
+                          LEFT JOIN participant_status_options pso 
+                                      ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
