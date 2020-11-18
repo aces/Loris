@@ -244,10 +244,10 @@ class NDB_BVL_Battery
     function removeInstrument($testName)
     {
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
+        $this->_assertBatterySelected();
 
         // assert that the instrument is valid
-        $error = $this->_assertValidInstrument($testName);
+        $this->_assertValidInstrument($testName);
     }
 
     /**
@@ -545,10 +545,9 @@ class NDB_BVL_Battery
     function _createCommentID($testName)
     {
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
-
+        $this->_assertBatterySelected();
         // assert that the instrument is valid
-        $error = $this->_assertValidInstrument($testName);
+        $this->_assertValidInstrument($testName);
         return NDB_BVL_Battery::generateCommentID($this->sessionID, $testName);
     }
 

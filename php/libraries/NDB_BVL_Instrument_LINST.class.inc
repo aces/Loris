@@ -191,6 +191,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             if (!empty($this->XINRules[$elname])) {
                 $registered_rules = $this->XINRules[$elname];
+                '@phan-var array $registered_rules';
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
