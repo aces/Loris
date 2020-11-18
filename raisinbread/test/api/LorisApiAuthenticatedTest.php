@@ -22,6 +22,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
 {
 
     protected $client;
+    protected $version;
     protected $headers;
     protected $base_uri;
     protected $originalJwtKey;
@@ -36,6 +37,9 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
+
+        $this->_version = 'v0.0.4-dev';
+
         // store the original JWT key for restoring it later
         $jwtConfig = $this->DB->pselect(
             '
@@ -71,6 +75,59 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         $this->DB->update('Config', $set, $where);
 
         $this->apiLogin('UnitTester', $this->validPassword);
+
+
+        $this->DB->insert(
+            "candidate",
+            [
+                'CandID'                => '900000',
+                'PSCID'                 => 'TST0001',
+                'RegistrationCenterID'  => 1,
+                'RegistrationProjectID' => 1,
+                'Active'                => 'Y',
+                'UserID'                => 1,
+                'Entity_type'           => 'Human',
+                'Sex'                   => 'Female'
+            ]
+        );
+        $this->DB->insert(
+            'session',
+            [
+                'ID'            => '999999',
+                'CandID'        => '900000',
+                'Visit_label'   => 'V1',
+                'CenterID'      => 1,
+                'ProjectID'     => 1,
+                'Current_stage' => 'Not Started',
+            ]
+        );
+        $this->DB->insert(
+            'test_names',
+            [
+                'ID'        => '999999',
+                'Test_name' => 'testtest',
+                'Full_name' => 'Test Test',
+                'Sub_group' => 1,
+            ]
+        );
+        $this->DB->insert(
+            'flag',
+            [
+                'ID'        => '999999',
+                'SessionID' => '999999',
+                'Test_name' => 'testtest',
+                'CommentID' => '11111111111111111',
+            ]
+        );
+        $this->DB->insert(
+            'flag',
+            [
+                'ID'        => '999999',
+                'SessionID' => '999999',
+                'Test_name' => 'testtest',
+                'CommentID' => 'DDE_11111111111111111',
+            ]
+        );
     }
 
     /**
@@ -83,7 +140,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      */
     public function apiLogin($username, $password)
     {
-        $this->base_uri = "$this->url/api/v0.0.3/";
+        $this->base_uri = "$this->url/api/$this->_version/";
         $this->client   = new Client(['base_uri' => $this->base_uri]);
         $response       = $this->client->request(
             'POST',
@@ -127,6 +184,11 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      */
     public function tearDown()
     {
+        $this->DB->delete("session", ['CandID' => '900000']);
+        $this->DB->delete("candidate", ['CandID' => '900000']);
+        $this->DB->delete("flag", ['ID' => '999999']);
+        $this->DB->delete("test_names", ['ID' => '999999']);
+
         $set = [
             'Value' => $this->originalJwtKey
         ];

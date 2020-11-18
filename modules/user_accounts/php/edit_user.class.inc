@@ -1343,7 +1343,31 @@ class Edit_User extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/user_accounts/js/rejectUser.js"]
+            [
+                $baseURL . '/user_accounts/js/rejectUser.js',
+                $baseURL . '/js/passwordVisibility.js',
+                $baseURL . '/user_accounts/js/edit_user_helper.js',
+                $baseURL . '/js/invalid_form_scroll.js',
+            ]
+        );
+    }
+
+    /**
+     * Include additional CSS files:
+     *  1. configuration
+     *
+     * @return array of CSS to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/css/password.css",
+            ]
         );
     }
 }
