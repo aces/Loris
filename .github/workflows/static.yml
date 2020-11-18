@@ -26,6 +26,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
+    - name: Install OS package dependencies
+      run: sudo apt-get install php-ast
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
