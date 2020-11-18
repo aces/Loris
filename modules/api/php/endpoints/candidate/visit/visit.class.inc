@@ -75,8 +75,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        // Removed 0.0.2 since session requires a project.
-        return ['v0.0.3'];
+         return [
+             'v0.0.3',
+             'v0.0.4-dev',
+         ];
     }
 
     /**
@@ -213,11 +215,18 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_candidate->getListOfVisitLabels()
         );
 
+        if (!$this->_candidate->isAccessibleBy($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                "You can't create or modify that candidate"
+            );
+        }
+
         $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
 
         if (!in_array($centerid, $user->getCenterIDs())) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'You can`t create candidates visit for that site'
+                "You can't create  or modify candidates visit for the site " .
+                $centerid
             );
         }
 
