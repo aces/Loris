@@ -54,9 +54,6 @@ class NDB_Form extends NDB_Page
      * @param string $page       Identifies the page to show
      * @param string $identifier Variables passed to form
      *
-     * @phan-var object $success
-
-     *
      * @return \NDB_Form
      */
     static function &factory($name, $page, $identifier)
