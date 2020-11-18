@@ -541,7 +541,6 @@ class NDB_BVL_Battery
      *
      * @param string $testName The test name that we want a commentID for
      *
-     * @SuppressWarnings("unused") for $error
      *
      * @return ?string the commentID generated
      */
