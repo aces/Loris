@@ -34,9 +34,10 @@ class CandidateListRow implements \LORIS\Data\DataInstance
     /**
      * Create a new CandidateListRow
      *
-     * @param array   $row    The row (in the same format as
-     *                        \Database::pselectRow returns.)
-     * @param integer $cid    The centerID affiliated with this row.
+     * @param array      $row The row (in the same format as
+     *                        \Database::pselectRow
+     *                        returns.)
+     * @param integer    $cid The centerID affiliated with this row.
      * @param \ProjectID $pid The projectID affiliated with this row.
      */
     public function __construct(array $row, int $cid, \ProjectID $pid)
