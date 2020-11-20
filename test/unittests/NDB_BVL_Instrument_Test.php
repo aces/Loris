@@ -1126,18 +1126,18 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that loadInstanceData returns data from the correct database
+     * Test that getInstanceData returns data from the correct database
      *
-     * @covers NDB_BVL_Instrument::loadInstanceData
+     * @covers NDB_BVL_Instrument::getInstanceData
      * @return void
      */
-    function testLoadInstanceData()
+    function testGetInstanceData()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'flag';
-        $defaults = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $defaults = $this->_instrument->getInstanceData();
         $defaults['Testdate'] = '2020-01-01 00:00:00';
         $this->assertEquals(
             $defaults,
@@ -1563,7 +1563,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->_instrument->_setDataEntryCompletionStatus('Complete');
-        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $data = $this->_instrument->getInstanceData();
         $this->assertEquals('Complete', $data['Data_entry_completion_status']);
     }
 
@@ -1598,7 +1598,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->_instrument->_nullScores(['Examiner' => 'Test Examiner1']);
-        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $data = $this->_instrument->getInstanceData();
         $this->assertEquals(null, $data['Examiner']);
     }
 
@@ -1675,7 +1675,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             []
         );
         $this->_instrument->clearInstrument();
-        $data           = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $data           = $this->_instrument->getInstanceData();
         $conflictsAfter = $this->_DB->pselect(
             "SELECT * FROM conflicts_unresolved",
             []
