@@ -1131,7 +1131,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * @covers NDB_BVL_Instrument::getInstanceData
      * @return void
      */
-    function getLoadInstanceData()
+    function testGetInstanceData()
     {
         $this->_setUpMockDB();
         $this->_setTableData();

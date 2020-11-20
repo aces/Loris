@@ -829,7 +829,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ["Data" => json_encode($newData)],
             ['CommentID' => $this->getCommentID()]
         );
-
+        $this->instanceData = $newData;
     }
 
 
