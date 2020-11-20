@@ -34,8 +34,14 @@ use \LORIS\Data\Filters\UserProjectMatch;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Unresolved extends Endpoint
+class Unresolved extends Endpoint implements ETagCalculator
 {
+    /**
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
+     */
+    private $_cache;
+
     /**
      * Returns true if the user has permission to access
      * the conflict resolver module
@@ -49,6 +55,17 @@ class Unresolved extends Endpoint
         return $user->hasPermission('conflict_resolver');
     }
 
+    /**
+     * Implements the ETagCalculator interface.
+     *
+     * @param ServerRequestInterface $request The PSR7 incoming request.
+     *
+     * @return string etag summarizing value of this request.
+     */
+    public function ETag(ServerRequestInterface $request): string
+    {
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
+    }
 
     /**
      * Return which methods are supported by this endpoint.
@@ -120,25 +137,31 @@ class Unresolved extends Endpoint
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-        $provisioner = (new UnresolvedProvisioner())
-            ->filter(
-                new HasAnyPermissionOrUserSiteMatch(
-                    ['access_all_profiles']
+        if (!isset($this->_cache)) {
+            $provisioner = (new UnresolvedProvisioner())
+                ->filter(
+                    new HasAnyPermissionOrUserSiteMatch(
+                        ['access_all_profiles']
+                    )
                 )
-            )
-            ->filter(new UserProjectMatch());
+                ->filter(new UserProjectMatch());
 
-        $user      = $request->getAttribute('user');
-        $conflicts = (new \LORIS\Data\Table())
-            ->withDataFrom($provisioner)
-            ->toArray($user);
+            $user      = $request->getAttribute('user');
+            $conflicts = (new \LORIS\Data\Table())
+                ->withDataFrom($provisioner)
+                ->toArray($user);
 
-        $body = [
-            'data'         => $conflicts,
-            'fieldOptions' => $this->_getFieldOptions(),
-        ];
+            $body = [
+                'data'         => $conflicts,
+                'fieldOptions' => $this->_getFieldOptions(),
+            ];
 
-        return new \LORIS\Http\Response\JsonResponse($body);
+            $this->_cache = $body;
+        }
+
+        return new \LORIS\Http\Response\JsonResponse(
+            $this->_cache
+        );
     }
 
     /**
