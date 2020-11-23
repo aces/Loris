@@ -63,7 +63,7 @@ if ($config->getSetting('useExternalID') !== 'true') {
     exit(1);
 }
 
-// Get all Candidate with a NULL externalID
+// Get all Candidates
 $cands = $DB->pselect(
     "SELECT CandID, ExternalID, RegistrationCenterID as site,
     RegistrationProjectID as project
@@ -72,9 +72,9 @@ $cands = $DB->pselect(
 );
 
 $i = 0;
-// Update all candidates with an external ID
+// Update all candidates external IDs
 foreach ($cands as $cand) {
-    if (!$reset && $cand['ExternalID'] != null) {
+    if (!$reset && !is_null($cand['ExternalID'])) {
         continue;
     }
 
