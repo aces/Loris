@@ -1,3 +1,7 @@
+# LORIS Glossary
+
+Below is a list of terms used mostly in the context of the LORIS user-facing front-end used. For definition of Study variables used in configuring LORIS also see [here](https://acesloris.readthedocs.io/en/latest/docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/00_Introduction_to_Study_Variables.html).
+
 **Administration:** in an instrument form, can be marked “None”, “Partial”, or “All”. If an instrument was not administered, it is marked as “None.” This will remove the instrument from the database statistics calculation. If an instrument was partially administered (i.e. candidate did not answer some questions, parent did not provide some answers, tester did not ask some of the questions), it is marked as “Partial”. This field has to be set for Data Entry to be marked as “Complete”.
 
 **Approval:** to promote a candidate from the “Visit” stage to the “Approval” stage, all of the instruments associated with a visit must be fully completed. Once the data for al the instruments in a candidate’s battery are entered, the visit stage should be marked as “Pass”, “Failure”, or “Withdrawal”. Candidates in this stage are no longer accessible for change unless feedback from the DCC is available.
