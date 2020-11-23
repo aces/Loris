@@ -613,14 +613,13 @@ class CandidateTest extends TestCase
         );
 
         $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                   "SELECT SubprojectID, title 
-                    FROM subproject 
-                    WHERE SubprojectID = :subprj"
+                   "SELECT SubprojectID, title"
                 )
             )
             ->willReturn(
@@ -632,7 +631,6 @@ class CandidateTest extends TestCase
             'title'        => 'testSubproject'
         );
 
-        $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(
             $expectedSubproject,
             $this->_candidate->getSubprojectForMostRecentVisit()
@@ -649,19 +647,17 @@ class CandidateTest extends TestCase
     {
         $subproject = array();
         $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
         
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                   "SELECT SubprojectID, title 
-                    FROM subproject 
-                    WHERE SubprojectID = :subprj"
+                   "SELECT SubprojectID, title"
                 )
             )
             ->willReturn($subproject);
 
-        $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(null, $this->_candidate->getSubprojectForMostRecentVisit());
     }
 
