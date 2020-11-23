@@ -1,5 +1,4 @@
 {
-  "extends": "google",
   "parser": "babel-eslint",
   "plugins": [
     "react",
@@ -7,7 +6,8 @@
   ],
   "env": {
     "browser": true,
-    "jquery": true
+    "jquery": true,
+    "node": true
   },
   "parserOptions": {
     "sourceType": "module",
@@ -16,12 +16,8 @@
       "globalReturn": false
     }
   },
+  "extends": ["eslint:recommended", "plugin:react/recommended", "google"],
   "rules": {
-    "extends": [
-      "eslint:recommended",
-      "plugin:react/recommended",
-      "google"
-    ],
     "max-len": ["error", {
         "code": 80,
         "tabWidth": 2,
