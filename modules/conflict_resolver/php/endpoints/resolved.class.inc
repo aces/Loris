@@ -13,7 +13,6 @@ namespace LORIS\conflict_resolver\Endpoints;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Router\Endpoint;
-use \LORIS\Middleware\ETagCalculator;
 use \LORIS\conflict_resolver\Provisioners\ResolvedProvisioner;
 use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 use \LORIS\Data\Filters\UserProjectMatch;
