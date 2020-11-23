@@ -20,7 +20,7 @@ Test Battery.
 ### Permissions
 
 **Testing with no permissions** [Automation Testing]
-  1. Access the module with a user without superuser, `battery_manager_view`, `battery_manager_edit permissions`.
+  1. Access the module with a user **not having** the `superuser`, `battery_manager_view` or `battery_manager_edit` permissions.
   2. The access to module should be denied.
 
 **Testing with view permission** [Automation Testing]
@@ -45,7 +45,7 @@ Test Battery.
 
 **Testing add functionality**
   1. Check that you cannot add an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
-  2. Check that you can only enter positive numbers (including 0) in Minumum age (days) and Maximum age (days).
+  2. Check that you can only enter positive numbers (including 0) in Minimum age (days) and Maximum age (days).
   3. Check that you can only enter positive numbers (including 0) in Instrument order.
   4. Check that when you try to add an entry that has an active duplicate in the table (Active = 'Y'), you receive an error message.
   5. Try to add an entry that does not have a duplicate.
@@ -88,7 +88,7 @@ Test Battery.
 
 **Testing edit (activate/deactivate/add) functionality**
   1. Check that you cannot edit an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
-  2. Check that you can only enter positive numbers (inclusing 0) in Minumum age (days) and Maximum age (days).
+  2. Check that you can only enter positive numbers (including 0) in Minimum age (days) and Maximum age (days).
   3. Check that you can only enter positive numbers (including 0) in Instrument order.
   4. Check that when the edited entry has the same values as another active entry in the Test Battery, you receive an error message.
   5. Try to edit an entry so that it has the same values as another deactivated entry in the Test Battery.
