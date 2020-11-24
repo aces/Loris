@@ -576,7 +576,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
-                        if (isset($dateFormat) && $dateFormat != "" && $dateFormat !== "Date") {
+                        if (isset($dateFormat) && $dateFormat != ""
+                            && $dateFormat !== "Date"
+                        ) {
                             if ($dateFormat === 'MonthYear') {
                                 // Shows date without day of month
                                 $this->addMonthYear(
