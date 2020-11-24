@@ -15,6 +15,10 @@ import swal from 'sweetalert2';
  *
  * */
 class MediaUploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -36,6 +40,9 @@ class MediaUploadForm extends Component {
     this.uploadFile = this.uploadFile.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     let self = this;
     $.ajax(this.props.DataURL, {
@@ -55,6 +62,11 @@ class MediaUploadForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error !== undefined) {
@@ -261,7 +273,7 @@ class MediaUploadForm extends Component {
     }
   }
 
-  /*
+  /**
    * Uploads the file to the server
    */
   uploadFile() {
@@ -269,11 +281,12 @@ class MediaUploadForm extends Component {
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData[key] !== '') {
-        formObj.append(key, formData[key]);
+      if (formData.hasOwnProperty(key)) {
+        if (formData[key] !== '') {
+          formObj.append(key, formData[key]);
+        }
       }
     }
-
     $.ajax({
       type: 'POST',
       url: this.props.action,
@@ -291,7 +304,9 @@ class MediaUploadForm extends Component {
         }.bind(this), false);
         return xhr;
       }.bind(this),
-      success: function() {
+      success: function(data) {
+        // Update data "row" into table
+        this.props.insertRow(JSON.parse(data));
         // Add git pfile to the list of exiting files
         let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
         mediaFiles.push(formData.file.name);
@@ -383,6 +398,7 @@ class MediaUploadForm extends Component {
 MediaUploadForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  insertRow: PropTypes.func.isRequired,
 };
 
 export default MediaUploadForm;

@@ -22,6 +22,10 @@ import SidebarContent from './components/SidebarContent';
  * @author Alizée Wickenheiser
  */
 class ElectrophysiologySessionView extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -228,6 +232,11 @@ class ElectrophysiologySessionView extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return (

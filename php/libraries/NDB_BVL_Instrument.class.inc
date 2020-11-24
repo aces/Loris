@@ -50,6 +50,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $commentID;
 
     /**
+     * The data associated with the commentID for this instrument
+     *
+     * @var ?array
+     */
+    protected $instanceData = null;
+
+    /**
      * Database table containing data referenced by $this->commentID
      *
      * @access public
@@ -464,7 +471,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $this->addGroup($buttons, null, null, "&nbsp;");
         }
 
-        $defaults = $this->loadInstanceData($this);
+        $defaults = $this->getInstanceData();
 
         // set the defaults (call private method _setDefaultsArray
         // which could be overridden if necessary)
@@ -822,7 +829,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ["Data" => json_encode($newData)],
             ['CommentID' => $this->getCommentID()]
         );
-
+        $this->instanceData = $newData;
     }
 
 
@@ -956,6 +963,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames(): array
     {
+        if (empty($this->getCommentID())) {
+            return [];
+        }
+
         $db = \Database::singleton();
 
         $centerID = $db->pselectOne(
@@ -1433,7 +1444,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getFieldValue(string $field)
     {
-        $allValues = self::loadInstanceData($this);
+        $allValues = $this->getInstanceData();
 
         if (!array_key_exists($field, $allValues)) {
             throw new \OutOfBoundsException("Invalid field for instrument");
@@ -1445,10 +1456,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
-     * @return SessionID The sessionID
+     * @return ?SessionID The sessionID
      */
-    function getSessionID(): SessionID
+    function getSessionID(): ?SessionID
     {
+
         $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
         $result = \NDB_Factory::singleton()->database()->pselectOne(
             $query,
@@ -1456,10 +1468,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'CID' => $this->getCommentID(),
             ]
         );
+
         if (empty($result)) {
-            throw new NotFound(
-                "No SessionID exists for CommentID: `{$this->getCommentID()}`"
-            );
+            return null;
         }
 
         return (new SessionID($result));
@@ -1503,7 +1514,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (empty($this->_requiredElements)) {
             return 100;
         }
-        $allData       = $this->loadInstanceData($this);
+        $allData       = $this->getInstanceData();
         $unanswered    = 0;
         $totalElements = count($this->_requiredElements);
         foreach ($this->_requiredElements as $field) {
@@ -1539,7 +1550,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             return 'Complete';
         }
 
-        $allData = $this->loadInstanceData($this);
+        $allData = $this->getInstanceData();
         foreach ($this->_requiredElements as $field) {
             // consider status field if not_answered chosen as an answer
             $statusField = $field . '_status';
@@ -1563,7 +1574,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDataEntryCompletionStatus(): string
     {
-        $data = NDB_BVL_Instrument::loadInstanceData($this);
+        $data = $this->getInstanceData();
         return $data["Data_entry_completion_status"];
     }
 
@@ -2049,7 +2060,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores(array $scoreCols): void
     {
-        $data = $this->loadInstanceData($this);
+        $data = $this->getInstanceData();
 
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
@@ -2082,10 +2093,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function diff(NDB_BVL_Instrument $otherInstrument): array
     {
         // Load this instance data
-        $thisData = NDB_BVL_Instrument::loadInstanceData($this);
+        $thisData = $this->getInstanceData();
 
         // Load other instance data
-        $otherData = NDB_BVL_Instrument::loadInstanceData($otherInstrument);
+        $otherData = $otherInstrument->getInstanceData();
 
         // Create the return object data structure
         $diff = [];
@@ -2117,13 +2128,51 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Gets the data from an instrument out of the database and returns it
      * as an array.
      *
+     * @return array containing the data for each field in this instrument
+     */
+    public function getInstanceData(): array
+    {
+        if ($this->instanceData !== null) {
+            return $this->instanceData;
+        }
+
+        $db = \Database::singleton();
+
+        if ($this->jsonData) {
+            $jsondata = $db->pselectOne(
+                "SELECT Data FROM flag WHERE CommentID=:CID",
+                ['CID' => $this->getCommentID()]
+            );
+
+            $this->instanceData = json_decode($jsondata, true) ?? [];
+        } else {
+            $defaults = $db->pselectRow(
+                "SELECT * FROM $this->table WHERE CommentID=:CID",
+                ['CID' => $this->getCommentID()]
+            );
+
+            $this->instanceData = $defaults ?? [];
+        }
+        return $this->instanceData;
+    }
+
+    /**
+     * Gets the data from an instrument out of the database and returns it
+     * as an array.
+     *
      * @param NDB_BVL_Instrument $instrumentInstance The object whose data is
      *                                               to be retrieved.
      *
      * @return array containing the data for each field in this instrument
+     *
+     * @deprecated use $instrumentInstance->getInstanceData() instead
      */
     static function loadInstanceData(NDB_BVL_Instrument $instrumentInstance): array
     {
+        error_log(
+            'Warning: loadInstanceData($inst) is deprecated and will be removed'
+            . ' in a future version of LORIS. Use $inst->getInstanceData() instead.'
+        );
         $db = \Database::singleton();
 
         if ($instrumentInstance->jsonData) {

@@ -1,6 +1,3 @@
-<script type="text/javascript" src="{$baseurl}/js/passwordVisibility.js"></script>
-<link rel="stylesheet" href="/css/password.css" type="text/css" />
-
 <div class="container">
   <div class="row">
     <section class="col-md-4 col-md-push-8">
@@ -54,9 +51,3 @@
     </section>
   </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function(event) {
-    passwordVisibility();
-  })
-</script>

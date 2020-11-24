@@ -7,7 +7,14 @@ import FilterableDataTable from 'FilterableDataTable';
 
 import InstrumentUploadForm from './uploadForm';
 
+/**
+ * Instrument Manager Index component
+ */
 class InstrumentManagerIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -21,6 +28,9 @@ class InstrumentManagerIndex extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -57,6 +67,11 @@ class InstrumentManagerIndex extends Component {
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.

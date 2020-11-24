@@ -6,7 +6,7 @@ class PaginationLinks extends Component {
     super(props);
     this.state = {
       RowsPerPage: 10,
-      Active: 1
+      Active: 1,
     };
     this.changePage = this.changePage.bind(this);
   }
@@ -39,9 +39,8 @@ class PaginationLinks extends Component {
       lastShownPage = startPage + 6;
       if (lastShownPage > lastPage) {
         lastShownPage = lastPage;
-        startPage = lastPage - 6
+        startPage = lastPage - 6;
       }
-
     }
 
 

@@ -1,3 +1,7 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import Panel from 'jsx/Panel';
+
 /**
  * This file contains React component for Electrophysiology module.
  *
@@ -5,12 +9,11 @@
  * @version 0.0.1
  *
  */
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import Panel from 'jsx/Panel';
-
-
 class FilePanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -19,7 +22,7 @@ class FilePanel extends Component {
   }
 
   /**
-   * Component did mount.
+   * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
     let downloads = [
@@ -48,6 +51,11 @@ class FilePanel extends Component {
     }
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const stylesFile = {
       button: {

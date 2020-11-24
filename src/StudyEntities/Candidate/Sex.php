@@ -23,7 +23,7 @@ namespace LORIS\StudyEntities\Candidate;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Sex
+class Sex implements \JsonSerializable
 {
     /* @var string */
     public $value;
@@ -70,6 +70,17 @@ class Sex
      * @return string
      */
     public function __toString(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * Implements the JSONSerializeable interface by converting
+     * the value to a string.
+     *
+     * @return string
+     */
+    public function jsonSerialize() : string
     {
         return $this->value;
     }

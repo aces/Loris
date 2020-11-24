@@ -500,7 +500,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".pending-accounts",
-            "1",
+            "2",
             "- User Accounts"
         );
         $this->resetPermissions();

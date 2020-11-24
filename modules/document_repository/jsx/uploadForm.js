@@ -15,6 +15,10 @@ import Loader from 'Loader';
  *
  * */
 class DocUploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -32,18 +36,30 @@ class DocUploadForm extends Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
+  /**
+   * Called by React when props are passed to the Component instance
+   *
+   * @param {object} nextProps
+   */
   componentWillReceiveProps(nextProps) {
     // Any time props.category changes, update state.
     if (nextProps.category) {
-        this.fetchData();
-      }
-   }
+      this.fetchData();
+    }
+  }
 
+  /**
+   * Fetch data
+   * @return {Promise<void>}
+   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -54,6 +70,11 @@ class DocUploadForm extends Component {
       });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error) {
@@ -138,10 +159,13 @@ class DocUploadForm extends Component {
     );
   }
 
-/** *******************************************************************************
- *                      ******     Helper methods     *******
- *********************************************************************************/
+  /** *******************************************************************************
+   *                      ******     Helper methods     *******
+   *********************************************************************************/
 
+  /**
+   * Upload file
+   */
   uploadFile() {
     // Set form data and upload the media file
     let formData = this.state.formData;

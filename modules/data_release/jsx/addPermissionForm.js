@@ -9,6 +9,10 @@ import swal from 'sweetalert2';
  * Module component rendering the add permission form modal window
  */
 class AddPermissionForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -46,15 +50,18 @@ class AddPermissionForm extends Component {
       });
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
   /**
-   * Render the form in the modal window
+   * Render the form in the modal window.
    *
-   * @return {boolean}
+   * @return {JSX} - React markup for the component
    */
   render() {
     // Data loading error

@@ -7,86 +7,127 @@ require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc'
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
 use PHPUnit\Framework\TestCase;
+
+/**
+ * Unit test for NDB_BVL_Instrument_LINST_ToJSON class
+ *
+ * PHP Version 7
+ *
+ * @category Tests
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris
+ */
 class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 {
     /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
+     *
+     * @return void
      */
-    function setUp() {
+    function setUp()
+    {
         global $_SESSION;
-        if(!defined("UNIT_TESTING")) {
+        if (!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMockBuilder(\stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
-        $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')->getMock();
-        $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);
+        $this->Session = $this->getMockBuilder(\stdClass::class)->setMethods(
+            [
+                'getProperty',
+                'setProperty',
+                'getUsername',
+                'isLoggedIn'
+            ]
+        )->getMock();
+        $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
+            ->getMock();
+        $this->Session->method("getProperty")
+            ->willReturn($this->MockSinglePointLogin);
 
-        $_SESSION = array(
+        $_SESSION = [
             'State' => $this->Session
-        );
+        ];
 
         $factory = \NDB_Factory::singleton();
         $factory->setTesting(true);
 
-        $mockdb = $this->getMockBuilder("\Database")->getMock();
+        $mockdb     = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
         $factory->setDatabase($mockdb);
         $factory->setConfig($mockconfig);
         $mockdb->expects($this->any())
-               ->method('pselectOne')
-               ->willReturn('999');
+            ->method('pselectOne')
+            ->willReturn('999');
 
         $this->QuickForm = new \LorisForm(); //$this->getMock("HTML_Quickform");
-        $this->Client = new \NDB_Client;
+        $this->Client    = new \NDB_Client;
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this->getMockBuilder('\Loris\Behavioural\NDB_BVL_Instrument_LINST')
-                        ->disableOriginalConstructor()
-                        ->setMethods(array('getFullName', 'getSessionID'))
-                        ->getMock();
+        $this->i = $this
+            ->getMockBuilder('\Loris\Behavioural\NDB_BVL_Instrument_LINST')
+            ->disableOriginalConstructor()
+            ->setMethods(['getFullName', 'getSessionID'])
+            ->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
-        $this->i->method('getSessionID')->willReturn(new \SessionID(strval("123456")));
-        $this->i->form = $this->QuickForm;
+        $this->i->method('getSessionID')
+            ->willReturn(new \SessionID(strval("123456")));
+        $this->i->form     = $this->QuickForm;
         $this->i->testName = "Test";
     }
 
     /**
      * Helper function to use for creating stubs that stub out everything except
      * the method being tested
+     *
+     * @param $methods [] The methods to exclude
+     *
+     * @return []
      */
-    function _getAllMethodsExcept($methods) {
+    function _getAllMethodsExcept($methods)
+    {
         $AllMethods = get_class_methods('NDB_BVL_Instrument_LINST');
 
         return array_diff($AllMethods, $methods);
     }
 
-    function testMetaData() {
+    /**
+     * Test metadata
+     *
+     * @return void
+     */
+    function testMetaData()
+    {
         $instrument = "table{@}Test\ntitle{@}Test Instrument";
-        $base64 = "data://text/plain;base64," . base64_encode($instrument);
+        $base64     = "data://text/plain;base64," . base64_encode($instrument);
         try {
             $this->i->loadInstrumentFile($base64, true);
         } catch (\NotFound $e) {
             // This can occur when no SessionID exists. It's not important
             // for this test.
         }
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
+        $json         = $this->i->toJSON();
+        $outArray     = json_decode($json, true);
         $ExpectedMeta = [
-            'InstrumentVersion' => "1l",
+            'InstrumentVersion'       => "1l",
             'InstrumentFormatVersion' => "v0.0.1a-dev",
-            "ShortName" => "Test",
-            "LongName" => "Test Instrument",
-            "IncludeMetaDataFields" => "true",
+            "ShortName"               => "Test",
+            "LongName"                => "Test Instrument",
+            "IncludeMetaDataFields"   => "true",
         ];
         $this->assertEquals($ExpectedMeta, $outArray['Meta']);
     }
 
-    function testAllElements() {
-        $instrument = "table{@}Test\n";
+    /**
+     * Test all elements
+     *
+     * @return void
+     */
+    function testAllElements()
+    {
+        $instrument  = "table{@}Test\n";
         $instrument .= "title{@}Test Instrument\n";
         $instrument .= "date{@}Date_taken{@}Date of Administration{@}2006{@}2012\n";
         $instrument .= "static{@}Candidate_Age{@}Candidate Age (Months)\n";
@@ -95,15 +136,25 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $instrument .= "header{@}{@}Header\n";
         $instrument .= "static{@}{@}label\n";
         $instrument .= "text{@}FieldName{@}Field Description\n";
-        $instrument .= "select{@}texbox_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
-        $instrument .= "textarea{@}FieldName{@}Field Description\n";
-        $instrument .= "select{@}textarea_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
-        $instrument .= "select{@}FieldName{@}Field Description{@}NULL=>''{-}'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}'option_3'=>'Option 3'{-}'not_answered'=>'Not Answered'\n";
-        $instrument .= "selectmultiple{@}FieldName{@}Field Description{@}NULL=>''{-}'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}'option_3'=>'Option 3'{-}'option_4'=>'Option 4'{-}'not_answered'=>'Not Answered'\n";
+        $instrument .= "select{@}texbox_status{@}{@}NULL=>''{-}"
+                       . "'not_answered'=>'Not Answered'\n";
+        $instrument .= "textarea{@}FieldName{@}"
+                       . "Field Description\n";
+        $instrument .= "select{@}textarea_status{@}{@}NULL=>''{-}"
+                       . "'not_answered'=>'Not Answered'\n";
+        $instrument .= "select{@}FieldName{@}Field Description{@}NULL=>''{-}"
+                       . "'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}"
+                       . "'option_3'=>'Option 3'{-}'not_answered'=>'Not Answered'\n";
+        $instrument .= "selectmultiple{@}FieldName{@}Field Description{@}NULL=>''{-}"
+                       . "'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}"
+                       . "'option_3'=>'Option 3'{-}'option_4'=>'Option 4'{-}"
+                       . "'not_answered'=>'Not Answered'\n";
         $instrument .= "date{@}FieldName{@}Field Description{@}2003{@}2014\n";
-        $instrument .= "select{@}date_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+        $instrument .= "select{@}date_status{@}{@}NULL=>''{-}"
+                       . "'not_answered'=>'Not Answered'\n";
         $instrument .= "numeric{@}FieldName{@}Field Description{@}0{@}20\n";
-        $instrument .= "select{@}numeric_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'";
+        $instrument .= "select{@}numeric_status{@}{@}NULL=>''{-}"
+                       . "'not_answered'=>'Not Answered'";
 
         $base64 = "data://text/plain;base64," . base64_encode($instrument);
         try {
@@ -112,37 +163,37 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             // This can occur when no SessionID exists. It's not important
             // for this test.
         }
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
-        $instrumentJSON = array(
-            "Meta" => [
-                'InstrumentVersion' => "1l",
+        $json           = $this->i->toJSON();
+        $outArray       = json_decode($json, true);
+        $instrumentJSON = [
+            "Meta"     => [
+                'InstrumentVersion'       => "1l",
                 'InstrumentFormatVersion' => "v0.0.1a-dev",
-                "ShortName" => "Test",
-                "LongName" => "Test Instrument",
-                "IncludeMetaDataFields" => "true",
+                "ShortName"               => "Test",
+                "LongName"                => "Test Instrument",
+                "IncludeMetaDataFields"   => "true",
             ],
             "Elements" => [
                 [
-                  "Type" => "date",
-                  "Name" => "Date_taken",
-                  "Description" => "Date of Administration",
-                  "Options" => [
-                    "MinDate" => "2006-01-01",
-                    "MaxDate" => "2012-12-31"
-                  ]
+                    "Type"        => "date",
+                    "Name"        => "Date_taken",
+                    "Description" => "Date of Administration",
+                    "Options"     => [
+                        "MinDate" => "2006-01-01",
+                        "MaxDate" => "2012-12-31"
+                    ]
                 ],
                 [
-                  "Type" => "select",
-                  "Name" => "Examiner",
-                  "Description" => "Examiner",
-                  "Options" => [
-                    "Values" => [
-                      "" => ""
-                    ],
-                    "AllowMultiple" => false,
-                    "RequireResponse" => false
-                  ]
+                    "Type"        => "select",
+                    "Name"        => "Examiner",
+                    "Description" => "Examiner",
+                    "Options"     => [
+                        "Values"          => [
+                            "" => ""
+                        ],
+                        "AllowMultiple"   => false,
+                        "RequireResponse" => false
+                    ]
                 ],
                 [
                     'Type'        => "header",
@@ -167,34 +218,34 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                     ]
                 ],
                 [
-                    'Type' => "select",
-                    "Name" => "FieldName",
+                    'Type'        => "select",
+                    "Name"        => "FieldName",
                     "Description" => "Field Description",
-                    "Options" => [
-                        "Values" => [
-                           ''=>'',
-                           'option_1'=>'Option 1',
-                           'option_2'=>'Option 2',
-                           'option_3'=>'Option 3'
+                    "Options"     => [
+                        "Values"          => [
+                            ''         =>'',
+                            'option_1' =>'Option 1',
+                            'option_2' =>'Option 2',
+                            'option_3' =>'Option 3'
                         ],
                         "RequireResponse" => true,
-                        "AllowMultiple" => false,
+                        "AllowMultiple"   => false,
                     ],
                 ],
                 [
-                    'Type' => "select",
-                    "Name" => "FieldName",
+                    'Type'        => "select",
+                    "Name"        => "FieldName",
                     "Description" => "Field Description",
-                    "Options" => [
-                        "Values" => [
-                           ''=>'',
-                           'option_1'=>'Option 1',
-                           'option_2'=>'Option 2',
-                           'option_3'=>'Option 3',
-                           'option_4'=>'Option 4'
+                    "Options"     => [
+                        "Values"          => [
+                            ''         =>'',
+                            'option_1' =>'Option 1',
+                            'option_2' =>'Option 2',
+                            'option_3' =>'Option 3',
+                            'option_4' =>'Option 4'
                         ],
                         "RequireResponse" => true,
-                        "AllowMultiple" => true,
+                        "AllowMultiple"   => true,
                     ],
                 ],
                 [
@@ -202,8 +253,8 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                     "Name"        => "FieldName",
                     "Description" => "Field Description",
                     "Options"     => [
-                        "MinDate" => "2003-01-01",
-                        "MaxDate" => "2014-12-31",
+                        "MinDate"         => "2003-01-01",
+                        "MaxDate"         => "2014-12-31",
                         "RequireResponse" => true
                     ]
                 ],
@@ -212,19 +263,25 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                     "Name"        => "FieldName",
                     "Description" => "Field Description",
                     "Options"     => [
-                        "NumberType" => "integer",
-                        "MinValue" => 0,
-                        "MaxValue" => 20,
+                        "NumberType"      => "integer",
+                        "MinValue"        => 0,
+                        "MaxValue"        => 20,
                         "RequireResponse" => true
                     ]
                 ]
             ]
-        );
+        ];
         $this->assertEquals($instrumentJSON, $outArray);
     }
 
-    function testPageElement() {
-        $instrument = "table{@}Test\n";
+    /**
+     * Test page element
+     *
+     * @return void
+     */
+    function testPageElement()
+    {
+        $instrument  = "table{@}Test\n";
         $instrument .= "title{@}Test Instrument\n";
         $instrument .= "date{@}Date_taken{@}Date of Administration{@}2006{@}2012\n";
         $instrument .= "static{@}Candidate_Age{@}Candidate Age (Months)\n";
@@ -241,41 +298,41 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             // This can occur when no SessionID exists. It's not important
             // for this test.
         }
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
-        $ExpectedMeta = $instrumentJSON = array(
-            "Meta" => [
-                'InstrumentVersion' => "1l",
+        $json         = $this->i->toJSON();
+        $outArray     = json_decode($json, true);
+        $ExpectedMeta = $instrumentJSON = [
+            "Meta"     => [
+                'InstrumentVersion'       => "1l",
                 'InstrumentFormatVersion' => "v0.0.1a-dev",
-                "ShortName" => "Test",
-                "LongName" => "Test Instrument",
-                "IncludeMetaDataFields" => "true",
+                "ShortName"               => "Test",
+                "LongName"                => "Test Instrument",
+                "IncludeMetaDataFields"   => "true",
             ],
             "Elements" => [
                 [
-                    'Type' => 'ElementGroup',
-                    'GroupType' => 'Page',
-                    'Elements' => [
+                    'Type'        => 'ElementGroup',
+                    'GroupType'   => 'Page',
+                    'Elements'    => [
                         [
-                          "Type" => "date",
-                          "Name" => "Date_taken",
-                          "Description" => "Date of Administration",
-                          "Options" => [
-                            "MinDate" => "2006-01-01",
-                            "MaxDate" => "2012-12-31"
-                          ]
+                            "Type"        => "date",
+                            "Name"        => "Date_taken",
+                            "Description" => "Date of Administration",
+                            "Options"     => [
+                                "MinDate" => "2006-01-01",
+                                "MaxDate" => "2012-12-31"
+                            ]
                         ],
                         [
-                          "Type" => "select",
-                          "Name" => "Examiner",
-                          "Description" => "Examiner",
-                          "Options" => [
-                            "Values" => [
-                              "" => ""
-                            ],
-                            "AllowMultiple" => false,
-                            "RequireResponse" => false
-                          ]
+                            "Type"        => "select",
+                            "Name"        => "Examiner",
+                            "Description" => "Examiner",
+                            "Options"     => [
+                                "Values"          => [
+                                    "" => ""
+                                ],
+                                "AllowMultiple"   => false,
+                                "RequireResponse" => false
+                            ]
                         ],
                         [
                             'Type'        => "header",
@@ -285,9 +342,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                     'Description' => 'Top'
                 ],
                 [
-                    'Type' => 'ElementGroup',
-                    'GroupType' => 'Page',
-                    'Elements' => [
+                    'Type'        => 'ElementGroup',
+                    'GroupType'   => 'Page',
+                    'Elements'    => [
                         [
                             'Type'        => "header",
                             "Description" => "Page 2"
@@ -296,8 +353,8 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                     'Description' => 'Page 2'
                 ]
             ]
-        );
+        ];
         $this->assertEquals($ExpectedMeta, $outArray);
     }
 }
-?>
+

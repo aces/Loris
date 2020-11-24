@@ -1,7 +1,14 @@
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
 
+/**
+ * View project component
+ */
 class ViewProject extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -23,6 +30,10 @@ class ViewProject extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Handle submit
+   * @param {object} e - Event object
+   */
   handleSubmit(e) {
     e.preventDefault();
 
@@ -71,6 +82,9 @@ class ViewProject extends React.Component {
     });
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
     let self = this;
     $.ajax(this.props.DataURL, {
@@ -130,10 +144,17 @@ class ViewProject extends React.Component {
     });
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Create file download links
+   * @return {JSX} - React markup for the component
+   */
   createFileDownloadLinks() {
     let files = this.state.files;
     let toReturn = [];
@@ -170,6 +191,12 @@ class ViewProject extends React.Component {
     return toReturn;
   }
 
+  /**
+   * Create menu filter links
+   * @param {string[]} stringArr
+   * @param {string} filterVar
+   * @return {JSX} - React markup for the component
+   */
   createMenuFilterLinks(stringArr, filterVar) {
     let links = [];
     stringArr.forEach(
@@ -190,6 +217,10 @@ class ViewProject extends React.Component {
     return links;
   }
 
+  /**
+   * Create static components
+   * @return {JSX} - React markup for the component
+   */
   createStaticComponents() {
     let collaborators;
     let keywords;
@@ -263,6 +294,10 @@ class ViewProject extends React.Component {
    );
   }
 
+  /**
+   * Create editable components
+   * @return {JSX} - React markup for the component
+   */
   createEditableComponents() {
     return (
       <div>
@@ -288,6 +323,12 @@ class ViewProject extends React.Component {
     );
   }
 
+  /**
+   * Add list item
+   * @param {string} formElement
+   * @param {*} value
+   * @param {string} pendingValKey
+   */
   addListItem(formElement, value, pendingValKey) {
     let formData = this.state.formData;
     let listItems = formData[formElement] || [];
@@ -299,6 +340,11 @@ class ViewProject extends React.Component {
     });
   }
 
+  /**
+   * Remove list item
+   * @param {string} formElement
+   * @param {*} value
+   */
   removeListItem(formElement, value) {
     let formData = this.state.formData;
     let listItems = formData[formElement];
@@ -314,6 +360,11 @@ class ViewProject extends React.Component {
     }
   }
 
+  /**
+   * Set form data
+   * @param {*} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -322,6 +373,11 @@ class ViewProject extends React.Component {
     });
   }
 
+  /**
+   * Set file data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
     if (!this.state.formData[formElement]) {
@@ -331,6 +387,11 @@ class ViewProject extends React.Component {
     this.setFormData(formElement, value);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return (

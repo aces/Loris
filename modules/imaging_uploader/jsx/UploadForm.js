@@ -1,18 +1,21 @@
 import ProgressBar from 'ProgressBar';
 import React, {Component} from 'react';
 import swal from 'sweetalert2';
+
 /**
  * Imaging Upload Form
- *
  * Form component allowing to upload MRI images to LORIS
  *
  * @author Alex Ilea
  * @author Victoria Foing
  * @version 1.0.0
  * @since 2017/04/01
- *
  */
 class UploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -31,14 +34,20 @@ class UploadForm extends Component {
     this.uploadFile = this.uploadFile.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     // Disable fields on initial load
     this.onFormChange(this.state.form.IsPhantom.name, null);
   }
 
-  /*
-   Updates values in formData
-   Deletes CandID, PSCID, and VisitLabel values if Phantom Scans is set to No
+  /**
+   * Updates values in formData
+   * Deletes CandID, PSCID, and VisitLabel values if Phantom Scans is set to No
+   *
+   * @param {string} field
+   * @param {*} value
    */
   onFormChange(field, value) {
     if (!field) return;
@@ -85,6 +94,9 @@ class UploadForm extends Component {
     });
   }
 
+  /**
+   * Submit form
+   */
   submitForm() {
     // Validate required fields
     const data = this.state.formData;
@@ -182,13 +194,13 @@ class UploadForm extends Component {
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
         cancelButtonText: 'No, cancel it!',
-      }, function(isConfirm) {
-        if (isConfirm) {
+      }).then((result) => {
+        if (result.value) {
           this.uploadFile(true);
         } else {
           swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
         }
-      }.bind(this));
+      });
     }
 
     // Pipeline has not been triggered yet
@@ -202,21 +214,22 @@ class UploadForm extends Component {
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
         cancelButtonText: 'No, cancel it!',
-      }, function(isConfirm) {
-        if (isConfirm) {
+      }).then((result) => {
+        if (result.value) {
           this.uploadFile(true);
         } else {
           swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
         }
-      }.bind(this));
+      });
     }
 
     return;
   }
 
-  /*
-   Uploads file to the server, listening to the progress
-   in order to get the percentage uploaded as value for the progress bar
+  /**
+   * Uploads file to the server, listening to the progress
+   * in order to get the percentage uploaded as value for the progress bar
+   * @param {boolean} overwriteFile
    */
   uploadFile(overwriteFile) {
     const formData = this.state.formData;
@@ -274,9 +287,8 @@ class UploadForm extends Component {
           title: 'Upload Successful!',
           text: text,
           type: 'success',
-        }, function() {
-          window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
+        window.location.assign(loris.BaseURL + '/imaging_uploader/');
       },
       // Upon errors in upload:
       // - Displays pop up window with submission error message
@@ -332,6 +344,11 @@ class UploadForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Bind form elements to formData
     const form = this.state.form;

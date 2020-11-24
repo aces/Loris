@@ -21,6 +21,7 @@ const resolve = {
   alias: {
     util: path.resolve(__dirname, './htdocs/js/util'),
     jsx: path.resolve(__dirname, './jsx'),
+    jslib: path.resolve(__dirname, './jslib'),
     Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
     DataTable: path.resolve(__dirname, './jsx/DataTable'),
     DynamicDataTable: path.resolve(__dirname, './jsx/DynamicDataTable'),
@@ -199,6 +200,7 @@ const config = [
   lorisModule('battery_manager', ['batteryManagerIndex']),
   lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
   lorisModule('behavioural_qc', ['behavioural_qc_module']),
+  lorisModule('create_timepoint', ['createTimepointIndex']),
   lorisModule('candidate_list', [
     'openProfileForm',
     'onLoad',
@@ -230,12 +232,11 @@ const config = [
     'react.tabs',
   ]),
   lorisModule('dicom_archive', ['dicom_archive']),
-  lorisModule('genomic_browser', ['FileUploadModal']),
+  lorisModule('genomic_browser', ['genomicBrowserIndex']),
   lorisModule('electrophysiology_browser', [
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
   ]),
-  lorisModule('genomic_browser', ['profileColumnFormatter']),
   lorisModule('imaging_browser', [
     'ImagePanel',
     'imagingBrowserIndex',

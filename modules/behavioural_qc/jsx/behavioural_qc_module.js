@@ -1,18 +1,29 @@
 /* global c3 */
 /* exported GraphicsPanel, BehaviouralFeedbackTab, IncompleteCandidatesPanel,
- InstrumentConflictsPanel
- */
+   InstrumentConflictsPanel
+*/
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
 import PaginationLinks from 'jsx/PaginationLinks';
 
+/**
+ * Paged Row Header component
+ */
 class PagedRowHeader extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <thead>
@@ -29,7 +40,14 @@ PagedRowHeader.propType = {
   headerRow: PropTypes.array.isRequired,
 };
 
+/**
+ * Paged Table component
+ */
 class PagedTable extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -42,12 +60,21 @@ class PagedTable extends Component {
     this.handlePageChange = this.handlePageChange.bind(this);
   }
 
+  /**
+   * Called by React when props are passed to the Component instance
+   *
+   * @param {object} nextProps
+   */
   componentWillReceiveProps(nextProps) {
     this.setState({
       currentPage: 1,
     });
   }
 
+  /**
+   * Get page data
+   * @return {object}
+   */
   getPage() {
     let start = this.state.pageSize * (this.state.currentPage - 1);
     let end = start + this.state.pageSize;
@@ -60,6 +87,10 @@ class PagedTable extends Component {
     };
   }
 
+  /**
+   * Get the number of pages
+   * @return {Number}
+   */
   getNumPages() {
     let numPages = Math.floor(
       this.props.tableRows.length / this.state.pageSize
@@ -69,10 +100,20 @@ class PagedTable extends Component {
     }
     return numPages;
   }
+
+  /**
+   * Handle page change callback
+   * @param {Number} pageNum
+   */
   handlePageChange(pageNum) {
     this.setState({currentPage: pageNum});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let tableContents = 'There is no data to display';
     let page = this.getPage();
@@ -119,7 +160,14 @@ PagedTable.propTypes = {
   tableRows: PropTypes.array,
 };
 
+/**
+ * Incomplete Candidates Row component
+ */
 class IncompleteCandidatesRow extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -128,12 +176,21 @@ class IncompleteCandidatesRow extends Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
+  /**
+   * Handle click callback
+   * @param {object} event
+   */
   handleClick(event) {
     event.preventDefault();
     let link = this.refs.incomplete;
     window.open(link, 'Incomplete Candidate');
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let row = this.props.row;
     return (
@@ -174,7 +231,14 @@ IncompleteCandidatesRow.propTypes = {
   BaseURL: PropTypes.string.isRequired,
 };
 
+/**
+ * Instrument Conflicts Row component
+ */
 class InstrumentConflictsRow extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -182,6 +246,11 @@ class InstrumentConflictsRow extends Component {
     };
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let row = this.props.row;
     let baseURL = this.props.BaseURL;
@@ -216,7 +285,14 @@ InstrumentConflictsRow.proptypes = {
   BaseURL: PropTypes.string.isRequired,
 };
 
+/**
+ * Behavioural Feedback Row component
+ */
 class BehaviouralFeedbackRow extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -225,12 +301,21 @@ class BehaviouralFeedbackRow extends Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
+  /**
+   * Handle click callback
+   * @param {object} event
+   */
   handleClick(event) {
     event.preventDefault();
     let link = this.refs.feedback.href;
     window.open(link, 'Behavioural Feedback');
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let row = this.props.row;
     let bvlLink;
@@ -284,7 +369,14 @@ BehaviouralFeedbackRow.propTypes = {
   BaseURL: PropTypes.string.isRequired,
 };
 
+/**
+ * Default Panel component
+ */
 class DefaultPanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -292,6 +384,11 @@ class DefaultPanel extends Component {
     };
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className='panel panel-primary'>
@@ -305,15 +402,28 @@ class DefaultPanel extends Component {
 }
 DefaultPanel.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.string,
+  children: PropTypes.object,
 };
 
+/**
+ * Incomplete Candidates component
+ */
 class IncompleteCandidates extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
     };
   }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // The actual row is passed as a child inside PagedTable
     let row = {};
@@ -337,7 +447,14 @@ IncompleteCandidates.propTypes = {
 };
 
 
+/**
+ * Instrument Conflicts component
+ */
 class InstrumentConflicts extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -345,6 +462,11 @@ class InstrumentConflicts extends Component {
     };
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // The actual row is passed as a child inside PagedTable
     let row = {};
@@ -367,7 +489,15 @@ InstrumentConflicts.propTypes = {
   BaseURL: PropTypes.string,
 };
 
+
+/**
+ * Behavioural Feedback component
+ */
 class BehaviouralFeedback extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -375,6 +505,11 @@ class BehaviouralFeedback extends Component {
     };
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // The actual row is passed as a child inside PagedTable
     let row = {};
@@ -397,7 +532,15 @@ BehaviouralFeedback.propTypes = {
   BaseURL: PropTypes.string,
 };
 
+
+/**
+ * Behavioural QC Graphics component
+ */
 class BehaviouralQCGraphics extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -405,6 +548,9 @@ class BehaviouralQCGraphics extends Component {
     };
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     c3.generate({
       bindto: '#completedChart',
@@ -425,6 +571,12 @@ class BehaviouralQCGraphics extends Component {
       },
     });
   }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let pscidStatus = (
       this.props.pscid ? ('Candidate ' + this.props.pscid) : 'All Candidates'
@@ -468,7 +620,7 @@ class BehaviouralQCGraphics extends Component {
   }
 }
 BehaviouralQCGraphics.propTypes = {
-  percentCompleted: PropTypes.string,
+  percentCompleted: PropTypes.number,
   pscid: PropTypes.string,
   visit: PropTypes.string,
   instrument: PropTypes.string,
@@ -493,4 +645,3 @@ export default {
   IncompleteCandidatesPanel,
   InstrumentConflictsPanel,
 };
-

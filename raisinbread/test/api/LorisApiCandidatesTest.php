@@ -175,7 +175,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         );
         $this->assertSame(
             gettype($candidatesCandidArray['Meta']['Sex']),
-            'array'
+            'string'
         );
         $this->assertSame(
             gettype($candidatesCandidArray['Visits']),
@@ -229,6 +229,59 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         );
         // Verify the status code
         $this->assertEquals(201, $response_new->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_new->getBody();
+        $this->assertNotEmpty($body);
+
+        // Second, try to create a valid new candidate in a site that the
+        // user is not affiliated with. The test user is only afficilated to
+        // Data Coordinating Center
+        $json_new     = [
+            'Candidate' =>
+                [
+                    'Project' => "Rye",
+                    'Site'    => "Montreal",
+                    'EDC'     => "2020-01-03",
+                    'DoB'     => "2020-01-03",
+                    'Sex'     => "Male"
+                ]
+        ];
+        $response_new = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_new
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(403, $response_new->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_new->getBody();
+        $this->assertNotEmpty($body);
+
+        $json_new     = [
+            'Candidate' =>
+                [
+                    'Project' => "",
+                    'Site'    => "Data Coordinating Center",
+                    'EDC'     => "2020-01-03",
+                    'DoB'     => "2020-01-03",
+                    'Sex'     => "Male"
+                ]
+        ];
+        $response_new = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_new
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(400, $response_new->getStatusCode());
         // Verify the endpoint has a body
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
