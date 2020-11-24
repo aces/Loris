@@ -46,8 +46,7 @@ if (isset($_REQUEST['category']) && $_REQUEST['category']) {
 } else if (isset($_REQUEST['keys']) && $_REQUEST['keys']) {
     $keys    = json_decode($_REQUEST['keys']);
     foreach (array_keys($keys) as $index) {
-        $key = explode('%2C', urlencode($keys[$index]));
-
+        $key   = explode('%2C', urlencode($keys[$index]));
         $query = $cdb->queryView(
             "DQG-2.0",
             "datadictionary",
