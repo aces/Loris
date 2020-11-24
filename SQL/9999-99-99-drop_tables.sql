@@ -207,5 +207,6 @@ DROP TABLE IF EXISTS `project_cohort_rel`;
 DROP TABLE IF EXISTS `consent_group`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `cohort`;
-DROP TABLE IF EXISTS `appointment_type`;
+
 DROP TABLE IF EXISTS `appointment`;
+DROP TABLE IF EXISTS `appointment_type`;
