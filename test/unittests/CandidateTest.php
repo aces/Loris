@@ -605,12 +605,12 @@ class CandidateTest extends TestCase
      */
     public function testGetSubprojectForMostRecentVisitReturnsMostRecentVisitLabel()
     {
-        $subproject = array(
-            array(
+        $subproject = [
+            [
                 'SubprojectID' => 1,
-                'title'        => 'testSubproject' 
-            )
-        );
+                'title'        => 'testSubproject'
+            ]
+        ];
 
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -619,17 +619,17 @@ class CandidateTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                   "SELECT SubprojectID, title"
+                    "SELECT SubprojectID, title"
                 )
             )
             ->willReturn(
                 $subproject
             );
 
-        $expectedSubproject = array(
+        $expectedSubproject = [
             'SubprojectID' => 1,
             'title'        => 'testSubproject'
-        );
+        ];
 
         $this->assertEquals(
             $expectedSubproject,
@@ -638,27 +638,31 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test getSubprojectForMostRecentVisit returns null if there is no visit with a Date_visit
+     * Test getSubprojectForMostRecentVisit returns null if there is
+     * no visit with a Date_visit
      *
      * @covers Candidate::getSubprojectForMostRecentVisit
      * @return void
      */
     public function testGetSubprojectForMostRecentVisitReturnsNull()
     {
-        $subproject = array();
+        $subproject = [];
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
-        
+
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                   "SELECT SubprojectID, title"
+                    "SELECT SubprojectID, title"
                 )
             )
             ->willReturn($subproject);
 
-        $this->assertEquals(null, $this->_candidate->getSubprojectForMostRecentVisit());
+        $this->assertEquals(
+            null,
+            $this->_candidate->getSubprojectForMostRecentVisit()
+        );
     }
 
     /**
