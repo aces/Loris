@@ -41,7 +41,7 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
             $content = $this->webDriver->findElement(
                 WebDriverBy::id("lorisworkspace")
             );
-            $this->fail('Can`t find select element. Found: ' . $content);
+            $this->fail('Can`t find select element. Found: ' . $content->ToString());
         }
         $this->assertNotEmpty($selectOptions);
     }
