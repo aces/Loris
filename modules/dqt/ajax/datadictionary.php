@@ -45,7 +45,6 @@ if (isset($_REQUEST['category']) && $_REQUEST['category']) {
     );
 } else if (isset($_REQUEST['keys']) && $_REQUEST['keys']) {
     $keys    = json_decode($_REQUEST['keys']);
-    $results = [];
     foreach (array_keys($keys) as $index) {
         $key = explode('%2C', urlencode($keys[$index]));
 
