@@ -44,7 +44,7 @@ foreach($flagData as $cmid => $data) {
         }
     } else {
         // Otherwise, take value from instrument table
-        $instrData = NDB_BVL_Instrument::loadInstanceData($instrument);
+        $instrData = $instrument->getInstanceData();
 
         if (isset($instrData['Data_entry_completion_status'])) {
             $dataToUpdate['Data_entry_completion_status']
