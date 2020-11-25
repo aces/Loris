@@ -349,7 +349,7 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN participant_status_options pso 
                                     ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
@@ -382,7 +382,7 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN participant_status_options pso 
                                       ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
