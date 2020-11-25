@@ -1116,7 +1116,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Test_name'                    => 'Test_name1',
                 'CommentID'                    => 'commentID1',
                 'Data_entry'                   => '',
-                'Data_entry_completion_status' => 'Incomplete',
                 'Administration'               => '',
                 'Validity'                     => '',
                 'Exclusion'                    => '',
@@ -1870,18 +1869,16 @@ class NDB_BVL_Instrument_Test extends TestCase
             "medical_history",
             [
                 [
-                    'CommentID' => 'commentID1',
-                    'UserID' => '456',
-                    'Examiner' => 'Test Examiner1',
-                    'Date_taken' => '2010-05-05 00:00:01',
-                    'Data_entry_completion_status' => 'Incomplete',
+                    'CommentID'                    => 'commentID1',
+                    'UserID'                       => '456',
+                    'Examiner'                     => 'Test Examiner1',
+                    'Date_taken'                   => '2010-05-05 00:00:01'
                 ],
                 [
-                    'CommentID' => 'commentID2',
-                    'UserID' => '457',
-                    'Examiner' => 'Test Examiner2',
-                    'Date_taken' => '2010-05-05 00:00:01',
-                    'Data_entry_completion_status' => 'Incomplete',
+                    'CommentID'                    => 'commentID2',
+                    'UserID'                       => '457',
+                    'Examiner'                     => 'Test Examiner2',
+                    'Date_taken'                   => '2010-05-05 00:00:01'
                 ],
             ]
         );
