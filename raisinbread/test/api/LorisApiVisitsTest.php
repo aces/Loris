@@ -217,10 +217,10 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // the user has access to visitTest (which we deleted
         // above to test the permission denied.) or this
         // test will return a 403 instead of a 400.
-        $this->DB->insert("user_psc_rel"
+        $this->DB->insert("user_psc_rel",
             [
-            'UserID' => '999990',
-            'CenterID' => '2'
+                'UserID' => '999990',
+                'CenterID' => '2'
             ]
         );
         // Test what happen when a field is missing (here, Battery)
