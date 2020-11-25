@@ -129,13 +129,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
             ]
         );
 
-        $this->DB->insert(
-            'user_project_rel',
-            [
-                'ProjectID' => '1',
-                'UserID' => '999990',
-            ],
-        );
+        // 1 is inserted by LorisIntegrationTest
         $this->DB->insert(
             'user_project_rel',
             [
@@ -144,6 +138,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
             ],
         );
 
+        // 1 is inserted by LorisIntegrationTest
         $this->DB->insert(
             'user_psc_rel',
             [
@@ -222,16 +217,33 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      */
     public function tearDown()
     {
+        // Only delete the ones we setup in setUp.
         $this->DB->delete(
             "user_project_rel",
             [
                 "UserID" => '999990',
+                "ProjectID" => '2',
             ],
         );
         $this->DB->delete(
             "user_psc_rel",
             [
                 "UserID" => '999990',
+                "CenterID" => '2',
+            ],
+        );
+        $this->DB->delete(
+            "user_psc_rel",
+            [
+                "UserID" => '999990',
+                "CenterID" => '3',
+            ],
+        );
+        $this->DB->delete(
+            "user_psc_rel",
+            [
+                "UserID" => '999990',
+                "CenterID" => '4',
             ],
         );
 
