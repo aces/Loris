@@ -213,6 +213,16 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        // The visit has CenterID 2, we need to ensure that
+        // the user has access to visitTest (which we deleted
+        // above to test the permission denied.) or this
+        // test will return a 403 instead of a 400.
+        $this->DB->insert("user_psc_rel"
+            [
+            'UserID' => '999990',
+            'CenterID' => '2'
+            ]
+        );
         // Test what happen when a field is missing (here, Battery)
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $this->visitTest,
