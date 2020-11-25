@@ -1111,18 +1111,18 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $defaults,
             [
-                'ID'                           => '1000',
-                'SessionID'                    => '123',
-                'Test_name'                    => 'Test_name1',
-                'CommentID'                    => 'commentID1',
-                'Data_entry'                   => '',
-                'Administration'               => '',
-                'Validity'                     => '',
-                'Exclusion'                    => '',
-                'Flag_status'                  => '',
-                'UserID'                       => '456',
-                'Testdate'                     => '2020-01-01 00:00:00',
-                'Data'                         => null
+                'ID'             => '1000',
+                'SessionID'      => '123',
+                'Test_name'      => 'Test_name1',
+                'CommentID'      => 'commentID1',
+                'Data_entry'     => '',
+                'Administration' => '',
+                'Validity'       => '',
+                'Exclusion'      => '',
+                'Flag_status'    => '',
+                'UserID'         => '456',
+                'Testdate'       => '2020-01-01 00:00:00',
+                'Data'           => null
             ]
         );
     }
@@ -1869,16 +1869,16 @@ class NDB_BVL_Instrument_Test extends TestCase
             "medical_history",
             [
                 [
-                    'CommentID'                    => 'commentID1',
-                    'UserID'                       => '456',
-                    'Examiner'                     => 'Test Examiner1',
-                    'Date_taken'                   => '2010-05-05 00:00:01'
+                    'CommentID'  => 'commentID1',
+                    'UserID'     => '456',
+                    'Examiner'   => 'Test Examiner1',
+                    'Date_taken' => '2010-05-05 00:00:01'
                 ],
                 [
-                    'CommentID'                    => 'commentID2',
-                    'UserID'                       => '457',
-                    'Examiner'                     => 'Test Examiner2',
-                    'Date_taken'                   => '2010-05-05 00:00:01'
+                    'CommentID'  => 'commentID2',
+                    'UserID'     => '457',
+                    'Examiner'   => 'Test Examiner2',
+                    'Date_taken' => '2010-05-05 00:00:01'
                 ],
             ]
         );
