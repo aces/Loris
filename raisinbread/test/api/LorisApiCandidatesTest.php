@@ -233,6 +233,10 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
 
+        // Erase sites that were setup in LorisApiAuthenticatedTest
+        // setup for data access in other tests.
+        $this->resetStudySite();
+
         // Second, try to create a valid new candidate in a site that the
         // user is not affiliated with. The test user is only afficilated to
         // Data Coordinating Center
