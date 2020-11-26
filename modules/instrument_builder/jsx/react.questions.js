@@ -828,11 +828,10 @@ class AddElement extends Component {
     super(props);
     if (this.props !== undefined && this.props.element) {
       // Editing an element, set to elements state
-      // let element = JSON.parse(JSON.stringify(this.props.element));
       this.state = {
         Options: Instrument.clone(this.props.element.Options === undefined ?
-           {} :
-           this.props.element.Options
+          {} :
+          this.props.element.Options
         ),
         Description: Instrument.clone(
           this.props.element.Description === undefined ?
@@ -1040,6 +1039,7 @@ class AddElement extends Component {
       default:
         break;
     }
+
     // Remove all error flags
     delete this.state.error;
     let element = {
