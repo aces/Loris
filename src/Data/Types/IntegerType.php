@@ -9,18 +9,6 @@ namespace LORIS\Data\Types;
  */
 class IntegerType implements \LORIS\Data\Type
 {
-    private $size;
-
-    /**
-     * Construct an IntegerType
-     *
-     * @param ?int $maxsize The largest value that the integer may be
-     */
-    public function __construct(?int $maxsize = null)
-    {
-        $this->size = $maxsize;
-    }
-
     /**
      * Convert the type to a human readable string
      *
