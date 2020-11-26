@@ -10,13 +10,6 @@ namespace LORIS\Data\Types;
 class DecimalType implements \LORIS\Data\Type
 {
     /**
-     * Construct a DecimalType
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Convert the type to a human readable string
      *
      * @return string

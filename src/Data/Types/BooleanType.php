@@ -9,13 +9,6 @@ namespace LORIS\Data\Types;
 class BooleanType implements \LORIS\Data\Type
 {
     /**
-     * Construct a BooleanType object
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Convert this data type to a string.
      *
      * @return string
