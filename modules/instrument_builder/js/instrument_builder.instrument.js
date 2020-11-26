@@ -117,24 +117,25 @@ var Instrument = {
                         content += "select{@}" + element.Name + "_status" +
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
                         break;
-                    case "date":
+                    case "date" : case 'basicdate' : case 'monthyear':
                         var elName = element.Name.replace(/\s/g, "").toLowerCase();
-                        var dropdown = "";
-
                         // Add dropdown and special naming when no date format is set
                         // (i.e when addDateElement() is used)
-                        if (element.Options.dateFormat === "") {
-                            elName = elName + "_date";
-                            dropdown = "select{@}" + elName + "_status" +
-                            "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+                      if (!element.Options.dateFormat) {
+                          // Makes the date be the default 'Date' if undefined.
+                          let dateFormat = 'Date';
+                          if (element.Type === 'basicdate') {
+                              dateFormat = 'BasicDate';
+                          } else if (element.Type === 'monthyear') {
+                              dateFormat = 'MonthYear';
+                          }
+                          element.Options.dateFormat = dateFormat;
                         }
-
                         content += 'date{@}';
                         content += elName + "{@}" + element.Description;
                         content += "{@}" + element.Options.MinDate.split('-')[0];
                         content += "{@}" + element.Options.MaxDate.split('-')[0];
                         content += "{@}" + element.Options.dateFormat + "\n";
-                        content += dropdown;
                         break;
                     case "numeric":
                         content += 'numeric{@}';
@@ -249,12 +250,13 @@ var Instrument = {
                             };
                             break;
                         case "date":
-                            tempElement.Type = 'date';
+                            tempElement.Type = pieces[5].toLowerCase();
                             tempElement.Name = pieces[1];
                             tempElement.Description = pieces[2];
                             tempElement.Options = {
                                 MinDate : pieces[3] + "-01-01",
-                                MaxDate : pieces[4] + "-12-31"
+                                MaxDate : pieces[4] + "-12-31",
+                                dateFormat: pieces[5],
                             };
                             tempElement.selected = {
                                 id: "date",

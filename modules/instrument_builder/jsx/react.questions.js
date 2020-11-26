@@ -70,7 +70,7 @@ class LorisElement extends Component {
                                        options={element.Options.Values}/>;
         }
         break;
-      case 'date':
+      case 'date': case 'basicdate': case 'monthyear':
         elementHtml = <DateElement
           label={element.Description}
           minYear={element.Options.MinDate}
@@ -395,13 +395,6 @@ class DateOptions extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    this.props.element.Options.dateFormat = '';
-  }
-
-  /**
    * On change
    * Keep track of the inputed years
    * @param {object} e - Event object
@@ -426,6 +419,13 @@ class DateOptions extends Component {
   render() {
     let minYear = this.props.element.Options.MinDate;
     let maxYear = this.props.element.Options.MaxDate;
+    let dateFormat = this.props.element.Options.dateFormat;
+    if (minYear && minYear.length > 4) {
+      minYear = minYear.substr(0, 4);
+    }
+    if (maxYear && maxYear.length > 4) {
+      maxYear = maxYear.substr(0, 4);
+    }
 
     let dateOptionsClass = 'options form-group';
     let errorMessage = '';
@@ -481,7 +481,9 @@ class DateOptions extends Component {
             <select
               id="dateFormat"
               className="form-control"
-              onChange={this.onChange}>
+              onChange={this.onChange}
+              defaultValue={dateFormat}
+            >
               {Object.keys(dateFormatOptions).map(function(option, key) {
                 return (
                   <option key={key} value={option}>
@@ -826,11 +828,11 @@ class AddElement extends Component {
     super(props);
     if (this.props !== undefined && this.props.element) {
       // Editing an element, set to elements state
+      let element = JSON.parse(JSON.stringify(this.props.element));
       this.state = {
-        Options: Instrument.clone(this.props.element.Options === undefined ?
+        Options: element.Options === undefined ?
           {} :
-          this.props.element.Options
-        ),
+          element.Options,
         Description: Instrument.clone(
           this.props.element.Description === undefined ?
           {} :
@@ -1037,7 +1039,6 @@ class AddElement extends Component {
       default:
         break;
     }
-
     // Remove all error flags
     delete this.state.error;
     let element = {
