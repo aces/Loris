@@ -1111,18 +1111,19 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $defaults,
             [
-                'ID'             => '1000',
-                'SessionID'      => '123',
-                'Test_name'      => 'Test_name1',
-                'CommentID'      => 'commentID1',
-                'Data_entry'     => '',
-                'Administration' => '',
-                'Validity'       => '',
-                'Exclusion'      => '',
-                'Flag_status'    => '',
-                'UserID'         => '456',
-                'Testdate'       => '2020-01-01 00:00:00',
-                'Data'           => null
+                'ID'                           => '1000',
+                'SessionID'                    => '123',
+                'Test_name'                    => 'Test_name1',
+                'CommentID'                    => 'commentID1',
+                'Data_entry'                   => '',
+                'Data_entry_completion_status' => 'Incomplete',
+                'Administration'               => '',
+                'Validity'                     => '',
+                'Exclusion'                    => null,
+                'Flag_status'                  => null,
+                'UserID'                       => '456',
+                'Testdate'                     => '2020-01-01 00:00:00',
+                'Data'                         => null
             ]
         );
     }
