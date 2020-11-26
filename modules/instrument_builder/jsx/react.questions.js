@@ -828,11 +828,12 @@ class AddElement extends Component {
     super(props);
     if (this.props !== undefined && this.props.element) {
       // Editing an element, set to elements state
-      let element = JSON.parse(JSON.stringify(this.props.element));
+      // let element = JSON.parse(JSON.stringify(this.props.element));
       this.state = {
-        Options: element.Options === undefined ?
-          {} :
-          element.Options,
+        Options: Instrument.clone(this.props.element.Options === undefined ?
+           {} :
+           this.props.element.Options
+        ),
         Description: Instrument.clone(
           this.props.element.Description === undefined ?
           {} :
