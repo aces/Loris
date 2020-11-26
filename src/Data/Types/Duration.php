@@ -6,7 +6,7 @@ namespace LORIS\Data\Types;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class Duration extends DecimalType implements \LORIS\Data\Type
+class Duration implements \LORIS\Data\Type
 {
     /**
      * Convert the type to a human readable string
@@ -14,6 +14,16 @@ class Duration extends DecimalType implements \LORIS\Data\Type
     public function __toString()
     {
         return "duration";
+    }
+
+    /**
+     * Serialize the type by converting to JSON
+     *
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return $this->__toString();
     }
 
     /**
