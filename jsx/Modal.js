@@ -132,11 +132,13 @@ class Modal extends Component {
 
     const submitButton = () => {
       if (onSubmit) {
+        const submit = () => onSubmit().then(() => this.props.onClose())
+        .catch(() => {});
         return (
           <div style={submitStyle}>
             <ButtonElement
               label="Submit"
-              onUserInput={() => onSubmit().then(() => this.props.onClose())}
+              onUserInput={submit}
             />
           </div>
         );
@@ -169,7 +171,7 @@ class Modal extends Component {
 
 Modal.propTypes = {
   title: PropTypes.string,
-  onSubmit: PropTypes.object,
+  onSubmit: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
   throwWarning: PropTypes.bool,
