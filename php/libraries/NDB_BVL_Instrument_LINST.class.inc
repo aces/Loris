@@ -461,8 +461,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     $firstFieldOfPage = true;
                     break;
-                case 'table':
+                case 'test':
                     $this->testName = trim($pieces[1]);
+                    break;
+                case 'table':
+                    // The line below offers backwards compatibility to LINST
+                    // files that don't define a test name
+                    $this->testName = $this->testName ?? trim($pieces[1]);
                     $this->table    = trim($pieces[1]);
                     break;
                 case 'title':

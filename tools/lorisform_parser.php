@@ -72,7 +72,7 @@ foreach ($files AS $file) {
     }
 
     if (is_array($obj->getFullName())) {
-        echo "Could not find row for $matches[1] in table test_names, 
+        echo "Could not find row for $matches[1] in table test_names,
         please populate test_names, instrument_subtests\n";
         continue;
     }
@@ -85,6 +85,7 @@ foreach ($files AS $file) {
 
     echo "Parsing instrument object...\n";
 
+    $output .="test{@}".$obj->testName."\n";
     $output .="table{@}".$obj->table."\n";
 
     $output .="title{@}".$obj->getFullName()."\n";
