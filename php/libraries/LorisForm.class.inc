@@ -1315,7 +1315,8 @@ class LorisForm
         foreach ($this->formRules as $rule) {
             if (is_callable($rule)) {
                 $violations = call_user_func($rule, $values);
-                if (!empty($violations)) {
+
+                if (is_array($violations) && !empty($violations)) {
                     foreach ($violations as $element => $msg) {
                         $this->setElementError($element, $msg);
                         $errors[$element] = "custom fail";
