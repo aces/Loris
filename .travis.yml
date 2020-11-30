@@ -16,6 +16,7 @@ install:
 - sudo apt-get install -y libapparmor1
 - pecl install -f ast-1.0.3
 - sudo apt-get install npm
+- composer self-update 1.10.17
 - make dev
 
 before_script:
