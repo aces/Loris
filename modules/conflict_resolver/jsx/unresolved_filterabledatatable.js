@@ -4,7 +4,7 @@ import FilterableDataTable from 'FilterableDataTable';
 import FixConflictForm from './fix_conflict_form';
 
 /**
- * Filterable datatabse fro unresolved conflicts.
+ * Filterable database for unresolved conflicts.
  */
 class UnresolvedFilterableDataTable extends Component {
   /**
