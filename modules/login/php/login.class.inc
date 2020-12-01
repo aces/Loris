@@ -57,6 +57,9 @@ class Login extends \NDB_Page
 
         $this->tpl_data['study_title'] = $config->getSetting('title');
 
+        $factory = \NDB_Factory::singleton();
+        $this->tpl_data['baseurl'] = $factory->settings()->getBaseURL();
+
         try {
             $this->tpl_data['study_logo'] = $config->getSetting('studylogo');
         } catch(\ConfigurationException $e) {

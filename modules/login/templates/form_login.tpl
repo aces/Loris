@@ -11,13 +11,13 @@
               <img src="{$baseurl}/{$study_logo}" alt="{$study_title}"/>
             </section>
           {/if}
-          <form method="POST" action="{$action}">
+          <form method="POST" action="">
             <div class="form-group">
-              <input type="text" name="username" class="form-control" placeholder="Username" value="{$username}"/>
+              <input type="text" name="username" class="form-control" placeholder="Username" value=""/>
             </div>
             <div class="form-group">
               <input type="password" name="password" class="form-control" placeholder="Password" aria-describedby="helpBlock" />
-              {if $error_message}
+              {if isset($error_message)}
                 <span id="helpBlock" class="help-block">
                     <b class="text-danger">{$error_message}</b>
                 </span>

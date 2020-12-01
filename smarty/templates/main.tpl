@@ -90,7 +90,7 @@
                             <span class="sr-only">Toggle navigation</span>
                             <img width=17 src="{$baseurl}/images/help.gif">
                         </button>
-                       {if $bvl_feedback}
+                       {if isset($bvl_feedback)}
                        <button type="button" class="navbar-toggle">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="glyphicon glyphicon-edit" style="color:white"></span>
@@ -99,7 +99,7 @@
 
 
                        <!-- toggle sidebar in mobile view -->
-                        {if $control_panel}
+                        {if isset($control_panel)}
                             <a id="menu-toggle" href="#" class="navbar-brand">
                                 <span class="glyphicon glyphicon-th-list"></span>
                             </a>
@@ -124,7 +124,7 @@
                             {/foreach}
                         </ul>
                         <ul class="nav navbar-nav navbar-right" id="nav-right">
-                            {if $bvl_feedback}
+                            {if isset($bvl_feedback)}
                             <li class="hidden-xs hidden-sm">
                                 <a href="#" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
                                     <span class="glyphicon glyphicon-edit"></span>
@@ -170,14 +170,14 @@
             </nav>
         {/if}
         <div id="page" class="container-fluid">
-		{if $control_panel or $feedback_panel}
-			{if $control_panel}
+		{if isset($control_panel) or isset($feedback_panel)}
+			{if isset($control_panel)}
 				<div id = "page_wrapper_sidebar" class ="wrapper">
 			{/if}
 		    <div id="bvl_panel_wrapper">
                 <!-- Sidebar -->
                             {$feedback_panel}
-			    {if $control_panel}
+			    {if isset($control_panel)}
                     <div id="sidebar-wrapper" class="sidebar-div">
                        <div id="sidebar-content">
                             {$control_panel}
@@ -216,7 +216,7 @@
                     <div id="breadcrumbs"></div>
                 {/if}
                         <div>
-                            {if $error_message != ""}
+                            {if isset($error_message) && $error_message != ""}
                                 <p>
                                     The following errors occurred while attempting to display this page:
                                     <ul>
@@ -258,12 +258,12 @@
 
 	</div>
 
-        {if $control_panel or $feedback_panel}
+        {if isset($control_panel) or isset($feedback_panel)}
         </div></div>
         {/if}
 
         {if $dynamictabs neq "dynamictabs"}
-            {if $control_panel}
+            {if isset($control_panel)}
             <div id="footer" class="footer navbar-bottom wrapper">
             {else}
             <div id="footer" class="footer navbar-bottom">
