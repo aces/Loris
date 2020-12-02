@@ -30,7 +30,7 @@ Deploy and log in with username *admin* and the password that's set up during de
 
  * Apache **2.4** or higher
  * MySQL >= 5.7 (or MariaDB >= 10.3) 
- * PHP <b>7.3</b> or higher
+ * PHP <b>7.4</b> is required
  * [Composer](https://getcomposer.org/) <b>1.x</b>
  * NodeJS <b>8.0</b> or higher
  * NPM
