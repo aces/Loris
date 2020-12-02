@@ -484,7 +484,7 @@ class NDB_Page implements RequestHandlerInterface
     function createSelect(
         $field,
         $label,
-        $options=null,
+        $options=[],
         $attribs=['class' => 'form-control input-sm']
     ) {
         return $this->form->createElement(
@@ -605,13 +605,13 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this radio button
      * @param string $label   The label to attach to this radio button
-     * @param string $options Options to pass to LorisForm
+     * @param array  $options Options to pass to LorisForm
      * @param array  $attribs An array of extra HTML attributes to
      *                        add to the element.
      *
      * @return array representing radio button
      */
-    function createRadio($field, $label, $options=null, $attribs=null)
+    function createRadio($field, $label, $options=[], $attribs=[])
     {
         return $this->form->createElement(
             "radio",
