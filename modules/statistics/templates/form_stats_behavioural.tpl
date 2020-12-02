@@ -1,6 +1,6 @@
 <div id="data_entry">
     <h2 class="statsH2">Data Entry Statistics  {if $CurrentProject|default} for {$CurrentProject.Name|default} {/if}</h2>
-    <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_behavioural.js"></script>
+    <script type="text/javascript" src="{$baseurl|default}/statistics/js/form_stats_behavioural.js"></script>
         <div class="col-sm-2">
             {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$CurrentProject.ID|default class="form-control"}
         </div>
