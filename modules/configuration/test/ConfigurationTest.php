@@ -81,7 +81,10 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertNotContains("You do not have access to this page.", $bodyText);
+         $this->assertStringNotContainsString(
+             "You do not have access to this page.",
+             $bodyText
+         );
          $this->resetPermissions();
     }
     /**
@@ -96,7 +99,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->assertStringContainsString("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
     /**
@@ -110,7 +113,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertContains("SubprojectID", $bodyText);
+         $this->assertStringContainsString("SubprojectID", $bodyText);
     }
     /**
      * Tests that subproject navigate back to config page
@@ -127,7 +130,7 @@ class ConfigurationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             "To configure study subprojects click here.",
             $bodyText
         );
@@ -168,7 +171,7 @@ class ConfigurationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector(".active")
         );
         $bodyText   = $webActives[1]->getText();
-        $this->assertContains($text, $bodyText);
+        $this->assertStringContainsString($text, $bodyText);
     }
 
     /**
@@ -200,7 +203,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "To configure study projects click here.",
             $bodyText
         );

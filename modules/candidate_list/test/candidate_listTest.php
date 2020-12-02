@@ -87,7 +87,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );

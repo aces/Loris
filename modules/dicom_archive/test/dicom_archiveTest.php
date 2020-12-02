@@ -84,11 +84,11 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
         );

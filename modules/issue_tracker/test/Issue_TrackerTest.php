@@ -156,7 +156,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
          //$bodyText =$this->webDriver->findElement(
          //    WebDriverBy::Name("keyword")
          //)->getText();
-         //$this->assertNotContains("TestTestTest", $bodyText);
+         //$this->assertStringNotContainsString("TestTestTest", $bodyText);
     }
 }
 

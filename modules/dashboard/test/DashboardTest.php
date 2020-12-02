@@ -640,7 +640,7 @@ class DashboardTest extends LorisIntegrationTest
                     "//*[@id='lorisworkspace']/div/div[1]/div[2]"
                 )
             )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "There have been no candidates registered yet.",
             $testText
         );
@@ -667,7 +667,7 @@ class DashboardTest extends LorisIntegrationTest
             $testText
         );
 
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "There have been no candidates registered yet.",
             $testText
         );

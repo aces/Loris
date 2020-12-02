@@ -1822,7 +1822,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->setup("commentID1", "page");
         $this->_instrument->table = 'medical_history';
-        $this->assertContains(
+        $this->assertStringContainsString(
             "<input  name=\"candID\" value=\"\" type=\"hidden\">\n",
             $this->_instrument->display()
         );

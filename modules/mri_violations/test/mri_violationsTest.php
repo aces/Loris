@@ -364,7 +364,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -384,7 +384,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
