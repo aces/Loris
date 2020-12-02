@@ -61,11 +61,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertStringContainsString(
-             "You do not have access to this page.",
-             $bodyText
-         );
-         $this->resetPermissions();
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
     }
     /**
      * Tests that, when loading the genomic_browser module, the
@@ -86,11 +86,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertStringNotContainsString(
-             "You do not have access to this page.",
-             $bodyText
-         );
-         $this->resetPermissions();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
     }
     /**
      * Tests that, when loading the genomic_browser module, the each Tab should

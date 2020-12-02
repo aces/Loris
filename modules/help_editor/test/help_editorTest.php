@@ -101,16 +101,16 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorPermission()
     {
-         $this->setupPermissions(["context_help"]);
-         $this->safeGet($this->url . "/help_editor/");
+        $this->setupPermissions(["context_help"]);
+        $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertStringNotContainsString(
-             "You do not have access to this page.",
-             $bodyText
-         );
-         $this->resetPermissions();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
     }
     /**
      * Tests that help editor does not load with the permission
@@ -119,16 +119,16 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorWithoutPermission()
     {
-         $this->setupPermissions([]);
-         $this->safeGet($this->url . "/help_editor/");
+        $this->setupPermissions([]);
+        $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertStringContainsString(
-             "You do not have access to this page.",
-             $bodyText
-         );
-         $this->resetPermissions();
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
     }
     /**
      * Tests that help editor does not load with the permission

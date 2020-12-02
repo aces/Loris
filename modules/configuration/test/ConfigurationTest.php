@@ -76,16 +76,16 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testConfigPermission()
     {
-         $this->setupPermissions(["config"]);
-         $this->safeGet($this->url . "/configuration/");
+        $this->setupPermissions(["config"]);
+        $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertStringNotContainsString(
-             "You do not have access to this page.",
-             $bodyText
-         );
-         $this->resetPermissions();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
     }
     /**
      * Tests that configuration can not load without the permission
@@ -99,7 +99,10 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertStringContainsString("You do not have access to this page.", $bodyText);
+         $this->assertStringContainsString(
+             "You do not have access to this page.",
+             $bodyText
+         );
          $this->resetPermissions();
     }
     /**

@@ -551,6 +551,9 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             "/electrophysiology_browser",
             $this->webDriver->getCurrentURL()
         );
-        $this->assertStringNotContainsString("sessions", $this->webDriver->getCurrentURL());
+        $this->assertStringNotContainsString(
+            "sessions",
+            $this->webDriver->getCurrentURL()
+        );
     }
 }
