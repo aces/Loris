@@ -456,8 +456,8 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $name      The name to give this group
      * @param string $label     A label to attach to the group
      * @param string $delimiter The separator to use between group elements
-     * @param string $options   An optional array to include prefix_wrapper and
-     *                          postfix_wrapper strings - html that will be
+     * @param array  $options   An optional array to include prefix_wrapper
+     *                          and postfix_wrapper strings - html that will be
      *                          placed before and after the group html
      *
      * @return void
@@ -466,7 +466,7 @@ class NDB_Page implements RequestHandlerInterface
      *       the parameters of LorisForm::addGroup and make their purposes
      *       more clear - Alexandra Livadas
      */
-    function addGroup($elements, $name, $label, $delimiter, $options=null)
+    function addGroup($elements, $name, $label, $delimiter, $options=[])
     {
         $this->form->addGroup($elements, $name, $label, $delimiter, $options);
     }
