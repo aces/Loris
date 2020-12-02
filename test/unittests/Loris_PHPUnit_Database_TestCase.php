@@ -60,7 +60,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      * @throws Exception
      * @return void
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->factory = NDB_Factory::singleton();
 

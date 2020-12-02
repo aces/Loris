@@ -33,7 +33,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp() : void
     {
         $this->form = new LorisForm();
     }
