@@ -49,7 +49,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp() : void
     {
         parent::setUp();
         $this->setUpConfigSetting("useProjects", "true");
@@ -60,7 +60,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function tearDown()
+    function tearDown() : void
     {
         parent::tearDown();
         $this->restoreConfigSetting("useProjects");

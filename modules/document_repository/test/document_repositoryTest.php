@@ -37,7 +37,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
     }
@@ -46,7 +46,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown() : void
     {
         parent::tearDown();
     }

@@ -34,7 +34,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp() : void
     {
         parent::setUp();
         //Insert a pending user
@@ -229,7 +229,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown() : void
     {
         $this->DB->run('SET foreign_key_checks =0');
         $this->DB->delete(
