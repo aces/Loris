@@ -99,10 +99,10 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertStringContainsString(
-             "You do not have access to this page.",
-             $bodyText
-         );
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
     /**
