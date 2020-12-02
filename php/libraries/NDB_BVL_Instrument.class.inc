@@ -2173,8 +2173,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Loads multiple instruments representing multiple commentIDs from the
      * database in bulk. This function must be called on an instrument instantiated
      * as \NDB_BVL_Instrument::factory('instrumentname') without a comment ID, and
-     * will return an array of copies of the instrument type with the data for the given
-     * commentIDs loaded.
+     * will return an array of copies of the instrument type with the data for
+     * the given commentIDs loaded.
      *
      * @param $commentIDs string[] A list of commentIDs to load in bulk.
      *
