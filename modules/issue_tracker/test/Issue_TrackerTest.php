@@ -91,7 +91,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Issue Tracker", $bodyText);
+        $this->assertStringContainsString("Issue Tracker", $bodyText);
     }
 
     /**
@@ -106,7 +106,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Issue Tracker", $bodyText);
+        $this->assertStringContainsString("Issue Tracker", $bodyText);
         $this->resetPermissions();
     }
 
@@ -136,7 +136,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "/issue_tracker/?format=json");
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains($value, $bodyText);
+        $this->assertStringContainsString($value, $bodyText);
 
     }
     /**

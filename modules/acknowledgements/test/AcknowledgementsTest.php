@@ -186,7 +186,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#swal2-title")
         )->getText();
-        $this->assertContains("Success!", $bodyText);
+        $this->assertStringContainsString("Success!", $bodyText);
     }
 }
 

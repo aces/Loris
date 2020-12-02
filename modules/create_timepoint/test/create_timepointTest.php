@@ -62,7 +62,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Create Time Point", $bodyText);
+        $this->assertStringContainsString("Create Time Point", $bodyText);
     }
 
     /**

@@ -39,7 +39,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/instrument_builder/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("Instrument Builder", $bodyText);
+        $this->assertStringContainsString("Instrument Builder", $bodyText);
     }
     /**
      * Tests that, when loading the Instrument builder module with permission, some
@@ -53,7 +53,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/instrument_builder/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("Instrument Builder", $bodyText);
+        $this->assertStringContainsString("Instrument Builder", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -68,7 +68,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/instrument_builder/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
 

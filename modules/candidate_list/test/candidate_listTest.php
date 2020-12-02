@@ -105,14 +105,14 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Access Profile", $bodyText);
+        $this->assertStringContainsString("Access Profile", $bodyText);
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
         $btn        = self::$advancedFilter;
         $buttonText = $this->safeFindElement(
             WebDriverBy::cssSelector($btn)
         )->getText();
-        $this->assertContains("Advanced", $buttonText);
+        $this->assertStringContainsString("Advanced", $buttonText);
     }
     /**
      * Tests that, after clicking the "Advanced" button, all of the
@@ -126,7 +126,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Access Profile", $bodyText);
+        $this->assertStringContainsString("Access Profile", $bodyText);
         // Switch to Advanced mode
         $btn = self::$advancedFilter;
         $this->safeClick(WebDriverBy::cssSelector($btn));
@@ -339,7 +339,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         //to do check the url
         $this->safeClick(WebDriverBy::cssSelector($btn));
         $URL =  $this->webDriver->executeScript("return window.location.href;");
-        $this->assertContains("300001", $URL);
+        $this->assertStringContainsString("300001", $URL);
         $this->resetPermissions();
     }
     /**
@@ -355,7 +355,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Candidate Profile",
             $bodyText
         );
