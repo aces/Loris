@@ -176,7 +176,7 @@
 			{/if}
 		    <div id="bvl_panel_wrapper">
                 <!-- Sidebar -->
-                            {$feedback_panel}
+                            {$feedback_panel|default}
 			    {if isset($control_panel)}
                     <div id="sidebar-wrapper" class="sidebar-div">
                        <div id="sidebar-content">
