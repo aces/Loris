@@ -252,8 +252,8 @@ function getUploadFields()
         $qparam
     );
 
-    $instrumentsList = toSelect($sessionRecords, "Test_name", null);
-    $candidatesList  = toSelect($sessionRecords, "PSCID", null);
+    $instrumentsList = toSelect($sessionRecords, "Test_name", '');
+    $candidatesList  = toSelect($sessionRecords, "PSCID", '');
     $visitList       = Utility::getVisitList();
     $languageList    = Utility::getLanguageList();
     $startYear       = $config->getSetting('startYear');
