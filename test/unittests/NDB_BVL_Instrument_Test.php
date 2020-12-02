@@ -53,7 +53,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         }
         date_default_timezone_set("UTC");
         $this->session = $this->getMockBuilder(\stdClass::class)
-            ->setMethods(
+            ->addMethods(
                 ['getProperty', 'setProperty', 'getUsername', 'isLoggedIn']
             )
             ->getMock();
@@ -80,7 +80,7 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->setMethods(["getFullName", "getSubtestList"])->getMock();
+            ->addMethods(["getFullName", "getSubtestList"])->getMock();
         $this->_instrument->method('getFullName')->willReturn("Test Instrument");
         $this->_instrument->method('getSubtestList')->willReturn([]);
         $this->_instrument->form     = $this->quickForm;
@@ -842,7 +842,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->setMethods(
+            ->addMethods(
                 ["getFullName", "getSubtestList", '_setupForm']
             )->getMock();
         $this->_instrument->method('getFullName')->willReturn("Test Instrument");
@@ -1618,7 +1618,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $otherInstrument            = $this
             ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->setMethods(["getFullName", "getSubtestList"])->getMock();
+            ->addMethods(["getFullName", "getSubtestList"])->getMock();
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
         $this->assertEquals(
