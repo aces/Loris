@@ -212,7 +212,7 @@
                     </div>
 
                 {/if}
-                {if $breadcrumbs != "" && empty($error_message)}
+                {if $breadcrumbs|default != "" && empty($error_message)}
                     <div id="breadcrumbs"></div>
                 {/if}
                         <div>
