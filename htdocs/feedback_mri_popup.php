@@ -60,7 +60,9 @@ if (isset($_POST['fire_away']) && $_POST['fire_away']) {
     }
 
     // save all comment status fields
-    if (isset($_POST['saveCommentStatusField']) && is_array($_POST['saveCommentStatusField'])) {
+    if (isset($_POST['saveCommentStatusField'])
+        && is_array($_POST['saveCommentStatusField'])
+    ) {
         foreach ($_POST['saveCommentStatusField'] as $status_field => $value) {
             $comments->setMRIValue($status_field, $value);
         }
