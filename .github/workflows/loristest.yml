@@ -14,8 +14,7 @@ jobs:
             - unit
             - integration
             php:
-            - 7.3
-            - 7.4
+            - 8.0.0
 
     steps:
     - uses: actions/checkout@v2
