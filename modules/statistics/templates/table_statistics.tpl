@@ -12,7 +12,7 @@
      - Visits (the visits to display)
      - Data (the data that populates the table)
  *}
-<script type="text/javascript" src="{$baseurl}/statistics/js/table_statistics.js"></script>
+<script type="text/javascript" src="{$baseurl|default}/statistics/js/table_statistics.js"></script>
 <h2 class="statsH3">{$SectionHeader}</h2>
 <h3 class="statsH3">{$TableHeader}</h3>
 <p>{$Disclamer}</p>
