@@ -1,62 +1,4 @@
 <br />
-<script type="text/javascript" src="{$baseurl}/js/passwordVisibility.js"></script>
-<link rel="stylesheet" href="/css/password.css" type="text/css" />
-<script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
-{literal}
-<script>
-    function toggleGroup(group) {
-        if(group) {
-            // id is the header that was clicked
-            id = group.target.id;
-
-            // chop off header_ to get section name
-            section = id.substring(7);
-
-            // hide (or show) the appropriate div for that section
-            section_el = $("#perms_" + section);
-            section_el.toggle();
-        }
-    }
-
-    $(document).ready(function() {
-        passwordVisibility();
-
-        $('[name="NA_UserID"]').change(function() {
-            $('.userid-star').toggleClass('hide', this.checked);
-            $('[name="UserID"]').prop('disabled', this.checked).val('');
-        }).change();
-
-        $('[name="NA_Password"]').change(function() {
-            $('.pwd-star').toggleClass('hide', this.checked);
-            $('[name="SendEmail"]').prop('checked', this.checked);
-            $('[name="Password_hash"], [name="__Confirm"]').prop('disabled', this.checked).val('');
-	    }).change();
-
-        $('[name="Password_hash"], [name="__Confirm"]').change(function() {
-            $('.pwd-star.password').toggleClass('hide',
-                !($('.pwd-star.password').hasClass('required')
-                 || ($('[name="__Confirm"]').val().length !== 0
-                     && $('[name="Password_hash"]').val().length === 0))
-                );
-
-            $('.pwd-star.confirm-password').toggleClass('hide',
-                !($('.pwd-star.confirm-password').hasClass('required')
-                 || ($('[name="Password_hash"]').val().length !== 0
-                     && $('[name="__Confirm"]').val().length === 0))
-                );
-        }).change();
-
-        // define event handler for all the header sections
-        $(".perm_header").click(toggleGroup);
-        // Get rid of the extra <br /> tag that Quickform element adds at the top of each <div>
-        $(".perm_header").each(function(idx, el) {
-            id = el.id;
-            section = id.substring(7);
-            section_el = $("#perms_" + section + " br:nth-child(1)").hide();
-        });
-    });
-</script>
-{/literal}
 <form method="post" name="edit_user" autocomplete="off">
     {if $form.errors}
     <div class="alert alert-danger" role="alert">
@@ -65,23 +7,23 @@
     {/if}
 
     <div class="panel panel-default">
-  <div class="panel-body">
-       <h3>Password Rules</h3>
-      <ul>
-        <li>The password must be at least 8 characters long.</li>
-        <li>The password cannot be your username or email address.</li>
-        <li>No special characters are required but your password must be sufficiently complex to be accepted.</li>
-      </ul>
-        <p>Please choose a unique password.</p>
-        <p>We suggest using a password manager to generate one for you.</p>
-      <h3>Notes</h3>
-      <ul>
-        <li>It is recommended to use an email address as the username, for clarity and uniqueness.</li>
-        <li>When generating a new password, please notify the user by checking 'Send email to user' box below!</li>
-    </ul>
-</div>
-</div>
-<h3>Add/Edit User</h3>
+        <div class="panel-body">
+            <h3>Password Rules</h3>
+            <ul>
+                <li>The password must be at least 8 characters long.</li>
+                <li>The password cannot be your username or email address.</li>
+                <li>No special characters are required but your password must be sufficiently complex to be accepted.</li>
+            </ul>
+            <p>Please choose a unique password.</p>
+            <p>We suggest using a password manager to generate one for you.</p>
+            <h3>Notes</h3>
+            <ul>
+                <li>It is recommended to use an email address as the username, for clarity and uniqueness.</li>
+                <li>When generating a new password, please notify the user by checking 'Send email to user' box below!</li>
+            </ul>
+        </div>
+    </div>
+    <h3>Add/Edit User</h3>
 	<!-- {foreach from=$form.errors item=error key=k}
 	    <ul>
 	        <li class="error">{$k}: k{$error}</li>

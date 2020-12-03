@@ -30,6 +30,7 @@ class MediaIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.mapColumn = this.mapColumn.bind(this);
+    this.insertRow = this.insertRow.bind(this);
   }
 
   /**
@@ -58,6 +59,19 @@ class MediaIndex extends Component {
         this.setState({error: true});
         console.error(error);
       });
+  }
+
+  /**
+   * Insert row of data into table after successful
+   * file upload and display recent data.
+   * @param {object} data - row to add to table
+   */
+  insertRow(data) {
+    let tableData = JSON.parse(JSON.stringify(this.state.data));
+    tableData.push(Object.values(data));
+    this.setState({
+      data: tableData,
+    });
   }
 
   /**
@@ -239,6 +253,7 @@ class MediaIndex extends Component {
               action={loris.BaseURL
                      + '/media/ajax/FileUpload.php?action=upload'}
               maxUploadSize={options.maxUploadSize}
+              insertRow={this.insertRow}
             />
           </TabPane>
         );

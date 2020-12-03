@@ -1,6 +1,3 @@
-<script type="text/javascript" src="{$baseurl}/js/passwordVisibility.js"></script>
-<link rel="stylesheet" href="/css/password.css" type="text/css" />
-
 <br />
 <form method="post" name="my_preferences" id="my_preferences" autocomplete="off">
     <h3>Password Rules</h3>
@@ -104,9 +101,3 @@
 
 {$form.hidden}
 </form>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function(event) {
-    passwordVisibility();
-  })
-</script>

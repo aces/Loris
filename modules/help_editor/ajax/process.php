@@ -42,60 +42,34 @@ if (!empty($_POST['helpID'])
             ),
         ]
     );
-} else {
-    //content does not exist insert the help file
-    if (!empty($_POST['section'])
-        && $_POST['subsection'] != 'undefined'
-        && empty($_POST['parentID'])
-    ) {
-        //create parent help section first
-        $parentID = HelpFile::insert(
-            [
-                'hash'    => md5($_POST['section']),
-                'topic'   => "",
-                'content' => "Under construction",
-                'created' => date(
-                    'Y-m-d h:i:s',
-                    time()
-                ),
-            ]
-        );
-         // check errors
-    }
-    if (!empty($_POST['section'])
-        && $_POST['subsection'] != 'undefined'
-        && !empty($_POST['parentID'])
-    ) {
-
-        // insert the help file
-        $helpID = HelpFile::insert(
-            [
-                'parentID' => $_POST['parentID'],
-                'hash'     => md5($_POST['subsection']),
-                'topic'    => $_POST['title'],
-                'content'  => $_POST['content'],
-                'created'  => date(
-                    'Y-m-d h:i:s',
-                    time()
-                ),
-            ]
-        );
-
-    } else if (!empty($_POST['section'])
-        && $_POST['subsection'] == 'undefined'
-    ) {
-        //default case
-        $helpID = HelpFile::insert(
-            [
-                'hash'    => md5($_POST['section']),
-                'topic'   => $_POST['title'],
-                'content' => $_POST['content'],
-                'created' => date(
-                    'Y-m-d h:i:s',
-                    time()
-                ),
-            ]
-        );
-    }
+} else if (!empty($_POST['section'])
+    && $_POST['subsection'] != 'undefined'
+) {
+    // insert the help file
+    $helpID = HelpFile::insert(
+        [
+            'hash'    => md5($_POST['subsection']),
+            'topic'   => $_POST['title'],
+            'content' => $_POST['content'],
+            'created' => date(
+                'Y-m-d h:i:s',
+                time()
+            ),
+        ]
+    );
+} else if (!empty($_POST['section'])
+    && $_POST['subsection'] == 'undefined'
+) {
+    //default case
+    $helpID = HelpFile::insert(
+        [
+            'hash'    => md5($_POST['section']),
+            'topic'   => $_POST['title'],
+            'content' => $_POST['content'],
+            'created' => date(
+                'Y-m-d h:i:s',
+                time()
+            ),
+        ]
+    );
 }
-

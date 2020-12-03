@@ -47,8 +47,11 @@ class NDB_PageTest extends TestCase
         parent::setUp();
 
         $this->_module = new NullModule("test_module");
-        $this->_page = new NDB_Page(
-            $this->_module, "test_page", "515", "123"
+        $this->_page   = new NDB_Page(
+            $this->_module,
+            "test_page",
+            "515",
+            "123"
         );
     }
 
@@ -78,7 +81,7 @@ class NDB_PageTest extends TestCase
     }
 
     /**
-     * Test that setTemplateVar correctly sets a value in the 
+     * Test that setTemplateVar correctly sets a value in the
      * tpl_data array and that getTemplateData returns the correct information
      *
      * @covers NDB_Page::setTemplateVar
@@ -103,10 +106,11 @@ class NDB_PageTest extends TestCase
     {
         $this->_page->addFile("test_name", "test_label");
         $this->assertEquals(
-            array('name'  => 'test_name',
-                  'label' => 'test_label',
-                  'type'  => 'file',
-                  'class' => 'fileUpload'), 
+            ['name'  => 'test_name',
+                'label' => 'test_label',
+                'type'  => 'file',
+                'class' => 'fileUpload'
+            ],
             $this->_page->form->form['test_name']
         );
     }
@@ -122,8 +126,9 @@ class NDB_PageTest extends TestCase
     {
         $this->_page->addHeader("test_header");
         $this->assertEquals(
-            array('label' => 'test_header',
-                  'type'  => 'header'),
+            ['label' => 'test_header',
+                'type'  => 'header'
+            ],
             current($this->_page->form->form)
         );
     }
@@ -137,13 +142,14 @@ class NDB_PageTest extends TestCase
      */
     public function testAddSelect()
     {
-        $this->_page->addSelect("test_name", "test_label", array());
+        $this->_page->addSelect("test_name", "test_label", []);
         $this->assertEquals(
-            array('name'    => 'test_name',
-                  'label'   => 'test_label',
-                  'type'    => 'select',
-                  'class'   => 'form-control input-sm',
-                  'options' => array()),
+            ['name'    => 'test_name',
+                'label'   => 'test_label',
+                'type'    => 'select',
+                'class'   => 'form-control input-sm',
+                'options' => []
+            ],
             $this->_page->form->form['test_name']
         );
     }
@@ -159,8 +165,9 @@ class NDB_PageTest extends TestCase
     {
         $this->_page->addLabel("test_label");
         $this->assertEquals(
-            array('label' => 'test_label',
-                  'type'  => 'static'),
+            ['label' => 'test_label',
+                'type'  => 'static'
+            ],
             current($this->_page->form->form)
         );
     }
@@ -176,9 +183,10 @@ class NDB_PageTest extends TestCase
     {
         $this->_page->addScoreColumn("test_name", "test_label");
         $this->assertEquals(
-            array('name'    => 'test_name',
-                  'label'   => 'test_label',
-                  'type'    => 'static'),
+            ['name'    => 'test_name',
+                'label' => 'test_label',
+                'type'  => 'static'
+            ],
             $this->_page->form->form['test_name']
         );
     }
@@ -194,10 +202,11 @@ class NDB_PageTest extends TestCase
     {
         $this->_page->addBasicText("test_name", "test_label");
         $this->assertEquals(
-            array('name'    => 'test_name',
-                  'label'   => 'test_label',
-                  'type'    => 'text',
-                  'class'   => 'form-control input-sm'),
+            ['name'    => 'test_name',
+                'label' => 'test_label',
+                'type'  => 'text',
+                'class' => 'form-control input-sm'
+            ],
             $this->_page->form->form['test_name']
         );
     }
@@ -213,10 +222,11 @@ class NDB_PageTest extends TestCase
     {
         $this->_page->addBasicTextArea("test_name", "test_label");
         $this->assertEquals(
-            array('name'    => 'test_name',
-                  'label'   => 'test_label',
-                  'type'    => 'textarea',
-                  'class'   => 'form-control input-sm'),
+            ['name'    => 'test_name',
+                'label' => 'test_label',
+                'type'  => 'textarea',
+                'class' => 'form-control input-sm'
+            ],
             $this->_page->form->form['test_name']
         );
     }
@@ -224,7 +234,7 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addBasicDate calls addElement from LorisForm and properly adds
      * an element to the page's form when dateOptions is not set. Since
-     * dateOptions is not set, the options array should remain empty. 
+     * dateOptions is not set, the options array should remain empty.
      *
      * @covers NDB_Page::addBasicDate
      * @return void
@@ -233,11 +243,12 @@ class NDB_PageTest extends TestCase
     {
         $this->_page->addBasicDate("test_name", "test_label");
         $this->assertEquals(
-            array('name'    => 'test_name',
-                  'label'   => 'test_label',
-                  'type'    => 'date',
-                  'class'   => 'form-control input-sm',
-                  'options' => array()),
+            ['name'    => 'test_name',
+                'label'   => 'test_label',
+                'type'    => 'date',
+                'class'   => 'form-control input-sm',
+                'options' => []
+            ],
             $this->_page->form->form['test_name']
         );
     }
@@ -252,14 +263,15 @@ class NDB_PageTest extends TestCase
      */
     public function testAddBasicDateWithDateOptionsSet()
     {
-        $this->_page->dateOptions = array('someOption' => 'true');
+        $this->_page->dateOptions = ['someOption' => 'true'];
         $this->_page->addBasicDate("test_name", "test_label");
         $this->assertEquals(
-            array('name'    => 'test_name',
-                  'label'   => 'test_label',
-                  'type'    => 'date',
-                  'class'   => 'form-control input-sm',
-                  'options' => array('someOption' => 'true')),
+            ['name'    => 'test_name',
+                'label'   => 'test_label',
+                'type'    => 'date',
+                'class'   => 'form-control input-sm',
+                'options' => ['someOption' => 'true']
+            ],
             $this->_page->form->form['test_name']
         );
     }
@@ -274,18 +286,19 @@ class NDB_PageTest extends TestCase
      */
     public function testAddCheckbox()
     {
-        $this->_page->addCheckbox("test_name", "test_label", array());
+        $this->_page->addCheckbox("test_name", "test_label", []);
         $this->assertEquals(
-            array('name'    => 'test_name',
-                  'label'   => 'test_label',
-                  'type'    => 'advcheckbox',
-                  'class' => 'form-control input-sm'),
+            ['name'    => 'test_name',
+                'label' => 'test_label',
+                'type'  => 'advcheckbox',
+                'class' => 'form-control input-sm'
+            ],
             $this->_page->form->form['test_name']
         );
     }
 
     /**
-     * Test that addRadio calls LorisForm::addGroup and properly creates a 
+     * Test that addRadio calls LorisForm::addGroup and properly creates a
      * group of radio elements.
      *
      * @covers NDB_Page::addRadio
@@ -293,35 +306,42 @@ class NDB_PageTest extends TestCase
      */
     public function testAddRadio()
     {
-        $radios = array(
-                      array('label' => 'label1',
-                            'value' => 'value1'),
-                      array('label' => 'label2',
-                            'value' => 'value2'));
-        $elementsArray = array(
-                             array('name' => 'test_radio',
-                                   'label' => 'label1',
-                                   'value' => 'value1',
-                                   'type' => 'radio',
-                                   'class' => 'form-control input-sm'),
-                             array('name' => 'test_radio',
-                                   'label' => 'label2',
-                                   'value' => 'value2',
-                                   'type' => 'radio',
-                                   'class' => 'form-control input-sm'));
+        $radios        = [
+            ['label' => 'label1',
+                'value' => 'value1'
+            ],
+            ['label' => 'label2',
+                'value' => 'value2'
+            ]
+        ];
+        $elementsArray = [
+            ['name' => 'test_radio',
+                'label' => 'label1',
+                'value' => 'value1',
+                'type'  => 'radio',
+                'class' => 'form-control input-sm'
+            ],
+            ['name' => 'test_radio',
+                'label' => 'label2',
+                'value' => 'value2',
+                'type'  => 'radio',
+                'class' => 'form-control input-sm'
+            ]
+        ];
         $this->_page->addRadio("test_radio", "group_label", $radios);
         $this->assertEquals(
-            array('name' => 'test_radio_group',
-                  'label' => 'group_label', 
-                  'type' => 'group',
-                  'delimiter' => ' ',
-                  'options' => false,
-                  'elements' => $elementsArray),
+            ['name' => 'test_radio_group',
+                'label'     => 'group_label',
+                'type'      => 'group',
+                'delimiter' => ' ',
+                'options'   => false,
+                'elements'  => $elementsArray
+            ],
             $this->_page->form->form['test_radio_group']
         );
     }
 
-    /** 
+    /**
      * Test that addHidden calls addElement from LorisForm and properly adds
      * an element to the page's form
      *
@@ -332,10 +352,11 @@ class NDB_PageTest extends TestCase
     {
         $this->_page->addHidden("test_name", "test_value");
         $this->assertEquals(
-            array('name'    => 'test_name',
-                  'label'   => null,
-                  'value'   => 'test_value',
-                  'type'    => 'hidden'),
+            ['name'    => 'test_name',
+                'label' => null,
+                'value' => 'test_value',
+                'type'  => 'hidden'
+            ],
             $this->_page->form->form['test_name']
         );
     }
@@ -349,28 +370,32 @@ class NDB_PageTest extends TestCase
      */
     public function testAddTextAreaGroup()
     {
-        $options = array(''             => '',
-                         'not_answered' => 'Not Answered');
-        $elementsArray = array(
-                             array('name' => 'test_field',
-                                   'label' => '', 
-                                   'type' => 'textarea',
-                                   'class' => 'form-control input-sm'),
-                             array('name' => 'test_field_status',
-                                   'label' => '', 
-                                   'type' => 'select',
-                                   'options' => $options,
-                                   'class' => 'form-control input-sm not-answered')
-                         );
+        $options       = [''             => '',
+            'not_answered' => 'Not Answered'
+        ];
+        $elementsArray = [
+            ['name' => 'test_field',
+                'label' => '',
+                'type'  => 'textarea',
+                'class' => 'form-control input-sm'
+            ],
+            ['name' => 'test_field_status',
+                'label'   => '',
+                'type'    => 'select',
+                'options' => $options,
+                'class'   => 'form-control input-sm not-answered'
+            ]
+        ];
 
         $this->_page->addTextAreaGroup("test_field", "test_label");
         $this->assertEquals(
-            array('name' => 'test_field_group',
-                  'type' => 'group',
-                  'label' => 'test_label',
-                  'delimiter' => ' ',
-                  'options' => false,
-                  'elements' => $elementsArray),
+            ['name' => 'test_field_group',
+                'type'      => 'group',
+                'label'     => 'test_label',
+                'delimiter' => ' ',
+                'options'   => false,
+                'elements'  => $elementsArray
+            ],
             $this->_page->form->form['test_field_group']
         );
     }
@@ -386,10 +411,11 @@ class NDB_PageTest extends TestCase
     {
         $this->_page->addPassword("test_name", "test_label");
         $this->assertEquals(
-            array('name'    => 'test_name',
-                  'label'   => 'test_label',
-                  'type'    => 'password',
-                  'class'   => 'form-control input-sm'),
+            ['name'    => 'test_name',
+                'label' => 'test_label',
+                'type'  => 'password',
+                'class' => 'form-control input-sm'
+            ],
             $this->_page->form->form['test_name']
         );
     }
@@ -403,11 +429,12 @@ class NDB_PageTest extends TestCase
      */
     public function testAddRule()
     {
-        $this->_page->addBasicText("abc", "Hello", array());
+        $this->_page->addBasicText("abc", "Hello", []);
         $this->_page->addRule("abc", "Required!", "required");
         $this->assertTrue($this->_page->form->form['abc']['required']);
         $this->assertEquals(
-            'Required!', $this->_page->form->form['abc']['requireMsg']
+            'Required!',
+            $this->_page->form->form['abc']['requireMsg']
         );
     }
 
@@ -423,18 +450,22 @@ class NDB_PageTest extends TestCase
         $text1 = $this->_page->createText("test_name1", "test_label1");
         $text2 = $this->_page->createText("test_name2", "test_label2");
         $this->_page->addGroup(
-            array($text1, $text2), "test_group", "group_label", ", "
+            [$text1, $text2],
+            "test_group",
+            "group_label",
+            ", "
         );
-        $result = array('name'      => 'test_group',
-                        'type'      => 'group',
-                        'label'     => 'group_label',
-                        'delimiter' => ', ',
-                        'options'   => null,
-                        'elements'  => array($text1, $text2));
+        $result = ['name'      => 'test_group',
+            'type'      => 'group',
+            'label'     => 'group_label',
+            'delimiter' => ', ',
+            'options'   => null,
+            'elements'  => [$text1, $text2]
+        ];
         $this->assertEquals(
             $result,
             $this->_page->form->form['test_group']
-        );    
+        );
     }
 
     /**
@@ -449,13 +480,19 @@ class NDB_PageTest extends TestCase
         $text1 = $this->_page->createText("test_name1", "test_label1");
         $text2 = $this->_page->createText("test_name2", "test_label2");
         $this->_page->addGroup(
-            array($text1, $text2), "test_group", "group_label", ", "
+            [$text1, $text2],
+            "test_group",
+            "group_label",
+            ", "
         );
-        $testRules = array(
-                         array(
-                             array("Message for text1!", 'required')),
-                         array(
-                             array("Message for text2!", 'numeric')));
+        $testRules = [
+            [
+                ["Message for text1!", 'required']
+            ],
+            [
+                ["Message for text2!", 'numeric']
+            ]
+        ];
         $this->_page->addGroupRule("test_group", $testRules);
 
         $this->assertTrue(
@@ -483,11 +520,12 @@ class NDB_PageTest extends TestCase
     public function testCreateSelect()
     {
         $this->assertEquals(
-            array('name' => 'test_field',
-                  'label' => 'test_label',
-                  'type' => 'select',
-                  'class' => 'form-control input-sm',
-                  'options' => null),
+            ['name' => 'test_field',
+                'label'   => 'test_label',
+                'type'    => 'select',
+                'class'   => 'form-control input-sm',
+                'options' => null
+            ],
             $this->_page->createSelect("test_field", "test_label")
         );
     }
@@ -516,10 +554,11 @@ class NDB_PageTest extends TestCase
     public function testCreateText()
     {
         $this->assertEquals(
-            array('name' => 'test_field',
-                  'label' => 'test_label',
-                  'type' => 'text',
-                  'class' => 'form-control input-sm'),
+            ['name' => 'test_field',
+                'label' => 'test_label',
+                'type'  => 'text',
+                'class' => 'form-control input-sm'
+            ],
             $this->_page->createText("test_field", "test_label")
         );
     }
@@ -533,10 +572,11 @@ class NDB_PageTest extends TestCase
     public function testCreateTextArea()
     {
         $this->assertEquals(
-            array('name' => 'test_field',
-                  'label' => 'test_label',
-                  'type' => 'textarea',
-                  'class' => 'form-control input-sm'),
+            ['name' => 'test_field',
+                'label' => 'test_label',
+                'type'  => 'textarea',
+                'class' => 'form-control input-sm'
+            ],
             $this->_page->createTextArea("test_field", "test_label")
         );
     }
@@ -550,11 +590,12 @@ class NDB_PageTest extends TestCase
     public function testCreateDate()
     {
         $this->assertEquals(
-            array('name' => 'test_field', 
-                  'label' => 'test_label',
-                  'type' => 'date',
-                  'class' => 'form-control input-sm',
-                  'options' => null),
+            ['name' => 'test_field',
+                'label'   => 'test_label',
+                'type'    => 'date',
+                'class'   => 'form-control input-sm',
+                'options' => null
+            ],
             $this->_page->createDate("test_field", "test_label")
         );
     }
@@ -568,9 +609,10 @@ class NDB_PageTest extends TestCase
     public function testCreateCheckbox()
     {
         $this->assertEquals(
-            array('name' => 'test_field',
-                  'label' => 'test_label',
-                  'type' => 'advcheckbox'),
+            ['name' => 'test_field',
+                'label' => 'test_label',
+                'type'  => 'advcheckbox'
+            ],
             $this->_page->createCheckbox("test_field", "test_label")
         );
     }
@@ -584,9 +626,10 @@ class NDB_PageTest extends TestCase
     public function testCreateRadio()
     {
         $this->assertEquals(
-            array('name' => 'test_field',
-                  'label' => 'test_label',
-                  'type' => 'radio'),
+            ['name' => 'test_field',
+                'label' => 'test_label',
+                'type'  => 'radio'
+            ],
             $this->_page->createRadio("test_field", "test_label")
         );
     }
@@ -600,10 +643,11 @@ class NDB_PageTest extends TestCase
     public function testCreatePassword()
     {
         $this->assertEquals(
-            array('name' => 'test_field',
-                  'label' => 'test_label',
-                  'type' => 'password',
-                  'class' => 'form-control input-sm'),
+            ['name' => 'test_field',
+                'label' => 'test_label',
+                'type'  => 'password',
+                'class' => 'form-control input-sm'
+            ],
             $this->_page->createPassword("test_field", "test_label")
         );
     }
@@ -622,7 +666,7 @@ class NDB_PageTest extends TestCase
 
     /**
      * Test that display uses a Smarty_NeuroDB object to return an html of the
-     * page object. 
+     * page object.
      *
      * @covers NDB_Page::display
      * @return void
@@ -634,7 +678,7 @@ class NDB_PageTest extends TestCase
     {
         $this->markTestIncomplete("This test is incomplete!");
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory = NDB_Factory::singleton();
+        $factory    = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $smarty = $this->getMockBuilder(Smarty_NeuroDB::class)
             ->disableOriginalConstructor()
@@ -693,8 +737,8 @@ class NDB_PageTest extends TestCase
      */
     public function testGetBreadcrumbs()
     {
-        $name = $this->_page->name;
-        $page = $this->_page->page;
+        $name     = $this->_page->name;
+        $page     = $this->_page->page;
         $sublabel = ucwords(str_replace('_', ' ', $page));
         $this->assertEquals(
             new \LORIS\BreadcrumbTrail(
@@ -735,7 +779,7 @@ class NDB_PageTest extends TestCase
     public function testGetJSDependencies()
     {
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory = NDB_Factory::singleton();
+        $factory    = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $this->assertEquals(
             [
@@ -768,7 +812,7 @@ class NDB_PageTest extends TestCase
     public function testGetCSSDependencies()
     {
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory = NDB_Factory::singleton();
+        $factory    = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $this->assertEquals(
             [
