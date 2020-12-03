@@ -343,7 +343,7 @@ class NDB_BVL_Battery
             $query .= " ORDER BY Subgroup_order";
         }
         $query  .= ", instrument_order, Full_name";
-        $qparams = ['SID' => $this->timePoint->getSessionID()];
+        $qparams = ['SID' => $this->sessionID];
 
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
