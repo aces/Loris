@@ -311,7 +311,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
                 $project->getAlias()
             );
             $parentID           = $parentIDgenerator->generate();
-            print_r($parentID);
             $setArray['ParentID'] = $parentID;
             try {
                 \Database::singleton()->insert('candidate', $setArray);
