@@ -4,7 +4,7 @@
       <h3 class="panel-title">{$page_title}</h3>
     </div>
     <div class="panel-body">
-      {if $success|default}
+      {if $success}
         <div class="success-message">
           <h1>Thank you!</h1>
           <p>{$success}</p>
@@ -19,7 +19,7 @@
           </p>
           <div class="form-group">
 		{$form.username.html}
-                {if $form.username.error|default}
+                {if $form.username.error}
                 <span id="helpBlock" class="help-block">
                    <b class="text-danger">{$form.username.error}</b>
                  </span>

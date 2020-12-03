@@ -8,7 +8,7 @@
     </h3>
   </div>
   <div class="panel-body">
-      {if $success|default}
+      {if $success}
     <div class="success-message">
       <h1>Thank you!</h1>
       <p>Your request for an account has been received successfully.</p>
@@ -24,7 +24,7 @@
     <form method="POST" name="form1" id="form1">
       <div class="form-group">
           {$form.firstname.html}
-          {if $form.firstname.error|default}
+          {if $form.firstname.error}
             <span id="helpBlock" class="help-block">
               <b class="text-danger">{$form.firstname.error}</b>
             </span>
@@ -32,7 +32,7 @@
       </div>
       <div class="form-group">
           {$form.lastname.html}
-          {if $form.lastname.error|default}
+          {if $form.lastname.error}
             <span id="helpBlock" class="help-block">
               <b class="text-danger">{$form.lastname.error}</b>
             </span>
@@ -40,7 +40,7 @@
       </div>
       <div class="form-group">
           {$form.from.html}
-          {if $form.from.error|default}
+          {if $form.from.error}
             <span id="helpBlock" class="help-block">
               <b class="text-danger">{$form.from.error}</b>
             </span>
@@ -48,7 +48,7 @@
       </div>
       <div class="form-group">
           {$form.site.html}
-          {if $form.site.error|default}
+          {if $form.site.error}
             <span id="helpBlock" class="help-block">
               <b class="text-danger">{$form.site.error}</b>
             </span>
@@ -56,7 +56,7 @@
       </div>
       <div class="form-group">
           {$form.project.html}
-          {if $form.project.error|default}
+          {if $form.project.error}
             <span id="helpBlock" class="help-block">
               <b class="text-danger">{$form.project.error}</b>
             </span>
@@ -75,7 +75,7 @@
 {$form.captcha.html}
             <div class="g-recaptcha" data-sitekey="{$captcha_key}"></div>
             <script src="https://www.google.com/recaptcha/api.js?render={$captcha_key}&onload=onloadCallback nonce={$nonce}"></script>
-            {if $form.captcha.error|default}
+            {if $form.captcha.error}
                 <span id="helpBlock" class="help-block">
                   <b class="text-danger">{$form.captcha.error}</b>
                 </span>

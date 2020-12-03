@@ -13,7 +13,7 @@
             <th>Output Type</th>
             <th>Scanner</th>
             <th>Subproject</th>
-            {if $useEDC|default}
+            {if $useEDC}
             <th>EDC</th>
             {/if}
         </tr>
@@ -29,10 +29,10 @@
             <td>{if $subject.mriqcpending=="Y"}<img src="{$baseurl}/images/check_blue.gif" width="12" height="12">{else}&nbsp;{/if}</td>
             <td>{$subject.dob}</td>
             <td>{$subject.sex}</td>
-            <td>{$outputType|default}</td>
+            <td>{$outputType}</td>
             <td>{$subject.scanner}</td>
             <td>{$subject.SubprojectTitle}</td>
-            {if $useEDC|default}
+            {if $useEDC}
             <td>{$subject.edc}</td>
             {/if}
         </tr>
