@@ -119,9 +119,23 @@ function lorisModule(mname, entries, override=false) {
   };
 }
 
+let mode = 'production';
+try {
+  const configFile = fs.readFileSync('project/config.xml', 'latin1');
+  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
+              .exec(configFile);
+  if (res && parseInt(res[1]) == 1) mode = 'development';
+} catch (error) {
+  console.error(
+    'Error - Can\'t read config.xml file. '
+    + 'Webpack mode set to production.'
+  );
+}
+
 const config = [
   // Core components
   {
+    mode: mode,
     entry: {
       DynamicDataTable: './jsx/DynamicDataTable.js',
       PaginationLinks: './jsx/PaginationLinks.js',
