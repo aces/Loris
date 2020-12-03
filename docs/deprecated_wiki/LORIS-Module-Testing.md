@@ -215,7 +215,7 @@ class $ModuleName$Test extends LorisIntegrationTest
         // (e.g. retrieve Browse string from browse tab)
         $selector = WebDriverBy::cssSelector("#tab-browse");
         $text = $this->webDriver->findElement($selector)->getText();
-        $this->assertContains("Browse", $text);
+        $this->assertStringContainsString("Browse", $text);
     }
 
     // Add more tests here

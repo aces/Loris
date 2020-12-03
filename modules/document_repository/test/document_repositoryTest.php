@@ -62,7 +62,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -83,7 +83,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
-        $this->assertContains("Document Repository", $bodyText);
+        $this->assertStringContainsString("Document Repository", $bodyText);
     }
     /**
      * Tests Upload page.
@@ -101,7 +101,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
             "return document.querySelector('#upload > div > div > form > div >".
             "div:nth-child(1) > h3').textContent"
         );
-        $this->assertContains("Upload a file", $text);
+        $this->assertStringContainsString("Upload a file", $text);
 
     }
     /**
@@ -121,7 +121,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $test = $this->safeFindElement(
             WebDriverBy::linkText("README.md")
         )->getText();
-        $this->assertContains("README.md", $test);
+        $this->assertStringContainsString("README.md", $test);
 
     }
     /**
@@ -163,7 +163,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
             3000
         )
             ->getText();
-         $this->assertContains("This is a test comment!", $text);
+         $this->assertStringContainsString("This is a test comment!", $text);
 
          // delete upload file
 

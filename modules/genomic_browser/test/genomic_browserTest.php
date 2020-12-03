@@ -61,7 +61,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->assertStringContainsString("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
     /**
@@ -83,7 +83,10 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertNotContains("You do not have access to this page.", $bodyText);
+         $this->assertStringNotContainsString(
+             "You do not have access to this page.",
+             $bodyText
+         );
          $this->resetPermissions();
     }
     /**
@@ -187,7 +190,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
-            $this->assertContains($key, $text);
+            $this->assertStringContainsString($key, $text);
         }
 
     }
@@ -214,7 +217,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                 $text = $this->webDriver->executescript(
                     "return document.querySelector('#datatable').textContent"
                 );
-                  $this->assertContains($expectDataRows, $text);
+                  $this->assertStringContainsString($expectDataRows, $text);
     }
     /**
      * Tests that, when clicking the upload button,the upload window should show up
@@ -238,6 +241,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
-            $this->assertContains("Upload File", $text);
+            $this->assertStringContainsString("Upload File", $text);
     }
 }

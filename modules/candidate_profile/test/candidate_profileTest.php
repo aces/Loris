@@ -35,7 +35,10 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("Candidate Profile 900000", $bodyText);
+        $this->assertStringContainsString(
+            "Candidate Profile 900000",
+            $bodyText
+        );
     }
 
     /**
@@ -53,7 +56,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("Permission Denied", $bodyText);
+        $this->assertStringContainsString("Permission Denied", $bodyText);
         $this->resetPermissions();
 
         $this->resetStudySite();
@@ -74,7 +77,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("Permission Denied", $bodyText);
+        $this->assertStringContainsString("Permission Denied", $bodyText);
         $this->resetPermissions();
 
         $this->resetUserProject();
