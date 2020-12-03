@@ -85,14 +85,14 @@
     <tbody>
     {section name=timepoint loop=$timePoints}
         <tr>
-            <td><a href="{$baseurl|default}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].Visit_label}</a></td>
+            <td><a href="{$baseurl}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].Visit_label}</a></td>
 
             <td>{$timePoints[timepoint].SubprojectTitle}</td>
 
             <td>{$timePoints[timepoint].SiteAlias}</td>
             <td>{$timePoints[timepoint].ProjectName}</td>
 
-            {if $timePoints[timepoint].staticStage|default != "" || $timePoints[timepoint].Current_stage == "Not Started"}
+            {if $timePoints[timepoint].staticStage != "" || $timePoints[timepoint].Current_stage == "Not Started"}
             <td colspan="3">{$timePoints[timepoint].Current_stage}</td>
             {else}
             <td>{$timePoints[timepoint].Current_stage}</td>
@@ -102,7 +102,7 @@
 
             <td>
             {if $timePoints[timepoint].Submitted == "Y"}
-        	    <img src="{$baseurl|default}/images/check_blue.gif" border="0" />
+        	    <img src="{$baseurl}/images/check_blue.gif" border="0" />
             {else}
         	    -
             {/if}
@@ -111,14 +111,14 @@
             {if $timePoints[timepoint].Scan_done != ""}
                     {if $timePoints[timepoint].Scan_done == 'Y'}
                         {assign var="scan_done" value="Yes"}
-                        <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$timePoints[timepoint].SessionID}" class="timepoint_list">
+                        <a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$timePoints[timepoint].SessionID}" class="timepoint_list">
                         {$scan_done}</a>
                     {else}
                         {assign var="scan_done" value="No"}
                         {$scan_done}
                     {/if}
             {else}
-                <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
+                <img alt="Data Missing" src="{$baseurl}/images/help2.gif" border=0>
             {/if}
             </td>
 
@@ -134,7 +134,7 @@
             {if $timePoints[timepoint].BVLQCStatus}
                 {$timePoints[timepoint].BVLQCType}
             {else}
-                <img src="{$baseurl|default}/images/delete.gif" border="0" />
+                <img src="{$baseurl}/images/delete.gif" border="0" />
             {/if}
             </td>
 
@@ -146,7 +146,7 @@
                 Fail
                 {/if}
             {else}
-                <img src="{$baseurl|default}/images/delete.gif" border="0" />
+                <img src="{$baseurl}/images/delete.gif" border="0" />
             {/if}
             </td>
 

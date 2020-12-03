@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <!-- shortcut icon that displays on the browser window -->
-<link rel="shortcut icon" href="{$baseurl|default}/images/mni_icon.ico" type="image/ico" />
+<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 
 <title>DCC MRI Quality Control</title>
 </head>
@@ -17,7 +17,7 @@
 
 <div>
 
-{if $saved|default}
+{if $saved}
 <p>Comments saved.</p>
 {/if}
 
@@ -36,12 +36,12 @@
 
 {foreach from=$comment item=curr_comment}
 <h3>
-{if $curr_comment.select_value_array|default and $curr_comment.select_name}
+{if $curr_comment.select_value_array and $curr_comment.select_name}
 {* the assign is simply because i [jharlap] don't have time to figure out how to make this work otherwise *}
 {assign var="save_comment_status_field_name" value="saveCommentStatusField["|cat:$curr_comment.select_name|cat:"]"}
-{html_options name=$save_comment_status_field_name values=$curr_comment.select_value_array selected=$curr_comment.selected|default output=$curr_comment.select_value_array}
+{html_options name=$save_comment_status_field_name values=$curr_comment.select_value_array selected=$curr_comment.selected output=$curr_comment.select_value_array}
 {else}
-{$curr_comment.selected|default}
+{$curr_comment.selected}
 {/if}
 {$curr_comment.name}
 </h3>
