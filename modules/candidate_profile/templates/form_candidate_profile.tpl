@@ -11,7 +11,7 @@
 window.addEventListener('load', () => {
     let candidate = null;
     async function loadCandidate() {
-        let response = await fetch(loris.BaseURL + '/api/v0.0.3/candidates/{$candidate->getCandID()}');
+        let response = await fetch(loris.BaseURL + '/api/v0.0.2/candidates/{$candidate->getCandID()}');
         let data = await response.json();
         candidate = data;
         return data;
