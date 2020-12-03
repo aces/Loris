@@ -9,7 +9,6 @@
 use LORIS\StudyEntities\Candidate\CandID;
 use LORIS\StudyEntities\Candidate\EntityType;
 use LORIS\StudyEntities\Candidate\Sex;
-use LORIS\StudyEntities\Candidate\ParentIDGenerator;
 
 /* Define constants used by the file */
 // error codes
@@ -307,8 +306,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             // Generate candid and insert into setArray
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
-            $parentIDgenerator  = new ParentIDGenerator\ParentIDGenerator();
-            $parentID           = $parentIDgenerator->generateParentID();
+            $parentIDgenerator  = new \ParentIDGenerator($site->getSiteAlias(),$project->getAlias());
+            $parentID           = $parentIDgenerator->generate();
+print_r($parentID);
             $setArray['ParentID'] = $parentID;
             try {
                 \Database::singleton()->insert('candidate', $setArray);

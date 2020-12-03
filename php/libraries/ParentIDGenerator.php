@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\StudyEntities\Candidate\ParentIDGenerator;
 /**
  * This class defines functions used to generate valid ParentID identifiers in
  * LORIS.
@@ -23,33 +22,18 @@ namespace LORIS\StudyEntities\Candidate\ParentIDGenerator;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ParentIDGenerator extends \CandIDGenerator
+class ParentIDGenerator extends SiteIDGenerator
 {
-
-    protected $prefix ;
-
     /**
-     * Creates a new ParentIDs generator by initializing properties based on class
-     * constants defined above.
+     * Generates ParentIDs.
      *
-     * @param string $prefix the prefix string
-     */
-    public function __construct(string $prefix="Parent")
-    {
-        parent::__construct();
-        $this->prefix = $prefix;
-    }
-
-    /**
-     * Creates a new ParentID.
+     * @param ?string $prefix The site prefix to prepend to the ID value.
      *
-     * @return string The new identifier.
+     * @return void
      */
-    public function generateParentID(): string
+    public function __construct(string $siteAlias, string $projectAlias)
     {
-        //  $generator = new \CandIDGenerator();
-        $candID = parent::generate();
-        return $this->prefix.(string)$candID;
+        $this->kind = 'ParentID';
+        parent::__construct($siteAlias, $projectAlias);
     }
-
 }

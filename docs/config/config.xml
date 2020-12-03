@@ -43,7 +43,13 @@
                 <seq type="alphanumeric" length="4"/> <!-- Ex: AAA0001-->
             </structure>
         </PSCID>
-
+        <ParentID>
+            <generation>random</generation>
+            <structure>
+                <seq type="static">PARENT</seq>
+                <seq type="numeric" length="6" min='100000' max='999999'/>
+            </structure>
+        </ParentID>
         <ExternalID>
             <generation>random</generation>
             <structure>
