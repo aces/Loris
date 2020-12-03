@@ -306,9 +306,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             // Generate candid and insert into setArray
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
-            $parentIDgenerator  = new \ParentIDGenerator($site->getSiteAlias(),$project->getAlias());
+            $parentIDgenerator  = new \ParentIDGenerator(
+                $site->getSiteAlias(),
+                $project->getAlias()
+            );
             $parentID           = $parentIDgenerator->generate();
-print_r($parentID);
+            print_r($parentID);
             $setArray['ParentID'] = $parentID;
             try {
                 \Database::singleton()->insert('candidate', $setArray);

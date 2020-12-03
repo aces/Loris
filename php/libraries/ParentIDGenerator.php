@@ -27,7 +27,8 @@ class ParentIDGenerator extends SiteIDGenerator
     /**
      * Generates ParentIDs.
      *
-     * @param ?string $prefix The site prefix to prepend to the ID value.
+     * @param string $siteAlias    The site prefix to prepend to the ID value.
+     * @param string $projectAlias The project prefix to prepend to the ID value.
      *
      * @return void
      */
