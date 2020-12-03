@@ -27,7 +27,7 @@
         </title>
         <script type="text/javascript">
           $(document).ready(function() {
-            {if $breadcrumbs != "" && empty($error_message)}
+            {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
 
               ReactDOM.render(
@@ -212,7 +212,7 @@
                     </div>
 
                 {/if}
-                {if $breadcrumbs != "" && empty($error_message)}
+                {if $breadcrumbs|default != "" && empty($error_message)}
                     <div id="breadcrumbs"></div>
                 {/if}
                         <div>
