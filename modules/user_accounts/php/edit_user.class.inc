@@ -948,7 +948,7 @@ class Edit_User extends \NDB_Form
                 $attribs
             );
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
+        $this->addGroup($group, 'PermID_Group', 'Permissions', "", []);
         unset($group);
 
         //getting users name and emails to create checkboxes
@@ -964,8 +964,8 @@ class Edit_User extends \NDB_Form
         $group   = [];
         $group[] = $this->form->createElement(
             'static',
-            null,
-            null,
+            '',
+            '',
             '</div>'
             . "<h3 id=\"header_supervisors\" class=\"perm_header button\" "
             . "style=\"text-align: center; margin-top: 5px;\"> "
@@ -973,7 +973,7 @@ class Edit_User extends \NDB_Form
             . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">"
         );
 
-        $attribs = $this->_isEditingOwnAccount() ? ['disabled' => true] : null;
+        $attribs = $this->_isEditingOwnAccount() ? ['disabled' => true] : [];
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] .']',
