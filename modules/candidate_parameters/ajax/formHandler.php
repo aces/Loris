@@ -281,26 +281,22 @@ function editFamilyInfoFields(\Database $db)
     $relationship     = isset($_POST[$relationshipType]) ?
         $_POST[$relationshipType] : null;
 
-    while ($siblingCandID != null ) {
+    $siblingID = $db->pselectOne(
+        "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
+        [
+            'candid'   => $siblingCandID,
+            'familyid' => $familyID,
+        ]
+    );
 
-        $siblingID = $db->pselectOne(
-            "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
-            [
-                'candid'   => $siblingCandID,
-                'familyid' => $familyID,
-            ]
-        );
+    $updateValues = [
+        'CandID'            => $siblingCandID,
+        'Relationship_type' => $relationship,
+        'FamilyID'          => $familyID,
+    ];
 
-        $updateValues = [
-            'CandID'            => $siblingCandID,
-            'Relationship_type' => $relationship,
-            'FamilyID'          => $familyID,
-        ];
+    $db->update('family', $updateValues, ['ID' => $siblingID]);
 
-        $db->update('family', $updateValues, ['ID' => $siblingID]);
-
-        $i++;
-    }
 }
 
 /**
