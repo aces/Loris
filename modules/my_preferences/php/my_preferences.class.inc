@@ -342,9 +342,9 @@ class My_Preferences extends \NDB_Form
                 $this->addGroup(
                     $nGroup,
                     "row_".$module."_".$operation,
-                    null,
+                    '',
                     $this->_GUIDelimiter,
-                    false
+                    []
                 );
                 $notification_rows[] ="row_".$module."_".$operation;
                 unset($nGroup);
