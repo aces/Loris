@@ -346,13 +346,13 @@ The getMockBuilder function is very customizable, and the different options are 
 
 `disableOriginalConstructor(): `If you are creating a mock of an object whose constructor requires some arguments, you can disable the constructor if it is unnecessary to specify the arguments for a given test. 
 
-`setMethods():` If your mock object only needs to use a short list of the LorisForm class methods, you can specify these in an array. 
+`addMethods():` If your mock object only needs to use a short list of the LorisForm class methods, you can specify these in an array. 
 
 
 ```
 $form = $this->getMockBuilder('LorisForm')
                  ->disableOriginalConstructor()
-                 ->setMethods(array('addStatic'))
+                 ->addMethods(array('addStatic'))
                  ->getMock();
 ```
 
