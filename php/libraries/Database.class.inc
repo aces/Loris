@@ -641,7 +641,7 @@ class Database
                 "Database DELETE did not execute successfully."
                 . $this->_createPDOErrorString(),
                 $query,
-                $where
+                [$where]
             );
         }
     }

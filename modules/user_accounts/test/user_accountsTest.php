@@ -135,8 +135,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testUserAccountsFilterClearBtn()
     {
         $this->safeGet($this->url . "/user_accounts/");
-        $this-> _testFilter($this->_name, $this->_table, null, "UnitTester");
-        $this-> _testFilter($this->_site, $this->_table, "1 rows", "3");
+        $this->_testFilter($this->_name, $this->_table, '', "UnitTester");
+        $this->_testFilter($this->_site, $this->_table, "1 rows", "3");
     }
     /**
      * Testing filter funtion and clear button
