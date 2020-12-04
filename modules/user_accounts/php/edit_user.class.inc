@@ -923,7 +923,7 @@ class Edit_User extends \NDB_Form
                 $lastRole = $row['type'];
                 $group[]  = $this->form->createElement(
                     'static',
-                    null,
+                    '',
                     '',
                     '</div>'
                     . "<h3 id=\"header_$lastRole\" "
@@ -982,7 +982,7 @@ class Edit_User extends \NDB_Form
             );
         }
 
-        $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "", false);
+        $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "", []);
         unset($group);
 
         if (!$this->isCreatingNewUser()) {
