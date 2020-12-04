@@ -78,12 +78,12 @@ class MriUploadServerProcess extends AbstractServerProcess
      * @param string $sourceLocation location of the MRI scan.
      * @param int    $id             ID of the process in the database.
      * @param int    $pid            PID for this process
-     * @param string $stdoutFile     full path of file used to store the process's
-     *                               stdout
-     * @param string $stderrFile     full path of file used to store the process's
-     *                               stderr
-     * @param string $exitCodeFile   full path of file used to store the process's
-     *                               exit code
+     * @param string $stdoutFile     full path of file used to store the
+     *                               process's stdout
+     * @param string $stderrFile     full path of file used to store the
+     *                               process's stderr
+     * @param string $exitCodeFile   full path of file used to store the
+     *                               process's exit code
      * @param int    $exitCode       process's exit code
      * @param string $userid         ID of the user who launched the process
      * @param string $startTime      time at which the process was started
