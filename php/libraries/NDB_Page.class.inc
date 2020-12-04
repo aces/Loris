@@ -585,11 +585,11 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
-     * @param string $attribs Attributes to pass to HTML_QuickForm
+     * @param array  $attribs Attributes to pass to HTML_QuickForm
      *
      * @return array representing checkbox
      */
-    function createCheckbox($field, $label, $attribs=null)
+    function createCheckbox($field, $label, $attribs=[])
     {
         return $this->form->createElement(
             "advcheckbox",
