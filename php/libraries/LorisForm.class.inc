@@ -1737,11 +1737,13 @@ class LorisForm
      * Only 'require', 'compare' and 'numeric' will be implemented
      * since those are the only ones we used.
      *
-     * @param string $element The element name to add the rule to.
-     *                        If this is a 'compare' rule, it will
-     *                        be an array of 2 element names.
-     * @param string $message The message to display if the rule is violated
-     * @param string $type    The rule type. 'compare', 'required' or 'numeric'
+     * @param string|array $element The element name to add the rule to.
+     *                              If this is a 'compare' rule, it will
+     *                              be an array of 2 element names.
+     * @param string $message       The message to display if the rule is
+     *                              violated
+     * @param string $type          The rule type. 'compare', 'required'
+     *                              or 'numeric'
      *
      * @return void
      */
