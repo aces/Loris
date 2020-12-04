@@ -702,7 +702,7 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $count       = 1;
         $this->_mockDB->expects($this->any())
-            ->method('pselectOne')
+            ->method('pselectOneInt')
             ->with(
                 $this->stringContains("FROM user_login_history")
             )
@@ -723,7 +723,7 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $count       = 0;
         $this->_mockDB->expects($this->any())
-            ->method('pselectOne')
+            ->method('pselectOneInt')
             ->with(
                 $this->stringContains("FROM user_login_history")
             )

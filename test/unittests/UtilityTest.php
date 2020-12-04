@@ -243,7 +243,7 @@ class UtilityTest extends TestCase
      */
     public function testGetConsentList()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselectWithIndexKey')
             ->willReturn($this->_consentInfo);
         $this->assertEquals($this->_consentInfo, Utility::getConsentList());
@@ -257,7 +257,7 @@ class UtilityTest extends TestCase
      */
     public function testGetProjectList()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselectColWithIndexKey')
             ->willReturn($this->_projectInfo);
         $this->assertEquals(
@@ -825,7 +825,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithInstrumentSpecified()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn(
@@ -882,7 +882,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithNameSpecified()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselectRow')
             ->willReturn(
                 [
@@ -910,7 +910,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithAllThreeParameters()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn(
