@@ -34,7 +34,7 @@ class Process
     /**
      * Unix PID
      *
-     * @var int
+     * @var int|null
      */
     private $_pid;
 
