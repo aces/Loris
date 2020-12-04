@@ -351,12 +351,12 @@ class NDB_Page implements RequestHandlerInterface
      * needs a value it should be added to the defaults.
      *
      * @param string $name    The name of the hidden element to add
-     * @param array  $value   The value of the hidden element to add
+     * @param string $value   The value of the hidden element to add
      * @param array  $attribs Additional html attributes for element
      *
      * @return void
      */
-    function addHidden($name, $value=null, $attribs=[])
+    function addHidden($name, $value='', $attribs=[])
     {
         $this->form->addElement('hidden', $name, $value, [], $attribs);
     }
