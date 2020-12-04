@@ -1935,14 +1935,14 @@ class LorisForm
      *
      * Creates an element without adding it to the form.
      *
-     * @param string $type    The type of element to be created.
-     * @param string $elname  The name of the element to be added
-     * @param string $label   The label to attach to the element
-     * @param array  $options Element specific options to pass
-     *                        to create* wrappers
-     * @param array  $attribs An array of extra HTML attributes to
-     *                        add to the element.
-     * @param array  $customs Only used in a certain mode of advcheckbox
+     * @param string       $type    The type of element to be created.
+     * @param string       $elname  The name of the element to be added
+     * @param string       $label   The label to attach to the element
+     * @param string|array $options Element specific options to pass
+     *                              to create* wrappers
+     * @param array        $attribs An array of extra HTML attributes to
+     *                              add to the element.
+     * @param array        $customs Only used in a certain mode of advcheckbox
      *
      * @return array of the form supported by $this->form
      */

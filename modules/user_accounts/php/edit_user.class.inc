@@ -845,14 +845,14 @@ class Edit_User extends \NDB_Form
                 'examiner_sites',
                 'Examiner At:',
                 $this->_GUIDelimiter,
-                false
+                []
             );
             $this->addGroup(
                 $groupB,
                 'examiner_group',
                 'Examiner Status',
                 $this->_GUIDelimiter,
-                false
+                []
             );
             unset($groupA);
             unset($groupB);
@@ -924,7 +924,7 @@ class Edit_User extends \NDB_Form
                 $group[]  = $this->form->createElement(
                     'static',
                     null,
-                    null,
+                    '',
                     '</div>'
                     . "<h3 id=\"header_$lastRole\" "
                     . "class=\"perm_header button\" "
