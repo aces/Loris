@@ -126,7 +126,7 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
@@ -164,7 +164,7 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown() : void
     {
         parent::tearDown();
         $this->_factory->reset();

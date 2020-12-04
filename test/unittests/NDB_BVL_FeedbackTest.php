@@ -41,7 +41,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      * @throws Exception
      * @return void
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->createLorisDBConnection();

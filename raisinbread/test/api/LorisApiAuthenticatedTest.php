@@ -27,14 +27,14 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     protected $base_uri;
     protected $originalJwtKey;
     protected $configIdJwt;
- 
+
     /**
      * Overrides LorisIntegrationTest::setUp() to store the current JWT key
      * and replaces it for an acceptable one.
      *
      * @return void
      */
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 
@@ -182,7 +182,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown() : void
     {
         $this->DB->delete("session", ['CandID' => '900000']);
         $this->DB->delete("candidate", ['CandID' => '900000']);

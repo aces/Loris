@@ -46,7 +46,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp() : void
     {
         parent::setUp();
     }
@@ -55,7 +55,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown() : void
     {
         parent::tearDown();
     }

@@ -33,7 +33,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp() : void
     {
         parent::setUp();
     }
@@ -43,7 +43,7 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown() : void
     {
         $this->DB->delete(
             "subproject",
