@@ -245,13 +245,10 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $value  = intval($row['val']);
-            if (!isset($this->tpl_data['behaviour']['C' . $center])) {
-                $this->tpl_data['behaviour']['C' . $center] = [$vl => []];
-            }
+
+            $this->tpl_data['behaviour']['C' . $center][$vl]
+                = $this->tpl_data['behaviour']['C' . $center][$vl] ?? [];
             $c =& $this->tpl_data['behaviour']['C' . $center];
-            if (!isset($c[$vl])) {
-                $c[$vl] = [];
-            }
 
             if (array_key_exists('total', $c[$vl])) {
                 $c[$vl]['total'] += $value;
@@ -322,13 +319,10 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $value  = intval($row['val']);
-            if (!isset($this->tpl_data['dde']['C' . $center])) {
-                $this->tpl_data['dde']['C' . $center] = [$vl => []];
-            }
+
+            $this->tpl_data['dde']['C' . $center][$vl]
+                = $this->tpl_data['dde']['C' . $center][$vl] ?? [];
             $c =& $this->tpl_data['dde']['C' . $center];
-            if (!isset($c[$vl])) {
-                $c[$vl] = [];
-            }
 
             if (array_key_exists('total', $c[$vl])) {
                 $c[$vl]['total'] += $value;
