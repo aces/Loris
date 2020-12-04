@@ -415,9 +415,9 @@ class NDB_Page implements RequestHandlerInterface
      * Adds a QuickForm rule to an element on the page.
      *
      * @param string|array $element The name of the element to have the rule
-     * @param string $message       The message to show on failure
-     * @param string $type          The type of rule to add
-     * @param string $format        See QuickForm documentation.
+     * @param string       $message The message to show on failure
+     * @param string       $type    The type of rule to add
+     * @param string       $format  See QuickForm documentation.
      *
      * @return void
      *

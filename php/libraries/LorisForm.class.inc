@@ -1740,9 +1740,9 @@ class LorisForm
      * @param string|array $element The element name to add the rule to.
      *                              If this is a 'compare' rule, it will
      *                              be an array of 2 element names.
-     * @param string $message       The message to display if the rule is
+     * @param string       $message The message to display if the rule is
      *                              violated
-     * @param string $type          The rule type. 'compare', 'required'
+     * @param string       $type    The rule type. 'compare', 'required'
      *                              or 'numeric'
      *
      * @return void
