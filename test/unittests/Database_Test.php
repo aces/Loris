@@ -82,7 +82,7 @@ class Database_Test extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -104,7 +104,7 @@ class Database_Test extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->factory->reset();

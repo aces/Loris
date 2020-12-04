@@ -20,7 +20,7 @@ class NDB_Menu_Filter_Test extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         global $_SESSION;
         $this->Session = $this->getMockBuilder(stdClass::class)->setMethods(

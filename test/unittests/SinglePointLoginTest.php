@@ -32,7 +32,7 @@ class SinglePointLoginTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $Factory = NDB_Factory::singleton();
         $Factory->setTesting(true);

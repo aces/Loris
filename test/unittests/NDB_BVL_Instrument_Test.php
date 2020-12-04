@@ -45,7 +45,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         global $_SESSION;
         if (!defined("UNIT_TESTING")) {
