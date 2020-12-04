@@ -15,7 +15,7 @@
 	<ul class="controlPanel fa-ul">
 		{section name=item loop=$status}
 		<li>
-			{if $access.status and $status[item].showlink}
+			{if $access.status and $status[item].showlink|default}
                         	<span class="fa-li"><i class="{$status[item].icon|default:'far fa-square'}"></i></span><a href="?candID={$candID}&sessionID={$sessionID}&setStageUpdate={$status[item].label}">{$status[item].label}</a>
 			{else}
                         	<span class="fa-li"><i class="{$status[item].icon|default:'far fa-square'}"></i></span>{$status[item].label}
@@ -45,7 +45,7 @@
 	<ul class="controlPanel fa-ul">
 		<li>
 			<span class="fa-li"><i class="{$bvl_qc_type_none.icon|default:'far fa-square'}"></i></span>
-			{if $bvl_qc_type_none.showlink}
+			{if $bvl_qc_type_none.showlink|default}
                         	<a href="?candID={$candID}&sessionID={$sessionID}&setBVLQCType=">Not Done</a>
 			{else}
                                                 Not Done
@@ -54,7 +54,7 @@
 
 		<li>
 		          <span class="fa-li"><i class="{$bvl_qc_type_visual.icon|default:'far fa-square'}"></i></span>
-			{if $bvl_qc_type_visual.showlink}
+			{if $bvl_qc_type_visual.showlink|default}
                         	<a href="?candID={$candID}&sessionID={$sessionID}&setBVLQCType=Visual">Visual</a>
 			{else}
                                                 Visual
@@ -62,7 +62,7 @@
 		</li>
 		<li>
                 	<span class="fa-li"><i class="{$bvl_qc_type_hardcopy.icon|default:'far fa-square'}"></i></span>
-			{if $bvl_qc_type_hardcopy.showlink}
+			{if $bvl_qc_type_hardcopy.showlink|default}
                         	<a href="?candID={$candID}&sessionID={$sessionID}&setBVLQCType=Hardcopy">Hardcopy</a>
 			{else}
                                                 Hardcopy
@@ -74,7 +74,7 @@
 	<ul class="controlPanel fa-ul">
 		<li>
 			<span class="fa-li"><i class="{$bvl_qc_status_none.icon|default:'far fa-square'}"></i></span>
-			{if $bvl_qc_status_none.showlink}
+			{if $bvl_qc_status_none.showlink|default}
                         	<a href="?candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=">Not Done</a>
 			{else}
                                                 Not Done
@@ -83,7 +83,7 @@
 
 		<li>
                 	<span class="fa-li"><i class="{$bvl_qc_status_complete.icon|default:'far fa-square'}"></i></span>
-			{if $bvl_qc_status_complete.showlink}
+			{if $bvl_qc_status_complete.showlink|default}
                         	<a href="?candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=Complete">Complete</a>
 			{else}
                                                 Complete
