@@ -46,7 +46,9 @@ if (isset($_POST['fire_away']) && $_POST['fire_away']) {
     $comments->clearAllComments();
 
     // set selected predefined comments
-    $comments->setPredefinedComments($_POST['savecomments']['predefined']);
+    if (isset($_POST['savecomments']['predefined'])) {
+        $comments->setPredefinedComments($_POST['savecomments']['predefined']);
+    }
 
     // save all textual comments but only if there is an entry [sebas]
     foreach (\Utility::asArray($_POST['savecomments']['text'])
@@ -58,7 +60,9 @@ if (isset($_POST['fire_away']) && $_POST['fire_away']) {
     }
 
     // save all comment status fields
-    if (is_array($_POST['saveCommentStatusField'])) {
+    if (isset($_POST['saveCommentStatusField'])
+        && is_array($_POST['saveCommentStatusField'])
+    ) {
         foreach ($_POST['saveCommentStatusField'] as $status_field => $value) {
             $comments->setMRIValue($status_field, $value);
         }
