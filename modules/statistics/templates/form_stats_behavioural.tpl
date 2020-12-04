@@ -1,8 +1,8 @@
 <div id="data_entry">
-    <h2 class="statsH2">Data Entry Statistics  {if $CurrentProject} for {$CurrentProject.Name} {/if}</h2>
-    <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_behavioural.js"></script>
+    <h2 class="statsH2">Data Entry Statistics  {if $CurrentProject|default} for {$CurrentProject.Name|default} {/if}</h2>
+    <script type="text/javascript" src="{$baseurl|default}/statistics/js/form_stats_behavioural.js"></script>
         <div class="col-sm-2">
-            {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$CurrentProject.ID class="form-control"}
+            {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$CurrentProject.ID|default class="form-control"}
         </div>
         <button class="btn btn-primary btn-sm" onClick="updateBehaviouralTab()">Submit Query</button>
         <br><br>
@@ -46,7 +46,7 @@
             <td class="   pis">Per Instrument Stats</td>
             {foreach from=$Centers item=center key=centername}
                 <td id='{$center.ID}PIS' class="pis" colspan="2">
-                    <a href='{$baseurl}/statistics/statistics_site/?CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}' target="_blank">View Details</a>
+                    <a href='{$baseurl|default}/statistics/statistics_site/?CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID|default}' target="_blank">View Details</a>
                 </td>
             {/foreach}
         </tr>
@@ -55,7 +55,7 @@
 
 
 
-    <b><a href='{$baseurl}/statistics/statistics_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
+    <b><a href='{$baseurl|default}/statistics/statistics_site/?CenterID={$CurrentSite.ID|default}&ProjectID={$CurrentProject.ID|default}' target="_blank">Click here for breakdown per participant {if $CurrentSite|default} for {$CurrentSite.Name|default} {/if} {if $CurrentProject|default} for {$CurrentProject.Name|default} {/if}</a></b>
     <br><br>
     <h2 class="statsH2">Double Data Entry Statistics:</h2>
 
@@ -100,14 +100,14 @@
             <td class=" pis">Per Instrument Stats</td>
             {foreach from=$Centers item=center key=centername}
                 <td id='{$center.ID}DDPIS' class="pis" colspan="2">
-                    <a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}' target="_blank">View Details</a>
+                    <a href='{$baseurl|default}/statistics/statistics_dd_site/?CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID|default}' target="_blank">View Details</a>
                 </td>
             {/foreach}
         </tr>
         </tbody>
     </table>
     <div>
-        <b><a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$CurrentSite.ID}&ProjectID={$CurrentProject.ID}' target="_blank">Click here for breakdown per participant{if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
+        <b><a href='{$baseurl|default}/statistics/statistics_dd_site/?CenterID={$CurrentSite.ID|default}&ProjectID={$CurrentProject.ID|default}' target="_blank">Click here for breakdown per participant{if $CurrentSite|default} for {$CurrentSite.Name|default} {/if} {if $CurrentProject|default} for {$CurrentProject.Name|default} {/if}</a></b>
     </div>
 </div>
 

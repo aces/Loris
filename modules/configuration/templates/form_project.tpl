@@ -1,11 +1,11 @@
-<script language="javascript" src="{$baseurl}/configuration/js/project.js">
+<script language="javascript" src="{$baseurl|default}/configuration/js/project.js">
 </script>
 <p>Use this page to manage the configuration of existing projects, or to add a new one.</p>
-<p>To configure study subprojects <a href="{$baseurl}/configuration/subproject/">click here</a>.</p>
+<p>To configure study subprojects <a href="{$baseurl|default}/configuration/subproject/">click here</a>.</p>
 
 <div class="col-md-3">
 <ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
-    <li class="active"><a id="#projectnew{$ProjectID}" href="#projectnew" data-toggle="tab" class="active">New ProjectID</a></li>
+    <li class="active"><a id="#projectnew{$ProjectID|default}" href="#projectnew" data-toggle="tab" class="active">New ProjectID</a></li>
     {foreach from=$projects key=ProjectID item=project name=configContent}
     <li><a id="#project{$ProjectID}" href="#project{$ProjectID}" data-toggle="tab">{$project.Name}</a></li>
     {/foreach}
