@@ -106,6 +106,7 @@ class PasswordTest extends TestCase
      */
     public function testContructorInvalidValues($invalidValue): void
     {
+        $this->expectException("InvalidArgumentException");
         $this->_configMock->expects($this->any())
             ->method('getSetting')
             ->willReturn('false');

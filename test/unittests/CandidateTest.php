@@ -586,7 +586,7 @@ class CandidateTest extends TestCase
         $subprojects = [];
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->exactly(3))
+        $this->_dbMock->expects($this->exactly(2))
             ->method('pselect')
             ->willReturn(
                 $subprojects
@@ -648,7 +648,7 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
             ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
-            ->willReturn(2);
+            ->willReturn('2');
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(2, $this->_candidate->getNextVisitNo());
