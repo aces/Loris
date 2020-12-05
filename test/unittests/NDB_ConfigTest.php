@@ -171,7 +171,7 @@ class NDB_ConfigTest extends TestCase
         $this->assertNull($this->_config->getSettingFromDB("showDatabaseQueries"));
         $this->_dbMock->expects($this->any())
             ->method('isConnected')
-            ->willReturn('true');
+            ->willReturn(true);
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn([['AllowMultiple' => '0', 'ParentID' => 'test']]);
