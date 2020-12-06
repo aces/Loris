@@ -76,7 +76,7 @@ class NDB_ConfigTest extends TestCase
     /**
      * Test double for User object
      *
-     * @var User | PHPUnitFrameworkMockObjectMockObject
+     * @var User | PHPUnit\Framework\MockObject\MockObject
      */
     private $_user;
 
