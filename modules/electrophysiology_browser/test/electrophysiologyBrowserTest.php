@@ -215,7 +215,10 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertStringContainsString("Electrophysiology Browser", $bodyText);
+        $this->assertStringContainsString(
+            "Electrophysiology Browser",
+            $bodyText
+        );
     }
 
     /**
@@ -250,7 +253,10 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
         $this->resetStudySite();
     }
@@ -346,7 +352,10 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $firstEntry = $this->safeFindElement(
             WebDriverBy::cssSelector("#dynamictable > tbody > tr:nth-child(1)")
         )->getText();
-        $this->assertStringContainsString("OTT166", $firstEntry);
+        $this->assertStringContainsString(
+            "OTT166",
+            $firstEntry
+        );
         $this->safeClick(
             WebDriverBy::cssSelector(self::$PSCIDHeader)
         );
@@ -456,7 +465,10 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertStringContainsString("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
 
         $this->setupPermissions(['electrophysiology_browser_view_allsites']);
@@ -464,7 +476,10 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
 
         $this->resetStudySite();
@@ -486,7 +501,10 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertStringContainsString("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
 
         $this->resetUserProject();
@@ -536,6 +554,9 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             "/electrophysiology_browser",
             $this->webDriver->getCurrentURL()
         );
-        $this->assertStringNotContainsString("sessions", $this->webDriver->getCurrentURL());
+        $this->assertStringNotContainsString(
+            "sessions",
+            $this->webDriver->getCurrentURL()
+        );
     }
 }

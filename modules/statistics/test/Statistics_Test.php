@@ -120,6 +120,9 @@ class StatisticsTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".statsH2")
         )->getText();
-        $this->assertStringContainsString("General Demographic Statistics", $bodyText);
+        $this->assertStringContainsString(
+            "General Demographic Statistics",
+            $bodyText
+        );
     }
 }

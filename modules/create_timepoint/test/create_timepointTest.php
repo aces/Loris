@@ -140,7 +140,10 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             WebDriverBy::cssSelector("body")
         )->getText();
 
-        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
 }
